@@ -127,8 +127,11 @@ class _MainScreenState extends State<MainScreen> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => LicensePage(
-                            applicationName: "This is a title.",
-                            applicationLegalese: "I dont know",
+                            applicationName: "privacyIDEA Authenticator",
+                            applicationVersion: "0.0.1",
+                            applicationIcon:
+                                Image.asset('res/logo/app_logo.png'),
+                            applicationLegalese: "Apache 2.0",
                             // TODO see http://astashov.s3.amazonaws.com/dartdoc_flutter/current/material/showLicensePage.html for information.
                             // TODO Register new licenses.
                           )))
