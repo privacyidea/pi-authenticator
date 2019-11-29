@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo', // TODO rename this
+      title: 'privacyIDEA Authenticator',
       theme: ThemeData(
         textTheme: TextTheme(
           title: TextStyle(
@@ -41,8 +41,7 @@ class MyApp extends StatelessWidget {
           textTheme: ButtonTextTheme.primary,
         ),
       ), // TODO move this theme to another file
-      home:
-          MainScreen(title: 'Flutter Demo Home Page'), // TODO set proper title
+      home: MainScreen(title: 'privacyIDEA Authenticator'),
     );
   }
 }
