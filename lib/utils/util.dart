@@ -101,3 +101,9 @@ OTPLibrary.OTPAlgorithm _mapAlgorithms(String algorithmName) {
 String insertCharAt(String str, String char, int pos) {
   return str.substring(0, pos) + char + str.substring(pos, str.length);
 }
+
+Token parseQRCodeToToken(String uri){
+  // TODO implement this
+  // TODO throw some exceptions
+  // TODO parse this uri
+}

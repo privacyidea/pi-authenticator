@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/addManuallyScreen.dart';
+import 'package:privacyidea_authenticator/utils/util.dart';
 import 'package:privacyidea_authenticator/widgets/hotpwidget.dart';
 import 'package:privacyidea_authenticator/widgets/totpwidget.dart';
 
@@ -106,10 +107,11 @@ class _MainScreenState extends State<MainScreen> {
         error: barcode,
       );
 
-      // TODO create a util method to parse the barcode and return a token.
       // TODO somehow handle to reopen the scan when it was not a qr code? Maybe another plugin would be better.
-      // TODO add the returned token to the list.
-
+      Token newToken = parseQRCodeToToken(barcode); // TODO handle the exceptions extra.
+      setState(() {
+        _tokenList.add(newToken);
+      });
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         //  Camera access was denied
