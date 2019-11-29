@@ -19,18 +19,19 @@
 */
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/screens/mainScreen.dart';
-import 'package:privacyidea_authenticator/utils/applicatioTheme.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'privacyIDEA Authenticator',
-      theme: getApplicationTheme(),
-      home: MainScreen(title: 'privacyIDEA Authenticator'),
-    );
-  }
+ThemeData getApplicationTheme() {
+  return ThemeData(
+    textTheme: TextTheme(
+      title: TextStyle(
+        fontSize: 19,
+        color: Colors.white,
+      ),
+    ),
+    primarySwatch: Colors.deepPurple,
+    buttonTheme: ButtonThemeData(
+      buttonColor: Colors.deepPurple,
+      textTheme: ButtonTextTheme.primary,
+    ),
+  );
 }
