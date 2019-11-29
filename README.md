@@ -6,6 +6,15 @@ The pi-authenticator currently implements support for HOTP and TOTP (30 and 60 s
 The App is best used with the
 [privacyIDEA Authentication Server](https://github/privacyidea/privacyidea), and supports both Android and iOS.
 
+# Goals
+
+* provide support for scanning qr codes according to the
+[Google Authenticator Key URI](https://github.com/google/google-authenticator/wiki/Key-Uri-Format).
+
+* provide a more secure way of enrollment as
+specified in our
+[smartphone concept](https://github.com/privacyidea/privacyidea/wiki/concept%3A-SmartphoneApp) as well as the [pushtoken](https://github.com/privacyidea/privacyidea/wiki/concept%3A-PushToken) with support for user-configured firebase projects
+
 # Development
 
 We use the [Flutter](https://flutter.dev/) framework for developing our application. This enables us to use a single code base for both Android and iOS, for development itself we use [Android Studio](https://developer.android.com/studio) with the official [Flutter plugin](https://github.com/flutter/flutter-intellij).
