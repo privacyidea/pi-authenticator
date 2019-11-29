@@ -163,22 +163,3 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 }
-
-// TODO remove this legacy code
-class AboutScreenArguments {
-  final String applicationName;
-  final String version;
-  final String licenseName;
-  final String developerName;
-
-  final Map<String, String> components;
-  final Map<String, String> licenseMap;
-
-  AboutScreenArguments(
-      {this.applicationName,
-      this.version,
-      this.licenseName,
-      this.developerName,
-      this.components,
-      this.licenseMap});
-}
