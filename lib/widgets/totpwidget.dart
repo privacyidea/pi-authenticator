@@ -18,6 +18,9 @@
   limitations under the License.
 */
 
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
@@ -73,7 +76,11 @@ class _TOTPWidgetState extends State<TOTPWidget>
     // Update the otp value when the android app resumes, this prevents outdated otp values
     // ignore: missing_return
     SystemChannels.lifecycle.setMessageHandler((msg) {
-      debugPrint('SystemChannels> $msg');
+      log(
+        "SystemChannels:",
+        name: "totpwidget.dart",
+        error: msg,
+      );
       if (msg == AppLifecycleState.resumed.toString()) {
         _updateOtpValue();
       }

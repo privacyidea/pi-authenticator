@@ -18,6 +18,8 @@
   limitations under the License.
 */
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/addManuallyScreen.dart';
@@ -158,7 +160,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _addNewToken(Token newToken) {
-    print("Token recieved: $newToken");
+    log("Adding new token:", name: "mainScreen.dart", error: newToken);
     if (newToken != null) {
       setState(() {
         _tokenList.add(newToken);
