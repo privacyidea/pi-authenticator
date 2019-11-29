@@ -46,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
         actions: _buildActionMenu(),
         leading: Padding(
           padding: EdgeInsets.all(4.0),
-          child: Image.asset('res/logo/app_logo.png'), // TODO replace logo
+          child: Image.asset('res/logo/app_logo.png'),
         ),
       ),
       body: _buildTokenList(),
