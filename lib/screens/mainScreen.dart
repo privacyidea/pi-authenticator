@@ -20,7 +20,9 @@
 
 import 'dart:developer';
 
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/addManuallyScreen.dart';
 import 'package:privacyidea_authenticator/widgets/hotpwidget.dart';
@@ -87,14 +89,38 @@ class _MainScreenState extends State<MainScreen> {
                     'Scan QR-Code',
                     style: Theme.of(context).textTheme.button,
                   ),
-                  onTap: () => {
-                    // TODO scan a qr code and create the corresponding token?
-                  },
+                  onTap: () => {_scanQRCode()},
                 ),
               ],
             ),
           );
         });
+  }
+
+  _scanQRCode() async {
+    try {
+      String barcode = await BarcodeScanner.scan();
+      log(
+        "Barcode scanned:",
+        name: "mainScreen.dart",
+        error: barcode,
+      );
+
+      // TODO create a util method to parse the barcode and return a token.
+      // TODO somehow handle to reopen the scan when it was not a qr code? Maybe another plugin would be better.
+      // TODO add the returned token to the list.
+
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        //  Camera access was denied
+      } else {
+        //  Unknown error
+      }
+    } on FormatException {
+      //  User returned by pressing the back button
+    } catch (e) {
+      //  Unknown error
+    }
   }
 
   ListView _buildTokenList() {
