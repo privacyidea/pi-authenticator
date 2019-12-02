@@ -108,8 +108,14 @@ class _MainScreenState extends State<MainScreen> {
       );
 
       // TODO somehow handle to reopen the scan when it was not a qr code? Maybe another plugin would be better.
-      Token newToken = parseQRCodeToToken(barcode); // TODO handle the exceptions extra.
+      Token newToken =
+          parseQRCodeToToken(barcode); // TODO handle the exceptions extra.
       setState(() {
+        log(
+          "Adding new token from qr-code:",
+          name: "mainScreen.dart",
+          error: newToken,
+        );
         _tokenList.add(newToken);
       });
     } on PlatformException catch (e) {
