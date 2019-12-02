@@ -119,28 +119,28 @@ void _testParseQRCodeToToken() {
       expect(
           () => parseQRCodeToToken(
               "http://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
-          throwsA(TypeMatcher<FormatException>()));
+          throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test with unknown type", () {
       expect(
           () => parseQRCodeToToken(
               "otpauth://asdf/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
-          throwsA(TypeMatcher<FormatException>()));
+          throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test with missing type", () {
       expect(
           () => parseQRCodeToToken(
               "otpauth:///ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
-          throwsA(TypeMatcher<FormatException>()));
+          throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test with missing label", () {
       expect(
           () => parseQRCodeToToken(
               "otpauth://totp/?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA256&digits=8&counter=5"),
-          throwsA(TypeMatcher<FormatException>()));
+          throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test missing algorithm", () {
@@ -153,7 +153,7 @@ void _testParseQRCodeToToken() {
       expect(
           () => parseQRCodeToToken(
               "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=BubbleSort&digits=6&period=30"),
-          throwsA(TypeMatcher<FormatException>()));
+          throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test missing digits", () {
@@ -166,28 +166,28 @@ void _testParseQRCodeToToken() {
       expect(
           () => parseQRCodeToToken(
               "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=66&period=30"),
-          throwsA(TypeMatcher<FormatException>()));
+          throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test invalid characters for digits", () {
       expect(
           () => parseQRCodeToToken(
               "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=aA&period=30"),
-          throwsA(TypeMatcher<FormatException>()));
+          throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test missing secret", () {
       expect(
           () => parseQRCodeToToken(
               "otpauth://totp/ACME%20Co:john@example.com?issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
-          throwsA(TypeMatcher<FormatException>()));
+          throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test invalid secret", () {
       expect(
           () => parseQRCodeToToken(
               "otpauth://totp/ACME%20Co:john@example.com?secret=ÖÖ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
-          throwsA(TypeMatcher<FormatException>()));
+          throwsA(TypeMatcher<ArgumentError>()));
     });
 
     // TOTP specific
@@ -201,7 +201,7 @@ void _testParseQRCodeToToken() {
       expect(
           () => parseQRCodeToToken(
               "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=aa"),
-          throwsA(TypeMatcher<FormatException>()));
+          throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test valid totp uri", () {
@@ -220,14 +220,14 @@ void _testParseQRCodeToToken() {
       expect(
           () => parseQRCodeToToken(
               "otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA256&digits=8"),
-          throwsA(TypeMatcher<FormatException>()));
+          throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test with invalid counter", () {
       expect(
           () => parseQRCodeToToken(
               "otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA256&digits=8&counter=aa"),
-          throwsA(TypeMatcher<FormatException>()));
+          throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test valid hotp uri", () {
