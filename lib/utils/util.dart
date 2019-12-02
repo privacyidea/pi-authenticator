@@ -138,23 +138,32 @@ Token parseQRCodeToToken(String uri) {
     print("Key: $key | Value: $value");
   });
 
+  String label = parse.path.substring(1);
+  String algorithm =
+      parse.queryParameters["algorithm"] ?? SHA1; // Optional parameter
+  int digits =
+      int.parse(parse.queryParameters["digits"] ?? "6"); // Optional parameter
+  Uint8List secret =
+      decodeSecretToUint8(parse.queryParameters["secret"], BASE32);
+  String serial = null; // TODO create serial
+
   // uri.host -> totp or hotp
   if (parse.host == "hotp") {
     return HOTPToken(
-      parse.path.substring(1), // Label
-      null, // TODO create a serial
-      parse.queryParameters["algorithm"] ?? SHA1, // Optional parameter
-      int.parse(parse.queryParameters["digits"] ?? "6"), // Optional parameter
-      decodeSecretToUint8(parse.queryParameters["secret"], BASE32),
+      label,
+      serial,
+      algorithm,
+      digits,
+      secret,
       counter: int.parse(parse.queryParameters["counter"]),
     );
   } else if (parse.host == "totp") {
     return TOTPToken(
-      parse.path.substring(1),
-      null, // TODO create a serial
-      parse.queryParameters["algorithm"] ?? SHA1, // Optional parameter
-      int.parse(parse.queryParameters["digits"] ?? "6"), // Optional parameter
-      decodeSecretToUint8(parse.queryParameters["secret"], BASE32),
+      label,
+      serial,
+      algorithm,
+      digits,
+      secret,
       int.parse(parse.queryParameters["period"] ?? "30"), // Optional parameter
     );
   }
