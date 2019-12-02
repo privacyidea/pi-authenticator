@@ -114,5 +114,78 @@ void _testDecodeSecretToUint8() {
 }
 
 void _testParseQRCodeToToken() {
-  // TODO
+  String qrCode =
+      "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30";
+
+  group("parseQRCodeToToken", () {
+    test("Test with wrong uri schema", () {
+      // TODO
+    });
+
+    test("Test with unknown type", () {
+      // TODO
+    });
+
+    test("Test with missing type", () {
+      // TODO
+    });
+
+    test("Test with unknown label", () {
+      // TODO
+    });
+
+    test("Test with missing label", () {
+      // TODO
+    });
+
+    test("Test missing algorithm", () {
+      // TODO
+    });
+
+    test("Test unknown algorithm", () {
+      // TODO
+    });
+
+    test("Test missing digits", () {
+      // TODO
+    });
+
+    test("Test invalid digits", () {
+      // TODO
+    });
+
+    test("Test missing secret", () {
+      // TODO
+    });
+
+    test("Test invalid secret", () {
+      // TODO
+    });
+
+    // TOTP specific
+    test("Test missing period", () {
+      // TODO
+    });
+
+    test("Test invalid period", () {
+      // TODO
+    });
+
+    test("Test valid totp uri", () {
+      // TODO
+    });
+
+    // HOTP specific
+    test("Test with missing counter", () {
+// TODO
+    });
+
+    test("Test with invalid counter", () {
+// TODO
+    });
+
+    test("Test valid hotp uri", () {
+      // TODO
+    });
+  });
 }
