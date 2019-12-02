@@ -114,78 +114,131 @@ void _testDecodeSecretToUint8() {
 }
 
 void _testParseQRCodeToToken() {
-  String qrCode =
-      "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30";
-
   group("parseQRCodeToToken", () {
     test("Test with wrong uri schema", () {
-      // TODO
+      expect(
+          () => parseQRCodeToToken(
+              "http://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
+          throwsA(TypeMatcher<FormatException>()));
     });
 
     test("Test with unknown type", () {
-      // TODO
+      expect(
+          () => parseQRCodeToToken(
+              "otpauth://asdf/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
+          throwsA(TypeMatcher<FormatException>()));
     });
 
     test("Test with missing type", () {
-      // TODO
-    });
-
-    test("Test with unknown label", () {
-      // TODO
+      expect(
+          () => parseQRCodeToToken(
+              "otpauth:///ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
+          throwsA(TypeMatcher<FormatException>()));
     });
 
     test("Test with missing label", () {
-      // TODO
+      expect(
+          () => parseQRCodeToToken(
+              "otpauth://totp/?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA256&digits=8&counter=5"),
+          throwsA(TypeMatcher<FormatException>()));
     });
 
     test("Test missing algorithm", () {
-      // TODO
+      Token token = parseQRCodeToToken(
+          "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&digits=6&period=30");
+      expect(token.algorithm, SHA1); // This is the default value
     });
 
     test("Test unknown algorithm", () {
-      // TODO
+      expect(
+          () => parseQRCodeToToken(
+              "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=BubbleSort&digits=6&period=30"),
+          throwsA(TypeMatcher<FormatException>()));
     });
 
     test("Test missing digits", () {
-      // TODO
+      Token token = parseQRCodeToToken(
+          "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=BubbleSort&period=30");
+      expect(token.digits, 6); // This is the default value
     });
 
-    test("Test invalid digits", () {
-      // TODO
+    test("Test invalid number of digits", () {
+      expect(
+          () => parseQRCodeToToken(
+              "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=66&period=30"),
+          throwsA(TypeMatcher<FormatException>()));
+    });
+
+    test("Test invalid characters for digits", () {
+      expect(
+          () => parseQRCodeToToken(
+              "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=aA&period=30"),
+          throwsA(TypeMatcher<FormatException>()));
     });
 
     test("Test missing secret", () {
-      // TODO
+      expect(
+          () => parseQRCodeToToken(
+              "otpauth://totp/ACME%20Co:john@example.com?issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
+          throwsA(TypeMatcher<FormatException>()));
     });
 
     test("Test invalid secret", () {
-      // TODO
+      expect(
+          () => parseQRCodeToToken(
+              "otpauth://totp/ACME%20Co:john@example.com?secret=ÖÖ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
+          throwsA(TypeMatcher<FormatException>()));
     });
 
     // TOTP specific
     test("Test missing period", () {
-      // TODO
+      TOTPToken token = parseQRCodeToToken(
+          "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6");
+      expect(token.period, 30);
     });
 
-    test("Test invalid period", () {
-      // TODO
+    test("Test invalid characters for period", () {
+      expect(
+          () => parseQRCodeToToken(
+              "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=aa"),
+          throwsA(TypeMatcher<FormatException>()));
     });
 
     test("Test valid totp uri", () {
-      // TODO
+      TOTPToken token = parseQRCodeToToken(
+          "otpauth://totp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA512&digits=8&period=60");
+      expect(token.label, "Kitchen");
+      expect(token.algorithm, SHA512);
+      expect(token.digits, 8);
+      expect(token.secret,
+          decodeSecretToUint8("HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ", BASE32));
+      expect(token.period, 60);
     });
 
     // HOTP specific
     test("Test with missing counter", () {
-// TODO
+      expect(
+          () => parseQRCodeToToken(
+              "otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA256&digits=8"),
+          throwsA(TypeMatcher<FormatException>()));
     });
 
     test("Test with invalid counter", () {
-// TODO
+      expect(
+          () => parseQRCodeToToken(
+              "otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA256&digits=8&counter=aa"),
+          throwsA(TypeMatcher<FormatException>()));
     });
 
     test("Test valid hotp uri", () {
-      // TODO
+      HOTPToken token = parseQRCodeToToken(
+          "otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA256&digits=8&counter=5");
+      expect(token.label, "Kitchen");
+      expect(token.algorithm, SHA256);
+      expect(token.digits, 8);
+      expect(token.secret,
+          decodeSecretToUint8("HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ", BASE32));
+      expect(token.counter, 5);
     });
   });
 }
