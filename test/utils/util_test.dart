@@ -20,8 +20,8 @@
 
 import 'dart:convert';
 
-import 'package:matcher/matcher.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:matcher/matcher.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/util.dart';
@@ -30,6 +30,7 @@ void main() {
   _testDecodeSecretToUint8();
   _testCalculateHotpValue();
   _testInsertCharAt();
+  _testParseQRCodeToToken();
 }
 
 void _testInsertCharAt() {
@@ -110,4 +111,8 @@ void _testDecodeSecretToUint8() {
           throwsA(TypeMatcher<FormatException>()));
     });
   });
+}
+
+void _testParseQRCodeToToken() {
+  // TODO
 }
