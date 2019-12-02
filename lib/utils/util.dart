@@ -19,6 +19,8 @@
 */
 
 import 'dart:convert';
+import 'dart:core';
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
@@ -102,8 +104,58 @@ String insertCharAt(String str, String char, int pos) {
   return str.substring(0, pos) + char + str.substring(pos, str.length);
 }
 
-Token parseQRCodeToToken(String uri){
-  // TODO implement this
+/// This method parses otpauth uris according to https://github.com/google/google-authenticator/wiki/Key-Uri-Format.
+/// The method returns an hotp or an totp token.
+Token parseQRCodeToToken(String uri) {
   // TODO throw some exceptions
-  // TODO parse this uri
+  // TODO check if the uri is valid
+
+//  ArgumentError.checkNotNull(uri, "uri");
+//  if (uri.isEmpty) {
+//    throw ArgumentError.value(uri, "uri", "Otpauth uri must not ne empty.");
+//  }
+
+  Uri parse = Uri.parse(uri);
+  log(
+    "Barcode is valid Uri:",
+    name: "util.dart",
+    error: "${parse}",
+  );
+
+  // otpauth://TYPE/LABEL?PARAMETERS
+
+  if (parse.scheme != "otpauth") {
+    throw ArgumentError.value(
+      uri,
+      "uri",
+      "The uri is not a valid otpauth uri.",
+    );
+  }
+
+//  parse.host -> Type totp or hotp
+// parse.path.substring(1) -> Label
+  parse.queryParameters.forEach((key, value) {
+    print("Key: $key | Value: $value");
+  });
+
+  // uri.host -> totp or hotp
+  if (parse.host == "hotp") {
+    return HOTPToken(
+      parse.path.substring(1), // Label
+      null, // TODO create a serial
+      parse.queryParameters["algorithm"] ?? SHA1, // Optional parameter
+      int.parse(parse.queryParameters["digits"] ?? "6"), // Optional parameter
+      decodeSecretToUint8(parse.queryParameters["secret"], BASE32),
+      counter: int.parse(parse.queryParameters["counter"]),
+    );
+  } else if (parse.host == "totp") {
+    return TOTPToken(
+      parse.path.substring(1),
+      null, // TODO create a serial
+      parse.queryParameters["algorithm"] ?? SHA1, // Optional parameter
+      int.parse(parse.queryParameters["digits"] ?? "6"), // Optional parameter
+      decodeSecretToUint8(parse.queryParameters["secret"], BASE32),
+      int.parse(parse.queryParameters["period"] ?? "30"), // Optional parameter
+    );
+  }
 }
