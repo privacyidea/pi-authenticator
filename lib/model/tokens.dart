@@ -23,12 +23,16 @@ import 'dart:typed_data';
 // TODO refactor this to use the factory pattern instead?
 
 abstract class Token {
-  String _label; // the name of the token, it cannot be uses as an identifier
-  String _serial; // this is the identifier of the secret
+  String _tokenVersion =
+      "v1.0.0"; // The version of this token, this is used for serialization.
+  String _label; // The name of the token, it cannot be uses as an identifier.
+  String _serial; // This is the identifier of the secret.
   String
-      _algorithm; // the hashing algorithm that is used to calculate the otp value
-  int _digits; // the number of digits the otp value will have
-  Uint8List _secret; // the secret based on which the otp value is calculated
+      _algorithm; // The hashing algorithm that is used to calculate the otp value.
+  int _digits; // The number of digits the otp value will have.
+  Uint8List _secret; // The secret based on which the otp value is calculated.
+
+  String get tokenVersion => _tokenVersion;
 
   String get label => _label;
 
