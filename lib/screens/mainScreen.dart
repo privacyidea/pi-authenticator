@@ -161,7 +161,7 @@ class _MainScreenState extends State<MainScreen> {
         onSelected: (String value) => {
           if (value == "about")
             {
-              clearLicenses(),
+//              clearLicenses(), // This is used for testing purposes.
               addAllLicenses(),
               Navigator.push(
                   context,
