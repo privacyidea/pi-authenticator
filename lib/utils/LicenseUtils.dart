@@ -8,10 +8,11 @@ clearLicenses() {
 }
 
 addAllLicenses() {
-  _addNewLicense("privacyIDEA Authenticator", PI_AUTHENTICATOR_LICENSE);
-  _addNewLicense("dart-hex", DART_HEX_LICENSE);
-  _addNewLicense("dart-base32", DART_BASE32_LICENSE);
-  _addNewLicense("dart_otp", DART_OTP_LICENSE);
+  _addNewLicense("privacyIDEA Authenticator", _PI_AUTHENTICATOR_LICENSE);
+  _addNewLicense("dart-hex", _DART_HEX_LICENSE);
+  _addNewLicense("dart-base32", _DART_BASE32_LICENSE);
+  _addNewLicense("dart_otp", _DART_OTP_LICENSE);
+  _addNewLicense("dart-uuid", _DART_UUID_LICENSE);
 }
 
 _addNewLicense(String packageName, String licenseText) {
@@ -20,7 +21,7 @@ _addNewLicense(String packageName, String licenseText) {
   });
 }
 
-const String PI_AUTHENTICATOR_LICENSE = '''
+const String _PI_AUTHENTICATOR_LICENSE = '''
 
                                  Apache License
                            Version 2.0, January 2004
@@ -198,7 +199,7 @@ const String PI_AUTHENTICATOR_LICENSE = '''
       of your accepting any such warranty or additional liability.
 
    END OF TERMS AND CONDITIONS''';
-const String DART_HEX_LICENSE = '''
+const String _DART_HEX_LICENSE = '''
 
 The MIT License (MIT)
 
@@ -222,14 +223,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ''';
-const String DART_BASE32_LICENSE = ''' Copyright (c) 2012 Yulian Kuncheff
+const String _DART_BASE32_LICENSE = ''' Copyright (c) 2012 Yulian Kuncheff
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.''';
-const String DART_OTP_LICENSE = ''' MIT License
+const String _DART_OTP_LICENSE = ''' MIT License
 
 Copyright (c) 2018 Gin
 
@@ -250,3 +251,10 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''';
+const String _DART_UUID_LICENSE = ''' Copyright (c) 2012 Yulian Kuncheff
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.''';
