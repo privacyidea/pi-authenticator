@@ -21,10 +21,12 @@
 import 'dart:developer';
 
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/addManuallyScreen.dart';
+import 'package:privacyidea_authenticator/utils/LicenseUtils.dart';
 import 'package:privacyidea_authenticator/utils/util.dart';
 import 'package:privacyidea_authenticator/widgets/hotpwidget.dart';
 import 'package:privacyidea_authenticator/widgets/totpwidget.dart';
@@ -159,6 +161,8 @@ class _MainScreenState extends State<MainScreen> {
         onSelected: (String value) => {
           if (value == "about")
             {
+//              clearLicenses(), // This is used for testing purposes.
+              addAllLicenses(),
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -168,8 +172,6 @@ class _MainScreenState extends State<MainScreen> {
                             applicationIcon:
                                 Image.asset('res/logo/app_logo.png'),
                             applicationLegalese: "Apache License 2.0",
-                            // TODO see http://astashov.s3.amazonaws.com/dartdoc_flutter/current/material/showLicensePage.html for information.
-                            // TODO Register new licenses.
                           )))
             }
           else
