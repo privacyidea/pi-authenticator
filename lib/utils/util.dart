@@ -128,11 +128,20 @@ Token parseQRCodeToToken(String uri) {
     throw ArgumentError.value(
       uri,
       "uri",
-      "The uri is not a valid otpauth uri.",
+      "The uri is not a valid otpauth uri but a(n) [${parse.scheme}] uri instead.",
     );
   }
 
 //  parse.host -> Type totp or hotp
+  String type = parse.host;
+  if (type != HOTP.toLowerCase() && type != TOTP.toLowerCase()) {
+    throw ArgumentError.value(
+      uri,
+      "uri",
+      "The token type [$type] is not supported",
+    );
+  }
+
 // parse.path.substring(1) -> Label
   parse.queryParameters.forEach((key, value) {
     print("Key: $key | Value: $value");
@@ -141,30 +150,81 @@ Token parseQRCodeToToken(String uri) {
   String label = parse.path.substring(1);
   String algorithm =
       parse.queryParameters["algorithm"] ?? SHA1; // Optional parameter
-  int digits =
-      int.parse(parse.queryParameters["digits"] ?? "6"); // Optional parameter
+
+  if (algorithm != SHA1 && algorithm != SHA256 && algorithm != SHA512) {
+    throw ArgumentError.value(
+      uri,
+      "uri",
+      "The algorithm [$algorithm] is not supported",
+    );
+  }
+
+  String digitsAsString =
+      parse.queryParameters["digits"] ?? "6"; // Optional parameter
+
+  if (digitsAsString != "6" && digitsAsString != "8") {
+    throw ArgumentError.value(
+      uri,
+      "uri",
+      "[$digitsAsString] is not a valid number of digits",
+    );
+  }
+
+  int digits = int.parse(digitsAsString);
+
+  // parse secret
+  String secretAsString = parse.queryParameters["secret"];
+  if (!isValidEncoding(secretAsString, BASE32)) {
+    throw ArgumentError.value(
+      uri,
+      "uri",
+      "[$BASE32] is not a valid encoding for [$secretAsString].",
+    );
+  }
+
   Uint8List secret =
       decodeSecretToUint8(parse.queryParameters["secret"], BASE32);
+
   String serial = null; // TODO create serial
 
-  // uri.host -> totp or hotp
-  if (parse.host == "hotp") {
-    return HOTPToken(
-      label,
-      serial,
-      algorithm,
-      digits,
-      secret,
-      counter: int.parse(parse.queryParameters["counter"]),
-    );
-  } else if (parse.host == "totp") {
+// uri.host -> totp or hotp
+  if (type == "hotp") {
+    String counterAsString = parse.queryParameters["counter"];
+    try {
+      int counter = int.parse(counterAsString);
+
+      return HOTPToken(
+        label,
+        serial,
+        algorithm,
+        digits,
+        secret,
+        counter: counter,
+      );
+    } on FormatException {
+      throw ArgumentError.value(
+        uri,
+        "uri",
+        "[$counterAsString] is not a valid value for the parameter [counter]",
+      );
+    }
+  } else if (type == "totp") {
+    String periodAsString = parse.queryParameters["period"] ?? "30";
+    if (periodAsString != "30" && periodAsString != "60") {
+      throw ArgumentError.value(
+        uri,
+        "uri",
+        "[$periodAsString] is not a valid value for the paramerter [period].",
+      );
+    }
+
     return TOTPToken(
       label,
       serial,
       algorithm,
       digits,
       secret,
-      int.parse(parse.queryParameters["period"] ?? "30"), // Optional parameter
+      int.parse(periodAsString), // Optional parameter
     );
   }
 }
