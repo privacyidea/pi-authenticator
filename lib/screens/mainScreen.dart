@@ -190,7 +190,7 @@ class _MainScreenState extends State<MainScreen> {
             }
           else
             {
-              // TODO if we have settingsat some point, open them
+              // TODO if we have settings at some point, open them
             }
         },
         elevation: 5.0,
