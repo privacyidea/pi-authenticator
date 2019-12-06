@@ -41,10 +41,12 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           widget.title,
@@ -79,6 +81,7 @@ class _MainScreenState extends State<MainScreen> {
                       style: Theme.of(context).textTheme.button,
                     ),
                     onTap: () => {
+                          Navigator.pop(context), // Close this bottom sheet.
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -92,7 +95,10 @@ class _MainScreenState extends State<MainScreen> {
                     'Scan QR-Code',
                     style: Theme.of(context).textTheme.button,
                   ),
-                  onTap: () => {_scanQRCode()},
+                  onTap: () => {
+                    Navigator.pop(context), // Close this bottom sheet.
+                    _scanQRCode()
+                  },
                 ),
               ],
             ),
@@ -109,9 +115,7 @@ class _MainScreenState extends State<MainScreen> {
         error: barcode,
       );
 
-      // TODO somehow handle to reopen the scan when it was not a qr code? Maybe another plugin would be better.
-      Token newToken =
-          parseQRCodeToToken(barcode); // TODO handle the exceptions extra.
+      Token newToken = parseQRCodeToToken(barcode);
       setState(() {
         log(
           "Adding new token from qr-code:",
@@ -128,6 +132,16 @@ class _MainScreenState extends State<MainScreen> {
       }
     } on FormatException {
       //  User returned by pressing the back button
+    } on ArgumentError catch (e) {
+      // Show the error message to the user.
+      _showMessage(
+          "${e.message}\n Please inform the creator of this qr code about the problem.",
+          Duration(seconds: 8));
+      log(
+        "Malformed QR code:",
+        name: "mainScreen.dart",
+        error: e.toString(),
+      );
     } catch (e) {
       //  Unknown error
     }
@@ -176,7 +190,7 @@ class _MainScreenState extends State<MainScreen> {
             }
           else
             {
-              // TODO if we have settingsat some point, open them
+              // TODO if we have settings at some point, open them
             }
         },
         elevation: 5.0,
@@ -202,5 +216,12 @@ class _MainScreenState extends State<MainScreen> {
         _tokenList.add(newToken);
       });
     }
+  }
+
+  _showMessage(String message, Duration duration) {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(message),
+      duration: duration,
+    ));
   }
 }
