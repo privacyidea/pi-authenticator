@@ -41,10 +41,12 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           widget.title,
@@ -110,16 +112,24 @@ class _MainScreenState extends State<MainScreen> {
       );
 
       // TODO somehow handle to reopen the scan when it was not a qr code? Maybe another plugin would be better.
-      Token newToken =
-          parseQRCodeToToken(barcode); // TODO handle the exceptions extra.
-      setState(() {
-        log(
-          "Adding new token from qr-code:",
-          name: "mainScreen.dart",
-          error: newToken,
-        );
-        _tokenList.add(newToken);
-      });
+      try {
+        throw ArgumentError(); // TODO remove this, it is just for testing
+        Token newToken = parseQRCodeToToken(barcode);
+        setState(() {
+          log(
+            "Adding new token from qr-code:",
+            name: "mainScreen.dart",
+            error: newToken,
+          );
+          _tokenList.add(newToken);
+        });
+      } on ArgumentError catch (e) {
+        // Show the error message to the user.
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: new Text("test"),
+          duration: Duration(seconds: 2),
+        ));
+      }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         //  Camera access was denied
