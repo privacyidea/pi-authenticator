@@ -27,6 +27,7 @@ import 'package:base32/base32.dart' as Base32Converter;
 import 'package:dart_otp/dart_otp.dart' as OTPLibrary;
 import 'package:hex/hex.dart' as HexConverter;
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:uuid/uuid.dart';
 
 import 'identifiers.dart';
 
@@ -185,7 +186,7 @@ Token parseQRCodeToToken(String uri) {
   Uint8List secret =
       decodeSecretToUint8(parse.queryParameters["secret"], BASE32);
 
-  String serial = null; // TODO create serial
+  String serial = Uuid().v4();
 
 // uri.host -> totp or hotp
   if (type == "hotp") {

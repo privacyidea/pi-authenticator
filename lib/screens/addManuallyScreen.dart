@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/util.dart';
+import 'package:uuid/uuid.dart';
 
 class AddTokenManuallyScreen extends StatefulWidget {
   @override
@@ -124,8 +125,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
   _returnTokenIfValid() {
     if (!inputIsValid()) return;
 
-    // TODO create serials for each token (and check if that serial already exists, just to be sure)
-    String serial = null;
+    String serial = Uuid().v4();
     Uint8List secretAsUint8 =
         decodeSecretToUint8(_selectedSecret, _selectedEncoding.value);
     Token newToken;
