@@ -116,24 +116,15 @@ class _MainScreenState extends State<MainScreen> {
       );
 
       // TODO somehow handle to reopen the scan when it was not a qr code? Maybe another plugin would be better.
-      try {
-        throw ArgumentError(); // TODO remove this, it is just for testing
-        Token newToken = parseQRCodeToToken(barcode);
-        setState(() {
-          log(
-            "Adding new token from qr-code:",
-            name: "mainScreen.dart",
-            error: newToken,
-          );
-          _tokenList.add(newToken);
-        });
-      } on ArgumentError catch (e) {
-        // Show the error message to the user.
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: new Text("test"),
-          duration: Duration(seconds: 2),
-        ));
-      }
+      Token newToken = parseQRCodeToToken(barcode);
+      setState(() {
+        log(
+          "Adding new token from qr-code:",
+          name: "mainScreen.dart",
+          error: newToken,
+        );
+        _tokenList.add(newToken);
+      });
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         //  Camera access was denied
@@ -142,6 +133,16 @@ class _MainScreenState extends State<MainScreen> {
       }
     } on FormatException {
       //  User returned by pressing the back button
+    } on ArgumentError catch (e) {
+      // Show the error message to the user.
+      _showMessage(
+          "${e.message}\n Please inform the creator of this qr code about the problem.",
+          Duration(seconds: 8));
+      log(
+        "Malformed QR code:",
+        name: "mainScreen.dart",
+        error: e.toString(),
+      );
     } catch (e) {
       //  Unknown error
     }
