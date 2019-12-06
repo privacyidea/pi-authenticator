@@ -136,12 +136,13 @@ void _testParseQRCodeToToken() {
           throwsA(TypeMatcher<ArgumentError>()));
     });
 
-    test("Test with missing label", () {
-      expect(
-          () => parseQRCodeToToken(
-              "otpauth://totp/?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA256&digits=8&counter=5"),
-          throwsA(TypeMatcher<ArgumentError>()));
-    });
+    // It may be better if we just deal with not having a label.
+//    test("Test with missing label", () {
+//      expect(
+//          () => parseQRCodeToToken(
+//              "otpauth://totp/?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA256&digits=8&counter=5"),
+//          throwsA(TypeMatcher<ArgumentError>()));
+//    });
 
     test("Test missing algorithm", () {
       Token token = parseQRCodeToToken(
@@ -158,10 +159,11 @@ void _testParseQRCodeToToken() {
 
     test("Test missing digits", () {
       Token token = parseQRCodeToToken(
-          "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=BubbleSort&period=30");
+          "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&period=30");
       expect(token.digits, 6); // This is the default value
     });
 
+    // At least the library used to calculate otp values does not support other number of digits.
     test("Test invalid number of digits", () {
       expect(
           () => parseQRCodeToToken(
