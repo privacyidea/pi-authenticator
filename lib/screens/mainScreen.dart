@@ -81,6 +81,7 @@ class _MainScreenState extends State<MainScreen> {
                       style: Theme.of(context).textTheme.button,
                     ),
                     onTap: () => {
+                          Navigator.pop(context), // Close this bottom sheet.
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -94,7 +95,10 @@ class _MainScreenState extends State<MainScreen> {
                     'Scan QR-Code',
                     style: Theme.of(context).textTheme.button,
                   ),
-                  onTap: () => {_scanQRCode()},
+                  onTap: () => {
+                    Navigator.pop(context), // Close this bottom sheet.
+                    _scanQRCode()
+                  },
                 ),
               ],
             ),
