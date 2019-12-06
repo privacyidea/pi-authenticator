@@ -115,7 +115,6 @@ class _MainScreenState extends State<MainScreen> {
         error: barcode,
       );
 
-      // TODO somehow handle to reopen the scan when it was not a qr code? Maybe another plugin would be better.
       Token newToken = parseQRCodeToToken(barcode);
       setState(() {
         log(
