@@ -217,4 +217,11 @@ class _MainScreenState extends State<MainScreen> {
       });
     }
   }
+
+  _showMessage(String message, Duration duration) {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(message),
+      duration: duration,
+    ));
+  }
 }
