@@ -18,7 +18,6 @@
   limitations under the License.
 */
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/storageUtils.dart';
