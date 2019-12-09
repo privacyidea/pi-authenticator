@@ -31,7 +31,7 @@ import 'package:uuid/uuid.dart';
 
 import 'identifiers.dart';
 
-Uint8List decodeSecretToUint8(String secret, String encoding) {
+List<int> decodeSecretToUint8(String secret, String encoding) {
   ArgumentError.checkNotNull(secret, "secret");
   ArgumentError.checkNotNull(encoding, "encoding");
 
@@ -62,7 +62,8 @@ bool isValidEncoding(String secret, String encoding) {
 }
 
 String calculateHotpValue(HOTPToken token) {
-  String base32Secret = Base32Converter.base32.encode(token.secret);
+  Uint8List binarySecret = Uint8List.fromList(token.secret);
+  String base32Secret = Base32Converter.base32.encode(binarySecret);
   return OTPLibrary.HOTP(
     counter: token.counter,
     digits: token.digits,
@@ -73,7 +74,8 @@ String calculateHotpValue(HOTPToken token) {
 
 // TODO test this method, may use mockito for 'faking' the system time
 String calculateTotpValue(TOTPToken token) {
-  String base32Secret = Base32Converter.base32.encode(token.secret);
+  Uint8List binarySecret = Uint8List.fromList(token.secret);
+  String base32Secret = Base32Converter.base32.encode(binarySecret);
   return OTPLibrary.TOTP(
           interval: token.period,
           digits: token.digits,
@@ -183,7 +185,7 @@ Token parseQRCodeToToken(String uri) {
     );
   }
 
-  Uint8List secret =
+  List<int> secret =
       decodeSecretToUint8(parse.queryParameters["secret"], BASE32);
 
   String serial = Uuid().v4();
