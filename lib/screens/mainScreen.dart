@@ -55,7 +55,7 @@ class _MainScreenState extends State<MainScreen> {
         actions: _buildActionMenu(),
         leading: Padding(
           padding: EdgeInsets.all(4.0),
-          child: Image.asset('res/logo/app_logo.png'),
+          child: Image.asset('res/logo/app_logo_light.png'),
         ),
       ),
       body: _buildTokenList(),
@@ -183,8 +183,10 @@ class _MainScreenState extends State<MainScreen> {
                       builder: (context) => LicensePage(
                             applicationName: "privacyIDEA Authenticator",
                             applicationVersion: "0.0.1",
-                            applicationIcon:
-                                Image.asset('res/logo/app_logo.png'),
+                            applicationIcon: Padding(
+                              padding: EdgeInsets.all(40.0),
+                              child: Image.asset('res/logo/app_logo_light.png'),
+                            ),
                             applicationLegalese: "Apache License 2.0",
                           )))
             }
