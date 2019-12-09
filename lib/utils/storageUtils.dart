@@ -25,30 +25,30 @@ import 'package:privacyidea_authenticator/model/tokens.dart';
 
 // TODO test the behavior of this class.
 class StorageUtil {
-  static final FlutterSecureStorage storage = FlutterSecureStorage();
+  static final FlutterSecureStorage _storage = FlutterSecureStorage();
 
   /// Saves [token] securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
   static void saveOrReplaceToken(Token token) async {
     String key = token.serial;
 
-    String value = await storage.read(key: key);
+    String value = await _storage.read(key: key);
 
     if (value != null) {
-      await storage.delete(key: key);
+      await _storage.delete(key: key);
     }
 
 //    String serializedToken;
 //    if(token is HOTPToken){
     String serializedToken = jsonEncode(token);
 //    }
-    await storage.write(key: key, value: serializedToken);
+    await _storage.write(key: key, value: serializedToken);
   }
 
   /// Returns a list of all Tokens that are saved in the secure storage of
   /// this device.
   static Future<List<Token>> loadAllTokens() async {
-    Map<String, String> keyValueMap = await storage.readAll();
+    Map<String, String> keyValueMap = await _storage.readAll();
 
     List<Token> tokenList = [];
     keyValueMap.forEach((_, value) {
