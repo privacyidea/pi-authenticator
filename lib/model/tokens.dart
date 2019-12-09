@@ -22,8 +22,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'tokens.g.dart';
 
-// TODO refactor this to use the factory pattern instead?
-
 abstract class Token {
   String _tokenVersion =
       "v1.0.0"; // The version of this token, this is used for serialization.
@@ -72,6 +70,11 @@ class HOTPToken extends Token {
   String toString() {
     return super.toString() + ' | Type HOTP | Counter $counter';
   }
+
+  factory HOTPToken.fromJson(Map<String, dynamic> json) =>
+      _$HOTPTokenFromJson(json);
+
+  Map<String, dynamic> toJson() => _$HOTPTokenToJson(this);
 }
 
 @JsonSerializable()
@@ -83,11 +86,16 @@ class TOTPToken extends Token {
 
   TOTPToken(String label, String serial, String algorithm, int digits,
       List<int> secret, int period)
-      :this._period = period,
+      : this._period = period,
         super(label, serial, algorithm, digits, secret);
 
   @override
   String toString() {
     return super.toString() + ' | Type TOTP | Period $period';
   }
+
+  factory TOTPToken.fromJson(Map<String, dynamic> json) =>
+      _$TOTPTokenFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TOTPTokenToJson(this);
 }
