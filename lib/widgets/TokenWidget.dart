@@ -49,9 +49,14 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   String _label;
 
   _TokenWidgetState(this._token) {
-    _updateOtpValue(); // TODO maybe move this to initState?
     _saveThisToken();
     _label = _token.label;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _updateOtpValue();
   }
 
   void _saveThisToken() {
