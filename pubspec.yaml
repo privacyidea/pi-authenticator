@@ -36,13 +36,16 @@ dependencies:
   # sprintf: ^4.0.0 # TODO add BSD license https://pub.dev/packages/sprintf
   # dependency to generate serials for tokens
   uuid: 2.0.4
-
+  # dependency to save to secure storage under android and ios
+  flutter_secure_storage: ^3.3.1+1
+  # dependency to serialize objects to json
   json_annotation: ^2.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  # dependencies to serialize objects to json
   build_runner: ^1.0.0
   json_serializable: ^2.0.0
 
