@@ -126,7 +126,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     if (!inputIsValid()) return;
 
     String serial = Uuid().v4();
-    Uint8List secretAsUint8 =
+    List<int> secretAsUint8 =
         decodeSecretToUint8(_selectedSecret, _selectedEncoding.value);
     Token newToken;
     if (_selectedType.value == HOTP) {
