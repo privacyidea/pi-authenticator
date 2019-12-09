@@ -24,6 +24,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/storageUtils.dart';
 import 'package:privacyidea_authenticator/utils/util.dart';
 
 class TOTPWidget extends StatefulWidget {
@@ -46,6 +47,7 @@ class _TOTPWidgetState extends State<TOTPWidget>
 
   _TOTPWidgetState({this.token}) {
     otpValue = calculateTotpValue(token);
+    _saveThisToken();
   }
 
   @override
@@ -116,6 +118,10 @@ class _TOTPWidgetState extends State<TOTPWidget>
         ),
       ],
     );
+  }
+
+  _saveThisToken() {
+    StorageUtil.saveOrReplaceToken(this.token);
   }
 
   _updateOtpValue() {

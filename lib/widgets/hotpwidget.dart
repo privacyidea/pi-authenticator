@@ -21,6 +21,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/storageUtils.dart';
 import 'package:privacyidea_authenticator/utils/util.dart';
 
 class HOTPWidget extends StatefulWidget {
@@ -40,6 +41,7 @@ class _HOTPWidgetState extends State<HOTPWidget> {
 
   _HOTPWidgetState({this.token}) {
     otpValue = calculateHotpValue(token);
+    _saveThisToken();
   }
 
   @override
@@ -72,6 +74,10 @@ class _HOTPWidgetState extends State<HOTPWidget> {
         ),
       ],
     );
+  }
+
+  _saveThisToken() {
+    StorageUtil.saveOrReplaceToken(this.token);
   }
 
   _updateOtpValue() {

@@ -27,6 +27,7 @@ import 'package:flutter/services.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/addManuallyScreen.dart';
 import 'package:privacyidea_authenticator/utils/LicenseUtils.dart';
+import 'package:privacyidea_authenticator/utils/storageUtils.dart';
 import 'package:privacyidea_authenticator/utils/util.dart';
 import 'package:privacyidea_authenticator/widgets/hotpwidget.dart';
 import 'package:privacyidea_authenticator/widgets/totpwidget.dart';
@@ -42,6 +43,17 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  _MainScreenState() {
+    _loadAllTokens();
+  }
+
+  _loadAllTokens() async {
+    List<Token> list = await StorageUtil.loadAllTokens();
+    setState(() {
+      this._tokenList = list;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
