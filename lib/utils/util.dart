@@ -122,7 +122,7 @@ Token parseQRCodeToToken(String uri) {
   log(
     "Barcode is valid Uri:",
     name: "util.dart",
-    error: "${parse}",
+    error: "$parse",
   );
 
   // otpauth://TYPE/LABEL?PARAMETERS
