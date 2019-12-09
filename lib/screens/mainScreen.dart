@@ -29,7 +29,7 @@ import 'package:privacyidea_authenticator/screens/addManuallyScreen.dart';
 import 'package:privacyidea_authenticator/utils/LicenseUtils.dart';
 import 'package:privacyidea_authenticator/utils/storageUtils.dart';
 import 'package:privacyidea_authenticator/utils/util.dart';
-import 'package:privacyidea_authenticator/widgets/TokenWidget.dart';
+import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen({Key key, this.title}) : super(key: key);

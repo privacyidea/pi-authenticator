@@ -25,7 +25,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/util.dart';
-import 'package:privacyidea_authenticator/widgets/TokenWidget.dart';
+import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 
 void main() {
   _testHotpWidget();
