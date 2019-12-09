@@ -26,8 +26,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/util.dart';
-import 'package:privacyidea_authenticator/widgets/hotpwidget.dart';
-import 'package:privacyidea_authenticator/widgets/totpwidget.dart';
+import 'package:privacyidea_authenticator/widgets/TokenWidget.dart';
 
 void main() {
   _testHotpWidget();
@@ -45,7 +44,7 @@ void _testTotpWidget() {
         TOTPToken("Office Time", null, SHA1, 6, utf8.encode("secret"), 30);
 
     await tester.pumpWidget(_WidgetTestWrapper(
-      child: TOTPWidget(token: token),
+      child: TokenWidget(token),
     ));
 
     final labelFinder = find.text("Office Time");
@@ -90,7 +89,7 @@ void _testHotpWidget() {
           HOTPToken("Office", null, SHA1, 6, utf8.encode("secret"), counter: 0);
 
       await tester.pumpWidget(_WidgetTestWrapper(
-        child: HOTPWidget(token: token),
+        child: TokenWidget(token),
       ));
 
       final labelFinder = find.text("Office");
@@ -105,7 +104,7 @@ void _testHotpWidget() {
           HOTPToken("Office", null, SHA1, 6, utf8.encode("secret"), counter: 0);
 
       await tester.pumpWidget(_WidgetTestWrapper(
-        child: HOTPWidget(token: token),
+        child: TokenWidget(token),
       ));
 
       final otpValueFinder = find.text("814 628");
