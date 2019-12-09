@@ -38,10 +38,7 @@ class StorageUtil {
       await _storage.delete(key: key);
     }
 
-//    String serializedToken;
-//    if(token is HOTPToken){
     String serializedToken = jsonEncode(token);
-//    }
     await _storage.write(key: key, value: serializedToken);
   }
 
@@ -53,6 +50,8 @@ class StorageUtil {
     List<Token> tokenList = [];
     keyValueMap.forEach((_, value) {
       Map<String, dynamic> serializedToken = jsonDecode(value);
+
+      // TODO when the token version (token.version) changed handle this here.
 
       if (serializedToken.containsKey("counter")) {
         tokenList.add(HOTPToken.fromJson(serializedToken));
