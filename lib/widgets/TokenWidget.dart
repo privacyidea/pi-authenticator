@@ -49,14 +49,9 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   String _label;
 
   _TokenWidgetState(this._token) {
+    _otpValue = calculateOtpValue(_token);
     _saveThisToken();
     _label = _token.label;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _updateOtpValue();
   }
 
   void _saveThisToken() {
@@ -73,7 +68,7 @@ class _HotpWidgetState extends _TokenWidgetState {
   void _updateOtpValue() {
     setState(() {
       (_token as HOTPToken).incrementCounter();
-      _otpValue = calculateHotpValue(_token);
+      _otpValue = calculateOtpValue(_token);
     });
   }
 
@@ -120,7 +115,7 @@ class _TotpWidgetState extends _TokenWidgetState
   @override
   void _updateOtpValue() {
     setState(() {
-      _otpValue = calculateTotpValue(_token);
+      _otpValue = calculateOtpValue(_token);
     });
   }
 
