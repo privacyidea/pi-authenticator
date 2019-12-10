@@ -22,6 +22,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/storageUtils.dart';
 import 'package:privacyidea_authenticator/utils/util.dart';
@@ -58,7 +59,47 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     StorageUtil.saveOrReplaceToken(this._token);
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.25,
+      child: Container(
+        color: Colors.white,
+        child: _buildTile(),
+      ),
+      secondaryActions: <Widget>[
+        IconSlideAction(
+          caption: 'More',
+          color: Colors.black45,
+          icon: Icons.more_horiz,
+          onTap: () => {},
+        ),
+        IconSlideAction(
+          caption: 'Delete',
+          color: Colors.red,
+          icon: Icons.delete,
+          onTap: () => {},
+        ),
+        IconSlideAction(
+          caption: 'Archive',
+          color: Colors.blue,
+          icon: Icons.archive,
+          onTap: () => {},
+        ),
+        IconSlideAction(
+          caption: 'Share',
+          color: Colors.indigo,
+          icon: Icons.share,
+          onTap: () => {},
+        ),
+      ],
+    );
+  }
+
   void _updateOtpValue();
+
+  Widget _buildTile();
 }
 
 class _HotpWidgetState extends _TokenWidgetState {
@@ -73,7 +114,7 @@ class _HotpWidgetState extends _TokenWidgetState {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget _buildTile() {
     return Stack(
       children: <Widget>[
         ListTile(
@@ -165,7 +206,7 @@ class _TotpWidgetState extends _TokenWidgetState
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget _buildTile() {
     return Column(
       children: <Widget>[
         ListTile(
