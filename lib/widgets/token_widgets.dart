@@ -182,6 +182,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         });
   }
 
+  // FIXME It seems that doing this without the list is not possible, it may work if the list is returned by token_widget instead
   void _deleteToken() {
     // TODO find out what to do here ...
 //    setState(() {
