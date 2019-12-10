@@ -70,27 +70,15 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       ),
       secondaryActions: <Widget>[
         IconSlideAction(
-          caption: 'More',
-          color: Colors.black45,
-          icon: Icons.more_horiz,
-          onTap: () => {},
-        ),
-        IconSlideAction(
           caption: 'Delete',
           color: Colors.red,
           icon: Icons.delete,
           onTap: () => {},
         ),
         IconSlideAction(
-          caption: 'Archive',
+          caption: 'Rename',
           color: Colors.blue,
-          icon: Icons.archive,
-          onTap: () => {},
-        ),
-        IconSlideAction(
-          caption: 'Share',
-          color: Colors.indigo,
-          icon: Icons.share,
+          icon: Icons.edit,
           onTap: () => {},
         ),
       ],
