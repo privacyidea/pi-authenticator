@@ -46,6 +46,7 @@ class TokenWidget extends StatefulWidget {
 
 abstract class _TokenWidgetState extends State<TokenWidget> {
   final Token _token;
+  static final SlidableController _slidableController = SlidableController();
   String _otpValue;
   String _label;
 
@@ -55,13 +56,12 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     _label = _token.label;
   }
 
-  void _saveThisToken() {
-    StorageUtil.saveOrReplaceToken(this._token);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Slidable(
+      key: Key(_token.serial),
+      // This is used to only let one Slidable be open at a time.
+      controller: _slidableController,
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
       child: Container(
@@ -73,16 +73,125 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
           caption: 'Delete',
           color: Colors.red,
           icon: Icons.delete,
-          onTap: () => {},
+          onTap: () => _deleteTokenDialog(),
         ),
         IconSlideAction(
           caption: 'Rename',
           color: Colors.blue,
           icon: Icons.edit,
-          onTap: () => {},
+          onTap: () => _renameTokenDialog(),
         ),
       ],
     );
+  }
+
+  // TODO Test this behaviour with integration testing.
+  void _renameTokenDialog() {
+    final _nameInputKey = GlobalKey<FormFieldState>();
+    String _selectedName;
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Rename token"),
+            titleTextStyle: Theme.of(context).textTheme.subhead,
+            content: TextFormField(
+              autofocus: true,
+              initialValue: _label,
+              key: _nameInputKey,
+              onChanged: (value) => this.setState(() => _selectedName = value),
+              decoration: InputDecoration(labelText: "Name"),
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please enter a name for this token.';
+                }
+                return null;
+              },
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Rename"),
+                onPressed: () {
+                  if (_nameInputKey.currentState.validate()) {
+                    _renameToken(_selectedName);
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+              FlatButton(
+                child: Text("Cancel"),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        });
+  }
+
+  void _renameToken(String newLabel) {
+    _saveThisToken();
+    log(
+      "Renamed token:",
+      name: "token_widgets.dart",
+      error: "\"${_token.label}\" changed to \"$newLabel\"",
+    );
+    _token.label = newLabel;
+
+    setState(() {
+      _label = _token.label;
+    });
+  }
+
+  void _deleteTokenDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Confirm deletion"),
+            titleTextStyle: Theme.of(context).textTheme.subhead,
+            content: RichText(
+              text: TextSpan(
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: "Are you sure you want to delete ",
+                    ),
+                    TextSpan(
+                        text: "\'$_label\'?",
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                        ))
+                  ]),
+            ),
+            actions: <Widget>[
+              FlatButton(
+//                onPressed: () => {
+//                  _deleteToken(),
+//                  Navigator.of(context).pop(),
+//                },
+                child: Text("Yes!"),
+              ),
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text("No, take me back!"),
+              ),
+            ],
+          );
+        });
+  }
+
+  void _deleteToken() {
+    // TODO find out what to do here ...
+//    setState(() {
+//      StorageUtil.deleteToken(_token);
+//      _tokenList.remove(_token);
+//    });
+  }
+
+  void _saveThisToken() {
+    StorageUtil.saveOrReplaceToken(this._token);
   }
 
   void _updateOtpValue();
