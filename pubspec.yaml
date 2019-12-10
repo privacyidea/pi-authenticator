@@ -41,6 +41,9 @@ dependencies:
   # dependency to serialize objects to json
   json_annotation: ^2.0.0
 
+  # dependency for slide options in list
+  flutter_slidable: ^0.5.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
