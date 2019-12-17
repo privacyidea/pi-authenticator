@@ -29,15 +29,16 @@ import 'package:privacyidea_authenticator/utils/util.dart';
 
 class TokenWidget extends StatefulWidget {
   final Token _token;
+  final Function _delete;
 
-  TokenWidget(this._token);
+  TokenWidget(this._token, this._delete);
 
   @override
   State<StatefulWidget> createState() {
     if (_token is HOTPToken) {
-      return _HotpWidgetState(_token);
+      return _HotpWidgetState(_token, _delete);
     } else if (_token is TOTPToken) {
-      return _TotpWidgetState(_token);
+      return _TotpWidgetState(_token, _delete);
     } else {
       return null; // The token must be one of the above.
     }
@@ -50,7 +51,9 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   String _otpValue;
   String _label;
 
-  _TokenWidgetState(this._token) {
+  final Function _delete;
+
+  _TokenWidgetState(this._token, this._delete) {
     _otpValue = calculateOtpValue(_token);
     _saveThisToken();
     _label = _token.label;
@@ -59,7 +62,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   @override
   Widget build(BuildContext context) {
     return Slidable(
-      key: Key(_token.serial),
+      key: ValueKey(_token.serial),
       // This is used to only let one Slidable be open at a time.
       controller: _slidableController,
       actionPane: SlidableDrawerActionPane(),
@@ -167,10 +170,10 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             ),
             actions: <Widget>[
               FlatButton(
-//                onPressed: () => {
-//                  _deleteToken(),
-//                  Navigator.of(context).pop(),
-//                },
+                onPressed: () => {
+                  _deleteToken(),
+                  Navigator.of(context).pop(),
+                },
                 child: Text("Yes!"),
               ),
               FlatButton(
@@ -189,6 +192,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 //      StorageUtil.deleteToken(_token);
 //      _tokenList.remove(_token);
 //    });
+    // TODO remove this unnecessary method
+    _delete(_token);
   }
 
   void _saveThisToken() {
@@ -201,7 +206,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 }
 
 class _HotpWidgetState extends _TokenWidgetState {
-  _HotpWidgetState(Token token) : super(token);
+  _HotpWidgetState(Token token, Function delete) : super(token, delete);
 
   @override
   void _updateOtpValue() {
@@ -249,7 +254,7 @@ class _TotpWidgetState extends _TokenWidgetState
   AnimationController
       controller; // Controller for animating the LinearProgressAnimator
 
-  _TotpWidgetState(Token token) : super(token);
+  _TotpWidgetState(Token token, Function delete) : super(token, delete);
 
   @override
   void _updateOtpValue() {
