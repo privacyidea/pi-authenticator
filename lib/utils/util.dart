@@ -108,19 +108,11 @@ String insertCharAt(String str, String char, int pos) {
 /// This method parses otpauth uris according to https://github.com/google/google-authenticator/wiki/Key-Uri-Format.
 /// The method returns an hotp or an totp token.
 Token parseQRCodeToToken(String uri) {
-  // TODO throw some exceptions
-  // TODO check if the uri is valid
-
-//  ArgumentError.checkNotNull(uri, "uri");
-//  if (uri.isEmpty) {
-//    throw ArgumentError.value(uri, "uri", "Otpauth uri must not ne empty.");
-//  }
-
   Uri parse = Uri.parse(uri);
   log(
     "Barcode is valid Uri:",
     name: "util.dart",
-    error: "${parse}",
+    error: "$parse",
   );
 
   // otpauth://TYPE/LABEL?PARAMETERS
@@ -227,5 +219,8 @@ Token parseQRCodeToToken(String uri) {
       secret,
       int.parse(periodAsString), // Optional parameter
     );
+  } else {
+    throw ArgumentError.value(
+        uri, "uri", "[$type] is not a supported type of token");
   }
 }
