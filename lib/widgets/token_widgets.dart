@@ -41,7 +41,7 @@ class TokenWidget extends StatefulWidget {
       return _TotpWidgetState(_token, _delete);
     } else {
       throw ArgumentError.value(_token, "token",
-          "The token [$_token] is of unknown type and not supported");
+          "The token [$_token] is of unknown type and not supported.");
     }
   }
 }
