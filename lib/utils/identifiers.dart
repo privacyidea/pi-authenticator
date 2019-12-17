@@ -30,6 +30,7 @@ enum Algorithms {
   SHA512,
 }
 
-// token types
-const String HOTP = 'HOTP';
-const String TOTP = 'TOTP';
+enum TokenTypes {
+  HOTP,
+  TOTP,
+}

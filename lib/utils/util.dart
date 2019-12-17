@@ -128,7 +128,8 @@ Token parseQRCodeToToken(String uri) {
 
 //  parse.host -> Type totp or hotp
   String type = parse.host;
-  if (type != HOTP.toLowerCase() && type != TOTP.toLowerCase()) {
+  if (type != describeEnum(TokenTypes.HOTP).toLowerCase() &&
+      type != describeEnum(TokenTypes.TOTP).toLowerCase()) {
     throw ArgumentError.value(
       uri,
       "uri",

@@ -32,7 +32,6 @@ class AddTokenManuallyScreen extends StatefulWidget {
 }
 
 class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
-  static final List<String> allowedTypes = [HOTP, TOTP];
   static final List<int> allowedDigits = [6, 8];
   static final List<int> allowedPeriods = [30, 60];
 
@@ -42,7 +41,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
 
   _Wrapper<Encodings> _selectedEncoding = _Wrapper(Encodings.none);
   _Wrapper<Algorithms> _selectedAlgorithm = _Wrapper(Algorithms.SHA1);
-  _Wrapper<String> _selectedType = _Wrapper(allowedTypes[0]);
+  _Wrapper<TokenTypes> _selectedType = _Wrapper(TokenTypes.HOTP);
   _Wrapper<int> _selectedDigits = _Wrapper(allowedDigits[0]);
   _Wrapper<int> _selectedPeriod = _Wrapper(allowedPeriods[0]);
 
@@ -86,20 +85,21 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             _buildTextInputForm(),
-            _buildDropdownButtonWithLabel(
+            _buildDropdownButtonWithEnumLabel(
                 'Encoding:', _selectedEncoding, Encodings.values),
-            _buildDropdownButtonWithLabel(
+            _buildDropdownButtonWithEnumLabel(
                 'Algorithm:', _selectedAlgorithm, Algorithms.values),
-//            _buildDropdownButtonWithLabel(
-//                'Digits:', _selectedDigits, allowedDigits),
-//            _buildDropdownButtonWithLabel('Type:', _selectedType, allowedTypes),
-//            Visibility(
-////               the period is only used by TOTP tokens
-//              visible: _selectedType.value == TOTP,
-//              child: _buildDropdownButtonWithLabel(
-//                  'Period:', _selectedPeriod, allowedPeriods,
-//                  postFix: 's'),
-//            ),
+            _buildDropdownButtonWithLabel(
+                'Digits:', _selectedDigits, allowedDigits),
+            _buildDropdownButtonWithEnumLabel(
+                'Type:', _selectedType, TokenTypes.values),
+            Visibility(
+//               the period is only used by TOTP tokens
+              visible: _selectedType.value == TokenTypes.TOTP,
+              child: _buildDropdownButtonWithLabel(
+                  'Period:', _selectedPeriod, allowedPeriods,
+                  postFix: 's'),
+            ),
             SizedBox(
               width: double.infinity,
               child: RaisedButton(
@@ -120,10 +120,10 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     Uint8List secretAsUint8 =
         decodeSecretToUint8(_selectedSecret, _selectedEncoding.value);
     Token newToken;
-    if (_selectedType.value == HOTP) {
+    if (_selectedType.value == TokenTypes.HOTP) {
       newToken = HOTPToken(_selectedName, serial, _selectedAlgorithm.value,
           _selectedDigits.value, secretAsUint8);
-    } else if (_selectedType.value == TOTP) {
+    } else if (_selectedType.value == TokenTypes.TOTP) {
       newToken = TOTPToken(_selectedName, serial, _selectedAlgorithm.value,
           _selectedDigits.value, secretAsUint8, _selectedPeriod.value);
     }
@@ -156,7 +156,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     return true;
   }
 
-  Widget _buildDropdownButtonWithLabel<T>(
+  Widget _buildDropdownButtonWithEnumLabel<T>(
       String label, _Wrapper reference, List<T> values,
       {postFix = ''}) {
     return Row(
@@ -170,6 +170,34 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
               value: value,
               child: Text(
                 "${describeEnum(value)}$postFix",
+                style: Theme.of(context).textTheme.subhead,
+              ),
+            );
+          }).toList(),
+          onChanged: (T newValue) {
+            setState(() {
+              reference.value = newValue;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDropdownButtonWithLabel<T>(
+      String label, _Wrapper reference, List<T> values,
+      {postFix = ''}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(label, style: Theme.of(context).textTheme.body1),
+        DropdownButton<T>(
+          value: reference.value,
+          items: values.map<DropdownMenuItem<T>>((T value) {
+            return DropdownMenuItem<T>(
+              value: value,
+              child: Text(
+                "$value$postFix",
                 style: Theme.of(context).textTheme.subhead,
               ),
             );
