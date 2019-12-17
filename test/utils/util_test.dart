@@ -49,14 +49,18 @@ void _testInsertCharAt() {
 void _testCalculateHotpValue() {
   // We need to use different tokens here, because simply incrementing the
   // counter between all method calls leads to a race condition
-  HOTPToken token0 =
-      HOTPToken(null, null, SHA1, 6, utf8.encode("secret"), counter: 0);
-  HOTPToken token1 =
-      HOTPToken(null, null, SHA1, 6, utf8.encode("secret"), counter: 1);
-  HOTPToken token2 =
-      HOTPToken(null, null, SHA1, 6, utf8.encode("secret"), counter: 2);
-  HOTPToken token8 =
-      HOTPToken(null, null, SHA1, 6, utf8.encode("secret"), counter: 8);
+  HOTPToken token0 = HOTPToken(
+      null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
+      counter: 0);
+  HOTPToken token1 = HOTPToken(
+      null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
+      counter: 1);
+  HOTPToken token2 = HOTPToken(
+      null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
+      counter: 2);
+  HOTPToken token8 = HOTPToken(
+      null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
+      counter: 8);
 
   group("calculateHotpValue", () {
     test("OTP for counter == 0",
@@ -77,7 +81,7 @@ void _testCalculateHotpValue() {
 void _testDecodeSecretToUint8() {
   group("decodeSecretToUint8", () {
     test("Check null as secret", () {
-      expect(() => decodeSecretToUint8(null, NONE),
+      expect(() => decodeSecretToUint8(null, Encodings.none),
           throwsA(TypeMatcher<ArgumentError>()));
     });
 
@@ -86,28 +90,23 @@ void _testDecodeSecretToUint8() {
           throwsA(TypeMatcher<ArgumentError>()));
     });
 
-    test("Test with unknown encoding", () {
-      expect(() => decodeSecretToUint8("mySecret", "thisIsNoBase"),
-          throwsA(TypeMatcher<ArgumentError>()));
-    });
-
     test("Test non hex secret", () {
-      expect(() => decodeSecretToUint8("oo", HEX),
+      expect(() => decodeSecretToUint8("oo", Encodings.hex),
           throwsA(TypeMatcher<FormatException>()));
     });
 
     test("Test non hex secret", () {
-      expect(() => decodeSecretToUint8("1Aö", HEX),
+      expect(() => decodeSecretToUint8("1Aö", Encodings.hex),
           throwsA(TypeMatcher<FormatException>()));
     });
 
     test("Test non base32 secret", () {
-      expect(() => decodeSecretToUint8("p", BASE32),
+      expect(() => decodeSecretToUint8("p", Encodings.base32),
           throwsA(TypeMatcher<FormatException>()));
     });
 
     test("Test non base32 secret", () {
-      expect(() => decodeSecretToUint8("AAAAAAöA", BASE32),
+      expect(() => decodeSecretToUint8("AAAAAAöA", Encodings.base32),
           throwsA(TypeMatcher<FormatException>()));
     });
   });
@@ -147,7 +146,7 @@ void _testParseQRCodeToToken() {
     test("Test missing algorithm", () {
       Token token = parseQRCodeToToken(
           "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&digits=6&period=30");
-      expect(token.algorithm, SHA1); // This is the default value
+      expect(token.algorithm, Algorithms.SHA1); // This is the default value
     });
 
     test("Test unknown algorithm", () {
@@ -210,10 +209,12 @@ void _testParseQRCodeToToken() {
       TOTPToken token = parseQRCodeToToken(
           "otpauth://totp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA512&digits=8&period=60");
       expect(token.label, "Kitchen");
-      expect(token.algorithm, SHA512);
+      expect(token.algorithm, Algorithms.SHA512);
       expect(token.digits, 8);
-      expect(token.secret,
-          decodeSecretToUint8("HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ", BASE32));
+      expect(
+          token.secret,
+          decodeSecretToUint8(
+              "HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ", Encodings.base32));
       expect(token.period, 60);
     });
 
@@ -236,10 +237,12 @@ void _testParseQRCodeToToken() {
       HOTPToken token = parseQRCodeToToken(
           "otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA256&digits=8&counter=5");
       expect(token.label, "Kitchen");
-      expect(token.algorithm, SHA256);
+      expect(token.algorithm, Algorithms.SHA256);
       expect(token.digits, 8);
-      expect(token.secret,
-          decodeSecretToUint8("HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ", BASE32));
+      expect(
+          token.secret,
+          decodeSecretToUint8(
+              "HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ", Encodings.base32));
       expect(token.counter, 5);
     });
   });
