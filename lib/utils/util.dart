@@ -25,24 +25,25 @@ import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
 import 'package:dart_otp/dart_otp.dart' as OTPLibrary;
+import 'package:flutter/foundation.dart';
 import 'package:hex/hex.dart' as HexConverter;
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:uuid/uuid.dart';
 
 import 'identifiers.dart';
 
-Uint8List decodeSecretToUint8(String secret, String encoding) {
+Uint8List decodeSecretToUint8(String secret, Encodings encoding) {
   ArgumentError.checkNotNull(secret, "secret");
   ArgumentError.checkNotNull(encoding, "encoding");
 
   switch (encoding) {
-    case NONE:
+    case Encodings.none:
       return utf8.encode(secret);
       break;
-    case HEX:
+    case Encodings.hex:
       return HexConverter.HEX.decode(secret);
       break;
-    case BASE32:
+    case Encodings.base32:
       return Base32Converter.base32.decode(secret);
       break;
     default:
@@ -51,7 +52,7 @@ Uint8List decodeSecretToUint8(String secret, String encoding) {
   }
 }
 
-bool isValidEncoding(String secret, String encoding) {
+bool isValidEncoding(String secret, Encodings encoding) {
   try {
     decodeSecretToUint8(secret, encoding);
   } on Exception catch (_) {
@@ -82,18 +83,18 @@ String calculateTotpValue(TOTPToken token) {
       .now();
 }
 
-OTPLibrary.OTPAlgorithm _mapAlgorithms(String algorithmName) {
-  ArgumentError.checkNotNull(algorithmName, "algorithmName");
+OTPLibrary.OTPAlgorithm _mapAlgorithms(Algorithms algorithm) {
+  ArgumentError.checkNotNull(algorithm, "algorithmName");
 
-  switch (algorithmName) {
-    case SHA1:
+  switch (algorithm) {
+    case Algorithms.SHA1:
       return OTPLibrary.OTPAlgorithm.SHA1;
-    case SHA256:
+    case Algorithms.SHA256:
       return OTPLibrary.OTPAlgorithm.SHA256;
-    case SHA512:
+    case Algorithms.SHA256:
       return OTPLibrary.OTPAlgorithm.SHA512;
     default:
-      throw ArgumentError.value(algorithmName, "algorithmName",
+      throw ArgumentError.value(algorithm, "algorithmName",
           "This algortihm is unknown and not supported!");
   }
 }
@@ -127,7 +128,8 @@ Token parseQRCodeToToken(String uri) {
 
 //  parse.host -> Type totp or hotp
   String type = parse.host;
-  if (type != HOTP.toLowerCase() && type != TOTP.toLowerCase()) {
+  if (type != describeEnum(TokenTypes.HOTP).toLowerCase() &&
+      type != describeEnum(TokenTypes.TOTP).toLowerCase()) {
     throw ArgumentError.value(
       uri,
       "uri",
@@ -141,10 +143,12 @@ Token parseQRCodeToToken(String uri) {
   });
 
   String label = parse.path.substring(1);
-  String algorithm =
-      parse.queryParameters["algorithm"] ?? SHA1; // Optional parameter
+  String algorithm = parse.queryParameters["algorithm"] ??
+      describeEnum(Algorithms.SHA1); // Optional parameter
 
-  if (algorithm != SHA1 && algorithm != SHA256 && algorithm != SHA512) {
+  if (algorithm != describeEnum(Algorithms.SHA1) &&
+      algorithm != describeEnum(Algorithms.SHA256) &&
+      algorithm != describeEnum(Algorithms.SHA512)) {
     throw ArgumentError.value(
       uri,
       "uri",
@@ -167,16 +171,16 @@ Token parseQRCodeToToken(String uri) {
 
   // parse secret
   String secretAsString = parse.queryParameters["secret"];
-  if (!isValidEncoding(secretAsString, BASE32)) {
+  if (!isValidEncoding(secretAsString, Encodings.base32)) {
     throw ArgumentError.value(
       uri,
       "uri",
-      "[$BASE32] is not a valid encoding for [$secretAsString].",
+      "[${describeEnum(Encodings.base32)}] is not a valid encoding for [$secretAsString].",
     );
   }
 
   Uint8List secret =
-      decodeSecretToUint8(parse.queryParameters["secret"], BASE32);
+      decodeSecretToUint8(parse.queryParameters["secret"], Encodings.base32);
 
   String serial = Uuid().v4();
 
@@ -189,7 +193,7 @@ Token parseQRCodeToToken(String uri) {
       return HOTPToken(
         label,
         serial,
-        algorithm,
+        mapStringToAlgorithm(algorithm),
         digits,
         secret,
         counter: counter,
@@ -214,7 +218,7 @@ Token parseQRCodeToToken(String uri) {
     return TOTPToken(
       label,
       serial,
-      algorithm,
+      mapStringToAlgorithm(algorithm),
       digits,
       secret,
       int.parse(periodAsString), // Optional parameter
@@ -223,4 +227,15 @@ Token parseQRCodeToToken(String uri) {
     throw ArgumentError.value(
         uri, "uri", "[$type] is not a supported type of token");
   }
+}
+
+Algorithms mapStringToAlgorithm(String algoAsString) {
+  for (Algorithms alg in Algorithms.values) {
+    if (describeEnum(alg) == algoAsString) {
+      return alg;
+    }
+  }
+
+  throw ArgumentError.value(algoAsString, "algorAsString",
+      "$algoAsString cannot be mapped to $Algorithms");
 }
