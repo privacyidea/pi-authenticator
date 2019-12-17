@@ -24,11 +24,6 @@ enum Encodings {
   hex,
 }
 
-// algorithms
-const String SHA1 = 'SHA1';
-const String SHA256 = 'SHA256';
-const String SHA512 = 'SHA512';
-
 enum Algorithms {
   SHA1,
   SHA256,

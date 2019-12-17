@@ -20,12 +20,14 @@
 
 import 'dart:typed_data';
 
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
+
 // TODO refactor this to use the factory pattern instead?
 
 abstract class Token {
   String _label; // the name of the token, it cannot be uses as an identifier
   String _serial; // this is the identifier of the secret
-  String
+  Algorithms
       _algorithm; // the hashing algorithm that is used to calculate the otp value
   int _digits; // the number of digits the otp value will have
   Uint8List _secret; // the secret based on which the otp value is calculated
@@ -34,7 +36,7 @@ abstract class Token {
 
   String get serial => _serial;
 
-  String get algorithm => _algorithm;
+  Algorithms get algorithm => _algorithm;
 
   int get digits => _digits;
 
@@ -55,7 +57,7 @@ class HOTPToken extends Token {
 
   void incrementCounter() => _counter++;
 
-  HOTPToken(String label, String serial, String algorithm, int digits,
+  HOTPToken(String label, String serial, Algorithms algorithm, int digits,
       Uint8List secret,
       {int counter = 0})
       : this._counter = counter,
@@ -73,7 +75,7 @@ class TOTPToken extends Token {
 
   int get period => _period;
 
-  TOTPToken(String label, String serial, String algorithm, int digits,
+  TOTPToken(String label, String serial, Algorithms algorithm, int digits,
       Uint8List secret, this._period)
       : super(label, serial, algorithm, digits, secret);
 

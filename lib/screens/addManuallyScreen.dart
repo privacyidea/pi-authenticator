@@ -32,11 +32,6 @@ class AddTokenManuallyScreen extends StatefulWidget {
 }
 
 class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
-  static final List<String> allowedAlgorithms = [
-    SHA1,
-    SHA256,
-    SHA512
-  ]; // contains all currently supported hash algorithms for creating otps
   static final List<String> allowedTypes = [HOTP, TOTP];
   static final List<int> allowedDigits = [6, 8];
   static final List<int> allowedPeriods = [30, 60];
@@ -46,7 +41,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
   String _selectedSecret;
 
   _Wrapper<Encodings> _selectedEncoding = _Wrapper(Encodings.none);
-  _Wrapper<String> _selectedAlgorithm = _Wrapper(allowedAlgorithms[0]);
+  _Wrapper<Algorithms> _selectedAlgorithm = _Wrapper(Algorithms.SHA1);
   _Wrapper<String> _selectedType = _Wrapper(allowedTypes[0]);
   _Wrapper<int> _selectedDigits = _Wrapper(allowedDigits[0]);
   _Wrapper<int> _selectedPeriod = _Wrapper(allowedPeriods[0]);
@@ -93,8 +88,8 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             _buildTextInputForm(),
             _buildDropdownButtonWithLabel(
                 'Encoding:', _selectedEncoding, Encodings.values),
-//            _buildDropdownButtonWithLabel(
-//                'Algorithm:', _selectedAlgorithm, allowedAlgorithms),
+            _buildDropdownButtonWithLabel(
+                'Algorithm:', _selectedAlgorithm, Algorithms.values),
 //            _buildDropdownButtonWithLabel(
 //                'Digits:', _selectedDigits, allowedDigits),
 //            _buildDropdownButtonWithLabel('Type:', _selectedType, allowedTypes),

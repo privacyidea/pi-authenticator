@@ -83,18 +83,18 @@ String calculateTotpValue(TOTPToken token) {
       .now();
 }
 
-OTPLibrary.OTPAlgorithm _mapAlgorithms(String algorithmName) {
-  ArgumentError.checkNotNull(algorithmName, "algorithmName");
+OTPLibrary.OTPAlgorithm _mapAlgorithms(Algorithms algorithm) {
+  ArgumentError.checkNotNull(algorithm, "algorithmName");
 
-  switch (algorithmName) {
-    case SHA1:
+  switch (algorithm) {
+    case Algorithms.SHA1:
       return OTPLibrary.OTPAlgorithm.SHA1;
-    case SHA256:
+    case Algorithms.SHA256:
       return OTPLibrary.OTPAlgorithm.SHA256;
-    case SHA512:
+    case Algorithms.SHA256:
       return OTPLibrary.OTPAlgorithm.SHA512;
     default:
-      throw ArgumentError.value(algorithmName, "algorithmName",
+      throw ArgumentError.value(algorithm, "algorithmName",
           "This algortihm is unknown and not supported!");
   }
 }
@@ -142,10 +142,12 @@ Token parseQRCodeToToken(String uri) {
   });
 
   String label = parse.path.substring(1);
-  String algorithm =
-      parse.queryParameters["algorithm"] ?? SHA1; // Optional parameter
+  String algorithm = parse.queryParameters["algorithm"] ??
+      describeEnum(Algorithms.SHA1); // Optional parameter
 
-  if (algorithm != SHA1 && algorithm != SHA256 && algorithm != SHA512) {
+  if (algorithm != describeEnum(Algorithms.SHA1) &&
+      algorithm != describeEnum(Algorithms.SHA256) &&
+      algorithm != describeEnum(Algorithms.SHA512)) {
     throw ArgumentError.value(
       uri,
       "uri",
@@ -190,7 +192,7 @@ Token parseQRCodeToToken(String uri) {
       return HOTPToken(
         label,
         serial,
-        algorithm,
+        mapStringToAlgorithm(algorithm),
         digits,
         secret,
         counter: counter,
@@ -215,7 +217,7 @@ Token parseQRCodeToToken(String uri) {
     return TOTPToken(
       label,
       serial,
-      algorithm,
+      mapStringToAlgorithm(algorithm),
       digits,
       secret,
       int.parse(periodAsString), // Optional parameter
@@ -224,4 +226,15 @@ Token parseQRCodeToToken(String uri) {
     throw ArgumentError.value(
         uri, "uri", "[$type] is not a supported type of token");
   }
+}
+
+Algorithms mapStringToAlgorithm(String algoAsString) {
+  for (Algorithms alg in Algorithms.values) {
+    if (describeEnum(alg) == algoAsString) {
+      return alg;
+    }
+  }
+
+  throw ArgumentError.value(algoAsString, "algorAsString",
+      "$algoAsString cannot be mapped to $Algorithms");
 }
