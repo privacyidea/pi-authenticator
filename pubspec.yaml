@@ -24,18 +24,20 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
 
-  # dependency for decoding (and encoding) strings to hex
+  # for decoding (and encoding) strings to hex
   hex: ^0.1.2 # https://pub.dev/packages/hex#-installing-tab-
-  # dependency for decoding (and encoding) strings to base32
+  #  for decoding (and encoding) strings to base32
   base32: ^1.1.1 # https://pub.dev/packages/base32
-  # dependency for calculationg otp values
+  # for calculating otp values
   dart_otp: ^1.3.0 # https://pub.dev/packages/dart_otp
-  # dependency for scanning barcodes
+  # for scanning barcodes
   barcode_scan: ^1.0.0
-  #dependency for formating string, this could be useful when using json for internationalization
+  # for formating string, this could be useful when using json for internationalization
   # sprintf: ^4.0.0 # TODO add BSD license https://pub.dev/packages/sprintf
-  # dependency to generate serials for tokens
+  # to generate serials for tokens
   uuid: 2.0.4
+  # for more icons to use # https://pub.dev/packages/font_awesome_flutter#-installing-tab-
+  font_awesome_flutter: ^8.5.0
 
 dev_dependencies:
   flutter_test:

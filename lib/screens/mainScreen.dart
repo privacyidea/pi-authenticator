@@ -24,6 +24,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/addManuallyScreen.dart';
 import 'package:privacyidea_authenticator/utils/LicenseUtils.dart';
@@ -75,7 +76,6 @@ class _MainScreenState extends State<MainScreen> {
               children: <Widget>[
                 new ListTile(
                     leading: new Icon(Icons.assignment),
-                    // TODO search for good icons
                     title: new Text(
                       'Add token manually',
                       style: Theme.of(context).textTheme.button,
@@ -89,8 +89,7 @@ class _MainScreenState extends State<MainScreen> {
                               )).then((newToken) => _addNewToken(newToken))
                         }),
                 new ListTile(
-                  leading: new Icon(Icons.scanner),
-                  // TODO search for good qrcode icon and add license -> http://fluttericon.com/
+                  leading: new Icon(FontAwesomeIcons.qrcode),
                   title: new Text(
                     'Scan QR-Code',
                     style: Theme.of(context).textTheme.button,
