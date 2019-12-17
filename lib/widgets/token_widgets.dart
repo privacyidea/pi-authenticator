@@ -40,7 +40,8 @@ class TokenWidget extends StatefulWidget {
     } else if (_token is TOTPToken) {
       return _TotpWidgetState(_token, _delete);
     } else {
-      return null; // The token must be one of the above.
+      throw ArgumentError.value(_token, "token",
+          "The token [$_token] is of unknown type and not supported");
     }
   }
 }
