@@ -172,7 +172,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             actions: <Widget>[
               FlatButton(
                 onPressed: () => {
-                  _deleteToken(),
+                  _delete(_token),
                   Navigator.of(context).pop(),
                 },
                 child: Text("Yes!"),
@@ -184,17 +184,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             ],
           );
         });
-  }
-
-  // FIXME It seems that doing this without the list is not possible, it may work if the list is returned by token_widget instead
-  void _deleteToken() {
-    // TODO find out what to do here ...
-//    setState(() {
-//      StorageUtil.deleteToken(_token);
-//      _tokenList.remove(_token);
-//    });
-    // TODO remove this unnecessary method
-    _delete(_token);
   }
 
   void _saveThisToken() {
