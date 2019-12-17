@@ -25,24 +25,25 @@ import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
 import 'package:dart_otp/dart_otp.dart' as OTPLibrary;
+import 'package:flutter/foundation.dart';
 import 'package:hex/hex.dart' as HexConverter;
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:uuid/uuid.dart';
 
 import 'identifiers.dart';
 
-Uint8List decodeSecretToUint8(String secret, String encoding) {
+Uint8List decodeSecretToUint8(String secret, Encodings encoding) {
   ArgumentError.checkNotNull(secret, "secret");
   ArgumentError.checkNotNull(encoding, "encoding");
 
   switch (encoding) {
-    case NONE:
+    case Encodings.none:
       return utf8.encode(secret);
       break;
-    case HEX:
+    case Encodings.hex:
       return HexConverter.HEX.decode(secret);
       break;
-    case BASE32:
+    case Encodings.base32:
       return Base32Converter.base32.decode(secret);
       break;
     default:
@@ -51,7 +52,7 @@ Uint8List decodeSecretToUint8(String secret, String encoding) {
   }
 }
 
-bool isValidEncoding(String secret, String encoding) {
+bool isValidEncoding(String secret, Encodings encoding) {
   try {
     decodeSecretToUint8(secret, encoding);
   } on Exception catch (_) {
@@ -167,16 +168,16 @@ Token parseQRCodeToToken(String uri) {
 
   // parse secret
   String secretAsString = parse.queryParameters["secret"];
-  if (!isValidEncoding(secretAsString, BASE32)) {
+  if (!isValidEncoding(secretAsString, Encodings.base32)) {
     throw ArgumentError.value(
       uri,
       "uri",
-      "[$BASE32] is not a valid encoding for [$secretAsString].",
+      "[${describeEnum(Encodings.base32)}] is not a valid encoding for [$secretAsString].",
     );
   }
 
   Uint8List secret =
-      decodeSecretToUint8(parse.queryParameters["secret"], BASE32);
+      decodeSecretToUint8(parse.queryParameters["secret"], Encodings.base32);
 
   String serial = Uuid().v4();
 

@@ -19,6 +19,7 @@
 */
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
@@ -31,11 +32,6 @@ class AddTokenManuallyScreen extends StatefulWidget {
 }
 
 class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
-  static final List<String> allowedEncodings = [
-    NONE,
-    BASE32,
-    HEX
-  ]; // contains all the encodings that are allowed for the secret
   static final List<String> allowedAlgorithms = [
     SHA1,
     SHA256,
@@ -49,7 +45,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
   String _selectedName;
   String _selectedSecret;
 
-  _Wrapper<String> _selectedEncoding = _Wrapper(allowedEncodings[0]);
+  _Wrapper<Encodings> _selectedEncoding = _Wrapper(Encodings.none);
   _Wrapper<String> _selectedAlgorithm = _Wrapper(allowedAlgorithms[0]);
   _Wrapper<String> _selectedType = _Wrapper(allowedTypes[0]);
   _Wrapper<int> _selectedDigits = _Wrapper(allowedDigits[0]);
@@ -96,19 +92,19 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
           children: <Widget>[
             _buildTextInputForm(),
             _buildDropdownButtonWithLabel(
-                'Encoding:', _selectedEncoding, allowedEncodings),
-            _buildDropdownButtonWithLabel(
-                'Algorithm:', _selectedAlgorithm, allowedAlgorithms),
-            _buildDropdownButtonWithLabel(
-                'Digits:', _selectedDigits, allowedDigits),
-            _buildDropdownButtonWithLabel('Type:', _selectedType, allowedTypes),
-            Visibility(
-              // the period is only used by TOTP tokens
-              visible: _selectedType.value == TOTP,
-              child: _buildDropdownButtonWithLabel(
-                  'Period:', _selectedPeriod, allowedPeriods,
-                  postFix: 's'),
-            ),
+                'Encoding:', _selectedEncoding, Encodings.values),
+//            _buildDropdownButtonWithLabel(
+//                'Algorithm:', _selectedAlgorithm, allowedAlgorithms),
+//            _buildDropdownButtonWithLabel(
+//                'Digits:', _selectedDigits, allowedDigits),
+//            _buildDropdownButtonWithLabel('Type:', _selectedType, allowedTypes),
+//            Visibility(
+////               the period is only used by TOTP tokens
+//              visible: _selectedType.value == TOTP,
+//              child: _buildDropdownButtonWithLabel(
+//                  'Period:', _selectedPeriod, allowedPeriods,
+//                  postFix: 's'),
+//            ),
             SizedBox(
               width: double.infinity,
               child: RaisedButton(
@@ -178,7 +174,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             return DropdownMenuItem<T>(
               value: value,
               child: Text(
-                "$value$postFix",
+                "${describeEnum(value)}$postFix",
                 style: Theme.of(context).textTheme.subhead,
               ),
             );

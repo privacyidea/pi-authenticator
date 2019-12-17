@@ -18,15 +18,22 @@
   limitations under the License.
 */
 
-// encodings
-const String NONE = 'none';
-const String BASE32 = 'base32';
-const String HEX = 'hex';
+enum Encodings {
+  none,
+  base32,
+  hex,
+}
 
 // algorithms
 const String SHA1 = 'SHA1';
 const String SHA256 = 'SHA256';
 const String SHA512 = 'SHA512';
+
+enum Algorithms {
+  SHA1,
+  SHA256,
+  SHA512,
+}
 
 // token types
 const String HOTP = 'HOTP';
