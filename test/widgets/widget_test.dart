@@ -43,7 +43,11 @@ void _testTotpWidget() {
         TOTPToken("Office Time", null, SHA1, 6, utf8.encode("secret"), 30);
 
     await tester.pumpWidget(_WidgetTestWrapper(
-      child: TokenWidget(token),
+      child: TokenWidget(
+        key: ObjectKey(token),
+        token: token,
+        onDeleteClicked: () => null,
+      ),
     ));
 
     final labelFinder = find.text("Office Time");
@@ -88,7 +92,11 @@ void _testHotpWidget() {
           HOTPToken("Office", null, SHA1, 6, utf8.encode("secret"), counter: 0);
 
       await tester.pumpWidget(_WidgetTestWrapper(
-        child: TokenWidget(token),
+        child: TokenWidget(
+          key: ObjectKey(token),
+          token: token,
+          onDeleteClicked: () => null,
+        ),
       ));
 
       final labelFinder = find.text("Office");
@@ -103,7 +111,11 @@ void _testHotpWidget() {
           HOTPToken("Office", null, SHA1, 6, utf8.encode("secret"), counter: 0);
 
       await tester.pumpWidget(_WidgetTestWrapper(
-        child: TokenWidget(token),
+        child: TokenWidget(
+          key: ObjectKey(token),
+          token: token,
+          onDeleteClicked: () => null,
+        ),
       ));
 
       final otpValueFinder = find.text("814 628");
