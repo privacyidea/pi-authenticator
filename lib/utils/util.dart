@@ -91,7 +91,8 @@ String calculateOtpValue(Token token) {
     return calculateTotpValue(token);
   }
 
-  return null;
+  throw ArgumentError.value(token, "token",
+      "The token kind of $token is not supported by this method");
 }
 
 OTPLibrary.OTPAlgorithm _mapAlgorithms(String algorithmName) {
