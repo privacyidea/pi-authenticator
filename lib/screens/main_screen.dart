@@ -72,6 +72,7 @@ class _MainScreenState extends State<MainScreen> {
       body: _buildTokenList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _onAddButtonPressed(context),
+        tooltip: "Add tokens",
         child: Icon(Icons.add),
       ),
     );

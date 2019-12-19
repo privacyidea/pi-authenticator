@@ -45,8 +45,9 @@ dependencies:
   flutter_slidable: ^0.5.4
 
 dev_dependencies:
-  flutter_test:
+  flutter_driver:
     sdk: flutter
+  test: any
 
   # dependencies to serialize objects to json
   build_runner: ^1.0.0
