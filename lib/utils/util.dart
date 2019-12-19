@@ -84,6 +84,16 @@ String calculateTotpValue(TOTPToken token) {
       .now();
 }
 
+String calculateOtpValue(Token token) {
+  if (token is HOTPToken) {
+    return calculateHotpValue(token);
+  } else if (token is TOTPToken) {
+    return calculateTotpValue(token);
+  }
+
+  return null;
+}
+
 OTPLibrary.OTPAlgorithm _mapAlgorithms(String algorithmName) {
   ArgumentError.checkNotNull(algorithmName, "algorithmName");
 

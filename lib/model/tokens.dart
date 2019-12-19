@@ -36,6 +36,10 @@ abstract class Token {
 
   String get label => _label;
 
+  set label(String label) {
+    this._label = label;
+  }
+
   String get serial => _serial;
 
   String get algorithm => _algorithm;

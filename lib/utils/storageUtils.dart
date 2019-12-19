@@ -62,4 +62,11 @@ class StorageUtil {
 
     return tokenList;
   }
+
+  /// Deletes the saved json of [token] from the secure storage.
+  static void deleteToken(Token token) async {
+    String key = token.serial;
+
+    await _storage.delete(key: key);
+  }
 }

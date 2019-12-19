@@ -29,8 +29,7 @@ import 'package:privacyidea_authenticator/screens/addManuallyScreen.dart';
 import 'package:privacyidea_authenticator/utils/LicenseUtils.dart';
 import 'package:privacyidea_authenticator/utils/storageUtils.dart';
 import 'package:privacyidea_authenticator/utils/util.dart';
-import 'package:privacyidea_authenticator/widgets/hotpwidget.dart';
-import 'package:privacyidea_authenticator/widgets/totpwidget.dart';
+import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen({Key key, this.title}) : super(key: key);
@@ -162,23 +161,25 @@ class _MainScreenState extends State<MainScreen> {
   ListView _buildTokenList() {
     return ListView.separated(
         itemBuilder: (context, index) {
-          Token currentToken = _tokenList[index];
-          if (currentToken is HOTPToken) {
-            return HOTPWidget(
-              token: currentToken,
-            );
-          } else if (currentToken is TOTPToken) {
-            return TOTPWidget(
-              token: currentToken,
-            );
-          }
-
-          return null;
+          Token token = _tokenList[index];
+          return TokenWidget(
+            key: ObjectKey(token),
+            token: token,
+            onDeleteClicked: () => _deleteClicked(token),
+          );
         },
         separatorBuilder: (context, index) {
           return Divider();
         },
         itemCount: _tokenList.length);
+  }
+
+  void _deleteClicked(Token token) {
+    setState(() {
+      print("Remove: $token");
+      _tokenList.remove(token);
+      StorageUtil.deleteToken(token);
+    });
   }
 
   List<Widget> _buildActionMenu() {
