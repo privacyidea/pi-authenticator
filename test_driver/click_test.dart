@@ -40,10 +40,29 @@ void main() {
 
 //    final buttonFinder = find.byType(FloatingActionButton.toString());
     final buttonFinder = find.byType("FloatingActionButton");
+    final addTokenButton = find.byValueKey("add_manually");
 
     test('click the button', () async {
       await driver.tap(buttonFinder);
       await Future.delayed(Duration(seconds: 10));
+      await driver.tap(addTokenButton);
+      await Future.delayed(Duration(seconds: 10));
+    });
+
+    test("Enter input", () async {
+      await driver.tap(find.ancestor(
+          of: find.text("Name"), matching: find.byType("TextFormField")));
+
+      await driver.enterText("TestName");
+
+      await driver.tap(find.ancestor(
+          of: find.text("Secret"), matching: find.byType("TextFormField")));
+
+      await driver.enterText("TestSecret");
+
+      await driver.tap(find.byType("RaisedButton"));
+
+      await Future.delayed(Duration(seconds: 20));
     });
   });
 }
