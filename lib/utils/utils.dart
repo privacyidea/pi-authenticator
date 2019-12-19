@@ -125,7 +125,7 @@ Token parseQRCodeToToken(String uri) {
   Uri parse = Uri.parse(uri);
   log(
     "Barcode is valid Uri:",
-    name: "util.dart",
+    name: "utils.dart",
     error: "$parse",
   );
 

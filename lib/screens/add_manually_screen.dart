@@ -22,7 +22,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/util.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
 class AddTokenManuallyScreen extends StatefulWidget {
@@ -155,6 +155,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     return true;
   }
 
+  // TODO simplify this with something like T is Enum ? a : b
   Widget _buildDropdownButtonWithEnumLabel<T>(
       String label, _Wrapper reference, List<T> values,
       {postFix = ''}) {

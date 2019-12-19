@@ -27,9 +27,9 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
-import 'package:privacyidea_authenticator/utils/LicenseUtils.dart';
+import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
-import 'package:privacyidea_authenticator/utils/util.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 
 class MainScreen extends StatefulWidget {
@@ -88,6 +88,7 @@ class _MainScreenState extends State<MainScreen> {
               children: <Widget>[
                 new ListTile(
                     leading: new Icon(Icons.assignment),
+                    key: Key('add_manually'),
                     title: new Text(
                       'Add token manually',
                       style: Theme.of(context).textTheme.button,
