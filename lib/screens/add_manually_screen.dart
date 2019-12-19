@@ -17,7 +17,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -117,7 +116,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     if (!inputIsValid()) return;
 
     String serial = Uuid().v4();
-    Uint8List secretAsUint8 =
+    List<int> secretAsUint8 =
         decodeSecretToUint8(_selectedSecret, _selectedEncoding.value);
     Token newToken;
     if (_selectedType.value == TokenTypes.HOTP) {

@@ -24,24 +24,35 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
 
-  # for decoding (and encoding) strings to hex
+  # dependency for decoding (and encoding) strings to hex
   hex: ^0.1.2 # https://pub.dev/packages/hex#-installing-tab-
-  #  for decoding (and encoding) strings to base32
+  # dependency for decoding (and encoding) strings to base32
   base32: ^1.1.1 # https://pub.dev/packages/base32
-  # for calculating otp values
+  # dependency for calculationg otp values
   dart_otp: ^1.3.0 # https://pub.dev/packages/dart_otp
-  # for scanning barcodes
+  # dependency for scanning barcodes
   barcode_scan: ^1.0.0
-  # for formating string, this could be useful when using json for internationalization
+  #dependency for formating string, this could be useful when using json for internationalization
   # sprintf: ^4.0.0 # TODO add BSD license https://pub.dev/packages/sprintf
-  # to generate serials for tokens
+  # dependency to generate serials for tokens
   uuid: 2.0.4
+  # dependency to save to secure storage under android and ios
+  flutter_secure_storage: ^3.3.1+1
+  # dependency to serialize objects to json
+  json_annotation: ^2.0.0
+  # dependency for slide options in list
+  flutter_slidable: ^0.5.4
   # for more icons to use # https://pub.dev/packages/font_awesome_flutter#-installing-tab-
   font_awesome_flutter: ^8.5.0
 
 dev_dependencies:
-  flutter_test:
+  flutter_driver:
     sdk: flutter
+  test: any
+
+  # dependencies to serialize objects to json
+  build_runner: ^1.0.0
+  json_serializable: ^2.0.0
 
 
 # For information on the generic Dart part of this file, see the

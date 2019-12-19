@@ -26,11 +26,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/screens/addManuallyScreen.dart';
+import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/utils/LicenseUtils.dart';
+import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/util.dart';
-import 'package:privacyidea_authenticator/widgets/hotpwidget.dart';
-import 'package:privacyidea_authenticator/widgets/totpwidget.dart';
+import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen({Key key, this.title}) : super(key: key);
@@ -43,6 +43,17 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  _MainScreenState() {
+    _loadAllTokens();
+  }
+
+  _loadAllTokens() async {
+    List<Token> list = await StorageUtil.loadAllTokens();
+    setState(() {
+      this._tokenList = list;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +73,7 @@ class _MainScreenState extends State<MainScreen> {
       body: _buildTokenList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _onAddButtonPressed(context),
+        tooltip: "Add tokens",
         child: Icon(Icons.add),
       ),
     );
@@ -110,7 +122,7 @@ class _MainScreenState extends State<MainScreen> {
       String barcode = await BarcodeScanner.scan();
       log(
         "Barcode scanned:",
-        name: "mainScreen.dart",
+        name: "main_screen.dart",
         error: barcode,
       );
 
@@ -118,7 +130,7 @@ class _MainScreenState extends State<MainScreen> {
       setState(() {
         log(
           "Adding new token from qr-code:",
-          name: "mainScreen.dart",
+          name: "main_screen.dart",
           error: newToken,
         );
         _tokenList.add(newToken);
@@ -138,7 +150,7 @@ class _MainScreenState extends State<MainScreen> {
           Duration(seconds: 8));
       log(
         "Malformed QR code:",
-        name: "mainScreen.dart",
+        name: "main_screen.dart",
         error: e.toString(),
       );
     } catch (e) {
@@ -149,23 +161,25 @@ class _MainScreenState extends State<MainScreen> {
   ListView _buildTokenList() {
     return ListView.separated(
         itemBuilder: (context, index) {
-          Token currentToken = _tokenList[index];
-          if (currentToken is HOTPToken) {
-            return HOTPWidget(
-              token: currentToken,
-            );
-          } else if (currentToken is TOTPToken) {
-            return TOTPWidget(
-              token: currentToken,
-            );
-          }
-
-          return null;
+          Token token = _tokenList[index];
+          return TokenWidget(
+            key: ObjectKey(token),
+            token: token,
+            onDeleteClicked: () => _deleteClicked(token),
+          );
         },
         separatorBuilder: (context, index) {
           return Divider();
         },
         itemCount: _tokenList.length);
+  }
+
+  void _deleteClicked(Token token) {
+    setState(() {
+      print("Remove: $token");
+      _tokenList.remove(token);
+      StorageUtil.deleteToken(token);
+    });
   }
 
   List<Widget> _buildActionMenu() {
@@ -211,7 +225,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _addNewToken(Token newToken) {
-    log("Adding new token:", name: "mainScreen.dart", error: newToken);
+    log("Adding new token:", name: "main_screen.dart", error: newToken);
     if (newToken != null) {
       setState(() {
         _tokenList.add(newToken);
