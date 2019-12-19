@@ -29,16 +29,19 @@ import 'package:privacyidea_authenticator/utils/util.dart';
 
 class TokenWidget extends StatefulWidget {
   final Token _token;
-  final Function _delete;
+  final VoidCallback _onDeleteClicked;
 
-  TokenWidget(this._token, this._delete);
+  TokenWidget({Key key, token, onDeleteClicked})
+      : this._token = token,
+        this._onDeleteClicked = onDeleteClicked,
+        super(key: key);
 
   @override
   State<StatefulWidget> createState() {
     if (_token is HOTPToken) {
-      return _HotpWidgetState(_token, _delete);
+      return _HotpWidgetState(_token, _onDeleteClicked);
     } else if (_token is TOTPToken) {
-      return _TotpWidgetState(_token, _delete);
+      return _TotpWidgetState(_token, _onDeleteClicked);
     } else {
       throw ArgumentError.value(_token, "token",
           "The token [$_token] is of unknown type and not supported.");
@@ -52,9 +55,9 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   String _otpValue;
   String _label;
 
-  final Function _delete;
+  final VoidCallback _onDeleteClicked;
 
-  _TokenWidgetState(this._token, this._delete) {
+  _TokenWidgetState(this._token, this._onDeleteClicked) {
     _otpValue = calculateOtpValue(_token);
     _saveThisToken();
     _label = _token.label;
@@ -118,7 +121,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 child: Text("Rename"),
                 onPressed: () {
                   if (_nameInputKey.currentState.validate()) {
-                    _renameToken(_selectedName);
+                    _renameClicked(_selectedName);
                     Navigator.of(context).pop();
                   }
                 },
@@ -132,7 +135,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         });
   }
 
-  void _renameToken(String newLabel) {
+  void _renameClicked(String newLabel) {
     _saveThisToken();
     log(
       "Renamed token:",
@@ -172,7 +175,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             actions: <Widget>[
               FlatButton(
                 onPressed: () => {
-                  _delete(_token),
+                  _onDeleteClicked(),
                   Navigator.of(context).pop(),
                 },
                 child: Text("Yes!"),

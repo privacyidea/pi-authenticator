@@ -161,7 +161,12 @@ class _MainScreenState extends State<MainScreen> {
   ListView _buildTokenList() {
     return ListView.separated(
         itemBuilder: (context, index) {
-          return TokenWidget(_tokenList[index], _deleteItem);
+          Token token = _tokenList[index];
+          return TokenWidget(
+            key: ObjectKey(token),
+            token: token,
+            onDeleteClicked: () => _deleteClicked(token),
+          );
         },
         separatorBuilder: (context, index) {
           return Divider();
@@ -169,7 +174,7 @@ class _MainScreenState extends State<MainScreen> {
         itemCount: _tokenList.length);
   }
 
-  void _deleteItem(Token token) {
+  void _deleteClicked(Token token) {
     setState(() {
       print("Remove: $token");
       _tokenList.remove(token);
