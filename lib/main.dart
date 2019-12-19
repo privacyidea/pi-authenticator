@@ -19,8 +19,8 @@
 */
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/screens/mainScreen.dart';
-import 'package:privacyidea_authenticator/utils/applicatioTheme.dart';
+import 'package:privacyidea_authenticator/screens/main_screen.dart';
+import 'package:privacyidea_authenticator/utils/applicatio_theme.dart';
 
 void main() => runApp(MyApp());
 

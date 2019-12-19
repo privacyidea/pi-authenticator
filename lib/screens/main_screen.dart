@@ -25,10 +25,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/screens/addManuallyScreen.dart';
-import 'package:privacyidea_authenticator/utils/LicenseUtils.dart';
-import 'package:privacyidea_authenticator/utils/storageUtils.dart';
-import 'package:privacyidea_authenticator/utils/util.dart';
+import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
+import 'package:privacyidea_authenticator/utils/license_utils.dart';
+import 'package:privacyidea_authenticator/utils/storage_utils.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 
 class MainScreen extends StatefulWidget {
@@ -122,7 +122,7 @@ class _MainScreenState extends State<MainScreen> {
       String barcode = await BarcodeScanner.scan();
       log(
         "Barcode scanned:",
-        name: "mainScreen.dart",
+        name: "main_screen.dart",
         error: barcode,
       );
 
@@ -130,7 +130,7 @@ class _MainScreenState extends State<MainScreen> {
       setState(() {
         log(
           "Adding new token from qr-code:",
-          name: "mainScreen.dart",
+          name: "main_screen.dart",
           error: newToken,
         );
         _tokenList.add(newToken);
@@ -150,7 +150,7 @@ class _MainScreenState extends State<MainScreen> {
           Duration(seconds: 8));
       log(
         "Malformed QR code:",
-        name: "mainScreen.dart",
+        name: "main_screen.dart",
         error: e.toString(),
       );
     } catch (e) {
@@ -223,7 +223,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _addNewToken(Token newToken) {
-    log("Adding new token:", name: "mainScreen.dart", error: newToken);
+    log("Adding new token:", name: "main_screen.dart", error: newToken);
     if (newToken != null) {
       setState(() {
         _tokenList.add(newToken);
