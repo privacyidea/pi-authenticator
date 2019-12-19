@@ -24,6 +24,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/utils/LicenseUtils.dart';
@@ -66,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
         actions: _buildActionMenu(),
         leading: Padding(
           padding: EdgeInsets.all(4.0),
-          child: Image.asset('res/logo/app_logo.png'),
+          child: Image.asset('res/logo/app_logo_light.png'),
         ),
       ),
       body: _buildTokenList(),
@@ -87,7 +88,6 @@ class _MainScreenState extends State<MainScreen> {
               children: <Widget>[
                 new ListTile(
                     leading: new Icon(Icons.assignment),
-                    // TODO search for good icons
                     title: new Text(
                       'Add token manually',
                       style: Theme.of(context).textTheme.button,
@@ -101,8 +101,7 @@ class _MainScreenState extends State<MainScreen> {
                               )).then((newToken) => _addNewToken(newToken))
                         }),
                 new ListTile(
-                  leading: new Icon(Icons.scanner),
-                  // TODO search for good qrcode icon and add license -> http://fluttericon.com/
+                  leading: new Icon(FontAwesomeIcons.qrcode),
                   title: new Text(
                     'Scan QR-Code',
                     style: Theme.of(context).textTheme.button,
@@ -197,8 +196,10 @@ class _MainScreenState extends State<MainScreen> {
                       builder: (context) => LicensePage(
                             applicationName: "privacyIDEA Authenticator",
                             applicationVersion: "0.0.1",
-                            applicationIcon:
-                                Image.asset('res/logo/app_logo.png'),
+                            applicationIcon: Padding(
+                              padding: EdgeInsets.all(40.0),
+                              child: Image.asset('res/logo/app_logo_light.png'),
+                            ),
                             applicationLegalese: "Apache License 2.0",
                           )))
             }

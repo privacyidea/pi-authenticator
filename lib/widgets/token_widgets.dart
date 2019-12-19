@@ -206,6 +206,7 @@ class _HotpWidgetState extends _TokenWidgetState {
     setState(() {
       (_token as HOTPToken).incrementCounter();
       _otpValue = calculateOtpValue(_token);
+      _saveThisToken(); // When the app reloads the counter should not be reset.
     });
   }
 

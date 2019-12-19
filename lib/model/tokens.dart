@@ -19,18 +19,19 @@
 */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 part 'tokens.g.dart';
 
 abstract class Token {
   String _tokenVersion =
       "v1.0.0"; // The version of this token, this is used for serialization.
-  String _label; // The name of the token, it cannot be uses as an identifier.
-  String _serial; // This is the identifier of the secret.
-  String
-      _algorithm; // The hashing algorithm that is used to calculate the otp value.
-  int _digits; // The number of digits the otp value will have.
-  List<int> _secret; // The secret based on which the otp value is calculated.
+  String _label; // the name of the token, it cannot be uses as an identifier
+  String _serial; // this is the identifier of the secret
+  Algorithms
+      _algorithm; // the hashing algorithm that is used to calculate the otp value
+  int _digits; // the number of digits the otp value will have
+  List<int> _secret; // the secret based on which the otp value is calculated
 
   String get tokenVersion => _tokenVersion;
 
@@ -42,7 +43,7 @@ abstract class Token {
 
   String get serial => _serial;
 
-  String get algorithm => _algorithm;
+  Algorithms get algorithm => _algorithm;
 
   int get digits => _digits;
 
@@ -64,7 +65,7 @@ class HOTPToken extends Token {
 
   void incrementCounter() => _counter++;
 
-  HOTPToken(String label, String serial, String algorithm, int digits,
+  HOTPToken(String label, String serial, Algorithms algorithm, int digits,
       List<int> secret,
       {int counter = 0})
       : this._counter = counter,
@@ -88,7 +89,7 @@ class TOTPToken extends Token {
 
   int get period => _period;
 
-  TOTPToken(String label, String serial, String algorithm, int digits,
+  TOTPToken(String label, String serial, Algorithms algorithm, int digits,
       List<int> secret, int period)
       : this._period = period,
         super(label, serial, algorithm, digits, secret);
