@@ -24,7 +24,7 @@ import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Add token manually', () {
+  group('Rename and delete', () {
     FlutterDriver driver;
 
     // Connect to the Flutter driver before running any tests.
@@ -59,21 +59,59 @@ void main() {
       await driver.enterText("TestSecret");
     });
 
-    test("Change token type", () async {
-      await driver.tap(find.text("SHA1"));
-      await driver.tap(find.text("SHA512"));
-
-      await driver.tap(find.text("6"));
-      await driver.tap(find.text("8"));
-    });
-
     test("Click 'add token'", () async {
       await driver.tap(find.byType("RaisedButton"));
     });
 
     test("Assert the token exists", () async {
       await driver.tap(find.text("TestName"));
-      await driver.tap(find.text("0754 6858"));
+    });
+
+    test("Assert renaming works", () async {
+      await driver.scroll(
+          find.text("TestName"), -500, 0, Duration(milliseconds: 100));
+
+      await driver.tap(find.text("Rename"));
+
+      // Wait for the dialog to open.
+      await driver.waitFor(find.text("Rename token"));
+
+      await driver.enterText("NewTestName");
+      await driver.tap(find.text("Rename"));
+
+      // Assert new name is shown.
+      await driver.tap(find.text("NewTestName"));
+    });
+
+    test("Assert renaming works again", () async {
+      await driver.scroll(
+          find.text("NewTestName"), -500, 0, Duration(milliseconds: 100));
+
+      await driver.tap(find.text("Rename"));
+
+      // Wait for the dialog to open.
+      await driver.waitFor(find.text("Rename token"));
+
+      await driver.enterText("OldTestName");
+      await driver.tap(find.text("Rename"));
+
+      // Assert new name is shown.
+      await driver.tap(find.text("OldTestName"));
+    });
+
+    test("Assert delete works", () async {
+      await driver.scroll(
+          find.text("OldTestName"), -500, 0, Duration(milliseconds: 100));
+
+      // Delete the token.
+      await driver.tap(find.text("Delete"));
+
+      // Wait for the dialog to open.
+      await driver.waitFor(find.text("Confirm deletion"));
+
+      await driver.tap(find.text("Yes!"));
+
+      await driver.waitForAbsent(find.text("OldTestName"));
     });
   });
 }
