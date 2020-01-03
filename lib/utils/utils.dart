@@ -104,7 +104,7 @@ OTPLibrary.OTPAlgorithm _mapAlgorithms(Algorithms algorithm) {
       return OTPLibrary.OTPAlgorithm.SHA1;
     case Algorithms.SHA256:
       return OTPLibrary.OTPAlgorithm.SHA256;
-    case Algorithms.SHA256:
+    case Algorithms.SHA512:
       return OTPLibrary.OTPAlgorithm.SHA512;
     default:
       throw ArgumentError.value(algorithm, "algorithmName",
