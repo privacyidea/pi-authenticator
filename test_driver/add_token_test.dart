@@ -19,6 +19,7 @@
 */
 
 // Imports the Flutter Driver API.
+
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
@@ -38,18 +39,15 @@ void main() {
       }
     });
 
-//    final buttonFinder = find.byType(FloatingActionButton.toString());
     final buttonFinder = find.byType("FloatingActionButton");
     final addTokenButton = find.byValueKey("add_manually");
 
-    test('click the button', () async {
+    test("CLick the 'add' button", () async {
       await driver.tap(buttonFinder);
-      await Future.delayed(Duration(seconds: 10));
       await driver.tap(addTokenButton);
-      await Future.delayed(Duration(seconds: 10));
     });
 
-    test("Enter input", () async {
+    test("Enter name and secret", () async {
       await driver.tap(find.ancestor(
           of: find.text("Name"), matching: find.byType("TextFormField")));
 
@@ -59,9 +57,26 @@ void main() {
           of: find.text("Secret"), matching: find.byType("TextFormField")));
 
       await driver.enterText("TestSecret");
+    });
 
+    test("Change token type", () async {
+      await driver.tap(find.text("SHA1"));
+      await driver.tap(find.text("SHA512"));
+
+      await driver.tap(find.text("6"));
+      await driver.tap(find.text("8"));
+    });
+
+    test("Click 'add token'", () async {
       await driver.tap(find.byType("RaisedButton"));
+    });
 
+    test("Assert the token exists", () async {
+      await driver.tap(find.text("TestName"));
+      await driver.tap(find.text("0754 6858"));
+    });
+
+    test("Wait", () async {
       await Future.delayed(Duration(seconds: 20));
     });
   });
