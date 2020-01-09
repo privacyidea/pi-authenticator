@@ -19,8 +19,10 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme.dart';
+import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,6 +30,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: [
+        const MyLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', ''),
+        const Locale('de', ''),
+      ],
       title: 'privacyIDEA Authenticator',
       theme: getApplicationTheme(),
       home: MainScreen(title: 'privacyIDEA Authenticator'),

@@ -28,6 +28,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
+import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
@@ -90,7 +91,7 @@ class _MainScreenState extends State<MainScreen> {
                     leading: new Icon(Icons.assignment),
                     key: Key('add_manually'),
                     title: new Text(
-                      'Add token manually',
+                      L10n.of(context).addManually,
                       style: Theme.of(context).textTheme.button,
                     ),
                     onTap: () => {
@@ -104,7 +105,7 @@ class _MainScreenState extends State<MainScreen> {
                 new ListTile(
                   leading: new Icon(FontAwesomeIcons.qrcode),
                   title: new Text(
-                    'Scan QR-Code',
+                    L10n.of(context).scanQr,
                     style: Theme.of(context).textTheme.button,
                   ),
                   onTap: () => {
@@ -215,12 +216,12 @@ class _MainScreenState extends State<MainScreen> {
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
             value: "about",
-            child: Text("About"),
+            child: Text(L10n.of(context).about),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: null, // TODO add value as key for navigation
-            child: Text("Settings"),
+            child: Text(L10n.of(context).settings),
           ),
         ],
       ),

@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
@@ -236,7 +237,7 @@ class _HotpWidgetState extends _TokenWidgetState {
               child: RaisedButton(
                 onPressed: () => _updateOtpValue(),
                 child: Text(
-                  "Next",
+                  L10n.of(context).next,
                   textScaleFactor: 1.5,
                 ),
               ),
