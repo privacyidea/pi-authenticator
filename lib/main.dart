@@ -20,7 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
-import 'package:privacyidea_authenticator/utils/applicatio_theme.dart';
+import 'package:privacyidea_authenticator/utils/application_theme.dart';
 
 void main() => runApp(MyApp());
 
