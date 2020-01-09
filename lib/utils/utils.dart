@@ -25,7 +25,6 @@ import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
 import 'package:dart_otp/dart_otp.dart' as OTPLibrary;
-import 'package:flutter/foundation.dart';
 import 'package:hex/hex.dart' as HexConverter;
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:uuid/uuid.dart';
@@ -104,7 +103,7 @@ OTPLibrary.OTPAlgorithm _mapAlgorithms(Algorithms algorithm) {
       return OTPLibrary.OTPAlgorithm.SHA1;
     case Algorithms.SHA256:
       return OTPLibrary.OTPAlgorithm.SHA256;
-    case Algorithms.SHA256:
+    case Algorithms.SHA512:
       return OTPLibrary.OTPAlgorithm.SHA512;
     default:
       throw ArgumentError.value(algorithm, "algorithmName",
@@ -125,7 +124,7 @@ Token parseQRCodeToToken(String uri) {
   Uri parse = Uri.parse(uri);
   log(
     "Barcode is valid Uri:",
-    name: "util.dart",
+    name: "utils.dart",
     error: "$parse",
   );
 
@@ -141,8 +140,8 @@ Token parseQRCodeToToken(String uri) {
 
 //  parse.host -> Type totp or hotp
   String type = parse.host;
-  if (type != describeEnum(TokenTypes.HOTP).toLowerCase() &&
-      type != describeEnum(TokenTypes.TOTP).toLowerCase()) {
+  if (type != enumAsString(TokenTypes.HOTP).toLowerCase() &&
+      type != enumAsString(TokenTypes.TOTP).toLowerCase()) {
     throw ArgumentError.value(
       uri,
       "uri",
@@ -157,11 +156,11 @@ Token parseQRCodeToToken(String uri) {
 
   String label = parse.path.substring(1);
   String algorithm = parse.queryParameters["algorithm"] ??
-      describeEnum(Algorithms.SHA1); // Optional parameter
+      enumAsString(Algorithms.SHA1); // Optional parameter
 
-  if (algorithm != describeEnum(Algorithms.SHA1) &&
-      algorithm != describeEnum(Algorithms.SHA256) &&
-      algorithm != describeEnum(Algorithms.SHA512)) {
+  if (algorithm != enumAsString(Algorithms.SHA1) &&
+      algorithm != enumAsString(Algorithms.SHA256) &&
+      algorithm != enumAsString(Algorithms.SHA512)) {
     throw ArgumentError.value(
       uri,
       "uri",
@@ -188,7 +187,7 @@ Token parseQRCodeToToken(String uri) {
     throw ArgumentError.value(
       uri,
       "uri",
-      "[${describeEnum(Encodings.base32)}] is not a valid encoding for [$secretAsString].",
+      "[${enumAsString(Encodings.base32)}] is not a valid encoding for [$secretAsString].",
     );
   }
 
@@ -244,11 +243,23 @@ Token parseQRCodeToToken(String uri) {
 
 Algorithms mapStringToAlgorithm(String algoAsString) {
   for (Algorithms alg in Algorithms.values) {
-    if (describeEnum(alg) == algoAsString) {
+    if (enumAsString(alg) == algoAsString) {
       return alg;
     }
   }
 
   throw ArgumentError.value(algoAsString, "algorAsString",
       "$algoAsString cannot be mapped to $Algorithms");
+}
+
+/// This implementation is taken from the library
+/// [foundation](https://api.flutter.dev/flutter/foundation/describeEnum.html).
+/// That library sadly depends on [dart.ui] and thus cannot be used in tests.
+/// Therefor only using this code enables us to use this library ([utils.dart])
+/// in tests.
+String enumAsString(Object enumEntry) {
+  final String description = enumEntry.toString();
+  final int indexOfDot = description.indexOf('.');
+  assert(indexOfDot != -1 && indexOfDot < description.length - 1);
+  return description.substring(indexOfDot + 1);
 }

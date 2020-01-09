@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 echo "Running all integration tests:"
-ls ./test_driver | grep -v "_" | while read line
+ls ./test_driver | grep -v "test" | while read line
 do
  echo ""
  echo "############################################################"

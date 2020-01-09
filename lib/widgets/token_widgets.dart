@@ -25,7 +25,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
-import 'package:privacyidea_authenticator/utils/util.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 
 class TokenWidget extends StatefulWidget {
   final Token _token;

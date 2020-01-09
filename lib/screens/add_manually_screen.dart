@@ -18,11 +18,10 @@
   limitations under the License.
 */
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/util.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
 class AddTokenManuallyScreen extends StatefulWidget {
@@ -84,13 +83,13 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             _buildTextInputForm(),
-            _buildDropdownButtonWithEnumLabel(
+            _buildDropdownButtonWithLabel(
                 'Encoding:', _selectedEncoding, Encodings.values),
-            _buildDropdownButtonWithEnumLabel(
+            _buildDropdownButtonWithLabel(
                 'Algorithm:', _selectedAlgorithm, Algorithms.values),
             _buildDropdownButtonWithLabel(
                 'Digits:', _selectedDigits, allowedDigits),
-            _buildDropdownButtonWithEnumLabel(
+            _buildDropdownButtonWithLabel(
                 'Type:', _selectedType, TokenTypes.values),
             Visibility(
 //               the period is only used by TOTP tokens
@@ -155,34 +154,6 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     return true;
   }
 
-  Widget _buildDropdownButtonWithEnumLabel<T>(
-      String label, _Wrapper reference, List<T> values,
-      {postFix = ''}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(label, style: Theme.of(context).textTheme.body1),
-        DropdownButton<T>(
-          value: reference.value,
-          items: values.map<DropdownMenuItem<T>>((T value) {
-            return DropdownMenuItem<T>(
-              value: value,
-              child: Text(
-                "${describeEnum(value)}$postFix",
-                style: Theme.of(context).textTheme.subhead,
-              ),
-            );
-          }).toList(),
-          onChanged: (T newValue) {
-            setState(() {
-              reference.value = newValue;
-            });
-          },
-        ),
-      ],
-    );
-  }
-
   Widget _buildDropdownButtonWithLabel<T>(
       String label, _Wrapper reference, List<T> values,
       {postFix = ''}) {
@@ -196,7 +167,8 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             return DropdownMenuItem<T>(
               value: value,
               child: Text(
-                "$value$postFix",
+                "${value is String || value is int || value is double
+                    ? value : enumAsString(value)}$postFix",
                 style: Theme.of(context).textTheme.subhead,
               ),
             );
