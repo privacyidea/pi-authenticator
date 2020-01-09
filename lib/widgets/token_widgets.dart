@@ -214,29 +214,33 @@ class _HotpWidgetState extends _TokenWidgetState {
     return Stack(
       children: <Widget>[
         ListTile(
-          title: Center(
-            child: Text(
-              insertCharAt(_otpValue, " ", _otpValue.length ~/ 2),
-              textScaleFactor: 2.5,
-            ),
+          title:
+//          Center( child:
+              Text(
+            insertCharAt(_otpValue, " ", _otpValue.length ~/ 2),
+            textScaleFactor: 2.5,
           ),
-          subtitle: Center(
-            child: Text(
-              _label,
-              textScaleFactor: 2.0,
-            ),
+//          ),
+          subtitle:
+//    Center(child:
+              Text(
+            _label,
+            textScaleFactor: 2.0,
+//            ),
           ),
         ),
         Align(
-          alignment: Alignment.centerRight,
-          child: RaisedButton(
-            onPressed: () => _updateOtpValue(),
-            child: Text(
-              "Next",
-              textScaleFactor: 1.5,
-            ),
-          ),
-        ),
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: RaisedButton(
+                onPressed: () => _updateOtpValue(),
+                child: Text(
+                  "Next",
+                  textScaleFactor: 1.5,
+                ),
+              ),
+            )),
       ],
     );
   }
@@ -306,17 +310,19 @@ class _TotpWidgetState extends _TokenWidgetState
     return Column(
       children: <Widget>[
         ListTile(
-          title: Center(
-            child: Text(
-              insertCharAt(_otpValue, " ", _otpValue.length ~/ 2),
-              textScaleFactor: 2.5,
-            ),
+          title:
+//          Center(child:
+              Text(
+            insertCharAt(_otpValue, " ", _otpValue.length ~/ 2),
+            textScaleFactor: 2.5,
+//            ),
           ),
-          subtitle: Center(
-            child: Text(
-              _label,
-              textScaleFactor: 2.0,
-            ),
+          subtitle:
+//          Center(child:
+              Text(
+            _label,
+            textScaleFactor: 2.0,
+//            ),
           ),
         ),
         LinearProgressIndicator(

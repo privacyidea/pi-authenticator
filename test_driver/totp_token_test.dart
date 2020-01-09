@@ -81,7 +81,6 @@ void main() {
         String rawValue = calculateTotpValue(token);
         String value = insertCharAt(rawValue, " ", rawValue.length ~/ 2);
 
-        await driver.tap(find.text("TOTPTestName"));
         await driver.tap(find.text(value));
       });
 
@@ -91,6 +90,8 @@ void main() {
 
         String rawValue = calculateTotpValue(token);
         String value = insertCharAt(rawValue, " ", rawValue.length ~/ 2);
+
+        print('Value: $value');
 
         await driver.waitFor(find.text(value), timeout: Duration(seconds: 40));
       });

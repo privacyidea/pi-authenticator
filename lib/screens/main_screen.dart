@@ -145,6 +145,7 @@ class _MainScreenState extends State<MainScreen> {
     } on FormatException {
       //  User returned by pressing the back button
     } on ArgumentError catch (e) {
+      // Error while parsing qr code.
       // Show the error message to the user.
       _showMessage(
           "${e.message}\n Please inform the creator of this qr code about the problem.",
