@@ -92,10 +92,9 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     );
   }
 
-  // TODO Test this behaviour with integration testing.
   void _renameTokenDialog() {
     final _nameInputKey = GlobalKey<FormFieldState>();
-    String _selectedName;
+    String _selectedName = _label;
 
     showDialog(
         context: context,
