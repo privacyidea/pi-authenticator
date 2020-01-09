@@ -21,6 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
@@ -84,24 +85,24 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
           children: <Widget>[
             _buildTextInputForm(),
             _buildDropdownButtonWithLabel(
-                'Encoding:', _selectedEncoding, Encodings.values),
+                L10n.of(context).encoding, _selectedEncoding, Encodings.values),
+            _buildDropdownButtonWithLabel(L10n.of(context).algorithm,
+                _selectedAlgorithm, Algorithms.values),
             _buildDropdownButtonWithLabel(
-                'Algorithm:', _selectedAlgorithm, Algorithms.values),
+                L10n.of(context).digits, _selectedDigits, allowedDigits),
             _buildDropdownButtonWithLabel(
-                'Digits:', _selectedDigits, allowedDigits),
-            _buildDropdownButtonWithLabel(
-                'Type:', _selectedType, TokenTypes.values),
+                L10n.of(context).type, _selectedType, TokenTypes.values),
             Visibility(
 //               the period is only used by TOTP tokens
               visible: _selectedType.value == TokenTypes.TOTP,
               child: _buildDropdownButtonWithLabel(
-                  'Period:', _selectedPeriod, allowedPeriods,
+                  L10n.of(context).period, _selectedPeriod, allowedPeriods,
                   postFix: 's'),
             ),
             SizedBox(
               width: double.infinity,
               child: RaisedButton(
-                child: Text("Add token"),
+                child: Text(L10n.of(context).addToken),
                 onPressed: () => _returnTokenIfValid(),
               ),
             ),
@@ -167,8 +168,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             return DropdownMenuItem<T>(
               value: value,
               child: Text(
-                "${value is String || value is int || value is double
-                    ? value : enumAsString(value)}$postFix",
+                "${value is String || value is int || value is double ? value : enumAsString(value)}$postFix",
                 style: Theme.of(context).textTheme.subhead,
               ),
             );
@@ -194,7 +194,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             decoration: InputDecoration(labelText: "Name"),
             validator: (value) {
               if (value.isEmpty) {
-                return 'Please enter a name for this token.';
+                return L10n.of(context).hintEmptyName;
               }
               return null;
             },
@@ -210,9 +210,9 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             validator: (value) {
               if (value.isEmpty) {
 //                FocusScope.of(context).requestFocus(_secretFieldFocus);
-                return 'Please enter a secret for this token.';
+                return L10n.of(context).hintEmptySecret;
               } else if (!isValidEncoding(value, _selectedEncoding.value)) {
-                return 'The secret does not fit current encoding.';
+                return L10n.of(context).hintInvalidSecret;
               }
               return null;
             },

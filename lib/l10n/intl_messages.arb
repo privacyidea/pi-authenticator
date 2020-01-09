@@ -1,32 +1,110 @@
 {
-  "@@last_modified": "2020-01-09T16:04:15.932783",
-  "next": "Next",
-  "@next": {
+  "@@last_modified": "2020-01-09T16:23:42.298337",
+  "Next": "Next",
+  "@Next": {
     "description": "The text of the button to calculate the next otp value.",
     "type": "text",
     "placeholders": {}
   },
-  "about": "About",
-  "@about": {
+  "About": "About",
+  "@About": {
     "description": "Button to open the about page.",
     "type": "text",
     "placeholders": {}
   },
-  "settings": "Settings",
-  "@settings": {
+  "Settings": "Settings",
+  "@Settings": {
     "description": "Button to open the settings page.",
     "type": "text",
     "placeholders": {}
   },
-  "addManually": "Add token manually",
-  "@addManually": {
+  "Add token manually": "Add token manually",
+  "@Add token manually": {
     "description": "The button to open the screen to add tokens by hand.",
     "type": "text",
     "placeholders": {}
   },
-  "scanQr": "Scan QR-Code",
-  "@scanQr": {
+  "Scan QR-Code": "Scan QR-Code",
+  "@Scan QR-Code": {
     "description": "The button to scan otpauto qr-codes.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Enter details for token": "Enter details for token",
+  "@Enter details for token": {
+    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Name": "Name",
+  "@Name": {
+    "description": "Describes the field where the tokens name should be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Secret": "Secret",
+  "@Secret": {
+    "description": "Describes the field where the tokens secret should be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Encoding": "Encoding",
+  "@Encoding": {
+    "description": "Title of the dropdown button where the encoding is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Algorithm": "Algorithm",
+  "@Algorithm": {
+    "description": "Title of the dropdown button where the encoding is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Digits": "Digits",
+  "@Digits": {
+    "description": "Title of the dropdown button where the number of digits for the opt value is selecte.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Type": "Type",
+  "@Type": {
+    "description": "Title of the dropdown button where the type of the token is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Period": "Period",
+  "@Period": {
+    "description": "Title of the dropdown button where the period of the totp token is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Add token": "Add token",
+  "@Add token": {
+    "description": "Button to add the token for which the values where added in this screen.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Add tokens": "Add tokens",
+  "@Add tokens": {
+    "description": "Tooltip for the button that opens the selection for adding tokens.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Please enter a name for this token.": "Please enter a name for this token.",
+  "@Please enter a name for this token.": {
+    "description": "Hint telling the user to enter a name for a token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Please enter a secret for this token.": "Please enter a secret for this token.",
+  "@Please enter a secret for this token.": {
+    "description": "Hint telling the user to enter a secret for a token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "The secret does not the fit current encoding": "The secret does not the fit current encoding",
+  "@The secret does not the fit current encoding": {
+    "description": "Hint telling the user that the secret deos not fit the selected encoding.",
     "type": "text",
     "placeholders": {}
   }
