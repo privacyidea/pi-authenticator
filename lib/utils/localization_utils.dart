@@ -25,6 +25,7 @@ class L10n {
   String get next {
     return Intl.message(
       'Next',
+      name: 'next',
       desc: 'The text of the button to calculate the next otp value.',
       locale: localeName,
     );
@@ -33,6 +34,7 @@ class L10n {
   String get about {
     return Intl.message(
       'About',
+      name: 'about',
       desc: 'Button to open the about page.',
       locale: localeName,
     );
@@ -41,6 +43,7 @@ class L10n {
   String get settings {
     return Intl.message(
       'Settings',
+      name: 'settings',
       desc: 'Button to open the settings page.',
       locale: localeName,
     );
@@ -49,6 +52,7 @@ class L10n {
   String get addManually {
     return Intl.message(
       'Add token manually',
+      name: 'addManually',
       desc: 'The button to open the screen to add tokens by hand.',
       locale: localeName,
     );
@@ -57,6 +61,7 @@ class L10n {
   String get scanQr {
     return Intl.message(
       'Scan QR-Code',
+      name: 'scanQr',
       desc: 'The button to scan otpauto qr-codes.',
       locale: localeName,
     );
@@ -65,6 +70,7 @@ class L10n {
   String get addManuallyTitle {
     return Intl.message(
       'Enter details for token',
+      name: 'addManuallyTitle',
       desc: 'Title of the screen where tokens are created manually,'
           ' tells the user to enter all required values.',
       locale: localeName,
@@ -74,6 +80,7 @@ class L10n {
   String get nameHint {
     return Intl.message(
       'Name',
+      name: 'nameHint',
       desc: 'Describes the field where the tokens name should be entered.',
       locale: localeName,
     );
@@ -82,6 +89,7 @@ class L10n {
   String get secretHint {
     return Intl.message(
       'Secret',
+      name: 'secretHint',
       desc: 'Describes the field where the tokens secret should be entered.',
       locale: localeName,
     );
@@ -90,6 +98,7 @@ class L10n {
   String get encoding {
     return Intl.message(
       'Encoding',
+      name: 'encoding',
       desc: 'Title of the dropdown button where the encoding is selected.',
       locale: localeName,
     );
@@ -98,6 +107,7 @@ class L10n {
   String get algorithm {
     return Intl.message(
       'Algorithm',
+      name: 'algorithm',
       desc: 'Title of the dropdown button where the encoding is selected.',
       locale: localeName,
     );
@@ -106,6 +116,7 @@ class L10n {
   String get digits {
     return Intl.message(
       'Digits',
+      name: 'digits',
       desc:
           'Title of the dropdown button where the number of digits for the opt value is selecte.',
       locale: localeName,
@@ -115,6 +126,7 @@ class L10n {
   String get type {
     return Intl.message(
       'Type',
+      name: 'type',
       desc:
           'Title of the dropdown button where the type of the token is selected.',
       locale: localeName,
@@ -124,6 +136,7 @@ class L10n {
   String get period {
     return Intl.message(
       'Period',
+      name: 'period',
       desc:
           'Title of the dropdown button where the period of the totp token is selected.',
       locale: localeName,
@@ -133,6 +146,7 @@ class L10n {
   String get addToken {
     return Intl.message(
       'Add token',
+      name: 'addToken',
       desc:
           'Button to add the token for which the values where added in this screen.',
       locale: localeName,
@@ -142,6 +156,7 @@ class L10n {
   String get toolTipAddToken {
     return Intl.message(
       'Add tokens',
+      name: 'toolTipAddToken',
       desc:
           'Tooltip for the button that opens the selection for adding tokens.',
       locale: localeName,
@@ -151,6 +166,7 @@ class L10n {
   String get hintEmptyName {
     return Intl.message(
       'Please enter a name for this token.',
+      name: 'hintEmptyName',
       desc: 'Hint telling the user to enter a name for a token.',
       locale: localeName,
     );
@@ -159,6 +175,7 @@ class L10n {
   String get hintEmptySecret {
     return Intl.message(
       'Please enter a secret for this token.',
+      name: 'hintEmptySecret',
       desc: 'Hint telling the user to enter a secret for a token.',
       locale: localeName,
     );
@@ -167,6 +184,7 @@ class L10n {
   String get hintInvalidSecret {
     return Intl.message(
       'The secret does not the fit current encoding',
+      name: 'hintInvalidSecret',
       desc:
           'Hint telling the user that the secret deos not fit the selected encoding.',
       locale: localeName,
