@@ -33,10 +33,6 @@ void main() {
 }
 
 void _testTotpWidget() {
-  // TODO widget contains name and initial value
-  // TODO widget updates after 30s
-  // TODO widget updates after 60s
-
   testWidgets("TOTP Widget shows name and initial value",
       (WidgetTester tester) async {
     TOTPToken token = TOTPToken(
@@ -57,31 +53,6 @@ void _testTotpWidget() {
     expect(labelFinder, findsOneWidget);
     expect(otpValueFinder, findsOneWidget);
   });
-
-  // FIXME find a way to test this behavior.
-//  testWidgets("TOTP Widgets updates after 30 seconds",
-//      (WidgetTester tester) async {
-//    TOTPToken token =
-//        TOTPToken("Office Time", null, SHA1, 6, utf8.encode("secret"), 30);
-//
-//    await tester.pumpWidget(_WidgetTestWrapper(
-//      child: TOTPWidget(token: token),
-//    ));
-//
-//    String startOtp = calculateTotpValue(token);
-//
-//    final startOtpValueFinder = find.text(startOtp);
-//
-//    await tester.pump(Duration(seconds: 60));
-//
-//    String newOtpValue = calculateTotpValue(token);
-//    final otpValueFinder = find.text(newOtpValue);
-//
-//    expect(otpValueFinder, findsOneWidget);
-////    expect(startOtpValueFinder, findsNothing);
-//
-//    print("Old value: $startOtp \nNew value: $newOtpValue");
-//  });
 }
 
 void _testHotpWidget() {
