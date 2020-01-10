@@ -1,6 +1,6 @@
 {
   "@@last_modified": "2020-01-09T16:23:42.298337",
-  "Next": "Nächster",
+  "PPP": "Next",
   "@Next": {
     "description": "The text of the button to calculate the next otp value.",
     "type": "text",
