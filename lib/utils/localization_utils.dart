@@ -20,6 +20,7 @@ class L10n {
 
   static L10n of(BuildContext context) {
     // Widget tests will fail with called getter [getter] on null otherwise.
+    //  This will use the default localization in that case.
     return Localizations.of<L10n>(context, L10n) ?? L10n('');
   }
 
