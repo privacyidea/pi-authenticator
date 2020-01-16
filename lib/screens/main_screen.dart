@@ -230,11 +230,11 @@ class _MainScreenState extends State<MainScreen> {
             value: "add_manually",
             child: Text("Add token"),
           ),
-          PopupMenuDivider(),
-          PopupMenuItem<String>(
-            value: "settings",
-            child: Text("Settings"),
-          ),
+//          PopupMenuDivider(),
+//          PopupMenuItem<String>(
+//            value: "settings",
+//            child: Text("Settings"),
+//          ),
         ],
       ),
     ];
