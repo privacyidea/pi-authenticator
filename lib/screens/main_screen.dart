@@ -79,45 +79,6 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  _onAddButtonPressed(BuildContext context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return Container(
-            child: new Wrap(
-              children: <Widget>[
-                new ListTile(
-                    leading: new Icon(Icons.assignment),
-                    key: Key('add_manually'),
-                    title: new Text(
-                      'Add token manually',
-                      style: Theme.of(context).textTheme.button,
-                    ),
-                    onTap: () => {
-                          Navigator.pop(context), // Close this bottom sheet.
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AddTokenManuallyScreen(),
-                              )).then((newToken) => _addNewToken(newToken))
-                        }),
-                new ListTile(
-                  leading: new Icon(FontAwesomeIcons.qrcode),
-                  title: new Text(
-                    'Scan QR-Code',
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                  onTap: () => {
-                    Navigator.pop(context), // Close this bottom sheet.
-                    _scanQRCode()
-                  },
-                ),
-              ],
-            ),
-          );
-        });
-  }
-
   _scanQRCode() async {
     try {
       String barcode = await BarcodeScanner.scan();
