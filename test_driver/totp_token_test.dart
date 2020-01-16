@@ -41,8 +41,8 @@ void main() {
       }
     });
 
-    final buttonFinder = find.byType("FloatingActionButton");
-    final addTokenButton = find.byValueKey("add_manually");
+    final buttonFinder = find.byType("PopupMenuButton<String>");
+    final addTokenButton = find.text("Add token");
 
     test("Click the 'add' button", () async {
       await driver.tap(buttonFinder);
