@@ -74,7 +74,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Enter details for token",
+          L10n.of(context).addManuallyTitle,
           style: Theme.of(context).textTheme.title,
         ),
       ),
@@ -191,7 +191,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             key: _nameInputKey,
             focusNode: _nameFieldFocus,
             onSaved: (value) => this.setState(() => _selectedName = value),
-            decoration: InputDecoration(labelText: "Name"),
+            decoration: InputDecoration(labelText: L10n.of(context).nameHint),
             validator: (value) {
               if (value.isEmpty) {
                 return L10n.of(context).hintEmptyName;
@@ -205,7 +205,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             focusNode: _secretFieldFocus,
             onSaved: (value) => this.setState(() => _selectedSecret = value),
             decoration: InputDecoration(
-              labelText: "Secret",
+              labelText: L10n.of(context).secretHint,
             ),
             validator: (value) {
               if (value.isEmpty) {

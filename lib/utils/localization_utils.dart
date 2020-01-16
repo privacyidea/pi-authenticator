@@ -192,6 +192,60 @@ class L10n {
       locale: localeName,
     );
   }
+
+  String get rename {
+    return Intl.message(
+      'Rename',
+      name: 'rename',
+      desc: 'Label that describes renaming the token.',
+      locale: localeName,
+    );
+  }
+
+  String get renameDialogTitle {
+    return Intl.message(
+      'Rename token',
+      name: 'renameDialogTitle',
+      desc: 'Title of the dialog where a new name for a token can be entered.',
+      locale: localeName,
+    );
+  }
+
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: 'Button to cancel an action.',
+      locale: localeName,
+    );
+  }
+
+  String get delete {
+    return Intl.message(
+      'Delete',
+      name: 'delete',
+      desc: 'Label that describes deleting the token.',
+      locale: localeName,
+    );
+  }
+
+  String get deleteDialogTitle {
+    return Intl.message(
+      'Confirm deletion',
+      name: 'deleteDialogTitle',
+      desc: 'Title of the dialog where a token can be deleted.',
+      locale: localeName,
+    );
+  }
+
+  String get areYouSure {
+    return Intl.message(
+      'Are you sure you want to delete',
+      name: 'areYouSure',
+      desc: 'Part of a question: Do you want to delete {x}?',
+      locale: localeName,
+    );
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<L10n> {

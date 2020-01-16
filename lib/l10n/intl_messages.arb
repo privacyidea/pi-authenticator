@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2020-01-10T10:39:59.026947",
+  "@@last_modified": "2020-01-16T13:01:05.184801",
   "next": "Next",
   "@next": {
     "description": "The text of the button to calculate the next otp value.",
@@ -105,6 +105,42 @@
   "hintInvalidSecret": "The secret does not the fit current encoding",
   "@hintInvalidSecret": {
     "description": "Hint telling the user that the secret deos not fit the selected encoding.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "rename": "Rename",
+  "@rename": {
+    "description": "Label that describes renaming the token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "renameDialogTitle": "Rename token",
+  "@renameDialogTitle": {
+    "description": "Title of the dialog where a new name for a token can be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Button to cancel an action.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Label that describes deleting the token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "deleteDialogTitle": "Confirm deletion",
+  "@deleteDialogTitle": {
+    "description": "Title of the dialog where a token can be deleted.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "areYouSure": "Are you sure you want to delete",
+  "@areYouSure": {
+    "description": "Part of a question: Do you want to delete {x}?",
     "type": "text",
     "placeholders": {}
   }
