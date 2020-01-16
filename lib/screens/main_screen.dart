@@ -72,9 +72,9 @@ class _MainScreenState extends State<MainScreen> {
       ),
       body: _buildTokenList(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _onAddButtonPressed(context),
-        tooltip: "Add tokens",
-        child: Icon(Icons.add),
+        onPressed: () => _scanQRCode(),
+        tooltip: "Scan QR Code",
+        child: Icon(FontAwesomeIcons.qrcode),
       ),
     );
   }
@@ -206,7 +206,15 @@ class _MainScreenState extends State<MainScreen> {
                             applicationLegalese: "Apache License 2.0",
                           )))
             }
-          else
+          else if (value == "add_manually")
+            {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddTokenManuallyScreen(),
+                  )).then((newToken) => _addNewToken(newToken))
+            }
+          else if (value == "settings")
             {
               // TODO if we have settings at some point, open them
             }
@@ -219,7 +227,12 @@ class _MainScreenState extends State<MainScreen> {
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
-            value: null, // TODO add value as key for navigation
+            value: "add_manually",
+            child: Text("Add token"),
+          ),
+          PopupMenuDivider(),
+          PopupMenuItem<String>(
+            value: "settings",
             child: Text("Settings"),
           ),
         ],
