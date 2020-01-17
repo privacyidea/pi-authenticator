@@ -18,10 +18,16 @@
   limitations under the License.
 */
 
+import 'dart:ui';
+
 import 'package:flutter_driver/driver_extension.dart';
 import 'package:privacyidea_authenticator/main.dart' as app;
 
 void main() {
+  // Override the supported locales of the application to prevent buttons having
+  //  different text values.
+  app.MyApp.supportedLocales = [Locale('en', '')];
+
   // This line enables the extension.
   enableFlutterDriverExtension();
 

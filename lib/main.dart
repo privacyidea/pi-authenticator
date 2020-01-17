@@ -27,6 +27,15 @@ import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  static List<Locale> _supportedLocales = [
+    const Locale('en', ''),
+    const Locale('de', ''),
+  ];
+
+  static set supportedLocales(List<Locale> supportedLocales) {
+    _supportedLocales = supportedLocales;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -35,10 +44,7 @@ class MyApp extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-      supportedLocales: [
-        const Locale('en', ''),
-        const Locale('de', ''),
-      ],
+      supportedLocales: _supportedLocales,
       title: 'privacyIDEA Authenticator',
       theme: getApplicationTheme(),
       home: MainScreen(title: 'privacyIDEA Authenticator'),
