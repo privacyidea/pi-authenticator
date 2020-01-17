@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -199,6 +200,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 }
 
 class _HotpWidgetState extends _TokenWidgetState {
+  bool buttonIsDisabled = false;
+
   _HotpWidgetState(Token token, Function delete) : super(token, delete);
 
   @override
@@ -207,7 +210,15 @@ class _HotpWidgetState extends _TokenWidgetState {
       (_token as HOTPToken).incrementCounter();
       _otpValue = calculateOtpValue(_token);
       _saveThisToken(); // When the app reloads the counter should not be reset.
+
+      _disableButtonForSomeTime();
     });
+  }
+
+  void _disableButtonForSomeTime() {
+    // Disable the button for 1 s.
+    buttonIsDisabled = true;
+    Timer(Duration(seconds: 1), () => setState(() => buttonIsDisabled = false));
   }
 
   @override
@@ -235,7 +246,7 @@ class _HotpWidgetState extends _TokenWidgetState {
             child: Padding(
               padding: EdgeInsets.all(20),
               child: RaisedButton(
-                onPressed: () => _updateOtpValue(),
+                onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
                 child: Text(
                   L10n.of(context).next,
                   textScaleFactor: 1.5,

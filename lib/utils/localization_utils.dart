@@ -53,7 +53,7 @@ class L10n {
 
   String get addManually {
     return Intl.message(
-      'Add token manually',
+      'Add token',
       name: 'addManually',
       desc: 'The button to open the screen to add tokens by hand.',
       locale: localeName,

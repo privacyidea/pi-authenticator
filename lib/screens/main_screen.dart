@@ -73,50 +73,11 @@ class _MainScreenState extends State<MainScreen> {
       ),
       body: _buildTokenList(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _onAddButtonPressed(context),
-        tooltip: L10n.of(context).toolTipAddToken,
-        child: Icon(Icons.add),
+        onPressed: () => _scanQRCode(),
+        tooltip: "Scan QR Code",
+        child: Icon(FontAwesomeIcons.qrcode),
       ),
     );
-  }
-
-  _onAddButtonPressed(BuildContext context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return Container(
-            child: new Wrap(
-              children: <Widget>[
-                new ListTile(
-                    leading: new Icon(Icons.assignment),
-                    key: Key('add_manually'),
-                    title: new Text(
-                      L10n.of(context).addManually,
-                      style: Theme.of(context).textTheme.button,
-                    ),
-                    onTap: () => {
-                          Navigator.pop(context), // Close this bottom sheet.
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AddTokenManuallyScreen(),
-                              )).then((newToken) => _addNewToken(newToken))
-                        }),
-                new ListTile(
-                  leading: new Icon(FontAwesomeIcons.qrcode),
-                  title: new Text(
-                    L10n.of(context).scanQr,
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                  onTap: () => {
-                    Navigator.pop(context), // Close this bottom sheet.
-                    _scanQRCode()
-                  },
-                ),
-              ],
-            ),
-          );
-        });
   }
 
   _scanQRCode() async {
@@ -207,7 +168,15 @@ class _MainScreenState extends State<MainScreen> {
                             applicationLegalese: "Apache License 2.0",
                           )))
             }
-          else
+          else if (value == "add_manually")
+            {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddTokenManuallyScreen(),
+                  )).then((newToken) => _addNewToken(newToken))
+            }
+          else if (value == "settings")
             {
               // TODO if we have settings at some point, open them
             }
@@ -220,9 +189,14 @@ class _MainScreenState extends State<MainScreen> {
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
-            value: null, // TODO add value as key for navigation
-            child: Text(L10n.of(context).settings),
+            value: "add_manually",
+            child: Text(L10n.of(context).addManually),
           ),
+//          PopupMenuDivider(),
+//          PopupMenuItem<String>(
+//            value: "settings",
+//            child: Text(L10n.of(context).settings),
+//          ),
         ],
       ),
     ];

@@ -18,7 +18,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "addManually": "Add token manually",
+   "addManually": "Add token",
   "@addManually": {
     "description": "The button to open the screen to add tokens by hand.",
     "type": "text",

@@ -79,27 +79,30 @@ void _testHotpWidget() {
     });
 
     testWidgets("HOTP Widgets next button works", (WidgetTester tester) async {
-      HOTPToken token = HOTPToken(
-          "Office", null, Algorithms.SHA1, 6, utf8.encode("secret"),
-          counter: 0);
+      await tester.runAsync(() async {
+        HOTPToken token = HOTPToken(
+            "Office", null, Algorithms.SHA1, 6, utf8.encode("secret"),
+            counter: 0);
 
-      await tester.pumpWidget(_WidgetTestWrapper(
-        child: TokenWidget(
-          key: ObjectKey(token),
-          token: token,
-          onDeleteClicked: () => null,
-        ),
-      ));
+        await tester.pumpWidget(_WidgetTestWrapper(
+          child: TokenWidget(
+            key: ObjectKey(token),
+            token: token,
+            onDeleteClicked: () => null,
+          ),
+        ));
 
-      final otpValueFinder = find.text("814 628");
+        final otpValueFinder = find.text("814 628");
 
-      // test that the 'next' button works
-      await tester.tap(find.byType(RaisedButton));
-      final otpValueFinder2 = find.text("533 881");
-      await tester.pump(Duration(milliseconds: 50));
+        // test that the 'next' button works
+        await tester.tap(find.byType(RaisedButton));
+        final otpValueFinder2 = find.text("533 881");
+//      await tester.pump(Duration(milliseconds: 50));
+        await tester.pumpAndSettle(const Duration(milliseconds: 50));
 
-      expect(otpValueFinder, findsNothing);
-      expect(otpValueFinder2, findsOneWidget);
+        expect(otpValueFinder, findsNothing);
+        expect(otpValueFinder2, findsOneWidget);
+      });
     });
   });
 }

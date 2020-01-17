@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "about" : MessageLookupByLibrary.simpleMessage("Über"),
-    "addManually" : MessageLookupByLibrary.simpleMessage("Token manuell hinzufügen"),
+    "addManually" : MessageLookupByLibrary.simpleMessage("Token hinzufügen"),
     "addManuallyTitle" : MessageLookupByLibrary.simpleMessage("Neuen Token konfigurieren"),
     "addToken" : MessageLookupByLibrary.simpleMessage("Token hinzufügen"),
     "algorithm" : MessageLookupByLibrary.simpleMessage("Algorithmus"),

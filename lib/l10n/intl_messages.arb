@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2020-01-16T13:01:05.184801",
+  "@@last_modified": "2020-01-17T14:14:30.068809",
   "next": "Next",
   "@next": {
     "description": "The text of the button to calculate the next otp value.",
@@ -18,7 +18,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "addManually": "Add token manually",
+  "addManually": "Add token",
   "@addManually": {
     "description": "The button to open the screen to add tokens by hand.",
     "type": "text",
