@@ -28,9 +28,9 @@ ThemeData getApplicationTheme() {
         color: Colors.white,
       ),
     ),
-    primarySwatch: Colors.deepPurple,
+    primarySwatch: Colors.blue,
     buttonTheme: ButtonThemeData(
-      buttonColor: Colors.deepPurple,
+      buttonColor: Colors.blue,
       textTheme: ButtonTextTheme.primary,
     ),
   );
