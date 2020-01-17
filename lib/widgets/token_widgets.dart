@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
@@ -77,13 +78,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       ),
       secondaryActions: <Widget>[
         IconSlideAction(
-          caption: 'Delete',
+          caption: L10n.of(context).delete,
           color: Colors.red,
           icon: Icons.delete,
           onTap: () => _deleteTokenDialog(),
         ),
         IconSlideAction(
-          caption: 'Rename',
+          caption: L10n.of(context).rename,
           color: Colors.blue,
           icon: Icons.edit,
           onTap: () => _renameTokenDialog(),
@@ -100,24 +101,24 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Rename token"),
+            title: Text(L10n.of(context).renameDialogTitle),
             titleTextStyle: Theme.of(context).textTheme.subhead,
             content: TextFormField(
               autofocus: true,
               initialValue: _label,
               key: _nameInputKey,
               onChanged: (value) => this.setState(() => _selectedName = value),
-              decoration: InputDecoration(labelText: "Name"),
+              decoration: InputDecoration(labelText: L10n.of(context).nameHint),
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'Please enter a name for this token.';
+                  return L10n.of(context).nameHint;
                 }
                 return null;
               },
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text("Rename"),
+                child: Text(L10n.of(context).rename),
                 onPressed: () {
                   if (_nameInputKey.currentState.validate()) {
                     _renameClicked(_selectedName);
@@ -126,7 +127,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 },
               ),
               FlatButton(
-                child: Text("Cancel"),
+                child: Text(L10n.of(context).cancel),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ],
@@ -153,7 +154,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Confirm deletion"),
+            title: Text(L10n.of(context).deleteDialogTitle),
             titleTextStyle: Theme.of(context).textTheme.subhead,
             content: RichText(
               text: TextSpan(
@@ -162,10 +163,10 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   ),
                   children: [
                     TextSpan(
-                      text: "Are you sure you want to delete ",
+                      text: L10n.of(context).areYouSure,
                     ),
                     TextSpan(
-                        text: "\'$_label\'?",
+                        text: " \'$_label\'?",
                         style: TextStyle(
                           fontStyle: FontStyle.italic,
                         ))
@@ -177,11 +178,11 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   _onDeleteClicked(),
                   Navigator.of(context).pop(),
                 },
-                child: Text("Yes!"),
+                child: Text(L10n.of(context).delete),
               ),
               FlatButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text("No, take me back!"),
+                child: Text(L10n.of(context).cancel),
               ),
             ],
           );
@@ -236,7 +237,7 @@ class _HotpWidgetState extends _TokenWidgetState {
               child: RaisedButton(
                 onPressed: () => _updateOtpValue(),
                 child: Text(
-                  "Next",
+                  L10n.of(context).next,
                   textScaleFactor: 1.5,
                 ),
               ),

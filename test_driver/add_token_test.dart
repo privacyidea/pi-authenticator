@@ -42,7 +42,7 @@ void main() {
     final buttonFinder = find.byType("FloatingActionButton");
     final addTokenButton = find.byValueKey("add_manually");
 
-    test("CLick the 'add' button", () async {
+    test("Click the 'add' button", () async {
       await driver.tap(buttonFinder);
       await driver.tap(addTokenButton);
     });
