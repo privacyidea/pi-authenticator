@@ -73,7 +73,7 @@ void main() {
 
     test("Assert the token exists", () async {
       await driver.tap(find.text("TestName"));
-      await driver.tap(find.text("0754 6858"));
+      await driver.tap(find.text("3058 7488"));
     });
   });
 }

@@ -24,7 +24,6 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
@@ -75,7 +74,7 @@ class _MainScreenState extends State<MainScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _scanQRCode(),
         tooltip: "Scan QR Code",
-        child: Icon(FontAwesomeIcons.qrcode),
+        child: Icon(Icons.add),
       ),
     );
   }

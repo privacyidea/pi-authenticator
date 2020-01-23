@@ -24,8 +24,8 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
-import 'package:dart_otp/dart_otp.dart' as OTPLibrary;
 import 'package:hex/hex.dart' as HexConverter;
+import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:uuid/uuid.dart';
 
@@ -54,7 +54,8 @@ List<int> decodeSecretToUint8(String secret, Encodings encoding) {
 bool isValidEncoding(String secret, Encodings encoding) {
   try {
     decodeSecretToUint8(secret, encoding);
-  } on Exception catch (_) {
+  } on Exception catch (e) {
+    print('${e.toString()}');
     return false;
   }
 
@@ -64,24 +65,25 @@ bool isValidEncoding(String secret, Encodings encoding) {
 String calculateHotpValue(HOTPToken token) {
   Uint8List binarySecret = Uint8List.fromList(token.secret);
   String base32Secret = Base32Converter.base32.encode(binarySecret);
-  return OTPLibrary.HOTP(
-    counter: token.counter,
-    digits: token.digits,
-    secret: base32Secret,
+  return "${OTPLibrary.OTP.generateHOTPCode(
+    base32Secret,
+    token.counter,
+    length: token.digits,
     algorithm: _mapAlgorithms(token.algorithm),
-  ).at(counter: token.counter);
+  )}";
 }
 
 // TODO test this method, may use mockito for 'faking' the system time
 String calculateTotpValue(TOTPToken token) {
   Uint8List binarySecret = Uint8List.fromList(token.secret);
   String base32Secret = Base32Converter.base32.encode(binarySecret);
-  return OTPLibrary.TOTP(
-          interval: token.period,
-          digits: token.digits,
-          secret: base32Secret,
-          algorithm: _mapAlgorithms(token.algorithm))
-      .now();
+  return "${OTPLibrary.OTP.generateTOTPCode(
+    base32Secret,
+    DateTime.now().millisecondsSinceEpoch,
+    length: token.digits,
+    algorithm: _mapAlgorithms(token.algorithm),
+    interval: token.period,
+  )}";
 }
 
 String calculateOtpValue(Token token) {
@@ -95,16 +97,16 @@ String calculateOtpValue(Token token) {
       "The token kind of $token is not supported by this method");
 }
 
-OTPLibrary.OTPAlgorithm _mapAlgorithms(Algorithms algorithm) {
+OTPLibrary.Algorithm _mapAlgorithms(Algorithms algorithm) {
   ArgumentError.checkNotNull(algorithm, "algorithmName");
 
   switch (algorithm) {
     case Algorithms.SHA1:
-      return OTPLibrary.OTPAlgorithm.SHA1;
+      return OTPLibrary.Algorithm.SHA1;
     case Algorithms.SHA256:
-      return OTPLibrary.OTPAlgorithm.SHA256;
+      return OTPLibrary.Algorithm.SHA256;
     case Algorithms.SHA512:
-      return OTPLibrary.OTPAlgorithm.SHA512;
+      return OTPLibrary.Algorithm.SHA512;
     default:
       throw ArgumentError.value(algorithm, "algorithmName",
           "This algortihm is unknown and not supported!");
@@ -138,29 +140,30 @@ Token parseQRCodeToToken(String uri) {
     );
   }
 
-//  parse.host -> Type totp or hotp
+  // parse.host -> Type totp or hotp
   String type = parse.host;
-  if (type != enumAsString(TokenTypes.HOTP).toLowerCase() &&
-      type != enumAsString(TokenTypes.TOTP).toLowerCase()) {
+  if (!equalsIgnoreCase(type, enumAsString(TokenTypes.HOTP)) &&
+      !equalsIgnoreCase(type, enumAsString(TokenTypes.TOTP))) {
     throw ArgumentError.value(
       uri,
       "uri",
-      "The token type [$type] is not supported",
+      "The token type [$type] is not supported.",
     );
   }
 
 // parse.path.substring(1) -> Label
+  print("Key: [..] | Value: [..]");
   parse.queryParameters.forEach((key, value) {
-    print("Key: $key | Value: $value");
+    print("  $key | $value");
   });
 
   String label = parse.path.substring(1);
   String algorithm = parse.queryParameters["algorithm"] ??
       enumAsString(Algorithms.SHA1); // Optional parameter
 
-  if (algorithm != enumAsString(Algorithms.SHA1) &&
-      algorithm != enumAsString(Algorithms.SHA256) &&
-      algorithm != enumAsString(Algorithms.SHA512)) {
+  if (!equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA1)) &&
+      !equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA256)) &&
+      !equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA512))) {
     throw ArgumentError.value(
       uri,
       "uri",
@@ -168,6 +171,7 @@ Token parseQRCodeToToken(String uri) {
     );
   }
 
+  // parse digits
   String digitsAsString =
       parse.queryParameters["digits"] ?? "6"; // Optional parameter
 
@@ -183,6 +187,15 @@ Token parseQRCodeToToken(String uri) {
 
   // parse secret
   String secretAsString = parse.queryParameters["secret"];
+
+  // This is a fix for omitted padding in base32 encoded secrets.
+  //
+  // According to https://github.com/google/google-authenticator/wiki/Key-Uri-Format,
+  // the padding can be omitted, but the libraries for base32 do not allow this.
+  if (secretAsString.length % 2 == 1) {
+    secretAsString += "=";
+  }
+
   if (!isValidEncoding(secretAsString, Encodings.base32)) {
     throw ArgumentError.value(
       uri,
@@ -191,12 +204,11 @@ Token parseQRCodeToToken(String uri) {
     );
   }
 
-  List<int> secret =
-      decodeSecretToUint8(parse.queryParameters["secret"], Encodings.base32);
+  List<int> secret = decodeSecretToUint8(secretAsString, Encodings.base32);
 
   String serial = Uuid().v4();
 
-// uri.host -> totp or hotp
+  // uri.host -> totp or hotp
   if (type == "hotp") {
     String counterAsString = parse.queryParameters["counter"];
     try {
@@ -243,7 +255,7 @@ Token parseQRCodeToToken(String uri) {
 
 Algorithms mapStringToAlgorithm(String algoAsString) {
   for (Algorithms alg in Algorithms.values) {
-    if (enumAsString(alg) == algoAsString) {
+    if (equalsIgnoreCase(enumAsString(alg), algoAsString)) {
       return alg;
     }
   }
@@ -262,4 +274,8 @@ String enumAsString(Object enumEntry) {
   final int indexOfDot = description.indexOf('.');
   assert(indexOfDot != -1 && indexOfDot < description.length - 1);
   return description.substring(indexOfDot + 1);
+}
+
+bool equalsIgnoreCase(String s1, String s2) {
+  return s1.toLowerCase() == s2.toLowerCase();
 }
