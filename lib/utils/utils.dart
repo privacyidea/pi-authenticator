@@ -24,8 +24,8 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
-import 'package:dart_otp/dart_otp.dart' as OTPLibrary;
 import 'package:hex/hex.dart' as HexConverter;
+import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:uuid/uuid.dart';
 
@@ -64,24 +64,25 @@ bool isValidEncoding(String secret, Encodings encoding) {
 String calculateHotpValue(HOTPToken token) {
   Uint8List binarySecret = Uint8List.fromList(token.secret);
   String base32Secret = Base32Converter.base32.encode(binarySecret);
-  return OTPLibrary.HOTP(
-    counter: token.counter,
-    digits: token.digits,
-    secret: base32Secret,
+  return "${OTPLibrary.OTP.generateHOTPCode(
+    base32Secret,
+    token.counter,
+    length: token.digits,
     algorithm: _mapAlgorithms(token.algorithm),
-  ).at(counter: token.counter);
+  )}";
 }
 
 // TODO test this method, may use mockito for 'faking' the system time
 String calculateTotpValue(TOTPToken token) {
   Uint8List binarySecret = Uint8List.fromList(token.secret);
   String base32Secret = Base32Converter.base32.encode(binarySecret);
-  return OTPLibrary.TOTP(
-          interval: token.period,
-          digits: token.digits,
-          secret: base32Secret,
-          algorithm: _mapAlgorithms(token.algorithm))
-      .now();
+  return "${OTPLibrary.OTP.generateTOTPCode(
+    base32Secret,
+    DateTime.now().millisecondsSinceEpoch,
+    length: token.digits,
+    algorithm: _mapAlgorithms(token.algorithm),
+    interval: token.period,
+  )}";
 }
 
 String calculateOtpValue(Token token) {
@@ -95,16 +96,16 @@ String calculateOtpValue(Token token) {
       "The token kind of $token is not supported by this method");
 }
 
-OTPLibrary.OTPAlgorithm _mapAlgorithms(Algorithms algorithm) {
+OTPLibrary.Algorithm _mapAlgorithms(Algorithms algorithm) {
   ArgumentError.checkNotNull(algorithm, "algorithmName");
 
   switch (algorithm) {
     case Algorithms.SHA1:
-      return OTPLibrary.OTPAlgorithm.SHA1;
+      return OTPLibrary.Algorithm.SHA1;
     case Algorithms.SHA256:
-      return OTPLibrary.OTPAlgorithm.SHA256;
+      return OTPLibrary.Algorithm.SHA256;
     case Algorithms.SHA512:
-      return OTPLibrary.OTPAlgorithm.SHA512;
+      return OTPLibrary.Algorithm.SHA512;
     default:
       throw ArgumentError.value(algorithm, "algorithmName",
           "This algortihm is unknown and not supported!");

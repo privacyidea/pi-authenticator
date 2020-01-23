@@ -28,8 +28,8 @@ dependencies:
   hex: ^0.1.2 # https://pub.dev/packages/hex#-installing-tab-
   # dependency for decoding (and encoding) strings to base32
   base32: ^1.1.1 # https://pub.dev/packages/base32
-  # dependency for calculationg otp values
-  dart_otp: ^1.3.0 # https://pub.dev/packages/dart_otp
+  # dependency for calculating otp values
+  otp: ^2.0.3 # https://pub.dev/packages/otp
   # dependency for scanning barcodes
   barcode_scan: ^1.0.0
   #dependency for formating string, this could be useful when using json for internationalization
