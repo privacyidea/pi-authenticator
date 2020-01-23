@@ -24,6 +24,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
@@ -149,36 +150,33 @@ class _MainScreenState extends State<MainScreen> {
     // TODO maybe a drawer / 'hamburger' menu would be nicer?
     return <Widget>[
       PopupMenuButton<String>(
-        onSelected: (String value) => {
-          if (value == "about")
-            {
-//              clearLicenses(), // This is used for testing purposes.
-              addAllLicenses(),
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => LicensePage(
-                            applicationName: "privacyIDEA Authenticator",
-                            applicationVersion: "0.0.1",
-                            applicationIcon: Padding(
-                              padding: EdgeInsets.all(40.0),
-                              child: Image.asset('res/logo/app_logo_light.png'),
-                            ),
-                            applicationLegalese: "Apache License 2.0",
-                          )))
-            }
-          else if (value == "add_manually")
-            {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddTokenManuallyScreen(),
-                  )).then((newToken) => _addNewToken(newToken))
-            }
-          else if (value == "settings")
-            {
-              // TODO if we have settings at some point, open them
-            }
+        onSelected: (String value) async {
+          if (value == "about") {
+            PackageInfo info = await PackageInfo.fromPlatform();
+//              clearLicenses(), // This is used for testing purposes only.
+            addAllLicenses();
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LicensePage(
+                          applicationName: "privacyIDEA Authenticator",
+                          applicationVersion: info.version,
+                          applicationIcon: Padding(
+                            padding: EdgeInsets.all(40.0),
+                            child: Image.asset('res/logo/app_logo_light.png'),
+                          ),
+                          applicationLegalese: "Apache License 2.0",
+                        )));
+//            });
+          } else if (value == "add_manually") {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddTokenManuallyScreen(),
+                )).then((newToken) => _addNewToken(newToken));
+          } else if (value == "settings") {
+            // TODO if we have settings at some point, open them
+          }
         },
         elevation: 5.0,
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
