@@ -24,7 +24,6 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
-import 'package:flutter/foundation.dart';
 import 'package:hex/hex.dart' as HexConverter;
 import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:privacyidea_authenticator/model/tokens.dart';
@@ -143,8 +142,8 @@ Token parseQRCodeToToken(String uri) {
 
   // parse.host -> Type totp or hotp
   String type = parse.host;
-  if (!equalsIgnoreCase(type, describeEnum(TokenTypes.HOTP)) &&
-      !equalsIgnoreCase(type, describeEnum(TokenTypes.TOTP))) {
+  if (!equalsIgnoreCase(type, enumAsString(TokenTypes.HOTP)) &&
+      !equalsIgnoreCase(type, enumAsString(TokenTypes.TOTP))) {
     throw ArgumentError.value(
       uri,
       "uri",
@@ -162,9 +161,9 @@ Token parseQRCodeToToken(String uri) {
   String algorithm = parse.queryParameters["algorithm"] ??
       enumAsString(Algorithms.SHA1); // Optional parameter
 
-  if (!equalsIgnoreCase(algorithm, describeEnum(Algorithms.SHA1)) &&
-      !equalsIgnoreCase(algorithm, describeEnum(Algorithms.SHA256)) &&
-      !equalsIgnoreCase(algorithm, describeEnum(Algorithms.SHA512))) {
+  if (!equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA1)) &&
+      !equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA256)) &&
+      !equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA512))) {
     throw ArgumentError.value(
       uri,
       "uri",
