@@ -75,7 +75,7 @@ class _MainScreenState extends State<MainScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _scanQRCode(),
         tooltip: "Scan QR Code",
-        child: Icon(FontAwesomeIcons.qrcode),
+        child: Icon(Icons.add),
       ),
     );
   }
