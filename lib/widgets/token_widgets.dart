@@ -175,9 +175,9 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             ),
             actions: <Widget>[
               FlatButton(
-                onPressed: () => {
-                  _onDeleteClicked(),
-                  Navigator.of(context).pop(),
+                onPressed: () {
+                  _onDeleteClicked();
+                  Navigator.of(context).pop();
                 },
                 child: Text(L10n.of(context).delete),
               ),
