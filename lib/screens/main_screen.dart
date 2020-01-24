@@ -92,8 +92,8 @@ class _MainScreenState extends State<MainScreen> {
         error: barcode,
       );
 
-      Token newToken =
-          _buildTokenFromMap(parseQRCodeToToken(barcode), Uri.parse(barcode));
+      Token newToken = await _buildTokenFromMap(
+          parseQRCodeToToken(barcode), Uri.parse(barcode));
       setState(() {
         log(
           "Adding new token from qr-code:",
@@ -126,7 +126,15 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Token _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) {
+  // ###########################################################################
+  //                            2 STEP ROLLOUT
+  // ###########################################################################
+
+  Widget dialogContent;
+  String title;
+  FlatButton dialogButton;
+
+  Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
     String serial = Uuid().v4();
 
     String type = uriMap[URI_TYPE];
@@ -138,20 +146,7 @@ class _MainScreenState extends State<MainScreen> {
     int period = uriMap[URI_PERIOD];
 
     if (is2StepURI(uri)) {
-      // TODO make all the calculations and dialog stuff.
-
-      // Default is a progress indicator while calculating.
-      Widget dialogContent = Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[CircularProgressIndicator()],
-      );
-
-      // Default title while calculating.
-      // TODO translate this.
-      String title = "Please wait while the phone part is generated.";
-
-      // Default is null as this dialog should not be dismissed.
-      FlatButton dialogButton;
+      _reset2StepDialog();
 
       showDialog(
           context: context,
@@ -167,6 +162,10 @@ class _MainScreenState extends State<MainScreen> {
               ),
             );
           });
+
+      await _calculate2StepSecret();
+      // TODO make all the calculations and dialog stuff.
+
     }
 
     // uri.host -> totp or hotp
@@ -193,6 +192,45 @@ class _MainScreenState extends State<MainScreen> {
           uri, "uri", "[$type] is not a supported type of token");
     }
   }
+
+  // TODO move this back in one method?
+  _reset2StepDialog() {
+    // Default is a progress indicator while calculating.
+    dialogContent = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[CircularProgressIndicator()],
+    );
+
+    // Default title while calculating.
+    // TODO translate this.
+    title = "Please wait while the phone part is generated.";
+
+    // Default is null as this dialog should not be dismissed.
+    dialogButton = null;
+  }
+
+  _calculate2StepSecret() async {
+    // TODO calculate stuff.
+    await Future.delayed(Duration(seconds: 5));
+    String phonePart = "<phonePart>";
+
+    // Update dialog.
+    setState(() {
+      title = "Generated phone part:"; // TODO translate this.
+      dialogContent = Text(phonePart);
+      dialogButton = FlatButton(
+        child: Text("Dismiss"),
+        onPressed: () {
+          Navigator.of(context).pop();
+          _reset2StepDialog();
+        },
+      );
+    });
+  }
+
+  // ###########################################################################
+  //                         2 STEP ROLLOUT END
+  // ###########################################################################
 
   ListView _buildTokenList() {
     return ListView.separated(
