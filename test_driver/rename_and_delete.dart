@@ -18,20 +18,20 @@
   limitations under the License.
 */
 
-import 'package:flutter/material.dart';
+import 'dart:ui';
 
-ThemeData getApplicationTheme() {
-  return ThemeData(
-    textTheme: TextTheme(
-      title: TextStyle(
-        fontSize: 19,
-        color: Colors.white,
-      ),
-    ),
-    primarySwatch: Colors.deepPurple,
-    buttonTheme: ButtonThemeData(
-      buttonColor: Colors.deepPurple,
-      textTheme: ButtonTextTheme.primary,
-    ),
-  );
+import 'package:flutter_driver/driver_extension.dart';
+import 'package:privacyidea_authenticator/main.dart' as app;
+
+void main() {
+  // Override the supported locales of the application to prevent buttons having
+  //  different text values.
+  app.MyApp.supportedLocales = [Locale('en', '')];
+
+  // This line enables the extension.
+  enableFlutterDriverExtension();
+
+  // Call the `main()` function of the app, or call `runApp` with
+  // any widget you are interested in testing.
+  app.main();
 }

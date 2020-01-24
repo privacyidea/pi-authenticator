@@ -2,14 +2,12 @@
 OTP Authenticator App for privacyIDEA Authentication Server
 
 The pi-authenticator currently implements support for HOTP and TOTP (30 and 60 seconds). Supported hashing algorithms are SHA-1, SHA-256 and SHA-512.
+It also supports scanning qr codes that match the [Google Authenticator Key URI](https://github.com/google/google-authenticator/wiki/Key-Uri-Format) format.
 
 The App is best used with the
 [privacyIDEA Authentication Server](https://github/privacyidea/privacyidea), and supports both Android and iOS.
 
 # Goals
-
-* provide support for scanning qr codes according to the
-[Google Authenticator Key URI](https://github.com/google/google-authenticator/wiki/Key-Uri-Format).
 
 * provide a more secure way of enrollment as
 specified in our

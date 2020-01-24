@@ -1,0 +1,147 @@
+{
+  "@@last_modified": "2020-01-10T10:39:59.026947",
+  "next": "Weiter",
+  "@next": {
+    "description": "The text of the button to calculate the next otp value.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "about": "Über",
+  "@about": {
+    "description": "Button to open the about page.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settings": "Einstellungen",
+  "@settings": {
+    "description": "Button to open the settings page.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addManually": "Token hinzufügen",
+  "@addManually": {
+    "description": "The button to open the screen to add tokens by hand.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "scanQr": "QR-Code scannen",
+  "@scanQr": {
+    "description": "The button to scan otpauto qr-codes.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addManuallyTitle": "Neuen Token konfigurieren",
+  "@addManuallyTitle": {
+    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "nameHint": "Name",
+  "@nameHint": {
+    "description": "Describes the field where the tokens name should be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "secretHint": "Geheimnis",
+  "@secretHint": {
+    "description": "Describes the field where the tokens secret should be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "encoding": "Verschlüsselung",
+  "@encoding": {
+    "description": "Title of the dropdown button where the encoding is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "algorithm": "Algorithmus",
+  "@algorithm": {
+    "description": "Title of the dropdown button where the encoding is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "digits": "Ziffern",
+  "@digits": {
+    "description": "Title of the dropdown button where the number of digits for the opt value is selecte.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "type": "Art",
+  "@type": {
+    "description": "Title of the dropdown button where the type of the token is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "period": "Periode",
+  "@period": {
+    "description": "Title of the dropdown button where the period of the totp token is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addToken": "Token hinzufügen",
+  "@addToken": {
+    "description": "Button to add the token for which the values where added in this screen.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "toolTipAddToken": "Neue Tokens hinzufügen",
+  "@toolTipAddToken": {
+    "description": "Tooltip for the button that opens the selection for adding tokens.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "hintEmptyName": "Bitte geben Sie einen Namen für diesen Token ein.",
+  "@hintEmptyName": {
+    "description": "Hint telling the user to enter a name for a token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "hintEmptySecret": "Bitte geben Sie ein Geheimnis für diesen Token ein.",
+  "@hintEmptySecret": {
+    "description": "Hint telling the user to enter a secret for a token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "hintInvalidSecret": "Das Geheimnis entspricht nicht der gewählten\n Verschlüsselung.",
+  "@hintInvalidSecret": {
+    "description": "Hint telling the user that the secret deos not fit the selected encoding.",
+    "type": "text",
+    "placeholders": {}
+  },
+    "rename": "Umbenennen",
+    "@rename": {
+      "description": "Label that describes renaming the token.",
+      "type": "text",
+      "placeholders": {}
+    },
+    "renameDialogTitle": "Token umbenennen",
+    "@renameDialogTitle": {
+      "description": "Title of the dialog where a new name for a token can be entered.",
+      "type": "text",
+      "placeholders": {}
+    },
+    "cancel": "Abbrechen",
+    "@cancel": {
+      "description": "Button to cancel an action.",
+      "type": "text",
+      "placeholders": {}
+    },
+    "delete": "Löschen",
+    "@delete": {
+      "description": "Label that describes deleting the token.",
+      "type": "text",
+      "placeholders": {}
+    },
+    "deleteDialogTitle": "Löschen bestätigen",
+    "@deleteDialogTitle": {
+      "description": "Title of the dialog where a token can be deleted.",
+      "type": "text",
+      "placeholders": {}
+    },
+    "areYouSure": "Bestätigen sie das Löschen von",
+    "@areYouSure": {
+      "description": "Part of a question: Do you want to delete {x}?",
+      "type": "text",
+      "placeholders": {}
+    }
+}
