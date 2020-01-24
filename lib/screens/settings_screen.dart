@@ -6,6 +6,8 @@ class SettingScreen extends StatelessWidget {
 
   final String title;
 
+  bool _hideOTP = false;
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -23,7 +25,7 @@ class SettingScreen extends StatelessWidget {
               title: Text('Theme'),
               subtitle: Text('Description'),
               trailing: FlatButton(
-                child: Text('clöck'),
+                child: Text('click'),
               ),
             ),
             Divider(),
@@ -31,8 +33,11 @@ class SettingScreen extends StatelessWidget {
             ListTile(
               title: Text('Hide otp'),
               subtitle: Text('Description'),
-              trailing: FlatButton(
-                child: Text('click'),
+              trailing: Switch(
+                value: _hideOTP,
+                onChanged: (value) {
+                  _hideOTP = value;
+                },
               ),
             ),
           ],
