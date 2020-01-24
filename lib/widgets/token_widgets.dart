@@ -137,13 +137,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   }
 
   void _renameClicked(String newLabel) {
+    _token.label = newLabel;
     _saveThisToken();
     log(
       "Renamed token:",
       name: "token_widgets.dart",
       error: "\"${_token.label}\" changed to \"$newLabel\"",
     );
-    _token.label = newLabel;
 
     setState(() {
       _label = _token.label;

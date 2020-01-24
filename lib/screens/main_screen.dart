@@ -130,10 +130,6 @@ class _MainScreenState extends State<MainScreen> {
   //                            2 STEP ROLLOUT
   // ###########################################################################
 
-  Widget dialogContent;
-  String title;
-  FlatButton dialogButton;
-
   Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
     String serial = Uuid().v4();
 
@@ -146,7 +142,7 @@ class _MainScreenState extends State<MainScreen> {
     int period = uriMap[URI_PERIOD];
 
     if (is2StepURI(uri)) {
-      _reset2StepDialog();
+      // TODO dont forget to return and not add a token the default way.
 
       showDialog(
           context: context,
@@ -155,17 +151,42 @@ class _MainScreenState extends State<MainScreen> {
             return BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
               child: AlertDialog(
-                title: Text(title),
+                title: Text("AAAAAAAAAA"),
                 titleTextStyle: Theme.of(context).textTheme.subhead,
-                content: dialogContent,
-                actions: <Widget>[dialogButton],
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[CircularProgressIndicator()],
+                ),
+                actions: <Widget>[null],
               ),
             );
           });
 
+//      // TODO make all the calculations and dialog stuff.
       await _calculate2StepSecret();
-      // TODO make all the calculations and dialog stuff.
+      await Future.delayed(Duration(seconds: 5)); // TODO remove
 
+      Navigator.of(context).pop();
+
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: AlertDialog(
+                title: Text("BBBBBBBBBB"),
+                titleTextStyle: Theme.of(context).textTheme.subhead,
+                content: null,
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("Dismiss"), // TODO translate
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                ],
+              ),
+            );
+          });
     }
 
     // uri.host -> totp or hotp
@@ -193,39 +214,9 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  // TODO move this back in one method?
-  _reset2StepDialog() {
-    // Default is a progress indicator while calculating.
-    dialogContent = Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[CircularProgressIndicator()],
-    );
-
-    // Default title while calculating.
-    // TODO translate this.
-    title = "Please wait while the phone part is generated.";
-
-    // Default is null as this dialog should not be dismissed.
-    dialogButton = null;
-  }
-
   _calculate2StepSecret() async {
     // TODO calculate stuff.
     await Future.delayed(Duration(seconds: 5));
-    String phonePart = "<phonePart>";
-
-    // Update dialog.
-    setState(() {
-      title = "Generated phone part:"; // TODO translate this.
-      dialogContent = Text(phonePart);
-      dialogButton = FlatButton(
-        child: Text("Dismiss"),
-        onPressed: () {
-          Navigator.of(context).pop();
-          _reset2StepDialog();
-        },
-      );
-    });
   }
 
   // ###########################################################################
