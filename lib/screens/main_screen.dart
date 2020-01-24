@@ -27,11 +27,13 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
+import 'package:uuid/uuid.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen({Key key, this.title}) : super(key: key);
@@ -89,7 +91,8 @@ class _MainScreenState extends State<MainScreen> {
         error: barcode,
       );
 
-      Token newToken = parseQRCodeToToken(barcode);
+      Token newToken =
+          _buildTokenFromMap(parseQRCodeToToken(barcode), Uri.parse(barcode));
       setState(() {
         log(
           "Adding new token from qr-code:",
@@ -119,6 +122,46 @@ class _MainScreenState extends State<MainScreen> {
       );
     } catch (e) {
       //  Unknown error
+    }
+  }
+
+  Token _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) {
+    String serial = Uuid().v4();
+
+    String type = uriMap[URI_TYPE];
+    String label = uriMap[URI_LABEL];
+    String algorithm = uriMap[URI_ALGORITHM];
+    int digits = uriMap[URI_DIGITS];
+    List<int> secret = uriMap[URI_SECRET];
+    int counter = uriMap[URI_COUNTER];
+    int period = uriMap[URI_PERIOD];
+
+    if (is2StepURI(uri)) {
+      // TODO make all the calculations and dialog stuff.
+    }
+
+    // uri.host -> totp or hotp
+    if (type == "hotp") {
+      return HOTPToken(
+        label,
+        serial,
+        mapStringToAlgorithm(algorithm),
+        digits,
+        secret,
+        counter: counter,
+      );
+    } else if (type == "totp") {
+      return TOTPToken(
+        label,
+        serial,
+        mapStringToAlgorithm(algorithm),
+        digits,
+        secret,
+        period,
+      );
+    } else {
+      throw ArgumentError.value(
+          uri, "uri", "[$type] is not a supported type of token");
     }
   }
 

@@ -27,7 +27,6 @@ import 'package:base32/base32.dart' as Base32Converter;
 import 'package:hex/hex.dart' as HexConverter;
 import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:uuid/uuid.dart';
 
 import 'identifiers.dart';
 
@@ -122,7 +121,8 @@ String insertCharAt(String str, String char, int pos) {
 
 /// This method parses otpauth uris according to https://github.com/google/google-authenticator/wiki/Key-Uri-Format.
 /// The method returns an hotp or an totp token.
-Token parseQRCodeToToken(String uri) {
+// TODO rename this method
+Map<String, dynamic> parseQRCodeToToken(String uri) {
   Uri parse = Uri.parse(uri);
   log(
     "Barcode is valid Uri:",
@@ -140,6 +140,8 @@ Token parseQRCodeToToken(String uri) {
     );
   }
 
+  Map<String, dynamic> uriMap = Map();
+
   // parse.host -> Type totp or hotp
   String type = parse.host;
   if (!equalsIgnoreCase(type, enumAsString(TokenTypes.HOTP)) &&
@@ -151,6 +153,8 @@ Token parseQRCodeToToken(String uri) {
     );
   }
 
+  uriMap[URI_TYPE] = type;
+
 // parse.path.substring(1) -> Label
   print("Key: [..] | Value: [..]");
   parse.queryParameters.forEach((key, value) {
@@ -158,6 +162,8 @@ Token parseQRCodeToToken(String uri) {
   });
 
   String label = parse.path.substring(1);
+  uriMap[URI_LABEL] = label;
+
   String algorithm = parse.queryParameters["algorithm"] ??
       enumAsString(Algorithms.SHA1); // Optional parameter
 
@@ -171,7 +177,9 @@ Token parseQRCodeToToken(String uri) {
     );
   }
 
-  // parse digits
+  uriMap[URI_ALGORITHM] = algorithm;
+
+  // Parse digits.
   String digitsAsString =
       parse.queryParameters["digits"] ?? "6"; // Optional parameter
 
@@ -185,7 +193,9 @@ Token parseQRCodeToToken(String uri) {
 
   int digits = int.parse(digitsAsString);
 
-  // parse secret
+  uriMap[URI_DIGITS] = digits;
+
+  // Parse secret.
   String secretAsString = parse.queryParameters["secret"];
 
   // This is a fix for omitted padding in base32 encoded secrets.
@@ -206,22 +216,13 @@ Token parseQRCodeToToken(String uri) {
 
   List<int> secret = decodeSecretToUint8(secretAsString, Encodings.base32);
 
-  String serial = Uuid().v4();
+  uriMap[URI_SECRET] = secret;
 
-  // uri.host -> totp or hotp
   if (type == "hotp") {
+    // Parse counter.
     String counterAsString = parse.queryParameters["counter"];
     try {
-      int counter = int.parse(counterAsString);
-
-      return HOTPToken(
-        label,
-        serial,
-        mapStringToAlgorithm(algorithm),
-        digits,
-        secret,
-        counter: counter,
-      );
+      uriMap[URI_COUNTER] = int.parse(counterAsString);
     } on FormatException {
       throw ArgumentError.value(
         uri,
@@ -229,7 +230,10 @@ Token parseQRCodeToToken(String uri) {
         "[$counterAsString] is not a valid value for the parameter [counter]",
       );
     }
-  } else if (type == "totp") {
+  }
+
+  if (type == "totp") {
+    // Parse period.
     String periodAsString = parse.queryParameters["period"] ?? "30";
     if (periodAsString != "30" && periodAsString != "60") {
       throw ArgumentError.value(
@@ -239,18 +243,55 @@ Token parseQRCodeToToken(String uri) {
       );
     }
 
-    return TOTPToken(
-      label,
-      serial,
-      mapStringToAlgorithm(algorithm),
-      digits,
-      secret,
-      int.parse(periodAsString), // Optional parameter
-    );
-  } else {
-    throw ArgumentError.value(
-        uri, "uri", "[$type] is not a supported type of token");
+    uriMap[URI_PERIOD] = int.parse(periodAsString);
   }
+
+  if (is2StepURI(parse)) {
+    // Parse for 2 step roll out.
+    String saltLengthAsString = parse.queryParameters["2step_salt"] ?? "10";
+    String outputLengthInByteAsString =
+        parse.queryParameters["2step_output"] ?? "20";
+    String iterationsAsString =
+        parse.queryParameters["2step_difficulty"] ?? "10000";
+
+    // Parse parameters
+    try {
+      uriMap[URI_SALT_LENGTH] = int.parse(saltLengthAsString);
+    } on FormatException {
+      throw ArgumentError.value(
+        uri,
+        "uri",
+        "[$saltLengthAsString] is not a valid value for parameter [2step_salt].",
+      );
+    }
+    try {
+      uriMap[URI_OUTPUT_LENGTH_IN_BYTES] =
+          int.parse(outputLengthInByteAsString);
+    } on FormatException {
+      throw ArgumentError.value(
+        uri,
+        "uri",
+        "[$outputLengthInByteAsString] is not a valid value for parameter [2step_output].",
+      );
+    }
+    try {
+      uriMap[URI_ITERATIONS] = int.parse(iterationsAsString);
+    } on FormatException {
+      throw ArgumentError.value(
+        uri,
+        "uri",
+        "[$iterationsAsString] is not a valid value for parameter [2step_difficulty].",
+      );
+    }
+  }
+
+  return uriMap;
+}
+
+bool is2StepURI(Uri uri) {
+  return uri.queryParameters["2step_salt"] != null ||
+      uri.queryParameters["2step_output"] != null ||
+      uri.queryParameters["2step_difficulty"] != null;
 }
 
 Algorithms mapStringToAlgorithm(String algoAsString) {

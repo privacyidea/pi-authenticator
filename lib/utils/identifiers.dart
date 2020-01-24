@@ -34,3 +34,15 @@ enum TokenTypes {
   HOTP,
   TOTP,
 }
+
+const String URI_TYPE = "URI_TYPE";
+const String URI_LABEL = "URI_LABEL";
+const String URI_ALGORITHM = "URI_ALGORITHM";
+const String URI_DIGITS = "URI_DIGITS";
+const String URI_SECRET = "URI_SECRET";
+const String URI_COUNTER = "URI_COUNTER";
+const String URI_PERIOD = "URI_PERIOD";
+// 2 step:
+const String URI_SALT_LENGTH = "URI_SALT_LENGTH";
+const String URI_OUTPUT_LENGTH_IN_BYTES = "URI_OUTPUT_LENGTH_IN_BYTES";
+const String URI_ITERATIONS = "URI_ITERATIONS";
