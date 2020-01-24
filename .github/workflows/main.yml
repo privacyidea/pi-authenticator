@@ -1,7 +1,10 @@
 name: unit testing
 
-on: [pull_request]
-
+on: 
+	push:
+		branches:
+			- master
+	pull_request:
 jobs:
   build:
 
