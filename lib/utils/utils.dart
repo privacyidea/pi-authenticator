@@ -192,7 +192,7 @@ Token parseQRCodeToToken(String uri) {
   //
   // According to https://github.com/google/google-authenticator/wiki/Key-Uri-Format,
   // the padding can be omitted, but the libraries for base32 do not allow this.
-  if (secretAsString.length % 2 == 1) {
+  if (secretAsString != null && secretAsString.length % 2 == 1) {
     secretAsString += "=";
   }
 
