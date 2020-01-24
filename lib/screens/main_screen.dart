@@ -19,6 +19,7 @@
 */
 
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
@@ -138,6 +139,34 @@ class _MainScreenState extends State<MainScreen> {
 
     if (is2StepURI(uri)) {
       // TODO make all the calculations and dialog stuff.
+
+      // Default is a progress indicator while calculating.
+      Widget dialogContent = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[CircularProgressIndicator()],
+      );
+
+      // Default title while calculating.
+      // TODO translate this.
+      String title = "Please wait while the phone part is generated.";
+
+      // Default is null as this dialog should not be dismissed.
+      FlatButton dialogButton;
+
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: AlertDialog(
+                title: Text(title),
+                titleTextStyle: Theme.of(context).textTheme.subhead,
+                content: dialogContent,
+                actions: <Widget>[dialogButton],
+              ),
+            );
+          });
     }
 
     // uri.host -> totp or hotp
