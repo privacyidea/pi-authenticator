@@ -18,28 +18,53 @@
   limitations under the License.
 */
 
+import 'dart:math';
 import 'dart:typed_data';
 
-Future<Uint8List> pbkdf2() async {
-  // TODO 1. Generate random bytes
+import 'package:base32/base32.dart';
+import 'package:steel_crypt/PointyCastleN/export.dart';
 
-  // TODO 2. Generate secret with PBKDF2 - HMAC - SHA1
+Future<Uint8List> pbkdf2(
+    {Uint8List salt, int iterations, int keyLength, Uint8List password}) async {
+  ArgumentError.checkNotNull(salt);
+  ArgumentError.checkNotNull(iterations);
+  ArgumentError.checkNotNull(keyLength);
+  ArgumentError.checkNotNull(password);
 
-  print('Generate secret');
-  await Future.delayed(Duration(seconds: 3));
+  // Setup algorithm (PBKDF2 - HMAC - SHA1).
+  String algorithm = 'SHA-1/HMAC/PBKDF2';
+  KeyDerivator keyDerivator = KeyDerivator(algorithm);
 
-  // TODO 3. Return secret
-  return Uint8List.fromList([5, 4, 3, 2, 1]);
+  Pbkdf2Parameters pbkdf2parameters =
+      Pbkdf2Parameters(salt, iterations, keyLength);
+  keyDerivator.init(pbkdf2parameters);
+
+  return keyDerivator.process(password);
 }
 
-Future<String> generatePhonePart() async {
-  // TODO 1. Generate SHA1 the of salt
+Future<String> generatePhoneChecksum({Uint8List phonePart}) async {
+  // 1. Generate SHA1 the of salt.
+  String type = "SHA-1";
+  Uint8List hash = Digest(type).process(phonePart);
 
-  // TODO 2. Trim SHA1 result to first four bytes -> This is used as the checksum
+  // 2. Trim SHA1 result to first four bytes.
+  Uint8List checksum = hash.sublist(0, 4);
 
-  print('Generate phone part');
-  await Future.delayed(Duration(seconds: 1));
+  // Use List<int> for combining because Uint8List does not work somehow.
+  List<int> toEncode = List();
+  toEncode..addAll(checksum)..addAll(phonePart);
 
-  // TODO 3. Return checksum + salt as BASE32 String without '='
-  return "This could be your checksum.";
+  // 3. Return checksum + salt as BASE32 String without '='.
+  return base32.encode(Uint8List.fromList(toEncode)).replaceAll('=', '');
+}
+
+Uint8List generateSalt(int length) {
+  Uint8List list = Uint8List(length);
+  Random rand = Random.secure();
+
+  for (int i = 0; i < length; i++) {
+    list[i] = rand.nextInt(1 << 8); // Generate next random byte.
+  }
+
+  return list;
 }

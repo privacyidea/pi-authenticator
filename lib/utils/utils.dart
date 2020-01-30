@@ -214,7 +214,7 @@ Map<String, dynamic> parseQRCodeToToken(String uri) {
     );
   }
 
-  List<int> secret = decodeSecretToUint8(secretAsString, Encodings.base32);
+  Uint8List secret = decodeSecretToUint8(secretAsString, Encodings.base32);
 
   uriMap[URI_SECRET] = secret;
 
