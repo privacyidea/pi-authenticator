@@ -29,12 +29,12 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
+import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/widgets/2_step_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 import 'package:uuid/uuid.dart';
 
@@ -146,69 +146,71 @@ class _MainScreenState extends State<MainScreen> {
     if (is2StepURI(uri)) {
       // TODO dont forget to return and not add a token the default way.
 
-      secret = await showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => TwoStepDialog(
-          iterations: uriMap[URI_ITERATIONS],
-          keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
-          saltLength: uriMap[URI_SALT_LENGTH],
-          password: secret,
-        ),
+//      secret = await showDialog(
+//        context: context,
+//        barrierDismissible: false,
+//        builder: (BuildContext context) => TwoStepDialog(
+//          iterations: uriMap[URI_ITERATIONS],
+//          keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
+//          saltLength: uriMap[URI_SALT_LENGTH],
+//          password: secret,
+//        ),
+//      );
+
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: AlertDialog(
+                title: Text("Generating phone part"), // TODO translate
+                titleTextStyle: Theme.of(context).textTheme.subhead,
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[CircularProgressIndicator()],
+                ),
+                actions: <Widget>[null],
+              ),
+            );
+          });
+
+      Uint8List salt = generateSalt(uriMap[URI_SALT_LENGTH]);
+
+      Uint8List newSecret = await pbkdf2(
+        salt: salt,
+        iterations: uriMap[URI_ITERATIONS],
+        keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
+        password: secret,
       );
 
-//      showDialog(
-//          context: context,
-//          barrierDismissible: false,
-//          builder: (BuildContext context) {
-//            return BackdropFilter(
-//              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-//              child: AlertDialog(
-//                title: Text("Generating phone part"), // TODO translate
-//                titleTextStyle: Theme.of(context).textTheme.subhead,
-//                content: Row(
-//                  mainAxisAlignment: MainAxisAlignment.center,
-//                  children: <Widget>[CircularProgressIndicator()],
-//                ),
-//                actions: <Widget>[null],
-//              ),
-//            );
-//          });
-//
-//      Uint8List salt = generateSalt(uriMap[URI_SALT_LENGTH]);
-//
-//      Uint8List newSecret = await pbkdf2(
-//        salt: salt,
-//        iterations: uriMap[URI_ITERATIONS],
-//        keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
-//        password: secret,
-//      );
-//
-//      String phoneChecksum = await generatePhoneChecksum(phonePart: salt);
-//
-//      Navigator.of(context).pop();
-//
-//      await showDialog(
-//          context: context,
-//          barrierDismissible: false,
-//          builder: (BuildContext context) {
-//            return BackdropFilter(
-//              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-//              child: AlertDialog(
-//                title: Text("Phone part:"), // TODO translate
-//                titleTextStyle: Theme.of(context).textTheme.subhead,
-//                content: Text("${splitPeriodically(phoneChecksum, 4)}"),
-//                actions: <Widget>[
-//                  FlatButton(
-//                    child: Text("Dismiss"), // TODO translate
-//                    onPressed: () => Navigator.of(context).pop(),
-//                  )
-//                ],
-//              ),
-//            );
-//          });
-//
-//      secret = newSecret;
+      print('${newSecret.length}');
+
+      String phoneChecksum = await generatePhoneChecksum(phonePart: salt);
+
+      Navigator.of(context).pop();
+
+      await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: AlertDialog(
+                title: Text("Phone part:"), // TODO translate
+                titleTextStyle: Theme.of(context).textTheme.subhead,
+                content: Text("${splitPeriodically(phoneChecksum, 4)}"),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("Dismiss"), // TODO translate
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                ],
+              ),
+            );
+          });
+
+      secret = newSecret;
     }
 
     // uri.host -> totp or hotp
