@@ -184,8 +184,6 @@ class _MainScreenState extends State<MainScreen> {
         password: secret,
       );
 
-      print('${newSecret.length}');
-
       String phoneChecksum = await generatePhoneChecksum(phonePart: salt);
 
       Navigator.of(context).pop();

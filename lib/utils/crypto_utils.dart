@@ -22,8 +22,11 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart';
+import 'package:flutter/foundation.dart';
 import 'package:steel_crypt/PointyCastleN/export.dart';
 
+// FIXME this method slows / blocks the ui,
+//   use isolate to make the heavy computations!
 Future<Uint8List> pbkdf2(
     {Uint8List salt, int iterations, int keyLength, Uint8List password}) async {
   ArgumentError.checkNotNull(salt);
@@ -31,15 +34,25 @@ Future<Uint8List> pbkdf2(
   ArgumentError.checkNotNull(keyLength);
   ArgumentError.checkNotNull(password);
 
+  Map<String, dynamic> map = new Map();
+  map["salt"] = salt;
+  map["iterations"] = iterations;
+  map["keyLength"] = keyLength;
+  map["password"] = password;
+
+  return compute(_pbkdfIsolate, map);
+}
+
+Uint8List _pbkdfIsolate(Map<String, dynamic> arguments) {
   // Setup algorithm (PBKDF2 - HMAC - SHA1).
   String algorithm = 'SHA-1/HMAC/PBKDF2';
   KeyDerivator keyDerivator = KeyDerivator(algorithm);
 
-  Pbkdf2Parameters pbkdf2parameters =
-      Pbkdf2Parameters(salt, iterations, keyLength);
+  Pbkdf2Parameters pbkdf2parameters = Pbkdf2Parameters(
+      arguments["salt"], arguments["iterations"], arguments["keyLength"]);
   keyDerivator.init(pbkdf2parameters);
 
-  return keyDerivator.process(password);
+  return keyDerivator.process(arguments["password"]);
 }
 
 Future<String> generatePhoneChecksum({Uint8List phonePart}) async {
