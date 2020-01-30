@@ -19,6 +19,7 @@
 */
 
 import 'dart:developer';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:barcode_scan/barcode_scan.dart';
@@ -33,6 +34,7 @@ import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
+import 'package:privacyidea_authenticator/widgets/2_step_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 import 'package:uuid/uuid.dart';
 
@@ -93,7 +95,7 @@ class _MainScreenState extends State<MainScreen> {
       );
 
       Token newToken = await _buildTokenFromMap(
-          parseQRCodeToToken(barcode), Uri.parse(barcode));
+          parseQRCodeToMap(barcode), Uri.parse(barcode));
       setState(() {
         log(
           "Adding new token from qr-code:",
@@ -137,56 +139,76 @@ class _MainScreenState extends State<MainScreen> {
     String label = uriMap[URI_LABEL];
     String algorithm = uriMap[URI_ALGORITHM];
     int digits = uriMap[URI_DIGITS];
-    List<int> secret = uriMap[URI_SECRET];
+    Uint8List secret = uriMap[URI_SECRET];
     int counter = uriMap[URI_COUNTER];
     int period = uriMap[URI_PERIOD];
 
     if (is2StepURI(uri)) {
       // TODO dont forget to return and not add a token the default way.
 
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: AlertDialog(
-                title: Text("AAAAAAAAAA"),
-                titleTextStyle: Theme.of(context).textTheme.subhead,
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[CircularProgressIndicator()],
-                ),
-                actions: <Widget>[null],
-              ),
-            );
-          });
+      secret = await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => TwoStepDialog(
+          iterations: uriMap[URI_ITERATIONS],
+          keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
+          saltLength: uriMap[URI_SALT_LENGTH],
+          password: secret,
+        ),
+      );
 
-//      // TODO make all the calculations and dialog stuff.
-      await _calculate2StepSecret();
-      await Future.delayed(Duration(seconds: 5)); // TODO remove
-
-      Navigator.of(context).pop();
-
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: AlertDialog(
-                title: Text("BBBBBBBBBB"),
-                titleTextStyle: Theme.of(context).textTheme.subhead,
-                content: null,
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text("Dismiss"), // TODO translate
-                    onPressed: () => Navigator.of(context).pop(),
-                  )
-                ],
-              ),
-            );
-          });
+//      showDialog(
+//          context: context,
+//          barrierDismissible: false,
+//          builder: (BuildContext context) {
+//            return BackdropFilter(
+//              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+//              child: AlertDialog(
+//                title: Text("Generating phone part"), // TODO translate
+//                titleTextStyle: Theme.of(context).textTheme.subhead,
+//                content: Row(
+//                  mainAxisAlignment: MainAxisAlignment.center,
+//                  children: <Widget>[CircularProgressIndicator()],
+//                ),
+//                actions: <Widget>[null],
+//              ),
+//            );
+//          });
+//
+//      Uint8List salt = generateSalt(uriMap[URI_SALT_LENGTH]);
+//
+//      Uint8List newSecret = await pbkdf2(
+//        salt: salt,
+//        iterations: uriMap[URI_ITERATIONS],
+//        keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
+//        password: secret,
+//      );
+//
+//      String phoneChecksum = await generatePhoneChecksum(phonePart: salt);
+//
+//      Navigator.of(context).pop();
+//
+//      await showDialog(
+//          context: context,
+//          barrierDismissible: false,
+//          builder: (BuildContext context) {
+//            return BackdropFilter(
+//              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+//              child: AlertDialog(
+//                title: Text("Phone part:"), // TODO translate
+//                titleTextStyle: Theme.of(context).textTheme.subhead,
+//                content: Text("${splitPeriodically(phoneChecksum, 4)}"),
+//                actions: <Widget>[
+//                  FlatButton(
+//                    child: Text("Dismiss"), // TODO translate
+//                    onPressed: () => Navigator.of(context).pop(),
+//                  )
+//                ],
+//              ),
+//            );
+//          });
+//
+//      secret = newSecret;
     }
 
     // uri.host -> totp or hotp
@@ -212,11 +234,6 @@ class _MainScreenState extends State<MainScreen> {
       throw ArgumentError.value(
           uri, "uri", "[$type] is not a supported type of token");
     }
-  }
-
-  _calculate2StepSecret() async {
-    // TODO calculate stuff.
-    await Future.delayed(Duration(seconds: 5));
   }
 
   // ###########################################################################
