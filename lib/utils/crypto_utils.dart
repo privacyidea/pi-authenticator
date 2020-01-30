@@ -25,8 +25,6 @@ import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:steel_crypt/PointyCastleN/export.dart';
 
-// FIXME this method slows / blocks the ui,
-//   use isolate to make the heavy computations!
 Future<Uint8List> pbkdf2(
     {Uint8List salt, int iterations, int keyLength, Uint8List password}) async {
   ArgumentError.checkNotNull(salt);
