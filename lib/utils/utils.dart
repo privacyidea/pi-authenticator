@@ -112,17 +112,31 @@ OTPLibrary.Algorithm _mapAlgorithms(Algorithms algorithm) {
   }
 }
 
-/// Inserts [char] at the position [pos] in the given String ([str]), and returns the resulting String.
+/// Inserts [char] at the position [pos] in the given String ([str]),
+/// and returns the resulting String.
 ///
 /// Example: insertCharAt("ABCD", " ", 2) --> "AB CD"
 String insertCharAt(String str, String char, int pos) {
   return str.substring(0, pos) + char + str.substring(pos, str.length);
 }
 
+/// Inserts [char] after every [period] characters in [str].
+/// Trims leading and trailing whitespaces. Returns the resulting String.
+///
+/// Example: "ABCD", " ", 1 --> "A B C D"
+/// Example: "ABCD", " ", 2 --> "AB CD"
+String splitPeriodically(String str, int period) {
+  String result = "";
+  for (int i = 0; i < str.length; i++) {
+    i % 4 == 0 ? result += " ${str[i]}" : result += str[i];
+  }
+
+  return result.trim();
+}
+
 /// This method parses otpauth uris according to https://github.com/google/google-authenticator/wiki/Key-Uri-Format.
-/// The method returns an hotp or an totp token.
-// TODO rename this method
-Map<String, dynamic> parseQRCodeToToken(String uri) {
+/// The method returns a map that contains all the uri parameters.
+Map<String, dynamic> parseQRCodeToMap(String uri) {
   Uri parse = Uri.parse(uri);
   log(
     "Barcode is valid Uri:",

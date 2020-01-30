@@ -116,21 +116,21 @@ void _testParseQRCodeToToken() {
   group("parseQRCodeToToken", () {
     test("Test with wrong uri schema", () {
       expect(
-          () => parseQRCodeToToken(
+          () => parseQRCodeToMap(
               "http://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
           throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test with unknown type", () {
       expect(
-          () => parseQRCodeToToken(
+          () => parseQRCodeToMap(
               "otpauth://asdf/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
           throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test with missing type", () {
       expect(
-          () => parseQRCodeToToken(
+          () => parseQRCodeToMap(
               "otpauth:///ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
           throwsA(TypeMatcher<ArgumentError>()));
     });
@@ -144,20 +144,20 @@ void _testParseQRCodeToToken() {
 //    });
 
     test("Test missing algorithm", () {
-      Map<String, dynamic> map = parseQRCodeToToken(
+      Map<String, dynamic> map = parseQRCodeToMap(
           "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&digits=6&period=30");
       expect(map[URI_ALGORITHM], "SHA1"); // This is the default value
     });
 
     test("Test unknown algorithm", () {
       expect(
-          () => parseQRCodeToToken(
+          () => parseQRCodeToMap(
               "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=BubbleSort&digits=6&period=30"),
           throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test missing digits", () {
-      Map<String, dynamic> map = parseQRCodeToToken(
+      Map<String, dynamic> map = parseQRCodeToMap(
           "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&period=30");
       expect(map[URI_DIGITS], 6); // This is the default value
     });
@@ -165,48 +165,48 @@ void _testParseQRCodeToToken() {
     // At least the library used to calculate otp values does not support other number of digits.
     test("Test invalid number of digits", () {
       expect(
-          () => parseQRCodeToToken(
+          () => parseQRCodeToMap(
               "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=66&period=30"),
           throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test invalid characters for digits", () {
       expect(
-          () => parseQRCodeToToken(
+          () => parseQRCodeToMap(
               "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=aA&period=30"),
           throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test missing secret", () {
       expect(
-          () => parseQRCodeToToken(
+          () => parseQRCodeToMap(
               "otpauth://totp/ACME%20Co:john@example.com?issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
           throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test invalid secret", () {
       expect(
-          () => parseQRCodeToToken(
+          () => parseQRCodeToMap(
               "otpauth://totp/ACME%20Co:john@example.com?secret=ÖÖ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30"),
           throwsA(TypeMatcher<ArgumentError>()));
     });
 
     // TOTP specific
     test("Test missing period", () {
-      Map<String, dynamic> map = parseQRCodeToToken(
+      Map<String, dynamic> map = parseQRCodeToMap(
           "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6");
       expect(map[URI_PERIOD], 30);
     });
 
     test("Test invalid characters for period", () {
       expect(
-          () => parseQRCodeToToken(
+          () => parseQRCodeToMap(
               "otpauth://totp/ACME%20Co:john@example.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=aa"),
           throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test valid totp uri", () {
-      Map<String, dynamic> map = parseQRCodeToToken(
+      Map<String, dynamic> map = parseQRCodeToMap(
           "otpauth://totp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA512&digits=8&period=60");
       expect(map[URI_LABEL], "Kitchen");
       expect(map[URI_ALGORITHM], "SHA512");
@@ -221,20 +221,20 @@ void _testParseQRCodeToToken() {
     // HOTP specific
     test("Test with missing counter", () {
       expect(
-          () => parseQRCodeToToken(
+          () => parseQRCodeToMap(
               "otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA256&digits=8"),
           throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test with invalid counter", () {
       expect(
-          () => parseQRCodeToToken(
+          () => parseQRCodeToMap(
               "otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA256&digits=8&counter=aa"),
           throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test("Test valid hotp uri", () {
-      Map<String, dynamic> map = parseQRCodeToToken(
+      Map<String, dynamic> map = parseQRCodeToMap(
           "otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA256&digits=8&counter=5");
       expect(map[URI_LABEL], "Kitchen");
       expect(map[URI_ALGORITHM], "SHA256");
