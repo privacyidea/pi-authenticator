@@ -109,6 +109,7 @@ class _MainScreenState extends State<MainScreen> {
         //  Camera access was denied
       } else {
         //  Unknown error
+        throw e;
       }
     } on FormatException {
       //  User returned by pressing the back button
@@ -125,6 +126,7 @@ class _MainScreenState extends State<MainScreen> {
       );
     } catch (e) {
       //  Unknown error
+      throw e;
     }
   }
 
