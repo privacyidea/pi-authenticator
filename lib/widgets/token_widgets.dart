@@ -194,6 +194,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     StorageUtil.saveOrReplaceToken(this._token);
   }
 
+  // This gets overridden in subclasses.
   void _updateOtpValue();
 
   Widget _buildTile();
