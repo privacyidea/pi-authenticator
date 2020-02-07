@@ -137,13 +137,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   }
 
   void _renameClicked(String newLabel) {
+    _token.label = newLabel;
     _saveThisToken();
     log(
       "Renamed token:",
       name: "token_widgets.dart",
       error: "\"${_token.label}\" changed to \"$newLabel\"",
     );
-    _token.label = newLabel;
 
     setState(() {
       _label = _token.label;
@@ -175,9 +175,9 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             ),
             actions: <Widget>[
               FlatButton(
-                onPressed: () => {
-                  _onDeleteClicked(),
-                  Navigator.of(context).pop(),
+                onPressed: () {
+                  _onDeleteClicked();
+                  Navigator.of(context).pop();
                 },
                 child: Text(L10n.of(context).delete),
               ),
@@ -194,6 +194,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     StorageUtil.saveOrReplaceToken(this._token);
   }
 
+  // This gets overridden in subclasses.
   void _updateOtpValue();
 
   Widget _buildTile();
