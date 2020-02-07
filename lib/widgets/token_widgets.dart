@@ -73,10 +73,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       controller: _slidableController,
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
-      child: Container(
-        color: Colors.white,
-        child: _buildClickableTile(),
-      ),
+      child: _buildClickableTile(),
       secondaryActions: <Widget>[
         IconSlideAction(
           caption: L10n.of(context).delete,
@@ -199,10 +196,12 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   Widget _buildClickableTile() {
     return InkWell(
-      enableFeedback: true,
-      splashColor: Colors.red,
-      onTap: () {
+      splashColor: Theme.of(context).primaryColor,
+      onLongPress: () {
         Clipboard.setData(ClipboardData(text: _otpValue));
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('$_otpValue copied to clipboard.'),
+        ));
       },
       child: _buildNonClickableTile(),
     );
