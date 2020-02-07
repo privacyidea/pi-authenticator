@@ -45,7 +45,8 @@ dependencies:
   # dependency for automatically showing the version number
   package_info: ^0.4.0+13 # https://pub.dev/packages/package_info
   # dependency for cryptographic algorithms
-  steel_crypt: ^1.5.4+1 # https://pub.dev/packages/steel_crypt
+  #steel_crypt: ^1.6.1 # https://pub.dev/packages/steel_crypt
+  pointycastle: ^1.0.2
 
   flutter_localizations:
     sdk: flutter
