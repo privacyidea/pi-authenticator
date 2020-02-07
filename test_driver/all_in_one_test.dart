@@ -21,11 +21,13 @@
 // Imports the Flutter Driver API.
 
 import 'add_token_test.dart';
+import 'copy_to_clipboard_test.dart';
 import 'rename_and_delete_test.dart';
 import 'totp_token_test.dart';
 
 void main() {
   addTokenTest();
-  RenameAndDeleteTest();
+  renameAndDeleteTest();
   totpTokenUpdateTest();
+  copyToClipboardTest();
 }
