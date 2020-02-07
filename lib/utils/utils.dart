@@ -50,6 +50,10 @@ List<int> decodeSecretToUint8(String secret, Encodings encoding) {
   }
 }
 
+String encodeAsHex(Uint8List decoded){
+  return HexConverter.HEX.encode(decoded);
+}
+
 bool isValidEncoding(String secret, Encodings encoding) {
   try {
     decodeSecretToUint8(secret, encoding);
