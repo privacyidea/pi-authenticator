@@ -75,7 +75,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       actionExtentRatio: 0.25,
       child: Container(
         color: Colors.white,
-        child: _buildTile(),
+        child: _buildClickableTile(),
       ),
       secondaryActions: <Widget>[
         IconSlideAction(
@@ -197,7 +197,18 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   // This gets overridden in subclasses.
   void _updateOtpValue();
 
-  Widget _buildTile();
+  Widget _buildClickableTile() {
+    return InkWell(
+      enableFeedback: true,
+      splashColor: Colors.red,
+      onTap: () {
+        Clipboard.setData(ClipboardData(text: _otpValue));
+      },
+      child: _buildNonClickableTile(),
+    );
+  }
+
+  Widget _buildNonClickableTile();
 }
 
 class _HotpWidgetState extends _TokenWidgetState {
@@ -224,7 +235,7 @@ class _HotpWidgetState extends _TokenWidgetState {
   }
 
   @override
-  Widget _buildTile() {
+  Widget _buildNonClickableTile() {
     return Stack(
       children: <Widget>[
         ListTile(
@@ -315,7 +326,7 @@ class _TotpWidgetState extends _TokenWidgetState
   }
 
   @override
-  Widget _buildTile() {
+  Widget _buildNonClickableTile() {
     return Column(
       children: <Widget>[
         ListTile(
