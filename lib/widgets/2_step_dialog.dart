@@ -73,8 +73,6 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
   }
 
   void _do2Step() async {
-    await Future.delayed(Duration(seconds: 1));
-
     // 1. Generate salt.
     Uint8List salt = generateSalt(widget._saltLength);
 
