@@ -24,6 +24,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
+import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 class TwoStepDialog extends StatefulWidget {
@@ -44,7 +45,7 @@ class TwoStepDialog extends StatefulWidget {
 }
 
 class _TwoStepDialogState extends State<TwoStepDialog> {
-  String _title = "Generating phone part"; // TODO translate
+  String _title;
   Widget _content = Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[CircularProgressIndicator()],
@@ -54,9 +55,15 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
   @override
   void initState() {
     super.initState();
-//    WidgetsBinding.instance.addPostFrameCallback((_){
+
     _do2Step();
-//    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _title = L10n.of(context).twoStepDialogTitleGenerate;
   }
 
   @override
@@ -64,7 +71,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
-        title: Text(_title), // TODO translate
+        title: Text(_title),
         titleTextStyle: Theme.of(context).textTheme.subhead,
         content: _content,
         actions: <Widget>[_button],
@@ -90,10 +97,10 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
 
     // Update UI.
     setState(() {
-      _title = "Phone part:"; // TODO translate
+      _title = L10n.of(context).twoStepDialogTitlePhonePart;
       _content = Text("$show");
       _button = FlatButton(
-        child: Text("Dismiss"), // TODO translate
+        child: Text(L10n.of(context).dismiss),
         onPressed: () => Navigator.of(context).pop(generatedSecret),
       );
     });

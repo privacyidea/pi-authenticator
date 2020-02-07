@@ -18,7 +18,7 @@
     "type": "text",
     "placeholders": {}
   },
-   "addManually": "Add token",
+  "addManually": "Add token",
   "@addManually": {
     "description": "The button to open the screen to add tokens by hand.",
     "type": "text",
@@ -141,6 +141,30 @@
   "areYouSure": "Are you sure you want to delete",
   "@areYouSure": {
     "description": "Part of a question: Do you want to delete {x}?",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Scan QR code": "Scan QR code",
+  "@Scan QR code": {
+    "description": "Tooltip for button that starts scanning for qr code.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Generating phone part": "Generating phone part",
+  "@Generating phone part": {
+    "description": "Title of a dialog telling the user that the phone part gets generated right now.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Phone part:": "Phone part:",
+  "@Phone part:": {
+    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Dismiss": "Dismiss",
+  "@Dismiss": {
+    "description": "Text of a button that closes a dialog.",
     "type": "text",
     "placeholders": {}
   }

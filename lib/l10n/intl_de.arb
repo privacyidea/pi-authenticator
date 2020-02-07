@@ -108,40 +108,64 @@
     "type": "text",
     "placeholders": {}
   },
-    "rename": "Umbenennen",
-    "@rename": {
-      "description": "Label that describes renaming the token.",
-      "type": "text",
-      "placeholders": {}
-    },
-    "renameDialogTitle": "Token umbenennen",
-    "@renameDialogTitle": {
-      "description": "Title of the dialog where a new name for a token can be entered.",
-      "type": "text",
-      "placeholders": {}
-    },
-    "cancel": "Abbrechen",
-    "@cancel": {
-      "description": "Button to cancel an action.",
-      "type": "text",
-      "placeholders": {}
-    },
-    "delete": "Löschen",
-    "@delete": {
-      "description": "Label that describes deleting the token.",
-      "type": "text",
-      "placeholders": {}
-    },
-    "deleteDialogTitle": "Löschen bestätigen",
-    "@deleteDialogTitle": {
-      "description": "Title of the dialog where a token can be deleted.",
-      "type": "text",
-      "placeholders": {}
-    },
-    "areYouSure": "Bestätigen sie das Löschen von",
-    "@areYouSure": {
-      "description": "Part of a question: Do you want to delete {x}?",
-      "type": "text",
-      "placeholders": {}
-    }
+  "rename": "Umbenennen",
+  "@rename": {
+    "description": "Label that describes renaming the token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "renameDialogTitle": "Token umbenennen",
+  "@renameDialogTitle": {
+    "description": "Title of the dialog where a new name for a token can be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "cancel": "Abbrechen",
+  "@cancel": {
+    "description": "Button to cancel an action.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "delete": "Löschen",
+  "@delete": {
+    "description": "Label that describes deleting the token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "deleteDialogTitle": "Löschen bestätigen",
+  "@deleteDialogTitle": {
+    "description": "Title of the dialog where a token can be deleted.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "areYouSure": "Bestätigen sie das Löschen von",
+  "@areYouSure": {
+    "description": "Part of a question: Do you want to delete {x}?",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Scan QR code": "Scanne QR code",
+  "@Scan QR code": {
+    "description": "Tooltip for button that starts scanning for qr code.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Generating phone part": "Generiere Telefonanteil",
+  "@Generating phone part": {
+    "description": "Title of a dialog telling the user that the phone part gets generated right now.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Phone part:": "Telefonanteil:",
+  "@Phone part:": {
+    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Dismiss": "Schließen",
+  "@Dismiss": {
+    "description": "Text of a button that closes a dialog.",
+    "type": "text",
+    "placeholders": {}
+  }
 }

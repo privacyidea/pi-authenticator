@@ -246,6 +246,40 @@ class L10n {
       locale: localeName,
     );
   }
+
+  String get scanQRTooltip {
+    return Intl.message(
+      'Scan QR code',
+      desc: 'Tooltip for button that starts scanning for qr code.',
+      locale: localeName,
+    );
+  }
+
+  String get twoStepDialogTitleGenerate {
+    return Intl.message(
+      'Generating phone part',
+      desc:
+          'Title of a dialog telling the user that the phone part gets generated right now.',
+      locale: localeName,
+    );
+  }
+
+  String get twoStepDialogTitlePhonePart {
+    return Intl.message(
+      'Phone part:',
+      desc:
+          'Title of a dialog telling the user that the phone was generated, and it is shown to the user.',
+      locale: localeName,
+    );
+  }
+
+  String get dismiss {
+    return Intl.message(
+      'Dismiss',
+      desc: 'Text of a button that closes a dialog.',
+      locale: localeName,
+    );
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<L10n> {

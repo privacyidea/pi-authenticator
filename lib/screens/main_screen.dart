@@ -34,7 +34,7 @@ import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/widgets/2_step_dialog.dart';
+import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 import 'package:uuid/uuid.dart';
 
@@ -79,7 +79,7 @@ class _MainScreenState extends State<MainScreen> {
       body: _buildTokenList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _scanQRCode(),
-        tooltip: "Scan QR Code",
+        tooltip: L10n.of(context).scanQRTooltip,
         child: Icon(Icons.add),
       ),
     );
