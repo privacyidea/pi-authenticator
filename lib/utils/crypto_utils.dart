@@ -18,12 +18,14 @@
   limitations under the License.
 */
 
+import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
-import 'package:steel_crypt/PointyCastleN/export.dart';
+import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 
 Future<Uint8List> pbkdf2(
     {Uint8List salt, int iterations, int keyLength, Uint8List password}) async {
@@ -36,15 +38,16 @@ Future<Uint8List> pbkdf2(
   map["salt"] = salt;
   map["iterations"] = iterations;
   map["keyLength"] = keyLength;
-  map["password"] = password;
+
+  // Funky converting of password because that is what the server does too.
+  map["password"] = utf8.encode(encodeAsHex(password));
 
   return compute(_pbkdfIsolate, map);
 }
 
 Uint8List _pbkdfIsolate(Map<String, dynamic> arguments) {
   // Setup algorithm (PBKDF2 - HMAC - SHA1).
-  String algorithm = 'SHA-1/HMAC/PBKDF2';
-  KeyDerivator keyDerivator = KeyDerivator(algorithm);
+  PBKDF2KeyDerivator keyDerivator = KeyDerivator('SHA-1/HMAC/PBKDF2');
 
   Pbkdf2Parameters pbkdf2parameters = Pbkdf2Parameters(
       arguments["salt"], arguments["iterations"], arguments["keyLength"]);
@@ -55,8 +58,7 @@ Uint8List _pbkdfIsolate(Map<String, dynamic> arguments) {
 
 Future<String> generatePhoneChecksum({Uint8List phonePart}) async {
   // 1. Generate SHA1 the of salt.
-  String type = "SHA-1";
-  Uint8List hash = Digest(type).process(phonePart);
+  Uint8List hash = Digest("SHA-1").process(phonePart);
 
   // 2. Trim SHA1 result to first four bytes.
   Uint8List checksum = hash.sublist(0, 4);
