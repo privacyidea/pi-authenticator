@@ -23,6 +23,8 @@
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
+import 'integration_test_utils.dart';
+
 void renameAndDeleteTest() {
   group('Rename and delete', () {
     FlutterDriver driver;
@@ -39,37 +41,13 @@ void renameAndDeleteTest() {
       }
     });
 
-    final buttonFinder = find.byType("PopupMenuButton<String>");
-    final addTokenButton = find.text("Add token");
-
-    test("Click the 'add' button", () async {
-      await driver.tap(buttonFinder);
-      await driver.tap(addTokenButton);
-    });
-
-    test("Enter name and secret", () async {
-      await driver.tap(find.ancestor(
-          of: find.text("Name"), matching: find.byType("TextFormField")));
-
-      await driver.enterText("TestName");
-
-      await driver.tap(find.ancestor(
-          of: find.text("Secret"), matching: find.byType("TextFormField")));
-
-      await driver.enterText("TestSecret");
-    });
-
-    test("Click 'add token'", () async {
-      await driver.tap(find.byType("RaisedButton"));
-    });
-
-    test("Assert the token exists", () async {
-      await driver.tap(find.text("TestName"));
-    });
+    String tokenName = 'TokenName';
+    String secret = 'TokenSecret';
+    addTokenRoutine(tokenName, secret);
 
     test("Assert renaming works", () async {
       await driver.scroll(
-          find.text("TestName"), -500, 0, Duration(milliseconds: 100));
+          find.text(tokenName), -500, 0, Duration(milliseconds: 100));
 
       await driver.tap(find.text("Rename"));
 
