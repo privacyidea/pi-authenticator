@@ -209,6 +209,7 @@ class _HotpWidgetState extends _TokenWidgetState {
   void _updateOtpValue() {
     setState(() {
       (_token as HOTPToken).incrementCounter();
+      print('OTP: $_otpValue');
       _otpValue = calculateOtpValue(_token);
       _saveThisToken(); // When the app reloads the counter should not be reset.
 
@@ -227,19 +228,14 @@ class _HotpWidgetState extends _TokenWidgetState {
     return Stack(
       children: <Widget>[
         ListTile(
-          title:
-//          Center( child:
-              Text(
-            insertCharAt(_otpValue, " ", _otpValue.length ~/ 2),
+          title: Text(
+            insertCharAt(
+                _otpValue.padLeft(_token.digits, '0'), " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
           ),
-//          ),
-          subtitle:
-//    Center(child:
-              Text(
+          subtitle: Text(
             _label,
             textScaleFactor: 2.0,
-//            ),
           ),
         ),
         Align(
@@ -323,19 +319,14 @@ class _TotpWidgetState extends _TokenWidgetState
     return Column(
       children: <Widget>[
         ListTile(
-          title:
-//          Center(child:
-              Text(
-            insertCharAt(_otpValue, " ", _otpValue.length ~/ 2),
+          title: Text(
+            insertCharAt(
+                _otpValue.padLeft(_token.digits, '0'), " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
-//            ),
           ),
-          subtitle:
-//          Center(child:
-              Text(
+          subtitle: Text(
             _label,
             textScaleFactor: 2.0,
-//            ),
           ),
         ),
         LinearProgressIndicator(
