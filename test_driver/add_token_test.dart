@@ -23,7 +23,7 @@
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
-void main() {
+void addTokenTest() {
   group('Add token manually', () {
     FlutterDriver driver;
 
@@ -74,6 +74,21 @@ void main() {
     test("Assert the token exists", () async {
       await driver.tap(find.text("TestName"));
       await driver.tap(find.text("3058 7488"));
+    });
+
+    test('Clean up', () async {
+      await driver.scroll(
+          find.text("TestName"), -500, 0, Duration(milliseconds: 100));
+
+      // Delete the token.
+      await driver.tap(find.text("Delete"));
+
+      // Wait for the dialog to open.
+      await driver.waitFor(find.text("Confirm deletion"));
+
+      await driver.tap(find.text("Delete"));
+
+      await driver.waitForAbsent(find.text("TestName"));
     });
   });
 }
