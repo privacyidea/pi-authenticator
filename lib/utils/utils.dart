@@ -91,9 +91,9 @@ String calculateTotpValue(TOTPToken token) {
 
 String calculateOtpValue(Token token) {
   if (token is HOTPToken) {
-    return calculateHotpValue(token);
+    return calculateHotpValue(token).padLeft(token.digits, '0');
   } else if (token is TOTPToken) {
-    return calculateTotpValue(token);
+    return calculateTotpValue(token).padLeft(token.digits, '0');
   }
 
   throw ArgumentError.value(token, "token",

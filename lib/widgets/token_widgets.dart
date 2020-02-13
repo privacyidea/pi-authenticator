@@ -240,7 +240,7 @@ class _HotpWidgetState extends _TokenWidgetState {
         ListTile(
           title: Text(
             insertCharAt(
-                _otpValue.padLeft(_token.digits, '0'), " ", _token.digits ~/ 2),
+                _otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
           ),
           subtitle: Text(
@@ -331,7 +331,7 @@ class _TotpWidgetState extends _TokenWidgetState
         ListTile(
           title: Text(
             insertCharAt(
-                _otpValue.padLeft(_token.digits, '0'), " ", _token.digits ~/ 2),
+                _otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
           ),
           subtitle: Text(
