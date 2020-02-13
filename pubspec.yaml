@@ -44,6 +44,8 @@ dependencies:
   flutter_slidable: ^0.5.4
   # dependency for automatically showing the version number
   package_info: ^0.4.0+13 # https://pub.dev/packages/package_info
+  # dependency for changing the theme of the app
+  dynamic_theme: ^1.0.1 # TODO add https://github.com/Norbert515/dynamic_theme/blob/master/LICENSE
 
   flutter_localizations:
     sdk: flutter
