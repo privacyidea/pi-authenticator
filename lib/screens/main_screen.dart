@@ -178,7 +178,7 @@ class _MainScreenState extends State<MainScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettingScreen('Settings'),
+                  builder: (context) => SettingsScreen('Settings'),
                 ));
           }
         },

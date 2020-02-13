@@ -20,8 +20,9 @@
 
 import 'package:flutter/material.dart';
 
-ThemeData getApplicationTheme() {
+ThemeData getApplicationTheme(Brightness brightness) {
   return ThemeData(
+    brightness: brightness,
     textTheme: TextTheme(
       title: TextStyle(
         fontSize: 19,

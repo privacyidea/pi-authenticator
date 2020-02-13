@@ -18,22 +18,29 @@
   limitations under the License.
 */
 
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SettingScreen extends StatelessWidget {
-  SettingScreen(this.title);
+class SettingsScreen extends StatefulWidget {
+  SettingsScreen(this._title);
 
-  final String title;
+  final String _title;
 
+  @override
+  State<StatefulWidget> createState() => SettingsScreenState();
+}
+
+class SettingsScreenState extends State<SettingsScreen> {
   bool _hideOTP = false;
+
+  Brightness _brightness = Brightness.light;
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget._title),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -41,12 +48,26 @@ class SettingScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text('Theme'),
-            ListTile(
-              title: Text('Theme'),
-              subtitle: Text('Description'),
-              trailing: FlatButton(
-                child: Text('click'),
-              ),
+            Column(
+              children: <Widget>[
+                Text('Select theme'),
+                RadioListTile(
+                  title: Text('Light theme'),
+                  value: Brightness.light,
+                  groupValue: Theme.of(context).brightness,
+                  onChanged: (value) {
+                    setState(() => changeBrightness(value));
+                  },
+                ),
+                RadioListTile(
+                  title: Text('Dark theme'),
+                  value: Brightness.dark,
+                  groupValue: Theme.of(context).brightness,
+                  onChanged: (value) {
+                    setState(() => changeBrightness(value));
+                  },
+                ),
+              ],
             ),
             Divider(),
             Text('Behavior'),
@@ -64,5 +85,9 @@ class SettingScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void changeBrightness(Brightness value) {
+    DynamicTheme.of(context).setBrightness(value);
   }
 }

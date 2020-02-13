@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
@@ -38,16 +39,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      localizationsDelegates: [
-        const MyLocalizationsDelegate(),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: _supportedLocales,
-      title: 'privacyIDEA Authenticator',
-      theme: getApplicationTheme(),
-      home: MainScreen(title: 'privacyIDEA Authenticator'),
-    );
+    return DynamicTheme(
+        defaultBrightness: Brightness.light,
+        data: (brightness) => getApplicationTheme(brightness),
+        themedWidgetBuilder: (context, theme) {
+          return MaterialApp(
+            localizationsDelegates: [
+              const MyLocalizationsDelegate(),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: _supportedLocales,
+            title: 'privacyIDEA Authenticator',
+            theme: theme,
+            home: MainScreen(title: 'privacyIDEA Authenticator'),
+          );
+        });
   }
 }
