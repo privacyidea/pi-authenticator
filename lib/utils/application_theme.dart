@@ -21,6 +21,9 @@
 import 'package:flutter/material.dart';
 
 ThemeData getApplicationTheme() {
+
+  MaterialColor primary = Colors.blue;
+
   return ThemeData(
     textTheme: TextTheme(
       title: TextStyle(
@@ -28,9 +31,9 @@ ThemeData getApplicationTheme() {
         color: Colors.white,
       ),
     ),
-    primarySwatch: Colors.blue,
+    primarySwatch: primary,
     buttonTheme: ButtonThemeData(
-      buttonColor: Colors.blue,
+      buttonColor: primary,
       textTheme: ButtonTextTheme.primary,
     ),
   );

@@ -73,10 +73,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       controller: _slidableController,
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
-      child: Container(
-        color: Colors.white,
-        child: _buildTile(),
-      ),
+      child: _buildClickableTile(),
       secondaryActions: <Widget>[
         IconSlideAction(
           caption: L10n.of(context).delete,
@@ -197,7 +194,20 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   // This gets overridden in subclasses.
   void _updateOtpValue();
 
-  Widget _buildTile();
+  Widget _buildClickableTile() {
+    return InkWell(
+      splashColor: Theme.of(context).primaryColor,
+      onLongPress: () {
+        Clipboard.setData(ClipboardData(text: _otpValue));
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text(L10n.of(context).otpValueCopiedMessage(_otpValue)),
+        ));
+      },
+      child: _buildNonClickableTile(),
+    );
+  }
+
+  Widget _buildNonClickableTile();
 }
 
 class _HotpWidgetState extends _TokenWidgetState {
@@ -224,13 +234,13 @@ class _HotpWidgetState extends _TokenWidgetState {
   }
 
   @override
-  Widget _buildTile() {
+  Widget _buildNonClickableTile() {
     return Stack(
       children: <Widget>[
         ListTile(
           title: Text(
             insertCharAt(
-                _otpValue.padLeft(_token.digits, '0'), " ", _token.digits ~/ 2),
+                _otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
           ),
           subtitle: Text(
@@ -315,13 +325,13 @@ class _TotpWidgetState extends _TokenWidgetState
   }
 
   @override
-  Widget _buildTile() {
+  Widget _buildNonClickableTile() {
     return Column(
       children: <Widget>[
         ListTile(
           title: Text(
             insertCharAt(
-                _otpValue.padLeft(_token.digits, '0'), " ", _token.digits ~/ 2),
+                _otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
           ),
           subtitle: Text(

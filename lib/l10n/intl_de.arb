@@ -167,5 +167,15 @@
     "description": "Text of a button that closes a dialog.",
     "type": "text",
     "placeholders": {}
+  },
+  "otpValueCopiedMessage": "Passwort \"{otpValue}\" wurde in die Zwischenablage kopiert.",
+  "@otpValueCopiedMessage": {
+    "description": "Tells the user that the otp value was copied to the clipboard.",
+    "type": "text",
+    "placeholders": {
+      "otpValue": {
+        "example": "055374"
+      }
+    }
   }
 }

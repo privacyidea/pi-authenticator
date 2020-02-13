@@ -1,145 +1,139 @@
 {
-  "@@last_modified": "2020-02-07T14:13:50.007298",
-  "next": "Next",
-  "@next": {
+  "@@last_modified": "2020-02-13T10:13:55.090512",
+  "Next": "Next",
+  "@Next": {
     "description": "The text of the button to calculate the next otp value.",
     "type": "text",
     "placeholders": {}
   },
-  "about": "About",
-  "@about": {
+  "About": "About",
+  "@About": {
     "description": "Button to open the about page.",
     "type": "text",
     "placeholders": {}
   },
-  "settings": "Settings",
-  "@settings": {
+  "Settings": "Settings",
+  "@Settings": {
     "description": "Button to open the settings page.",
     "type": "text",
     "placeholders": {}
   },
-  "addManually": "Add token",
-  "@addManually": {
+  "Add token": "Add token",
+  "@Add token": {
     "description": "The button to open the screen to add tokens by hand.",
     "type": "text",
     "placeholders": {}
   },
-  "scanQr": "Scan QR-Code",
-  "@scanQr": {
+  "Scan QR-Code": "Scan QR-Code",
+  "@Scan QR-Code": {
     "description": "The button to scan otpauto qr-codes.",
     "type": "text",
     "placeholders": {}
   },
-  "addManuallyTitle": "Enter details for token",
-  "@addManuallyTitle": {
+  "Enter details for token": "Enter details for token",
+  "@Enter details for token": {
     "description": "Title of the screen where tokens are created manually, tells the user to enter all required values.",
     "type": "text",
     "placeholders": {}
   },
-  "nameHint": "Name",
-  "@nameHint": {
+  "Name": "Name",
+  "@Name": {
     "description": "Describes the field where the tokens name should be entered.",
     "type": "text",
     "placeholders": {}
   },
-  "secretHint": "Secret",
-  "@secretHint": {
+  "Secret": "Secret",
+  "@Secret": {
     "description": "Describes the field where the tokens secret should be entered.",
     "type": "text",
     "placeholders": {}
   },
-  "encoding": "Encoding",
-  "@encoding": {
+  "Encoding": "Encoding",
+  "@Encoding": {
     "description": "Title of the dropdown button where the encoding is selected.",
     "type": "text",
     "placeholders": {}
   },
-  "algorithm": "Algorithm",
-  "@algorithm": {
+  "Algorithm": "Algorithm",
+  "@Algorithm": {
     "description": "Title of the dropdown button where the encoding is selected.",
     "type": "text",
     "placeholders": {}
   },
-  "digits": "Digits",
-  "@digits": {
+  "Digits": "Digits",
+  "@Digits": {
     "description": "Title of the dropdown button where the number of digits for the opt value is selecte.",
     "type": "text",
     "placeholders": {}
   },
-  "type": "Type",
-  "@type": {
+  "Type": "Type",
+  "@Type": {
     "description": "Title of the dropdown button where the type of the token is selected.",
     "type": "text",
     "placeholders": {}
   },
-  "period": "Period",
-  "@period": {
+  "Period": "Period",
+  "@Period": {
     "description": "Title of the dropdown button where the period of the totp token is selected.",
     "type": "text",
     "placeholders": {}
   },
-  "addToken": "Add token",
-  "@addToken": {
-    "description": "Button to add the token for which the values where added in this screen.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "toolTipAddToken": "Add tokens",
-  "@toolTipAddToken": {
+  "Add tokens": "Add tokens",
+  "@Add tokens": {
     "description": "Tooltip for the button that opens the selection for adding tokens.",
     "type": "text",
     "placeholders": {}
   },
-  "hintEmptyName": "Please enter a name for this token.",
-  "@hintEmptyName": {
+  "Please enter a name for this token.": "Please enter a name for this token.",
+  "@Please enter a name for this token.": {
     "description": "Hint telling the user to enter a name for a token.",
     "type": "text",
     "placeholders": {}
   },
-  "hintEmptySecret": "Please enter a secret for this token.",
-  "@hintEmptySecret": {
+  "Please enter a secret for this token.": "Please enter a secret for this token.",
+  "@Please enter a secret for this token.": {
     "description": "Hint telling the user to enter a secret for a token.",
     "type": "text",
     "placeholders": {}
   },
-  "hintInvalidSecret": "The secret does not the fit current encoding",
-  "@hintInvalidSecret": {
+  "The secret does not the fit current encoding": "The secret does not the fit current encoding",
+  "@The secret does not the fit current encoding": {
     "description": "Hint telling the user that the secret deos not fit the selected encoding.",
     "type": "text",
     "placeholders": {}
   },
-  "rename": "Rename",
-  "@rename": {
+  "Rename": "Rename",
+  "@Rename": {
     "description": "Label that describes renaming the token.",
     "type": "text",
     "placeholders": {}
   },
-  "renameDialogTitle": "Rename token",
-  "@renameDialogTitle": {
+  "Rename token": "Rename token",
+  "@Rename token": {
     "description": "Title of the dialog where a new name for a token can be entered.",
     "type": "text",
     "placeholders": {}
   },
-  "cancel": "Cancel",
-  "@cancel": {
+  "Cancel": "Cancel",
+  "@Cancel": {
     "description": "Button to cancel an action.",
     "type": "text",
     "placeholders": {}
   },
-  "delete": "Delete",
-  "@delete": {
+  "Delete": "Delete",
+  "@Delete": {
     "description": "Label that describes deleting the token.",
     "type": "text",
     "placeholders": {}
   },
-  "deleteDialogTitle": "Confirm deletion",
-  "@deleteDialogTitle": {
+  "Confirm deletion": "Confirm deletion",
+  "@Confirm deletion": {
     "description": "Title of the dialog where a token can be deleted.",
     "type": "text",
     "placeholders": {}
   },
-  "areYouSure": "Are you sure you want to delete",
-  "@areYouSure": {
+  "Are you sure you want to delete": "Are you sure you want to delete",
+  "@Are you sure you want to delete": {
     "description": "Part of a question: Do you want to delete {x}?",
     "type": "text",
     "placeholders": {}
@@ -167,5 +161,15 @@
     "description": "Text of a button that closes a dialog.",
     "type": "text",
     "placeholders": {}
+  },
+  "otpValueCopiedMessage": "Password \"{otpValue}\" copied to clipboard.",
+  "@otpValueCopiedMessage": {
+    "description": "Tells the user that the otp value was copied to the clipboard.",
+    "type": "text",
+    "placeholders": {
+      "otpValue": {
+        "example": "055374"
+      }
+    }
   }
 }
