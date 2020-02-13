@@ -21,6 +21,7 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/widgets/custom_radio_list_tile.dart';
 
 class SettingsScreen extends StatefulWidget {
   SettingsScreen(this._title);
@@ -33,8 +34,6 @@ class SettingsScreen extends StatefulWidget {
 
 class SettingsScreenState extends State<SettingsScreen> {
   bool _hideOTP = false;
-
-  Brightness _brightness = Brightness.light;
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +49,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             Text('Theme'),
             Column(
               children: <Widget>[
-                Text('Select theme'),
-                RadioListTile(
+                RightOrientedRadioListTile(
                   title: Text('Light theme'),
                   value: Brightness.light,
                   groupValue: Theme.of(context).brightness,
@@ -59,7 +57,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                     setState(() => changeBrightness(value));
                   },
                 ),
-                RadioListTile(
+                RightOrientedRadioListTile(
                   title: Text('Dark theme'),
                   value: Brightness.dark,
                   groupValue: Theme.of(context).brightness,
