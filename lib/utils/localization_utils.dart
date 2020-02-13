@@ -256,6 +256,17 @@ class L10n {
       locale: localeName,
     );
   }
+
+  String otpValueCopiedMessage(var otpValue) {
+    return Intl.message(
+      'Password "$otpValue" copied to clipboard.',
+      name: 'otpValueCopiedMessage',
+      args: [otpValue],
+      examples: const {'otpValue': '055374'},
+      desc: 'Tells the user that the otp value was copied to the clipboard.',
+      locale: localeName,
+    );
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<L10n> {

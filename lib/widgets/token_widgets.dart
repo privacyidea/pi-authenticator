@@ -200,7 +200,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       onLongPress: () {
         Clipboard.setData(ClipboardData(text: _otpValue));
         Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('$_otpValue copied to clipboard.'),
+          content: Text(L10n.of(context).otpValueCopiedMessage(_otpValue)),
         ));
       },
       child: _buildNonClickableTile(),
