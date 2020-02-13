@@ -52,6 +52,7 @@ class MyApp extends StatelessWidget {
             supportedLocales: _supportedLocales,
             title: 'privacyIDEA Authenticator',
             theme: theme,
+            darkTheme: getApplicationTheme(Brightness.dark),
             home: MainScreen(title: 'privacyIDEA Authenticator'),
           );
         });

@@ -37,6 +37,9 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isSystemDarkMode =
+        MediaQuery.of(context).platformBrightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget._title),
@@ -54,18 +57,22 @@ class SettingsScreenState extends State<SettingsScreen> {
                   value: Brightness.light,
                   groupValue: Theme.of(context).brightness,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: (value) {
-                    setState(() => changeBrightness(value));
-                  },
+                  onChanged: !isSystemDarkMode
+                      ? (value) {
+                          setState(() => changeBrightness(value));
+                        }
+                      : null,
                 ),
                 RadioListTile(
                   title: Text('Dark theme'),
                   value: Brightness.dark,
                   groupValue: Theme.of(context).brightness,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: (value) {
-                    setState(() => changeBrightness(value));
-                  },
+                  onChanged: !isSystemDarkMode
+                      ? (value) {
+                          setState(() => changeBrightness(value));
+                        }
+                      : null,
                 ),
               ],
             ),
