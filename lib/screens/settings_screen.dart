@@ -21,7 +21,6 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/widgets/custom_radio_list_tile.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -34,7 +33,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
-  bool _hideOTP = false;
+//  bool _hideOTP = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,40 +49,42 @@ class SettingsScreenState extends State<SettingsScreen> {
             SettingsGroup(
               title: 'Theme',
               children: <Widget>[
-                RightOrientedRadioListTile(
+                RadioListTile(
                   title: Text('Light theme'),
                   value: Brightness.light,
                   groupValue: Theme.of(context).brightness,
+                  controlAffinity: ListTileControlAffinity.trailing,
                   onChanged: (value) {
                     setState(() => changeBrightness(value));
                   },
                 ),
-                RightOrientedRadioListTile(
+                RadioListTile(
                   title: Text('Dark theme'),
                   value: Brightness.dark,
                   groupValue: Theme.of(context).brightness,
+                  controlAffinity: ListTileControlAffinity.trailing,
                   onChanged: (value) {
                     setState(() => changeBrightness(value));
                   },
                 ),
               ],
             ),
-            Divider(),
-            SettingsGroup(
-              title: 'Behavior',
-              children: <Widget>[
-                ListTile(
-                  title: Text('Hide otp'),
-                  subtitle: Text('Description'),
-                  trailing: Switch(
-                    value: _hideOTP,
-                    onChanged: (value) {
-                      _hideOTP = value;
-                    },
-                  ),
-                ),
-              ],
-            ),
+//            Divider(),
+//            SettingsGroup(
+//              title: 'Behavior',
+//              children: <Widget>[
+//                ListTile(
+//                  title: Text('Hide otp'),
+//                  subtitle: Text('Description'),
+//                  trailing: Switch(
+//                    value: _hideOTP,
+//                    onChanged: (value) {
+//                      _hideOTP = value;
+//                    },
+//                  ),
+//                ),
+//              ],
+//            ),
           ],
         ),
       ),
