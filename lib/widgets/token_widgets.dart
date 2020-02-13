@@ -74,7 +74,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
       child: Container(
-        color: Colors.white,
         child: _buildTile(),
       ),
       secondaryActions: <Widget>[
@@ -227,18 +226,14 @@ class _HotpWidgetState extends _TokenWidgetState {
       children: <Widget>[
         ListTile(
           title:
-//          Center( child:
               Text(
             insertCharAt(_otpValue, " ", _otpValue.length ~/ 2),
             textScaleFactor: 2.5,
           ),
-//          ),
           subtitle:
-//    Center(child:
               Text(
             _label,
             textScaleFactor: 2.0,
-//            ),
           ),
         ),
         Align(
@@ -323,18 +318,14 @@ class _TotpWidgetState extends _TokenWidgetState
       children: <Widget>[
         ListTile(
           title:
-//          Center(child:
               Text(
             insertCharAt(_otpValue, " ", _otpValue.length ~/ 2),
             textScaleFactor: 2.5,
-//            ),
           ),
           subtitle:
-//          Center(child:
               Text(
             _label,
             textScaleFactor: 2.0,
-//            ),
           ),
         ),
         LinearProgressIndicator(

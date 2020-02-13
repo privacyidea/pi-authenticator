@@ -21,18 +21,35 @@
 import 'package:flutter/material.dart';
 
 ThemeData getApplicationTheme(Brightness brightness) {
-  return ThemeData(
-    brightness: brightness,
-    textTheme: TextTheme(
-      title: TextStyle(
-        fontSize: 19,
-        color: Colors.white,
-      ),
-    ),
-    primarySwatch: Colors.blue,
-    buttonTheme: ButtonThemeData(
-      buttonColor: Colors.blue,
-      textTheme: ButtonTextTheme.primary,
-    ),
+  bool isDark = brightness == Brightness.dark;
+
+  final Color primaryColor = isDark ? Colors.black : Color(0xff03a8f4);
+  final Color accentColor = isDark ? Color(0xff03f4c8) : primaryColor;
+
+  FloatingActionButtonThemeData floatingActionButtonThemeData =
+      FloatingActionButtonThemeData(backgroundColor: accentColor);
+
+  final ButtonThemeData buttonTheme = ButtonThemeData(
+    textTheme: ButtonTextTheme.accent,
+    colorScheme: ThemeData.dark().buttonTheme.colorScheme.copyWith(
+          primary: accentColor,
+          secondary: isDark ? Colors.black : Colors.white,
+        ),
   );
+
+  return isDark
+      ? ThemeData.dark().copyWith(
+          primaryColor: primaryColor,
+          accentColor: accentColor,
+          toggleableActiveColor: accentColor,
+          floatingActionButtonTheme: floatingActionButtonThemeData,
+          buttonTheme: buttonTheme,
+        )
+      : ThemeData.light().copyWith(
+          primaryColor: primaryColor,
+          accentColor: accentColor,
+          toggleableActiveColor: accentColor,
+          floatingActionButtonTheme: floatingActionButtonThemeData,
+          buttonTheme: buttonTheme,
+        );
 }
