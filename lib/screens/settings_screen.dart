@@ -22,6 +22,7 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/widgets/custom_radio_list_tile.dart';
+import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
 
 class SettingsScreen extends StatefulWidget {
   SettingsScreen(this._title);
@@ -46,8 +47,8 @@ class SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('Theme'),
-            Column(
+            SettingsGroup(
+              title: 'Theme',
               children: <Widget>[
                 RightOrientedRadioListTile(
                   title: Text('Light theme'),
@@ -68,16 +69,20 @@ class SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
             Divider(),
-            Text('Behavior'),
-            ListTile(
-              title: Text('Hide otp'),
-              subtitle: Text('Description'),
-              trailing: Switch(
-                value: _hideOTP,
-                onChanged: (value) {
-                  _hideOTP = value;
-                },
-              ),
+            SettingsGroup(
+              title: 'Behavior',
+              children: <Widget>[
+                ListTile(
+                  title: Text('Hide otp'),
+                  subtitle: Text('Description'),
+                  trailing: Switch(
+                    value: _hideOTP,
+                    onChanged: (value) {
+                      _hideOTP = value;
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
         ),
