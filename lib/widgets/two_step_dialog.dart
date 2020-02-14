@@ -97,8 +97,6 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     String phoneChecksum = await generatePhoneChecksum(phonePart: salt);
     String show = splitPeriodically(phoneChecksum, 4);
 
-    Brightness brightness = DynamicTheme.of(context).brightness;
-
     // Update UI.
     setState(() {
       _title = L10n.of(context).twoStepDialogTitlePhonePart;
@@ -106,7 +104,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
       _button = FlatButton(
         child: Text(
           L10n.of(context).dismiss,
-          style: getDialogTextStyle(brightness),
+          style: getDialogTextStyle(isDarkModeOn(context)),
         ),
         onPressed: () => Navigator.of(context).pop(generatedSecret),
       );

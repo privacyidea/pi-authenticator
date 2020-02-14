@@ -21,7 +21,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -69,8 +68,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Brightness brightness = DynamicTheme.of(context).brightness;
-
     return Slidable(
       key: ValueKey(_token.serial),
       // This is used to only let one Slidable be open at a time.
@@ -81,13 +78,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       secondaryActions: <Widget>[
         IconSlideAction(
           caption: L10n.of(context).delete,
-          color: getTonedColor(Colors.red, brightness),
+          color: getTonedColor(Colors.red, isDarkModeOn(context)),
           icon: Icons.delete,
           onTap: () => _deleteTokenDialog(),
         ),
         IconSlideAction(
           caption: L10n.of(context).rename,
-          color: getTonedColor(Colors.blue, brightness),
+          color: getTonedColor(Colors.blue, isDarkModeOn(context)),
           icon: Icons.edit,
           onTap: () => _renameTokenDialog(),
         ),
@@ -98,8 +95,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   void _renameTokenDialog() {
     final _nameInputKey = GlobalKey<FormFieldState>();
     String _selectedName = _label;
-
-    Brightness brightness = DynamicTheme.of(context).brightness;
 
     showDialog(
         context: context,
@@ -123,14 +118,14 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               FlatButton(
                 child: Text(
                   L10n.of(context).cancel,
-                  style: getDialogTextStyle(brightness),
+                  style: getDialogTextStyle(isDarkModeOn(context)),
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               FlatButton(
                 child: Text(
                   L10n.of(context).rename,
-                  style: getDialogTextStyle(brightness),
+                  style: getDialogTextStyle(isDarkModeOn(context)),
                 ),
                 onPressed: () {
                   if (_nameInputKey.currentState.validate()) {
@@ -159,8 +154,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   }
 
   void _deleteTokenDialog() {
-    Brightness brightness = DynamicTheme.of(context).brightness;
-
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -174,11 +167,11 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   children: [
                     TextSpan(
                       text: L10n.of(context).areYouSure,
-                      style: getDialogTextStyle(brightness),
+                      style: getDialogTextStyle(isDarkModeOn(context)),
                     ),
                     TextSpan(
                       text: " \'$_label\'?",
-                      style: getDialogTextStyle(brightness).copyWith(
+                      style: getDialogTextStyle(isDarkModeOn(context)).copyWith(
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -189,7 +182,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   L10n.of(context).cancel,
-                  style: getDialogTextStyle(brightness),
+                  style: getDialogTextStyle(isDarkModeOn(context)),
                 ),
               ),
               FlatButton(
@@ -199,7 +192,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 },
                 child: Text(
                   L10n.of(context).delete,
-                  style: getDialogTextStyle(brightness),
+                  style: getDialogTextStyle(isDarkModeOn(context)),
                 ),
               ),
             ],
@@ -258,8 +251,7 @@ class _HotpWidgetState extends _TokenWidgetState {
       children: <Widget>[
         ListTile(
           title: Text(
-            insertCharAt(
-                _otpValue, " ", _token.digits ~/ 2),
+            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
           ),
           subtitle: Text(
@@ -349,8 +341,7 @@ class _TotpWidgetState extends _TokenWidgetState
       children: <Widget>[
         ListTile(
           title: Text(
-            insertCharAt(
-                _otpValue, " ", _token.digits ~/ 2),
+            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
           ),
           subtitle: Text(

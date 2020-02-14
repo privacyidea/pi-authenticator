@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 
 ThemeData getApplicationTheme(Brightness brightness) {
@@ -57,15 +58,10 @@ ThemeData getApplicationTheme(Brightness brightness) {
         );
 }
 
-TextStyle getDialogTextStyle(Brightness brightness) {
-  bool isDark = brightness == Brightness.dark;
+TextStyle getDialogTextStyle(bool isDark) =>
+    TextStyle(color: isDark ? Colors.white : Colors.black);
 
-  return TextStyle(color: isDark ? Colors.white : Colors.black);
-}
-
-Color getTonedColor(Color input, Brightness brightness) {
-  bool isDark = brightness == Brightness.dark;
-
+Color getTonedColor(Color input, bool isDark) {
   double f = 0.8;
 
   return isDark
@@ -73,3 +69,6 @@ Color getTonedColor(Color input, Brightness brightness) {
           (input.green * f).round(), (input.blue * f).round())
       : input;
 }
+
+bool isDarkModeOn(BuildContext context) => DynamicTheme.of(context).brightness == Brightness.dark ||
+MediaQuery.of(context).platformBrightness == Brightness.dark;
