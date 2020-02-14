@@ -24,7 +24,7 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/utils/application_theme.dart';
+import 'package:privacyidea_authenticator/utils/application_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';

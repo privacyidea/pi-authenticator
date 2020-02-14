@@ -22,7 +22,7 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
-import 'package:privacyidea_authenticator/utils/application_theme.dart';
+import 'package:privacyidea_authenticator/utils/application_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 
 void main() => runApp(MyApp());

@@ -39,8 +39,6 @@ ThemeData getApplicationTheme(Brightness brightness) {
         ),
   );
 
-  // TODO how des the 2 step dialog look?
-
   return isDark
       ? ThemeData.dark().copyWith(
           primaryColor: primaryColor,
