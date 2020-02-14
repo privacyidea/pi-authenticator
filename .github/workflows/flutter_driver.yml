@@ -32,7 +32,7 @@ jobs:
         UDID=$(
           xcrun instruments -s |
           awk \
-            -F ' *[][]' \
+            -F[][] \
             -v 'device=${{ matrix.device }}' \
             '$1 == device { print $2 }'
         )
