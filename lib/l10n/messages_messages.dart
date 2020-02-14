@@ -30,12 +30,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "Are you sure you want to delete" : MessageLookupByLibrary.simpleMessage("Are you sure you want to delete"),
     "Cancel" : MessageLookupByLibrary.simpleMessage("Cancel"),
     "Confirm deletion" : MessageLookupByLibrary.simpleMessage("Confirm deletion"),
+    "Dark theme" : MessageLookupByLibrary.simpleMessage("Dark theme"),
     "Delete" : MessageLookupByLibrary.simpleMessage("Delete"),
     "Digits" : MessageLookupByLibrary.simpleMessage("Digits"),
     "Dismiss" : MessageLookupByLibrary.simpleMessage("Dismiss"),
     "Encoding" : MessageLookupByLibrary.simpleMessage("Encoding"),
     "Enter details for token" : MessageLookupByLibrary.simpleMessage("Enter details for token"),
     "Generating phone part" : MessageLookupByLibrary.simpleMessage("Generating phone part"),
+    "Light theme" : MessageLookupByLibrary.simpleMessage("Light theme"),
     "Name" : MessageLookupByLibrary.simpleMessage("Name"),
     "Next" : MessageLookupByLibrary.simpleMessage("Next"),
     "Period" : MessageLookupByLibrary.simpleMessage("Period"),
@@ -49,6 +51,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Secret" : MessageLookupByLibrary.simpleMessage("Secret"),
     "Settings" : MessageLookupByLibrary.simpleMessage("Settings"),
     "The secret does not the fit current encoding" : MessageLookupByLibrary.simpleMessage("The secret does not the fit current encoding"),
+    "Theme" : MessageLookupByLibrary.simpleMessage("Theme"),
     "Type" : MessageLookupByLibrary.simpleMessage("Type"),
     "otpValueCopiedMessage" : m0
   };

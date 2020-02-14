@@ -177,5 +177,23 @@
         "example": "055374"
       }
     }
+  },
+  "Theme": "Thema",
+  "@Theme": {
+    "description": "Title of the setting group where the theme can be selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Light theme": "Helles Thema",
+  "@Light theme": {
+    "description": "The light theme.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Dark theme": "Dunkles Thema",
+  "@Dark theme": {
+    "description": "The dark theme.",
+    "type": "text",
+    "placeholders": {}
   }
 }

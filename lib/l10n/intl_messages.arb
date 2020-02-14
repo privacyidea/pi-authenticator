@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2020-02-13T10:13:55.090512",
+  "@@last_modified": "2020-02-14T11:27:49.557833",
   "Next": "Next",
   "@Next": {
     "description": "The text of the button to calculate the next otp value.",
@@ -171,5 +171,23 @@
         "example": "055374"
       }
     }
+  },
+  "Theme": "Theme",
+  "@Theme": {
+    "description": "Title of the setting group where the theme can be selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Light theme": "Light theme",
+  "@Light theme": {
+    "description": "The light theme.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Dark theme": "Dark theme",
+  "@Dark theme": {
+    "description": "The dark theme.",
+    "type": "text",
+    "placeholders": {}
   }
 }

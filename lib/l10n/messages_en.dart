@@ -23,10 +23,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "Dark theme" : MessageLookupByLibrary.simpleMessage("Dark theme"),
     "Dismiss" : MessageLookupByLibrary.simpleMessage("Dismiss"),
     "Generating phone part" : MessageLookupByLibrary.simpleMessage("Generating phone part"),
+    "Light theme" : MessageLookupByLibrary.simpleMessage("Light theme"),
     "Phone part:" : MessageLookupByLibrary.simpleMessage("Phone part:"),
     "Scan QR code" : MessageLookupByLibrary.simpleMessage("Scan QR code"),
+    "Theme" : MessageLookupByLibrary.simpleMessage("Theme"),
     "otpValueCopiedMessage" : m0
   };
 }

@@ -21,10 +21,12 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/application_theme.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
@@ -67,6 +69,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness brightness = DynamicTheme.of(context).brightness;
+
     return Slidable(
       key: ValueKey(_token.serial),
       // This is used to only let one Slidable be open at a time.
@@ -77,13 +81,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       secondaryActions: <Widget>[
         IconSlideAction(
           caption: L10n.of(context).delete,
-          color: Colors.red,
+          color: getTonedColor(Colors.red, brightness),
           icon: Icons.delete,
           onTap: () => _deleteTokenDialog(),
         ),
         IconSlideAction(
           caption: L10n.of(context).rename,
-          color: Colors.blue,
+          color: getTonedColor(Colors.blue, brightness),
           icon: Icons.edit,
           onTap: () => _renameTokenDialog(),
         ),
@@ -95,12 +99,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     final _nameInputKey = GlobalKey<FormFieldState>();
     String _selectedName = _label;
 
+    Brightness brightness = DynamicTheme.of(context).brightness;
+
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(L10n.of(context).renameDialogTitle),
-            titleTextStyle: Theme.of(context).textTheme.subhead,
             content: TextFormField(
               autofocus: true,
               initialValue: _label,
@@ -116,17 +121,23 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text(L10n.of(context).rename),
+                child: Text(
+                  L10n.of(context).cancel,
+                  style: getDialogTextStyle(brightness),
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              FlatButton(
+                child: Text(
+                  L10n.of(context).rename,
+                  style: getDialogTextStyle(brightness),
+                ),
                 onPressed: () {
                   if (_nameInputKey.currentState.validate()) {
                     _renameClicked(_selectedName);
                     Navigator.of(context).pop();
                   }
                 },
-              ),
-              FlatButton(
-                child: Text(L10n.of(context).cancel),
-                onPressed: () => Navigator.of(context).pop(),
               ),
             ],
           );
@@ -148,12 +159,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   }
 
   void _deleteTokenDialog() {
+    Brightness brightness = DynamicTheme.of(context).brightness;
+
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(L10n.of(context).deleteDialogTitle),
-            titleTextStyle: Theme.of(context).textTheme.subhead,
             content: RichText(
               text: TextSpan(
                   style: TextStyle(
@@ -162,25 +174,33 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   children: [
                     TextSpan(
                       text: L10n.of(context).areYouSure,
+                      style: getDialogTextStyle(brightness),
                     ),
                     TextSpan(
-                        text: " \'$_label\'?",
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                        ))
+                      text: " \'$_label\'?",
+                      style: getDialogTextStyle(brightness).copyWith(
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   ]),
             ),
             actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  L10n.of(context).cancel,
+                  style: getDialogTextStyle(brightness),
+                ),
+              ),
               FlatButton(
                 onPressed: () {
                   _onDeleteClicked();
                   Navigator.of(context).pop();
                 },
-                child: Text(L10n.of(context).delete),
-              ),
-              FlatButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(L10n.of(context).cancel),
+                child: Text(
+                  L10n.of(context).delete,
+                  style: getDialogTextStyle(brightness),
+                ),
               ),
             ],
           );
@@ -219,7 +239,6 @@ class _HotpWidgetState extends _TokenWidgetState {
   void _updateOtpValue() {
     setState(() {
       (_token as HOTPToken).incrementCounter();
-      print('OTP: $_otpValue');
       _otpValue = calculateOtpValue(_token);
       _saveThisToken(); // When the app reloads the counter should not be reset.
 

@@ -30,6 +30,7 @@ import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
@@ -68,7 +69,6 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: Text(
           widget.title,
-          style: Theme.of(context).textTheme.title,
         ),
         actions: _buildActionMenu(),
         leading: Padding(
@@ -233,7 +233,6 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                           applicationLegalese: "Apache License 2.0",
                         )));
-//            });
           } else if (value == "add_manually") {
             Navigator.push(
                 context,
@@ -241,7 +240,11 @@ class _MainScreenState extends State<MainScreen> {
                   builder: (context) => AddTokenManuallyScreen(),
                 )).then((newToken) => _addNewToken(newToken));
           } else if (value == "settings") {
-            // TODO if we have settings at some point, open them
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsScreen('Settings'),
+                ));
           }
         },
         elevation: 5.0,
@@ -255,11 +258,11 @@ class _MainScreenState extends State<MainScreen> {
             value: "add_manually",
             child: Text(L10n.of(context).addManually),
           ),
-//          PopupMenuDivider(),
-//          PopupMenuItem<String>(
-//            value: "settings",
-//            child: Text(L10n.of(context).settings),
-//          ),
+          PopupMenuDivider(),
+          PopupMenuItem<String>(
+            value: "settings",
+            child: Text(L10n.of(context).settings),
+          ),
         ],
       ),
     ];

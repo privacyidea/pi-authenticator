@@ -20,21 +20,56 @@
 
 import 'package:flutter/material.dart';
 
-ThemeData getApplicationTheme() {
+ThemeData getApplicationTheme(Brightness brightness) {
+  bool isDark = brightness == Brightness.dark;
 
-  MaterialColor primary = Colors.blue;
+//  final Color primaryColor = isDark ? Colors.black : Color(0xff03a8f4);
+  final Color primaryColor = isDark ? Colors.black : Color(0xff03a8f4);
+  final Color accentColor = isDark ? Color(0xff03f4c8) : primaryColor;
 
-  return ThemeData(
-    textTheme: TextTheme(
-      title: TextStyle(
-        fontSize: 19,
-        color: Colors.white,
-      ),
-    ),
-    primarySwatch: primary,
-    buttonTheme: ButtonThemeData(
-      buttonColor: primary,
-      textTheme: ButtonTextTheme.primary,
-    ),
+  FloatingActionButtonThemeData floatingActionButtonThemeData =
+      FloatingActionButtonThemeData(backgroundColor: accentColor);
+
+  final ButtonThemeData buttonTheme = ButtonThemeData(
+    textTheme: ButtonTextTheme.accent,
+    colorScheme: ThemeData.dark().buttonTheme.colorScheme.copyWith(
+          primary: accentColor,
+          secondary: isDark ? Colors.black : Colors.white,
+        ),
   );
+
+  // TODO how des the 2 step dialog look?
+
+  return isDark
+      ? ThemeData.dark().copyWith(
+          primaryColor: primaryColor,
+          accentColor: accentColor,
+          toggleableActiveColor: accentColor,
+          floatingActionButtonTheme: floatingActionButtonThemeData,
+          buttonTheme: buttonTheme,
+        )
+      : ThemeData.light().copyWith(
+          primaryColor: primaryColor,
+          accentColor: accentColor,
+          toggleableActiveColor: accentColor,
+          floatingActionButtonTheme: floatingActionButtonThemeData,
+          buttonTheme: buttonTheme,
+        );
+}
+
+TextStyle getDialogTextStyle(Brightness brightness) {
+  bool isDark = brightness == Brightness.dark;
+
+  return TextStyle(color: isDark ? Colors.white : Colors.black);
+}
+
+Color getTonedColor(Color input, Brightness brightness) {
+  bool isDark = brightness == Brightness.dark;
+
+  double f = 0.8;
+
+  return isDark
+      ? Color.fromARGB(input.alpha, (input.red * f).round(),
+          (input.green * f).round(), (input.blue * f).round())
+      : input;
 }
