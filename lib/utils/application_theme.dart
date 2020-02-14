@@ -20,9 +20,11 @@
 
 import 'package:flutter/material.dart';
 
+
 ThemeData getApplicationTheme(Brightness brightness) {
   bool isDark = brightness == Brightness.dark;
 
+//  final Color primaryColor = isDark ? Colors.black : Color(0xff03a8f4);
   final Color primaryColor = isDark ? Colors.black : Color(0xff03a8f4);
   final Color accentColor = isDark ? Color(0xff03f4c8) : primaryColor;
 
@@ -52,4 +54,10 @@ ThemeData getApplicationTheme(Brightness brightness) {
           floatingActionButtonTheme: floatingActionButtonThemeData,
           buttonTheme: buttonTheme,
         );
+}
+
+TextStyle getDialogTextStyle(Brightness brightness) {
+  bool isDark = brightness == Brightness.dark;
+
+  return TextStyle(color: isDark ? Colors.white : Colors.black);
 }

@@ -99,12 +99,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     final _nameInputKey = GlobalKey<FormFieldState>();
     String _selectedName = _label;
 
+    Brightness brightness = DynamicTheme.of(context).brightness;
+
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(L10n.of(context).renameDialogTitle),
-            titleTextStyle: Theme.of(context).textTheme.subhead,
             content: TextFormField(
               autofocus: true,
               initialValue: _label,
@@ -120,17 +121,23 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text(L10n.of(context).rename),
+                child: Text(
+                  L10n.of(context).cancel,
+                  style: getDialogTextStyle(brightness),
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              FlatButton(
+                child: Text(
+                  L10n.of(context).rename,
+                  style: getDialogTextStyle(brightness),
+                ),
                 onPressed: () {
                   if (_nameInputKey.currentState.validate()) {
                     _renameClicked(_selectedName);
                     Navigator.of(context).pop();
                   }
                 },
-              ),
-              FlatButton(
-                child: Text(L10n.of(context).cancel),
-                onPressed: () => Navigator.of(context).pop(),
               ),
             ],
           );
@@ -152,12 +159,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   }
 
   void _deleteTokenDialog() {
+    Brightness brightness = DynamicTheme.of(context).brightness;
+
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(L10n.of(context).deleteDialogTitle),
-            titleTextStyle: Theme.of(context).textTheme.subhead,
             content: RichText(
               text: TextSpan(
                   style: TextStyle(
@@ -166,25 +174,33 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   children: [
                     TextSpan(
                       text: L10n.of(context).areYouSure,
+                      style: getDialogTextStyle(brightness),
                     ),
                     TextSpan(
-                        text: " \'$_label\'?",
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                        ))
+                      text: " \'$_label\'?",
+                      style: getDialogTextStyle(brightness).copyWith(
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   ]),
             ),
             actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  L10n.of(context).cancel,
+                  style: getDialogTextStyle(brightness),
+                ),
+              ),
               FlatButton(
                 onPressed: () => {
                   _onDeleteClicked(),
                   Navigator.of(context).pop(),
                 },
-                child: Text(L10n.of(context).delete),
-              ),
-              FlatButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(L10n.of(context).cancel),
+                child: Text(
+                  L10n.of(context).delete,
+                  style: getDialogTextStyle(brightness),
+                ),
               ),
             ],
           );
@@ -227,13 +243,11 @@ class _HotpWidgetState extends _TokenWidgetState {
     return Stack(
       children: <Widget>[
         ListTile(
-          title:
-              Text(
+          title: Text(
             insertCharAt(_otpValue, " ", _otpValue.length ~/ 2),
             textScaleFactor: 2.5,
           ),
-          subtitle:
-              Text(
+          subtitle: Text(
             _label,
             textScaleFactor: 2.0,
           ),
@@ -319,13 +333,11 @@ class _TotpWidgetState extends _TokenWidgetState
     return Column(
       children: <Widget>[
         ListTile(
-          title:
-              Text(
+          title: Text(
             insertCharAt(_otpValue, " ", _otpValue.length ~/ 2),
             textScaleFactor: 2.5,
           ),
-          subtitle:
-              Text(
+          subtitle: Text(
             _label,
             textScaleFactor: 2.0,
           ),
