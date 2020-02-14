@@ -31,11 +31,14 @@ class SettingsGroup extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          title,
-          style: Theme.of(context).textTheme.subhead.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+        ListTile(
+          dense: true,
+          leading: Text(
+            title,
+            style: Theme.of(context).textTheme.subhead.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
         ),
       ]..addAll(children),
     );
