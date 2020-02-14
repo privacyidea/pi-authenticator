@@ -23,7 +23,7 @@
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
-import 'integration_test_utils.dart';
+import '../integration_test_utils.dart';
 
 void renameAndDeleteTest() {
   group('Rename and delete', () {
