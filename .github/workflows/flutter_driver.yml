@@ -31,7 +31,7 @@ jobs:
       run: |
         UDID=$(
           xcrun instruments -s |
-          grep -m 1 ${{ matrix.device }} |
+          grep -m 1 $matrix.device |
           awk \
             -F '[][]' \
             '{ print $2 }'
