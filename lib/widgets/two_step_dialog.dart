@@ -21,8 +21,10 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/utils/application_theme.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
@@ -72,7 +74,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
         title: Text(_title),
-        titleTextStyle: Theme.of(context).textTheme.subhead,
+//        titleTextStyle: Theme.of(context).textTheme.subhead,
         content: _content,
         actions: <Widget>[_button],
       ),
@@ -95,12 +97,17 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     String phoneChecksum = await generatePhoneChecksum(phonePart: salt);
     String show = splitPeriodically(phoneChecksum, 4);
 
+    Brightness brightness = DynamicTheme.of(context).brightness;
+
     // Update UI.
     setState(() {
       _title = L10n.of(context).twoStepDialogTitlePhonePart;
       _content = Text("$show");
       _button = FlatButton(
-        child: Text(L10n.of(context).dismiss),
+        child: Text(
+          L10n.of(context).dismiss,
+          style: getDialogTextStyle(brightness),
+        ),
         onPressed: () => Navigator.of(context).pop(generatedSecret),
       );
     });
