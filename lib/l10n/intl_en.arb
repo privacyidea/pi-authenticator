@@ -143,5 +143,23 @@
     "description": "Part of a question: Do you want to delete {x}?",
     "type": "text",
     "placeholders": {}
+  },
+  "Theme": "Theme",
+  "@Theme": {
+    "description": "Title of the setting group where the theme can be selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Light theme": "Light theme",
+  "@Light theme": {
+    "description": "The light theme.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Dark theme": "Dark theme",
+  "@Dark theme": {
+    "description": "The dark theme.",
+    "type": "text",
+    "placeholders": {}
   }
 }

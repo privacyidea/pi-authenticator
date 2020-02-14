@@ -20,7 +20,6 @@
 
 import 'package:flutter/material.dart';
 
-
 ThemeData getApplicationTheme(Brightness brightness) {
   bool isDark = brightness == Brightness.dark;
 
@@ -38,6 +37,8 @@ ThemeData getApplicationTheme(Brightness brightness) {
           secondary: isDark ? Colors.black : Colors.white,
         ),
   );
+
+  // TODO how des the 2 step dialog look?
 
   return isDark
       ? ThemeData.dark().copyWith(
