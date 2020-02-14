@@ -69,6 +69,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness brightness = DynamicTheme.of(context).brightness;
+
     return Slidable(
       key: ValueKey(_token.serial),
       // This is used to only let one Slidable be open at a time.
@@ -81,13 +83,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       secondaryActions: <Widget>[
         IconSlideAction(
           caption: L10n.of(context).delete,
-          color: Colors.red,
+          color: getTonedColor(Colors.red, brightness),
           icon: Icons.delete,
           onTap: () => _deleteTokenDialog(),
         ),
         IconSlideAction(
           caption: L10n.of(context).rename,
-          color: Colors.blue,
+          color: getTonedColor(Colors.blue, brightness),
           icon: Icons.edit,
           onTap: () => _renameTokenDialog(),
         ),

@@ -62,3 +62,14 @@ TextStyle getDialogTextStyle(Brightness brightness) {
 
   return TextStyle(color: isDark ? Colors.white : Colors.black);
 }
+
+Color getTonedColor(Color input, Brightness brightness) {
+  bool isDark = brightness == Brightness.dark;
+
+  double f = 0.8;
+
+  return isDark
+      ? Color.fromARGB(input.alpha, (input.red * f).round(),
+          (input.green * f).round(), (input.blue * f).round())
+      : input;
+}
