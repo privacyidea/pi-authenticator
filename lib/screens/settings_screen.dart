@@ -18,51 +18,87 @@
   limitations under the License.
 */
 
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
 
-class SettingScreen extends StatelessWidget {
-  SettingScreen(this.title);
+class SettingsScreen extends StatefulWidget {
+  SettingsScreen(this._title);
 
-  final String title;
+  final String _title;
 
-  bool _hideOTP = false;
+  @override
+  State<StatefulWidget> createState() => SettingsScreenState();
+}
+
+class SettingsScreenState extends State<SettingsScreen> {
+//  bool _hideOTP = false;
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    bool isSystemDarkMode =
+        MediaQuery.of(context).platformBrightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget._title),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('Theme'),
-            ListTile(
-              title: Text('Theme'),
-              subtitle: Text('Description'),
-              trailing: FlatButton(
-                child: Text('click'),
-              ),
+            SettingsGroup(
+              title: 'Theme',
+              children: <Widget>[
+                RadioListTile(
+                  title: Text('Light theme'),
+                  value: Brightness.light,
+                  groupValue: Theme.of(context).brightness,
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  onChanged: !isSystemDarkMode
+                      ? (value) {
+                          setState(() => changeBrightness(value));
+                        }
+                      : null,
+                ),
+                RadioListTile(
+                  title: Text('Dark theme'),
+                  value: Brightness.dark,
+                  groupValue: Theme.of(context).brightness,
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  onChanged: !isSystemDarkMode
+                      ? (value) {
+                          setState(() => changeBrightness(value));
+                        }
+                      : null,
+                ),
+              ],
             ),
-            Divider(),
-            Text('Behavior'),
-            ListTile(
-              title: Text('Hide otp'),
-              subtitle: Text('Description'),
-              trailing: Switch(
-                value: _hideOTP,
-                onChanged: (value) {
-                  _hideOTP = value;
-                },
-              ),
-            ),
+//            Divider(),
+//            SettingsGroup(
+//              title: 'Behavior',
+//              children: <Widget>[
+//                ListTile(
+//                  title: Text('Hide otp'),
+//                  subtitle: Text('Description'),
+//                  trailing: Switch(
+//                    value: _hideOTP,
+//                    onChanged: (value) {
+//                      _hideOTP = value;
+//                    },
+//                  ),
+//                ),
+//              ],
+//            ),
           ],
         ),
       ),
     );
+  }
+
+  void changeBrightness(Brightness value) {
+    DynamicTheme.of(context).setBrightness(value);
   }
 }

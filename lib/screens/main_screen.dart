@@ -64,7 +64,6 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: Text(
           widget.title,
-          style: Theme.of(context).textTheme.title,
         ),
         actions: _buildActionMenu(),
         leading: Padding(
@@ -178,7 +177,7 @@ class _MainScreenState extends State<MainScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettingScreen('Settings'),
+                  builder: (context) => SettingsScreen('Settings'),
                 ));
           }
         },

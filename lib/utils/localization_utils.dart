@@ -246,6 +246,30 @@ class L10n {
       locale: localeName,
     );
   }
+
+  String get theme {
+    return Intl.message(
+      'Theme',
+      desc: 'Title of the setting group where the theme can be selected.',
+      locale: localeName,
+    );
+  }
+
+  String get lightTheme {
+    return Intl.message(
+      'Light theme',
+      desc: 'The light theme.',
+      locale: localeName,
+    );
+  }
+
+  String get darkTheme {
+    return Intl.message(
+      'Dark theme',
+      desc: 'The dark theme.',
+      locale: localeName,
+    );
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<L10n> {

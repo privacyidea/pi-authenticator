@@ -75,7 +75,6 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
       appBar: AppBar(
         title: Text(
           L10n.of(context).addManuallyTitle,
-          style: Theme.of(context).textTheme.title,
         ),
       ),
       body: SingleChildScrollView(
