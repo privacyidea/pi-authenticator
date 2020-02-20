@@ -147,23 +147,27 @@ Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
     error: uri,
   );
 
-  String scheme = uri.scheme;
-  if (scheme == "otpauth") {
+  if (uri.scheme != "otpauth") {
+    throw ArgumentError.value(
+      uri,
+      "uri",
+      "The uri is not a valid otpauth uri but a(n) [${uri.scheme}] uri instead.",
+    );
+  }
+
+  String type = uri.host;
+  if (equalsIgnoreCase(type, enumAsString(TokenTypes.HOTP)) ||
+      equalsIgnoreCase(type, enumAsString(TokenTypes.TOTP))) {
     return parseOtpAuth(uri);
-  } else if (scheme == "piauth") {
+  } else if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
     return parsePiAuth(uri);
   }
 
-  log(
-    "The scheme $scheme of the uri is unknown.",
-    name: "utils.dart",
-    error: uri,
-  );
   throw ArgumentError.value(
-      uri,
-      "uri",
-      "The scheme $scheme of the uri "
-          "is not supported!");
+    uri,
+    "uri",
+    "The token type [$type] is not supported",
+  );
 }
 
 Map<String, dynamic> parsePiAuth(Uri uri) {
@@ -181,15 +185,9 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
 
   // TODO extend this for iOs version of the app.
 
-  if (uri.scheme != "piauth") {
-    throw ArgumentError.value(
-      uri,
-      "uri",
-      "The uri is not a valid piauth uri but a(n) [${uri.scheme}] uri instead.",
-    );
-  }
-
   Map<String, dynamic> uriMap = Map();
+
+  uriMap[URI_TYPE] = uri.host;
 
   // If we do not support the version of this piauth url, we can stop here.
   String pushVersionAsString = uri.queryParameters["v"];
@@ -253,28 +251,10 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
 Map<String, dynamic> parseOtpAuth(Uri uri) {
   // otpauth://TYPE/LABEL?PARAMETERS
 
-  if (uri.scheme != "otpauth") {
-    throw ArgumentError.value(
-      uri,
-      "uri",
-      "The uri is not a valid otpauth uri but a(n) [${uri.scheme}] uri instead.",
-    );
-  }
-
   Map<String, dynamic> uriMap = Map();
 
   // parse.host -> Type totp or hotp
-  String type = uri.host;
-  if (!equalsIgnoreCase(type, enumAsString(TokenTypes.HOTP)) &&
-      !equalsIgnoreCase(type, enumAsString(TokenTypes.TOTP))) {
-    throw ArgumentError.value(
-      uri,
-      "uri",
-      "The token type [$type] is not supported.",
-    );
-  }
-
-  uriMap[URI_TYPE] = type;
+  uriMap[URI_TYPE] = uri.host;
 
 // parse.path.substring(1) -> Label
   print("Key: [..] | Value: [..]");
@@ -338,7 +318,7 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
 
   uriMap[URI_SECRET] = secret;
 
-  if (type == "hotp") {
+  if (uriMap[URI_TYPE] == "hotp") {
     // Parse counter.
     String counterAsString = uri.queryParameters["counter"];
     try {
@@ -352,7 +332,7 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
     }
   }
 
-  if (type == "totp") {
+  if (uriMap[URI_TYPE] == "totp") {
     // Parse period.
     String periodAsString = uri.queryParameters["period"] ?? "30";
     if (periodAsString != "30" && periodAsString != "60") {
