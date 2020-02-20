@@ -33,6 +33,7 @@ enum Algorithms {
 enum TokenTypes {
   HOTP,
   TOTP,
+  PIPUSH,
 }
 
 // qr codes:
