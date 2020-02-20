@@ -50,7 +50,7 @@ List<int> decodeSecretToUint8(String secret, Encodings encoding) {
   }
 }
 
-String encodeAsHex(Uint8List decoded){
+String encodeAsHex(Uint8List decoded) {
   return HexConverter.HEX.encode(decoded);
 }
 
@@ -138,30 +138,133 @@ String splitPeriodically(String str, int period) {
   return result.trim();
 }
 
-/// This method parses otpauth uris according to https://github.com/google/google-authenticator/wiki/Key-Uri-Format.
 /// The method returns a map that contains all the uri parameters.
-Map<String, dynamic> parseQRCodeToMap(String uri) {
-  Uri parse = Uri.parse(uri);
+Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
+  Uri uri = Uri.parse(uriAsString);
   log(
     "Barcode is valid Uri:",
     name: "utils.dart",
-    error: "$parse",
+    error: uri,
   );
 
-  // otpauth://TYPE/LABEL?PARAMETERS
+  String scheme = uri.scheme;
+  if (scheme == "otpauth") {
+    return parseOtpAuth(uri);
+  } else if (scheme == "piauth") {
+    return parsePiAuth(uri);
+  }
 
-  if (parse.scheme != "otpauth") {
+  log(
+    "The scheme $scheme of the uri is unknown.",
+    name: "utils.dart",
+    error: uri,
+  );
+  throw ArgumentError.value(
+      uri,
+      "uri",
+      "The scheme $scheme of the uri "
+          "is not supported!");
+}
+
+Map<String, dynamic> parsePiAuth(Uri uri) {
+  // otpauth://pipush/LABELTEXT?
+  // url=https://privacyidea.org/enroll/this/token
+  // &ttl=120
+  // &serial=PIPU0006EF87
+  // &projectid=test-d1231
+  // &appid=1:0123456789012:android:0123456789abcdef
+  // &apikey=AIzaSyBeFSjwJ8aEcHQaj4-isT-sLAX6lmSrvbb
+  // &projectnumber=850240559999
+  // &enrollment_credential=9311ee50678983c0f29d3d843f86e39405e2b427
+  // &apikeyios=AIzaSyBeFSjwJ8aEcHQaj4-isT-sLAX6lmSrvbb
+  // &appidios=1:0123456789012:ios:0123456789abcdef
+
+  // TODO extend this for iOs version of the app.
+
+  if (uri.scheme != "piauth") {
     throw ArgumentError.value(
       uri,
       "uri",
-      "The uri is not a valid otpauth uri but a(n) [${parse.scheme}] uri instead.",
+      "The uri is not a valid piauth uri but a(n) [${uri.scheme}] uri instead.",
+    );
+  }
+
+  Map<String, dynamic> uriMap = Map();
+
+  // If we do not support the version of this piauth url, we can stop here.
+  String pushVersionAsString = uri.queryParameters["v"];
+  try {
+    int pushVersion = int.parse(pushVersionAsString);
+
+    if (pushVersion > 100) {
+      // FIXME what is the right version here?
+      ArgumentError.value(
+          uri,
+          "uri",
+          "The piauth version [$pushVersionAsString] "
+              "is not supported by this version of the app.");
+    }
+  } on FormatException {
+    throw ArgumentError.value(uri, "uri",
+        "[$pushVersionAsString] is not a valid value for parameter [v].");
+  }
+
+  uriMap[URI_LABEL] = _parseLabel(uri);
+
+  uriMap[URI_SERIAL] = uri.queryParameters["serial"];
+  ArgumentError.checkNotNull(uriMap[URI_SERIAL], "serial");
+
+  uriMap[URI_PROJECT_ID] = uri.queryParameters["projectid"];
+  ArgumentError.checkNotNull(uriMap[URI_PROJECT_ID], "projectid");
+
+  uriMap[URI_APP_ID] = uri.queryParameters["appid"];
+  ArgumentError.checkNotNull(uriMap[URI_APP_ID], "appid");
+
+  uriMap[URI_API_KEY] = uri.queryParameters["apikey"];
+  ArgumentError.checkNotNull(uriMap[URI_API_KEY], "apikey");
+
+  uriMap[URI_PROJECT_NUMBER] = uri.queryParameters["projectnumber"];
+  ArgumentError.checkNotNull(uriMap[URI_PROJECT_NUMBER], "projectnumber");
+
+  // TODO what happens if Uri.parse fails?
+  uriMap[URI_ROLLOUT_URL] = Uri.parse(uri.queryParameters["url"]);
+  ArgumentError.checkNotNull(uriMap[URI_ROLLOUT_URL], "url");
+
+  String ttlAsString = uri.queryParameters["ttl"] ?? "10";
+  try {
+    uriMap[URI_TTL] = int.parse(ttlAsString);
+  } on FormatException {
+    throw ArgumentError.value(
+        uri, "uri", "[$ttlAsString] is not a valid value for parameter [ttl].");
+  }
+
+  uriMap[URI_ENROLLMENT_CREDENTIAL] =
+      uri.queryParameters["enrollment_credential"];
+  ArgumentError.checkNotNull(
+      uriMap[URI_ENROLLMENT_CREDENTIAL], "enrollment_credential");
+
+  uriMap[URI_SSL_VERIFY] = (uri.queryParameters["sslverify"] ?? "1") == "1";
+
+  return uriMap;
+}
+
+/// /// This method parses otpauth uris according
+/// to https://github.com/google/google-authenticator/wiki/Key-Uri-Format.
+Map<String, dynamic> parseOtpAuth(Uri uri) {
+  // otpauth://TYPE/LABEL?PARAMETERS
+
+  if (uri.scheme != "otpauth") {
+    throw ArgumentError.value(
+      uri,
+      "uri",
+      "The uri is not a valid otpauth uri but a(n) [${uri.scheme}] uri instead.",
     );
   }
 
   Map<String, dynamic> uriMap = Map();
 
   // parse.host -> Type totp or hotp
-  String type = parse.host;
+  String type = uri.host;
   if (!equalsIgnoreCase(type, enumAsString(TokenTypes.HOTP)) &&
       !equalsIgnoreCase(type, enumAsString(TokenTypes.TOTP))) {
     throw ArgumentError.value(
@@ -175,14 +278,13 @@ Map<String, dynamic> parseQRCodeToMap(String uri) {
 
 // parse.path.substring(1) -> Label
   print("Key: [..] | Value: [..]");
-  parse.queryParameters.forEach((key, value) {
+  uri.queryParameters.forEach((key, value) {
     print("  $key | $value");
   });
 
-  String label = parse.path.substring(1);
-  uriMap[URI_LABEL] = label;
+  uriMap[URI_LABEL] = _parseLabel(uri);
 
-  String algorithm = parse.queryParameters["algorithm"] ??
+  String algorithm = uri.queryParameters["algorithm"] ??
       enumAsString(Algorithms.SHA1); // Optional parameter
 
   if (!equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA1)) &&
@@ -199,7 +301,7 @@ Map<String, dynamic> parseQRCodeToMap(String uri) {
 
   // Parse digits.
   String digitsAsString =
-      parse.queryParameters["digits"] ?? "6"; // Optional parameter
+      uri.queryParameters["digits"] ?? "6"; // Optional parameter
 
   if (digitsAsString != "6" && digitsAsString != "8") {
     throw ArgumentError.value(
@@ -214,7 +316,7 @@ Map<String, dynamic> parseQRCodeToMap(String uri) {
   uriMap[URI_DIGITS] = digits;
 
   // Parse secret.
-  String secretAsString = parse.queryParameters["secret"];
+  String secretAsString = uri.queryParameters["secret"];
 
   // This is a fix for omitted padding in base32 encoded secrets.
   //
@@ -238,7 +340,7 @@ Map<String, dynamic> parseQRCodeToMap(String uri) {
 
   if (type == "hotp") {
     // Parse counter.
-    String counterAsString = parse.queryParameters["counter"];
+    String counterAsString = uri.queryParameters["counter"];
     try {
       uriMap[URI_COUNTER] = int.parse(counterAsString);
     } on FormatException {
@@ -252,7 +354,7 @@ Map<String, dynamic> parseQRCodeToMap(String uri) {
 
   if (type == "totp") {
     // Parse period.
-    String periodAsString = parse.queryParameters["period"] ?? "30";
+    String periodAsString = uri.queryParameters["period"] ?? "30";
     if (periodAsString != "30" && periodAsString != "60") {
       throw ArgumentError.value(
         uri,
@@ -264,13 +366,13 @@ Map<String, dynamic> parseQRCodeToMap(String uri) {
     uriMap[URI_PERIOD] = int.parse(periodAsString);
   }
 
-  if (is2StepURI(parse)) {
+  if (is2StepURI(uri)) {
     // Parse for 2 step roll out.
-    String saltLengthAsString = parse.queryParameters["2step_salt"] ?? "10";
+    String saltLengthAsString = uri.queryParameters["2step_salt"] ?? "10";
     String outputLengthInByteAsString =
-        parse.queryParameters["2step_output"] ?? "20";
+        uri.queryParameters["2step_output"] ?? "20";
     String iterationsAsString =
-        parse.queryParameters["2step_difficulty"] ?? "10000";
+        uri.queryParameters["2step_difficulty"] ?? "10000";
 
     // Parse parameters
     try {
@@ -304,6 +406,10 @@ Map<String, dynamic> parseQRCodeToMap(String uri) {
   }
 
   return uriMap;
+}
+
+String _parseLabel(Uri uri) {
+  return uri.path.substring(1);
 }
 
 bool is2StepURI(Uri uri) {
