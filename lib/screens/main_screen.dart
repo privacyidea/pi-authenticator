@@ -29,14 +29,14 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
+import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uuid/uuid.dart';
 
 class MainScreen extends StatefulWidget {
@@ -130,14 +130,15 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  // ###########################################################################
-  //                            2 STEP ROLLOUT
-  // ###########################################################################
-
   Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
     String serial = Uuid().v4();
-
     String type = uriMap[URI_TYPE];
+
+    // Push token do not need any of the other parameters.
+    if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
+      return _buildPushToken(uriMap, uri, serial);
+    }
+
     String label = uriMap[URI_LABEL];
     String algorithm = uriMap[URI_ALGORITHM];
     int digits = uriMap[URI_DIGITS];
@@ -180,13 +181,14 @@ class _MainScreenState extends State<MainScreen> {
       );
     } else {
       throw ArgumentError.value(
-          uri, "uri", "[$type] is not a supported type of token");
+          uri,
+          "uri",
+          "Building the token type "
+              "[$type] is not a supported right now.");
     }
   }
 
-  // ###########################################################################
-  //                         2 STEP ROLLOUT END
-  // ###########################################################################
+  Token _buildPushToken(Map<String, dynamic> uriMap, Uri uri, String serial) {}
 
   ListView _buildTokenList() {
     return ListView.separated(
