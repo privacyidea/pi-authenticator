@@ -134,8 +134,13 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
     String serial = Uuid().v4();
-
     String type = uriMap[URI_TYPE];
+
+    // Push token do not need any of the other parameters.
+    if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
+      return _buildPushToken(uriMap, uri, serial);
+    }
+
     String label = uriMap[URI_LABEL];
     String algorithm = uriMap[URI_ALGORITHM];
     int digits = uriMap[URI_DIGITS];
@@ -178,9 +183,14 @@ class _MainScreenState extends State<MainScreen> {
       );
     } else {
       throw ArgumentError.value(
-          uri, "uri", "[$type] is not a supported type of token");
+          uri,
+          "uri",
+          "Building the token type "
+              "[$type] is not a supported right now.");
     }
   }
+
+  Token _buildPushToken(Map<String, dynamic> uriMap, Uri uri, String serial) {}
 
   ListView _buildTokenList() {
     return ListView.separated(
