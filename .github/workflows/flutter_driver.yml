@@ -42,6 +42,8 @@ jobs:
     - uses: subosito/flutter-action@v1
       with:
         channel: 'stable'
+    - name: "List all test files"
+      run: "ls -R test_driver"
     - name: "Run Flutter Driver tests"
       run: "flutter drive --target=test_driver/run_all.dart"
 
