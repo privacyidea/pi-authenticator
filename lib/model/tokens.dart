@@ -27,7 +27,7 @@ abstract class Token {
   String _tokenVersion =
       "v1.0.0"; // The version of this token, this is used for serialization.
   String _label; // the name of the token, it cannot be uses as an identifier
-  String _serial; // this is the identifier of the secret
+  String _serial; // this is the identifier of the token
   Algorithms
       _algorithm; // the hashing algorithm that is used to calculate the otp value
   int _digits; // the number of digits the otp value will have

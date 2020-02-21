@@ -194,8 +194,7 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   try {
     int pushVersion = int.parse(pushVersionAsString);
 
-    if (pushVersion > 100) {
-      // FIXME what is the right version here?
+    if (pushVersion > 1) {
       ArgumentError.value(
           uri,
           "uri",
