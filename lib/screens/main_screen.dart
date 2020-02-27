@@ -19,6 +19,8 @@
 */
 
 import 'dart:developer';
+import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
@@ -27,11 +29,16 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
+import 'package:privacyidea_authenticator/screens/settings_screen.dart';
+import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
+import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
+import 'package:uuid/uuid.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen({Key key, this.title}) : super(key: key);
@@ -63,7 +70,7 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: Text(
           widget.title,
-          style: Theme.of(context).textTheme.title,
+          textScaleFactor: screenTitleScaleFactor,
         ),
         actions: _buildActionMenu(),
         leading: Padding(
@@ -74,7 +81,7 @@ class _MainScreenState extends State<MainScreen> {
       body: _buildTokenList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _scanQRCode(),
-        tooltip: "Scan QR Code",
+        tooltip: L10n.of(context).scanQRTooltip,
         child: Icon(Icons.add),
       ),
     );
@@ -89,7 +96,8 @@ class _MainScreenState extends State<MainScreen> {
         error: barcode,
       );
 
-      Token newToken = parseQRCodeToToken(barcode);
+      Token newToken = await _buildTokenFromMap(
+          parseQRCodeToMap(barcode), Uri.parse(barcode));
       setState(() {
         log(
           "Adding new token from qr-code:",
@@ -103,6 +111,7 @@ class _MainScreenState extends State<MainScreen> {
         //  Camera access was denied
       } else {
         //  Unknown error
+        throw e;
       }
     } on FormatException {
       //  User returned by pressing the back button
@@ -119,6 +128,57 @@ class _MainScreenState extends State<MainScreen> {
       );
     } catch (e) {
       //  Unknown error
+      throw e;
+    }
+  }
+
+  Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
+    String serial = Uuid().v4();
+
+    String type = uriMap[URI_TYPE];
+    String label = uriMap[URI_LABEL];
+    String algorithm = uriMap[URI_ALGORITHM];
+    int digits = uriMap[URI_DIGITS];
+    Uint8List secret = uriMap[URI_SECRET];
+    int counter = uriMap[URI_COUNTER];
+    int period = uriMap[URI_PERIOD];
+
+    if (is2StepURI(uri)) {
+      // Calculate the whole secret.
+      secret = await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => TwoStepDialog(
+          iterations: uriMap[URI_ITERATIONS],
+          keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
+          saltLength: uriMap[URI_SALT_LENGTH],
+          password: secret,
+        ),
+      );
+    }
+
+    // uri.host -> totp or hotp
+    if (type == "hotp") {
+      return HOTPToken(
+        label,
+        serial,
+        mapStringToAlgorithm(algorithm),
+        digits,
+        secret,
+        counter: counter,
+      );
+    } else if (type == "totp") {
+      return TOTPToken(
+        label,
+        serial,
+        mapStringToAlgorithm(algorithm),
+        digits,
+        secret,
+        period,
+      );
+    } else {
+      throw ArgumentError.value(
+          uri, "uri", "[$type] is not a supported type of token");
     }
   }
 
@@ -167,7 +227,6 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                           applicationLegalese: "Apache License 2.0",
                         )));
-//            });
           } else if (value == "add_manually") {
             Navigator.push(
                 context,
@@ -175,7 +234,11 @@ class _MainScreenState extends State<MainScreen> {
                   builder: (context) => AddTokenManuallyScreen(),
                 )).then((newToken) => _addNewToken(newToken));
           } else if (value == "settings") {
-            // TODO if we have settings at some point, open them
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsScreen('Settings'),
+                ));
           }
         },
         elevation: 5.0,
@@ -189,11 +252,11 @@ class _MainScreenState extends State<MainScreen> {
             value: "add_manually",
             child: Text(L10n.of(context).addManually),
           ),
-//          PopupMenuDivider(),
-//          PopupMenuItem<String>(
-//            value: "settings",
-//            child: Text(L10n.of(context).settings),
-//          ),
+          PopupMenuDivider(),
+          PopupMenuItem<String>(
+            value: "settings",
+            child: Text(L10n.of(context).settings),
+          ),
         ],
       ),
     ];

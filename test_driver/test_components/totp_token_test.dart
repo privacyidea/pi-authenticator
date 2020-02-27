@@ -25,7 +25,7 @@ import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:test/test.dart';
 
-void main() {
+void totpTokenUpdateTest() {
   group('TOTP token update', () {
     FlutterDriver driver;
 
@@ -78,8 +78,9 @@ void main() {
       // We have to run this without waiting for all animations to stop
       // (the animation loops in this widget)
       await driver.runUnsynchronized(() async {
-        String rawValue = calculateTotpValue(token);
+        String rawValue = calculateTotpValue(token).padLeft(6, '0');
         String value = insertCharAt(rawValue, " ", rawValue.length ~/ 2);
+        print('1. Value: $value');
 
         await driver.tap(find.text(value));
       });
@@ -88,17 +89,30 @@ void main() {
         // Wait until update is due.
         await Future.delayed(Duration(seconds: 32));
 
-        String rawValue = calculateTotpValue(token);
+        String rawValue = calculateTotpValue(token).padLeft(6, '0');
         String value = insertCharAt(rawValue, " ", rawValue.length ~/ 2);
 
-        print('Value: $value');
+        print('2. Value: $value');
 
         await driver.waitFor(find.text(value), timeout: Duration(seconds: 40));
       });
     }, timeout: Timeout(Duration(seconds: 60)));
 
-//    test("Wait", () async {
-//      await Future.delayed(Duration(seconds: 5));
-//    });
+    test('Clean up', () async {
+      await driver.runUnsynchronized(() async {
+        await driver.scroll(
+            find.text("TOTPTestName"), -500, 0, Duration(milliseconds: 100));
+
+        // Delete the token.
+        await driver.tap(find.text("Delete"));
+
+        // Wait for the dialog to open.
+        await driver.waitFor(find.text("Confirm deletion"));
+
+        await driver.tap(find.text("Delete"));
+
+        await driver.waitForAbsent(find.text("TOTPTestName"));
+      });
+    });
   });
 }

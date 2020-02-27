@@ -23,8 +23,8 @@
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
-void main() {
-  group('Add token manually', () {
+void addTokenRoutine(String name, String secret) {
+  group('Copy otp value to clipboard', () {
     FlutterDriver driver;
 
     // Connect to the Flutter driver before running any tests.
@@ -39,32 +39,23 @@ void main() {
       }
     });
 
-    final buttonFinder = find.byType("PopupMenuButton<String>");
-    final addTokenButton = find.text("Add token");
-
     test("Click the 'add' button", () async {
-      await driver.tap(buttonFinder);
-      await driver.tap(addTokenButton);
+      await driver.tap(find.byType("PopupMenuButton<String>"));
+      await driver.tap(find.text("Add token"));
     });
 
     test("Enter name and secret", () async {
+      // Enter the name.
       await driver.tap(find.ancestor(
           of: find.text("Name"), matching: find.byType("TextFormField")));
 
-      await driver.enterText("TestName");
+      await driver.enterText(name);
 
+      // Enter the secret.
       await driver.tap(find.ancestor(
           of: find.text("Secret"), matching: find.byType("TextFormField")));
 
-      await driver.enterText("TestSecret");
-    });
-
-    test("Change token type", () async {
-      await driver.tap(find.text("SHA1"));
-      await driver.tap(find.text("SHA512"));
-
-      await driver.tap(find.text("6"));
-      await driver.tap(find.text("8"));
+      await driver.enterText(secret);
     });
 
     test("Click 'add token'", () async {
@@ -72,8 +63,14 @@ void main() {
     });
 
     test("Assert the token exists", () async {
-      await driver.tap(find.text("TestName"));
-      await driver.tap(find.text("3058 7488"));
+      await driver.tap(find.text(name));
     });
   });
+}
+
+Future<bool> doLongPress(
+    FlutterDriver driver, SerializableFinder target) async {
+  // Pressing 2 seconds is needed to start the 'paste' dialog on a text field.
+  await driver.scroll(target, 0, 0, Duration(seconds: 2));
+  return true;
 }

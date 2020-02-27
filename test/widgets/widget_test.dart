@@ -20,9 +20,11 @@
 
 import 'dart:convert';
 
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
@@ -115,12 +117,17 @@ class _WidgetTestWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: child,
-        ),
-      ),
-    );
+    return DynamicTheme(
+        defaultBrightness: Brightness.light,
+        data: (brightness) => getApplicationTheme(brightness),
+        themedWidgetBuilder: (context, theme) {
+          return MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: child,
+              ),
+            ),
+          );
+        });
   }
 }

@@ -18,20 +18,16 @@
   limitations under the License.
 */
 
-import 'dart:ui';
+// Imports the Flutter Driver API.
 
-import 'package:flutter_driver/driver_extension.dart';
-import 'package:privacyidea_authenticator/main.dart' as app;
+import 'test_components/add_token_test.dart';
+import 'test_components/copy_to_clipboard_test.dart';
+import 'test_components/rename_and_delete_test.dart';
+import 'test_components/totp_token_test.dart';
 
 void main() {
-  // Override the supported locales of the application to prevent buttons having
-  //  different text values.
-  app.MyApp.supportedLocales = [Locale('en', '')];
-
-  // This line enables the extension.
-  enableFlutterDriverExtension();
-
-  // Call the `main()` function of the app, or call `runApp` with
-  // any widget you are interested in testing.
-  app.main();
+  addTokenTest();
+  renameAndDeleteTest();
+  totpTokenUpdateTest();
+  copyToClipboardTest();
 }

@@ -19,31 +19,17 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'de';
 
+  static m0(otpValue) => "Passwort \"${otpValue}\" wurde in die Zwischenablage kopiert.";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
-    "about" : MessageLookupByLibrary.simpleMessage("Über"),
-    "addManually" : MessageLookupByLibrary.simpleMessage("Token hinzufügen"),
-    "addManuallyTitle" : MessageLookupByLibrary.simpleMessage("Neuen Token konfigurieren"),
-    "addToken" : MessageLookupByLibrary.simpleMessage("Token hinzufügen"),
-    "algorithm" : MessageLookupByLibrary.simpleMessage("Algorithmus"),
-    "areYouSure" : MessageLookupByLibrary.simpleMessage("Bestätigen sie das Löschen von"),
-    "cancel" : MessageLookupByLibrary.simpleMessage("Abbrechen"),
-    "delete" : MessageLookupByLibrary.simpleMessage("Löschen"),
-    "deleteDialogTitle" : MessageLookupByLibrary.simpleMessage("Löschen bestätigen"),
-    "digits" : MessageLookupByLibrary.simpleMessage("Ziffern"),
-    "encoding" : MessageLookupByLibrary.simpleMessage("Verschlüsselung"),
-    "hintEmptyName" : MessageLookupByLibrary.simpleMessage("Bitte geben Sie einen Namen für diesen Token ein."),
-    "hintEmptySecret" : MessageLookupByLibrary.simpleMessage("Bitte geben Sie ein Geheimnis für diesen Token ein."),
-    "hintInvalidSecret" : MessageLookupByLibrary.simpleMessage("Das Geheimnis entspricht nicht der gewählten\n Verschlüsselung."),
-    "nameHint" : MessageLookupByLibrary.simpleMessage("Name"),
-    "next" : MessageLookupByLibrary.simpleMessage("Weiter"),
-    "period" : MessageLookupByLibrary.simpleMessage("Periode"),
-    "rename" : MessageLookupByLibrary.simpleMessage("Umbenennen"),
-    "renameDialogTitle" : MessageLookupByLibrary.simpleMessage("Token umbenennen"),
-    "scanQr" : MessageLookupByLibrary.simpleMessage("QR-Code scannen"),
-    "secretHint" : MessageLookupByLibrary.simpleMessage("Geheimnis"),
-    "settings" : MessageLookupByLibrary.simpleMessage("Einstellungen"),
-    "toolTipAddToken" : MessageLookupByLibrary.simpleMessage("Neue Tokens hinzufügen"),
-    "type" : MessageLookupByLibrary.simpleMessage("Art")
+    "Dark theme" : MessageLookupByLibrary.simpleMessage("Dunkles Thema"),
+    "Dismiss" : MessageLookupByLibrary.simpleMessage("Schließen"),
+    "Generating phone part" : MessageLookupByLibrary.simpleMessage("Generiere Telefonanteil"),
+    "Light theme" : MessageLookupByLibrary.simpleMessage("Helles Thema"),
+    "Phone part:" : MessageLookupByLibrary.simpleMessage("Telefonanteil:"),
+    "Scan QR code" : MessageLookupByLibrary.simpleMessage("Scanne QR code"),
+    "Theme" : MessageLookupByLibrary.simpleMessage("Thema"),
+    "otpValueCopiedMessage" : m0
   };
 }
