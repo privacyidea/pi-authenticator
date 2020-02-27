@@ -39,21 +39,14 @@ ThemeData getApplicationTheme(Brightness brightness) {
         ),
   );
 
-  return isDark
-      ? ThemeData.dark().copyWith(
-          primaryColor: primaryColor,
-          accentColor: accentColor,
-          toggleableActiveColor: accentColor,
-          floatingActionButtonTheme: floatingActionButtonThemeData,
-          buttonTheme: buttonTheme,
-        )
-      : ThemeData.light().copyWith(
-          primaryColor: primaryColor,
-          accentColor: accentColor,
-          toggleableActiveColor: accentColor,
-          floatingActionButtonTheme: floatingActionButtonThemeData,
-          buttonTheme: buttonTheme,
-        );
+  ThemeData thisTheme = isDark ? ThemeData.dark() : ThemeData.light();
+  return thisTheme.copyWith(
+    primaryColor: primaryColor,
+    accentColor: accentColor,
+    toggleableActiveColor: accentColor,
+    floatingActionButtonTheme: floatingActionButtonThemeData,
+    buttonTheme: buttonTheme,
+  );
 }
 
 TextStyle getDialogTextStyle(bool isDark) =>
@@ -68,5 +61,6 @@ Color getTonedColor(Color input, bool isDark) {
       : input;
 }
 
-bool isDarkModeOn(BuildContext context) => DynamicTheme.of(context).brightness == Brightness.dark ||
-MediaQuery.of(context).platformBrightness == Brightness.dark;
+bool isDarkModeOn(BuildContext context) =>
+    DynamicTheme.of(context).brightness == Brightness.dark ||
+    MediaQuery.of(context).platformBrightness == Brightness.dark;
