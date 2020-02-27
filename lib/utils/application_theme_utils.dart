@@ -39,9 +39,12 @@ ThemeData getApplicationTheme(Brightness brightness) {
   final ButtonThemeData buttonTheme = ButtonThemeData(
     textTheme: ButtonTextTheme.accent,
     colorScheme: thisThemeData.buttonTheme.colorScheme.copyWith(
-          primary: accentColor,
-          secondary: isDark ? Colors.black : Colors.white,
-        ),
+      primary: accentColor,
+// FIXME: Sadly this changes the text color of the 'paste' button too, and thus
+//   making that text unreadable
+//          secondary: isDark ? Colors.black : Colors.white,
+      secondary: isDark ? Colors.white : Colors.black,
+    ),
   );
 
   return thisThemeData.copyWith(
