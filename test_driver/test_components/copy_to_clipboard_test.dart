@@ -65,8 +65,6 @@ void copyToClipboardTest() {
       await driver.tap(find.text(pasteText));
 
       await driver.waitFor(find.text('149049'));
-
-      Future.delayed(Duration(seconds: 5));
     });
   });
 }
