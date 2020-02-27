@@ -39,7 +39,7 @@ dependencies:
   # dependency to save to secure storage under android and ios
   flutter_secure_storage: ^3.3.1+1
   # dependency to serialize objects to json
-  json_annotation: ^2.0.0
+  json_annotation: ^2.0.0 # run "flutter pub run build_runner build" in terminal to build tokens.g.dart
   # dependency for slide options in list
   flutter_slidable: ^0.5.4
   # dependency for automatically showing the version number
