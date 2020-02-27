@@ -29,14 +29,15 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
+import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
+import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uuid/uuid.dart';
 
 class MainScreen extends StatefulWidget {
@@ -69,6 +70,7 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: Text(
           widget.title,
+          textScaleFactor: screenTitleScaleFactor,
         ),
         actions: _buildActionMenu(),
         leading: Padding(
@@ -130,10 +132,6 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  // ###########################################################################
-  //                            2 STEP ROLLOUT
-  // ###########################################################################
-
   Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
     String serial = Uuid().v4();
 
@@ -183,10 +181,6 @@ class _MainScreenState extends State<MainScreen> {
           uri, "uri", "[$type] is not a supported type of token");
     }
   }
-
-  // ###########################################################################
-  //                         2 STEP ROLLOUT END
-  // ###########################################################################
 
   ListView _buildTokenList() {
     return ListView.separated(
