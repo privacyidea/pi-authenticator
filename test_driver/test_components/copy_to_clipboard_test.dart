@@ -55,17 +55,14 @@ void copyToClipboardTest() {
     });
 
     test('Verify value is in clipboard', () async {
-      print(
-          '################################################# ${Platform.operatingSystem}');
-
       await doLongPress(
           driver,
           find.ancestor(
               of: find.text("Name"), matching: find.byType("TextFormField")));
 
       String pasteText =
-          Platform.operatingSystem == 'linux' ? "PASTE" : "Paste";
-      await driver.tap(find.text('PASTE'));
+      Platform.operatingSystem == 'linux' ? "PASTE" : "Paste";
+      await driver.tap(find.text(pasteText));
 
       await driver.waitFor(find.text('149049'));
 
