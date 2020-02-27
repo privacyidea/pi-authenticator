@@ -190,7 +190,33 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Token _buildPushToken(Map<String, dynamic> uriMap, Uri uri, String serial) {}
+  Token _buildPushToken(Map<String, dynamic> uriMap, Uri uri, String serial) {
+    // TODO:
+//    otpauth://
+//    pipush/
+//        PIPU00028E46 ## for token
+//        ?
+//
+//    &v=1 ## for parsing
+//
+//    ##### TOKEN
+//    &issuer=privacyIDEA ## for token
+//    &serial=PIPU00028E46 ## for token
+//
+//    ##### 2. STEP
+//    &sslverify=0 ## for 2. enrollment step
+//    &enrollment_credential=9XXXXXXX7 ## for 2. enrollment step
+//    url=https%3A//XX.XX.XX.XX/ttype/push ## for 2. enrollment step
+//    &ttl=2 ## for 2. enrollment step
+//
+//    ##### FCM
+//    &projectnumber=6XXXXXX4 ## for fcm init
+//    &projectid=XXXXX ## for fcm init
+//    &appid=1XXXXXXa9 ## for fcm init
+//    &apikey=AIzaXXXXXiRk ## for fcm init
+//    &appidios=AIzaSXXXXXvUWdiRk ## for fcm init
+//    &apikeyios=AIzXXXXXk ## for fcm init
+  }
 
   ListView _buildTokenList() {
     return ListView.separated(
