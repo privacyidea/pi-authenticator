@@ -18,20 +18,29 @@
   limitations under the License.
 */
 
-import 'dart:ui';
+import 'package:flutter/material.dart';
 
-import 'package:flutter_driver/driver_extension.dart';
-import 'package:privacyidea_authenticator/main.dart' as app;
+class SettingsGroup extends StatelessWidget {
+  final String title;
+  final List<Widget> children;
 
-void main() {
-  // Override the supported locales of the application to prevent buttons having
-  //  different text values.
-  app.MyApp.supportedLocales = [Locale('en', '')];
+  SettingsGroup({this.title, this.children});
 
-  // This line enables the extension.
-  enableFlutterDriverExtension();
-
-  // Call the `main()` function of the app, or call `runApp` with
-  // any widget you are interested in testing.
-  app.main();
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        ListTile(
+          dense: true,
+          leading: Text(
+            title,
+            style: Theme.of(context).textTheme.subhead.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+        ),
+      ]..addAll(children),
+    );
+  }
 }

@@ -19,31 +19,17 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
+  static m0(otpValue) => "Password \"${otpValue}\" copied to clipboard.";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
-    "about" : MessageLookupByLibrary.simpleMessage("About"),
-    "addManually" : MessageLookupByLibrary.simpleMessage("Add token"),
-    "addManuallyTitle" : MessageLookupByLibrary.simpleMessage("Enter details for token"),
-    "addToken" : MessageLookupByLibrary.simpleMessage("Add token"),
-    "algorithm" : MessageLookupByLibrary.simpleMessage("Algorithm"),
-    "areYouSure" : MessageLookupByLibrary.simpleMessage("Are you sure you want to delete"),
-    "cancel" : MessageLookupByLibrary.simpleMessage("Cancel"),
-    "delete" : MessageLookupByLibrary.simpleMessage("Delete"),
-    "deleteDialogTitle" : MessageLookupByLibrary.simpleMessage("Confirm deletion"),
-    "digits" : MessageLookupByLibrary.simpleMessage("Digits"),
-    "encoding" : MessageLookupByLibrary.simpleMessage("Encoding"),
-    "hintEmptyName" : MessageLookupByLibrary.simpleMessage("Please enter a name for this token."),
-    "hintEmptySecret" : MessageLookupByLibrary.simpleMessage("Please enter a secret for this token."),
-    "hintInvalidSecret" : MessageLookupByLibrary.simpleMessage("The secret does not the fit current encoding"),
-    "nameHint" : MessageLookupByLibrary.simpleMessage("Name"),
-    "next" : MessageLookupByLibrary.simpleMessage("Next"),
-    "period" : MessageLookupByLibrary.simpleMessage("Period"),
-    "rename" : MessageLookupByLibrary.simpleMessage("Rename"),
-    "renameDialogTitle" : MessageLookupByLibrary.simpleMessage("Rename token"),
-    "scanQr" : MessageLookupByLibrary.simpleMessage("Scan QR-Code"),
-    "secretHint" : MessageLookupByLibrary.simpleMessage("Secret"),
-    "settings" : MessageLookupByLibrary.simpleMessage("Settings"),
-    "toolTipAddToken" : MessageLookupByLibrary.simpleMessage("Add tokens"),
-    "type" : MessageLookupByLibrary.simpleMessage("Type")
+    "Dark theme" : MessageLookupByLibrary.simpleMessage("Dark theme"),
+    "Dismiss" : MessageLookupByLibrary.simpleMessage("Dismiss"),
+    "Generating phone part" : MessageLookupByLibrary.simpleMessage("Generating phone part"),
+    "Light theme" : MessageLookupByLibrary.simpleMessage("Light theme"),
+    "Phone part:" : MessageLookupByLibrary.simpleMessage("Phone part:"),
+    "Scan QR code" : MessageLookupByLibrary.simpleMessage("Scan QR code"),
+    "Theme" : MessageLookupByLibrary.simpleMessage("Theme"),
+    "otpValueCopiedMessage" : m0
   };
 }

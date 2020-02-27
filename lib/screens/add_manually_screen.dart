@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
@@ -75,13 +76,12 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
       appBar: AppBar(
         title: Text(
           L10n.of(context).addManuallyTitle,
-          style: Theme.of(context).textTheme.title,
+          textScaleFactor: screenTitleScaleFactor,
         ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             _buildTextInputForm(),
             _buildDropdownButtonWithLabel(
@@ -157,27 +157,34 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
 
   Widget _buildDropdownButtonWithLabel<T>(
       String label, _Wrapper reference, List<T> values,
-      {postFix = ''}) {
+      {String postFix = ''}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Text(label, style: Theme.of(context).textTheme.body1),
-        DropdownButton<T>(
-          value: reference.value,
-          items: values.map<DropdownMenuItem<T>>((T value) {
-            return DropdownMenuItem<T>(
-              value: value,
-              child: Text(
-                "${value is String || value is int || value is double ? value : enumAsString(value)}$postFix",
-                style: Theme.of(context).textTheme.subhead,
-              ),
-            );
-          }).toList(),
-          onChanged: (T newValue) {
-            setState(() {
-              reference.value = newValue;
-            });
-          },
+        Container(
+          width: 100,
+          child: DropdownButton<T>(
+            isExpanded: true,
+            value: reference.value,
+            items: values.map<DropdownMenuItem<T>>((T value) {
+              return DropdownMenuItem<T>(
+                value: value,
+                child: Text(
+                  "${value is String
+                      || value is int
+                      || value is double ? value : enumAsString(value)}"
+                  "$postFix",
+                  style: Theme.of(context).textTheme.subhead,
+                ),
+              );
+            }).toList(),
+            onChanged: (T newValue) {
+              setState(() {
+                reference.value = newValue;
+              });
+            },
+          ),
         ),
       ],
     );

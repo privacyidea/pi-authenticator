@@ -27,7 +27,6 @@ class L10n {
   String get next {
     return Intl.message(
       'Next',
-      name: 'next',
       desc: 'The text of the button to calculate the next otp value.',
       locale: localeName,
     );
@@ -36,7 +35,6 @@ class L10n {
   String get about {
     return Intl.message(
       'About',
-      name: 'about',
       desc: 'Button to open the about page.',
       locale: localeName,
     );
@@ -45,7 +43,6 @@ class L10n {
   String get settings {
     return Intl.message(
       'Settings',
-      name: 'settings',
       desc: 'Button to open the settings page.',
       locale: localeName,
     );
@@ -54,7 +51,6 @@ class L10n {
   String get addManually {
     return Intl.message(
       'Add token',
-      name: 'addManually',
       desc: 'The button to open the screen to add tokens by hand.',
       locale: localeName,
     );
@@ -63,7 +59,6 @@ class L10n {
   String get scanQr {
     return Intl.message(
       'Scan QR-Code',
-      name: 'scanQr',
       desc: 'The button to scan otpauto qr-codes.',
       locale: localeName,
     );
@@ -72,7 +67,6 @@ class L10n {
   String get addManuallyTitle {
     return Intl.message(
       'Enter details for token',
-      name: 'addManuallyTitle',
       desc: 'Title of the screen where tokens are created manually,'
           ' tells the user to enter all required values.',
       locale: localeName,
@@ -82,7 +76,6 @@ class L10n {
   String get nameHint {
     return Intl.message(
       'Name',
-      name: 'nameHint',
       desc: 'Describes the field where the tokens name should be entered.',
       locale: localeName,
     );
@@ -91,7 +84,6 @@ class L10n {
   String get secretHint {
     return Intl.message(
       'Secret',
-      name: 'secretHint',
       desc: 'Describes the field where the tokens secret should be entered.',
       locale: localeName,
     );
@@ -100,7 +92,6 @@ class L10n {
   String get encoding {
     return Intl.message(
       'Encoding',
-      name: 'encoding',
       desc: 'Title of the dropdown button where the encoding is selected.',
       locale: localeName,
     );
@@ -109,7 +100,6 @@ class L10n {
   String get algorithm {
     return Intl.message(
       'Algorithm',
-      name: 'algorithm',
       desc: 'Title of the dropdown button where the encoding is selected.',
       locale: localeName,
     );
@@ -118,7 +108,6 @@ class L10n {
   String get digits {
     return Intl.message(
       'Digits',
-      name: 'digits',
       desc:
           'Title of the dropdown button where the number of digits for the opt value is selecte.',
       locale: localeName,
@@ -128,7 +117,6 @@ class L10n {
   String get type {
     return Intl.message(
       'Type',
-      name: 'type',
       desc:
           'Title of the dropdown button where the type of the token is selected.',
       locale: localeName,
@@ -138,7 +126,6 @@ class L10n {
   String get period {
     return Intl.message(
       'Period',
-      name: 'period',
       desc:
           'Title of the dropdown button where the period of the totp token is selected.',
       locale: localeName,
@@ -148,7 +135,6 @@ class L10n {
   String get addToken {
     return Intl.message(
       'Add token',
-      name: 'addToken',
       desc:
           'Button to add the token for which the values where added in this screen.',
       locale: localeName,
@@ -158,7 +144,6 @@ class L10n {
   String get toolTipAddToken {
     return Intl.message(
       'Add tokens',
-      name: 'toolTipAddToken',
       desc:
           'Tooltip for the button that opens the selection for adding tokens.',
       locale: localeName,
@@ -168,7 +153,6 @@ class L10n {
   String get hintEmptyName {
     return Intl.message(
       'Please enter a name for this token.',
-      name: 'hintEmptyName',
       desc: 'Hint telling the user to enter a name for a token.',
       locale: localeName,
     );
@@ -177,7 +161,6 @@ class L10n {
   String get hintEmptySecret {
     return Intl.message(
       'Please enter a secret for this token.',
-      name: 'hintEmptySecret',
       desc: 'Hint telling the user to enter a secret for a token.',
       locale: localeName,
     );
@@ -186,7 +169,6 @@ class L10n {
   String get hintInvalidSecret {
     return Intl.message(
       'The secret does not the fit current encoding',
-      name: 'hintInvalidSecret',
       desc:
           'Hint telling the user that the secret deos not fit the selected encoding.',
       locale: localeName,
@@ -196,7 +178,6 @@ class L10n {
   String get rename {
     return Intl.message(
       'Rename',
-      name: 'rename',
       desc: 'Label that describes renaming the token.',
       locale: localeName,
     );
@@ -205,7 +186,6 @@ class L10n {
   String get renameDialogTitle {
     return Intl.message(
       'Rename token',
-      name: 'renameDialogTitle',
       desc: 'Title of the dialog where a new name for a token can be entered.',
       locale: localeName,
     );
@@ -214,7 +194,6 @@ class L10n {
   String get cancel {
     return Intl.message(
       'Cancel',
-      name: 'cancel',
       desc: 'Button to cancel an action.',
       locale: localeName,
     );
@@ -223,7 +202,6 @@ class L10n {
   String get delete {
     return Intl.message(
       'Delete',
-      name: 'delete',
       desc: 'Label that describes deleting the token.',
       locale: localeName,
     );
@@ -232,7 +210,6 @@ class L10n {
   String get deleteDialogTitle {
     return Intl.message(
       'Confirm deletion',
-      name: 'deleteDialogTitle',
       desc: 'Title of the dialog where a token can be deleted.',
       locale: localeName,
     );
@@ -241,8 +218,76 @@ class L10n {
   String get areYouSure {
     return Intl.message(
       'Are you sure you want to delete',
-      name: 'areYouSure',
       desc: 'Part of a question: Do you want to delete {x}?',
+      locale: localeName,
+    );
+  }
+
+  String get scanQRTooltip {
+    return Intl.message(
+      'Scan QR code',
+      desc: 'Tooltip for button that starts scanning for qr code.',
+      locale: localeName,
+    );
+  }
+
+  String get twoStepDialogTitleGenerate {
+    return Intl.message(
+      'Generating phone part',
+      desc:
+          'Title of a dialog telling the user that the phone part gets generated right now.',
+      locale: localeName,
+    );
+  }
+
+  String get twoStepDialogTitlePhonePart {
+    return Intl.message(
+      'Phone part:',
+      desc:
+          'Title of a dialog telling the user that the phone was generated, and it is shown to the user.',
+      locale: localeName,
+    );
+  }
+
+  String get dismiss {
+    return Intl.message(
+      'Dismiss',
+      desc: 'Text of a button that closes a dialog.',
+      locale: localeName,
+    );
+  }
+
+  String otpValueCopiedMessage(var otpValue) {
+    return Intl.message(
+      'Password "$otpValue" copied to clipboard.',
+      name: 'otpValueCopiedMessage',
+      args: [otpValue],
+      examples: const {'otpValue': '055374'},
+      desc: 'Tells the user that the otp value was copied to the clipboard.',
+      locale: localeName,
+    );
+  }
+
+  String get theme {
+    return Intl.message(
+      'Theme',
+      desc: 'Title of the setting group where the theme can be selected.',
+      locale: localeName,
+    );
+  }
+
+  String get lightTheme {
+    return Intl.message(
+      'Light theme',
+      desc: 'The light theme.',
+      locale: localeName,
+    );
+  }
+
+  String get darkTheme {
+    return Intl.message(
+      'Dark theme',
+      desc: 'The dark theme.',
       locale: localeName,
     );
   }
