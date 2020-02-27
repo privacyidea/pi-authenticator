@@ -20,6 +20,8 @@
 
 // Imports the Flutter Driver API.
 
+import 'dart:io';
+
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
@@ -53,11 +55,16 @@ void copyToClipboardTest() {
     });
 
     test('Verify value is in clipboard', () async {
+      print(
+          '################################################# ${Platform.operatingSystem}');
+
       await doLongPress(
           driver,
           find.ancestor(
               of: find.text("Name"), matching: find.byType("TextFormField")));
 
+      String pasteText =
+          Platform.operatingSystem == 'linux' ? "PASTE" : "Paste";
       await driver.tap(find.text('PASTE'));
 
       await driver.waitFor(find.text('149049'));
