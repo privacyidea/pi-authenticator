@@ -22,6 +22,7 @@ We use the [Flutter](https://flutter.dev/) framework for developing our applicat
 Tests are located under `app/test`. These can be run from within Android Studio, if the necessary plugins are installed or directly by running `flutter test` at the root of the project. For additional information please view the official [Flutter documentation](https://flutter.dev/docs/testing).
 
 ![Unit and widget tests](https://github.com/privacyidea/pi-authenticator/workflows/flutter%20test/badge.svg?branch=master)
+
 ![Integrations tests](https://github.com/privacyidea/pi-authenticator/workflows/flutter%20driver/badge.svg?branch=master)
 
 # Contribution
