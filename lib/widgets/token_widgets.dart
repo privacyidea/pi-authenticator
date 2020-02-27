@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
@@ -73,20 +74,17 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       controller: _slidableController,
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
-      child: Container(
-        color: Colors.white,
-        child: _buildTile(),
-      ),
+      child: _buildClickableTile(),
       secondaryActions: <Widget>[
         IconSlideAction(
           caption: L10n.of(context).delete,
-          color: Colors.red,
+          color: getTonedColor(Colors.red, isDarkModeOn(context)),
           icon: Icons.delete,
           onTap: () => _deleteTokenDialog(),
         ),
         IconSlideAction(
           caption: L10n.of(context).rename,
-          color: Colors.blue,
+          color: getTonedColor(Colors.blue, isDarkModeOn(context)),
           icon: Icons.edit,
           onTap: () => _renameTokenDialog(),
         ),
@@ -103,7 +101,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(L10n.of(context).renameDialogTitle),
-            titleTextStyle: Theme.of(context).textTheme.subhead,
             content: TextFormField(
               autofocus: true,
               initialValue: _label,
@@ -119,7 +116,17 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text(L10n.of(context).rename),
+                child: Text(
+                  L10n.of(context).cancel,
+                  style: getDialogTextStyle(isDarkModeOn(context)),
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              FlatButton(
+                child: Text(
+                  L10n.of(context).rename,
+                  style: getDialogTextStyle(isDarkModeOn(context)),
+                ),
                 onPressed: () {
                   if (_nameInputKey.currentState.validate()) {
                     _renameClicked(_selectedName);
@@ -127,23 +134,19 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   }
                 },
               ),
-              FlatButton(
-                child: Text(L10n.of(context).cancel),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
             ],
           );
         });
   }
 
   void _renameClicked(String newLabel) {
+    _token.label = newLabel;
     _saveThisToken();
     log(
       "Renamed token:",
       name: "token_widgets.dart",
       error: "\"${_token.label}\" changed to \"$newLabel\"",
     );
-    _token.label = newLabel;
 
     setState(() {
       _label = _token.label;
@@ -156,7 +159,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(L10n.of(context).deleteDialogTitle),
-            titleTextStyle: Theme.of(context).textTheme.subhead,
             content: RichText(
               text: TextSpan(
                   style: TextStyle(
@@ -165,25 +167,33 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   children: [
                     TextSpan(
                       text: L10n.of(context).areYouSure,
+                      style: getDialogTextStyle(isDarkModeOn(context)),
                     ),
                     TextSpan(
-                        text: " \'$_label\'?",
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                        ))
+                      text: " \'$_label\'?",
+                      style: getDialogTextStyle(isDarkModeOn(context)).copyWith(
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   ]),
             ),
             actions: <Widget>[
               FlatButton(
-                onPressed: () => {
-                  _onDeleteClicked(),
-                  Navigator.of(context).pop(),
-                },
-                child: Text(L10n.of(context).delete),
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  L10n.of(context).cancel,
+                  style: getDialogTextStyle(isDarkModeOn(context)),
+                ),
               ),
               FlatButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(L10n.of(context).cancel),
+                onPressed: () {
+                  _onDeleteClicked();
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  L10n.of(context).delete,
+                  style: getDialogTextStyle(isDarkModeOn(context)),
+                ),
               ),
             ],
           );
@@ -194,9 +204,23 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     StorageUtil.saveOrReplaceToken(this._token);
   }
 
+  // This gets overridden in subclasses.
   void _updateOtpValue();
 
-  Widget _buildTile();
+  Widget _buildClickableTile() {
+    return InkWell(
+      splashColor: Theme.of(context).primaryColor,
+      onLongPress: () {
+        Clipboard.setData(ClipboardData(text: _otpValue));
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text(L10n.of(context).otpValueCopiedMessage(_otpValue)),
+        ));
+      },
+      child: _buildNonClickableTile(),
+    );
+  }
+
+  Widget _buildNonClickableTile();
 }
 
 class _HotpWidgetState extends _TokenWidgetState {
@@ -222,23 +246,17 @@ class _HotpWidgetState extends _TokenWidgetState {
   }
 
   @override
-  Widget _buildTile() {
+  Widget _buildNonClickableTile() {
     return Stack(
       children: <Widget>[
         ListTile(
-          title:
-//          Center( child:
-              Text(
-            insertCharAt(_otpValue, " ", _otpValue.length ~/ 2),
+          title: Text(
+            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
           ),
-//          ),
-          subtitle:
-//    Center(child:
-              Text(
+          subtitle: Text(
             _label,
             textScaleFactor: 2.0,
-//            ),
           ),
         ),
         Align(
@@ -318,23 +336,17 @@ class _TotpWidgetState extends _TokenWidgetState
   }
 
   @override
-  Widget _buildTile() {
+  Widget _buildNonClickableTile() {
     return Column(
       children: <Widget>[
         ListTile(
-          title:
-//          Center(child:
-              Text(
-            insertCharAt(_otpValue, " ", _otpValue.length ~/ 2),
+          title: Text(
+            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
-//            ),
           ),
-          subtitle:
-//          Center(child:
-              Text(
+          subtitle: Text(
             _label,
             textScaleFactor: 2.0,
-//            ),
           ),
         ),
         LinearProgressIndicator(

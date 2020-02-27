@@ -18,22 +18,16 @@
   limitations under the License.
 */
 
-import 'package:flutter/material.dart';
+// Imports the Flutter Driver API.
 
-ThemeData getApplicationTheme() {
-  return ThemeData(
-    textTheme: TextTheme(
-      title: TextStyle(
-        fontSize: 19,
-        color: Colors.white,
-      ),
-    ),
-    primarySwatch: Colors.blue,
-    buttonTheme: ButtonThemeData(
-      buttonColor: Colors.blue,
-      textTheme: ButtonTextTheme.primary,
-    ),
-  );
+import 'test_components/add_token_test.dart';
+import 'test_components/copy_to_clipboard_test.dart';
+import 'test_components/rename_and_delete_test.dart';
+import 'test_components/totp_token_test.dart';
+
+void main() {
+  addTokenTest();
+  renameAndDeleteTest();
+  totpTokenUpdateTest();
+  copyToClipboardTest();
 }
-
-int aa = 55;
