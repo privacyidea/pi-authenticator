@@ -27,6 +27,8 @@ import 'package:flutter/material.dart';
 ThemeData getApplicationTheme(Brightness brightness) {
   bool isDark = brightness == Brightness.dark;
 
+  ThemeData thisThemeData = isDark ? ThemeData.dark() : ThemeData.light();
+
 //  final Color primaryColor = isDark ? Colors.black : Color(0xff03a8f4);
   final Color primaryColor = isDark ? Colors.black : Color(0xff03a8f4);
   final Color accentColor = isDark ? Color(0xff03f4c8) : primaryColor;
@@ -36,14 +38,13 @@ ThemeData getApplicationTheme(Brightness brightness) {
 
   final ButtonThemeData buttonTheme = ButtonThemeData(
     textTheme: ButtonTextTheme.accent,
-    colorScheme: ThemeData.dark().buttonTheme.colorScheme.copyWith(
+    colorScheme: thisThemeData.buttonTheme.colorScheme.copyWith(
           primary: accentColor,
           secondary: isDark ? Colors.black : Colors.white,
         ),
   );
 
-  ThemeData thisTheme = isDark ? ThemeData.dark() : ThemeData.light();
-  return thisTheme.copyWith(
+  return thisThemeData.copyWith(
     primaryColor: primaryColor,
     accentColor: accentColor,
     toggleableActiveColor: accentColor,
