@@ -216,6 +216,12 @@ class _MainScreenState extends State<MainScreen> {
 //    &apikey=AIzaXXXXXiRk ## for fcm init
 //    &appidios=AIzaSXXXXXvUWdiRk ## for fcm init
 //    &apikeyios=AIzXXXXXk ## for fcm init
+
+  // TODO:
+    // 1. init firebase
+    // 2. save firebase config
+    // 3.
+
   }
 
   ListView _buildTokenList() {
