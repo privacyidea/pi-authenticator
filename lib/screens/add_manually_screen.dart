@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
@@ -75,6 +76,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
       appBar: AppBar(
         title: Text(
           L10n.of(context).addManuallyTitle,
+          textScaleFactor: screenTitleScaleFactor,
         ),
       ),
       body: SingleChildScrollView(

@@ -21,6 +21,7 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -42,7 +43,10 @@ class SettingsScreenState extends State<SettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget._title),
+        title: Text(
+          widget._title,
+          textScaleFactor: screenTitleScaleFactor,
+        ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(20, 10, 20, 10),

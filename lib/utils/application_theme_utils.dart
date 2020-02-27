@@ -28,7 +28,7 @@ ThemeData getApplicationTheme(Brightness brightness) {
   final Color primaryColor = isDark ? Colors.black : Color(0xff03a8f4);
   final Color accentColor = isDark ? Color(0xff03f4c8) : primaryColor;
 
-  FloatingActionButtonThemeData floatingActionButtonThemeData =
+  final FloatingActionButtonThemeData floatingActionButtonThemeData =
       FloatingActionButtonThemeData(backgroundColor: accentColor);
 
   final ButtonThemeData buttonTheme = ButtonThemeData(
@@ -64,3 +64,5 @@ Color getTonedColor(Color input, bool isDark) {
 bool isDarkModeOn(BuildContext context) =>
     DynamicTheme.of(context).brightness == Brightness.dark ||
     MediaQuery.of(context).platformBrightness == Brightness.dark;
+
+double get screenTitleScaleFactor => 0.95;
