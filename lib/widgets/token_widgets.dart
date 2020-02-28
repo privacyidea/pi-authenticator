@@ -57,16 +57,14 @@ class TokenWidget extends StatefulWidget {
   }
 }
 
-abstract class _OTPTokenWidgetState extends State<TokenWidget> {
+abstract class _TokenWidgetState extends State<TokenWidget> {
   final OTPToken _token;
   static final SlidableController _slidableController = SlidableController();
-  String _otpValue;
   String _label;
 
   final VoidCallback _onDeleteClicked;
 
-  _OTPTokenWidgetState(this._token, this._onDeleteClicked) {
-    _otpValue = calculateOtpValue(_token);
+  _TokenWidgetState(this._token, this._onDeleteClicked) {
     _saveThisToken();
     _label = _token.label;
   }
@@ -79,7 +77,7 @@ abstract class _OTPTokenWidgetState extends State<TokenWidget> {
       controller: _slidableController,
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
-      child: _buildClickableTile(),
+      child: _buildTile(),
       secondaryActions: <Widget>[
         IconSlideAction(
           caption: L10n.of(context).delete,
@@ -209,10 +207,32 @@ abstract class _OTPTokenWidgetState extends State<TokenWidget> {
     StorageUtil.saveOrReplaceToken(this._token);
   }
 
+  Widget _buildTile();
+}
+
+class _PushWidgetState extends _TokenWidgetState {
+  _PushWidgetState(OTPToken token, VoidCallback onDeleteClicked)
+      : super(token, onDeleteClicked);
+
+  @override
+  Widget _buildTile() {
+    // TODO: implement _buildTile
+    return null;
+  }
+}
+
+abstract class _OTPTokenWidgetState extends _TokenWidgetState {
+  String _otpValue;
+
+  _OTPTokenWidgetState(OTPToken token, VoidCallback onDeleteClicked)
+      : _otpValue = calculateOtpValue(token),
+        super(token, onDeleteClicked);
+
   // This gets overridden in subclasses.
   void _updateOtpValue();
 
-  Widget _buildClickableTile() {
+  @override
+  Widget _buildTile() {
     return InkWell(
       splashColor: Theme.of(context).primaryColor,
       onLongPress: () {
