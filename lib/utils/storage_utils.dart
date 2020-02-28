@@ -57,9 +57,9 @@ class StorageUtil {
         tokenList.add(HOTPToken.fromJson(serializedToken));
       } else if (serializedToken.containsKey("period")) {
         tokenList.add(TOTPToken.fromJson(serializedToken));
+      } else if (serializedToken.containsKey("ttl")) {
+        tokenList.add(PushToken.fromJson(serializedToken));
       }
-
-      // TODO load push tokens
     });
 
     return tokenList;
