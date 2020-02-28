@@ -156,6 +156,8 @@ class PushToken extends Token {
 
   DateTime get timeToDie => _timeToDie;
 
+  bool isRolledOut = false;
+
   PushToken({
     String label,
     String issuer,
@@ -176,7 +178,7 @@ class PushToken extends Token {
     return super.toString() +
         ' | Type Push | Serial $serial | SSLVerify $sslVerify '
             '| Enrollment Credentials $enrollmentCredentials '
-            '| URL $url | Time to die $timeToDie';
+            '| URL $url | Time to die $timeToDie | Is rolled out $isRolledOut';
   }
 
   factory PushToken.fromJson(Map<String, dynamic> json) =>
