@@ -23,6 +23,8 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -231,6 +233,7 @@ class _MainScreenState extends State<MainScreen> {
 
     // TODO: Init firebase I guess.
     // save firebaseconfig
+    _initFirebase(firebaseConfig);
 
     return PushToken(
       label: uriMap[URI_LABEL],
@@ -241,6 +244,52 @@ class _MainScreenState extends State<MainScreen> {
       enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
       url: uriMap[URI_ROLLOUT_URL],
     );
+  }
+
+  // FIXME initializing firebase messaging this way is not possible
+  void _initFirebase(FirebaseConfig config) async {
+    List<FirebaseApp> after = await FirebaseApp.allApps();
+    print('Before configured apps: $after');
+
+//    String name = "what_is_this_for?";
+    String name = "what_is_this_for?";
+    FirebaseOptions options = FirebaseOptions(
+      googleAppID: config.appID,
+      apiKey: config.apiKey,
+      databaseURL: "https://" + config.projectID + ".firebaseio.com",
+      storageBucket: config.projectID + ".appspot.com",
+      projectID: config.projectID,
+      gcmSenderID: config.projectNumber,
+    );
+
+//    FirebaseApp firebaseApp =
+    await FirebaseApp.configure(
+      name: name,
+      options: options,
+    );
+
+    List<FirebaseApp> apps = await FirebaseApp.allApps();
+    print('After configured apps: $apps');
+
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+
+    await firebaseMessaging.requestNotificationPermissions();
+
+    firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+      },
+    );
+
+    firebaseMessaging.getToken().then((token) {
+      print("FCM token: $token");
+    });
   }
 
   ListView _buildTokenList() {
