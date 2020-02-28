@@ -19,8 +19,23 @@
 */
 
 class FirebaseConfig {
-  String projectID;
-  String projectNumber;
-  String appID;
-  String apiKey;
+  String _projectID;
+  String _projectNumber;
+  String _appID;
+  String _apiKey;
+
+  FirebaseConfig(
+      {String projectID, String projectNumber, String appID, String apiKey})
+      : this._projectID = projectID,
+        this._projectNumber = projectNumber,
+        this._appID = appID,
+        this._apiKey = apiKey;
+
+  get projectID => _projectID;
+
+  get projectNumber => _projectNumber;
+
+  get appID => _appID;
+
+  get apiKey => _apiKey;
 }
