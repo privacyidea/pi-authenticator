@@ -211,6 +211,9 @@ class _PushWidgetState extends _TokenWidgetState {
   _PushWidgetState(Token token, VoidCallback onDeleteClicked)
       : super(token, onDeleteClicked);
 
+
+  // TODO make all that 2. rollout step stuff
+
   @override
   Widget _buildTile() {
     // TODO: implement _buildTile
