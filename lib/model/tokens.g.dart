@@ -82,9 +82,9 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
       sslVerify: json['sslVerify'] as bool,
       enrollmentCredentials: json['enrollmentCredentials'] as String,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
-      ttl: json['ttl'] == null
+      timeToDie: json['timeToDie'] == null
           ? null
-          : Duration(microseconds: json['ttl'] as int));
+          : DateTime.parse(json['timeToDie'] as String));
 }
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
@@ -94,5 +94,5 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'sslVerify': instance.sslVerify,
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
-      'ttl': instance.ttl?.inMicroseconds
+      'timeToDie': instance.timeToDie?.toIso8601String()
     };

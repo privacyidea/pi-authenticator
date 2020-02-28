@@ -133,14 +133,13 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Future<Token> _buildTokenFromMap(
-      Map<String, dynamic> uriMap, Uri uri) async {
+  Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
     String uuid = Uuid().v4();
     String type = uriMap[URI_TYPE];
 
     // Push token do not need any of the other parameters.
     if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
-      return _buildPushToken(uriMap, uri, uuid);
+      return _buildPushToken(uriMap, uuid);
     }
 
     String label = uriMap[URI_LABEL];
@@ -195,7 +194,7 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  PushToken _buildPushToken(Map<String, dynamic> uriMap, Uri uri, String uuid) {
+  PushToken _buildPushToken(Map<String, dynamic> uriMap, String uuid) {
     // TODO:
 //    otpauth://
 //    pipush/
@@ -229,6 +228,19 @@ class _MainScreenState extends State<MainScreen> {
         projectNumber: uriMap[URI_PROJECT_NUMBER],
         appID: uriMap[URI_APP_ID],
         apiKey: uriMap[URI_API_KEY]);
+
+    // TODO: Init firebase I guess.
+    // save firebaseconfig
+
+    return PushToken(
+      label: uriMap[URI_LABEL],
+      issuer: uriMap[URI_ISSUER],
+      uuid: uuid,
+      sslVerify: uriMap[URI_SSL_VERIFY],
+      timeToDie: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
+      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
+      url: uriMap[URI_ROLLOUT_URL],
+    );
   }
 
   ListView _buildTokenList() {

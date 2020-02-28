@@ -34,7 +34,7 @@ class TokenWidget extends StatefulWidget {
   final Token _token;
   final VoidCallback _onDeleteClicked;
 
-  TokenWidget({Key key, token, onDeleteClicked})
+  TokenWidget({Key key, Token token, onDeleteClicked})
       : this._token = token,
         this._onDeleteClicked = onDeleteClicked,
         super(key: key);
@@ -55,7 +55,7 @@ class TokenWidget extends StatefulWidget {
 }
 
 abstract class _TokenWidgetState extends State<TokenWidget> {
-  final OTPToken _token;
+  final Token _token;
   static final SlidableController _slidableController = SlidableController();
   String _label;
 
@@ -208,7 +208,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 }
 
 class _PushWidgetState extends _TokenWidgetState {
-  _PushWidgetState(OTPToken token, VoidCallback onDeleteClicked)
+  _PushWidgetState(Token token, VoidCallback onDeleteClicked)
       : super(token, onDeleteClicked);
 
   @override
@@ -275,7 +275,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
       children: <Widget>[
         ListTile(
           title: Text(
-            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
+            insertCharAt(_otpValue, " ", (_token as OTPToken).digits ~/ 2),
             textScaleFactor: 2.5,
           ),
           subtitle: Text(
@@ -365,7 +365,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
       children: <Widget>[
         ListTile(
           title: Text(
-            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
+            insertCharAt(_otpValue, " ", (_token as OTPToken).digits ~/ 2),
             textScaleFactor: 2.5,
           ),
           subtitle: Text(

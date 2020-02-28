@@ -141,7 +141,7 @@ class PushToken extends Token {
   bool _sslVerify;
   String _enrollmentCredentials;
   Uri _url;
-  Duration _ttl;
+  DateTime _timeToDie;
 
   String get serial => _serial;
 
@@ -151,7 +151,7 @@ class PushToken extends Token {
 
   Uri get url => url;
 
-  Duration get ttl => ttl;
+  DateTime get timeToDie => _timeToDie;
 
   PushToken({
     String label,
@@ -161,11 +161,11 @@ class PushToken extends Token {
     bool sslVerify,
     String enrollmentCredentials,
     Uri url,
-    Duration ttl,
+    DateTime timeToDie,
   })  : this._sslVerify = sslVerify,
         this._enrollmentCredentials = enrollmentCredentials,
         this._url = url,
-        this._ttl = ttl,
+        this._timeToDie = timeToDie,
         super(label, issuer, uuid);
 
   factory PushToken.fromJson(Map<String, dynamic> json) =>
