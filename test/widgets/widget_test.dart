@@ -38,7 +38,13 @@ void _testTotpWidget() {
   testWidgets("TOTP Widget shows name and initial value",
       (WidgetTester tester) async {
     TOTPToken token = TOTPToken(
-        "Office Time", null, Algorithms.SHA1, 6, utf8.encode("secret"), 30);
+      label: "Office Time",
+      issuer: null,
+      algorithm: Algorithms.SHA1,
+      digits: 6,
+      secret: utf8.encode("secret"),
+      period: 30,
+    );
 
     await tester.pumpWidget(_WidgetTestWrapper(
       child: TokenWidget(
@@ -49,8 +55,9 @@ void _testTotpWidget() {
     ));
 
     final labelFinder = find.text("Office Time");
-    final otpValueFinder = find.text(insertCharAt(
-        calculateTotpValue(token), " ", calculateTotpValue(token).length ~/ 2));
+    String value = calculateTotpValue(token).padLeft(token.digits, '0');
+    final otpValueFinder =
+        find.text(insertCharAt(value, " ", value.length ~/ 2));
 
     expect(labelFinder, findsOneWidget);
     expect(otpValueFinder, findsOneWidget);
@@ -62,8 +69,13 @@ void _testHotpWidget() {
     testWidgets("HOTP Widgets shows name and initial otp value",
         (WidgetTester tester) async {
       HOTPToken token = HOTPToken(
-          "Office", null, Algorithms.SHA1, 6, utf8.encode("secret"),
-          counter: 0);
+        label: "Office",
+        issuer: null,
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: utf8.encode("secret"),
+        counter: 0,
+      );
 
       await tester.pumpWidget(_WidgetTestWrapper(
         child: TokenWidget(
@@ -83,8 +95,13 @@ void _testHotpWidget() {
     testWidgets("HOTP Widgets next button works", (WidgetTester tester) async {
       await tester.runAsync(() async {
         HOTPToken token = HOTPToken(
-            "Office", null, Algorithms.SHA1, 6, utf8.encode("secret"),
-            counter: 0);
+          label: "Office",
+          issuer: null,
+          algorithm: Algorithms.SHA1,
+          digits: 6,
+          secret: utf8.encode("secret"),
+          counter: 0,
+        );
 
         await tester.pumpWidget(_WidgetTestWrapper(
           child: TokenWidget(

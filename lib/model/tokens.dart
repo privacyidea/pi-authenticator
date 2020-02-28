@@ -27,11 +27,8 @@ abstract class Token {
   String _tokenVersion =
       "v1.0.0"; // The version of this token, this is used for serialization.
   String _label; // the name of the token, it cannot be uses as an identifier
-  String _serial; // this is the identifier of the token
-  Algorithms
-      _algorithm; // the hashing algorithm that is used to calculate the otp value
-  int _digits; // the number of digits the otp value will have
-  List<int> _secret; // the secret based on which the otp value is calculated
+  String _issuer; // The issuer of this token, currently unused.
+  String _uuid; // this is the identifier of the token
 
   String get tokenVersion => _tokenVersion;
 
@@ -41,7 +38,24 @@ abstract class Token {
     this._label = label;
   }
 
-  String get serial => _serial;
+  String get uuid => _uuid;
+
+  String get issuer => issuer;
+
+  Token(this._label, this._issuer, this._uuid);
+
+  @override
+  String toString() {
+    return 'Label $_label | Issuer $_issuer'
+        ' | Version $_tokenVersion | ID $_uuid';
+  }
+}
+
+abstract class OTPToken extends Token {
+  Algorithms
+      _algorithm; // the hashing algorithm that is used to calculate the otp value
+  int _digits; // the number of digits the otp value will have
+  List<int> _secret; // the secret based on which the otp value is calculated
 
   Algorithms get algorithm => _algorithm;
 
@@ -49,27 +63,35 @@ abstract class Token {
 
   List<int> get secret => _secret;
 
-  Token(this._label, this._serial, this._algorithm, this._digits, this._secret);
+  OTPToken(String label, String issuer, String uuid, this._algorithm,
+      this._digits, this._secret)
+      : super(label, issuer, uuid);
 
   @override
   String toString() {
-    return 'Label $label | Serial $serial | Algorithm $algorithm | Digits $digits | Secret $secret';
+    return super.toString() +
+        ' | Algorithm $algorithm | Digits $digits | Secret $secret';
   }
 }
 
 @JsonSerializable()
-class HOTPToken extends Token {
+class HOTPToken extends OTPToken {
   int _counter; // this value is used to calculate the current otp value
 
   int get counter => _counter;
 
   void incrementCounter() => _counter++;
 
-  HOTPToken(String label, String serial, Algorithms algorithm, int digits,
+  HOTPToken(
+      {String label,
+      String issuer,
+      String uuid,
+      Algorithms algorithm,
+      int digits,
       List<int> secret,
-      {int counter = 0})
+      int counter = 0})
       : this._counter = counter,
-        super(label, serial, algorithm, digits, secret);
+        super(label, issuer, uuid, algorithm, digits, secret);
 
   @override
   String toString() {
@@ -83,16 +105,22 @@ class HOTPToken extends Token {
 }
 
 @JsonSerializable()
-class TOTPToken extends Token {
+class TOTPToken extends OTPToken {
   int _period; // this value is used to calculate the current 'counter' of this token
 // based on the UNIX systemtime), the counter is used to calculate the current otp value
 
   int get period => _period;
 
-  TOTPToken(String label, String serial, Algorithms algorithm, int digits,
-      List<int> secret, int period)
+  TOTPToken(
+      {String label,
+      String issuer,
+      String uuid,
+      Algorithms algorithm,
+      int digits,
+      List<int> secret,
+      int period})
       : this._period = period,
-        super(label, serial, algorithm, digits, secret);
+        super(label, issuer, uuid, algorithm, digits, secret);
 
   @override
   String toString() {

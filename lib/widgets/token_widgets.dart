@@ -45,22 +45,27 @@ class TokenWidget extends StatefulWidget {
       return _HotpWidgetState(_token, _onDeleteClicked);
     } else if (_token is TOTPToken) {
       return _TotpWidgetState(_token, _onDeleteClicked);
-    } else {
+    }
+//    else if (_token is PushToken) {
+//    //   TODO build push token widget
+    // // TODO build another parent state
+//    }
+    else {
       throw ArgumentError.value(_token, "token",
           "The token [$_token] is of unknown type and not supported.");
     }
   }
 }
 
-abstract class _TokenWidgetState extends State<TokenWidget> {
-  final Token _token;
+abstract class _OTPTokenWidgetState extends State<TokenWidget> {
+  final OTPToken _token;
   static final SlidableController _slidableController = SlidableController();
   String _otpValue;
   String _label;
 
   final VoidCallback _onDeleteClicked;
 
-  _TokenWidgetState(this._token, this._onDeleteClicked) {
+  _OTPTokenWidgetState(this._token, this._onDeleteClicked) {
     _otpValue = calculateOtpValue(_token);
     _saveThisToken();
     _label = _token.label;
@@ -69,7 +74,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   @override
   Widget build(BuildContext context) {
     return Slidable(
-      key: ValueKey(_token.serial),
+      key: ValueKey(_token.uuid),
       // This is used to only let one Slidable be open at a time.
       controller: _slidableController,
       actionPane: SlidableDrawerActionPane(),
@@ -223,10 +228,10 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   Widget _buildNonClickableTile();
 }
 
-class _HotpWidgetState extends _TokenWidgetState {
+class _HotpWidgetState extends _OTPTokenWidgetState {
   bool buttonIsDisabled = false;
 
-  _HotpWidgetState(Token token, Function delete) : super(token, delete);
+  _HotpWidgetState(OTPToken token, Function delete) : super(token, delete);
 
   @override
   void _updateOtpValue() {
@@ -276,12 +281,12 @@ class _HotpWidgetState extends _TokenWidgetState {
   }
 }
 
-class _TotpWidgetState extends _TokenWidgetState
+class _TotpWidgetState extends _OTPTokenWidgetState
     with SingleTickerProviderStateMixin {
   AnimationController
       controller; // Controller for animating the LinearProgressAnimator
 
-  _TotpWidgetState(Token token, Function delete) : super(token, delete);
+  _TotpWidgetState(OTPToken token, Function delete) : super(token, delete);
 
   @override
   void _updateOtpValue() {

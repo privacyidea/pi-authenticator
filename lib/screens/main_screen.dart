@@ -27,6 +27,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
+import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
@@ -132,13 +133,14 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
-    String serial = Uuid().v4();
+  Future<Token> _buildTokenFromMap(
+      Map<String, dynamic> uriMap, Uri uri) async {
+    String uuid = Uuid().v4();
     String type = uriMap[URI_TYPE];
 
     // Push token do not need any of the other parameters.
     if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
-      return _buildPushToken(uriMap, uri, serial);
+      return _buildPushToken(uriMap, uri, uuid);
     }
 
     String label = uriMap[URI_LABEL];
@@ -147,6 +149,7 @@ class _MainScreenState extends State<MainScreen> {
     Uint8List secret = uriMap[URI_SECRET];
     int counter = uriMap[URI_COUNTER];
     int period = uriMap[URI_PERIOD];
+    String issuer = uriMap[URI_ISSUER];
 
     if (is2StepURI(uri)) {
       // Calculate the whole secret.
@@ -165,21 +168,23 @@ class _MainScreenState extends State<MainScreen> {
     // uri.host -> totp or hotp
     if (type == "hotp") {
       return HOTPToken(
-        label,
-        serial,
-        mapStringToAlgorithm(algorithm),
-        digits,
-        secret,
+        label: label,
+        issuer: issuer,
+        uuid: uuid,
+        algorithm: mapStringToAlgorithm(algorithm),
+        digits: digits,
+        secret: secret,
         counter: counter,
       );
     } else if (type == "totp") {
       return TOTPToken(
-        label,
-        serial,
-        mapStringToAlgorithm(algorithm),
-        digits,
-        secret,
-        period,
+        label: label,
+        issuer: issuer,
+        uuid: uuid,
+        algorithm: mapStringToAlgorithm(algorithm),
+        digits: digits,
+        secret: secret,
+        period: period,
       );
     } else {
       throw ArgumentError.value(
@@ -190,7 +195,7 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Token _buildPushToken(Map<String, dynamic> uriMap, Uri uri, String serial) {
+  PushToken _buildPushToken(Map<String, dynamic> uriMap, Uri uri, String uuid) {
     // TODO:
 //    otpauth://
 //    pipush/
@@ -217,11 +222,13 @@ class _MainScreenState extends State<MainScreen> {
 //    &appidios=AIzaSXXXXXvUWdiRk ## for fcm init
 //    &apikeyios=AIzXXXXXk ## for fcm init
 
-  // TODO:
-    // 1. init firebase
-    // 2. save firebase config
-    // 3.
-
+    // TODO: Change this to work with ios, or change the parsing
+    //  of the uri directly.
+    FirebaseConfig firebaseConfig = FirebaseConfig(
+        projectID: uriMap[URI_PROJECT_ID],
+        projectNumber: uriMap[URI_PROJECT_NUMBER],
+        appID: uriMap[URI_APP_ID],
+        apiKey: uriMap[URI_API_KEY]);
   }
 
   ListView _buildTokenList() {

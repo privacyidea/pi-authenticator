@@ -115,16 +115,29 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
   _returnTokenIfValid() {
     if (!inputIsValid()) return;
 
-    String serial = Uuid().v4();
+    String uuid = Uuid().v4();
     List<int> secretAsUint8 =
         decodeSecretToUint8(_selectedSecret, _selectedEncoding.value);
-    Token newToken;
+    OTPToken newToken;
     if (_selectedType.value == TokenTypes.HOTP) {
-      newToken = HOTPToken(_selectedName, serial, _selectedAlgorithm.value,
-          _selectedDigits.value, secretAsUint8);
+      newToken = HOTPToken(
+        label: _selectedName,
+        issuer: null,
+        uuid: uuid,
+        algorithm: _selectedAlgorithm.value,
+        digits: _selectedDigits.value,
+        secret: secretAsUint8,
+      );
     } else if (_selectedType.value == TokenTypes.TOTP) {
-      newToken = TOTPToken(_selectedName, serial, _selectedAlgorithm.value,
-          _selectedDigits.value, secretAsUint8, _selectedPeriod.value);
+      newToken = TOTPToken(
+        label: _selectedName,
+        issuer: null,
+        uuid: uuid,
+        algorithm: _selectedAlgorithm.value,
+        digits: _selectedDigits.value,
+        secret: secretAsUint8,
+        period: _selectedPeriod.value,
+      );
     }
 
     // Everything should be fine now, and we can return the new token.

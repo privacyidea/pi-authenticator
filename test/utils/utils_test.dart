@@ -50,17 +50,37 @@ void _testCalculateHotpValue() {
   // We need to use different tokens here, because simply incrementing the
   // counter between all method calls leads to a race condition
   HOTPToken token0 = HOTPToken(
-      null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
-      counter: 0);
+    label: null,
+    issuer: null,
+    algorithm: Algorithms.SHA1,
+    digits: 6,
+    secret: utf8.encode("secret"),
+    counter: 0,
+  );
   HOTPToken token1 = HOTPToken(
-      null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
-      counter: 1);
+    label: null,
+    issuer: null,
+    algorithm: Algorithms.SHA1,
+    digits: 6,
+    secret: utf8.encode("secret"),
+    counter: 1,
+  );
   HOTPToken token2 = HOTPToken(
-      null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
-      counter: 2);
+    label: null,
+    issuer: null,
+    algorithm: Algorithms.SHA1,
+    digits: 6,
+    secret: utf8.encode("secret"),
+    counter: 2,
+  );
   HOTPToken token8 = HOTPToken(
-      null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
-      counter: 8);
+    label: null,
+    issuer: null,
+    algorithm: Algorithms.SHA1,
+    digits: 6,
+    secret: utf8.encode("secret"),
+    counter: 8,
+  );
 
   group("calculateHotpValue", () {
     test("OTP for counter == 0",

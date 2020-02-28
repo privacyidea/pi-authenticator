@@ -34,7 +34,7 @@ dependencies:
   barcode_scan: ^1.0.0
   #dependency for formating string, this could be useful when using json for internationalization
   # sprintf: ^4.0.0 # TODO add BSD license https://pub.dev/packages/sprintf
-  # dependency to generate serials for tokens
+  # dependency to generate IDs for tokens
   uuid: 2.0.4
   # dependency to save to secure storage under android and ios
   flutter_secure_storage: ^3.3.1+1

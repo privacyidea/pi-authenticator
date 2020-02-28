@@ -8,17 +8,19 @@ part of 'tokens.dart';
 
 HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) {
   return HOTPToken(
-      json['label'] as String,
-      json['serial'] as String,
-      _$enumDecodeNullable(_$AlgorithmsEnumMap, json['algorithm']),
-      json['digits'] as int,
-      (json['secret'] as List)?.map((e) => e as int)?.toList(),
+      label: json['label'] as String,
+      issuer: json['issuer'] as String,
+      uuid: json['uuid'] as String,
+      algorithm: _$enumDecodeNullable(_$AlgorithmsEnumMap, json['algorithm']),
+      digits: json['digits'] as int,
+      secret: (json['secret'] as List)?.map((e) => e as int)?.toList(),
       counter: json['counter'] as int);
 }
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
       'label': instance.label,
-      'serial': instance.serial,
+      'uuid': instance.uuid,
+      'issuer': instance.issuer,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm],
       'digits': instance.digits,
       'secret': instance.secret,
@@ -53,17 +55,19 @@ const _$AlgorithmsEnumMap = <Algorithms, dynamic>{
 
 TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) {
   return TOTPToken(
-      json['label'] as String,
-      json['serial'] as String,
-      _$enumDecodeNullable(_$AlgorithmsEnumMap, json['algorithm']),
-      json['digits'] as int,
-      (json['secret'] as List)?.map((e) => e as int)?.toList(),
-      json['period'] as int);
+      label: json['label'] as String,
+      issuer: json['issuer'] as String,
+      uuid: json['uuid'] as String,
+      algorithm: _$enumDecodeNullable(_$AlgorithmsEnumMap, json['algorithm']),
+      digits: json['digits'] as int,
+      secret: (json['secret'] as List)?.map((e) => e as int)?.toList(),
+      period: json['period'] as int);
 }
 
 Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
       'label': instance.label,
-      'serial': instance.serial,
+      'uuid': instance.uuid,
+      'issuer': instance.issuer,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm],
       'digits': instance.digits,
       'secret': instance.secret,

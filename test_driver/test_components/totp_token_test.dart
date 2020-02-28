@@ -72,8 +72,15 @@ void totpTokenUpdateTest() {
 
     test("Assert otp value gets updated", () async {
       // The opt value of this token is the same as the one of the added token.
-      TOTPToken token = new TOTPToken(null, null, Algorithms.SHA1, 6,
-          decodeSecretToUint8("TestSecret", Encodings.none), 30);
+      TOTPToken token = new TOTPToken(
+        label: null,
+        issuer: null,
+        uuid: null,
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: decodeSecretToUint8("TestSecret", Encodings.none),
+        period: 30,
+      );
 
       // We have to run this without waiting for all animations to stop
       // (the animation loops in this widget)

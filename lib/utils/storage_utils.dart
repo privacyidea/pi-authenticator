@@ -30,7 +30,7 @@ class StorageUtil {
   /// Saves [token] securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
   static void saveOrReplaceToken(Token token) async {
-    String key = token.serial;
+    String key = token.uuid;
 
     String value = await _storage.read(key: key);
 
@@ -65,7 +65,7 @@ class StorageUtil {
 
   /// Deletes the saved json of [token] from the secure storage.
   static void deleteToken(Token token) async {
-    String key = token.serial;
+    String key = token.uuid;
 
     await _storage.delete(key: key);
   }
