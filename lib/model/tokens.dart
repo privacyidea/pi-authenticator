@@ -40,14 +40,14 @@ abstract class Token {
 
   String get uuid => _uuid;
 
-  String get issuer => issuer;
+  String get issuer => _issuer;
 
   Token(this._label, this._issuer, this._uuid);
 
   @override
   String toString() {
-    return 'Label $_label | Issuer $_issuer'
-        ' | Version $_tokenVersion | ID $_uuid';
+    return 'Label $label | Issuer $issuer'
+        ' | Version $tokenVersion | ID $uuid';
   }
 }
 
@@ -106,8 +106,11 @@ class HOTPToken extends OTPToken {
 
 @JsonSerializable()
 class TOTPToken extends OTPToken {
-  int _period; // this value is used to calculate the current 'counter' of this token
-// based on the UNIX systemtime), the counter is used to calculate the current otp value
+  int _period;
+
+  // this value is used to calculate the current 'counter' of this token
+  // based on the UNIX systemtime), the counter is used to calculate the
+  // current otp value
 
   int get period => _period;
 
@@ -149,7 +152,7 @@ class PushToken extends Token {
 
   String get enrollmentCredentials => _enrollmentCredentials;
 
-  Uri get url => url;
+  Uri get url => _url;
 
   DateTime get timeToDie => _timeToDie;
 
@@ -167,6 +170,14 @@ class PushToken extends Token {
         this._url = url,
         this._timeToDie = timeToDie,
         super(label, issuer, uuid);
+
+  @override
+  String toString() {
+    return super.toString() +
+        ' | Type Push | Serial $serial | SSLVerify $sslVerify '
+            '| Enrollment Credentials $enrollmentCredentials '
+            '| URL $url | Time to die $timeToDie';
+  }
 
   factory PushToken.fromJson(Map<String, dynamic> json) =>
       _$PushTokenFromJson(json);
