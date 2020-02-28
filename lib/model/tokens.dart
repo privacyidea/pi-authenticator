@@ -132,3 +132,44 @@ class TOTPToken extends OTPToken {
 
   Map<String, dynamic> toJson() => _$TOTPTokenToJson(this);
 }
+
+@JsonSerializable()
+class PushToken extends Token {
+  String _serial;
+
+  // 2. step
+  bool _sslVerify;
+  String _enrollmentCredentials;
+  Uri _url;
+  Duration _ttl;
+
+  String get serial => _serial;
+
+  bool get sslVerify => _sslVerify;
+
+  String get enrollmentCredentials => _enrollmentCredentials;
+
+  Uri get url => url;
+
+  Duration get ttl => ttl;
+
+  PushToken({
+    String label,
+    String issuer,
+    String uuid,
+    // 2. step
+    bool sslVerify,
+    String enrollmentCredentials,
+    Uri url,
+    Duration ttl,
+  })  : this._sslVerify = sslVerify,
+        this._enrollmentCredentials = enrollmentCredentials,
+        this._url = url,
+        this._ttl = ttl,
+        super(label, issuer, uuid);
+
+  factory PushToken.fromJson(Map<String, dynamic> json) =>
+      _$PushTokenFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PushTokenToJson(this);
+}

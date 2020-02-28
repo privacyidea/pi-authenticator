@@ -58,6 +58,8 @@ class StorageUtil {
       } else if (serializedToken.containsKey("period")) {
         tokenList.add(TOTPToken.fromJson(serializedToken));
       }
+
+      // TODO load push tokens
     });
 
     return tokenList;
