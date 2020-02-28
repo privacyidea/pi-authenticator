@@ -18,6 +18,11 @@
   limitations under the License.
 */
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'firebase_config.g.dart';
+
+@JsonSerializable()
 class FirebaseConfig {
   String _projectID;
   String _projectNumber;
@@ -38,4 +43,9 @@ class FirebaseConfig {
   get appID => _appID;
 
   get apiKey => _apiKey;
+
+  factory FirebaseConfig.fromJson(Map<String, dynamic> json) =>
+      _$FirebaseConfigFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FirebaseConfigToJson(this);
 }
