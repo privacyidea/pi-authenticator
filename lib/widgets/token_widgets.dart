@@ -45,12 +45,9 @@ class TokenWidget extends StatefulWidget {
       return _HotpWidgetState(_token, _onDeleteClicked);
     } else if (_token is TOTPToken) {
       return _TotpWidgetState(_token, _onDeleteClicked);
-    }
-//    else if (_token is PushToken) {
-//    //   TODO build push token widget
-    // // TODO build another parent state
-//    }
-    else {
+    } else if (_token is PushToken) {
+      return _PushWidgetState(_token, _onDeleteClicked);
+    } else {
       throw ArgumentError.value(_token, "token",
           "The token [$_token] is of unknown type and not supported.");
     }
@@ -217,7 +214,9 @@ class _PushWidgetState extends _TokenWidgetState {
   @override
   Widget _buildTile() {
     // TODO: implement _buildTile
-    return null;
+    return ListTile(
+      title: Text(_token.label),
+    );
   }
 }
 
