@@ -42,9 +42,6 @@ class CustomLicenseScreen extends StatefulWidget {
 }
 
 class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
-  bool _isLoaded = false;
-  Column _licenses;
-
   List<Widget> widgetList;
 
   @override
@@ -89,24 +86,22 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            L10n.of(context).about,
-            textScaleFactor: screenTitleScaleFactor,
-          ),
+      appBar: AppBar(
+        title: Text(
+          L10n.of(context).about,
+          textScaleFactor: screenTitleScaleFactor,
         ),
-        body: Scrollbar(
+      ),
+      body: Scrollbar(
           child: ListView.builder(
               itemCount: widgetList.length,
               itemBuilder: (BuildContext context, int index) {
                 return widgetList[index];
-              }),
-        ));
+              })),
+    );
   }
 
   void buildAllLicenses() async {
-    print('Start loading');
-
     List<LicenseEntry> licenseList = await LicenseRegistry.licenses.toList();
 
     List<Widget> _licenseList = List<Widget>();
@@ -116,12 +111,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
     }
 
     setState(() {
-//      _licenses = Column(
-//        children: <Widget>[..._licenseList],
-//      );
-
       widgetList.addAll(_licenseList);
-      _isLoaded = true;
     });
   }
 
