@@ -1,5 +1,4 @@
-name: unit testing
-
+name: flutter test
 on: 
    push:
       branches:
