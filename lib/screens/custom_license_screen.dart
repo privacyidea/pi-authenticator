@@ -45,13 +45,45 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
   bool _isLoaded = false;
   Column _licenses;
 
-  List<Widget> widgetList = [];
+  List<Widget> widgetList;
 
   @override
   void initState() {
     super.initState();
 
     buildAllLicenses();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    widgetList ??= [
+      Padding(
+        padding: EdgeInsets.only(top: 16.0),
+        child: Column(
+          children: <Widget>[
+            Text(
+              "${widget.applicationName}",
+              style: Theme.of(context).textTheme.headline,
+            ),
+            widget.applicationIcon,
+            Text("Version ${widget.applicationVersion}"),
+            Container(
+              height: 16,
+            ),
+            Text(
+              "${widget.applicationLegalese}",
+              style: Theme.of(context).textTheme.caption,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Text("Powered by flutter"),
+            ),
+          ],
+        ),
+      )
+    ];
   }
 
   @override
@@ -64,36 +96,11 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
           ),
         ),
         body: Scrollbar(
-          child: Padding(
-            padding: EdgeInsets.only(top: 16.0),
-            child: Column(
-              children: <Widget>[
-                Text(
-                  "${widget.applicationName}",
-                  style: Theme.of(context).textTheme.headline,
-                ),
-                widget.applicationIcon,
-                Text("Version ${widget.applicationVersion}"),
-                Container(
-                  height: 16,
-                ),
-                Text(
-                  "${widget.applicationLegalese}",
-                  style: Theme.of(context).textTheme.caption,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Text("Powered by flutter"),
-                ),
-              ],
-            ),
-          ),
-//          child:
-//          ListView.builder(
-//              itemCount: widgetList.length,
-//              itemBuilder: (BuildContext context, int index) {
-//                return widgetList[index];
-//              }),
+          child: ListView.builder(
+              itemCount: widgetList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return widgetList[index];
+              }),
         ));
   }
 
