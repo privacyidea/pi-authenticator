@@ -29,6 +29,7 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
+import 'package:privacyidea_authenticator/screens/custom_license_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
@@ -218,15 +219,26 @@ class _MainScreenState extends State<MainScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => LicensePage(
-                          applicationName: "privacyIDEA Authenticator",
-                          applicationVersion: info.version,
-                          applicationIcon: Padding(
-                            padding: EdgeInsets.all(40.0),
-                            child: Image.asset('res/logo/app_logo_light.png'),
-                          ),
-                          applicationLegalese: "Apache License 2.0",
-                        )));
+                  builder: (context) =>
+//                        LicensePage(
+//                          applicationName: "privacyIDEA Authenticator",
+//                          applicationVersion: info.version,
+//                          applicationIcon: Padding(
+//                            padding: EdgeInsets.all(40.0),
+//                            child: Image.asset('res/logo/app_logo_light.png'),
+//                          ),
+//                          applicationLegalese: "Apache License 2.0",
+//                        )
+                      CustomLicenseScreen(
+                    applicationName: "privacyIDEA Authenticator",
+                    applicationVersion: info.version,
+                    applicationIcon: Padding(
+                      padding: EdgeInsets.all(40.0),
+                      child: Image.asset('res/logo/app_logo_light.png'),
+                    ),
+                    applicationLegalese: "Apache License 2.0",
+                  ),
+                ));
           } else if (value == "add_manually") {
             Navigator.push(
                 context,
