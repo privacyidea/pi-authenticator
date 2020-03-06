@@ -31,6 +31,7 @@ void main() {
   _testCalculateHotpValue();
   _testInsertCharAt();
   _testParseQRCodeToToken();
+  _testParse2StepSaltURIs();
 }
 
 void _testInsertCharAt() {
@@ -249,5 +250,73 @@ void _testParseQRCodeToToken() {
     // TODO test parsing 2 step salt
     // TODO test default values
     // TODO test works with only one param set
+  });
+}
+
+void _testParse2StepSaltURIs() {
+  group("Parse 2 step rollout uris", () {
+    test("Test valid and complete uri", () {
+      Map<String, dynamic> map = parseQRCodeToMap("otpauth://hotp/OATH0005CCCB?"
+          "secret=2X7CTS3JWS4OVYIRHM4FKWEOW6TCJP6A&counter=1&digits=6"
+          "&issuer=privacyIDEA&2step_salt=8"
+          "&2step_output=20&2step_difficulty=10000");
+      expect(map[URI_LABEL], "OATH0005CCCB");
+      expect(map[URI_COUNTER], 1);
+      expect(map[URI_DIGITS], 6);
+      expect(map[URI_SALT_LENGTH], 8);
+      expect(map[URI_OUTPUT_LENGTH_IN_BYTES], 20);
+      expect(map[URI_ITERATIONS], 10000);
+    });
+
+    test("Test default output length", () {
+      Map<String, dynamic> map = parseQRCodeToMap("otpauth://hotp/OATH0005CCCB?"
+          "secret=2X7CTS3JWS4OVYIRHM4FKWEOW6TCJP6A&counter=1&digits=6"
+          "&issuer=privacyIDEA&2step_salt=8"
+          "&2step_difficulty=10000");
+      expect(map[URI_LABEL], "OATH0005CCCB");
+      expect(map[URI_COUNTER], 1);
+      expect(map[URI_DIGITS], 6);
+      expect(map[URI_SALT_LENGTH], 8);
+      expect(map[URI_OUTPUT_LENGTH_IN_BYTES], 20);
+      expect(map[URI_ITERATIONS], 10000);
+    });
+
+    test("Test default iterations", () {
+      Map<String, dynamic> map = parseQRCodeToMap("otpauth://hotp/OATH0005CCCB?"
+          "secret=2X7CTS3JWS4OVYIRHM4FKWEOW6TCJP6A&counter=1&digits=6"
+          "&issuer=privacyIDEA&2step_salt=8"
+          "&2step_output=20");
+      expect(map[URI_LABEL], "OATH0005CCCB");
+      expect(map[URI_COUNTER], 1);
+      expect(map[URI_DIGITS], 6);
+      expect(map[URI_SALT_LENGTH], 8);
+      expect(map[URI_OUTPUT_LENGTH_IN_BYTES], 20);
+      expect(map[URI_ITERATIONS], 10000);
+    });
+
+    test("Test default salt length", () {
+      Map<String, dynamic> map = parseQRCodeToMap("otpauth://hotp/OATH0005CCCB?"
+          "secret=2X7CTS3JWS4OVYIRHM4FKWEOW6TCJP6A&counter=1&digits=6"
+          "&issuer=privacyIDEA"
+          "&2step_output=20&2step_difficulty=10000");
+      expect(map[URI_LABEL], "OATH0005CCCB");
+      expect(map[URI_COUNTER], 1);
+      expect(map[URI_DIGITS], 6);
+      expect(map[URI_SALT_LENGTH], 10);
+      expect(map[URI_OUTPUT_LENGTH_IN_BYTES], 20);
+      expect(map[URI_ITERATIONS], 10000);
+    });
+
+    test("Test only salt length", () {
+      Map<String, dynamic> map = parseQRCodeToMap("otpauth://hotp/OATH0005CCCB?"
+          "secret=2X7CTS3JWS4OVYIRHM4FKWEOW6TCJP6A&counter=1&digits=6"
+          "&issuer=privacyIDEA&2step_salt=8");
+      expect(map[URI_LABEL], "OATH0005CCCB");
+      expect(map[URI_COUNTER], 1);
+      expect(map[URI_DIGITS], 6);
+      expect(map[URI_SALT_LENGTH], 8);
+      expect(map[URI_OUTPUT_LENGTH_IN_BYTES], 20);
+      expect(map[URI_ITERATIONS], 10000);
+    });
   });
 }
