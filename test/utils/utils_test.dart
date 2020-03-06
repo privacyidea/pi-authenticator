@@ -246,10 +246,6 @@ void _testParseQRCodeToToken() {
               "HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ", Encodings.base32));
       expect(map[URI_COUNTER], 5);
     });
-
-    // TODO test parsing 2 step salt
-    // TODO test default values
-    // TODO test works with only one param set
   });
 }
 
