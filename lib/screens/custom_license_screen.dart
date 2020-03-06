@@ -43,6 +43,7 @@ class CustomLicenseScreen extends StatefulWidget {
 
 class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
   List<Widget> widgetList;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -86,19 +87,32 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          L10n.of(context).about,
-          textScaleFactor: screenTitleScaleFactor,
+        appBar: AppBar(
+          title: Text(
+            L10n.of(context).about,
+            textScaleFactor: screenTitleScaleFactor,
+          ),
         ),
-      ),
-      body: Scrollbar(
-          child: ListView.builder(
-              itemCount: widgetList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return widgetList[index];
-              })),
-    );
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: Scrollbar(
+                child: ListView.builder(
+                    itemCount: widgetList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return widgetList[index];
+                    }),
+              ),
+            ),
+            Visibility(
+              visible: _isLoading,
+              child: Align(
+                alignment: Alignment.center,
+                child: LinearProgressIndicator(),
+              ),
+            ),
+          ],
+        ));
   }
 
   void buildAllLicenses() async {
@@ -112,6 +126,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
 
     setState(() {
       widgetList.addAll(_licenseList);
+      _isLoading = false;
     });
   }
 
