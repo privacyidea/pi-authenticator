@@ -248,11 +248,7 @@ class _MainScreenState extends State<MainScreen> {
 
   // FIXME initializing firebase messaging this way is not possible
   void _initFirebase(FirebaseConfig config) async {
-    List<FirebaseApp> after = await FirebaseApp.allApps();
-    print('Before configured apps: $after');
-
-//    String name = "what_is_this_for?";
-    String name = "what_is_this_for?";
+    String name = "example";
     FirebaseOptions options = FirebaseOptions(
       googleAppID: config.appID,
       apiKey: config.apiKey,
@@ -262,15 +258,12 @@ class _MainScreenState extends State<MainScreen> {
       gcmSenderID: config.projectNumber,
     );
 
-//    FirebaseApp firebaseApp =
     await FirebaseApp.configure(
       name: name,
       options: options,
     );
 
-    List<FirebaseApp> apps = await FirebaseApp.allApps();
-    print('After configured apps: $apps');
-
+    // FIXME make firebase_messaging use the configured app above.
     FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 
     await firebaseMessaging.requestNotificationPermissions();
