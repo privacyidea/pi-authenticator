@@ -48,33 +48,110 @@ void _testInsertCharAt() {
 }
 
 void _testCalculateHotpValue() {
-  // We need to use different tokens here, because simply incrementing the
-  // counter between all method calls leads to a race condition
-  HOTPToken token0 = HOTPToken(
-      null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
-      counter: 0);
-  HOTPToken token1 = HOTPToken(
-      null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
-      counter: 1);
-  HOTPToken token2 = HOTPToken(
-      null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
-      counter: 2);
-  HOTPToken token8 = HOTPToken(
-      null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
-      counter: 8);
+  group("Calculate hotp values", () {
+    group("different couters 6 digits", () {
+      // We need to use different tokens here, because simply incrementing the
+      // counter between all method calls leads to a race condition
+      HOTPToken token0 = HOTPToken(
+          null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
+          counter: 0);
+      HOTPToken token1 = HOTPToken(
+          null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
+          counter: 1);
+      HOTPToken token2 = HOTPToken(
+          null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
+          counter: 2);
+      HOTPToken token8 = HOTPToken(
+          null, null, Algorithms.SHA1, 6, utf8.encode("secret"),
+          counter: 8);
 
-  group("calculateHotpValue", () {
-    test("OTP for counter == 0",
-        () => expect(calculateHotpValue(token0), "814628"));
+      test("OTP for counter == 0",
+          () => expect(calculateHotpValue(token0), "814628"));
 
-    test("OTP for counter == 1",
-        () => expect(calculateHotpValue(token1), "533881"));
+      test("OTP for counter == 1",
+          () => expect(calculateHotpValue(token1), "533881"));
 
-    test("OTP for counter == 2",
-        () => expect(calculateHotpValue(token2), "720111"));
+      test("OTP for counter == 2",
+          () => expect(calculateHotpValue(token2), "720111"));
 
-    test("OTP for counter == 8",
-        () => expect(calculateHotpValue(token8), "963685"));
+      test("OTP for counter == 8",
+          () => expect(calculateHotpValue(token8), "963685"));
+    });
+
+    group("different couters 8 digits", () {
+      // We need to use different tokens here, because simply incrementing the
+      // counter between all method calls leads to a race condition
+      HOTPToken token0 = HOTPToken(
+          null, null, Algorithms.SHA1, 8, utf8.encode("secret"),
+          counter: 0);
+      HOTPToken token1 = HOTPToken(
+          null, null, Algorithms.SHA1, 8, utf8.encode("secret"),
+          counter: 1);
+      HOTPToken token2 = HOTPToken(
+          null, null, Algorithms.SHA1, 8, utf8.encode("secret"),
+          counter: 2);
+      HOTPToken token8 = HOTPToken(
+          null, null, Algorithms.SHA1, 8, utf8.encode("secret"),
+          counter: 8);
+
+      test("OTP for counter == 0",
+          () => expect(calculateHotpValue(token0), "31814628"));
+
+      test("OTP for counter == 1",
+          () => expect(calculateHotpValue(token1), "28533881"));
+
+      test("OTP for counter == 2",
+          () => expect(calculateHotpValue(token2), "31720111"));
+
+      test("OTP for counter == 8",
+          () => expect(calculateHotpValue(token8), "15963685"));
+    });
+
+    group("different algorithms 6 digits", () {
+      // We need to use different tokens here, because simply incrementing the
+      // counter between all method calls leads to a race condition
+      HOTPToken token0 = HOTPToken(
+          null, null, Algorithms.SHA1, 6, utf8.encode("Secret"),
+          counter: 0);
+      HOTPToken token1 = HOTPToken(
+          null, null, Algorithms.SHA256, 6, utf8.encode("Secret"),
+          counter: 0);
+      HOTPToken token2 = HOTPToken(
+          null, null, Algorithms.SHA512, 6, utf8.encode("Secret"),
+          counter: 0);
+
+      test("OTP for sha1",
+          () => expect(calculateHotpValue(token0), "292574"));
+
+      test("OTP for sha256",
+          () => expect(calculateHotpValue(token1), "203782"));
+
+      test("OTP for sha512",
+          () => expect(calculateHotpValue(token2), "636350"));
+    });
+
+    group("different algorithms 8 digits", () {
+      // We need to use different tokens here, because simply incrementing the
+      // counter between all method calls leads to a race condition
+      HOTPToken token0 = HOTPToken(
+          null, null, Algorithms.SHA1, 8, utf8.encode("Secret"),
+          counter: 0);
+      HOTPToken token1 = HOTPToken(
+          null, null, Algorithms.SHA256, 8, utf8.encode("Secret"),
+          counter: 0);
+      HOTPToken token2 = HOTPToken(
+          null, null, Algorithms.SHA512, 8, utf8.encode("Secret"),
+          counter: 0);
+
+      test("OTP for sha1",
+          () => expect(calculateHotpValue(token0), "25292574"));
+
+      test("OTP for sha256",
+          () => expect(calculateHotpValue(token1), "25203782"));
+
+      test("OTP for sha512",
+          () => expect(calculateHotpValue(token2), "99636350"));
+    });
   });
 }
 
