@@ -234,15 +234,15 @@ class _MainScreenState extends State<MainScreen> {
 //    // save firebaseconfig
     _initFirebase(firebaseConfig);
 //
-//    return PushToken(
-//      label: uriMap[URI_LABEL],
-//      issuer: uriMap[URI_ISSUER],
-//      uuid: uuid,
-//      sslVerify: uriMap[URI_SSL_VERIFY],
-//      timeToDie: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
-//      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-//      url: uriMap[URI_ROLLOUT_URL],
-//    );
+    return PushToken(
+      label: uriMap[URI_LABEL],
+      issuer: uriMap[URI_ISSUER],
+      uuid: uuid,
+      sslVerify: uriMap[URI_SSL_VERIFY],
+      timeToDie: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
+      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
+      url: uriMap[URI_ROLLOUT_URL],
+    );
   }
 
   // FIXME initializing firebase messaging this way is not possible
@@ -267,6 +267,9 @@ class _MainScreenState extends State<MainScreen> {
 
     await firebaseMessaging.requestNotificationPermissions();
 
+    // FIXME: onResume and onLaunch is not configured see
+    //  https://pub.dev/packages/firebase_messaging#-readme-tab-
+    //  but the solution there does not seem to work?
     firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
