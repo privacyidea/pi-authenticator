@@ -49,7 +49,9 @@ dependencies:
   # dependency for changing the theme of the app
   dynamic_theme: ^1.0.1 # https://pub.dev/packages/dynamic_theme
   # dependency for push tokens https://github.com/privacyidea/privacyidea/wiki/concept%3A-PushToken
-  firebase_messaging: ^6.0.9
+  # firebase_messaging: ^6.0.9
+  firebase_messaging:
+    path: ./local_plugins/firebase_messaging-6.0.9
   # dependency for firebase configuration
   firebase_core: ^0.4.4
 
