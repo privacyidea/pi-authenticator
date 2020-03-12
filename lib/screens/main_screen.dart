@@ -280,11 +280,28 @@ class _MainScreenState extends State<MainScreen> {
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
       },
+      // FIXME this leads to errors
+//      onBackgroundMessage: myBackgroundMessageHandler,
     );
 
     firebaseMessaging.getToken().then((token) {
       print("FCM token: $token");
     });
+  }
+
+  static Future<dynamic> myBackgroundMessageHandler(
+      Map<String, dynamic> message) {
+    if (message.containsKey('data')) {
+      // Handle data message
+      final dynamic data = message['data'];
+    }
+
+    if (message.containsKey('notification')) {
+      // Handle notification message
+      final dynamic notification = message['notification'];
+    }
+
+    // Or do other work.
   }
 
   ListView _buildTokenList() {
