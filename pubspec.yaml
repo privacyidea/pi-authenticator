@@ -51,7 +51,7 @@ dependencies:
   # dependency for push tokens https://github.com/privacyidea/privacyidea/wiki/concept%3A-PushToken
   # firebase_messaging: ^6.0.9
   firebase_messaging:
-    path: ./local_plugins/firebase_messaging-6.0.9
+    path: ./local_plugins/firebase_messaging-6.0.12
   # dependency for firebase configuration
   # firebase_core: ^0.4.4
 
