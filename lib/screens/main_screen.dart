@@ -23,7 +23,6 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:barcode_scan/barcode_scan.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -223,45 +222,45 @@ class _MainScreenState extends State<MainScreen> {
 //    &appidios=AIzaSXXXXXvUWdiRk ## for fcm init
 //    &apikeyios=AIzXXXXXk ## for fcm init
 
-    // TODO: Change this to work with ios, or change the parsing
-    //  of the uri directly.
+//    // TODO: Change this to work with ios, or change the parsing
+//    //  of the uri directly.
     FirebaseConfig firebaseConfig = FirebaseConfig(
         projectID: uriMap[URI_PROJECT_ID],
         projectNumber: uriMap[URI_PROJECT_NUMBER],
         appID: uriMap[URI_APP_ID],
         apiKey: uriMap[URI_API_KEY]);
-
-    // TODO: Init firebase I guess.
-    // save firebaseconfig
+//
+//    // TODO: Init firebase I guess.
+//    // save firebaseconfig
     _initFirebase(firebaseConfig);
-
-    return PushToken(
-      label: uriMap[URI_LABEL],
-      issuer: uriMap[URI_ISSUER],
-      uuid: uuid,
-      sslVerify: uriMap[URI_SSL_VERIFY],
-      timeToDie: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
-      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-      url: uriMap[URI_ROLLOUT_URL],
-    );
+//
+//    return PushToken(
+//      label: uriMap[URI_LABEL],
+//      issuer: uriMap[URI_ISSUER],
+//      uuid: uuid,
+//      sslVerify: uriMap[URI_SSL_VERIFY],
+//      timeToDie: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
+//      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
+//      url: uriMap[URI_ROLLOUT_URL],
+//    );
   }
 
   // FIXME initializing firebase messaging this way is not possible
   void _initFirebase(FirebaseConfig config) async {
     String name = "example";
-    FirebaseOptions options = FirebaseOptions(
-      googleAppID: config.appID,
-      apiKey: config.apiKey,
-      databaseURL: "https://" + config.projectID + ".firebaseio.com",
-      storageBucket: config.projectID + ".appspot.com",
-      projectID: config.projectID,
-      gcmSenderID: config.projectNumber,
-    );
-
-    await FirebaseApp.configure(
-      name: name,
-      options: options,
-    );
+//    FirebaseOptions options = FirebaseOptions(
+//      googleAppID: config.appID,
+//      apiKey: config.apiKey,
+//      databaseURL: "https://" + config.projectID + ".firebaseio.com",
+//      storageBucket: config.projectID + ".appspot.com",
+//      projectID: config.projectID,
+//      gcmSenderID: config.projectNumber,
+//    );
+//
+//    await FirebaseApp.configure(
+//      name: name,
+//      options: options,
+//    );
 
     // FIXME make firebase_messaging use the configured app above.
     FirebaseMessaging firebaseMessaging = FirebaseMessaging();
