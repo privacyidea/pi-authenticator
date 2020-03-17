@@ -23,6 +23,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -248,19 +249,19 @@ class _MainScreenState extends State<MainScreen> {
   // FIXME initializing firebase messaging this way is not possible
   void _initFirebase(FirebaseConfig config) async {
     String name = "example";
-//    FirebaseOptions options = FirebaseOptions(
-//      googleAppID: config.appID,
-//      apiKey: config.apiKey,
-//      databaseURL: "https://" + config.projectID + ".firebaseio.com",
-//      storageBucket: config.projectID + ".appspot.com",
-//      projectID: config.projectID,
-//      gcmSenderID: config.projectNumber,
-//    );
-//
-//    await FirebaseApp.configure(
-//      name: name,
-//      options: options,
-//    );
+    FirebaseOptions options = FirebaseOptions(
+      googleAppID: config.appID,
+      apiKey: config.apiKey,
+      databaseURL: "https://" + config.projectID + ".firebaseio.com",
+      storageBucket: config.projectID + ".appspot.com",
+      projectID: config.projectID,
+      gcmSenderID: config.projectNumber,
+    );
+
+    await FirebaseApp.configure(
+      name: name,
+      options: options,
+    );
 
     // FIXME make firebase_messaging use the configured app above.
     FirebaseMessaging firebaseMessaging = FirebaseMessaging();
@@ -289,20 +290,20 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  static Future<dynamic> myBackgroundMessageHandler(
-      Map<String, dynamic> message) {
-    if (message.containsKey('data')) {
-      // Handle data message
-      final dynamic data = message['data'];
-    }
-
-    if (message.containsKey('notification')) {
-      // Handle notification message
-      final dynamic notification = message['notification'];
-    }
-
-    // Or do other work.
-  }
+//  static Future<dynamic> myBackgroundMessageHandler(
+//      Map<String, dynamic> message) {
+//    if (message.containsKey('data')) {
+//      // Handle data message
+//      final dynamic data = message['data'];
+//    }
+//
+//    if (message.containsKey('notification')) {
+//      // Handle notification message
+//      final dynamic notification = message['notification'];
+//    }
+//
+//    // Or do other work.
+//  }
 
   ListView _buildTokenList() {
     return ListView.separated(

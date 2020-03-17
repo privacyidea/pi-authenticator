@@ -53,7 +53,7 @@ dependencies:
   firebase_messaging:
     path: ./local_plugins/firebase_messaging-6.0.12
   # dependency for firebase configuration
-  # firebase_core: ^0.4.4
+  firebase_core: ^0.4.4
 
   flutter_localizations:
     sdk: flutter
