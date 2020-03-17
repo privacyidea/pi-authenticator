@@ -248,7 +248,7 @@ class _MainScreenState extends State<MainScreen> {
 
   // FIXME initializing firebase messaging this way is not possible
   void _initFirebase(FirebaseConfig config) async {
-    String name = "example";
+    String name = "privacyIDEA Authenticator";
     FirebaseOptions options = FirebaseOptions(
       googleAppID: config.appID,
       apiKey: config.apiKey,
@@ -265,6 +265,8 @@ class _MainScreenState extends State<MainScreen> {
 
     // FIXME make firebase_messaging use the configured app above.
     FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+
+    firebaseMessaging.setApplicationName(name);
 
     await firebaseMessaging.requestNotificationPermissions();
 
