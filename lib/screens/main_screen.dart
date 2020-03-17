@@ -249,13 +249,33 @@ class _MainScreenState extends State<MainScreen> {
   // FIXME initializing firebase messaging this way is not possible
   void _initFirebase(FirebaseConfig config) async {
     String name = "privacyIDEA Authenticator";
+
+//    FirebaseOptions options = FirebaseOptions(
+//      googleAppID: config.appID,
+//      apiKey: config.apiKey,
+//      databaseURL: "https://" + config.projectID + ".firebaseio.com",
+//      storageBucket: config.projectID + ".appspot.com",
+//      projectID: config.projectID,
+//      gcmSenderID: config.projectNumber,
+//    );
+
+    // FirebaseApp
+    // {name=[DEFAULT],
+    // options=FirebaseOptions
+    // {applicationId=1:978796356794:android:62b1e07b007e368ec98e83,
+    // apiKey=AIzaSyBkOGSo8JuVcLIDYD1zMUX-fxsHy8Inf5U,
+    // databaseUrl=https://test-3bdba.firebaseio.com,
+    // gcmSenderId=978796356794,
+    // storageBucket=test-3bdba.appspot.com,
+    // projectId=test-3bdba}}]
+
     FirebaseOptions options = FirebaseOptions(
-      googleAppID: config.appID,
-      apiKey: config.apiKey,
-      databaseURL: "https://" + config.projectID + ".firebaseio.com",
-      storageBucket: config.projectID + ".appspot.com",
-      projectID: config.projectID,
-      gcmSenderID: config.projectNumber,
+      googleAppID: "1:978796356794:android:62b1e07b007e368ec98e83",
+      apiKey: "AIzaSyBkOGSo8JuVcLIDYD1zMUX-fxsHy8Inf5U",
+      databaseURL: "https://" + "test-3bdba" + ".firebaseio.com",
+      storageBucket: "test-3bdba" + ".appspot.com",
+      projectID: "test-3bdba",
+      gcmSenderID: "978796356794",
     );
 
     await FirebaseApp.configure(
