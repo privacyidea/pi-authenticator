@@ -81,3 +81,30 @@ Uint8List generateSalt(int length) {
 
   return list;
 }
+
+// TODO change this
+AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> generateRSAkeyPair() {
+  final keyGen = RSAKeyGenerator()
+    ..init(ParametersWithRandom(
+        RSAKeyGeneratorParameters(BigInt.parse('65537'), 4096, 64),
+        exampleSecureRandom()));
+
+  final pair = keyGen.generateKeyPair();
+
+  return AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>(
+      pair.publicKey, pair.privateKey);
+}
+
+//  TODO what are the alternatives
+SecureRandom exampleSecureRandom() {
+  final secureRandom = FortunaRandom();
+
+  final seedSource = Random.secure();
+  final seeds = <int>[];
+  for (int i = 0; i < 32; i++) {
+    seeds.add(seedSource.nextInt(255));
+  }
+  secureRandom.seed(KeyParameter(Uint8List.fromList(seeds)));
+
+  return secureRandom;
+}

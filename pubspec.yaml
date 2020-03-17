@@ -54,6 +54,8 @@ dependencies:
     path: ./local_plugins/firebase_messaging-6.0.12
   # dependency for firebase configuration
   firebase_core: ^0.4.4
+  # dependency for http requests
+  http: ^0.12.0+4 # TODO add license https://pub.dev/packages/http#-readme-tab-
 
   flutter_localizations:
     sdk: flutter

@@ -19,6 +19,7 @@
 */
 
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -28,12 +29,14 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/io_client.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
+import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
@@ -196,7 +199,8 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  PushToken _buildPushToken(Map<String, dynamic> uriMap, String uuid) {
+  Future<PushToken> _buildPushToken(
+      Map<String, dynamic> uriMap, String uuid) async {
     // TODO:
 //    otpauth://
 //    pipush/
@@ -231,10 +235,42 @@ class _MainScreenState extends State<MainScreen> {
         appID: uriMap[URI_APP_ID],
         apiKey: uriMap[URI_API_KEY]);
 //
-//    // TODO: Init firebase I guess.
-//    // save firebaseconfig
-    _initFirebase(firebaseConfig);
-//
+    // TODO save firebaseconfig
+    String token = await _initFirebase(firebaseConfig);
+
+    print('Generating RSA');
+    final pair = generateRSAkeyPair();
+
+    print('Sending message to ${uriMap[URI_ROLLOUT_URL]}');
+    print('Verify? ${uriMap[URI_SSL_VERIFY]}');
+    var url = uriMap[URI_ROLLOUT_URL];
+//    var response = await http.post(url, body: {
+//      'enrollment_credential': uriMap[URI_ENROLLMENT_CREDENTIAL],
+//      'serial': uriMap[URI_SERIAL],
+//      'fbtoken': token,
+//      'pubkey': pair.publicKey.toString(),
+//    });
+//    print('Response status: ${response.statusCode}');
+//    print('Response body: ${response.body}');
+
+    // TODO wrap this
+    IOClient ioClient = IOClient(HttpClient()
+      ..badCertificateCallback =
+          ((X509Certificate cert, String host, int port) =>
+              !uriMap[URI_SSL_VERIFY]));
+
+    var response = await ioClient.post(url, body: {
+      'enrollment_credential': uriMap[URI_ENROLLMENT_CREDENTIAL],
+      'serial': uriMap[URI_SERIAL],
+      'fbtoken': token,
+      'pubkey': pair.publicKey.toString(),
+    });
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    ioClient.close();
+
     return PushToken(
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
@@ -247,17 +283,17 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   // FIXME initializing firebase messaging this way is not possible
-  void _initFirebase(FirebaseConfig config) async {
+  Future<String> _initFirebase(FirebaseConfig config) async {
     String name = "privacyIDEA Authenticator";
 
-//    FirebaseOptions options = FirebaseOptions(
-//      googleAppID: config.appID,
-//      apiKey: config.apiKey,
-//      databaseURL: "https://" + config.projectID + ".firebaseio.com",
-//      storageBucket: config.projectID + ".appspot.com",
-//      projectID: config.projectID,
-//      gcmSenderID: config.projectNumber,
-//    );
+    FirebaseOptions options = FirebaseOptions(
+      googleAppID: config.appID,
+      apiKey: config.apiKey,
+      databaseURL: "https://" + config.projectID + ".firebaseio.com",
+      storageBucket: config.projectID + ".appspot.com",
+      projectID: config.projectID,
+      gcmSenderID: config.projectNumber,
+    );
 
     // FirebaseApp
     // {name=[DEFAULT],
@@ -269,21 +305,20 @@ class _MainScreenState extends State<MainScreen> {
     // storageBucket=test-3bdba.appspot.com,
     // projectId=test-3bdba}}]
 
-    FirebaseOptions options = FirebaseOptions(
-      googleAppID: "1:978796356794:android:62b1e07b007e368ec98e83",
-      apiKey: "AIzaSyBkOGSo8JuVcLIDYD1zMUX-fxsHy8Inf5U",
-      databaseURL: "https://" + "test-3bdba" + ".firebaseio.com",
-      storageBucket: "test-3bdba" + ".appspot.com",
-      projectID: "test-3bdba",
-      gcmSenderID: "978796356794",
-    );
+//    FirebaseOptions options = FirebaseOptions(
+//      googleAppID: "1:978796356794:android:62b1e07b007e368ec98e83",
+//      apiKey: "AIzaSyBkOGSo8JuVcLIDYD1zMUX-fxsHy8Inf5U",
+//      databaseURL: "https://" + "test-3bdba" + ".firebaseio.com",
+//      storageBucket: "test-3bdba" + ".appspot.com",
+//      projectID: "test-3bdba",
+//      gcmSenderID: "978796356794",
+//    );
 
     await FirebaseApp.configure(
       name: name,
       options: options,
     );
 
-    // FIXME make firebase_messaging use the configured app above.
     FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 
     firebaseMessaging.setApplicationName(name);
@@ -310,6 +345,8 @@ class _MainScreenState extends State<MainScreen> {
     firebaseMessaging.getToken().then((token) {
       print("FCM token: $token");
     });
+
+    return await firebaseMessaging.getToken();
   }
 
 //  static Future<dynamic> myBackgroundMessageHandler(
