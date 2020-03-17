@@ -63,7 +63,7 @@ public class FirebaseMessagingPlugin extends BroadcastReceiver
 
         // TODO The firebase app should not be initialized here, a pre existing app should be used
         //  instead, maybe we need to initialize our own app here, or somewhere else.
-        FirebaseApp.initializeApp(applicationContext);
+//        FirebaseApp.initializeApp(applicationContext);
 
 
         channel = new MethodChannel(binaryMessenger, "plugins.flutter.io/firebase_messaging");
@@ -174,8 +174,15 @@ public class FirebaseMessagingPlugin extends BroadcastReceiver
 
         // TODO handle using a preconfigured firebase app
         // TODO 1. Print out all registered firebase apps
+        if ("FcmSetApplicationName".equals(call.method)) {
+//            System.out.println("XXX I exist!");
+//            System.out.println("XXX " + FirebaseApp.getApps(applicationContext));
+//            System.out.println("XXX " + FirebaseApp.getInstance("example"));
 
-        if ("FcmDartService#start".equals(call.method)) {
+            System.out.println("XXX " + call.arguments.toString());
+
+
+        } else if ("FcmDartService#start".equals(call.method)) {
             long setupCallbackHandle = 0;
             long backgroundMessageHandle = 0;
             try {
