@@ -211,14 +211,51 @@ class _PushWidgetState extends _TokenWidgetState {
   _PushWidgetState(Token token, VoidCallback onDeleteClicked)
       : super(token, onDeleteClicked);
 
-
   // TODO make all that 2. rollout step stuff
+  //    print('Generating RSA');
+//    final pair = generateRSAkeyPair();
+//
+//    print('Sending message to ${uriMap[URI_ROLLOUT_URL]}');
+//    print('Verify? ${uriMap[URI_SSL_VERIFY]}');
+//    var url = uriMap[URI_ROLLOUT_URL];
+////    var response = await http.post(url, body: {
+////      'enrollment_credential': uriMap[URI_ENROLLMENT_CREDENTIAL],
+////      'serial': uriMap[URI_SERIAL],
+////      'fbtoken': token,
+////      'pubkey': pair.publicKey.toString(),
+////    });
+////    print('Response status: ${response.statusCode}');
+////    print('Response body: ${response.body}');
+//
+//    // TODO wrap this
+//    IOClient ioClient = IOClient(HttpClient()
+//      ..badCertificateCallback =
+//          ((X509Certificate cert, String host, int port) =>
+//              !uriMap[URI_SSL_VERIFY]));
+//
+//    var response = await ioClient.post(url, body: {
+//      'enrollment_credential': uriMap[URI_ENROLLMENT_CREDENTIAL],
+//      'serial': uriMap[URI_SERIAL],
+//      'fbtoken': token,
+//      'pubkey': pair.publicKey.toString(),
+//    });
+//
+//    // TODO check response - show error - etc.
+//
+//    print('Response status: ${response.statusCode}');
+//    print('Response body: ${response.body}');
+//
+//    ioClient.close();
 
   @override
   Widget _buildTile() {
     // TODO: implement _buildTile
     return ListTile(
-      title: Text(_token.label),
+      title: Text("Title"),
+      subtitle: Text(
+        _label,
+        textScaleFactor: 2.0,
+      ),
     );
   }
 }
@@ -287,17 +324,18 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
           ),
         ),
         Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: EdgeInsets.all(20),
-              child: RaisedButton(
-                onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
-                child: Text(
-                  L10n.of(context).next,
-                  textScaleFactor: 1.5,
-                ),
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: RaisedButton(
+              onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
+              child: Text(
+                L10n.of(context).next,
+                textScaleFactor: 1.5,
               ),
-            )),
+            ),
+          ),
+        ),
       ],
     );
   }
