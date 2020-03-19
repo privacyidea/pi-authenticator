@@ -21,6 +21,7 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 
 // TODO test the behavior of this class.
@@ -30,16 +31,7 @@ class StorageUtil {
   /// Saves [token] securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
   static void saveOrReplaceToken(Token token) async {
-    String key = token.uuid;
-
-    String value = await _storage.read(key: key);
-
-    if (value != null) {
-      await _storage.delete(key: key);
-    }
-
-    String serializedToken = jsonEncode(token);
-    await _storage.write(key: key, value: serializedToken);
+    await _storage.write(key: token.uuid, value: jsonEncode(token));
   }
 
   /// Returns a list of all Tokens that are saved in the secure storage of
@@ -70,5 +62,23 @@ class StorageUtil {
     String key = token.uuid;
 
     await _storage.delete(key: key);
+  }
+
+  static const _FIREBASE_CONFIG_KEY = "sdfkjhfhknvcnell";
+
+  static void saveOrReplaceFirebaseConfig(FirebaseConfig config) async {
+    await _storage.write(key: _FIREBASE_CONFIG_KEY, value: jsonEncode(config));
+  }
+
+  static Future<bool> doesFirebaseConfigExist() async {
+    return loadFirebaseConfig() != null;
+  }
+
+  static Future<FirebaseConfig> loadFirebaseConfig() async {
+    String serializedConfig = await _storage.read(key: _FIREBASE_CONFIG_KEY);
+
+    return serializedConfig == null
+        ? null
+        : FirebaseConfig.fromJson(jsonDecode(serializedConfig));
   }
 }
