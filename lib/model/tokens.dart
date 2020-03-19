@@ -140,10 +140,15 @@ class TOTPToken extends OTPToken {
 class PushToken extends Token {
   String _serial;
 
-  // 2. step
+  // Roll out
   bool _sslVerify;
   String _enrollmentCredentials;
   Uri _url;
+  String _firebaseToken;
+  bool isRolledOut = false;
+
+  String get firebaseToken => _firebaseToken;
+
   DateTime _timeToDie;
 
   String get serial => _serial;
@@ -156,8 +161,6 @@ class PushToken extends Token {
 
   DateTime get timeToDie => _timeToDie;
 
-  bool isRolledOut = false;
-
   PushToken({
     String label,
     String issuer,
@@ -166,11 +169,13 @@ class PushToken extends Token {
     bool sslVerify,
     String enrollmentCredentials,
     Uri url,
+    String firebaseToken,
     DateTime timeToDie,
   })  : this._sslVerify = sslVerify,
         this._enrollmentCredentials = enrollmentCredentials,
         this._url = url,
         this._timeToDie = timeToDie,
+        this._firebaseToken = firebaseToken,
         super(label, issuer, uuid);
 
   @override
@@ -178,7 +183,8 @@ class PushToken extends Token {
     return super.toString() +
         ' | Type Push | Serial $serial | SSLVerify $sslVerify '
             '| Enrollment Credentials $enrollmentCredentials '
-            '| URL $url | Time to die $timeToDie | Is rolled out $isRolledOut';
+            '| URL $url | Firebase Token $firebaseToken '
+            '| Time to die $timeToDie | Is rolled out $isRolledOut';
   }
 
   factory PushToken.fromJson(Map<String, dynamic> json) =>

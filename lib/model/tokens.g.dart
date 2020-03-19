@@ -82,6 +82,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
       sslVerify: json['sslVerify'] as bool,
       enrollmentCredentials: json['enrollmentCredentials'] as String,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
+      firebaseToken: json['firebaseToken'] as String,
       timeToDie: json['timeToDie'] == null
           ? null
           : DateTime.parse(json['timeToDie'] as String))
@@ -92,9 +93,10 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'label': instance.label,
       'uuid': instance.uuid,
       'issuer': instance.issuer,
+      'isRolledOut': instance.isRolledOut,
+      'firebaseToken': instance.firebaseToken,
       'sslVerify': instance.sslVerify,
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
-      'timeToDie': instance.timeToDie?.toIso8601String(),
-      'isRolledOut': instance.isRolledOut
+      'timeToDie': instance.timeToDie?.toIso8601String()
     };
