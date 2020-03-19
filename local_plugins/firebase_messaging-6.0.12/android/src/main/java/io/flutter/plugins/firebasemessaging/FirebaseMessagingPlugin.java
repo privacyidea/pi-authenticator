@@ -173,18 +173,9 @@ public class FirebaseMessagingPlugin extends BroadcastReceiver
          *  background message handling is complete.
          */
 
-        // TODO handle using a preconfigured firebase app
-        // TODO 1. Print out all registered firebase apps
         if ("FcmSetApplicationName".equals(call.method)) {
-//            System.out.println("XXX I exist!");
-            System.out.println("XXX " + FirebaseApp.getApps(applicationContext));
-//            System.out.println("XXX " + FirebaseApp.getInstance("example"));
-
-            System.out.println("XXX " + call.arguments.toString());
             String applicationName = call.arguments.toString();
             firebaseApp = FirebaseApp.getInstance(applicationName);
-
-
         } else if ("FcmDartService#start".equals(call.method)) {
             long setupCallbackHandle = 0;
             long backgroundMessageHandle = 0;
