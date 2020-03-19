@@ -163,6 +163,7 @@ class PushToken extends Token {
 
   PushToken({
     String label,
+    String serial,
     String issuer,
     String uuid,
     // 2. step
@@ -171,11 +172,12 @@ class PushToken extends Token {
     Uri url,
     String firebaseToken,
     DateTime timeToDie,
-  })  : this._sslVerify = sslVerify,
+  })  : this._serial = serial,
+        this._sslVerify = sslVerify,
         this._enrollmentCredentials = enrollmentCredentials,
         this._url = url,
-        this._timeToDie = timeToDie,
         this._firebaseToken = firebaseToken,
+        this._timeToDie = timeToDie,
         super(label, issuer, uuid);
 
   @override

@@ -20,12 +20,17 @@
 
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
+import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:http/io_client.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
+import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
@@ -211,50 +216,89 @@ class _PushWidgetState extends _TokenWidgetState {
   _PushWidgetState(Token token, VoidCallback onDeleteClicked)
       : super(token, onDeleteClicked);
 
-  // TODO make all that 2. rollout step stuff
-  //    print('Generating RSA');
-//    final pair = generateRSAkeyPair();
-//
-//    print('Sending message to ${uriMap[URI_ROLLOUT_URL]}');
-//    print('Verify? ${uriMap[URI_SSL_VERIFY]}');
-//    var url = uriMap[URI_ROLLOUT_URL];
-////    var response = await http.post(url, body: {
-////      'enrollment_credential': uriMap[URI_ENROLLMENT_CREDENTIAL],
-////      'serial': uriMap[URI_SERIAL],
-////      'fbtoken': token,
-////      'pubkey': pair.publicKey.toString(),
-////    });
-////    print('Response status: ${response.statusCode}');
-////    print('Response body: ${response.body}');
-//
-//    // TODO wrap this
-//    IOClient ioClient = IOClient(HttpClient()
-//      ..badCertificateCallback =
-//          ((X509Certificate cert, String host, int port) =>
-//              !uriMap[URI_SSL_VERIFY]));
-//
-//    var response = await ioClient.post(url, body: {
-//      'enrollment_credential': uriMap[URI_ENROLLMENT_CREDENTIAL],
-//      'serial': uriMap[URI_SERIAL],
-//      'fbtoken': token,
-//      'pubkey': pair.publicKey.toString(),
-//    });
-//
-//    // TODO check response - show error - etc.
-//
-//    print('Response status: ${response.statusCode}');
-//    print('Response body: ${response.body}');
-//
-//    ioClient.close();
+  PushToken get _token => super._token as PushToken;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (!_token.isRolledOut) {
+      _rollOutToken();
+    }
+  }
+
+  // TODO make this even more async so that the ui
+  //  is shown before roll out finished
+  //  maybe generating the  rsa key is to hard
+  // TODO check expiration date
+  void _rollOutToken() async {
+    // TODO make all that 2. rollout step stuff
+
+    // TODO save this keys somehow
+    print('Generating RSA');
+    final pair = generateRSAkeyPair();
+
+    print('Sending message to ${_token.url}');
+    print('Verify? ${_token.sslVerify}');
+    var url = _token.url;
+
+    // TODO wrap this
+    IOClient ioClient = IOClient(HttpClient()
+      ..badCertificateCallback =
+          ((X509Certificate cert, String host, int port) => !_token.sslVerify));
+
+    var response = await ioClient.post(url, body: {
+      'enrollment_credential': _token.enrollmentCredentials,
+      'serial': _token.serial,
+      'fbtoken': _token.firebaseToken,
+      'pubkey': pair.publicKey.toString(),
+    });
+
+    // TODO check response - show error - etc.
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    // TODO parse response: public key of server!
+
+    ioClient.close();
+
+    setState(() {
+      _token.isRolledOut = true;
+    });
+  }
 
   @override
   Widget _buildTile() {
     // TODO: implement _buildTile
-    return ListTile(
-      title: Text("Title"),
-      subtitle: Text(
-        _label,
-        textScaleFactor: 2.0,
+    return ClipRect(
+      child: Stack(
+        children: <Widget>[
+          ListTile(
+            title: Text(
+              _token.serial,
+              textScaleFactor: 2.3,
+            ),
+            subtitle: Text(
+              _label,
+              textScaleFactor: 2.0,
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Visibility(
+              visible: !_token.isRolledOut,
+              child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: Column(
+                    children: <Widget>[
+                      CircularProgressIndicator(),
+                      Text('Rollingn out'),
+                    ],
+                  )),
+            ),
+          )
+        ],
       ),
     );
   }

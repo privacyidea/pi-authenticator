@@ -235,6 +235,7 @@ class _MainScreenState extends State<MainScreen> {
     String firebaseToken = await _initFirebase(firebaseConfig);
 
     return PushToken(
+      serial: uriMap[URI_SERIAL],
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
       uuid: uuid,
