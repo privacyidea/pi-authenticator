@@ -19,6 +19,7 @@
 */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 part 'tokens.g.dart';
@@ -147,6 +148,10 @@ class PushToken extends Token {
   String _firebaseToken;
   bool isRolledOut = false;
 
+//  RSAPrivateKey privateKey;
+  bool hasPendingRequest = false;
+  Uri requestUri;
+
   String get firebaseToken => _firebaseToken;
 
   DateTime _timeToDie;
@@ -180,6 +185,7 @@ class PushToken extends Token {
         this._timeToDie = timeToDie,
         super(label, issuer, uuid);
 
+  // TODO update this method depending on isRolledOut
   @override
   String toString() {
     return super.toString() +

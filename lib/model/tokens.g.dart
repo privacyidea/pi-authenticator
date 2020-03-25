@@ -77,6 +77,7 @@ Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
 PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
   return PushToken(
       label: json['label'] as String,
+      serial: json['serial'] as String,
       issuer: json['issuer'] as String,
       uuid: json['uuid'] as String,
       sslVerify: json['sslVerify'] as bool,
@@ -86,7 +87,11 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
       timeToDie: json['timeToDie'] == null
           ? null
           : DateTime.parse(json['timeToDie'] as String))
-    ..isRolledOut = json['isRolledOut'] as bool;
+    ..isRolledOut = json['isRolledOut'] as bool
+    ..hasPendingRequest = json['hasPendingRequest'] as bool
+    ..requestUri = json['requestUri'] == null
+        ? null
+        : Uri.parse(json['requestUri'] as String);
 }
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
@@ -94,7 +99,10 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'uuid': instance.uuid,
       'issuer': instance.issuer,
       'isRolledOut': instance.isRolledOut,
+      'hasPendingRequest': instance.hasPendingRequest,
+      'requestUri': instance.requestUri?.toString(),
       'firebaseToken': instance.firebaseToken,
+      'serial': instance.serial,
       'sslVerify': instance.sslVerify,
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
