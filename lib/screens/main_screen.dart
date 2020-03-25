@@ -231,6 +231,7 @@ class _MainScreenState extends State<MainScreen> {
         appID: uriMap[URI_APP_ID],
         apiKey: uriMap[URI_API_KEY]);
 
+    // TODO remove firebase project when no push token exists anymore
     // TODO handle init not working / possible / firebase already initialised
     String firebaseToken = await _initFirebase(firebaseConfig);
 
@@ -300,6 +301,20 @@ class _MainScreenState extends State<MainScreen> {
 
   void _printFcmMessage(Map<String, dynamic> message) {
     message['data'].forEach((key, value) => print('$key = $value'));
+
+    String requestedSerial = message['data']['serial'];
+    Uri requestUri = Uri.parse(message['data']['url']);
+
+    _tokenList.forEach((token) {
+      if (token is PushToken) {
+        if (token.serial == requestedSerial && token.isRolledOut) {
+          setState(() {
+            token.hasPendingRequest = true;
+            token.requestUri = requestUri;
+          });
+        }
+      }
+    });
   }
 
 //  static Future<dynamic> myBackgroundMessageHandler(
