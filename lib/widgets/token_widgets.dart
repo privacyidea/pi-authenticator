@@ -228,29 +228,60 @@ class _PushWidgetState extends _TokenWidgetState {
 
   // TODO check expiration date
   void _rollOutToken() async {
-      // TODO make all that 2. rollout step stuff
+    // TODO make all that 2. rollout step stuff
 
-      // TODO save this keys somehow
-      final pair = await generateRSAKeyPair();
+    final keyPair = await generateRSAKeyPair();
 
-      Response response =
-          await doPost(sslVerify: _token.sslVerify, url: _token.url, body: {
-        'enrollment_credential': _token.enrollmentCredentials,
-        'serial': _token.serial,
-        'fbtoken': _token.firebaseToken,
-        'pubkey': pair.publicKey.toString(),
-      });
+    log(
+      "Setting private key for token",
+      name: "token_widgets.dart",
+      error: "Token: $_token, key: ${keyPair.privateKey}",
+    );
+    // TODO convert the key somehow
+//    _token.privateKey = keyPair.privateKey;
 
-      // TODO check response - show error - etc.
+    Response response =
+        await doPost(sslVerify: _token.sslVerify, url: _token.url, body: {
+      'enrollment_credential': _token.enrollmentCredentials,
+      'serial': _token.serial,
+      'fbtoken': _token.firebaseToken,
+      'pubkey': keyPair.publicKey.toString(),
+      // FIXME What is the value to be actually send here?
+    });
 
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+    // TODO check response - show error - etc.
 
-      // TODO parse response: public key of server!
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
 
-      setState(() {
-        _token.isRolledOut = true;
-      });
+    log("Get response:", error: "${response.body}");
+//    RSAPublicKey publicServerKey = response.body["detail"]["public_key"];
+
+    // TODO parse response: public key of server!
+
+    setState(() {
+      _token.isRolledOut = true;
+      _saveThisToken();
+    });
+  }
+
+  void acceptRequest() {
+    // TODO
+
+    resetRequest();
+  }
+
+  void declineRequest() {
+    // TODO
+
+    resetRequest();
+  }
+
+  void resetRequest() {
+    setState(() {
+      _token.hasPendingRequest = false;
+      _token.requestUri = null;
+    });
   }
 
   @override
@@ -259,15 +290,37 @@ class _PushWidgetState extends _TokenWidgetState {
     return ClipRect(
       child: Stack(
         children: <Widget>[
-          ListTile(
-            title: Text(
-              _token.serial,
-              textScaleFactor: 2.3,
-            ),
-            subtitle: Text(
-              _label,
-              textScaleFactor: 2.0,
-            ),
+          Column(
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  _token.serial,
+                  textScaleFactor: 2.3,
+                ),
+                subtitle: Text(
+                  _label,
+                  textScaleFactor: 2.0,
+                ),
+              ),
+              Visibility(
+                visible: _token.hasPendingRequest,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    RaisedButton(
+                      // TODO style and translate
+                      child: Text("Yes"),
+                      onPressed: acceptRequest,
+                    ),
+                    RaisedButton(
+                      // TODO style and translate
+                      child: Text("No"),
+                      onPressed: declineRequest,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           Align(
             alignment: Alignment.bottomCenter,
