@@ -20,14 +20,13 @@
 
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:http/io_client.dart';
+import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
@@ -227,45 +226,31 @@ class _PushWidgetState extends _TokenWidgetState {
     }
   }
 
-  // TODO make this even more async so that the ui
-  //  is shown before roll out finished
-  //  maybe generating the  rsa key is to hard
   // TODO check expiration date
   void _rollOutToken() async {
-    // TODO make all that 2. rollout step stuff
+      // TODO make all that 2. rollout step stuff
 
-    // TODO save this keys somehow
-    print('Generating RSA');
-    final pair = generateRSAkeyPair();
+      // TODO save this keys somehow
+      final pair = await generateRSAKeyPair();
 
-    print('Sending message to ${_token.url}');
-    print('Verify? ${_token.sslVerify}');
-    var url = _token.url;
+      Response response =
+          await doPost(sslVerify: _token.sslVerify, url: _token.url, body: {
+        'enrollment_credential': _token.enrollmentCredentials,
+        'serial': _token.serial,
+        'fbtoken': _token.firebaseToken,
+        'pubkey': pair.publicKey.toString(),
+      });
 
-    // TODO wrap this
-    IOClient ioClient = IOClient(HttpClient()
-      ..badCertificateCallback =
-          ((X509Certificate cert, String host, int port) => !_token.sslVerify));
+      // TODO check response - show error - etc.
 
-    var response = await ioClient.post(url, body: {
-      'enrollment_credential': _token.enrollmentCredentials,
-      'serial': _token.serial,
-      'fbtoken': _token.firebaseToken,
-      'pubkey': pair.publicKey.toString(),
-    });
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
-    // TODO check response - show error - etc.
+      // TODO parse response: public key of server!
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    // TODO parse response: public key of server!
-
-    ioClient.close();
-
-    setState(() {
-      _token.isRolledOut = true;
-    });
+      setState(() {
+        _token.isRolledOut = true;
+      });
   }
 
   @override
