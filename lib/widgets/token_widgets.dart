@@ -19,6 +19,7 @@
 */
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui';
 
@@ -27,6 +28,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart';
+import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
@@ -254,15 +256,19 @@ class _PushWidgetState extends _TokenWidgetState {
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
 
-    log("Get response:", error: "${response.body}");
-//    RSAPublicKey publicServerKey = response.body["detail"]["public_key"];
-
     // TODO parse response: public key of server!
+    // TODO save this key to token
+    RSAPublicKey publicServerKey =
+        parsePublicKey(json.decode(response.body)['detail']['public_key']);
 
     setState(() {
       _token.isRolledOut = true;
       _saveThisToken();
     });
+  }
+
+  RSAPublicKey parsePublicKey(String key) {
+    return convertDERToPublicKey(base64.decode(key));
   }
 
   void acceptRequest() {

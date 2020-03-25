@@ -29,6 +29,7 @@ import 'package:hex/hex.dart' as HexConverter;
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'package:otp/otp.dart' as OTPLibrary;
+import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 
 import 'identifiers.dart';
@@ -429,6 +430,7 @@ bool equalsIgnoreCase(String s1, String s2) {
   return s1.toLowerCase() == s2.toLowerCase();
 }
 
+/// Custom POST request allows to not verify certificates
 Future<Response> doPost(
     {bool sslVerify, Uri url, Map<String, String> body}) async {
   log("Sending post request",
@@ -446,4 +448,22 @@ Future<Response> doPost(
   ioClient.close();
 
   return response;
+}
+
+RSAPublicKey convertDERToPublicKey(Uint8List der) {
+  // TODO The rsa key we get seems to be in ASN1 format which looks like this:
+//    -----BEGIN RSA PUBLIC KEY-----
+//        BASE64 ENCODED DATA           <-- This is what we get, the rest is for PEM only
+//    -----END RSA PUBLIC KEY-----
+//
+//    RSAPublicKey ::= SEQUENCE {
+//    modulus           INTEGER,  -- n
+//    publicExponent    INTEGER   -- e
+//    }
+// TODO create the key from the above:
+//    RSAPublicKey(modulus, exponent)
+}
+
+void parseASN1Sequence(Uint8List bytes) {
+  // TODO
 }
