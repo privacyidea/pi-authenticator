@@ -19,7 +19,8 @@
 */
 
 import 'dart:convert';
-import 'dart:math';
+import 'dart:developer';
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart';
@@ -73,7 +74,7 @@ Future<String> generatePhoneChecksum({Uint8List phonePart}) async {
 
 Uint8List generateSalt(int length) {
   Uint8List list = Uint8List(length);
-  Random rand = Random.secure();
+  math.Random rand = math.Random.secure();
 
   for (int i = 0; i < length; i++) {
     list[i] = rand.nextInt(1 << 8); // Generate next random byte.
@@ -82,11 +83,21 @@ Uint8List generateSalt(int length) {
   return list;
 }
 
-// TODO change this
-AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> generateRSAkeyPair() {
+Future<AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>>
+    generateRSAKeyPair() async {
+  log("Start generating RSA key pair", name: "crypto_utils.dart");
+  AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> keyPair =
+      await compute(_generateRSAKeyPair, 4096);
+  log("Finished generating RSA key pair", name: "crypto_utils.dart");
+  return keyPair;
+}
+
+/// Computationally costly method to be run in an isolate.
+AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> _generateRSAKeyPair(
+    int bitLength) {
   final keyGen = RSAKeyGenerator()
     ..init(ParametersWithRandom(
-        RSAKeyGeneratorParameters(BigInt.parse('65537'), 4096, 64),
+        RSAKeyGeneratorParameters(BigInt.parse('65537'), bitLength, 64),
         exampleSecureRandom()));
 
   final pair = keyGen.generateKeyPair();
@@ -99,7 +110,7 @@ AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> generateRSAkeyPair() {
 SecureRandom exampleSecureRandom() {
   final secureRandom = FortunaRandom();
 
-  final seedSource = Random.secure();
+  final seedSource = math.Random.secure();
   final seeds = <int>[];
   for (int i = 0; i < 32; i++) {
     seeds.add(seedSource.nextInt(255));
