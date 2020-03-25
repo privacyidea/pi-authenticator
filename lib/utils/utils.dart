@@ -21,10 +21,13 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
 import 'package:hex/hex.dart' as HexConverter;
+import 'package:http/http.dart';
+import 'package:http/io_client.dart';
 import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:privacyidea_authenticator/model/tokens.dart';
 
@@ -424,4 +427,23 @@ String enumAsString(Object enumEntry) {
 
 bool equalsIgnoreCase(String s1, String s2) {
   return s1.toLowerCase() == s2.toLowerCase();
+}
+
+Future<Response> doPost(
+    {bool sslVerify, Uri url, Map<String, String> body}) async {
+  log("Sending post request",
+      name: "utils.dart",
+      error: "URI: $url, SSLVerify: $sslVerify, Body: $body");
+
+  IOClient ioClient = IOClient(HttpClient()
+    ..badCertificateCallback =
+        ((X509Certificate cert, String host, int port) => !sslVerify));
+
+  Response response = await ioClient.post(url, body: body);
+
+  log("Recieved response", name: "utils.dart", error: response);
+
+  ioClient.close();
+
+  return response;
 }
