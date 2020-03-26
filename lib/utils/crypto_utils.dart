@@ -23,10 +23,13 @@ import 'dart:developer';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:asn1lib/asn1lib.dart';
 import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
+
+import 'identifiers.dart';
 
 Future<Uint8List> pbkdf2(
     {Uint8List salt, int iterations, int keyLength, Uint8List password}) async {
@@ -118,4 +121,62 @@ SecureRandom exampleSecureRandom() {
   secureRandom.seed(KeyParameter(Uint8List.fromList(seeds)));
 
   return secureRandom;
+}
+
+RSAPublicKey convertDERToPublicKey(Uint8List der) {
+  // TODO The rsa key we get seems to be in ASN1 format which looks like this:
+//    -----BEGIN RSA PUBLIC KEY-----
+//        BASE64 ENCODED DATA           <-- This is what we get, the rest is for PEM only
+//    -----END RSA PUBLIC KEY-----
+//
+//    RSAPublicKey ::= SEQUENCE {
+//    modulus           INTEGER,  -- n
+//    publicExponent    INTEGER   -- e
+//    }
+//
+//                OR
+//
+//  RSAPrivateKey ::= SEQUENCE {
+//  version           Version,
+//  modulus           INTEGER,  -- n
+//  publicExponent    INTEGER,  -- e
+//  privateExponent   INTEGER,  -- d
+//  prime1            INTEGER,  -- p
+//  prime2            INTEGER,  -- q
+//  exponent1         INTEGER,  -- d mod (p-1)
+//  exponent2         INTEGER,  -- d mod (q-1)
+//  coefficient       INTEGER,  -- (inverse of q) mod p
+//  otherPrimeInfos   OtherPrimeInfos OPTIONAL
+//  }
+
+// TODO create the key from the above:
+//    RSAPublicKey(modulus, exponent)
+
+  ASN1Sequence asn1sequence = parseASN1Sequence(der);
+  var modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
+  var exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
+
+  return RSAPublicKey(modulus, exponent);
+}
+
+ASN1Sequence parseASN1Sequence(Uint8List bytes) {
+  return ASN1Parser(bytes).nextObject() as ASN1Sequence;
+}
+
+/// signedMessage is what was allegedly signed, signature gets validated
+bool validateSignature(
+    RSAPublicKey publicKey, Uint8List signedMessage, Uint8List signature) {
+  // TODO replace this with direct instantiation -> may be less library code to import
+  RSASigner signer = Signer(SIGNING_ALGORITHM); // Get algorithm from registry
+  signer.init(false, PublicKeyParameter<RSAPublicKey>(publicKey));
+  try {
+    var verifySignature =
+        signer.verifySignature(signedMessage, RSASignature(signature));
+    return verifySignature;
+  } on ArgumentError catch (e) {
+    log('Verifying signature failed do to ${e.name}',
+        name: 'crypto_utils.dart', error: e);
+  }
+
+  return false;
 }
