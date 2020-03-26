@@ -18,11 +18,13 @@
   limitations under the License.
 */
 
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:base32/base32.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -34,6 +36,7 @@ import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
+import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
@@ -279,7 +282,7 @@ class _MainScreenState extends State<MainScreen> {
     firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: ");
-        _printFcmMessage(message);
+        _handleIncomingAuthRequest(message);
       },
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
@@ -299,19 +302,51 @@ class _MainScreenState extends State<MainScreen> {
     return firebaseToken;
   }
 
-  void _printFcmMessage(Map<String, dynamic> message) {
+  void _handleIncomingAuthRequest(Map<String, dynamic> message) {
+    // TODO handle message in wrong format
     message['data'].forEach((key, value) => print('$key = $value'));
 
+    print('get data block');
+
+    // FIXME why does it fail with this line?
+//    Map<String, dynamic> data = message['data'];
+
+    print('after data');
+
+    // TODO Handle uri error
     String requestedSerial = message['data']['serial'];
     Uri requestUri = Uri.parse(message['data']['url']);
 
+    log('Incoming push auth request for token with serial.',
+        name: 'main_screen.dart', error: requestedSerial);
     _tokenList.forEach((token) {
       if (token is PushToken) {
         if (token.serial == requestedSerial && token.isRolledOut) {
-          setState(() {
-            token.hasPendingRequest = true;
-            token.requestUri = requestUri;
-          });
+          log('Token matched requested token',
+              name: 'main_screen.dart', error: token);
+          // {nonce}|{url}|{serial}|{question}|{title}|{sslverify} in BASE32
+          String signature = message['data']['signature'];
+          String signedData = '${message['data']['nonce']}|'
+              '${message['data']['url']}|'
+              '${message['data']['serial']}|'
+              '${message['data']['question']}|'
+              '${message['data']['title']}|'
+              '${message['data']['sslverify']}';
+
+          if (validateSignature(token.publicServerKey, utf8.encode(signedData),
+              base32.decode(signature))) {
+            log('Validating incoming message was successful.',
+                name: 'main_screen.dart');
+            setState(() {
+              token.hasPendingRequest = true;
+              token.requestUri = requestUri;
+            });
+          } else {
+            log('Validating incoming message failed.',
+                name: 'main_screen.dart',
+                error:
+                    'Signature $signature does not match signed data: $signedData');
+          }
         }
       }
     });
