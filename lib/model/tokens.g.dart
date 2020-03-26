@@ -111,7 +111,9 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
     ..hasPendingRequest = json['hasPendingRequest'] as bool
     ..requestUri = json['requestUri'] == null
         ? null
-        : Uri.parse(json['requestUri'] as String);
+        : Uri.parse(json['requestUri'] as String)
+    ..requestNonce = json['requestNonce'] as String
+    ..requestSSLVerify = json['requestSSLVerify'] as bool;
 }
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
@@ -129,6 +131,8 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'publicServerKey': instance.publicServerKey,
       'hasPendingRequest': instance.hasPendingRequest,
       'requestUri': instance.requestUri?.toString(),
+      'requestNonce': instance.requestNonce,
+      'requestSSLVerify': instance.requestSSLVerify,
       'firebaseToken': instance.firebaseToken,
       'serial': instance.serial,
       'sslVerify': instance.sslVerify,
