@@ -61,3 +61,6 @@ const String URI_ROLLOUT_URL = "URI_ROLLOUT_URL";
 const String URI_TTL = "URI_TTL";
 const String URI_ENROLLMENT_CREDENTIAL = "URI_ENROLLMENT_CREDENTIALS";
 const String URI_SSL_VERIFY = "URI_SSL_VERIFY";
+
+// Crypto stuff:
+const String SIGNING_ALGORITHM = 'SHA-256/RSA';
