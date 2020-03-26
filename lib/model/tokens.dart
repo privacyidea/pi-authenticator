@@ -148,7 +148,10 @@ class PushToken extends Token {
   String _firebaseToken;
   bool isRolledOut = false;
 
-//  RSAPrivateKey privateKey;
+  // FIXME split them in n and p and q and e to allow serialization
+  RSAPrivateKey privateTokenKey;
+  RSAPublicKey publicServerKey;
+
   bool hasPendingRequest = false;
   Uri requestUri;
 

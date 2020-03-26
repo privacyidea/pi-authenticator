@@ -239,8 +239,7 @@ class _PushWidgetState extends _TokenWidgetState {
       name: "token_widgets.dart",
       error: "Token: $_token, key: ${keyPair.privateKey}",
     );
-    // TODO convert the key somehow
-//    _token.privateKey = keyPair.privateKey;
+    _token.privateTokenKey = keyPair.privateKey;
 
     Response response =
         await doPost(sslVerify: _token.sslVerify, url: _token.url, body: {
@@ -248,37 +247,44 @@ class _PushWidgetState extends _TokenWidgetState {
       'serial': _token.serial,
       'fbtoken': _token.firebaseToken,
       'pubkey': keyPair.publicKey.toString(),
-      // FIXME What is the value to be actually send here?
+      // FIXME Convert this to ASN1.
     });
 
-    // TODO check response - show error - etc.
+    // TODO do not do the following part if parsing response failed! <---
+    RSAPublicKey publicServerKey = parseResponse(response);
+    _token.publicServerKey = publicServerKey;
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    // TODO parse response: public key of server!
-    // TODO save this key to token
-    RSAPublicKey publicServerKey =
-        parsePublicKey(json.decode(response.body)['detail']['public_key']);
+    log('Roll out successful', name: 'token_widgets.dart', error: _token);
 
     setState(() {
       _token.isRolledOut = true;
       _saveThisToken();
     });
+    // TODO up to here <---
   }
 
-  RSAPublicKey parsePublicKey(String key) {
+  // TODO throw exception if something does not fit
+  RSAPublicKey parseResponse(Response response) {
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    // TODO check response - show error - etc.
+
+    String key = json.decode(response.body)['detail']['public_key'];
+    key = key.replaceAll('\n', ''); // TODO replace other line breaks too?
+    log("KEY", error: key);
     return convertDERToPublicKey(base64.decode(key));
   }
 
   void acceptRequest() {
-    // TODO
+    // TODO write a message
+    // TODO check if url is set, then do something. Or request fails with missing url?
 
     resetRequest();
   }
 
   void declineRequest() {
-    // TODO
+    // TODO write a message
 
     resetRequest();
   }
@@ -292,7 +298,6 @@ class _PushWidgetState extends _TokenWidgetState {
 
   @override
   Widget _buildTile() {
-    // TODO: implement _buildTile
     return ClipRect(
       child: Stack(
         children: <Widget>[
