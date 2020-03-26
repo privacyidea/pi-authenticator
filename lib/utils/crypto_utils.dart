@@ -123,13 +123,13 @@ SecureRandom exampleSecureRandom() {
   return secureRandom;
 }
 
-RSAPublicKey convertDERToPublicKey(Uint8List der) {
+Future<RSAPublicKey> convertDERToPublicKey(String der) async {
   //    RSAPublicKey ::= SEQUENCE {
   //    modulus           INTEGER,  -- n
   //    publicExponent    INTEGER   -- e
   //    }
 
-  ASN1Sequence asn1sequence = _parseASN1Sequence(der);
+  ASN1Sequence asn1sequence = _parseASN1Sequence(base64.decode(der));
   BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
   BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
 
@@ -140,10 +140,19 @@ ASN1Sequence _parseASN1Sequence(Uint8List bytes) {
   return ASN1Parser(bytes).nextObject() as ASN1Sequence;
 }
 
+// TODO write tests for these methods
+Future<String> convertPublicKeyToDER(RSAPublicKey publicKey) async {
+  ASN1Sequence s = ASN1Sequence()
+    ..add(ASN1Integer(publicKey.modulus))
+    ..add(ASN1Integer(publicKey.exponent));
+  Uint8List bytes = s.valueBytes();
+
+  return base64.encode(bytes);
+}
+
 /// signedMessage is what was allegedly signed, signature gets validated
 bool validateSignature(
     RSAPublicKey publicKey, Uint8List signedMessage, Uint8List signature) {
-  // TODO replace this with direct instantiation -> may be less library code to import
   RSASigner signer = Signer(SIGNING_ALGORITHM); // Get algorithm from registry
   signer.init(
       false, PublicKeyParameter<RSAPublicKey>(publicKey)); // false to validate
@@ -164,7 +173,7 @@ String createBase32Signature(RSAPrivateKey privateKey, Uint8List dataToSign) {
 }
 
 Uint8List _createSignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
-  RSASigner signer = Signer(SIGNING_ALGORITHM); // Get using registry
+  RSASigner signer = Signer(SIGNING_ALGORITHM); // Get algorithm from registry
 
   signer.init(
       true, PrivateKeyParameter<RSAPrivateKey>(privateKey)); // true to sign

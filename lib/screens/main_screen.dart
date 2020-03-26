@@ -340,6 +340,10 @@ class _MainScreenState extends State<MainScreen> {
             setState(() {
               token.hasPendingRequest = true;
               token.requestUri = requestUri;
+              token.requestNonce = message['data']['nonce'];
+              token.requestSSLVerify = message['data']['sslverify'] == '1'
+                  ? true
+                  : false; // TODO is this the right interpretation?
             });
           } else {
             log('Validating incoming message failed.',

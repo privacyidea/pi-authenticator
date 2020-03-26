@@ -178,6 +178,8 @@ class PushToken extends Token {
 
   bool hasPendingRequest = false;
   Uri requestUri;
+  String requestNonce;
+  bool requestSSLVerify = false;
 
   String get firebaseToken => _firebaseToken;
 

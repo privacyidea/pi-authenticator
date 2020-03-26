@@ -23,6 +23,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:base32/base32.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -246,12 +247,11 @@ class _PushWidgetState extends _TokenWidgetState {
       'enrollment_credential': _token.enrollmentCredentials,
       'serial': _token.serial,
       'fbtoken': _token.firebaseToken,
-      'pubkey': keyPair.publicKey.toString(),
-      // FIXME Convert this to ASN1.
+      'pubkey': await convertPublicKeyToDER(keyPair.publicKey),
     });
 
     // TODO do not do the following part if parsing response failed! <---
-    RSAPublicKey publicServerKey = parseResponse(response);
+    RSAPublicKey publicServerKey = await parseResponse(response);
     _token.publicServerKey = publicServerKey;
 
     log('Roll out successful', name: 'token_widgets.dart', error: _token);
@@ -264,7 +264,7 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   // TODO throw exception if something does not fit
-  RSAPublicKey parseResponse(Response response) {
+  Future<RSAPublicKey> parseResponse(Response response) async {
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
 
@@ -273,10 +273,10 @@ class _PushWidgetState extends _TokenWidgetState {
     String key = json.decode(response.body)['detail']['public_key'];
     key = key.replaceAll('\n', ''); // TODO replace other line breaks too?
     log("KEY", error: key);
-    return convertDERToPublicKey(base64.decode(key));
+    return convertDERToPublicKey(key);
   }
 
-  void acceptRequest() {
+  void acceptRequest() async {
     // TODO write a message
     // TODO check if url is set, then do something. Or request fails with missing url?
 
@@ -292,20 +292,36 @@ class _PushWidgetState extends _TokenWidgetState {
     //    nonce=<nonce_from_request>
     //    serial=<serial>
     //    signature=<signature>
+    Map<String, String> body = {
+      'nonce': _token.requestNonce,
+      'serial': _token.serial,
+      'signature': createBase32Signature(_token.privateTokenKey,
+          base32.decode('${_token.requestNonce}|${_token.serial}')),
+      // TODO Is base32 the right format?
+    };
+    Response response = await doPost(
+        sslVerify: _token.requestSSLVerify, url: _token.requestUri, body: body);
+
+    // TODO handle response:
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
 
     resetRequest();
   }
 
-  void declineRequest() {
+  void declineRequest() async {
     // TODO write a message
 
     resetRequest();
   }
 
+  /// Reset the token status after push auth request was handled by the user.
   void resetRequest() {
     setState(() {
       _token.hasPendingRequest = false;
       _token.requestUri = null;
+      _token.requestNonce = null;
+      _token.requestSSLVerify = false;
     });
   }
 

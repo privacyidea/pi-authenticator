@@ -21,7 +21,6 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
