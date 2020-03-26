@@ -280,6 +280,19 @@ class _PushWidgetState extends _TokenWidgetState {
     // TODO write a message
     // TODO check if url is set, then do something. Or request fails with missing url?
 
+    log('Push auth request accepted, sending message',
+        name: 'token_widgets.dart', error: 'Url: ${_token.requestUri}');
+
+    // TODO sign and send, nothing more to do from the app side
+    // TODO what is with the response code?
+
+    // signature ::=  {nonce}|{serial}
+
+    //    POST https://privacyideaserver/validate/check
+    //    nonce=<nonce_from_request>
+    //    serial=<serial>
+    //    signature=<signature>
+
     resetRequest();
   }
 
