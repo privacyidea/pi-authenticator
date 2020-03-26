@@ -88,6 +88,26 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
           ? null
           : DateTime.parse(json['timeToDie'] as String))
     ..isRolledOut = json['isRolledOut'] as bool
+    ..privateModulus = json['privateModulus'] == null
+        ? null
+        : BigInt.parse(json['privateModulus'] as String)
+    ..privateExponent = json['privateExponent'] == null
+        ? null
+        : BigInt.parse(json['privateExponent'] as String)
+    ..privateP = json['privateP'] == null
+        ? null
+        : BigInt.parse(json['privateP'] as String)
+    ..privateQ = json['privateQ'] == null
+        ? null
+        : BigInt.parse(json['privateQ'] as String)
+    ..privateTokenKey = json['privateTokenKey']
+    ..publicModulus = json['publicModulus'] == null
+        ? null
+        : BigInt.parse(json['publicModulus'] as String)
+    ..publicExponent = json['publicExponent'] == null
+        ? null
+        : BigInt.parse(json['publicExponent'] as String)
+    ..publicServerKey = json['publicServerKey']
     ..hasPendingRequest = json['hasPendingRequest'] as bool
     ..requestUri = json['requestUri'] == null
         ? null
@@ -99,6 +119,14 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'uuid': instance.uuid,
       'issuer': instance.issuer,
       'isRolledOut': instance.isRolledOut,
+      'privateModulus': instance.privateModulus?.toString(),
+      'privateExponent': instance.privateExponent?.toString(),
+      'privateP': instance.privateP?.toString(),
+      'privateQ': instance.privateQ?.toString(),
+      'privateTokenKey': instance.privateTokenKey,
+      'publicModulus': instance.publicModulus?.toString(),
+      'publicExponent': instance.publicExponent?.toString(),
+      'publicServerKey': instance.publicServerKey,
       'hasPendingRequest': instance.hasPendingRequest,
       'requestUri': instance.requestUri?.toString(),
       'firebaseToken': instance.firebaseToken,
