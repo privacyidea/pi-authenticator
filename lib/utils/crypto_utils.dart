@@ -124,42 +124,19 @@ SecureRandom exampleSecureRandom() {
 }
 
 RSAPublicKey convertDERToPublicKey(Uint8List der) {
-  // TODO The rsa key we get seems to be in ASN1 format which looks like this:
-//    -----BEGIN RSA PUBLIC KEY-----
-//        BASE64 ENCODED DATA           <-- This is what we get, the rest is for PEM only
-//    -----END RSA PUBLIC KEY-----
-//
-//    RSAPublicKey ::= SEQUENCE {
-//    modulus           INTEGER,  -- n
-//    publicExponent    INTEGER   -- e
-//    }
-//
-//                OR
-//
-//  RSAPrivateKey ::= SEQUENCE {
-//  version           Version,
-//  modulus           INTEGER,  -- n
-//  publicExponent    INTEGER,  -- e
-//  privateExponent   INTEGER,  -- d
-//  prime1            INTEGER,  -- p
-//  prime2            INTEGER,  -- q
-//  exponent1         INTEGER,  -- d mod (p-1)
-//  exponent2         INTEGER,  -- d mod (q-1)
-//  coefficient       INTEGER,  -- (inverse of q) mod p
-//  otherPrimeInfos   OtherPrimeInfos OPTIONAL
-//  }
+  //    RSAPublicKey ::= SEQUENCE {
+  //    modulus           INTEGER,  -- n
+  //    publicExponent    INTEGER   -- e
+  //    }
 
-// TODO create the key from the above:
-//    RSAPublicKey(modulus, exponent)
-
-  ASN1Sequence asn1sequence = parseASN1Sequence(der);
-  var modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
-  var exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
+  ASN1Sequence asn1sequence = _parseASN1Sequence(der);
+  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
+  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
 
   return RSAPublicKey(modulus, exponent);
 }
 
-ASN1Sequence parseASN1Sequence(Uint8List bytes) {
+ASN1Sequence _parseASN1Sequence(Uint8List bytes) {
   return ASN1Parser(bytes).nextObject() as ASN1Sequence;
 }
 
@@ -168,15 +145,29 @@ bool validateSignature(
     RSAPublicKey publicKey, Uint8List signedMessage, Uint8List signature) {
   // TODO replace this with direct instantiation -> may be less library code to import
   RSASigner signer = Signer(SIGNING_ALGORITHM); // Get algorithm from registry
-  signer.init(false, PublicKeyParameter<RSAPublicKey>(publicKey));
+  signer.init(
+      false, PublicKeyParameter<RSAPublicKey>(publicKey)); // false to validate
+
+  bool isVerified = false;
   try {
-    var verifySignature =
-        signer.verifySignature(signedMessage, RSASignature(signature));
-    return verifySignature;
+    isVerified = signer.verifySignature(signedMessage, RSASignature(signature));
   } on ArgumentError catch (e) {
     log('Verifying signature failed do to ${e.name}',
         name: 'crypto_utils.dart', error: e);
   }
 
-  return false;
+  return isVerified;
+}
+
+String createBase32Signature(RSAPrivateKey privateKey, Uint8List dataToSign) {
+  return base32.encode(_createSignature(privateKey, dataToSign));
+}
+
+Uint8List _createSignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
+  RSASigner signer = Signer(SIGNING_ALGORITHM); // Get using registry
+
+  signer.init(
+      true, PrivateKeyParameter<RSAPrivateKey>(privateKey)); // true to sign
+
+  return signer.generateSignature(dataToSign).bytes;
 }
