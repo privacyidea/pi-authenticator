@@ -442,7 +442,9 @@ Future<Response> doPost(
 
   Response response = await ioClient.post(url, body: body);
 
-  log("Recieved response", name: "utils.dart", error: response);
+  log("Recieved response",
+      name: "utils.dart",
+      error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
 
   ioClient.close();
 
