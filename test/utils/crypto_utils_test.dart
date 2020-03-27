@@ -18,8 +18,10 @@
   limitations under the License.
 */
 
+import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:test/test.dart';
 
@@ -27,6 +29,8 @@ void main() {
   _testGeneratePhoneChecksum();
   _testGenerateSalt();
   _testPbkdf2();
+  _testRSASigning();
+  _testSerializingRSAKeys();
 }
 
 void _testGeneratePhoneChecksum() {
@@ -98,7 +102,6 @@ void _testGenerateSalt() {
 }
 
 void _testPbkdf2() {
-
   // Output matchers generated with python:
   // ```
   //  from hashlib import pbkdf2_hmac
@@ -833,6 +836,79 @@ void _testPbkdf2() {
                 22,
                 83
               ])));
+    });
+  });
+}
+
+void _testRSASigning() {
+  group('rsa signing and verifying', () {
+    test('signature is valid', () async {
+      var asymmetricKeyPair = await generateRSAKeyPair();
+      RSAPublicKey publicKey = asymmetricKeyPair.publicKey;
+      RSAPrivateKey privateKey = asymmetricKeyPair.privateKey;
+
+      String message = 'I am a signature.';
+
+      var signature = createSignature(privateKey, utf8.encode(message));
+
+      expect(
+          true, validateSignature(publicKey, utf8.encode(message), signature));
+    });
+
+    test('signature is invalid', () async {
+      var asymmetricKeyPair = await generateRSAKeyPair();
+      RSAPublicKey publicKey = asymmetricKeyPair.publicKey;
+      RSAPrivateKey privateKey = asymmetricKeyPair.privateKey;
+
+      String message = 'I am a signature.';
+
+      var signature = createSignature(privateKey, utf8.encode(message));
+
+      expect(
+          false,
+          validateSignature(
+              publicKey,
+              utf8.encode('I am not the signature you are looking for.'),
+              signature));
+    });
+
+    test('signature is invalid because of flipped parameters', () async {
+      var asymmetricKeyPair = await generateRSAKeyPair();
+      RSAPublicKey publicKey = asymmetricKeyPair.publicKey;
+      RSAPrivateKey privateKey = asymmetricKeyPair.privateKey;
+
+      String message = 'I am a signature.';
+
+      var signature = createSignature(privateKey, utf8.encode(message));
+
+      expect(
+          false, validateSignature(publicKey, signature, utf8.encode(message)));
+    });
+  });
+}
+
+void _testSerializingRSAKeys() {
+  group('serialize rsa public keys', () {
+    test('Converting key', () async {
+      RSAPublicKey publicKey =
+          RSAPublicKey(BigInt.from(431254), BigInt.from(32545));
+
+      String base64String = await convertPublicKeyToDER(publicKey);
+      RSAPublicKey convertedKey = await convertDERToPublicKey(base64String);
+
+      expect(publicKey.modulus, convertedKey.modulus);
+      expect(publicKey.exponent, convertedKey.exponent);
+    });
+
+    test('Converting generated key', () async {
+      var asymmetricKeyPair = await generateRSAKeyPair();
+      RSAPublicKey publicKey = asymmetricKeyPair.publicKey;
+
+      String base64String = await convertPublicKeyToDER(publicKey);
+      RSAPublicKey convertedKey = await convertDERToPublicKey(base64String);
+
+      expect(publicKey.modulus, convertedKey.modulus);
+      expect(publicKey.exponent, convertedKey.exponent);
     });
   });
 }
