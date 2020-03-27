@@ -248,7 +248,7 @@ class _PushWidgetState extends _TokenWidgetState {
       'enrollment_credential': _token.enrollmentCredentials,
       'serial': _token.serial,
       'fbtoken': _token.firebaseToken,
-      'pubkey': await convertPublicKeyToDER(keyPair.publicKey),
+      'pubkey': derComplicatedToString(keyPair.publicKey),
     });
 
     // TODO do not do the following part if parsing response failed! <---
