@@ -123,6 +123,7 @@ SecureRandom exampleSecureRandom() {
   return secureRandom;
 }
 
+// TODO write description
 Future<RSAPublicKey> convertDERToPublicKey(String der) async {
   //    RSAPublicKey ::= SEQUENCE {
   //    modulus           INTEGER,  -- n
@@ -136,16 +137,17 @@ Future<RSAPublicKey> convertDERToPublicKey(String der) async {
   return RSAPublicKey(modulus, exponent);
 }
 
+// TODO remove this method
 ASN1Sequence _parseASN1Sequence(Uint8List bytes) {
   return ASN1Parser(bytes).nextObject() as ASN1Sequence;
 }
 
-// TODO write tests for these methods
+// TODO write description
 Future<String> convertPublicKeyToDER(RSAPublicKey publicKey) async {
   ASN1Sequence s = ASN1Sequence()
     ..add(ASN1Integer(publicKey.modulus))
     ..add(ASN1Integer(publicKey.exponent));
-  Uint8List bytes = s.valueBytes();
+  Uint8List bytes = s.encodedBytes;
 
   return base64.encode(bytes);
 }
@@ -169,10 +171,10 @@ bool validateSignature(
 }
 
 String createBase32Signature(RSAPrivateKey privateKey, Uint8List dataToSign) {
-  return base32.encode(_createSignature(privateKey, dataToSign));
+  return base32.encode(createSignature(privateKey, dataToSign));
 }
 
-Uint8List _createSignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
+Uint8List createSignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
   RSASigner signer = Signer(SIGNING_ALGORITHM); // Get algorithm from registry
 
   signer.init(
