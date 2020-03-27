@@ -23,7 +23,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui';
 
-import 'package:base32/base32.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -218,6 +217,8 @@ class _PushWidgetState extends _TokenWidgetState {
   _PushWidgetState(Token token, VoidCallback onDeleteClicked)
       : super(token, onDeleteClicked);
 
+  // TODO change rename and delete while roll out process is running
+
   PushToken get _token => super._token as PushToken;
 
   @override
@@ -296,8 +297,7 @@ class _PushWidgetState extends _TokenWidgetState {
       'nonce': _token.requestNonce,
       'serial': _token.serial,
       'signature': createBase32Signature(_token.privateTokenKey,
-          base32.decode('${_token.requestNonce}|${_token.serial}')),
-      // TODO Is base32 the right format?
+          utf8.encode('${_token.requestNonce}|${_token.serial}')),
     };
     Response response = await doPost(
         sslVerify: _token.requestSSLVerify, url: _token.requestUri, body: body);
