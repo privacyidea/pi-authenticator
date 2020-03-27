@@ -123,8 +123,9 @@ SecureRandom exampleSecureRandom() {
   return secureRandom;
 }
 
+// TODO move all that to parsing utils?
 // TODO write description
-Future<RSAPublicKey> convertDERToPublicKey(String der) async {
+RSAPublicKey convertDERToPublicKey(String der) {
   //    RSAPublicKey ::= SEQUENCE {
   //    modulus           INTEGER,  -- n
   //    publicExponent    INTEGER   -- e
@@ -143,13 +144,54 @@ ASN1Sequence _parseASN1Sequence(Uint8List bytes) {
 }
 
 // TODO write description
-Future<String> convertPublicKeyToDER(RSAPublicKey publicKey) async {
+String convertPublicKeyToDER(RSAPublicKey publicKey) {
   ASN1Sequence s = ASN1Sequence()
     ..add(ASN1Integer(publicKey.modulus))
     ..add(ASN1Integer(publicKey.exponent));
   Uint8List bytes = s.encodedBytes;
 
   return base64.encode(bytes);
+}
+
+// TODO rename methods and add documentation
+// TODO describe
+RSAPublicKey derComplicatedToKey(String key) {
+  var baseSequence =
+      ASN1Parser(base64.decode(key)).nextObject() as ASN1Sequence;
+
+  var encodedAlgorithm = baseSequence.elements[0];
+
+  var algorithm = ASN1Parser(encodedAlgorithm.contentBytes()).nextObject()
+      as ASN1ObjectIdentifier;
+
+//  print(algorithm.identifier); // TODO check if identifier fits rsaEncryption!
+
+  var encodedKey = baseSequence.elements[1];
+
+  var asn1sequence =
+      ASN1Parser(encodedKey.contentBytes()).nextObject() as ASN1Sequence;
+
+  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
+  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
+
+  return RSAPublicKey(modulus, exponent);
+}
+
+// TODO describe
+String derComplicatedToString(RSAPublicKey key) {
+  ASN1ObjectIdentifier.registerFrequentNames();
+  ASN1Sequence algorithm = ASN1Sequence()
+    ..add(ASN1ObjectIdentifier.fromName('rsaEncryption'))
+    ..add(ASN1Null());
+
+  var keySequence = ASN1Sequence() // THIS MUST BE A BIT STRING
+    ..add(ASN1Integer(key.modulus))
+    ..add(ASN1Integer(key.exponent));
+
+  var publicKey = ASN1BitString(keySequence.encodedBytes);
+
+  var asn1sequence = ASN1Sequence()..add(algorithm)..add(publicKey);
+  return base64.encode(asn1sequence.encodedBytes);
 }
 
 /// signedMessage is what was allegedly signed, signature gets validated

@@ -893,8 +893,8 @@ void _testSerializingRSAKeys() {
       RSAPublicKey publicKey =
           RSAPublicKey(BigInt.from(431254), BigInt.from(32545));
 
-      String base64String = await convertPublicKeyToDER(publicKey);
-      RSAPublicKey convertedKey = await convertDERToPublicKey(base64String);
+      String base64String = convertPublicKeyToDER(publicKey);
+      RSAPublicKey convertedKey = convertDERToPublicKey(base64String);
 
       expect(publicKey.modulus, convertedKey.modulus);
       expect(publicKey.exponent, convertedKey.exponent);
@@ -904,11 +904,59 @@ void _testSerializingRSAKeys() {
       var asymmetricKeyPair = await generateRSAKeyPair();
       RSAPublicKey publicKey = asymmetricKeyPair.publicKey;
 
-      String base64String = await convertPublicKeyToDER(publicKey);
-      RSAPublicKey convertedKey = await convertDERToPublicKey(base64String);
+      String base64String = convertPublicKeyToDER(publicKey);
+      RSAPublicKey convertedKey = convertDERToPublicKey(base64String);
 
       expect(publicKey.modulus, convertedKey.modulus);
       expect(publicKey.exponent, convertedKey.exponent);
     });
+
+    // TODO test with serialized key
+  });
+
+  group('Other format', () {
+    test('Converting key', () async {
+      RSAPublicKey publicKey =
+          RSAPublicKey(BigInt.from(431254), BigInt.from(32545));
+
+      String base64String = derComplicatedToString(publicKey);
+      RSAPublicKey convertedKey = derComplicatedToKey(base64String);
+
+      expect(publicKey.modulus, convertedKey.modulus);
+      expect(publicKey.exponent, convertedKey.exponent);
+    });
+
+    test('Converting generated key', () async {
+      var asymmetricKeyPair = await generateRSAKeyPair();
+      RSAPublicKey publicKey = asymmetricKeyPair.publicKey;
+
+      String base64String = derComplicatedToString(publicKey);
+      RSAPublicKey convertedKey = derComplicatedToKey(base64String);
+
+      expect(publicKey.modulus, convertedKey.modulus);
+      expect(publicKey.exponent, convertedKey.exponent);
+    });
+
+    test('parse working key', () async {
+      String serializedPublicKey = "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCA"
+          "gEAwdxugfnlsrd3rwZsEvI8GzEF4BtGEK3+vXRWVv43Z0Itn9NAtN5TWYgUkI/1RdI"
+          "ahWSZ8xM8vqza3Vb6SzI/vzw4O22TvFwNGDQcwIpxf/I0Iow+U/0uA0VFH2nPdyeJw"
+          "eNjEFaPkIZEHSyJ0CUtNS2umXpx4IyUN2R9Xve4OddbUpfTFPDYdcOiqPn1IkVLan/"
+          "t1fyEggabsk0Mdig+lK6JEd3keU1o9cOyHeiplOrmS5mNLV2Alz6Es+gvbvsMkXKvJ"
+          "rZ3+f8eVvRMNUgS/UfgIgPflUvUgxhlDCmCs/brZeZMhrUbWN00URdrfRT3xdSmNUV"
+          "10LPryk/l9quG8Phn8MKE1cKEEGWcBkuvF0v/f9DqMh6hsXea86oA//bYZM8Nb+mut"
+          "EjXSAi5AJxfryci0MGbL5jZaO8a2yfx41f84forxMReBCATDQIzSagMK9Ixln/h/U2"
+          "KZarenD6rB1rAd0pQLjXa9GMdfBJdImW3LYNpDaPuV/MPQOGRa851gCTf9Ha7rZl67"
+          "ekTgwlEAskZOp6NQz8ZdCl4oc7gaTGjFttBmH1TZtKtkpuvhqXv3Ige6XCzBH40+HC"
+          "nuwUCqJvPlKJHd/ikm2OfQS+BsPH8HDvrQGQyHyzBzV20oRfNGPIXVOXc9AEIJAPxB"
+          "QYQE2aoTR+l7N4On4x59z8qU1UCAwEAAQ==";
+
+      expect(derComplicatedToString(derComplicatedToKey(serializedPublicKey)),
+          serializedPublicKey);
+    });
+  });
+
+  group('Formats should be interchangable', () {
+    // TODO
   });
 }
