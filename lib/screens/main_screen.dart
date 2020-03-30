@@ -306,13 +306,6 @@ class _MainScreenState extends State<MainScreen> {
     // TODO handle message in wrong format
     message['data'].forEach((key, value) => print('$key = $value'));
 
-    print('get data block');
-
-    // FIXME why does it fail with this line?
-//    Map<String, dynamic> data = message['data'];
-
-    print('after data');
-
     // TODO Handle uri error
     String requestedSerial = message['data']['serial'];
     Uri requestUri = Uri.parse(message['data']['url']);
