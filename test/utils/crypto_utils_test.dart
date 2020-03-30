@@ -849,10 +849,10 @@ void _testRSASigning() {
 
       String message = 'I am a signature.';
 
-      var signature = createSignature(privateKey, utf8.encode(message));
+      var signature = createRSASignature(privateKey, utf8.encode(message));
 
       expect(
-          true, validateSignature(publicKey, utf8.encode(message), signature));
+          true, verifyRSASignature(publicKey, utf8.encode(message), signature));
     });
 
     test('Signature is invalid', () async {
@@ -862,11 +862,11 @@ void _testRSASigning() {
 
       String message = 'I am a signature.';
 
-      var signature = createSignature(privateKey, utf8.encode(message));
+      var signature = createRSASignature(privateKey, utf8.encode(message));
 
       expect(
           false,
-          validateSignature(
+          verifyRSASignature(
               publicKey,
               utf8.encode('I am not the signature you are looking for.'),
               signature));
@@ -879,10 +879,10 @@ void _testRSASigning() {
 
       String message = 'I am a signature.';
 
-      var signature = createSignature(privateKey, utf8.encode(message));
+      var signature = createRSASignature(privateKey, utf8.encode(message));
 
       expect(
-          false, validateSignature(publicKey, signature, utf8.encode(message)));
+          false, verifyRSASignature(publicKey, signature, utf8.encode(message)));
     });
   });
 }

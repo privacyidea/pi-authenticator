@@ -124,7 +124,7 @@ SecureRandom exampleSecureRandom() {
 }
 
 /// signedMessage is what was allegedly signed, signature gets validated
-bool validateSignature(
+bool verifyRSASignature(
     RSAPublicKey publicKey, Uint8List signedMessage, Uint8List signature) {
   RSASigner signer = Signer(SIGNING_ALGORITHM); // Get algorithm from registry
   signer.init(
@@ -142,10 +142,10 @@ bool validateSignature(
 }
 
 String createBase32Signature(RSAPrivateKey privateKey, Uint8List dataToSign) {
-  return base32.encode(createSignature(privateKey, dataToSign));
+  return base32.encode(createRSASignature(privateKey, dataToSign));
 }
 
-Uint8List createSignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
+Uint8List createRSASignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
   RSASigner signer = Signer(SIGNING_ALGORITHM); // Get algorithm from registry
 
   signer.init(

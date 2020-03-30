@@ -252,7 +252,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<String> _initFirebase(FirebaseConfig config) async {
-    // TODO save config
+    // TODO save config / load config?
 
     String name = "privacyIDEA Authenticator";
 
@@ -333,7 +333,7 @@ class _MainScreenState extends State<MainScreen> {
               '${message['data']['title']}|'
               '${message['data']['sslverify']}';
 
-          if (validateSignature(token.publicServerKey, utf8.encode(signedData),
+          if (verifyRSASignature(token.publicServerKey, utf8.encode(signedData),
               base32.decode(signature))) {
             log('Validating incoming message was successful.',
                 name: 'main_screen.dart');
