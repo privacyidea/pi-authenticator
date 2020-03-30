@@ -222,6 +222,8 @@ class _PushWidgetState extends _TokenWidgetState {
 
   PushToken get _token => super._token as PushToken;
 
+  bool _rollOutFailed = false;
+
   @override
   void initState() {
     super.initState();
@@ -232,6 +234,10 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   void _rollOutToken() async {
+    setState(() {
+      _rollOutFailed = false;
+    });
+
     // TODO check expiration date
 
     final keyPair = await generateRSAKeyPair();
@@ -263,11 +269,15 @@ class _PushWidgetState extends _TokenWidgetState {
           _saveThisToken();
         });
       } else {
-        // TODO rollout fails here too.
         log("Post request on roll out failed.",
             name: "token_widgets.dart",
             error: "Token: $_token, Status code: ${response.statusCode},"
                 " Body: ${response.body}");
+
+        setState(() {
+          _rollOutFailed = true;
+        });
+
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text("Rolling out token ${_token.label} failed."
               "Error code: ${response.statusCode}"),
@@ -275,13 +285,13 @@ class _PushWidgetState extends _TokenWidgetState {
           duration: Duration(seconds: 3),
         ));
       }
-    }
-
-    // TODO when the rollout fails, update ui and add button to try again if token is not expired.
-
-    on SocketException catch (e) {
+    } on SocketException catch (e) {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
+
+      setState(() {
+        _rollOutFailed = true;
+      });
 
       Scaffold.of(context).showSnackBar(SnackBar(
           content: Text("No internet connection, rollout not possible."),
@@ -291,6 +301,10 @@ class _PushWidgetState extends _TokenWidgetState {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
 
+      setState(() {
+        _rollOutFailed = true;
+      });
+
       Scaffold.of(context).showSnackBar(SnackBar(
           content: Text("An unknown error occured, rollout not possible: $e"),
           // TODO translate
@@ -299,18 +313,27 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
-    response = Response("sdhg", 200);
+    response = Response("sdhg",
+        200); // TODO remove this late -> just to force failing roll out right now.
 
     log("Parsing rollout response, try to extract public_key.",
         name: "token_widgets.dart", error: response.body);
 
-    String key = json.decode(response.body)['detail']['public_key'];
-    key = key.replaceAll('\n', '');
+    try {
+      String key = json.decode(response.body)['detail']['public_key'];
+      key = key.replaceAll('\n', '');
 
-    log("Extracting public key was successful.",
-        name: "token_widgets.dart", error: key);
+      log("Extracting public key was successful.",
+          name: "token_widgets.dart", error: key);
 
-    return deserializeRSAPublicKeyPKCS1(key);
+      return deserializeRSAPublicKeyPKCS1(key);
+    } on FormatException catch (e) {
+      throw FormatException(
+          "Response body does not contain RSA public key.", e);
+
+      throw ArgumentError.value(response.body, "response.body",
+          "Response body does not contain public RSA key of the server.");
+    }
   }
 
   void acceptRequest() async {
@@ -430,12 +453,25 @@ class _PushWidgetState extends _TokenWidgetState {
                   ],
                 ),
               ),
+              Visibility(
+                visible: _rollOutFailed,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    RaisedButton(
+                      // TODO style and translate
+                      child: Text("Rollout failed, try again."),
+                      onPressed: _rollOutToken,
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Visibility(
-              visible: !_token.isRolledOut,
+              visible: !_token.isRolledOut && !_rollOutFailed,
               child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                   child: Column(
@@ -445,7 +481,7 @@ class _PushWidgetState extends _TokenWidgetState {
                     ],
                   )),
             ),
-          )
+          ),
         ],
       ),
     );
