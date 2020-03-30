@@ -319,6 +319,9 @@ class _MainScreenState extends State<MainScreen> {
 
     log('Incoming push auth request for token with serial.',
         name: 'main_screen.dart', error: requestedSerial);
+
+    bool wasHandled = false;
+
     _tokenList.forEach((token) {
       if (token is PushToken) {
         if (token.serial == requestedSerial && token.isRolledOut) {
@@ -335,6 +338,8 @@ class _MainScreenState extends State<MainScreen> {
 
           if (verifyRSASignature(token.publicServerKey, utf8.encode(signedData),
               base32.decode(signature))) {
+            wasHandled = true;
+
             log('Validating incoming message was successful.',
                 name: 'main_screen.dart');
             setState(() {
@@ -354,6 +359,11 @@ class _MainScreenState extends State<MainScreen> {
         }
       }
     });
+
+    if (!wasHandled) {
+      log("The requested token does not exist or is not rolled out.",
+          name: "main_screen.dart", error: requestedSerial);
+    }
   }
 
 //  static Future<dynamic> myBackgroundMessageHandler(

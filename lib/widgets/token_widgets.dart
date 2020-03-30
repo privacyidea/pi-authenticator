@@ -238,8 +238,26 @@ class _PushWidgetState extends _TokenWidgetState {
       _rollOutFailed = false;
     });
 
-    // TODO check expiration date
+    if (DateTime.now().isAfter(_token.timeToDie)) {
+      log("Token is expired, abort rollout and delte it.",
+          name: "token_widgets.dart",
+          error: "Now: ${DateTime.now()}, Token expires at ${[
+            _token.timeToDie
+          ]}, Token: $_token");
 
+      setState(() {
+        _rollOutFailed = true;
+      });
+
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content:
+            Text("Token ${_token.label} is expired, rollout not possible."),
+        // TODO translate
+        duration: Duration(seconds: 3),
+      ));
+    }
+
+    // TODO generating keypair could be omitted, if this is the second run!
     final keyPair = await generateRSAKeyPair();
 
     log(
