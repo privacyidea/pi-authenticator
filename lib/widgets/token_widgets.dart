@@ -248,7 +248,7 @@ class _PushWidgetState extends _TokenWidgetState {
       'enrollment_credential': _token.enrollmentCredentials,
       'serial': _token.serial,
       'fbtoken': _token.firebaseToken,
-      'pubkey': derComplicatedToString(keyPair.publicKey),
+      'pubkey': serializeRSAPublicKeyPKCS8(keyPair.publicKey),
     });
 
     // TODO do not do the following part if parsing response failed! <---
@@ -274,7 +274,7 @@ class _PushWidgetState extends _TokenWidgetState {
     String key = json.decode(response.body)['detail']['public_key'];
     key = key.replaceAll('\n', ''); // TODO replace other line breaks too?
     log("KEY", error: key);
-    return convertDERToPublicKey(key);
+    return deserializeRSAPublicKeyPKCS1(key);
   }
 
   void acceptRequest() async {

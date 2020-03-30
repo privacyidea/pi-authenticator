@@ -123,77 +123,6 @@ SecureRandom exampleSecureRandom() {
   return secureRandom;
 }
 
-// TODO move all that to parsing utils?
-// TODO write description
-RSAPublicKey convertDERToPublicKey(String der) {
-  //    RSAPublicKey ::= SEQUENCE {
-  //    modulus           INTEGER,  -- n
-  //    publicExponent    INTEGER   -- e
-  //    }
-
-  ASN1Sequence asn1sequence = _parseASN1Sequence(base64.decode(der));
-  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
-  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
-
-  return RSAPublicKey(modulus, exponent);
-}
-
-// TODO remove this method
-ASN1Sequence _parseASN1Sequence(Uint8List bytes) {
-  return ASN1Parser(bytes).nextObject() as ASN1Sequence;
-}
-
-// TODO write description
-String convertPublicKeyToDER(RSAPublicKey publicKey) {
-  ASN1Sequence s = ASN1Sequence()
-    ..add(ASN1Integer(publicKey.modulus))
-    ..add(ASN1Integer(publicKey.exponent));
-  Uint8List bytes = s.encodedBytes;
-
-  return base64.encode(bytes);
-}
-
-// TODO rename methods and add documentation
-// TODO describe
-RSAPublicKey derComplicatedToKey(String key) {
-  var baseSequence =
-      ASN1Parser(base64.decode(key)).nextObject() as ASN1Sequence;
-
-  var encodedAlgorithm = baseSequence.elements[0];
-
-  var algorithm = ASN1Parser(encodedAlgorithm.contentBytes()).nextObject()
-      as ASN1ObjectIdentifier;
-
-//  print(algorithm.identifier); // TODO check if identifier fits rsaEncryption!
-
-  var encodedKey = baseSequence.elements[1];
-
-  var asn1sequence =
-      ASN1Parser(encodedKey.contentBytes()).nextObject() as ASN1Sequence;
-
-  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
-  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
-
-  return RSAPublicKey(modulus, exponent);
-}
-
-// TODO describe
-String derComplicatedToString(RSAPublicKey key) {
-  ASN1ObjectIdentifier.registerFrequentNames();
-  ASN1Sequence algorithm = ASN1Sequence()
-    ..add(ASN1ObjectIdentifier.fromName('rsaEncryption'))
-    ..add(ASN1Null());
-
-  var keySequence = ASN1Sequence() // THIS MUST BE A BIT STRING
-    ..add(ASN1Integer(key.modulus))
-    ..add(ASN1Integer(key.exponent));
-
-  var publicKey = ASN1BitString(keySequence.encodedBytes);
-
-  var asn1sequence = ASN1Sequence()..add(algorithm)..add(publicKey);
-  return base64.encode(asn1sequence.encodedBytes);
-}
-
 /// signedMessage is what was allegedly signed, signature gets validated
 bool validateSignature(
     RSAPublicKey publicKey, Uint8List signedMessage, Uint8List signature) {
@@ -223,4 +152,105 @@ Uint8List createSignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
       true, PrivateKeyParameter<RSAPrivateKey>(privateKey)); // true to sign
 
   return signer.generateSignature(dataToSign).bytes;
+}
+
+// TODO move all that to parsing utils?
+/// Extract RSA-Public-Keys from DER structure that is a BASE64 encoded Strings.
+/// According to the PKCS#1 format:
+///
+/// RSAPublicKey ::= SEQUENCE {
+///     modulus           INTEGER,  -- n
+///     publicExponent    INTEGER   -- e
+/// }
+RSAPublicKey deserializeRSAPublicKeyPKCS1(String der) {
+  ASN1Sequence asn1sequence =
+      ASN1Parser(base64.decode(der)).nextObject() as ASN1Sequence;
+  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
+  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
+
+  return RSAPublicKey(modulus, exponent);
+}
+
+/// Convert an RSA-Public-Key to a DER structure as a BASE64 encoded String.
+/// According to the PKCS#1 format:
+///
+/// RSAPublicKey ::= SEQUENCE {
+///     modulus           INTEGER,  -- n
+///     publicExponent    INTEGER   -- e
+/// }
+String serializeRSAPublicKeyPKCS1(RSAPublicKey publicKey) {
+  ASN1Sequence s = ASN1Sequence()
+    ..add(ASN1Integer(publicKey.modulus))
+    ..add(ASN1Integer(publicKey.exponent));
+  Uint8List bytes = s.encodedBytes;
+
+  return base64.encode(bytes);
+}
+
+/// Extract RSA-Public-Keys from DER structure that is a BASE64 encoded Strings.
+/// According to the PKCS#8 format:
+///
+/// PublicKeyInfo ::= SEQUENCE {
+///     algorithm       AlgorithmIdentifier,
+///     PublicKey       BIT STRING
+/// }
+///
+/// AlgorithmIdentifier ::= SEQUENCE {
+///     algorithm       OBJECT IDENTIFIER,
+///     parameters      ANY DEFINED BY algorithm OPTIONAL
+/// }
+RSAPublicKey deserializeRSAPublicKeyPKCS8(String key) {
+  var baseSequence =
+      ASN1Parser(base64.decode(key)).nextObject() as ASN1Sequence;
+
+  var encodedAlgorithm = baseSequence.elements[0];
+
+  var algorithm = ASN1Parser(encodedAlgorithm.contentBytes()).nextObject()
+      as ASN1ObjectIdentifier;
+
+  if (algorithm.identifier != "1.2.840.113549.1.1.1") {
+    throw ArgumentError.value(
+        algorithm.identifier,
+        "algorithm.identifier",
+        "Identifier of algorgorithm does not math identifier of RSA "
+            "(1.2.840.113549.1.1.1).");
+  }
+
+  var encodedKey = baseSequence.elements[1];
+
+  var asn1sequence =
+      ASN1Parser(encodedKey.contentBytes()).nextObject() as ASN1Sequence;
+
+  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
+  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
+
+  return RSAPublicKey(modulus, exponent);
+}
+
+/// Convert an RSA-Public-Key to a DER structure as a BASE64 encoded String.
+/// According to the PKCS#8 format:
+///
+/// PublicKeyInfo ::= SEQUENCE {
+///     algorithm       AlgorithmIdentifier,
+///     PublicKey       BIT STRING
+/// }
+///
+/// AlgorithmIdentifier ::= SEQUENCE {
+///     algorithm       OBJECT IDENTIFIER,
+///     parameters      ANY DEFINED BY algorithm OPTIONAL
+/// }
+String serializeRSAPublicKeyPKCS8(RSAPublicKey key) {
+  ASN1ObjectIdentifier.registerFrequentNames();
+  ASN1Sequence algorithm = ASN1Sequence()
+    ..add(ASN1ObjectIdentifier.fromName('rsaEncryption'))
+    ..add(ASN1Null());
+
+  var keySequence = ASN1Sequence()
+    ..add(ASN1Integer(key.modulus))
+    ..add(ASN1Integer(key.exponent));
+
+  var publicKey = ASN1BitString(keySequence.encodedBytes);
+
+  var asn1sequence = ASN1Sequence()..add(algorithm)..add(publicKey);
+  return base64.encode(asn1sequence.encodedBytes);
 }

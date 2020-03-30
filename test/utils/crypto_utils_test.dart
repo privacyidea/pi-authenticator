@@ -894,8 +894,8 @@ void _testSerializingRSAKeys() {
         RSAPublicKey publicKey =
             RSAPublicKey(BigInt.from(431254), BigInt.from(32545));
 
-        String base64String = convertPublicKeyToDER(publicKey);
-        RSAPublicKey convertedKey = convertDERToPublicKey(base64String);
+        String base64String = serializeRSAPublicKeyPKCS1(publicKey);
+        RSAPublicKey convertedKey = deserializeRSAPublicKeyPKCS1(base64String);
 
         expect(publicKey.modulus, convertedKey.modulus);
         expect(publicKey.exponent, convertedKey.exponent);
@@ -905,8 +905,8 @@ void _testSerializingRSAKeys() {
         var asymmetricKeyPair = await generateRSAKeyPair();
         RSAPublicKey publicKey = asymmetricKeyPair.publicKey;
 
-        String base64String = convertPublicKeyToDER(publicKey);
-        RSAPublicKey convertedKey = convertDERToPublicKey(base64String);
+        String base64String = serializeRSAPublicKeyPKCS1(publicKey);
+        RSAPublicKey convertedKey = deserializeRSAPublicKeyPKCS1(base64String);
 
         expect(publicKey.modulus, convertedKey.modulus);
         expect(publicKey.exponent, convertedKey.exponent);
@@ -927,7 +927,7 @@ void _testSerializingRSAKeys() {
             "TcMl8sPWxB8lgGpUCAwEAAQ==";
 
         expect(
-            convertPublicKeyToDER(convertDERToPublicKey(serializedPublicKey)),
+            serializeRSAPublicKeyPKCS1(deserializeRSAPublicKeyPKCS1(serializedPublicKey)),
             serializedPublicKey);
       });
     });
@@ -937,8 +937,8 @@ void _testSerializingRSAKeys() {
         RSAPublicKey publicKey =
             RSAPublicKey(BigInt.from(431254), BigInt.from(32545));
 
-        String base64String = derComplicatedToString(publicKey);
-        RSAPublicKey convertedKey = derComplicatedToKey(base64String);
+        String base64String = serializeRSAPublicKeyPKCS8(publicKey);
+        RSAPublicKey convertedKey = deserializeRSAPublicKeyPKCS8(base64String);
 
         expect(publicKey.modulus, convertedKey.modulus);
         expect(publicKey.exponent, convertedKey.exponent);
@@ -948,8 +948,8 @@ void _testSerializingRSAKeys() {
         var asymmetricKeyPair = await generateRSAKeyPair();
         RSAPublicKey publicKey = asymmetricKeyPair.publicKey;
 
-        String base64String = derComplicatedToString(publicKey);
-        RSAPublicKey convertedKey = derComplicatedToKey(base64String);
+        String base64String = serializeRSAPublicKeyPKCS8(publicKey);
+        RSAPublicKey convertedKey = deserializeRSAPublicKeyPKCS8(base64String);
 
         expect(publicKey.modulus, convertedKey.modulus);
         expect(publicKey.exponent, convertedKey.exponent);
@@ -969,7 +969,7 @@ void _testSerializingRSAKeys() {
             "nuwUCqJvPlKJHd/ikm2OfQS+BsPH8HDvrQGQyHyzBzV20oRfNGPIXVOXc9AEIJAPxB"
             "QYQE2aoTR+l7N4On4x59z8qU1UCAwEAAQ==";
 
-        expect(derComplicatedToString(derComplicatedToKey(serializedPublicKey)),
+        expect(serializeRSAPublicKeyPKCS8(deserializeRSAPublicKeyPKCS8(serializedPublicKey)),
             serializedPublicKey);
       });
     });
