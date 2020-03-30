@@ -331,8 +331,6 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
-    response = Response("sdhg",
-        200); // TODO remove this late -> just to force failing roll out right now.
 
     log("Parsing rollout response, try to extract public_key.",
         name: "token_widgets.dart", error: response.body);
