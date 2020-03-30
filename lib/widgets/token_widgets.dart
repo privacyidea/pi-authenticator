@@ -21,6 +21,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -243,6 +244,8 @@ class _PushWidgetState extends _TokenWidgetState {
     );
     _token.privateTokenKey = keyPair.privateKey;
 
+    // FIXME handle failing post request - e.g. no internet connection
+    // TODO show button to retry rollout if token is not expired
     Response response =
         await doPost(sslVerify: _token.sslVerify, url: _token.url, body: {
       'enrollment_credential': _token.enrollmentCredentials,
@@ -278,14 +281,8 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   void acceptRequest() async {
-    // TODO write a message
-    // TODO check if url is set, then do something. Or request fails with missing url?
-
     log('Push auth request accepted, sending message',
         name: 'token_widgets.dart', error: 'Url: ${_token.requestUri}');
-
-    // TODO sign and send, nothing more to do from the app side
-    // TODO what is with the response code?
 
     // signature ::=  {nonce}|{serial}
 
@@ -299,19 +296,60 @@ class _PushWidgetState extends _TokenWidgetState {
       'signature': createBase32Signature(_token.privateTokenKey,
           utf8.encode('${_token.requestNonce}|${_token.serial}')),
     };
-    Response response = await doPost(
-        sslVerify: _token.requestSSLVerify, url: _token.requestUri, body: body);
 
-    // TODO handle response:
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    try {
+      Response response = await doPost(
+          sslVerify: _token.requestSSLVerify,
+          url: _token.requestUri,
+          body: body);
 
-    resetRequest();
+      if (response.statusCode == 200) {
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text("Accepted push auth request for ${_token.label}."),
+          // TODO translate
+          duration: Duration(seconds: 2),
+        ));
+        resetRequest();
+      } else {
+        log("Accepting push auth request failed.",
+            name: "token_widgets.dart",
+            error:
+                "Token: $_token, Status code: ${response.statusCode}, Body: ${response.body}");
+
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content:
+              Text("Accepting push auth request for ${_token.label} failed. "
+                  "Error code: ${response.statusCode}"),
+          // TODO translate
+          duration: Duration(seconds: 3),
+        ));
+      }
+    } on SocketException catch (e) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text("No internet connection, authentication not possible."),
+          // TODO translate
+          duration: Duration(seconds: 3)));
+
+      log("Accept push auth request failed.",
+          name: "token_widgets.dart", error: e);
+    } on Exception catch (e) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text(
+              "Unknown exception [${e.runtimeType}], authentication not possible."),
+          // TODO translate
+          duration: Duration(seconds: 3)));
+
+      log("Accept push auth request failed.",
+          name: "token_widgets.dart", error: e);
+    }
   }
 
   void declineRequest() async {
-    // TODO write a message
-
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text("Declined push auth request for ${_token.label}."),
+      // TODO translate
+      duration: Duration(seconds: 2),
+    ));
     resetRequest();
   }
 
