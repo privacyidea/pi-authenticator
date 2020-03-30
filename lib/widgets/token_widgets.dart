@@ -231,9 +231,8 @@ class _PushWidgetState extends _TokenWidgetState {
     }
   }
 
-  // TODO check expiration date
   void _rollOutToken() async {
-    // TODO make all that 2. rollout step stuff
+    // TODO check expiration date
 
     final keyPair = await generateRSAKeyPair();
 
@@ -244,39 +243,73 @@ class _PushWidgetState extends _TokenWidgetState {
     );
     _token.privateTokenKey = keyPair.privateKey;
 
-    // FIXME handle failing post request - e.g. no internet connection
-    // TODO show button to retry rollout if token is not expired
-    Response response =
-        await doPost(sslVerify: _token.sslVerify, url: _token.url, body: {
-      'enrollment_credential': _token.enrollmentCredentials,
-      'serial': _token.serial,
-      'fbtoken': _token.firebaseToken,
-      'pubkey': serializeRSAPublicKeyPKCS8(keyPair.publicKey),
-    });
+    try {
+      Response response =
+          await doPost(sslVerify: _token.sslVerify, url: _token.url, body: {
+        'enrollment_credential': _token.enrollmentCredentials,
+        'serial': _token.serial,
+        'fbtoken': _token.firebaseToken,
+        'pubkey': serializeRSAPublicKeyPKCS8(keyPair.publicKey),
+      });
 
-    // TODO do not do the following part if parsing response failed! <---
-    RSAPublicKey publicServerKey = await parseResponse(response);
-    _token.publicServerKey = publicServerKey;
+      if (response.statusCode == 200) {
+        RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
+        _token.publicServerKey = publicServerKey;
 
-    log('Roll out successful', name: 'token_widgets.dart', error: _token);
+        log('Roll out successful', name: 'token_widgets.dart', error: _token);
 
-    setState(() {
-      _token.isRolledOut = true;
-      _saveThisToken();
-    });
-    // TODO up to here <---
+        setState(() {
+          _token.isRolledOut = true;
+          _saveThisToken();
+        });
+      } else {
+        // TODO rollout fails here too.
+        log("Post request on roll out failed.",
+            name: "token_widgets.dart",
+            error: "Token: $_token, Status code: ${response.statusCode},"
+                " Body: ${response.body}");
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text("Rolling out token ${_token.label} failed."
+              "Error code: ${response.statusCode}"),
+          // TODO translate
+          duration: Duration(seconds: 3),
+        ));
+      }
+    }
+
+    // TODO when the rollout fails, update ui and add button to try again if token is not expired.
+
+    on SocketException catch (e) {
+      log("Roll out push token [$_token] failed.",
+          name: "token_widgets.dart", error: e);
+
+      Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text("No internet connection, rollout not possible."),
+          // TODO translate
+          duration: Duration(seconds: 3)));
+    } on Exception catch (e) {
+      log("Roll out push token [$_token] failed.",
+          name: "token_widgets.dart", error: e);
+
+      Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text("An unknown error occured, rollout not possible: $e"),
+          // TODO translate
+          duration: Duration(seconds: 5)));
+    }
   }
 
-  // TODO throw exception if something does not fit
-  Future<RSAPublicKey> parseResponse(Response response) async {
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+  Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
+    response = Response("sdhg", 200);
 
-    // TODO check response - show error - etc.
+    log("Parsing rollout response, try to extract public_key.",
+        name: "token_widgets.dart", error: response.body);
 
     String key = json.decode(response.body)['detail']['public_key'];
-    key = key.replaceAll('\n', ''); // TODO replace other line breaks too?
-    log("KEY", error: key);
+    key = key.replaceAll('\n', '');
+
+    log("Extracting public key was successful.",
+        name: "token_widgets.dart", error: key);
+
     return deserializeRSAPublicKeyPKCS1(key);
   }
 
@@ -313,8 +346,8 @@ class _PushWidgetState extends _TokenWidgetState {
       } else {
         log("Accepting push auth request failed.",
             name: "token_widgets.dart",
-            error:
-                "Token: $_token, Status code: ${response.statusCode}, Body: ${response.body}");
+            error: "Token: $_token, Status code: ${response.statusCode}, "
+                "Body: ${response.body}");
 
         Scaffold.of(context).showSnackBar(SnackBar(
           content:
@@ -325,22 +358,21 @@ class _PushWidgetState extends _TokenWidgetState {
         ));
       }
     } on SocketException catch (e) {
+      log("Accept push auth request for [$_token] failed.",
+          name: "token_widgets.dart", error: e);
       Scaffold.of(context).showSnackBar(SnackBar(
           content: Text("No internet connection, authentication not possible."),
           // TODO translate
           duration: Duration(seconds: 3)));
-
-      log("Accept push auth request failed.",
-          name: "token_widgets.dart", error: e);
     } on Exception catch (e) {
-      Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(
-              "Unknown exception [${e.runtimeType}], authentication not possible."),
-          // TODO translate
-          duration: Duration(seconds: 3)));
-
-      log("Accept push auth request failed.",
+      log("Accept push auth request for [$_token] failed.",
           name: "token_widgets.dart", error: e);
+      Scaffold.of(context).showSnackBar(SnackBar(
+          content:
+              Text("An unknown error occured, accepting push authenticatinon"
+                  " failed: $e"),
+          // TODO translate
+          duration: Duration(seconds: 5)));
     }
   }
 
