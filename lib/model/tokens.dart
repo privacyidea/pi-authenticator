@@ -183,7 +183,7 @@ class PushToken extends Token {
 
   String get firebaseToken => _firebaseToken;
 
-  DateTime _timeToDie;
+  DateTime _expirationDate;
 
   String get serial => _serial;
 
@@ -193,7 +193,7 @@ class PushToken extends Token {
 
   Uri get url => _url;
 
-  DateTime get timeToDie => _timeToDie;
+  DateTime get timeToDie => _expirationDate;
 
   PushToken({
     String label,
@@ -205,13 +205,13 @@ class PushToken extends Token {
     String enrollmentCredentials,
     Uri url,
     String firebaseToken,
-    DateTime timeToDie,
+    DateTime expirationDate,
   })  : this._serial = serial,
         this._sslVerify = sslVerify,
         this._enrollmentCredentials = enrollmentCredentials,
         this._url = url,
         this._firebaseToken = firebaseToken,
-        this._timeToDie = timeToDie,
+        this._expirationDate = expirationDate,
         super(label, issuer, uuid);
 
   // TODO update this method depending on isRolledOut

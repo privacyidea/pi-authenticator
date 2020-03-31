@@ -70,7 +70,7 @@ class StorageUtil {
     await _storage.write(key: _FIREBASE_CONFIG_KEY, value: jsonEncode(config));
   }
 
-  static Future<bool> doesFirebaseConfigExist() async {
+  static Future<bool> firebaseConfigExists() async {
     return await loadFirebaseConfig() != null;
   }
 

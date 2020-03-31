@@ -26,6 +26,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart';
@@ -218,18 +219,19 @@ class _PushWidgetState extends _TokenWidgetState {
   _PushWidgetState(Token token, VoidCallback onDeleteClicked)
       : super(token, onDeleteClicked);
 
-  // TODO change rename and delete while roll out process is running
+  // TODO change rename and delete while roll out process is running?
 
   PushToken get _token => super._token as PushToken;
 
   bool _rollOutFailed = false;
+  bool _retryButtonIsEnabled = true;
 
   @override
   void initState() {
     super.initState();
 
     if (!_token.isRolledOut) {
-      _rollOutToken();
+      SchedulerBinding.instance.addPostFrameCallback((_) => _rollOutToken());
     }
   }
 
@@ -237,6 +239,28 @@ class _PushWidgetState extends _TokenWidgetState {
     setState(() {
       _rollOutFailed = false;
     });
+
+    if (_token.firebaseToken == null) {
+      // The firebase config of this token is different to the existing
+      // firebase config in this app.
+      log("Token has different firebase config than existing.",
+          name: "token_widgets.dart");
+
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content:
+            Text("Token ${_token.label} has different firebase configuration "
+                "that the existing configuration, currently only one "
+                "firebase project is supported."),
+        // TODO translate
+        duration: Duration(seconds: 5),
+      ));
+
+      setState(() {
+        _rollOutFailed = true;
+      });
+
+      return;
+    }
 
     if (DateTime.now().isAfter(_token.timeToDie)) {
       log("Token is expired, abort rollout and delte it.",
@@ -435,6 +459,12 @@ class _PushWidgetState extends _TokenWidgetState {
     _saveThisToken();
   }
 
+  void _disableRetryButtonForSomeTime() {
+    setState(() => _retryButtonIsEnabled = false);
+    Timer(Duration(seconds: 3),
+        () => setState(() => _retryButtonIsEnabled = true));
+  }
+
   @override
   Widget _buildTile() {
     return ClipRect(
@@ -453,6 +483,7 @@ class _PushWidgetState extends _TokenWidgetState {
                 ),
               ),
               Visibility(
+                // Accept / decline push auth request.
                 visible: _token.hasPendingRequest,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -471,6 +502,7 @@ class _PushWidgetState extends _TokenWidgetState {
                 ),
               ),
               Visibility(
+                // Retry roll out.
                 visible: _rollOutFailed,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -478,7 +510,12 @@ class _PushWidgetState extends _TokenWidgetState {
                     RaisedButton(
                       // TODO style and translate
                       child: Text("Rollout failed, try again."),
-                      onPressed: _rollOutToken,
+                      onPressed: _retryButtonIsEnabled
+                          ? () {
+                              _rollOutToken();
+                              _disableRetryButtonForSomeTime();
+                            }
+                          : null,
                     ),
                   ],
                 ),
@@ -486,6 +523,7 @@ class _PushWidgetState extends _TokenWidgetState {
             ],
           ),
           Align(
+            // Show that the token is rolling out.
             alignment: Alignment.bottomCenter,
             child: Visibility(
               visible: !_token.isRolledOut && !_rollOutFailed,

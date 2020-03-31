@@ -64,7 +64,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _loadFirebase() async {
-    if (await StorageUtil.doesFirebaseConfigExist()) {
+    if (await StorageUtil.firebaseConfigExists()) {
       _initFirebase(await StorageUtil.loadFirebaseConfig());
     }
   }
@@ -251,7 +251,7 @@ class _MainScreenState extends State<MainScreen> {
       issuer: uriMap[URI_ISSUER],
       uuid: uuid,
       sslVerify: uriMap[URI_SSL_VERIFY],
-      timeToDie: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
+      expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
       enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
       url: uriMap[URI_ROLLOUT_URL],
       firebaseToken: firebaseToken,
@@ -261,19 +261,40 @@ class _MainScreenState extends State<MainScreen> {
   Future<String> _initFirebase(FirebaseConfig config) async {
     // FIXME What to do when a firebase project already exists?
 
+    // TODO IF config exists AND config != existing config DO return null
+    // TODO IF config exists AND config == existing config DO return fbtoken
+    // TODO IF config !exists DO create everything, return fbtoken
+
+    log("Initializing firebase.", name: "main_screen.dart");
+
     String name = "privacyIDEA Authenticator";
 
-    await FirebaseApp.configure(
-      name: name,
-      options: FirebaseOptions(
-        googleAppID: config.appID,
-        apiKey: config.apiKey,
-        databaseURL: "https://" + config.projectID + ".firebaseio.com",
-        storageBucket: config.projectID + ".appspot.com",
-        projectID: config.projectID,
-        gcmSenderID: config.projectNumber,
-      ),
-    );
+    if (!await StorageUtil.firebaseConfigExists() ||
+        await StorageUtil.loadFirebaseConfig() == config) {
+      log("Creating firebaseApp from config.",
+          name: "main_screen.dart", error: config);
+
+      await FirebaseApp.configure(
+        name: name,
+        options: FirebaseOptions(
+          googleAppID: config.appID,
+          apiKey: config.apiKey,
+          databaseURL: "https://" + config.projectID + ".firebaseio.com",
+          storageBucket: config.projectID + ".appspot.com",
+          projectID: config.projectID,
+          gcmSenderID: config.projectNumber,
+        ),
+      );
+    } else {
+      if (await StorageUtil.loadFirebaseConfig() != config) {
+        log("Given firebase config does not equal the existing config.",
+            name: "main_screen.dart",
+            error: "Existing: ${await StorageUtil.loadFirebaseConfig()}"
+                "\n Given:    $config");
+
+        return null;
+      }
+    }
 
     // TODO Fix license
     // TODO implement ios
