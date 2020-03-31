@@ -71,7 +71,7 @@ class StorageUtil {
   }
 
   static Future<bool> doesFirebaseConfigExist() async {
-    return loadFirebaseConfig() != null;
+    return await loadFirebaseConfig() != null;
   }
 
   static Future<FirebaseConfig> loadFirebaseConfig() async {

@@ -331,7 +331,6 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
-
     log("Parsing rollout response, try to extract public_key.",
         name: "token_widgets.dart", error: response.body);
 
@@ -432,6 +431,8 @@ class _PushWidgetState extends _TokenWidgetState {
       _token.requestNonce = null;
       _token.requestSSLVerify = false;
     });
+
+    _saveThisToken();
   }
 
   @override

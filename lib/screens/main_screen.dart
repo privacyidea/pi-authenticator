@@ -60,6 +60,13 @@ class _MainScreenState extends State<MainScreen> {
 
   _MainScreenState() {
     _loadAllTokens();
+    _loadFirebase();
+  }
+
+  _loadFirebase() async {
+    if (await StorageUtil.doesFirebaseConfigExist()) {
+      _initFirebase(await StorageUtil.loadFirebaseConfig());
+    }
   }
 
   _loadAllTokens() async {
@@ -252,7 +259,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<String> _initFirebase(FirebaseConfig config) async {
-    // TODO save config / load config?
+    // FIXME What to do when a firebase project already exists?
 
     String name = "privacyIDEA Authenticator";
 
@@ -299,6 +306,8 @@ class _MainScreenState extends State<MainScreen> {
     log("Firebase initialized, token added",
         name: "main_screen.dart", error: firebaseToken);
 
+    StorageUtil.saveOrReplaceFirebaseConfig(config);
+
     return firebaseToken;
   }
 
@@ -343,6 +352,8 @@ class _MainScreenState extends State<MainScreen> {
                   ? true
                   : false; // TODO is this the right interpretation?
             });
+
+            StorageUtil.saveOrReplaceToken(token); // Save the pending request.
           } else {
             log('Validating incoming message failed.',
                 name: 'main_screen.dart',
