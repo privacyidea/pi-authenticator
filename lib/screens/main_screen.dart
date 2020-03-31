@@ -242,7 +242,6 @@ class _MainScreenState extends State<MainScreen> {
         apiKey: uriMap[URI_API_KEY]);
 
     // TODO remove firebase project when no push token exists anymore
-    // TODO handle init not working / possible / firebase already initialised
     String firebaseToken = await _initFirebase(firebaseConfig);
 
     return PushToken(
@@ -314,8 +313,7 @@ class _MainScreenState extends State<MainScreen> {
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
       },
-      // FIXME this leads to errors (because of scanner plugin?)
-//      onBackgroundMessage: myBackgroundMessageHandler,
+      onBackgroundMessage: myBackgroundMessageHandler,
     );
 
     String firebaseToken = await firebaseMessaging.getToken();
@@ -328,7 +326,28 @@ class _MainScreenState extends State<MainScreen> {
     return firebaseToken;
   }
 
+  static Future<dynamic> myBackgroundMessageHandler(
+      Map<String, dynamic> message) async {
+    log("Background message recieved.",
+        name: "main_screen.dart", error: message);
+
+    if (message.containsKey('data')) {
+      // FIXME This does not update the ui.
+      _handleIncomingRequest(message, await StorageUtil.loadAllTokens());
+    } else {
+      log("Message does not contain [data] block, message is ignored.",
+          name: "main_screen.dart");
+    }
+  }
+
   void _handleIncomingAuthRequest(Map<String, dynamic> message) {
+    setState(() => _handleIncomingRequest(message, _tokenList));
+  }
+
+  static void _handleIncomingRequest(
+      Map<String, dynamic> message, List<Token> tokenList) {
+    print('This is new!');
+
     // TODO handle message in wrong format
     message['data'].forEach((key, value) => print('$key = $value'));
 
@@ -341,7 +360,7 @@ class _MainScreenState extends State<MainScreen> {
 
     bool wasHandled = false;
 
-    _tokenList.forEach((token) {
+    tokenList.forEach((token) {
       if (token is PushToken) {
         if (token.serial == requestedSerial && token.isRolledOut) {
           log('Token matched requested token',
@@ -361,14 +380,13 @@ class _MainScreenState extends State<MainScreen> {
 
             log('Validating incoming message was successful.',
                 name: 'main_screen.dart');
-            setState(() {
-              token.hasPendingRequest = true;
-              token.requestUri = requestUri;
-              token.requestNonce = message['data']['nonce'];
-              token.requestSSLVerify = message['data']['sslverify'] == '1'
-                  ? true
-                  : false; // TODO is this the right interpretation?
-            });
+
+            token.hasPendingRequest = true;
+            token.requestUri = requestUri;
+            token.requestNonce = message['data']['nonce'];
+            token.requestSSLVerify = message['data']['sslverify'] == '1'
+                ? true
+                : false; // TODO is this the right interpretation?
 
             StorageUtil.saveOrReplaceToken(token); // Save the pending request.
           } else {
@@ -386,21 +404,6 @@ class _MainScreenState extends State<MainScreen> {
           name: "main_screen.dart", error: requestedSerial);
     }
   }
-
-//  static Future<dynamic> myBackgroundMessageHandler(
-//      Map<String, dynamic> message) {
-//    if (message.containsKey('data')) {
-//      // Handle data message
-//      final dynamic data = message['data'];
-//    }
-//
-//    if (message.containsKey('notification')) {
-//      // Handle notification message
-//      final dynamic notification = message['notification'];
-//    }
-//
-//    // Or do other work.
-//  }
 
   ListView _buildTokenList() {
     return ListView.separated(

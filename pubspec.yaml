@@ -31,7 +31,7 @@ dependencies:
   # dependency for calculating otp values
   otp: ^2.0.3 # https://pub.dev/packages/otp
   # dependency for scanning barcodes
-  barcode_scan: ^1.0.0
+  barcode_scan: ^2.0.0
   # dependency to generate IDs for tokens
   uuid: 2.0.4
   # dependency to save to secure storage under android and ios
