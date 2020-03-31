@@ -259,11 +259,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<String> _initFirebase(FirebaseConfig config) async {
-    // FIXME What to do when a firebase project already exists?
-
-    // TODO IF config exists AND config != existing config DO return null
-    // TODO IF config exists AND config == existing config DO return fbtoken
-    // TODO IF config !exists DO create everything, return fbtoken
+    ArgumentError.checkNotNull(config, "config");
 
     log("Initializing firebase.", name: "main_screen.dart");
 

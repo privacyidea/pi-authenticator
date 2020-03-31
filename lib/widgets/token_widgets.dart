@@ -246,14 +246,11 @@ class _PushWidgetState extends _TokenWidgetState {
       log("Token has different firebase config than existing.",
           name: "token_widgets.dart");
 
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content:
-            Text("Token ${_token.label} has different firebase configuration "
-                "that the existing configuration, currently only one "
-                "firebase project is supported."),
-        // TODO translate
-        duration: Duration(seconds: 5),
-      ));
+      _showMessage(
+          "Token ${_token.label} has different firebase configuration "
+          "that the existing configuration, currently only one "
+          "firebase project is supported.",
+          5); // TODO translate
 
       setState(() {
         _rollOutFailed = true;
@@ -273,12 +270,8 @@ class _PushWidgetState extends _TokenWidgetState {
         _rollOutFailed = true;
       });
 
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content:
-            Text("Token ${_token.label} is expired, rollout not possible."),
-        // TODO translate
-        duration: Duration(seconds: 3),
-      ));
+      _showMessage("Token ${_token.label} is expired, rollout not possible.",
+          3); // TODO translate
     }
 
     // TODO generating keypair could be omitted, if this is the second run!
@@ -320,12 +313,10 @@ class _PushWidgetState extends _TokenWidgetState {
           _rollOutFailed = true;
         });
 
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Rolling out token ${_token.label} failed."
-              "Error code: ${response.statusCode}"),
-          // TODO translate
-          duration: Duration(seconds: 3),
-        ));
+        _showMessage(
+            "Rolling out token ${_token.label} failed."
+            "Error code: ${response.statusCode}",
+            3); // TODO translate
       }
     } on SocketException catch (e) {
       log("Roll out push token [$_token] failed.",
@@ -335,10 +326,8 @@ class _PushWidgetState extends _TokenWidgetState {
         _rollOutFailed = true;
       });
 
-      Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("No internet connection, rollout not possible."),
-          // TODO translate
-          duration: Duration(seconds: 3)));
+      _showMessage(
+          "No internet connection, rollout not possible.", 3); // TODO translate
     } on Exception catch (e) {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
@@ -347,10 +336,8 @@ class _PushWidgetState extends _TokenWidgetState {
         _rollOutFailed = true;
       });
 
-      Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("An unknown error occured, rollout not possible: $e"),
-          // TODO translate
-          duration: Duration(seconds: 5)));
+      _showMessage("An unknown error occured, rollout not possible: $e",
+          5); // TODO translate
     }
   }
 
@@ -369,9 +356,6 @@ class _PushWidgetState extends _TokenWidgetState {
     } on FormatException catch (e) {
       throw FormatException(
           "Response body does not contain RSA public key.", e);
-
-      throw ArgumentError.value(response.body, "response.body",
-          "Response body does not contain public RSA key of the server.");
     }
   }
 
@@ -399,11 +383,9 @@ class _PushWidgetState extends _TokenWidgetState {
           body: body);
 
       if (response.statusCode == 200) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Accepted push auth request for ${_token.label}."),
-          // TODO translate
-          duration: Duration(seconds: 2),
-        ));
+        _showMessage("Accepted push auth request for ${_token.label}.",
+            2); // TODO translate
+
         resetRequest();
       } else {
         log("Accepting push auth request failed.",
@@ -411,39 +393,31 @@ class _PushWidgetState extends _TokenWidgetState {
             error: "Token: $_token, Status code: ${response.statusCode}, "
                 "Body: ${response.body}");
 
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content:
-              Text("Accepting push auth request for ${_token.label} failed. "
-                  "Error code: ${response.statusCode}"),
-          // TODO translate
-          duration: Duration(seconds: 3),
-        ));
+        _showMessage(
+            "Accepting push auth request for ${_token.label} failed. "
+            "Error code: ${response.statusCode}",
+            3); // TODO translate
       }
     } on SocketException catch (e) {
       log("Accept push auth request for [$_token] failed.",
           name: "token_widgets.dart", error: e);
-      Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("No internet connection, authentication not possible."),
-          // TODO translate
-          duration: Duration(seconds: 3)));
+
+      _showMessage("No internet connection, authentication not possible.",
+          3); // TODO translate
     } on Exception catch (e) {
       log("Accept push auth request for [$_token] failed.",
           name: "token_widgets.dart", error: e);
-      Scaffold.of(context).showSnackBar(SnackBar(
-          content:
-              Text("An unknown error occured, accepting push authenticatinon"
-                  " failed: $e"),
-          // TODO translate
-          duration: Duration(seconds: 5)));
+
+      _showMessage(
+          "An unknown error occured, accepting push authenticatinon"
+          " failed: $e",
+          5); // TODO translate
     }
   }
 
   void declineRequest() async {
-    Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text("Declined push auth request for ${_token.label}."),
-      // TODO translate
-      duration: Duration(seconds: 2),
-    ));
+    _showMessage(
+        "Declined push auth request for ${_token.label}.", 2); // TODO translate
     resetRequest();
   }
 
@@ -540,6 +514,16 @@ class _PushWidgetState extends _TokenWidgetState {
         ],
       ),
     );
+  }
+
+  void _showMessage(String message, int seconds) {
+    ArgumentError.checkNotNull(message, "message");
+    ArgumentError.checkNotNull(seconds, "seconds");
+
+    Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text(message),
+        // TODO translate
+        duration: Duration(seconds: seconds)));
   }
 }
 
