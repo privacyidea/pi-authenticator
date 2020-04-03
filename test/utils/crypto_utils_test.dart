@@ -881,9 +881,9 @@ void _testRSASigning() {
 
       var signature = createRSASignature(privateKey, utf8.encode(message));
 
-      expect(
-          false, verifyRSASignature(publicKey, signature, utf8.encode(message)));
-    });
+      expect(false,
+          verifyRSASignature(publicKey, signature, utf8.encode(message)));
+    }, timeout: Timeout(Duration(seconds: 60)));
   });
 }
 
@@ -927,7 +927,8 @@ void _testSerializingRSAKeys() {
             "TcMl8sPWxB8lgGpUCAwEAAQ==";
 
         expect(
-            serializeRSAPublicKeyPKCS1(deserializeRSAPublicKeyPKCS1(serializedPublicKey)),
+            serializeRSAPublicKeyPKCS1(
+                deserializeRSAPublicKeyPKCS1(serializedPublicKey)),
             serializedPublicKey);
       });
     });
@@ -969,7 +970,9 @@ void _testSerializingRSAKeys() {
             "nuwUCqJvPlKJHd/ikm2OfQS+BsPH8HDvrQGQyHyzBzV20oRfNGPIXVOXc9AEIJAPxB"
             "QYQE2aoTR+l7N4On4x59z8qU1UCAwEAAQ==";
 
-        expect(serializeRSAPublicKeyPKCS8(deserializeRSAPublicKeyPKCS8(serializedPublicKey)),
+        expect(
+            serializeRSAPublicKeyPKCS8(
+                deserializeRSAPublicKeyPKCS8(serializedPublicKey)),
             serializedPublicKey);
       });
     });

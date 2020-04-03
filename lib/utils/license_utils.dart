@@ -24,6 +24,7 @@ import 'package:flutter/foundation.dart';
 /// It can be used for testing purposes, if one wishes to inspect a specifically
 /// added license.
 clearLicenses() {
+  // ignore: invalid_use_of_visible_for_testing_member
   LicenseRegistry.reset();
 }
 
