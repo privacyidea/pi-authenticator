@@ -35,7 +35,8 @@ class StorageUtil {
   }
 
   static Future<Token> loadToken(String id) async {
-    return (await loadAllTokens()).firstWhere((t) => t.uuid == id);
+    return (await loadAllTokens())
+        .firstWhere((t) => t.uuid == id, orElse: () => null);
   }
 
   /// Returns a list of all Tokens that are saved in the secure storage of
@@ -53,7 +54,7 @@ class StorageUtil {
         tokenList.add(HOTPToken.fromJson(serializedToken));
       } else if (serializedToken.containsKey("period")) {
         tokenList.add(TOTPToken.fromJson(serializedToken));
-      } else if (serializedToken.containsKey("timeToDie")) {
+      } else if (serializedToken.containsKey("serial")) {
         tokenList.add(PushToken.fromJson(serializedToken));
       }
     });
