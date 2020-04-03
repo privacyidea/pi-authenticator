@@ -853,7 +853,7 @@ void _testRSASigning() {
 
       expect(
           true, verifyRSASignature(publicKey, utf8.encode(message), signature));
-    });
+    }, timeout: Timeout(Duration(seconds: 60)));
 
     test('Signature is invalid', () async {
       var asymmetricKeyPair = await generateRSAKeyPair();
@@ -870,7 +870,7 @@ void _testRSASigning() {
               publicKey,
               utf8.encode('I am not the signature you are looking for.'),
               signature));
-    });
+    }, timeout: Timeout(Duration(seconds: 60)));
 
     test('Signature is invalid because of flipped parameters', () async {
       var asymmetricKeyPair = await generateRSAKeyPair();
@@ -884,7 +884,7 @@ void _testRSASigning() {
       expect(false,
           verifyRSASignature(publicKey, signature, utf8.encode(message)));
     }, timeout: Timeout(Duration(seconds: 60)));
-  });
+  }, timeout: Timeout(Duration(seconds: 300)));
 }
 
 void _testSerializingRSAKeys() {
@@ -899,7 +899,7 @@ void _testSerializingRSAKeys() {
 
         expect(publicKey.modulus, convertedKey.modulus);
         expect(publicKey.exponent, convertedKey.exponent);
-      });
+      }, timeout: Timeout(Duration(seconds: 60)));
 
       test('Converting generated key', () async {
         var asymmetricKeyPair = await generateRSAKeyPair();
@@ -910,7 +910,7 @@ void _testSerializingRSAKeys() {
 
         expect(publicKey.modulus, convertedKey.modulus);
         expect(publicKey.exponent, convertedKey.exponent);
-      });
+      }, timeout: Timeout(Duration(seconds: 60)));
 
       test('Parsing existing key', () async {
         String serializedPublicKey = "MIICCgKCAgEAtOE6hDrwB+9Quk5Ibp9DduUMAmQ"
@@ -930,8 +930,8 @@ void _testSerializingRSAKeys() {
             serializeRSAPublicKeyPKCS1(
                 deserializeRSAPublicKeyPKCS1(serializedPublicKey)),
             serializedPublicKey);
-      });
-    });
+      }, timeout: Timeout(Duration(seconds: 60)));
+    }, timeout: Timeout(Duration(seconds: 300)));
 
     group('PKCS#8 format', () {
       test('Converting key', () async {
@@ -943,7 +943,7 @@ void _testSerializingRSAKeys() {
 
         expect(publicKey.modulus, convertedKey.modulus);
         expect(publicKey.exponent, convertedKey.exponent);
-      });
+      }, timeout: Timeout(Duration(seconds: 60)));
 
       test('Converting generated key', () async {
         var asymmetricKeyPair = await generateRSAKeyPair();
@@ -954,7 +954,7 @@ void _testSerializingRSAKeys() {
 
         expect(publicKey.modulus, convertedKey.modulus);
         expect(publicKey.exponent, convertedKey.exponent);
-      });
+      }, timeout: Timeout(Duration(seconds: 60)));
 
       test('Parse existing key', () async {
         String serializedPublicKey = "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCA"
@@ -974,7 +974,7 @@ void _testSerializingRSAKeys() {
             serializeRSAPublicKeyPKCS8(
                 deserializeRSAPublicKeyPKCS8(serializedPublicKey)),
             serializedPublicKey);
-      });
-    });
-  });
+      }, timeout: Timeout(Duration(seconds: 60)));
+    }, timeout: Timeout(Duration(seconds: 300)));
+  }, timeout: Timeout(Duration(seconds: 300)));
 }
