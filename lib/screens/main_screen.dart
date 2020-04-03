@@ -332,7 +332,6 @@ class _MainScreenState extends State<MainScreen> {
         name: "main_screen.dart", error: message);
 
     if (message.containsKey('data')) {
-      // FIXME This does not update the ui.
       _handleIncomingRequest(message, await StorageUtil.loadAllTokens());
     } else {
       log("Message does not contain [data] block, message is ignored.",
