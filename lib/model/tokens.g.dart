@@ -88,14 +88,24 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
           ? null
           : DateTime.parse(json['expirationDate'] as String))
     ..isRolledOut = json['isRolledOut'] as bool
-    ..publicServerKey = json['publicServerKey'] == null
+    ..privateModulus = json['privateModulus'] == null
         ? null
-        : SerializableRSAPublicKey.fromJson(
-            json['publicServerKey'] as Map<String, dynamic>)
-    ..privateTokenKey = json['privateTokenKey'] == null
+        : BigInt.parse(json['privateModulus'] as String)
+    ..privateExponent = json['privateExponent'] == null
         ? null
-        : SerializableRSAPrivateKey.fromJson(
-            json['privateTokenKey'] as Map<String, dynamic>)
+        : BigInt.parse(json['privateExponent'] as String)
+    ..privateP = json['privateP'] == null
+        ? null
+        : BigInt.parse(json['privateP'] as String)
+    ..privateQ = json['privateQ'] == null
+        ? null
+        : BigInt.parse(json['privateQ'] as String)
+    ..publicModulus = json['publicModulus'] == null
+        ? null
+        : BigInt.parse(json['publicModulus'] as String)
+    ..publicExponent = json['publicExponent'] == null
+        ? null
+        : BigInt.parse(json['publicExponent'] as String)
     ..hasPendingRequest = json['hasPendingRequest'] as bool
     ..requestUri = json['requestUri'] == null
         ? null
@@ -109,8 +119,12 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'uuid': instance.uuid,
       'issuer': instance.issuer,
       'isRolledOut': instance.isRolledOut,
-      'publicServerKey': instance.publicServerKey,
-      'privateTokenKey': instance.privateTokenKey,
+      'privateModulus': instance.privateModulus?.toString(),
+      'privateExponent': instance.privateExponent?.toString(),
+      'privateP': instance.privateP?.toString(),
+      'privateQ': instance.privateQ?.toString(),
+      'publicModulus': instance.publicModulus?.toString(),
+      'publicExponent': instance.publicExponent?.toString(),
       'hasPendingRequest': instance.hasPendingRequest,
       'requestUri': instance.requestUri?.toString(),
       'requestNonce': instance.requestNonce,
