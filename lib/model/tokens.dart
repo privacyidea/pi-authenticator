@@ -193,7 +193,7 @@ class PushToken extends Token {
 
   Uri get url => _url;
 
-  DateTime get timeToDie => _expirationDate;
+  DateTime get expirationDate => _expirationDate;
 
   PushToken({
     String label,
@@ -221,7 +221,7 @@ class PushToken extends Token {
         ' | Type Push | Serial $serial | SSLVerify $sslVerify '
             '| Enrollment Credentials $enrollmentCredentials '
             '| URL $url | Firebase Token $firebaseToken '
-            '| Time to die $timeToDie | Is rolled out $isRolledOut';
+            '| Time to die $expirationDate | Is rolled out $isRolledOut';
   }
 
   factory PushToken.fromJson(Map<String, dynamic> json) =>

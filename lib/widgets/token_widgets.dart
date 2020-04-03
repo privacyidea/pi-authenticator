@@ -233,6 +233,23 @@ class _PushWidgetState extends _TokenWidgetState {
     if (!_token.isRolledOut) {
       SchedulerBinding.instance.addPostFrameCallback((_) => _rollOutToken());
     }
+
+    SystemChannels.lifecycle.setMessageHandler((msg) async {
+      PushToken t = await StorageUtil.loadToken(_token.uuid) as PushToken;
+
+      // Push requests that were received in background can only save to
+      // the storage, the ui must be updated here
+      if (msg == "AppLifecycleState.resumed" && t.hasPendingRequest) {
+        setState(() {
+          _token.hasPendingRequest = t.hasPendingRequest;
+          _token.requestUri = t.requestUri;
+          _token.requestNonce = t.requestNonce;
+          _token.requestSSLVerify = t.requestSSLVerify;
+        });
+      }
+
+      return Future.value("");
+    });
   }
 
   void _rollOutToken() async {
@@ -259,11 +276,11 @@ class _PushWidgetState extends _TokenWidgetState {
       return;
     }
 
-    if (DateTime.now().isAfter(_token.timeToDie)) {
+    if (DateTime.now().isAfter(_token.expirationDate)) {
       log("Token is expired, abort rollout and delte it.",
           name: "token_widgets.dart",
           error: "Now: ${DateTime.now()}, Token expires at ${[
-            _token.timeToDie
+            _token.expirationDate
           ]}, Token: $_token");
 
       setState(() {
@@ -464,12 +481,12 @@ class _PushWidgetState extends _TokenWidgetState {
                   children: <Widget>[
                     RaisedButton(
                       // TODO style and translate
-                      child: Text("Yes"),
+                      child: Text("Accept"),
                       onPressed: acceptRequest,
                     ),
                     RaisedButton(
                       // TODO style and translate
-                      child: Text("No"),
+                      child: Text("Decline"),
                       onPressed: declineRequest,
                     ),
                   ],

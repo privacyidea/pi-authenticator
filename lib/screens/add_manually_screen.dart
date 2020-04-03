@@ -90,8 +90,8 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
                 _selectedAlgorithm, Algorithms.values),
             _buildDropdownButtonWithLabel(
                 L10n.of(context).digits, _selectedDigits, allowedDigits),
-            _buildDropdownButtonWithLabel(
-                L10n.of(context).type, _selectedType, TokenTypes.values),
+            _buildDropdownButtonWithLabel(L10n.of(context).type, _selectedType,
+                List.from(TokenTypes.values)..remove(TokenTypes.PIPUSH)),
             Visibility(
 //               the period is only used by TOTP tokens
               visible: _selectedType.value == TokenTypes.TOTP,

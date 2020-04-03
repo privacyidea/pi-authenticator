@@ -34,6 +34,10 @@ class StorageUtil {
     await _storage.write(key: token.uuid, value: jsonEncode(token));
   }
 
+  static Future<Token> loadToken(String id) async {
+    return (await loadAllTokens()).firstWhere((t) => t.uuid == id);
+  }
+
   /// Returns a list of all Tokens that are saved in the secure storage of
   /// this device.
   static Future<List<Token>> loadAllTokens() async {
