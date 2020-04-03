@@ -236,7 +236,11 @@ class _PushWidgetState extends _TokenWidgetState {
 
     // ignore: missing_return
     SystemChannels.lifecycle.setMessageHandler((msg) async {
-      PushToken t = await StorageUtil.loadToken(_token.uuid) as PushToken;
+      PushToken t = await StorageUtil.loadToken(_token.uuid);
+
+      if (t == null) {
+        return; // FIXME Loading fails on start of app.
+      }
 
       // Push requests that were received in background can only be saved to
       // the storage, the ui must be updated here

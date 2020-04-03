@@ -20,6 +20,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/custom_rsa_keys.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 part 'tokens.g.dart';
@@ -148,33 +149,44 @@ class PushToken extends Token {
   String _firebaseToken;
   bool isRolledOut = false;
 
-  // RSA keys are split in their components to allow serialization
-  // Private key of token
-  BigInt privateModulus;
-  BigInt privateExponent;
-  BigInt privateP;
-  BigInt privateQ;
+//  // RSA keys are split in their components to allow serialization
+//  // Private key of token
+//  BigInt privateModulus;
+//  BigInt privateExponent;
+//  BigInt privateP;
+//  BigInt privateQ;
+//
+//  get privateTokenKey => RSAPrivateKey(
+//      this.privateModulus, this.privateExponent, this.privateP, this.privateQ);
+//
+//  set privateTokenKey(RSAPrivateKey privateKey) {
+//    this.privateModulus = privateKey.modulus;
+//    this.privateExponent = privateKey.exponent;
+//    this.privateP = privateKey.p;
+//    this.privateQ = privateKey.q;
+//  }
+//
+//  // Public key of server
+//  BigInt publicModulus;
+//  BigInt publicExponent;
+//
+//  get publicServerKey => RSAPublicKey(publicModulus, publicExponent);
+//
+//  set publicServerKey(RSAPublicKey publicKey) {
+//    this.publicModulus = publicKey.modulus;
+//    this.publicExponent = publicKey.exponent;
+//  }
 
-  get privateTokenKey => RSAPrivateKey(
-      this.privateModulus, this.privateExponent, this.privateP, this.privateQ);
+  SerializableRSAPublicKey _publicServerKey;
+  SerializableRSAPrivateKey _privateTokenKey;
 
-  set privateTokenKey(RSAPrivateKey privateKey) {
-    this.privateModulus = privateKey.modulus;
-    this.privateExponent = privateKey.exponent;
-    this.privateP = privateKey.p;
-    this.privateQ = privateKey.q;
-  }
+  set publicServerKey(RSAPublicKey key) => _publicServerKey = SerializableRSAPublicKey(key.modulus, key.exponent);
 
-  // Public key of server
-  BigInt publicModulus;
-  BigInt publicExponent;
+  set privateTokenKey(RSAPrivateKey key) => _privateTokenKey = SerializableRSAPrivateKey(key.modulus, key.exponent, key.p, key.q);
 
-  get publicServerKey => RSAPublicKey(publicModulus, publicExponent);
+  SerializableRSAPublicKey get publicServerKey => _publicServerKey;
 
-  set publicServerKey(RSAPublicKey publicKey) {
-    this.publicModulus = publicKey.modulus;
-    this.publicExponent = publicKey.exponent;
-  }
+  SerializableRSAPrivateKey get privateTokenKey => _privateTokenKey;
 
   bool hasPendingRequest = false;
   Uri requestUri;
