@@ -201,14 +201,16 @@ class PushToken extends Token {
         this._expirationDate = expirationDate,
         super(label, issuer, uuid);
 
-  // TODO update this method depending on isRolledOut
   @override
   String toString() {
-    return super.toString() +
-        ' | Type Push | Serial $serial | SSLVerify $sslVerify '
-            '| Enrollment Credentials $enrollmentCredentials '
-            '| URL $url | Firebase Token $firebaseToken '
-            '| Time to die $expirationDate | Is rolled out $isRolledOut';
+    return 'PushToken{_serial: $_serial, _sslVerify: $_sslVerify,'
+        ' _enrollmentCredentials: $_enrollmentCredentials, _url: $_url,'
+        ' _firebaseToken: $_firebaseToken, isRolledOut: $isRolledOut,'
+        ' _publicServerKey: $_publicServerKey,'
+        ' _privateTokenKey: $_privateTokenKey, '
+        'hasPendingRequest: $hasPendingRequest, requestUri: $requestUri, '
+        'requestNonce: $requestNonce, requestSSLVerify: $requestSSLVerify, '
+        '_expirationDate: $_expirationDate}';
   }
 
   factory PushToken.fromJson(Map<String, dynamic> json) =>
