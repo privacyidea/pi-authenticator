@@ -127,11 +127,11 @@ String insertCharAt(String str, String char, int pos) {
   return str.substring(0, pos) + char + str.substring(pos, str.length);
 }
 
-/// Inserts [char] after every [period] characters in [str].
+/// Inserts [' '] after every [period] characters in [str].
 /// Trims leading and trailing whitespaces. Returns the resulting String.
 ///
-/// Example: "ABCD", " ", 1 --> "A B C D"
-/// Example: "ABCD", " ", 2 --> "AB CD"
+/// Example: "ABCD", 1 --> "A B C D"
+/// Example: "ABCD", 2 --> "AB CD"
 String splitPeriodically(String str, int period) {
   String result = "";
   for (int i = 0; i < str.length; i++) {
@@ -198,8 +198,10 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   try {
     int pushVersion = int.parse(pushVersionAsString);
 
+    print('VERSION: $pushVersion');
+
     if (pushVersion > 1) {
-      ArgumentError.value(
+      throw ArgumentError.value(
           uri,
           "uri",
           "The piauth version [$pushVersionAsString] "
@@ -249,7 +251,7 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   return uriMap;
 }
 
-/// /// This method parses otpauth uris according
+/// This method parses otpauth uris according
 /// to https://github.com/google/google-authenticator/wiki/Key-Uri-Format.
 Map<String, dynamic> parseOtpAuth(Uri uri) {
   // otpauth://TYPE/LABEL?PARAMETERS
@@ -425,9 +427,8 @@ String enumAsString(Object enumEntry) {
   return description.substring(indexOfDot + 1);
 }
 
-bool equalsIgnoreCase(String s1, String s2) {
-  return s1.toLowerCase() == s2.toLowerCase();
-}
+bool equalsIgnoreCase(String s1, String s2) =>
+    s1.toLowerCase() == s2.toLowerCase();
 
 /// Custom POST request allows to not verify certificates
 Future<Response> doPost(
