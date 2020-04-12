@@ -399,9 +399,8 @@ class _MainScreenState extends State<MainScreen> {
 
             StorageUtil.saveOrReplaceToken(token); // Save the pending request.
 
-            // TODO get title and body from request
-            _showNotification(
-                token, "TITLE", "BODY"); // Notify the user of the request.
+            _showNotification(token, message['data']['title'],
+                message['data']['question']); // Notify the user of the request.
 
           } else {
             log('Validating incoming message failed.',
@@ -426,16 +425,23 @@ class _MainScreenState extends State<MainScreen> {
 
     // TODO configure
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'your channel id', 'your channel name', 'your channel description',
-        importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+      'your channel id',
+      'your channel name',
+      'your channel description',
+      importance: Importance.Max,
+      priority: Priority.High,
+      ticker: 'ticker',
+//      styleInformation: bigTextStyleInformation, // TODO add style information to display token name 
+    );
 
     var platformChannelSpecifics =
         NotificationDetails(androidPlatformChannelSpecifics, null);
     await flutterLocalNotificationsPlugin.show(
-        token.serial.hashCode,
-        title,
-        text,
-        platformChannelSpecifics); // TODO add payload for automatic accept, when the notification is clicked?
+      token.serial.hashCode,
+      title,
+      text,
+      platformChannelSpecifics,
+    ); // TODO add payload for automatic accept, when the notification is clicked?
   }
 
   ListView _buildTokenList() {
