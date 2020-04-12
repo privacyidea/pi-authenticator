@@ -30,6 +30,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
@@ -57,6 +58,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   _MainScreenState() {
     _loadAllTokens();
@@ -262,6 +265,7 @@ class _MainScreenState extends State<MainScreen> {
 
     log("Initializing firebase.", name: "main_screen.dart");
 
+    // Used to identify a firebase app, this is nothing more than an id.
     String name = "privacyIDEA Authenticator";
 
     if (!await StorageUtil.firebaseConfigExists() ||
@@ -280,15 +284,22 @@ class _MainScreenState extends State<MainScreen> {
           gcmSenderID: config.projectNumber,
         ),
       );
-    } else {
-      if (await StorageUtil.loadFirebaseConfig() != config) {
-        log("Given firebase config does not equal the existing config.",
-            name: "main_screen.dart",
-            error: "Existing: ${await StorageUtil.loadFirebaseConfig()}"
-                "\n Given:    $config");
 
-        return null;
-      }
+      // TODO Configure local notifications.
+      // TODO add ios
+      // TODO check if it is already initialized
+      var initializationSettingsAndroid =
+          AndroidInitializationSettings('app_icon');
+      var initializationSettings =
+          InitializationSettings(initializationSettingsAndroid, null);
+      await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    } else if (await StorageUtil.loadFirebaseConfig() != config) {
+      log("Given firebase config does not equal the existing config.",
+          name: "main_screen.dart",
+          error: "Existing: ${await StorageUtil.loadFirebaseConfig()}"
+              "\n Given:    $config");
+
+      return null;
     }
 
     // TODO Fix license
@@ -313,7 +324,8 @@ class _MainScreenState extends State<MainScreen> {
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
       },
-      onBackgroundMessage: myBackgroundMessageHandler,
+      onBackgroundMessage:
+          myBackgroundMessageHandler, // FIXME There might be a bug when using local-notifications and firebase_messaging, see https://github.com/MaikuB/flutter_local_notifications/tree/master/flutter_local_notifications
     );
 
     String firebaseToken = await firebaseMessaging.getToken();
@@ -345,8 +357,6 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _handleIncomingRequest(
       Map<String, dynamic> message, List<Token> tokenList) {
-    print('This is new!');
-
     // TODO handle message in wrong format
     message['data'].forEach((key, value) => print('$key = $value'));
 
@@ -388,6 +398,11 @@ class _MainScreenState extends State<MainScreen> {
                 : false; // TODO is this the right interpretation?
 
             StorageUtil.saveOrReplaceToken(token); // Save the pending request.
+
+            // TODO get title and body from request
+            _showNotification(
+                token, "TITLE", "BODY"); // Notify the user of the request.
+
           } else {
             log('Validating incoming message failed.',
                 name: 'main_screen.dart',
@@ -402,6 +417,25 @@ class _MainScreenState extends State<MainScreen> {
       log("The requested token does not exist or is not rolled out.",
           name: "main_screen.dart", error: requestedSerial);
     }
+  }
+
+  static void _showNotification(
+      PushToken token, String title, String text) async {
+    // TODO change priority
+    // TODO support ios
+
+    // TODO configure
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'your channel id', 'your channel name', 'your channel description',
+        importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+
+    var platformChannelSpecifics =
+        NotificationDetails(androidPlatformChannelSpecifics, null);
+    await flutterLocalNotificationsPlugin.show(
+        token.serial.hashCode,
+        title,
+        text,
+        platformChannelSpecifics); // TODO add payload for automatic accept, when the notification is clicked?
   }
 
   ListView _buildTokenList() {
