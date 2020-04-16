@@ -63,7 +63,7 @@ class TokenWidget extends StatefulWidget {
 }
 
 abstract class _TokenWidgetState extends State<TokenWidget> {
-  final Token _token;
+  Token _token;
   static final SlidableController _slidableController = SlidableController();
   String _label;
 
@@ -240,17 +240,14 @@ class _PushWidgetState extends _TokenWidgetState {
 
       // Push requests that were received in background can only be saved to
       // the storage, the ui must be updated here
-      if (msg == "AppLifecycleState.resumed" && t.hasPendingRequest) {
+      if (msg == "AppLifecycleState.resumed" && t.pushRequests.isNotEmpty) {
         log(
             "Push token received request while app was in background. "
             "Updating UI.",
             name: "token_widgets.dart");
 
         setState(() {
-          _token.hasPendingRequest = t.hasPendingRequest;
-          _token.requestUri = t.requestUri;
-          _token.requestNonce = t.requestNonce;
-          _token.requestSSLVerify = t.requestSSLVerify;
+          _token = t;
         });
       }
     });
@@ -381,8 +378,10 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   void acceptRequest() async {
+    var pushRequest = _token.pushRequests.first;
+
     log('Push auth request accepted, sending message',
-        name: 'token_widgets.dart', error: 'Url: ${_token.requestUri}');
+        name: 'token_widgets.dart', error: 'Url: ${pushRequest.uri}');
 
     // signature ::=  {nonce}|{serial}
 
@@ -391,17 +390,15 @@ class _PushWidgetState extends _TokenWidgetState {
     //    serial=<serial>
     //    signature=<signature>
     Map<String, String> body = {
-      'nonce': _token.requestNonce,
+      'nonce': pushRequest.nonce,
       'serial': _token.serial,
       'signature': createBase32Signature(_token.privateTokenKey,
-          utf8.encode('${_token.requestNonce}|${_token.serial}')),
+          utf8.encode('${pushRequest.nonce}|${_token.serial}')),
     };
 
     try {
       Response response = await doPost(
-          sslVerify: _token.requestSSLVerify,
-          url: _token.requestUri,
-          body: body);
+          sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
 
       if (response.statusCode == 200) {
         _showMessage("Accepted push auth request for ${_token.label}.",
@@ -445,10 +442,7 @@ class _PushWidgetState extends _TokenWidgetState {
   /// Reset the token status after push auth request was handled by the user.
   void resetRequest() {
     setState(() {
-      _token.hasPendingRequest = false;
-      _token.requestUri = null;
-      _token.requestNonce = null;
-      _token.requestSSLVerify = false;
+      _token.pushRequests.removeFirst();
     });
 
     _saveThisToken();
@@ -479,7 +473,7 @@ class _PushWidgetState extends _TokenWidgetState {
               ),
               Visibility(
                 // Accept / decline push auth request.
-                visible: _token.hasPendingRequest,
+                visible: _token.pushRequests.isNotEmpty,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[

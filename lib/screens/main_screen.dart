@@ -342,13 +342,7 @@ class _MainScreenState extends State<MainScreen> {
       Map<String, dynamic> message) async {
     log("Background message recieved.",
         name: "main_screen.dart", error: message);
-
-    if (message.containsKey('data')) {
-      _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), true);
-    } else {
-      log("Message does not contain [data] block, message is ignored.",
-          name: "main_screen.dart");
-    }
+    _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), true);
   }
 
   void _handleIncomingAuthRequest(Map<String, dynamic> message) {
@@ -390,12 +384,12 @@ class _MainScreenState extends State<MainScreen> {
             log('Validating incoming message was successful.',
                 name: 'main_screen.dart');
 
-            token.hasPendingRequest = true;
-            token.requestUri = requestUri;
-            token.requestNonce = message['data']['nonce'];
-            token.requestSSLVerify = message['data']['sslverify'] == '1'
-                ? true
-                : false; // TODO is this the right interpretation?
+            PushRequest pushRequest = PushRequest(
+                requestUri,
+                message['data']['nonce'],
+                message['data']['sslverify'] == '1' ? true : false);
+
+            token.pushRequests.addLast(pushRequest);
 
             StorageUtil.saveOrReplaceToken(token); // Save the pending request.
 
@@ -467,7 +461,7 @@ class _MainScreenState extends State<MainScreen> {
           return TokenWidget(
             key: ObjectKey(token),
             token: token,
-            onDeleteClicked: () => _deleteClicked(token),
+            onDeleteClicked: () => _removeToken(token),
           );
         },
         separatorBuilder: (context, index) {
@@ -476,7 +470,7 @@ class _MainScreenState extends State<MainScreen> {
         itemCount: _tokenList.length);
   }
 
-  void _deleteClicked(Token token) {
+  void _removeToken(Token token) {
     setState(() {
       print("Remove: $token");
       _tokenList.remove(token);
@@ -510,7 +504,7 @@ class _MainScreenState extends State<MainScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AddTokenManuallyScreen(),
-                )).then((newToken) => _addNewToken(newToken));
+                )).then((newToken) => _addToken(newToken));
           } else if (value == "settings") {
             Navigator.push(
                 context,
@@ -540,7 +534,7 @@ class _MainScreenState extends State<MainScreen> {
     ];
   }
 
-  _addNewToken(Token newToken) {
+  _addToken(Token newToken) {
     log("Adding new token:", name: "main_screen.dart", error: newToken);
     if (newToken != null) {
       setState(() {

@@ -18,6 +18,8 @@
   limitations under the License.
 */
 
+import 'dart:collection';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/custom_rsa_keys.dart';
@@ -163,10 +165,7 @@ class PushToken extends Token {
 
   SerializableRSAPrivateKey get privateTokenKey => _privateTokenKey;
 
-  bool hasPendingRequest = false;
-  Uri requestUri;
-  String requestNonce;
-  bool requestSSLVerify = false;
+  Queue<PushRequest> _pushRequests = new Queue();
 
   String get firebaseToken => _firebaseToken;
 
@@ -181,6 +180,8 @@ class PushToken extends Token {
   Uri get url => _url;
 
   DateTime get expirationDate => _expirationDate;
+
+  Queue<PushRequest> get pushRequests => _pushRequests;
 
   PushToken({
     String label,
@@ -204,17 +205,43 @@ class PushToken extends Token {
   @override
   String toString() {
     return 'PushToken{_serial: $_serial, _sslVerify: $_sslVerify,'
-        ' _enrollmentCredentials: $_enrollmentCredentials, _url: $_url,'
-        ' _firebaseToken: $_firebaseToken, isRolledOut: $isRolledOut,'
-        ' _publicServerKey: $_publicServerKey,'
-        ' _privateTokenKey: $_privateTokenKey, '
-        'hasPendingRequest: $hasPendingRequest, requestUri: $requestUri, '
-        'requestNonce: $requestNonce, requestSSLVerify: $requestSSLVerify, '
-        '_expirationDate: $_expirationDate}';
+        ' _enrollmentCredentials: $_enrollmentCredentials,'
+        ' _url: $_url, _firebaseToken: $_firebaseToken,'
+        ' isRolledOut: $isRolledOut, _publicServerKey: $_publicServerKey,'
+        ' _privateTokenKey: $_privateTokenKey, _pushRequests: $_pushRequests,'
+        ' _expirationDate: $_expirationDate}';
   }
 
   factory PushToken.fromJson(Map<String, dynamic> json) =>
       _$PushTokenFromJson(json);
 
   Map<String, dynamic> toJson() => _$PushTokenToJson(this);
+}
+
+@JsonSerializable()
+class PushRequest {
+  Uri _uri;
+  String _nonce;
+  bool _sslVerify;
+
+  String get nonce => _nonce;
+
+  bool get sslVerify => _sslVerify;
+
+  Uri get uri => _uri;
+
+  PushRequest(Uri uri, String nonce, bool sslVerify)
+      : this._uri = uri,
+        this._nonce = nonce,
+        this._sslVerify = sslVerify;
+
+  @override
+  String toString() {
+    return 'PushRequest{_uri: $_uri, _nonce: $_nonce, _sslVerify: $_sslVerify}';
+  }
+
+  factory PushRequest.fromJson(Map<String, dynamic> json) =>
+      _$PushRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PushRequestToJson(this);
 }

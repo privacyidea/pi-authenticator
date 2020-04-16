@@ -95,13 +95,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
     ..privateTokenKey = json['privateTokenKey'] == null
         ? null
         : SerializableRSAPrivateKey.fromJson(
-            json['privateTokenKey'] as Map<String, dynamic>)
-    ..hasPendingRequest = json['hasPendingRequest'] as bool
-    ..requestUri = json['requestUri'] == null
-        ? null
-        : Uri.parse(json['requestUri'] as String)
-    ..requestNonce = json['requestNonce'] as String
-    ..requestSSLVerify = json['requestSSLVerify'] as bool;
+            json['privateTokenKey'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
@@ -111,14 +105,24 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'isRolledOut': instance.isRolledOut,
       'publicServerKey': instance.publicServerKey,
       'privateTokenKey': instance.privateTokenKey,
-      'hasPendingRequest': instance.hasPendingRequest,
-      'requestUri': instance.requestUri?.toString(),
-      'requestNonce': instance.requestNonce,
-      'requestSSLVerify': instance.requestSSLVerify,
       'firebaseToken': instance.firebaseToken,
       'serial': instance.serial,
       'sslVerify': instance.sslVerify,
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
       'expirationDate': instance.expirationDate?.toIso8601String()
+    };
+
+PushRequest _$PushRequestFromJson(Map<String, dynamic> json) {
+  return PushRequest(
+      json['uri'] == null ? null : Uri.parse(json['uri'] as String),
+      json['nonce'] as String,
+      json['sslVerify'] as bool);
+}
+
+Map<String, dynamic> _$PushRequestToJson(PushRequest instance) =>
+    <String, dynamic>{
+      'nonce': instance.nonce,
+      'sslVerify': instance.sslVerify,
+      'uri': instance.uri?.toString()
     };
