@@ -165,7 +165,8 @@ class PushToken extends Token {
 
   SerializableRSAPrivateKey get privateTokenKey => _privateTokenKey;
 
-  Queue<PushRequest> _pushRequests = new Queue();
+  Queue<PushRequest> _pushRequests =
+      new Queue(); // FIXME Serialization of queue is not supported by the plugin.
 
   String get firebaseToken => _firebaseToken;
 
