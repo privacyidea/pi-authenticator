@@ -344,7 +344,7 @@ class _MainScreenState extends State<MainScreen> {
         name: "main_screen.dart", error: message);
 
     if (message.containsKey('data')) {
-      _handleIncomingRequest(message, await StorageUtil.loadAllTokens());
+      _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), true);
     } else {
       log("Message does not contain [data] block, message is ignored.",
           name: "main_screen.dart");
@@ -352,11 +352,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _handleIncomingAuthRequest(Map<String, dynamic> message) {
-    setState(() => _handleIncomingRequest(message, _tokenList));
+    setState(() => _handleIncomingRequest(message, _tokenList, false));
   }
 
   static void _handleIncomingRequest(
-      Map<String, dynamic> message, List<Token> tokenList) {
+      Map<String, dynamic> message, List<Token> tokenList, bool inBackground) {
     // TODO handle message in wrong format
     message['data'].forEach((key, value) => print('$key = $value'));
 
@@ -399,8 +399,11 @@ class _MainScreenState extends State<MainScreen> {
 
             StorageUtil.saveOrReplaceToken(token); // Save the pending request.
 
-            _showNotification(token, message['data']['title'],
-                message['data']['question']); // Notify the user of the request.
+            _showNotification(
+                token,
+                message['data']['title'],
+                message['data']['question'],
+                !inBackground); // Notify the user of the request.
 
           } else {
             log('Validating incoming message failed.',
@@ -419,23 +422,36 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   static void _showNotification(
-      PushToken token, String title, String text) async {
+      PushToken token, String title, String text, bool silent) async {
+    silent = false;
+
+    // TODO Handle different priorities
+
     // TODO change priority
     // TODO support ios
+    var iOSPlatformChannelSpecifics =
+        IOSNotificationDetails(presentSound: silent);
 
-    // TODO configure
+    // TODO configure - Do we need channel ids?
+    var bigTextStyleInformation = BigTextStyleInformation(text,
+        htmlFormatBigText: true,
+        contentTitle: title,
+        htmlFormatContentTitle: true,
+        summaryText: 'Token <i>${token.label}</i>',
+        htmlFormatSummaryText: true);
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'your channel id',
       'your channel name',
       'your channel description',
-      importance: Importance.Max,
-      priority: Priority.High,
       ticker: 'ticker',
-//      styleInformation: bigTextStyleInformation, // TODO add style information to display token name 
+      playSound: silent,
+      styleInformation:
+          bigTextStyleInformation, // TODO add style information to display token name
     );
 
-    var platformChannelSpecifics =
-        NotificationDetails(androidPlatformChannelSpecifics, null);
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+
     await flutterLocalNotificationsPlugin.show(
       token.serial.hashCode,
       title,
