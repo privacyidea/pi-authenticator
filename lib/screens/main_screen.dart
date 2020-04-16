@@ -385,6 +385,8 @@ class _MainScreenState extends State<MainScreen> {
                 name: 'main_screen.dart');
 
             PushRequest pushRequest = PushRequest(
+                message['data']['title'],
+                message['data']['question'],
                 requestUri,
                 message['data']['nonce'],
                 message['data']['sslverify'] == '1' ? true : false);

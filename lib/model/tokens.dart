@@ -220,6 +220,9 @@ class PushToken extends Token {
 
 @JsonSerializable()
 class PushRequest {
+  String _title;
+  String _question;
+
   Uri _uri;
   String _nonce;
   bool _sslVerify;
@@ -230,14 +233,22 @@ class PushRequest {
 
   Uri get uri => _uri;
 
-  PushRequest(Uri uri, String nonce, bool sslVerify)
-      : this._uri = uri,
+  String get question => _question;
+
+  String get title => _title;
+
+  PushRequest(
+      String title, String question, Uri uri, String nonce, bool sslVerify)
+      : this._title = title,
+        this._question = question,
+        this._uri = uri,
         this._nonce = nonce,
         this._sslVerify = sslVerify;
 
   @override
   String toString() {
-    return 'PushRequest{_uri: $_uri, _nonce: $_nonce, _sslVerify: $_sslVerify}';
+    return 'PushRequest{_title: $_title, _question: $_question, '
+        '_uri: $_uri, _nonce: $_nonce, _sslVerify: $_sslVerify}';
   }
 
   factory PushRequest.fromJson(Map<String, dynamic> json) =>

@@ -474,18 +474,30 @@ class _PushWidgetState extends _TokenWidgetState {
               Visibility(
                 // Accept / decline push auth request.
                 visible: _token.pushRequests.isNotEmpty,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                child: Column(
                   children: <Widget>[
-                    RaisedButton(
-                      // TODO style and translate
-                      child: Text("Accept"),
-                      onPressed: acceptRequest,
-                    ),
-                    RaisedButton(
-                      // TODO style and translate
-                      child: Text("Decline"),
-                      onPressed: declineRequest,
+                    _token.pushRequests.isNotEmpty
+                        ? Text(
+                            _token.pushRequests.first.title) // TODO Style this?
+                        : Placeholder(),
+                    _token.pushRequests.isNotEmpty
+                        ? Text(_token
+                            .pushRequests.first.question) // TODO Style this?
+                        : Placeholder(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        RaisedButton(
+                          // TODO style and translate
+                          child: Text("Accept"),
+                          onPressed: acceptRequest,
+                        ),
+                        RaisedButton(
+                          // TODO style and translate
+                          child: Text("Decline"),
+                          onPressed: declineRequest,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -535,10 +547,8 @@ class _PushWidgetState extends _TokenWidgetState {
     ArgumentError.checkNotNull(message, "message");
     ArgumentError.checkNotNull(seconds, "seconds");
 
-    Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text(message),
-        // TODO translate
-        duration: Duration(seconds: seconds)));
+    Scaffold.of(context).showSnackBar(
+        SnackBar(content: Text(message), duration: Duration(seconds: seconds)));
   }
 }
 
