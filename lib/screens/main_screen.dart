@@ -391,7 +391,7 @@ class _MainScreenState extends State<MainScreen> {
                 message['data']['nonce'],
                 message['data']['sslverify'] == '1' ? true : false);
 
-            token.pushRequests.addLast(pushRequest);
+            token.pushRequests.add(pushRequest);
 
             StorageUtil.saveOrReplaceToken(token); // Save the pending request.
 

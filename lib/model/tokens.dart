@@ -18,8 +18,6 @@
   limitations under the License.
 */
 
-import 'dart:collection';
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/custom_rsa_keys.dart';
@@ -57,7 +55,7 @@ abstract class Token {
 
 abstract class OTPToken extends Token {
   Algorithms
-      _algorithm; // the hashing algorithm that is used to calculate the otp value
+  _algorithm; // the hashing algorithm that is used to calculate the otp value
   int _digits; // the number of digits the otp value will have
   List<int> _secret; // the secret based on which the otp value is calculated
 
@@ -86,14 +84,13 @@ class HOTPToken extends OTPToken {
 
   void incrementCounter() => _counter++;
 
-  HOTPToken(
-      {String label,
-      String issuer,
-      String uuid,
-      Algorithms algorithm,
-      int digits,
-      List<int> secret,
-      int counter = 0})
+  HOTPToken({String label,
+    String issuer,
+    String uuid,
+    Algorithms algorithm,
+    int digits,
+    List<int> secret,
+    int counter = 0})
       : this._counter = counter,
         super(label, issuer, uuid, algorithm, digits, secret);
 
@@ -118,14 +115,13 @@ class TOTPToken extends OTPToken {
 
   int get period => _period;
 
-  TOTPToken(
-      {String label,
-      String issuer,
-      String uuid,
-      Algorithms algorithm,
-      int digits,
-      List<int> secret,
-      int period})
+  TOTPToken({String label,
+    String issuer,
+    String uuid,
+    Algorithms algorithm,
+    int digits,
+    List<int> secret,
+    int period})
       : this._period = period,
         super(label, issuer, uuid, algorithm, digits, secret);
 
@@ -158,15 +154,15 @@ class PushToken extends Token {
   set publicServerKey(RSAPublicKey key) =>
       _publicServerKey = SerializableRSAPublicKey(key.modulus, key.exponent);
 
-  set privateTokenKey(RSAPrivateKey key) => _privateTokenKey =
-      SerializableRSAPrivateKey(key.modulus, key.exponent, key.p, key.q);
+  set privateTokenKey(RSAPrivateKey key) =>
+      _privateTokenKey =
+          SerializableRSAPrivateKey(key.modulus, key.exponent, key.p, key.q);
 
   SerializableRSAPublicKey get publicServerKey => _publicServerKey;
 
   SerializableRSAPrivateKey get privateTokenKey => _privateTokenKey;
 
-  Queue<PushRequest> _pushRequests =
-      new Queue(); // FIXME Serialization of queue is not supported by the plugin.
+  List<PushRequest> _pushRequests;
 
   String get firebaseToken => _firebaseToken;
 
@@ -182,7 +178,22 @@ class PushToken extends Token {
 
   DateTime get expirationDate => _expirationDate;
 
-  Queue<PushRequest> get pushRequests => _pushRequests;
+  List<PushRequest> get pushRequests {
+    if (this._pushRequests == null) {
+      this._pushRequests = List();
+    }
+
+    return _pushRequests;
+  }
+
+  set pushRequests(List l) {
+    if (_pushRequests != null) {
+      throw ArgumentError(
+          "Initializing [pushRequests] in [PushToken] is only allowed once.");
+    }
+
+    this._pushRequests = l;
+  }
 
   PushToken({
     String label,
@@ -195,7 +206,8 @@ class PushToken extends Token {
     Uri url,
     String firebaseToken,
     DateTime expirationDate,
-  })  : this._serial = serial,
+  })
+      : this._serial = serial,
         this._sslVerify = sslVerify,
         this._enrollmentCredentials = enrollmentCredentials,
         this._url = url,
@@ -238,8 +250,8 @@ class PushRequest {
 
   String get title => _title;
 
-  PushRequest(
-      String title, String question, Uri uri, String nonce, bool sslVerify)
+  PushRequest(String title, String question, Uri uri, String nonce,
+      bool sslVerify)
       : this._title = title,
         this._question = question,
         this._uri = uri,

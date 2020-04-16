@@ -95,7 +95,11 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
     ..privateTokenKey = json['privateTokenKey'] == null
         ? null
         : SerializableRSAPrivateKey.fromJson(
-            json['privateTokenKey'] as Map<String, dynamic>);
+            json['privateTokenKey'] as Map<String, dynamic>)
+    ..pushRequests = (json['pushRequests'] as List)
+        ?.map((e) =>
+            e == null ? null : PushRequest.fromJson(e as Map<String, dynamic>))
+        ?.toList();
 }
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
@@ -110,7 +114,8 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'sslVerify': instance.sslVerify,
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
-      'expirationDate': instance.expirationDate?.toIso8601String()
+      'expirationDate': instance.expirationDate?.toIso8601String(),
+      'pushRequests': instance.pushRequests
     };
 
 PushRequest _$PushRequestFromJson(Map<String, dynamic> json) {
