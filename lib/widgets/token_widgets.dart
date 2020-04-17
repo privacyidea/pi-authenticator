@@ -33,7 +33,6 @@ import 'package:http/http.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
-import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
@@ -406,7 +405,7 @@ class _PushWidgetState extends _TokenWidgetState {
         _showMessage("Accepted push auth request for ${_token.label}.",
             2); // TODO translate
 
-        resetRequest();
+        removeRequest(_token.pushRequests.pop());
       } else {
         log("Accepting push auth request failed.",
             name: "token_widgets.dart",
@@ -438,14 +437,13 @@ class _PushWidgetState extends _TokenWidgetState {
   void declineRequest() async {
     _showMessage(
         "Declined push auth request for ${_token.label}.", 2); // TODO translate
-    resetRequest();
+    removeRequest(_token.pushRequests.pop());
   }
 
   /// Reset the token status after push auth request was handled by the user.
-  void resetRequest() {
+  void removeRequest(PushRequest request) {
     setState(() {
-      var pop = _token.pushRequests.pop();
-      flutterLocalNotificationsPlugin.cancel(pop.id);
+      flutterLocalNotificationsPlugin.cancel(request.id);
     });
 
     _saveThisToken();
@@ -480,12 +478,14 @@ class _PushWidgetState extends _TokenWidgetState {
                 child: Column(
                   children: <Widget>[
                     _token.pushRequests.isNotEmpty
-                        ? Text(
-                            _token.pushRequests.peek().title) // TODO Style this?
+                        ? Text(_token.pushRequests
+                            .peek()
+                            .title) // TODO Style this?
                         : Placeholder(),
                     _token.pushRequests.isNotEmpty
-                        ? Text(_token
-                            .pushRequests.peek().question) // TODO Style this?
+                        ? Text(_token.pushRequests
+                            .peek()
+                            .question) // TODO Style this?
                         : Placeholder(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
