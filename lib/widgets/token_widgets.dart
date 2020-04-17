@@ -227,6 +227,8 @@ class _PushWidgetState extends _TokenWidgetState {
   bool _rollOutFailed = false;
   bool _retryButtonIsEnabled = true;
 
+  Timer deleteTimer;
+
   @override
   void initState() {
     super.initState();
@@ -235,12 +237,12 @@ class _PushWidgetState extends _TokenWidgetState {
       SchedulerBinding.instance.addPostFrameCallback((_) => _rollOutToken());
     }
 
+    // Push requests that were received in background can only be saved to
+    // the storage, the ui must be updated here.
     // ignore: missing_return
     SystemChannels.lifecycle.setMessageHandler((msg) async {
       PushToken t = await StorageUtil.loadToken(_token.id);
 
-      // Push requests that were received in background can only be saved to
-      // the storage, the ui must be updated here
       if (msg == "AppLifecycleState.resumed" && t.pushRequests.isNotEmpty) {
         log(
             "Push token received request while app was in background. "
@@ -252,6 +254,35 @@ class _PushWidgetState extends _TokenWidgetState {
         });
       }
     });
+
+    // Delete expired push requests periodically.
+    deleteTimer = Timer.periodic(Duration(seconds: 30), (_) {
+      // TODO Clean this up and remove the message at the end.
+
+      var f = (PushRequest r) => DateTime.now().isAfter(r.expirationDate);
+
+      var where = _token.pushRequests.where(f).toList();
+
+      int len = where.length;
+
+      for (PushRequest r in where) {
+        flutterLocalNotificationsPlugin.cancel(r.id);
+      }
+
+      _token.pushRequests.removeWhere(f);
+
+      setState(() {
+        _saveThisToken();
+      });
+
+      _showMessage("Deleted $len request", 3);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    deleteTimer.cancel();
   }
 
   void _rollOutToken() async {
@@ -444,9 +475,8 @@ class _PushWidgetState extends _TokenWidgetState {
   void removeRequest(PushRequest request) {
     setState(() {
       flutterLocalNotificationsPlugin.cancel(request.id);
+      _saveThisToken();
     });
-
-    _saveThisToken();
   }
 
   void _disableRetryButtonForSomeTime() {
@@ -468,7 +498,8 @@ class _PushWidgetState extends _TokenWidgetState {
                   textScaleFactor: 2.3,
                 ),
                 subtitle: Text(
-                  _label,
+//                  _label,
+                  '$_label, ${_token.pushRequests.length}',
                   textScaleFactor: 2.0,
                 ),
               ),
