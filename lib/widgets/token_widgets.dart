@@ -32,6 +32,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/screens/main_screen.dart';
+import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
@@ -442,7 +444,8 @@ class _PushWidgetState extends _TokenWidgetState {
   /// Reset the token status after push auth request was handled by the user.
   void resetRequest() {
     setState(() {
-      _token.pushRequests.pop();
+      var pop = _token.pushRequests.pop();
+      flutterLocalNotificationsPlugin.cancel(pop.id);
     });
 
     _saveThisToken();

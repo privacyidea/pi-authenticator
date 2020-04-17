@@ -119,7 +119,7 @@ PushRequest _$PushRequestFromJson(Map<String, dynamic> json) {
       json['uri'] == null ? null : Uri.parse(json['uri'] as String),
       json['nonce'] as String,
       json['sslVerify'] as bool,
-      json['id'] as String,
+      json['id'] as int,
       expirationDate: json['expirationDate'] == null
           ? null
           : DateTime.parse(json['expirationDate'] as String));

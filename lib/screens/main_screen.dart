@@ -55,11 +55,12 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
 class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
 
   _MainScreenState() {
     _loadAllTokens();
@@ -390,7 +391,7 @@ class _MainScreenState extends State<MainScreen> {
                 requestUri,
                 message['data']['nonce'],
                 message['data']['sslverify'] == '1' ? true : false,
-                Uuid().v4(),
+                Uuid().v4().hashCode,
                 expirationDate: DateTime.now().add(Duration(
                     minutes: 2))); // // Push requests expire after 2 minutes.
 

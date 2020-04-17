@@ -233,7 +233,7 @@ class PushRequest {
   String _title;
   String _question;
 
-  String _id;
+  int _id;
 
   Uri _uri;
   String _nonce;
@@ -243,7 +243,7 @@ class PushRequest {
 
   DateTime get expirationDate => _expirationDate;
 
-  String get id => _id;
+  int get id => _id;
 
   String get nonce => _nonce;
 
@@ -256,7 +256,7 @@ class PushRequest {
   String get title => _title;
 
   PushRequest(String title, String question, Uri uri, String nonce,
-      bool sslVerify, String id, {DateTime expirationDate})
+      bool sslVerify, int id, {DateTime expirationDate})
       : this._title = title,
         this._question = question,
         this._uri = uri,
