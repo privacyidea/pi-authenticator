@@ -163,7 +163,7 @@ class PushToken extends Token {
 
   SerializableRSAPrivateKey get privateTokenKey => _privateTokenKey;
 
-  List<PushRequest> _pushRequests;
+  PushRequestQueue _pushRequests;
 
   String get firebaseToken => _firebaseToken;
 
@@ -179,15 +179,13 @@ class PushToken extends Token {
 
   DateTime get expirationDate => _expirationDate;
 
-  List<PushRequest> get pushRequests {
-    if (this._pushRequests == null) {
-      this._pushRequests = List();
-    }
-
+  // The get and set methods are needed for serialization.
+  PushRequestQueue get pushRequests {
+    _pushRequests ??= PushRequestQueue();
     return _pushRequests;
   }
 
-  set pushRequests(List l) {
+  set pushRequests(PushRequestQueue l) {
     if (_pushRequests != null) {
       throw ArgumentError(
           "Initializing [pushRequests] in [PushToken] is only allowed once.");
@@ -271,35 +269,43 @@ class PushRequest {
 }
 
 @JsonSerializable()
-class FIFOQueue<T> {
-  FIFOQueue([List<T> list]) {
-    if (list == null) {
-      list = List();
-    }
+class PushRequestQueue {
+  PushRequestQueue();
 
-    this._list = list;
+  List<PushRequest> _list;
+
+  // The get and set methods are needed for serialization.
+  List<PushRequest> get list {
+    _list ??= List();
+    return _list;
   }
 
-  List<T> _list;
+  set list(List<PushRequest> l) {
+    if (_list != null) {
+      throw ArgumentError(
+          "Initializing [list] in [PushRequestQueue] is only allowed once.");
+    }
 
-  bool get isEmpty => _list.isEmpty;
+    this._list = l;
+  }
 
-  bool get isNotEmpty => _list.isNotEmpty;
+  bool get isEmpty => list.isEmpty;
 
-  void add(T t) => _list.add(t);
+  bool get isNotEmpty => list.isNotEmpty;
 
-  T peek() => _list.first;
+  void add(PushRequest pushRequest) => list.add(pushRequest);
 
-  T pop() => _list.removeAt(0);
+  PushRequest peek() => list.first;
 
+  PushRequest pop() => list.removeAt(0);
 
   @override
   String toString() {
-    return 'FIFOQueue{_list: $_list}';
+    return 'PushRequestQueue{_list: $list}';
   }
 
-  factory FIFOQueue.fromJson(Map<String, dynamic> json) =>
-      _$FIFOQueueFromJson(json);
+  factory PushRequestQueue.fromJson(Map<String, dynamic> json) =>
+      _$PushRequestQueueFromJson(json);
 
-  Map<String, dynamic> toJson() => _$FIFOQueueToJson(this);
+  Map<String, dynamic> toJson() => _$PushRequestQueueToJson(this);
 }

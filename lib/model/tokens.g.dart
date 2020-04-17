@@ -96,10 +96,10 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
         ? null
         : SerializableRSAPrivateKey.fromJson(
             json['privateTokenKey'] as Map<String, dynamic>)
-    ..pushRequests = (json['pushRequests'] as List)
-        ?.map((e) =>
-            e == null ? null : PushRequest.fromJson(e as Map<String, dynamic>))
-        ?.toList();
+    ..pushRequests = json['pushRequests'] == null
+        ? null
+        : PushRequestQueue.fromJson(
+            json['pushRequests'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
@@ -135,3 +135,14 @@ Map<String, dynamic> _$PushRequestToJson(PushRequest instance) =>
       'question': instance.question,
       'title': instance.title
     };
+
+PushRequestQueue _$PushRequestQueueFromJson(Map<String, dynamic> json) {
+  return PushRequestQueue()
+    ..list = (json['list'] as List)
+        ?.map((e) =>
+            e == null ? null : PushRequest.fromJson(e as Map<String, dynamic>))
+        ?.toList();
+}
+
+Map<String, dynamic> _$PushRequestQueueToJson(PushRequestQueue instance) =>
+    <String, dynamic>{'list': instance.list};
