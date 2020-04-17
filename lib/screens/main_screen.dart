@@ -389,16 +389,14 @@ class _MainScreenState extends State<MainScreen> {
                 message['data']['question'],
                 requestUri,
                 message['data']['nonce'],
-                message['data']['sslverify'] == '1' ? true : false);
+                message['data']['sslverify'] == '1' ? true : false,
+                Uuid().v4());
 
-            token.pushRequests.addLast(pushRequest);
+            token.pushRequests.add(pushRequest);
 
             StorageUtil.saveOrReplaceToken(token); // Save the pending request.
 
-            _showNotification(
-                token,
-                message['data']['title'],
-                message['data']['question'],
+            _showNotification(token, pushRequest,
                 !inBackground); // Notify the user of the request.
 
           } else {
@@ -418,7 +416,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   static void _showNotification(
-      PushToken token, String title, String text, bool silent) async {
+      PushToken token, PushRequest pushRequest, bool silent) async {
     silent = false;
 
     // TODO Handle different priorities
@@ -429,9 +427,9 @@ class _MainScreenState extends State<MainScreen> {
         IOSNotificationDetails(presentSound: silent);
 
     // TODO configure - Do we need channel ids?
-    var bigTextStyleInformation = BigTextStyleInformation(text,
+    var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
         htmlFormatBigText: true,
-        contentTitle: title,
+        contentTitle: pushRequest.title,
         htmlFormatContentTitle: true,
         summaryText: 'Token <i>${token.label}</i>',
         htmlFormatSummaryText: true);
@@ -449,9 +447,9 @@ class _MainScreenState extends State<MainScreen> {
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(
-      token.serial.hashCode,
-      title,
-      text,
+      pushRequest.id.hashCode, // ID of the notification
+      pushRequest.title,
+      pushRequest.question,
       platformChannelSpecifics,
     ); // TODO add payload for automatic accept, when the notification is clicked?
   }

@@ -95,7 +95,11 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
     ..privateTokenKey = json['privateTokenKey'] == null
         ? null
         : SerializableRSAPrivateKey.fromJson(
-            json['privateTokenKey'] as Map<String, dynamic>);
+            json['privateTokenKey'] as Map<String, dynamic>)
+    ..pushRequests = json['pushRequests'] == null
+        ? null
+        : PushRequestQueue.fromJson(
+            json['pushRequests'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
@@ -110,7 +114,8 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'sslVerify': instance.sslVerify,
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
-      'expirationDate': instance.expirationDate?.toIso8601String()
+      'expirationDate': instance.expirationDate?.toIso8601String(),
+      'pushRequests': instance.pushRequests
     };
 
 PushRequest _$PushRequestFromJson(Map<String, dynamic> json) {
@@ -119,14 +124,27 @@ PushRequest _$PushRequestFromJson(Map<String, dynamic> json) {
       json['question'] as String,
       json['uri'] == null ? null : Uri.parse(json['uri'] as String),
       json['nonce'] as String,
-      json['sslVerify'] as bool);
+      json['sslVerify'] as bool,
+      json['id'] as String);
 }
 
 Map<String, dynamic> _$PushRequestToJson(PushRequest instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'nonce': instance.nonce,
       'sslVerify': instance.sslVerify,
       'uri': instance.uri?.toString(),
       'question': instance.question,
       'title': instance.title
     };
+
+PushRequestQueue _$PushRequestQueueFromJson(Map<String, dynamic> json) {
+  return PushRequestQueue()
+    ..list = (json['list'] as List)
+        ?.map((e) =>
+            e == null ? null : PushRequest.fromJson(e as Map<String, dynamic>))
+        ?.toList();
+}
+
+Map<String, dynamic> _$PushRequestQueueToJson(PushRequestQueue instance) =>
+    <String, dynamic>{'list': instance.list};

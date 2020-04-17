@@ -378,7 +378,7 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   void acceptRequest() async {
-    var pushRequest = _token.pushRequests.first;
+    var pushRequest = _token.pushRequests.peek();
 
     log('Push auth request accepted, sending message',
         name: 'token_widgets.dart', error: 'Url: ${pushRequest.uri}');
@@ -442,7 +442,7 @@ class _PushWidgetState extends _TokenWidgetState {
   /// Reset the token status after push auth request was handled by the user.
   void resetRequest() {
     setState(() {
-      _token.pushRequests.removeFirst();
+      _token.pushRequests.pop();
     });
 
     _saveThisToken();
@@ -478,11 +478,11 @@ class _PushWidgetState extends _TokenWidgetState {
                   children: <Widget>[
                     _token.pushRequests.isNotEmpty
                         ? Text(
-                            _token.pushRequests.first.title) // TODO Style this?
+                            _token.pushRequests.peek().title) // TODO Style this?
                         : Placeholder(),
                     _token.pushRequests.isNotEmpty
                         ? Text(_token
-                            .pushRequests.first.question) // TODO Style this?
+                            .pushRequests.peek().question) // TODO Style this?
                         : Placeholder(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
