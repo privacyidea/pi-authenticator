@@ -19,9 +19,11 @@
 */
 
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:test/test.dart';
+import 'package:uuid/uuid.dart';
 
 void main() {
   verifyCustomListBehavesLikeQueue();
@@ -29,50 +31,65 @@ void main() {
 
 void verifyCustomListBehavesLikeQueue() {
   group("Test custom queue", () {
+    Uri uri = Uri.parse("http://www.example.com");
+
     test("isEmpty", () {
-      FIFOQueue<int> fifo = FIFOQueue();
+      PushRequestQueue fifo = PushRequestQueue();
+      var pushRequest =
+          PushRequest("title", "question", uri, "nonce", false, Uuid().v4());
 
       expect(fifo.isNotEmpty, false);
       expect(fifo.isEmpty, true);
 
-      fifo.add(1);
+      fifo.add(pushRequest);
 
       expect(fifo.isNotEmpty, true);
       expect(fifo.isEmpty, false);
 
       var peek = fifo.peek();
-      expect(peek, 1);
+      expect(peek, pushRequest);
 
       expect(fifo.isNotEmpty, true);
       expect(fifo.isEmpty, false);
 
       var pop = fifo.pop();
-      expect(pop, 1);
+      expect(pop, pushRequest);
 
       expect(fifo.isNotEmpty, false);
       expect(fifo.isEmpty, true);
     });
 
     test("behaves like queue", () {
-      Queue<int> queue = Queue();
-      FIFOQueue<int> fifo = FIFOQueue();
+      Queue<PushRequest> queue = Queue();
+      PushRequestQueue fifo = PushRequestQueue();
 
-      queue.addLast(1);
-      fifo.add(1);
-      queue.addLast(2);
-      fifo.add(2);
-      queue.addLast(3);
-      fifo.add(3);
+      var one =
+          PushRequest("one", "question", uri, "nonce", false, Uuid().v4());
+      var two =
+          PushRequest("two", "question", uri, "nonce", false, Uuid().v4());
+      var three =
+          PushRequest("three", "question", uri, "nonce", false, Uuid().v4());
+      var four =
+          PushRequest("four", "question", uri, "nonce", false, Uuid().v4());
+      var five =
+          PushRequest("five", "question", uri, "nonce", false, Uuid().v4());
+
+      queue.addLast(one);
+      fifo.add(one);
+      queue.addLast(two);
+      fifo.add(two);
+      queue.addLast(three);
+      fifo.add(three);
 
       expect(fifo.peek(), queue.first);
       fifo.pop();
       queue.removeFirst();
       expect(fifo.peek(), queue.first);
 
-      queue.addLast(4);
-      fifo.add(4);
-      queue.addLast(4);
-      fifo.add(4);
+      queue.addLast(four);
+      fifo.add(four);
+      queue.addLast(five);
+      fifo.add(five);
       expect(fifo.pop(), queue.removeFirst());
       expect(fifo.pop(), queue.removeFirst());
       expect(fifo.pop(), queue.removeFirst());
@@ -80,6 +97,33 @@ void verifyCustomListBehavesLikeQueue() {
 
       expect(fifo.isEmpty, true);
       expect(queue.isEmpty, true);
+    });
+
+    test("serialization", () {
+      PushRequestQueue fifo = PushRequestQueue();
+
+      var one =
+          PushRequest("one", "question", uri, "nonce", false, Uuid().v4());
+      var two =
+          PushRequest("two", "question", uri, "nonce", false, Uuid().v4());
+      var three =
+          PushRequest("three", "question", uri, "nonce", false, Uuid().v4());
+      var four =
+          PushRequest("four", "question", uri, "nonce", false, Uuid().v4());
+      var five =
+          PushRequest("five", "question", uri, "nonce", false, Uuid().v4());
+
+      fifo.add(one);
+      fifo.add(two);
+      fifo.add(three);
+      fifo.add(four);
+      fifo.add(five);
+
+      var encoded = jsonEncode(fifo);
+      var decoded = PushRequestQueue.fromJson(
+          jsonDecode(encoded) as Map<String, dynamic>);
+
+      expect(decoded, fifo);
     });
   });
 }
