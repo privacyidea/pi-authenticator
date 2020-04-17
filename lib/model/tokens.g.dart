@@ -10,6 +10,7 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) {
   return HOTPToken(
       label: json['label'] as String,
       issuer: json['issuer'] as String,
+      id: json['id'] as String,
       algorithm: _$enumDecodeNullable(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,
       secret: (json['secret'] as List)?.map((e) => e as int)?.toList(),
@@ -18,6 +19,7 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
       'label': instance.label,
+      'id': instance.id,
       'issuer': instance.issuer,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm],
       'digits': instance.digits,
@@ -55,6 +57,7 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) {
   return TOTPToken(
       label: json['label'] as String,
       issuer: json['issuer'] as String,
+      id: json['id'] as String,
       algorithm: _$enumDecodeNullable(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,
       secret: (json['secret'] as List)?.map((e) => e as int)?.toList(),
@@ -63,6 +66,7 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
       'label': instance.label,
+      'id': instance.id,
       'issuer': instance.issuer,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm],
       'digits': instance.digits,
@@ -75,6 +79,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
       label: json['label'] as String,
       serial: json['serial'] as String,
       issuer: json['issuer'] as String,
+      id: json['id'] as String,
       sslVerify: json['sslVerify'] as bool,
       enrollmentCredentials: json['enrollmentCredentials'] as String,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
@@ -99,6 +104,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'label': instance.label,
+      'id': instance.id,
       'issuer': instance.issuer,
       'isRolledOut': instance.isRolledOut,
       'publicServerKey': instance.publicServerKey,

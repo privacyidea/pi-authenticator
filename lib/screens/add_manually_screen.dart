@@ -123,7 +123,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
       newToken = HOTPToken(
         label: _selectedName,
         issuer: null,
-        uuid: uuid,
+        id: uuid,
         algorithm: _selectedAlgorithm.value,
         digits: _selectedDigits.value,
         secret: secretAsUint8,
@@ -132,7 +132,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
       newToken = TOTPToken(
         label: _selectedName,
         issuer: null,
-        uuid: uuid,
+        id: uuid,
         algorithm: _selectedAlgorithm.value,
         digits: _selectedDigits.value,
         secret: secretAsUint8,
@@ -184,9 +184,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
               return DropdownMenuItem<T>(
                 value: value,
                 child: Text(
-                  "${value is String
-                      || value is int
-                      || value is double ? value : enumAsString(value)}"
+                  "${value is String || value is int || value is double ? value : enumAsString(value)}"
                   "$postFix",
                   style: Theme.of(context).textTheme.subhead,
                 ),

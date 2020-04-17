@@ -185,7 +185,7 @@ class _MainScreenState extends State<MainScreen> {
       return HOTPToken(
         label: label,
         issuer: issuer,
-        uuid: uuid,
+        id: uuid,
         algorithm: mapStringToAlgorithm(algorithm),
         digits: digits,
         secret: secret,
@@ -195,7 +195,7 @@ class _MainScreenState extends State<MainScreen> {
       return TOTPToken(
         label: label,
         issuer: issuer,
-        uuid: uuid,
+        id: uuid,
         algorithm: mapStringToAlgorithm(algorithm),
         digits: digits,
         secret: secret,
@@ -252,7 +252,7 @@ class _MainScreenState extends State<MainScreen> {
       serial: uriMap[URI_SERIAL],
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
-      uuid: uuid,
+      id: uuid,
       sslVerify: uriMap[URI_SSL_VERIFY],
       expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
       enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],

@@ -64,9 +64,9 @@ abstract class OTPToken extends Token {
 
   List<int> get secret => _secret;
 
-  OTPToken(String label, String issuer, String uuid, this._algorithm,
+  OTPToken(String label, String issuer, String id, this._algorithm,
       this._digits, this._secret)
-      : super(label, issuer, uuid);
+      : super(label, issuer, id);
 
   @override
   String toString() {
@@ -86,13 +86,13 @@ class HOTPToken extends OTPToken {
   HOTPToken(
       {String label,
       String issuer,
-      String uuid,
+      String id,
       Algorithms algorithm,
       int digits,
       List<int> secret,
       int counter = 0})
       : this._counter = counter,
-        super(label, issuer, uuid, algorithm, digits, secret);
+        super(label, issuer, id, algorithm, digits, secret);
 
   @override
   String toString() {
@@ -118,13 +118,13 @@ class TOTPToken extends OTPToken {
   TOTPToken(
       {String label,
       String issuer,
-      String uuid,
+      String id,
       Algorithms algorithm,
       int digits,
       List<int> secret,
       int period})
       : this._period = period,
-        super(label, issuer, uuid, algorithm, digits, secret);
+        super(label, issuer, id, algorithm, digits, secret);
 
   @override
   String toString() {
@@ -197,7 +197,7 @@ class PushToken extends Token {
     String label,
     String serial,
     String issuer,
-    String uuid,
+    String id,
     // 2. step
     bool sslVerify,
     String enrollmentCredentials,
@@ -210,11 +210,11 @@ class PushToken extends Token {
         this._url = url,
         this._firebaseToken = firebaseToken,
         this._expirationDate = expirationDate,
-        super(label, issuer, uuid);
+        super(label, issuer, id);
 
   @override
   String toString() {
-    return 'PushToken{_serial: $_serial, _sslVerify: $_sslVerify,'
+    return 'PushToken{ID: $id,_serial: $_serial, _sslVerify: $_sslVerify,'
         ' _enrollmentCredentials: $_enrollmentCredentials,'
         ' _url: $_url, _firebaseToken: $_firebaseToken,'
         ' isRolledOut: $isRolledOut, _publicServerKey: $_publicServerKey,'
@@ -256,7 +256,8 @@ class PushRequest {
   String get title => _title;
 
   PushRequest(String title, String question, Uri uri, String nonce,
-      bool sslVerify, int id, {DateTime expirationDate})
+      bool sslVerify, int id,
+      {DateTime expirationDate})
       : this._title = title,
         this._question = question,
         this._uri = uri,
@@ -307,6 +308,14 @@ class PushRequestQueue {
 
     this._list = l;
   }
+
+  int get length => list.length;
+
+  void removeWhere(bool f(PushRequest request)) => list.removeWhere(f);
+
+  Iterable<PushRequest> where(bool f(PushRequest element)) => _list.where(f);
+
+  void remove(PushRequest request) => _list.remove(request);
 
   bool get isEmpty => list.isEmpty;
 
