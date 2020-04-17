@@ -227,7 +227,7 @@ class _PushWidgetState extends _TokenWidgetState {
   bool _rollOutFailed = false;
   bool _retryButtonIsEnabled = true;
 
-  Timer deleteTimer;
+  Timer _deleteTimer; // Timer that deletes expired requests periodically.
 
   @override
   void initState() {
@@ -256,33 +256,26 @@ class _PushWidgetState extends _TokenWidgetState {
     });
 
     // Delete expired push requests periodically.
-    deleteTimer = Timer.periodic(Duration(seconds: 30), (_) {
-      // TODO Clean this up and remove the message at the end.
-
+    _deleteTimer = Timer.periodic(Duration(seconds: 30), (_) {
+      // Function determines if a request is expired
       var f = (PushRequest r) => DateTime.now().isAfter(r.expirationDate);
 
-      var where = _token.pushRequests.where(f).toList();
-
-      int len = where.length;
-
-      for (PushRequest r in where) {
-        flutterLocalNotificationsPlugin.cancel(r.id);
-      }
-
+      // Remove requests from queue and remove their notifications.
+      _token.pushRequests
+          .where(f)
+          .forEach((r) => flutterLocalNotificationsPlugin.cancel(r.id));
       _token.pushRequests.removeWhere(f);
 
       setState(() {
         _saveThisToken();
       });
-
-      _showMessage("Deleted $len request", 3);
     });
   }
 
   @override
   void dispose() {
     super.dispose();
-    deleteTimer.cancel();
+    _deleteTimer.cancel();
   }
 
   void _rollOutToken() async {
