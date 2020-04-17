@@ -234,9 +234,13 @@ class PushRequest {
   String _title;
   String _question;
 
+  String _id;
+
   Uri _uri;
   String _nonce;
   bool _sslVerify;
+
+  String get id => _id;
 
   String get nonce => _nonce;
 
@@ -248,18 +252,29 @@ class PushRequest {
 
   String get title => _title;
 
-  PushRequest(
-      String title, String question, Uri uri, String nonce, bool sslVerify)
+  PushRequest(String title, String question, Uri uri, String nonce,
+      bool sslVerify, String id)
       : this._title = title,
         this._question = question,
         this._uri = uri,
         this._nonce = nonce,
-        this._sslVerify = sslVerify;
+        this._sslVerify = sslVerify,
+        _id = id;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PushRequest &&
+          runtimeType == other.runtimeType &&
+          _id == other._id;
+
+  @override
+  int get hashCode => _id.hashCode;
 
   @override
   String toString() {
-    return 'PushRequest{_title: $_title, _question: $_question, '
-        '_uri: $_uri, _nonce: $_nonce, _sslVerify: $_sslVerify}';
+    return 'PushRequest{_title: $_title, _question: $_question,'
+        ' _id: $_id, _uri: $_uri, _nonce: $_nonce, _sslVerify: $_sslVerify}';
   }
 
   factory PushRequest.fromJson(Map<String, dynamic> json) =>
@@ -303,6 +318,26 @@ class PushRequestQueue {
   String toString() {
     return 'PushRequestQueue{_list: $list}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PushRequestQueue &&
+          runtimeType == other.runtimeType &&
+          _listsAreEqual(list, other.list);
+
+  bool _listsAreEqual(List<PushRequest> l1, List<PushRequest> l2) {
+    if (l1.length != l2.length) return false;
+
+    for (int i = 0; i < l1.length - 1; i++) {
+      if (l1[i] != l2[i]) return false;
+    }
+
+    return true;
+  }
+
+  @override
+  int get hashCode => list.hashCode;
 
   factory PushRequestQueue.fromJson(Map<String, dynamic> json) =>
       _$PushRequestQueueFromJson(json);

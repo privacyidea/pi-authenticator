@@ -124,11 +124,13 @@ PushRequest _$PushRequestFromJson(Map<String, dynamic> json) {
       json['question'] as String,
       json['uri'] == null ? null : Uri.parse(json['uri'] as String),
       json['nonce'] as String,
-      json['sslVerify'] as bool);
+      json['sslVerify'] as bool,
+      json['id'] as String);
 }
 
 Map<String, dynamic> _$PushRequestToJson(PushRequest instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'nonce': instance.nonce,
       'sslVerify': instance.sslVerify,
       'uri': instance.uri?.toString(),
