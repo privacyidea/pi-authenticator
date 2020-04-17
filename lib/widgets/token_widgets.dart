@@ -491,8 +491,8 @@ class _PushWidgetState extends _TokenWidgetState {
                   textScaleFactor: 2.3,
                 ),
                 subtitle: Text(
-//                  _label,
-                  '$_label, ${_token.pushRequests.length}',
+                  _label,
+//                  '$_label, ${_token.pushRequests.length}',
                   textScaleFactor: 2.0,
                 ),
               ),
