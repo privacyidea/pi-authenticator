@@ -390,7 +390,9 @@ class _MainScreenState extends State<MainScreen> {
                 requestUri,
                 message['data']['nonce'],
                 message['data']['sslverify'] == '1' ? true : false,
-                Uuid().v4());
+                Uuid().v4(),
+                expirationDate: DateTime.now().add(Duration(
+                    minutes: 2))); // // Push requests expire after 2 minutes.
 
             token.pushRequests.add(pushRequest);
 

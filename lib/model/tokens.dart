@@ -20,7 +20,6 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/model/custom_rsa_keys.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 part 'tokens.g.dart';
@@ -30,7 +29,7 @@ abstract class Token {
       "v1.0.0"; // The version of this token, this is used for serialization.
   String _label; // the name of the token, it cannot be uses as an identifier
   String _issuer; // The issuer of this token, currently unused.
-  String _uuid; // this is the identifier of the token
+  String _id; // this is the identifier of the token
 
   String get tokenVersion => _tokenVersion;
 
@@ -40,16 +39,16 @@ abstract class Token {
     this._label = label;
   }
 
-  String get uuid => _uuid;
+  String get id => _id;
 
   String get issuer => _issuer;
 
-  Token(this._label, this._issuer, this._uuid);
+  Token(this._label, this._issuer, this._id);
 
   @override
   String toString() {
     return 'Label $label | Issuer $issuer'
-        ' | Version $tokenVersion | ID $uuid';
+        ' | Version $tokenVersion | ID $id';
   }
 }
 
@@ -240,6 +239,10 @@ class PushRequest {
   String _nonce;
   bool _sslVerify;
 
+  DateTime _expirationDate;
+
+  DateTime get expirationDate => _expirationDate;
+
   String get id => _id;
 
   String get nonce => _nonce;
@@ -253,13 +256,14 @@ class PushRequest {
   String get title => _title;
 
   PushRequest(String title, String question, Uri uri, String nonce,
-      bool sslVerify, String id)
+      bool sslVerify, String id, {DateTime expirationDate})
       : this._title = title,
         this._question = question,
         this._uri = uri,
         this._nonce = nonce,
         this._sslVerify = sslVerify,
-        _id = id;
+        this._id = id,
+        this._expirationDate = expirationDate;
 
   @override
   bool operator ==(Object other) =>
@@ -343,4 +347,26 @@ class PushRequestQueue {
       _$PushRequestQueueFromJson(json);
 
   Map<String, dynamic> toJson() => _$PushRequestQueueToJson(this);
+}
+
+@JsonSerializable()
+class SerializableRSAPublicKey extends RSAPublicKey {
+  SerializableRSAPublicKey(BigInt modulus, BigInt exponent)
+      : super(modulus, exponent);
+
+  factory SerializableRSAPublicKey.fromJson(Map<String, dynamic> json) =>
+      _$SerializableRSAPublicKeyFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SerializableRSAPublicKeyToJson(this);
+}
+
+@JsonSerializable()
+class SerializableRSAPrivateKey extends RSAPrivateKey {
+  SerializableRSAPrivateKey(BigInt modulus, BigInt exponent, BigInt p, BigInt q)
+      : super(modulus, exponent, p, q);
+
+  factory SerializableRSAPrivateKey.fromJson(Map<String, dynamic> json) =>
+      _$SerializableRSAPrivateKeyFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SerializableRSAPrivateKeyToJson(this);
 }

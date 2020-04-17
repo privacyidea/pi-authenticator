@@ -77,7 +77,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   @override
   Widget build(BuildContext context) {
     return Slidable(
-      key: ValueKey(_token.uuid),
+      key: ValueKey(_token.id),
       // This is used to only let one Slidable be open at a time.
       controller: _slidableController,
       actionPane: SlidableDrawerActionPane(),
@@ -236,7 +236,7 @@ class _PushWidgetState extends _TokenWidgetState {
 
     // ignore: missing_return
     SystemChannels.lifecycle.setMessageHandler((msg) async {
-      PushToken t = await StorageUtil.loadToken(_token.uuid);
+      PushToken t = await StorageUtil.loadToken(_token.id);
 
       // Push requests that were received in background can only be saved to
       // the storage, the ui must be updated here
