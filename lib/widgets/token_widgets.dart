@@ -32,6 +32,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
@@ -63,7 +64,7 @@ class TokenWidget extends StatefulWidget {
 }
 
 abstract class _TokenWidgetState extends State<TokenWidget> {
-  final Token _token;
+  Token _token;
   static final SlidableController _slidableController = SlidableController();
   String _label;
 
@@ -77,7 +78,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   @override
   Widget build(BuildContext context) {
     return Slidable(
-      key: ValueKey(_token.uuid),
+      key: ValueKey(_token.id),
       // This is used to only let one Slidable be open at a time.
       controller: _slidableController,
       actionPane: SlidableDrawerActionPane(),
@@ -226,6 +227,8 @@ class _PushWidgetState extends _TokenWidgetState {
   bool _rollOutFailed = false;
   bool _retryButtonIsEnabled = true;
 
+  Timer _deleteTimer; // Timer that deletes expired requests periodically.
+
   @override
   void initState() {
     super.initState();
@@ -234,26 +237,45 @@ class _PushWidgetState extends _TokenWidgetState {
       SchedulerBinding.instance.addPostFrameCallback((_) => _rollOutToken());
     }
 
+    // Push requests that were received in background can only be saved to
+    // the storage, the ui must be updated here.
     // ignore: missing_return
     SystemChannels.lifecycle.setMessageHandler((msg) async {
-      PushToken t = await StorageUtil.loadToken(_token.uuid);
+      PushToken t = await StorageUtil.loadToken(_token.id);
 
-      // Push requests that were received in background can only be saved to
-      // the storage, the ui must be updated here
-      if (msg == "AppLifecycleState.resumed" && t.hasPendingRequest) {
+      if (msg == "AppLifecycleState.resumed" && t.pushRequests.isNotEmpty) {
         log(
             "Push token received request while app was in background. "
             "Updating UI.",
             name: "token_widgets.dart");
 
         setState(() {
-          _token.hasPendingRequest = t.hasPendingRequest;
-          _token.requestUri = t.requestUri;
-          _token.requestNonce = t.requestNonce;
-          _token.requestSSLVerify = t.requestSSLVerify;
+          _token = t;
         });
       }
     });
+
+    // Delete expired push requests periodically.
+    _deleteTimer = Timer.periodic(Duration(seconds: 30), (_) {
+      // Function determines if a request is expired
+      var f = (PushRequest r) => DateTime.now().isAfter(r.expirationDate);
+
+      // Remove requests from queue and remove their notifications.
+      _token.pushRequests
+          .where(f)
+          .forEach((r) => flutterLocalNotificationsPlugin.cancel(r.id));
+      _token.pushRequests.removeWhere(f);
+
+      setState(() {
+        _saveThisToken();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _deleteTimer.cancel();
   }
 
   void _rollOutToken() async {
@@ -381,8 +403,10 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   void acceptRequest() async {
+    var pushRequest = _token.pushRequests.peek();
+
     log('Push auth request accepted, sending message',
-        name: 'token_widgets.dart', error: 'Url: ${_token.requestUri}');
+        name: 'token_widgets.dart', error: 'Url: ${pushRequest.uri}');
 
     // signature ::=  {nonce}|{serial}
 
@@ -391,23 +415,21 @@ class _PushWidgetState extends _TokenWidgetState {
     //    serial=<serial>
     //    signature=<signature>
     Map<String, String> body = {
-      'nonce': _token.requestNonce,
+      'nonce': pushRequest.nonce,
       'serial': _token.serial,
       'signature': createBase32Signature(_token.privateTokenKey,
-          utf8.encode('${_token.requestNonce}|${_token.serial}')),
+          utf8.encode('${pushRequest.nonce}|${_token.serial}')),
     };
 
     try {
       Response response = await doPost(
-          sslVerify: _token.requestSSLVerify,
-          url: _token.requestUri,
-          body: body);
+          sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
 
       if (response.statusCode == 200) {
         _showMessage("Accepted push auth request for ${_token.label}.",
             2); // TODO translate
 
-        resetRequest();
+        removeRequest(_token.pushRequests.pop());
       } else {
         log("Accepting push auth request failed.",
             name: "token_widgets.dart",
@@ -439,19 +461,15 @@ class _PushWidgetState extends _TokenWidgetState {
   void declineRequest() async {
     _showMessage(
         "Declined push auth request for ${_token.label}.", 2); // TODO translate
-    resetRequest();
+    removeRequest(_token.pushRequests.pop());
   }
 
   /// Reset the token status after push auth request was handled by the user.
-  void resetRequest() {
+  void removeRequest(PushRequest request) {
     setState(() {
-      _token.hasPendingRequest = false;
-      _token.requestUri = null;
-      _token.requestNonce = null;
-      _token.requestSSLVerify = false;
+      flutterLocalNotificationsPlugin.cancel(request.id);
+      _saveThisToken();
     });
-
-    _saveThisToken();
   }
 
   void _disableRetryButtonForSomeTime() {
@@ -474,24 +492,39 @@ class _PushWidgetState extends _TokenWidgetState {
                 ),
                 subtitle: Text(
                   _label,
+//                  '$_label, ${_token.pushRequests.length}',
                   textScaleFactor: 2.0,
                 ),
               ),
               Visibility(
                 // Accept / decline push auth request.
-                visible: _token.hasPendingRequest,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                visible: _token.pushRequests.isNotEmpty,
+                child: Column(
                   children: <Widget>[
-                    RaisedButton(
-                      // TODO style and translate
-                      child: Text("Accept"),
-                      onPressed: acceptRequest,
-                    ),
-                    RaisedButton(
-                      // TODO style and translate
-                      child: Text("Decline"),
-                      onPressed: declineRequest,
+                    _token.pushRequests.isNotEmpty
+                        ? Text(_token.pushRequests
+                            .peek()
+                            .title) // TODO Style this?
+                        : Placeholder(),
+                    _token.pushRequests.isNotEmpty
+                        ? Text(_token.pushRequests
+                            .peek()
+                            .question) // TODO Style this?
+                        : Placeholder(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        RaisedButton(
+                          // TODO style and translate
+                          child: Text("Accept"),
+                          onPressed: acceptRequest,
+                        ),
+                        RaisedButton(
+                          // TODO style and translate
+                          child: Text("Decline"),
+                          onPressed: declineRequest,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -541,10 +574,8 @@ class _PushWidgetState extends _TokenWidgetState {
     ArgumentError.checkNotNull(message, "message");
     ArgumentError.checkNotNull(seconds, "seconds");
 
-    Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text(message),
-        // TODO translate
-        duration: Duration(seconds: seconds)));
+    Scaffold.of(context).showSnackBar(
+        SnackBar(content: Text(message), duration: Duration(seconds: seconds)));
   }
 }
 

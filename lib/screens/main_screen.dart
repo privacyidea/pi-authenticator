@@ -55,11 +55,12 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
 class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
 
   _MainScreenState() {
     _loadAllTokens();
@@ -184,7 +185,7 @@ class _MainScreenState extends State<MainScreen> {
       return HOTPToken(
         label: label,
         issuer: issuer,
-        uuid: uuid,
+        id: uuid,
         algorithm: mapStringToAlgorithm(algorithm),
         digits: digits,
         secret: secret,
@@ -194,7 +195,7 @@ class _MainScreenState extends State<MainScreen> {
       return TOTPToken(
         label: label,
         issuer: issuer,
-        uuid: uuid,
+        id: uuid,
         algorithm: mapStringToAlgorithm(algorithm),
         digits: digits,
         secret: secret,
@@ -251,7 +252,7 @@ class _MainScreenState extends State<MainScreen> {
       serial: uriMap[URI_SERIAL],
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
-      uuid: uuid,
+      id: uuid,
       sslVerify: uriMap[URI_SSL_VERIFY],
       expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
       enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
@@ -342,13 +343,7 @@ class _MainScreenState extends State<MainScreen> {
       Map<String, dynamic> message) async {
     log("Background message recieved.",
         name: "main_screen.dart", error: message);
-
-    if (message.containsKey('data')) {
-      _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), true);
-    } else {
-      log("Message does not contain [data] block, message is ignored.",
-          name: "main_screen.dart");
-    }
+    _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), true);
   }
 
   void _handleIncomingAuthRequest(Map<String, dynamic> message) {
@@ -390,19 +385,21 @@ class _MainScreenState extends State<MainScreen> {
             log('Validating incoming message was successful.',
                 name: 'main_screen.dart');
 
-            token.hasPendingRequest = true;
-            token.requestUri = requestUri;
-            token.requestNonce = message['data']['nonce'];
-            token.requestSSLVerify = message['data']['sslverify'] == '1'
-                ? true
-                : false; // TODO is this the right interpretation?
+            PushRequest pushRequest = PushRequest(
+                message['data']['title'],
+                message['data']['question'],
+                requestUri,
+                message['data']['nonce'],
+                message['data']['sslverify'] == '1' ? true : false,
+                Uuid().v4().hashCode,
+                expirationDate: DateTime.now().add(Duration(
+                    minutes: 2))); // // Push requests expire after 2 minutes.
+
+            token.pushRequests.add(pushRequest);
 
             StorageUtil.saveOrReplaceToken(token); // Save the pending request.
 
-            _showNotification(
-                token,
-                message['data']['title'],
-                message['data']['question'],
+            _showNotification(token, pushRequest,
                 !inBackground); // Notify the user of the request.
 
           } else {
@@ -422,7 +419,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   static void _showNotification(
-      PushToken token, String title, String text, bool silent) async {
+      PushToken token, PushRequest pushRequest, bool silent) async {
     silent = false;
 
     // TODO Handle different priorities
@@ -433,9 +430,9 @@ class _MainScreenState extends State<MainScreen> {
         IOSNotificationDetails(presentSound: silent);
 
     // TODO configure - Do we need channel ids?
-    var bigTextStyleInformation = BigTextStyleInformation(text,
+    var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
         htmlFormatBigText: true,
-        contentTitle: title,
+        contentTitle: pushRequest.title,
         htmlFormatContentTitle: true,
         summaryText: 'Token <i>${token.label}</i>',
         htmlFormatSummaryText: true);
@@ -453,9 +450,9 @@ class _MainScreenState extends State<MainScreen> {
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(
-      token.serial.hashCode,
-      title,
-      text,
+      pushRequest.id.hashCode, // ID of the notification
+      pushRequest.title,
+      pushRequest.question,
       platformChannelSpecifics,
     ); // TODO add payload for automatic accept, when the notification is clicked?
   }
@@ -467,7 +464,7 @@ class _MainScreenState extends State<MainScreen> {
           return TokenWidget(
             key: ObjectKey(token),
             token: token,
-            onDeleteClicked: () => _deleteClicked(token),
+            onDeleteClicked: () => _removeToken(token),
           );
         },
         separatorBuilder: (context, index) {
@@ -476,7 +473,7 @@ class _MainScreenState extends State<MainScreen> {
         itemCount: _tokenList.length);
   }
 
-  void _deleteClicked(Token token) {
+  void _removeToken(Token token) {
     setState(() {
       print("Remove: $token");
       _tokenList.remove(token);
@@ -510,7 +507,7 @@ class _MainScreenState extends State<MainScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AddTokenManuallyScreen(),
-                )).then((newToken) => _addNewToken(newToken));
+                )).then((newToken) => _addToken(newToken));
           } else if (value == "settings") {
             Navigator.push(
                 context,
@@ -540,7 +537,7 @@ class _MainScreenState extends State<MainScreen> {
     ];
   }
 
-  _addNewToken(Token newToken) {
+  _addToken(Token newToken) {
     log("Adding new token:", name: "main_screen.dart", error: newToken);
     if (newToken != null) {
       setState(() {

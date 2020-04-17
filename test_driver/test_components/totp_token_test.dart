@@ -75,7 +75,7 @@ void totpTokenUpdateTest() {
       TOTPToken token = new TOTPToken(
         label: null,
         issuer: null,
-        uuid: null,
+        id: null,
         algorithm: Algorithms.SHA1,
         digits: 6,
         secret: decodeSecretToUint8("TestSecret", Encodings.none),

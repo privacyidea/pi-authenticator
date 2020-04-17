@@ -31,12 +31,12 @@ class StorageUtil {
   /// Saves [token] securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
   static void saveOrReplaceToken(Token token) async {
-    await _storage.write(key: token.uuid, value: jsonEncode(token));
+    await _storage.write(key: token.id, value: jsonEncode(token));
   }
 
   static Future<Token> loadToken(String id) async {
     return (await loadAllTokens())
-        .firstWhere((t) => t.uuid == id, orElse: () => null);
+        .firstWhere((t) => t.id == id, orElse: () => null);
   }
 
   /// Returns a list of all Tokens that are saved in the secure storage of
@@ -64,7 +64,7 @@ class StorageUtil {
 
   /// Deletes the saved json of [token] from the secure storage.
   static void deleteToken(Token token) async {
-    String key = token.uuid;
+    String key = token.id;
 
     await _storage.delete(key: key);
   }

@@ -20,7 +20,6 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/model/custom_rsa_keys.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 part 'tokens.g.dart';
@@ -30,7 +29,7 @@ abstract class Token {
       "v1.0.0"; // The version of this token, this is used for serialization.
   String _label; // the name of the token, it cannot be uses as an identifier
   String _issuer; // The issuer of this token, currently unused.
-  String _uuid; // this is the identifier of the token
+  String _id; // this is the identifier of the token
 
   String get tokenVersion => _tokenVersion;
 
@@ -40,16 +39,16 @@ abstract class Token {
     this._label = label;
   }
 
-  String get uuid => _uuid;
+  String get id => _id;
 
   String get issuer => _issuer;
 
-  Token(this._label, this._issuer, this._uuid);
+  Token(this._label, this._issuer, this._id);
 
   @override
   String toString() {
     return 'Label $label | Issuer $issuer'
-        ' | Version $tokenVersion | ID $uuid';
+        ' | Version $tokenVersion | ID $id';
   }
 }
 
@@ -65,9 +64,9 @@ abstract class OTPToken extends Token {
 
   List<int> get secret => _secret;
 
-  OTPToken(String label, String issuer, String uuid, this._algorithm,
+  OTPToken(String label, String issuer, String id, this._algorithm,
       this._digits, this._secret)
-      : super(label, issuer, uuid);
+      : super(label, issuer, id);
 
   @override
   String toString() {
@@ -87,13 +86,13 @@ class HOTPToken extends OTPToken {
   HOTPToken(
       {String label,
       String issuer,
-      String uuid,
+      String id,
       Algorithms algorithm,
       int digits,
       List<int> secret,
       int counter = 0})
       : this._counter = counter,
-        super(label, issuer, uuid, algorithm, digits, secret);
+        super(label, issuer, id, algorithm, digits, secret);
 
   @override
   String toString() {
@@ -119,13 +118,13 @@ class TOTPToken extends OTPToken {
   TOTPToken(
       {String label,
       String issuer,
-      String uuid,
+      String id,
       Algorithms algorithm,
       int digits,
       List<int> secret,
       int period})
       : this._period = period,
-        super(label, issuer, uuid, algorithm, digits, secret);
+        super(label, issuer, id, algorithm, digits, secret);
 
   @override
   String toString() {
@@ -163,10 +162,7 @@ class PushToken extends Token {
 
   SerializableRSAPrivateKey get privateTokenKey => _privateTokenKey;
 
-  bool hasPendingRequest = false;
-  Uri requestUri;
-  String requestNonce;
-  bool requestSSLVerify = false;
+  PushRequestQueue _pushRequests;
 
   String get firebaseToken => _firebaseToken;
 
@@ -182,11 +178,26 @@ class PushToken extends Token {
 
   DateTime get expirationDate => _expirationDate;
 
+  // The get and set methods are needed for serialization.
+  PushRequestQueue get pushRequests {
+    _pushRequests ??= PushRequestQueue();
+    return _pushRequests;
+  }
+
+  set pushRequests(PushRequestQueue l) {
+    if (_pushRequests != null) {
+      throw ArgumentError(
+          "Initializing [pushRequests] in [PushToken] is only allowed once.");
+    }
+
+    this._pushRequests = l;
+  }
+
   PushToken({
     String label,
     String serial,
     String issuer,
-    String uuid,
+    String id,
     // 2. step
     bool sslVerify,
     String enrollmentCredentials,
@@ -199,22 +210,172 @@ class PushToken extends Token {
         this._url = url,
         this._firebaseToken = firebaseToken,
         this._expirationDate = expirationDate,
-        super(label, issuer, uuid);
+        super(label, issuer, id);
 
   @override
   String toString() {
-    return 'PushToken{_serial: $_serial, _sslVerify: $_sslVerify,'
-        ' _enrollmentCredentials: $_enrollmentCredentials, _url: $_url,'
-        ' _firebaseToken: $_firebaseToken, isRolledOut: $isRolledOut,'
-        ' _publicServerKey: $_publicServerKey,'
-        ' _privateTokenKey: $_privateTokenKey, '
-        'hasPendingRequest: $hasPendingRequest, requestUri: $requestUri, '
-        'requestNonce: $requestNonce, requestSSLVerify: $requestSSLVerify, '
-        '_expirationDate: $_expirationDate}';
+    return 'PushToken{ID: $id,_serial: $_serial, _sslVerify: $_sslVerify,'
+        ' _enrollmentCredentials: $_enrollmentCredentials,'
+        ' _url: $_url, _firebaseToken: $_firebaseToken,'
+        ' isRolledOut: $isRolledOut, _publicServerKey: $_publicServerKey,'
+        ' _privateTokenKey: $_privateTokenKey, _pushRequests: $_pushRequests,'
+        ' _expirationDate: $_expirationDate}';
   }
 
   factory PushToken.fromJson(Map<String, dynamic> json) =>
       _$PushTokenFromJson(json);
 
   Map<String, dynamic> toJson() => _$PushTokenToJson(this);
+}
+
+@JsonSerializable()
+class PushRequest {
+  String _title;
+  String _question;
+
+  int _id;
+
+  Uri _uri;
+  String _nonce;
+  bool _sslVerify;
+
+  DateTime _expirationDate;
+
+  DateTime get expirationDate => _expirationDate;
+
+  int get id => _id;
+
+  String get nonce => _nonce;
+
+  bool get sslVerify => _sslVerify;
+
+  Uri get uri => _uri;
+
+  String get question => _question;
+
+  String get title => _title;
+
+  PushRequest(String title, String question, Uri uri, String nonce,
+      bool sslVerify, int id,
+      {DateTime expirationDate})
+      : this._title = title,
+        this._question = question,
+        this._uri = uri,
+        this._nonce = nonce,
+        this._sslVerify = sslVerify,
+        this._id = id,
+        this._expirationDate = expirationDate;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PushRequest &&
+          runtimeType == other.runtimeType &&
+          _id == other._id;
+
+  @override
+  int get hashCode => _id.hashCode;
+
+  @override
+  String toString() {
+    return 'PushRequest{_title: $_title, _question: $_question,'
+        ' _id: $_id, _uri: $_uri, _nonce: $_nonce, _sslVerify: $_sslVerify}';
+  }
+
+  factory PushRequest.fromJson(Map<String, dynamic> json) =>
+      _$PushRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PushRequestToJson(this);
+}
+
+@JsonSerializable()
+class PushRequestQueue {
+  PushRequestQueue();
+
+  List<PushRequest> _list;
+
+  // The get and set methods are needed for serialization.
+  List<PushRequest> get list {
+    _list ??= List();
+    return _list;
+  }
+
+  set list(List<PushRequest> l) {
+    if (_list != null) {
+      throw ArgumentError(
+          "Initializing [list] in [PushRequestQueue] is only allowed once.");
+    }
+
+    this._list = l;
+  }
+
+  int get length => list.length;
+
+  void removeWhere(bool f(PushRequest request)) => list.removeWhere(f);
+
+  Iterable<PushRequest> where(bool f(PushRequest element)) => _list.where(f);
+
+  void remove(PushRequest request) => _list.remove(request);
+
+  bool get isEmpty => list.isEmpty;
+
+  bool get isNotEmpty => list.isNotEmpty;
+
+  void add(PushRequest pushRequest) => list.add(pushRequest);
+
+  PushRequest peek() => list.first;
+
+  PushRequest pop() => list.removeAt(0);
+
+  @override
+  String toString() {
+    return 'PushRequestQueue{_list: $list}';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PushRequestQueue &&
+          runtimeType == other.runtimeType &&
+          _listsAreEqual(list, other.list);
+
+  bool _listsAreEqual(List<PushRequest> l1, List<PushRequest> l2) {
+    if (l1.length != l2.length) return false;
+
+    for (int i = 0; i < l1.length - 1; i++) {
+      if (l1[i] != l2[i]) return false;
+    }
+
+    return true;
+  }
+
+  @override
+  int get hashCode => list.hashCode;
+
+  factory PushRequestQueue.fromJson(Map<String, dynamic> json) =>
+      _$PushRequestQueueFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PushRequestQueueToJson(this);
+}
+
+@JsonSerializable()
+class SerializableRSAPublicKey extends RSAPublicKey {
+  SerializableRSAPublicKey(BigInt modulus, BigInt exponent)
+      : super(modulus, exponent);
+
+  factory SerializableRSAPublicKey.fromJson(Map<String, dynamic> json) =>
+      _$SerializableRSAPublicKeyFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SerializableRSAPublicKeyToJson(this);
+}
+
+@JsonSerializable()
+class SerializableRSAPrivateKey extends RSAPrivateKey {
+  SerializableRSAPrivateKey(BigInt modulus, BigInt exponent, BigInt p, BigInt q)
+      : super(modulus, exponent, p, q);
+
+  factory SerializableRSAPrivateKey.fromJson(Map<String, dynamic> json) =>
+      _$SerializableRSAPrivateKeyFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SerializableRSAPrivateKeyToJson(this);
 }

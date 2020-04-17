@@ -10,7 +10,7 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) {
   return HOTPToken(
       label: json['label'] as String,
       issuer: json['issuer'] as String,
-      uuid: json['uuid'] as String,
+      id: json['id'] as String,
       algorithm: _$enumDecodeNullable(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,
       secret: (json['secret'] as List)?.map((e) => e as int)?.toList(),
@@ -19,7 +19,7 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
       'label': instance.label,
-      'uuid': instance.uuid,
+      'id': instance.id,
       'issuer': instance.issuer,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm],
       'digits': instance.digits,
@@ -57,7 +57,7 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) {
   return TOTPToken(
       label: json['label'] as String,
       issuer: json['issuer'] as String,
-      uuid: json['uuid'] as String,
+      id: json['id'] as String,
       algorithm: _$enumDecodeNullable(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,
       secret: (json['secret'] as List)?.map((e) => e as int)?.toList(),
@@ -66,7 +66,7 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
       'label': instance.label,
-      'uuid': instance.uuid,
+      'id': instance.id,
       'issuer': instance.issuer,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm],
       'digits': instance.digits,
@@ -79,7 +79,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
       label: json['label'] as String,
       serial: json['serial'] as String,
       issuer: json['issuer'] as String,
-      uuid: json['uuid'] as String,
+      id: json['id'] as String,
       sslVerify: json['sslVerify'] as bool,
       enrollmentCredentials: json['enrollmentCredentials'] as String,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
@@ -96,29 +96,95 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
         ? null
         : SerializableRSAPrivateKey.fromJson(
             json['privateTokenKey'] as Map<String, dynamic>)
-    ..hasPendingRequest = json['hasPendingRequest'] as bool
-    ..requestUri = json['requestUri'] == null
+    ..pushRequests = json['pushRequests'] == null
         ? null
-        : Uri.parse(json['requestUri'] as String)
-    ..requestNonce = json['requestNonce'] as String
-    ..requestSSLVerify = json['requestSSLVerify'] as bool;
+        : PushRequestQueue.fromJson(
+            json['pushRequests'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'label': instance.label,
-      'uuid': instance.uuid,
+      'id': instance.id,
       'issuer': instance.issuer,
       'isRolledOut': instance.isRolledOut,
       'publicServerKey': instance.publicServerKey,
       'privateTokenKey': instance.privateTokenKey,
-      'hasPendingRequest': instance.hasPendingRequest,
-      'requestUri': instance.requestUri?.toString(),
-      'requestNonce': instance.requestNonce,
-      'requestSSLVerify': instance.requestSSLVerify,
       'firebaseToken': instance.firebaseToken,
       'serial': instance.serial,
       'sslVerify': instance.sslVerify,
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
-      'expirationDate': instance.expirationDate?.toIso8601String()
+      'expirationDate': instance.expirationDate?.toIso8601String(),
+      'pushRequests': instance.pushRequests
+    };
+
+PushRequest _$PushRequestFromJson(Map<String, dynamic> json) {
+  return PushRequest(
+      json['title'] as String,
+      json['question'] as String,
+      json['uri'] == null ? null : Uri.parse(json['uri'] as String),
+      json['nonce'] as String,
+      json['sslVerify'] as bool,
+      json['id'] as int,
+      expirationDate: json['expirationDate'] == null
+          ? null
+          : DateTime.parse(json['expirationDate'] as String));
+}
+
+Map<String, dynamic> _$PushRequestToJson(PushRequest instance) =>
+    <String, dynamic>{
+      'expirationDate': instance.expirationDate?.toIso8601String(),
+      'id': instance.id,
+      'nonce': instance.nonce,
+      'sslVerify': instance.sslVerify,
+      'uri': instance.uri?.toString(),
+      'question': instance.question,
+      'title': instance.title
+    };
+
+PushRequestQueue _$PushRequestQueueFromJson(Map<String, dynamic> json) {
+  return PushRequestQueue()
+    ..list = (json['list'] as List)
+        ?.map((e) =>
+            e == null ? null : PushRequest.fromJson(e as Map<String, dynamic>))
+        ?.toList();
+}
+
+Map<String, dynamic> _$PushRequestQueueToJson(PushRequestQueue instance) =>
+    <String, dynamic>{'list': instance.list};
+
+SerializableRSAPublicKey _$SerializableRSAPublicKeyFromJson(
+    Map<String, dynamic> json) {
+  return SerializableRSAPublicKey(
+      json['modulus'] == null ? null : BigInt.parse(json['modulus'] as String),
+      json['exponent'] == null
+          ? null
+          : BigInt.parse(json['exponent'] as String));
+}
+
+Map<String, dynamic> _$SerializableRSAPublicKeyToJson(
+        SerializableRSAPublicKey instance) =>
+    <String, dynamic>{
+      'modulus': instance.modulus?.toString(),
+      'exponent': instance.exponent?.toString()
+    };
+
+SerializableRSAPrivateKey _$SerializableRSAPrivateKeyFromJson(
+    Map<String, dynamic> json) {
+  return SerializableRSAPrivateKey(
+      json['modulus'] == null ? null : BigInt.parse(json['modulus'] as String),
+      json['exponent'] == null
+          ? null
+          : BigInt.parse(json['exponent'] as String),
+      json['p'] == null ? null : BigInt.parse(json['p'] as String),
+      json['q'] == null ? null : BigInt.parse(json['q'] as String));
+}
+
+Map<String, dynamic> _$SerializableRSAPrivateKeyToJson(
+        SerializableRSAPrivateKey instance) =>
+    <String, dynamic>{
+      'modulus': instance.modulus?.toString(),
+      'exponent': instance.exponent?.toString(),
+      'p': instance.p?.toString(),
+      'q': instance.q?.toString()
     };

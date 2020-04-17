@@ -49,12 +49,12 @@ class FirebaseConfig {
 
   Map<String, dynamic> toJson() => _$FirebaseConfigToJson(this);
 
-  bool operator ==(c) =>
-      c is FirebaseConfig &&
-      c.projectID == projectID &&
-      c.projectNumber == projectNumber &&
-      c.appID == appID &&
-      c.apiKey == apiKey;
+  bool operator ==(fc) =>
+      fc is FirebaseConfig &&
+      fc.projectID == projectID &&
+      fc.projectNumber == projectNumber &&
+      fc.appID == appID &&
+      fc.apiKey == apiKey;
 
   int get hashCode => projectID.hashCode ^ projectNumber.hashCode;
 }
