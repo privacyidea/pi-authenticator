@@ -55,7 +55,7 @@ abstract class Token {
 
 abstract class OTPToken extends Token {
   Algorithms
-  _algorithm; // the hashing algorithm that is used to calculate the otp value
+      _algorithm; // the hashing algorithm that is used to calculate the otp value
   int _digits; // the number of digits the otp value will have
   List<int> _secret; // the secret based on which the otp value is calculated
 
@@ -84,13 +84,14 @@ class HOTPToken extends OTPToken {
 
   void incrementCounter() => _counter++;
 
-  HOTPToken({String label,
-    String issuer,
-    String uuid,
-    Algorithms algorithm,
-    int digits,
-    List<int> secret,
-    int counter = 0})
+  HOTPToken(
+      {String label,
+      String issuer,
+      String uuid,
+      Algorithms algorithm,
+      int digits,
+      List<int> secret,
+      int counter = 0})
       : this._counter = counter,
         super(label, issuer, uuid, algorithm, digits, secret);
 
@@ -115,13 +116,14 @@ class TOTPToken extends OTPToken {
 
   int get period => _period;
 
-  TOTPToken({String label,
-    String issuer,
-    String uuid,
-    Algorithms algorithm,
-    int digits,
-    List<int> secret,
-    int period})
+  TOTPToken(
+      {String label,
+      String issuer,
+      String uuid,
+      Algorithms algorithm,
+      int digits,
+      List<int> secret,
+      int period})
       : this._period = period,
         super(label, issuer, uuid, algorithm, digits, secret);
 
@@ -154,9 +156,8 @@ class PushToken extends Token {
   set publicServerKey(RSAPublicKey key) =>
       _publicServerKey = SerializableRSAPublicKey(key.modulus, key.exponent);
 
-  set privateTokenKey(RSAPrivateKey key) =>
-      _privateTokenKey =
-          SerializableRSAPrivateKey(key.modulus, key.exponent, key.p, key.q);
+  set privateTokenKey(RSAPrivateKey key) => _privateTokenKey =
+      SerializableRSAPrivateKey(key.modulus, key.exponent, key.p, key.q);
 
   SerializableRSAPublicKey get publicServerKey => _publicServerKey;
 
@@ -206,8 +207,7 @@ class PushToken extends Token {
     Uri url,
     String firebaseToken,
     DateTime expirationDate,
-  })
-      : this._serial = serial,
+  })  : this._serial = serial,
         this._sslVerify = sslVerify,
         this._enrollmentCredentials = enrollmentCredentials,
         this._url = url,
@@ -250,8 +250,8 @@ class PushRequest {
 
   String get title => _title;
 
-  PushRequest(String title, String question, Uri uri, String nonce,
-      bool sslVerify)
+  PushRequest(
+      String title, String question, Uri uri, String nonce, bool sslVerify)
       : this._title = title,
         this._question = question,
         this._uri = uri,
@@ -268,4 +268,38 @@ class PushRequest {
       _$PushRequestFromJson(json);
 
   Map<String, dynamic> toJson() => _$PushRequestToJson(this);
+}
+
+@JsonSerializable()
+class FIFOQueue<T> {
+  FIFOQueue([List<T> list]) {
+    if (list == null) {
+      list = List();
+    }
+
+    this._list = list;
+  }
+
+  List<T> _list;
+
+  bool get isEmpty => _list.isEmpty;
+
+  bool get isNotEmpty => _list.isNotEmpty;
+
+  void add(T t) => _list.add(t);
+
+  T peek() => _list.first;
+
+  T pop() => _list.removeAt(0);
+
+
+  @override
+  String toString() {
+    return 'FIFOQueue{_list: $_list}';
+  }
+
+  factory FIFOQueue.fromJson(Map<String, dynamic> json) =>
+      _$FIFOQueueFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FIFOQueueToJson(this);
 }
