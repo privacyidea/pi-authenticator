@@ -502,6 +502,7 @@ class _PushWidgetState extends _TokenWidgetState {
 //                  '$_label, ${_token.pushRequests.length}',
                   textScaleFactor: 2.0,
                 ),
+                trailing: Icon(Icons.message),
               ),
               Visibility(
                 // Accept / decline push auth request.
