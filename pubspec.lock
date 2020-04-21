@@ -317,7 +317,7 @@ packages:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.16.0"
+    version: "0.16.1"
   intl_translation:
     dependency: "direct main"
     description:
@@ -506,7 +506,7 @@ packages:
       name: pub_semver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.2"
+    version: "1.4.3"
   pubspec_parse:
     dependency: transitive
     description:
