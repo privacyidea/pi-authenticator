@@ -226,6 +226,7 @@ class _PushWidgetState extends _TokenWidgetState {
 
   bool _rollOutFailed = false;
   bool _retryButtonIsEnabled = true;
+  bool _acceptButtonIsEnabled = true;
 
   Timer _deleteTimer; // Timer that deletes expired requests periodically.
 
@@ -478,6 +479,12 @@ class _PushWidgetState extends _TokenWidgetState {
         () => setState(() => _retryButtonIsEnabled = true));
   }
 
+  void _disableAcceptButtonForSomeTime() {
+    setState(() => _acceptButtonIsEnabled = false);
+    Timer(Duration(seconds: 1),
+        () => setState(() => _acceptButtonIsEnabled = true));
+  }
+
   @override
   Widget _buildTile() {
     return ClipRect(
@@ -517,12 +524,22 @@ class _PushWidgetState extends _TokenWidgetState {
                         RaisedButton(
                           // TODO style and translate
                           child: Text("Accept"),
-                          onPressed: acceptRequest,
+                          onPressed: _acceptButtonIsEnabled
+                              ? () {
+                                  acceptRequest();
+                                  _disableAcceptButtonForSomeTime();
+                                }
+                              : null,
                         ),
                         RaisedButton(
                           // TODO style and translate
                           child: Text("Decline"),
-                          onPressed: declineRequest,
+                          onPressed: _acceptButtonIsEnabled
+                              ? () {
+                                  declineRequest();
+                                  _disableAcceptButtonForSomeTime();
+                                }
+                              : null,
                         ),
                       ],
                     ),
