@@ -568,19 +568,19 @@ class _PushWidgetState extends _TokenWidgetState {
               ),
             ],
           ),
-          Align(
-            // Show that the token is rolling out.
-            alignment: Alignment.bottomCenter,
-            child: Visibility(
-              visible: !_token.isRolledOut && !_rollOutFailed,
-              child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                  child: Column(
-                    children: <Widget>[
-                      CircularProgressIndicator(),
-                      Text('Rollingn out'),
-                    ],
-                  )),
+          // Show that the token is rolling out.
+          Visibility(
+            visible: !_token.isRolledOut && !_rollOutFailed,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: ListTile(
+                title: Column(
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    Text('Rollingn out'),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
