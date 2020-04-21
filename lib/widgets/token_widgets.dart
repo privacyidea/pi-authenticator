@@ -227,6 +227,7 @@ class _PushWidgetState extends _TokenWidgetState {
   bool _rollOutFailed = false;
   bool _retryButtonIsEnabled = true;
   bool _acceptButtonIsEnabled = true;
+  bool _acceptFailed = false;
 
   Timer _deleteTimer; // Timer that deletes expired requests periodically.
 
@@ -429,13 +430,13 @@ class _PushWidgetState extends _TokenWidgetState {
       if (response.statusCode == 200) {
         _showMessage("Accepted push auth request for ${_token.label}.",
             2); // TODO translate
-
         removeRequest(_token.pushRequests.pop());
       } else {
         log("Accepting push auth request failed.",
             name: "token_widgets.dart",
             error: "Token: $_token, Status code: ${response.statusCode}, "
                 "Body: ${response.body}");
+        setState(() => _acceptFailed = true);
 
         _showMessage(
             "Accepting push auth request for ${_token.label} failed. "
@@ -445,12 +446,14 @@ class _PushWidgetState extends _TokenWidgetState {
     } on SocketException catch (e) {
       log("Accept push auth request for [$_token] failed.",
           name: "token_widgets.dart", error: e);
+      setState(() => _acceptFailed = true);
 
       _showMessage("No internet connection, authentication not possible.",
           3); // TODO translate
     } on Exception catch (e) {
       log("Accept push auth request for [$_token] failed.",
           name: "token_widgets.dart", error: e);
+      setState(() => _acceptFailed = true);
 
       _showMessage(
           "An unknown error occured, accepting push authenticatinon"
@@ -468,6 +471,7 @@ class _PushWidgetState extends _TokenWidgetState {
   /// Reset the token status after push auth request was handled by the user.
   void removeRequest(PushRequest request) {
     setState(() {
+      _acceptFailed = false;
       flutterLocalNotificationsPlugin.cancel(request.id);
       _saveThisToken();
     });
@@ -524,7 +528,7 @@ class _PushWidgetState extends _TokenWidgetState {
                       children: <Widget>[
                         RaisedButton(
                           // TODO style and translate
-                          child: Text("Accept"),
+                          child: Text(_acceptFailed ? "Retry" : "Accept"),
                           onPressed: _acceptButtonIsEnabled
                               ? () {
                                   acceptRequest();
