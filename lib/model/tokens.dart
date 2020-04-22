@@ -152,11 +152,12 @@ class PushToken extends Token {
   SerializableRSAPublicKey _publicServerKey;
   SerializableRSAPrivateKey _privateTokenKey;
 
-  set publicServerKey(RSAPublicKey key) =>
-      _publicServerKey = SerializableRSAPublicKey(key.modulus, key.exponent);
+  set publicServerKey(RSAPublicKey key) => _publicServerKey =
+      key == null ? null : SerializableRSAPublicKey(key.modulus, key.exponent);
 
-  set privateTokenKey(RSAPrivateKey key) => _privateTokenKey =
-      SerializableRSAPrivateKey(key.modulus, key.exponent, key.p, key.q);
+  set privateTokenKey(RSAPrivateKey key) => _privateTokenKey = key == null
+      ? null
+      : SerializableRSAPrivateKey(key.modulus, key.exponent, key.p, key.q);
 
   SerializableRSAPublicKey get publicServerKey => _publicServerKey;
 
