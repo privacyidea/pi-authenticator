@@ -321,6 +321,8 @@ class PushRequestQueue {
 
   bool get isNotEmpty => list.isNotEmpty;
 
+  bool contains(PushRequest r) => _list.contains(r);
+
   void add(PushRequest pushRequest) => list.add(pushRequest);
 
   PushRequest peek() => list.first;

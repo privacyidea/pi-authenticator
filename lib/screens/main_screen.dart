@@ -347,7 +347,12 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _handleIncomingAuthRequest(Map<String, dynamic> message) {
-    setState(() => _handleIncomingRequest(message, _tokenList, false));
+    log("Foreground message recieved.",
+        name: "main_screen.dart", error: message);
+    setState(() async {
+      _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), false);
+      _loadAllTokens();
+    });
   }
 
   static void _handleIncomingRequest(
@@ -395,13 +400,20 @@ class _MainScreenState extends State<MainScreen> {
                 expirationDate: DateTime.now().add(Duration(
                     minutes: 2))); // // Push requests expire after 2 minutes.
 
-            token.pushRequests.add(pushRequest);
+            if (!token.pushRequests.contains(pushRequest)) {
+              token.pushRequests.add(pushRequest);
 
-            StorageUtil.saveOrReplaceToken(token); // Save the pending request.
+              StorageUtil.saveOrReplaceToken(
+                  token); // Save the pending request.
 
-            _showNotification(token, pushRequest,
-                !inBackground); // Notify the user of the request.
-
+              _showNotification(token, pushRequest,
+                  !inBackground); // Notify the user of the request.
+            } else {
+              log(
+                  "The push request $pushRequest already exists "
+                  "for the token $token",
+                  name: "main_screen.dart");
+            }
           } else {
             log('Validating incoming message failed.',
                 name: 'main_screen.dart',

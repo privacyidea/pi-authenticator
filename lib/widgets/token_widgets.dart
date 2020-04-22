@@ -253,6 +253,7 @@ class _PushWidgetState extends _TokenWidgetState {
 
         setState(() {
           _token = t;
+          _saveThisToken();
         });
       }
     });
