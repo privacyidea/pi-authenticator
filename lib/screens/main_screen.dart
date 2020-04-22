@@ -121,6 +121,14 @@ class _MainScreenState extends State<MainScreen> {
           name: "main_screen.dart",
           error: newToken,
         );
+
+        if (newToken is PushToken && _tokenList.contains(newToken)) {
+          _showMessage(
+              "A token with the serial ${newToken.serial} already exists!",
+              Duration(seconds: 2));
+          return;
+        }
+
         _tokenList.add(newToken);
       });
     } on PlatformException catch (e) {

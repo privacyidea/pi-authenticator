@@ -213,6 +213,16 @@ class PushToken extends Token {
         super(label, issuer, id);
 
   @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PushToken &&
+          runtimeType == other.runtimeType &&
+          _serial == other._serial;
+
+  @override
+  int get hashCode => _serial.hashCode;
+
+  @override
   String toString() {
     return 'PushToken{ID: $id,_serial: $_serial, _sslVerify: $_sslVerify,'
         ' _enrollmentCredentials: $_enrollmentCredentials,'
