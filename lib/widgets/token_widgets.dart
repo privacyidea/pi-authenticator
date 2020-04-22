@@ -318,15 +318,18 @@ class _PushWidgetState extends _TokenWidgetState {
           3); // TODO translate
     }
 
-    // TODO generating keypair could be omitted, if this is the second run!
-    final keyPair = await generateRSAKeyPair();
+    if (_token.privateTokenKey == null) {
+      final keyPair = await generateRSAKeyPair();
 
-    log(
-      "Setting private key for token",
-      name: "token_widgets.dart",
-      error: "Token: $_token, key: ${keyPair.privateKey}",
-    );
-    _token.privateTokenKey = keyPair.privateKey;
+      log(
+        "Setting private key for token",
+        name: "token_widgets.dart",
+        error: "Token: $_token, key: ${keyPair.privateKey}",
+      );
+      _token.privateTokenKey = keyPair.privateKey;
+      _token.publicTokenKey = keyPair.publicKey;
+      _saveThisToken();
+    }
 
     try {
       Response response =
@@ -334,7 +337,7 @@ class _PushWidgetState extends _TokenWidgetState {
         'enrollment_credential': _token.enrollmentCredentials,
         'serial': _token.serial,
         'fbtoken': _token.firebaseToken,
-        'pubkey': serializeRSAPublicKeyPKCS8(keyPair.publicKey),
+        'pubkey': serializeRSAPublicKeyPKCS8(_token.publicTokenKey),
       });
 
       if (response.statusCode == 200) {

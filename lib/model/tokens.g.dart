@@ -96,6 +96,10 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
         ? null
         : SerializableRSAPrivateKey.fromJson(
             json['privateTokenKey'] as Map<String, dynamic>)
+    ..publicTokenKey = json['publicTokenKey'] == null
+        ? null
+        : SerializableRSAPublicKey.fromJson(
+            json['publicTokenKey'] as Map<String, dynamic>)
     ..pushRequests = json['pushRequests'] == null
         ? null
         : PushRequestQueue.fromJson(
@@ -109,6 +113,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'isRolledOut': instance.isRolledOut,
       'publicServerKey': instance.publicServerKey,
       'privateTokenKey': instance.privateTokenKey,
+      'publicTokenKey': instance.publicTokenKey,
       'firebaseToken': instance.firebaseToken,
       'serial': instance.serial,
       'sslVerify': instance.sslVerify,
