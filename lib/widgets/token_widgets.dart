@@ -220,8 +220,6 @@ class _PushWidgetState extends _TokenWidgetState {
   _PushWidgetState(Token token, VoidCallback onDeleteClicked)
       : super(token, onDeleteClicked);
 
-  // TODO change rename and delete while roll out process is running?
-
   PushToken get _token => super._token as PushToken;
 
   bool _rollOutFailed = false;
@@ -247,8 +245,8 @@ class _PushWidgetState extends _TokenWidgetState {
 
       if (msg == "AppLifecycleState.resumed" && t.pushRequests.isNotEmpty) {
         log(
-            "Push token received request while app was in background. "
-            "Updating UI.",
+            "Push token may have received a request while app was "
+            "in background. Updating UI.",
             name: "token_widgets.dart");
 
         setState(() {
@@ -528,8 +526,20 @@ class _PushWidgetState extends _TokenWidgetState {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         RaisedButton(
-                          // TODO style and translate
-                          child: Text(_acceptFailed ? "Retry" : "Accept"),
+                          // TODO translate
+                          child: _acceptFailed
+                              ? Row(
+                                  children: <Widget>[
+                                    Text("Retry"),
+                                    Icon(Icons.replay),
+                                  ],
+                                )
+                              : Row(
+                                  children: <Widget>[
+                                    Text("Accept"),
+                                    Icon(Icons.check),
+                                  ],
+                                ),
                           onPressed: _acceptButtonIsEnabled
                               ? () {
                                   acceptRequest();
@@ -538,8 +548,13 @@ class _PushWidgetState extends _TokenWidgetState {
                               : null,
                         ),
                         RaisedButton(
-                          // TODO style and translate
-                          child: Text("Decline"),
+                          // TODO translate
+                          child: Row(
+                            children: <Widget>[
+                              Text("Decline"),
+                              Icon(Icons.clear),
+                            ],
+                          ),
                           onPressed: _acceptButtonIsEnabled
                               ? () {
                                   declineRequest();
@@ -559,8 +574,8 @@ class _PushWidgetState extends _TokenWidgetState {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     RaisedButton(
-                      // TODO style and translate
-                      child: Text("Rollout failed, try again."),
+                      // TODO translate
+                      child: Text("Rollout failed, please try again."),
                       onPressed: _retryButtonIsEnabled
                           ? () {
                               _rollOutToken();
