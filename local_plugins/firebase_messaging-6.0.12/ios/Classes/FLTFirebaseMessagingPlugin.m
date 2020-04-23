@@ -136,6 +136,8 @@ static NSObject<FlutterPluginRegistrar> *_registrar;
       [[UIApplication sharedApplication] registerForRemoteNotifications];
       result([NSNumber numberWithBool:YES]);
     }
+  }else if ([@"FcmSetApplicationName" isEqualToString:method]) {
+    // TODO: Configure the firebase app just like the android part of this plugin does.
   } else if ([@"configure" isEqualToString:method]) {
     [FIRMessaging messaging].shouldEstablishDirectChannel = true;
     [[UIApplication sharedApplication] registerForRemoteNotifications];
