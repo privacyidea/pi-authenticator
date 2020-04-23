@@ -20,6 +20,7 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -245,13 +246,11 @@ class _MainScreenState extends State<MainScreen> {
 //    &appidios=AIzaSXXXXXvUWdiRk ## for fcm init
 //    &apikeyios=AIzXXXXXk ## for fcm init
 
-//    // TODO: Change this to work with ios, or change the parsing
-//    //  of the uri directly.
     FirebaseConfig firebaseConfig = FirebaseConfig(
         projectID: uriMap[URI_PROJECT_ID],
         projectNumber: uriMap[URI_PROJECT_NUMBER],
-        appID: uriMap[URI_APP_ID],
-        apiKey: uriMap[URI_API_KEY]);
+        appID: Platform.isIOS ? uriMap[URI_APP_ID_IOS] : uriMap[URI_APP_ID],
+        apiKey: Platform.isIOS ? uriMap[URI_API_KEY_IOS] : uriMap[URI_API_KEY]);
 
     // TODO remove firebase project when no push token exists anymore
     String firebaseToken = await _initFirebase(firebaseConfig);
@@ -317,7 +316,7 @@ class _MainScreenState extends State<MainScreen> {
       ..setApplicationName(name);
 
     // TODO only ios, handle that
-//    await firebaseMessaging.requestNotificationPermissions();
+    await firebaseMessaging.requestNotificationPermissions();
 
     // FIXME: onResume and onLaunch is not configured see
     //  https://pub.dev/packages/firebase_messaging#-readme-tab-
