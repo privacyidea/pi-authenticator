@@ -274,7 +274,7 @@ class _MainScreenState extends State<MainScreen> {
     log("Initializing firebase.", name: "main_screen.dart");
 
     // Used to identify a firebase app, this is nothing more than an id.
-    String name = "privacyIDEA Authenticator";
+    String name = "privacyidea_authenticator";
 
     if (!await StorageUtil.firebaseConfigExists() ||
         await StorageUtil.loadFirebaseConfig() == config) {
