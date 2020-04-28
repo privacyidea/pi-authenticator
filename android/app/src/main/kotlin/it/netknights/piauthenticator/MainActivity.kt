@@ -1,4 +1,4 @@
-package com.example.privacyidea_authenticator
+package it.netknights.piauthenticator
 
 import android.os.Bundle
 
