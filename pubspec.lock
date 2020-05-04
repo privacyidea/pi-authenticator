@@ -262,7 +262,7 @@ packages:
       name: flutter_local_notifications
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.2"
+    version: "1.4.3"
   flutter_local_notifications_platform_interface:
     dependency: transitive
     description:
@@ -485,7 +485,7 @@ packages:
       name: otp
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.2.0"
   package_config:
     dependency: transitive
     description:
