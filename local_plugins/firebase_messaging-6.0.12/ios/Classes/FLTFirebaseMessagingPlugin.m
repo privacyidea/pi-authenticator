@@ -51,10 +51,13 @@ static NSObject<FlutterPluginRegistrar> *_registrar;
   if (self) {
     _channel = channel;
     _resumingFromBackground = NO;
+      // TODO Remove this code here, and configure FIRApp in method call.
     if (![FIRApp appNamed:@"__FIRAPP_DEFAULT"]) {
-      NSLog(@"Configuring the default Firebase app...");
+      NSLog(@"Configuring the deyxyxfault Firebase app...");
       [FIRApp configure];
+      NSLog(@"All the firebase apps: %@.",  [FIRApp allApps]);
       NSLog(@"Configured the default Firebase app %@.", [FIRApp defaultApp].name);
+        NSLog(@"LOOK AT ME, AM I BEEIGN PRINTED?");
     }
     [FIRMessaging messaging].delegate = self;
   }
@@ -138,10 +141,12 @@ static NSObject<FlutterPluginRegistrar> *_registrar;
     }
   }else if ([@"FcmSetApplicationName" isEqualToString:method]) {
     // TODO: Configure the firebase app just like the android part of this plugin does.
+    NSString *topic = call.arguments;
+    NSLog(@"Try to add the app name %@\n", topic);
   } else if ([@"configure" isEqualToString:method]) {
     [FIRMessaging messaging].shouldEstablishDirectChannel = true;
     [[UIApplication sharedApplication] registerForRemoteNotifications];
-    if (_launchNotification != nil) {
+     if (_launchNotification != nil) {
       [_channel invokeMethod:@"onLaunch" arguments:_launchNotification];
     }
     result(nil);
