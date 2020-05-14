@@ -75,6 +75,10 @@ class StorageUtil {
     await _storage.write(key: _FIREBASE_CONFIG_KEY, value: jsonEncode(config));
   }
 
+  static void deleteFirebaseConfig()async {
+    await _storage.delete(key: _FIREBASE_CONFIG_KEY);
+  }
+
   static Future<bool> firebaseConfigExists() async {
     return await loadFirebaseConfig() != null;
   }

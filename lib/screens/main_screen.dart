@@ -69,6 +69,23 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _loadFirebase() async {
+
+    // If no push tokens exist, the firebase config should be deleted here.
+    // TODO Delete the firebase config when the last push token was removed also.
+
+    print('_loadFirebase');
+    print((await StorageUtil.loadAllTokens()).length);
+
+    if(!await StorageUtil.loadAllTokens().asStream().any((element) {
+    print('Token is of type ${element.runtimeType}.');
+    return element is PushToken;
+    })){
+      StorageUtil.deleteFirebaseConfig();
+      _showMessage("Firebase config was deleted!", Duration(seconds: 2));
+      return;
+    }
+
+
     if (await StorageUtil.firebaseConfigExists()) {
       _initFirebase(await StorageUtil.loadFirebaseConfig());
     }
@@ -274,7 +291,7 @@ class _MainScreenState extends State<MainScreen> {
     log("Initializing firebase.", name: "main_screen.dart");
 
     // Used to identify a firebase app, this is nothing more than an id.
-    String name = "privacyidea_authenticator";
+    final String name = "privacyidea_authenticator";
 
     if (!await StorageUtil.firebaseConfigExists() ||
         await StorageUtil.loadFirebaseConfig() == config) {
@@ -298,8 +315,10 @@ class _MainScreenState extends State<MainScreen> {
       // TODO check if it is already initialized
       var initializationSettingsAndroid =
           AndroidInitializationSettings('app_icon');
+      var initializationSettingsIOS = IOSInitializationSettings(); // FIXME Is onDIdReceiveLocalNotification necessary here?
       var initializationSettings =
-          InitializationSettings(initializationSettingsAndroid, null);
+          InitializationSettings(initializationSettingsAndroid,
+              initializationSettingsIOS);
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
     } else if (await StorageUtil.loadFirebaseConfig() != config) {
       log("Given firebase config does not equal the existing config.",
@@ -316,7 +335,9 @@ class _MainScreenState extends State<MainScreen> {
       ..setApplicationName(name);
 
     // TODO only ios, handle that
-    await firebaseMessaging.requestNotificationPermissions();
+    if(!await firebaseMessaging.requestNotificationPermissions()){
+      return null; // TODO How to handle this case right?
+    }
 
     // FIXME: onResume and onLaunch is not configured see
     //  https://pub.dev/packages/firebase_messaging#-readme-tab-
@@ -332,7 +353,7 @@ class _MainScreenState extends State<MainScreen> {
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
       },
-      onBackgroundMessage:
+      onBackgroundMessage: Platform.isIOS ? null : // iOS does not support this.
           myBackgroundMessageHandler, // FIXME There might be a bug when using local-notifications and firebase_messaging, see https://github.com/MaikuB/flutter_local_notifications/tree/master/flutter_local_notifications
     );
 
