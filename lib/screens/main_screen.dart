@@ -72,7 +72,7 @@ class _MainScreenState extends State<MainScreen> {
 
     // If no push tokens exist, the firebase config should be deleted here.
     // TODO Delete the firebase config when the last push token was removed also.
-    if((await StorageUtil.loadAllTokens()).any((element) => element is PushToken)){
+    if(!(await StorageUtil.loadAllTokens()).any((element) => element is PushToken)){
       StorageUtil.deleteFirebaseConfig();
       _showMessage("Firebase config was deleted!", Duration(seconds: 2));
       return;
@@ -371,6 +371,7 @@ class _MainScreenState extends State<MainScreen> {
     log("Foreground message recieved.",
         name: "main_screen.dart", error: message);
     setState(() async {
+      debugPrint("$message");
       _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), false);
       _loadAllTokens();
     });
@@ -378,12 +379,17 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _handleIncomingRequest(
       Map<String, dynamic> message, List<Token> tokenList, bool inBackground) {
+
+    // iOS handles the data differently, 'data' block does not exist there.
+    final bool isIOS = Platform.isIOS;
+
     // TODO handle message in wrong format
-    message['data'].forEach((key, value) => print('$key = $value'));
+    // TODO Replace message[data] with a single reference!
+    (isIOS ? message : message['data']).forEach((key, value) => print('$key = $value'));
 
     // TODO Handle uri error
-    String requestedSerial = message['data']['serial'];
-    Uri requestUri = Uri.parse(message['data']['url']);
+    String requestedSerial = (isIOS ? message : message['data'])['serial'];
+    Uri requestUri = Uri.parse((isIOS ? message : message['data'])['url']);
 
     log('Incoming push auth request for token with serial.',
         name: 'main_screen.dart', error: requestedSerial);
@@ -396,13 +402,13 @@ class _MainScreenState extends State<MainScreen> {
           log('Token matched requested token',
               name: 'main_screen.dart', error: token);
           // {nonce}|{url}|{serial}|{question}|{title}|{sslverify} in BASE32
-          String signature = message['data']['signature'];
-          String signedData = '${message['data']['nonce']}|'
-              '${message['data']['url']}|'
-              '${message['data']['serial']}|'
-              '${message['data']['question']}|'
-              '${message['data']['title']}|'
-              '${message['data']['sslverify']}';
+          String signature = (isIOS ? message : message['data'])['signature'];
+          String signedData = '${(isIOS ? message : message['data'])['nonce']}|'
+              '${(isIOS ? message : message['data'])['url']}|'
+              '${(isIOS ? message : message['data'])['serial']}|'
+              '${(isIOS ? message : message['data'])['question']}|'
+              '${(isIOS ? message : message['data'])['title']}|'
+              '${(isIOS ? message : message['data'])['sslverify']}';
 
           if (verifyRSASignature(token.publicServerKey, utf8.encode(signedData),
               base32.decode(signature))) {
@@ -412,11 +418,11 @@ class _MainScreenState extends State<MainScreen> {
                 name: 'main_screen.dart');
 
             PushRequest pushRequest = PushRequest(
-                message['data']['title'],
-                message['data']['question'],
+                (isIOS ? message : message['data'])['title'],
+                (isIOS ? message : message['data'])['question'],
                 requestUri,
-                message['data']['nonce'],
-                message['data']['sslverify'] == '1' ? true : false,
+                (isIOS ? message : message['data'])['nonce'],
+                (isIOS ? message : message['data'])['sslverify'] == '1' ? true : false,
                 Uuid().v4().hashCode,
                 expirationDate: DateTime.now().add(Duration(
                     minutes: 2))); // // Push requests expire after 2 minutes.
@@ -427,8 +433,7 @@ class _MainScreenState extends State<MainScreen> {
               StorageUtil.saveOrReplaceToken(
                   token); // Save the pending request.
 
-              _showNotification(token, pushRequest,
-                  !inBackground); // Notify the user of the request.
+              _showNotification(token, pushRequest, !inBackground); // Notify the user of the request.
             } else {
               log(
                   "The push request $pushRequest already exists "
