@@ -69,15 +69,14 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _loadFirebase() async {
-
     // If no push tokens exist, the firebase config should be deleted here.
     // TODO Delete the firebase config when the last push token was removed also.
-    if(!(await StorageUtil.loadAllTokens()).any((element) => element is PushToken)){
+    if (!(await StorageUtil.loadAllTokens())
+        .any((element) => element is PushToken)) {
       StorageUtil.deleteFirebaseConfig();
       _showMessage("Firebase config was deleted!", Duration(seconds: 2));
       return;
     }
-
 
     if (await StorageUtil.firebaseConfigExists()) {
       _initFirebase(await StorageUtil.loadFirebaseConfig());
@@ -308,10 +307,10 @@ class _MainScreenState extends State<MainScreen> {
       // TODO check if it is already initialized
       var initializationSettingsAndroid =
           AndroidInitializationSettings('app_icon');
-      var initializationSettingsIOS = IOSInitializationSettings(); // FIXME Is onDIdReceiveLocalNotification necessary here?
-      var initializationSettings =
-          InitializationSettings(initializationSettingsAndroid,
-              initializationSettingsIOS);
+      var initializationSettingsIOS =
+          IOSInitializationSettings(); // FIXME Is onDIdReceiveLocalNotification necessary here?
+      var initializationSettings = InitializationSettings(
+          initializationSettingsAndroid, initializationSettingsIOS);
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
     } else if (await StorageUtil.loadFirebaseConfig() != config) {
       log("Given firebase config does not equal the existing config.",
@@ -328,7 +327,7 @@ class _MainScreenState extends State<MainScreen> {
       ..setApplicationName(name);
 
     // TODO only ios, handle that
-    if(!await firebaseMessaging.requestNotificationPermissions()){
+    if (!await firebaseMessaging.requestNotificationPermissions()) {
       return null; // TODO How to handle this case right?
     }
 
@@ -346,7 +345,9 @@ class _MainScreenState extends State<MainScreen> {
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
       },
-      onBackgroundMessage: Platform.isIOS ? null : // iOS does not support this.
+      onBackgroundMessage: Platform.isIOS
+          ? null
+          : // iOS does not support this.
           myBackgroundMessageHandler, // FIXME There might be a bug when using local-notifications and firebase_messaging, see https://github.com/MaikuB/flutter_local_notifications/tree/master/flutter_local_notifications
     );
 
@@ -379,17 +380,16 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _handleIncomingRequest(
       Map<String, dynamic> message, List<Token> tokenList, bool inBackground) {
-
     // iOS handles the data differently, 'data' block does not exist there.
-    final bool isIOS = Platform.isIOS;
+    var data = (Platform.isIOS ? message : message['data']);
 
     // TODO handle message in wrong format
     // TODO Replace message[data] with a single reference!
-    (isIOS ? message : message['data']).forEach((key, value) => print('$key = $value'));
+    data.forEach((key, value) => print('$key = $value'));
 
     // TODO Handle uri error
-    String requestedSerial = (isIOS ? message : message['data'])['serial'];
-    Uri requestUri = Uri.parse((isIOS ? message : message['data'])['url']);
+    String requestedSerial = data['serial'];
+    Uri requestUri = Uri.parse(data['url']);
 
     log('Incoming push auth request for token with serial.',
         name: 'main_screen.dart', error: requestedSerial);
@@ -402,13 +402,13 @@ class _MainScreenState extends State<MainScreen> {
           log('Token matched requested token',
               name: 'main_screen.dart', error: token);
           // {nonce}|{url}|{serial}|{question}|{title}|{sslverify} in BASE32
-          String signature = (isIOS ? message : message['data'])['signature'];
-          String signedData = '${(isIOS ? message : message['data'])['nonce']}|'
-              '${(isIOS ? message : message['data'])['url']}|'
-              '${(isIOS ? message : message['data'])['serial']}|'
-              '${(isIOS ? message : message['data'])['question']}|'
-              '${(isIOS ? message : message['data'])['title']}|'
-              '${(isIOS ? message : message['data'])['sslverify']}';
+          String signature = data['signature'];
+          String signedData = '${data['nonce']}|'
+              '${data['url']}|'
+              '${data['serial']}|'
+              '${data['question']}|'
+              '${data['title']}|'
+              '${data['sslverify']}';
 
           if (verifyRSASignature(token.publicServerKey, utf8.encode(signedData),
               base32.decode(signature))) {
@@ -418,11 +418,11 @@ class _MainScreenState extends State<MainScreen> {
                 name: 'main_screen.dart');
 
             PushRequest pushRequest = PushRequest(
-                (isIOS ? message : message['data'])['title'],
-                (isIOS ? message : message['data'])['question'],
+                data['title'],
+                data['question'],
                 requestUri,
-                (isIOS ? message : message['data'])['nonce'],
-                (isIOS ? message : message['data'])['sslverify'] == '1' ? true : false,
+                data['nonce'],
+                data['sslverify'] == '1' ? true : false,
                 Uuid().v4().hashCode,
                 expirationDate: DateTime.now().add(Duration(
                     minutes: 2))); // // Push requests expire after 2 minutes.
@@ -433,7 +433,8 @@ class _MainScreenState extends State<MainScreen> {
               StorageUtil.saveOrReplaceToken(
                   token); // Save the pending request.
 
-              _showNotification(token, pushRequest, !inBackground); // Notify the user of the request.
+              _showNotification(token, pushRequest,
+                  !inBackground); // Notify the user of the request.
             } else {
               log(
                   "The push request $pushRequest already exists "
