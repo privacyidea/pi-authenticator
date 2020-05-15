@@ -74,7 +74,6 @@ class _MainScreenState extends State<MainScreen> {
     if (!(await StorageUtil.loadAllTokens())
         .any((element) => element is PushToken)) {
       StorageUtil.deleteFirebaseConfig();
-      _showMessage("Firebase config was deleted!", Duration(seconds: 2));
       return;
     }
 
@@ -230,39 +229,11 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<PushToken> _buildPushToken(
       Map<String, dynamic> uriMap, String uuid) async {
-//    otpauth://
-//    pipush/
-//        PIPU00028E46 ## for token
-//        ?
-//
-//    &v=1 ## for parsing
-//
-//    ##### TOKEN
-//    &issuer=privacyIDEA ## for token
-//    &serial=PIPU00028E46 ## for token
-//
-//    ##### 2. STEP
-//    &sslverify=0 ## for 2. enrollment step
-//    &enrollment_credential=9XXXXXXX7 ## for 2. enrollment step
-//    &url=https%3A//XX.XX.XX.XX/ttype/push ## for 2. enrollment step
-//    &ttl=2 ## for 2. enrollment step
-//
-//    ##### FCM
-//    &projectnumber=6XXXXXX4 ## for fcm init
-//    &projectid=XXXXX ## for fcm init
-//    &appid=1XXXXXXa9 ## for fcm init
-//    &apikey=AIzaXXXXXiRk ## for fcm init
-//    &appidios=AIzaSXXXXXvUWdiRk ## for fcm init
-//    &apikeyios=AIzXXXXXk ## for fcm init
-
     FirebaseConfig firebaseConfig = FirebaseConfig(
         projectID: uriMap[URI_PROJECT_ID],
         projectNumber: uriMap[URI_PROJECT_NUMBER],
         appID: Platform.isIOS ? uriMap[URI_APP_ID_IOS] : uriMap[URI_APP_ID],
         apiKey: Platform.isIOS ? uriMap[URI_API_KEY_IOS] : uriMap[URI_API_KEY]);
-
-    // TODO remove firebase project when no push token exists anymore
-    String firebaseToken = await _initFirebase(firebaseConfig);
 
     return PushToken(
       serial: uriMap[URI_SERIAL],
@@ -273,7 +244,7 @@ class _MainScreenState extends State<MainScreen> {
       expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
       enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
       url: uriMap[URI_ROLLOUT_URL],
-      firebaseToken: firebaseToken,
+      firebaseToken: await _initFirebase(firebaseConfig),
     );
   }
 
@@ -302,9 +273,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
       );
 
-      // TODO Configure local notifications.
-      // TODO add ios
-      // TODO check if it is already initialized
+      // TODO check if it is already initialized?
       var initializationSettingsAndroid =
           AndroidInitializationSettings('app_icon');
       var initializationSettingsIOS =
@@ -332,7 +301,8 @@ class _MainScreenState extends State<MainScreen> {
       // TODO What happens on iOS, if this is not permitted?
     }
 
-    // FIXME: onResume and onLaunch is not configured see
+    // FIXME: onResume and onLaunch is not configured see, when is that used
+    //   anyway?
     //  https://pub.dev/packages/firebase_messaging#-readme-tab-
     //  but the solution there does not seem to work?
     firebaseMessaging.configure(
@@ -385,11 +355,11 @@ class _MainScreenState extends State<MainScreen> {
     var data = (Platform.isIOS ? message : message['data']);
 
     // TODO handle message in wrong format
-    data.forEach((key, value) => print('$key = $value'));
+//    data.forEach((key, value) => print('$key = $value'));
 
     // TODO Handle uri error
-    String requestedSerial = data['serial'];
     Uri requestUri = Uri.parse(data['url']);
+    String requestedSerial = data['serial'];
 
     log('Incoming push auth request for token with serial.',
         name: 'main_screen.dart', error: requestedSerial);
@@ -507,11 +477,17 @@ class _MainScreenState extends State<MainScreen> {
         itemCount: _tokenList.length);
   }
 
-  void _removeToken(Token token) {
+  void _removeToken(Token token) async {
+    await StorageUtil.deleteToken(token);
+
+    if (!(await StorageUtil.loadAllTokens())
+        .any((element) => element is PushToken)) {
+      StorageUtil.deleteFirebaseConfig();
+    }
+
     setState(() {
       print("Remove: $token");
       _tokenList.remove(token);
-      StorageUtil.deleteToken(token);
     });
   }
 
