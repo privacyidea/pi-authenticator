@@ -322,13 +322,14 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     // TODO Fix license
-    // TODO implement ios
     FirebaseMessaging firebaseMessaging = FirebaseMessaging()
       ..setApplicationName(name);
 
-    // TODO only ios, handle that
-    if (!await firebaseMessaging.requestNotificationPermissions()) {
-      return null; // TODO How to handle this case right?
+    // This can only be denied on iOS.
+    if (Platform.isIOS &&
+        !await firebaseMessaging.requestNotificationPermissions()) {
+//      return null; // TODO How to handle this case right?
+      // TODO What happens on iOS, if this is not permitted?
     }
 
     // FIXME: onResume and onLaunch is not configured see
@@ -384,7 +385,6 @@ class _MainScreenState extends State<MainScreen> {
     var data = (Platform.isIOS ? message : message['data']);
 
     // TODO handle message in wrong format
-    // TODO Replace message[data] with a single reference!
     data.forEach((key, value) => print('$key = $value'));
 
     // TODO Handle uri error
@@ -459,12 +459,10 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _showNotification(
       PushToken token, PushRequest pushRequest, bool silent) async {
-    silent = false;
+//    silent = false; // TODO 'Silent' does not seem to work?
 
     // TODO Handle different priorities
 
-    // TODO change priority
-    // TODO support ios
     var iOSPlatformChannelSpecifics =
         IOSNotificationDetails(presentSound: silent);
 
@@ -481,19 +479,16 @@ class _MainScreenState extends State<MainScreen> {
       'your channel description',
       ticker: 'ticker',
       playSound: silent,
-      styleInformation:
-          bigTextStyleInformation, // TODO add style information to display token name
+      styleInformation: bigTextStyleInformation, // To display token name.
     );
-
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(
       pushRequest.id.hashCode, // ID of the notification
       pushRequest.title,
       pushRequest.question,
-      platformChannelSpecifics,
-    ); // TODO add payload for automatic accept, when the notification is clicked?
+      NotificationDetails(
+          androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics),
+    );
   }
 
   ListView _buildTokenList() {
