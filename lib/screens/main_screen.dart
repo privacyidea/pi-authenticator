@@ -76,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
     print('_loadFirebase');
     print((await StorageUtil.loadAllTokens()).length);
 
-    if(!await StorageUtil.loadAllTokens().asStream().any((element) {
+    if(!(await StorageUtil.loadAllTokens()).any((element) {
     print('Token is of type ${element.runtimeType}.');
     return element is PushToken;
     })){
@@ -385,12 +385,15 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _handleIncomingRequest(
       Map<String, dynamic> message, List<Token> tokenList, bool inBackground) {
+
+    var data = Platform.isIOS ? message : message['data'];
+
     // TODO handle message in wrong format
-    message['data'].forEach((key, value) => print('$key = $value'));
+    data.forEach((key, value) => print('$key = $value'));
 
     // TODO Handle uri error
-    String requestedSerial = message['data']['serial'];
-    Uri requestUri = Uri.parse(message['data']['url']);
+    String requestedSerial = data['serial'];
+    Uri requestUri = Uri.parse(data['url']);
 
     log('Incoming push auth request for token with serial.',
         name: 'main_screen.dart', error: requestedSerial);
@@ -403,13 +406,13 @@ class _MainScreenState extends State<MainScreen> {
           log('Token matched requested token',
               name: 'main_screen.dart', error: token);
           // {nonce}|{url}|{serial}|{question}|{title}|{sslverify} in BASE32
-          String signature = message['data']['signature'];
-          String signedData = '${message['data']['nonce']}|'
-              '${message['data']['url']}|'
-              '${message['data']['serial']}|'
-              '${message['data']['question']}|'
-              '${message['data']['title']}|'
-              '${message['data']['sslverify']}';
+          String signature = data['signature'];
+          String signedData = '${data['nonce']}|'
+              '${data['url']}|'
+              '${data['serial']}|'
+              '${data['question']}|'
+              '${data['title']}|'
+              '${data['sslverify']}';
 
           if (verifyRSASignature(token.publicServerKey, utf8.encode(signedData),
               base32.decode(signature))) {
@@ -419,11 +422,11 @@ class _MainScreenState extends State<MainScreen> {
                 name: 'main_screen.dart');
 
             PushRequest pushRequest = PushRequest(
-                message['data']['title'],
-                message['data']['question'],
+                data['title'],
+                data['question'],
                 requestUri,
-                message['data']['nonce'],
-                message['data']['sslverify'] == '1' ? true : false,
+                data['nonce'],
+                data['sslverify'] == '1' ? true : false,
                 Uuid().v4().hashCode,
                 expirationDate: DateTime.now().add(Duration(
                     minutes: 2))); // // Push requests expire after 2 minutes.
