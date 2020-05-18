@@ -335,7 +335,7 @@ class _MainScreenState extends State<MainScreen> {
       ..setApplicationName(name);
 
     // TODO only ios, handle that
-    if(!await firebaseMessaging.requestNotificationPermissions()){
+    if(Platform.isIOS && !await firebaseMessaging.requestNotificationPermissions()){
       return null; // TODO How to handle this case right?
     }
 
