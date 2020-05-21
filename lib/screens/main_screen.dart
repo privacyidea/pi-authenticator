@@ -70,7 +70,6 @@ class _MainScreenState extends State<MainScreen> {
 
   _loadFirebase() async {
     // If no push tokens exist, the firebase config should be deleted here.
-    // TODO Delete the firebase config when the last push token was removed also.
     if (!(await StorageUtil.loadAllTokens())
         .any((element) => element is PushToken)) {
       StorageUtil.deleteFirebaseConfig();

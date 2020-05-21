@@ -115,7 +115,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               initialValue: _label,
               key: _nameInputKey,
               onChanged: (value) => this.setState(() => _selectedName = value),
-              decoration: InputDecoration(labelText: Localization.of(context).nameHint),
+              decoration:
+                  InputDecoration(labelText: Localization.of(context).nameHint),
               validator: (value) {
                 if (value.isEmpty) {
                   return Localization.of(context).nameHint;
@@ -291,10 +292,9 @@ class _PushWidgetState extends _TokenWidgetState {
           name: "token_widgets.dart");
 
       _showMessage(
-          "Token ${_token.label} has different firebase configuration "
-          "that the existing configuration, currently only one "
-          "firebase project is supported.",
-          5); // TODO translate
+          Localization.of(context)
+              .errorOnlyOneFirebaseProjectIsSupported(_token.label),
+          5);
 
       setState(() {
         _rollOutFailed = true;
@@ -314,8 +314,7 @@ class _PushWidgetState extends _TokenWidgetState {
         _rollOutFailed = true;
       });
 
-      _showMessage("Token ${_token.label} is expired, rollout not possible.",
-          3); // TODO translate
+      _showMessage(Localization.of(context).errorTokenExpired(_token.label), 3);
     }
 
     if (_token.privateTokenKey == null) {
@@ -361,9 +360,9 @@ class _PushWidgetState extends _TokenWidgetState {
         });
 
         _showMessage(
-            "Rolling out token ${_token.label} failed."
-            "Error code: ${response.statusCode}",
-            3); // TODO translate
+            Localization.of(context)
+                .errorRollOutFailed(_token.label, response.statusCode),
+            3);
       }
     } on SocketException catch (e) {
       log("Roll out push token [$_token] failed.",
@@ -373,8 +372,7 @@ class _PushWidgetState extends _TokenWidgetState {
         _rollOutFailed = true;
       });
 
-      _showMessage(
-          "No internet connection, rollout not possible.", 3); // TODO translate
+      _showMessage(Localization.of(context).errorRollOutNoNetworkConnection, 3);
     } on Exception catch (e) {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
@@ -383,8 +381,7 @@ class _PushWidgetState extends _TokenWidgetState {
         _rollOutFailed = true;
       });
 
-      _showMessage("An unknown error occured, rollout not possible: $e",
-          5); // TODO translate
+      _showMessage(Localization.of(context).errorRollOutUnknownError(e), 5);
     }
   }
 
@@ -430,8 +427,8 @@ class _PushWidgetState extends _TokenWidgetState {
           sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
 
       if (response.statusCode == 200) {
-        _showMessage("Accepted push auth request for ${_token.label}.",
-            2); // TODO translate
+        _showMessage(
+            Localization.of(context).acceptPushAuthRequestFor(_token.label), 2);
         removeRequest(_token.pushRequests.pop());
       } else {
         log("Accepting push auth request failed.",
@@ -441,9 +438,9 @@ class _PushWidgetState extends _TokenWidgetState {
         setState(() => _acceptFailed = true);
 
         _showMessage(
-            "Accepting push auth request for ${_token.label} failed. "
-            "Error code: ${response.statusCode}",
-            3); // TODO translate
+            Localization.of(context).errorPushAuthRequestFailedFor(
+                _token.label, response.statusCode),
+            3);
       }
     } on SocketException catch (e) {
       log("Accept push auth request for [$_token] failed.",
@@ -458,7 +455,7 @@ class _PushWidgetState extends _TokenWidgetState {
       setState(() => _acceptFailed = true);
 
       _showMessage(
-          "An unknown error occured, accepting push authenticatinon"
+          "An unknown error occurred, accepting push authentication"
           " failed: $e",
           5); // TODO translate
     }
@@ -529,17 +526,16 @@ class _PushWidgetState extends _TokenWidgetState {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         RaisedButton(
-                          // TODO translate
                           child: _acceptFailed
                               ? Row(
                                   children: <Widget>[
-                                    Text("Retry"),
+                                    Text(Localization.of(context).retry),
                                     Icon(Icons.replay),
                                   ],
                                 )
                               : Row(
                                   children: <Widget>[
-                                    Text("Accept"),
+                                    Text(Localization.of(context).accept),
                                     Icon(Icons.check),
                                   ],
                                 ),
@@ -551,10 +547,9 @@ class _PushWidgetState extends _TokenWidgetState {
                               : null,
                         ),
                         RaisedButton(
-                          // TODO translate
                           child: Row(
                             children: <Widget>[
-                              Text("Decline"),
+                              Text(Localization.of(context).decline),
                               Icon(Icons.clear),
                             ],
                           ),
@@ -577,8 +572,7 @@ class _PushWidgetState extends _TokenWidgetState {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     RaisedButton(
-                      // TODO translate
-                      child: Text("Rollout failed, please try again."),
+                      child: Text(Localization.of(context).retryRollOut),
                       onPressed: _retryButtonIsEnabled
                           ? () {
                               _rollOutToken();
@@ -600,7 +594,7 @@ class _PushWidgetState extends _TokenWidgetState {
                 title: Column(
                   children: <Widget>[
                     CircularProgressIndicator(),
-                    Text('Rolling out'), // TODO Translate
+                    Text(Localization.of(context).rollingOut),
                   ],
                 ),
               ),
@@ -637,7 +631,8 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
       onLongPress: () {
         Clipboard.setData(ClipboardData(text: _otpValue));
         Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(Localization.of(context).otpValueCopiedMessage(_otpValue)),
+          content:
+              Text(Localization.of(context).otpValueCopiedMessage(_otpValue)),
         ));
       },
       child: _buildNonClickableTile(),

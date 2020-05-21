@@ -21,7 +21,8 @@ class Localization {
   static Localization of(BuildContext context) {
     // Widget tests will fail with called getter [getter] on null otherwise.
     //  This will use the default localization in that case.
-    return Localizations.of<Localization>(context, Localization) ?? Localization('');
+    return Localizations.of<Localization>(context, Localization) ??
+        Localization('');
   }
 
   String get next {
@@ -288,6 +289,144 @@ class Localization {
     return Intl.message(
       'Dark theme',
       desc: 'The dark theme.',
+      locale: localeName,
+    );
+  }
+
+  // ###########################################################################
+  //                                PUSH TOKENS:
+  // ###########################################################################
+
+  String errorOnlyOneFirebaseProjectIsSupported(var name) {
+    return Intl.message(
+      "Token $name has different firebase configuration "
+      "that the existing configuration, currently only one "
+      "firebase project is supported.",
+      name: 'errorOnlyOneFirebaseProjectIsSupported',
+      args: [name],
+      examples: const {'name': 'PUSH1234A'},
+      desc: 'Tells the user that the token can not be used because'
+          ' it has a different firebase configuration than the current'
+          ' used configuration of the application.',
+      locale: localeName,
+    );
+  }
+
+  String errorTokenExpired(var name) {
+    return Intl.message(
+      "Token $name is expired, roll-out not possible.",
+      name: 'errorTokenExpired',
+      args: [name],
+      examples: const {'name': 'PUSH1234A'},
+      desc:
+          'Tells the user that the token can not be rolled out, because it expired.',
+      locale: localeName,
+    );
+  }
+
+  String errorRollOutFailed(String name, var errorCode) {
+    return Intl.message(
+      "Rolling out token $name failed."
+      "Error code: $errorCode",
+      name: "errorRollOutFailed",
+      args: [name, errorCode],
+      examples: const {'name': 'PUSH1234A', 'errorCode': "500"},
+      desc:
+          'Tells the user that the token could not be rolled out, because a network error occured.',
+      locale: localeName,
+    );
+  }
+
+  String get errorRollOutNoNetworkConnection {
+    return Intl.message(
+      "No network connection, roll-out not possible.",
+      name: 'errorRollOutNoNetworkConnection',
+      desc: 'Tells the user that the roll-out failed because '
+          'no network connection is available.',
+      locale: localeName,
+    );
+  }
+
+  String errorRollOutUnknownError(var e) {
+    return Intl.message(
+      "An unknown error occurred, roll-out not possible: $e",
+      name: 'errorRollOutUnknownError',
+      args: [e],
+      examples: const {'e': 'IllegalArgumentException on Line 5 ...'},
+      desc:
+          'Tells the user that the roll-out failed because of an unknown error.',
+      locale: localeName,
+    );
+  }
+
+  String acceptPushAuthRequestFor(String name) {
+    return Intl.message(
+      "Accepted push auth request for $name.",
+      name: "acceptPushAuthRequestFor",
+      args: [name],
+      examples: const {'name': 'PUSH1234A'},
+      desc:
+          'Tells the user that a push request for a specific token was accepted.',
+      locale: localeName,
+    );
+  }
+
+  String errorPushAuthRequestFailedFor(String name, var errorCode) {
+    return Intl.message(
+      "Accepting push auth request for $name failed. "
+      "Error code: $errorCode",
+      name: "errorPushAuthRequestFailedFor",
+      args: [name, errorCode],
+      examples: const {'name': 'PUSH1234A', 'errorCode': "500"},
+      desc:
+          'Tells the user that a push auth request could not be accepted for a token.',
+      locale: localeName,
+    );
+  }
+
+  String get retry {
+    return Intl.message(
+      "Retry",
+      name: 'retry',
+      desc: 'Label for e.g. a button. Something is tried to be done again.',
+      locale: localeName,
+    );
+  }
+
+  String get accept {
+    return Intl.message(
+      "Accept",
+      name: 'accept',
+      desc: 'Label for e.g. a button. Something gets accepted by the user.',
+      locale: localeName,
+    );
+  }
+
+  String get decline {
+    return Intl.message(
+      "Decline",
+      name: 'decline',
+      desc: 'Label for e.g. a button. Something gets declined by the user.',
+      locale: localeName,
+    );
+  }
+
+  String get rollingOut {
+    return Intl.message(
+      "Rolling out",
+      name: 'rollingOut',
+      desc: 'Label that tells the user that ta token is being rolled out.',
+      locale: localeName,
+    );
+  }
+
+  String get retryRollOut {
+    return Intl.message(
+      "Roll-out failed, please try again.",
+      name: 'retryRollOut',
+      desc:
+          'Label for e.g. a button. Tells the user that rolling out the token '
+          'failed. Roll out can be retried by clicking this button.',
       locale: localeName,
     );
   }
