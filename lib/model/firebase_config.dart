@@ -60,7 +60,7 @@ class FirebaseConfig {
 
   @override
   String toString() {
-    return 'FirebaseConfig{_projectID: $_projectID, '
-        '_projectNumber: $_projectNumber, _appID: $_appID, _apiKey: $_apiKey}';
+    return 'FirebaseConfig{_projectID: $_projectID,'
+        ' _projectNumber: $_projectNumber, _appID: $_appID, _apiKey: $_apiKey}';
   }
 }

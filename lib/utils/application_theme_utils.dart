@@ -39,9 +39,9 @@ ThemeData getApplicationTheme(Brightness brightness) {
   final ButtonThemeData buttonTheme = ButtonThemeData(
     textTheme: ButtonTextTheme.accent,
     colorScheme: thisThemeData.buttonTheme.colorScheme.copyWith(
-          primary: accentColor,
-          secondary: isDark ? Colors.black : Colors.white,
-        ),
+      primary: accentColor,
+      secondary: isDark ? Colors.black : Colors.white,
+    ),
   );
 
   return thisThemeData.copyWith(

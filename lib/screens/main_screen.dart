@@ -276,8 +276,7 @@ class _MainScreenState extends State<MainScreen> {
       // TODO check if it is already initialized?
       var initializationSettingsAndroid =
           AndroidInitializationSettings('app_icon');
-      var initializationSettingsIOS =
-          IOSInitializationSettings(); // FIXME Is onDIdReceiveLocalNotification necessary here?
+      var initializationSettingsIOS = IOSInitializationSettings();
       var initializationSettings = InitializationSettings(
           initializationSettingsAndroid, initializationSettingsIOS);
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
@@ -294,15 +293,12 @@ class _MainScreenState extends State<MainScreen> {
     FirebaseMessaging firebaseMessaging = FirebaseMessaging()
       ..setApplicationName(name);
 
-    // This can only be denied on iOS.
     if (Platform.isIOS &&
         !await firebaseMessaging.requestNotificationPermissions()) {
-//      return null; // TODO How to handle this case right?
-      // TODO What happens on iOS, if this is not permitted?
+      return null; // TODO How to handle this case right?
     }
 
-    // FIXME: onResume and onLaunch is not configured see, when is that used
-    //   anyway?
+    // FIXME: onResume and onLaunch is not configured see:
     //  https://pub.dev/packages/firebase_messaging#-readme-tab-
     //  but the solution there does not seem to work?
     firebaseMessaging.configure(
@@ -343,7 +339,6 @@ class _MainScreenState extends State<MainScreen> {
     log("Foreground message recieved.",
         name: "main_screen.dart", error: message);
     setState(() async {
-      debugPrint("$message");
       _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), false);
       _loadAllTokens();
     });
@@ -351,13 +346,8 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _handleIncomingRequest(
       Map<String, dynamic> message, List<Token> tokenList, bool inBackground) {
-    // iOS handles the data differently, 'data' block does not exist there.
-    var data = (Platform.isIOS ? message : message['data']);
+    var data = Platform.isIOS ? message : message['data'];
 
-    // TODO handle message in wrong format
-//    data.forEach((key, value) => print('$key = $value'));
-
-    // TODO Handle uri error
     Uri requestUri = Uri.parse(data['url']);
     String requestedSerial = data['serial'];
 
@@ -371,7 +361,6 @@ class _MainScreenState extends State<MainScreen> {
         if (token.serial == requestedSerial && token.isRolledOut) {
           log('Token matched requested token',
               name: 'main_screen.dart', error: token);
-          // {nonce}|{url}|{serial}|{question}|{title}|{sslverify} in BASE32
           String signature = data['signature'];
           String signedData = '${data['nonce']}|'
               '${data['url']}|'
@@ -394,8 +383,9 @@ class _MainScreenState extends State<MainScreen> {
                 data['nonce'],
                 data['sslverify'] == '1' ? true : false,
                 Uuid().v4().hashCode,
-                expirationDate: DateTime.now().add(Duration(
-                    minutes: 2))); // // Push requests expire after 2 minutes.
+                expirationDate: DateTime.now().add(
+                  Duration(minutes: 2),
+                )); // Push requests expire after 2 minutes.
 
             if (!token.pushRequests.contains(pushRequest)) {
               token.pushRequests.add(pushRequest);
@@ -429,12 +419,13 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _showNotification(
       PushToken token, PushRequest pushRequest, bool silent) async {
-//    silent = false; // TODO 'Silent' does not seem to work?
+    //silent = false;
 
-    // TODO Handle different priorities
+    // TODO Handle different priorities?
 
+    // TODO change priority?
     var iOSPlatformChannelSpecifics =
-        IOSNotificationDetails(presentSound: silent);
+        IOSNotificationDetails(presentSound: !silent);
 
     // TODO configure - Do we need channel ids?
     var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
