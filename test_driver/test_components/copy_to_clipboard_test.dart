@@ -20,6 +20,8 @@
 
 // Imports the Flutter Driver API.
 
+import 'dart:io';
+
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
@@ -58,11 +60,11 @@ void copyToClipboardTest() {
           find.ancestor(
               of: find.text("Name"), matching: find.byType("TextFormField")));
 
-      await driver.tap(find.text('PASTE'));
+      String pasteText =
+          Platform.operatingSystem == 'linux' ? "PASTE" : "Paste";
+      await driver.tap(find.text(pasteText));
 
       await driver.waitFor(find.text('149049'));
-
-      Future.delayed(Duration(seconds: 5));
     });
   });
 }
