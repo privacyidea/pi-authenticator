@@ -63,16 +63,20 @@ class StorageUtil {
   }
 
   /// Deletes the saved json of [token] from the secure storage.
-  static void deleteToken(Token token) async {
+  static Future<void> deleteToken(Token token) async {
     String key = token.id;
 
-    await _storage.delete(key: key);
+    return _storage.delete(key: key);
   }
 
   static const _FIREBASE_CONFIG_KEY = "sdfkjhfhknvcnell";
 
   static void saveOrReplaceFirebaseConfig(FirebaseConfig config) async {
     await _storage.write(key: _FIREBASE_CONFIG_KEY, value: jsonEncode(config));
+  }
+
+  static void deleteFirebaseConfig() async {
+    await _storage.delete(key: _FIREBASE_CONFIG_KEY);
   }
 
   static Future<bool> firebaseConfigExists() async {

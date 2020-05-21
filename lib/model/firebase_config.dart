@@ -57,4 +57,10 @@ class FirebaseConfig {
       fc.apiKey == apiKey;
 
   int get hashCode => projectID.hashCode ^ projectNumber.hashCode;
+
+  @override
+  String toString() {
+    return 'FirebaseConfig{_projectID: $_projectID,'
+        ' _projectNumber: $_projectNumber, _appID: $_appID, _apiKey: $_apiKey}';
+  }
 }

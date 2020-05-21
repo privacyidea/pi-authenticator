@@ -20,6 +20,7 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -68,6 +69,14 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _loadFirebase() async {
+    // If no push tokens exist, the firebase config should be deleted here.
+    // TODO Delete the firebase config when the last push token was removed also.
+    if (!(await StorageUtil.loadAllTokens())
+        .any((element) => element is PushToken)) {
+      StorageUtil.deleteFirebaseConfig();
+      return;
+    }
+
     if (await StorageUtil.firebaseConfigExists()) {
       _initFirebase(await StorageUtil.loadFirebaseConfig());
     }
@@ -220,41 +229,11 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<PushToken> _buildPushToken(
       Map<String, dynamic> uriMap, String uuid) async {
-//    otpauth://
-//    pipush/
-//        PIPU00028E46 ## for token
-//        ?
-//
-//    &v=1 ## for parsing
-//
-//    ##### TOKEN
-//    &issuer=privacyIDEA ## for token
-//    &serial=PIPU00028E46 ## for token
-//
-//    ##### 2. STEP
-//    &sslverify=0 ## for 2. enrollment step
-//    &enrollment_credential=9XXXXXXX7 ## for 2. enrollment step
-//    &url=https%3A//XX.XX.XX.XX/ttype/push ## for 2. enrollment step
-//    &ttl=2 ## for 2. enrollment step
-//
-//    ##### FCM
-//    &projectnumber=6XXXXXX4 ## for fcm init
-//    &projectid=XXXXX ## for fcm init
-//    &appid=1XXXXXXa9 ## for fcm init
-//    &apikey=AIzaXXXXXiRk ## for fcm init
-//    &appidios=AIzaSXXXXXvUWdiRk ## for fcm init
-//    &apikeyios=AIzXXXXXk ## for fcm init
-
-//    // TODO: Change this to work with ios, or change the parsing
-//    //  of the uri directly.
     FirebaseConfig firebaseConfig = FirebaseConfig(
         projectID: uriMap[URI_PROJECT_ID],
         projectNumber: uriMap[URI_PROJECT_NUMBER],
-        appID: uriMap[URI_APP_ID],
-        apiKey: uriMap[URI_API_KEY]);
-
-    // TODO remove firebase project when no push token exists anymore
-    String firebaseToken = await _initFirebase(firebaseConfig);
+        appID: Platform.isIOS ? uriMap[URI_APP_ID_IOS] : uriMap[URI_APP_ID],
+        apiKey: Platform.isIOS ? uriMap[URI_API_KEY_IOS] : uriMap[URI_API_KEY]);
 
     return PushToken(
       serial: uriMap[URI_SERIAL],
@@ -265,7 +244,7 @@ class _MainScreenState extends State<MainScreen> {
       expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
       enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
       url: uriMap[URI_ROLLOUT_URL],
-      firebaseToken: firebaseToken,
+      firebaseToken: await _initFirebase(firebaseConfig),
     );
   }
 
@@ -275,7 +254,7 @@ class _MainScreenState extends State<MainScreen> {
     log("Initializing firebase.", name: "main_screen.dart");
 
     // Used to identify a firebase app, this is nothing more than an id.
-    String name = "privacyIDEA Authenticator";
+    final String name = "privacyidea_authenticator";
 
     if (!await StorageUtil.firebaseConfigExists() ||
         await StorageUtil.loadFirebaseConfig() == config) {
@@ -294,13 +273,12 @@ class _MainScreenState extends State<MainScreen> {
         ),
       );
 
-      // TODO Configure local notifications.
-      // TODO add ios
-      // TODO check if it is already initialized
+      // TODO check if it is already initialized?
       var initializationSettingsAndroid =
           AndroidInitializationSettings('app_icon');
-      var initializationSettings =
-          InitializationSettings(initializationSettingsAndroid, null);
+      var initializationSettingsIOS = IOSInitializationSettings();
+      var initializationSettings = InitializationSettings(
+          initializationSettingsAndroid, initializationSettingsIOS);
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
     } else if (await StorageUtil.loadFirebaseConfig() != config) {
       log("Given firebase config does not equal the existing config.",
@@ -312,14 +290,15 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     // TODO Fix license
-    // TODO implement ios
     FirebaseMessaging firebaseMessaging = FirebaseMessaging()
       ..setApplicationName(name);
 
-    // TODO only ios, handle that
-//    await firebaseMessaging.requestNotificationPermissions();
+    if (Platform.isIOS &&
+        !await firebaseMessaging.requestNotificationPermissions()) {
+      return null; // TODO How to handle this case right?
+    }
 
-    // FIXME: onResume and onLaunch is not configured see
+    // FIXME: onResume and onLaunch is not configured see:
     //  https://pub.dev/packages/firebase_messaging#-readme-tab-
     //  but the solution there does not seem to work?
     firebaseMessaging.configure(
@@ -333,7 +312,9 @@ class _MainScreenState extends State<MainScreen> {
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
       },
-      onBackgroundMessage:
+      onBackgroundMessage: Platform.isIOS
+          ? null
+          : // iOS does not support this.
           myBackgroundMessageHandler, // FIXME There might be a bug when using local-notifications and firebase_messaging, see https://github.com/MaikuB/flutter_local_notifications/tree/master/flutter_local_notifications
     );
 
@@ -365,12 +346,10 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _handleIncomingRequest(
       Map<String, dynamic> message, List<Token> tokenList, bool inBackground) {
-    // TODO handle message in wrong format
-    message['data'].forEach((key, value) => print('$key = $value'));
+    var data = Platform.isIOS ? message : message['data'];
 
-    // TODO Handle uri error
-    String requestedSerial = message['data']['serial'];
-    Uri requestUri = Uri.parse(message['data']['url']);
+    Uri requestUri = Uri.parse(data['url']);
+    String requestedSerial = data['serial'];
 
     log('Incoming push auth request for token with serial.',
         name: 'main_screen.dart', error: requestedSerial);
@@ -382,14 +361,13 @@ class _MainScreenState extends State<MainScreen> {
         if (token.serial == requestedSerial && token.isRolledOut) {
           log('Token matched requested token',
               name: 'main_screen.dart', error: token);
-          // {nonce}|{url}|{serial}|{question}|{title}|{sslverify} in BASE32
-          String signature = message['data']['signature'];
-          String signedData = '${message['data']['nonce']}|'
-              '${message['data']['url']}|'
-              '${message['data']['serial']}|'
-              '${message['data']['question']}|'
-              '${message['data']['title']}|'
-              '${message['data']['sslverify']}';
+          String signature = data['signature'];
+          String signedData = '${data['nonce']}|'
+              '${data['url']}|'
+              '${data['serial']}|'
+              '${data['question']}|'
+              '${data['title']}|'
+              '${data['sslverify']}';
 
           if (verifyRSASignature(token.publicServerKey, utf8.encode(signedData),
               base32.decode(signature))) {
@@ -399,14 +377,15 @@ class _MainScreenState extends State<MainScreen> {
                 name: 'main_screen.dart');
 
             PushRequest pushRequest = PushRequest(
-                message['data']['title'],
-                message['data']['question'],
+                data['title'],
+                data['question'],
                 requestUri,
-                message['data']['nonce'],
-                message['data']['sslverify'] == '1' ? true : false,
+                data['nonce'],
+                data['sslverify'] == '1' ? true : false,
                 Uuid().v4().hashCode,
-                expirationDate: DateTime.now().add(Duration(
-                    minutes: 2))); // // Push requests expire after 2 minutes.
+                expirationDate: DateTime.now().add(
+                  Duration(minutes: 2),
+                )); // Push requests expire after 2 minutes.
 
             if (!token.pushRequests.contains(pushRequest)) {
               token.pushRequests.add(pushRequest);
@@ -440,14 +419,13 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _showNotification(
       PushToken token, PushRequest pushRequest, bool silent) async {
-    silent = false;
+    //silent = false;
 
-    // TODO Handle different priorities
+    // TODO Handle different priorities?
 
-    // TODO change priority
-    // TODO support ios
+    // TODO change priority?
     var iOSPlatformChannelSpecifics =
-        IOSNotificationDetails(presentSound: silent);
+        IOSNotificationDetails(presentSound: !silent);
 
     // TODO configure - Do we need channel ids?
     var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
@@ -462,19 +440,16 @@ class _MainScreenState extends State<MainScreen> {
       'your channel description',
       ticker: 'ticker',
       playSound: silent,
-      styleInformation:
-          bigTextStyleInformation, // TODO add style information to display token name
+      styleInformation: bigTextStyleInformation, // To display token name.
     );
-
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(
       pushRequest.id.hashCode, // ID of the notification
       pushRequest.title,
       pushRequest.question,
-      platformChannelSpecifics,
-    ); // TODO add payload for automatic accept, when the notification is clicked?
+      NotificationDetails(
+          androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics),
+    );
   }
 
   ListView _buildTokenList() {
@@ -493,11 +468,17 @@ class _MainScreenState extends State<MainScreen> {
         itemCount: _tokenList.length);
   }
 
-  void _removeToken(Token token) {
+  void _removeToken(Token token) async {
+    await StorageUtil.deleteToken(token);
+
+    if (!(await StorageUtil.loadAllTokens())
+        .any((element) => element is PushToken)) {
+      StorageUtil.deleteFirebaseConfig();
+    }
+
     setState(() {
       print("Remove: $token");
       _tokenList.remove(token);
-      StorageUtil.deleteToken(token);
     });
   }
 

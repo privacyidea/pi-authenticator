@@ -853,7 +853,7 @@ void _testRSASigning() {
 
       expect(
           true, verifyRSASignature(publicKey, utf8.encode(message), signature));
-    }, timeout: Timeout(Duration(seconds: 60)));
+    }, timeout: Timeout(Duration(minutes: 5)));
 
     test('Signature is invalid', () async {
       var asymmetricKeyPair = await generateRSAKeyPair();
@@ -870,7 +870,7 @@ void _testRSASigning() {
               publicKey,
               utf8.encode('I am not the signature you are looking for.'),
               signature));
-    }, timeout: Timeout(Duration(seconds: 60)));
+    }, timeout: Timeout(Duration(minutes: 5)));
 
     test('Signature is invalid because of flipped parameters', () async {
       var asymmetricKeyPair = await generateRSAKeyPair();
@@ -883,8 +883,8 @@ void _testRSASigning() {
 
       expect(false,
           verifyRSASignature(publicKey, signature, utf8.encode(message)));
-    }, timeout: Timeout(Duration(seconds: 60)));
-  }, timeout: Timeout(Duration(seconds: 300)));
+    }, timeout: Timeout(Duration(minutes: 5)));
+  }, timeout: Timeout(Duration(minutes: 16)));
 }
 
 void _testSerializingRSAKeys() {
