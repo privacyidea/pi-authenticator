@@ -75,7 +75,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          L10n.of(context).addManuallyTitle,
+          Localization.of(context).addManuallyTitle,
           textScaleFactor: screenTitleScaleFactor,
         ),
       ),
@@ -85,24 +85,24 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
           children: <Widget>[
             _buildTextInputForm(),
             _buildDropdownButtonWithLabel(
-                L10n.of(context).encoding, _selectedEncoding, Encodings.values),
-            _buildDropdownButtonWithLabel(L10n.of(context).algorithm,
+                Localization.of(context).encoding, _selectedEncoding, Encodings.values),
+            _buildDropdownButtonWithLabel(Localization.of(context).algorithm,
                 _selectedAlgorithm, Algorithms.values),
             _buildDropdownButtonWithLabel(
-                L10n.of(context).digits, _selectedDigits, allowedDigits),
-            _buildDropdownButtonWithLabel(L10n.of(context).type, _selectedType,
+                Localization.of(context).digits, _selectedDigits, allowedDigits),
+            _buildDropdownButtonWithLabel(Localization.of(context).type, _selectedType,
                 List.from(TokenTypes.values)..remove(TokenTypes.PIPUSH)),
             Visibility(
 //               the period is only used by TOTP tokens
               visible: _selectedType.value == TokenTypes.TOTP,
               child: _buildDropdownButtonWithLabel(
-                  L10n.of(context).period, _selectedPeriod, allowedPeriods,
+                  Localization.of(context).period, _selectedPeriod, allowedPeriods,
                   postFix: 's'),
             ),
             SizedBox(
               width: double.infinity,
               child: RaisedButton(
-                child: Text(L10n.of(context).addToken),
+                child: Text(Localization.of(context).addToken),
                 onPressed: () => _returnTokenIfValid(),
               ),
             ),
@@ -209,10 +209,10 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             key: _nameInputKey,
             focusNode: _nameFieldFocus,
             onSaved: (value) => this.setState(() => _selectedName = value),
-            decoration: InputDecoration(labelText: L10n.of(context).nameHint),
+            decoration: InputDecoration(labelText: Localization.of(context).nameHint),
             validator: (value) {
               if (value.isEmpty) {
-                return L10n.of(context).hintEmptyName;
+                return Localization.of(context).hintEmptyName;
               }
               return null;
             },
@@ -223,14 +223,14 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             focusNode: _secretFieldFocus,
             onSaved: (value) => this.setState(() => _selectedSecret = value),
             decoration: InputDecoration(
-              labelText: L10n.of(context).secretHint,
+              labelText: Localization.of(context).secretHint,
             ),
             validator: (value) {
               if (value.isEmpty) {
 //                FocusScope.of(context).requestFocus(_secretFieldFocus);
-                return L10n.of(context).hintEmptySecret;
+                return Localization.of(context).hintEmptySecret;
               } else if (!isValidEncoding(value, _selectedEncoding.value)) {
-                return L10n.of(context).hintInvalidSecret;
+                return Localization.of(context).hintInvalidSecret;
               }
               return null;
             },

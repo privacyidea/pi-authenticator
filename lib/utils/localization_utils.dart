@@ -3,25 +3,25 @@ import 'package:intl/intl.dart';
 
 import '../l10n/messages_all.dart';
 
-class L10n {
+class Localization {
   String localeName;
 
-  L10n(this.localeName);
+  Localization(this.localeName);
 
-  static Future<L10n> load(Locale locale) {
+  static Future<Localization> load(Locale locale) {
     final String name =
         locale.countryCode.isEmpty ? locale.languageCode : locale.toString();
     final String localeName = Intl.canonicalizedLocale(name);
 
     return initializeMessages(localeName).then((_) {
-      return L10n(localeName);
+      return Localization(localeName);
     });
   }
 
-  static L10n of(BuildContext context) {
+  static Localization of(BuildContext context) {
     // Widget tests will fail with called getter [getter] on null otherwise.
     //  This will use the default localization in that case.
-    return Localizations.of<L10n>(context, L10n) ?? L10n('');
+    return Localizations.of<Localization>(context, Localization) ?? Localization('');
   }
 
   String get next {
@@ -293,7 +293,7 @@ class L10n {
   }
 }
 
-class MyLocalizationsDelegate extends LocalizationsDelegate<L10n> {
+class MyLocalizationsDelegate extends LocalizationsDelegate<Localization> {
   const MyLocalizationsDelegate();
 
   @override
@@ -302,12 +302,12 @@ class MyLocalizationsDelegate extends LocalizationsDelegate<L10n> {
   }
 
   @override
-  Future<L10n> load(Locale locale) {
-    return L10n.load(locale);
+  Future<Localization> load(Locale locale) {
+    return Localization.load(locale);
   }
 
   @override
-  bool shouldReload(LocalizationsDelegate<L10n> old) {
+  bool shouldReload(LocalizationsDelegate<Localization> old) {
     return false;
   }
 }
