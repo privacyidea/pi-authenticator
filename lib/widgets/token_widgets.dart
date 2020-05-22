@@ -116,10 +116,10 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               key: _nameInputKey,
               onChanged: (value) => this.setState(() => _selectedName = value),
               decoration:
-                  InputDecoration(labelText: Localization.of(context).nameHint),
+                  InputDecoration(labelText: Localization.of(context).name),
               validator: (value) {
                 if (value.isEmpty) {
-                  return Localization.of(context).nameHint;
+                  return Localization.of(context).name;
                 }
                 return null;
               },

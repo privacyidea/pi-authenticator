@@ -25,6 +25,34 @@ class Localization {
         Localization('');
   }
 
+  // ###########################################################################
+  // REUSABLE TEXTS (E.G. PART OF OTHER MESSAGES)
+  // ###########################################################################
+
+  String get noNetworkConnection {
+    return Intl.message(
+      "No network connection.",
+      name: 'noNetworkConnection',
+      desc:
+          'Text indicates that something can not be reached over the network.',
+      locale: localeName,
+    );
+  }
+
+  String get unknownError {
+    return Intl.message(
+      "An unknown error occurred.",
+      name: 'unknownError',
+      desc:
+          'Text indicates that something went wrong and an unknown error occured.',
+      locale: localeName,
+    );
+  }
+
+  // ###########################################################################
+  // WORDS (E.G. FOR BUTTONS)
+  // ###########################################################################
+
   String get next {
     return Intl.message(
       'Next',
@@ -41,40 +69,34 @@ class Localization {
     );
   }
 
-  String get settings {
+  String get retry {
     return Intl.message(
-      'Settings',
-      desc: 'Button to open the settings page.',
+      "Retry",
+      name: 'retry',
+      desc: 'Label for e.g. a button. Something is tried to be done again.',
       locale: localeName,
     );
   }
 
-  String get addManually {
+  String get accept {
     return Intl.message(
-      'Add token',
-      desc: 'The button to open the screen to add tokens by hand.',
+      "Accept",
+      name: 'accept',
+      desc: 'Label for e.g. a button. Something gets accepted by the user.',
       locale: localeName,
     );
   }
 
-  String get scanQr {
+  String get decline {
     return Intl.message(
-      'Scan QR-Code',
-      desc: 'The button to scan otpauto qr-codes.',
+      "Decline",
+      name: 'decline',
+      desc: 'Label for e.g. a button. Something gets declined by the user.',
       locale: localeName,
     );
   }
 
-  String get addManuallyTitle {
-    return Intl.message(
-      'Enter details for token',
-      desc: 'Title of the screen where tokens are created manually,'
-          ' tells the user to enter all required values.',
-      locale: localeName,
-    );
-  }
-
-  String get nameHint {
+  String get name {
     return Intl.message(
       'Name',
       desc: 'Describes the field where the tokens name should be entered.',
@@ -82,7 +104,7 @@ class Localization {
     );
   }
 
-  String get secretHint {
+  String get secret {
     return Intl.message(
       'Secret',
       desc: 'Describes the field where the tokens secret should be entered.',
@@ -133,20 +155,72 @@ class Localization {
     );
   }
 
+  String get rename {
+    return Intl.message(
+      'Rename',
+      desc: 'Label that describes renaming the token.',
+      locale: localeName,
+    );
+  }
+
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      desc: 'Button to cancel an action.',
+      locale: localeName,
+    );
+  }
+
+  String get delete {
+    return Intl.message(
+      'Delete',
+      desc: 'Label that describes deleting the token.',
+      locale: localeName,
+    );
+  }
+
+  String get dismiss {
+    return Intl.message(
+      'Dismiss',
+      desc: 'Text of a button that closes a dialog.',
+      locale: localeName,
+    );
+  }
+
+  // ###########################################################################
+  // OTHERS
+  // ###########################################################################
+
+  String get addManually {
+    return Intl.message(
+      'Add token',
+      desc: 'The button to open the screen to add tokens by hand.',
+      locale: localeName,
+    );
+  }
+
+  String get scanQr {
+    return Intl.message(
+      'Scan QR-Code',
+      desc: 'The button to scan otpauto qr-codes.',
+      locale: localeName,
+    );
+  }
+
+  String get addManuallyTitle {
+    return Intl.message(
+      'Enter details for token',
+      desc: 'Title of the screen where tokens are created manually,'
+          ' tells the user to enter all required values.',
+      locale: localeName,
+    );
+  }
+
   String get addToken {
     return Intl.message(
       'Add token',
       desc:
           'Button to add the token for which the values where added in this screen.',
-      locale: localeName,
-    );
-  }
-
-  String get toolTipAddToken {
-    return Intl.message(
-      'Add tokens',
-      desc:
-          'Tooltip for the button that opens the selection for adding tokens.',
       locale: localeName,
     );
   }
@@ -176,34 +250,10 @@ class Localization {
     );
   }
 
-  String get rename {
-    return Intl.message(
-      'Rename',
-      desc: 'Label that describes renaming the token.',
-      locale: localeName,
-    );
-  }
-
   String get renameDialogTitle {
     return Intl.message(
       'Rename token',
       desc: 'Title of the dialog where a new name for a token can be entered.',
-      locale: localeName,
-    );
-  }
-
-  String get cancel {
-    return Intl.message(
-      'Cancel',
-      desc: 'Button to cancel an action.',
-      locale: localeName,
-    );
-  }
-
-  String get delete {
-    return Intl.message(
-      'Delete',
-      desc: 'Label that describes deleting the token.',
       locale: localeName,
     );
   }
@@ -216,6 +266,7 @@ class Localization {
     );
   }
 
+  // TODO Change this to accept parameter!
   String get areYouSure {
     return Intl.message(
       'Are you sure you want to delete',
@@ -250,14 +301,6 @@ class Localization {
     );
   }
 
-  String get dismiss {
-    return Intl.message(
-      'Dismiss',
-      desc: 'Text of a button that closes a dialog.',
-      locale: localeName,
-    );
-  }
-
   String otpValueCopiedMessage(var otpValue) {
     return Intl.message(
       'Password "$otpValue" copied to clipboard.',
@@ -265,6 +308,18 @@ class Localization {
       args: [otpValue],
       examples: const {'otpValue': '055374'},
       desc: 'Tells the user that the otp value was copied to the clipboard.',
+      locale: localeName,
+    );
+  }
+
+  // ###########################################################################
+  // SETTINGS
+  // ###########################################################################
+
+  String get settings {
+    return Intl.message(
+      'Settings',
+      desc: 'Button to open the settings page.',
       locale: localeName,
     );
   }
@@ -339,7 +394,7 @@ class Localization {
 
   String get errorRollOutNoNetworkConnection {
     return Intl.message(
-      "No network connection, roll-out not possible.",
+      noNetworkConnection + " Roll-out not possible.",
       name: 'errorRollOutNoNetworkConnection',
       desc: 'Tells the user that the roll-out failed because '
           'no network connection is available.',
@@ -349,7 +404,7 @@ class Localization {
 
   String errorRollOutUnknownError(var e) {
     return Intl.message(
-      "An unknown error occurred, roll-out not possible: $e",
+      unknownError + " Roll-out not possible: $e",
       name: 'errorRollOutUnknownError',
       args: [e],
       examples: const {'e': 'IllegalArgumentException on Line 5 ...'},
@@ -378,7 +433,7 @@ class Localization {
       args: [name],
       examples: const {'name': 'PUSH1234A'},
       desc:
-      'Tells the user that a push request for a specific token was declined.',
+          'Tells the user that a push request for a specific token was declined.',
       locale: localeName,
     );
   }
@@ -396,38 +451,11 @@ class Localization {
     );
   }
 
-  String get retry {
-    return Intl.message(
-      "Retry",
-      name: 'retry',
-      desc: 'Label for e.g. a button. Something is tried to be done again.',
-      locale: localeName,
-    );
-  }
-
-  String get accept {
-    return Intl.message(
-      "Accept",
-      name: 'accept',
-      desc: 'Label for e.g. a button. Something gets accepted by the user.',
-      locale: localeName,
-    );
-  }
-
-  String get decline {
-    return Intl.message(
-      "Decline",
-      name: 'decline',
-      desc: 'Label for e.g. a button. Something gets declined by the user.',
-      locale: localeName,
-    );
-  }
-
   String get rollingOut {
     return Intl.message(
       "Rolling out",
       name: 'rollingOut',
-      desc: 'Label that tells the user that ta token is being rolled out.',
+      desc: 'Label that tells the user that the token is being rolled out.',
       locale: localeName,
     );
   }
@@ -445,7 +473,7 @@ class Localization {
 
   String get errorAuthenticationNotPossibleWithoutNetworkAccess {
     return Intl.message(
-      "No internet connection, authentication not possible.",
+      noNetworkConnection + " Authentication not possible.",
       name: 'errorAuthenticationNotPossibleWithoutNetworkAccess',
       desc: 'Error message tell the user that accepting a push request failed.',
       locale: localeName,
@@ -454,8 +482,7 @@ class Localization {
 
   String errorAuthenticationFailedUnknownError(var e) {
     return Intl.message(
-      "An unknown error occurred, accepting push authentication"
-      " failed: $e",
+      unknownError + " Accepting push authentication failed: $e",
       name: 'errorAuthenticationFailedUnknownError',
       desc: "Tells the user that the authentication could not be accepted "
           "because of an unknown error.",

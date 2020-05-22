@@ -84,19 +84,23 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
         child: Column(
           children: <Widget>[
             _buildTextInputForm(),
-            _buildDropdownButtonWithLabel(
-                Localization.of(context).encoding, _selectedEncoding, Encodings.values),
+            _buildDropdownButtonWithLabel(Localization.of(context).encoding,
+                _selectedEncoding, Encodings.values),
             _buildDropdownButtonWithLabel(Localization.of(context).algorithm,
                 _selectedAlgorithm, Algorithms.values),
+            _buildDropdownButtonWithLabel(Localization.of(context).digits,
+                _selectedDigits, allowedDigits),
             _buildDropdownButtonWithLabel(
-                Localization.of(context).digits, _selectedDigits, allowedDigits),
-            _buildDropdownButtonWithLabel(Localization.of(context).type, _selectedType,
+                Localization.of(context).type,
+                _selectedType,
                 List.from(TokenTypes.values)..remove(TokenTypes.PIPUSH)),
             Visibility(
 //               the period is only used by TOTP tokens
               visible: _selectedType.value == TokenTypes.TOTP,
               child: _buildDropdownButtonWithLabel(
-                  Localization.of(context).period, _selectedPeriod, allowedPeriods,
+                  Localization.of(context).period,
+                  _selectedPeriod,
+                  allowedPeriods,
                   postFix: 's'),
             ),
             SizedBox(
@@ -209,7 +213,8 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             key: _nameInputKey,
             focusNode: _nameFieldFocus,
             onSaved: (value) => this.setState(() => _selectedName = value),
-            decoration: InputDecoration(labelText: Localization.of(context).nameHint),
+            decoration:
+                InputDecoration(labelText: Localization.of(context).name),
             validator: (value) {
               if (value.isEmpty) {
                 return Localization.of(context).hintEmptyName;
@@ -223,7 +228,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             focusNode: _secretFieldFocus,
             onSaved: (value) => this.setState(() => _selectedSecret = value),
             decoration: InputDecoration(
-              labelText: Localization.of(context).secretHint,
+              labelText: Localization.of(context).secret,
             ),
             validator: (value) {
               if (value.isEmpty) {
