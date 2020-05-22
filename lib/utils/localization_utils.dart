@@ -26,30 +26,6 @@ class Localization {
   }
 
   // ###########################################################################
-  // REUSABLE TEXTS (E.G. PART OF OTHER MESSAGES)
-  // ###########################################################################
-
-  String get noNetworkConnection {
-    return Intl.message(
-      "No network connection.",
-      name: 'noNetworkConnection',
-      desc:
-          'Text indicates that something can not be reached over the network.',
-      locale: localeName,
-    );
-  }
-
-  String get unknownError {
-    return Intl.message(
-      "An unknown error occurred.",
-      name: 'unknownError',
-      desc:
-          'Text indicates that something went wrong and an unknown error occured.',
-      locale: localeName,
-    );
-  }
-
-  // ###########################################################################
   // WORDS (E.G. FOR BUTTONS)
   // ###########################################################################
 
@@ -394,7 +370,7 @@ class Localization {
 
   String get errorRollOutNoNetworkConnection {
     return Intl.message(
-      noNetworkConnection + " Roll-out not possible.",
+      "No network connection. Roll-out not possible.",
       name: 'errorRollOutNoNetworkConnection',
       desc: 'Tells the user that the roll-out failed because '
           'no network connection is available.',
@@ -404,7 +380,7 @@ class Localization {
 
   String errorRollOutUnknownError(var e) {
     return Intl.message(
-      unknownError + " Roll-out not possible: $e",
+      "An unknown error occurred. Roll-out not possible: $e",
       name: 'errorRollOutUnknownError',
       args: [e],
       examples: const {'e': 'IllegalArgumentException on Line 5 ...'},
@@ -473,7 +449,7 @@ class Localization {
 
   String get errorAuthenticationNotPossibleWithoutNetworkAccess {
     return Intl.message(
-      noNetworkConnection + " Authentication not possible.",
+      "No network connection. Authentication not possible.",
       name: 'errorAuthenticationNotPossibleWithoutNetworkAccess',
       desc: 'Error message tell the user that accepting a push request failed.',
       locale: localeName,
@@ -482,8 +458,10 @@ class Localization {
 
   String errorAuthenticationFailedUnknownError(var e) {
     return Intl.message(
-      unknownError + " Accepting push authentication failed: $e",
+      "An unknown error occurred. Accepting push authentication failed: $e",
       name: 'errorAuthenticationFailedUnknownError',
+      args: [e],
+      examples: const {'e': 'IllegalArgumentException on line 5, ...'},
       desc: "Tells the user that the authentication could not be accepted "
           "because of an unknown error.",
       locale: localeName,
