@@ -447,23 +447,23 @@ class _PushWidgetState extends _TokenWidgetState {
           name: "token_widgets.dart", error: e);
       setState(() => _acceptFailed = true);
 
-      _showMessage("No internet connection, authentication not possible.",
-          3); // TODO translate
+      _showMessage(
+          Localization.of(context)
+              .errorAuthenticationNotPossibleWithoutNetworkAccess,
+          3);
     } on Exception catch (e) {
       log("Accept push auth request for [$_token] failed.",
           name: "token_widgets.dart", error: e);
       setState(() => _acceptFailed = true);
 
       _showMessage(
-          "An unknown error occurred, accepting push authentication"
-          " failed: $e",
-          5); // TODO translate
+          Localization.of(context).errorAuthenticationFailedUnknownError(e), 5);
     }
   }
 
   void declineRequest() async {
     _showMessage(
-        "Declined push auth request for ${_token.label}.", 2); // TODO translate
+        Localization.of(context).decliningPushAuthRequestFor(_token.label), 2);
     removeRequest(_token.pushRequests.pop());
   }
 

@@ -371,6 +371,18 @@ class Localization {
     );
   }
 
+  String decliningPushAuthRequestFor(String name) {
+    return Intl.message(
+      "Declined push auth request for $name.",
+      name: "decliningPushAuthRequestFor",
+      args: [name],
+      examples: const {'name': 'PUSH1234A'},
+      desc:
+      'Tells the user that a push request for a specific token was declined.',
+      locale: localeName,
+    );
+  }
+
   String errorPushAuthRequestFailedFor(String name, var errorCode) {
     return Intl.message(
       "Accepting push auth request for $name failed. "
@@ -427,6 +439,26 @@ class Localization {
       desc:
           'Label for e.g. a button. Tells the user that rolling out the token '
           'failed. Roll out can be retried by clicking this button.',
+      locale: localeName,
+    );
+  }
+
+  String get errorAuthenticationNotPossibleWithoutNetworkAccess {
+    return Intl.message(
+      "No internet connection, authentication not possible.",
+      name: 'errorAuthenticationNotPossibleWithoutNetworkAccess',
+      desc: 'Error message tell the user that accepting a push request failed.',
+      locale: localeName,
+    );
+  }
+
+  String errorAuthenticationFailedUnknownError(var e) {
+    return Intl.message(
+      "An unknown error occurred, accepting push authentication"
+      " failed: $e",
+      name: 'errorAuthenticationFailedUnknownError',
+      desc: "Tells the user that the authentication could not be accepted "
+          "because of an unknown error.",
       locale: localeName,
     );
   }
