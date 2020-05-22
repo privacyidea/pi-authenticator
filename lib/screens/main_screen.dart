@@ -70,7 +70,6 @@ class _MainScreenState extends State<MainScreen> {
 
   _loadFirebase() async {
     // If no push tokens exist, the firebase config should be deleted here.
-    // TODO Delete the firebase config when the last push token was removed also.
     if (!(await StorageUtil.loadAllTokens())
         .any((element) => element is PushToken)) {
       StorageUtil.deleteFirebaseConfig();
@@ -107,7 +106,7 @@ class _MainScreenState extends State<MainScreen> {
       body: _buildTokenList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _scanQRCode(),
-        tooltip: L10n.of(context).scanQRTooltip,
+        tooltip: Localization.of(context).scanQRTooltip,
         child: Icon(Icons.add),
       ),
     );
@@ -521,17 +520,17 @@ class _MainScreenState extends State<MainScreen> {
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
             value: "about",
-            child: Text(L10n.of(context).about),
+            child: Text(Localization.of(context).about),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "add_manually",
-            child: Text(L10n.of(context).addManually),
+            child: Text(Localization.of(context).addManually),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "settings",
-            child: Text(L10n.of(context).settings),
+            child: Text(Localization.of(context).settings),
           ),
         ],
       ),

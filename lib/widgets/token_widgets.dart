@@ -86,13 +86,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       child: _buildTile(),
       secondaryActions: <Widget>[
         IconSlideAction(
-          caption: L10n.of(context).delete,
+          caption: Localization.of(context).delete,
           color: getTonedColor(Colors.red, isDarkModeOn(context)),
           icon: Icons.delete,
           onTap: () => _deleteTokenDialog(),
         ),
         IconSlideAction(
-          caption: L10n.of(context).rename,
+          caption: Localization.of(context).rename,
           color: getTonedColor(Colors.blue, isDarkModeOn(context)),
           icon: Icons.edit,
           onTap: () => _renameTokenDialog(),
@@ -109,16 +109,17 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(L10n.of(context).renameDialogTitle),
+            title: Text(Localization.of(context).renameDialogTitle),
             content: TextFormField(
               autofocus: true,
               initialValue: _label,
               key: _nameInputKey,
               onChanged: (value) => this.setState(() => _selectedName = value),
-              decoration: InputDecoration(labelText: L10n.of(context).nameHint),
+              decoration:
+                  InputDecoration(labelText: Localization.of(context).name),
               validator: (value) {
                 if (value.isEmpty) {
-                  return L10n.of(context).nameHint;
+                  return Localization.of(context).name;
                 }
                 return null;
               },
@@ -126,14 +127,14 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             actions: <Widget>[
               FlatButton(
                 child: Text(
-                  L10n.of(context).cancel,
+                  Localization.of(context).cancel,
                   style: getDialogTextStyle(isDarkModeOn(context)),
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               FlatButton(
                 child: Text(
-                  L10n.of(context).rename,
+                  Localization.of(context).rename,
                   style: getDialogTextStyle(isDarkModeOn(context)),
                 ),
                 onPressed: () {
@@ -167,7 +168,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(L10n.of(context).deleteDialogTitle),
+            title: Text(Localization.of(context).deleteDialogTitle),
             content: RichText(
               text: TextSpan(
                   style: TextStyle(
@@ -175,7 +176,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   ),
                   children: [
                     TextSpan(
-                      text: L10n.of(context).areYouSure,
+                      text: Localization.of(context).areYouSure,
                       style: getDialogTextStyle(isDarkModeOn(context)),
                     ),
                     TextSpan(
@@ -190,7 +191,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               FlatButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
-                  L10n.of(context).cancel,
+                  Localization.of(context).cancel,
                   style: getDialogTextStyle(isDarkModeOn(context)),
                 ),
               ),
@@ -200,7 +201,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   Navigator.of(context).pop();
                 },
                 child: Text(
-                  L10n.of(context).delete,
+                  Localization.of(context).delete,
                   style: getDialogTextStyle(isDarkModeOn(context)),
                 ),
               ),
@@ -291,10 +292,9 @@ class _PushWidgetState extends _TokenWidgetState {
           name: "token_widgets.dart");
 
       _showMessage(
-          "Token ${_token.label} has different firebase configuration "
-          "that the existing configuration, currently only one "
-          "firebase project is supported.",
-          5); // TODO translate
+          Localization.of(context)
+              .errorOnlyOneFirebaseProjectIsSupported(_token.label),
+          5);
 
       setState(() {
         _rollOutFailed = true;
@@ -314,8 +314,7 @@ class _PushWidgetState extends _TokenWidgetState {
         _rollOutFailed = true;
       });
 
-      _showMessage("Token ${_token.label} is expired, rollout not possible.",
-          3); // TODO translate
+      _showMessage(Localization.of(context).errorTokenExpired(_token.label), 3);
     }
 
     if (_token.privateTokenKey == null) {
@@ -361,9 +360,9 @@ class _PushWidgetState extends _TokenWidgetState {
         });
 
         _showMessage(
-            "Rolling out token ${_token.label} failed."
-            "Error code: ${response.statusCode}",
-            3); // TODO translate
+            Localization.of(context)
+                .errorRollOutFailed(_token.label, response.statusCode),
+            3);
       }
     } on SocketException catch (e) {
       log("Roll out push token [$_token] failed.",
@@ -373,8 +372,7 @@ class _PushWidgetState extends _TokenWidgetState {
         _rollOutFailed = true;
       });
 
-      _showMessage(
-          "No internet connection, rollout not possible.", 3); // TODO translate
+      _showMessage(Localization.of(context).errorRollOutNoNetworkConnection, 3);
     } on Exception catch (e) {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
@@ -383,8 +381,7 @@ class _PushWidgetState extends _TokenWidgetState {
         _rollOutFailed = true;
       });
 
-      _showMessage("An unknown error occured, rollout not possible: $e",
-          5); // TODO translate
+      _showMessage(Localization.of(context).errorRollOutUnknownError(e), 5);
     }
   }
 
@@ -430,8 +427,8 @@ class _PushWidgetState extends _TokenWidgetState {
           sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
 
       if (response.statusCode == 200) {
-        _showMessage("Accepted push auth request for ${_token.label}.",
-            2); // TODO translate
+        _showMessage(
+            Localization.of(context).acceptPushAuthRequestFor(_token.label), 2);
         removeRequest(_token.pushRequests.pop());
       } else {
         log("Accepting push auth request failed.",
@@ -441,32 +438,32 @@ class _PushWidgetState extends _TokenWidgetState {
         setState(() => _acceptFailed = true);
 
         _showMessage(
-            "Accepting push auth request for ${_token.label} failed. "
-            "Error code: ${response.statusCode}",
-            3); // TODO translate
+            Localization.of(context).errorPushAuthRequestFailedFor(
+                _token.label, response.statusCode),
+            3);
       }
     } on SocketException catch (e) {
       log("Accept push auth request for [$_token] failed.",
           name: "token_widgets.dart", error: e);
       setState(() => _acceptFailed = true);
 
-      _showMessage("No internet connection, authentication not possible.",
-          3); // TODO translate
+      _showMessage(
+          Localization.of(context)
+              .errorAuthenticationNotPossibleWithoutNetworkAccess,
+          3);
     } on Exception catch (e) {
       log("Accept push auth request for [$_token] failed.",
           name: "token_widgets.dart", error: e);
       setState(() => _acceptFailed = true);
 
       _showMessage(
-          "An unknown error occured, accepting push authenticatinon"
-          " failed: $e",
-          5); // TODO translate
+          Localization.of(context).errorAuthenticationFailedUnknownError(e), 5);
     }
   }
 
   void declineRequest() async {
     _showMessage(
-        "Declined push auth request for ${_token.label}.", 2); // TODO translate
+        Localization.of(context).decliningPushAuthRequestFor(_token.label), 2);
     removeRequest(_token.pushRequests.pop());
   }
 
@@ -529,17 +526,16 @@ class _PushWidgetState extends _TokenWidgetState {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         RaisedButton(
-                          // TODO translate
                           child: _acceptFailed
                               ? Row(
                                   children: <Widget>[
-                                    Text("Retry"),
+                                    Text(Localization.of(context).retry),
                                     Icon(Icons.replay),
                                   ],
                                 )
                               : Row(
                                   children: <Widget>[
-                                    Text("Accept"),
+                                    Text(Localization.of(context).accept),
                                     Icon(Icons.check),
                                   ],
                                 ),
@@ -551,10 +547,9 @@ class _PushWidgetState extends _TokenWidgetState {
                               : null,
                         ),
                         RaisedButton(
-                          // TODO translate
                           child: Row(
                             children: <Widget>[
-                              Text("Decline"),
+                              Text(Localization.of(context).decline),
                               Icon(Icons.clear),
                             ],
                           ),
@@ -577,8 +572,7 @@ class _PushWidgetState extends _TokenWidgetState {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     RaisedButton(
-                      // TODO translate
-                      child: Text("Rollout failed, please try again."),
+                      child: Text(Localization.of(context).retryRollOut),
                       onPressed: _retryButtonIsEnabled
                           ? () {
                               _rollOutToken();
@@ -600,7 +594,7 @@ class _PushWidgetState extends _TokenWidgetState {
                 title: Column(
                   children: <Widget>[
                     CircularProgressIndicator(),
-                    Text('Rollingn out'),
+                    Text(Localization.of(context).rollingOut),
                   ],
                 ),
               ),
@@ -637,7 +631,8 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
       onLongPress: () {
         Clipboard.setData(ClipboardData(text: _otpValue));
         Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(L10n.of(context).otpValueCopiedMessage(_otpValue)),
+          content:
+              Text(Localization.of(context).otpValueCopiedMessage(_otpValue)),
         ));
       },
       child: _buildNonClickableTile(),
@@ -690,7 +685,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             child: RaisedButton(
               onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
               child: Text(
-                L10n.of(context).next,
+                Localization.of(context).next,
                 textScaleFactor: 1.5,
               ),
             ),

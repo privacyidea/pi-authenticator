@@ -1,145 +1,151 @@
 {
-  "@@last_modified": "2020-01-16T13:01:05.184801",
-  "next": "Next",
-  "@next": {
+  "@@last_modified": "2020-05-22T13:39:34.179337",
+  "Next": "Next",
+  "@Next": {
     "description": "The text of the button to calculate the next otp value.",
     "type": "text",
     "placeholders": {}
   },
-  "about": "About",
-  "@about": {
+  "About": "About",
+  "@About": {
     "description": "Button to open the about page.",
     "type": "text",
     "placeholders": {}
   },
-  "settings": "Settings",
-  "@settings": {
-    "description": "Button to open the settings page.",
+  "retry": "Retry",
+  "@retry": {
+    "description": "Label for e.g. a button. Something is tried to be done again.",
     "type": "text",
     "placeholders": {}
   },
-  "addManually": "Add token",
-  "@addManually": {
-    "description": "The button to open the screen to add tokens by hand.",
+  "accept": "Accept",
+  "@accept": {
+    "description": "Label for e.g. a button. Something gets accepted by the user.",
     "type": "text",
     "placeholders": {}
   },
-  "scanQr": "Scan QR-Code",
-  "@scanQr": {
-    "description": "The button to scan otpauto qr-codes.",
+  "decline": "Decline",
+  "@decline": {
+    "description": "Label for e.g. a button. Something gets declined by the user.",
     "type": "text",
     "placeholders": {}
   },
-  "addManuallyTitle": "Enter details for token",
-  "@addManuallyTitle": {
-    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "nameHint": "Name",
-  "@nameHint": {
+  "Name": "Name",
+  "@Name": {
     "description": "Describes the field where the tokens name should be entered.",
     "type": "text",
     "placeholders": {}
   },
-  "secretHint": "Secret",
-  "@secretHint": {
+  "Secret": "Secret",
+  "@Secret": {
     "description": "Describes the field where the tokens secret should be entered.",
     "type": "text",
     "placeholders": {}
   },
-  "encoding": "Encoding",
-  "@encoding": {
+  "Encoding": "Encoding",
+  "@Encoding": {
     "description": "Title of the dropdown button where the encoding is selected.",
     "type": "text",
     "placeholders": {}
   },
-  "algorithm": "Algorithm",
-  "@algorithm": {
+  "Algorithm": "Algorithm",
+  "@Algorithm": {
     "description": "Title of the dropdown button where the encoding is selected.",
     "type": "text",
     "placeholders": {}
   },
-  "digits": "Digits",
-  "@digits": {
+  "Digits": "Digits",
+  "@Digits": {
     "description": "Title of the dropdown button where the number of digits for the opt value is selecte.",
     "type": "text",
     "placeholders": {}
   },
-  "type": "Type",
-  "@type": {
+  "Type": "Type",
+  "@Type": {
     "description": "Title of the dropdown button where the type of the token is selected.",
     "type": "text",
     "placeholders": {}
   },
-  "period": "Period",
-  "@period": {
+  "Period": "Period",
+  "@Period": {
     "description": "Title of the dropdown button where the period of the totp token is selected.",
     "type": "text",
     "placeholders": {}
   },
-  "addToken": "Add token",
-  "@addToken": {
-    "description": "Button to add the token for which the values where added in this screen.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "toolTipAddToken": "Add tokens",
-  "@toolTipAddToken": {
-    "description": "Tooltip for the button that opens the selection for adding tokens.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "hintEmptyName": "Please enter a name for this token.",
-  "@hintEmptyName": {
-    "description": "Hint telling the user to enter a name for a token.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "hintEmptySecret": "Please enter a secret for this token.",
-  "@hintEmptySecret": {
-    "description": "Hint telling the user to enter a secret for a token.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "hintInvalidSecret": "The secret does not the fit current encoding",
-  "@hintInvalidSecret": {
-    "description": "Hint telling the user that the secret deos not fit the selected encoding.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "rename": "Rename",
-  "@rename": {
+  "Rename": "Rename",
+  "@Rename": {
     "description": "Label that describes renaming the token.",
     "type": "text",
     "placeholders": {}
   },
-  "renameDialogTitle": "Rename token",
-  "@renameDialogTitle": {
-    "description": "Title of the dialog where a new name for a token can be entered.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "cancel": "Cancel",
-  "@cancel": {
+  "Cancel": "Cancel",
+  "@Cancel": {
     "description": "Button to cancel an action.",
     "type": "text",
     "placeholders": {}
   },
-  "delete": "Delete",
-  "@delete": {
+  "Delete": "Delete",
+  "@Delete": {
     "description": "Label that describes deleting the token.",
     "type": "text",
     "placeholders": {}
   },
-  "deleteDialogTitle": "Confirm deletion",
-  "@deleteDialogTitle": {
+  "Dismiss": "Dismiss",
+  "@Dismiss": {
+    "description": "Text of a button that closes a dialog.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Add token": "Add token",
+  "@Add token": {
+    "description": "The button to open the screen to add tokens by hand.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Scan QR-Code": "Scan QR-Code",
+  "@Scan QR-Code": {
+    "description": "The button to scan otpauto qr-codes.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Enter details for token": "Enter details for token",
+  "@Enter details for token": {
+    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Please enter a name for this token.": "Please enter a name for this token.",
+  "@Please enter a name for this token.": {
+    "description": "Hint telling the user to enter a name for a token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Please enter a secret for this token.": "Please enter a secret for this token.",
+  "@Please enter a secret for this token.": {
+    "description": "Hint telling the user to enter a secret for a token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "The secret does not fit the current encoding": "The secret does not fit the current encoding",
+  "@The secret does not fit the current encoding": {
+    "description": "Hint telling the user that the secret does not fit the selected encoding.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Rename token": "Rename token",
+  "@Rename token": {
+    "description": "Title of the dialog where a new name for a token can be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Confirm deletion": "Confirm deletion",
+  "@Confirm deletion": {
     "description": "Title of the dialog where a token can be deleted.",
     "type": "text",
     "placeholders": {}
   },
-  "areYouSure": "Are you sure you want to delete",
-  "@areYouSure": {
+  "Are you sure you want to delete": "Are you sure you want to delete",
+  "@Are you sure you want to delete": {
     "description": "Part of a question: Do you want to delete {x}?",
     "type": "text",
     "placeholders": {}
@@ -162,12 +168,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "Dismiss": "Dismiss",
-  "@Dismiss": {
-    "description": "Text of a button that closes a dialog.",
-    "type": "text",
-    "placeholders": {}
-  },
   "otpValueCopiedMessage": "Password \"{otpValue}\" copied to clipboard.",
   "@otpValueCopiedMessage": {
     "description": "Tells the user that the otp value was copied to the clipboard.",
@@ -177,6 +177,12 @@
         "example": "055374"
       }
     }
+  },
+  "Settings": "Settings",
+  "@Settings": {
+    "description": "Button to open the settings page.",
+    "type": "text",
+    "placeholders": {}
   },
   "Theme": "Theme",
   "@Theme": {
@@ -195,5 +201,115 @@
     "description": "The dark theme.",
     "type": "text",
     "placeholders": {}
+  },
+  "errorOnlyOneFirebaseProjectIsSupported": "The firebase configuration of {name} differs from the one currently used by the app. Currently only one is supported.",
+  "@errorOnlyOneFirebaseProjectIsSupported": {
+    "description": "Tells the user that the token can not be used because it has a different firebase configuration than the current used configuration of the application.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "errorTokenExpired": "Token {name} is expired, roll-out not possible.",
+  "@errorTokenExpired": {
+    "description": "Tells the user that the token can not be rolled out, because it expired.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "errorRollOutFailed": "Rolling out token {name} failed. Error code: {errorCode}",
+  "@errorRollOutFailed": {
+    "description": "Tells the user that the token could not be rolled out, because a network error occured.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      },
+      "errorCode": {
+        "example": "500"
+      }
+    }
+  },
+  "errorRollOutNoNetworkConnection": "No network connection. Roll-out not possible.",
+  "@errorRollOutNoNetworkConnection": {
+    "description": "Tells the user that the roll-out failed because no network connection is available.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorRollOutUnknownError": "An unknown error occurred. Roll-out not possible: {e}",
+  "@errorRollOutUnknownError": {
+    "description": "Tells the user that the roll-out failed because of an unknown error.",
+    "type": "text",
+    "placeholders": {
+      "e": {
+        "example": "IllegalArgumentException on Line 5 ..."
+      }
+    }
+  },
+  "acceptPushAuthRequestFor": "Accepted authentication request for {name}.",
+  "@acceptPushAuthRequestFor": {
+    "description": "Tells the user that a push request for a specific token was accepted.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "decliningPushAuthRequestFor": "Declined authentication request for {name}.",
+  "@decliningPushAuthRequestFor": {
+    "description": "Tells the user that a push request for a specific token was declined.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "errorPushAuthRequestFailedFor": "Accepting authentication request for {name} failed. Error code: {errorCode}",
+  "@errorPushAuthRequestFailedFor": {
+    "description": "Tells the user that a push auth request could not be accepted for a token.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      },
+      "errorCode": {
+        "example": "500"
+      }
+    }
+  },
+  "rollingOut": "Rolling out",
+  "@rollingOut": {
+    "description": "Label that tells the user that the token is being rolled out.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "retryRollOut": "Roll-out failed, please try again.",
+  "@retryRollOut": {
+    "description": "Label for e.g. a button. Tells the user that rolling out the token failed. Roll out can be retried by clicking this button.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorAuthenticationNotPossibleWithoutNetworkAccess": "No network connection. Authentication not possible.",
+  "@errorAuthenticationNotPossibleWithoutNetworkAccess": {
+    "description": "Error message tell the user that accepting a push request failed.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorAuthenticationFailedUnknownError": "An unknown error occurred. Authentication failed: {e}",
+  "@errorAuthenticationFailedUnknownError": {
+    "description": "Tells the user that the authentication could not be accepted because of an unknown error.",
+    "type": "text",
+    "placeholders": {
+      "e": {
+        "example": "IllegalArgumentException on line 5, ..."
+      }
+    }
   }
 }

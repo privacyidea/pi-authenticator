@@ -64,7 +64,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _title = L10n.of(context).twoStepDialogTitleGenerate;
+    _title = Localization.of(context).twoStepDialogTitleGenerate;
   }
 
   @override
@@ -98,11 +98,11 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
 
     // Update UI.
     setState(() {
-      _title = L10n.of(context).twoStepDialogTitlePhonePart;
+      _title = Localization.of(context).twoStepDialogTitlePhonePart;
       _content = Text("$show");
       _button = FlatButton(
         child: Text(
-          L10n.of(context).dismiss,
+          Localization.of(context).dismiss,
           style: getDialogTextStyle(isDarkModeOn(context)),
         ),
         onPressed: () => Navigator.of(context).pop(generatedSecret),
