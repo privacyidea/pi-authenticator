@@ -219,9 +219,9 @@ class Localization {
 
   String get hintInvalidSecret {
     return Intl.message(
-      'The secret does not the fit current encoding',
+      'The secret does not fit the current encoding',
       desc:
-          'Hint telling the user that the secret deos not fit the selected encoding.',
+          'Hint telling the user that the secret does not fit the selected encoding.',
       locale: localeName,
     );
   }
@@ -330,9 +330,8 @@ class Localization {
 
   String errorOnlyOneFirebaseProjectIsSupported(var name) {
     return Intl.message(
-      "Token $name has different firebase configuration "
-      "that the existing configuration, currently only one "
-      "firebase project is supported.",
+      "The firebase configuration of $name differs from the one currently "
+      "used by the app. Currently only one is supported.",
       name: 'errorOnlyOneFirebaseProjectIsSupported',
       args: [name],
       examples: const {'name': 'PUSH1234A'},
@@ -357,8 +356,7 @@ class Localization {
 
   String errorRollOutFailed(String name, var errorCode) {
     return Intl.message(
-      "Rolling out token $name failed."
-      "Error code: $errorCode",
+      "Rolling out token $name failed. Error code: $errorCode",
       name: "errorRollOutFailed",
       args: [name, errorCode],
       examples: const {'name': 'PUSH1234A', 'errorCode': "500"},
@@ -392,7 +390,7 @@ class Localization {
 
   String acceptPushAuthRequestFor(String name) {
     return Intl.message(
-      "Accepted push auth request for $name.",
+      "Accepted authentication request for $name.",
       name: "acceptPushAuthRequestFor",
       args: [name],
       examples: const {'name': 'PUSH1234A'},
@@ -404,7 +402,7 @@ class Localization {
 
   String decliningPushAuthRequestFor(String name) {
     return Intl.message(
-      "Declined push auth request for $name.",
+      "Declined authentication request for $name.",
       name: "decliningPushAuthRequestFor",
       args: [name],
       examples: const {'name': 'PUSH1234A'},
@@ -416,7 +414,7 @@ class Localization {
 
   String errorPushAuthRequestFailedFor(String name, var errorCode) {
     return Intl.message(
-      "Accepting push auth request for $name failed. "
+      "Accepting authentication request for $name failed. "
       "Error code: $errorCode",
       name: "errorPushAuthRequestFailedFor",
       args: [name, errorCode],
@@ -458,7 +456,7 @@ class Localization {
 
   String errorAuthenticationFailedUnknownError(var e) {
     return Intl.message(
-      "An unknown error occurred. Accepting push authentication failed: $e",
+      "An unknown error occurred. Authentication failed: $e",
       name: 'errorAuthenticationFailedUnknownError',
       args: [e],
       examples: const {'e': 'IllegalArgumentException on line 5, ...'},
