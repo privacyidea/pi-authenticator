@@ -247,6 +247,10 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  // FIXME The token itself must call this function. Otherwise this will never work
+  //  if it failed after scanning.
+  //  Either the token must know the full firebase config, or the token must
+  //  know a reference to the firebase config.
   Future<String> _initFirebase(FirebaseConfig config) async {
     ArgumentError.checkNotNull(config, "config");
 
@@ -300,6 +304,8 @@ class _MainScreenState extends State<MainScreen> {
     // FIXME: onResume and onLaunch is not configured see:
     //  https://pub.dev/packages/firebase_messaging#-readme-tab-
     //  but the solution there does not seem to work?
+    //  These functions do not seem to serve a purpose, as the background
+    //  message handling seems to do just that.
     firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: ");
