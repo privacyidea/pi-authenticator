@@ -264,15 +264,17 @@ class _PushWidgetState extends _TokenWidgetState {
       // Function determines if a request is expired
       var f = (PushRequest r) => DateTime.now().isAfter(r.expirationDate);
 
-      // Remove requests from queue and remove their notifications.
-      _token.pushRequests
-          .where(f)
-          .forEach((r) => flutterLocalNotificationsPlugin.cancel(r.id));
-      _token.pushRequests.removeWhere(f);
+      if (_token.pushRequests != null && _token.pushRequests.isNotEmpty) {
+        // Remove requests from queue and remove their notifications.
+        _token.pushRequests
+            .where(f)
+            .forEach((r) => flutterLocalNotificationsPlugin.cancel(r.id));
+        _token.pushRequests.removeWhere(f);
 
-      setState(() {
-        _saveThisToken();
-      });
+        setState(() {
+          _saveThisToken();
+        });
+      }
     });
   }
 
