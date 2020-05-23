@@ -83,7 +83,6 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
       sslVerify: json['sslVerify'] as bool,
       enrollmentCredentials: json['enrollmentCredentials'] as String,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
-      firebaseToken: json['firebaseToken'] as String,
       expirationDate: json['expirationDate'] == null
           ? null
           : DateTime.parse(json['expirationDate'] as String))
@@ -114,7 +113,6 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'publicServerKey': instance.publicServerKey,
       'privateTokenKey': instance.privateTokenKey,
       'publicTokenKey': instance.publicTokenKey,
-      'firebaseToken': instance.firebaseToken,
       'serial': instance.serial,
       'sslVerify': instance.sslVerify,
       'enrollmentCredentials': instance.enrollmentCredentials,

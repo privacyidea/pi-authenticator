@@ -285,23 +285,24 @@ class _PushWidgetState extends _TokenWidgetState {
       _rollOutFailed = false;
     });
 
-    if (_token.firebaseToken == null) {
-      // The firebase config of this token is different to the existing
-      // firebase config in this app.
-      log("Token has different firebase config than existing.",
-          name: "token_widgets.dart");
-
-      _showMessage(
-          Localization.of(context)
-              .errorOnlyOneFirebaseProjectIsSupported(_token.label),
-          5);
-
-      setState(() {
-        _rollOutFailed = true;
-      });
-
-      return;
-    }
+    // TODO Check if config of token == global config
+//    if (_token.firebaseToken == null) {
+//      // The firebase config of this token is different to the existing
+//      // firebase config in this app.
+//      log("Token has different firebase config than existing.",
+//          name: "token_widgets.dart");
+//
+//      _showMessage(
+//          Localization.of(context)
+//              .errorOnlyOneFirebaseProjectIsSupported(_token.label),
+//          5);
+//
+//      setState(() {
+//        _rollOutFailed = true;
+//      });
+//
+//      return;
+//    }
 
     if (DateTime.now().isAfter(_token.expirationDate)) {
       log("Token is expired, abort rollout and delte it.",
@@ -335,7 +336,7 @@ class _PushWidgetState extends _TokenWidgetState {
           await doPost(sslVerify: _token.sslVerify, url: _token.url, body: {
         'enrollment_credential': _token.enrollmentCredentials,
         'serial': _token.serial,
-        'fbtoken': _token.firebaseToken,
+//        'fbtoken': _token.firebaseToken, // TODO Get firebase token
         'pubkey': serializeRSAPublicKeyPKCS8(_token.publicTokenKey),
       });
 

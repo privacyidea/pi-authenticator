@@ -72,12 +72,12 @@ class _MainScreenState extends State<MainScreen> {
     // If no push tokens exist, the firebase config should be deleted here.
     if (!(await StorageUtil.loadAllTokens())
         .any((element) => element is PushToken)) {
-      StorageUtil.deleteFirebaseConfig();
+      StorageUtil.deleteGlobalFirebaseConfig();
       return;
     }
 
-    if (await StorageUtil.firebaseConfigExists()) {
-      _initFirebase(await StorageUtil.loadFirebaseConfig());
+    if (await StorageUtil.globalFirebaseConfigExists()) {
+      _initFirebase(await StorageUtil.loadGlobalFirebaseConfig());
     }
   }
 
@@ -243,7 +243,6 @@ class _MainScreenState extends State<MainScreen> {
       expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
       enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
       url: uriMap[URI_ROLLOUT_URL],
-      firebaseToken: await _initFirebase(firebaseConfig),
     );
   }
 
@@ -259,8 +258,8 @@ class _MainScreenState extends State<MainScreen> {
     // Used to identify a firebase app, this is nothing more than an id.
     final String name = "privacyidea_authenticator";
 
-    if (!await StorageUtil.firebaseConfigExists() ||
-        await StorageUtil.loadFirebaseConfig() == config) {
+    if (!await StorageUtil.globalFirebaseConfigExists() ||
+        await StorageUtil.loadGlobalFirebaseConfig() == config) {
       log("Creating firebaseApp from config.",
           name: "main_screen.dart", error: config);
 
@@ -283,10 +282,10 @@ class _MainScreenState extends State<MainScreen> {
       var initializationSettings = InitializationSettings(
           initializationSettingsAndroid, initializationSettingsIOS);
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-    } else if (await StorageUtil.loadFirebaseConfig() != config) {
+    } else if (await StorageUtil.loadGlobalFirebaseConfig() != config) {
       log("Given firebase config does not equal the existing config.",
           name: "main_screen.dart",
-          error: "Existing: ${await StorageUtil.loadFirebaseConfig()}"
+          error: "Existing: ${await StorageUtil.loadGlobalFirebaseConfig()}"
               "\n Given:    $config");
 
       return null;
@@ -328,7 +327,7 @@ class _MainScreenState extends State<MainScreen> {
     log("Firebase initialized, token added",
         name: "main_screen.dart", error: firebaseToken);
 
-    StorageUtil.saveOrReplaceFirebaseConfig(config);
+    StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
 
     return firebaseToken;
   }
@@ -478,7 +477,7 @@ class _MainScreenState extends State<MainScreen> {
 
     if (!(await StorageUtil.loadAllTokens())
         .any((element) => element is PushToken)) {
-      StorageUtil.deleteFirebaseConfig();
+      StorageUtil.deleteGlobalFirebaseConfig();
     }
 
     setState(() {
