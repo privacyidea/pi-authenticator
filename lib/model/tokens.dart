@@ -147,6 +147,8 @@ class PushToken extends Token {
   Uri _url;
   bool isRolledOut = false;
 
+  String firebaseToken;
+
   // RSA keys
   SerializableRSAPublicKey _publicServerKey;
   SerializableRSAPrivateKey _privateTokenKey;
@@ -228,7 +230,7 @@ class PushToken extends Token {
   String toString() {
     return 'PushToken{ID: $id,_serial: $_serial, _sslVerify: $_sslVerify,'
         ' _enrollmentCredentials: $_enrollmentCredentials,'
-        ' _url: $_url,'
+        ' _url: $_url, firebaseToken: $firebaseToken'
         ' isRolledOut: $isRolledOut, _publicServerKey: $_publicServerKey,'
         ' _privateTokenKey: $_privateTokenKey, _pushRequests: $_pushRequests,'
         ' _expirationDate: $_expirationDate}';

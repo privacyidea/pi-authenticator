@@ -228,13 +228,13 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<PushToken> _buildPushToken(
       Map<String, dynamic> uriMap, String uuid) async {
-    FirebaseConfig firebaseConfig = FirebaseConfig(
+    FirebaseConfig config = FirebaseConfig(
         projectID: uriMap[URI_PROJECT_ID],
         projectNumber: uriMap[URI_PROJECT_NUMBER],
         appID: Platform.isIOS ? uriMap[URI_APP_ID_IOS] : uriMap[URI_APP_ID],
         apiKey: Platform.isIOS ? uriMap[URI_API_KEY_IOS] : uriMap[URI_API_KEY]);
 
-    return PushToken(
+    PushToken token = PushToken(
       serial: uriMap[URI_SERIAL],
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
@@ -244,6 +244,13 @@ class _MainScreenState extends State<MainScreen> {
       enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
       url: uriMap[URI_ROLLOUT_URL],
     );
+
+    // Save the config for this token to use it when rolling out.
+    await StorageUtil.saveOrReplaceFirebaseConfig(token, config);
+
+    print('Config for token: ${await StorageUtil.loadFirebaseConfig(token)}');
+
+    return token;
   }
 
   // FIXME The token itself must call this function. Otherwise this will never work
@@ -461,9 +468,9 @@ class _MainScreenState extends State<MainScreen> {
         itemBuilder: (context, index) {
           Token token = _tokenList[index];
           return TokenWidget(
-            key: ObjectKey(token),
-            token: token,
+            token,
             onDeleteClicked: () => _removeToken(token),
+            getFirebaseToken: (config) => _initFirebase(config),
           );
         },
         separatorBuilder: (context, index) {

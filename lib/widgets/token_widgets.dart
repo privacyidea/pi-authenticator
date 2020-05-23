@@ -42,11 +42,13 @@ import 'package:privacyidea_authenticator/utils/utils.dart';
 class TokenWidget extends StatefulWidget {
   final Token _token;
   final VoidCallback _onDeleteClicked;
+  final Function _getFirebaseToken;
 
-  TokenWidget({Key key, Token token, onDeleteClicked})
+  TokenWidget(Token token, {onDeleteClicked, getFirebaseToken})
       : this._token = token,
         this._onDeleteClicked = onDeleteClicked,
-        super(key: key);
+        this._getFirebaseToken = getFirebaseToken,
+        super(key: ObjectKey(token));
 
   @override
   State<StatefulWidget> createState() {
@@ -285,24 +287,25 @@ class _PushWidgetState extends _TokenWidgetState {
       _rollOutFailed = false;
     });
 
-    // TODO Check if config of token == global config
-//    if (_token.firebaseToken == null) {
-//      // The firebase config of this token is different to the existing
-//      // firebase config in this app.
-//      log("Token has different firebase config than existing.",
-//          name: "token_widgets.dart");
-//
-//      _showMessage(
-//          Localization.of(context)
-//              .errorOnlyOneFirebaseProjectIsSupported(_token.label),
-//          5);
-//
-//      setState(() {
-//        _rollOutFailed = true;
-//      });
-//
-//      return;
-//    }
+    if (await StorageUtil.globalFirebaseConfigExists() &&
+        await StorageUtil.loadFirebaseConfig(_token) !=
+            await StorageUtil.loadGlobalFirebaseConfig()) {
+      // The firebase config of this token is different to the existing
+      // firebase config in this app.
+      log("Token has different firebase config than existing.",
+          name: "token_widgets.dart");
+
+      _showMessage(
+          Localization.of(context)
+              .errorOnlyOneFirebaseProjectIsSupported(_token.label),
+          5);
+
+      setState(() {
+        _rollOutFailed = true;
+      });
+
+      return;
+    }
 
     if (DateTime.now().isAfter(_token.expirationDate)) {
       log("Token is expired, abort rollout and delte it.",
@@ -332,11 +335,16 @@ class _PushWidgetState extends _TokenWidgetState {
     }
 
     try {
+      // Generate the firebase token if necessary.
+      if (_token.firebaseToken == null)
+        _token.firebaseToken = await widget
+            ._getFirebaseToken(await StorageUtil.loadFirebaseConfig(_token));
+
       Response response =
           await doPost(sslVerify: _token.sslVerify, url: _token.url, body: {
         'enrollment_credential': _token.enrollmentCredentials,
         'serial': _token.serial,
-//        'fbtoken': _token.firebaseToken, // TODO Get firebase token
+        'fbtoken': _token.firebaseToken,
         'pubkey': serializeRSAPublicKeyPKCS8(_token.publicTokenKey),
       });
 

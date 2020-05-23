@@ -102,7 +102,7 @@ class StorageUtil {
 
   static const _KEY_POSTFIX = "_firebase_config";
 
-  static void saveOrReplaceFirebaseConfig(
+  static Future<void> saveOrReplaceFirebaseConfig(
       Token token, FirebaseConfig config) async {
     await _storage.write(
         key: token.id + _KEY_POSTFIX, value: jsonEncode(config));

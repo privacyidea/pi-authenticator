@@ -87,6 +87,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
           ? null
           : DateTime.parse(json['expirationDate'] as String))
     ..isRolledOut = json['isRolledOut'] as bool
+    ..firebaseToken = json['firebaseToken'] as String
     ..publicServerKey = json['publicServerKey'] == null
         ? null
         : SerializableRSAPublicKey.fromJson(
@@ -110,6 +111,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'id': instance.id,
       'issuer': instance.issuer,
       'isRolledOut': instance.isRolledOut,
+      'firebaseToken': instance.firebaseToken,
       'publicServerKey': instance.publicServerKey,
       'privateTokenKey': instance.privateTokenKey,
       'publicTokenKey': instance.publicTokenKey,
