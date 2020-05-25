@@ -278,7 +278,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
       );
 
-      // TODO check if it is already initialized?
+      // TODO Check if it is already initialized?
       var initializationSettingsAndroid =
           AndroidInitializationSettings('app_icon');
       var initializationSettingsIOS = IOSInitializationSettings();
@@ -301,7 +301,7 @@ class _MainScreenState extends State<MainScreen> {
     // Ask user to allow notifications, if declined no notifications are shown
     //  for incomming push requests.
     if (Platform.isIOS) {
-      !await firebaseMessaging.requestNotificationPermissions();
+      await firebaseMessaging.requestNotificationPermissions();
     }
 
     // FIXME: onResume and onLaunch is not configured see:
