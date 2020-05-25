@@ -145,8 +145,9 @@ class PushToken extends Token {
   bool _sslVerify;
   String _enrollmentCredentials;
   Uri _url;
-  String _firebaseToken;
   bool isRolledOut = false;
+
+  String firebaseToken;
 
   // RSA keys
   SerializableRSAPublicKey _publicServerKey;
@@ -170,8 +171,6 @@ class PushToken extends Token {
   SerializableRSAPublicKey get publicTokenKey => _publicTokenKey;
 
   PushRequestQueue _pushRequests;
-
-  String get firebaseToken => _firebaseToken;
 
   DateTime _expirationDate;
 
@@ -209,13 +208,11 @@ class PushToken extends Token {
     bool sslVerify,
     String enrollmentCredentials,
     Uri url,
-    String firebaseToken,
     DateTime expirationDate,
   })  : this._serial = serial,
         this._sslVerify = sslVerify,
         this._enrollmentCredentials = enrollmentCredentials,
         this._url = url,
-        this._firebaseToken = firebaseToken,
         this._expirationDate = expirationDate,
         super(label, issuer, id);
 
@@ -233,7 +230,7 @@ class PushToken extends Token {
   String toString() {
     return 'PushToken{ID: $id,_serial: $_serial, _sslVerify: $_sslVerify,'
         ' _enrollmentCredentials: $_enrollmentCredentials,'
-        ' _url: $_url, _firebaseToken: $_firebaseToken,'
+        ' _url: $_url, firebaseToken: $firebaseToken'
         ' isRolledOut: $isRolledOut, _publicServerKey: $_publicServerKey,'
         ' _privateTokenKey: $_privateTokenKey, _pushRequests: $_pushRequests,'
         ' _expirationDate: $_expirationDate}';

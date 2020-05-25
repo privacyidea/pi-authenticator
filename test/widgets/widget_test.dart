@@ -48,8 +48,7 @@ void _testTotpWidget() {
 
     await tester.pumpWidget(_WidgetTestWrapper(
       child: TokenWidget(
-        key: ObjectKey(token),
-        token: token,
+        token,
         onDeleteClicked: () => null,
       ),
     ));
@@ -79,8 +78,7 @@ void _testHotpWidget() {
 
       await tester.pumpWidget(_WidgetTestWrapper(
         child: TokenWidget(
-          key: ObjectKey(token),
-          token: token,
+          token,
           onDeleteClicked: () => null,
         ),
       ));
@@ -105,8 +103,7 @@ void _testHotpWidget() {
 
         await tester.pumpWidget(_WidgetTestWrapper(
           child: TokenWidget(
-            key: ObjectKey(token),
-            token: token,
+            token,
             onDeleteClicked: () => null,
           ),
         ));

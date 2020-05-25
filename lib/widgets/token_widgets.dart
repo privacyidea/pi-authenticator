@@ -42,11 +42,13 @@ import 'package:privacyidea_authenticator/utils/utils.dart';
 class TokenWidget extends StatefulWidget {
   final Token _token;
   final VoidCallback _onDeleteClicked;
+  final Function _getFirebaseToken;
 
-  TokenWidget({Key key, Token token, onDeleteClicked})
+  TokenWidget(Token token, {onDeleteClicked, getFirebaseToken})
       : this._token = token,
         this._onDeleteClicked = onDeleteClicked,
-        super(key: key);
+        this._getFirebaseToken = getFirebaseToken,
+        super(key: ObjectKey(token));
 
   @override
   State<StatefulWidget> createState() {
@@ -262,15 +264,17 @@ class _PushWidgetState extends _TokenWidgetState {
       // Function determines if a request is expired
       var f = (PushRequest r) => DateTime.now().isAfter(r.expirationDate);
 
-      // Remove requests from queue and remove their notifications.
-      _token.pushRequests
-          .where(f)
-          .forEach((r) => flutterLocalNotificationsPlugin.cancel(r.id));
-      _token.pushRequests.removeWhere(f);
+      if (_token.pushRequests != null && _token.pushRequests.isNotEmpty) {
+        // Remove requests from queue and remove their notifications.
+        _token.pushRequests
+            .where(f)
+            .forEach((r) => flutterLocalNotificationsPlugin.cancel(r.id));
+        _token.pushRequests.removeWhere(f);
 
-      setState(() {
-        _saveThisToken();
-      });
+        setState(() {
+          _saveThisToken();
+        });
+      }
     });
   }
 
@@ -285,7 +289,9 @@ class _PushWidgetState extends _TokenWidgetState {
       _rollOutFailed = false;
     });
 
-    if (_token.firebaseToken == null) {
+    if (await StorageUtil.globalFirebaseConfigExists() &&
+        await StorageUtil.loadFirebaseConfig(_token) !=
+            await StorageUtil.loadGlobalFirebaseConfig()) {
       // The firebase config of this token is different to the existing
       // firebase config in this app.
       log("Token has different firebase config than existing.",
@@ -331,6 +337,11 @@ class _PushWidgetState extends _TokenWidgetState {
     }
 
     try {
+      // Generate the firebase token if necessary.
+      if (_token.firebaseToken == null)
+        _token.firebaseToken = await widget
+            ._getFirebaseToken(await StorageUtil.loadFirebaseConfig(_token));
+
       Response response =
           await doPost(sslVerify: _token.sslVerify, url: _token.url, body: {
         'enrollment_credential': _token.enrollmentCredentials,

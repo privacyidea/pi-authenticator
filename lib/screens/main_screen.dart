@@ -72,12 +72,12 @@ class _MainScreenState extends State<MainScreen> {
     // If no push tokens exist, the firebase config should be deleted here.
     if (!(await StorageUtil.loadAllTokens())
         .any((element) => element is PushToken)) {
-      StorageUtil.deleteFirebaseConfig();
+      StorageUtil.deleteGlobalFirebaseConfig();
       return;
     }
 
-    if (await StorageUtil.firebaseConfigExists()) {
-      _initFirebase(await StorageUtil.loadFirebaseConfig());
+    if (await StorageUtil.globalFirebaseConfigExists()) {
+      _initFirebase(await StorageUtil.loadGlobalFirebaseConfig());
     }
   }
 
@@ -228,13 +228,13 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<PushToken> _buildPushToken(
       Map<String, dynamic> uriMap, String uuid) async {
-    FirebaseConfig firebaseConfig = FirebaseConfig(
+    FirebaseConfig config = FirebaseConfig(
         projectID: uriMap[URI_PROJECT_ID],
         projectNumber: uriMap[URI_PROJECT_NUMBER],
         appID: Platform.isIOS ? uriMap[URI_APP_ID_IOS] : uriMap[URI_APP_ID],
         apiKey: Platform.isIOS ? uriMap[URI_API_KEY_IOS] : uriMap[URI_API_KEY]);
 
-    return PushToken(
+    PushToken token = PushToken(
       serial: uriMap[URI_SERIAL],
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
@@ -243,8 +243,14 @@ class _MainScreenState extends State<MainScreen> {
       expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
       enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
       url: uriMap[URI_ROLLOUT_URL],
-      firebaseToken: await _initFirebase(firebaseConfig),
     );
+
+    // Save the config for this token to use it when rolling out.
+    await StorageUtil.saveOrReplaceFirebaseConfig(token, config);
+
+    print('Config for token: ${await StorageUtil.loadFirebaseConfig(token)}');
+
+    return token;
   }
 
   Future<String> _initFirebase(FirebaseConfig config) async {
@@ -255,8 +261,8 @@ class _MainScreenState extends State<MainScreen> {
     // Used to identify a firebase app, this is nothing more than an id.
     final String name = "privacyidea_authenticator";
 
-    if (!await StorageUtil.firebaseConfigExists() ||
-        await StorageUtil.loadFirebaseConfig() == config) {
+    if (!await StorageUtil.globalFirebaseConfigExists() ||
+        await StorageUtil.loadGlobalFirebaseConfig() == config) {
       log("Creating firebaseApp from config.",
           name: "main_screen.dart", error: config);
 
@@ -279,10 +285,10 @@ class _MainScreenState extends State<MainScreen> {
       var initializationSettings = InitializationSettings(
           initializationSettingsAndroid, initializationSettingsIOS);
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-    } else if (await StorageUtil.loadFirebaseConfig() != config) {
+    } else if (await StorageUtil.loadGlobalFirebaseConfig() != config) {
       log("Given firebase config does not equal the existing config.",
           name: "main_screen.dart",
-          error: "Existing: ${await StorageUtil.loadFirebaseConfig()}"
+          error: "Existing: ${await StorageUtil.loadGlobalFirebaseConfig()}"
               "\n Given:    $config");
 
       return null;
@@ -300,6 +306,8 @@ class _MainScreenState extends State<MainScreen> {
     // FIXME: onResume and onLaunch is not configured see:
     //  https://pub.dev/packages/firebase_messaging#-readme-tab-
     //  but the solution there does not seem to work?
+    //  These functions do not seem to serve a purpose, as the background
+    //  message handling seems to do just that.
     firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: ");
@@ -322,7 +330,15 @@ class _MainScreenState extends State<MainScreen> {
     log("Firebase initialized, token added",
         name: "main_screen.dart", error: firebaseToken);
 
-    StorageUtil.saveOrReplaceFirebaseConfig(config);
+    StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
+
+    // The Firebase Plugin will throw a network exception, but that does not reach
+    //  the flutter part of the app. That is why we need to throw our own socket-
+    //  exception in this case.
+    if (firebaseToken == null)
+      throw SocketException(
+          "Firebase token could not be retrieved, the only know cause of this is"
+          " that the firebase servers could not be reached.");
 
     return firebaseToken;
   }
@@ -456,9 +472,9 @@ class _MainScreenState extends State<MainScreen> {
         itemBuilder: (context, index) {
           Token token = _tokenList[index];
           return TokenWidget(
-            key: ObjectKey(token),
-            token: token,
+            token,
             onDeleteClicked: () => _removeToken(token),
+            getFirebaseToken: (config) => _initFirebase(config),
           );
         },
         separatorBuilder: (context, index) {
@@ -472,7 +488,7 @@ class _MainScreenState extends State<MainScreen> {
 
     if (!(await StorageUtil.loadAllTokens())
         .any((element) => element is PushToken)) {
-      StorageUtil.deleteFirebaseConfig();
+      StorageUtil.deleteGlobalFirebaseConfig();
     }
 
     setState(() {
