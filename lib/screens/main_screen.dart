@@ -298,9 +298,10 @@ class _MainScreenState extends State<MainScreen> {
     FirebaseMessaging firebaseMessaging = FirebaseMessaging()
       ..setApplicationName(name);
 
-    if (Platform.isIOS &&
-        !await firebaseMessaging.requestNotificationPermissions()) {
-      return null; // TODO How to handle this case right?
+    // Ask user to allow notifications, if declined no notifications are shown
+    //  for incomming push requests.
+    if (Platform.isIOS) {
+      !await firebaseMessaging.requestNotificationPermissions();
     }
 
     // FIXME: onResume and onLaunch is not configured see:
