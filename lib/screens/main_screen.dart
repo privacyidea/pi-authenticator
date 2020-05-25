@@ -253,10 +253,6 @@ class _MainScreenState extends State<MainScreen> {
     return token;
   }
 
-  // FIXME The token itself must call this function. Otherwise this will never work
-  //  if it failed after scanning.
-  //  Either the token must know the full firebase config, or the token must
-  //  know a reference to the firebase config.
   Future<String> _initFirebase(FirebaseConfig config) async {
     ArgumentError.checkNotNull(config, "config");
 
@@ -335,6 +331,14 @@ class _MainScreenState extends State<MainScreen> {
         name: "main_screen.dart", error: firebaseToken);
 
     StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
+
+    // The Firebase Plugin will throw a network exception, but that does not reach
+    //  the flutter part of the app. That is why we need to throw our own socket-
+    //  exception in this case.
+    if (firebaseToken == null)
+      throw SocketException(
+          "Firebase token could not be retrieved, the only know cause of this is"
+          " that the firebase servers could not be reached.");
 
     return firebaseToken;
   }

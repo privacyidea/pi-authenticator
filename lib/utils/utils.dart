@@ -443,6 +443,12 @@ Future<Response> doPost(
       name: "utils.dart",
       error: "URI: $url, SSLVerify: $sslVerify, Body: $body");
 
+  if (body.entries.any((element) => element.value == null)) {
+    throw ArgumentError(
+        "The parameter [body] contains a null value, this will cause an "
+        "exception and thus is not permitted.");
+  }
+
   IOClient ioClient = IOClient(HttpClient()
     ..badCertificateCallback =
         ((X509Certificate cert, String host, int port) => !sslVerify));
