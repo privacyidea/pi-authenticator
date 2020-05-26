@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.io.IOException;
@@ -62,10 +63,8 @@ public class FirebaseMessagingPlugin extends BroadcastReceiver
     private void onAttachedToEngine(Context context, BinaryMessenger binaryMessenger) {
         this.applicationContext = context;
 
-        // TODO The firebase app should not be initialized here, a pre existing app should be used
-        //  instead, maybe we need to initialize our own app here, or somewhere else.
+        // Do not create the default app here!
 //        FirebaseApp.initializeApp(applicationContext);
-
 
         channel = new MethodChannel(binaryMessenger, "plugins.flutter.io/firebase_messaging");
         final MethodChannel backgroundCallbackChannel =
@@ -176,7 +175,8 @@ public class FirebaseMessagingPlugin extends BroadcastReceiver
         if ("FcmSetApplicationName".equals(call.method)) {
             String applicationName = call.arguments.toString();
             firebaseApp = FirebaseApp.getInstance(applicationName);
-        } else if ("FcmDartService#start".equals(call.method)) {
+        }
+        else if("FcmDartService#start".equals(call.method)) {
             long setupCallbackHandle = 0;
             long backgroundMessageHandle = 0;
             try {
@@ -197,8 +197,7 @@ public class FirebaseMessagingPlugin extends BroadcastReceiver
             FlutterFirebaseMessagingService.onInitialized();
             result.success(true);
         } else if ("configure".equals(call.method)) {
-            FirebaseInstanceId.getInstance(firebaseApp)
-//            FirebaseInstanceId.getInstance()
+          FirebaseInstanceId.getInstance(firebaseApp)
                     .getInstanceId()
                     .addOnCompleteListener(
                             new OnCompleteListener<InstanceIdResult>() {
@@ -216,6 +215,7 @@ public class FirebaseMessagingPlugin extends BroadcastReceiver
             }
             result.success(null);
         }
+        // TODO Support this?
 //        else if ("subscribeToTopic".equals(call.method)) {
 //            String topic = call.arguments();
 //            FirebaseMessaging.getInstance()
@@ -252,8 +252,7 @@ public class FirebaseMessagingPlugin extends BroadcastReceiver
 //                            });
 //        }
         else if ("getToken".equals(call.method)) {
-            FirebaseInstanceId.getInstance(firebaseApp)
-//            FirebaseInstanceId.getInstance()
+          FirebaseInstanceId.getInstance(firebaseApp)
                     .getInstanceId()
                     .addOnCompleteListener(
                             new OnCompleteListener<InstanceIdResult>() {
@@ -274,10 +273,9 @@ public class FirebaseMessagingPlugin extends BroadcastReceiver
                         @Override
                         public void run() {
                             try {
-//                                FirebaseInstanceId.getInstance().deleteInstanceId();
-                                FirebaseInstanceId
-                                        .getInstance(firebaseApp)
-                                        .deleteInstanceId();
+                              FirebaseInstanceId
+                                      .getInstance(firebaseApp)
+                                      .deleteInstanceId();
                                 if (mainActivity != null) {
                                     mainActivity.runOnUiThread(
                                             new Runnable() {
@@ -303,6 +301,7 @@ public class FirebaseMessagingPlugin extends BroadcastReceiver
                     })
                     .start();
         }
+        // TODO Support this?
 //        else if ("autoInitEnabled".equals(call.method)) {
 //            result.success(FirebaseMessaging.getInstance().isAutoInitEnabled());
 //        } else if ("setAutoInitEnabled".equals(call.method)) {
@@ -310,7 +309,7 @@ public class FirebaseMessagingPlugin extends BroadcastReceiver
 //            FirebaseMessaging.getInstance().setAutoInitEnabled(isEnabled);
 //            result.success(null);
 //        }
-        else {
+      else {
             result.notImplemented();
         }
     }
