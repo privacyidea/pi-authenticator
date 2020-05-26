@@ -246,6 +246,8 @@ class _PushWidgetState extends _TokenWidgetState {
     SystemChannels.lifecycle.setMessageHandler((msg) async {
       PushToken t = await StorageUtil.loadToken(_token.id);
 
+      // FIXME This throws errors because the token [t] is null, why?
+
       if (msg == "AppLifecycleState.resumed" && t.pushRequests.isNotEmpty) {
         log(
             "Push token may have received a request while app was "
