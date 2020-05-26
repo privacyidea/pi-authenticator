@@ -280,8 +280,9 @@ class _PushWidgetState extends _TokenWidgetState {
 
   @override
   void dispose() {
-    super.dispose();
+    // FIXME Delete all pending push requests also, and remove the notifications!
     _deleteTimer.cancel();
+    super.dispose();
   }
 
   void _rollOutToken() async {
