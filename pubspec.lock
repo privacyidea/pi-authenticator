@@ -228,10 +228,10 @@ packages:
   firebase_messaging:
     dependency: "direct main"
     description:
-      path: "local_plugins/firebase_messaging-6.0.12"
+      path: "local_plugins/firebase_messaging-6.0.16"
       relative: true
     source: path
-    version: "6.0.12"
+    version: "6.0.16"
   fixnum:
     dependency: transitive
     description:
