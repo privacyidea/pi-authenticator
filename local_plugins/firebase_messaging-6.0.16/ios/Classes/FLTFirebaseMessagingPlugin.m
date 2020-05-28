@@ -5,9 +5,10 @@
 #import <UserNotifications/UserNotifications.h>
 
 #import "FLTFirebaseMessagingPlugin.h"
-#import "UserAgent.h"
 
 #import "Firebase/Firebase.h"
+
+NSString *const kGCMMessageIDKey = @"gcm.message_id";
 
 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 @interface FLTFirebaseMessagingPlugin () <FIRMessagingDelegate>
@@ -48,18 +49,17 @@ static NSObject<FlutterPluginRegistrar> *_registrar;
 - (instancetype)initWithChannel:(FlutterMethodChannel *)channel {
   self = [super init];
 
-  if (self) {
-    _channel = channel;
-    _resumingFromBackground = NO;
-      // TODO Remove this code here, and configure FIRApp in method call.
-    //if (![FIRApp appNamed:@"__FIRAPP_DEFAULT"]) {
-      //NSLog(@"Configuring the default Firebase app...");
-      //[FIRApp configure];
-      //NSLog(@"All the firebase apps: %@.",  [FIRApp allApps]);
-      //NSLog(@"Configured the default Firebase app %@.", [FIRApp defaultApp].name);
-    //}
-    //[FIRMessaging messaging].delegate = self;
-  }
+   if (self) {
+      _channel = channel;
+      _resumingFromBackground = NO;
+        // Do not configure firebase at this point!
+      //if (![FIRApp appNamed:@"__FIRAPP_DEFAULT"]) {
+        //NSLog(@"Configuring the default Firebase app...");
+        //[FIRApp configure];
+        //NSLog(@"Configured the default Firebase app %@.", [FIRApp defaultApp].name);
+      //}
+      //[FIRMessaging messaging].delegate = self;
+    }
   return self;
 }
 
@@ -138,28 +138,29 @@ static NSObject<FlutterPluginRegistrar> *_registrar;
       [[UIApplication sharedApplication] registerForRemoteNotifications];
       result([NSNumber numberWithBool:YES]);
     }
-  }else if ([@"FcmSetApplicationName" isEqualToString:method]) {
-    // TODO: Configure the firebase app just like the android part of this plugin does.
-    NSString *topic = call.arguments;
-    //NSLog(@"Adding firebase app with name: %@\n", topic);
-    NSLog(@"Was it successfull? appNamed: %@ exists.", [FIRApp appNamed:topic]);
-    NSLog(@"All the firebase apps: %@.",  [FIRApp allApps]);
+  }
+  else if ([@"FcmSetApplicationName" isEqualToString:method]) {
+      // Use our custom firebase app for messages.
+      NSString *topic = call.arguments;
+      //NSLog(@"Adding firebase app with name: %@\n", topic);
+      NSLog(@"Does the app exist?: %@ exists.", [FIRApp appNamed:topic]);
+      NSLog(@"All the firebase before apps: %@.",  [FIRApp allApps]);
       [FIRApp configureWithOptions: [FIRApp appNamed:topic].options];
       NSLog(@"All apps after: %@.", [FIRApp allApps]);
       NSLog(@"Default app is now: %@.", [FIRApp defaultApp]);
-      
-      
-    [FIRMessaging messaging].delegate = self;
-  } else if ([@"configure" isEqualToString:method]) {
+
+      [FIRMessaging messaging].delegate = self;
+    }
+  else if ([@"configure" isEqualToString:method]) {
     [FIRMessaging messaging].shouldEstablishDirectChannel = true;
     [[UIApplication sharedApplication] registerForRemoteNotifications];
-     if (_launchNotification != nil) {
+    if (_launchNotification != nil && _launchNotification[kGCMMessageIDKey]) {
       [_channel invokeMethod:@"onLaunch" arguments:_launchNotification];
     }
     result(nil);
   }
-/*
- else if ([@"subscribeToTopic" isEqualToString:method]) {
+  /* TODO Support this?
+   else if ([@"subscribeToTopic" isEqualToString:method]) {
     NSString *topic = call.arguments;
     [[FIRMessaging messaging] subscribeToTopic:topic
                                     completion:^(NSError *error) {
@@ -172,9 +173,8 @@ static NSObject<FlutterPluginRegistrar> *_registrar;
                                           result(getFlutterError(error));
                                         }];
   }
- */
-
- else if ([@"getToken" isEqualToString:method]) {
+  */
+  else if ([@"getToken" isEqualToString:method]) {
     [[FIRInstanceID instanceID]
         instanceIDWithHandler:^(FIRInstanceIDResult *_Nullable instanceIDResult,
                                 NSError *_Nullable error) {
@@ -186,8 +186,8 @@ static NSObject<FlutterPluginRegistrar> *_registrar;
           }
         }];
   }
- /*
- else if ([@"deleteInstanceID" isEqualToString:method]) {
+  /* TODO Support this?
+  else if ([@"deleteInstanceID" isEqualToString:method]) {
     [[FIRInstanceID instanceID] deleteIDWithHandler:^void(NSError *_Nullable error) {
       if (error.code != 0) {
         NSLog(@"deleteInstanceID, error: %@", error);
@@ -212,10 +212,39 @@ static NSObject<FlutterPluginRegistrar> *_registrar;
 }
 
 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-// Receive data message on iOS 10 devices while app is in the foreground.
+// Received data message on iOS 10 devices while app is in the foreground.
+// Only invoked if method swizzling is enabled.
 - (void)applicationReceivedRemoteMessage:(FIRMessagingRemoteMessage *)remoteMessage {
   [self didReceiveRemoteNotification:remoteMessage.appData];
 }
+
+// Received data message on iOS 10 devices while app is in the foreground.
+// Only invoked if method swizzling is disabled and UNUserNotificationCenterDelegate has been
+// registered in AppDelegate
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+       willPresentNotification:(UNNotification *)notification
+         withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler
+    NS_AVAILABLE_IOS(10.0) {
+  NSDictionary *userInfo = notification.request.content.userInfo;
+  // Check to key to ensure we only handle messages from Firebase
+  if (userInfo[kGCMMessageIDKey]) {
+    [[FIRMessaging messaging] appDidReceiveMessage:userInfo];
+    [_channel invokeMethod:@"onMessage" arguments:userInfo];
+    completionHandler(UNNotificationPresentationOptionNone);
+  }
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+    didReceiveNotificationResponse:(UNNotificationResponse *)response
+             withCompletionHandler:(void (^)(void))completionHandler NS_AVAILABLE_IOS(10.0) {
+  NSDictionary *userInfo = response.notification.request.content.userInfo;
+  // Check to key to ensure we only handle messages from Firebase
+  if (userInfo[kGCMMessageIDKey]) {
+    [_channel invokeMethod:@"onResume" arguments:userInfo];
+    completionHandler();
+  }
+}
+
 #endif
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo {

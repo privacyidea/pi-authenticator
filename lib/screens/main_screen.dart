@@ -310,15 +310,20 @@ class _MainScreenState extends State<MainScreen> {
     //  These functions do not seem to serve a purpose, as the background
     //  message handling seems to do just that.
     firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
+      onMessage: (Map<String, dynamic> message) async { 
+        // Used by Android and iOS
         print("onMessage: ");
         _handleIncomingAuthRequest(message);
       },
       onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
+        // Does not seem to be used by Android or iOS
+        print("onLaunch: ");
+        _handleIncomingAuthRequest(message);
       },
       onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
+        // Used by iOS only (?)
+        print("onResume: ");
+        _handleIncomingAuthRequest(message);
       },
       onBackgroundMessage: Platform.isIOS
           ? null
