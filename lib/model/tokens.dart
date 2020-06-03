@@ -56,7 +56,7 @@ abstract class OTPToken extends Token {
   Algorithms
       _algorithm; // the hashing algorithm that is used to calculate the otp value
   int _digits; // the number of digits the otp value will have
-  String _secret; // the secret based on which the otp value is calculated
+  String _secret; // the secret based on which the otp value is calculated in base32
 
   Algorithms get algorithm => _algorithm;
 
