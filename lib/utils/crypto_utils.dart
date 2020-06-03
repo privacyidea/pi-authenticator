@@ -254,3 +254,16 @@ String serializeRSAPublicKeyPKCS8(RSAPublicKey key) {
   var asn1sequence = ASN1Sequence()..add(algorithm)..add(publicKey);
   return base64.encode(asn1sequence.encodedBytes);
 }
+
+// TODO Description
+String serializeRSAPrivateKeyPKCS1(RSAPrivateKey key) {
+  // TODO
+  return '';
+}
+
+// TODO Description
+RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String key) {
+  // TODO
+  return RSAPrivateKey(
+      BigInt.from(1), BigInt.from(2), BigInt.from(2), BigInt.from(0));
+}

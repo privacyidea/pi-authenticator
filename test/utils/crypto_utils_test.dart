@@ -977,4 +977,19 @@ void _testSerializingRSAKeys() {
       }, timeout: Timeout(Duration(seconds: 60)));
     }, timeout: Timeout(Duration(seconds: 300)));
   }, timeout: Timeout(Duration(seconds: 300)));
+
+  group("Serialize RSA private keys", () {
+    test('Converting key', () async {
+      RSAPrivateKey privateKey = RSAPrivateKey(BigInt.from(324235),
+          BigInt.from(1234234), BigInt.from(234), BigInt.from(3454));
+
+      String base64String = serializeRSAPrivateKeyPKCS1(privateKey);
+      RSAPrivateKey convertedKey = deserializeRSAPrivateKeyPKCS1(base64String);
+
+      expect(privateKey.modulus, convertedKey.modulus);
+      expect(privateKey.exponent, convertedKey.exponent);
+      expect(privateKey.p, convertedKey.p);
+      expect(privateKey.q, convertedKey.q);
+    }, timeout: Timeout(Duration(seconds: 60)));
+  }, timeout: Timeout(Duration(seconds: 300)));
 }
