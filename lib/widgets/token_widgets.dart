@@ -282,7 +282,7 @@ class _PushWidgetState extends _TokenWidgetState {
 
   @override
   void dispose() {
-    // FIXME Delete all pending push requests also, and remove the notifications!
+    // FIXME Delete all pending push requests also, and remove the notifications! --> But why? Is this supposed  to be in delete()?
     _deleteTimer.cancel();
     super.dispose();
   }
