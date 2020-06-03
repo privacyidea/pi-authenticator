@@ -56,28 +56,28 @@ void _testCalculateHotpValue() {
           issuer: null,
           algorithm: Algorithms.SHA1,
           digits: 6,
-          secret: utf8.encode("secret"),
+          secret: encodeSecretAs(utf8.encode("secret"), Encodings.base32),
           counter: 0);
       HOTPToken token1 = HOTPToken(
           label: null,
           issuer: null,
           algorithm: Algorithms.SHA1,
           digits: 6,
-          secret: utf8.encode("secret"),
+          secret: encodeSecretAs(utf8.encode("secret"), Encodings.base32),
           counter: 1);
       HOTPToken token2 = HOTPToken(
           label: null,
           issuer: null,
           algorithm: Algorithms.SHA1,
           digits: 6,
-          secret: utf8.encode("secret"),
+          secret: encodeSecretAs(utf8.encode("secret"), Encodings.base32),
           counter: 2);
       HOTPToken token8 = HOTPToken(
           label: null,
           issuer: null,
           algorithm: Algorithms.SHA1,
           digits: 6,
-          secret: utf8.encode("secret"),
+          secret: encodeSecretAs(utf8.encode("secret"), Encodings.base32),
           counter: 8);
 
       test("OTP for counter == 0",
@@ -101,28 +101,28 @@ void _testCalculateHotpValue() {
           issuer: null,
           algorithm: Algorithms.SHA1,
           digits: 8,
-          secret: utf8.encode("secret"),
+          secret: encodeSecretAs(utf8.encode("secret"), Encodings.base32),
           counter: 0);
       HOTPToken token1 = HOTPToken(
           label: null,
           issuer: null,
           algorithm: Algorithms.SHA1,
           digits: 8,
-          secret: utf8.encode("secret"),
+          secret: encodeSecretAs(utf8.encode("secret"), Encodings.base32),
           counter: 1);
       HOTPToken token2 = HOTPToken(
           label: null,
           issuer: null,
           algorithm: Algorithms.SHA1,
           digits: 8,
-          secret: utf8.encode("secret"),
+          secret: encodeSecretAs(utf8.encode("secret"), Encodings.base32),
           counter: 2);
       HOTPToken token8 = HOTPToken(
           label: null,
           issuer: null,
           algorithm: Algorithms.SHA1,
           digits: 8,
-          secret: utf8.encode("secret"),
+          secret: encodeSecretAs(utf8.encode("secret"), Encodings.base32),
           counter: 8);
 
       test("OTP for counter == 0",
@@ -146,21 +146,21 @@ void _testCalculateHotpValue() {
           issuer: null,
           algorithm: Algorithms.SHA1,
           digits: 6,
-          secret: utf8.encode("Secret"),
+          secret: encodeSecretAs(utf8.encode("Secret"), Encodings.base32),
           counter: 0);
       HOTPToken token1 = HOTPToken(
           label: null,
           issuer: null,
           algorithm: Algorithms.SHA256,
           digits: 6,
-          secret: utf8.encode("Secret"),
+          secret: encodeSecretAs(utf8.encode("Secret"), Encodings.base32),
           counter: 0);
       HOTPToken token2 = HOTPToken(
           label: null,
           issuer: null,
           algorithm: Algorithms.SHA512,
           digits: 6,
-          secret: utf8.encode("Secret"),
+          secret: encodeSecretAs(utf8.encode("Secret"), Encodings.base32),
           counter: 0);
 
       test("OTP for sha1", () => expect(calculateHotpValue(token0), "292574"));
@@ -180,21 +180,21 @@ void _testCalculateHotpValue() {
           issuer: null,
           algorithm: Algorithms.SHA1,
           digits: 8,
-          secret: utf8.encode("Secret"),
+          secret: encodeSecretAs(utf8.encode("Secret"), Encodings.base32),
           counter: 0);
       HOTPToken token1 = HOTPToken(
           label: null,
           issuer: null,
           algorithm: Algorithms.SHA256,
           digits: 8,
-          secret: utf8.encode("Secret"),
+          secret: encodeSecretAs(utf8.encode("Secret"), Encodings.base32),
           counter: 0);
       HOTPToken token2 = HOTPToken(
           label: null,
           issuer: null,
           algorithm: Algorithms.SHA512,
           digits: 8,
-          secret: utf8.encode("Secret"),
+          secret: encodeSecretAs(utf8.encode("Secret"), Encodings.base32),
           counter: 0);
 
       test(

@@ -56,13 +56,13 @@ abstract class OTPToken extends Token {
   Algorithms
       _algorithm; // the hashing algorithm that is used to calculate the otp value
   int _digits; // the number of digits the otp value will have
-  List<int> _secret; // the secret based on which the otp value is calculated
+  String _secret; // the secret based on which the otp value is calculated
 
   Algorithms get algorithm => _algorithm;
 
   int get digits => _digits;
 
-  List<int> get secret => _secret;
+  String get secret => _secret;
 
   OTPToken(String label, String issuer, String id, this._algorithm,
       this._digits, this._secret)
@@ -89,7 +89,7 @@ class HOTPToken extends OTPToken {
       String id,
       Algorithms algorithm,
       int digits,
-      List<int> secret,
+      String secret,
       int counter = 0})
       : this._counter = counter,
         super(label, issuer, id, algorithm, digits, secret);
@@ -121,7 +121,7 @@ class TOTPToken extends OTPToken {
       String id,
       Algorithms algorithm,
       int digits,
-      List<int> secret,
+      String secret,
       int period})
       : this._period = period,
         super(label, issuer, id, algorithm, digits, secret);

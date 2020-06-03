@@ -13,7 +13,7 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) {
       id: json['id'] as String,
       algorithm: _$enumDecodeNullable(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,
-      secret: (json['secret'] as List)?.map((e) => e as int)?.toList(),
+      secret: json['secret'] as String,
       counter: json['counter'] as int);
 }
 
@@ -60,7 +60,7 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) {
       id: json['id'] as String,
       algorithm: _$enumDecodeNullable(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,
-      secret: (json['secret'] as List)?.map((e) => e as int)?.toList(),
+      secret: json['secret'] as String,
       period: json['period'] as int);
 }
 

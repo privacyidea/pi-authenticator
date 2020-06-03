@@ -42,7 +42,7 @@ void _testTotpWidget() {
       issuer: null,
       algorithm: Algorithms.SHA1,
       digits: 6,
-      secret: utf8.encode("secret"),
+      secret: encodeSecretAs(utf8.encode("secret"), Encodings.base32),
       period: 30,
     );
 
@@ -72,7 +72,7 @@ void _testHotpWidget() {
         issuer: null,
         algorithm: Algorithms.SHA1,
         digits: 6,
-        secret: utf8.encode("secret"),
+        secret: encodeSecretAs(utf8.encode("secret"), Encodings.base32),
         counter: 0,
       );
 
@@ -97,7 +97,7 @@ void _testHotpWidget() {
           issuer: null,
           algorithm: Algorithms.SHA1,
           digits: 6,
-          secret: utf8.encode("secret"),
+          secret: encodeSecretAs(utf8.encode("secret"), Encodings.base32),
           counter: 0,
         );
 

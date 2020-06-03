@@ -204,7 +204,7 @@ class _MainScreenState extends State<MainScreen> {
         id: uuid,
         algorithm: mapStringToAlgorithm(algorithm),
         digits: digits,
-        secret: secret,
+        secret: encodeSecretAs(secret, Encodings.base32),
         counter: counter,
       );
     } else if (type == "totp") {
@@ -214,7 +214,7 @@ class _MainScreenState extends State<MainScreen> {
         id: uuid,
         algorithm: mapStringToAlgorithm(algorithm),
         digits: digits,
-        secret: secret,
+        secret: encodeSecretAs(secret, Encodings.base32),
         period: period,
       );
     } else {
