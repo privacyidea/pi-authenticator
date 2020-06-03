@@ -255,13 +255,47 @@ String serializeRSAPublicKeyPKCS8(RSAPublicKey key) {
   return base64.encode(asn1sequence.encodedBytes);
 }
 
-// TODO Description
+/// Convert an RSA-Private-Key to a DER structure as a BASE64 encoded String.
+/// According to the PKCS#1 format:
+///
+/// RSAPrivateKey ::= SEQUENCE {
+///    version           Version,
+///    modulus           INTEGER,  -- n
+///    publicExponent    INTEGER,  -- e
+///    privateExponent   INTEGER,  -- d
+///    prime1            INTEGER,  -- p
+///    prime2            INTEGER,  -- q
+///    exponent1         INTEGER,  -- d mod (p-1)
+///    exponent2         INTEGER,  -- d mod (q-1)
+///    coefficient       INTEGER,  -- (inverse of q) mod p
+///    otherPrimeInfos   OtherPrimeInfos OPTIONAL
+/// }
+///
+/// Version ::= INTEGER { two-prime(0), multi(1) }
+/// (CONSTRAINED BY {-- version must be multi if otherPrimeInfos present --})
 String serializeRSAPrivateKeyPKCS1(RSAPrivateKey key) {
   // TODO
   return '';
 }
 
-// TODO Description
+/// Extract RSA-Private-Keys from DER structure that is a BASE64 encoded Strings.
+/// According to the PKCS#1 format:
+///
+/// RSAPrivateKey ::= SEQUENCE {
+///    version           Version,
+///    modulus           INTEGER,  -- n
+///    publicExponent    INTEGER,  -- e
+///    privateExponent   INTEGER,  -- d
+///    prime1            INTEGER,  -- p
+///    prime2            INTEGER,  -- q
+///    exponent1         INTEGER,  -- d mod (p-1)
+///    exponent2         INTEGER,  -- d mod (q-1)
+///    coefficient       INTEGER,  -- (inverse of q) mod p
+///    otherPrimeInfos   OtherPrimeInfos OPTIONAL
+/// }
+///
+/// Version ::= INTEGER { two-prime(0), multi(1) }
+/// (CONSTRAINED BY {-- version must be multi if otherPrimeInfos present --})
 RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String key) {
   // TODO
   return RSAPrivateKey(
