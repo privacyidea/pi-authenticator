@@ -282,7 +282,7 @@ class _PushWidgetState extends _TokenWidgetState {
 
   @override
   void dispose() {
-    // FIXME Delete all pending push requests also, and remove the notifications! --> But why? Is this supposed  to be in delete()?
+    // FIXME Delete all pending push requests also, and remove the notifications! --> But why? Is this supposed to be in delete()?
     _deleteTimer.cancel();
     super.dispose();
   }
@@ -334,28 +334,24 @@ class _PushWidgetState extends _TokenWidgetState {
         name: "token_widgets.dart",
         error: "Token: $_token, key: ${keyPair.privateKey}",
       );
-      _token.privateTokenKey = keyPair.privateKey;
-      _token.publicTokenKey = keyPair.publicKey;
+      _token.setPrivateTokenKey(keyPair.privateKey);
+      _token..setPublicTokenKey(keyPair.publicKey);
       _saveThisToken();
     }
 
     try {
-      // Generate the firebase token if necessary.
-      if (_token.firebaseToken == null)
-        _token.firebaseToken = await widget
-            ._getFirebaseToken(await StorageUtil.loadFirebaseConfig(_token));
-
       Response response =
           await doPost(sslVerify: _token.sslVerify, url: _token.url, body: {
         'enrollment_credential': _token.enrollmentCredentials,
         'serial': _token.serial,
-        'fbtoken': _token.firebaseToken,
-        'pubkey': serializeRSAPublicKeyPKCS8(_token.publicTokenKey),
+        'fbtoken': await widget
+            ._getFirebaseToken(await StorageUtil.loadFirebaseConfig(_token)),
+        'pubkey': serializeRSAPublicKeyPKCS8(_token.getPublicTokenKey()),
       });
 
       if (response.statusCode == 200) {
         RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
-        _token.publicServerKey = publicServerKey;
+        _token.setPublicServerKey(publicServerKey);
 
         log('Roll out successful', name: 'token_widgets.dart', error: _token);
 
@@ -432,7 +428,7 @@ class _PushWidgetState extends _TokenWidgetState {
     Map<String, String> body = {
       'nonce': pushRequest.nonce,
       'serial': _token.serial,
-      'signature': createBase32Signature(_token.privateTokenKey,
+      'signature': createBase32Signature(_token.getPrivateTokenKey(),
           utf8.encode('${pushRequest.nonce}|${_token.serial}')),
     };
 

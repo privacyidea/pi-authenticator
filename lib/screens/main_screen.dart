@@ -390,7 +390,7 @@ class _MainScreenState extends State<MainScreen> {
               '${data['title']}|'
               '${data['sslverify']}';
 
-          if (verifyRSASignature(token.publicServerKey, utf8.encode(signedData),
+          if (verifyRSASignature(token.getPublicServerKey(), utf8.encode(signedData),
               base32.decode(signature))) {
             wasHandled = true;
 
