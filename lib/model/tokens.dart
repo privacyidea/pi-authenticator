@@ -20,6 +20,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 part 'tokens.g.dart';
@@ -56,7 +57,8 @@ abstract class OTPToken extends Token {
   Algorithms
       _algorithm; // the hashing algorithm that is used to calculate the otp value
   int _digits; // the number of digits the otp value will have
-  String _secret; // the secret based on which the otp value is calculated in base32
+  String
+      _secret; // the secret based on which the otp value is calculated in base32
 
   Algorithms get algorithm => _algorithm;
 
@@ -147,28 +149,29 @@ class PushToken extends Token {
   Uri _url;
   bool isRolledOut = false;
 
-  String firebaseToken;
+  // RSA keys - String values for backward compatibility with serialization
+  String publicServerKey;
+  String privateTokenKey;
+  String publicTokenKey;
 
-  // RSA keys
-  SerializableRSAPublicKey _publicServerKey;
-  SerializableRSAPrivateKey _privateTokenKey;
-  SerializableRSAPublicKey _publicTokenKey;
+  // Custom getter and setter for RSA keys
+  RSAPublicKey getPublicServerKey() =>
+      deserializeRSAPublicKeyPKCS1(publicServerKey);
 
-  set publicServerKey(RSAPublicKey key) => _publicServerKey =
-      key == null ? null : SerializableRSAPublicKey(key.modulus, key.exponent);
+  RSAPublicKey getPublicTokenKey() =>
+      deserializeRSAPublicKeyPKCS1(publicTokenKey);
 
-  set privateTokenKey(RSAPrivateKey key) => _privateTokenKey = key == null
-      ? null
-      : SerializableRSAPrivateKey(key.modulus, key.exponent, key.p, key.q);
+  RSAPrivateKey getPrivateTokenKey() =>
+      deserializeRSAPrivateKeyPKCS1(privateTokenKey);
 
-  set publicTokenKey(RSAPublicKey key) => _publicTokenKey =
-      key == null ? null : SerializableRSAPublicKey(key.modulus, key.exponent);
+  void setPublicServerKey(RSAPublicKey key) =>
+      publicServerKey = serializeRSAPublicKeyPKCS1(key);
 
-  SerializableRSAPublicKey get publicServerKey => _publicServerKey;
+  void setPublicTokenKey(RSAPublicKey key) =>
+      publicTokenKey = serializeRSAPublicKeyPKCS1(key);
 
-  SerializableRSAPrivateKey get privateTokenKey => _privateTokenKey;
-
-  SerializableRSAPublicKey get publicTokenKey => _publicTokenKey;
+  void setPrivateTokenKey(RSAPrivateKey key) =>
+      privateTokenKey = serializeRSAPrivateKeyPKCS1(key);
 
   PushRequestQueue _pushRequests;
 
@@ -190,13 +193,13 @@ class PushToken extends Token {
     return _pushRequests;
   }
 
-  set pushRequests(PushRequestQueue l) {
+  set pushRequests(PushRequestQueue queue) {
     if (_pushRequests != null) {
       throw ArgumentError(
           "Initializing [pushRequests] in [PushToken] is only allowed once.");
     }
 
-    this._pushRequests = l;
+    this._pushRequests = queue;
   }
 
   PushToken({
@@ -228,12 +231,11 @@ class PushToken extends Token {
 
   @override
   String toString() {
-    return 'PushToken{ID: $id,_serial: $_serial, _sslVerify: $_sslVerify,'
-        ' _enrollmentCredentials: $_enrollmentCredentials,'
-        ' _url: $_url, firebaseToken: $firebaseToken'
-        ' isRolledOut: $isRolledOut, _publicServerKey: $_publicServerKey,'
-        ' _privateTokenKey: $_privateTokenKey, _pushRequests: $_pushRequests,'
-        ' _expirationDate: $_expirationDate}';
+    return 'PushToken{_serial: $_serial, _sslVerify: $_sslVerify, '
+        '_enrollmentCredentials: $_enrollmentCredentials, _url: $_url, '
+        'isRolledOut: $isRolledOut, publicServerKey: $publicServerKey, '
+        'privateTokenKey: $privateTokenKey, publicTokenKey: $publicTokenKey, '
+        '_pushRequests: $_pushRequests, _expirationDate: $_expirationDate}';
   }
 
   factory PushToken.fromJson(Map<String, dynamic> json) =>
