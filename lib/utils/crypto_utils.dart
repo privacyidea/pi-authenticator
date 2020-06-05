@@ -162,9 +162,9 @@ Uint8List createRSASignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
 ///     modulus           INTEGER,  -- n
 ///     publicExponent    INTEGER   -- e
 /// }
-RSAPublicKey deserializeRSAPublicKeyPKCS1(String der) {
+RSAPublicKey deserializeRSAPublicKeyPKCS1(String keyStr) {
   ASN1Sequence asn1sequence =
-      ASN1Parser(base64.decode(der)).nextObject() as ASN1Sequence;
+      ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
   BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
   BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
 
@@ -179,12 +179,12 @@ RSAPublicKey deserializeRSAPublicKeyPKCS1(String der) {
 ///     publicExponent    INTEGER   -- e
 /// }
 String serializeRSAPublicKeyPKCS1(RSAPublicKey publicKey) {
+  
   ASN1Sequence s = ASN1Sequence()
     ..add(ASN1Integer(publicKey.modulus))
     ..add(ASN1Integer(publicKey.exponent));
-  Uint8List bytes = s.encodedBytes;
 
-  return base64.encode(bytes);
+  return base64.encode(s.encodedBytes);
 }
 
 /// Extract RSA-Public-Keys from DER structure that is a BASE64 encoded Strings.
@@ -199,9 +199,10 @@ String serializeRSAPublicKeyPKCS1(RSAPublicKey publicKey) {
 ///     algorithm       OBJECT IDENTIFIER,
 ///     parameters      ANY DEFINED BY algorithm OPTIONAL
 /// }
-RSAPublicKey deserializeRSAPublicKeyPKCS8(String key) {
+RSAPublicKey deserializeRSAPublicKeyPKCS8(String keyStr) {
+  
   var baseSequence =
-      ASN1Parser(base64.decode(key)).nextObject() as ASN1Sequence;
+      ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
 
   var encodedAlgorithm = baseSequence.elements[0];
 
@@ -274,8 +275,19 @@ String serializeRSAPublicKeyPKCS8(RSAPublicKey key) {
 /// Version ::= INTEGER { two-prime(0), multi(1) }
 /// (CONSTRAINED BY {-- version must be multi if otherPrimeInfos present --})
 String serializeRSAPrivateKeyPKCS1(RSAPrivateKey key) {
-  // TODO
-  return '';
+
+  ASN1Sequence s = ASN1Sequence()
+    ..add(ASN1Integer.fromInt(0)) // version
+    ..add(ASN1Integer(key.modulus)) // modulus
+    ..add(ASN1Integer(key.exponent)) // e
+    ..add(ASN1Integer(key.d)) // d
+    ..add(ASN1Integer(key.p)) // p
+    ..add(ASN1Integer(key.q)) // q
+    ..add(ASN1Integer(key.d % (key.p - BigInt.one))) // d mod (p-1)
+    ..add(ASN1Integer(key.d % (key.q - BigInt.one))) // d mod (q-1)
+    ..add(ASN1Integer(key.q.modInverse(key.p))); // q^(-1) mod p
+
+  return base64.encode(s.encodedBytes);
 }
 
 /// Extract RSA-Private-Keys from DER structure that is a BASE64 encoded Strings.
@@ -296,8 +308,14 @@ String serializeRSAPrivateKeyPKCS1(RSAPrivateKey key) {
 ///
 /// Version ::= INTEGER { two-prime(0), multi(1) }
 /// (CONSTRAINED BY {-- version must be multi if otherPrimeInfos present --})
-RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String key) {
-  // TODO
-  return RSAPrivateKey(
-      BigInt.from(1), BigInt.from(2), BigInt.from(2), BigInt.from(0));
+RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String keyStr) {
+
+  ASN1Sequence asn1sequence =
+      ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
+  BigInt modulus = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
+  BigInt exponent = (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger;
+  BigInt p = (asn1sequence.elements[4] as ASN1Integer).valueAsBigInteger;
+  BigInt q = (asn1sequence.elements[5] as ASN1Integer).valueAsBigInteger;
+
+  return RSAPrivateKey(modulus, exponent, p, q);
 }
