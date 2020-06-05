@@ -980,8 +980,7 @@ void _testSerializingRSAKeys() {
 
   group("Serialize RSA private keys", () {
     test('Converting key', () async {
-      RSAPrivateKey privateKey = RSAPrivateKey(BigInt.from(324235),
-          BigInt.from(1234234), BigInt.from(234), BigInt.from(3454));
+      RSAPrivateKey privateKey = (await generateRSAKeyPair()).privateKey;
 
       String base64String = serializeRSAPrivateKeyPKCS1(privateKey);
       RSAPrivateKey convertedKey = deserializeRSAPrivateKeyPKCS1(base64String);
@@ -991,5 +990,9 @@ void _testSerializingRSAKeys() {
       expect(privateKey.p, convertedKey.p);
       expect(privateKey.q, convertedKey.q);
     }, timeout: Timeout(Duration(seconds: 60)));
+
+    // TODO Add test Key -> String
+    // TODO Add test String -> Key
+
   }, timeout: Timeout(Duration(seconds: 300)));
 }
