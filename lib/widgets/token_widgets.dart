@@ -40,12 +40,12 @@ import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
-typedef GetFirebaseCallback = Future<String> Function(FirebaseConfig);
+typedef GetFBTokenCallback = Future<String> Function(FirebaseConfig);
 
 class TokenWidget extends StatefulWidget {
   final Token _token;
   final VoidCallback _onDeleteClicked;
-  final GetFirebaseCallback _getFirebaseToken;
+  final GetFBTokenCallback _getFirebaseToken;
 
   TokenWidget(Token token, {onDeleteClicked, getFirebaseToken})
       : this._token = token,
