@@ -294,7 +294,6 @@ class _MainScreenState extends State<MainScreen> {
       return null;
     }
 
-    // TODO Fix license
     FirebaseMessaging firebaseMessaging = FirebaseMessaging()
       ..setApplicationName(name);
 
@@ -310,7 +309,7 @@ class _MainScreenState extends State<MainScreen> {
     //  These functions do not seem to serve a purpose, as the background
     //  message handling seems to do just that.
     firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async { 
+      onMessage: (Map<String, dynamic> message) async {
         // Used by Android and iOS
         print("onMessage: ");
         _handleIncomingAuthRequest(message);
@@ -328,7 +327,7 @@ class _MainScreenState extends State<MainScreen> {
       onBackgroundMessage: Platform.isIOS
           ? null
           : // iOS does not support this.
-          myBackgroundMessageHandler, // FIXME There might be a bug when using local-notifications and firebase_messaging, see https://github.com/MaikuB/flutter_local_notifications/tree/master/flutter_local_notifications
+          myBackgroundMessageHandler,
     );
 
     String firebaseToken = await firebaseMessaging.getToken();
@@ -443,8 +442,6 @@ class _MainScreenState extends State<MainScreen> {
     //silent = false;
 
     // TODO Handle different priorities?
-
-    // TODO change priority?
     var iOSPlatformChannelSpecifics =
         IOSNotificationDetails(presentSound: !silent);
 

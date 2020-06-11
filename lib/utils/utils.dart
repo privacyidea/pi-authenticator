@@ -186,8 +186,6 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   // &apikeyios=AIzaSyBeFSjwJ8aEcHQaj4-isT-sLAX6lmSrvbb
   // &appidios=1:0123456789012:ios:0123456789abcdef
 
-  // TODO extend this for iOs version of the app.
-
   Map<String, dynamic> uriMap = Map();
 
   uriMap[URI_TYPE] = uri.host;

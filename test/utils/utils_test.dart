@@ -450,7 +450,7 @@ void _testParseOtpAuth() {
 
     group("Push Token", () {
       test("parse complete uri", () {
-        // TODO Handle android vs ios.
+        // TODO Do these work on iOS?
 
         Map<String, dynamic> uriMap = parsePiAuth(Uri.parse(
             "otpauth://pipush/PIPU0001353C?url=https%3A//192.168.178.32/ttype/"
