@@ -40,7 +40,7 @@ import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
-typedef GetFirebaseCallback = String Function(FirebaseConfig);
+typedef GetFirebaseCallback = Future<String> Function(FirebaseConfig);
 
 class TokenWidget extends StatefulWidget {
   final Token _token;
