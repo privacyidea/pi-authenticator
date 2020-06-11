@@ -56,11 +56,11 @@ class TokenWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     if (_token is HOTPToken) {
-      return _HotpWidgetState(_token, _onDeleteClicked);
+      return _HotpWidgetState(_token);
     } else if (_token is TOTPToken) {
-      return _TotpWidgetState(_token, _onDeleteClicked);
+      return _TotpWidgetState(_token);
     } else if (_token is PushToken) {
-      return _PushWidgetState(_token, _onDeleteClicked);
+      return _PushWidgetState(_token);
     } else {
       throw ArgumentError.value(_token, "token",
           "The token [$_token] is of unknown type and not supported.");
@@ -73,9 +73,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   static final SlidableController _slidableController = SlidableController();
   String _label;
 
-  final VoidCallback _onDeleteClicked;
-
-  _TokenWidgetState(this._token, this._onDeleteClicked) {
+  _TokenWidgetState(this._token) {
     _saveThisToken();
     _label = _token.label;
   }
@@ -202,7 +200,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               ),
               FlatButton(
                 onPressed: () {
-                  _onDeleteClicked();
+                  widget._onDeleteClicked();
                   Navigator.of(context).pop();
                 },
                 child: Text(
@@ -223,8 +221,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 }
 
 class _PushWidgetState extends _TokenWidgetState {
-  _PushWidgetState(Token token, VoidCallback onDeleteClicked)
-      : super(token, onDeleteClicked);
+  _PushWidgetState(Token token) : super(token);
 
   PushToken get _token => super._token as PushToken;
 
@@ -634,9 +631,9 @@ class _PushWidgetState extends _TokenWidgetState {
 abstract class _OTPTokenWidgetState extends _TokenWidgetState {
   String _otpValue;
 
-  _OTPTokenWidgetState(OTPToken token, VoidCallback onDeleteClicked)
+  _OTPTokenWidgetState(OTPToken token)
       : _otpValue = calculateOtpValue(token),
-        super(token, onDeleteClicked);
+        super(token);
 
   // This gets overridden in subclasses.
   void _updateOtpValue();
@@ -662,7 +659,7 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
 class _HotpWidgetState extends _OTPTokenWidgetState {
   bool buttonIsDisabled = false;
 
-  _HotpWidgetState(OTPToken token, Function delete) : super(token, delete);
+  _HotpWidgetState(OTPToken token) : super(token);
 
   @override
   void _updateOtpValue() {
@@ -718,7 +715,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
   AnimationController
       controller; // Controller for animating the LinearProgressAnimator
 
-  _TotpWidgetState(OTPToken token, Function delete) : super(token, delete);
+  _TotpWidgetState(OTPToken token) : super(token);
 
   @override
   void _updateOtpValue() {
