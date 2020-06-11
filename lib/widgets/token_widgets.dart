@@ -659,12 +659,14 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
 class _HotpWidgetState extends _OTPTokenWidgetState {
   bool buttonIsDisabled = false;
 
+  HOTPToken get _token => super._token as HOTPToken;
+
   _HotpWidgetState(OTPToken token) : super(token);
 
   @override
   void _updateOtpValue() {
     setState(() {
-      (_token as HOTPToken).incrementCounter();
+      _token.incrementCounter();
       _otpValue = calculateOtpValue(_token);
       _saveThisToken(); // When the app reloads the counter should not be reset.
 
@@ -684,7 +686,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
       children: <Widget>[
         ListTile(
           title: Text(
-            insertCharAt(_otpValue, " ", (_token as OTPToken).digits ~/ 2),
+            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
           ),
           subtitle: Text(
@@ -715,6 +717,8 @@ class _TotpWidgetState extends _OTPTokenWidgetState
   AnimationController
       controller; // Controller for animating the LinearProgressAnimator
 
+  TOTPToken get _token => super._token as TOTPToken;
+
   _TotpWidgetState(OTPToken token) : super(token);
 
   @override
@@ -729,7 +733,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     super.initState();
 
     controller = AnimationController(
-      duration: Duration(seconds: (_token as TOTPToken).period),
+      duration: Duration(seconds: _token.period),
       // Animate the progress for the duration of the tokens period.
       vsync:
           this, // By extending SingleTickerProviderStateMixin we can use this object as vsync, this prevents offscreen animations.
@@ -775,7 +779,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
       children: <Widget>[
         ListTile(
           title: Text(
-            insertCharAt(_otpValue, " ", (_token as OTPToken).digits ~/ 2),
+            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
           ),
           subtitle: Text(
