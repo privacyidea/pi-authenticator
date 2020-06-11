@@ -28,7 +28,6 @@ import 'theme_values.dart';
 /// app is returned, otherwise the light theme is returned.
 ThemeData getApplicationTheme(Brightness brightness) {
   bool isDark = brightness == Brightness.dark;
-
   ThemeData thisThemeData = isDark ? ThemeData.dark() : ThemeData.light();
 
   final Color primaryColor = isDark ? Colors.black : PRIMARY_COLOR;
@@ -38,13 +37,9 @@ ThemeData getApplicationTheme(Brightness brightness) {
       FloatingActionButtonThemeData(backgroundColor: accentColor);
 
   final ButtonThemeData buttonTheme = ButtonThemeData(
-    textTheme: ButtonTextTheme.accent,
+    textTheme: ButtonTextTheme.primary,
     colorScheme: thisThemeData.buttonTheme.colorScheme.copyWith(
       primary: accentColor,
-// FIXME: Sadly this changes the text color of the 'paste' button too, and thus
-//   making that text unreadable
-//          secondary: isDark ? Colors.black : Colors.white,
-      secondary: isDark ? Colors.white : Colors.black,
     ),
   );
 

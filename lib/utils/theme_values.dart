@@ -20,8 +20,8 @@
 
 import 'dart:ui';
 
-//const Color PRIMARY_COLOR = Color(0xff03a8f4); // Default: Color(0xff03a8f4)
-//const Color DARK_ACCENT_COLOR = Color(0xff03f4c8); // Default: Color(0xff03f4c8)
+const Color PRIMARY_COLOR = Color(0xff03a8f4); // Default: Color(0xff03a8f4)
+const Color DARK_ACCENT_COLOR = Color(0xff03f4c8); // Default: Color(0xff03f4c8)
 
-const Color PRIMARY_COLOR = Color(0xff03a8f4);
-const Color DARK_ACCENT_COLOR = Color(0xff03f4c8);
+//const Color PRIMARY_COLOR = Color(0xffFFD25F);
+//const Color DARK_ACCENT_COLOR = Color(0x0ff000);
