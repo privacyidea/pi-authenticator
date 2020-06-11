@@ -351,13 +351,13 @@ class _MainScreenState extends State<MainScreen> {
 
   static Future<dynamic> myBackgroundMessageHandler(
       Map<String, dynamic> message) async {
-    log("Background message recieved.",
+    log("Background message received.",
         name: "main_screen.dart", error: message);
     _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), true);
   }
 
   void _handleIncomingAuthRequest(Map<String, dynamic> message) {
-    log("Foreground message recieved.",
+    log("Foreground message received.",
         name: "main_screen.dart", error: message);
     setState(() async {
       _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), false);
