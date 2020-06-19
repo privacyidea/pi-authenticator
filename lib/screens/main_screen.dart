@@ -403,7 +403,7 @@ class _MainScreenState extends State<MainScreen> {
                 requestUri,
                 data['nonce'],
                 data['sslverify'] == '1' ? true : false,
-                Uuid().v4().hashCode,
+                data['nonce'].hashCode,
                 expirationDate: DateTime.now().add(
                   Duration(minutes: 2),
                 )); // Push requests expire after 2 minutes.
