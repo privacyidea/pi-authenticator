@@ -324,6 +324,7 @@ class _PushWidgetState extends _TokenWidgetState {
       });
 
       _showMessage(Localization.of(context).errorTokenExpired(_token.label), 3);
+      return;
     }
 
     if (_token.privateTokenKey == null) {
