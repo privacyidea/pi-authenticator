@@ -310,7 +310,7 @@ class _MainScreenState extends State<MainScreen> {
     //  These functions do not seem to serve a purpose, as the background
     //  message handling seems to do just that.
     firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async { 
+      onMessage: (Map<String, dynamic> message) async {
         // Used by Android and iOS
         print("onMessage: ");
         _handleIncomingAuthRequest(message);
@@ -390,8 +390,8 @@ class _MainScreenState extends State<MainScreen> {
               '${data['title']}|'
               '${data['sslverify']}';
 
-          if (verifyRSASignature(token.getPublicServerKey(), utf8.encode(signedData),
-              base32.decode(signature))) {
+          if (verifyRSASignature(token.getPublicServerKey(),
+              utf8.encode(signedData), base32.decode(signature))) {
             wasHandled = true;
 
             log('Validating incoming message was successful.',
