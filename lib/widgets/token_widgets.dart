@@ -31,6 +31,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
@@ -40,10 +41,12 @@ import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
+typedef GetFBTokenCallback = Future<String> Function(FirebaseConfig);
+
 class TokenWidget extends StatefulWidget {
   final Token _token;
   final VoidCallback _onDeleteClicked;
-  final Function _getFirebaseToken;
+  final GetFBTokenCallback _getFirebaseToken;
 
   TokenWidget(Token token, {onDeleteClicked, getFirebaseToken})
       : this._token = token,
@@ -54,11 +57,11 @@ class TokenWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     if (_token is HOTPToken) {
-      return _HotpWidgetState(_token, _onDeleteClicked);
+      return _HotpWidgetState(_token);
     } else if (_token is TOTPToken) {
-      return _TotpWidgetState(_token, _onDeleteClicked);
+      return _TotpWidgetState(_token);
     } else if (_token is PushToken) {
-      return _PushWidgetState(_token, _onDeleteClicked);
+      return _PushWidgetState(_token);
     } else {
       throw ArgumentError.value(_token, "token",
           "The token [$_token] is of unknown type and not supported.");
@@ -71,9 +74,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   static final SlidableController _slidableController = SlidableController();
   String _label;
 
-  final VoidCallback _onDeleteClicked;
-
-  _TokenWidgetState(this._token, this._onDeleteClicked) {
+  _TokenWidgetState(this._token) {
     _saveThisToken();
     _label = _token.label;
   }
@@ -200,7 +201,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               ),
               FlatButton(
                 onPressed: () {
-                  _onDeleteClicked();
+                  widget._onDeleteClicked();
                   Navigator.of(context).pop();
                 },
                 child: Text(
@@ -221,8 +222,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 }
 
 class _PushWidgetState extends _TokenWidgetState {
-  _PushWidgetState(Token token, VoidCallback onDeleteClicked)
-      : super(token, onDeleteClicked);
+  _PushWidgetState(Token token) : super(token);
 
   PushToken get _token => super._token as PushToken;
 
@@ -629,9 +629,9 @@ class _PushWidgetState extends _TokenWidgetState {
 abstract class _OTPTokenWidgetState extends _TokenWidgetState {
   String _otpValue;
 
-  _OTPTokenWidgetState(OTPToken token, VoidCallback onDeleteClicked)
+  _OTPTokenWidgetState(OTPToken token)
       : _otpValue = calculateOtpValue(token),
-        super(token, onDeleteClicked);
+        super(token);
 
   // This gets overridden in subclasses.
   void _updateOtpValue();
@@ -657,12 +657,14 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
 class _HotpWidgetState extends _OTPTokenWidgetState {
   bool buttonIsDisabled = false;
 
-  _HotpWidgetState(OTPToken token, Function delete) : super(token, delete);
+  HOTPToken get _token => super._token as HOTPToken;
+
+  _HotpWidgetState(OTPToken token) : super(token);
 
   @override
   void _updateOtpValue() {
     setState(() {
-      (_token as HOTPToken).incrementCounter();
+      _token.incrementCounter();
       _otpValue = calculateOtpValue(_token);
       _saveThisToken(); // When the app reloads the counter should not be reset.
 
@@ -682,7 +684,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
       children: <Widget>[
         ListTile(
           title: Text(
-            insertCharAt(_otpValue, " ", (_token as OTPToken).digits ~/ 2),
+            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
           ),
           subtitle: Text(
@@ -713,7 +715,9 @@ class _TotpWidgetState extends _OTPTokenWidgetState
   AnimationController
       controller; // Controller for animating the LinearProgressAnimator
 
-  _TotpWidgetState(OTPToken token, Function delete) : super(token, delete);
+  TOTPToken get _token => super._token as TOTPToken;
+
+  _TotpWidgetState(OTPToken token) : super(token);
 
   @override
   void _updateOtpValue() {
@@ -727,7 +731,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     super.initState();
 
     controller = AnimationController(
-      duration: Duration(seconds: (_token as TOTPToken).period),
+      duration: Duration(seconds: _token.period),
       // Animate the progress for the duration of the tokens period.
       vsync:
           this, // By extending SingleTickerProviderStateMixin we can use this object as vsync, this prevents offscreen animations.
@@ -773,7 +777,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
       children: <Widget>[
         ListTile(
           title: Text(
-            insertCharAt(_otpValue, " ", (_token as OTPToken).digits ~/ 2),
+            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
           ),
           subtitle: Text(
