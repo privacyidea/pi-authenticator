@@ -310,7 +310,7 @@ class _MainScreenState extends State<MainScreen> {
     //  These functions do not seem to serve a purpose, as the background
     //  message handling seems to do just that.
     firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async { 
+      onMessage: (Map<String, dynamic> message) async {
         // Used by Android and iOS
         print("onMessage: ");
         _handleIncomingAuthRequest(message);
@@ -403,7 +403,7 @@ class _MainScreenState extends State<MainScreen> {
                 requestUri,
                 data['nonce'],
                 data['sslverify'] == '1' ? true : false,
-                Uuid().v4().hashCode,
+                data['nonce'].hashCode,
                 expirationDate: DateTime.now().add(
                   Duration(minutes: 2),
                 )); // Push requests expire after 2 minutes.
@@ -414,8 +414,7 @@ class _MainScreenState extends State<MainScreen> {
               StorageUtil.saveOrReplaceToken(
                   token); // Save the pending request.
 
-              _showNotification(token, pushRequest,
-                  !inBackground); // Notify the user of the request.
+              if (inBackground) _showNotification(token, pushRequest, false);
             } else {
               log(
                   "The push request $pushRequest already exists "
@@ -440,10 +439,6 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _showNotification(
       PushToken token, PushRequest pushRequest, bool silent) async {
-    //silent = false;
-
-    // TODO Handle different priorities?
-
     // TODO change priority?
     var iOSPlatformChannelSpecifics =
         IOSNotificationDetails(presentSound: !silent);
