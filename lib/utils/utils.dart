@@ -33,19 +33,19 @@ import 'package:privacyidea_authenticator/model/tokens.dart';
 
 import 'identifiers.dart';
 
-List<int> decodeSecretToUint8(String secret, Encodings encoding) {
+Uint8List decodeSecretToUint8(String secret, Encodings encoding) {
   ArgumentError.checkNotNull(secret, "secret");
   ArgumentError.checkNotNull(encoding, "encoding");
 
   switch (encoding) {
     case Encodings.none:
-      return utf8.encode(secret);
+      return Uint8List.fromList(utf8.encode(secret));
       break;
     case Encodings.hex:
-      return HexConverter.HEX.decode(secret);
+      return Uint8List.fromList(HexConverter.HEX.decode(secret));
       break;
     case Encodings.base32:
-      return Base32Converter.base32.decode(secret);
+      return Uint8List.fromList(Base32Converter.base32.decode(secret));
       break;
     default:
       throw ArgumentError.value(
@@ -53,8 +53,28 @@ List<int> decodeSecretToUint8(String secret, Encodings encoding) {
   }
 }
 
-String encodeAsHex(Uint8List decoded) {
-  return HexConverter.HEX.encode(decoded);
+String encodeSecretAs(Uint8List secret, Encodings encoding) {
+  ArgumentError.checkNotNull(secret, "secret");
+  ArgumentError.checkNotNull(encoding, "encoding");
+
+  switch (encoding) {
+    case Encodings.none:
+      return utf8.decode(secret);
+      break;
+    case Encodings.hex:
+      return HexConverter.HEX.encode(secret);
+      break;
+    case Encodings.base32:
+      return Base32Converter.base32.encode(secret);
+      break;
+    default:
+      throw ArgumentError.value(
+          encoding, "encoding", "The encoding is unknown and not supported!");
+  }
+}
+
+String encodeAsHex(Uint8List secret) {
+  return encodeSecretAs(secret, Encodings.hex);
 }
 
 bool isValidEncoding(String secret, Encodings encoding) {
@@ -69,7 +89,7 @@ bool isValidEncoding(String secret, Encodings encoding) {
 }
 
 String calculateHotpValue(HOTPToken token) {
-  Uint8List binarySecret = Uint8List.fromList(token.secret);
+  Uint8List binarySecret = decodeSecretToUint8(token.secret, Encodings.base32);
   String base32Secret = Base32Converter.base32.encode(binarySecret);
   return "${OTPLibrary.OTP.generateHOTPCode(
     base32Secret,
@@ -81,7 +101,7 @@ String calculateHotpValue(HOTPToken token) {
 
 // TODO test this method, may use mockito for 'faking' the system time
 String calculateTotpValue(TOTPToken token) {
-  Uint8List binarySecret = Uint8List.fromList(token.secret);
+  Uint8List binarySecret = decodeSecretToUint8(token.secret, Encodings.base32);
   String base32Secret = Base32Converter.base32.encode(binarySecret);
   return "${OTPLibrary.OTP.generateTOTPCode(
     base32Secret,

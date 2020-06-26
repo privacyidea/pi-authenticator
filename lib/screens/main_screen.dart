@@ -204,7 +204,7 @@ class _MainScreenState extends State<MainScreen> {
         id: uuid,
         algorithm: mapStringToAlgorithm(algorithm),
         digits: digits,
-        secret: secret,
+        secret: encodeSecretAs(secret, Encodings.base32),
         counter: counter,
       );
     } else if (type == "totp") {
@@ -214,7 +214,7 @@ class _MainScreenState extends State<MainScreen> {
         id: uuid,
         algorithm: mapStringToAlgorithm(algorithm),
         digits: digits,
-        secret: secret,
+        secret: encodeSecretAs(secret, Encodings.base32),
         period: period,
       );
     } else {
@@ -390,8 +390,8 @@ class _MainScreenState extends State<MainScreen> {
               '${data['title']}|'
               '${data['sslverify']}';
 
-          if (verifyRSASignature(token.publicServerKey, utf8.encode(signedData),
-              base32.decode(signature))) {
+          if (verifyRSASignature(token.getPublicServerKey(),
+              utf8.encode(signedData), base32.decode(signature))) {
             wasHandled = true;
 
             log('Validating incoming message was successful.',

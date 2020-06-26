@@ -120,8 +120,9 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     if (!inputIsValid()) return;
 
     String uuid = Uuid().v4();
-    List<int> secretAsUint8 =
+    List<int> secretByte =
         decodeSecretToUint8(_selectedSecret, _selectedEncoding.value);
+    String secretBase32 = encodeSecretAs(secretByte, Encodings.base32);
     OTPToken newToken;
     if (_selectedType.value == TokenTypes.HOTP) {
       newToken = HOTPToken(
@@ -130,7 +131,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
         id: uuid,
         algorithm: _selectedAlgorithm.value,
         digits: _selectedDigits.value,
-        secret: secretAsUint8,
+        secret: secretBase32,
       );
     } else if (_selectedType.value == TokenTypes.TOTP) {
       newToken = TOTPToken(
@@ -139,7 +140,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
         id: uuid,
         algorithm: _selectedAlgorithm.value,
         digits: _selectedDigits.value,
-        secret: secretAsUint8,
+        secret: secretBase32,
         period: _selectedPeriod.value,
       );
     }

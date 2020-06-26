@@ -19,6 +19,8 @@
 */
 
 // Imports the Flutter Driver API.
+import 'dart:convert';
+
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
@@ -78,7 +80,7 @@ void totpTokenUpdateTest() {
         id: null,
         algorithm: Algorithms.SHA1,
         digits: 6,
-        secret: decodeSecretToUint8("TestSecret", Encodings.none),
+        secret: encodeSecretAs(utf8.encode("TestSecret"), Encodings.base32),
         period: 30,
       );
 
