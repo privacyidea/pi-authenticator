@@ -141,13 +141,18 @@ static NSObject<FlutterPluginRegistrar> *_registrar;
   }
   else if ([@"FcmSetApplicationName" isEqualToString:method]) {
       // Use our custom firebase app for messages.
-      NSString *topic = call.arguments;
+      NSString *name = call.arguments;
       //NSLog(@"Adding firebase app with name: %@\n", topic);
-      NSLog(@"Does the app exist?: %@ exists.", [FIRApp appNamed:topic]);
-      NSLog(@"All the firebase before apps: %@.",  [FIRApp allApps]);
-      [FIRApp configureWithOptions: [FIRApp appNamed:topic].options];
+      NSLog(@"Does an app with  the provided name exist?: %@ exists.", [FIRApp appNamed:name]);
+      NSLog(@"All the firebase apps before: %@.",  [FIRApp allApps]);
+      NSLog(@"Default app right now: %@.", [FIRApp defaultApp]);
+      if([FIRApp defaultApp] == nil){
+          [FIRApp configureWithOptions: [FIRApp appNamed:name].options];
+      } else{
+          NSLog(@"Default app already exists!");
+      }
       NSLog(@"All apps after: %@.", [FIRApp allApps]);
-      NSLog(@"Default app is now: %@.", [FIRApp defaultApp]);
+      //NSLog(@"Default app is now: %@.", [FIRApp defaultApp]);
 
       [FIRMessaging messaging].delegate = self;
     }

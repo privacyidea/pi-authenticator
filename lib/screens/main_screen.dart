@@ -402,7 +402,7 @@ class _MainScreenState extends State<MainScreen> {
                 requestUri,
                 data['nonce'],
                 data['sslverify'] == '1' ? true : false,
-                Uuid().v4().hashCode,
+                data['nonce'].hashCode,
                 expirationDate: DateTime.now().add(
                   Duration(minutes: 2),
                 )); // Push requests expire after 2 minutes.
@@ -413,8 +413,7 @@ class _MainScreenState extends State<MainScreen> {
               StorageUtil.saveOrReplaceToken(
                   token); // Save the pending request.
 
-              _showNotification(token, pushRequest,
-                  !inBackground); // Notify the user of the request.
+              if (inBackground) _showNotification(token, pushRequest, false);
             } else {
               log(
                   "The push request $pushRequest already exists "
@@ -439,9 +438,7 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _showNotification(
       PushToken token, PushRequest pushRequest, bool silent) async {
-    //silent = false;
 
-    // TODO Handle different priorities?
     var iOSPlatformChannelSpecifics =
         IOSNotificationDetails(presentSound: !silent);
 
