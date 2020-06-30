@@ -21,7 +21,7 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 
-import 'theme_values.dart';
+import 'customizations.dart';
 
 /// Builds the theme of this application, the theme is dependent on the
 /// brightness of the device, when brightness == dark the dark theme of this

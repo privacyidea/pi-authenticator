@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
+import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 
 void main() => runApp(MyApp());
@@ -53,10 +54,10 @@ class MyApp extends StatelessWidget {
               DefaultCupertinoLocalizations.delegate,
             ],
             supportedLocales: _supportedLocales,
-            title: 'privacyIDEA Authenticator',
+            title: applicationName,
             theme: theme,
             darkTheme: getApplicationTheme(Brightness.dark),
-            home: MainScreen(title: 'privacyIDEA Authenticator'),
+            home: MainScreen(title: applicationName),
           );
         });
   }
