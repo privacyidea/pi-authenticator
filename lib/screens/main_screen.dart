@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -33,6 +34,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:package_info/package_info.dart';
+import 'package:passcode_screen/circle.dart';
+import 'package:passcode_screen/keyboard.dart';
+import 'package:passcode_screen/passcode_screen.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
@@ -62,10 +66,68 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isAppUnlocked = false;
+  final StreamController<bool> _verificationNotifier =
+      StreamController<bool>.broadcast();
 
   _MainScreenState() {
+    _checkPIN();
     _loadAllTokens();
     _loadFirebase();
+  }
+
+  _checkPIN() async {
+    if (!await StorageUtil.isPINSet()) {
+      setState(() => _isAppUnlocked = true);
+    } else {
+      Navigator.push(
+          context,
+          PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                WillPopScope(
+              onWillPop: () async => _isAppUnlocked,
+              child: PasscodeScreen(
+                title: Text(
+                  'Unlock App', // TODO Translate
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white, fontSize: 28),
+                ),
+                circleUIConfig: CircleUIConfig(
+                    borderColor: Colors.blue,
+                    fillColor: Colors.blue,
+                    circleSize: 30),
+                keyboardUIConfig: KeyboardUIConfig(
+                    digitBorderWidth: 2, primaryColor: Colors.blue),
+                passwordEnteredCallback: _onPasscodeEntered,
+                cancelButton: Text(""),
+                deleteButton: Text(
+                  'Delete',
+                  style: const TextStyle(fontSize: 16, color: Colors.white),
+                  semanticsLabel: 'Delete',
+                ),
+                shouldTriggerVerification: _verificationNotifier.stream,
+                backgroundColor: Colors.black.withOpacity(0.8),
+                cancelCallback: _onPasscodeCancelled,
+                digits: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+              ),
+            ),
+          ));
+    }
+  }
+
+  _onPasscodeEntered(String enteredPasscode) async {
+    bool isValid = (await StorageUtil.getPIN()) == enteredPasscode;
+    _verificationNotifier.add(isValid);
+    if (isValid) {
+      setState(() {
+        this._isAppUnlocked = isValid;
+      });
+    }
+  }
+
+  _onPasscodeCancelled() {
+    Navigator.maybePop(context);
   }
 
   _loadFirebase() async {
@@ -103,12 +165,16 @@ class _MainScreenState extends State<MainScreen> {
           child: Image.asset('res/logo/app_logo_light.png'),
         ),
       ),
-      body: _buildTokenList(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _scanQRCode(),
-        tooltip: Localization.of(context).scanQRTooltip,
-        child: Icon(Icons.add),
-      ),
+      body: _isAppUnlocked
+          ? _buildTokenList()
+          : Placeholder(), // TODO Replace this with empty placeholder!
+      floatingActionButton: _isAppUnlocked
+          ? FloatingActionButton(
+              onPressed: () => _scanQRCode(),
+              tooltip: Localization.of(context).scanQRTooltip,
+              child: Icon(Icons.add),
+            )
+          : null,
     );
   }
 
@@ -438,7 +504,6 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _showNotification(
       PushToken token, PushRequest pushRequest, bool silent) async {
-
     var iOSPlatformChannelSpecifics =
         IOSNotificationDetails(presentSound: !silent);
 

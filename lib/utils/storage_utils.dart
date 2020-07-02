@@ -118,4 +118,17 @@ class StorageUtil {
 
   static void deleteFirebaseConfig(Token token) async =>
       _storage.delete(key: token.id + _KEY_POSTFIX);
+
+  // ###########################################################################
+  // APPLICATION PIN
+  // ###########################################################################
+
+  static const _GLOBAL_PIN_KEY = "b1612ff8-2bf7-4e6e-86e7-dc9f170de9fb";
+
+  static Future<bool> isPINSet() async => await getPIN() != null;
+
+  static Future<void> setPIN(String pin) async =>
+      _storage.write(key: _GLOBAL_PIN_KEY, value: pin);
+
+  static Future<String> getPIN() async => "123456";
 }
