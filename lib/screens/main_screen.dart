@@ -76,6 +76,10 @@ class _MainScreenState extends State<MainScreen> {
     _loadFirebase();
   }
 
+  // TODO
+  //  Style pin input
+  //  Hide stuff in background on iOS
+  //  Ask for pin when app was in background
   _checkPIN() async {
     if (!await StorageUtil.isPINSet()) {
       setState(() => _isAppUnlocked = true);
@@ -108,7 +112,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 shouldTriggerVerification: _verificationNotifier.stream,
                 backgroundColor: Colors.black.withOpacity(0.8),
-                cancelCallback: _onPasscodeCancelled,
+                cancelCallback: null,
                 digits: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
               ),
             ),
@@ -124,10 +128,6 @@ class _MainScreenState extends State<MainScreen> {
         this._isAppUnlocked = isValid;
       });
     }
-  }
-
-  _onPasscodeCancelled() {
-    Navigator.maybePop(context);
   }
 
   _loadFirebase() async {
@@ -167,7 +167,7 @@ class _MainScreenState extends State<MainScreen> {
       ),
       body: _isAppUnlocked
           ? _buildTokenList()
-          : Placeholder(), // TODO Replace this with empty placeholder!
+          : Column(), // TODO Replace this with empty placeholder!
       floatingActionButton: _isAppUnlocked
           ? FloatingActionButton(
               onPressed: () => _scanQRCode(),
