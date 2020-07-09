@@ -103,12 +103,12 @@ class _MainScreenState extends State<MainScreen> {
                     circleSize: 30),
                 keyboardUIConfig: KeyboardUIConfig(
                     digitBorderWidth: 2, primaryColor: Colors.blue),
-                passwordEnteredCallback: _onPasscodeEntered,
-                cancelButton: Text(""),
+                passwordEnteredCallback: _onPINEntered,
+                cancelButton: Text(""), // Cancel is not possible.
                 deleteButton: Text(
-                  'Delete',
+                  'Delete', // TODO Translate
                   style: const TextStyle(fontSize: 16, color: Colors.white),
-                  semanticsLabel: 'Delete',
+                  semanticsLabel: 'Delete', // TODO Translate
                 ),
                 shouldTriggerVerification: _verificationNotifier.stream,
                 backgroundColor: Colors.black.withOpacity(0.8),
@@ -120,7 +120,7 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  _onPasscodeEntered(String enteredPasscode) async {
+  _onPINEntered(String enteredPasscode) async {
     bool isValid = (await StorageUtil.getPIN()) == enteredPasscode;
     _verificationNotifier.add(isValid);
     if (isValid) {
@@ -167,7 +167,7 @@ class _MainScreenState extends State<MainScreen> {
       ),
       body: _isAppUnlocked
           ? _buildTokenList()
-          : Column(), // TODO Replace this with empty placeholder!
+          : Column(),
       floatingActionButton: _isAppUnlocked
           ? FloatingActionButton(
               onPressed: () => _scanQRCode(),
