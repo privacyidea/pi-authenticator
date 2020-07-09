@@ -33,6 +33,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:package_info/package_info.dart';
 import 'package:passcode_screen/circle.dart';
 import 'package:passcode_screen/keyboard.dart';
@@ -63,10 +64,11 @@ class MainScreen extends StatefulWidget {
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   List<Token> _tokenList = List<Token>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isAppUnlocked = false;
+  bool _isCheckingForPIN = false;
   final StreamController<bool> _verificationNotifier =
       StreamController<bool>.broadcast();
 
@@ -76,14 +78,31 @@ class _MainScreenState extends State<MainScreen> {
     _loadFirebase();
   }
 
+  @override
+  void onPause() {
+    setState(() {
+      _isAppUnlocked = false;
+    });
+  }
+
+  @override
+  void onResume() {
+    _checkPIN();
+  }
+
   // TODO
   //  Style pin input
   //  Hide stuff in background on iOS
   //  Ask for pin when app was in background
   _checkPIN() async {
+    if (_isCheckingForPIN) return;
+    _isCheckingForPIN = true;
+
     if (!await StorageUtil.isPINSet()) {
       setState(() => _isAppUnlocked = true);
-    } else {
+    }
+
+    if (!_isAppUnlocked) {
       Navigator.push(
           context,
           PageRouteBuilder(
@@ -104,7 +123,8 @@ class _MainScreenState extends State<MainScreen> {
                 keyboardUIConfig: KeyboardUIConfig(
                     digitBorderWidth: 2, primaryColor: Colors.blue),
                 passwordEnteredCallback: _onPINEntered,
-                cancelButton: Text(""), // Cancel is not possible.
+                cancelButton: Text(""),
+                // Cancel is not possible.
                 deleteButton: Text(
                   'Delete', // TODO Translate
                   style: const TextStyle(fontSize: 16, color: Colors.white),
@@ -120,10 +140,11 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  _onPINEntered(String enteredPasscode) async {
-    bool isValid = (await StorageUtil.getPIN()) == enteredPasscode;
+  _onPINEntered(String enteredPIN) async {
+    bool isValid = (await StorageUtil.getPIN()) == enteredPIN;
     _verificationNotifier.add(isValid);
     if (isValid) {
+      _isCheckingForPIN = false;
       setState(() {
         this._isAppUnlocked = isValid;
       });
@@ -165,9 +186,7 @@ class _MainScreenState extends State<MainScreen> {
           child: Image.asset('res/logo/app_logo_light.png'),
         ),
       ),
-      body: _isAppUnlocked
-          ? _buildTokenList()
-          : Column(),
+      body: _isAppUnlocked ? _buildTokenList() : Column(),
       floatingActionButton: _isAppUnlocked
           ? FloatingActionButton(
               onPressed: () => _scanQRCode(),

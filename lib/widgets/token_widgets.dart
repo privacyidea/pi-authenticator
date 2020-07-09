@@ -29,6 +29,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:http/http.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
@@ -221,7 +222,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   Widget _buildTile();
 }
 
-class _PushWidgetState extends _TokenWidgetState {
+class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   _PushWidgetState(Token token) : super(token);
 
   PushToken get _token => super._token as PushToken;
@@ -234,33 +235,62 @@ class _PushWidgetState extends _TokenWidgetState {
   Timer _deleteTimer; // Timer that deletes expired requests periodically.
 
   @override
+  void onPause() {
+    // Nothing to right now
+  }
+
+  @override
+  void onResume() async {
+    PushToken t = await StorageUtil.loadToken(_token.id);
+
+    log(
+        "Push token may have received a request while app was "
+        "in background. Updating UI.",
+        name: "token_widgets.dart");
+
+    // TODO Check this behaviour!
+    if (t.pushRequests.isNotEmpty) {
+      setState(() {
+        _token = t;
+        _saveThisToken();
+      });
+    }
+  }
+
+  @override
+  void afterFirstRender() {
+    // super.afterFirstRender();
+    if (!_token.isRolledOut) _rollOutToken();
+  }
+
+  @override
   void initState() {
     super.initState();
 
-    if (!_token.isRolledOut) {
-      SchedulerBinding.instance.addPostFrameCallback((_) => _rollOutToken());
-    }
-
-    // Push requests that were received in background can only be saved to
-    // the storage, the ui must be updated here.
-    // ignore: missing_return
-    SystemChannels.lifecycle.setMessageHandler((msg) async {
-      PushToken t = await StorageUtil.loadToken(_token.id);
-
-      // FIXME This throws errors because the token [t] is null, why?
-
-      if (msg == "AppLifecycleState.resumed" && t.pushRequests.isNotEmpty) {
-        log(
-            "Push token may have received a request while app was "
-            "in background. Updating UI.",
-            name: "token_widgets.dart");
-
-        setState(() {
-          _token = t;
-          _saveThisToken();
-        });
-      }
-    });
+//    if (!_token.isRolledOut) {
+//      SchedulerBinding.instance.addPostFrameCallback((_) => _rollOutToken());
+//    }
+//
+//    // Push requests that were received in background can only be saved to
+//    // the storage, the ui must be updated here.
+//    // ignore: missing_return
+//    SystemChannels.lifecycle.setMessageHandler((msg) async {
+//      PushToken t = await StorageUtil.loadToken(_token.id);
+//
+//      // FIXME This throws errors because the token [t] is null, why?
+//
+//      if (msg == "AppLifecycleState.resumed" && t.pushRequests.isNotEmpty) {
+//        log(
+//            "Push token may have received a request while app was "
+//            "in background. Updating UI.",
+//            name: "token_widgets.dart");
+//
+//        setState(() {
+//          _token = t;
+//          _saveThisToken();
+//        });
+//      }
+//    });
 
     // Delete expired push requests periodically.
     _deleteTimer = Timer.periodic(Duration(seconds: 30), (_) {
@@ -711,7 +741,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
 }
 
 class _TotpWidgetState extends _OTPTokenWidgetState
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, LifecycleMixin {
   AnimationController
       controller; // Controller for animating the LinearProgressAnimator
 
@@ -750,19 +780,16 @@ class _TotpWidgetState extends _OTPTokenWidgetState
         }
       })
       ..forward(); // Start the animation.
+  }
 
-    // Update the otp value when the android app resumes, this prevents outdated otp values
-    // ignore: missing_return
-    SystemChannels.lifecycle.setMessageHandler((msg) {
-      log(
-        "SystemChannels:",
-        name: "totpwidget.dart",
-        error: msg,
-      );
-      if (msg == AppLifecycleState.resumed.toString()) {
-        _updateOtpValue();
-      }
-    });
+  @override
+  void onPause() {
+// Nothing to do right now
+  }
+
+  @override
+  void onResume() {
+    _updateOtpValue();
   }
 
   @override
