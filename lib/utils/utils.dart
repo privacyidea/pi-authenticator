@@ -213,6 +213,12 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
 
   // If we do not support the version of this piauth url, we can stop here.
   String pushVersionAsString = uri.queryParameters["v"];
+
+  if (pushVersionAsString == null) {
+    throw ArgumentError.value(uri, "uri",
+        "Parameter [v] is not an optional parameter and is missing.");
+  }
+
   try {
     int pushVersion = int.parse(pushVersionAsString);
 
@@ -352,12 +358,19 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
     // Parse counter.
     String counterAsString = uri.queryParameters["counter"];
     try {
+      if (counterAsString == null) {
+        throw ArgumentError.value(
+          uri,
+          "uri",
+          "Value for parameter [counter] is not optional and is missing.",
+        );
+      }
       uriMap[URI_COUNTER] = int.parse(counterAsString);
     } on FormatException {
       throw ArgumentError.value(
         uri,
         "uri",
-        "[$counterAsString] is not a valid value for the parameter [counter]",
+        "[$counterAsString] is not a valid value for uri parameter [counter].",
       );
     }
   }
