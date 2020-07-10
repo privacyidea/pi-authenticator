@@ -100,44 +100,52 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
     if (!await StorageUtil.isPINSet()) {
       setState(() => _isAppUnlocked = true);
+      _isCheckingForPIN = false;
+      return;
     }
 
-    if (!_isAppUnlocked) {
-      Navigator.push(
-          context,
-          PageRouteBuilder(
-            opaque: false,
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                WillPopScope(
-              onWillPop: () async => _isAppUnlocked,
-              child: PasscodeScreen(
-                title: Text(
-                  'Unlock App', // TODO Translate
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 28),
-                ),
-                circleUIConfig: CircleUIConfig(
-                    borderColor: Colors.blue,
-                    fillColor: Colors.blue,
-                    circleSize: 30),
-                keyboardUIConfig: KeyboardUIConfig(
-                    digitBorderWidth: 2, primaryColor: Colors.blue),
-                passwordEnteredCallback: _onPINEntered,
-                cancelButton: Text(""),
-                // Cancel is not possible.
-                deleteButton: Text(
-                  'Delete', // TODO Translate
-                  style: const TextStyle(fontSize: 16, color: Colors.white),
-                  semanticsLabel: 'Delete', // TODO Translate
-                ),
-                shouldTriggerVerification: _verificationNotifier.stream,
-                backgroundColor: Colors.black.withOpacity(0.8),
-                cancelCallback: null,
-                digits: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+    if (!_isAppUnlocked) _askForPIN();
+  }
+
+  _askForPIN() async {
+    int numberOfDigits = (await StorageUtil.getPIN()).length;
+
+    Navigator.push(
+        context,
+        PageRouteBuilder(
+          opaque: false,
+          pageBuilder: (context, animation, secondaryAnimation) => WillPopScope(
+            onWillPop: () async => _isAppUnlocked,
+            child: PasscodeScreen(
+              title: Text(
+                'Unlock App', // TODO Translate
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontSize: 28),
               ),
+              passwordDigits: numberOfDigits,
+              circleUIConfig: CircleUIConfig(
+                  borderColor: Colors.blue, // TODO Style
+                  fillColor: Colors.blue,
+                  circleSize: 30),
+              keyboardUIConfig: KeyboardUIConfig(
+                  digitBorderWidth: 2, primaryColor: Colors.blue),
+              // TODO Style
+              passwordEnteredCallback: _onPINEntered,
+              cancelButton: Text(""),
+              // TODO Translate
+              // Cancel is not possible.
+              deleteButton: Text(
+                'Delete', // TODO Translate
+                style: const TextStyle(fontSize: 16, color: Colors.white),
+                semanticsLabel: 'Delete', // TODO Translate
+              ),
+              shouldTriggerVerification: _verificationNotifier.stream,
+              backgroundColor: Colors.black.withOpacity(0.8),
+              cancelCallback: null,
+              digits: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
             ),
-          ));
-    }
+          ),
+        ));
   }
 
   _onPINEntered(String enteredPIN) async {
