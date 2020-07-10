@@ -131,4 +131,7 @@ class StorageUtil {
       _storage.write(key: _GLOBAL_PIN_KEY, value: pin);
 
   static Future<String> getPIN() async => _storage.read(key: _GLOBAL_PIN_KEY);
+
+  static Future<void> deletePIN() async =>
+      _storage.delete(key: _GLOBAL_PIN_KEY);
 }
