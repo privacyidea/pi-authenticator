@@ -22,6 +22,8 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
+import 'package:privacyidea_authenticator/utils/storage_utils.dart';
+import 'package:privacyidea_authenticator/widgets/set_pin_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -35,6 +37,19 @@ class SettingsScreen extends StatefulWidget {
 
 class SettingsScreenState extends State<SettingsScreen> {
 //  bool _hideOTP = false;
+  bool _isPINSet =
+      true; // Initial value because we determine this asynchronously.
+
+  @override
+  void initState() {
+    super.initState();
+    getPINState();
+  }
+
+  void getPINState() async {
+    _isPINSet = await StorageUtil.isPINSet();
+    setState(() {}); // Tell the ui to refresh.
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +92,40 @@ class SettingsScreenState extends State<SettingsScreen> {
                           setState(() => changeBrightness(value));
                         }
                       : null,
+                ),
+              ],
+            ),
+            Divider(),
+            SettingsGroup(
+              title: 'Security', // TODO Translate
+              children: <Widget>[
+                ListTile(
+                  title: Text('Lock app'), // TODO Translate
+                  subtitle: Text('Ask for PIN on app start'), // TODO Translate
+                  trailing: Switch(
+                    value: _isPINSet,
+                    onChanged: (value) async {
+                      if (_isPINSet && !value) {
+                        // Disable pin
+                        // TODO
+                        print('Deactivate');
+                        setState(() => _isPINSet = false);
+                      } else if (!_isPINSet && value) {
+                        // Enable pin
+                        // TODO
+                        String newPin = await showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) => SetPINDialog(),
+                        );
+                        if (newPin != null) {
+                          await StorageUtil.setPIN(newPin);
+                          setState(() => _isPINSet = true);
+                          print('Activate');
+                        }
+                      }
+                    },
+                  ),
                 ),
               ],
             ),

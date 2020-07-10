@@ -130,5 +130,5 @@ class StorageUtil {
   static Future<void> setPIN(String pin) async =>
       _storage.write(key: _GLOBAL_PIN_KEY, value: pin);
 
-  static Future<String> getPIN() async => "123456";
+  static Future<String> getPIN() async => _storage.read(key: _GLOBAL_PIN_KEY);
 }
