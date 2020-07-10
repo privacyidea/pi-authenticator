@@ -18,9 +18,14 @@
   limitations under the License.
 */
 
+import 'dart:async';
+
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:passcode_screen/circle.dart';
+import 'package:passcode_screen/keyboard.dart';
+import 'package:passcode_screen/passcode_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/widgets/set_pin_dialog.dart';
@@ -107,22 +112,14 @@ class SettingsScreenState extends State<SettingsScreen> {
                     onChanged: (value) async {
                       if (_isPINSet && !value) {
                         // Disable pin
-                        // TODO
-                        print('Deactivate');
-                        setState(() => _isPINSet = false);
+                        _askForPIN(() async {
+                          print('Deactivate');
+                          await StorageUtil.deletePIN();
+                          setState(() => _isPINSet = false);
+                        });
                       } else if (!_isPINSet && value) {
                         // Enable pin
-                        // TODO
-                        String newPin = await showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) => SetPINDialog(),
-                        );
-                        if (newPin != null) {
-                          await StorageUtil.setPIN(newPin);
-                          setState(() => _isPINSet = true);
-                          print('Activate');
-                        }
+                        _setNewAppPIN();
                       }
                     },
                   ),
@@ -149,6 +146,77 @@ class SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
     );
+  }
+
+  void _setNewAppPIN() async {
+    String newPin = await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => SetPINDialog(),
+    );
+    if (newPin != null) {
+      await StorageUtil.setPIN(newPin);
+      setState(() => _isPINSet = true);
+      print('Activate');
+    }
+  }
+
+  bool _isAppUnlocked = false;
+  final StreamController<bool> _verificationNotifier =
+      StreamController<bool>.broadcast();
+
+  _askForPIN(VoidCallback callback) async {
+    int numberOfDigits = (await StorageUtil.getPIN()).length;
+
+    Navigator.push(
+        context,
+        PageRouteBuilder(
+          opaque: false,
+          pageBuilder: (context, animation, secondaryAnimation) => WillPopScope(
+            onWillPop: () async => _isAppUnlocked,
+            child: PasscodeScreen(
+              title: Text(
+                'Unlock App', // TODO Translate
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontSize: 28),
+              ),
+              passwordDigits: numberOfDigits,
+              circleUIConfig: CircleUIConfig(
+                  borderColor: Colors.blue, // TODO Style
+                  fillColor: Colors.blue,
+                  circleSize: 30),
+              keyboardUIConfig: KeyboardUIConfig(
+                  digitBorderWidth: 2, primaryColor: Colors.blue),
+              // TODO Style
+              passwordEnteredCallback: (enteredPIN) =>
+                  _onPINEntered(enteredPIN, callback),
+              cancelButton: Text("Cancel"),
+              // TODO Translate
+              // Cancel is not possible.
+              deleteButton: Text(
+                'Delete', // TODO Translate
+                style: const TextStyle(fontSize: 16, color: Colors.white),
+                semanticsLabel: 'Delete', // TODO Translate
+              ),
+              shouldTriggerVerification: _verificationNotifier.stream,
+              backgroundColor: Colors.black.withOpacity(0.8),
+              cancelCallback: null,
+              digits: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+            ),
+          ),
+        ));
+  }
+
+  _onPINEntered(String enteredPIN, VoidCallback callback) async {
+    bool isValid = (await StorageUtil.getPIN()) == enteredPIN;
+    _verificationNotifier.add(isValid);
+    if (isValid) {
+      callback.call();
+      setState(() {
+        this._isAppUnlocked = isValid;
+      });
+//      _setNewAppPIN();
+    }
   }
 
   void changeBrightness(Brightness value) {
