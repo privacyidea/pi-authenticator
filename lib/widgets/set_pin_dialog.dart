@@ -22,7 +22,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:flutter/services.dart';
 
 class SetPINDialog extends StatefulWidget {
   @override
@@ -31,14 +31,6 @@ class SetPINDialog extends StatefulWidget {
 
 class _SetPINDialogState extends State<SetPINDialog> {
   String _title;
-
-//  Widget _content = Row(
-//    mainAxisAlignment: MainAxisAlignment.center,
-//    children: <Widget>[
-//      _buildTextInputForm(), // TODO Add a form here
-//    ],
-//  );
-  FlatButton _button;
 
   @override
   void didChangeDependencies() {
@@ -49,12 +41,12 @@ class _SetPINDialogState extends State<SetPINDialog> {
   }
 
   String _newPIN;
-  String _confirmedPIN;
+  String _confirmPIN;
 
   // fields needed to manage the widget
   final _confirmPINKey = GlobalKey<FormFieldState>();
   final _newPINKey = GlobalKey<FormFieldState>();
-  bool _autoValidateSecret = false;
+  bool _autoValidatePIN = false;
 
   // used to handle focusing certain input fields
   FocusNode _newPINFocus;
@@ -76,41 +68,103 @@ class _SetPINDialogState extends State<SetPINDialog> {
     super.dispose();
   }
 
+  final keyBoardType = TextInputType.number;
+  final List<TextInputFormatter> inputFormatters = [
+    WhitelistingTextInputFormatter.digitsOnly
+  ];
+  final border = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(2),
+      borderSide: BorderSide(width: 2, color: Colors.green));
+  final focusBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(width: 2, color: Colors.green));
+  final errorBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(2),
+      borderSide: BorderSide(width: 2, color: Colors.red));
+  final focusedErrorBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(width: 2, color: Colors.red));
+
   Form _buildTextInputForm() {
     return Form(
       child: Column(
         children: <Widget>[
           TextFormField(
+            keyboardType: keyBoardType,
+            inputFormatters: inputFormatters,
             key: _newPINKey,
             focusNode: _newPINFocus,
-            onSaved: (value) => this.setState(() => _newPIN = value),
-            decoration: InputDecoration(labelText: 'new PIN'),
-            // TODO Translate
+            onFieldSubmitted: (value) => this.setState(() {
+//              print('Setting new PIN: $_newPIN from $value');
+//              setState(() => _autoValidatePIN = true);
+//              _newPINKey.currentState.validate();
+              _confirmPINFocus.requestFocus();
+            }),
+            onChanged: (value) => this.setState(() {
+//              print('Setting new PIN: $_newPIN from $value');
+//              setState(() => _autoValidatePIN = true);
+//              _newPINKey.currentState.validate();
+              _newPIN = value;
+            }),
+            decoration: InputDecoration(
+              labelText: 'PIN',
+              // TODO Translate
+              border: border,
+              focusedBorder: focusBorder,
+              errorBorder: errorBorder,
+              focusedErrorBorder: focusedErrorBorder,
+            ),
             validator: (value) {
               if (value.isEmpty) {
-                return Localization.of(context).hintEmptyName;
+                return 'Please enter a PIN.'; // TODO Translate
               }
               return null;
             },
           ),
+          Padding(
+            padding: EdgeInsets.all(5),
+          ),
           TextFormField(
+            keyboardType: keyBoardType,
+            inputFormatters: inputFormatters,
             key: _confirmPINKey,
-            autovalidate: _autoValidateSecret,
+            autovalidate: _autoValidatePIN,
             focusNode: _confirmPINFocus,
-            onSaved: (value) => this.setState(() => _confirmedPIN = value),
-            decoration: InputDecoration(labelText: 'confirm PIN'),
-            // TODO Translate
+//            onSaved: (value) =>
+//                this.setState(() => _confirmPINKey.currentState.validate()),
+            onChanged: (value) => this.setState(() {
+//              print('Setting new PIN: $_newPIN from $value');
+//              setState(() => _autoValidatePIN = true);
+//              _newPINKey.currentState.validate();
+              _confirmPIN = value;
+            }),
+            decoration: InputDecoration(
+              labelText: 'Confirm',
+              // TODO Translate
+              border: border,
+              focusedBorder: focusBorder,
+              errorBorder: errorBorder,
+              focusedErrorBorder: focusedErrorBorder,
+            ),
             validator: (value) {
-              if (value.isEmpty) {
-//                FocusScope.of(context).requestFocus(_secretFieldFocus);
-                return Localization.of(context).hintEmptySecret;
+//              if (value.isEmpty) {
+////                FocusScope.of(context).requestFocus(_secretFieldFocus);
+//                return Localization.of(context).hintEmptySecret;
+//              }
+              if (value != _newPIN) {
+                return 'The PINs are not equal'; // TODO Translate
               }
+
               return null;
             },
           ),
         ],
       ),
     );
+  }
+
+  bool validatePIN(String pin) {
+    return pin == _newPIN;
   }
 
   @override
@@ -120,7 +174,24 @@ class _SetPINDialogState extends State<SetPINDialog> {
       child: AlertDialog(
         title: Text(_title),
         content: _buildTextInputForm(),
-        actions: <Widget>[_button],
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Push me!'), // TODO Translate
+            onPressed: () {
+              if (_newPINKey.currentState.validate()) {
+                if (_confirmPINKey.currentState.validate()) {
+                  if (_newPIN == _confirmPIN && _newPIN.isNotEmpty) {
+                    Navigator.of(context).pop(_newPIN);
+                  }
+                } else {
+                  _confirmPINFocus.requestFocus();
+                }
+              } else {
+                _newPINFocus.requestFocus();
+              }
+            },
+          )
+        ],
       ),
     );
   }
