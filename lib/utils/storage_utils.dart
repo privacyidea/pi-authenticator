@@ -46,7 +46,8 @@ class StorageUtil {
     Map<String, String> keyValueMap = await _storage.readAll();
 
     List<Token> tokenList = [];
-    keyValueMap.forEach((_, value) {
+    for (String value in keyValueMap.values) {
+      if (!(jsonDecode(value) is Map)) continue;
       Map<String, dynamic> serializedToken = jsonDecode(value);
 
       // TODO when the token version (token.version) changed handle this here.
@@ -58,7 +59,7 @@ class StorageUtil {
       } else if (serializedToken.containsKey("serial")) {
         tokenList.add(PushToken.fromJson(serializedToken));
       }
-    });
+    }
 
     return tokenList;
   }
