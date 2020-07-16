@@ -87,12 +87,16 @@ class _SetPINDialogState extends State<SetPINDialog> {
       borderRadius: BorderRadius.circular(10),
       borderSide: BorderSide(width: 2, color: Colors.red));
 
+  bool obscurePIN = true;
+  bool obscureConfirm = true;
+
   Form _buildTextInputForm() {
     return Form(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           TextFormField(
+            obscureText: obscurePIN,
             keyboardType: keyBoardType,
             inputFormatters: inputFormatters,
             key: _newPINKey,
@@ -104,6 +108,18 @@ class _SetPINDialogState extends State<SetPINDialog> {
               _newPIN = value;
             }),
             decoration: InputDecoration(
+              suffixIcon: GestureDetector(
+                child: Icon(
+                  Icons.remove_red_eye,
+                  color:
+                      obscurePIN ? Colors.grey : Theme.of(context).primaryColor,
+                ),
+                onTap: () {
+                  setState(() {
+                    obscurePIN = !obscurePIN;
+                  });
+                },
+              ),
               labelText: 'PIN',
               // TODO Translate
               border: border,
@@ -122,6 +138,7 @@ class _SetPINDialogState extends State<SetPINDialog> {
             padding: EdgeInsets.all(5),
           ),
           TextFormField(
+            obscureText: obscureConfirm,
             keyboardType: keyBoardType,
             inputFormatters: inputFormatters,
             key: _confirmPINKey,
@@ -138,6 +155,19 @@ class _SetPINDialogState extends State<SetPINDialog> {
             decoration: InputDecoration(
               labelText: 'Confirm',
               // TODO Translate
+              suffixIcon: GestureDetector(
+                child: Icon(
+                  Icons.remove_red_eye,
+                  color: obscureConfirm
+                      ? Colors.grey
+                      : Theme.of(context).primaryColor,
+                ),
+                onTap: () {
+                  setState(() {
+                    obscureConfirm = !obscureConfirm;
+                  });
+                },
+              ),
               border: border,
               focusedBorder: focusBorder,
               errorBorder: errorBorder,
