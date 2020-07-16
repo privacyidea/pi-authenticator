@@ -37,9 +37,7 @@ class _SetPINDialogState extends State<SetPINDialog> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-//    _title = Localization.of(context).twoStepDialogTitleGenerate;
-    _title = 'Please enter a new PIN';
+    _title = 'Please enter a new PIN'; // TODO Translate
   }
 
   String _newPIN;
@@ -49,6 +47,8 @@ class _SetPINDialogState extends State<SetPINDialog> {
   final _confirmPINKey = GlobalKey<FormFieldState>();
   final _newPINKey = GlobalKey<FormFieldState>();
   bool _autoValidatePIN = false;
+  bool obscurePIN = true;
+  bool obscureConfirm = true;
 
   // used to handle focusing certain input fields
   FocusNode _newPINFocus;
@@ -75,8 +75,7 @@ class _SetPINDialogState extends State<SetPINDialog> {
     WhitelistingTextInputFormatter.digitsOnly
   ];
   final border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(2),
-      borderSide: BorderSide(width: 2));
+      borderRadius: BorderRadius.circular(2), borderSide: BorderSide(width: 2));
   final focusBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
       borderSide: BorderSide(width: 2, color: Colors.grey));
@@ -86,9 +85,6 @@ class _SetPINDialogState extends State<SetPINDialog> {
   final focusedErrorBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
       borderSide: BorderSide(width: 2, color: Colors.red));
-
-  bool obscurePIN = true;
-  bool obscureConfirm = true;
 
   Form _buildTextInputForm() {
     return Form(
@@ -111,8 +107,9 @@ class _SetPINDialogState extends State<SetPINDialog> {
               suffixIcon: GestureDetector(
                 child: Icon(
                   Icons.remove_red_eye,
-                  color:
-                      obscurePIN ? Colors.grey : getHighlightColor(isDarkModeOn(context)),
+                  color: obscurePIN
+                      ? Colors.grey
+                      : getHighlightColor(isDarkModeOn(context)),
                 ),
                 onTap: () {
                   setState(() {
@@ -144,12 +141,7 @@ class _SetPINDialogState extends State<SetPINDialog> {
             key: _confirmPINKey,
             autovalidate: _autoValidatePIN,
             focusNode: _confirmPINFocus,
-//            onSaved: (value) =>
-//                this.setState(() => _confirmPINKey.currentState.validate()),
             onChanged: (value) => this.setState(() {
-//              print('Setting new PIN: $_newPIN from $value');
-//              setState(() => _autoValidatePIN = true);
-//              _newPINKey.currentState.validate();
               _confirmPIN = value;
             }),
             decoration: InputDecoration(
@@ -174,10 +166,6 @@ class _SetPINDialogState extends State<SetPINDialog> {
               focusedErrorBorder: focusedErrorBorder,
             ),
             validator: (value) {
-//              if (value.isEmpty) {
-////                FocusScope.of(context).requestFocus(_secretFieldFocus);
-//                return Localization.of(context).hintEmptySecret;
-//              }
               if (value != _newPIN) {
                 return 'The PINs are not equal'; // TODO Translate
               }
