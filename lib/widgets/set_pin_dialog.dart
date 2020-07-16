@@ -23,6 +23,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
+import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 
 class SetPINDialog extends StatefulWidget {
   @override
@@ -88,6 +90,7 @@ class _SetPINDialogState extends State<SetPINDialog> {
   Form _buildTextInputForm() {
     return Form(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           TextFormField(
             keyboardType: keyBoardType,
@@ -95,15 +98,9 @@ class _SetPINDialogState extends State<SetPINDialog> {
             key: _newPINKey,
             focusNode: _newPINFocus,
             onFieldSubmitted: (value) => this.setState(() {
-//              print('Setting new PIN: $_newPIN from $value');
-//              setState(() => _autoValidatePIN = true);
-//              _newPINKey.currentState.validate();
               _confirmPINFocus.requestFocus();
             }),
             onChanged: (value) => this.setState(() {
-//              print('Setting new PIN: $_newPIN from $value');
-//              setState(() => _autoValidatePIN = true);
-//              _newPINKey.currentState.validate();
               _newPIN = value;
             }),
             decoration: InputDecoration(
@@ -176,7 +173,17 @@ class _SetPINDialogState extends State<SetPINDialog> {
         content: _buildTextInputForm(),
         actions: <Widget>[
           FlatButton(
-            child: Text('Push me!'), // TODO Translate
+            child: Text(
+              Localization.of(context).cancel,
+              style: getDialogTextStyle(isDarkModeOn(context)),
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          FlatButton(
+            child: Text(
+              Localization.of(context).accept,
+              style: getDialogTextStyle(isDarkModeOn(context)),
+            ), // TODO Translate
             onPressed: () {
               if (_newPINKey.currentState.validate()) {
                 if (_confirmPINKey.currentState.validate()) {
