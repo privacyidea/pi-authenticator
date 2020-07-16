@@ -76,10 +76,10 @@ class _SetPINDialogState extends State<SetPINDialog> {
   ];
   final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(2),
-      borderSide: BorderSide(width: 2, color: Colors.green));
+      borderSide: BorderSide(width: 2));
   final focusBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
-      borderSide: BorderSide(width: 2, color: Colors.green));
+      borderSide: BorderSide(width: 2, color: Colors.grey));
   final errorBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(2),
       borderSide: BorderSide(width: 2, color: Colors.red));
@@ -112,7 +112,7 @@ class _SetPINDialogState extends State<SetPINDialog> {
                 child: Icon(
                   Icons.remove_red_eye,
                   color:
-                      obscurePIN ? Colors.grey : Theme.of(context).primaryColor,
+                      obscurePIN ? Colors.grey : getHighlightColor(isDarkModeOn(context)),
                 ),
                 onTap: () {
                   setState(() {

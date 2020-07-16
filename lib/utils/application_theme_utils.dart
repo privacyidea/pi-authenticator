@@ -23,6 +23,10 @@ import 'package:flutter/material.dart';
 
 import 'customizations.dart';
 
+Color getHighlightColor(bool isDark) {
+  return isDark ? DARK_ACCENT_COLOR : PRIMARY_COLOR;
+}
+
 /// Builds the theme of this application, the theme is dependent on the
 /// brightness of the device, when brightness == dark the dark theme of this
 /// app is returned, otherwise the light theme is returned.
