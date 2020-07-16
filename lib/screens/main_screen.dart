@@ -35,9 +35,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:package_info/package_info.dart';
-import 'package:passcode_screen/circle.dart';
-import 'package:passcode_screen/keyboard.dart';
-import 'package:passcode_screen/passcode_screen.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
@@ -93,7 +90,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   // TODO
   //  Style pin input
   //  Hide stuff in background on iOS
-  //  Ask for pin when app was in background
   _checkPIN() async {
     if (_isCheckingForPIN) return;
     _isCheckingForPIN = true;
@@ -116,34 +112,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           opaque: false,
           pageBuilder: (context, animation, secondaryAnimation) => WillPopScope(
             onWillPop: () async => _isAppUnlocked,
-            child: PasscodeScreen(
-              title: Text(
-                'Unlock App', // TODO Translate
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 28),
-              ),
-              passwordDigits: numberOfDigits,
-              circleUIConfig: CircleUIConfig(
-                  borderColor: Colors.blue, // TODO Style
-                  fillColor: Colors.blue,
-                  circleSize: 30),
-              keyboardUIConfig: KeyboardUIConfig(
-                  digitBorderWidth: 2, primaryColor: Colors.blue),
-              // TODO Style
-              passwordEnteredCallback: _onPINEntered,
-              cancelButton: Text(""),
-              // TODO Translate
-              // Cancel is not possible.
-              deleteButton: Text(
-                'Delete', // TODO Translate
-                style: const TextStyle(fontSize: 16, color: Colors.white),
-                semanticsLabel: 'Delete', // TODO Translate
-              ),
-              shouldTriggerVerification: _verificationNotifier.stream,
-              backgroundColor: Colors.black.withOpacity(0.8),
-              cancelCallback: null,
-              digits: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-            ),
+            child: buildPasscodeScreen(
+                context, numberOfDigits, _onPINEntered, _verificationNotifier),
           ),
         ));
   }

@@ -28,6 +28,7 @@ import 'package:passcode_screen/keyboard.dart';
 import 'package:passcode_screen/passcode_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/set_pin_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
 
@@ -174,35 +175,8 @@ class SettingsScreenState extends State<SettingsScreen> {
           opaque: false,
           pageBuilder: (context, animation, secondaryAnimation) => WillPopScope(
             onWillPop: () async => _isAppUnlocked,
-            child: PasscodeScreen(
-              title: Text(
-                'Unlock App', // TODO Translate
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 28),
-              ),
-              passwordDigits: numberOfDigits,
-              circleUIConfig: CircleUIConfig(
-                  borderColor: Colors.blue, // TODO Style
-                  fillColor: Colors.blue,
-                  circleSize: 30),
-              keyboardUIConfig: KeyboardUIConfig(
-                  digitBorderWidth: 2, primaryColor: Colors.blue),
-              // TODO Style
-              passwordEnteredCallback: (enteredPIN) =>
-                  _onPINEntered(enteredPIN, callback),
-              cancelButton: Text("Cancel"),
-              // TODO Translate
-              // Cancel is not possible.
-              deleteButton: Text(
-                'Delete', // TODO Translate
-                style: const TextStyle(fontSize: 16, color: Colors.white),
-                semanticsLabel: 'Delete', // TODO Translate
-              ),
-              shouldTriggerVerification: _verificationNotifier.stream,
-              backgroundColor: Colors.black.withOpacity(0.8),
-              cancelCallback: null,
-              digits: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-            ),
+            child: buildPasscodeScreen(context,numberOfDigits, (enteredPIN) =>
+                _onPINEntered(enteredPIN, callback), _verificationNotifier, allowCancel: true),
           ),
         ));
   }
