@@ -35,6 +35,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:package_info/package_info.dart';
+import 'package:passcode_screen/circle.dart';
+import 'package:passcode_screen/keyboard.dart';
+import 'package:passcode_screen/passcode_screen.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
@@ -630,4 +633,38 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       duration: duration,
     ));
   }
+}
+
+PasscodeScreen buildPasscodeScreen(
+    BuildContext context,
+    final int numberOfDigits,
+    final PasswordEnteredCallback passwordEnteredCallback,
+    final StreamController<bool> verificationNotifier,
+    {final bool allowCancel = false}) {
+  return PasscodeScreen(
+    title: Text(
+      'Unlock App', // TODO Translate
+      textAlign: TextAlign.center,
+      style: TextStyle(color: Colors.white, fontSize: 28),
+    ),
+    passwordDigits: numberOfDigits,
+    circleUIConfig: CircleUIConfig(
+        borderColor: Colors.blue, // TODO Style
+        fillColor: Colors.blue,
+        circleSize: 30),
+    keyboardUIConfig:
+        KeyboardUIConfig(digitBorderWidth: 2, primaryColor: Colors.blue),
+    // TODO Style
+    passwordEnteredCallback: passwordEnteredCallback,
+    cancelButton: Text(allowCancel ? Localization.of(context).cancel : ""),
+    deleteButton: Text(
+      Localization.of(context).delete,
+      style: const TextStyle(fontSize: 16, color: Colors.white),
+      semanticsLabel: Localization.of(context).cancel,
+    ),
+    shouldTriggerVerification: verificationNotifier.stream,
+    backgroundColor: Colors.black.withOpacity(0.8),
+    cancelCallback: allowCancel ? () => Navigator.of(context).pop() : null,
+    digits: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+  );
 }

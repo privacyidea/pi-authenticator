@@ -26,10 +26,11 @@ import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/set_pin_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
+
+import 'main_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   SettingsScreen(this._title);
