@@ -23,14 +23,13 @@ import 'dart:async';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:passcode_screen/circle.dart';
-import 'package:passcode_screen/keyboard.dart';
-import 'package:passcode_screen/passcode_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/set_pin_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   SettingsScreen(this._title);
@@ -42,7 +41,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
-//  bool _hideOTP = false;
+  // FIXME Can this be simplified by using streambuilder?
   bool _isPINSet =
       true; // Initial value because we determine this asynchronously.
 
@@ -125,6 +124,24 @@ class SettingsScreenState extends State<SettingsScreen> {
                     },
                   ),
                 ),
+                PreferenceBuilder<bool>(
+                  preference: AppSettings.of(context).streamHideOpts(),
+                  builder: (context, bool hideOTP) {
+                    print('Rebuild switch');
+                    return ListTile(
+                        title: Text('Hide passwords'),
+                        // TODO Translate
+                        subtitle: Text('Obscure passwords'),
+                        // TODO Translate
+                        trailing: Switch(
+                          value: hideOTP,
+                          onChanged: (value) async {
+                            AppSettings.of(context).setHideOpts(value);
+//                            AppSettings.of(context).setHideOpts(value);
+                          },
+                        ));
+                  },
+                ),
               ],
             ),
 //            Divider(),
@@ -175,8 +192,12 @@ class SettingsScreenState extends State<SettingsScreen> {
           opaque: false,
           pageBuilder: (context, animation, secondaryAnimation) => WillPopScope(
             onWillPop: () async => _isAppUnlocked,
-            child: buildPasscodeScreen(context,numberOfDigits, (enteredPIN) =>
-                _onPINEntered(enteredPIN, callback), _verificationNotifier, allowCancel: true),
+            child: buildPasscodeScreen(
+                context,
+                numberOfDigits,
+                (enteredPIN) => _onPINEntered(enteredPIN, callback),
+                _verificationNotifier,
+                allowCancel: true),
           ),
         ));
   }
@@ -196,4 +217,22 @@ class SettingsScreenState extends State<SettingsScreen> {
   void changeBrightness(Brightness value) {
     DynamicTheme.of(context).setBrightness(value);
   }
+}
+
+class AppSettings extends InheritedWidget {
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) => true;
+
+  static AppSettings of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<AppSettings>();
+
+  AppSettings({Widget child, StreamingSharedPreferences preferences})
+      : _hideOpts = preferences.getBool(PREF_HIDE_OTPS, defaultValue: false),
+        super(child: child);
+
+  final Preference<bool> _hideOpts;
+
+  Stream<bool> streamHideOpts() => _hideOpts;
+
+  void setHideOpts(bool value) => _hideOpts.setValue(value);
 }
