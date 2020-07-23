@@ -18,7 +18,7 @@
   limitations under the License.
 */
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_driver/driver_extension.dart';
 import 'package:privacyidea_authenticator/main.dart' as app;
 
