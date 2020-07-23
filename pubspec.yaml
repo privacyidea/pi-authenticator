@@ -1,5 +1,7 @@
 name: privacyidea_authenticator
 description: An OTP Authenticator App for privacyIDEA Authentication Server.
+homepage: https://netknights.it/en/
+repository: https://github.com/privacyidea/pi-authenticator
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -11,7 +13,7 @@ description: An OTP Authenticator App for privacyIDEA Authentication Server.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.0.0+1
+version: 3.0.0+300000 # TODO How to set the right version number?
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -31,15 +33,13 @@ dependencies:
   # dependency for calculating otp values
   otp: ^2.0.3 # https://pub.dev/packages/otp
   # dependency for scanning barcodes
-  barcode_scan: ^1.0.0
-  #dependency for formating string, this could be useful when using json for internationalization
-  # sprintf: ^4.0.0 # TODO add BSD license https://pub.dev/packages/sprintf
-  # dependency to generate serials for tokens
+  barcode_scan: ^2.0.0
+  # dependency to generate IDs for tokens
   uuid: 2.0.4
   # dependency to save to secure storage under android and ios
   flutter_secure_storage: ^3.3.1+1
   # dependency to serialize objects to json
-  json_annotation: ^2.0.0
+  json_annotation: ^2.0.0 # run "flutter pub run build_runner build" in terminal to build tokens.g.dart
   # dependency for slide options in list
   flutter_slidable: ^0.5.4
   # dependency for automatically showing the version number
@@ -48,6 +48,18 @@ dependencies:
   pointycastle: ^1.0.2
   # dependency for changing the theme of the app
   dynamic_theme: ^1.0.1 # https://pub.dev/packages/dynamic_theme
+  # dependency for push tokens https://github.com/privacyidea/privacyidea/wiki/concept%3A-PushToken
+  # firebase_messaging: ^6.0.9
+  firebase_messaging:
+    path: ./local_plugins/firebase_messaging-6.0.16
+  # dependency for firebase configuration
+  firebase_core: ^0.4.4
+  # dependency for http requests https://pub.dev/packages/http#-readme-tab-
+  http: ^0.12.0+4
+  # for parsing ASN1 encoded stuff
+  asn1lib: ^0.6.4
+  # for displaying incoming push requests as notifications
+  flutter_local_notifications: ^1.4.1 # https://pub.dev/packages/flutter_local_notifications#-installing-tab-
 
   flutter_localizations:
     sdk: flutter

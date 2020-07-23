@@ -21,29 +21,25 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 
+import 'customizations.dart';
+
 /// Builds the theme of this application, the theme is dependent on the
 /// brightness of the device, when brightness == dark the dark theme of this
 /// app is returned, otherwise the light theme is returned.
 ThemeData getApplicationTheme(Brightness brightness) {
   bool isDark = brightness == Brightness.dark;
-
   ThemeData thisThemeData = isDark ? ThemeData.dark() : ThemeData.light();
 
-//  final Color primaryColor = isDark ? Colors.black : Color(0xff03a8f4);
-  final Color primaryColor = isDark ? Colors.black : Color(0xff03a8f4);
-  final Color accentColor = isDark ? Color(0xff03f4c8) : primaryColor;
+  final Color primaryColor = isDark ? Colors.black : PRIMARY_COLOR;
+  final Color accentColor = isDark ? DARK_ACCENT_COLOR : primaryColor;
 
   final FloatingActionButtonThemeData floatingActionButtonThemeData =
       FloatingActionButtonThemeData(backgroundColor: accentColor);
 
   final ButtonThemeData buttonTheme = ButtonThemeData(
-    textTheme: ButtonTextTheme.accent,
+    textTheme: ButtonTextTheme.primary,
     colorScheme: thisThemeData.buttonTheme.colorScheme.copyWith(
       primary: accentColor,
-// FIXME: Sadly this changes the text color of the 'paste' button too, and thus
-//   making that text unreadable
-//          secondary: isDark ? Colors.black : Colors.white,
-      secondary: isDark ? Colors.white : Colors.black,
     ),
   );
 

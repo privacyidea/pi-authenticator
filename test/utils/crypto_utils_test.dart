@@ -18,8 +18,10 @@
   limitations under the License.
 */
 
+import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:test/test.dart';
 
@@ -27,6 +29,7 @@ void main() {
   _testGeneratePhoneChecksum();
   _testGenerateSalt();
   _testPbkdf2();
+  _testRSASigning();
 }
 
 void _testGeneratePhoneChecksum() {
@@ -98,7 +101,6 @@ void _testGenerateSalt() {
 }
 
 void _testPbkdf2() {
-
   // Output matchers generated with python:
   // ```
   //  from hashlib import pbkdf2_hmac
@@ -835,4 +837,51 @@ void _testPbkdf2() {
               ])));
     });
   });
+}
+
+void _testRSASigning() {
+  group('RSA signing and verifying', () {
+    test('Signature is valid', () async {
+      var asymmetricKeyPair = await generateRSAKeyPair();
+      RSAPublicKey publicKey = asymmetricKeyPair.publicKey;
+      RSAPrivateKey privateKey = asymmetricKeyPair.privateKey;
+
+      String message = 'I am a signature.';
+
+      var signature = createRSASignature(privateKey, utf8.encode(message));
+
+      expect(
+          true, verifyRSASignature(publicKey, utf8.encode(message), signature));
+    }, timeout: Timeout(Duration(minutes: 5)));
+
+    test('Signature is invalid', () async {
+      var asymmetricKeyPair = await generateRSAKeyPair();
+      RSAPublicKey publicKey = asymmetricKeyPair.publicKey;
+      RSAPrivateKey privateKey = asymmetricKeyPair.privateKey;
+
+      String message = 'I am a signature.';
+
+      var signature = createRSASignature(privateKey, utf8.encode(message));
+
+      expect(
+          false,
+          verifyRSASignature(
+              publicKey,
+              utf8.encode('I am not the signature you are looking for.'),
+              signature));
+    }, timeout: Timeout(Duration(minutes: 5)));
+
+    test('Signature is invalid because of flipped parameters', () async {
+      var asymmetricKeyPair = await generateRSAKeyPair();
+      RSAPublicKey publicKey = asymmetricKeyPair.publicKey;
+      RSAPrivateKey privateKey = asymmetricKeyPair.privateKey;
+
+      String message = 'I am a signature.';
+
+      var signature = createRSASignature(privateKey, utf8.encode(message));
+
+      expect(false,
+          verifyRSASignature(publicKey, signature, utf8.encode(message)));
+    }, timeout: Timeout(Duration(minutes: 5)));
+  }, timeout: Timeout(Duration(minutes: 16)));
 }

@@ -3,26 +3,31 @@ import 'package:intl/intl.dart';
 
 import '../l10n/messages_all.dart';
 
-class L10n {
+class Localization {
   String localeName;
 
-  L10n(this.localeName);
+  Localization(this.localeName);
 
-  static Future<L10n> load(Locale locale) {
+  static Future<Localization> load(Locale locale) {
     final String name =
         locale.countryCode.isEmpty ? locale.languageCode : locale.toString();
     final String localeName = Intl.canonicalizedLocale(name);
 
     return initializeMessages(localeName).then((_) {
-      return L10n(localeName);
+      return Localization(localeName);
     });
   }
 
-  static L10n of(BuildContext context) {
+  static Localization of(BuildContext context) {
     // Widget tests will fail with called getter [getter] on null otherwise.
     //  This will use the default localization in that case.
-    return Localizations.of<L10n>(context, L10n) ?? L10n('');
+    return Localizations.of<Localization>(context, Localization) ??
+        Localization('');
   }
+
+  // ###########################################################################
+  // WORDS (E.G. FOR BUTTONS)
+  // ###########################################################################
 
   String get next {
     return Intl.message(
@@ -40,40 +45,34 @@ class L10n {
     );
   }
 
-  String get settings {
+  String get retry {
     return Intl.message(
-      'Settings',
-      desc: 'Button to open the settings page.',
+      "Retry",
+      name: 'retry',
+      desc: 'Label for e.g. a button. Something is tried to be done again.',
       locale: localeName,
     );
   }
 
-  String get addManually {
+  String get accept {
     return Intl.message(
-      'Add token',
-      desc: 'The button to open the screen to add tokens by hand.',
+      "Accept",
+      name: 'accept',
+      desc: 'Label for e.g. a button. Something gets accepted by the user.',
       locale: localeName,
     );
   }
 
-  String get scanQr {
+  String get decline {
     return Intl.message(
-      'Scan QR-Code',
-      desc: 'The button to scan otpauto qr-codes.',
+      "Decline",
+      name: 'decline',
+      desc: 'Label for e.g. a button. Something gets declined by the user.',
       locale: localeName,
     );
   }
 
-  String get addManuallyTitle {
-    return Intl.message(
-      'Enter details for token',
-      desc: 'Title of the screen where tokens are created manually,'
-          ' tells the user to enter all required values.',
-      locale: localeName,
-    );
-  }
-
-  String get nameHint {
+  String get name {
     return Intl.message(
       'Name',
       desc: 'Describes the field where the tokens name should be entered.',
@@ -81,7 +80,7 @@ class L10n {
     );
   }
 
-  String get secretHint {
+  String get secret {
     return Intl.message(
       'Secret',
       desc: 'Describes the field where the tokens secret should be entered.',
@@ -132,20 +131,72 @@ class L10n {
     );
   }
 
+  String get rename {
+    return Intl.message(
+      'Rename',
+      desc: 'Label that describes renaming the token.',
+      locale: localeName,
+    );
+  }
+
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      desc: 'Button to cancel an action.',
+      locale: localeName,
+    );
+  }
+
+  String get delete {
+    return Intl.message(
+      'Delete',
+      desc: 'Label that describes deleting the token.',
+      locale: localeName,
+    );
+  }
+
+  String get dismiss {
+    return Intl.message(
+      'Dismiss',
+      desc: 'Text of a button that closes a dialog.',
+      locale: localeName,
+    );
+  }
+
+  // ###########################################################################
+  // OTHERS
+  // ###########################################################################
+
+  String get addManually {
+    return Intl.message(
+      'Add token',
+      desc: 'The button to open the screen to add tokens by hand.',
+      locale: localeName,
+    );
+  }
+
+  String get scanQr {
+    return Intl.message(
+      'Scan QR-Code',
+      desc: 'The button to scan otpauto qr-codes.',
+      locale: localeName,
+    );
+  }
+
+  String get addManuallyTitle {
+    return Intl.message(
+      'Enter details for token',
+      desc: 'Title of the screen where tokens are created manually,'
+          ' tells the user to enter all required values.',
+      locale: localeName,
+    );
+  }
+
   String get addToken {
     return Intl.message(
       'Add token',
       desc:
           'Button to add the token for which the values where added in this screen.',
-      locale: localeName,
-    );
-  }
-
-  String get toolTipAddToken {
-    return Intl.message(
-      'Add tokens',
-      desc:
-          'Tooltip for the button that opens the selection for adding tokens.',
       locale: localeName,
     );
   }
@@ -168,17 +219,9 @@ class L10n {
 
   String get hintInvalidSecret {
     return Intl.message(
-      'The secret does not the fit current encoding',
+      'The secret does not fit the current encoding',
       desc:
-          'Hint telling the user that the secret deos not fit the selected encoding.',
-      locale: localeName,
-    );
-  }
-
-  String get rename {
-    return Intl.message(
-      'Rename',
-      desc: 'Label that describes renaming the token.',
+          'Hint telling the user that the secret does not fit the selected encoding.',
       locale: localeName,
     );
   }
@@ -191,22 +234,6 @@ class L10n {
     );
   }
 
-  String get cancel {
-    return Intl.message(
-      'Cancel',
-      desc: 'Button to cancel an action.',
-      locale: localeName,
-    );
-  }
-
-  String get delete {
-    return Intl.message(
-      'Delete',
-      desc: 'Label that describes deleting the token.',
-      locale: localeName,
-    );
-  }
-
   String get deleteDialogTitle {
     return Intl.message(
       'Confirm deletion',
@@ -215,6 +242,7 @@ class L10n {
     );
   }
 
+  // TODO Change this to accept parameter!
   String get areYouSure {
     return Intl.message(
       'Are you sure you want to delete',
@@ -249,14 +277,6 @@ class L10n {
     );
   }
 
-  String get dismiss {
-    return Intl.message(
-      'Dismiss',
-      desc: 'Text of a button that closes a dialog.',
-      locale: localeName,
-    );
-  }
-
   String otpValueCopiedMessage(var otpValue) {
     return Intl.message(
       'Password "$otpValue" copied to clipboard.',
@@ -264,6 +284,18 @@ class L10n {
       args: [otpValue],
       examples: const {'otpValue': '055374'},
       desc: 'Tells the user that the otp value was copied to the clipboard.',
+      locale: localeName,
+    );
+  }
+
+  // ###########################################################################
+  // SETTINGS
+  // ###########################################################################
+
+  String get settings {
+    return Intl.message(
+      'Settings',
+      desc: 'Button to open the settings page.',
       locale: localeName,
     );
   }
@@ -291,9 +323,151 @@ class L10n {
       locale: localeName,
     );
   }
+
+  // ###########################################################################
+  //                                PUSH TOKENS:
+  // ###########################################################################
+
+  String errorOnlyOneFirebaseProjectIsSupported(var name) {
+    return Intl.message(
+      "The firebase configuration of $name differs from the one currently "
+      "used by the app. Currently only one is supported.",
+      name: 'errorOnlyOneFirebaseProjectIsSupported',
+      args: [name],
+      examples: const {'name': 'PUSH1234A'},
+      desc: 'Tells the user that the token can not be used because'
+          ' it has a different firebase configuration than the current'
+          ' used configuration of the application.',
+      locale: localeName,
+    );
+  }
+
+  String errorTokenExpired(var name) {
+    return Intl.message(
+      "Token $name is expired, roll-out not possible.",
+      name: 'errorTokenExpired',
+      args: [name],
+      examples: const {'name': 'PUSH1234A'},
+      desc:
+          'Tells the user that the token can not be rolled out, because it expired.',
+      locale: localeName,
+    );
+  }
+
+  String errorRollOutFailed(String name, var errorCode) {
+    return Intl.message(
+      "Rolling out token $name failed. Error code: $errorCode",
+      name: "errorRollOutFailed",
+      args: [name, errorCode],
+      examples: const {'name': 'PUSH1234A', 'errorCode': "500"},
+      desc:
+          'Tells the user that the token could not be rolled out, because a network error occured.',
+      locale: localeName,
+    );
+  }
+
+  String get errorRollOutNoNetworkConnection {
+    return Intl.message(
+      "No network connection. Roll-out not possible.",
+      name: 'errorRollOutNoNetworkConnection',
+      desc: 'Tells the user that the roll-out failed because '
+          'no network connection is available.',
+      locale: localeName,
+    );
+  }
+
+  String errorRollOutUnknownError(var e) {
+    return Intl.message(
+      "An unknown error occurred. Roll-out not possible: $e",
+      name: 'errorRollOutUnknownError',
+      args: [e],
+      examples: const {'e': 'IllegalArgumentException on Line 5 ...'},
+      desc:
+          'Tells the user that the roll-out failed because of an unknown error.',
+      locale: localeName,
+    );
+  }
+
+  String acceptPushAuthRequestFor(String name) {
+    return Intl.message(
+      "Accepted authentication request for $name.",
+      name: "acceptPushAuthRequestFor",
+      args: [name],
+      examples: const {'name': 'PUSH1234A'},
+      desc:
+          'Tells the user that a push request for a specific token was accepted.',
+      locale: localeName,
+    );
+  }
+
+  String decliningPushAuthRequestFor(String name) {
+    return Intl.message(
+      "Declined authentication request for $name.",
+      name: "decliningPushAuthRequestFor",
+      args: [name],
+      examples: const {'name': 'PUSH1234A'},
+      desc:
+          'Tells the user that a push request for a specific token was declined.',
+      locale: localeName,
+    );
+  }
+
+  String errorPushAuthRequestFailedFor(String name, var errorCode) {
+    return Intl.message(
+      "Accepting authentication request for $name failed. "
+      "Error code: $errorCode",
+      name: "errorPushAuthRequestFailedFor",
+      args: [name, errorCode],
+      examples: const {'name': 'PUSH1234A', 'errorCode': "500"},
+      desc:
+          'Tells the user that a push auth request could not be accepted for a token.',
+      locale: localeName,
+    );
+  }
+
+  String get rollingOut {
+    return Intl.message(
+      "Rolling out",
+      name: 'rollingOut',
+      desc: 'Label that tells the user that the token is being rolled out.',
+      locale: localeName,
+    );
+  }
+
+  String get retryRollOut {
+    return Intl.message(
+      "Roll-out failed, please try again.",
+      name: 'retryRollOut',
+      desc:
+          'Label for e.g. a button. Tells the user that rolling out the token '
+          'failed. Roll out can be retried by clicking this button.',
+      locale: localeName,
+    );
+  }
+
+  String get errorAuthenticationNotPossibleWithoutNetworkAccess {
+    return Intl.message(
+      "No network connection. Authentication not possible.",
+      name: 'errorAuthenticationNotPossibleWithoutNetworkAccess',
+      desc: 'Error message tell the user that accepting a push request failed.',
+      locale: localeName,
+    );
+  }
+
+  String errorAuthenticationFailedUnknownError(var e) {
+    return Intl.message(
+      "An unknown error occurred. Authentication failed: $e",
+      name: 'errorAuthenticationFailedUnknownError',
+      args: [e],
+      examples: const {'e': 'IllegalArgumentException on line 5, ...'},
+      desc: "Tells the user that the authentication could not be accepted "
+          "because of an unknown error.",
+      locale: localeName,
+    );
+  }
 }
 
-class MyLocalizationsDelegate extends LocalizationsDelegate<L10n> {
+class MyLocalizationsDelegate extends LocalizationsDelegate<Localization> {
   const MyLocalizationsDelegate();
 
   @override
@@ -302,12 +476,12 @@ class MyLocalizationsDelegate extends LocalizationsDelegate<L10n> {
   }
 
   @override
-  Future<L10n> load(Locale locale) {
-    return L10n.load(locale);
+  Future<Localization> load(Locale locale) {
+    return Localization.load(locale);
   }
 
   @override
-  bool shouldReload(LocalizationsDelegate<L10n> old) {
+  bool shouldReload(LocalizationsDelegate<Localization> old) {
     return false;
   }
 }
