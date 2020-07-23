@@ -225,6 +225,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         name: "main_screen.dart",
         error: e.toString(),
       );
+
+      print(e.stackTrace);
     } catch (e) {
       //  Unknown error
       throw e;
