@@ -35,6 +35,7 @@ import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
+import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
@@ -42,6 +43,7 @@ import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/custom_texts.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 typedef GetFBTokenCallback = Future<String> Function(FirebaseConfig);
 
@@ -714,14 +716,22 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
     return Stack(
       children: <Widget>[
         ListTile(
-          title: HideableText(
-            text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            hiddenText:
-                insertCharAt("*" * _token.digits, " ", _token.digits ~/ 2),
-            textScaleFactor: 2.2,
-            hideDuration: Duration(seconds: 4),
-            textStyle: TextStyle(fontFamily: "monospace"),
-            enabled: true, // TODO Change from settings
+          title: PreferenceBuilder<bool>(
+            preference: AppSettings.of(context).streamHideOpts(),
+            builder: (context, bool hide) {
+              return HideableText(
+                text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
+                hiddenText:
+                    insertCharAt("*" * _token.digits, " ", _token.digits ~/ 2),
+                textScaleFactor: 2.2,
+                hideDuration: Duration(seconds: 4),
+                textStyle: TextStyle(
+                  fontFamily: "monospace",
+                  fontWeight: FontWeight.bold,
+                ),
+                enabled: hide,
+              );
+            },
           ),
           subtitle: Text(
             _label,
@@ -809,14 +819,22 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     return Column(
       children: <Widget>[
         ListTile(
-          title: HideableText(
-            text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            hiddenText:
-                insertCharAt("*" * _token.digits, " ", _token.digits ~/ 2),
-            textScaleFactor: 2.2,
-            hideDuration: Duration(seconds: 4),
-            textStyle: TextStyle(fontFamily: "monospace"),
-            enabled: true, // TODO Change from settings
+          title: PreferenceBuilder<bool>(
+            preference: AppSettings.of(context).streamHideOpts(),
+            builder: (context, bool hide) {
+              return HideableText(
+                text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
+                hiddenText:
+                    insertCharAt("*" * _token.digits, " ", _token.digits ~/ 2),
+                textScaleFactor: 2.2,
+                hideDuration: Duration(seconds: 4),
+                textStyle: TextStyle(
+                  fontFamily: "monospace",
+                  fontWeight: FontWeight.bold,
+                ),
+                enabled: hide,
+              );
+            },
           ),
           subtitle: Text(
             _label,
