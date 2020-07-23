@@ -63,9 +63,9 @@ dependencies:
   # locking the app with a password
   passcode_screen: ^1.2.0
   # managing lifecycle of app -> onPause, onResume
-  flutterlifecyclehooks: ^1.0.0 # TODO Add license
+  flutterlifecyclehooks: ^1.0.0
   # manage settings
-  streaming_shared_preferences: ^1.0.1 # TODO Add license
+  streaming_shared_preferences: ^1.0.1
 
   flutter_localizations:
     sdk: flutter
