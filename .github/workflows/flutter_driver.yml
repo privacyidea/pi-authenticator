@@ -16,8 +16,8 @@ jobs:
       # environment.
       matrix:
         device:
-        - "/^iPhone 8/"
-        - "/^iPhone 11/"
+        - "iPhone 8 (13.6)"
+        - "iPhone 11 (13.6)"
       # When set to true, GitHub cancels all in-progress jobs if any        
       # matrix job fails.
       fail-fast: false
@@ -34,7 +34,7 @@ jobs:
           awk \
             -F ' *[][]' \
             -v 'device=${{ matrix.device }}' \
-            '$1 ~ device { print $2 }'
+            '$1 == device { print $2 }'
         )
         xcrun simctl boot "${UDID:?No Simulator with this name found}"
         
