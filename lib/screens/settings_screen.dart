@@ -23,14 +23,12 @@ import 'dart:async';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:passcode_screen/circle.dart';
-import 'package:passcode_screen/keyboard.dart';
-import 'package:passcode_screen/passcode_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/set_pin_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
+
+import 'main_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   SettingsScreen(this._title);
@@ -175,8 +173,12 @@ class SettingsScreenState extends State<SettingsScreen> {
           opaque: false,
           pageBuilder: (context, animation, secondaryAnimation) => WillPopScope(
             onWillPop: () async => _isAppUnlocked,
-            child: buildPasscodeScreen(context,numberOfDigits, (enteredPIN) =>
-                _onPINEntered(enteredPIN, callback), _verificationNotifier, allowCancel: true),
+            child: buildPasscodeScreen(
+                context,
+                numberOfDigits,
+                (enteredPIN) => _onPINEntered(enteredPIN, callback),
+                _verificationNotifier,
+                allowCancel: true),
           ),
         ));
   }

@@ -26,16 +26,11 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
-import 'package:flutter/material.dart';
 import 'package:hex/hex.dart' as HexConverter;
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'package:otp/otp.dart' as OTPLibrary;
-import 'package:passcode_screen/circle.dart';
-import 'package:passcode_screen/keyboard.dart';
-import 'package:passcode_screen/passcode_screen.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 
 import 'identifiers.dart';
 
@@ -486,38 +481,4 @@ Future<Response> doPost(
   ioClient.close();
 
   return response;
-}
-
-PasscodeScreen buildPasscodeScreen(
-    BuildContext context,
-    final int numberOfDigits,
-    final PasswordEnteredCallback passwordEnteredCallback,
-    final StreamController<bool> verificationNotifier,
-    {final bool allowCancel = false}) {
-  return PasscodeScreen(
-    title: Text(
-      'Unlock App', // TODO Translate
-      textAlign: TextAlign.center,
-      style: TextStyle(color: Colors.white, fontSize: 28),
-    ),
-    passwordDigits: numberOfDigits,
-    circleUIConfig: CircleUIConfig(
-        borderColor: Colors.blue, // TODO Style
-        fillColor: Colors.blue,
-        circleSize: 30),
-    keyboardUIConfig:
-        KeyboardUIConfig(digitBorderWidth: 2, primaryColor: Colors.blue),
-    // TODO Style
-    passwordEnteredCallback: passwordEnteredCallback,
-    cancelButton: Text(allowCancel ? Localization.of(context).cancel : ""),
-    deleteButton: Text(
-      Localization.of(context).delete,
-      style: const TextStyle(fontSize: 16, color: Colors.white),
-      semanticsLabel: Localization.of(context).cancel,
-    ),
-    shouldTriggerVerification: verificationNotifier.stream,
-    backgroundColor: Colors.black.withOpacity(0.8),
-    cancelCallback: allowCancel ? () => Navigator.of(context).pop() : null,
-    digits: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-  );
 }
