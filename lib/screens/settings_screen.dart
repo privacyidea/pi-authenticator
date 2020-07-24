@@ -42,19 +42,21 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
-  // FIXME Can this be simplified by using streambuilder?
-  bool _isPINSet =
-      true; // Initial value because we determine this asynchronously.
+  StreamController<bool> _isPINSetController;
+
+  Stream<bool> get isPinSet => _isPINSetController.stream;
 
   @override
   void initState() {
     super.initState();
-    getPINState();
-  }
 
-  void getPINState() async {
-    _isPINSet = await StorageUtil.isPINSet();
-    setState(() {}); // Tell the ui to refresh.
+    var checkPIN =
+        () async => _isPINSetController.add(await StorageUtil.isPINSet());
+
+    _isPINSetController = StreamController<bool>(
+      onListen: checkPIN,
+      onResume: checkPIN,
+    );
   }
 
   @override
@@ -108,20 +110,32 @@ class SettingsScreenState extends State<SettingsScreen> {
                 ListTile(
                   title: Text('Lock app'), // TODO Translate
                   subtitle: Text('Ask for PIN on app start'), // TODO Translate
-                  trailing: Switch(
-                    value: _isPINSet,
-                    onChanged: (value) async {
-                      if (_isPINSet && !value) {
-                        // Disable pin
-                        _askForPIN(() async {
-                          print('Deactivate');
-                          await StorageUtil.deletePIN();
-                          setState(() => _isPINSet = false);
-                        });
-                      } else if (!_isPINSet && value) {
-                        // Enable pin
-                        _setNewAppPIN();
+                  trailing: StreamBuilder<bool>(
+                    stream: isPinSet,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        // Because initial data causes weird ui update.
+                        return Switch(
+                          value: false,
+                          onChanged: (value) {},
+                        );
                       }
+
+                      return Switch(
+                        value: snapshot.data,
+                        onChanged: (value) async {
+                          if (snapshot.data && !value) {
+                            // Disable pin
+                            _askForPIN(() async {
+                              await StorageUtil.deletePIN();
+                              _isPINSetController.add(false);
+                            });
+                          } else if (!snapshot.data && value) {
+                            // Enable pin
+                            _setNewAppPIN();
+                          }
+                        },
+                      );
                     },
                   ),
                 ),
@@ -175,7 +189,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     );
     if (newPin != null) {
       await StorageUtil.setPIN(newPin);
-      setState(() => _isPINSet = true);
+      _isPINSetController.add(true);
       print('Activate');
     }
   }
@@ -211,7 +225,6 @@ class SettingsScreenState extends State<SettingsScreen> {
       setState(() {
         this._isAppUnlocked = isValid;
       });
-//      _setNewAppPIN();
     }
   }
 
