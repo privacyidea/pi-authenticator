@@ -55,9 +55,9 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
               style: Theme.of(context).textTheme.headline5,
             ),
             widget.applicationIcon,
-            FutureBuilder(
+            FutureBuilder<PackageInfo>(
               future: _info,
-              builder: (context, AsyncSnapshot<PackageInfo> snapshot) {
+              builder: (context, snapshot) {
                 if (snapshot.hasData)
                   return Text('Version ${snapshot.data.version}');
                 else
@@ -130,9 +130,9 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
           textScaleFactor: screenTitleScaleFactor,
         ),
       ),
-      body: StreamBuilder(
+      body: StreamBuilder<List<Widget>>(
         stream: widgetListStream(),
-        builder: (context, AsyncSnapshot<List<Widget>> snapshot) {
+        builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
               itemCount: snapshot.data.length,
