@@ -3,7 +3,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
 
-  Copyright (c) 2017-2019 NetKnights GmbH
+  Copyright (c) 2017-2020 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
