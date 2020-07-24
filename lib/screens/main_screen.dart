@@ -572,7 +572,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         onSelected: (String value) async {
           if (value == "about") {
             PackageInfo info = await PackageInfo.fromPlatform();
-//              clearLicenses(), // This is used for testing purposes only.
+//            clearLicenses(); // This is used for testing purposes only.
             addAllLicenses();
             Navigator.push(
                 context,
