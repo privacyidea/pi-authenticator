@@ -21,21 +21,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomLicenseScreen extends StatefulWidget {
-  final String applicationName;
-  final String applicationVersion;
-  final Widget applicationIcon;
-  final String applicationLegalese;
-
-  CustomLicenseScreen({
-    this.applicationName,
-    this.applicationVersion,
-    this.applicationIcon,
-    this.applicationLegalese,
-  });
+  final String applicationName = "privacyIDEA Authenticator";
+  final Widget applicationIcon = Padding(
+    padding: EdgeInsets.all(40.0),
+    child: Image.asset('res/logo/app_logo_light.png'),
+  );
+  final String applicationLegalese = "Apache License 2.0";
+  final Uri gitHubLink =
+      Uri.parse("https://github.com/privacyidea/pi-authenticator");
+  final Uri websiteLink = Uri.parse("https://netknights.it");
 
   @override
   State<StatefulWidget> createState() => _CustomLicenseScreenState();
@@ -44,11 +44,13 @@ class CustomLicenseScreen extends StatefulWidget {
 class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
   List<Widget> widgetList;
   bool _isLoading = true;
+  Future<PackageInfo> info;
 
   @override
   void initState() {
     super.initState();
 
+    info = PackageInfo.fromPlatform();
     buildAllLicenses();
   }
 
@@ -63,27 +65,65 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
           children: <Widget>[
             Text(
               "${widget.applicationName}",
-              style: Theme.of(context).textTheme.headline,
+              style: Theme.of(context).textTheme.headline5,
             ),
             widget.applicationIcon,
-            Text("Version ${widget.applicationVersion}"),
+            FutureBuilder(
+              future: info,
+              builder: (context, AsyncSnapshot<PackageInfo> snapshot) {
+                if (snapshot.hasData)
+                  return Text('Version ${snapshot.data.version}');
+                else
+                  return CircularProgressIndicator();
+              },
+            ),
             Container(
               height: 16,
             ),
-            Text(
-              "${widget.applicationLegalese}",
-              style: Theme.of(context).textTheme.caption,
+            FlatButton(
+              child: Text(
+                "${widget.applicationLegalese}",
+                style: Theme.of(context).textTheme.caption,
+              ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Text('lol');
+                  },
+                );
+              }, // TODO Show licnese text on click
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: Text("Powered by flutter"),
+            FlatButton(
+              child: Text(
+                '${widget.gitHubLink}',
+                style: TextStyle(decoration: TextDecoration.underline),
+              ),
+              onPressed: () => _launchUri(widget.gitHubLink),
             ),
+            FlatButton(
+              child: Text(
+                '${widget.websiteLink}',
+                style: TextStyle(decoration: TextDecoration.underline),
+              ),
+              onPressed: () => _launchUri(widget.websiteLink),
+            ),
+//            Padding(
+//              padding: EdgeInsets.symmetric(vertical: 16),
+//              child: Text("Powered by flutter"),
+//            ),
           ],
         ),
       )
     ];
   }
 
+  void _launchUri(Uri link) async {
+    String uri = link.toString();
+    if (await canLaunch(uri)) launch(uri);
+  }
+
+  // TODO Rebuild this using future builder.
   @override
   Widget build(BuildContext context) {
     return Scaffold(

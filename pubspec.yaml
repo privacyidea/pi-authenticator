@@ -66,6 +66,8 @@ dependencies:
   flutterlifecyclehooks: ^1.0.0
   # manage settings
   streaming_shared_preferences: ^1.0.1
+  # open links
+  url_launcher: ^5.5.0 # TODO Add LICENSE
 
   flutter_localizations:
     sdk: flutter

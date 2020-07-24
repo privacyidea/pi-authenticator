@@ -587,15 +587,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 //                          ),
 //                          applicationLegalese: "Apache License 2.0",
 //                        )
-                      CustomLicenseScreen(
-                    applicationName: "privacyIDEA Authenticator",
-                    applicationVersion: info.version,
-                    applicationIcon: Padding(
-                      padding: EdgeInsets.all(40.0),
-                      child: Image.asset('res/logo/app_logo_light.png'),
-                    ),
-                    applicationLegalese: "Apache License 2.0",
-                  ),
+                      CustomLicenseScreen(),
                 ));
           } else if (value == "add_manually") {
             Navigator.push(
