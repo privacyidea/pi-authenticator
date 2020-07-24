@@ -89,7 +89,24 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
                 showDialog(
                   context: context,
                   builder: (context) {
-                    return Text('lol');
+                    return Dialog(
+                      child: StreamBuilder(
+                        stream: LicenseRegistry.licenses.where((event) => event
+                            .packages
+                            .contains("privacyIDEA Authenticator")),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData)
+                            return SingleChildScrollView(
+                              child: _buildSingleLicense(snapshot.data),
+                            );
+                          else
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[CircularProgressIndicator()],
+                            );
+                        },
+                      ),
+                    );
                   },
                 );
               }, // TODO Show licnese text on click
@@ -123,7 +140,6 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
     if (await canLaunch(uri)) launch(uri);
   }
 
-  // TODO Rebuild this using future builder.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,7 +172,8 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
   }
 
   void buildAllLicenses() async {
-    List<LicenseEntry> licenseList = await LicenseRegistry.licenses.toList();
+    List<LicenseEntry> licenseList = await LicenseRegistry.licenses
+        .toList(); // TODO This returns a stream -> Stream builder
 
     List<Widget> _licenseList = List<Widget>();
 
