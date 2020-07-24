@@ -42,23 +42,10 @@ class CustomLicenseScreen extends StatefulWidget {
 }
 
 class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
-  List<Widget> widgetList;
-  bool _isLoading = true;
-  Future<PackageInfo> info;
+  Future<PackageInfo> _info;
 
-  @override
-  void initState() {
-    super.initState();
-
-    info = PackageInfo.fromPlatform();
-    buildAllLicenses();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    widgetList ??= [
+  Stream<List<Widget>> widgetListStream() async* {
+    List<Widget> initialList = [
       Padding(
         padding: EdgeInsets.only(top: 16.0),
         child: Column(
@@ -69,7 +56,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
             ),
             widget.applicationIcon,
             FutureBuilder(
-              future: info,
+              future: _info,
               builder: (context, AsyncSnapshot<PackageInfo> snapshot) {
                 if (snapshot.hasData)
                   return Text('Version ${snapshot.data.version}');
@@ -85,31 +72,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
                 "${widget.applicationLegalese}",
                 style: Theme.of(context).textTheme.caption,
               ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Dialog(
-                      child: StreamBuilder(
-                        stream: LicenseRegistry.licenses.where((event) => event
-                            .packages
-                            .contains("privacyIDEA Authenticator")),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData)
-                            return SingleChildScrollView(
-                              child: _buildSingleLicense(snapshot.data),
-                            );
-                          else
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[CircularProgressIndicator()],
-                            );
-                        },
-                      ),
-                    );
-                  },
-                );
-              }, // TODO Show licnese text on click
+              onPressed: _showAppLicenseDialog,
             ),
             FlatButton(
               child: Text(
@@ -125,14 +88,32 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
               ),
               onPressed: () => _launchUri(widget.websiteLink),
             ),
-//            Padding(
-//              padding: EdgeInsets.symmetric(vertical: 16),
-//              child: Text("Powered by flutter"),
-//            ),
           ],
         ),
-      )
+      ),
     ];
+
+    // Put initial content with loading indicator:
+    yield [
+      ...initialList,
+      Align(
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
+      ),
+    ];
+
+    // Put initial content and licenses:
+    List<LicenseEntry> licenses = await LicenseRegistry.licenses.toList();
+    yield [
+      ...initialList,
+      for (LicenseEntry entry in licenses) _buildSingleLicense(entry)
+    ];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _info = PackageInfo.fromPlatform();
   }
 
   void _launchUri(Uri link) async {
@@ -143,48 +124,50 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            LTen.of(context).about,
-            textScaleFactor: screenTitleScaleFactor,
-          ),
+      appBar: AppBar(
+        title: Text(
+          LTen.of(context).about,
+          textScaleFactor: screenTitleScaleFactor,
         ),
-        body: Column(
-          children: <Widget>[
-            Expanded(
-              child: Scrollbar(
-                child: ListView.builder(
-                    itemCount: widgetList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return widgetList[index];
-                    }),
-              ),
-            ),
-            Visibility(
-              visible: _isLoading,
-              child: Align(
-                alignment: Alignment.center,
-                child: LinearProgressIndicator(),
-              ),
-            ),
-          ],
-        ));
+      ),
+      body: StreamBuilder(
+        stream: widgetListStream(),
+        builder: (context, AsyncSnapshot<List<Widget>> snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) => snapshot.data[index],
+            );
+          } else
+            return Column();
+        },
+      ),
+    );
   }
 
-  void buildAllLicenses() async {
-    List<LicenseEntry> licenseList = await LicenseRegistry.licenses
-        .toList(); // TODO This returns a stream -> Stream builder
-
-    List<Widget> _licenseList = List<Widget>();
-
-    for (LicenseEntry entry in licenseList) {
-      _licenseList.add(_buildSingleLicense(entry));
-    }
-
-    setState(() {
-      widgetList.addAll(_licenseList);
-      _isLoading = false;
-    });
+  void _showAppLicenseDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: StreamBuilder(
+            stream: LicenseRegistry.licenses.where((event) =>
+                event.packages.contains("privacyIDEA Authenticator")),
+            builder: (context, snapshot) {
+              if (snapshot.hasData)
+                return SingleChildScrollView(
+                  child: _buildSingleLicense(snapshot.data),
+                );
+              else
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[CircularProgressIndicator()],
+                );
+            },
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildSingleLicense(LicenseEntry entry) {
