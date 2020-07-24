@@ -94,13 +94,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       child: _buildTile(),
       secondaryActions: <Widget>[
         IconSlideAction(
-          caption: Localization.of(context).delete,
+          caption: LTen.of(context).delete,
           color: getTonedColor(Colors.red, isDarkModeOn(context)),
           icon: Icons.delete,
           onTap: () => _deleteTokenDialog(),
         ),
         IconSlideAction(
-          caption: Localization.of(context).rename,
+          caption: LTen.of(context).rename,
           color: getTonedColor(Colors.blue, isDarkModeOn(context)),
           icon: Icons.edit,
           onTap: () => _renameTokenDialog(),
@@ -117,17 +117,17 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(Localization.of(context).renameDialogTitle),
+            title: Text(LTen.of(context).renameDialogTitle),
             content: TextFormField(
               autofocus: true,
               initialValue: _label,
               key: _nameInputKey,
               onChanged: (value) => this.setState(() => _selectedName = value),
               decoration:
-                  InputDecoration(labelText: Localization.of(context).name),
+                  InputDecoration(labelText: LTen.of(context).name),
               validator: (value) {
                 if (value.isEmpty) {
-                  return Localization.of(context).name;
+                  return LTen.of(context).name;
                 }
                 return null;
               },
@@ -135,14 +135,14 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             actions: <Widget>[
               FlatButton(
                 child: Text(
-                  Localization.of(context).cancel,
+                  LTen.of(context).cancel,
                   style: getDialogTextStyle(isDarkModeOn(context)),
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               FlatButton(
                 child: Text(
-                  Localization.of(context).rename,
+                  LTen.of(context).rename,
                   style: getDialogTextStyle(isDarkModeOn(context)),
                 ),
                 onPressed: () {
@@ -176,7 +176,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(Localization.of(context).deleteDialogTitle),
+            title: Text(LTen.of(context).deleteDialogTitle),
             content: RichText(
               text: TextSpan(
                   style: TextStyle(
@@ -184,7 +184,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   ),
                   children: [
                     TextSpan(
-                      text: Localization.of(context).areYouSure,
+                      text: LTen.of(context).areYouSure,
                       style: getDialogTextStyle(isDarkModeOn(context)),
                     ),
                     TextSpan(
@@ -199,7 +199,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               FlatButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
-                  Localization.of(context).cancel,
+                  LTen.of(context).cancel,
                   style: getDialogTextStyle(isDarkModeOn(context)),
                 ),
               ),
@@ -209,7 +209,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   Navigator.of(context).pop();
                 },
                 child: Text(
-                  Localization.of(context).delete,
+                  LTen.of(context).delete,
                   style: getDialogTextStyle(isDarkModeOn(context)),
                 ),
               ),
@@ -335,7 +335,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           name: "token_widgets.dart");
 
       _showMessage(
-          Localization.of(context)
+          LTen.of(context)
               .errorOnlyOneFirebaseProjectIsSupported(_token.label),
           5);
 
@@ -357,7 +357,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
         _rollOutFailed = true;
       });
 
-      _showMessage(Localization.of(context).errorTokenExpired(_token.label), 3);
+      _showMessage(LTen.of(context).errorTokenExpired(_token.label), 3);
       return;
     }
 
@@ -405,7 +405,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
         });
 
         _showMessage(
-            Localization.of(context)
+            LTen.of(context)
                 .errorRollOutFailed(_token.label, response.statusCode),
             3);
       }
@@ -417,7 +417,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
         _rollOutFailed = true;
       });
 
-      _showMessage(Localization.of(context).errorRollOutNoNetworkConnection, 3);
+      _showMessage(LTen.of(context).errorRollOutNoNetworkConnection, 3);
     } on Exception catch (e) {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
@@ -426,7 +426,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
         _rollOutFailed = true;
       });
 
-      _showMessage(Localization.of(context).errorRollOutUnknownError(e), 5);
+      _showMessage(LTen.of(context).errorRollOutUnknownError(e), 5);
     }
   }
 
@@ -473,7 +473,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
       if (response.statusCode == 200) {
         _showMessage(
-            Localization.of(context).acceptPushAuthRequestFor(_token.label), 2);
+            LTen.of(context).acceptPushAuthRequestFor(_token.label), 2);
         removeRequest(_token.pushRequests.pop());
       } else {
         log("Accepting push auth request failed.",
@@ -483,7 +483,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
         setState(() => _acceptFailed = true);
 
         _showMessage(
-            Localization.of(context).errorPushAuthRequestFailedFor(
+            LTen.of(context).errorPushAuthRequestFailedFor(
                 _token.label, response.statusCode),
             3);
       }
@@ -493,7 +493,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       setState(() => _acceptFailed = true);
 
       _showMessage(
-          Localization.of(context)
+          LTen.of(context)
               .errorAuthenticationNotPossibleWithoutNetworkAccess,
           3);
     } on Exception catch (e) {
@@ -502,13 +502,13 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       setState(() => _acceptFailed = true);
 
       _showMessage(
-          Localization.of(context).errorAuthenticationFailedUnknownError(e), 5);
+          LTen.of(context).errorAuthenticationFailedUnknownError(e), 5);
     }
   }
 
   void declineRequest() async {
     _showMessage(
-        Localization.of(context).decliningPushAuthRequestFor(_token.label), 2);
+        LTen.of(context).decliningPushAuthRequestFor(_token.label), 2);
     removeRequest(_token.pushRequests.pop());
   }
 
@@ -574,13 +574,13 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                           child: _acceptFailed
                               ? Row(
                                   children: <Widget>[
-                                    Text(Localization.of(context).retry),
+                                    Text(LTen.of(context).retry),
                                     Icon(Icons.replay),
                                   ],
                                 )
                               : Row(
                                   children: <Widget>[
-                                    Text(Localization.of(context).accept),
+                                    Text(LTen.of(context).accept),
                                     Icon(Icons.check),
                                   ],
                                 ),
@@ -594,7 +594,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                         RaisedButton(
                           child: Row(
                             children: <Widget>[
-                              Text(Localization.of(context).decline),
+                              Text(LTen.of(context).decline),
                               Icon(Icons.clear),
                             ],
                           ),
@@ -617,7 +617,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     RaisedButton(
-                      child: Text(Localization.of(context).retryRollOut),
+                      child: Text(LTen.of(context).retryRollOut),
                       onPressed: _retryButtonIsEnabled
                           ? () {
                               _rollOutToken();
@@ -639,7 +639,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                 title: Column(
                   children: <Widget>[
                     CircularProgressIndicator(),
-                    Text(Localization.of(context).rollingOut),
+                    Text(LTen.of(context).rollingOut),
                   ],
                 ),
               ),
@@ -677,7 +677,7 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
         Clipboard.setData(ClipboardData(text: _otpValue));
         Scaffold.of(context).showSnackBar(SnackBar(
           content:
-              Text(Localization.of(context).otpValueCopiedMessage(_otpValue)),
+              Text(LTen.of(context).otpValueCopiedMessage(_otpValue)),
         ));
       },
       child: _buildNonClickableTile(),
@@ -745,7 +745,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             child: RaisedButton(
               onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
               child: Text(
-                Localization.of(context).next,
+                LTen.of(context).next,
                 textScaleFactor: 1.5,
               ),
             ),

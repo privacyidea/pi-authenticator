@@ -23,26 +23,26 @@ import 'package:intl/intl.dart';
 
 import '../l10n/messages_all.dart';
 
-class Localization {
+class LTen {
   String localeName;
 
-  Localization(this.localeName);
+  LTen(this.localeName);
 
-  static Future<Localization> load(Locale locale) {
+  static Future<LTen> load(Locale locale) {
     final String name =
         locale.countryCode.isEmpty ? locale.languageCode : locale.toString();
     final String localeName = Intl.canonicalizedLocale(name);
 
     return initializeMessages(localeName).then((_) {
-      return Localization(localeName);
+      return LTen(localeName);
     });
   }
 
-  static Localization of(BuildContext context) {
+  static LTen of(BuildContext context) {
     // Widget tests will fail with called getter [getter] on null otherwise.
     //  This will use the default localization in that case.
-    return Localizations.of<Localization>(context, Localization) ??
-        Localization('');
+    return Localizations.of<LTen>(context, LTen) ??
+        LTen('');
   }
 
   // ###########################################################################
@@ -487,7 +487,7 @@ class Localization {
   }
 }
 
-class MyLocalizationsDelegate extends LocalizationsDelegate<Localization> {
+class MyLocalizationsDelegate extends LocalizationsDelegate<LTen> {
   const MyLocalizationsDelegate();
 
   @override
@@ -496,12 +496,12 @@ class MyLocalizationsDelegate extends LocalizationsDelegate<Localization> {
   }
 
   @override
-  Future<Localization> load(Locale locale) {
-    return Localization.load(locale);
+  Future<LTen> load(Locale locale) {
+    return LTen.load(locale);
   }
 
   @override
-  bool shouldReload(LocalizationsDelegate<Localization> old) {
+  bool shouldReload(LocalizationsDelegate<LTen> old) {
     return false;
   }
 }

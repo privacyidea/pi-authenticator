@@ -172,7 +172,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       floatingActionButton: _isAppUnlocked
           ? FloatingActionButton(
               onPressed: () => _scanQRCode(),
-              tooltip: Localization.of(context).scanQRTooltip,
+              tooltip: LTen.of(context).scanQRTooltip,
               child: Icon(Icons.add),
             )
           : null,
@@ -615,17 +615,17 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
             value: "about",
-            child: Text(Localization.of(context).about),
+            child: Text(LTen.of(context).about),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "add_manually",
-            child: Text(Localization.of(context).addManually),
+            child: Text(LTen.of(context).addManually),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "settings",
-            child: Text(Localization.of(context).settings),
+            child: Text(LTen.of(context).settings),
           ),
         ],
       ),
@@ -670,11 +670,11 @@ PasscodeScreen buildPasscodeScreen(
         KeyboardUIConfig(digitBorderWidth: 2, primaryColor: Colors.blue),
     // TODO Style
     passwordEnteredCallback: passwordEnteredCallback,
-    cancelButton: Text(allowCancel ? Localization.of(context).cancel : ""),
+    cancelButton: Text(allowCancel ? LTen.of(context).cancel : ""),
     deleteButton: Text(
-      Localization.of(context).delete,
+      LTen.of(context).delete,
       style: const TextStyle(fontSize: 16, color: Colors.white),
-      semanticsLabel: Localization.of(context).cancel,
+      semanticsLabel: LTen.of(context).cancel,
     ),
     shouldTriggerVerification: verificationNotifier.stream,
     backgroundColor: Colors.black.withOpacity(0.8),

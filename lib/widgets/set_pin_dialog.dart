@@ -192,14 +192,14 @@ class _SetPINDialogState extends State<SetPINDialog> {
         actions: <Widget>[
           FlatButton(
             child: Text(
-              Localization.of(context).cancel,
+              LTen.of(context).cancel,
               style: getDialogTextStyle(isDarkModeOn(context)),
             ),
             onPressed: () => Navigator.of(context).pop(),
           ),
           FlatButton(
             child: Text(
-              Localization.of(context).accept,
+              LTen.of(context).accept,
               style: getDialogTextStyle(isDarkModeOn(context)),
             ), // TODO Translate
             onPressed: () {
