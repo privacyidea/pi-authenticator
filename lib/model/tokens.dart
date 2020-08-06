@@ -238,7 +238,8 @@ class PushToken extends Token {
         '_enrollmentCredentials: $_enrollmentCredentials, _url: $_url, '
         'isRolledOut: $isRolledOut, publicServerKey: $publicServerKey, '
         'privateTokenKey: $privateTokenKey, publicTokenKey: $publicTokenKey, '
-        '_pushRequests: $_pushRequests, _expirationDate: $_expirationDate}';
+        '_pushRequests: $_pushRequests, _expirationDate: $_expirationDate},'
+        'id: $_id';
   }
 
   factory PushToken.fromJson(Map<String, dynamic> json) =>
