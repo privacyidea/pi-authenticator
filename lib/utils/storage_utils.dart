@@ -19,10 +19,14 @@
 */
 
 import 'dart:convert';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:privacyidea_app_legacy/privacyidea_app_legacy.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 
 // TODO test the behavior of this class.
 class StorageUtil {
@@ -118,4 +122,70 @@ class StorageUtil {
 
   static void deleteFirebaseConfig(Token token) async =>
       _storage.delete(key: token.id + _KEY_POSTFIX);
+
+  // ###########################################################################
+  // LEGACY
+  // ###########################################################################
+
+  static Future<List<Token>> loadAllTokensLegacy() async {
+    List l = jsonDecode(await Legacy.loadAllTokens());
+    debugPrint(l.toString());
+
+    List<Token> out = [];
+
+//    [{serial: OATH00006CC1,
+//    label: privacyIDEA: OATH00006CC1,
+//    type: hotp,
+//    secret: VIKKZD4K6JTTBWDYD2RPZUTS5V5B26RX,
+//    digits: 6,
+//    algorithm: HmacSHA1,
+//    counter: 1,
+//    withpin: false},
+    //
+//    {serial: TOTP00005DF4,
+//    label: privacyIDEA: TOTP00005DF4,
+//    type: totp,
+//    secret: DUCZFI55L4Y2JXJ4LO2QL5VO26IFE3SD,
+//    digits: 6, algorithm: HmacSHA1,
+//    period: 30,
+//    withpin: false}]
+
+    for (var map in l) {
+      Token t;
+      if (map['type'] != null && map['type'] == 'hotp') {
+        t = HOTPToken(
+          issuer: map['label'],
+          id: map['serial'],
+          label: map['label'],
+          counter: map['counter'],
+          digits: map['digits'],
+          secret: map['secret'],
+          algorithm: mapStringToAlgorithm(map['algorithm'].toString().substring(4)),
+        );
+      } else if (map['type'] != null && map['type'] == 'totp') {
+        t = TOTPToken(
+          issuer: map['label'],
+          id: map['serial'],
+          label: map['label'],
+          period: map['period'],
+          digits: map['digits'],
+          secret: map['secret'],
+          algorithm: mapStringToAlgorithm(map['algorithm'].toString().substring(4)),
+        );
+      } else if (map['type'] != null && map['type'] == 'push') {
+        // TODO
+      } else {
+        log(
+          "Unknown token type encountered",
+          name: 'storage_utils.dart#loadAllTokensLegacy',
+          error: map,
+        );
+        continue;
+      }
+
+      out.add(t);
+    }
+
+    return out;
+  }
 }

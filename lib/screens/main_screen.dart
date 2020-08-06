@@ -82,10 +82,13 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _loadAllTokens() async {
-    List<Token> list = await StorageUtil.loadAllTokens();
-    setState(() {
-      this._tokenList = list;
-    });
+    List<Token> l1 = await StorageUtil.loadAllTokens();
+    setState(() => this._tokenList = l1);
+
+    if (l1.isNotEmpty) return;
+
+    List<Token> l2 = await StorageUtil.loadAllTokensLegacy();
+    setState(() => this._tokenList.addAll(l2));
   }
 
   @override
@@ -440,7 +443,6 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _showNotification(
       PushToken token, PushRequest pushRequest, bool silent) async {
-
     var iOSPlatformChannelSpecifics =
         IOSNotificationDetails(presentSound: !silent);
 
