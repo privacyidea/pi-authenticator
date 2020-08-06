@@ -155,14 +155,17 @@ class PushToken extends Token {
   String publicTokenKey;
 
   // Custom getter and setter for RSA keys
-  RSAPublicKey getPublicServerKey() =>
-      deserializeRSAPublicKeyPKCS1(publicServerKey);
+  RSAPublicKey getPublicServerKey() => publicServerKey == null
+      ? null
+      : deserializeRSAPublicKeyPKCS1(publicServerKey);
 
-  RSAPublicKey getPublicTokenKey() =>
-      deserializeRSAPublicKeyPKCS1(publicTokenKey);
+  RSAPublicKey getPublicTokenKey() => publicTokenKey == null
+      ? null
+      : deserializeRSAPublicKeyPKCS1(publicTokenKey);
 
-  RSAPrivateKey getPrivateTokenKey() =>
-      deserializeRSAPrivateKeyPKCS1(privateTokenKey);
+  RSAPrivateKey getPrivateTokenKey() => privateTokenKey == null
+      ? null
+      : deserializeRSAPrivateKeyPKCS1(privateTokenKey);
 
   void setPublicServerKey(RSAPublicKey key) =>
       publicServerKey = serializeRSAPublicKeyPKCS1(key);
