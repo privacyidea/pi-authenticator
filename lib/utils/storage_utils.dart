@@ -48,6 +48,22 @@ class StorageUtil {
   static Future<List<Token>> loadAllTokens() async {
     Map<String, String> keyValueMap = await _storage.readAll();
 
+    if (keyValueMap.keys.isEmpty) {
+      // No Token is availabel, attempt to load legacy tokens:
+
+      print('Loading legacy tokens');
+
+      List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
+
+      if (legacyTokens.isNotEmpty) {
+        for (Token t in legacyTokens) {
+          await StorageUtil.saveOrReplaceToken(t);
+        }
+
+        keyValueMap = await _storage.readAll();
+      }
+    }
+
     List<Token> tokenList = [];
     keyValueMap.forEach((_, value) {
       Map<String, dynamic> serializedToken = jsonDecode(value);

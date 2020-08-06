@@ -96,11 +96,6 @@ class _MainScreenState extends State<MainScreen> {
   _loadAllTokens() async {
     List<Token> l1 = await StorageUtil.loadAllTokens();
     setState(() => this._tokenList = l1);
-
-    if (l1.isNotEmpty) return;
-
-    List<Token> l2 = await StorageUtil.loadAllTokensLegacy();
-    setState(() => this._tokenList.addAll(l2));
   }
 
   @override
@@ -376,12 +371,13 @@ class _MainScreenState extends State<MainScreen> {
     log("Foreground message received.",
         name: "main_screen.dart", error: message);
     setState(() async {
-      _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), false);
+      await _handleIncomingRequest(
+          message, await StorageUtil.loadAllTokens(), false);
       _loadAllTokens();
     });
   }
 
-  static void _handleIncomingRequest(Map<String, dynamic> message,
+  static Future<void> _handleIncomingRequest(Map<String, dynamic> message,
       List<Token> tokenList, bool inBackground) async {
     var data = Platform.isIOS ? message : message['data'];
 
