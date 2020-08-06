@@ -369,8 +369,8 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  static void _handleIncomingRequest(
-      Map<String, dynamic> message, List<Token> tokenList, bool inBackground) {
+  static void _handleIncomingRequest(Map<String, dynamic> message,
+      List<Token> tokenList, bool inBackground) async {
     var data = Platform.isIOS ? message : message['data'];
 
     Uri requestUri = Uri.parse(data['url']);
@@ -381,7 +381,7 @@ class _MainScreenState extends State<MainScreen> {
 
     bool wasHandled = false;
 
-    tokenList.forEach((token) {
+    for (Token token in tokenList) {
       if (token is PushToken) {
         if (token.serial == requestedSerial && token.isRolledOut) {
           log('Token matched requested token',
@@ -394,8 +394,12 @@ class _MainScreenState extends State<MainScreen> {
               '${data['title']}|'
               '${data['sslverify']}';
 
-          if (verifyRSASignature(token.getPublicServerKey(),
-              utf8.encode(signedData), base32.decode(signature))) {
+          bool isVerified = token.publicTokenKey == null
+              ? await Legacy.verify(token.serial, signedData, signature)
+              : verifyRSASignature(token.getPublicServerKey(),
+                  utf8.encode(signedData), base32.decode(signature));
+
+          if (isVerified) {
             wasHandled = true;
 
             log('Validating incoming message was successful.',
