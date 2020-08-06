@@ -21,7 +21,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:privacyidea_app_legacy/privacyidea_app_legacy.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
@@ -128,64 +127,78 @@ class StorageUtil {
   // ###########################################################################
 
   static Future<List<Token>> loadAllTokensLegacy() async {
-    List l = jsonDecode(await Legacy.loadAllTokens());
-    debugPrint(l.toString());
+    List<Token> tokenList = [];
 
-    List<Token> out = [];
-
-//    [{serial: OATH00006CC1,
-//    label: privacyIDEA: OATH00006CC1,
-//    type: hotp,
-//    secret: VIKKZD4K6JTTBWDYD2RPZUTS5V5B26RX,
-//    digits: 6,
-//    algorithm: HmacSHA1,
-//    counter: 1,
-//    withpin: false},
-    //
-//    {serial: TOTP00005DF4,
-//    label: privacyIDEA: TOTP00005DF4,
-//    type: totp,
-//    secret: DUCZFI55L4Y2JXJ4LO2QL5VO26IFE3SD,
-//    digits: 6, algorithm: HmacSHA1,
-//    period: 30,
-//    withpin: false}]
-
-    for (var map in l) {
-      Token t;
-      if (map['type'] != null && map['type'] == 'hotp') {
-        t = HOTPToken(
-          issuer: map['label'],
-          id: map['serial'],
-          label: map['label'],
-          counter: map['counter'],
-          digits: map['digits'],
-          secret: map['secret'],
-          algorithm: mapStringToAlgorithm(map['algorithm'].toString().substring(4)),
+    for (var tokenMap in jsonDecode(await Legacy.loadAllTokens())) {
+      Token token;
+      if (tokenMap['type'] != null && tokenMap['type'] == 'hotp') {
+        token = HOTPToken(
+          issuer: tokenMap['label'],
+          id: tokenMap['serial'],
+          label: tokenMap['label'],
+          counter: tokenMap['counter'],
+          digits: tokenMap['digits'],
+          secret: tokenMap['secret'],
+          algorithm: mapStringToAlgorithm(
+              tokenMap['algorithm'].toString().substring(4)),
         );
-      } else if (map['type'] != null && map['type'] == 'totp') {
-        t = TOTPToken(
-          issuer: map['label'],
-          id: map['serial'],
-          label: map['label'],
-          period: map['period'],
-          digits: map['digits'],
-          secret: map['secret'],
-          algorithm: mapStringToAlgorithm(map['algorithm'].toString().substring(4)),
+      } else if (tokenMap['type'] != null && tokenMap['type'] == 'totp') {
+        token = TOTPToken(
+          issuer: tokenMap['label'],
+          id: tokenMap['serial'],
+          label: tokenMap['label'],
+          period: tokenMap['period'],
+          digits: tokenMap['digits'],
+          secret: tokenMap['secret'],
+          algorithm: mapStringToAlgorithm(
+              tokenMap['algorithm'].toString().substring(4)),
         );
-      } else if (map['type'] != null && map['type'] == 'push') {
-        // TODO
+      } else if (tokenMap['type'] != null && tokenMap['type'] == 'pipush') {
+        // FIXME What to do with unfinished tokens?
+        // [{serial: PIPU00005308,
+        // label: privacyIDEA: PIPU00005308,
+        // type: pipush,
+        // rollout_state: FINISHED}]
+        token = PushToken(
+          issuer: tokenMap['label'],
+          label: tokenMap['label'],
+          id: tokenMap['serial'],
+          serial: tokenMap['serial'],
+          expirationDate: DateTime.now().subtract(Duration(minutes: 60)),
+          enrollmentCredentials: null,
+          sslVerify: null,
+          url: null,
+        );
+
+        (token as PushToken).isRolledOut = true;
+
+        // {projectid: piauthenticator-dfbc6,
+        // appid: 1:258156671446:android:a14220ab99606769253477,
+        // apikey: AIzaSyBpLxCidyK8fX4_v7hHzRYGXcJ6PC12TuA,
+        // projectnumber: 258156671446}
+        var configMap = jsonDecode(await Legacy.loadFirebaseConfig());
+
+        FirebaseConfig config = FirebaseConfig(
+          appID: configMap['appid'],
+          apiKey: configMap['apikey'],
+          projectID: configMap['projectid'],
+          projectNumber: configMap['projectnumber'],
+        );
+
+        StorageUtil.saveOrReplaceFirebaseConfig(token, config);
+        StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
       } else {
         log(
           "Unknown token type encountered",
           name: 'storage_utils.dart#loadAllTokensLegacy',
-          error: map,
+          error: tokenMap,
         );
         continue;
       }
 
-      out.add(t);
+      tokenList.add(token);
     }
 
-    return out;
+    return tokenList;
   }
 }
