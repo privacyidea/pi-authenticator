@@ -570,6 +570,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.0"
+  privacyidea_app_legacy:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "0ea4a87e8c767cf2e0eda1b7de9a3a22bfeb2eca"
+      url: "https://github.com/timosturm/piauthenticator_legacy.git"
+    source: git
+    version: "0.0.1"
   process:
     dependency: transitive
     description:
