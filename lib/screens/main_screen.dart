@@ -69,15 +69,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _loadEverything() async {
-    print('Load everything');
-
     await _loadAllTokens();
     await _loadFirebase();
-
-    print('Tokens ${await StorageUtil.loadAllTokens()}');
-    print('Firebase ${await StorageUtil.loadGlobalFirebaseConfig()}');
-
-    print('Everything loaded');
   }
 
   _loadFirebase() async {
