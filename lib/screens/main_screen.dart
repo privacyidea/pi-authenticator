@@ -65,8 +65,19 @@ class _MainScreenState extends State<MainScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   _MainScreenState() {
-    _loadAllTokens();
-    _loadFirebase();
+    _loadEverything();
+  }
+
+  _loadEverything() async {
+    print('Load everything');
+
+    await _loadAllTokens();
+    await _loadFirebase();
+
+    print('Tokens ${await StorageUtil.loadAllTokens()}');
+    print('Firebase ${await StorageUtil.loadGlobalFirebaseConfig()}');
+
+    print('Everything loaded');
   }
 
   _loadFirebase() async {

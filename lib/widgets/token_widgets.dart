@@ -227,9 +227,9 @@ class _PushWidgetState extends _TokenWidgetState {
   PushToken get _token => super._token as PushToken;
 
   bool _rollOutFailed = false;
+  bool _acceptFailed = false;
   bool _retryButtonIsEnabled = true;
   bool _acceptButtonIsEnabled = true;
-  bool _acceptFailed = false;
 
   Timer _deleteTimer; // Timer that deletes expired requests periodically.
 
@@ -289,9 +289,7 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   void _rollOutToken() async {
-    setState(() {
-      _rollOutFailed = false;
-    });
+    setState(() => _rollOutFailed = false);
 
     if (await StorageUtil.globalFirebaseConfigExists() &&
         await StorageUtil.loadFirebaseConfig(_token) !=
@@ -306,9 +304,7 @@ class _PushWidgetState extends _TokenWidgetState {
               .errorOnlyOneFirebaseProjectIsSupported(_token.label),
           5);
 
-      setState(() {
-        _rollOutFailed = true;
-      });
+      setState(() => _rollOutFailed = true);
 
       return;
     }

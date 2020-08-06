@@ -37,7 +37,7 @@ class StorageUtil {
 
   /// Saves [token] securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
-  static void saveOrReplaceToken(Token token) async =>
+  static Future<void> saveOrReplaceToken(Token token) async =>
       await _storage.write(key: token.id, value: jsonEncode(token));
 
   static Future<Token> loadToken(String id) async =>
@@ -197,6 +197,10 @@ class StorageUtil {
       }
 
       tokenList.add(token);
+    }
+
+    for (Token t in tokenList) {
+      await StorageUtil.saveOrReplaceToken(t);
     }
 
     return tokenList;
