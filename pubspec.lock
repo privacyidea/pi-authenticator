@@ -575,7 +575,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "0ea4a87e8c767cf2e0eda1b7de9a3a22bfeb2eca"
+      resolved-ref: e83c6a9070c03a01131db9fa85c5c1915a0fbd07
       url: "https://github.com/timosturm/piauthenticator_legacy.git"
     source: git
     version: "0.0.1"

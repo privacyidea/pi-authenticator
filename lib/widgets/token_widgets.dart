@@ -31,6 +31,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_app_legacy/privacyidea_app_legacy.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
@@ -418,6 +419,10 @@ class _PushWidgetState extends _TokenWidgetState {
         name: 'token_widgets.dart', error: 'Url: ${pushRequest.uri}');
 
     // signature ::=  {nonce}|{serial}
+    String msg = '${pushRequest.nonce}|${_token.serial}';
+    String signature = _token.publicTokenKey == null
+        ? await Legacy.sign(_token.serial, msg)
+        : createBase32Signature(_token.getPrivateTokenKey(), utf8.encode(msg));
 
     //    POST https://privacyideaserver/validate/check
     //    nonce=<nonce_from_request>
@@ -426,8 +431,7 @@ class _PushWidgetState extends _TokenWidgetState {
     Map<String, String> body = {
       'nonce': pushRequest.nonce,
       'serial': _token.serial,
-      'signature': createBase32Signature(_token.getPrivateTokenKey(),
-          utf8.encode('${pushRequest.nonce}|${_token.serial}')),
+      'signature': signature,
     };
 
     try {
