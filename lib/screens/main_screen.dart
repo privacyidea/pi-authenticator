@@ -406,13 +406,14 @@ class _MainScreenState extends State<MainScreen> {
             log('Validating incoming message was successful.',
                 name: 'main_screen.dart');
 
+            // TODO Add parameter names:
             PushRequest pushRequest = PushRequest(
-                data['title'],
-                data['question'],
-                requestUri,
-                data['nonce'],
-                data['sslverify'] == '1' ? true : false,
-                data['nonce'].hashCode,
+                title: data['title'],
+                question: data['question'],
+                uri: requestUri,
+                nonce: data['nonce'],
+                sslVerify: data['sslverify'] == '1' ? true : false,
+                id: data['nonce'].hashCode,
                 expirationDate: DateTime.now().add(
                   Duration(minutes: 2),
                 )); // Push requests expire after 2 minutes.
@@ -420,8 +421,8 @@ class _MainScreenState extends State<MainScreen> {
             if (!token.pushRequests.contains(pushRequest)) {
               token.pushRequests.add(pushRequest);
 
-              StorageUtil.saveOrReplaceToken(
-                  token); // Save the pending request.
+              // Save the pending request.
+              StorageUtil.saveOrReplaceToken(token);
 
               if (inBackground) _showNotification(token, pushRequest, false);
             } else {
@@ -438,7 +439,7 @@ class _MainScreenState extends State<MainScreen> {
           }
         }
       }
-    });
+    }
 
     if (!wasHandled) {
       log("The requested token does not exist or is not rolled out.",

@@ -36,7 +36,13 @@ void verifyCustomListBehavesLikeQueue() {
     test("isEmpty", () {
       PushRequestQueue fifo = PushRequestQueue();
       var pushRequest = PushRequest(
-          "title", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "title",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
 
       expect(fifo.isNotEmpty, false);
       expect(fifo.isEmpty, true);
@@ -64,15 +70,45 @@ void verifyCustomListBehavesLikeQueue() {
       PushRequestQueue fifo = PushRequestQueue();
 
       var one = PushRequest(
-          "one", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "one",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var two = PushRequest(
-          "two", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "two",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var three = PushRequest(
-          "three", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "three",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var four = PushRequest(
-          "four", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "four",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var five = PushRequest(
-          "five", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "five",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
 
       queue.addLast(one);
       fifo.add(one);
@@ -103,15 +139,45 @@ void verifyCustomListBehavesLikeQueue() {
       PushRequestQueue fifo = PushRequestQueue();
 
       var one = PushRequest(
-          "one", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "one",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var two = PushRequest(
-          "two", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "two",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var three = PushRequest(
-          "three", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "three",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var four = PushRequest(
-          "four", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "four",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var five = PushRequest(
-          "five", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "five",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
 
       fifo.add(one);
       fifo.add(two);

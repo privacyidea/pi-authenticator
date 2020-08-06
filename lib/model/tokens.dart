@@ -274,9 +274,14 @@ class PushRequest {
 
   String get title => _title;
 
-  PushRequest(String title, String question, Uri uri, String nonce,
-      bool sslVerify, int id,
-      {DateTime expirationDate})
+  PushRequest(
+      {String title,
+      String question,
+      Uri uri,
+      String nonce,
+      bool sslVerify,
+      int id,
+      DateTime expirationDate})
       : this._title = title,
         this._question = question,
         this._uri = uri,
