@@ -155,10 +155,6 @@ class StorageUtil {
         );
       } else if (tokenMap['type'] != null && tokenMap['type'] == 'pipush') {
         // FIXME What to do with unfinished tokens?
-        // [{serial: PIPU00005308,
-        // label: privacyIDEA: PIPU00005308,
-        // type: pipush,
-        // rollout_state: FINISHED}]
         token = PushToken(
           issuer: tokenMap['label'],
           label: tokenMap['label'],
@@ -169,13 +165,8 @@ class StorageUtil {
           sslVerify: null,
           url: null,
         );
-
         (token as PushToken).isRolledOut = true;
 
-        // {projectid: piauthenticator-dfbc6,
-        // appid: 1:258156671446:android:a14220ab99606769253477,
-        // apikey: AIzaSyBpLxCidyK8fX4_v7hHzRYGXcJ6PC12TuA,
-        // projectnumber: 258156671446}
         var configMap = jsonDecode(await Legacy.loadFirebaseConfig());
 
         FirebaseConfig config = FirebaseConfig(
