@@ -60,6 +60,8 @@ dependencies:
   asn1lib: ^0.6.4
   # for displaying incoming push requests as notifications
   flutter_local_notifications: ^1.4.1 # https://pub.dev/packages/flutter_local_notifications#-installing-tab-
+  # manage settings
+  streaming_shared_preferences: ^1.0.1
 
   flutter_localizations:
     sdk: flutter

@@ -73,12 +73,27 @@ class _MainScreenState extends State<MainScreen> {
 
     // TODO Make these request configurable (on / off)
     // TODO Automatically activate / deactivate this timer. (When e.g. no push token exists)
-    if (true) {
-      _pollTimer =
-          Timer.periodic(Duration(seconds: 10), (_) => _pollForRequests());
-    } else {
-      _pollTimer?.cancel();
-    }
+//    if (true) {
+//      _pollTimer =
+//          Timer.periodic(Duration(seconds: 10), (_) => _pollForRequests());
+//    } else {
+//      _pollTimer?.cancel();
+//    }
+
+//    AppSettings.of(context).streamEnablePolling().listen(
+//          (bool event) {
+//        if (event) {
+////          _pollTimer = Timer.periodic(Duration(seconds: 10), (_) => _pollForRequests());
+//          _pollTimer = Timer.periodic(
+//              Duration(seconds: 10), (_) => print('Polling ...'));
+//        } else {
+//          _pollTimer?.cancel();
+//        }
+//      },
+//      onDone: null, // TODO
+//      cancelOnError: false,
+//      onError: (error) => print('$error'), // TODO
+//    );
   }
 
   _pollForRequests() async {
@@ -121,7 +136,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void dispose() {
-    _pollTimer.cancel();
+    _pollTimer?.cancel();
     super.dispose();
   }
 
