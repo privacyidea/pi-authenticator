@@ -43,8 +43,8 @@ void copyToClipboardTest() {
       }
     });
 
-    String tokenName = 'Herbert';
-    String secret = 'HerbertsDarkSecret';
+    String tokenName = 'TokenName';
+    String secret = 'TokenSecret';
     addTokenRoutine(tokenName, secret);
 
     test('Copy otp value', () async {
