@@ -24,7 +24,6 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/widgets/set_pin_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
@@ -234,6 +233,9 @@ class SettingsScreenState extends State<SettingsScreen> {
 }
 
 class AppSettings extends InheritedWidget {
+  // Preferences
+  static String _prefHideOtps = 'KEY_HIDE_OTPS';
+
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
 
@@ -241,7 +243,7 @@ class AppSettings extends InheritedWidget {
       context.dependOnInheritedWidgetOfExactType<AppSettings>();
 
   AppSettings({Widget child, StreamingSharedPreferences preferences})
-      : _hideOpts = preferences.getBool(PREF_HIDE_OTPS, defaultValue: false),
+      : _hideOpts = preferences.getBool(_prefHideOtps, defaultValue: false),
         super(child: child);
 
   final Preference<bool> _hideOpts;

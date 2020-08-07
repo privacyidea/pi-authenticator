@@ -67,5 +67,3 @@ const String URI_SSL_VERIFY = "URI_SSL_VERIFY";
 // Crypto stuff:
 const String SIGNING_ALGORITHM = 'SHA-256/RSA';
 
-// Preferences
-const String PREF_HIDE_OTPS = 'KEY_HIDE_OTPS';
