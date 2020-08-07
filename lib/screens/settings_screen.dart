@@ -81,6 +81,24 @@ class SettingsScreenState extends State<SettingsScreen> {
                 ),
               ],
             ),
+            SettingsGroup(
+              title: 'Misc', // TODO Translate
+              children: <Widget>[
+                PreferenceBuilder<bool>(
+                  preference: AppSettings.of(context).streamEnablePolling(),
+                  builder: (context, value) {
+                    return ListTile(
+                      title: Text('Titlte'),
+                      trailing: Switch(
+                        value: value,
+                        onChanged: (value) =>
+                            AppSettings.of(context).setEnablePolling(value),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
 //            Divider(),
 //            SettingsGroup(
 //              title: 'Behavior',

@@ -80,20 +80,22 @@ class _MainScreenState extends State<MainScreen> {
 //      _pollTimer?.cancel();
 //    }
 
-//    AppSettings.of(context).streamEnablePolling().listen(
-//          (bool event) {
-//        if (event) {
-////          _pollTimer = Timer.periodic(Duration(seconds: 10), (_) => _pollForRequests());
-//          _pollTimer = Timer.periodic(
-//              Duration(seconds: 10), (_) => print('Polling ...'));
-//        } else {
-//          _pollTimer?.cancel();
-//        }
-//      },
-//      onDone: null, // TODO
-//      cancelOnError: false,
-//      onError: (error) => print('$error'), // TODO
-//    );
+    // TODO Use livecyclehooks
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      AppSettings.of(context).streamEnablePolling().listen(
+        (bool event) {
+          if (event) {
+            _pollTimer = Timer.periodic(
+                Duration(seconds: 10), (_) => _pollForRequests());
+          } else {
+            _pollTimer?.cancel();
+          }
+        },
+        onDone: null, // TODO
+        cancelOnError: false,
+        onError: (error) => print('$error'), // TODO
+      );
+    });
   }
 
   _pollForRequests() async {
