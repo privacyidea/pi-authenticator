@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -32,6 +33,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:http/http.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
@@ -62,6 +64,66 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  Timer _pollTimer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // TODO Make these request configurable (on / off)
+    // TODO Automatically activate / deactivate this timer. (When e.g. no push token exists)
+    if (true) {
+      _pollTimer =
+          Timer.periodic(Duration(seconds: 10), (_) => _pollForRequests());
+    } else {
+      _pollTimer?.cancel();
+    }
+  }
+
+  _pollForRequests() async {
+    // Get all push tokens
+    List<PushToken> pushTokens =
+        (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
+
+    // Start request for each token
+    for (PushToken p in pushTokens) {
+      if (!p.isRolledOut) continue;
+
+      String timestamp = DateTime.now().toIso8601String();
+
+      Map<String, String> parameters = {
+        'serial': p.serial,
+        'timestamp': timestamp,
+        'signature': createBase32Signature(
+            p.getPrivateTokenKey(), utf8.encode('$timestamp|${p.serial}')),
+      };
+
+      try {
+//        Response response = await doGet(url: p.url, headers: headers,sslVerify: p.sslVerify);
+        Response response = await doGet(
+            url: p.url, parameters: parameters, sslVerify: p.sslVerify);
+
+        debugPrint('$response');
+        // TODO Parse response!
+      } on SocketException {
+        log(
+          'Polling push tokens not working, server can not be reached.',
+          name: 'main_screen.dart',
+        );
+      }
+    }
+
+    // Add requests to each token
+
+    // ? Reload ui
+  }
+
+  @override
+  void dispose() {
+    _pollTimer.cancel();
+    super.dispose();
+  }
 
   _MainScreenState() {
     _loadAllTokens();
@@ -440,7 +502,6 @@ class _MainScreenState extends State<MainScreen> {
 
   static void _showNotification(
       PushToken token, PushRequest pushRequest, bool silent) async {
-
     var iOSPlatformChannelSpecifics =
         IOSNotificationDetails(presentSound: !silent);
 
