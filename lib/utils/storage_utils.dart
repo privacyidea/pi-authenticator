@@ -170,7 +170,6 @@ class StorageUtil {
               tokenMap['algorithm'].toString().substring(4)),
         );
       } else if (tokenMap['type'] != null && tokenMap['type'] == 'pipush') {
-        // FIXME What to do with unfinished tokens?
         token = PushToken(
           issuer: tokenMap['label'],
           label: tokenMap['label'],
