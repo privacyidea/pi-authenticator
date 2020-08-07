@@ -494,3 +494,32 @@ Future<Response> doPost(
 
   return response;
 }
+
+// FIXME What to do with sslVerify for legacy tokens?
+Future<Response> doGet(
+    {Uri url, Map<String, String> parameters, bool sslVerify = false}) async {
+  IOClient ioClient = IOClient(HttpClient()
+    ..badCertificateCallback =
+        ((X509Certificate cert, String host, int port) => !sslVerify));
+
+  // TODO Make this more general!
+  // TODO Are the parameters the headers?
+  String urlWithParameters = '$url?serial=${parameters['serial']}'
+      '&timestamp=${parameters['timestamp']}'
+      '&signature=${parameters['signature']}';
+  print('$urlWithParameters');
+  Response response = await ioClient.get(urlWithParameters);
+
+//  String urlWithParameters = '$url';
+//  parameters.forEach((key, value) => urlWithParameters += '&$key=$value');
+//  print('$urlWithParameters');
+//  Response response = await ioClient.get(urlWithParameters);
+
+  log("Received response",
+      name: "utils.dart",
+      error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
+
+  ioClient.close();
+
+  return response;
+}
