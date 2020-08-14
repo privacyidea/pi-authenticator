@@ -88,7 +88,10 @@ class SettingsScreenState extends State<SettingsScreen> {
                   preference: AppSettings.of(context).streamEnablePolling(),
                   builder: (context, value) {
                     return ListTile(
-                      title: Text('Titlte'),
+                      title: Text('Enable polling'), // TODO Translate
+                      subtitle: Text('Requests push challenges from the server'
+                          ' periodically. Enable this if push challenges are'
+                          ' not received normally.'), // TODO Translate, find better text.
                       trailing: Switch(
                         value: value,
                         onChanged: (value) =>
