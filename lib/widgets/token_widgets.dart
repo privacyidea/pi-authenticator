@@ -359,8 +359,8 @@ class _PushWidgetState extends _TokenWidgetState {
 
         setState(() {
           _token.isRolledOut = true;
-          _saveThisToken();
         });
+        _saveThisToken();
       } else {
         log("Post request on roll out failed.",
             name: "token_widgets.dart",
