@@ -202,6 +202,29 @@ class PushToken extends Token {
     this._pushRequests = queue;
   }
 
+  CustomIntBuffer _knownPushRequests;
+
+  // The get and set methods are needed for serialization.
+  CustomIntBuffer get knownPushRequests {
+    _knownPushRequests ??= CustomIntBuffer();
+    return _knownPushRequests;
+  }
+
+  set knownPushRequests(CustomIntBuffer buffer) {
+    if (_knownPushRequests != null) {
+      throw ArgumentError(
+          "Initializing [knownPushRequests] in [PushToken] is only allowed once.");
+    }
+
+    this._knownPushRequests = buffer;
+  }
+
+  bool knowsRequestWithId(int id) {
+    bool exists = pushRequests.any((element) => element.id == id);
+
+    return this.knownPushRequests.contains(id) || exists;
+  }
+
   PushToken({
     String label,
     String serial,
@@ -331,6 +354,8 @@ class PushRequestQueue {
 
   Iterable<PushRequest> where(bool f(PushRequest element)) => _list.where(f);
 
+  bool any(bool f(PushRequest element)) => _list.any(f);
+
   void remove(PushRequest request) => _list.remove(request);
 
   bool get isEmpty => list.isEmpty;
@@ -396,4 +421,52 @@ class SerializableRSAPrivateKey extends RSAPrivateKey {
       _$SerializableRSAPrivateKeyFromJson(json);
 
   Map<String, dynamic> toJson() => _$SerializableRSAPrivateKeyToJson(this);
+}
+
+@JsonSerializable()
+class CustomIntBuffer {
+  final int maxSize = 20;
+
+//  CustomIntBuffer(int maxSize)
+//      : assert(maxSize >= 1),
+//        this.maxSize = maxSize,
+//        _list = List();
+
+  CustomIntBuffer();
+
+  List<int> _list;
+
+  // The get and set methods are needed for serialization.
+  List<int> get list {
+    _list ??= List();
+    return _list;
+  }
+
+  set list(List<int> l) {
+    if (_list != null) {
+      throw ArgumentError(
+          "Initializing [list] in [CustomStringBuffer] is only allowed once.");
+    }
+
+    if (l.length > maxSize) {
+      throw ArgumentError(
+          'The list $l is to long for a buffer of size $maxSize');
+    }
+
+    this._list = l;
+  }
+
+  void put(int value) {
+    if (_list.length >= maxSize) list.removeAt(0);
+    _list.add(value);
+  }
+
+  int get length => _list.length;
+
+  bool contains(int value) => _list.contains(value);
+
+  factory CustomIntBuffer.fromJson(Map<String, dynamic> json) =>
+      _$CustomIntBufferFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CustomIntBufferToJson(this);
 }

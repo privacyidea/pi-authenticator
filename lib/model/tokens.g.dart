@@ -93,7 +93,11 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
     ..pushRequests = json['pushRequests'] == null
         ? null
         : PushRequestQueue.fromJson(
-            json['pushRequests'] as Map<String, dynamic>);
+            json['pushRequests'] as Map<String, dynamic>)
+    ..knownPushRequests = json['knownPushRequests'] == null
+        ? null
+        : CustomIntBuffer.fromJson(
+            json['knownPushRequests'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
@@ -109,7 +113,8 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
       'expirationDate': instance.expirationDate?.toIso8601String(),
-      'pushRequests': instance.pushRequests
+      'pushRequests': instance.pushRequests,
+      'knownPushRequests': instance.knownPushRequests
     };
 
 PushRequest _$PushRequestFromJson(Map<String, dynamic> json) {
@@ -182,3 +187,11 @@ Map<String, dynamic> _$SerializableRSAPrivateKeyToJson(
       'p': instance.p?.toString(),
       'q': instance.q?.toString()
     };
+
+CustomIntBuffer _$CustomIntBufferFromJson(Map<String, dynamic> json) {
+  return CustomIntBuffer()
+    ..list = (json['list'] as List)?.map((e) => e as int)?.toList();
+}
+
+Map<String, dynamic> _$CustomIntBufferToJson(CustomIntBuffer instance) =>
+    <String, dynamic>{'list': instance.list};

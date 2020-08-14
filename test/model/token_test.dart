@@ -27,6 +27,7 @@ import 'package:uuid/uuid.dart';
 
 void main() {
   verifyCustomListBehavesLikeQueue();
+  verifyCustomStringBufferWorks();
 }
 
 void verifyCustomListBehavesLikeQueue() {
@@ -124,6 +125,43 @@ void verifyCustomListBehavesLikeQueue() {
           jsonDecode(encoded) as Map<String, dynamic>);
 
       expect(decoded, fifo);
+    });
+  });
+}
+
+void verifyCustomStringBufferWorks() {
+  group('test custom string buffer', () {
+    test('put elements in', () {
+      CustomIntBuffer buffer = CustomIntBuffer();
+      buffer.list = List();
+
+      expect(buffer.maxSize, 20);
+      expect(buffer.length, 0);
+
+      buffer.put(1);
+      buffer.put(2);
+      buffer.put(3);
+
+      expect(buffer.length, 3);
+
+      expect(buffer.contains(1), true);
+      expect(buffer.contains(2), true);
+      expect(buffer.contains(3), true);
+      expect(buffer.contains(4), false);
+
+      for (int i = 3; i < buffer.maxSize; i++) {
+        buffer.put(-1);
+      }
+
+      buffer.put(4);
+
+      expect(buffer.length, 20);
+      expect(buffer.maxSize, 20);
+
+      expect(buffer.contains(1), false);
+      expect(buffer.contains(2), true);
+      expect(buffer.contains(3), true);
+      expect(buffer.contains(4), true);
     });
   });
 }
