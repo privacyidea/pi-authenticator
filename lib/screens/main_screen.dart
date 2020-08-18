@@ -494,10 +494,6 @@ class _MainScreenState extends State<MainScreen> {
               Duration(minutes: 2),
             )); // Push requests expire after 2 minutes.
 
-        // FIXME: Make a broader test for checking if the request is already known,
-        //  because poll takes up to 2 min before realizing a request was handled.
-        //  The token should hava a query to check if a request is known!
-
         if (!token.knowsRequestWithId(pushRequest.id)) {
           token.pushRequests.add(pushRequest);
           token.knownPushRequests.put(pushRequest.id);
