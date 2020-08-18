@@ -21,7 +21,9 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
+import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
@@ -84,19 +86,38 @@ class SettingsScreenState extends State<SettingsScreen> {
             SettingsGroup(
               title: 'Misc', // TODO Translate
               children: <Widget>[
-                PreferenceBuilder<bool>(
-                  preference: AppSettings.of(context).streamEnablePolling(),
+                FutureBuilder<bool>(
+                  initialData: false,
+                  future: StorageUtil.loadAllTokens()
+                      .asStream()
+                      .any((element) => element is PushToken),
                   builder: (context, value) {
-                    return ListTile(
-                      title: Text('Enable polling'), // TODO Translate
-                      subtitle: Text('Requests push challenges from the server'
-                          ' periodically. Enable this if push challenges are'
-                          ' not received normally.'), // TODO Translate, find better text.
-                      trailing: Switch(
-                        value: value,
-                        onChanged: (value) =>
-                            AppSettings.of(context).setEnablePolling(value),
-                      ),
+                    Function onChange;
+
+                    // Check if any push tokens exist, if not, this cannot be
+                    //  enabled.
+                    if (value.hasData && value.data) {
+                      onChange = (value) =>
+                          AppSettings.of(context).setEnablePolling(value);
+                    }
+
+                    return PreferenceBuilder<bool>(
+                      preference: AppSettings.of(context).streamEnablePolling(),
+                      builder: (context, value) {
+                        return ListTile(
+                          title: Text('Enable polling'),
+                          // TODO Translate
+                          subtitle: Text(
+                              'Requests push challenges from the server'
+                              ' periodically. Enable this if push challenges are'
+                              ' not received normally.'),
+                          // TODO Translate, find better text.
+                          trailing: Switch(
+                            value: value,
+                            onChanged: onChange,
+                          ),
+                        );
+                      },
                     );
                   },
                 ),
