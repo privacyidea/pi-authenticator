@@ -173,8 +173,6 @@ class PushToken extends Token {
   void setPrivateTokenKey(RSAPrivateKey key) =>
       privateTokenKey = serializeRSAPrivateKeyPKCS1(key);
 
-  PushRequestQueue _pushRequests;
-
   DateTime _expirationDate;
 
   String get serial => _serial;
@@ -186,6 +184,8 @@ class PushToken extends Token {
   Uri get url => _url;
 
   DateTime get expirationDate => _expirationDate;
+
+  PushRequestQueue _pushRequests;
 
   // The get and set methods are needed for serialization.
   PushRequestQueue get pushRequests {
@@ -426,11 +426,6 @@ class SerializableRSAPrivateKey extends RSAPrivateKey {
 @JsonSerializable()
 class CustomIntBuffer {
   final int maxSize = 20;
-
-//  CustomIntBuffer(int maxSize)
-//      : assert(maxSize >= 1),
-//        this.maxSize = maxSize,
-//        _list = List();
 
   CustomIntBuffer();
 
