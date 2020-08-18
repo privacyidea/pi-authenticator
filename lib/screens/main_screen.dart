@@ -59,7 +59,7 @@ class MainScreen extends StatefulWidget {
 }
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
@@ -71,12 +71,10 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
-    // TODO Automatically activate / deactivate this timer. (When e.g. no push token exists)
-
     // TODO Use livecyclehooks
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       AppSettings.of(context).streamEnablePolling().listen(
-            (bool event) {
+        (bool event) {
           if (event) {
             _pollTimer = Timer.periodic(
                 Duration(seconds: 10), (_) => _pollForRequests());
@@ -84,9 +82,8 @@ class _MainScreenState extends State<MainScreen> {
             _pollTimer?.cancel();
           }
         },
-        onDone: null, // TODO Can there be anything done?
         cancelOnError: false,
-        onError: (error) => print('$error'), // TODO
+        onError: (error) => print('$error'),
       );
     });
   }
@@ -94,7 +91,13 @@ class _MainScreenState extends State<MainScreen> {
   _pollForRequests() async {
     // Get all push tokens
     List<PushToken> pushTokens =
-    (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
+        (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
+
+    // Disable polling if no push tokens exist
+    if (pushTokens.isEmpty) {
+      AppSettings.of(context).setEnablePolling(false);
+      return;
+    }
 
     // Start request for each token
     for (PushToken p in pushTokens) {
@@ -186,9 +189,7 @@ class _MainScreenState extends State<MainScreen> {
       body: _buildTokenList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _scanQRCode(),
-        tooltip: Localization
-            .of(context)
-            .scanQRTooltip,
+        tooltip: Localization.of(context).scanQRTooltip,
         child: Icon(Icons.add),
       ),
     );
@@ -234,8 +235,7 @@ class _MainScreenState extends State<MainScreen> {
       // Error while parsing qr code.
       // Show the error message to the user.
       _showMessage(
-          "${e
-              .message}\n Please inform the creator of this qr code about the problem.",
+          "${e.message}\n Please inform the creator of this qr code about the problem.",
           Duration(seconds: 8));
       log(
         "Malformed QR code:",
@@ -272,13 +272,12 @@ class _MainScreenState extends State<MainScreen> {
       secret = await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context) =>
-            TwoStepDialog(
-              iterations: uriMap[URI_ITERATIONS],
-              keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
-              saltLength: uriMap[URI_SALT_LENGTH],
-              password: secret,
-            ),
+        builder: (BuildContext context) => TwoStepDialog(
+          iterations: uriMap[URI_ITERATIONS],
+          keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
+          saltLength: uriMap[URI_SALT_LENGTH],
+          password: secret,
+        ),
       );
     }
 
@@ -312,8 +311,8 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Future<PushToken> _buildPushToken(Map<String, dynamic> uriMap,
-      String uuid) async {
+  Future<PushToken> _buildPushToken(
+      Map<String, dynamic> uriMap, String uuid) async {
     FirebaseConfig config = FirebaseConfig(
         projectID: uriMap[URI_PROJECT_ID],
         projectNumber: uriMap[URI_PROJECT_NUMBER],
@@ -366,7 +365,7 @@ class _MainScreenState extends State<MainScreen> {
 
       // TODO Check if it is already initialized?
       var initializationSettingsAndroid =
-      AndroidInitializationSettings('app_icon');
+          AndroidInitializationSettings('app_icon');
       var initializationSettingsIOS = IOSInitializationSettings();
       var initializationSettings = InitializationSettings(
           initializationSettingsAndroid, initializationSettingsIOS);
@@ -430,7 +429,7 @@ class _MainScreenState extends State<MainScreen> {
     if (firebaseToken == null)
       throw SocketException(
           "Firebase token could not be retrieved, the only know cause of this is"
-              " that the firebase servers could not be reached.");
+          " that the firebase servers could not be reached.");
 
     return firebaseToken;
   }
@@ -450,8 +449,8 @@ class _MainScreenState extends State<MainScreen> {
     _loadAllTokens();
   }
 
-  static void _handleIncomingRequest(Map<String, dynamic> message,
-      List<Token> tokenList, bool inBackground) {
+  static void _handleIncomingRequest(
+      Map<String, dynamic> message, List<Token> tokenList, bool inBackground) {
     // This allows for handling push on ios, android and poll.
     var data = message['data'] == null ? message : message['data'];
 
@@ -509,14 +508,14 @@ class _MainScreenState extends State<MainScreen> {
         } else {
           log(
               "The push request $pushRequest already exists "
-                  "for the token $token",
+              "for the token $token",
               name: "main_screen.dart");
         }
       } else {
         log('Validating incoming message failed.',
             name: 'main_screen.dart',
             error:
-            'Signature $signature does not match signed data: $signedData');
+                'Signature $signature does not match signed data: $signedData');
       }
     });
 
@@ -526,10 +525,10 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  static void _showNotification(PushToken token, PushRequest pushRequest,
-      bool silent) async {
+  static void _showNotification(
+      PushToken token, PushRequest pushRequest, bool silent) async {
     var iOSPlatformChannelSpecifics =
-    IOSNotificationDetails(presentSound: !silent);
+        IOSNotificationDetails(presentSound: !silent);
 
     // TODO configure - Do we need channel ids?
     var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
@@ -598,8 +597,7 @@ class _MainScreenState extends State<MainScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        LicensePage(
+                    builder: (context) => LicensePage(
                           applicationName: "privacyIDEA Authenticator",
                           applicationVersion: info.version,
                           applicationIcon: Padding(
@@ -623,27 +621,20 @@ class _MainScreenState extends State<MainScreen> {
           }
         },
         elevation: 5.0,
-        itemBuilder: (BuildContext context) =>
-        <PopupMenuEntry<String>>[
+        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
             value: "about",
-            child: Text(Localization
-                .of(context)
-                .about),
+            child: Text(Localization.of(context).about),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "add_manually",
-            child: Text(Localization
-                .of(context)
-                .addManually),
+            child: Text(Localization.of(context).addManually),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "settings",
-            child: Text(Localization
-                .of(context)
-                .settings),
+            child: Text(Localization.of(context).settings),
           ),
         ],
       ),
