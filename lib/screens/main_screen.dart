@@ -452,9 +452,10 @@ class _MainScreenState extends State<MainScreen> {
         summaryText: 'Token <i>${token.label}</i>',
         htmlFormatSummaryText: true);
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'your channel id',
-      'your channel name',
-      'your channel description',
+      'privacy_idea_authenticator_push',
+      'Push challenges',
+      'Push challenges are received over firebase, if the app is in background,'
+          'a notification for each request is shown.',
       ticker: 'ticker',
       playSound: silent,
       styleInformation: bigTextStyleInformation, // To display token name.
