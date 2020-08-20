@@ -182,7 +182,7 @@ packages:
       name: coverage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.11"
+    version: "0.14.0"
   crypto:
     dependency: transitive
     description:
@@ -297,7 +297,7 @@ packages:
       name: flutter_local_notifications
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.4+3"
+    version: "1.4.4+4"
   flutter_local_notifications_platform_interface:
     dependency: transitive
     description:
@@ -401,7 +401,7 @@ packages:
       name: intl_translation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.17.9"
+    version: "0.17.10"
   io:
     dependency: transitive
     description:
@@ -541,7 +541,7 @@ packages:
       name: petitparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.0"
+    version: "3.0.4"
   platform:
     dependency: transitive
     description:
