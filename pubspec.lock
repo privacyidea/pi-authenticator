@@ -573,11 +573,9 @@ packages:
   privacyidea_app_legacy:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: e83c6a9070c03a01131db9fa85c5c1915a0fbd07
-      url: "https://github.com/timosturm/piauthenticator_legacy.git"
-    source: git
+      path: "local_plugins/piauthenticator_legacy"
+      relative: true
+    source: path
     version: "0.0.1"
   process:
     dependency: transitive

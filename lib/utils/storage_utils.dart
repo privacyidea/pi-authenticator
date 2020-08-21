@@ -53,6 +53,7 @@ class StorageUtil {
 
       print('Loading legacy tokens');
 
+      // TODO Load this only once (=> can later be attempted again?)
       List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
 
       if (legacyTokens.isNotEmpty) {
