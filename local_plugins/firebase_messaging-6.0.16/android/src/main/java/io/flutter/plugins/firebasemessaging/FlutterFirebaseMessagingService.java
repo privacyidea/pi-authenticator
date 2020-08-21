@@ -71,7 +71,7 @@ public class FlutterFirebaseMessagingService extends FirebaseMessagingService {
     FlutterMain.ensureInitializationComplete(backgroundContext, null);
 
     // If background isolate is not running start it.
-    if (!isIsolateRunning.get() && isApplicationForeground(backgroundContext)) {
+    if (!isIsolateRunning.get()) {
       SharedPreferences p = backgroundContext.getSharedPreferences(SHARED_PREFERENCES_KEY, 0);
       long callbackHandle = p.getLong(BACKGROUND_SETUP_CALLBACK_HANDLE_KEY, 0);
       startBackgroundIsolate(backgroundContext, callbackHandle);
