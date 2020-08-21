@@ -1,6 +1,6 @@
 name: privacyidea_authenticator
 description: An OTP Authenticator App for privacyIDEA Authentication Server.
-homepage: https://netknights.it/en/
+homepage: https://netknights.it
 repository: https://github.com/privacyidea/pi-authenticator
 
 # The following defines the version and build number for your application.
@@ -13,7 +13,11 @@ repository: https://github.com/privacyidea/pi-authenticator
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.0.0+300000 # TODO How to set the right version number?
+version: 3.0.1+300000 # TODO How to set the right version number?
+# version: major.minor.build          + major|minor|build|00
+# version: version number             + build number (optional)
+# android: build-name                 + versionCode
+# iOS    : CFBundleShortVersionString + CFBundleVersion
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
