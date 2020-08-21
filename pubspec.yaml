@@ -62,8 +62,7 @@ dependencies:
   flutter_local_notifications: ^1.4.1 # https://pub.dev/packages/flutter_local_notifications#-installing-tab-
   # legacy support for loading old tokens:
   privacyidea_app_legacy:
-    git:
-      url: https://github.com/timosturm/piauthenticator_legacy.git
+    path: ./local_plugins/piauthenticator_legacy
 
   flutter_localizations:
     sdk: flutter
