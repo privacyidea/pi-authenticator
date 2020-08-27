@@ -31,7 +31,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_app_legacy/privacyidea_app_legacy.dart';
+import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
