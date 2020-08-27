@@ -87,8 +87,15 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _loadAllTokens() async {
-    List<Token> l1 = await StorageUtil.loadAllTokens();
+    // FIXME This must be done when the context is available. Maybe initState ?
+    AppSettings settings = AppSettings.of(context);
+
+    List<Token> l1 = await StorageUtil.loadAllTokens(
+      loadLegacy: settings.getLoadLegacy(),
+    );
     setState(() => this._tokenList = l1);
+    // Because we only want to load legacy tokens once:
+    settings.setLoadLegacy(false);
   }
 
   @override
