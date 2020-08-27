@@ -327,9 +327,11 @@ class PushRequestQueue {
 
   int get length => list.length;
 
+  void forEach(void f(PushRequest request)) => list.forEach((f));
+
   void removeWhere(bool f(PushRequest request)) => list.removeWhere(f);
 
-  Iterable<PushRequest> where(bool f(PushRequest element)) => _list.where(f);
+  Iterable<PushRequest> where(bool f(PushRequest request)) => _list.where(f);
 
   void remove(PushRequest request) => _list.remove(request);
 
