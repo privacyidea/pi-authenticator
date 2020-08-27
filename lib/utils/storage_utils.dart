@@ -45,15 +45,14 @@ class StorageUtil {
 
   /// Returns a list of all Tokens that are saved in the secure storage of
   /// this device.
-  static Future<List<Token>> loadAllTokens() async {
+  static Future<List<Token>> loadAllTokens({bool loadLegacy = false}) async {
     Map<String, String> keyValueMap = await _storage.readAll();
 
-    if (keyValueMap.keys.isEmpty) {
+    if (keyValueMap.keys.isEmpty && loadLegacy) {
       // No Token is availabel, attempt to load legacy tokens:
 
       print('Loading legacy tokens');
 
-      // TODO Load this only once (=> can later be attempted again?)
       List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
 
       if (legacyTokens.isNotEmpty) {
