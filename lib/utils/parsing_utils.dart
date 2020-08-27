@@ -267,8 +267,13 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   uriMap[URI_PROJECT_NUMBER] = uri.queryParameters["projectnumber"];
   ArgumentError.checkNotNull(uriMap[URI_PROJECT_NUMBER], "projectnumber");
 
-  // TODO what happens if Uri.parse fails?
-  uriMap[URI_ROLLOUT_URL] = Uri.parse(uri.queryParameters["url"]);
+  String url = uri.queryParameters["url"];
+  try {
+    uriMap[URI_ROLLOUT_URL] = Uri.parse(url);
+  } on FormatException catch (e) {
+    throw ArgumentError.value(
+        uri, "uri", "[$url] is not a valid Uri. error: ${e.message}");
+  }
   ArgumentError.checkNotNull(uriMap[URI_ROLLOUT_URL], "url");
 
   String ttlAsString = uri.queryParameters["ttl"] ?? "10";

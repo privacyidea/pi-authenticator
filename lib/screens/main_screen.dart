@@ -145,8 +145,9 @@ class _MainScreenState extends State<MainScreen> {
         //  Unknown error
         throw e;
       }
-    } on FormatException {
-      //  User returned by pressing the back button
+    } on FormatException catch (e) {
+      //  User returned by pressing the back button (can have other causes too!)
+      throw e;
     } on ArgumentError catch (e) {
       // Error while parsing qr code.
       // Show the error message to the user.
