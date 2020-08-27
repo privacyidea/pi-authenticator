@@ -81,7 +81,7 @@ bool isValidEncoding(String secret, Encodings encoding) {
   try {
     decodeSecretToUint8(secret, encoding);
   } on Exception catch (e) {
-    print('${e.toString()}');
+    log('${e.toString()}');
     return false;
   }
 

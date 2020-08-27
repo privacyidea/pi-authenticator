@@ -230,7 +230,7 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   try {
     int pushVersion = int.parse(pushVersionAsString);
 
-    print('VERSION: $pushVersion');
+    log('Parsing push token with version: $pushVersion');
 
     if (pushVersion > 1) {
       throw ArgumentError.value(
@@ -306,9 +306,9 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   uriMap[URI_ISSUER] = uri.queryParameters['issuer'];
 
 // parse.path.substring(1) -> Label
-  print("Key: [..] | Value: [..]");
+  log("Key: [..] | Value: [..]");
   uri.queryParameters.forEach((key, value) {
-    print("  $key | $value");
+    log("  $key | $value");
   });
 
   uriMap[URI_LABEL] = _parseLabel(uri);
