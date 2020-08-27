@@ -333,8 +333,9 @@ class _PushWidgetState extends _TokenWidgetState {
         name: "token_widgets.dart",
         error: "Token: $_token, key: ${keyPair.privateKey}",
       );
-      _token.setPrivateTokenKey(keyPair.privateKey);
-      _token..setPublicTokenKey(keyPair.publicKey);
+      _token
+        ..setPrivateTokenKey(keyPair.privateKey)
+        ..setPublicTokenKey(keyPair.publicKey);
       _saveThisToken();
     }
 
