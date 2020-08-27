@@ -65,14 +65,12 @@ dependencies:
   # for displaying incoming push requests as notifications
   flutter_local_notifications: ^1.4.1 # https://pub.dev/packages/flutter_local_notifications#-installing-tab-
   # legacy support for loading old tokens:
-  privacyidea_app_legacy:
-    path: ./local_plugins/piauthenticator_legacy
+  pi_authenticator_legacy:
+    path: ./local_plugins/pi-authenticator-legacy
 
   # shared preferences
   streaming_shared_preferences: ^1.0.1
 
-  flutter_localizations:
-    sdk: flutter
   flutter_cupertino_localizations: ^1.0.1
   intl: ^0.16.0
   intl_translation: any #^0.17.10
