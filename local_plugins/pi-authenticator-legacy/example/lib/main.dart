@@ -1,8 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());

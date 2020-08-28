@@ -295,7 +295,9 @@ public class Util {
         return sig.verify(bSignature);
     }
 
-    public String sign(String serial, String message) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, CertificateException, UnrecoverableEntryException, KeyStoreException, IOException {
+    public String sign(String serial, String message) throws NoSuchAlgorithmException,
+            InvalidKeyException, SignatureException, CertificateException,
+            UnrecoverableEntryException, KeyStoreException, IOException {
         byte[] bMessage = message.getBytes(StandardCharsets.UTF_8);
 
         Signature s = Signature.getInstance(SIGNING_ALGORITHM);

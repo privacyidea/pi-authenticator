@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/services.dart';
 
@@ -13,6 +14,11 @@ const String PARAMETER_MESSAGE = "message";
 const String PARAMETER_SIGNED_DATA = "signedData";
 const String PARAMETER_SIGNATURE = "signature";
 
+// TODO Specifiy error handling in correspondence wiht ios
+//  Android: secretKeyWrapper unavailable when no native app was installed ->
+//            error
+//  iOS: ?
+
 class Legacy {
   static const MethodChannel _channel = const MethodChannel(METHOD_CHANNEL_ID);
 
@@ -20,19 +26,52 @@ class Legacy {
       await _channel.invokeMethod(METHOD_SIGN, {
         PARAMETER_SERIAL: serial,
         PARAMETER_MESSAGE: message,
+      }).catchError((dynamic, stackTrace) {
+        log(
+          "Error occurred",
+          name: "pi_authenticator_legacy.dart",
+          error: dynamic,
+        );
+        return false;
       });
 
   static Future<bool> verify(
-      String serial, String signedData, String signature) async =>
+          String serial, String signedData, String signature) async =>
       await _channel.invokeMethod(METHOD_VERIFY, {
         PARAMETER_SERIAL: serial,
         PARAMETER_SIGNED_DATA: signedData,
         PARAMETER_SIGNATURE: signature,
+      }).catchError((dynamic, stackTrace) {
+        log(
+          "Error occurred",
+          name: "pi_authenticator_legacy.dart",
+          error: dynamic,
+        );
+
+        return false;
       });
 
-  static Future<String> loadAllTokens() async =>
-      await _channel.invokeMethod(METHOD_LOAD_ALL_TOKENS);
+  static Future<String> loadAllTokens() async => await _channel
+          .invokeMethod(METHOD_LOAD_ALL_TOKENS)
+          .catchError((dynamic, stackTrace) {
+        log(
+          "Error occurred",
+          name: "pi_authenticator_legacy.dart",
+          error: dynamic,
+        );
 
-  static Future<String> loadFirebaseConfig() async =>
-      await _channel.invokeMethod(METHOD_LOAD_FIREBASE_CONFIG);
+        return "[]";
+      });
+
+  static Future<String> loadFirebaseConfig() async => await _channel
+          .invokeMethod(METHOD_LOAD_FIREBASE_CONFIG)
+          .catchError((dynamic, stackTrace) {
+        log(
+          "Error occurred",
+          name: "pi_authenticator_legacy.dart",
+          error: dynamic,
+        );
+
+        return "{}";
+      });
 }
