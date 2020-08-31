@@ -286,17 +286,31 @@ class _MainScreenState extends State<MainScreen> {
       log("Creating firebaseApp from config.",
           name: "main_screen.dart", error: config);
 
-      await FirebaseApp.configure(
-        name: name,
-        options: FirebaseOptions(
-          googleAppID: config.appID,
-          apiKey: config.apiKey,
-          databaseURL: "https://" + config.projectID + ".firebaseio.com",
-          storageBucket: config.projectID + ".appspot.com",
-          projectID: config.projectID,
-          gcmSenderID: config.projectNumber,
-        ),
-      );
+      try {
+        await FirebaseApp.configure(
+          name: name,
+          options: FirebaseOptions(
+            googleAppID: config.appID,
+            apiKey: config.apiKey,
+            databaseURL: "https://" + config.projectID + ".firebaseio.com",
+            storageBucket: config.projectID + ".appspot.com",
+            projectID: config.projectID,
+            gcmSenderID: config.projectNumber,
+          ),
+        );
+      } on ArgumentError catch (e) {
+        log(
+          "Invalid firebase configuration provided.",
+          name: "main_screen.dart",
+          error: config,
+        );
+
+        // FIXME This does not work, error messages are only shown, when
+        //  a token calls this, not on startup!
+        //  What should be done in that case?
+        // TODO Inform the user!
+        throw SocketException("Notice me!");
+      }
 
       // TODO Check if it is already initialized?
       var initializationSettingsAndroid =
@@ -318,7 +332,7 @@ class _MainScreenState extends State<MainScreen> {
       ..setApplicationName(name);
 
     // Ask user to allow notifications, if declined no notifications are shown
-    //  for incomming push requests.
+    //  for incoming push requests.
     if (Platform.isIOS) {
       await firebaseMessaging.requestNotificationPermissions();
     }
@@ -360,10 +374,11 @@ class _MainScreenState extends State<MainScreen> {
     // The Firebase Plugin will throw a network exception, but that does not reach
     //  the flutter part of the app. That is why we need to throw our own socket-
     //  exception in this case.
-    if (firebaseToken == null)
+    if (firebaseToken == null) {
       throw SocketException(
           "Firebase token could not be retrieved, the only know cause of this is"
           " that the firebase servers could not be reached.");
+    }
 
     return firebaseToken;
   }
