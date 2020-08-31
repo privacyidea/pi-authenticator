@@ -30,8 +30,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart';
-import 'package:pointycastle/asymmetric/api.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
+import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
@@ -317,9 +317,7 @@ class _PushWidgetState extends _TokenWidgetState {
             _token.expirationDate
           ]}, Token: $_token");
 
-      setState(() {
-        _rollOutFailed = true;
-      });
+      setState(() => _rollOutFailed = true);
 
       _showMessage(Localization.of(context).errorTokenExpired(_token.label), 3);
       return;
