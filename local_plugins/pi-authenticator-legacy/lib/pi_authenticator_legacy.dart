@@ -28,7 +28,7 @@ class Legacy {
         PARAMETER_MESSAGE: message,
       }).catchError((dynamic, stackTrace) {
         log(
-          "Error occurred",
+          "Error occurred in [sign]",
           name: "pi_authenticator_legacy.dart",
           error: dynamic,
         );
@@ -43,7 +43,7 @@ class Legacy {
         PARAMETER_SIGNATURE: signature,
       }).catchError((dynamic, stackTrace) {
         log(
-          "Error occurred",
+          "Error occurred in [verify]",
           name: "pi_authenticator_legacy.dart",
           error: dynamic,
         );
@@ -55,7 +55,7 @@ class Legacy {
           .invokeMethod(METHOD_LOAD_ALL_TOKENS)
           .catchError((dynamic, stackTrace) {
         log(
-          "Error occurred",
+          "Error occurred in [loadAllTokens]",
           name: "pi_authenticator_legacy.dart",
           error: dynamic,
         );
@@ -67,7 +67,7 @@ class Legacy {
           .invokeMethod(METHOD_LOAD_FIREBASE_CONFIG)
           .catchError((dynamic, stackTrace) {
         log(
-          "Error occurred",
+          "Error occurred in [loadFirebaseConfig]",
           name: "pi_authenticator_legacy.dart",
           error: dynamic,
         );
