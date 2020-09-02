@@ -462,6 +462,7 @@ class _MainScreenState extends State<MainScreen> {
 
     bool wasHandled = false;
 
+    // FIXME The push request is shown twice if polling, but accepting the second fails -> Does not exist in model!
     tokenList
         .whereType<PushToken>()
         .where((token) => token.serial == requestedSerial && token.isRolledOut)
