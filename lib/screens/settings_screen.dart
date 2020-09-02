@@ -88,14 +88,14 @@ class SettingsScreenState extends State<SettingsScreen> {
               children: <Widget>[
                 FutureBuilder<bool>(
                   initialData: false,
-                  future: StorageUtil.loadAllTokens()
-                      .asStream()
-                      .any((element) => element is PushToken),
+                  future: StorageUtil.loadAllTokens().then(
+                      (value) => value.any((element) => element is PushToken)),
                   builder: (context, value) {
                     Function onChange;
 
                     // Check if any push tokens exist, if not, this cannot be
                     //  enabled.
+
                     if (value.hasData && value.data) {
                       onChange = (value) =>
                           AppSettings.of(context).setEnablePolling(value);
