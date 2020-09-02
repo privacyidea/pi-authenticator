@@ -14,7 +14,7 @@ const String PARAMETER_MESSAGE = "message";
 const String PARAMETER_SIGNED_DATA = "signedData";
 const String PARAMETER_SIGNATURE = "signature";
 
-// TODO Specifiy error handling in correspondence wiht ios
+// TODO Specifiy error handling in correspondence with ios
 //  Android: secretKeyWrapper unavailable when no native app was installed ->
 //            error
 //  iOS: ?

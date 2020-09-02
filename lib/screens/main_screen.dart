@@ -273,6 +273,7 @@ class _MainScreenState extends State<MainScreen> {
     return token;
   }
 
+  // TODO Call this when the context is available to show error msg.
   Future<String> _initFirebase(FirebaseConfig config) async {
     ArgumentError.checkNotNull(config, "config");
 

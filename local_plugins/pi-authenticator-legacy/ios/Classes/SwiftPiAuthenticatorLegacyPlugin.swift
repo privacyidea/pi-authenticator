@@ -8,6 +8,11 @@ public class SwiftPiAuthenticatorLegacyPlugin: NSObject, FlutterPlugin {
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
 
+  // This function handels method calls,
+  // TODO
+  //  get name of method
+  //  get parameters
+  //  return result || error
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     result("iOS " + UIDevice.current.systemVersion)
   }
