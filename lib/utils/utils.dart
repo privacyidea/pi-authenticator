@@ -507,7 +507,7 @@ Future<Response> doGet(
   String urlWithParameters = '$url?serial=${parameters['serial']}'
       '&timestamp=${parameters['timestamp']}'
       '&signature=${parameters['signature']}';
-  print('$urlWithParameters');
+//  print('$urlWithParameters');
   Response response = await ioClient.get(urlWithParameters);
 
 //  String urlWithParameters = '$url';

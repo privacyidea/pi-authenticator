@@ -214,8 +214,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         });
   }
 
-  void _saveThisToken() {
-    StorageUtil.saveOrReplaceToken(this._token);
+  Future<void> _saveThisToken() async {
+    return StorageUtil.saveOrReplaceToken(this._token);
   }
 
   Widget _buildTile();
@@ -306,9 +306,7 @@ class _PushWidgetState extends _TokenWidgetState {
               .errorOnlyOneFirebaseProjectIsSupported(_token.label),
           5);
 
-      setState(() {
-        _rollOutFailed = true;
-      });
+      setState(() => _rollOutFailed = true);
 
       return;
     }
@@ -320,9 +318,7 @@ class _PushWidgetState extends _TokenWidgetState {
             _token.expirationDate
           ]}, Token: $_token");
 
-      setState(() {
-        _rollOutFailed = true;
-      });
+      setState(() => _rollOutFailed = true);
 
       _showMessage(Localization.of(context).errorTokenExpired(_token.label), 3);
       return;
@@ -338,7 +334,7 @@ class _PushWidgetState extends _TokenWidgetState {
       );
       _token.setPrivateTokenKey(keyPair.privateKey);
       _token..setPublicTokenKey(keyPair.publicKey);
-      _saveThisToken();
+      await _saveThisToken();
     }
 
     try {
@@ -357,19 +353,15 @@ class _PushWidgetState extends _TokenWidgetState {
 
         log('Roll out successful', name: 'token_widgets.dart', error: _token);
 
-        setState(() {
-          _token.isRolledOut = true;
-        });
-        _saveThisToken();
+        await _saveThisToken();
+        setState(() => _token.isRolledOut = true);
       } else {
         log("Post request on roll out failed.",
             name: "token_widgets.dart",
             error: "Token: $_token, Status code: ${response.statusCode},"
                 " Body: ${response.body}");
 
-        setState(() {
-          _rollOutFailed = true;
-        });
+        setState(() => _rollOutFailed = true);
 
         _showMessage(
             Localization.of(context)
@@ -380,18 +372,14 @@ class _PushWidgetState extends _TokenWidgetState {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
 
-      setState(() {
-        _rollOutFailed = true;
-      });
+      setState(() => _rollOutFailed = true);
 
       _showMessage(Localization.of(context).errorRollOutNoNetworkConnection, 3);
     } on Exception catch (e) {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
 
-      setState(() {
-        _rollOutFailed = true;
-      });
+      setState(() => _rollOutFailed = true);
 
       _showMessage(Localization.of(context).errorRollOutUnknownError(e), 5);
     }
@@ -480,12 +468,11 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   /// Reset the token status after push auth request was handled by the user.
-  void removeRequest(PushRequest request) {
-    setState(() {
-      _acceptFailed = false;
-      flutterLocalNotificationsPlugin.cancel(request.id);
-      _saveThisToken();
-    });
+  void removeRequest(PushRequest request) async {
+    await _saveThisToken();
+    flutterLocalNotificationsPlugin.cancel(request.id);
+
+    setState(() => _acceptFailed = false);
   }
 
   void _disableRetryButtonForSomeTime() {

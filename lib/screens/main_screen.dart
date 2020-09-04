@@ -446,7 +446,7 @@ class _MainScreenState extends State<MainScreen> {
         name: "main_screen.dart", error: message);
 
     _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), false);
-    _loadAllTokens();
+    _loadAllTokens(); // Update UI
   }
 
   static void _handleIncomingRequest(
@@ -460,13 +460,26 @@ class _MainScreenState extends State<MainScreen> {
     log('Incoming push auth request for token with serial.',
         name: 'main_screen.dart', error: requestedSerial);
 
-    bool wasHandled = false;
-
     // FIXME The push request is shown twice if polling, but accepting the second fails -> Does not exist in model!
-    tokenList
-        .whereType<PushToken>()
-        .where((token) => token.serial == requestedSerial && token.isRolledOut)
-        .forEach((token) {
+    //  Is the 'forEach' the problem? - Does not seem so
+    //  This error is hard to recreate!
+
+    // FIXME When >= 2 push requests are polled, only one is show / saved.
+    //  -> each 10 sec only *one* of the requests can be handled
+    //  This is most likely a problem with the load / save, one update overwrites
+    //  the other!
+    //  How to fix?
+    //    1. Wait for this method to end before handling another request
+    //    2. Use a database that handles the updates -> Hive (Does not support concurrency) -> This is no option!
+    //    3. Lock this method e.g. https://pub.dev/packages/mutex
+
+    PushToken token = tokenList.whereType<PushToken>().firstWhere(
+        (element) => element.serial == requestedSerial && element.isRolledOut);
+
+    if (token == null) {
+      log("The requested token does not exist or is not rolled out.",
+          name: "main_screen.dart", error: requestedSerial);
+    } else {
       log('Token matched requested token',
           name: 'main_screen.dart', error: token);
       String signature = data['signature'];
@@ -479,8 +492,6 @@ class _MainScreenState extends State<MainScreen> {
 
       if (verifyRSASignature(token.getPublicServerKey(),
           utf8.encode(signedData), base32.decode(signature))) {
-        wasHandled = true;
-
         log('Validating incoming message was successful.',
             name: 'main_screen.dart');
 
@@ -505,7 +516,7 @@ class _MainScreenState extends State<MainScreen> {
         } else {
           log(
               "The push request $pushRequest already exists "
-              "for the token $token",
+              "for the token with serial ${token.serial}",
               name: "main_screen.dart");
         }
       } else {
@@ -514,11 +525,6 @@ class _MainScreenState extends State<MainScreen> {
             error:
                 'Signature $signature does not match signed data: $signedData');
       }
-    });
-
-    if (!wasHandled) {
-      log("The requested token does not exist or is not rolled out.",
-          name: "main_screen.dart", error: requestedSerial);
     }
   }
 
