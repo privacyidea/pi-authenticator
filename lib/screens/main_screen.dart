@@ -470,7 +470,6 @@ class _MainScreenState extends State<MainScreen> {
     //  the other!
     //  How to fix?
     //    1. Wait for this method to end before handling another request
-    //    2. Use a database that handles the updates -> Hive (Does not support concurrency) -> This is no option!
     //    3. Lock this method e.g. https://pub.dev/packages/mutex
 
     PushToken token = tokenList.whereType<PushToken>().firstWhere(

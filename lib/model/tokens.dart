@@ -425,7 +425,7 @@ class SerializableRSAPrivateKey extends RSAPrivateKey {
 
 @JsonSerializable()
 class CustomIntBuffer {
-  final int maxSize = 20;
+  final int maxSize = 30;
 
   CustomIntBuffer();
 
