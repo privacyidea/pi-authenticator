@@ -23,7 +23,7 @@ jobs:
       with:
         channel: 'stable'
     - run: "flutter pub get"
-    - run: "flutter build apk"
+    - run: "flutter build apk --debug"
 
     - name: "List all test files"
       run: "ls -R test_driver"
