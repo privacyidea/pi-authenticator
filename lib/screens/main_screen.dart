@@ -90,8 +90,13 @@ class _MainScreenState extends State<MainScreen> {
 
   _pollForRequests() async {
     // Get all push tokens
-    List<PushToken> pushTokens =
-        (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
+    List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
+        .whereType<PushToken>()
+        .where((token) =>
+            token.isRolledOut &&
+            token.url !=
+                null) // Legacy tokens can not pull, because the url is missing!
+        .toList();
 
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
@@ -101,9 +106,6 @@ class _MainScreenState extends State<MainScreen> {
 
     // Start request for each token
     for (PushToken p in pushTokens) {
-      if (!p.isRolledOut) continue;
-      // TODO Check for legacy tokens, those do not have the url anymore!
-
       String timestamp = DateTime.now().toUtc().toIso8601String();
 
       Map<String, String> parameters = {
@@ -124,7 +126,6 @@ class _MainScreenState extends State<MainScreen> {
           List values = result['value'];
 
           for (Map<String, dynamic> value in values) {
-            print('$value');
             _handleIncomingAuthRequest({'data': value});
           }
         } else {
