@@ -76,9 +76,11 @@ class _MainScreenState extends State<MainScreen> {
       AppSettings.of(context).streamEnablePolling().listen(
         (bool event) {
           if (event) {
+            log('Polling is enabled.', name: 'main_screen.dart');
             _pollTimer = Timer.periodic(
                 Duration(seconds: 10), (_) => _pollForRequests());
           } else {
+            log('Polling is disabled.', name: 'main_screen.dart');
             _pollTimer?.cancel();
           }
         },
@@ -100,6 +102,8 @@ class _MainScreenState extends State<MainScreen> {
 
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
+      log('No push token is available for polling, polling is disabled.',
+          name: 'main_screen.dart');
       AppSettings.of(context).setEnablePolling(false);
       return;
     }
