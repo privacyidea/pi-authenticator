@@ -167,9 +167,7 @@ class _MainScreenState extends State<MainScreen> {
 
   _loadAllTokens() async {
     List<Token> list = await StorageUtil.loadAllTokens();
-    setState(() {
-      this._tokenList = list;
-    });
+    setState(() => this._tokenList = list);
   }
 
   @override
@@ -439,17 +437,21 @@ class _MainScreenState extends State<MainScreen> {
       Map<String, dynamic> message) async {
     log("Background message received.",
         name: "main_screen.dart", error: message);
-    _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), true);
+    StorageUtil.protect(() async => _handleIncomingRequest(
+        message, await StorageUtil.loadAllTokens(), true));
   }
 
   void _handleIncomingAuthRequest(Map<String, dynamic> message) async {
     log("Foreground message received.",
         name: "main_screen.dart", error: message);
 
-    _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), false);
+    StorageUtil.protect(() async => _handleIncomingRequest(
+        message, await StorageUtil.loadAllTokens(), false));
     _loadAllTokens(); // Update UI
   }
 
+  /// Handles incoming push requests by verifying the challenge and adding it
+  /// to the token. This should be guarded by a lock.
   static void _handleIncomingRequest(
       Map<String, dynamic> message, List<Token> tokenList, bool inBackground) {
     // This allows for handling push on ios, android and poll.
