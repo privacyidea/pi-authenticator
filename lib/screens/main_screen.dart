@@ -467,18 +467,6 @@ class _MainScreenState extends State<MainScreen> {
     log('Incoming push auth request for token with serial.',
         name: 'main_screen.dart', error: requestedSerial);
 
-    // FIXME The push request is shown twice if polling, but accepting the second fails -> Does not exist in model!
-    //  Is the 'forEach' the problem? - Does not seem so
-    //  This error is hard to recreate!
-
-    // FIXME When >= 2 push requests are polled, only one is show / saved.
-    //  -> each 10 sec only *one* of the requests can be handled
-    //  This is most likely a problem with the load / save, one update overwrites
-    //  the other!
-    //  How to fix?
-    //    1. Wait for this method to end before handling another request
-    //    3. Lock this method e.g. https://pub.dev/packages/mutex
-
     PushToken token = tokenList.whereType<PushToken>().firstWhere(
         (element) => element.serial == requestedSerial && element.isRolledOut);
 
