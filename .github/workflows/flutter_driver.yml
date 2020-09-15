@@ -13,7 +13,7 @@ jobs:
     strategy:
       # When set to true, GitHub cancels all in-progress jobs if any        
       # matrix job fails.
-      fail-fast: false
+      fail-fast: true
       matrix:
         api-level: [18, 28, 29] # [minSdk, most used, newest]
         target: [default] # [default, google_apis]
