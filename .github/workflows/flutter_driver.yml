@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         api-level: [18, 28, 29] # [minSdk, most used, newest]
-        target: [default, google_apis] # [default, google_apis]
+        target: [default] # [default, google_apis]
     steps:
     - uses: actions/checkout@v2
     - uses: subosito/flutter-action@v1
