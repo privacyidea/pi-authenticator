@@ -88,8 +88,11 @@ class SettingsScreenState extends State<SettingsScreen> {
               children: <Widget>[
                 FutureBuilder<bool>(
                   initialData: false,
-                  future: StorageUtil.loadAllTokens().then(
-                      (value) => value.any((element) => element is PushToken)),
+                  future: StorageUtil.loadAllTokens().then((value) => value.any(
+                      (element) =>
+                          element is PushToken &&
+                          element.isRolledOut &&
+                          element.url != null)),
                   builder: (context, value) {
                     Function onChange;
 
