@@ -15,8 +15,8 @@ jobs:
       # matrix job fails.
       fail-fast: false
       matrix:
-        api-level: [21, 23, 29]
-        target: [default, google_apis]
+        api-level: [29] # [21, 23, 29]
+        target: [google_apis] # [default, google_apis]
     steps:
     - uses: actions/checkout@v2
     - uses: subosito/flutter-action@v1
