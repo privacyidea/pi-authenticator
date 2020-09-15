@@ -281,15 +281,12 @@ class _PushWidgetState extends _TokenWidgetState {
 
   @override
   void dispose() {
-    // FIXME Delete all pending push requests also, and remove the notifications! --> But why? Is this supposed to be in delete()?
     _deleteTimer.cancel();
     super.dispose();
   }
 
   void _rollOutToken() async {
-    setState(() {
-      _rollOutFailed = false;
-    });
+    setState(() => _rollOutFailed = false);
 
     if (await StorageUtil.globalFirebaseConfigExists() &&
         await StorageUtil.loadFirebaseConfig(_token) !=
@@ -351,8 +348,9 @@ class _PushWidgetState extends _TokenWidgetState {
 
         log('Roll out successful', name: 'token_widgets.dart', error: _token);
 
+        _token.isRolledOut = true;
         await _saveThisToken();
-        setState(() => _token.isRolledOut = true);
+        setState(() => {}); // Update ui
       } else {
         log("Post request on roll out failed.",
             name: "token_widgets.dart",
