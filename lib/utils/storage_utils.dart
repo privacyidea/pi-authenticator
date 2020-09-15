@@ -21,11 +21,17 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 
 // TODO test the behavior of this class.
 class StorageUtil {
+  // Use this to lock critical sections of code.
+  static final Mutex _m = Mutex();
+
+  static protect(Function f) => _m.protect(f);
+
   static final FlutterSecureStorage _storage = FlutterSecureStorage();
 
   // ###########################################################################

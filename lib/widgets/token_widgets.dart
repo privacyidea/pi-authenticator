@@ -162,9 +162,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       error: "\"${_token.label}\" changed to \"$newLabel\"",
     );
 
-    setState(() {
-      _label = _token.label;
-    });
+    setState(() => _label = _token.label);
   }
 
   void _deleteTokenDialog() {
