@@ -94,9 +94,9 @@ class _MainScreenState extends State<MainScreen> {
     // Get all push tokens
     List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
         .whereType<PushToken>()
-        .where((token) =>
-            token.isRolledOut &&
-            token.url !=
+        .where((t) =>
+            t.isRolledOut &&
+            t.url !=
                 null) // Legacy tokens can not pull, because the url is missing!
         .toList();
 
@@ -467,8 +467,9 @@ class _MainScreenState extends State<MainScreen> {
     log('Incoming push auth request for token with serial.',
         name: 'main_screen.dart', error: requestedSerial);
 
-    PushToken token = tokenList.whereType<PushToken>().firstWhere(
-        (element) => element.serial == requestedSerial && element.isRolledOut);
+    PushToken token = tokenList
+        .whereType<PushToken>()
+        .firstWhere((t) => t.serial == requestedSerial && t.isRolledOut);
 
     if (token == null) {
       log("The requested token does not exist or is not rolled out.",
