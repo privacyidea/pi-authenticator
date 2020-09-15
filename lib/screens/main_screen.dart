@@ -441,7 +441,7 @@ class _MainScreenState extends State<MainScreen> {
       Map<String, dynamic> message) async {
     log("Background message received.",
         name: "main_screen.dart", error: message);
-    StorageUtil.protect(() async => _handleIncomingRequest(
+    await StorageUtil.protect(() async => _handleIncomingRequest(
         message, await StorageUtil.loadAllTokens(), true));
   }
 
@@ -449,7 +449,7 @@ class _MainScreenState extends State<MainScreen> {
     log("Foreground message received.",
         name: "main_screen.dart", error: message);
 
-    StorageUtil.protect(() async => _handleIncomingRequest(
+    await StorageUtil.protect(() async => _handleIncomingRequest(
         message, await StorageUtil.loadAllTokens(), false));
     _loadAllTokens(); // Update UI
   }
