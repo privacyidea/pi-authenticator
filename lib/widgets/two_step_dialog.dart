@@ -21,7 +21,6 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
@@ -65,7 +64,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _title = L10n.of(context).twoStepDialogTitleGenerate;
+    _title = Localization.of(context).twoStepDialogTitleGenerate;
   }
 
   @override
@@ -99,11 +98,11 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
 
     // Update UI.
     setState(() {
-      _title = L10n.of(context).twoStepDialogTitlePhonePart;
+      _title = Localization.of(context).twoStepDialogTitlePhonePart;
       _content = Text("$show");
       _button = FlatButton(
         child: Text(
-          L10n.of(context).dismiss,
+          Localization.of(context).dismiss,
           style: getDialogTextStyle(isDarkModeOn(context)),
         ),
         onPressed: () => Navigator.of(context).pop(generatedSecret),
