@@ -66,10 +66,6 @@ class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  _MainScreenState() {
-//    _loadEverything();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -271,7 +267,6 @@ class _MainScreenState extends State<MainScreen> {
     return token;
   }
 
-  // TODO Call this when the context is available to show error msg.
   Future<String> _initFirebase(FirebaseConfig config) async {
     ArgumentError.checkNotNull(config, "config");
 
@@ -297,18 +292,18 @@ class _MainScreenState extends State<MainScreen> {
             gcmSenderID: config.projectNumber,
           ),
         );
-      } on ArgumentError catch (e) {
+      } on ArgumentError {
         log(
           "Invalid firebase configuration provided.",
           name: "main_screen.dart",
           error: config,
         );
 
-        // FIXME This does not work, error messages are only shown, when
-        //  a token calls this, not on startup!
-        //  What should be done in that case?
-        // TODO Inform the user!
-        throw SocketException("Notice me!");
+        _showMessage(
+            "The firebase configuration is corrupted and cannot be used.",
+            // TODO Translate
+            Duration(seconds: 15));
+        return null;
       }
 
       // TODO Check if it is already initialized?
@@ -524,6 +519,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _removeToken(Token token) async {
+    log("Remove: $token");
     await StorageUtil.deleteToken(token);
 
     if (!(await StorageUtil.loadAllTokens())
@@ -531,10 +527,7 @@ class _MainScreenState extends State<MainScreen> {
       StorageUtil.deleteGlobalFirebaseConfig();
     }
 
-    setState(() {
-      log("Remove: $token");
-      _tokenList.remove(token);
-    });
+    await _loadAllTokens();
   }
 
   List<Widget> _buildActionMenu() {

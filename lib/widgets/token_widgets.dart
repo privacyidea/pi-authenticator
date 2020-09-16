@@ -324,7 +324,7 @@ class _PushWidgetState extends _TokenWidgetState {
     }
 
     if (DateTime.now().isAfter(_token.expirationDate)) {
-      log("Token is expired, abort rollout and delte it.",
+      log("Token is expired, abort roll-out and delete it.",
           name: "token_widgets.dart",
           error: "Now: ${DateTime.now()}, Token expires at ${[
             _token.expirationDate
