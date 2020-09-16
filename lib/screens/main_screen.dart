@@ -301,7 +301,7 @@ class _MainScreenState extends State<MainScreen> {
       await firebaseMessaging.requestNotificationPermissions();
     }
 
-    // FIXME: onResume and onLaunch is not configured see:
+    //  onResume and onLaunch is not configured see:
     //  https://pub.dev/packages/firebase_messaging#-readme-tab-
     //  but the solution there does not seem to work?
     //  These functions do not seem to serve a purpose, as the background
@@ -386,6 +386,9 @@ class _MainScreenState extends State<MainScreen> {
               '${data['question']}|'
               '${data['title']}|'
               '${data['sslverify']}';
+
+          // Re-add url to android legacy tokens:
+          token.url ??= data['url'];
 
           if (verifyRSASignature(token.getPublicServerKey(),
               utf8.encode(signedData), base32.decode(signature))) {
