@@ -33,7 +33,7 @@ jobs:
       with:
         api-level: ${{ matrix.api-level }}
         target: ${{ matrix.target }}
-        #arch: x86_64
+        arch: x86_64
         profile: Nexus 6
         script: "flutter drive --target=test_driver/run_all.dart"
 
