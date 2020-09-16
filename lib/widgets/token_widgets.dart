@@ -232,6 +232,7 @@ class _PushWidgetState extends _TokenWidgetState {
 
   bool _rollOutFailed = false;
   bool _acceptFailed = false;
+
   bool _retryButtonIsEnabled = true;
   bool _acceptButtonIsEnabled = true;
 

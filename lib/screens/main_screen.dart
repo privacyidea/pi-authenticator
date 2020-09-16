@@ -331,7 +331,7 @@ class _MainScreenState extends State<MainScreen> {
       await firebaseMessaging.requestNotificationPermissions();
     }
 
-    // FIXME: onResume and onLaunch is not configured see:
+    //  onResume and onLaunch is not configured see:
     //  https://pub.dev/packages/firebase_messaging#-readme-tab-
     //  but the solution there does not seem to work?
     //  These functions do not seem to serve a purpose, as the background
@@ -371,7 +371,7 @@ class _MainScreenState extends State<MainScreen> {
     if (firebaseToken == null) {
       throw SocketException(
           "Firebase token could not be retrieved, the only know cause of this is"
-          " that the firebase servers could not be reached.");
+              " that the firebase servers could not be reached.");
     }
 
     return firebaseToken;
@@ -419,6 +419,9 @@ class _MainScreenState extends State<MainScreen> {
               '${data['title']}|'
               '${data['sslverify']}';
 
+          // Re-add url to android legacy tokens:
+          token.url ??= data['url'];
+
           bool isVerified = token.publicTokenKey == null
               ? await Legacy.verify(token.serial, signedData, signature)
               : verifyRSASignature(token.getPublicServerKey(),
@@ -430,7 +433,6 @@ class _MainScreenState extends State<MainScreen> {
             log('Validating incoming message was successful.',
                 name: 'main_screen.dart');
 
-            // TODO Add parameter names:
             PushRequest pushRequest = PushRequest(
                 title: data['title'],
                 question: data['question'],
@@ -476,7 +478,6 @@ class _MainScreenState extends State<MainScreen> {
     var iOSPlatformChannelSpecifics =
         IOSNotificationDetails(presentSound: !silent);
 
-    // TODO configure - Do we need channel ids?
     var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
         htmlFormatBigText: true,
         contentTitle: pushRequest.title,

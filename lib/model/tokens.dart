@@ -146,7 +146,7 @@ class PushToken extends Token {
   // Roll out
   bool _sslVerify;
   String _enrollmentCredentials;
-  Uri _url;
+  Uri url; // Full access to allow adding to legacy android tokens
   bool isRolledOut = false;
 
   // RSA keys - String values for backward compatibility with serialization
@@ -186,8 +186,6 @@ class PushToken extends Token {
 
   String get enrollmentCredentials => _enrollmentCredentials;
 
-  Uri get url => _url;
-
   DateTime get expirationDate => _expirationDate;
 
   // The get and set methods are needed for serialization.
@@ -218,7 +216,7 @@ class PushToken extends Token {
   })  : this._serial = serial,
         this._sslVerify = sslVerify,
         this._enrollmentCredentials = enrollmentCredentials,
-        this._url = url,
+        this.url = url,
         this._expirationDate = expirationDate,
         super(label, issuer, id);
 
@@ -235,7 +233,7 @@ class PushToken extends Token {
   @override
   String toString() {
     return 'PushToken{_serial: $_serial, _sslVerify: $_sslVerify, '
-        '_enrollmentCredentials: $_enrollmentCredentials, _url: $_url, '
+        '_enrollmentCredentials: $_enrollmentCredentials, url: $url, '
         'isRolledOut: $isRolledOut, publicServerKey: $publicServerKey, '
         'privateTokenKey: $privateTokenKey, publicTokenKey: $publicTokenKey, '
         '_pushRequests: $_pushRequests, _expirationDate: $_expirationDate},'
