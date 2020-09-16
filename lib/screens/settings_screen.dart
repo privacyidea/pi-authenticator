@@ -23,6 +23,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
+import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
@@ -66,7 +67,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                   controlAffinity: ListTileControlAffinity.trailing,
                   onChanged: !isSystemDarkMode
                       ? (value) {
-                          setState(() => changeBrightness(value));
+                          setState(() => _changeBrightness(value));
                         }
                       : null,
                 ),
@@ -77,7 +78,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                   controlAffinity: ListTileControlAffinity.trailing,
                   onChanged: !isSystemDarkMode
                       ? (value) {
-                          setState(() => changeBrightness(value));
+                          setState(() => _changeBrightness(value));
                         }
                       : null,
                 ),
@@ -104,17 +105,41 @@ class SettingsScreenState extends State<SettingsScreen> {
                           AppSettings.of(context).setEnablePolling(value);
                     }
 
+                    // TODO Show disclaimer when some of the tokens have no url?
+                    var subtitle = Text(
+                        'Requests push challenges from the server'
+                        ' periodically. Enable this if push challenges are'
+                        ' not received normally.'); // TODO Translate, find better text.
+
+                    var title = RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Enable polling', // TODO Translate
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                          WidgetSpan(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 10),
+                              child: GestureDetector(
+                                onTap: _showPollingInfo,
+                                child: Icon(
+                                  Icons.info_outline,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+
                     return PreferenceBuilder<bool>(
                       preference: AppSettings.of(context).streamEnablePolling(),
                       builder: (context, value) {
                         return ListTile(
-                          title: Text('Enable polling'),
-                          // TODO Translate
-                          subtitle: Text(
-                              'Requests push challenges from the server'
-                              ' periodically. Enable this if push challenges are'
-                              ' not received normally.'),
-                          // TODO Translate, find better text.
+                          title: title,
+                          subtitle: subtitle,
                           trailing: Switch(
                             value: value,
                             onChanged: onChange,
@@ -148,8 +173,28 @@ class SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void changeBrightness(Brightness value) {
+  void _changeBrightness(Brightness value) {
     DynamicTheme.of(context).setBrightness(value);
+  }
+
+  void _showPollingInfo() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(Localization.of(context).renameDialogTitle),
+            content: Text('Some of the tokens do not support polling:'),// TODO Translate
+            actions: <Widget>[
+              FlatButton(
+                child: Text(
+                  Localization.of(context).dismiss,
+                  style: getDialogTextStyle(isDarkModeOn(context)),
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        });
   }
 }
 
