@@ -15,7 +15,7 @@ jobs:
       # matrix job fails.
       fail-fast: true
       matrix:
-        api-level: [18] # [minSdk, most used, newest] , 28, 29
+        api-level: [28] # [minSdk, most used, newest] 18, 28, 29
         target: [default] # [default, google_apis]
     steps:
     - uses: actions/checkout@v2
