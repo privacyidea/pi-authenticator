@@ -133,7 +133,7 @@ bool verifyRSASignature(
   try {
     isVerified = signer.verifySignature(signedMessage, RSASignature(signature));
   } on ArgumentError catch (e) {
-    log('Verifying signature failed do to ${e.name}',
+    log('Verifying signature failed due to ${e.name}',
         name: 'crypto_utils.dart', error: e);
   }
 
