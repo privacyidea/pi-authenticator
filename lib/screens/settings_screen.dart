@@ -87,22 +87,28 @@ class SettingsScreenState extends State<SettingsScreen> {
             SettingsGroup(
               title: 'Misc', // TODO Translate
               children: <Widget>[
-                FutureBuilder<bool>(
-                  initialData: false,
-                  future: StorageUtil.loadAllTokens().then((value) => value.any(
-                      (element) =>
-                          element is PushToken &&
-                          element.isRolledOut &&
-                          element.url != null)),
+                FutureBuilder<List<Token>>(
+                  initialData: [],
+                  future: StorageUtil.loadAllTokens(),
                   builder: (context, value) {
                     Function onChange;
+                    List<PushToken> tokens = [];
+                    List<PushToken> unsupported = [];
 
                     // Check if any push tokens exist, if not, this cannot be
                     //  enabled.
+                    if (value.hasData) {
+                      tokens = value.data.whereType<PushToken>().toList();
 
-                    if (value.hasData && value.data) {
-                      onChange = (value) =>
-                          AppSettings.of(context).setEnablePolling(value);
+                      unsupported = tokens
+                          .where((element) => element.url == null)
+                          .toList();
+
+                      if (tokens.any((element) =>
+                          element.isRolledOut && element.url != null)) {
+                        onChange = (value) =>
+                            AppSettings.of(context).setEnablePolling(value);
+                      }
                     }
 
                     // TODO Show disclaimer when some of the tokens have no url?
@@ -119,15 +125,20 @@ class SettingsScreenState extends State<SettingsScreen> {
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                           WidgetSpan(
+                            // TODO Only show if unsupported is not empty
                             child: Padding(
                               padding: EdgeInsets.only(left: 10),
-                              child: GestureDetector(
-                                onTap: _showPollingInfo,
-                                child: Icon(
-                                  Icons.info_outline,
-                                  color: Colors.red,
-                                ),
-                              ),
+                              child: unsupported.isEmpty && tokens.isNotEmpty
+                                  ? GestureDetector(
+                                      onTap: () =>
+                                          _showPollingInfo(unsupported),
+                                      // TODO Give list of unsupported tokens!
+                                      child: Icon(
+                                        Icons.info_outline,
+                                        color: Colors.red,
+                                      ),
+                                    )
+                                  : null,
                             ),
                           ),
                         ],
@@ -177,13 +188,24 @@ class SettingsScreenState extends State<SettingsScreen> {
     DynamicTheme.of(context).setBrightness(value);
   }
 
-  void _showPollingInfo() {
+  void _showPollingInfo(List<PushToken> unsupported) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(Localization.of(context).renameDialogTitle),
-            content: Text('Some of the tokens do not support polling:'),// TODO Translate
+            title: Text('Some of the tokens do not support polling:'),
+            // TODO Translate, Change text
+            content: Scrollbar(
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: unsupported.length,
+                itemBuilder: (context, index) {
+                  return Text('${unsupported[index].label}');
+                },
+                separatorBuilder: (context, index) => Divider(),
+              ),
+            ),
+            // TODO Translate
             actions: <Widget>[
               FlatButton(
                 child: Text(
