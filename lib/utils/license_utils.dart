@@ -28,8 +28,6 @@ clearLicenses() {
   LicenseRegistry.reset();
 }
 
-// TODO This is the best thing right now I can do. It might be a good idea to
-//  search for packages in the license registry first.
 addAllLicenses() {
   _addNewLicense("privacyIDEA Authenticator", _PI_AUTHENTICATOR_LICENSE);
   _addNewLicense("dart-hex", _DART_HEX_LICENSE);
@@ -43,7 +41,8 @@ addAllLicenses() {
   _addNewLicense("package_info", _PACKAGE_INFO_LICENSE);
   _addNewLicense("pointycastle", _POINTYCASTLE_LICENSE);
   _addNewLicense("dynamic_theme", _DYNAMIC_THEME_LICENSE);
-//  _addNewLicense("flutterfire", _FLUTTERFIRE_LICENSE); // TODO The code was changed locally, license may have to be changed accordingly.
+  _addNewLicense("flutterfire",
+      _FLUTTERFIRE_LICENSE); // TODO The code was changed locally, license may have to be changed accordingly.
   _addNewLicense("firebase_core", _FIREBASE_CORE_LICENSE);
   _addNewLicense('asn1lib', _ASN1LIB_LICENSE);
   _addNewLicense('http', _HTTP_LICENSE);

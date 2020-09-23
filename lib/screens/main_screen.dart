@@ -92,7 +92,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _loadAllTokens() async {
-    // FIXME This must be done when the context is available. Maybe initState ?
     AppSettings settings = AppSettings.of(context);
 
     List<Token> l1 = await StorageUtil.loadAllTokens(
@@ -299,14 +298,11 @@ class _MainScreenState extends State<MainScreen> {
           error: config,
         );
 
-        _showMessage(
-            "The firebase configuration is corrupted and cannot be used.",
-            // TODO Translate
+        _showMessage(Localization.of(context).errorFirebaseConfigCorrupted,
             Duration(seconds: 15));
         return null;
       }
 
-      // TODO Check if it is already initialized?
       var initializationSettingsAndroid =
           AndroidInitializationSettings('app_icon');
       var initializationSettingsIOS = IOSInitializationSettings();
@@ -371,7 +367,7 @@ class _MainScreenState extends State<MainScreen> {
     if (firebaseToken == null) {
       throw SocketException(
           "Firebase token could not be retrieved, the only know cause of this is"
-              " that the firebase servers could not be reached.");
+          " that the firebase servers could not be reached.");
     }
 
     return firebaseToken;
@@ -532,7 +528,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   List<Widget> _buildActionMenu() {
-    // TODO maybe a drawer / 'hamburger' menu would be nicer?
     return <Widget>[
       PopupMenuButton<String>(
         onSelected: (String value) async {

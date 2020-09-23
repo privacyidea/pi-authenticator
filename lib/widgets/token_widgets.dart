@@ -174,23 +174,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(Localization.of(context).deleteDialogTitle),
-            content: RichText(
-              text: TextSpan(
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: Localization.of(context).areYouSure,
-                      style: getDialogTextStyle(isDarkModeOn(context)),
-                    ),
-                    TextSpan(
-                      text: " \'$_label\'?",
-                      style: getDialogTextStyle(isDarkModeOn(context)).copyWith(
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ]),
+            content: Text(
+              Localization.of(context).confirmDeletionOf(_label),
             ),
             actions: <Widget>[
               FlatButton(
