@@ -162,7 +162,9 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       error: "\"${_token.label}\" changed to \"$newLabel\"",
     );
 
-    setState(() => _label = _token.label);
+    setState(() {
+      _label = _token.label;
+    });
   }
 
   void _deleteTokenDialog() {
@@ -199,7 +201,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               ),
               FlatButton(
                 onPressed: () {
-                  widget._onDeleteClicked();
+                  _onDeleteClicked();
                   Navigator.of(context).pop();
                 },
                 child: Text(
@@ -211,6 +213,9 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
           );
         });
   }
+
+  // Allows overriding the callback.
+  void _onDeleteClicked() => widget._onDeleteClicked();
 
   Future<void> _saveThisToken() async {
     return StorageUtil.saveOrReplaceToken(this._token);
@@ -225,11 +230,21 @@ class _PushWidgetState extends _TokenWidgetState {
   PushToken get _token => super._token as PushToken;
 
   bool _rollOutFailed = false;
-  bool _retryButtonIsEnabled = true;
-  bool _acceptButtonIsEnabled = true;
   bool _acceptFailed = false;
 
+  bool _retryButtonIsEnabled = true;
+  bool _acceptButtonIsEnabled = true;
+
   Timer _deleteTimer; // Timer that deletes expired requests periodically.
+
+  @override
+  void _onDeleteClicked() {
+    // Delete all push notifications for a when the token is deleted.
+    _token.pushRequests.forEach(
+        (element) => flutterLocalNotificationsPlugin.cancel(element.id));
+
+    super._onDeleteClicked();
+  }
 
   @override
   void initState() {
@@ -246,6 +261,8 @@ class _PushWidgetState extends _TokenWidgetState {
       PushToken t = await StorageUtil.loadToken(_token.id);
 
       // FIXME This throws errors because the token [t] is null, why?
+      // The error does not seem to break anything
+      // It indicates that this method is executed after the token was removed.
 
       if (msg == "AppLifecycleState.resumed" && t.pushRequests.isNotEmpty) {
         log(
@@ -425,7 +442,7 @@ class _PushWidgetState extends _TokenWidgetState {
       if (response.statusCode == 200) {
         _showMessage(
             Localization.of(context).acceptPushAuthRequestFor(_token.label), 2);
-        removeRequest(_token.pushRequests.pop());
+        removeCurrentRequest();
       } else {
         log("Accepting push auth request failed.",
             name: "token_widgets.dart",
@@ -460,13 +477,15 @@ class _PushWidgetState extends _TokenWidgetState {
   void declineRequest() async {
     _showMessage(
         Localization.of(context).decliningPushAuthRequestFor(_token.label), 2);
-    removeRequest(_token.pushRequests.pop());
+    removeCurrentRequest();
   }
 
   /// Reset the token status after push auth request was handled by the user.
-  void removeRequest(PushRequest request) async {
+  void removeCurrentRequest() async {
+    PushRequest request = _token.pushRequests.pop();
+
+    flutterLocalNotificationsPlugin.cancel(request?.id);
     await _saveThisToken();
-    flutterLocalNotificationsPlugin.cancel(request.id);
 
     setState(() => _acceptFailed = false);
   }
