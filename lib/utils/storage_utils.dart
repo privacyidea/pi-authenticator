@@ -68,7 +68,7 @@ class StorageUtil {
     keyValueMap.forEach((_, value) {
       Map<String, dynamic> serializedToken = jsonDecode(value);
 
-      // TODO when the token version (token.version) changed handle this here.
+      // When the token version (token.version) changed handle this here.
 
       if (serializedToken.containsKey("counter")) {
         tokenList.add(HOTPToken.fromJson(serializedToken));
