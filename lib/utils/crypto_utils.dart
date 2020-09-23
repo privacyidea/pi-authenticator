@@ -74,17 +74,6 @@ Future<String> generatePhoneChecksum({Uint8List phonePart}) async {
   return base32.encode(Uint8List.fromList(toEncode)).replaceAll('=', '');
 }
 
-Uint8List generateSalt(int length) {
-  Uint8List list = Uint8List(length);
-  math.Random rand = math.Random.secure();
-
-  for (int i = 0; i < length; i++) {
-    list[i] = rand.nextInt(1 << 8); // Generate next random byte.
-  }
-
-  return list;
-}
-
 Future<AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>>
     generateRSAKeyPair() async {
   log("Start generating RSA key pair", name: "crypto_utils.dart");
@@ -100,7 +89,7 @@ AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> _generateRSAKeyPair(
   final keyGen = RSAKeyGenerator()
     ..init(ParametersWithRandom(
         RSAKeyGeneratorParameters(BigInt.parse('65537'), bitLength, 64),
-        exampleSecureRandom()));
+        secureRandom()));
 
   final pair = keyGen.generateKeyPair();
 
@@ -108,8 +97,8 @@ AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> _generateRSAKeyPair(
       pair.publicKey, pair.privateKey);
 }
 
-//  TODO what are the alternatives
-SecureRandom exampleSecureRandom() {
+/// Provides a secure random number generator.
+SecureRandom secureRandom() {
   final secureRandom = FortunaRandom();
 
   final seedSource = math.Random.secure();
