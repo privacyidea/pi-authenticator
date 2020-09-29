@@ -22,6 +22,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 
 part 'tokens.g.dart';
 
@@ -31,6 +32,9 @@ abstract class Token {
   String _label; // the name of the token, it cannot be uses as an identifier
   String _issuer; // The issuer of this token, currently unused.
   String _id; // this is the identifier of the token
+
+  // Must be string representation of TokenType enum.
+  String type; // Used to identify the token when deserializing.
 
   String get tokenVersion => _tokenVersion;
 
@@ -44,7 +48,7 @@ abstract class Token {
 
   String get issuer => _issuer;
 
-  Token(this._label, this._issuer, this._id);
+  Token(this._label, this._issuer, this._id, this.type);
 
   @override
   String toString() {
@@ -66,9 +70,9 @@ abstract class OTPToken extends Token {
 
   String get secret => _secret;
 
-  OTPToken(String label, String issuer, String id, this._algorithm,
+  OTPToken(String label, String issuer, String id, String type, this._algorithm,
       this._digits, this._secret)
-      : super(label, issuer, id);
+      : super(label, issuer, id, type);
 
   @override
   String toString() {
@@ -94,7 +98,8 @@ class HOTPToken extends OTPToken {
       String secret,
       int counter = 0})
       : this._counter = counter,
-        super(label, issuer, id, algorithm, digits, secret);
+        super(label, issuer, id, enumAsString(TokenTypes.HOTP), algorithm,
+            digits, secret);
 
   @override
   String toString() {
@@ -126,7 +131,8 @@ class TOTPToken extends OTPToken {
       String secret,
       int period})
       : this._period = period,
-        super(label, issuer, id, algorithm, digits, secret);
+        super(label, issuer, id, enumAsString(TokenTypes.TOTP), algorithm,
+            digits, secret);
 
   @override
   String toString() {
@@ -215,7 +221,7 @@ class PushToken extends Token {
         this._enrollmentCredentials = enrollmentCredentials,
         this.url = url,
         this._expirationDate = expirationDate,
-        super(label, issuer, id);
+        super(label, issuer, id, enumAsString(TokenTypes.PIPUSH));
 
   @override
   bool operator ==(Object other) =>

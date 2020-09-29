@@ -19,10 +19,13 @@
 */
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 
 // TODO test the behavior of this class.
 class StorageUtil {
@@ -48,20 +51,26 @@ class StorageUtil {
     Map<String, String> keyValueMap = await _storage.readAll();
 
     List<Token> tokenList = [];
-    keyValueMap.forEach((_, value) {
+    for (String value in keyValueMap.values) {
       Map<String, dynamic> serializedToken = jsonDecode(value);
+
+      if (!serializedToken.containsKey('type')) continue;
 
       // TODO when the token version (token.version) changed handle this here.
 
-      // TODO Change this to use type of token class!
-      if (serializedToken.containsKey("counter")) {
+      if (serializedToken['type'] == enumAsString(TokenTypes.HOTP)) {
         tokenList.add(HOTPToken.fromJson(serializedToken));
-      } else if (serializedToken.containsKey("period")) {
+      } else if (serializedToken['type'] == enumAsString(TokenTypes.TOTP)) {
         tokenList.add(TOTPToken.fromJson(serializedToken));
-      } else if (serializedToken.containsKey("serial")) {
+      } else if (serializedToken['type'] == enumAsString(TokenTypes.PIPUSH)) {
         tokenList.add(PushToken.fromJson(serializedToken));
+      } else {
+        log(
+          'Type ${serializedToken['type']} is unknown.',
+          name: 'storage_utils.dart',
+        );
       }
-    });
+    }
 
     return tokenList;
   }
