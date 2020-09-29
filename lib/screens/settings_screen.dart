@@ -106,54 +106,55 @@ class SettingsScreenState extends State<SettingsScreen> {
             SettingsGroup(
               title: 'Security', // TODO Translate
               children: <Widget>[
-                ListTile(
-                  title: Text('Lock app'), // TODO Translate
-                  subtitle: Text('Ask for PIN on app start'), // TODO Translate
-                  trailing: StreamBuilder<bool>(
-                    stream: isPinSet,
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        // Because initial data causes weird ui update.
-                        return Switch(
-                          value: false,
-                          onChanged: (value) {},
-                        );
-                      }
-
-                      return Switch(
-                        value: snapshot.data,
-                        onChanged: (value) async {
-                          if (snapshot.data && !value) {
-                            // Disable pin
-                            _askForPIN(() async {
-                              await StorageUtil.deletePIN();
-                              _isPINSetController.add(false);
-                            });
-                          } else if (!snapshot.data && value) {
-                            // Enable pin
-                            _setNewAppPIN();
-                          }
-                        },
-                      );
-                    },
-                  ),
-                ),
+//                ListTile(
+//                  title: Text('Lock app'), // TODO Translate
+//                  subtitle: Text('Ask for PIN on app start'), // TODO Translate
+//                  trailing: StreamBuilder<bool>(
+//                    stream: isPinSet,
+//                    builder: (context, snapshot) {
+//                      if (!snapshot.hasData) {
+//                        // Because initial data causes weird ui update.
+//                        return Switch(
+//                          value: false,
+//                          onChanged: (value) {},
+//                        );
+//                      }
+//
+//                      return Switch(
+//                        value: snapshot.data,
+//                        onChanged: (value) async {
+//                          if (snapshot.data && !value) {
+//                            // Disable pin
+//                            _askForPIN(() async {
+//                              await StorageUtil.deletePIN();
+//                              _isPINSetController.add(false);
+//                            });
+//                          } else if (!snapshot.data && value) {
+//                            // Enable pin
+//                            _setNewAppPIN();
+//                          }
+//                        },
+//                      );
+//                    },
+//                  ),
+//                ),
                 PreferenceBuilder<bool>(
                   preference: AppSettings.of(context).streamHideOpts(),
                   builder: (context, bool hideOTP) {
                     print('Rebuild switch');
                     return ListTile(
-                        title: Text('Hide passwords'),
-                        // TODO Translate
-                        subtitle: Text('Obscure passwords'),
-                        // TODO Translate
-                        trailing: Switch(
-                          value: hideOTP,
-                          onChanged: (value) async {
-                            AppSettings.of(context).setHideOpts(value);
+                      title: Text('Hide passwords'),
+                      // TODO Translate
+                      subtitle: Text('Obscure passwords'),
+                      // TODO Translate
+                      trailing: Switch(
+                        value: hideOTP,
+                        onChanged: (value) async {
+                          AppSettings.of(context).setHideOpts(value);
 //                            AppSettings.of(context).setHideOpts(value);
-                          },
-                        ));
+                        },
+                      ),
+                    );
                   },
                 ),
               ],
