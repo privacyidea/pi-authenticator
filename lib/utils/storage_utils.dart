@@ -31,7 +31,7 @@ import 'package:privacyidea_authenticator/utils/utils.dart';
 class StorageUtil {
   static final FlutterSecureStorage _storage = FlutterSecureStorage();
 
-  static const String _GLOBAL_PREFIX = 'v3_';
+  static const String _GLOBAL_PREFIX = 'app_v3_';
 
   // ###########################################################################
   // TOKENS
