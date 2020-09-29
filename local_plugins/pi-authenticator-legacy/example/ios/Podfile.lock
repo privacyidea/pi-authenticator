@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - pi_authenticator_legacy (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - pi_authenticator_legacy (from `.symlinks/plugins/pi_authenticator_legacy/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  pi_authenticator_legacy:
+    :path: ".symlinks/plugins/pi_authenticator_legacy/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  pi_authenticator_legacy: b5096296b651f793782e343c26c940b191af3f36
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.9.3
