@@ -1,6 +1,6 @@
 name: privacyidea_authenticator
 description: An OTP Authenticator App for privacyIDEA Authentication Server.
-homepage: https://netknights.it/en/
+homepage: https://netknights.it
 repository: https://github.com/privacyidea/pi-authenticator
 
 # The following defines the version and build number for your application.
@@ -13,7 +13,11 @@ repository: https://github.com/privacyidea/pi-authenticator
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.0.0+300000 # TODO How to set the right version number?
+version: 3.0.2+0300002 # TODO How to set the right version number?
+# version: major.minor.build          + 2x major|2x minor|3x build <- 2 per number
+# version: version number             + build number (optional)
+# android: build-name                 + versionCode
+# iOS    : CFBundleShortVersionString + CFBundleVersion
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -33,13 +37,13 @@ dependencies:
   # dependency for calculating otp values
   otp: ^2.0.3 # https://pub.dev/packages/otp
   # dependency for scanning barcodes
-  barcode_scan: ^2.0.0
+  barcode_scan: ^2.0.1
   # dependency to generate IDs for tokens
-  uuid: 2.0.4
+  uuid: ^2.2.0
   # dependency to save to secure storage under android and ios
   flutter_secure_storage: ^3.3.1+1
   # dependency to serialize objects to json
-  json_annotation: ^2.0.0 # run "flutter pub run build_runner build" in terminal to build tokens.g.dart
+  json_annotation: ^3.0.1 # run "flutter pub run build_runner build" in terminal to build tokens.g.dart
   # dependency for slide options in list
   flutter_slidable: ^0.5.4
   # dependency for automatically showing the version number
@@ -53,7 +57,7 @@ dependencies:
   firebase_messaging:
     path: ./local_plugins/firebase_messaging-6.0.16
   # dependency for firebase configuration
-  firebase_core: ^0.4.4
+  firebase_core: ^0.4.0
   # dependency for http requests https://pub.dev/packages/http#-readme-tab-
   http: ^0.12.0+4
   # for parsing ASN1 encoded stuff
@@ -73,7 +77,7 @@ dependencies:
     sdk: flutter
   flutter_cupertino_localizations: ^1.0.1
   intl: ^0.16.0
-  intl_translation: any
+  intl_translation: any #^0.17.10
 
 dev_dependencies:
   flutter_driver:
@@ -81,8 +85,8 @@ dev_dependencies:
   test: any
 
   # dependencies to serialize objects to json
-  build_runner: ^1.0.0
-  json_serializable: ^2.0.0
+  build_runner: 1.10.0
+  json_serializable: ^3.4.0
 
 
 # For information on the generic Dart part of this file, see the
