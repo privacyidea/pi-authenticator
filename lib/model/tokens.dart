@@ -22,6 +22,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 
 part 'tokens.g.dart';
 
@@ -31,6 +32,9 @@ abstract class Token {
   String _label; // the name of the token, it cannot be uses as an identifier
   String _issuer; // The issuer of this token, currently unused.
   String _id; // this is the identifier of the token
+
+  // Must be string representation of TokenType enum.
+  String type; // Used to identify the token when deserializing.
 
   String get tokenVersion => _tokenVersion;
 
@@ -44,7 +48,7 @@ abstract class Token {
 
   String get issuer => _issuer;
 
-  Token(this._label, this._issuer, this._id);
+  Token(this._label, this._issuer, this._id, this.type);
 
   @override
   String toString() {
@@ -66,9 +70,9 @@ abstract class OTPToken extends Token {
 
   String get secret => _secret;
 
-  OTPToken(String label, String issuer, String id, this._algorithm,
+  OTPToken(String label, String issuer, String id, String type, this._algorithm,
       this._digits, this._secret)
-      : super(label, issuer, id);
+      : super(label, issuer, id, type);
 
   @override
   String toString() {
@@ -94,7 +98,8 @@ class HOTPToken extends OTPToken {
       String secret,
       int counter = 0})
       : this._counter = counter,
-        super(label, issuer, id, algorithm, digits, secret);
+        super(label, issuer, id, enumAsString(TokenTypes.HOTP), algorithm,
+            digits, secret);
 
   @override
   String toString() {
@@ -126,7 +131,8 @@ class TOTPToken extends OTPToken {
       String secret,
       int period})
       : this._period = period,
-        super(label, issuer, id, algorithm, digits, secret);
+        super(label, issuer, id, enumAsString(TokenTypes.TOTP), algorithm,
+            digits, secret);
 
   @override
   String toString() {
@@ -146,7 +152,7 @@ class PushToken extends Token {
   // Roll out
   bool _sslVerify;
   String _enrollmentCredentials;
-  Uri _url;
+  Uri url; // Full access to allow adding to legacy android tokens
   bool isRolledOut = false;
 
   // RSA keys - String values for backward compatibility with serialization
@@ -186,8 +192,6 @@ class PushToken extends Token {
 
   String get enrollmentCredentials => _enrollmentCredentials;
 
-  Uri get url => _url;
-
   DateTime get expirationDate => _expirationDate;
 
   // The get and set methods are needed for serialization.
@@ -218,9 +222,9 @@ class PushToken extends Token {
   })  : this._serial = serial,
         this._sslVerify = sslVerify,
         this._enrollmentCredentials = enrollmentCredentials,
-        this._url = url,
+        this.url = url,
         this._expirationDate = expirationDate,
-        super(label, issuer, id);
+        super(label, issuer, id, enumAsString(TokenTypes.PIPUSH));
 
   @override
   bool operator ==(Object other) =>
@@ -235,7 +239,7 @@ class PushToken extends Token {
   @override
   String toString() {
     return 'PushToken{_serial: $_serial, _sslVerify: $_sslVerify, '
-        '_enrollmentCredentials: $_enrollmentCredentials, _url: $_url, '
+        '_enrollmentCredentials: $_enrollmentCredentials, url: $url, '
         'isRolledOut: $isRolledOut, publicServerKey: $publicServerKey, '
         'privateTokenKey: $privateTokenKey, publicTokenKey: $publicTokenKey, '
         '_pushRequests: $_pushRequests, _expirationDate: $_expirationDate},'
@@ -336,9 +340,11 @@ class PushRequestQueue {
 
   int get length => list.length;
 
+  void forEach(void f(PushRequest request)) => list.forEach((f));
+
   void removeWhere(bool f(PushRequest request)) => list.removeWhere(f);
 
-  Iterable<PushRequest> where(bool f(PushRequest element)) => _list.where(f);
+  Iterable<PushRequest> where(bool f(PushRequest request)) => _list.where(f);
 
   void remove(PushRequest request) => _list.remove(request);
 
