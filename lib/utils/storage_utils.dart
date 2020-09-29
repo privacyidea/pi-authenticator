@@ -40,8 +40,8 @@ class StorageUtil {
 
   /// Saves [token] securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
-  static Future<void> saveOrReplaceToken(Token token) async => await _storage.write(
-      key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
+  static Future<void> saveOrReplaceToken(Token token) async => await _storage
+      .write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
 
   static Future<Token> loadToken(String id) async => (await loadAllTokens())
       .firstWhere((t) => _GLOBAL_PREFIX + t.id == id, orElse: () => null);
@@ -148,7 +148,7 @@ class StorageUtil {
   }
 
   static void deleteFirebaseConfig(Token token) async =>
-      _storage.delete(key: _GLOBAL_PREFIX +token.id + _KEY_POSTFIX);
+      _storage.delete(key: _GLOBAL_PREFIX + token.id + _KEY_POSTFIX);
 
   // ###########################################################################
   // LEGACY
