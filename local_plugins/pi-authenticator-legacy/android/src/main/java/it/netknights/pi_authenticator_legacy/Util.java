@@ -119,8 +119,6 @@ public class Util {
     public Util() {
     }
 
-    // TODO Rewrite
-
     public String loadTokensJSON() throws IOException, GeneralSecurityException {
         logprint("LOADING TOKEN");
         byte[] data = loadDataFromFile(DATAFILE);
@@ -441,15 +439,15 @@ public class Util {
                     e.printStackTrace();
                 }
             }
-            // Check for pending Authentication Requests
-            try {
-                String pendingAuths = o.getString(PENDING_AUTHS);
-                t.setPendingAuths((ArrayList<PushAuthRequest>) new Gson().fromJson(pendingAuths,
-                        new TypeToken<ArrayList<PushAuthRequest>>() {
-                        }.getType()));
-            } catch (JSONException e) {
-                // there were none and that's ok
-            }
+            // Ignore pending auths
+//            try {
+//                String pendingAuths = o.getString(PENDING_AUTHS);
+//                t.setPendingAuths((ArrayList<PushAuthRequest>) new Gson().fromJson(pendingAuths,
+//                        new TypeToken<ArrayList<PushAuthRequest>>() {
+//                        }.getType()));
+//            } catch (JSONException e) {
+//                // there were none and that's ok
+//            }
             return t;
         }
 
