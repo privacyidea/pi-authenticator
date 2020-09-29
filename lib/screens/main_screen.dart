@@ -438,7 +438,6 @@ class _MainScreenState extends State<MainScreen> {
             log('Validating incoming message was successful.',
                 name: 'main_screen.dart');
 
-            // TODO Add parameter names:
             PushRequest pushRequest = PushRequest(
                 title: data['title'],
                 question: data['question'],
