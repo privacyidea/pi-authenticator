@@ -84,23 +84,19 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
         child: Column(
           children: <Widget>[
             _buildTextInputForm(),
-            _buildDropdownButtonWithLabel(LTen.of(context).encoding,
-                _selectedEncoding, Encodings.values),
+            _buildDropdownButtonWithLabel(
+                LTen.of(context).encoding, _selectedEncoding, Encodings.values),
             _buildDropdownButtonWithLabel(LTen.of(context).algorithm,
                 _selectedAlgorithm, Algorithms.values),
-            _buildDropdownButtonWithLabel(LTen.of(context).digits,
-                _selectedDigits, allowedDigits),
             _buildDropdownButtonWithLabel(
-                LTen.of(context).type,
-                _selectedType,
+                LTen.of(context).digits, _selectedDigits, allowedDigits),
+            _buildDropdownButtonWithLabel(LTen.of(context).type, _selectedType,
                 List.from(TokenTypes.values)..remove(TokenTypes.PIPUSH)),
             Visibility(
 //               the period is only used by TOTP tokens
               visible: _selectedType.value == TokenTypes.TOTP,
               child: _buildDropdownButtonWithLabel(
-                  LTen.of(context).period,
-                  _selectedPeriod,
-                  allowedPeriods,
+                  LTen.of(context).period, _selectedPeriod, allowedPeriods,
                   postFix: 's'),
             ),
             SizedBox(
@@ -214,8 +210,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             key: _nameInputKey,
             focusNode: _nameFieldFocus,
             onSaved: (value) => this.setState(() => _selectedName = value),
-            decoration:
-                InputDecoration(labelText: LTen.of(context).name),
+            decoration: InputDecoration(labelText: LTen.of(context).name),
             validator: (value) {
               if (value.isEmpty) {
                 return LTen.of(context).hintEmptyName;

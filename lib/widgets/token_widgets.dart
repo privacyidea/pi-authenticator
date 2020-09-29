@@ -123,8 +123,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               initialValue: _label,
               key: _nameInputKey,
               onChanged: (value) => this.setState(() => _selectedName = value),
-              decoration:
-                  InputDecoration(labelText: LTen.of(context).name),
+              decoration: InputDecoration(labelText: LTen.of(context).name),
               validator: (value) {
                 if (value.isEmpty) {
                   return LTen.of(context).name;
@@ -335,8 +334,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           name: "token_widgets.dart");
 
       _showMessage(
-          LTen.of(context)
-              .errorOnlyOneFirebaseProjectIsSupported(_token.label),
+          LTen.of(context).errorOnlyOneFirebaseProjectIsSupported(_token.label),
           5);
 
       setState(() {
@@ -493,8 +491,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       setState(() => _acceptFailed = true);
 
       _showMessage(
-          LTen.of(context)
-              .errorAuthenticationNotPossibleWithoutNetworkAccess,
+          LTen.of(context).errorAuthenticationNotPossibleWithoutNetworkAccess,
           3);
     } on Exception catch (e) {
       log("Accept push auth request for [$_token] failed.",
@@ -507,8 +504,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   }
 
   void declineRequest() async {
-    _showMessage(
-        LTen.of(context).decliningPushAuthRequestFor(_token.label), 2);
+    _showMessage(LTen.of(context).decliningPushAuthRequestFor(_token.label), 2);
     removeRequest(_token.pushRequests.pop());
   }
 
@@ -676,8 +672,7 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
       onLongPress: () {
         Clipboard.setData(ClipboardData(text: _otpValue));
         Scaffold.of(context).showSnackBar(SnackBar(
-          content:
-              Text(LTen.of(context).otpValueCopiedMessage(_otpValue)),
+          content: Text(LTen.of(context).otpValueCopiedMessage(_otpValue)),
         ));
       },
       child: _buildNonClickableTile(),

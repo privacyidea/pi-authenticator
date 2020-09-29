@@ -41,8 +41,7 @@ class LTen {
   static LTen of(BuildContext context) {
     // Widget tests will fail with called getter [getter] on null otherwise.
     //  This will use the default localization in that case.
-    return Localizations.of<LTen>(context, LTen) ??
-        LTen('');
+    return Localizations.of<LTen>(context, LTen) ?? LTen('');
   }
 
   // ###########################################################################
