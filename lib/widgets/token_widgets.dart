@@ -717,7 +717,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
               return HideableText(
                 text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
                 hiddenText:
-                    insertCharAt("*" * _token.digits, " ", _token.digits ~/ 2),
+                    insertCharAt("\u2022" * _token.digits, " ", _token.digits ~/ 2),
                 textScaleFactor: 2.2,
                 hideDuration: Duration(seconds: 4),
                 textStyle: TextStyle(
@@ -820,7 +820,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
               return HideableText(
                 text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
                 hiddenText:
-                    insertCharAt("*" * _token.digits, " ", _token.digits ~/ 2),
+                    insertCharAt("\u2022" * _token.digits, " ", _token.digits ~/ 2),
                 textScaleFactor: 2.2,
                 hideDuration: Duration(seconds: 4),
                 textStyle: TextStyle(
