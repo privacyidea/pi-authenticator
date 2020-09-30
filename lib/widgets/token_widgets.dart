@@ -204,7 +204,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               ),
               FlatButton(
                 onPressed: () {
-                  widget._onDeleteClicked();
+                  _onDeleteClicked();
                   Navigator.of(context).pop();
                 },
                 child: Text(
@@ -216,6 +216,9 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
           );
         });
   }
+
+  // Allows overriding the callback.
+  void _onDeleteClicked() => widget._onDeleteClicked();
 
   void _saveThisToken() {
     StorageUtil.saveOrReplaceToken(this._token);
@@ -230,11 +233,21 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   PushToken get _token => super._token as PushToken;
 
   bool _rollOutFailed = false;
-  bool _retryButtonIsEnabled = true;
-  bool _acceptButtonIsEnabled = true;
   bool _acceptFailed = false;
 
+  bool _retryButtonIsEnabled = true;
+  bool _acceptButtonIsEnabled = true;
+
   Timer _deleteTimer; // Timer that deletes expired requests periodically.
+
+  @override
+  void _onDeleteClicked() {
+    // Delete all push notifications for a when the token is deleted.
+    _token.pushRequests.forEach(
+        (element) => flutterLocalNotificationsPlugin.cancel(element.id));
+
+    super._onDeleteClicked();
+  }
 
   @override
   void onPause() {
@@ -315,7 +328,6 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
   @override
   void dispose() {
-    // FIXME Delete all pending push requests also, and remove the notifications! --> But why? Is this supposed to be in delete()?
     _deleteTimer.cancel();
     super.dispose();
   }
@@ -472,7 +484,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       if (response.statusCode == 200) {
         _showMessage(
             LTen.of(context).acceptPushAuthRequestFor(_token.label), 2);
-        removeRequest(_token.pushRequests.pop());
+        removeCurrentRequest();
       } else {
         log("Accepting push auth request failed.",
             name: "token_widgets.dart",
@@ -505,16 +517,17 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
   void declineRequest() async {
     _showMessage(LTen.of(context).decliningPushAuthRequestFor(_token.label), 2);
-    removeRequest(_token.pushRequests.pop());
+    removeCurrentRequest();
   }
 
   /// Reset the token status after push auth request was handled by the user.
-  void removeRequest(PushRequest request) {
-    setState(() {
-      _acceptFailed = false;
-      flutterLocalNotificationsPlugin.cancel(request.id);
-      _saveThisToken();
-    });
+  void removeCurrentRequest() {
+    PushRequest request = _token.pushRequests.pop();
+
+    flutterLocalNotificationsPlugin.cancel(request?.id);
+    _saveThisToken();
+
+    setState(() => _acceptFailed = false);
   }
 
   void _disableRetryButtonForSomeTime() {

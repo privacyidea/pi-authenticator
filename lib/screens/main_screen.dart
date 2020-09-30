@@ -48,6 +48,7 @@ import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
@@ -148,9 +149,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   _loadAllTokens() async {
     List<Token> list = await StorageUtil.loadAllTokens();
-    setState(() {
-      this._tokenList = list;
-    });
+    setState(() => this._tokenList = list);
   }
 
   @override
@@ -213,8 +212,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         //  Unknown error
         throw e;
       }
-    } on FormatException {
-      //  User returned by pressing the back button
+    } on FormatException catch (e) {
+      //  User returned by pressing the back button (can have other causes too!)
+      throw e;
     } on ArgumentError catch (e) {
       // Error while parsing qr code.
       // Show the error message to the user.
@@ -224,10 +224,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       log(
         "Malformed QR code:",
         name: "main_screen.dart",
-        error: e.toString(),
+        error: e.stackTrace,
       );
-
-      print(e.stackTrace);
     } catch (e) {
       //  Unknown error
       throw e;
@@ -317,8 +315,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     // Save the config for this token to use it when rolling out.
     await StorageUtil.saveOrReplaceFirebaseConfig(token, config);
 
-    print('Config for token: ${await StorageUtil.loadFirebaseConfig(token)}');
-
     return token;
   }
 
@@ -372,7 +368,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       await firebaseMessaging.requestNotificationPermissions();
     }
 
-    // FIXME: onResume and onLaunch is not configured see:
+    //  onResume and onLaunch is not configured see:
     //  https://pub.dev/packages/firebase_messaging#-readme-tab-
     //  but the solution there does not seem to work?
     //  These functions do not seem to serve a purpose, as the background
@@ -380,17 +376,17 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         // Used by Android and iOS
-        print("onMessage: ");
+        log("onMessage: ");
         _handleIncomingAuthRequest(message);
       },
       onLaunch: (Map<String, dynamic> message) async {
         // Does not seem to be used by Android or iOS
-        print("onLaunch: ");
+        log("onLaunch: ");
         _handleIncomingAuthRequest(message);
       },
       onResume: (Map<String, dynamic> message) async {
         // Used by iOS only (?)
-        print("onResume: ");
+        log("onResume: ");
         _handleIncomingAuthRequest(message);
       },
       onBackgroundMessage: Platform.isIOS
@@ -458,6 +454,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
               '${data['title']}|'
               '${data['sslverify']}';
 
+          // Re-add url to android legacy tokens:
+          token.url ??= data['url'];
+
           if (verifyRSASignature(token.getPublicServerKey(),
               utf8.encode(signedData), base32.decode(signature))) {
             wasHandled = true;
@@ -518,9 +517,10 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         summaryText: 'Token <i>${token.label}</i>',
         htmlFormatSummaryText: true);
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'your channel id',
-      'your channel name',
-      'your channel description',
+      'privacy_idea_authenticator_push',
+      'Push challenges',
+      'Push challenges are received over firebase, if the app is in background,'
+          'a notification for each request is shown.',
       ticker: 'ticker',
       playSound: silent,
       styleInformation: bigTextStyleInformation, // To display token name.
@@ -560,7 +560,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     }
 
     setState(() {
-      print("Remove: $token");
+      log("Remove: $token");
       _tokenList.remove(token);
     });
   }
