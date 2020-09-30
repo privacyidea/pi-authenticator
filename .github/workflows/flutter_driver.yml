@@ -6,44 +6,34 @@ on:
          - master
    pull_request:
      
+
 jobs:
   drive:
-    
-    # Creates a build matrix for your jobs. You can define different
-    # variations of an environment to run each job in.
+    runs-on: macos-latest
     strategy:
-      # A set of different configurations of the virtual  
-      # environment.
-      matrix:
-        device:
-        - "iPhone 8 (13.3)"
-        - "iPhone 11 Pro Max (13.3)"
       # When set to true, GitHub cancels all in-progress jobs if any        
       # matrix job fails.
-      fail-fast: false
-    runs-on: macos-latest
-
+      fail-fast: true
+      matrix:
+        api-level: [21, 28, 29] # [minSdk, most used, newest] 18 would be minSDK but does not support x86_64
+        target: [default] # [default, google_apis]
     steps:
-    - name: "List all simulators"
-      run: "xcrun instruments -s"
-      
-    - name: "Start Simulator"
-      run: |
-        UDID=$(
-          xcrun instruments -s |
-          awk \
-            -F ' *[][]' \
-            -v 'device=${{ matrix.device }}' \
-            '$1 == device { print $2 }'
-        )
-        xcrun simctl boot "${UDID:?No Simulator with this name found}"
-        
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - uses: subosito/flutter-action@v1
       with:
         channel: 'stable'
+    - run: "flutter pub get"
+    - run: "flutter build apk --debug"
+
     - name: "List all test files"
       run: "ls -R test_driver"
-    - name: "Run Flutter Driver tests"
-      run: "flutter drive --target=test_driver/run_all.dart"
+
+    - name: run tests
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: ${{ matrix.api-level }}
+        target: ${{ matrix.target }}
+        arch: x86_64
+        profile: Nexus 6
+        script: "flutter drive --target=test_driver/run_all.dart"
 

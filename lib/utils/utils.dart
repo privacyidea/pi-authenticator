@@ -21,28 +21,31 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
 import 'package:hex/hex.dart' as HexConverter;
+import 'package:http/http.dart';
+import 'package:http/io_client.dart';
 import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:privacyidea_authenticator/model/tokens.dart';
 
 import 'identifiers.dart';
 
-List<int> decodeSecretToUint8(String secret, Encodings encoding) {
+Uint8List decodeSecretToUint8(String secret, Encodings encoding) {
   ArgumentError.checkNotNull(secret, "secret");
   ArgumentError.checkNotNull(encoding, "encoding");
 
   switch (encoding) {
     case Encodings.none:
-      return utf8.encode(secret);
+      return Uint8List.fromList(utf8.encode(secret));
       break;
     case Encodings.hex:
-      return HexConverter.HEX.decode(secret);
+      return Uint8List.fromList(HexConverter.HEX.decode(secret));
       break;
     case Encodings.base32:
-      return Base32Converter.base32.decode(secret);
+      return Uint8List.fromList(Base32Converter.base32.decode(secret));
       break;
     default:
       throw ArgumentError.value(
@@ -50,15 +53,35 @@ List<int> decodeSecretToUint8(String secret, Encodings encoding) {
   }
 }
 
-String encodeAsHex(Uint8List decoded){
-  return HexConverter.HEX.encode(decoded);
+String encodeSecretAs(Uint8List secret, Encodings encoding) {
+  ArgumentError.checkNotNull(secret, "secret");
+  ArgumentError.checkNotNull(encoding, "encoding");
+
+  switch (encoding) {
+    case Encodings.none:
+      return utf8.decode(secret);
+      break;
+    case Encodings.hex:
+      return HexConverter.HEX.encode(secret);
+      break;
+    case Encodings.base32:
+      return Base32Converter.base32.encode(secret);
+      break;
+    default:
+      throw ArgumentError.value(
+          encoding, "encoding", "The encoding is unknown and not supported!");
+  }
+}
+
+String encodeAsHex(Uint8List secret) {
+  return encodeSecretAs(secret, Encodings.hex);
 }
 
 bool isValidEncoding(String secret, Encodings encoding) {
   try {
     decodeSecretToUint8(secret, encoding);
   } on Exception catch (e) {
-    print('${e.toString()}');
+    log('${e.toString()}');
     return false;
   }
 
@@ -66,7 +89,7 @@ bool isValidEncoding(String secret, Encodings encoding) {
 }
 
 String calculateHotpValue(HOTPToken token) {
-  Uint8List binarySecret = Uint8List.fromList(token.secret);
+  Uint8List binarySecret = decodeSecretToUint8(token.secret, Encodings.base32);
   String base32Secret = Base32Converter.base32.encode(binarySecret);
   return "${OTPLibrary.OTP.generateHOTPCode(
     base32Secret,
@@ -78,7 +101,7 @@ String calculateHotpValue(HOTPToken token) {
 
 // TODO test this method, may use mockito for 'faking' the system time
 String calculateTotpValue(TOTPToken token) {
-  Uint8List binarySecret = Uint8List.fromList(token.secret);
+  Uint8List binarySecret = decodeSecretToUint8(token.secret, Encodings.base32);
   String base32Secret = Base32Converter.base32.encode(binarySecret);
   return "${OTPLibrary.OTP.generateTOTPCode(
     base32Secret,
@@ -89,7 +112,7 @@ String calculateTotpValue(TOTPToken token) {
   )}";
 }
 
-String calculateOtpValue(Token token) {
+String calculateOtpValue(OTPToken token) {
   if (token is HOTPToken) {
     return calculateHotpValue(token).padLeft(token.digits, '0');
   } else if (token is TOTPToken) {
@@ -124,11 +147,11 @@ String insertCharAt(String str, String char, int pos) {
   return str.substring(0, pos) + char + str.substring(pos, str.length);
 }
 
-/// Inserts [char] after every [period] characters in [str].
+/// Inserts [' '] after every [period] characters in [str].
 /// Trims leading and trailing whitespaces. Returns the resulting String.
 ///
-/// Example: "ABCD", " ", 1 --> "A B C D"
-/// Example: "ABCD", " ", 2 --> "AB CD"
+/// Example: "ABCD", 1 --> "A B C D"
+/// Example: "ABCD", 2 --> "AB CD"
 String splitPeriodically(String str, int period) {
   String result = "";
   for (int i = 0; i < str.length; i++) {
@@ -136,180 +159,6 @@ String splitPeriodically(String str, int period) {
   }
 
   return result.trim();
-}
-
-/// This method parses otpauth uris according to https://github.com/google/google-authenticator/wiki/Key-Uri-Format.
-/// The method returns a map that contains all the uri parameters.
-Map<String, dynamic> parseQRCodeToMap(String uri) {
-  Uri parse = Uri.parse(uri);
-  log(
-    "Barcode is valid Uri:",
-    name: "utils.dart",
-    error: "$parse",
-  );
-
-  // otpauth://TYPE/LABEL?PARAMETERS
-
-  if (parse.scheme != "otpauth") {
-    throw ArgumentError.value(
-      uri,
-      "uri",
-      "The uri is not a valid otpauth uri but a(n) [${parse.scheme}] uri instead.",
-    );
-  }
-
-  Map<String, dynamic> uriMap = Map();
-
-  // parse.host -> Type totp or hotp
-  String type = parse.host;
-  if (!equalsIgnoreCase(type, enumAsString(TokenTypes.HOTP)) &&
-      !equalsIgnoreCase(type, enumAsString(TokenTypes.TOTP))) {
-    throw ArgumentError.value(
-      uri,
-      "uri",
-      "The token type [$type] is not supported.",
-    );
-  }
-
-  uriMap[URI_TYPE] = type;
-
-// parse.path.substring(1) -> Label
-  print("Key: [..] | Value: [..]");
-  parse.queryParameters.forEach((key, value) {
-    print("  $key | $value");
-  });
-
-  String label = parse.path.substring(1);
-  uriMap[URI_LABEL] = label;
-
-  String algorithm = parse.queryParameters["algorithm"] ??
-      enumAsString(Algorithms.SHA1); // Optional parameter
-
-  if (!equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA1)) &&
-      !equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA256)) &&
-      !equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA512))) {
-    throw ArgumentError.value(
-      uri,
-      "uri",
-      "The algorithm [$algorithm] is not supported",
-    );
-  }
-
-  uriMap[URI_ALGORITHM] = algorithm;
-
-  // Parse digits.
-  String digitsAsString =
-      parse.queryParameters["digits"] ?? "6"; // Optional parameter
-
-  if (digitsAsString != "6" && digitsAsString != "8") {
-    throw ArgumentError.value(
-      uri,
-      "uri",
-      "[$digitsAsString] is not a valid number of digits",
-    );
-  }
-
-  int digits = int.parse(digitsAsString);
-
-  uriMap[URI_DIGITS] = digits;
-
-  // Parse secret.
-  String secretAsString = parse.queryParameters["secret"];
-
-  // This is a fix for omitted padding in base32 encoded secrets.
-  //
-  // According to https://github.com/google/google-authenticator/wiki/Key-Uri-Format,
-  // the padding can be omitted, but the libraries for base32 do not allow this.
-  if (secretAsString != null && secretAsString.length % 2 == 1) {
-    secretAsString += "=";
-  }
-
-  if (!isValidEncoding(secretAsString, Encodings.base32)) {
-    throw ArgumentError.value(
-      uri,
-      "uri",
-      "[${enumAsString(Encodings.base32)}] is not a valid encoding for [$secretAsString].",
-    );
-  }
-
-  Uint8List secret = decodeSecretToUint8(secretAsString, Encodings.base32);
-
-  uriMap[URI_SECRET] = secret;
-
-  if (type == "hotp") {
-    // Parse counter.
-    String counterAsString = parse.queryParameters["counter"];
-    try {
-      uriMap[URI_COUNTER] = int.parse(counterAsString);
-    } on FormatException {
-      throw ArgumentError.value(
-        uri,
-        "uri",
-        "[$counterAsString] is not a valid value for the parameter [counter]",
-      );
-    }
-  }
-
-  if (type == "totp") {
-    // Parse period.
-    String periodAsString = parse.queryParameters["period"] ?? "30";
-    if (periodAsString != "30" && periodAsString != "60") {
-      throw ArgumentError.value(
-        uri,
-        "uri",
-        "[$periodAsString] is not a valid value for the paramerter [period].",
-      );
-    }
-
-    uriMap[URI_PERIOD] = int.parse(periodAsString);
-  }
-
-  if (is2StepURI(parse)) {
-    // Parse for 2 step roll out.
-    String saltLengthAsString = parse.queryParameters["2step_salt"] ?? "10";
-    String outputLengthInByteAsString =
-        parse.queryParameters["2step_output"] ?? "20";
-    String iterationsAsString =
-        parse.queryParameters["2step_difficulty"] ?? "10000";
-
-    // Parse parameters
-    try {
-      uriMap[URI_SALT_LENGTH] = int.parse(saltLengthAsString);
-    } on FormatException {
-      throw ArgumentError.value(
-        uri,
-        "uri",
-        "[$saltLengthAsString] is not a valid value for parameter [2step_salt].",
-      );
-    }
-    try {
-      uriMap[URI_OUTPUT_LENGTH_IN_BYTES] =
-          int.parse(outputLengthInByteAsString);
-    } on FormatException {
-      throw ArgumentError.value(
-        uri,
-        "uri",
-        "[$outputLengthInByteAsString] is not a valid value for parameter [2step_output].",
-      );
-    }
-    try {
-      uriMap[URI_ITERATIONS] = int.parse(iterationsAsString);
-    } on FormatException {
-      throw ArgumentError.value(
-        uri,
-        "uri",
-        "[$iterationsAsString] is not a valid value for parameter [2step_difficulty].",
-      );
-    }
-  }
-
-  return uriMap;
-}
-
-bool is2StepURI(Uri uri) {
-  return uri.queryParameters["2step_salt"] != null ||
-      uri.queryParameters["2step_output"] != null ||
-      uri.queryParameters["2step_difficulty"] != null;
 }
 
 Algorithms mapStringToAlgorithm(String algoAsString) {
@@ -335,6 +184,33 @@ String enumAsString(Object enumEntry) {
   return description.substring(indexOfDot + 1);
 }
 
-bool equalsIgnoreCase(String s1, String s2) {
-  return s1.toLowerCase() == s2.toLowerCase();
+bool equalsIgnoreCase(String s1, String s2) =>
+    s1.toLowerCase() == s2.toLowerCase();
+
+/// Custom POST request allows to not verify certificates
+Future<Response> doPost(
+    {bool sslVerify, Uri url, Map<String, String> body}) async {
+  log("Sending post request",
+      name: "utils.dart",
+      error: "URI: $url, SSLVerify: $sslVerify, Body: $body");
+
+  if (body.entries.any((element) => element.value == null)) {
+    throw ArgumentError(
+        "The parameter [body] contains a null value, this will cause an "
+        "exception and thus is not permitted.");
+  }
+
+  IOClient ioClient = IOClient(HttpClient()
+    ..badCertificateCallback =
+        ((X509Certificate cert, String host, int port) => !sslVerify));
+
+  Response response = await ioClient.post(url, body: body);
+
+  log("Received response",
+      name: "utils.dart",
+      error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
+
+  ioClient.close();
+
+  return response;
 }

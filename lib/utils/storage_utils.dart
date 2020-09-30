@@ -21,26 +21,24 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 
 // TODO test the behavior of this class.
 class StorageUtil {
   static final FlutterSecureStorage _storage = FlutterSecureStorage();
 
+  // ###########################################################################
+  // TOKENS
+  // ###########################################################################
+
   /// Saves [token] securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
-  static void saveOrReplaceToken(Token token) async {
-    String key = token.serial;
+  static void saveOrReplaceToken(Token token) async =>
+      await _storage.write(key: token.id, value: jsonEncode(token));
 
-    String value = await _storage.read(key: key);
-
-    if (value != null) {
-      await _storage.delete(key: key);
-    }
-
-    String serializedToken = jsonEncode(token);
-    await _storage.write(key: key, value: serializedToken);
-  }
+  static Future<Token> loadToken(String id) async =>
+      (await loadAllTokens()).firstWhere((t) => t.id == id, orElse: () => null);
 
   /// Returns a list of all Tokens that are saved in the secure storage of
   /// this device.
@@ -57,6 +55,8 @@ class StorageUtil {
         tokenList.add(HOTPToken.fromJson(serializedToken));
       } else if (serializedToken.containsKey("period")) {
         tokenList.add(TOTPToken.fromJson(serializedToken));
+      } else if (serializedToken.containsKey("serial")) {
+        tokenList.add(PushToken.fromJson(serializedToken));
       }
     });
 
@@ -64,9 +64,58 @@ class StorageUtil {
   }
 
   /// Deletes the saved json of [token] from the secure storage.
-  static void deleteToken(Token token) async {
-    String key = token.serial;
-
-    await _storage.delete(key: key);
+  /// If the token is a PushToken, its firebase config is deleted too.
+  static Future<void> deleteToken(Token token) async {
+    _storage.delete(key: token.id);
+    if (token is PushToken) deleteFirebaseConfig(token);
   }
+
+  // ###########################################################################
+  // GLOBAL FIREBASE CONFIG
+  // ###########################################################################
+
+  static const _GLOBAL_FIREBASE_CONFIG_KEY =
+      "cc0d13b2-9ce1-11ea-bb37-0242ac130002";
+
+  static void saveOrReplaceGlobalFirebaseConfig(FirebaseConfig config) async =>
+      await _storage.write(
+          key: _GLOBAL_FIREBASE_CONFIG_KEY, value: jsonEncode(config));
+
+  static void deleteGlobalFirebaseConfig() async =>
+      await _storage.delete(key: _GLOBAL_FIREBASE_CONFIG_KEY);
+
+  static Future<bool> globalFirebaseConfigExists() async =>
+      await loadGlobalFirebaseConfig() != null;
+
+  static Future<FirebaseConfig> loadGlobalFirebaseConfig() async {
+    String serializedConfig =
+        await _storage.read(key: _GLOBAL_FIREBASE_CONFIG_KEY);
+
+    return serializedConfig == null
+        ? null
+        : FirebaseConfig.fromJson(jsonDecode(serializedConfig));
+  }
+
+  // ###########################################################################
+  // FIREBASE PER TOKEN
+  // ###########################################################################
+
+  static const _KEY_POSTFIX = "_firebase_config";
+
+  static Future<void> saveOrReplaceFirebaseConfig(
+      Token token, FirebaseConfig config) async {
+    await _storage.write(
+        key: token.id + _KEY_POSTFIX, value: jsonEncode(config));
+  }
+
+  static Future<FirebaseConfig> loadFirebaseConfig(Token token) async {
+    String serializedConfig = await _storage.read(key: token.id + _KEY_POSTFIX);
+
+    return serializedConfig == null
+        ? null
+        : FirebaseConfig.fromJson(jsonDecode(serializedConfig));
+  }
+
+  static void deleteFirebaseConfig(Token token) async =>
+      _storage.delete(key: token.id + _KEY_POSTFIX);
 }
