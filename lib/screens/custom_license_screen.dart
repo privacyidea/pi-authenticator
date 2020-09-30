@@ -89,7 +89,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            L10n.of(context).about,
+            Localization.of(context).about,
             textScaleFactor: screenTitleScaleFactor,
           ),
         ),
