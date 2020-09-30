@@ -77,7 +77,7 @@ dev_dependencies:
   test: any
 
   # dependencies to serialize objects to json
-  build_runner: any
+  build_runner: 1.10.1
   json_serializable: ^3.4.0
 
 
