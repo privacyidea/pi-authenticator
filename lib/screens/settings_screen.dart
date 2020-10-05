@@ -111,7 +111,6 @@ class SettingsScreenState extends State<SettingsScreen> {
                       }
                     }
 
-                    // TODO Show disclaimer when some of the tokens have no url?
                     var subtitle = Text(
                         'Requests push challenges from the server'
                         ' periodically. Enable this if push challenges are'
@@ -125,14 +124,12 @@ class SettingsScreenState extends State<SettingsScreen> {
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                           WidgetSpan(
-                            // TODO Only show if unsupported is not empty
                             child: Padding(
                               padding: EdgeInsets.only(left: 10),
-                              child: unsupported.isEmpty && tokens.isNotEmpty
+                              child: unsupported.isNotEmpty && tokens.isNotEmpty
                                   ? GestureDetector(
                                       onTap: () =>
                                           _showPollingInfo(unsupported),
-                                      // TODO Give list of unsupported tokens!
                                       child: Icon(
                                         Icons.info_outline,
                                         color: Colors.red,
@@ -193,8 +190,9 @@ class SettingsScreenState extends State<SettingsScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Some of the tokens do not support polling:'),
-            // TODO Translate, Change text
+            title: Text(
+                'Some of the tokens are outdated and do not support polling:'),
+            // TODO Translate
             content: Scrollbar(
               child: ListView.separated(
                 shrinkWrap: true,
@@ -205,7 +203,6 @@ class SettingsScreenState extends State<SettingsScreen> {
                 separatorBuilder: (context, index) => Divider(),
               ),
             ),
-            // TODO Translate
             actions: <Widget>[
               FlatButton(
                 child: Text(

@@ -529,7 +529,6 @@ class _MainScreenState extends State<MainScreen> {
     var iOSPlatformChannelSpecifics =
         IOSNotificationDetails(presentSound: !silent);
 
-    // TODO configure - Do we need channel ids?
     var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
         htmlFormatBigText: true,
         contentTitle: pushRequest.title,
@@ -584,7 +583,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   List<Widget> _buildActionMenu() {
-    // TODO maybe a drawer / 'hamburger' menu would be nicer?
     return <Widget>[
       PopupMenuButton<String>(
         onSelected: (String value) async {
