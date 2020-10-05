@@ -58,10 +58,10 @@ class SettingsScreenState extends State<SettingsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SettingsGroup(
-              title: 'Theme',
+              title: Localization.of(context).theme,
               children: <Widget>[
                 RadioListTile(
-                  title: Text('Light theme'),
+                  title: Text(Localization.of(context).lightTheme),
                   value: Brightness.light,
                   groupValue: Theme.of(context).brightness,
                   controlAffinity: ListTileControlAffinity.trailing,
@@ -72,7 +72,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                       : null,
                 ),
                 RadioListTile(
-                  title: Text('Dark theme'),
+                  title: Text(Localization.of(context).darkTheme),
                   value: Brightness.dark,
                   groupValue: Theme.of(context).brightness,
                   controlAffinity: ListTileControlAffinity.trailing,
@@ -85,7 +85,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
             SettingsGroup(
-              title: 'Misc', // TODO Translate
+              title: Localization.of(context).misc,
               children: <Widget>[
                 FutureBuilder<List<Token>>(
                   initialData: [],
@@ -111,16 +111,11 @@ class SettingsScreenState extends State<SettingsScreen> {
                       }
                     }
 
-                    var subtitle = Text(
-                        'Requests push challenges from the server'
-                        ' periodically. Enable this if push challenges are'
-                        ' not received normally.'); // TODO Translate, find better text.
-
                     var title = RichText(
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: 'Enable polling', // TODO Translate
+                            text: Localization.of(context).enablePolling,
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
                           WidgetSpan(
@@ -147,7 +142,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                       builder: (context, value) {
                         return ListTile(
                           title: title,
-                          subtitle: subtitle,
+                          subtitle:
+                              Text(Localization.of(context).pollingDescription),
                           trailing: Switch(
                             value: value,
                             onChanged: onChange,
@@ -190,9 +186,7 @@ class SettingsScreenState extends State<SettingsScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(
-                'Some of the tokens are outdated and do not support polling:'),
-            // TODO Translate
+            title: Text(Localization.of(context).pollingInfoTitle + ':'),
             content: Scrollbar(
               child: ListView.separated(
                 shrinkWrap: true,

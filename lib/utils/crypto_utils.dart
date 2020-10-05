@@ -108,7 +108,6 @@ AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> _generateRSAKeyPair(
       pair.publicKey, pair.privateKey);
 }
 
-//  TODO what are the alternatives
 SecureRandom exampleSecureRandom() {
   final secureRandom = FortunaRandom();
 

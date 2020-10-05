@@ -25,6 +25,8 @@ class Localization {
         Localization('');
   }
 
+  // TODO Create .arb files and add german translations after this is in master!
+
   // ###########################################################################
   // WORDS (E.G. FOR BUTTONS)
   // ###########################################################################
@@ -320,6 +322,40 @@ class Localization {
     return Intl.message(
       'Dark theme',
       desc: 'The dark theme.',
+      locale: localeName,
+    );
+  }
+
+  String get pollingInfoTitle {
+    return Intl.message(
+      'Some of the tokens are outdated and do not support polling',
+      desc: 'Tells the user, that the following tokens do not support polling.',
+      locale: localeName,
+    );
+  }
+
+  String get enablePolling {
+    return Intl.message(
+      'Enable polling',
+      desc: 'Name of the setting switch that enables polling.',
+      locale: localeName,
+    );
+  }
+
+  String get misc {
+    return Intl.message(
+      'Miscellaneous',
+      desc: 'Title for misc settings.',
+      locale: localeName,
+    );
+  }
+
+  String get pollingDescription {
+    return Intl.message(
+      'Request push challenges from the server'
+      ' periodically. Enable this if push challenges are'
+      ' not received normally.',
+      desc: 'The description of the polling feature.',
       locale: localeName,
     );
   }
