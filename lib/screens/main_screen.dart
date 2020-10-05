@@ -456,7 +456,7 @@ class _MainScreenState extends State<MainScreen> {
   /// to the token. This should be guarded by a lock.
   static void _handleIncomingRequest(
       Map<String, dynamic> message, List<Token> tokenList, bool inBackground) {
-    // This allows for handling push on ios, android and poll.
+    // This allows for handling push on ios, android and polling.
     var data = message['data'] == null ? message : message['data'];
 
     Uri requestUri = Uri.parse(data['url']);
