@@ -51,8 +51,9 @@ class StorageUtil {
   static Future<List<Token>> loadAllTokens({bool loadLegacy = false}) async {
     Map<String, String> keyValueMap = await _storage.readAll();
 
-    if (keyValueMap.keys.isEmpty && loadLegacy) {
-      // No Token is availabel, attempt to load legacy tokens:
+    // TODO remove the true when done with testing
+    if (true || keyValueMap.keys.isEmpty && loadLegacy) {
+      // No token is available, attempt to load legacy tokens
 
       print('Loading legacy tokens');
 
@@ -168,7 +169,7 @@ class StorageUtil {
           digits: tokenMap['digits'],
           secret: tokenMap['secret'],
           algorithm: mapStringToAlgorithm(
-              tokenMap['algorithm'].toString().substring(4)),
+              tokenMap['algorithm']),
         );
       } else if (tokenMap['type'] != null && tokenMap['type'] == 'totp') {
         token = TOTPToken(
@@ -179,7 +180,7 @@ class StorageUtil {
           digits: tokenMap['digits'],
           secret: tokenMap['secret'],
           algorithm: mapStringToAlgorithm(
-              tokenMap['algorithm'].toString().substring(4)),
+              tokenMap['algorithm']),
         );
       } else if (tokenMap['type'] != null && tokenMap['type'] == 'pipush') {
         token = PushToken(
