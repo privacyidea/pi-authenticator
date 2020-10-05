@@ -19,6 +19,7 @@
 */
 
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matcher/matcher.dart';
@@ -208,7 +209,6 @@ void _testCalculateHotpValue() {
   });
 }
 
-// TODO test getting right return values
 void _testDecodeSecretToUint8() {
   group("decodeSecretToUint8", () {
     test("Check null as secret", () {
@@ -224,21 +224,41 @@ void _testDecodeSecretToUint8() {
     test("Test non hex secret", () {
       expect(() => decodeSecretToUint8("oo", Encodings.hex),
           throwsA(TypeMatcher<FormatException>()));
-    });
 
-    test("Test non hex secret", () {
       expect(() => decodeSecretToUint8("1Aö", Encodings.hex),
           throwsA(TypeMatcher<FormatException>()));
+    });
+
+    test("Test hex secret", () {
+      expect(decodeSecretToUint8("ABCD", Encodings.hex),
+          Uint8List.fromList([171, 205]));
+
+      expect(decodeSecretToUint8("FF8", Encodings.hex),
+          Uint8List.fromList([15, 248]));
     });
 
     test("Test non base32 secret", () {
       expect(() => decodeSecretToUint8("p", Encodings.base32),
           throwsA(TypeMatcher<FormatException>()));
-    });
 
-    test("Test non base32 secret", () {
       expect(() => decodeSecretToUint8("AAAAAAöA", Encodings.base32),
           throwsA(TypeMatcher<FormatException>()));
+    });
+
+    test("Test base32 secret", () {
+      expect(decodeSecretToUint8("ABCD", Encodings.base32),
+          Uint8List.fromList([0, 68]));
+
+      expect(decodeSecretToUint8("DEG3", Encodings.base32),
+          Uint8List.fromList([25, 13]));
+    });
+
+    test("Test utf-8 secret", () {
+      expect(decodeSecretToUint8("ABCD", Encodings.none),
+          Uint8List.fromList([65, 66, 67, 68]));
+
+      expect(decodeSecretToUint8("DEG3", Encodings.none),
+          Uint8List.fromList([68, 69, 71, 51]));
     });
   });
 }

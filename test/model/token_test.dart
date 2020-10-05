@@ -135,7 +135,7 @@ void verifyCustomStringBufferWorks() {
       CustomIntBuffer buffer = CustomIntBuffer();
       buffer.list = List();
 
-      expect(buffer.maxSize, 20);
+      expect(buffer.maxSize, 30);
       expect(buffer.length, 0);
 
       buffer.put(1);
@@ -155,8 +155,8 @@ void verifyCustomStringBufferWorks() {
 
       buffer.put(4);
 
-      expect(buffer.length, 20);
-      expect(buffer.maxSize, 20);
+      expect(buffer.length, 30);
+      expect(buffer.maxSize, 30);
 
       expect(buffer.contains(1), false);
       expect(buffer.contains(2), true);
