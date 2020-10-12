@@ -161,7 +161,7 @@ packages:
       name: code_builder
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.4.1"
+    version: "3.5.0"
   collection:
     dependency: transitive
     description:
@@ -330,7 +330,7 @@ packages:
       name: flutter_secure_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.4"
+    version: "3.3.5"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -354,7 +354,7 @@ packages:
       name: flutterlifecyclehooks
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   fuchsia_remote_debug_protocol:
     dependency: transitive
     description: flutter
@@ -542,13 +542,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.3"
-  passcode_screen:
-    dependency: "direct main"
-    description:
-      name: passcode_screen
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.0"
   path:
     dependency: transitive
     description:

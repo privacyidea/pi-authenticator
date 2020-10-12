@@ -65,7 +65,7 @@ dependencies:
   # for displaying incoming push requests as notifications
   flutter_local_notifications: ^1.4.1 # https://pub.dev/packages/flutter_local_notifications#-installing-tab-
   # locking the app with a password
-  passcode_screen: ^1.2.0
+#  passcode_screen: ^1.2.0
   # managing lifecycle of app -> onPause, onResume
   flutterlifecyclehooks: ^1.0.0
   # manage settings

@@ -25,11 +25,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
-import 'package:privacyidea_authenticator/widgets/set_pin_dialog.dart';
+import 'package:privacyidea_authenticator/widgets/pin_dialogs.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
-
-import 'main_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   SettingsScreen(this._title);
@@ -106,38 +104,38 @@ class SettingsScreenState extends State<SettingsScreen> {
             SettingsGroup(
               title: 'Security', // TODO Translate
               children: <Widget>[
-//                ListTile(
-//                  title: Text('Lock app'), // TODO Translate
-//                  subtitle: Text('Ask for PIN on app start'), // TODO Translate
-//                  trailing: StreamBuilder<bool>(
-//                    stream: isPinSet,
-//                    builder: (context, snapshot) {
-//                      if (!snapshot.hasData) {
-//                        // Because initial data causes weird ui update.
-//                        return Switch(
-//                          value: false,
-//                          onChanged: (value) {},
-//                        );
-//                      }
-//
-//                      return Switch(
-//                        value: snapshot.data,
-//                        onChanged: (value) async {
-//                          if (snapshot.data && !value) {
-//                            // Disable pin
-//                            _askForPIN(() async {
-//                              await StorageUtil.deletePIN();
-//                              _isPINSetController.add(false);
-//                            });
-//                          } else if (!snapshot.data && value) {
-//                            // Enable pin
-//                            _setNewAppPIN();
-//                          }
-//                        },
-//                      );
-//                    },
-//                  ),
-//                ),
+                ListTile(
+                  title: Text('Lock app'), // TODO Translate
+                  subtitle: Text('Ask for PIN on app start'), // TODO Translate
+                  trailing: StreamBuilder<bool>(
+                    stream: isPinSet,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        // Because initial data causes weird ui update.
+                        return Switch(
+                          value: false,
+                          onChanged: (value) {},
+                        );
+                      }
+
+                      return Switch(
+                        value: snapshot.data,
+                        onChanged: (value) async {
+                          if (snapshot.data && !value) {
+                            // Disable pin
+                            _attemptRemovePassword(() async {
+                              await StorageUtil.deletePIN();
+                              _isPINSetController.add(false);
+                            });
+                          } else if (!snapshot.data && value) {
+                            // Enable pin
+                            _setNewAppPIN();
+                          }
+                        },
+                      );
+                    },
+                  ),
+                ),
                 PreferenceBuilder<bool>(
                   preference: AppSettings.of(context).streamHideOpts(),
                   builder: (context, bool hideOTP) {
@@ -185,47 +183,22 @@ class SettingsScreenState extends State<SettingsScreen> {
     String newPin = await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) => SetPINDialog(),
+      builder: (BuildContext context) => EnterNewPINDialog(),
     );
+
     if (newPin != null) {
       await StorageUtil.setPIN(newPin);
       _isPINSetController.add(true);
-      print('Activate');
+      print('Activated PIN');
     }
   }
 
-  bool _isAppUnlocked = false;
-  final StreamController<bool> _verificationNotifier =
-      StreamController<bool>.broadcast();
-
-  _askForPIN(VoidCallback callback) async {
-    int numberOfDigits = (await StorageUtil.getPIN()).length;
-
-    Navigator.push(
-        context,
-        PageRouteBuilder(
-          opaque: false,
-          pageBuilder: (context, animation, secondaryAnimation) => WillPopScope(
-            onWillPop: () async => _isAppUnlocked,
-            child: buildPasscodeScreen(
-                context,
-                numberOfDigits,
-                (enteredPIN) => _onPINEntered(enteredPIN, callback),
-                _verificationNotifier,
-                allowCancel: true),
-          ),
-        ));
-  }
-
-  _onPINEntered(String enteredPIN, VoidCallback callback) async {
-    bool isValid = (await StorageUtil.getPIN()) == enteredPIN;
-    _verificationNotifier.add(isValid);
-    if (isValid) {
-      callback.call();
-      setState(() {
-        this._isAppUnlocked = isValid;
-      });
-    }
+  _attemptRemovePassword(VoidCallback callback) async {
+    if (!(await StorageUtil.isPINSet())) return;
+    await validatePIN(
+        context: context,
+        allowCancel: true,
+        success: () => StorageUtil.deletePIN());
   }
 
   void changeBrightness(Brightness value) {

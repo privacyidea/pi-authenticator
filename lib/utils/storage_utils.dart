@@ -132,8 +132,8 @@ class StorageUtil {
       _storage.write(key: _GLOBAL_PIN_KEY, value: pin);
 
   // FIXME This is deactivated until a good solution for this is found!
-//  static Future<String> getPIN() async => _storage.read(key: _GLOBAL_PIN_KEY);
-  static Future<String> getPIN() async => null;
+  static Future<String> getPIN() async => _storage.read(key: _GLOBAL_PIN_KEY);
+//  static Future<String> getPIN() async => null;
 
   static Future<void> deletePIN() async =>
       _storage.delete(key: _GLOBAL_PIN_KEY);

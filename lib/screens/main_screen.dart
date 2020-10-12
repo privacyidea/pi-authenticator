@@ -35,9 +35,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:package_info/package_info.dart';
-import 'package:passcode_screen/circle.dart';
-import 'package:passcode_screen/keyboard.dart';
-import 'package:passcode_screen/passcode_screen.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
@@ -51,6 +48,7 @@ import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
+import 'package:privacyidea_authenticator/widgets/pin_dialogs.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uuid/uuid.dart';
@@ -93,45 +91,23 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   // TODO
-  //  Style pin input
   //  Hide stuff in background on iOS
   _checkPIN() async {
     if (_isCheckingForPIN) return;
     _isCheckingForPIN = true;
 
-    if (!await StorageUtil.isPINSet()) {
+    if (await StorageUtil.isPINSet()) {
+      await validatePIN(context: context, success: () => _onPINEntered(true));
+    } else {
       setState(() => _isAppUnlocked = true);
       _isCheckingForPIN = false;
-      return;
     }
-
-    if (!_isAppUnlocked) _askForPIN();
   }
 
-  _askForPIN() async {
-    int numberOfDigits = (await StorageUtil.getPIN()).length;
-
-    Navigator.push(
-        context,
-        PageRouteBuilder(
-          opaque: false,
-          pageBuilder: (context, animation, secondaryAnimation) => WillPopScope(
-            onWillPop: () async => _isAppUnlocked,
-            child: buildPasscodeScreen(
-                context, numberOfDigits, _onPINEntered, _verificationNotifier),
-          ),
-        ));
-  }
-
-  _onPINEntered(String enteredPIN) async {
-    bool isValid = (await StorageUtil.getPIN()) == enteredPIN;
+  _onPINEntered(bool isValid) async {
     _verificationNotifier.add(isValid);
-    if (isValid) {
-      _isCheckingForPIN = false;
-      setState(() {
-        this._isAppUnlocked = isValid;
-      });
-    }
+    _isCheckingForPIN = false;
+    setState(() => this._isAppUnlocked = isValid);
   }
 
   _loadFirebase() async {
@@ -639,38 +615,4 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       duration: duration,
     ));
   }
-}
-
-PasscodeScreen buildPasscodeScreen(
-    BuildContext context,
-    final int numberOfDigits,
-    final PasswordEnteredCallback passwordEnteredCallback,
-    final StreamController<bool> verificationNotifier,
-    {final bool allowCancel = false}) {
-  return PasscodeScreen(
-    title: Text(
-      'Unlock App', // TODO Translate
-      textAlign: TextAlign.center,
-      style: TextStyle(color: Colors.white, fontSize: 28),
-    ),
-    passwordDigits: numberOfDigits,
-    circleUIConfig: CircleUIConfig(
-        borderColor: Colors.blue, // TODO Style
-        fillColor: Colors.blue,
-        circleSize: 30),
-    keyboardUIConfig:
-        KeyboardUIConfig(digitBorderWidth: 2, primaryColor: Colors.blue),
-    // TODO Style
-    passwordEnteredCallback: passwordEnteredCallback,
-    cancelButton: Text(allowCancel ? LTen.of(context).cancel : ""),
-    deleteButton: Text(
-      LTen.of(context).delete,
-      style: const TextStyle(fontSize: 16, color: Colors.white),
-      semanticsLabel: LTen.of(context).cancel,
-    ),
-    shouldTriggerVerification: verificationNotifier.stream,
-    backgroundColor: Colors.black.withOpacity(0.8),
-    cancelCallback: allowCancel ? () => Navigator.of(context).pop() : null,
-    digits: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-  );
 }
