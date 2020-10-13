@@ -38,7 +38,7 @@ class _EnterNewPasswordDialogState extends State<EnterNewPasswordDialog> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _title = 'Please enter a new Password'; // TODO Translate
+    _title = 'Enter new password:'; // TODO Translate
   }
 
   String _newPassword;
@@ -82,14 +82,7 @@ class _EnterNewPasswordDialogState extends State<EnterNewPasswordDialog> {
             onChanged: (value) => this.setState(() {
               _newPassword = value;
             }),
-            labelText: 'Password',
-            // TODO Translate
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter a Password.'; // TODO Translate
-              }
-              return null;
-            },
+            labelText: 'Password', // TODO Translate
           ),
           Padding(
             padding: EdgeInsets.all(5),
@@ -176,7 +169,7 @@ class _CheckPasswordDialogState extends State<CheckPasswordDialog> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _title = 'Please enter the Password:'; // TODO Translate
+    _title = 'Enter password to unlock:'; // TODO Translate
   }
 
   String _currentInput;

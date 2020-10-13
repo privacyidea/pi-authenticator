@@ -107,7 +107,6 @@ class PasswordInputFormField extends StatefulWidget {
       FormFieldValidator<String> validator})
       : assert(labelText != null),
         assert(formKey != null),
-        assert(validator != null),
         _validator = validator,
         _formKey = formKey,
         _labelText = labelText,
@@ -144,7 +143,6 @@ class _PasswordInputFormFieldState extends State<PasswordInputFormField> {
           },
         ),
         labelText: widget._labelText,
-        // TODO Translate
         border: widget.border,
         focusedBorder: widget.focusBorder,
         errorBorder: widget.errorBorder,
@@ -152,11 +150,10 @@ class _PasswordInputFormFieldState extends State<PasswordInputFormField> {
       ),
       validator: (value) {
         if (value.isEmpty) {
-          return 'Please enter your Password.'; // TODO Translate
+          return 'Please enter your Password'; // TODO Translate
         } else {
-          return widget._validator.call(value);
+          return widget._validator?.call(value);
         }
-//        return null;
       },
     );
   }
