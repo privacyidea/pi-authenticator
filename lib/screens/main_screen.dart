@@ -48,7 +48,7 @@ import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/widgets/pin_dialogs.dart';
+import 'package:privacyidea_authenticator/widgets/password_dialogs.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uuid/uuid.dart';
@@ -68,12 +68,12 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   List<Token> _tokenList = List<Token>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isAppUnlocked = false;
-  bool _isCheckingForPIN = false;
+  bool _isCheckingForPassword = false;
   final StreamController<bool> _verificationNotifier =
       StreamController<bool>.broadcast();
 
   _MainScreenState() {
-    _checkPIN();
+    _checkPassword();
     _loadAllTokens();
     _loadFirebase();
   }
@@ -87,26 +87,27 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   @override
   void onResume() {
-    _checkPIN();
+    _checkPassword();
   }
 
   // TODO
   //  Hide stuff in background on iOS
-  _checkPIN() async {
-    if (_isCheckingForPIN) return;
-    _isCheckingForPIN = true;
+  _checkPassword() async {
+    if (_isCheckingForPassword) return;
+    _isCheckingForPassword = true;
 
-    if (await StorageUtil.isPINSet()) {
-      await validatePIN(context: context, success: () => _onPINEntered(true));
+    if (await StorageUtil.isPasswordSet()) {
+      await validatePassword(
+          context: context, success: () => _onPasswordEntered(true));
     } else {
       setState(() => _isAppUnlocked = true);
-      _isCheckingForPIN = false;
+      _isCheckingForPassword = false;
     }
   }
 
-  _onPINEntered(bool isValid) async {
+  _onPasswordEntered(bool isValid) async {
     _verificationNotifier.add(isValid);
-    _isCheckingForPIN = false;
+    _isCheckingForPassword = false;
     setState(() => this._isAppUnlocked = isValid);
   }
 
