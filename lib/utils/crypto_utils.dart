@@ -129,8 +129,6 @@ bool verifyRSASignature(
   signer.init(
       false, PublicKeyParameter<RSAPublicKey>(publicKey)); // false to validate
 
-  print("VERFIY RSA SIGNATURE");
-
   bool isVerified = false;
   try {
     isVerified = signer.verifySignature(signedMessage, RSASignature(signature));
