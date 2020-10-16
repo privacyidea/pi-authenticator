@@ -69,8 +69,8 @@ public class SwiftPiAuthenticatorLegacyPlugin: NSObject, FlutterPlugin {
                 if let type = dict["type"] as! String? {
                     if type == "pipush" {
                         if let serial = dict["serial"] as! String? {
-                            dict["privateTokenKey"] = privsDict[serial]
-                            dict["publicServerKey"] = pubsDict[serial]
+                            dict["privateTokenKey"] = privsDict[serial]?.trimmingCharacters(in: .whitespacesAndNewlines)
+                            dict["publicServerKey"] = pubsDict[serial]?.trimmingCharacters(in: .whitespacesAndNewlines)
                         }
                     }
                     else if(type == "hotp" || type == "totp") {

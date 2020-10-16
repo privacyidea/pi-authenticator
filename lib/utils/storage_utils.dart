@@ -51,11 +51,8 @@ class StorageUtil {
   static Future<List<Token>> loadAllTokens({bool loadLegacy = false}) async {
     Map<String, String> keyValueMap = await _storage.readAll();
 
-    // TODO remove the true when done with testing
-    if (true || keyValueMap.keys.isEmpty && loadLegacy) {
+    if (keyValueMap.keys.isEmpty && loadLegacy) {
       // No token is available, attempt to load legacy tokens
-
-      print('Loading legacy tokens');
 
       List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
 
@@ -194,6 +191,16 @@ class StorageUtil {
           url: null,
         );
         (token as PushToken).isRolledOut = true;
+
+        if(tokenMap['privateTokenKey']!= null) {
+          (token as PushToken).privateTokenKey = (tokenMap["privateTokenKey"] as String).replaceAll("\n", "");
+          //print("adding privatekey legacy: ${(token as PushToken).privateTokenKey}");
+        }
+
+        if (tokenMap["publicServerKey"]!= null) {
+          (token as PushToken).publicServerKey = (tokenMap["publicServerKey"] as String).replaceAll("\n", "");
+          //print("adding public key legacy: ${(token as PushToken).publicServerKey}");
+        }
 
         var configMap = jsonDecode(await Legacy.loadFirebaseConfig());
 

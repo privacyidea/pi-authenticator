@@ -427,7 +427,7 @@ class _MainScreenState extends State<MainScreen> {
           // Re-add url to android legacy tokens:
           token.url ??= Uri.parse(data['url']);
 
-          bool isVerified = token.publicTokenKey == null
+          bool isVerified = token.privateTokenKey == null
               ? await Legacy.verify(token.serial, signedData, signature)
               : verifyRSASignature(token.getPublicServerKey(),
                   utf8.encode(signedData), base32.decode(signature));
@@ -451,7 +451,6 @@ class _MainScreenState extends State<MainScreen> {
 
             if (!token.pushRequests.contains(pushRequest)) {
               token.pushRequests.add(pushRequest);
-
               // Save the pending request.
               StorageUtil.saveOrReplaceToken(token);
 
