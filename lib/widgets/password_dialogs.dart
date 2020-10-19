@@ -116,6 +116,8 @@ class _EnterNewPasswordDialogState extends State<EnterNewPasswordDialog> {
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
         title: Text(_title),
+        scrollable: true,
+
         content: _buildTextInputForm(),
         actions: <Widget>[
           FlatButton(
@@ -162,7 +164,6 @@ class CheckPasswordDialog extends StatefulWidget {
   State<StatefulWidget> createState() => _CheckPasswordDialogState();
 }
 
-// FIXME This does not work in horizontal mode!
 class _CheckPasswordDialogState extends State<CheckPasswordDialog> {
   String _title;
 
@@ -230,6 +231,7 @@ class _CheckPasswordDialogState extends State<CheckPasswordDialog> {
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: AlertDialog(
           title: Text(_title),
+          scrollable: true,
           content: _buildTextInputForm(),
           actions: <Widget>[
             Visibility(
@@ -246,16 +248,10 @@ class _CheckPasswordDialogState extends State<CheckPasswordDialog> {
               child: Text(
                 LTen.of(context).accept,
                 style: getDialogTextStyle(isDarkModeOn(context)),
-              ), // TODO Translate
+              ),
               onPressed: () {
-                // TODO Validate input? Or auto validate input?
-                // TODO Only pop on success!
-
                 var value = validateInput();
                 _enterPasswordKey.currentState.validate();
-
-                print('isValid $value');
-
                 if (value) Navigator.of(context).pop(value);
               },
             )
@@ -272,7 +268,7 @@ Future<void> validatePassword(
     BuildContext context,
     bool allowCancel = false}) async {
   ArgumentError.checkNotNull(context, '[context] must not be null!');
-  ArgumentError.checkNotNull(success, '[sucess] callback must not be null!');
+  ArgumentError.checkNotNull(success, '[success] callback must not be null!');
 
   String password = await StorageUtil.getPassword();
 
