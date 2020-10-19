@@ -174,23 +174,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(Localization.of(context).deleteDialogTitle),
-            content: RichText(
-              text: TextSpan(
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: Localization.of(context).areYouSure,
-                      style: getDialogTextStyle(isDarkModeOn(context)),
-                    ),
-                    TextSpan(
-                      text: " \'$_label\'?",
-                      style: getDialogTextStyle(isDarkModeOn(context)).copyWith(
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ]),
+            content: Text(
+              Localization.of(context).confirmDeletionOf(_label),
             ),
             actions: <Widget>[
               FlatButton(
@@ -325,7 +310,7 @@ class _PushWidgetState extends _TokenWidgetState {
     }
 
     if (DateTime.now().isAfter(_token.expirationDate)) {
-      log("Token is expired, abort rollout and delte it.",
+      log("Token is expired, abort roll-out and delete it.",
           name: "token_widgets.dart",
           error: "Now: ${DateTime.now()}, Token expires at ${[
             _token.expirationDate

@@ -82,7 +82,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
 
   void _do2Step() async {
     // 1. Generate salt.
-    Uint8List salt = generateSalt(widget._saltLength);
+    Uint8List salt = secureRandom().nextBytes(widget._saltLength);
 
     // 2. Generate secret.
     Uint8List generatedSecret = await pbkdf2(

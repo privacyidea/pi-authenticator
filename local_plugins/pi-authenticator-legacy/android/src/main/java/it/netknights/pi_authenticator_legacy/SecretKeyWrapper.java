@@ -25,27 +25,28 @@ package it.netknights.pi_authenticator_legacy;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
-import android.security.KeyPairGeneratorSpec;
-
-import androidx.annotation.RequiresApi;
+//import android.security.KeyPairGeneratorSpec;
+//
+//import androidx.annotation.RequiresApi;
+//import java.math.BigInteger;
+//
+//import java.security.KeyPairGenerator;
+//import java.security.InvalidAlgorithmParameterException;
+//import java.security.NoSuchProviderException;
+//import java.security.PublicKey;
+//import java.util.Calendar;
+//import java.util.GregorianCalendar;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.GeneralSecurityException;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -130,47 +131,47 @@ public class SecretKeyWrapper {
         return (SecretKey) mCipher.unwrap(blob, "AES", Cipher.SECRET_KEY);
     }
 
-    /**
-     * Generate a KeyPair and store it with the given alias in the KeyStore.
-     * Return the PublicKey
-     *
-     * @param alias   the alias to store the key with
-     * @param context needed for KeyPairGeneratorSpec
-     * @return the PublicKey of the just generated KeyPair
-     */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static PublicKey generateKeyPair(String alias, Context context) throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException,
-            NoSuchProviderException, InvalidAlgorithmParameterException, UnrecoverableEntryException {
-        final KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-        keyStore.load(null);
-        logprint("generateKeyPair for alias: " + alias);
-        if (keyStore.containsAlias(alias)) {
-            // TODO double entry_normal -> overwrite?
-        }
-        final Calendar start = new GregorianCalendar();
-        final Calendar end = new GregorianCalendar();
-        end.add(Calendar.YEAR, 100);
-        final KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore");
-        final KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
-                .setAlias(alias)
-                .setSubject(new X500Principal("CN=" + alias))
-                .setSerialNumber(BigInteger.ONE)
-                .setStartDate(start.getTime())
-                .setEndDate(end.getTime())
-                .setKeySize(4096)
-                .build();
-        gen.initialize(spec);
-        gen.generateKeyPair();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            //Following code is for API 28+
-            PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, null);
-            Certificate certificate = keyStore.getCertificate(alias);
-            return new KeyStore.PrivateKeyEntry(privateKey, new Certificate[]{certificate}).getCertificate().getPublicKey();
-        } else {
-            final KeyStore.PrivateKeyEntry entry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, null);
-            return entry.getCertificate().getPublicKey();
-        }
-    }
+//    /**
+//     * Generate a KeyPair and store it with the given alias in the KeyStore.
+//     * Return the PublicKey
+//     *
+//     * @param alias   the alias to store the key with
+//     * @param context needed for KeyPairGeneratorSpec
+//     * @return the PublicKey of the just generated KeyPair
+//     */
+//    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+//    public static PublicKey generateKeyPair(String alias, Context context) throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException,
+//            NoSuchProviderException, InvalidAlgorithmParameterException, UnrecoverableEntryException {
+//        final KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+//        keyStore.load(null);
+//        logprint("generateKeyPair for alias: " + alias);
+//        if (keyStore.containsAlias(alias)) {
+//            // TODO double entry_normal -> overwrite?
+//        }
+//        final Calendar start = new GregorianCalendar();
+//        final Calendar end = new GregorianCalendar();
+//        end.add(Calendar.YEAR, 100);
+//        final KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore");
+//        final KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
+//                .setAlias(alias)
+//                .setSubject(new X500Principal("CN=" + alias))
+//                .setSerialNumber(BigInteger.ONE)
+//                .setStartDate(start.getTime())
+//                .setEndDate(end.getTime())
+//                .setKeySize(4096)
+//                .build();
+//        gen.initialize(spec);
+//        gen.generateKeyPair();
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//            //Following code is for API 28+
+//            PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, null);
+//            Certificate certificate = keyStore.getCertificate(alias);
+//            return new KeyStore.PrivateKeyEntry(privateKey, new Certificate[]{certificate}).getCertificate().getPublicKey();
+//        } else {
+//            final KeyStore.PrivateKeyEntry entry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, null);
+//            return entry.getCertificate().getPublicKey();
+//        }
+//    }
 
     /**
      * Load the PrivateKey for the given alias/serial
@@ -212,13 +213,7 @@ public class SecretKeyWrapper {
             }
             keyStore.deleteEntry(alias);
             logprint("key for alias " + alias + " was deleted from keystore!");
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
         }
     }

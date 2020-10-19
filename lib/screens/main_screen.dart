@@ -66,10 +66,6 @@ class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  _MainScreenState() {
-//    _loadEverything();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -96,11 +92,10 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _loadAllTokens() async {
-    // FIXME This must be done when the context is available. Maybe initState ?
     AppSettings settings = AppSettings.of(context);
 
     List<Token> l1 = await StorageUtil.loadAllTokens(
-      loadLegacy: settings.getLoadLegacy(),
+      loadLegacy: settings.getLoadLegacy()
     );
     setState(() => this._tokenList = l1);
     // Because we only want to load legacy tokens once:
@@ -271,7 +266,6 @@ class _MainScreenState extends State<MainScreen> {
     return token;
   }
 
-  // TODO Call this when the context is available to show error msg.
   Future<String> _initFirebase(FirebaseConfig config) async {
     ArgumentError.checkNotNull(config, "config");
 
@@ -297,21 +291,18 @@ class _MainScreenState extends State<MainScreen> {
             gcmSenderID: config.projectNumber,
           ),
         );
-      } on ArgumentError catch (e) {
+      } on ArgumentError {
         log(
           "Invalid firebase configuration provided.",
           name: "main_screen.dart",
           error: config,
         );
 
-        // FIXME This does not work, error messages are only shown, when
-        //  a token calls this, not on startup!
-        //  What should be done in that case?
-        // TODO Inform the user!
-        throw SocketException("Notice me!");
+        _showMessage(Localization.of(context).errorFirebaseConfigCorrupted,
+            Duration(seconds: 15));
+        return null;
       }
 
-      // TODO Check if it is already initialized?
       var initializationSettingsAndroid =
           AndroidInitializationSettings('app_icon');
       var initializationSettingsIOS = IOSInitializationSettings();
@@ -482,7 +473,6 @@ class _MainScreenState extends State<MainScreen> {
     var iOSPlatformChannelSpecifics =
         IOSNotificationDetails(presentSound: !silent);
 
-    // TODO configure - Do we need channel ids?
     var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
         htmlFormatBigText: true,
         contentTitle: pushRequest.title,
@@ -525,6 +515,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _removeToken(Token token) async {
+    log("Remove: $token");
     await StorageUtil.deleteToken(token);
 
     if (!(await StorageUtil.loadAllTokens())
@@ -532,14 +523,10 @@ class _MainScreenState extends State<MainScreen> {
       StorageUtil.deleteGlobalFirebaseConfig();
     }
 
-    setState(() {
-      log("Remove: $token");
-      _tokenList.remove(token);
-    });
+    await _loadAllTokens();
   }
 
   List<Widget> _buildActionMenu() {
-    // TODO maybe a drawer / 'hamburger' menu would be nicer?
     return <Widget>[
       PopupMenuButton<String>(
         onSelected: (String value) async {

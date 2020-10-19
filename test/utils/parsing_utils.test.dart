@@ -113,9 +113,6 @@ void _testSerializingRSAKeys() {
       expect(privateKey.p, convertedKey.p);
       expect(privateKey.q, convertedKey.q);
     }, timeout: Timeout(Duration(seconds: 60)));
-
-    // TODO Add test Key -> String
-    // TODO Add test String -> Key
   }, timeout: Timeout(Duration(seconds: 300)));
 }
 
@@ -325,29 +322,33 @@ void _testParseOtpAuth() {
 
     group("Push Token", () {
       test("parse complete uri", () {
-        // TODO Do these work on iOS?
-
         Map<String, dynamic> uriMap = parsePiAuth(Uri.parse(
             "otpauth://pipush/PIPU0001353C?url=https%3A//192.168.178.32/ttype/"
-            "push&ttl=2&issuer=privacyIDEA"
-            "&enrollment_credential=69ebdbd37a70dcd2dfd4d166cc5325158dc7befe"
-            "&projectnumber=645909237054&projectid=lkfhgdf"
-            "&appid=1%3A645909237054%3Aandroid%3A812605f9a33242a9"
-            "&apikey=AIzaSyAGyFpiB9pUILcXKpfagENJCPqvvUWdiRk"
-            "&appidios=AIzaSyAGyFpiB9pUILcXKpfagENJCPqvvUWdiRk"
-            "&apikeyios=AIzaSyAGyFpiB9pUILcXKpfagENJCPqvvUWdiRk&v=1"
-            "&serial=PIPU0001353C&sslverify=0"));
+            "push"
+            "&ttl=2"
+            "&issuer=privacyIDEA"
+            "&enrollment_credential=69fe"
+            "&projectnumber=1234"
+            "&projectid=this_is_my_id"
+            "&appid=appIdAndroid"
+            "&apikey=apiKeyAndroid"
+            "&appidios=appIdIos"
+            "&apikeyios=apiKeyIos"
+            "&v=1"
+            "&serial=PIPU0001353C"
+            "&sslverify=0"));
 
         expect(uriMap[URI_LABEL], "PIPU0001353C");
         expect(uriMap[URI_SERIAL], "PIPU0001353C");
         expect(uriMap[URI_TTL], 2);
         expect(uriMap[URI_ISSUER], "privacyIDEA");
-        expect(uriMap[URI_ENROLLMENT_CREDENTIAL],
-            "69ebdbd37a70dcd2dfd4d166cc5325158dc7befe");
-        expect(uriMap[URI_PROJECT_NUMBER], "645909237054");
-        expect(uriMap[URI_PROJECT_ID], "lkfhgdf");
-        expect(uriMap[URI_APP_ID], "1:645909237054:android:812605f9a33242a9");
-        expect(uriMap[URI_API_KEY], "AIzaSyAGyFpiB9pUILcXKpfagENJCPqvvUWdiRk");
+        expect(uriMap[URI_ENROLLMENT_CREDENTIAL], "69fe");
+        expect(uriMap[URI_PROJECT_NUMBER], "1234");
+        expect(uriMap[URI_PROJECT_ID], "this_is_my_id");
+        expect(uriMap[URI_APP_ID], "appIdAndroid");
+        expect(uriMap[URI_APP_ID_IOS], "appIdIos");
+        expect(uriMap[URI_API_KEY], "apiKeyAndroid");
+        expect(uriMap[URI_API_KEY_IOS], "apiKeyIos");
         expect(uriMap[URI_SSL_VERIFY], false);
       });
     });
