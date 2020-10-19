@@ -44,6 +44,7 @@ import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
@@ -164,8 +165,9 @@ class _MainScreenState extends State<MainScreen> {
         //  Unknown error
         throw e;
       }
-    } on FormatException {
-      //  User returned by pressing the back button
+    } on FormatException catch (e) {
+      //  User returned by pressing the back button (can have other causes too!)
+      throw e;
     } on ArgumentError catch (e) {
       // Error while parsing qr code.
       // Show the error message to the user.
@@ -175,10 +177,8 @@ class _MainScreenState extends State<MainScreen> {
       log(
         "Malformed QR code:",
         name: "main_screen.dart",
-        error: e.toString(),
+        error: e.stackTrace,
       );
-
-      print(e.stackTrace);
     } catch (e) {
       //  Unknown error
       throw e;
@@ -268,8 +268,6 @@ class _MainScreenState extends State<MainScreen> {
     // Save the config for this token to use it when rolling out.
     await StorageUtil.saveOrReplaceFirebaseConfig(token, config);
 
-    print('Config for token: ${await StorageUtil.loadFirebaseConfig(token)}');
-
     return token;
   }
 
@@ -338,7 +336,7 @@ class _MainScreenState extends State<MainScreen> {
       await firebaseMessaging.requestNotificationPermissions();
     }
 
-    // FIXME: onResume and onLaunch is not configured see:
+    //  onResume and onLaunch is not configured see:
     //  https://pub.dev/packages/firebase_messaging#-readme-tab-
     //  but the solution there does not seem to work?
     //  These functions do not seem to serve a purpose, as the background
@@ -346,17 +344,17 @@ class _MainScreenState extends State<MainScreen> {
     firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         // Used by Android and iOS
-        print("onMessage: ");
+        log("onMessage: ");
         _handleIncomingAuthRequest(message);
       },
       onLaunch: (Map<String, dynamic> message) async {
         // Does not seem to be used by Android or iOS
-        print("onLaunch: ");
+        log("onLaunch: ");
         _handleIncomingAuthRequest(message);
       },
       onResume: (Map<String, dynamic> message) async {
         // Used by iOS only (?)
-        print("onResume: ");
+        log("onResume: ");
         _handleIncomingAuthRequest(message);
       },
       onBackgroundMessage: Platform.isIOS
@@ -426,7 +424,10 @@ class _MainScreenState extends State<MainScreen> {
               '${data['title']}|'
               '${data['sslverify']}';
 
-          bool isVerified = token.publicTokenKey == null
+          // Re-add url to android legacy tokens:
+          token.url ??= Uri.parse(data['url']);
+
+          bool isVerified = token.privateTokenKey == null
               ? await Legacy.verify(token.serial, signedData, signature)
               : verifyRSASignature(token.getPublicServerKey(),
                   utf8.encode(signedData), base32.decode(signature));
@@ -437,7 +438,6 @@ class _MainScreenState extends State<MainScreen> {
             log('Validating incoming message was successful.',
                 name: 'main_screen.dart');
 
-            // TODO Add parameter names:
             PushRequest pushRequest = PushRequest(
                 title: data['title'],
                 question: data['question'],
@@ -451,7 +451,6 @@ class _MainScreenState extends State<MainScreen> {
 
             if (!token.pushRequests.contains(pushRequest)) {
               token.pushRequests.add(pushRequest);
-
               // Save the pending request.
               StorageUtil.saveOrReplaceToken(token);
 
@@ -534,7 +533,7 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     setState(() {
-      print("Remove: $token");
+      log("Remove: $token");
       _tokenList.remove(token);
     });
   }
