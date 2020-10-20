@@ -15,10 +15,11 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) {
     digits: json['digits'] as int,
     secret: json['secret'] as String,
     counter: json['counter'] as int,
-  );
+  )..type = json['type'] as String;
 }
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
+      'type': instance.type,
       'label': instance.label,
       'id': instance.id,
       'issuer': instance.issuer,
@@ -75,10 +76,11 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) {
     digits: json['digits'] as int,
     secret: json['secret'] as String,
     period: json['period'] as int,
-  );
+  )..type = json['type'] as String;
 }
 
 Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
+      'type': instance.type,
       'label': instance.label,
       'id': instance.id,
       'issuer': instance.issuer,
@@ -101,6 +103,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
         ? null
         : DateTime.parse(json['expirationDate'] as String),
   )
+    ..type = json['type'] as String
     ..isRolledOut = json['isRolledOut'] as bool
     ..publicServerKey = json['publicServerKey'] as String
     ..privateTokenKey = json['privateTokenKey'] as String
@@ -112,6 +115,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
+      'type': instance.type,
       'label': instance.label,
       'id': instance.id,
       'issuer': instance.issuer,

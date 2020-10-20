@@ -122,7 +122,10 @@ public class Util {
     public String loadTokensJSON() throws IOException, GeneralSecurityException {
         logprint("LOADING TOKEN");
         byte[] data = loadDataFromFile(DATAFILE);
-        return new String(data);
+
+        String out = new String(data);
+        out = out.replaceAll("Hmac", "");
+        return out;
     }
 
     public PublicKey getPIPubkey(String serial) throws GeneralSecurityException, IOException {

@@ -13,8 +13,8 @@ repository: https://github.com/privacyidea/pi-authenticator
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.1.1+0301001 # TODO How to set the right version number?
-# version: major.minor.build          + 2x major|2x minor|3x build <- 2 per number
+version: 3.1.5+0301005 # TODO Set the right version number
+# version: major.minor.build          + 2x major|2x minor|3x build
 # version: version number             + build number (optional)
 # android: build-name                 + versionCode
 # iOS    : CFBundleShortVersionString + CFBundleVersion
