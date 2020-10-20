@@ -94,9 +94,8 @@ class _MainScreenState extends State<MainScreen> {
   _loadAllTokens() async {
     AppSettings settings = AppSettings.of(context);
 
-    List<Token> l1 = await StorageUtil.loadAllTokens(
-      loadLegacy: settings.getLoadLegacy()
-    );
+    List<Token> l1 =
+        await StorageUtil.loadAllTokens(loadLegacy: settings.getLoadLegacy());
     setState(() => this._tokenList = l1);
     // Because we only want to load legacy tokens once:
     settings.setLoadLegacy(false);
@@ -110,6 +109,8 @@ class _MainScreenState extends State<MainScreen> {
         title: Text(
           widget.title,
           textScaleFactor: screenTitleScaleFactor,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
         ),
         actions: _buildActionMenu(),
         leading: Padding(
