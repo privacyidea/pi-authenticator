@@ -217,7 +217,7 @@ void _testDecodeSecretToUint8() {
     });
 
     test("Check null as encoding", () {
-      expect(() => decodeSecretToUint8("mySecre", null),
+      expect(() => decodeSecretToUint8("mySecret", null),
           throwsA(TypeMatcher<ArgumentError>()));
     });
 

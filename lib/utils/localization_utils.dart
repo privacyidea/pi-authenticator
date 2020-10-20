@@ -244,11 +244,12 @@ class Localization {
     );
   }
 
-  // TODO Change this to accept parameter!
-  String get areYouSure {
+  String confirmDeletionOf(String name) {
     return Intl.message(
-      'Are you sure you want to delete',
-      desc: 'Part of a question: Do you want to delete {x}?',
+      'Are you sure you want to delete $name?',
+      desc: 'Asks for confirmation on deleting a token.',
+      args: [name],
+      examples: {'name': 'PUSH1234'},
       locale: localeName,
     );
   }
@@ -284,7 +285,7 @@ class Localization {
       'Password "$otpValue" copied to clipboard.',
       name: 'otpValueCopiedMessage',
       args: [otpValue],
-      examples: const {'otpValue': '055374'},
+      examples: {'otpValue': '055374'},
       desc: 'Tells the user that the otp value was copied to the clipboard.',
       locale: localeName,
     );
@@ -498,6 +499,13 @@ class Localization {
       examples: const {'e': 'IllegalArgumentException on line 5, ...'},
       desc: "Tells the user that the authentication could not be accepted "
           "because of an unknown error.",
+      locale: localeName,
+    );
+  }
+
+  String get errorFirebaseConfigCorrupted {
+    return Intl.message(
+      "The firebase configuration is corrupted and cannot be used.",
       locale: localeName,
     );
   }

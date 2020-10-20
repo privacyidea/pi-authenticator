@@ -23,6 +23,7 @@ import 'dart:developer';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
+import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
@@ -53,8 +54,22 @@ class StorageUtil {
 
   /// Returns a list of all Tokens that are saved in the secure storage of
   /// this device.
-  static Future<List<Token>> loadAllTokens() async {
+  static Future<List<Token>> loadAllTokens({bool loadLegacy = false}) async {
     Map<String, String> keyValueMap = await _storage.readAll();
+
+    if (keyValueMap.keys.isEmpty && loadLegacy) {
+      // No token is available, attempt to load legacy tokens
+
+      List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
+
+      if (legacyTokens.isNotEmpty) {
+        for (Token t in legacyTokens) {
+          await StorageUtil.saveOrReplaceToken(t);
+        }
+
+        keyValueMap = await _storage.readAll();
+      }
+    }
 
     List<Token> tokenList = [];
     for (String value in keyValueMap.values) {
@@ -138,4 +153,88 @@ class StorageUtil {
 
   static void deleteFirebaseConfig(Token token) async =>
       _storage.delete(key: _GLOBAL_PREFIX + token.id + _KEY_POSTFIX);
+
+  // ###########################################################################
+  // LEGACY
+  // ###########################################################################
+
+  static Future<List<Token>> loadAllTokensLegacy() async {
+    List<Token> tokenList = [];
+
+    for (var tokenMap in jsonDecode(await Legacy.loadAllTokens())) {
+      Token token;
+      if (tokenMap['type'] != null && tokenMap['type'] == 'hotp') {
+        token = HOTPToken(
+          issuer: tokenMap['label'],
+          id: tokenMap['serial'],
+          label: tokenMap['label'],
+          counter: tokenMap['counter'],
+          digits: tokenMap['digits'],
+          secret: tokenMap['secret'],
+          algorithm: mapStringToAlgorithm(
+              tokenMap['algorithm']),
+        );
+      } else if (tokenMap['type'] != null && tokenMap['type'] == 'totp') {
+        token = TOTPToken(
+          issuer: tokenMap['label'],
+          id: tokenMap['serial'],
+          label: tokenMap['label'],
+          period: tokenMap['period'],
+          digits: tokenMap['digits'],
+          secret: tokenMap['secret'],
+          algorithm: mapStringToAlgorithm(
+              tokenMap['algorithm']),
+        );
+      } else if (tokenMap['type'] != null && tokenMap['type'] == 'pipush') {
+        token = PushToken(
+          issuer: tokenMap['label'],
+          label: tokenMap['label'],
+          id: tokenMap['serial'],
+          serial: tokenMap['serial'],
+          expirationDate: DateTime.now().subtract(Duration(minutes: 60)),
+          enrollmentCredentials: null,
+          sslVerify: null,
+          url: null,
+        );
+        (token as PushToken).isRolledOut = true;
+
+        if(tokenMap['privateTokenKey']!= null) {
+          (token as PushToken).privateTokenKey = (tokenMap["privateTokenKey"] as String).replaceAll("\n", "");
+          //print("adding privatekey legacy: ${(token as PushToken).privateTokenKey}");
+        }
+
+        if (tokenMap["publicServerKey"]!= null) {
+          (token as PushToken).publicServerKey = (tokenMap["publicServerKey"] as String).replaceAll("\n", "");
+          //print("adding public key legacy: ${(token as PushToken).publicServerKey}");
+        }
+
+        var configMap = jsonDecode(await Legacy.loadFirebaseConfig());
+
+        FirebaseConfig config = FirebaseConfig(
+          appID: configMap['appid'],
+          apiKey: configMap['apikey'],
+          projectID: configMap['projectid'],
+          projectNumber: configMap['projectnumber'],
+        );
+
+        StorageUtil.saveOrReplaceFirebaseConfig(token, config);
+        StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
+      } else {
+        log(
+          "Unknown token type encountered",
+          name: 'storage_utils.dart#loadAllTokensLegacy',
+          error: tokenMap,
+        );
+        continue;
+      }
+
+      tokenList.add(token);
+    }
+
+    for (Token t in tokenList) {
+      await StorageUtil.saveOrReplaceToken(t);
+    }
+
+    return tokenList;
+  }
 }

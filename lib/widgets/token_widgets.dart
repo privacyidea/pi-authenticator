@@ -30,6 +30,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart';
+import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
@@ -173,23 +174,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(Localization.of(context).deleteDialogTitle),
-            content: RichText(
-              text: TextSpan(
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: Localization.of(context).areYouSure,
-                      style: getDialogTextStyle(isDarkModeOn(context)),
-                    ),
-                    TextSpan(
-                      text: " \'$_label\'?",
-                      style: getDialogTextStyle(isDarkModeOn(context)).copyWith(
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ]),
+            content: Text(
+              Localization.of(context).confirmDeletionOf(_label),
             ),
             actions: <Widget>[
               FlatButton(
@@ -324,7 +310,7 @@ class _PushWidgetState extends _TokenWidgetState {
     }
 
     if (DateTime.now().isAfter(_token.expirationDate)) {
-      log("Token is expired, abort rollout and delte it.",
+      log("Token is expired, abort roll-out and delete it.",
           name: "token_widgets.dart",
           error: "Now: ${DateTime.now()}, Token expires at ${[
             _token.expirationDate
@@ -344,8 +330,9 @@ class _PushWidgetState extends _TokenWidgetState {
         name: "token_widgets.dart",
         error: "Token: $_token, key: ${keyPair.privateKey}",
       );
-      _token.setPrivateTokenKey(keyPair.privateKey);
-      _token..setPublicTokenKey(keyPair.publicKey);
+      _token
+        ..setPrivateTokenKey(keyPair.privateKey)
+        ..setPublicTokenKey(keyPair.publicKey);
       await _saveThisToken();
     }
 
@@ -423,6 +410,10 @@ class _PushWidgetState extends _TokenWidgetState {
         name: 'token_widgets.dart', error: 'Url: ${pushRequest.uri}');
 
     // signature ::=  {nonce}|{serial}
+    String msg = '${pushRequest.nonce}|${_token.serial}';
+    String signature = _token.publicTokenKey == null
+        ? await Legacy.sign(_token.serial, msg)
+        : createBase32Signature(_token.getPrivateTokenKey(), utf8.encode(msg));
 
     //    POST https://privacyideaserver/validate/check
     //    nonce=<nonce_from_request>
@@ -431,8 +422,7 @@ class _PushWidgetState extends _TokenWidgetState {
     Map<String, String> body = {
       'nonce': pushRequest.nonce,
       'serial': _token.serial,
-      'signature': createBase32Signature(_token.getPrivateTokenKey(),
-          utf8.encode('${pushRequest.nonce}|${_token.serial}')),
+      'signature': signature,
     };
 
     try {

@@ -31,9 +31,7 @@ import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp(
-    preferences: await StreamingSharedPreferences.instance,
-  ));
+  runApp(MyApp(preferences: await StreamingSharedPreferences.instance));
 }
 
 class MyApp extends StatelessWidget {

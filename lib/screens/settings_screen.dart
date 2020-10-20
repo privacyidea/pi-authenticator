@@ -215,6 +215,7 @@ class AppSettings extends InheritedWidget {
   // Preferences
   static String _prefHideOtps = 'KEY_HIDE_OTPS';
   static String _prefEnablePoll = 'KEY_ENABLE_POLLING';
+  static String _loadLegacyKey = 'KEY_LOAD_LEGACY';
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
@@ -226,6 +227,7 @@ class AppSettings extends InheritedWidget {
       : _hideOpts = preferences.getBool(_prefHideOtps, defaultValue: false),
         _enablePolling =
             preferences.getBool(_prefEnablePoll, defaultValue: false),
+        _loadLegacy = preferences.getBool(_loadLegacyKey, defaultValue: true),
         super(child: child);
 
   final Preference<bool> _hideOpts;
@@ -238,4 +240,40 @@ class AppSettings extends InheritedWidget {
   void setHideOpts(bool value) => _hideOpts.setValue(value);
 
   void setEnablePolling(bool value) => _enablePolling.setValue(value);
+
+  final Preference<bool> _loadLegacy;
+
+  void setLoadLegacy(bool value) => _loadLegacy.setValue(value);
+
+  bool getLoadLegacy() => _loadLegacy.getValue();
 }
+
+// TODO Remove this
+//class AppSettings extends InheritedWidget {
+//  // Preferences
+//  static String _prefHideOtps = 'KEY_HIDE_OTPS';
+//  static String _loadLegacyKey = 'KEY_LOAD_LEGACY';
+//
+//  @override
+//  bool updateShouldNotify(InheritedWidget oldWidget) => true;
+//
+//  static AppSettings of(BuildContext context) =>
+//      context.dependOnInheritedWidgetOfExactType<AppSettings>();
+//
+//  AppSettings({Widget child, StreamingSharedPreferences preferences})
+//      : _hideOpts = preferences.getBool(_prefHideOtps, defaultValue: false),
+//        _loadLegacy = preferences.getBool(_loadLegacyKey, defaultValue: true),
+//        super(child: child);
+//
+//  final Preference<bool> _hideOpts;
+//
+//  Stream<bool> streamHideOpts() => _hideOpts;
+//
+//  void setHideOpts(bool value) => _hideOpts.setValue(value);
+//
+//  final Preference<bool> _loadLegacy;
+//
+//  void setLoadLegacy(bool value) => _loadLegacy.setValue(value);
+//
+//  bool getLoadLegacy() => _loadLegacy.getValue();
+//}

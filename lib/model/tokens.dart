@@ -161,14 +161,17 @@ class PushToken extends Token {
   String publicTokenKey;
 
   // Custom getter and setter for RSA keys
-  RSAPublicKey getPublicServerKey() =>
-      deserializeRSAPublicKeyPKCS1(publicServerKey);
+  RSAPublicKey getPublicServerKey() => publicServerKey == null
+      ? null
+      : deserializeRSAPublicKeyPKCS1(publicServerKey);
 
-  RSAPublicKey getPublicTokenKey() =>
-      deserializeRSAPublicKeyPKCS1(publicTokenKey);
+  RSAPublicKey getPublicTokenKey() => publicTokenKey == null
+      ? null
+      : deserializeRSAPublicKeyPKCS1(publicTokenKey);
 
-  RSAPrivateKey getPrivateTokenKey() =>
-      deserializeRSAPrivateKeyPKCS1(privateTokenKey);
+  RSAPrivateKey getPrivateTokenKey() => privateTokenKey == null
+      ? null
+      : deserializeRSAPrivateKeyPKCS1(privateTokenKey);
 
   void setPublicServerKey(RSAPublicKey key) =>
       publicServerKey = serializeRSAPublicKeyPKCS1(key);
@@ -262,7 +265,8 @@ class PushToken extends Token {
         '_enrollmentCredentials: $_enrollmentCredentials, url: $url, '
         'isRolledOut: $isRolledOut, publicServerKey: $publicServerKey, '
         'privateTokenKey: $privateTokenKey, publicTokenKey: $publicTokenKey, '
-        '_pushRequests: $_pushRequests, _expirationDate: $_expirationDate}';
+        '_pushRequests: $_pushRequests, _expirationDate: $_expirationDate},'
+        'id: $_id';
   }
 
   factory PushToken.fromJson(Map<String, dynamic> json) =>
@@ -298,9 +302,14 @@ class PushRequest {
 
   String get title => _title;
 
-  PushRequest(String title, String question, Uri uri, String nonce,
-      bool sslVerify, int id,
-      {DateTime expirationDate})
+  PushRequest(
+      {String title,
+      String question,
+      Uri uri,
+      String nonce,
+      bool sslVerify,
+      int id,
+      DateTime expirationDate})
       : this._title = title,
         this._question = question,
         this._uri = uri,

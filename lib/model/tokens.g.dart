@@ -138,12 +138,12 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
 
 PushRequest _$PushRequestFromJson(Map<String, dynamic> json) {
   return PushRequest(
-    json['title'] as String,
-    json['question'] as String,
-    json['uri'] == null ? null : Uri.parse(json['uri'] as String),
-    json['nonce'] as String,
-    json['sslVerify'] as bool,
-    json['id'] as int,
+    title: json['title'] as String,
+    question: json['question'] as String,
+    uri: json['uri'] == null ? null : Uri.parse(json['uri'] as String),
+    nonce: json['nonce'] as String,
+    sslVerify: json['sslVerify'] as bool,
+    id: json['id'] as int,
     expirationDate: json['expirationDate'] == null
         ? null
         : DateTime.parse(json['expirationDate'] as String),
