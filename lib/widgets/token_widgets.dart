@@ -240,6 +240,7 @@ class _PushWidgetState extends _TokenWidgetState {
       SchedulerBinding.instance.addPostFrameCallback((_) => _rollOutToken());
     }
 
+    // TODO Check if onResume could be used here!
     // Push requests that were received in background can only be saved to
     // the storage, the ui must be updated here.
     // ignore: missing_return
