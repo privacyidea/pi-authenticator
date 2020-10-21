@@ -215,9 +215,11 @@ Future<Response> doPost(
   return response;
 }
 
-// FIXME What to do with sslVerify for legacy tokens?
 Future<Response> doGet(
     {Uri url, Map<String, String> parameters, bool sslVerify = true}) async {
+  ArgumentError.checkNotNull(
+      sslVerify, 'Parameter [sslVerify] must not be null!');
+
   IOClient ioClient = IOClient(HttpClient()
     ..badCertificateCallback =
         ((X509Certificate cert, String host, int port) => !sslVerify));
