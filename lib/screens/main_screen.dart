@@ -118,11 +118,16 @@ class _MainScreenState extends State<MainScreen> {
     for (PushToken p in pushTokens) {
       String timestamp = DateTime.now().toUtc().toIso8601String();
 
+      // Legacy android tokens are signed differently
+      String message = '${p.serial}|$timestamp';
+      String signature = p.privateTokenKey == null
+          ? await Legacy.sign(p.serial, message)
+          : createBase32Signature(p.getPrivateTokenKey(), utf8.encode(message));
+
       Map<String, String> parameters = {
         'serial': p.serial,
         'timestamp': timestamp,
-        'signature': createBase32Signature(
-            p.getPrivateTokenKey(), utf8.encode('${p.serial}|$timestamp')),
+        'signature': signature,
       };
 
       try {
@@ -478,8 +483,8 @@ class _MainScreenState extends State<MainScreen> {
 
   /// Handles incoming push requests by verifying the challenge and adding it
   /// to the token. This should be guarded by a lock.
-  static Future<void> _handleIncomingRequest(
-      Map<String, dynamic> message, List<Token> tokenList, bool inBackground)async {
+  static Future<void> _handleIncomingRequest(Map<String, dynamic> message,
+      List<Token> tokenList, bool inBackground) async {
     // This allows for handling push on ios, android and polling.
     var data = message['data'] == null ? message : message['data'];
 
@@ -507,25 +512,31 @@ class _MainScreenState extends State<MainScreen> {
           '${data['title']}|'
           '${data['sslverify']}';
 
-      // Re-add url to android legacy tokens:
+      bool sslVerify = int.parse(data['sslverify'], onError: (parse) => 1) == 0
+          ? false
+          : true;
+
+      // Re-add url and sslverify to android legacy tokens:
       token.url ??= Uri.parse(data['url']);
+      token.sslVerify ??= sslVerify;
 
       bool isVerified = token.privateTokenKey == null
           ? await Legacy.verify(token.serial, signedData, signature)
           : verifyRSASignature(token.getPublicServerKey(),
-          utf8.encode(signedData), base32.decode(signature));
+              utf8.encode(signedData), base32.decode(signature));
 
       if (isVerified) {
         log('Validating incoming message was successful.',
             name: 'main_screen.dart');
 
         PushRequest pushRequest = PushRequest(
-            title:data['title'],
+            title: data['title'],
             question: data['question'],
-            uri:requestUri,
-            nonce:data['nonce'],
-            sslVerify:data['sslverify'] == '1' ? true : false,
-            id: data['nonce'].hashCode, // FIXME This is not guaranteed to not lead to collisions!
+            uri: requestUri,
+            nonce: data['nonce'],
+            sslVerify: sslVerify,
+            id: data['nonce'].hashCode,
+            // FIXME This is not guaranteed to not lead to collisions, but they might be unlikely in this case.
             expirationDate: DateTime.now().add(
               Duration(minutes: 2),
             )); // Push requests expire after 2 minutes.
