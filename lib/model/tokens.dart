@@ -188,6 +188,8 @@ class PushToken extends Token {
 
   bool get sslVerify => _sslVerify;
 
+  set sslVerify(bool sslVerify) => this._sslVerify = sslVerify;
+
   String get enrollmentCredentials => _enrollmentCredentials;
 
   DateTime get expirationDate => _expirationDate;
