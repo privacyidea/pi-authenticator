@@ -249,6 +249,7 @@ class _PushWidgetState extends _TokenWidgetState {
       // FIXME This throws errors because the token [t] is null, why?
       // The error does not seem to break anything
       // It indicates that this method is executed after the token was removed.
+      if (t == null) return;
 
       if (msg == "AppLifecycleState.resumed" && t.pushRequests.isNotEmpty) {
         log(
