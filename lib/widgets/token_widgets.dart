@@ -220,8 +220,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   // Allows overriding the callback.
   void _onDeleteClicked() => widget._onDeleteClicked();
 
-  void _saveThisToken() {
-    StorageUtil.saveOrReplaceToken(this._token);
+  Future<void> _saveThisToken() async {
+    await StorageUtil.saveOrReplaceToken(this._token);
   }
 
   Widget _buildTile();
@@ -256,19 +256,18 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
   @override
   void onResume() async {
-    PushToken t = await StorageUtil.loadToken(_token.id);
-
     log(
         "Push token may have received a request while app was "
         "in background. Updating UI.",
         name: "token_widgets.dart");
 
+    PushToken t = await StorageUtil.loadToken(_token.id);
+
+    // FIXME This does not work, maybe we should reload all tokens on resume?
     // TODO Check this behaviour!
     if (t.pushRequests.isNotEmpty) {
-      setState(() {
-        _token = t;
-        _saveThisToken();
-      });
+      setState(() => _token = t);
+      await _saveThisToken();
     }
   }
 
