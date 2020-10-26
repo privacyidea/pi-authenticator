@@ -144,11 +144,15 @@
     "type": "text",
     "placeholders": {}
   },
-  "Are you sure you want to delete": "Bestätigen sie das Löschen von",
-  "@Are you sure you want to delete": {
-    "description": "Part of a question: Do you want to delete {x}?",
+  "confirmDeletionOf": "Bestätigen Sie das Löschen von {name}?",
+  "@confirmDeletionOf": {
+    "description": "Asks for confirmation on deleting a token.",
     "type": "text",
-    "placeholders": {}
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234"
+      }
+    }
   },
   "Scan QR code": "Scanne QR-code",
   "@Scan QR code": {
@@ -302,6 +306,30 @@
     "type": "text",
     "placeholders": {}
   },
+  "Some of the tokens are outdated and do not support polling": "Einige der Token sind veraltet und unterstützen keine aktiven Anfragen",
+  "@Some of the tokens are outdated and do not support polling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Enable polling": "Aktiviere Stellen von Push Anfragen",
+  "@Enable polling": {
+    "description": "Name of the setting switch that enables polling.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Miscellaneous": "Verschiedenes",
+  "@Miscellaneous": {
+    "description": "Title for misc settings.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Request push challenges from the server periodically. Enable this if push challenges are not received normally.": "Fordere regelmäßig Push-Anfragen vom Server an. Aktivieren Sie diese Funktion, wenn Nachrichten ansonsten nicht erhalten werden.",
+  "@Request push challenges from the server periodically. Enable this if push challenges are not received normally.": {
+    "description": "The description of the polling feature.",
+    "type": "text",
+    "placeholders": {}
+  },
   "errorAuthenticationFailedUnknownError": "Ein unbekannter Fehler ist aufgetreten. Authentifizierung fehlgeschlagen: {e}",
   "@errorAuthenticationFailedUnknownError": {
     "description": "Tells the user that the authentication could not be accepted because of an unknown error.",
@@ -311,5 +339,10 @@
         "example": "IllegalArgumentException on line 5, ..."
       }
     }
+  },
+  "The firebase configuration is corrupted and cannot be used.": "Die Firebase-Konfiguration ist beschädigt und kann nicht genutzt werden.",
+  "@The firebase configuration is corrupted and cannot be used.": {
+    "type": "text",
+    "placeholders": {}
   }
 }
