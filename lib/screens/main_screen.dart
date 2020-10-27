@@ -145,8 +145,7 @@ class _MainScreenState extends State<MainScreen> {
             _handleIncomingAuthRequest({'data': value});
           }
         } else {
-          // Who knows what happened here?
-          // TODO Handle this case?
+          // Error messages can only be distinguished by their text content, not by their error code. This would make error handling complex.
         }
       } on SocketException {
         log(
