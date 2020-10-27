@@ -312,7 +312,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "Enable polling": "Aktiviere Stellen von Push Anfragen",
+  "Enable polling": "Aktives Stellen von Push-Anfragen",
   "@Enable polling": {
     "description": "Name of the setting switch that enables polling.",
     "type": "text",
@@ -324,7 +324,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "Request push challenges from the server periodically. Enable this if push challenges are not received normally.": "Fordere regelmäßig Push-Anfragen vom Server an. Aktivieren Sie diese Funktion, wenn Nachrichten ansonsten nicht erhalten werden.",
+  "Request push challenges from the server periodically. Enable this if push challenges are not received normally.": "Fordert regelmäßig Push-Anfragen vom Server an. Aktivieren Sie diese Funktion, wenn Nachrichten ansonsten nicht erhalten werden.",
   "@Request push challenges from the server periodically. Enable this if push challenges are not received normally.": {
     "description": "The description of the polling feature.",
     "type": "text",
