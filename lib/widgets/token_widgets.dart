@@ -248,7 +248,7 @@ class _PushWidgetState extends _TokenWidgetState {
       PushToken t = await StorageUtil.loadToken(_token.id);
 
       // TODO Maybe we should simply reload all tokens on resume?
-      // FIXME This throws errors because the token [t] is null, why?
+      // This throws errors because the token [t] is null, why?
       // The error does not seem to break anything
       // It indicates that this method is executed after the token was removed.
       if (t == null) return;

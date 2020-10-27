@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2020-05-22T13:39:34.179337",
+  "@@last_modified": "2020-10-21T15:41:30.972614",
   "Next": "Next",
   "@Next": {
     "description": "The text of the button to calculate the next otp value.",
@@ -144,11 +144,15 @@
     "type": "text",
     "placeholders": {}
   },
-  "Are you sure you want to delete": "Are you sure you want to delete",
-  "@Are you sure you want to delete": {
-    "description": "Part of a question: Do you want to delete {x}?",
+  "confirmDeletionOf": "Are you sure you want to delete {name}?",
+  "@confirmDeletionOf": {
+    "description": "Asks for confirmation on deleting a token.",
     "type": "text",
-    "placeholders": {}
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234"
+      }
+    }
   },
   "Scan QR code": "Scan QR code",
   "@Scan QR code": {
@@ -202,6 +206,30 @@
     "type": "text",
     "placeholders": {}
   },
+  "Some of the tokens are outdated and do not support polling": "Some of the tokens are outdated and do not support polling",
+  "@Some of the tokens are outdated and do not support polling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Enable polling": "Enable polling",
+  "@Enable polling": {
+    "description": "Name of the setting switch that enables polling.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Miscellaneous": "Miscellaneous",
+  "@Miscellaneous": {
+    "description": "Title for misc settings.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Request push challenges from the server periodically. Enable this if push challenges are not received normally.": "Request push challenges from the server periodically. Enable this if push challenges are not received normally.",
+  "@Request push challenges from the server periodically. Enable this if push challenges are not received normally.": {
+    "description": "The description of the polling feature.",
+    "type": "text",
+    "placeholders": {}
+  },
   "errorOnlyOneFirebaseProjectIsSupported": "The firebase configuration of {name} differs from the one currently used by the app. Currently only one is supported.",
   "@errorOnlyOneFirebaseProjectIsSupported": {
     "description": "Tells the user that the token can not be used because it has a different firebase configuration than the current used configuration of the application.",
@@ -222,7 +250,7 @@
       }
     }
   },
-  "errorRollOutFailed": "Rolling out token {name} failed.Error code: {errorCode}",
+  "errorRollOutFailed": "Rolling out token {name} failed. Error code: {errorCode}",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occured.",
     "type": "text",
@@ -311,5 +339,10 @@
         "example": "IllegalArgumentException on line 5, ..."
       }
     }
+  },
+  "The firebase configuration is corrupted and cannot be used.": "The firebase configuration is corrupted and cannot be used.",
+  "@The firebase configuration is corrupted and cannot be used.": {
+    "type": "text",
+    "placeholders": {}
   }
 }

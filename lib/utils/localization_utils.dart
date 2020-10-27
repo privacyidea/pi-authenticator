@@ -249,7 +249,8 @@ class Localization {
       'Are you sure you want to delete $name?',
       desc: 'Asks for confirmation on deleting a token.',
       args: [name],
-      examples: {'name': 'PUSH1234'},
+      examples: const {'name': 'PUSH1234'},
+      name: 'confirmDeletionOf',
       locale: localeName,
     );
   }
@@ -285,7 +286,7 @@ class Localization {
       'Password "$otpValue" copied to clipboard.',
       name: 'otpValueCopiedMessage',
       args: [otpValue],
-      examples: {'otpValue': '055374'},
+      examples: const {'otpValue': '055374'},
       desc: 'Tells the user that the otp value was copied to the clipboard.',
       locale: localeName,
     );
@@ -515,17 +516,11 @@ class MyLocalizationsDelegate extends LocalizationsDelegate<Localization> {
   const MyLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) {
-    return ['en', 'de'].contains(locale.languageCode);
-  }
+  bool isSupported(Locale locale) => ['en', 'de'].contains(locale.languageCode);
 
   @override
-  Future<Localization> load(Locale locale) {
-    return Localization.load(locale);
-  }
+  Future<Localization> load(Locale locale) => Localization.load(locale);
 
   @override
-  bool shouldReload(LocalizationsDelegate<Localization> old) {
-    return false;
-  }
+  bool shouldReload(LocalizationsDelegate<Localization> old) => false;
 }

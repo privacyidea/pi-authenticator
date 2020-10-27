@@ -38,8 +38,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
-//  bool _hideOTP = false;
-
   @override
   Widget build(BuildContext context) {
     bool isSystemDarkMode =
