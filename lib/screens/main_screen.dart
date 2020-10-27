@@ -423,27 +423,27 @@ class _MainScreenState extends State<MainScreen> {
     //  These functions do not seem to serve a purpose, as the background
     //  message handling seems to do just that.
     // TODO Enable again, this is just for testing polling!
-    firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        // Used by Android and iOS
-        log("onMessage: ");
-        _handleIncomingAuthRequest(message);
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        // Does not seem to be used by Android or iOS
-        log("onLaunch: ");
-        _handleIncomingAuthRequest(message);
-      },
-      onResume: (Map<String, dynamic> message) async {
-        // Used by iOS only (?)
-        log("onResume: ");
-        _handleIncomingAuthRequest(message);
-      },
-      onBackgroundMessage: Platform.isIOS
-          ? null
-          : // iOS does not support this.
-          myBackgroundMessageHandler,
-    );
+//    firebaseMessaging.configure(
+//      onMessage: (Map<String, dynamic> message) async {
+//        // Used by Android and iOS
+//        log("onMessage: ");
+//        _handleIncomingAuthRequest(message);
+//      },
+//      onLaunch: (Map<String, dynamic> message) async {
+//        // Does not seem to be used by Android or iOS
+//        log("onLaunch: ");
+//        _handleIncomingAuthRequest(message);
+//      },
+//      onResume: (Map<String, dynamic> message) async {
+//        // Used by iOS only (?)
+//        log("onResume: ");
+//        _handleIncomingAuthRequest(message);
+//      },
+//      onBackgroundMessage: Platform.isIOS
+//          ? null
+//          : // iOS does not support this.
+//          myBackgroundMessageHandler,
+//    );
 
     String firebaseToken = await firebaseMessaging.getToken();
 
