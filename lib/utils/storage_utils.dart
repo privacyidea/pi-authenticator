@@ -160,7 +160,7 @@ class StorageUtil {
 
     for (var tokenMap in jsonDecode(await Legacy.loadAllTokens())) {
       Token token;
-      if (tokenMap['type'] != null && tokenMap['type'] == 'hotp') {
+      if (tokenMap['type'] == 'hotp') {
         token = HOTPToken(
           issuer: tokenMap['label'],
           id: tokenMap['serial'],
@@ -171,7 +171,7 @@ class StorageUtil {
           algorithm: mapStringToAlgorithm(
               tokenMap['algorithm']),
         );
-      } else if (tokenMap['type'] != null && tokenMap['type'] == 'totp') {
+      } else if (tokenMap['type'] == 'totp') {
         token = TOTPToken(
           issuer: tokenMap['label'],
           id: tokenMap['serial'],
@@ -182,7 +182,7 @@ class StorageUtil {
           algorithm: mapStringToAlgorithm(
               tokenMap['algorithm']),
         );
-      } else if (tokenMap['type'] != null && tokenMap['type'] == 'pipush') {
+      } else if (tokenMap['type'] == 'pipush') {
         token = PushToken(
           issuer: tokenMap['label'],
           label: tokenMap['label'],
