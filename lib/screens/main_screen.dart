@@ -85,6 +85,7 @@ class _MainScreenState extends State<MainScreen> {
           } else {
             log('Polling is disabled.', name: 'main_screen.dart');
             _pollTimer?.cancel();
+            _pollTimer == null;
           }
         },
         cancelOnError: false,
