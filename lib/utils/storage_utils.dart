@@ -54,6 +54,7 @@ class StorageUtil {
 
   /// Returns a list of all Tokens that are saved in the secure storage of
   /// this device.
+  /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
   static Future<List<Token>> loadAllTokens({bool loadLegacy = false}) async {
     Map<String, String> keyValueMap = await _storage.readAll();
 
