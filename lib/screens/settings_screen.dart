@@ -192,9 +192,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: unsupported.length,
-                itemBuilder: (context, index) {
-                  return Text('${unsupported[index].label}');
-                },
+                itemBuilder: (context, index) => Text('${unsupported[index].label}'),
                 separatorBuilder: (context, index) => Divider(),
               ),
             ),
