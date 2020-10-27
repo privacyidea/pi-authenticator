@@ -89,7 +89,7 @@ class _MainScreenState extends State<MainScreen> {
           }
         },
         cancelOnError: false,
-        onError: (error) => print('$error'),
+        onError: (error) => log('$error', name: 'polling timer'),
       );
     });
 
