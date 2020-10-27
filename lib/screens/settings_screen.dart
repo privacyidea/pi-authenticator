@@ -233,7 +233,8 @@ class AppSettings extends InheritedWidget {
 
   final Preference<bool> _hideOpts;
   final Preference<bool> _enablePolling;
-
+  final Preference<bool> _loadLegacy;
+  
   Stream<bool> streamHideOpts() => _hideOpts;
 
   Stream<bool> streamEnablePolling() => _enablePolling;
@@ -242,7 +243,6 @@ class AppSettings extends InheritedWidget {
 
   void setEnablePolling(bool value) => _enablePolling.setValue(value);
 
-  final Preference<bool> _loadLegacy;
 
   void setLoadLegacy(bool value) => _loadLegacy.setValue(value);
 
