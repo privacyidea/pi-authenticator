@@ -231,9 +231,6 @@ class StorageUtil {
       tokenList.add(token);
     }
 
-    for (Token t in tokenList) {
-      await StorageUtil.saveOrReplaceToken(t);
-    }
 
     return tokenList;
   }
