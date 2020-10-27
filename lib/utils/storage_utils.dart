@@ -197,7 +197,6 @@ class StorageUtil {
 
         if(tokenMap['privateTokenKey']!= null) {
           (token as PushToken).privateTokenKey = (tokenMap["privateTokenKey"] as String).replaceAll("\n", "");
-          //print("adding privatekey legacy: ${(token as PushToken).privateTokenKey}");
         }
 
         if (tokenMap["publicServerKey"]!= null) {
