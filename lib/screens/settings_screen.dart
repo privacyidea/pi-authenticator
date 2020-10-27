@@ -181,6 +181,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     DynamicTheme.of(context).setBrightness(value);
   }
 
+/// Shows a dialog to the user that displays all push tokens that do not support polling.
   void _showPollingInfo(List<PushToken> unsupported) {
     showDialog(
         context: context,
