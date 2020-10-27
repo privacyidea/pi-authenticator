@@ -85,10 +85,11 @@ class _MainScreenState extends State<MainScreen> {
           } else {
             log('Polling is disabled.', name: 'main_screen.dart');
             _pollTimer?.cancel();
+            _pollTimer == null;
           }
         },
         cancelOnError: false,
-        onError: (error) => print('$error'),
+        onError: (error) => log('$error', name: 'polling timer'),
       );
     });
 
@@ -144,8 +145,7 @@ class _MainScreenState extends State<MainScreen> {
             _handleIncomingAuthRequest({'data': value});
           }
         } else {
-          // Who knows what happened here?
-          // TODO Handle this case?
+          // Error messages can only be distinguished by their text content, not by their error code. This would make error handling complex.
         }
       } on SocketException {
         log(

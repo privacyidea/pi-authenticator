@@ -33,7 +33,7 @@ import 'package:privacyidea_authenticator/utils/utils.dart';
 class StorageUtil {
   // Use this to lock critical sections of code.
   static final Mutex _m = Mutex();
-
+    /// Function [f] is executed, protected by Mutex [_m]. That means, that calls of this method will always be executed serial.
   static protect(Function f) => _m.protect(f);
 
   static final FlutterSecureStorage _storage = FlutterSecureStorage();
@@ -54,23 +54,20 @@ class StorageUtil {
 
   /// Returns a list of all Tokens that are saved in the secure storage of
   /// this device.
+  /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
   static Future<List<Token>> loadAllTokens({bool loadLegacy = false}) async {
-    Map<String, String> keyValueMap = await _storage.readAll();
-
-    if (keyValueMap.keys.isEmpty && loadLegacy) {
-      // No token is available, attempt to load legacy tokens
+    if (loadLegacy) {
+      // Load legacy tokens and add them to the storage.
 
       List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
 
-      if (legacyTokens.isNotEmpty) {
-        for (Token t in legacyTokens) {
-          await StorageUtil.saveOrReplaceToken(t);
-        }
-
-        keyValueMap = await _storage.readAll();
+      for (Token t in legacyTokens) {
+        await StorageUtil.saveOrReplaceToken(t);
       }
     }
-
+    
+    Map<String, String> keyValueMap = await _storage.readAll();
+        
     List<Token> tokenList = [];
     for (String value in keyValueMap.values) {
       Map<String, dynamic> serializedToken = jsonDecode(value);
@@ -163,7 +160,7 @@ class StorageUtil {
 
     for (var tokenMap in jsonDecode(await Legacy.loadAllTokens())) {
       Token token;
-      if (tokenMap['type'] != null && tokenMap['type'] == 'hotp') {
+      if (tokenMap['type'] == 'hotp') {
         token = HOTPToken(
           issuer: tokenMap['label'],
           id: tokenMap['serial'],
@@ -174,7 +171,7 @@ class StorageUtil {
           algorithm: mapStringToAlgorithm(
               tokenMap['algorithm']),
         );
-      } else if (tokenMap['type'] != null && tokenMap['type'] == 'totp') {
+      } else if (tokenMap['type'] == 'totp') {
         token = TOTPToken(
           issuer: tokenMap['label'],
           id: tokenMap['serial'],
@@ -185,7 +182,7 @@ class StorageUtil {
           algorithm: mapStringToAlgorithm(
               tokenMap['algorithm']),
         );
-      } else if (tokenMap['type'] != null && tokenMap['type'] == 'pipush') {
+      } else if (tokenMap['type'] == 'pipush') {
         token = PushToken(
           issuer: tokenMap['label'],
           label: tokenMap['label'],
@@ -200,12 +197,10 @@ class StorageUtil {
 
         if(tokenMap['privateTokenKey']!= null) {
           (token as PushToken).privateTokenKey = (tokenMap["privateTokenKey"] as String).replaceAll("\n", "");
-          //print("adding privatekey legacy: ${(token as PushToken).privateTokenKey}");
         }
 
         if (tokenMap["publicServerKey"]!= null) {
           (token as PushToken).publicServerKey = (tokenMap["publicServerKey"] as String).replaceAll("\n", "");
-          //print("adding public key legacy: ${(token as PushToken).publicServerKey}");
         }
 
         var configMap = jsonDecode(await Legacy.loadFirebaseConfig());
@@ -231,9 +226,6 @@ class StorageUtil {
       tokenList.add(token);
     }
 
-    for (Token t in tokenList) {
-      await StorageUtil.saveOrReplaceToken(t);
-    }
 
     return tokenList;
   }

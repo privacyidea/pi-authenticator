@@ -25,8 +25,6 @@ class Localization {
         Localization('');
   }
 
-  // TODO Create .arb files and add german translations after this is in master!
-
   // ###########################################################################
   // WORDS (E.G. FOR BUTTONS)
   // ###########################################################################

@@ -104,6 +104,7 @@ class SettingsScreenState extends State<SettingsScreen> {
 
                       if (tokens.any((element) =>
                           element.isRolledOut && element.url != null)) {
+                          // Set onChange to acitvate switch in ui
                         onChange = (value) =>
                             AppSettings.of(context).setEnablePolling(value);
                       }
@@ -116,6 +117,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                             text: Localization.of(context).enablePolling,
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
+                          // Add clickable icon to inform user of unsupported push tokens (for polling)
                           WidgetSpan(
                             child: Padding(
                               padding: EdgeInsets.only(left: 10),
@@ -179,6 +181,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     DynamicTheme.of(context).setBrightness(value);
   }
 
+/// Shows a dialog to the user that displays all push tokens that do not support polling.
   void _showPollingInfo(List<PushToken> unsupported) {
     showDialog(
         context: context,
@@ -189,9 +192,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: unsupported.length,
-                itemBuilder: (context, index) {
-                  return Text('${unsupported[index].label}');
-                },
+                itemBuilder: (context, index) => Text('${unsupported[index].label}'),
                 separatorBuilder: (context, index) => Divider(),
               ),
             ),
@@ -230,7 +231,8 @@ class AppSettings extends InheritedWidget {
 
   final Preference<bool> _hideOpts;
   final Preference<bool> _enablePolling;
-
+  final Preference<bool> _loadLegacy;
+  
   Stream<bool> streamHideOpts() => _hideOpts;
 
   Stream<bool> streamEnablePolling() => _enablePolling;
@@ -239,7 +241,6 @@ class AppSettings extends InheritedWidget {
 
   void setEnablePolling(bool value) => _enablePolling.setValue(value);
 
-  final Preference<bool> _loadLegacy;
 
   void setLoadLegacy(bool value) => _loadLegacy.setValue(value);
 
