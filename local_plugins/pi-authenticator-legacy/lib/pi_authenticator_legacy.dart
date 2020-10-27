@@ -34,7 +34,7 @@ class Legacy {
           name: "pi_authenticator_legacy.dart",
           error: dynamic,
         );
-        return false; // FIXME This does not make any sense, return null?
+        return null;
       });
 
   static Future<bool> verify(
