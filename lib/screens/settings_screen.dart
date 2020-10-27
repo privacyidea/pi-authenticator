@@ -104,6 +104,7 @@ class SettingsScreenState extends State<SettingsScreen> {
 
                       if (tokens.any((element) =>
                           element.isRolledOut && element.url != null)) {
+                          // Set onChange to acitvate switch in ui
                         onChange = (value) =>
                             AppSettings.of(context).setEnablePolling(value);
                       }
