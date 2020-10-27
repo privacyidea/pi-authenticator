@@ -117,6 +117,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                             text: Localization.of(context).enablePolling,
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
+                          // Add clickable icon to inform user of unsupported push tokens (for polling)
                           WidgetSpan(
                             child: Padding(
                               padding: EdgeInsets.only(left: 10),
