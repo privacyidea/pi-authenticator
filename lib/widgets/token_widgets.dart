@@ -457,7 +457,7 @@ class _PushWidgetState extends _TokenWidgetState {
           Localization.of(context)
               .errorAuthenticationNotPossibleWithoutNetworkAccess,
           3);
-    } on Exception catch (e) {
+    } catch (e) {
       log("Accept push auth request for [$_token] failed.",
           name: "token_widgets.dart", error: e);
       setState(() => _acceptFailed = true);

@@ -196,8 +196,8 @@ Future<Response> doPost(
 
   if (body.entries.any((element) => element.value == null)) {
     throw ArgumentError(
-        "The parameter [body] contains a null value, this will cause an "
-        "exception and thus is not permitted.");
+        "Can not send request because the [body] contains a null value,"
+        " this is not permitted.");
   }
 
   IOClient ioClient = IOClient(HttpClient()
