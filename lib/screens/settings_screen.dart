@@ -153,6 +153,30 @@ class SettingsScreenState extends State<SettingsScreen> {
                 ),
               ],
             ),
+            Divider(),
+            SettingsGroup(
+              title: 'Language', // TODO Add locale
+              children: [
+                DropdownButton<String>(
+                  isExpanded: true,
+                  value: 'a', // Initial value and current value
+                  items:
+                      ['a', 'b'].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        "$value",
+                        style: Theme.of(context).textTheme.subhead,
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (String newValue) {
+                    // TODO
+                    var a = Locale('en', 'US');
+                  },
+                ),
+              ],
+            ),
 //            Divider(),
 //            SettingsGroup(
 //              title: 'Behavior',
