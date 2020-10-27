@@ -201,7 +201,6 @@ class StorageUtil {
 
         if (tokenMap["publicServerKey"]!= null) {
           (token as PushToken).publicServerKey = (tokenMap["publicServerKey"] as String).replaceAll("\n", "");
-          //print("adding public key legacy: ${(token as PushToken).publicServerKey}");
         }
 
         var configMap = jsonDecode(await Legacy.loadFirebaseConfig());
