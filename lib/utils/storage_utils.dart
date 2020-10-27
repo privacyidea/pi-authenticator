@@ -33,7 +33,7 @@ import 'package:privacyidea_authenticator/utils/utils.dart';
 class StorageUtil {
   // Use this to lock critical sections of code.
   static final Mutex _m = Mutex();
-
+    /// Function [f] is executed, protected by Mutex [_m]. That means, that calls of this method will always be executed serial.
   static protect(Function f) => _m.protect(f);
 
   static final FlutterSecureStorage _storage = FlutterSecureStorage();
