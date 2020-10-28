@@ -29,6 +29,8 @@ import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
+import 'utils/identifiers.dart' as identifiers;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp(preferences: await StreamingSharedPreferences.instance));
@@ -40,11 +42,9 @@ class MyApp extends StatelessWidget {
   const MyApp({StreamingSharedPreferences preferences})
       : this._preferences = preferences;
 
-  static List<Locale> _supportedLocales = [
-    const Locale('en', ''),
-    const Locale('de', ''),
-  ];
+  static List<Locale> _supportedLocales = identifiers.supportedLocales;
 
+  /// This shall only be used when testing!
   static set supportedLocales(List<Locale> supportedLocales) {
     _supportedLocales = supportedLocales;
   }

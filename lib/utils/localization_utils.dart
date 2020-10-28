@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../l10n/messages_all.dart';
+import 'identifiers.dart';
 
 class Localization {
   String localeName;
@@ -515,8 +516,12 @@ class Localization {
 class MyLocalizationsDelegate extends LocalizationsDelegate<Localization> {
   const MyLocalizationsDelegate();
 
+//  @override
+//  bool isSupported(Locale locale) => ['en', 'de'].contains(locale.languageCode);
+
   @override
-  bool isSupported(Locale locale) => ['en', 'de'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      supportedLocales.any((l) => l.languageCode == locale.languageCode);
 
   @override
   Future<Localization> load(Locale locale) => Localization.load(locale);
