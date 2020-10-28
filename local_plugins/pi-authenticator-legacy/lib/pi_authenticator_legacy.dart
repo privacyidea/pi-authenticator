@@ -14,13 +14,6 @@ const String PARAMETER_MESSAGE = "message";
 const String PARAMETER_SIGNED_DATA = "signedData";
 const String PARAMETER_SIGNATURE = "signature";
 
-// TODO Specifiy error handling in correspondence with ios
-//  Android: secretKeyWrapper unavailable when no native app was installed ->
-//            error
-//  iOS: ?
-
-// TODO Make json parsing here instead where these methods are called?
-
 class Legacy {
   static const MethodChannel _channel = const MethodChannel(METHOD_CHANNEL_ID);
 
@@ -34,7 +27,7 @@ class Legacy {
           name: "pi_authenticator_legacy.dart",
           error: dynamic,
         );
-        return false; // FIXME This does not make any sense, return null?
+        return null;
       });
 
   static Future<bool> verify(

@@ -196,8 +196,8 @@ Future<Response> doPost(
 
   if (body.entries.any((element) => element.value == null)) {
     throw ArgumentError(
-        "The parameter [body] contains a null value, this will cause an "
-        "exception and thus is not permitted.");
+        "Can not send request because the [body] contains a null value,"
+        " this is not permitted.");
   }
 
   IOClient ioClient = IOClient(HttpClient()
@@ -215,10 +215,12 @@ Future<Response> doPost(
   return response;
 }
 
-// FIXME What to do with sslVerify for legacy tokens?
 Future<Response> doGet(
     {Uri url, Map<String, String> parameters, bool sslVerify = true}) async {
-  //sslVerify = false;
+
+  ArgumentError.checkNotNull(
+      sslVerify, 'Parameter [sslVerify] must not be null!');
+
   IOClient ioClient = IOClient(HttpClient()
     ..badCertificateCallback =
         ((X509Certificate cert, String host, int port) => !sslVerify));
