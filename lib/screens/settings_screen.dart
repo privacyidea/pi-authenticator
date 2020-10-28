@@ -23,6 +23,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
@@ -155,24 +156,34 @@ class SettingsScreenState extends State<SettingsScreen> {
             ),
             Divider(),
             SettingsGroup(
-              title: 'Language', // TODO Add locale
+              title: 'Language', // TODO Add translation
               children: [
-                DropdownButton<String>(
-                  isExpanded: true,
-                  value: 'a', // Initial value and current value
-                  items:
-                      ['a', 'b'].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        "$value",
-                        style: Theme.of(context).textTheme.subhead,
-                      ),
+                StreamBuilder<Locale>(
+                  stream: AppSettings.of(context).streamLocalePreference(),
+                  builder: (context, snapshot) {
+                    // FIXME Do not return null, set device locale here instead.
+                    if (!snapshot.hasData || snapshot.hasError) return null;
+
+                    return DropdownButton<Locale>(
+                      isExpanded: true,
+                      value: snapshot.data,
+                      // Initial value and current value
+                      items: supportedLocales
+                          .map<DropdownMenuItem<Locale>>((Locale value) {
+                        return DropdownMenuItem<Locale>(
+                          value: value,
+                          child: Text(
+                            "$value",
+                            style: Theme.of(context).textTheme.subhead,
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (Locale locale) {
+                        AppSettings.of(context).setLocalePreference(locale);
+                        // FIXME Change app language here (this does not work)
+                        Localization.load(locale);
+                      },
                     );
-                  }).toList(),
-                  onChanged: (String newValue) {
-                    // TODO
-                    var a = Locale('en', 'US');
                   },
                 ),
               ],
@@ -251,7 +262,8 @@ class AppSettings extends InheritedWidget {
         _enablePolling =
             preferences.getBool(_prefEnablePoll, defaultValue: false),
         _loadLegacy = preferences.getBool(_loadLegacyKey, defaultValue: true),
-  _localePreference = preferences.getString(_localePreferenceKey, defaultValue: null),
+        _localePreference = preferences.getString(_localePreferenceKey,
+            defaultValue: _encodeLocale(supportedLocales[0])),
         super(child: child);
 
   final Preference<bool> _hideOpts;
@@ -270,4 +282,22 @@ class AppSettings extends InheritedWidget {
   void setLoadLegacy(bool value) => _loadLegacy.setValue(value);
 
   bool getLoadLegacy() => _loadLegacy.getValue();
+
+  void setLocalePreference(Locale locale) =>
+      _localePreference.setValue(_encodeLocale(locale));
+
+//  Locale getLocalePreference() => _decodeLocale(_localePreference.getValue());
+
+  Stream<Locale> streamLocalePreference() {
+    return _localePreference.map((String str) => _decodeLocale(str));
+  }
+
+  static String _encodeLocale(Locale locale) {
+    return '${locale.languageCode}#${locale.countryCode}';
+  }
+
+  static Locale _decodeLocale(String str) {
+    var split = str.split('#');
+    return Locale(split[0], split[1]);
+  }
 }
