@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import SwiftyRSA
 
 public class SwiftPiAuthenticatorLegacyPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
@@ -103,12 +104,12 @@ public class SwiftPiAuthenticatorLegacyPlugin: NSObject, FlutterPlugin {
         }
         
         if (retJSONArray.count < 2) {
-            //print("Empty result, returning empty string")
+            print("Empty result, returning empty string")
             result("")
         } else {
             retJSONArray.removeLast(2)
             retJSONArray.append(contentsOf: "]")
-            //print("retJSONArray: \(retJSONArray)")
+            print("retJSONArray: \(retJSONArray)")
             result(retJSONArray)
         }
         

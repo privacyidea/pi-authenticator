@@ -24,15 +24,19 @@ import 'dart:developer';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
+import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 // TODO test the behavior of this class.
 class StorageUtil {
   // Use this to lock critical sections of code.
   static final Mutex _m = Mutex();
+
+  static bool _once = true;
 
   static protect(Function f) => _m.protect(f);
 
@@ -57,8 +61,10 @@ class StorageUtil {
   static Future<List<Token>> loadAllTokens({bool loadLegacy = false}) async {
     Map<String, String> keyValueMap = await _storage.readAll();
 
-    if (keyValueMap.keys.isEmpty && loadLegacy) {
+
+    if (_once || (keyValueMap.keys.isEmpty && loadLegacy)) {
       // No token is available, attempt to load legacy tokens
+      if (_once) _once = false;
 
       List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
 
@@ -198,8 +204,18 @@ class StorageUtil {
         );
         (token as PushToken).isRolledOut = true;
 
+        if (tokenMap['sslVerify'] != null) {
+          (token as PushToken).sslVerify = tokenMap['sslVerify'];
+        }
+
+        if (tokenMap['enrollment_url'] != null) {
+          (token as PushToken).url = Uri.parse((tokenMap['enrollment_url'] as String));
+        }
+
         if(tokenMap['privateTokenKey']!= null) {
-          (token as PushToken).privateTokenKey = (tokenMap["privateTokenKey"] as String).replaceAll("\n", "");
+          var bytes = base64Decode((tokenMap["privateTokenKey"] as String).replaceAll("\n", ""));
+          RSAPrivateKey privateKey = deserializeRSAPrivateKeyPKCS1();
+          (token as PushToken).setPrivateTokenKey(privateKey);
           //print("adding privatekey legacy: ${(token as PushToken).privateTokenKey}");
         }
 
@@ -207,7 +223,6 @@ class StorageUtil {
           (token as PushToken).publicServerKey = (tokenMap["publicServerKey"] as String).replaceAll("\n", "");
           //print("adding public key legacy: ${(token as PushToken).publicServerKey}");
         }
-
         var configMap = jsonDecode(await Legacy.loadFirebaseConfig());
 
         FirebaseConfig config = FirebaseConfig(

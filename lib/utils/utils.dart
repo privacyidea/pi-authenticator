@@ -218,10 +218,11 @@ Future<Response> doPost(
 // FIXME What to do with sslVerify for legacy tokens?
 Future<Response> doGet(
     {Uri url, Map<String, String> parameters, bool sslVerify = true}) async {
+  //sslVerify = false;
   IOClient ioClient = IOClient(HttpClient()
     ..badCertificateCallback =
         ((X509Certificate cert, String host, int port) => !sslVerify));
-
+  print("POLLING !!! url=$url");
   // TODO Make this more general!
   // TODO Are the parameters the headers?
   String urlWithParameters = '$url?serial=${parameters['serial']}'
@@ -240,6 +241,6 @@ Future<Response> doGet(
       error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
 
   ioClient.close();
-
+  print("Response ${response.body}");
   return response;
 }

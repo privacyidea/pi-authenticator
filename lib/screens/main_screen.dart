@@ -103,7 +103,7 @@ class _MainScreenState extends State<MainScreen> {
         .where((t) =>
             t.isRolledOut &&
             t.url !=
-                null) // Legacy tokens can not pull, because the url is missing!
+                null) // Legacy tokens can not poll, because the url is missing!
         .toList();
 
     // Disable polling if no push tokens exist
@@ -123,6 +123,8 @@ class _MainScreenState extends State<MainScreen> {
       String signature = p.privateTokenKey == null
           ? await Legacy.sign(p.serial, message)
           : createBase32Signature(p.getPrivateTokenKey(), utf8.encode(message));
+
+      print("signature: $signature");
 
       Map<String, String> parameters = {
         'serial': p.serial,

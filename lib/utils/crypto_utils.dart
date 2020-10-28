@@ -26,6 +26,7 @@ import 'dart:typed_data';
 import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import 'identifiers.dart';
@@ -135,7 +136,7 @@ String createBase32Signature(RSAPrivateKey privateKey, Uint8List dataToSign) {
 
 Uint8List createRSASignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
   RSASigner signer = Signer(SIGNING_ALGORITHM); // Get algorithm from registry
-
+  print("Signing with private key: ${serializeRSAPrivateKeyPKCS1(privateKey)}");
   signer.init(
       true, PrivateKeyParameter<RSAPrivateKey>(privateKey)); // true to sign
 
