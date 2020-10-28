@@ -18,6 +18,8 @@
   limitations under the License.
 */
 
+import 'dart:ui';
+
 enum Encodings {
   none,
   base32,
@@ -66,3 +68,6 @@ const String URI_SSL_VERIFY = "URI_SSL_VERIFY";
 
 // Crypto stuff:
 const String SIGNING_ALGORITHM = 'SHA-256/RSA';
+
+// Localization
+const List<Locale> supportedLocales = [Locale('en', ''), Locale('de', '')];

@@ -238,6 +238,7 @@ class AppSettings extends InheritedWidget {
   static String _prefHideOtps = 'KEY_HIDE_OTPS';
   static String _prefEnablePoll = 'KEY_ENABLE_POLLING';
   static String _loadLegacyKey = 'KEY_LOAD_LEGACY';
+  static String _localePreferenceKey = 'KEY_LOCALE_PREFERENCE';
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
@@ -250,10 +251,13 @@ class AppSettings extends InheritedWidget {
         _enablePolling =
             preferences.getBool(_prefEnablePoll, defaultValue: false),
         _loadLegacy = preferences.getBool(_loadLegacyKey, defaultValue: true),
+  _localePreference = preferences.getString(_localePreferenceKey, defaultValue: null),
         super(child: child);
 
   final Preference<bool> _hideOpts;
   final Preference<bool> _enablePolling;
+  final Preference<bool> _loadLegacy;
+  final Preference<String> _localePreference;
 
   Stream<bool> streamHideOpts() => _hideOpts;
 
@@ -262,8 +266,6 @@ class AppSettings extends InheritedWidget {
   void setHideOpts(bool value) => _hideOpts.setValue(value);
 
   void setEnablePolling(bool value) => _enablePolling.setValue(value);
-
-  final Preference<bool> _loadLegacy;
 
   void setLoadLegacy(bool value) => _loadLegacy.setValue(value);
 
