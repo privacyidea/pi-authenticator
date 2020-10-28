@@ -414,7 +414,7 @@ class _PushWidgetState extends _TokenWidgetState {
 
     // signature ::=  {nonce}|{serial}
     String msg = '${pushRequest.nonce}|${_token.serial}';
-    String signature = _token.publicTokenKey == null
+    String signature = _token.privateTokenKey == null
         ? await Legacy.sign(_token.serial, msg)
         : createBase32Signature(_token.getPrivateTokenKey(), utf8.encode(msg));
 

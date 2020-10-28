@@ -69,6 +69,7 @@ class _MainScreenState extends State<MainScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Timer _pollTimer;
+  bool _allowManualRefresh = false;
 
   @override
   void initState() {
@@ -82,10 +83,12 @@ class _MainScreenState extends State<MainScreen> {
             log('Polling is enabled.', name: 'main_screen.dart');
             _pollTimer = Timer.periodic(
                 Duration(seconds: 10), (_) => _pollForRequests());
+            setState(() => _allowManualRefresh = true);
           } else {
             log('Polling is disabled.', name: 'main_screen.dart');
             _pollTimer?.cancel();
-            _pollTimer == null;
+            _pollTimer = null;
+            setState(() => _allowManualRefresh = false);
           }
         },
         cancelOnError: false,
@@ -187,6 +190,7 @@ class _MainScreenState extends State<MainScreen> {
 
     List<Token> l1 =
         await StorageUtil.loadAllTokens(loadLegacy: settings.getLoadLegacy());
+
     setState(() => this._tokenList = l1);
     // Because we only want to load legacy tokens once:
     settings.setLoadLegacy(false);
@@ -209,7 +213,7 @@ class _MainScreenState extends State<MainScreen> {
           child: Image.asset('res/logo/app_logo_light.png'),
         ),
       ),
-      body: _buildTokenList(),
+      body: _buildBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _scanQRCode(),
         tooltip: Localization.of(context).scanQRTooltip,
@@ -595,8 +599,11 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  ListView _buildTokenList() {
-    return ListView.separated(
+  /// Builds the body of the screen. If [_allowManualRefresh] is true,
+  /// returns a list wrapped in a RefreshIndicator to manually poll.
+  /// If not returns the list only.
+  Widget _buildBody() {
+    ListView list = ListView.separated(
         itemBuilder: (context, index) {
           Token token = _tokenList[index];
           return TokenWidget(
@@ -609,6 +616,13 @@ class _MainScreenState extends State<MainScreen> {
           return Divider();
         },
         itemCount: _tokenList.length);
+
+    return _allowManualRefresh
+        ? RefreshIndicator(
+            child: list,
+            onRefresh: () async => await _pollForRequests(),
+          )
+        : list;
   }
 
   void _removeToken(Token token) async {
