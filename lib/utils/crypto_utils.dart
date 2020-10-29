@@ -136,7 +136,6 @@ String createBase32Signature(RSAPrivateKey privateKey, Uint8List dataToSign) {
 
 Uint8List createRSASignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
   RSASigner signer = Signer(SIGNING_ALGORITHM); // Get algorithm from registry
-  print("Signing with private key: ${serializeRSAPrivateKeyPKCS1(privateKey)}");
   signer.init(
       true, PrivateKeyParameter<RSAPrivateKey>(privateKey)); // true to sign
 

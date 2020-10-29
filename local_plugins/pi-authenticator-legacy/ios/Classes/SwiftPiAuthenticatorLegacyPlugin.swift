@@ -20,18 +20,19 @@ public class SwiftPiAuthenticatorLegacyPlugin: NSObject, FlutterPlugin {
          kSecAttrKeySizeInBits as String:      4096,
          kSecAttrKeyClass as String:           kSecAttrKeyClassPrivate]
     
+    let query: [String: Any] = [
+        kSecClass as String : kSecClassGenericPassword,
+        kSecReturnData as String  : kCFBooleanTrue as Any,
+        kSecReturnAttributes as String : kCFBooleanTrue as Any,
+        kSecReturnRef as String : kCFBooleanTrue as Any,
+        kSecMatchLimit as String : kSecMatchLimitAll
+    ]
+    
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        print("HANDLE \(call.method)")
+        //print("HANDLE \(call.method)")
         switch call.method {
-        case "load_all_tokens":
-            let query: [String: Any] = [
-                kSecClass as String : kSecClassGenericPassword,
-                kSecReturnData as String  : kCFBooleanTrue as Any,
-                kSecReturnAttributes as String : kCFBooleanTrue as Any,
-                kSecReturnRef as String : kCFBooleanTrue as Any,
-                kSecMatchLimit as String : kSecMatchLimitAll
-            ]
             
+        case "load_all_tokens":
             var resultObj: AnyObject?
             
             let lastResultCode = withUnsafeMutablePointer(to: &resultObj) {
@@ -39,8 +40,6 @@ public class SwiftPiAuthenticatorLegacyPlugin: NSObject, FlutterPlugin {
             }
             
             var tokens = [String]()
-            var pubsDict = [String:String]()
-            var privsDict = [String:String]()
             
             if lastResultCode == noErr {
                 let array = resultObj as? Array<Dictionary<String, Any>>
@@ -48,19 +47,9 @@ public class SwiftPiAuthenticatorLegacyPlugin: NSObject, FlutterPlugin {
                     if let key = item[kSecAttrAccount as String] as? String,
                         let value = item[kSecValueData as String] as? Data {
                         
-                        // Do not touch data that was saved by the new app or metadata
+                        // Do not touch data that was saved by the new app or metadata or seckeys
                         if (key.starts(with: "firebaseconfig") || key.starts(with: "privacyidea.authenticator")
                             || key.starts(with: "app_v3_") || key.starts(with: "private") || key.starts(with: "piPub")) {}
-                            
-                        // Gather the public and private keys to merge with the push token at the end
-                        /*else if key.starts(with: "piPub")  {
-                            let val = String(data: value, encoding: .utf8)
-                            pubsDict[key.replacingFirstOccurrence(of: "piPub", with: "")] = val
-                        }
-                        else if key.starts(with: "private") {
-                            let val = String(data: value, encoding: .utf8)
-                            privsDict[key.replacingFirstOccurrence(of: "private", with: "")] = val
-                        } */
                         else {
                             if let tokenstr = String(data: value, encoding:.utf8) {
                                 tokens.append(tokenstr.trimmingCharacters(in: .whitespacesAndNewlines))
@@ -93,12 +82,7 @@ public class SwiftPiAuthenticatorLegacyPlugin: NSObject, FlutterPlugin {
                                     dict["secret"] = b32
                                 }
                             }
-                        }  /*else if type == "pipush" {
-                            if let serial = dict["serial"] as! String? {
-                                dict["privateTokenKey"] = privsDict[serial]?.trimmingCharacters(in: .whitespacesAndNewlines)
-                                dict["publicServerKey"] = pubsDict[serial]?.trimmingCharacters(in: .whitespacesAndNewlines)
-                            }
-                        } */
+                        }
                     }
                     
                     let completed = try JSONSerialization.data(withJSONObject: dict, options: [])
@@ -112,27 +96,18 @@ public class SwiftPiAuthenticatorLegacyPlugin: NSObject, FlutterPlugin {
             }
             
             if (retJSONArray.count < 2) {
-                print("Empty result, returning empty string")
+                //print("Empty result, returning empty string")
                 result("")
             } else {
                 retJSONArray.removeLast(2)
                 retJSONArray.append(contentsOf: "]")
-                print("retJSONArray: \(retJSONArray)")
+                //print("retJSONArray: \(retJSONArray)")
                 result(retJSONArray)
             }
             break;
             
         case "load_firebase_config":
             var ret:String = ""
-            
-            let query: [String: Any] = [
-                kSecClass as String : kSecClassGenericPassword,
-                kSecReturnData as String  : kCFBooleanTrue as Any,
-                kSecReturnAttributes as String : kCFBooleanTrue as Any,
-                kSecReturnRef as String : kCFBooleanTrue as Any,
-                kSecMatchLimit as String : kSecMatchLimitAll
-            ]
-            
             var thisResult: AnyObject?
             
             let lastResultCode = withUnsafeMutablePointer(to: &thisResult) {
@@ -192,7 +167,7 @@ public class SwiftPiAuthenticatorLegacyPlugin: NSObject, FlutterPlugin {
                 }
             }
             
-            print("Returning \(ret ?? "empty string")")
+            //print("Returning \(ret ?? "empty string")")
             result(ret)
             break;
             
@@ -220,16 +195,15 @@ public class SwiftPiAuthenticatorLegacyPlugin: NSObject, FlutterPlugin {
                                 
                                 verified = try clear.verify(with: pubKey, signature: sign, digestType: .sha256)
                             } catch {
-                                print("validation error \(error.localizedDescription)")
-                                //return false
+                                //print("validation error \(error.localizedDescription)")
                             }
                         } else {
-                            print("SecKeyCreateWithData failed with \(error.debugDescription)")
+                            //print("SecKeyCreateWithData failed with \(error.debugDescription)")
                         }
                     }
                 }
             }
-            print("Returning \(verified)")
+            //print("Returning \(verified)")
             result(verified)
             break;
             
@@ -418,11 +392,7 @@ extension Data {
     public var base32EncodedString: String {
         return base32Encode(self)
     }
-    /*
-     public var base32EncodedData: Data {
-     return base32EncodedString.dataUsingUTF8StringEncoding
-     }
-     */
+    
     public var base32DecodedData: Data? {
         return String(data: self, encoding: .utf8).flatMap(base32DecodeToData)
     }
@@ -431,11 +401,7 @@ extension Data {
     public var base32HexEncodedString: String {
         return base32HexEncode(self)
     }
-    /*
-     public var base32HexEncodedData: Data {
-     return base32HexEncodedString.dataUsingUTF8StringEncoding
-     }
-     */
+    
     public var base32HexDecodedData: Data? {
         return String(data: self, encoding: .utf8).flatMap(base32HexDecodeToData)
     }
@@ -583,7 +549,6 @@ let extendedHexAlphabetDecodeTable: [UInt8] = [
     __,__,__,__, __,__,__,__, __,__,__,__, __,__,__,__,  // 0xE0 - 0xEF
     __,__,__,__, __,__,__,__, __,__,__,__, __,__,__,__,  // 0xF0 - 0xFF
 ]
-
 
 private func base32decode(_ string: String, _ table: [UInt8]) -> [UInt8]? {
     let length = string.unicodeScalars.count
