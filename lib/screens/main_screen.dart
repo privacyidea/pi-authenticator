@@ -128,7 +128,10 @@ class _MainScreenState extends State<MainScreen> {
           ? await Legacy.sign(p.serial, message)
           : createBase32Signature(p.getPrivateTokenKey(), utf8.encode(message));
 
-      print("signature: $signature");
+      //String signatureLegacy = await Legacy.sign(p.serial, message);
+
+      print("signature from flutter: $signature");
+      //print("signature from legacy: $signatureLegacy");
 
       Map<String, String> parameters = {
         'serial': p.serial,

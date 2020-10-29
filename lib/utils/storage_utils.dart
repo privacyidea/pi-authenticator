@@ -207,7 +207,7 @@ class StorageUtil {
         if (tokenMap['enrollment_url'] != null) {
           (token as PushToken).url = Uri.parse((tokenMap['enrollment_url'] as String));
         }
-
+        /*
         if(tokenMap['privateTokenKey']!= null) {
           //var bytes = base64Decode((tokenMap["privateTokenKey"] as String).replaceAll("\n", ""));
           //RSAPrivateKey privateKey = deserializeRSAPrivateKeyPKCS1((tokenMap["privateTokenKey"] as String));
@@ -218,6 +218,7 @@ class StorageUtil {
         if (tokenMap["publicServerKey"]!= null) {
           (token as PushToken).publicServerKey = (tokenMap["publicServerKey"] as String).replaceAll("\n", "");
         }
+         */
         var configMap = jsonDecode(await Legacy.loadFirebaseConfig());
 
         FirebaseConfig config = FirebaseConfig(
