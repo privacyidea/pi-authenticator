@@ -690,7 +690,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
         Align(
           alignment: Alignment.centerRight,
           child: Padding(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
             child: RaisedButton(
               onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
               child: Text(
