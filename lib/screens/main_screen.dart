@@ -623,7 +623,7 @@ class _MainScreenState extends State<MainScreen> {
 
     bool allowManualRefresh = _tokenList.any(
             (t) =>
-        t is PushToken && t.url != null && t.privateTokenKey != null);
+        t is PushToken && t.url != null);
 
     return allowManualRefresh
         ? RefreshIndicator(
