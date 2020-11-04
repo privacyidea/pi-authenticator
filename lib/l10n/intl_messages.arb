@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2020-10-21T15:41:30.972614",
+  "@@last_modified": "2020-11-04T12:40:18.589114",
   "Next": "Next",
   "@Next": {
     "description": "The text of the button to calculate the next otp value.",
@@ -342,6 +342,11 @@
   },
   "The firebase configuration is corrupted and cannot be used.": "The firebase configuration is corrupted and cannot be used.",
   "@The firebase configuration is corrupted and cannot be used.": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "Polling for new challenges": "Polling for new challenges",
+  "@Polling for new challenges": {
     "type": "text",
     "placeholders": {}
   }

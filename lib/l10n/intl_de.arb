@@ -344,5 +344,10 @@
   "@The firebase configuration is corrupted and cannot be used.": {
     "type": "text",
     "placeholders": {}
+  },
+  "Polling for new challenges": "Frage ausstehende Authentifizierungsanfragen ab",
+  "@Polling for new challenges": {
+    "type": "text",
+    "placeholders": {}
   }
 }

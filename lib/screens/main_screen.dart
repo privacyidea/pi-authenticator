@@ -628,7 +628,10 @@ class _MainScreenState extends State<MainScreen> {
     return allowManualRefresh
         ? RefreshIndicator(
       child: list,
-      onRefresh: () async => await _pollForRequests(),
+      onRefresh: () async {
+        _showMessage(Localization.of(context).pollNow, Duration(seconds: 1));
+        await _pollForRequests();
+      },
     )
         : list;
   }

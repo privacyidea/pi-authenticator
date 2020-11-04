@@ -62,6 +62,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Phone part:" : MessageLookupByLibrary.simpleMessage("Telefonanteil:"),
     "Please enter a name for this token." : MessageLookupByLibrary.simpleMessage("Bitte geben Sie einen Namen für diesen Token ein."),
     "Please enter a secret for this token." : MessageLookupByLibrary.simpleMessage("Bitte geben Sie ein Geheimnis für diesen Token ein."),
+    "Polling for new challenges" : MessageLookupByLibrary.simpleMessage("Frage ausstehende Authentifizierungsanfragen ab"),
     "Rename" : MessageLookupByLibrary.simpleMessage("Umbenennen"),
     "Rename token" : MessageLookupByLibrary.simpleMessage("Token umbenennen"),
     "Request push challenges from the server periodically. Enable this if push challenges are not received normally." : MessageLookupByLibrary.simpleMessage("Fordert regelmäßig Push-Anfragen vom Server an. Aktivieren Sie diese Funktion, wenn Nachrichten ansonsten nicht erhalten werden."),

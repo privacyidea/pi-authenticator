@@ -508,6 +508,10 @@ class Localization {
       locale: localeName,
     );
   }
+
+  String get pollNow {
+    return Intl.message('Polling for new challenges', locale: localeName);
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<Localization> {
