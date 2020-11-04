@@ -242,11 +242,13 @@ class Localization {
     );
   }
 
-  // TODO Change this to accept parameter!
-  String get areYouSure {
+  String confirmDeletionOf(String name) {
     return Intl.message(
-      'Are you sure you want to delete',
-      desc: 'Part of a question: Do you want to delete {x}?',
+      'Are you sure you want to delete $name?',
+      desc: 'Asks for confirmation on deleting a token.',
+      args: [name],
+      examples: const {'name': 'PUSH1234'},
+      name: 'confirmDeletionOf',
       locale: localeName,
     );
   }
@@ -320,6 +322,40 @@ class Localization {
     return Intl.message(
       'Dark theme',
       desc: 'The dark theme.',
+      locale: localeName,
+    );
+  }
+
+  String get pollingInfoTitle {
+    return Intl.message(
+      'Some of the tokens are outdated and do not support polling',
+      desc: 'Tells the user, that the following tokens do not support polling.',
+      locale: localeName,
+    );
+  }
+
+  String get enablePolling {
+    return Intl.message(
+      'Enable polling',
+      desc: 'Name of the setting switch that enables polling.',
+      locale: localeName,
+    );
+  }
+
+  String get misc {
+    return Intl.message(
+      'Miscellaneous',
+      desc: 'Title for misc settings.',
+      locale: localeName,
+    );
+  }
+
+  String get pollingDescription {
+    return Intl.message(
+      'Request push challenges from the server'
+      ' periodically. Enable this if push challenges are'
+      ' not received normally.',
+      desc: 'The description of the polling feature.',
       locale: localeName,
     );
   }
@@ -465,23 +501,28 @@ class Localization {
       locale: localeName,
     );
   }
+
+  String get errorFirebaseConfigCorrupted {
+    return Intl.message(
+      "The firebase configuration is corrupted and cannot be used.",
+      locale: localeName,
+    );
+  }
+
+  String get pollNow {
+    return Intl.message('Polling for new challenges', locale: localeName);
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<Localization> {
   const MyLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) {
-    return ['en', 'de'].contains(locale.languageCode);
-  }
+  bool isSupported(Locale locale) => ['en', 'de'].contains(locale.languageCode);
 
   @override
-  Future<Localization> load(Locale locale) {
-    return Localization.load(locale);
-  }
+  Future<Localization> load(Locale locale) => Localization.load(locale);
 
   @override
-  bool shouldReload(LocalizationsDelegate<Localization> old) {
-    return false;
-  }
+  bool shouldReload(LocalizationsDelegate<Localization> old) => false;
 }

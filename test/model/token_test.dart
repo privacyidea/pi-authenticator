@@ -27,6 +27,7 @@ import 'package:uuid/uuid.dart';
 
 void main() {
   verifyCustomListBehavesLikeQueue();
+  verifyCustomStringBufferWorks();
 }
 
 void verifyCustomListBehavesLikeQueue() {
@@ -36,7 +37,13 @@ void verifyCustomListBehavesLikeQueue() {
     test("isEmpty", () {
       PushRequestQueue fifo = PushRequestQueue();
       var pushRequest = PushRequest(
-          "title", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "title",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
 
       expect(fifo.isNotEmpty, false);
       expect(fifo.isEmpty, true);
@@ -64,15 +71,45 @@ void verifyCustomListBehavesLikeQueue() {
       PushRequestQueue fifo = PushRequestQueue();
 
       var one = PushRequest(
-          "one", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "one",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var two = PushRequest(
-          "two", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "two",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var three = PushRequest(
-          "three", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "three",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var four = PushRequest(
-          "four", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "four",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var five = PushRequest(
-          "five", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "five",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
 
       queue.addLast(one);
       fifo.add(one);
@@ -103,15 +140,45 @@ void verifyCustomListBehavesLikeQueue() {
       PushRequestQueue fifo = PushRequestQueue();
 
       var one = PushRequest(
-          "one", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "one",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var two = PushRequest(
-          "two", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "two",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var three = PushRequest(
-          "three", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "three",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var four = PushRequest(
-          "four", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "four",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
       var five = PushRequest(
-          "five", "question", uri, "nonce", false, Uuid().v4().hashCode);
+        title: "five",
+        question: "question",
+        uri: uri,
+        nonce: "nonce",
+        sslVerify: false,
+        id: Uuid().v4().hashCode,
+      );
 
       fifo.add(one);
       fifo.add(two);
@@ -124,6 +191,43 @@ void verifyCustomListBehavesLikeQueue() {
           jsonDecode(encoded) as Map<String, dynamic>);
 
       expect(decoded, fifo);
+    });
+  });
+}
+
+void verifyCustomStringBufferWorks() {
+  group('test custom string buffer', () {
+    test('put elements in', () {
+      CustomIntBuffer buffer = CustomIntBuffer();
+      buffer.list = List();
+
+      expect(buffer.maxSize, 30);
+      expect(buffer.length, 0);
+
+      buffer.put(1);
+      buffer.put(2);
+      buffer.put(3);
+
+      expect(buffer.length, 3);
+
+      expect(buffer.contains(1), true);
+      expect(buffer.contains(2), true);
+      expect(buffer.contains(3), true);
+      expect(buffer.contains(4), false);
+
+      for (int i = 3; i < buffer.maxSize; i++) {
+        buffer.put(-1);
+      }
+
+      buffer.put(4);
+
+      expect(buffer.length, 30);
+      expect(buffer.maxSize, 30);
+
+      expect(buffer.contains(1), false);
+      expect(buffer.contains(2), true);
+      expect(buffer.contains(3), true);
+      expect(buffer.contains(4), true);
     });
   });
 }

@@ -22,13 +22,22 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:mutex/mutex.dart';
+import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
+import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 // TODO test the behavior of this class.
 class StorageUtil {
+  // Use this to lock critical sections of code.
+  static final Mutex _m = Mutex();
+    /// Function [f] is executed, protected by Mutex [_m]. That means, that calls of this method will always be executed serial.
+  static protect(Function f) => _m.protect(f);
+
   static final FlutterSecureStorage _storage = FlutterSecureStorage();
 
   static const String _GLOBAL_PREFIX = 'app_v3_';
@@ -47,9 +56,21 @@ class StorageUtil {
 
   /// Returns a list of all Tokens that are saved in the secure storage of
   /// this device.
-  static Future<List<Token>> loadAllTokens() async {
-    Map<String, String> keyValueMap = await _storage.readAll();
+  /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
+  ///
+  static Future<List<Token>> loadAllTokens({bool loadLegacy = false}) async {
 
+    if (loadLegacy) {
+      // Load legacy tokens and add them to the storage.
+      List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
+
+      for (Token t in legacyTokens) {
+        await StorageUtil.saveOrReplaceToken(t);
+      }
+    }
+    
+    Map<String, String> keyValueMap = await _storage.readAll();
+        
     List<Token> tokenList = [];
     for (String value in keyValueMap.values) {
       Map<String, dynamic> serializedToken = jsonDecode(value);
@@ -132,4 +153,83 @@ class StorageUtil {
 
   static void deleteFirebaseConfig(Token token) async =>
       _storage.delete(key: _GLOBAL_PREFIX + token.id + _KEY_POSTFIX);
+
+  // ###########################################################################
+  // LEGACY
+  // ###########################################################################
+
+  static Future<List<Token>> loadAllTokensLegacy() async {
+    List<Token> tokenList = [];
+
+    for (var tokenMap in jsonDecode(await Legacy.loadAllTokens())) {
+      Token token;
+      if (tokenMap['type'] == 'hotp') {
+        token = HOTPToken(
+          issuer: tokenMap['label'],
+          id: tokenMap['serial'],
+          label: tokenMap['label'],
+          counter: tokenMap['counter'],
+          digits: tokenMap['digits'],
+          secret: tokenMap['secret'],
+          algorithm: mapStringToAlgorithm(
+              tokenMap['algorithm']),
+        );
+      } else if (tokenMap['type'] == 'totp') {
+        token = TOTPToken(
+          issuer: tokenMap['label'],
+          id: tokenMap['serial'],
+          label: tokenMap['label'],
+          period: tokenMap['period'],
+          digits: tokenMap['digits'],
+          secret: tokenMap['secret'],
+          algorithm: mapStringToAlgorithm(
+              tokenMap['algorithm']),
+        );
+      } else if (tokenMap['type'] == 'pipush') {
+        token = PushToken(
+          issuer: tokenMap['label'],
+          label: tokenMap['label'],
+          id: tokenMap['serial'],
+          serial: tokenMap['serial'],
+          expirationDate: DateTime.now().subtract(Duration(minutes: 60)),
+          enrollmentCredentials: null,
+          sslVerify: null,
+          url: null,
+        );
+        (token as PushToken).isRolledOut = true;
+
+        if (tokenMap['sslVerify'] != null) {
+          (token as PushToken).sslVerify = tokenMap['sslVerify'];
+        }
+
+        if (tokenMap['enrollment_url'] != null) {
+          (token as PushToken).url = Uri.parse((tokenMap['enrollment_url'] as String));
+        }
+
+        var configMap = jsonDecode(await Legacy.loadFirebaseConfig());
+
+        FirebaseConfig config = FirebaseConfig(
+          appID: configMap['appid'],
+          apiKey: configMap['apikey'],
+          projectID: configMap['projectid'],
+          projectNumber: configMap['projectnumber'],
+        );
+
+        StorageUtil.saveOrReplaceFirebaseConfig(token, config);
+        StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
+      } else {
+        log(
+          "Unknown token type encountered",
+          name: 'storage_utils.dart#loadAllTokensLegacy',
+          error: tokenMap,
+        );
+        continue;
+      }
+
+      tokenList.add(token);
+    }
+
+
+    return tokenList;
+  }
 }

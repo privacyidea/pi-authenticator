@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -30,9 +31,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:http/http.dart';
 import 'package:package_info/package_info.dart';
+import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
@@ -58,15 +62,109 @@ class MainScreen extends StatefulWidget {
 }
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin();
 
 class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  _MainScreenState() {
-    _loadAllTokens();
-    _loadFirebase();
+  Timer _pollTimer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Start polling timer
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      AppSettings.of(context).streamEnablePolling().listen(
+            (bool event) {
+          if (event) {
+            log('Polling is enabled.', name: 'main_screen.dart');
+            _pollTimer = Timer.periodic(
+                Duration(seconds: 10), (_) => _pollForRequests());
+          } else {
+            log('Polling is disabled.', name: 'main_screen.dart');
+            _pollTimer?.cancel();
+            _pollTimer = null;
+          }
+        },
+        cancelOnError: false,
+        onError: (error) => log('$error', name: 'polling timer'),
+      );
+    });
+
+    // Load UI elements
+    SchedulerBinding.instance.addPostFrameCallback((_) => _loadEverything());
+  }
+
+  _pollForRequests() async {
+    // Get all push tokens
+    List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
+        .whereType<PushToken>()
+        .where((t) =>
+    t.isRolledOut &&
+        t.url !=
+            null) // Legacy tokens can not poll, because the url is missing!
+        .toList();
+
+    // Disable polling if no push tokens exist
+    if (pushTokens.isEmpty) {
+      log('No push token is available for polling, polling is disabled.',
+          name: 'main_screen.dart');
+      AppSettings.of(context).setEnablePolling(false);
+      return;
+    }
+
+    // Start request for each token
+    for (PushToken p in pushTokens) {
+      String timestamp = DateTime.now().toUtc().toIso8601String();
+
+      // Legacy android tokens are signed differently
+      String message = '${p.serial}|$timestamp';
+      String signature = p.privateTokenKey == null
+          ? await Legacy.sign(p.serial, message)
+          : createBase32Signature(p.getPrivateTokenKey(), utf8.encode(message));
+
+      Map<String, String> parameters = {
+        'serial': p.serial,
+        'timestamp': timestamp,
+        'signature': signature,
+      };
+
+      try {
+        Response response = await doGet(
+            url: p.url, parameters: parameters, sslVerify: p.sslVerify);
+
+        if (response.statusCode == 200) {
+          // The signature of this message must not be verified as each push
+          // request gets verified independently.
+          Map<String, dynamic> result = jsonDecode(response.body)['result'];
+          List values = result['value'];
+
+          for (Map<String, dynamic> value in values) {
+            _handleIncomingAuthRequest({'data': value});
+          }
+        } else {
+          // Error messages can only be distinguished by their text content, not by their error code. This would make error handling complex.
+        }
+      } on SocketException {
+        log(
+          'Polling push tokens not working, server can not be reached.',
+          name: 'main_screen.dart',
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _pollTimer?.cancel();
+    super.dispose();
+  }
+
+  _loadEverything() async {
+    await _loadTokenList();
+    await _loadFirebase();
   }
 
   _loadFirebase() async {
@@ -82,9 +180,17 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  _loadAllTokens() async {
-    List<Token> list = await StorageUtil.loadAllTokens();
-    setState(() => this._tokenList = list);
+  _loadTokenList() async {
+    AppSettings settings = AppSettings.of(context);
+
+    List<Token> l1 =
+    await StorageUtil.loadAllTokens(loadLegacy: settings.getLoadLegacy());
+    // Prevent the list items from skipping around on ui updates
+    l1.sort((a, b) => a.id.hashCode.compareTo(b.id.hashCode));
+
+    setState(() => this._tokenList = l1);
+    // Because we only want to load legacy tokens once:
+    settings.setLoadLegacy(false);
   }
 
   @override
@@ -95,6 +201,8 @@ class _MainScreenState extends State<MainScreen> {
         title: Text(
           widget.title,
           textScaleFactor: screenTitleScaleFactor,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
         ),
         actions: _buildActionMenu(),
         leading: Padding(
@@ -102,10 +210,12 @@ class _MainScreenState extends State<MainScreen> {
           child: Image.asset('res/logo/app_logo_light.png'),
         ),
       ),
-      body: _buildTokenList(),
+      body: _buildBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _scanQRCode(),
-        tooltip: Localization.of(context).scanQRTooltip,
+        tooltip: Localization
+            .of(context)
+            .scanQRTooltip,
         child: Icon(Icons.add),
       ),
     );
@@ -152,7 +262,8 @@ class _MainScreenState extends State<MainScreen> {
       // Error while parsing qr code.
       // Show the error message to the user.
       _showMessage(
-          "${e.message}\n Please inform the creator of this qr code about the problem.",
+          "${e
+              .message}\n Please inform the creator of this qr code about the problem.",
           Duration(seconds: 8));
       log(
         "Malformed QR code:",
@@ -187,12 +298,13 @@ class _MainScreenState extends State<MainScreen> {
       secret = await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context) => TwoStepDialog(
-          iterations: uriMap[URI_ITERATIONS],
-          keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
-          saltLength: uriMap[URI_SALT_LENGTH],
-          password: secret,
-        ),
+        builder: (BuildContext context) =>
+            TwoStepDialog(
+              iterations: uriMap[URI_ITERATIONS],
+              keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
+              saltLength: uriMap[URI_SALT_LENGTH],
+              password: secret,
+            ),
       );
     }
 
@@ -226,8 +338,8 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Future<PushToken> _buildPushToken(
-      Map<String, dynamic> uriMap, String uuid) async {
+  Future<PushToken> _buildPushToken(Map<String, dynamic> uriMap,
+      String uuid) async {
     FirebaseConfig config = FirebaseConfig(
         projectID: uriMap[URI_PROJECT_ID],
         projectNumber: uriMap[URI_PROJECT_NUMBER],
@@ -264,21 +376,34 @@ class _MainScreenState extends State<MainScreen> {
       log("Creating firebaseApp from config.",
           name: "main_screen.dart", error: config);
 
-      await FirebaseApp.configure(
-        name: name,
-        options: FirebaseOptions(
-          googleAppID: config.appID,
-          apiKey: config.apiKey,
-          databaseURL: "https://" + config.projectID + ".firebaseio.com",
-          storageBucket: config.projectID + ".appspot.com",
-          projectID: config.projectID,
-          gcmSenderID: config.projectNumber,
-        ),
-      );
+      try {
+        await FirebaseApp.configure(
+          name: name,
+          options: FirebaseOptions(
+            googleAppID: config.appID,
+            apiKey: config.apiKey,
+            databaseURL: "https://" + config.projectID + ".firebaseio.com",
+            storageBucket: config.projectID + ".appspot.com",
+            projectID: config.projectID,
+            gcmSenderID: config.projectNumber,
+          ),
+        );
+      } on ArgumentError {
+        log(
+          "Invalid firebase configuration provided.",
+          name: "main_screen.dart",
+          error: config,
+        );
 
-      // TODO Check if it is already initialized?
+        _showMessage(Localization
+            .of(context)
+            .errorFirebaseConfigCorrupted,
+            Duration(seconds: 15));
+        return null;
+      }
+
       var initializationSettingsAndroid =
-          AndroidInitializationSettings('app_icon');
+      AndroidInitializationSettings('app_icon');
       var initializationSettingsIOS = IOSInitializationSettings();
       var initializationSettings = InitializationSettings(
           initializationSettingsAndroid, initializationSettingsIOS);
@@ -296,12 +421,12 @@ class _MainScreenState extends State<MainScreen> {
       ..setApplicationName(name);
 
     // Ask user to allow notifications, if declined no notifications are shown
-    //  for incomming push requests.
+    //  for incoming push requests.
     if (Platform.isIOS) {
       await firebaseMessaging.requestNotificationPermissions();
     }
 
-    //  onResume and onLaunch is not configured see:
+    // onResume and onLaunch is not configured see:
     //  https://pub.dev/packages/firebase_messaging#-readme-tab-
     //  but the solution there does not seem to work?
     //  These functions do not seem to serve a purpose, as the background
@@ -325,7 +450,7 @@ class _MainScreenState extends State<MainScreen> {
       onBackgroundMessage: Platform.isIOS
           ? null
           : // iOS does not support this.
-          myBackgroundMessageHandler,
+      myBackgroundMessageHandler,
     );
 
     String firebaseToken = await firebaseMessaging.getToken();
@@ -338,10 +463,11 @@ class _MainScreenState extends State<MainScreen> {
     // The Firebase Plugin will throw a network exception, but that does not reach
     //  the flutter part of the app. That is why we need to throw our own socket-
     //  exception in this case.
-    if (firebaseToken == null)
+    if (firebaseToken == null) {
       throw SocketException(
           "Firebase token could not be retrieved, the only know cause of this is"
-          " that the firebase servers could not be reached.");
+              " that the firebase servers could not be reached.");
+    }
 
     return firebaseToken;
   }
@@ -350,21 +476,27 @@ class _MainScreenState extends State<MainScreen> {
       Map<String, dynamic> message) async {
     log("Background message received.",
         name: "main_screen.dart", error: message);
-    _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), true);
+    await StorageUtil.protect(() async =>
+        _handleIncomingRequest(
+            message, await StorageUtil.loadAllTokens(), true));
   }
 
-  void _handleIncomingAuthRequest(Map<String, dynamic> message) {
+  void _handleIncomingAuthRequest(Map<String, dynamic> message) async {
     log("Foreground message received.",
         name: "main_screen.dart", error: message);
-    setState(() async {
-      _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), false);
-      _loadAllTokens();
-    });
+
+    await StorageUtil.protect(() async =>
+        _handleIncomingRequest(
+            message, await StorageUtil.loadAllTokens(), false));
+    _loadTokenList(); // Update UI
   }
 
-  static void _handleIncomingRequest(
-      Map<String, dynamic> message, List<Token> tokenList, bool inBackground) {
-    var data = Platform.isIOS ? message : message['data'];
+  /// Handles incoming push requests by verifying the challenge and adding it
+  /// to the token. This should be guarded by a lock.
+  static Future<void> _handleIncomingRequest(Map<String, dynamic> message,
+      List<Token> tokenList, bool inBackground) async {
+    // This allows for handling push on ios, android and polling.
+    var data = message['data'] == null ? message : message['data'];
 
     Uri requestUri = Uri.parse(data['url']);
     String requestedSerial = data['serial'];
@@ -372,77 +504,80 @@ class _MainScreenState extends State<MainScreen> {
     log('Incoming push auth request for token with serial.',
         name: 'main_screen.dart', error: requestedSerial);
 
-    bool wasHandled = false;
+    PushToken token = tokenList
+        .whereType<PushToken>()
+        .firstWhere((t) => t.serial == requestedSerial && t.isRolledOut);
 
-    tokenList.forEach((token) {
-      if (token is PushToken) {
-        if (token.serial == requestedSerial && token.isRolledOut) {
-          log('Token matched requested token',
-              name: 'main_screen.dart', error: token);
-          String signature = data['signature'];
-          String signedData = '${data['nonce']}|'
-              '${data['url']}|'
-              '${data['serial']}|'
-              '${data['question']}|'
-              '${data['title']}|'
-              '${data['sslverify']}';
-
-          // Re-add url to android legacy tokens:
-          token.url ??= data['url'];
-
-          if (verifyRSASignature(token.getPublicServerKey(),
-              utf8.encode(signedData), base32.decode(signature))) {
-            wasHandled = true;
-
-            log('Validating incoming message was successful.',
-                name: 'main_screen.dart');
-
-            PushRequest pushRequest = PushRequest(
-                data['title'],
-                data['question'],
-                requestUri,
-                data['nonce'],
-                data['sslverify'] == '1' ? true : false,
-                data['nonce'].hashCode,
-                expirationDate: DateTime.now().add(
-                  Duration(minutes: 2),
-                )); // Push requests expire after 2 minutes.
-
-            if (!token.pushRequests.contains(pushRequest)) {
-              token.pushRequests.add(pushRequest);
-
-              StorageUtil.saveOrReplaceToken(
-                  token); // Save the pending request.
-
-              if (inBackground) _showNotification(token, pushRequest, false);
-            } else {
-              log(
-                  "The push request $pushRequest already exists "
-                  "for the token $token",
-                  name: "main_screen.dart");
-            }
-          } else {
-            log('Validating incoming message failed.',
-                name: 'main_screen.dart',
-                error:
-                    'Signature $signature does not match signed data: $signedData');
-          }
-        }
-      }
-    });
-
-    if (!wasHandled) {
+    if (token == null) {
       log("The requested token does not exist or is not rolled out.",
           name: "main_screen.dart", error: requestedSerial);
+    } else {
+      log('Token matched requested token',
+          name: 'main_screen.dart', error: token);
+      String signature = data['signature'];
+      String signedData = '${data['nonce']}|'
+          '${data['url']}|'
+          '${data['serial']}|'
+          '${data['question']}|'
+          '${data['title']}|'
+          '${data['sslverify']}';
+
+      bool sslVerify = int.parse(data['sslverify'], onError: (parse) => 1) == 0
+          ? false
+          : true;
+
+      // Re-add url and sslverify to android legacy tokens:
+      token.url ??= Uri.parse(data['url']);
+      token.sslVerify ??= sslVerify;
+
+      bool isVerified = token.privateTokenKey == null
+          ? await Legacy.verify(token.serial, signedData, signature)
+          : verifyRSASignature(token.getPublicServerKey(),
+          utf8.encode(signedData), base32.decode(signature));
+
+      if (isVerified) {
+        log('Validating incoming message was successful.',
+            name: 'main_screen.dart');
+
+        PushRequest pushRequest = PushRequest(
+            title: data['title'],
+            question: data['question'],
+            uri: requestUri,
+            nonce: data['nonce'],
+            sslVerify: sslVerify,
+            id: data['nonce'].hashCode,
+            // FIXME This is not guaranteed to not lead to collisions, but they might be unlikely in this case.
+            expirationDate: DateTime.now().add(
+              Duration(minutes: 2),
+            )); // Push requests expire after 2 minutes.
+
+        if (!token.knowsRequestWithId(pushRequest.id)) {
+          token.pushRequests.add(pushRequest);
+          token.knownPushRequests.put(pushRequest.id);
+
+          StorageUtil.saveOrReplaceToken(token); // Save the pending request.
+
+          if (inBackground) _showNotification(token, pushRequest, false);
+        } else {
+          log(
+              "The push request $pushRequest already exists "
+                  "for the token with serial ${token.serial}",
+              name: "main_screen.dart");
+        }
+      } else {
+        log('Validating incoming message failed.',
+            name: 'main_screen.dart',
+            error:
+            'Signature $signature does not match signed data: $signedData');
+      }
     }
   }
 
-  static void _showNotification(
-      PushToken token, PushRequest pushRequest, bool silent) async {
+  static void _showNotification(PushToken token, PushRequest pushRequest,
+      bool silent) async {
     var iOSPlatformChannelSpecifics =
-        IOSNotificationDetails(presentSound: !silent);
+    IOSNotificationDetails(presentSound: !silent);
 
-    // TODO configure - Do we need channel ids?
     var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
         htmlFormatBigText: true,
         contentTitle: pushRequest.title,
@@ -468,8 +603,11 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  ListView _buildTokenList() {
-    return ListView.separated(
+  /// Builds the body of the screen. If any tokens supports polling,
+  /// returns a list wrapped in a RefreshIndicator to manually poll.
+  /// If not returns the list only.
+  Widget _buildBody() {
+    ListView list = ListView.separated(
         itemBuilder: (context, index) {
           Token token = _tokenList[index];
           return TokenWidget(
@@ -482,9 +620,24 @@ class _MainScreenState extends State<MainScreen> {
           return Divider();
         },
         itemCount: _tokenList.length);
+
+    bool allowManualRefresh = _tokenList.any(
+            (t) =>
+        t is PushToken && t.url != null);
+
+    return allowManualRefresh
+        ? RefreshIndicator(
+      child: list,
+      onRefresh: () async {
+        _showMessage(Localization.of(context).pollNow, Duration(seconds: 1));
+        await _pollForRequests();
+      },
+    )
+        : list;
   }
 
   void _removeToken(Token token) async {
+    log("Remove: $token");
     await StorageUtil.deleteToken(token);
 
     if (!(await StorageUtil.loadAllTokens())
@@ -492,14 +645,10 @@ class _MainScreenState extends State<MainScreen> {
       StorageUtil.deleteGlobalFirebaseConfig();
     }
 
-    setState(() {
-      log("Remove: $token");
-      _tokenList.remove(token);
-    });
+    await _loadTokenList();
   }
 
   List<Widget> _buildActionMenu() {
-    // TODO maybe a drawer / 'hamburger' menu would be nicer?
     return <Widget>[
       PopupMenuButton<String>(
         onSelected: (String value) async {
@@ -510,7 +659,8 @@ class _MainScreenState extends State<MainScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => LicensePage(
+                    builder: (context) =>
+                        LicensePage(
                           applicationName: "privacyIDEA Authenticator",
                           applicationVersion: info.version,
                           applicationIcon: Padding(
@@ -534,20 +684,27 @@ class _MainScreenState extends State<MainScreen> {
           }
         },
         elevation: 5.0,
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        itemBuilder: (BuildContext context) =>
+        <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
             value: "about",
-            child: Text(Localization.of(context).about),
+            child: Text(Localization
+                .of(context)
+                .about),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "add_manually",
-            child: Text(Localization.of(context).addManually),
+            child: Text(Localization
+                .of(context)
+                .addManually),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "settings",
-            child: Text(Localization.of(context).settings),
+            child: Text(Localization
+                .of(context)
+                .settings),
           ),
         ],
       ),

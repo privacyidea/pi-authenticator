@@ -111,7 +111,11 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
     ..pushRequests = json['pushRequests'] == null
         ? null
         : PushRequestQueue.fromJson(
-            json['pushRequests'] as Map<String, dynamic>);
+            json['pushRequests'] as Map<String, dynamic>)
+    ..knownPushRequests = json['knownPushRequests'] == null
+        ? null
+        : CustomIntBuffer.fromJson(
+            json['knownPushRequests'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
@@ -129,16 +133,17 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'enrollmentCredentials': instance.enrollmentCredentials,
       'expirationDate': instance.expirationDate?.toIso8601String(),
       'pushRequests': instance.pushRequests,
+      'knownPushRequests': instance.knownPushRequests,
     };
 
 PushRequest _$PushRequestFromJson(Map<String, dynamic> json) {
   return PushRequest(
-    json['title'] as String,
-    json['question'] as String,
-    json['uri'] == null ? null : Uri.parse(json['uri'] as String),
-    json['nonce'] as String,
-    json['sslVerify'] as bool,
-    json['id'] as int,
+    title: json['title'] as String,
+    question: json['question'] as String,
+    uri: json['uri'] == null ? null : Uri.parse(json['uri'] as String),
+    nonce: json['nonce'] as String,
+    sslVerify: json['sslVerify'] as bool,
+    id: json['id'] as int,
     expirationDate: json['expirationDate'] == null
         ? null
         : DateTime.parse(json['expirationDate'] as String),
@@ -201,4 +206,14 @@ Map<String, dynamic> _$SerializableRSAPrivateKeyToJson(
       'exponent': instance.exponent?.toString(),
       'p': instance.p?.toString(),
       'q': instance.q?.toString(),
+    };
+
+CustomIntBuffer _$CustomIntBufferFromJson(Map<String, dynamic> json) {
+  return CustomIntBuffer()
+    ..list = (json['list'] as List)?.map((e) => e as int)?.toList();
+}
+
+Map<String, dynamic> _$CustomIntBufferToJson(CustomIntBuffer instance) =>
+    <String, dynamic>{
+      'list': instance.list,
     };

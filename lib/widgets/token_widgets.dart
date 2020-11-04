@@ -30,6 +30,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart';
+import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
@@ -173,23 +174,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(Localization.of(context).deleteDialogTitle),
-            content: RichText(
-              text: TextSpan(
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: Localization.of(context).areYouSure,
-                      style: getDialogTextStyle(isDarkModeOn(context)),
-                    ),
-                    TextSpan(
-                      text: " \'$_label\'?",
-                      style: getDialogTextStyle(isDarkModeOn(context)).copyWith(
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ]),
+            content: Text(
+              Localization.of(context).confirmDeletionOf(_label),
             ),
             actions: <Widget>[
               FlatButton(
@@ -217,8 +203,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   // Allows overriding the callback.
   void _onDeleteClicked() => widget._onDeleteClicked();
 
-  void _saveThisToken() {
-    StorageUtil.saveOrReplaceToken(this._token);
+  Future<void> _saveThisToken() async {
+    return StorageUtil.saveOrReplaceToken(this._token);
   }
 
   Widget _buildTile();
@@ -254,15 +240,18 @@ class _PushWidgetState extends _TokenWidgetState {
       SchedulerBinding.instance.addPostFrameCallback((_) => _rollOutToken());
     }
 
+    // TODO Check if onResume could be used here!
     // Push requests that were received in background can only be saved to
     // the storage, the ui must be updated here.
     // ignore: missing_return
     SystemChannels.lifecycle.setMessageHandler((msg) async {
       PushToken t = await StorageUtil.loadToken(_token.id);
 
-      // FIXME This throws errors because the token [t] is null, why?
+      // TODO Maybe we should simply reload all tokens on resume?
+      // This throws errors because the token [t] is null, why?
       // The error does not seem to break anything
       // It indicates that this method is executed after the token was removed.
+      if (t == null) return;
 
       if (msg == "AppLifecycleState.resumed" && t.pushRequests.isNotEmpty) {
         log(
@@ -303,9 +292,7 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   void _rollOutToken() async {
-    setState(() {
-      _rollOutFailed = false;
-    });
+    setState(() => _rollOutFailed = false);
 
     if (await StorageUtil.globalFirebaseConfigExists() &&
         await StorageUtil.loadFirebaseConfig(_token) !=
@@ -320,23 +307,19 @@ class _PushWidgetState extends _TokenWidgetState {
               .errorOnlyOneFirebaseProjectIsSupported(_token.label),
           5);
 
-      setState(() {
-        _rollOutFailed = true;
-      });
+      setState(() => _rollOutFailed = true);
 
       return;
     }
 
     if (DateTime.now().isAfter(_token.expirationDate)) {
-      log("Token is expired, abort rollout and delte it.",
+      log("Token is expired, abort roll-out and delete it.",
           name: "token_widgets.dart",
           error: "Now: ${DateTime.now()}, Token expires at ${[
             _token.expirationDate
           ]}, Token: $_token");
 
-      setState(() {
-        _rollOutFailed = true;
-      });
+      setState(() => _rollOutFailed = true);
 
       _showMessage(Localization.of(context).errorTokenExpired(_token.label), 3);
       return;
@@ -350,9 +333,10 @@ class _PushWidgetState extends _TokenWidgetState {
         name: "token_widgets.dart",
         error: "Token: $_token, key: ${keyPair.privateKey}",
       );
-      _token.setPrivateTokenKey(keyPair.privateKey);
-      _token..setPublicTokenKey(keyPair.publicKey);
-      _saveThisToken();
+      _token
+        ..setPrivateTokenKey(keyPair.privateKey)
+        ..setPublicTokenKey(keyPair.publicKey);
+      await _saveThisToken();
     }
 
     try {
@@ -371,19 +355,16 @@ class _PushWidgetState extends _TokenWidgetState {
 
         log('Roll out successful', name: 'token_widgets.dart', error: _token);
 
-        setState(() {
-          _token.isRolledOut = true;
-          _saveThisToken();
-        });
+        _token.isRolledOut = true;
+        await _saveThisToken();
+        setState(() => {}); // Update ui
       } else {
         log("Post request on roll out failed.",
             name: "token_widgets.dart",
             error: "Token: $_token, Status code: ${response.statusCode},"
                 " Body: ${response.body}");
 
-        setState(() {
-          _rollOutFailed = true;
-        });
+        setState(() => _rollOutFailed = true);
 
         _showMessage(
             Localization.of(context)
@@ -394,18 +375,14 @@ class _PushWidgetState extends _TokenWidgetState {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
 
-      setState(() {
-        _rollOutFailed = true;
-      });
+      setState(() => _rollOutFailed = true);
 
       _showMessage(Localization.of(context).errorRollOutNoNetworkConnection, 3);
     } on Exception catch (e) {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
 
-      setState(() {
-        _rollOutFailed = true;
-      });
+      setState(() => _rollOutFailed = true);
 
       _showMessage(Localization.of(context).errorRollOutUnknownError(e), 5);
     }
@@ -436,6 +413,10 @@ class _PushWidgetState extends _TokenWidgetState {
         name: 'token_widgets.dart', error: 'Url: ${pushRequest.uri}');
 
     // signature ::=  {nonce}|{serial}
+    String msg = '${pushRequest.nonce}|${_token.serial}';
+    String signature = _token.privateTokenKey == null
+        ? await Legacy.sign(_token.serial, msg)
+        : createBase32Signature(_token.getPrivateTokenKey(), utf8.encode(msg));
 
     //    POST https://privacyideaserver/validate/check
     //    nonce=<nonce_from_request>
@@ -444,8 +425,7 @@ class _PushWidgetState extends _TokenWidgetState {
     Map<String, String> body = {
       'nonce': pushRequest.nonce,
       'serial': _token.serial,
-      'signature': createBase32Signature(_token.getPrivateTokenKey(),
-          utf8.encode('${pushRequest.nonce}|${_token.serial}')),
+      'signature': signature,
     };
 
     try {
@@ -477,7 +457,7 @@ class _PushWidgetState extends _TokenWidgetState {
           Localization.of(context)
               .errorAuthenticationNotPossibleWithoutNetworkAccess,
           3);
-    } on Exception catch (e) {
+    } catch (e) {
       log("Accept push auth request for [$_token] failed.",
           name: "token_widgets.dart", error: e);
       setState(() => _acceptFailed = true);
@@ -494,11 +474,11 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   /// Reset the token status after push auth request was handled by the user.
-  void removeCurrentRequest() {
+  void removeCurrentRequest() async {
     PushRequest request = _token.pushRequests.pop();
 
     flutterLocalNotificationsPlugin.cancel(request?.id);
-    _saveThisToken();
+    await _saveThisToken();
 
     setState(() => _acceptFailed = false);
   }

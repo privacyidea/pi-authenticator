@@ -41,8 +41,8 @@ void copyToClipboardTest() {
       }
     });
 
-    String tokenName = 'Herbert';
-    String secret = 'HerbertsDarkSecret';
+    String tokenName = 'TokenName';
+    String secret = 'TokenSecret';
     addTokenRoutine(tokenName, secret);
 
     test('Copy otp value', () async {
@@ -60,7 +60,7 @@ void copyToClipboardTest() {
 
       await driver.tap(find.text("Paste"));
 
-      await driver.waitFor(find.text('149049'));
+      await driver.waitFor(find.text('591668'));
     });
   });
 }
