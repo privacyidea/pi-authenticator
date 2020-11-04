@@ -69,7 +69,6 @@ class _MainScreenState extends State<MainScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Timer _pollTimer;
-  bool _allowManualRefresh = false;
 
   @override
   void initState() {
@@ -83,12 +82,10 @@ class _MainScreenState extends State<MainScreen> {
             log('Polling is enabled.', name: 'main_screen.dart');
             _pollTimer = Timer.periodic(
                 Duration(seconds: 10), (_) => _pollForRequests());
-            setState(() => _allowManualRefresh = true);
           } else {
             log('Polling is disabled.', name: 'main_screen.dart');
             _pollTimer?.cancel();
             _pollTimer = null;
-            setState(() => _allowManualRefresh = false);
           }
         },
         cancelOnError: false,
@@ -166,7 +163,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _loadEverything() async {
-    await _loadAllTokens();
+    await _loadTokenList();
     await _loadFirebase();
   }
 
@@ -183,11 +180,13 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  _loadAllTokens() async {
+  _loadTokenList() async {
     AppSettings settings = AppSettings.of(context);
 
     List<Token> l1 =
         await StorageUtil.loadAllTokens(loadLegacy: settings.getLoadLegacy());
+    // Prevent the list items from skipping around on ui updates
+    l1.sort((a, b) => a.id.hashCode.compareTo(b.id.hashCode));
 
     setState(() => this._tokenList = l1);
     // Because we only want to load legacy tokens once:
@@ -482,7 +481,7 @@ class _MainScreenState extends State<MainScreen> {
 
     await StorageUtil.protect(() async => _handleIncomingRequest(
         message, await StorageUtil.loadAllTokens(), false));
-    _loadAllTokens(); // Update UI
+    _loadTokenList(); // Update UI
   }
 
   /// Handles incoming push requests by verifying the challenge and adding it
@@ -597,7 +596,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  /// Builds the body of the screen. If [_allowManualRefresh] is true,
+  /// Builds the body of the screen. If any tokens supports polling,
   /// returns a list wrapped in a RefreshIndicator to manually poll.
   /// If not returns the list only.
   Widget _buildBody() {
@@ -615,7 +614,10 @@ class _MainScreenState extends State<MainScreen> {
         },
         itemCount: _tokenList.length);
 
-    return _allowManualRefresh
+    bool allowManualRefresh = _tokenList.any(
+        (t) => t is PushToken && t.url != null && t.privateTokenKey != null);
+
+    return allowManualRefresh
         ? RefreshIndicator(
             child: list,
             onRefresh: () async => await _pollForRequests(),
@@ -632,7 +634,7 @@ class _MainScreenState extends State<MainScreen> {
       StorageUtil.deleteGlobalFirebaseConfig();
     }
 
-    await _loadAllTokens();
+    await _loadTokenList();
   }
 
   List<Widget> _buildActionMenu() {
