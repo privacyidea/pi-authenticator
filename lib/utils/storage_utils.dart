@@ -24,18 +24,17 @@ import 'dart:developer';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
-import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 // TODO test the behavior of this class.
 class StorageUtil {
   // Use this to lock critical sections of code.
   static final Mutex _m = Mutex();
-    /// Function [f] is executed, protected by Mutex [_m]. That means, that calls of this method will always be executed serial.
+
+  /// Function [f] is executed, protected by Mutex [_m]. That means, that calls of this method will always be executed serial.
   static protect(Function f) => _m.protect(f);
 
   static final FlutterSecureStorage _storage = FlutterSecureStorage();
@@ -51,15 +50,14 @@ class StorageUtil {
   static void saveOrReplaceToken(Token token) async => await _storage.write(
       key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
 
-  static Future<Token> loadToken(String id) async => (await loadAllTokens())
-      .firstWhere((t) => _GLOBAL_PREFIX + t.id == id, orElse: () => null);
+  static Future<Token> loadToken(String id) async =>
+      (await loadAllTokens()).firstWhere((t) => t.id == id, orElse: () => null);
 
   /// Returns a list of all Tokens that are saved in the secure storage of
   /// this device.
   /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
   ///
   static Future<List<Token>> loadAllTokens({bool loadLegacy = false}) async {
-
     if (loadLegacy) {
       // Load legacy tokens and add them to the storage.
       List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
@@ -68,9 +66,9 @@ class StorageUtil {
         await StorageUtil.saveOrReplaceToken(t);
       }
     }
-    
+
     Map<String, String> keyValueMap = await _storage.readAll();
-        
+
     List<Token> tokenList = [];
     for (String value in keyValueMap.values) {
       Map<String, dynamic> serializedToken = jsonDecode(value);
@@ -171,8 +169,7 @@ class StorageUtil {
           counter: tokenMap['counter'],
           digits: tokenMap['digits'],
           secret: tokenMap['secret'],
-          algorithm: mapStringToAlgorithm(
-              tokenMap['algorithm']),
+          algorithm: mapStringToAlgorithm(tokenMap['algorithm']),
         );
       } else if (tokenMap['type'] == 'totp') {
         token = TOTPToken(
@@ -182,8 +179,7 @@ class StorageUtil {
           period: tokenMap['period'],
           digits: tokenMap['digits'],
           secret: tokenMap['secret'],
-          algorithm: mapStringToAlgorithm(
-              tokenMap['algorithm']),
+          algorithm: mapStringToAlgorithm(tokenMap['algorithm']),
         );
       } else if (tokenMap['type'] == 'pipush') {
         token = PushToken(
@@ -203,7 +199,8 @@ class StorageUtil {
         }
 
         if (tokenMap['enrollment_url'] != null) {
-          (token as PushToken).url = Uri.parse((tokenMap['enrollment_url'] as String));
+          (token as PushToken).url =
+              Uri.parse((tokenMap['enrollment_url'] as String));
         }
 
         var configMap = jsonDecode(await Legacy.loadFirebaseConfig());
@@ -228,7 +225,6 @@ class StorageUtil {
 
       tokenList.add(token);
     }
-
 
     return tokenList;
   }
