@@ -82,6 +82,7 @@ class _MainScreenState extends State<MainScreen> {
             log('Polling is enabled.', name: 'main_screen.dart');
             _pollTimer = Timer.periodic(
                 Duration(seconds: 10), (_) => _pollForRequests());
+            _pollForRequests();
           } else {
             log('Polling is disabled.', name: 'main_screen.dart');
             _pollTimer?.cancel();
@@ -621,15 +622,17 @@ class _MainScreenState extends State<MainScreen> {
         },
         itemCount: _tokenList.length);
 
-    bool allowManualRefresh = _tokenList.any(
-            (t) =>
-        t is PushToken && t.url != null);
+    bool allowManualRefresh =
+    _tokenList.any((t) => t is PushToken && t.url != null);
 
     return allowManualRefresh
         ? RefreshIndicator(
       child: list,
       onRefresh: () async {
-        _showMessage(Localization.of(context).pollNow, Duration(seconds: 1));
+        _showMessage(
+            Localization
+                .of(context)
+                .pollNow, Duration(seconds: 1));
         await _pollForRequests();
       },
     )
