@@ -259,6 +259,8 @@ class _PushWidgetState extends _TokenWidgetState {
             "in background. Updating UI.",
             name: "token_widgets.dart");
 
+        _deleteExpiredRequests(t);
+
         setState(() {
           _token = t;
           _saveThisToken();
@@ -268,21 +270,22 @@ class _PushWidgetState extends _TokenWidgetState {
 
     // Delete expired push requests periodically.
     _deleteTimer = Timer.periodic(Duration(seconds: 30), (_) {
-      // Function determines if a request is expired
-      var f = (PushRequest r) => DateTime.now().isAfter(r.expirationDate);
-
       if (_token.pushRequests != null && _token.pushRequests.isNotEmpty) {
-        // Remove requests from queue and remove their notifications.
-        _token.pushRequests
-            .where(f)
-            .forEach((r) => flutterLocalNotificationsPlugin.cancel(r.id));
-        _token.pushRequests.removeWhere(f);
-
-        setState(() {
-          _saveThisToken();
-        });
+        _deleteExpiredRequests(_token);
+        _saveThisToken();
+        setState(() {}); // Update ui
       }
     });
+  }
+
+  void _deleteExpiredRequests(PushToken t) {
+    var f = (PushRequest r) => DateTime.now().isAfter(r.expirationDate);
+
+    // Remove requests from queue and remove their notifications.
+    t.pushRequests
+        .where(f)
+        .forEach((r) => flutterLocalNotificationsPlugin.cancel(r.id));
+    t.pushRequests.removeWhere(f);
   }
 
   @override
