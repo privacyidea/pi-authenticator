@@ -200,9 +200,12 @@ Future<Response> doPost(
         " this is not permitted.");
   }
 
-  IOClient ioClient = IOClient(HttpClient()
-    ..badCertificateCallback =
-        ((X509Certificate cert, String host, int port) => !sslVerify));
+  HttpClient httpClient = HttpClient();
+  httpClient.badCertificateCallback =
+      ((X509Certificate cert, String host, int port) => !sslVerify);
+  httpClient.userAgent = USER_AGENT_STRING;
+
+  IOClient ioClient = IOClient(httpClient);
 
   Response response = await ioClient.post(url, body: body);
 
@@ -217,19 +220,20 @@ Future<Response> doPost(
 
 Future<Response> doGet(
     {Uri url, Map<String, String> parameters, bool sslVerify = true}) async {
-
   ArgumentError.checkNotNull(
       sslVerify, 'Parameter [sslVerify] must not be null!');
 
-  IOClient ioClient = IOClient(HttpClient()
-    ..badCertificateCallback =
-        ((X509Certificate cert, String host, int port) => !sslVerify));
+  HttpClient httpClient = HttpClient();
+  httpClient.badCertificateCallback =
+      ((X509Certificate cert, String host, int port) => !sslVerify);
+  httpClient.userAgent = USER_AGENT_STRING;
+
+  IOClient ioClient = IOClient(httpClient);
   // TODO Make this more general!
   // TODO Are the parameters the headers?
   String urlWithParameters = '$url?serial=${parameters['serial']}'
       '&timestamp=${parameters['timestamp']}'
       '&signature=${parameters['signature']}';
-//  print('$urlWithParameters');
   Response response = await ioClient.get(urlWithParameters);
 
 //  String urlWithParameters = '$url';
