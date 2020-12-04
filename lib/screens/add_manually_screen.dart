@@ -20,7 +20,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
@@ -76,7 +75,8 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
       appBar: AppBar(
         title: Text(
           Localization.of(context).addManuallyTitle,
-          textScaleFactor: screenTitleScaleFactor,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
         ),
       ),
       body: SingleChildScrollView(

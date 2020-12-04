@@ -73,7 +73,3 @@ Color getTonedColor(Color input, bool isDark) {
 bool isDarkModeOn(BuildContext context) =>
     DynamicTheme.of(context).brightness == Brightness.dark ||
     MediaQuery.of(context).platformBrightness == Brightness.dark;
-
-/// Default scale for Text() that is used inside AppBar() as title, this
-/// guarantees that the application name fits in the app bar.
-double get screenTitleScaleFactor => 0.95;

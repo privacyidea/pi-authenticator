@@ -22,7 +22,6 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
@@ -47,7 +46,8 @@ class SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: Text(
           widget._title,
-          textScaleFactor: screenTitleScaleFactor,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
         ),
       ),
       body: SingleChildScrollView(
