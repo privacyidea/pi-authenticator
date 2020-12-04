@@ -26,7 +26,6 @@ import 'dart:typed_data';
 import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pointycastle/export.dart';
-import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import 'identifiers.dart';

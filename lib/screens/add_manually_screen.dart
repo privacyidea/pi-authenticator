@@ -106,7 +106,10 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             SizedBox(
               width: double.infinity,
               child: RaisedButton(
-                child: Text(Localization.of(context).addToken),
+                child: Text(
+                  Localization.of(context).addToken,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
                 onPressed: () => _returnTokenIfValid(),
               ),
             ),

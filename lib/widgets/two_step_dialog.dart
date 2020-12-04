@@ -23,7 +23,6 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
@@ -51,7 +50,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[CircularProgressIndicator()],
   );
-  FlatButton _button;
+  MaterialButton _button;
 
   @override
   void initState() {
@@ -100,10 +99,11 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     setState(() {
       _title = Localization.of(context).twoStepDialogTitlePhonePart;
       _content = Text("$show");
-      _button = FlatButton(
+      _button = RaisedButton(
+        color: Colors.white70,
         child: Text(
           Localization.of(context).dismiss,
-          style: getDialogTextStyle(isDarkModeOn(context)),
+          style: Theme.of(context).textTheme.headline6,
         ),
         onPressed: () => Navigator.of(context).pop(generatedSecret),
       );
