@@ -52,6 +52,8 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
   );
   MaterialButton _button;
 
+  Uint8List generatedSecret;
+
   @override
   void initState() {
     super.initState();
@@ -70,11 +72,14 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
   Widget build(BuildContext context) {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: AlertDialog(
-        title: Text(_title),
-//        titleTextStyle: Theme.of(context).textTheme.subhead,
-        content: _content,
-        actions: <Widget>[_button],
+      child: WillPopScope(
+        onWillPop: () async => false,
+        // Prevents closing the dialog without returning a secret.
+        child: AlertDialog(
+          title: Text(_title),
+          content: _content,
+          actions: <Widget>[_button],
+        ),
       ),
     );
   }
@@ -84,7 +89,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     Uint8List salt = secureRandom().nextBytes(widget._saltLength);
 
     // 2. Generate secret.
-    Uint8List generatedSecret = await pbkdf2(
+    generatedSecret = await pbkdf2(
       salt: salt,
       iterations: widget._iterations,
       keyLength: widget._keyLength,
