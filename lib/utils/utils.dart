@@ -217,7 +217,6 @@ Future<Response> doPost(
 
 Future<Response> doGet(
     {Uri url, Map<String, String> parameters, bool sslVerify = true}) async {
-
   ArgumentError.checkNotNull(
       sslVerify, 'Parameter [sslVerify] must not be null!');
 

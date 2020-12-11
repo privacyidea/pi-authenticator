@@ -41,7 +41,6 @@ import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
-import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
@@ -62,7 +61,7 @@ class MainScreen extends StatefulWidget {
 }
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 class _MainScreenState extends State<MainScreen> {
   List<Token> _tokenList = List<Token>();
@@ -77,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
     // Start polling timer
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       AppSettings.of(context).streamEnablePolling().listen(
-            (bool event) {
+        (bool event) {
           if (event) {
             log('Polling is enabled.', name: 'main_screen.dart');
             _pollTimer = Timer.periodic(
@@ -103,9 +102,9 @@ class _MainScreenState extends State<MainScreen> {
     List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
         .whereType<PushToken>()
         .where((t) =>
-    t.isRolledOut &&
-        t.url !=
-            null) // Legacy tokens can not poll, because the url is missing!
+            t.isRolledOut &&
+            t.url !=
+                null) // Legacy tokens can not poll, because the url is missing!
         .toList();
 
     // Disable polling if no push tokens exist
@@ -185,7 +184,7 @@ class _MainScreenState extends State<MainScreen> {
     AppSettings settings = AppSettings.of(context);
 
     List<Token> l1 =
-    await StorageUtil.loadAllTokens(loadLegacy: settings.getLoadLegacy());
+        await StorageUtil.loadAllTokens(loadLegacy: settings.getLoadLegacy());
     // Prevent the list items from skipping around on ui updates
     l1.sort((a, b) => a.id.hashCode.compareTo(b.id.hashCode));
 
@@ -201,7 +200,6 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: Text(
           widget.title,
-          textScaleFactor: screenTitleScaleFactor,
           overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
@@ -214,9 +212,7 @@ class _MainScreenState extends State<MainScreen> {
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _scanQRCode(),
-        tooltip: Localization
-            .of(context)
-            .scanQRTooltip,
+        tooltip: Localization.of(context).scanQRTooltip,
         child: Icon(Icons.add),
       ),
     );
@@ -263,8 +259,7 @@ class _MainScreenState extends State<MainScreen> {
       // Error while parsing qr code.
       // Show the error message to the user.
       _showMessage(
-          "${e
-              .message}\n Please inform the creator of this qr code about the problem.",
+          "${e.message}\n Please inform the creator of this qr code about the problem.",
           Duration(seconds: 8));
       log(
         "Malformed QR code:",
@@ -299,13 +294,12 @@ class _MainScreenState extends State<MainScreen> {
       secret = await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context) =>
-            TwoStepDialog(
-              iterations: uriMap[URI_ITERATIONS],
-              keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
-              saltLength: uriMap[URI_SALT_LENGTH],
-              password: secret,
-            ),
+        builder: (BuildContext context) => TwoStepDialog(
+          iterations: uriMap[URI_ITERATIONS],
+          keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
+          saltLength: uriMap[URI_SALT_LENGTH],
+          password: secret,
+        ),
       );
     }
 
@@ -339,8 +333,8 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Future<PushToken> _buildPushToken(Map<String, dynamic> uriMap,
-      String uuid) async {
+  Future<PushToken> _buildPushToken(
+      Map<String, dynamic> uriMap, String uuid) async {
     FirebaseConfig config = FirebaseConfig(
         projectID: uriMap[URI_PROJECT_ID],
         projectNumber: uriMap[URI_PROJECT_NUMBER],
@@ -396,15 +390,13 @@ class _MainScreenState extends State<MainScreen> {
           error: config,
         );
 
-        _showMessage(Localization
-            .of(context)
-            .errorFirebaseConfigCorrupted,
+        _showMessage(Localization.of(context).errorFirebaseConfigCorrupted,
             Duration(seconds: 15));
         return null;
       }
 
       var initializationSettingsAndroid =
-      AndroidInitializationSettings('app_icon');
+          AndroidInitializationSettings('app_icon');
       var initializationSettingsIOS = IOSInitializationSettings();
       var initializationSettings = InitializationSettings(
           initializationSettingsAndroid, initializationSettingsIOS);
@@ -451,7 +443,7 @@ class _MainScreenState extends State<MainScreen> {
       onBackgroundMessage: Platform.isIOS
           ? null
           : // iOS does not support this.
-      myBackgroundMessageHandler,
+          myBackgroundMessageHandler,
     );
 
     String firebaseToken = await firebaseMessaging.getToken();
@@ -467,7 +459,7 @@ class _MainScreenState extends State<MainScreen> {
     if (firebaseToken == null) {
       throw SocketException(
           "Firebase token could not be retrieved, the only know cause of this is"
-              " that the firebase servers could not be reached.");
+          " that the firebase servers could not be reached.");
     }
 
     return firebaseToken;
@@ -477,18 +469,16 @@ class _MainScreenState extends State<MainScreen> {
       Map<String, dynamic> message) async {
     log("Background message received.",
         name: "main_screen.dart", error: message);
-    await StorageUtil.protect(() async =>
-        _handleIncomingRequest(
-            message, await StorageUtil.loadAllTokens(), true));
+    await StorageUtil.protect(() async => _handleIncomingRequest(
+        message, await StorageUtil.loadAllTokens(), true));
   }
 
   void _handleIncomingAuthRequest(Map<String, dynamic> message) async {
     log("Foreground message received.",
         name: "main_screen.dart", error: message);
 
-    await StorageUtil.protect(() async =>
-        _handleIncomingRequest(
-            message, await StorageUtil.loadAllTokens(), false));
+    await StorageUtil.protect(() async => _handleIncomingRequest(
+        message, await StorageUtil.loadAllTokens(), false));
     _loadTokenList(); // Update UI
   }
 
@@ -534,7 +524,7 @@ class _MainScreenState extends State<MainScreen> {
       bool isVerified = token.privateTokenKey == null
           ? await Legacy.verify(token.serial, signedData, signature)
           : verifyRSASignature(token.getPublicServerKey(),
-          utf8.encode(signedData), base32.decode(signature));
+              utf8.encode(signedData), base32.decode(signature));
 
       if (isVerified) {
         log('Validating incoming message was successful.',
@@ -562,22 +552,22 @@ class _MainScreenState extends State<MainScreen> {
         } else {
           log(
               "The push request $pushRequest already exists "
-                  "for the token with serial ${token.serial}",
+              "for the token with serial ${token.serial}",
               name: "main_screen.dart");
         }
       } else {
         log('Validating incoming message failed.',
             name: 'main_screen.dart',
             error:
-            'Signature $signature does not match signed data: $signedData');
+                'Signature $signature does not match signed data: $signedData');
       }
     }
   }
 
-  static void _showNotification(PushToken token, PushRequest pushRequest,
-      bool silent) async {
+  static void _showNotification(
+      PushToken token, PushRequest pushRequest, bool silent) async {
     var iOSPlatformChannelSpecifics =
-    IOSNotificationDetails(presentSound: !silent);
+        IOSNotificationDetails(presentSound: !silent);
 
     var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
         htmlFormatBigText: true,
@@ -623,19 +613,17 @@ class _MainScreenState extends State<MainScreen> {
         itemCount: _tokenList.length);
 
     bool allowManualRefresh =
-    _tokenList.any((t) => t is PushToken && t.url != null);
+        _tokenList.any((t) => t is PushToken && t.url != null);
 
     return allowManualRefresh
         ? RefreshIndicator(
-      child: list,
-      onRefresh: () async {
-        _showMessage(
-            Localization
-                .of(context)
-                .pollNow, Duration(seconds: 1));
-        await _pollForRequests();
-      },
-    )
+            child: list,
+            onRefresh: () async {
+              _showMessage(
+                  Localization.of(context).pollNow, Duration(seconds: 1));
+              await _pollForRequests();
+            },
+          )
         : list;
   }
 
@@ -662,8 +650,7 @@ class _MainScreenState extends State<MainScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        LicensePage(
+                    builder: (context) => LicensePage(
                           applicationName: "privacyIDEA Authenticator",
                           applicationVersion: info.version,
                           applicationIcon: Padding(
@@ -687,27 +674,20 @@ class _MainScreenState extends State<MainScreen> {
           }
         },
         elevation: 5.0,
-        itemBuilder: (BuildContext context) =>
-        <PopupMenuEntry<String>>[
+        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
             value: "about",
-            child: Text(Localization
-                .of(context)
-                .about),
+            child: Text(Localization.of(context).about),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "add_manually",
-            child: Text(Localization
-                .of(context)
-                .addManually),
+            child: Text(Localization.of(context).addManually),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "settings",
-            child: Text(Localization
-                .of(context)
-                .settings),
+            child: Text(Localization.of(context).settings),
           ),
         ],
       ),

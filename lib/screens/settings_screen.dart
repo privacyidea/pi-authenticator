@@ -22,7 +22,6 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
@@ -47,7 +46,8 @@ class SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: Text(
           widget._title,
-          textScaleFactor: screenTitleScaleFactor,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
         ),
       ),
       body: SingleChildScrollView(
@@ -104,7 +104,7 @@ class SettingsScreenState extends State<SettingsScreen> {
 
                       if (tokens.any((element) =>
                           element.isRolledOut && element.url != null)) {
-                          // Set onChange to acitvate switch in ui
+                        // Set onChange to acitvate switch in ui
                         onChange = (value) =>
                             AppSettings.of(context).setEnablePolling(value);
                       }
@@ -181,7 +181,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     DynamicTheme.of(context).setBrightness(value);
   }
 
-/// Shows a dialog to the user that displays all push tokens that do not support polling.
+  /// Shows a dialog to the user that displays all push tokens that do not support polling.
   void _showPollingInfo(List<PushToken> unsupported) {
     showDialog(
         context: context,
@@ -192,7 +192,8 @@ class SettingsScreenState extends State<SettingsScreen> {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: unsupported.length,
-                itemBuilder: (context, index) => Text('${unsupported[index].label}'),
+                itemBuilder: (context, index) =>
+                    Text('${unsupported[index].label}'),
                 separatorBuilder: (context, index) => Divider(),
               ),
             ),
@@ -200,7 +201,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               FlatButton(
                 child: Text(
                   Localization.of(context).dismiss,
-                  style: getDialogTextStyle(isDarkModeOn(context)),
+                  style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
@@ -232,7 +233,7 @@ class AppSettings extends InheritedWidget {
   final Preference<bool> _hideOpts;
   final Preference<bool> _enablePolling;
   final Preference<bool> _loadLegacy;
-  
+
   Stream<bool> streamHideOpts() => _hideOpts;
 
   Stream<bool> streamEnablePolling() => _enablePolling;
@@ -240,7 +241,6 @@ class AppSettings extends InheritedWidget {
   void setHideOpts(bool value) => _hideOpts.setValue(value);
 
   void setEnablePolling(bool value) => _enablePolling.setValue(value);
-
 
   void setLoadLegacy(bool value) => _loadLegacy.setValue(value);
 
