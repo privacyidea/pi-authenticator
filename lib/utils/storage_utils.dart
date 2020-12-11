@@ -136,6 +136,23 @@ class StorageUtil {
         : FirebaseConfig.fromJson(jsonDecode(serializedConfig));
   }
 
+  static const _CURRENT_APP_TOKEN_KEY = _GLOBAL_PREFIX + "APP_TOKEN";
+
+  static Future<void> setCurrentFirebaseToken(String str) async =>
+      _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str);
+
+  static Future<String> getCurrentFirebaseToken() async =>
+      _storage.read(key: _CURRENT_APP_TOKEN_KEY);
+
+  static const _NEW_APP_TOKEN_KEY = _GLOBAL_PREFIX + "APP_TOKEN";
+
+  // This is used for checking if the token was updated.
+  static Future<void> setNewFirebaseToken(String str) async =>
+      _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
+
+  static Future<String> getNewFirebaseToken() async =>
+      _storage.read(key: _NEW_APP_TOKEN_KEY);
+
   // ###########################################################################
   // FIREBASE PER TOKEN
   // ###########################################################################
