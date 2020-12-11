@@ -71,9 +71,18 @@ class StorageUtil {
 
     List<Token> tokenList = [];
     for (String value in keyValueMap.values) {
-      Map<String, dynamic> serializedToken = jsonDecode(value);
+      Map<String, dynamic> serializedToken;
 
-      if (!serializedToken.containsKey('type')) continue;
+      try {
+        serializedToken = jsonDecode(value);
+      } on FormatException catch (e) {
+        log('Could not interprete this as a token: $value',
+            name: 'storage_utils.dart');
+        continue;
+      }
+
+      if (serializedToken == null || !serializedToken.containsKey('type'))
+        continue;
 
       // TODO when the token version (token.version) changed handle this here.
 
