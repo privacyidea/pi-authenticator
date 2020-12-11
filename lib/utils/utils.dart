@@ -29,6 +29,7 @@ import 'package:hex/hex.dart' as HexConverter;
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'package:otp/otp.dart' as OTPLibrary;
+import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 
 import 'identifiers.dart';
@@ -247,4 +248,19 @@ Future<Response> doGet(
 
   ioClient.close();
   return response;
+}
+
+bool verifyServerResponse(RSAPublicKey privateKey, String body) {
+  // TODO Implement this!
+  // Body: {"id": 1, "jsonrpc": "2.0", "result": {"status": true, "value": true},
+  // "time": 1607689663.7786171, "version": "privacyIDEA 3.5.dev2",
+  // "versionnumber": "3.5.dev2",
+  // "signature": "rsa_sha256_pss:6745bc7a1c1f5b3ab1938c34692b1177d245cbd9c7bd8
+  // bae6d1643f1e12551bac5a5f3510a6de4683ffa49d20755347fb723bc23c518e5eb12cbe55
+  // cb54b6f252217cfce7d966dba078bde47e2afaf50523aa5a4122b2eed33cb61378e346100a
+  // 8f4e5808308d0ff35aa83ee13a6363cd47a2631940b645ef2dd49415334d77588673f97f68
+  // e58d4f979054796bda1fb72b4169aec5e80b201f95345bae4e3c91a5a64ad9ad7d0e979720
+  // 6229f8dcf3fd6fa58e27a9787beb52aa3a7f3aa8c3b33df9ff5a836570bdc56414d2f0e708
+  // e61a55906c461df0b22f1fae42e5532b3fcf7b7f83825665e6737a3b0752353101cabe0ee4
+  // dc71a953adb1f1d93c92ca3"}
 }
