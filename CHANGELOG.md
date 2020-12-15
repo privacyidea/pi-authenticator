@@ -1,7 +1,5 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. 
-
 ## [3.0.7] - 2020-11-12
 
 ### Fixed
@@ -37,5 +35,5 @@ All notable changes to this project will be documented in this file.
 - parallel development of android and ios version
 
 
-[unreleased]: https://github.com/olivierlacan/keep-a-changelog/compare/v1.1.0...HEAD
-[1.1.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v1.0.0...v1.1.0
+[3.0.4]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.0...v3.0.4
+

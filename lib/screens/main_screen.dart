@@ -102,7 +102,7 @@ class _MainScreenState extends State<MainScreen> {
       PackageInfo info = await PackageInfo.fromPlatform();
 
       // Check if the app was updated
-      if (/*info.version != await StorageUtil.getCurrentVersion()*/ true) { // TODO REmove
+      if (info.version != await StorageUtil.getCurrentVersion()) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => UpdateScreen()),
