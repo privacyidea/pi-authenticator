@@ -228,4 +228,18 @@ class StorageUtil {
 
     return tokenList;
   }
+
+// ###########################################################################
+// Update information
+// ###########################################################################
+
+  static const _KEY_VERSION = _GLOBAL_PREFIX + "_app_version";
+
+  static Future<String> getCurrentVersion() async {
+    return await _storage.read(key: _KEY_VERSION);
+  }
+
+  static Future<void> setCurrentVersion(String version) async {
+    await _storage.write(key: _KEY_VERSION, value: version);
+  }
 }

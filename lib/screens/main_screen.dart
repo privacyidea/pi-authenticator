@@ -41,6 +41,7 @@ import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
+import 'package:privacyidea_authenticator/screens/update_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
@@ -95,6 +96,20 @@ class _MainScreenState extends State<MainScreen> {
 
     // Load UI elements
     SchedulerBinding.instance.addPostFrameCallback((_) => _loadEverything());
+
+    // Show changelog
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
+      PackageInfo info = await PackageInfo.fromPlatform();
+
+      // Check if the app was updated
+      if (/*info.version != await StorageUtil.getCurrentVersion()*/ true) { // TODO REmove
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => UpdateScreen()),
+        );
+        StorageUtil.setCurrentVersion(info.version);
+      }
+    });
   }
 
   _pollForRequests() async {
