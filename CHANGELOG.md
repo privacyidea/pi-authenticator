@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [3.0.7] - 2020-11-12
 
-## Fixed
+### Fixed
 
 - fixed showing push notifications that were received when the app is closed
 
