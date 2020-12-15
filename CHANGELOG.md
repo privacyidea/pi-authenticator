@@ -2,19 +2,39 @@
 
 All notable changes to this project will be documented in this file. 
 
-## [Unreleased]
+## [3.0.7] - 2020-11-12
 
-## [1.1.0] - 2019-02-15
+## Fixed
+
+- fixed showing push notifications that were received when the app is closed
+
+
+## [3.0.6] - 2020-11-11
 
 ### Added
 
-- Danish translation from [@frederikspang](https://github.com/frederikspang).
-- Georgian translation from [@tatocaster ](https://github.com/tatocaster).
-- Changelog inconsistency section in Bad Practices
+- Automatic migration of tokens from version prior to 3.0.0
+- Push challenges can now be activly polled from the server
+- Added option to automatically poll push challenges from server (only when the app is open)
+
+
+## [3.0.4] - 2020-09-30
 
 ### Changed
-- Fixed typos in Italian translation from [@lorenzo-arena](https://github.com/lorenzo-arena).
-- Fixed typos in Indonesian translation from [@ekojs](https://github.com/ekojs).
+
+- Changed internal serialization of the tokens
+
+## [3.0.0] - 2020-09-15
+
+### Added
+
+- Tokens can be renamed or deleted by swiping to the left side of the screen
+- Added theme setting to the app, the user can choose between a light and a dark theme
+
+### Changed
+
+- Using new engine to program the app
+- parallel development of android and ios version
 
 
 [unreleased]: https://github.com/olivierlacan/keep-a-changelog/compare/v1.1.0...HEAD
