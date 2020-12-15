@@ -104,6 +104,7 @@ flutter:
   assets:
     - res/logo/app_logo_light.png
     - res/logo/app_logo_dark.png
+    - CHANGELOG.md
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
