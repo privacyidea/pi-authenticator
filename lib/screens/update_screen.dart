@@ -7,9 +7,12 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 // TODO Format as Markdown?
 
 class UpdateScreen extends StatelessWidget {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text(
             'Changelog', // TODO Translate (?)
@@ -24,10 +27,21 @@ class UpdateScreen extends StatelessWidget {
             if (snapshot.hasData) {
               return Markdown(
                 data: snapshot.data,
+                onTapLink: (String text, String href, String title) {
+                  _showMessage('Text: $text\nhref: $href\ntitle: $title',
+                      Duration(seconds: 5));
+                },
               );
             }
             return CircularProgressIndicator();
           },
         ));
+  }
+
+  _showMessage(String message, Duration duration) {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(message),
+      duration: duration,
+    ));
   }
 }
