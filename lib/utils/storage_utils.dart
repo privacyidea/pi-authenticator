@@ -81,8 +81,9 @@ class StorageUtil {
         continue;
       }
 
-      if (serializedToken == null || !serializedToken.containsKey('type'))
+      if (serializedToken == null || !serializedToken.containsKey('type')){
         continue;
+      }
 
       // TODO when the token version (token.version) changed handle this here.
 
