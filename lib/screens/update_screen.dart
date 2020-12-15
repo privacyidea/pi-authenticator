@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // TODO Check if the app was updated -> If yes, show this page, make accessible from settings?
 // TODO Show Information for each update version / changelog
@@ -27,10 +30,8 @@ class UpdateScreen extends StatelessWidget {
             if (snapshot.hasData) {
               return Markdown(
                 data: snapshot.data,
-                onTapLink: (String text, String href, String title) {
-                  _showMessage('Text: $text\nhref: $href\ntitle: $title',
-                      Duration(seconds: 5));
-                },
+                onTapLink: (String text, String href, String title) =>
+                    _launchURL(href),
               );
             }
             return CircularProgressIndicator();
@@ -38,10 +39,11 @@ class UpdateScreen extends StatelessWidget {
         ));
   }
 
-  _showMessage(String message, Duration duration) {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(message),
-      duration: duration,
-    ));
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      log('Could not launch url $url', name: 'update_screen.dart');
+    }
   }
 }
