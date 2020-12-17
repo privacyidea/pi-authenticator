@@ -40,8 +40,8 @@ import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
-import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
+import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
@@ -99,15 +99,17 @@ class _MainScreenState extends State<MainScreen> {
 
     // Show changelog
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
-      PackageInfo info = await PackageInfo.fromPlatform();
+      if (!AppSettings.of(context).isTestMode) {
+        PackageInfo info = await PackageInfo.fromPlatform();
 
-      // Check if the app was updated
-      if (info.version != await StorageUtil.getCurrentVersion()) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ChangelogScreen()),
-        );
-        StorageUtil.setCurrentVersion(info.version);
+        // Check if the app was updated
+        if (info.version != await StorageUtil.getCurrentVersion()) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChangelogScreen()),
+          );
+          StorageUtil.setCurrentVersion(info.version);
+        }
       }
     });
   }
