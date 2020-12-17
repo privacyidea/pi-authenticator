@@ -10,13 +10,13 @@ import 'package:url_launcher/url_launcher.dart';
 // TODO Format as Markdown?
 
 class ChangelogScreen extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            'Changelog', // TODO Translate (?) This stays in english for the moment
+            'Changelog',
+            // TODO Translate (?) This stays in english for the moment
             overflow: TextOverflow.ellipsis,
             // maxLines: 2 only works like this.
             maxLines: 2, // Title can be shown on small screens too.
