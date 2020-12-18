@@ -99,7 +99,6 @@ class _MainScreenState extends State<MainScreen> {
 
     // FIXME This must be done elsewhere -> lifecycle stuff
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      log("I WAS CALLED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       // Update firebase token if the previous update attempt failed.
       updateFirebaseToken();
     });
@@ -176,7 +175,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _loadFirebase() async {
-    // If no push tokens exist, the firebase config should be deleted here.
+    // If no push tokens exist, the firebase config is deleted here.
     if (!(await StorageUtil.loadAllTokens())
         .any((element) => element is PushToken)) {
       StorageUtil.deleteGlobalFirebaseConfig();
