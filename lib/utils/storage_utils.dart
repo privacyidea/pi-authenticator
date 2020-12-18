@@ -71,7 +71,19 @@ class StorageUtil {
 
     List<Token> tokenList = [];
     for (String value in keyValueMap.values) {
-      Map<String, dynamic> serializedToken = jsonDecode(value);
+      Map<String, dynamic> serializedToken;
+
+      try {
+        serializedToken = jsonDecode(value);
+      } on FormatException catch (e) {
+        log('Could not interprete this as a token: $value',
+            name: 'storage_utils.dart');
+        continue;
+      }
+
+      if (serializedToken == null || !serializedToken.containsKey('type')) {
+        continue;
+      }
 
       if (!serializedToken.containsKey('type')) continue;
 
@@ -227,5 +239,19 @@ class StorageUtil {
     }
 
     return tokenList;
+  }
+
+// ###########################################################################
+// Update information
+// ###########################################################################
+
+  static const _KEY_VERSION = _GLOBAL_PREFIX + "_app_version";
+
+  static Future<String> getCurrentVersion() async {
+    return await _storage.read(key: _KEY_VERSION);
+  }
+
+  static Future<void> setCurrentVersion(String version) async {
+    await _storage.write(key: _KEY_VERSION, value: version);
   }
 }

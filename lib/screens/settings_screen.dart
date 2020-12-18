@@ -216,6 +216,7 @@ class AppSettings extends InheritedWidget {
   static String _prefHideOtps = 'KEY_HIDE_OTPS';
   static String _prefEnablePoll = 'KEY_ENABLE_POLLING';
   static String _loadLegacyKey = 'KEY_LOAD_LEGACY';
+  final bool isTestMode;
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
@@ -228,6 +229,8 @@ class AppSettings extends InheritedWidget {
         _enablePolling =
             preferences.getBool(_prefEnablePoll, defaultValue: false),
         _loadLegacy = preferences.getBool(_loadLegacyKey, defaultValue: true),
+        isTestMode =
+            const bool.fromEnvironment('testing_mode', defaultValue: false),
         super(child: child);
 
   final Preference<bool> _hideOpts;
