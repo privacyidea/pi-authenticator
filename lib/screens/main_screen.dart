@@ -533,13 +533,12 @@ class _MainScreenState extends State<MainScreen> {
           'signature': signature
         });
 
-        if (response.statusCode != 200 ||
-            !verifyServerResponse(p.getPublicServerKey(), response.body)) {
+        if (response.statusCode == 200) {
+          log('Updating firebase token for push token: ${p.serial} succeeded!');
+        } else {
           log('Updating firebase token for push token: ${p.serial} failed!',
               name: 'main_screen.dart');
           updateWasSuccessful = false;
-        } else {
-          log('Updating firebase token for push token: ${p.serial} succeeded!');
         }
       }
     }
