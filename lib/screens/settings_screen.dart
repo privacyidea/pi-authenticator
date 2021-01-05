@@ -18,6 +18,8 @@
   limitations under the License.
 */
 
+import 'dart:developer';
+
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +28,7 @@ import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
+import 'package:privacyidea_authenticator/widgets/update_firebase_token_dialog.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -38,12 +41,15 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     bool isSystemDarkMode =
         MediaQuery.of(context).platformBrightness == Brightness.dark;
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           widget._title,
@@ -82,79 +88,122 @@ class SettingsScreenState extends State<SettingsScreen> {
                 ),
               ],
             ),
-            SettingsGroup(
-              title: Localization.of(context).misc,
-              children: <Widget>[
-                FutureBuilder<List<Token>>(
-                  initialData: [],
-                  future: StorageUtil.loadAllTokens(),
-                  builder: (context, value) {
-                    Function onChange;
-                    List<PushToken> tokens = [];
-                    List<PushToken> unsupported = [];
+            FutureBuilder<List<Token>>(
+              initialData: [],
+              future: StorageUtil.loadAllTokens(),
+              builder: (context, snapshot) {
+                bool show = true;
+                List<PushToken> pushTokenList = snapshot.hasData
+                    ? snapshot.data.whereType<PushToken>().toList()
+                    : [];
 
-                    // Check if any push tokens exist, if not, this cannot be
-                    //  enabled.
-                    if (value.hasData) {
-                      tokens = value.data.whereType<PushToken>().toList();
+                if (!snapshot.hasData ||
+                    snapshot.hasError ||
+                    pushTokenList.isEmpty) {
+                  log('No push tokens exist, settings are hidden.',
+                      name: 'settings_screen.dart');
+                  show = false;
+                }
 
-                      unsupported = tokens
-                          .where((element) => element.url == null)
-                          .toList();
-
-                      if (tokens.any((element) =>
-                          element.isRolledOut && element.url != null)) {
-                          // Set onChange to acitvate switch in ui
-                        onChange = (value) =>
-                            AppSettings.of(context).setEnablePolling(value);
-                      }
-                    }
-
-                    var title = RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: Localization.of(context).enablePolling,
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                          // Add clickable icon to inform user of unsupported push tokens (for polling)
-                          WidgetSpan(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10),
-                              child: unsupported.isNotEmpty && tokens.isNotEmpty
-                                  ? GestureDetector(
-                                      onTap: () =>
-                                          _showPollingInfo(unsupported),
-                                      child: Icon(
-                                        Icons.info_outline,
-                                        color: Colors.red,
-                                      ),
-                                    )
-                                  : null,
+                return Visibility(
+                    visible: show,
+                    child: SettingsGroup(
+                      title: Localization.of(context).push,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text('Update firebase token'),
+                          // TODO Translate
+                          subtitle: Text('Sends the current firebase token of'
+                              ' this application to the privacyIDEA server.'),
+                          trailing: RaisedButton(
+                            // TODO Position this right
+                            child: Text('Update'), // TODO Translate
+                            onPressed: () => showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (context) => UpdateFirebaseTokenDialog(),
                             ),
                           ),
-                        ],
-                      ),
-                    );
+                        ),
+                        FutureBuilder<List<Token>>(
+                          // TODO This can be removed
+                          initialData: [],
+                          future: StorageUtil.loadAllTokens(),
+                          builder: (context, value) {
+                            Function onChange;
+                            List<PushToken> tokens = [];
+                            List<PushToken> unsupported = [];
 
-                    return PreferenceBuilder<bool>(
-                      preference: AppSettings.of(context).streamEnablePolling(),
-                      builder: (context, value) {
-                        return ListTile(
-                          title: title,
-                          subtitle:
-                              Text(Localization.of(context).pollingDescription),
-                          trailing: Switch(
-                            value: value,
-                            onChanged: onChange,
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
+                            // Check if any push tokens exist, if not, this cannot be
+                            //  enabled.
+                            if (value.hasData) {
+                              tokens =
+                                  value.data.whereType<PushToken>().toList();
+
+                              unsupported = tokens
+                                  .where((element) => element.url == null)
+                                  .toList();
+
+                              if (tokens.any((element) =>
+                                  element.isRolledOut && element.url != null)) {
+                                // Set onChange to acitvate switch in ui
+                                onChange = (value) => AppSettings.of(context)
+                                    .setEnablePolling(value);
+                              }
+                            }
+
+                            var title = RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text:
+                                        Localization.of(context).enablePolling,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1,
+                                  ),
+                                  // Add clickable icon to inform user of unsupported push tokens (for polling)
+                                  WidgetSpan(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: unsupported.isNotEmpty &&
+                                              tokens.isNotEmpty
+                                          ? GestureDetector(
+                                              onTap: () =>
+                                                  _showPollingInfo(unsupported),
+                                              child: Icon(
+                                                Icons.info_outline,
+                                                color: Colors.red,
+                                              ),
+                                            )
+                                          : null,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            return PreferenceBuilder<bool>(
+                              preference:
+                                  AppSettings.of(context).streamEnablePolling(),
+                              builder: (context, value) {
+                                return ListTile(
+                                  title: title,
+                                  subtitle: Text(Localization.of(context)
+                                      .pollingDescription),
+                                  trailing: Switch(
+                                    value: value,
+                                    onChanged: onChange,
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ));
+              },
             ),
+
 //            Divider(),
 //            SettingsGroup(
 //              title: 'Behavior',
@@ -181,7 +230,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     DynamicTheme.of(context).setBrightness(value);
   }
 
-/// Shows a dialog to the user that displays all push tokens that do not support polling.
+  /// Shows a dialog to the user that displays all push tokens that do not support polling.
   void _showPollingInfo(List<PushToken> unsupported) {
     showDialog(
         context: context,
@@ -192,7 +241,8 @@ class SettingsScreenState extends State<SettingsScreen> {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: unsupported.length,
-                itemBuilder: (context, index) => Text('${unsupported[index].label}'),
+                itemBuilder: (context, index) =>
+                    Text('${unsupported[index].label}'),
                 separatorBuilder: (context, index) => Divider(),
               ),
             ),
@@ -207,6 +257,13 @@ class SettingsScreenState extends State<SettingsScreen> {
             ],
           );
         });
+  }
+
+  _showMessage(String message, Duration duration) {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(message),
+      duration: duration,
+    ));
   }
 }
 
@@ -232,7 +289,7 @@ class AppSettings extends InheritedWidget {
   final Preference<bool> _hideOpts;
   final Preference<bool> _enablePolling;
   final Preference<bool> _loadLegacy;
-  
+
   Stream<bool> streamHideOpts() => _hideOpts;
 
   Stream<bool> streamEnablePolling() => _enablePolling;
@@ -240,7 +297,6 @@ class AppSettings extends InheritedWidget {
   void setHideOpts(bool value) => _hideOpts.setValue(value);
 
   void setEnablePolling(bool value) => _enablePolling.setValue(value);
-
 
   void setLoadLegacy(bool value) => _loadLegacy.setValue(value);
 
