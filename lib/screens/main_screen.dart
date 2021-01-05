@@ -97,10 +97,14 @@ class _MainScreenState extends State<MainScreen> {
     // Load UI elements
     SchedulerBinding.instance.addPostFrameCallback((_) => _loadEverything());
 
-    // FIXME This must be done elsewhere -> lifecycle stuff
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      // Update firebase token if the previous update attempt failed.
-      updateFirebaseToken();
+    // Attempt to automatically update firebase tokens if the token was changed.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      String newToken = await StorageUtil.getNewFirebaseToken();
+
+      if ((await StorageUtil.getCurrentFirebaseToken()) != newToken &&
+          newToken != null) {
+        _updateFirebaseToken();
+      }
     });
   }
 
@@ -475,75 +479,76 @@ class _MainScreenState extends State<MainScreen> {
       await StorageUtil.setCurrentFirebaseToken(firebaseToken);
     }
 
-    firebaseMessaging.onTokenRefresh.listen((token) async {
-      if ((await StorageUtil.getCurrentFirebaseToken()) != token) {
-        log("New firebase token generated: $token", name: 'main_screen.dart');
-        await StorageUtil.setNewFirebaseToken(token);
-        updateFirebaseToken();
+    firebaseMessaging.onTokenRefresh.listen((newToken) async {
+      if ((await StorageUtil.getCurrentFirebaseToken()) != newToken) {
+        log("New firebase token generated: $newToken",
+            name: 'main_screen.dart');
+        await StorageUtil.setNewFirebaseToken(newToken);
+        _updateFirebaseToken();
       }
     });
 
     return firebaseToken;
   }
 
-  static void updateFirebaseToken() async {
-    String currentToken = await StorageUtil.getCurrentFirebaseToken();
+  /// This method attempts to update the fbToken for all PushTokens that can be
+  /// updated. I.e. all tokens that know the url of their respective privacyIDEA
+  /// server. If the update fails for one or all tokens, this method does *not*
+  /// give any feedback!.
+  ///
+  /// This should only be used to attempt to update the fbToken automatically,
+  /// as this can not be guaranteed to work, there is a manual option available
+  /// through the settings also.
+  void _updateFirebaseToken() async {
     String newToken = await StorageUtil.getNewFirebaseToken();
 
-    // TODO Different approach: When fb_token was changed mark each pushtoken
-    //  for update. Then check if any ptoken is marked and update it here.
-    //  If this process fails in the middle, all successful p must no be checked
-    //  again. -> This does not work because json can not be updated currently!
+    if (newToken == null) {
+      // Nothing to update here!
+      return;
+    }
 
     List<PushToken> tokenList = (await StorageUtil.loadAllTokens())
         .whereType<PushToken>()
         .where((t) => t.url != null)
         .toList();
 
-    // TODO Is there a good way to handle these tokens?
-//    List<PushToken> tokenWithOutUrl = tokenList.where((e) => e.url == null);
+    bool allUpdated = true;
 
-    bool updateWasSuccessful = true;
+    for (PushToken p in tokenList) {
+      // POST /ttype/push HTTP/1.1
+      //Host: example.com
+      //
+      //new_fb_token=<new firebase token>
+      //serial=<tokenserial>element
+      //timestamp=<timestamp>
+      //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
 
-    // TODO Reenable that check
-    if (newToken != null /* && newToken != currentToken*/) {
-      for (PushToken p in tokenList) {
-        // POST /ttype/push HTTP/1.1
-        //Host: example.com
-        //
-        //new_fb_token=<new firebase token>
-        //serial=<tokenserial>element
-        //timestamp=<timestamp>
-        //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
+      String timestamp = DateTime.now().toUtc().toIso8601String();
 
-        String timestamp = DateTime.now().toUtc().toIso8601String();
+      String message = '$newToken|${p.serial}|$timestamp';
 
-        String message = '$newToken|${p.serial}|$timestamp';
+      String signature = p.privateTokenKey == null
+          ? await Legacy.sign(p.serial, message)
+          : createBase32Signature(p.getPrivateTokenKey(), utf8.encode(message));
 
-        String signature = p.privateTokenKey == null
-            ? await Legacy.sign(p.serial, message)
-            : createBase32Signature(
-                p.getPrivateTokenKey(), utf8.encode(message));
+      Response response =
+          await doPost(sslVerify: p.sslVerify, url: p.url, body: {
+        'new_fb_token': newToken,
+        'serial': p.serial,
+        'timestamp': timestamp,
+        'signature': signature
+      });
 
-        Response response =
-            await doPost(sslVerify: p.sslVerify, url: p.url, body: {
-          'new_fb_token': newToken,
-          'serial': p.serial,
-          'timestamp': timestamp,
-          'signature': signature
-        });
-
-        if (response.statusCode == 200) {
-          log('Updating firebase token for push token: ${p.serial} succeeded!');
-        } else {
-          log('Updating firebase token for push token: ${p.serial} failed!',
-              name: 'main_screen.dart');
-          updateWasSuccessful = false;
-        }
+      if (response.statusCode == 200) {
+        log('Updating firebase token for push token: ${p.serial} succeeded!');
+      } else {
+        log('Updating firebase token for push token: ${p.serial} failed!',
+            name: 'main_screen.dart');
+        allUpdated = false;
       }
     }
 
-    if (updateWasSuccessful) {
+    if (allUpdated) {
       StorageUtil.setCurrentFirebaseToken(newToken);
     }
   }
