@@ -302,6 +302,14 @@ class Localization {
     );
   }
 
+  String get push {
+    return Intl.message(
+      'Push Token',
+      desc: 'Title for the settings block concerning the push tokens.',
+      locale: localeName,
+    );
+  }
+
   String get theme {
     return Intl.message(
       'Theme',
