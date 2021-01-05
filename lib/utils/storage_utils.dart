@@ -75,13 +75,11 @@ class StorageUtil {
 
       try {
         serializedToken = jsonDecode(value);
-      } on FormatException catch (e) {
-        log('Could not interprete this as a token: $value',
-            name: 'storage_utils.dart');
+      } on FormatException {
         continue;
       }
 
-      if (serializedToken == null || !serializedToken.containsKey('type')){
+      if (serializedToken == null || !serializedToken.containsKey('type')) {
         continue;
       }
 
