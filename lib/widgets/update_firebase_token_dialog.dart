@@ -62,8 +62,6 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
   @override
   Widget build(BuildContext context) {
-    print('Starting update!');
-
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
@@ -75,6 +73,11 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
   }
 
   void _updateFbTokens() async {
+    log(
+      'Starting update of firebase token.',
+      name: 'update_firebase_token_dialog.dart',
+    );
+
     String token = await FirebaseMessaging().getToken();
 
     List<PushToken> tokenList =
