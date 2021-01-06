@@ -50,14 +50,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
   @override
   void initState() {
     super.initState();
-
     _updateFbTokens();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _title = "Updating Firebase Tokens";
   }
 
   @override
@@ -65,7 +58,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
-        title: Text(_title),
+        title: Text(Localization.of(context).synchronizePushDialogTitle),
         content: _content,
         actions: <Widget>[_button],
       ),
@@ -126,8 +119,8 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
     if (tokenWithFailedUpdate.isEmpty && tokenWithOutUrl.isEmpty) {
       setState(() {
-        _content = Text('Update was successful.');
-        _button = FlatButton(
+        _content = Text(Localization.of(context).allTokensSynchronized);
+        _button = RaisedButton(
           child: Text(Localization.of(context).dismiss),
           onPressed: () => Navigator.pop(context),
         );
@@ -135,44 +128,38 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     } else {
       List<Widget> children = [];
 
-      // TODO Remove this:
-//      tokenWithFailedUpdate.addAll(List<PushToken>.generate(
-//          5, (index) => PushToken(label: 'Token $index')));
-//      tokenWithOutUrl.addAll(List<PushToken>.generate(
-//          5, (index) => PushToken(label: 'Token $index')));
-
       if (tokenWithFailedUpdate.isNotEmpty) {
-        List<Widget> failedToken = [];
-
-        failedToken.add(Text(
-          'Update failed for the following token, please try again:',
-        )); // TODO Add translation
+        children.add(
+            Text(Localization.of(context).synchronizationFailedForTheseTokens));
         for (PushToken p in tokenWithFailedUpdate) {
-          failedToken.add(Text('• ${p.label}'));
+          children.add(Text('• ${p.label}'));
         }
-
-        children.add(Padding(
-          padding: EdgeInsets.only(bottom: 15),
-          child: Column(
-            children: failedToken,
-            crossAxisAlignment: CrossAxisAlignment.start,
-          ),
-        ));
       }
 
       if (tokenWithOutUrl.isNotEmpty) {
-        children.add(Text(
-            'Updating the following token is not supported, these must be rolled out again:')); // TODO Add translation
+        if (children.isNotEmpty) {
+          children.add(Divider());
+        }
+
+        children.add(Text(Localization.of(context)
+            .synchronizationNotSupportedForTheseTokens));
         for (PushToken p in tokenWithOutUrl) {
           children.add(Text('• ${p.label}'));
         }
       }
 
+      final ScrollController controller = ScrollController();
+
       setState(() {
-        _content = SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: children,
+        _content = Scrollbar(
+          isAlwaysShown: true,
+          controller: controller,
+          child: SingleChildScrollView(
+            controller: controller,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: children,
+            ),
           ),
         );
         _button = RaisedButton(
