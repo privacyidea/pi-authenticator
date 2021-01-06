@@ -92,115 +92,94 @@ class SettingsScreenState extends State<SettingsScreen> {
               initialData: [],
               future: StorageUtil.loadAllTokens(),
               builder: (context, snapshot) {
-                bool show = true;
+                bool showPushSettingsGroup = true;
+
                 List<PushToken> pushTokenList = snapshot.hasData
                     ? snapshot.data.whereType<PushToken>().toList()
                     : [];
 
-                if (!snapshot.hasData ||
-                    snapshot.hasError ||
-                    pushTokenList.isEmpty) {
-                  log('No push tokens exist, settings are hidden.',
+                if (pushTokenList.isEmpty) {
+                  log('No push tokens exist, push settings are hidden.',
                       name: 'settings_screen.dart');
-                  show = false;
+                  showPushSettingsGroup = false;
                 }
 
                 return Visibility(
-                    visible: show,
-                    child: SettingsGroup(
-                      title: Localization.of(context).push,
-                      children: <Widget>[
-                        ListTile(
-                          title: Text('Update firebase token'),
-                          // TODO Translate
-                          subtitle: Text('Sends the current firebase token of'
-                              ' this application to the privacyIDEA server.'),
-                          trailing: RaisedButton(
-                            // TODO Position this right
-                            child: Text('Update'), // TODO Translate
-                            onPressed: () => showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (context) => UpdateFirebaseTokenDialog(),
-                            ),
+                  visible: showPushSettingsGroup,
+                  child: SettingsGroup(
+                    title: Localization.of(context).push,
+                    children: <Widget>[
+                      ListTile(
+                        title:
+                            Text(Localization.of(context).synchronizePushTitle),
+                        subtitle: Text(Localization.of(context)
+                            .synchronizePushDescription),
+                        trailing: RaisedButton(
+                          child: Text(Localization.of(context).sync),
+                          onPressed: () => showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => UpdateFirebaseTokenDialog(),
                           ),
                         ),
-                        FutureBuilder<List<Token>>(
-                          // TODO This can be removed
-                          initialData: [],
-                          future: StorageUtil.loadAllTokens(),
-                          builder: (context, value) {
-                            Function onChange;
-                            List<PushToken> tokens = [];
-                            List<PushToken> unsupported = [];
+                      ),
+                      PreferenceBuilder<bool>(
+                        preference:
+                            AppSettings.of(context).streamEnablePolling(),
+                        builder: (context, value) {
+                          Function onChange;
+                          List<PushToken> unsupported = pushTokenList
+                              .where((e) => e.url == null)
+                              .toList();
 
-                            // Check if any push tokens exist, if not, this cannot be
-                            //  enabled.
-                            if (value.hasData) {
-                              tokens =
-                                  value.data.whereType<PushToken>().toList();
+                          if (pushTokenList.any((element) =>
+                              element.isRolledOut && element.url != null)) {
+                            // Set onChange to activate switch in ui.
+                            onChange = (value) =>
+                                AppSettings.of(context).setEnablePolling(value);
+                          }
 
-                              unsupported = tokens
-                                  .where((element) => element.url == null)
-                                  .toList();
-
-                              if (tokens.any((element) =>
-                                  element.isRolledOut && element.url != null)) {
-                                // Set onChange to acitvate switch in ui
-                                onChange = (value) => AppSettings.of(context)
-                                    .setEnablePolling(value);
-                              }
-                            }
-
-                            var title = RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text:
-                                        Localization.of(context).enablePolling,
-                                    style:
-                                        Theme.of(context).textTheme.subtitle1,
+                          Widget title = RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: Localization.of(context).enablePolling,
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                ),
+                                // Add clickable icon to inform user of unsupported push tokens (for polling)
+                                WidgetSpan(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 10),
+                                    child: unsupported.isNotEmpty &&
+                                            pushTokenList.isNotEmpty
+                                        ? GestureDetector(
+                                            onTap: () =>
+                                                _showPollingInfo(unsupported),
+                                            child: Icon(
+                                              Icons.info_outline,
+                                              color: Colors.red,
+                                            ),
+                                          )
+                                        : null,
                                   ),
-                                  // Add clickable icon to inform user of unsupported push tokens (for polling)
-                                  WidgetSpan(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 10),
-                                      child: unsupported.isNotEmpty &&
-                                              tokens.isNotEmpty
-                                          ? GestureDetector(
-                                              onTap: () =>
-                                                  _showPollingInfo(unsupported),
-                                              child: Icon(
-                                                Icons.info_outline,
-                                                color: Colors.red,
-                                              ),
-                                            )
-                                          : null,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-
-                            return PreferenceBuilder<bool>(
-                              preference:
-                                  AppSettings.of(context).streamEnablePolling(),
-                              builder: (context, value) {
-                                return ListTile(
-                                  title: title,
-                                  subtitle: Text(Localization.of(context)
-                                      .pollingDescription),
-                                  trailing: Switch(
-                                    value: value,
-                                    onChanged: onChange,
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ],
-                    ));
+                                ),
+                              ],
+                            ),
+                          );
+                          return ListTile(
+                            title: title,
+                            subtitle: Text(
+                                Localization.of(context).pollingDescription),
+                            trailing: Switch(
+                              value: value,
+                              onChanged: onChange,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
 
