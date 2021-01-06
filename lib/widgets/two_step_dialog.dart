@@ -23,7 +23,6 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
@@ -51,7 +50,9 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[CircularProgressIndicator()],
   );
-  FlatButton _button;
+  MaterialButton _button;
+
+  Uint8List generatedSecret;
 
   @override
   void initState() {
@@ -71,11 +72,14 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
   Widget build(BuildContext context) {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: AlertDialog(
-        title: Text(_title),
-//        titleTextStyle: Theme.of(context).textTheme.subhead,
-        content: _content,
-        actions: <Widget>[_button],
+      child: WillPopScope(
+        onWillPop: () async => false,
+        // Prevents closing the dialog without returning a secret.
+        child: AlertDialog(
+          title: Text(_title),
+          content: _content,
+          actions: <Widget>[_button],
+        ),
       ),
     );
   }
@@ -85,7 +89,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     Uint8List salt = secureRandom().nextBytes(widget._saltLength);
 
     // 2. Generate secret.
-    Uint8List generatedSecret = await pbkdf2(
+    generatedSecret = await pbkdf2(
       salt: salt,
       iterations: widget._iterations,
       keyLength: widget._keyLength,
@@ -100,10 +104,11 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     setState(() {
       _title = Localization.of(context).twoStepDialogTitlePhonePart;
       _content = Text("$show");
-      _button = FlatButton(
+      _button = RaisedButton(
+        color: Colors.white70,
         child: Text(
           Localization.of(context).dismiss,
-          style: getDialogTextStyle(isDarkModeOn(context)),
+          style: Theme.of(context).textTheme.headline6,
         ),
         onPressed: () => Navigator.of(context).pop(generatedSecret),
       );

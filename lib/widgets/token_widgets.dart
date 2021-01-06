@@ -140,7 +140,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               FlatButton(
                 child: Text(
                   Localization.of(context).rename,
-                  style: getDialogTextStyle(isDarkModeOn(context)),
+                  style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () {
                   if (_nameInputKey.currentState.validate()) {
@@ -182,7 +182,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   Localization.of(context).cancel,
-                  style: getDialogTextStyle(isDarkModeOn(context)),
+                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
               FlatButton(
@@ -192,7 +192,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 },
                 child: Text(
                   Localization.of(context).delete,
-                  style: getDialogTextStyle(isDarkModeOn(context)),
+                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
             ],
@@ -508,12 +508,12 @@ class _PushWidgetState extends _TokenWidgetState {
               ListTile(
                 title: Text(
                   _token.serial,
-                  textScaleFactor: 2.3,
+                  style: Theme.of(context).textTheme.headline4,
                 ),
                 subtitle: Text(
                   _label,
 //                  '$_label, ${_token.pushRequests.length}',
-                  textScaleFactor: 2.0,
+                  style: Theme.of(context).textTheme.headline5,
                 ),
                 trailing: Icon(Icons.message),
               ),
@@ -539,13 +539,21 @@ class _PushWidgetState extends _TokenWidgetState {
                           child: _acceptFailed
                               ? Row(
                                   children: <Widget>[
-                                    Text(Localization.of(context).retry),
+                                    Text(
+                                      Localization.of(context).retry,
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                    ),
                                     Icon(Icons.replay),
                                   ],
                                 )
                               : Row(
                                   children: <Widget>[
-                                    Text(Localization.of(context).accept),
+                                    Text(
+                                      Localization.of(context).accept,
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                    ),
                                     Icon(Icons.check),
                                   ],
                                 ),
@@ -559,7 +567,10 @@ class _PushWidgetState extends _TokenWidgetState {
                         RaisedButton(
                           child: Row(
                             children: <Widget>[
-                              Text(Localization.of(context).decline),
+                              Text(
+                                Localization.of(context).decline,
+                                style: Theme.of(context).textTheme.headline6,
+                              ),
                               Icon(Icons.clear),
                             ],
                           ),
@@ -582,7 +593,10 @@ class _PushWidgetState extends _TokenWidgetState {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     RaisedButton(
-                      child: Text(Localization.of(context).retryRollOut),
+                      child: Text(
+                        Localization.of(context).retryRollOut,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
                       onPressed: _retryButtonIsEnabled
                           ? () {
                               _rollOutToken();
@@ -683,11 +697,11 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
         ListTile(
           title: Text(
             insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            textScaleFactor: 2.5,
+            style: Theme.of(context).textTheme.headline4,
           ),
           subtitle: Text(
             _label,
-            textScaleFactor: 2.0,
+            style: Theme.of(context).textTheme.headline5,
           ),
         ),
         Align(
@@ -698,7 +712,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
               onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
               child: Text(
                 Localization.of(context).next,
-                textScaleFactor: 1.5,
+                style: Theme.of(context).textTheme.headline6,
               ),
             ),
           ),
@@ -776,11 +790,11 @@ class _TotpWidgetState extends _OTPTokenWidgetState
         ListTile(
           title: Text(
             insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            textScaleFactor: 2.5,
+            style: Theme.of(context).textTheme.headline4,
           ),
           subtitle: Text(
             _label,
-            textScaleFactor: 2.0,
+            style: Theme.of(context).textTheme.headline5,
           ),
         ),
         LinearProgressIndicator(

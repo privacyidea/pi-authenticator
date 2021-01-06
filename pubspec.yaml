@@ -13,7 +13,7 @@ repository: https://github.com/privacyidea/pi-authenticator
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.1.0+0301000 # TODO Set the right version number
+version: 3.0.9+0300009 # TODO Set the right version number
 # version: major.minor.build          + 2x major|2x minor|3x build <- 2 per number
 # version: version number             + build number (optional)
 # android: build-name                 + versionCode
@@ -71,6 +71,8 @@ dependencies:
   streaming_shared_preferences: ^1.0.1
   mutex: ^1.1.0
   flutterlifecyclehooks: ^1.0.1
+  flutter_markdown: ^0.5.1
+  url_launcher: ^5.7.10
 
   flutter_cupertino_localizations: ^1.0.1
   intl: ^0.16.0
@@ -104,6 +106,7 @@ flutter:
   assets:
     - res/logo/app_logo_light.png
     - res/logo/app_logo_dark.png
+    - CHANGELOG.md
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

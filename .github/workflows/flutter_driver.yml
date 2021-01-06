@@ -35,5 +35,5 @@ jobs:
         target: ${{ matrix.target }}
         arch: x86_64
         profile: Nexus 6
-        script: "flutter drive --target=test_driver/run_all.dart"
+        script: "flutter driver --dart-define=testing_mode=true --target=test_driver/run_all.dart"
 

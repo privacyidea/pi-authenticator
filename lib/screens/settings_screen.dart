@@ -24,7 +24,6 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
@@ -41,19 +40,17 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   Widget build(BuildContext context) {
     bool isSystemDarkMode =
         MediaQuery.of(context).platformBrightness == Brightness.dark;
 
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           widget._title,
-          textScaleFactor: screenTitleScaleFactor,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
         ),
       ),
       body: SingleChildScrollView(
@@ -229,20 +226,13 @@ class SettingsScreenState extends State<SettingsScreen> {
               FlatButton(
                 child: Text(
                   Localization.of(context).dismiss,
-                  style: getDialogTextStyle(isDarkModeOn(context)),
+                  style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ],
           );
         });
-  }
-
-  _showMessage(String message, Duration duration) {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(message),
-      duration: duration,
-    ));
   }
 }
 
@@ -251,6 +241,7 @@ class AppSettings extends InheritedWidget {
   static String _prefHideOtps = 'KEY_HIDE_OTPS';
   static String _prefEnablePoll = 'KEY_ENABLE_POLLING';
   static String _loadLegacyKey = 'KEY_LOAD_LEGACY';
+  final bool isTestMode;
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
@@ -263,6 +254,8 @@ class AppSettings extends InheritedWidget {
         _enablePolling =
             preferences.getBool(_prefEnablePoll, defaultValue: false),
         _loadLegacy = preferences.getBool(_loadLegacyKey, defaultValue: true),
+        isTestMode =
+            const bool.fromEnvironment('testing_mode', defaultValue: false),
         super(child: child);
 
   final Preference<bool> _hideOpts;
