@@ -33,7 +33,6 @@ import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 class UpdateFirebaseTokenDialog extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() => _UpdateFirebaseTokenDialogState();
 }
@@ -44,7 +43,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[CircularProgressIndicator()],
   );
-  MaterialButton _button;
+  bool _showDismiss = false;
 
   @override
   void initState() {
@@ -59,16 +58,22 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
       child: AlertDialog(
         title: Text(Localization.of(context).synchronizePushDialogTitle),
         content: _content,
-        actions: <Widget>[_button],
+        actions: <Widget>[
+          Visibility(
+            visible: _showDismiss,
+            child: RaisedButton(
+              child: Text(Localization.of(context).dismiss),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   void _updateFbTokens() async {
-    log(
-      'Starting update of firebase token.',
-      name: 'update_firebase_token_dialog.dart'
-    );
+    log('Starting update of firebase token.',
+        name: 'update_firebase_token_dialog.dart');
 
     String token = await FirebaseMessaging().getToken();
 
@@ -108,7 +113,8 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
       });
 
       if (response.statusCode == 200) {
-        log('Updating firebase token for push token: ${p.serial} succeeded!',name: 'update_firebase_token_dialog.dart');
+        log('Updating firebase token for push token: ${p.serial} succeeded!',
+            name: 'update_firebase_token_dialog.dart');
       } else {
         log('Updating firebase token for push token: ${p.serial} failed!',
             name: 'update_firebase_token_dialog.dart');
@@ -119,10 +125,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     if (tokenWithFailedUpdate.isEmpty && tokenWithOutUrl.isEmpty) {
       setState(() {
         _content = Text(Localization.of(context).allTokensSynchronized);
-        _button = RaisedButton(
-          child: Text(Localization.of(context).dismiss),
-          onPressed: () => Navigator.pop(context),
-        );
+        _showDismiss = true;
       });
     } else {
       List<Widget> children = [];
@@ -161,10 +164,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
             ),
           ),
         );
-        _button = RaisedButton(
-          child: Text(Localization.of(context).dismiss),
-          onPressed: () => Navigator.pop(context),
-        );
+        _showDismiss = true;
       });
     }
   }
