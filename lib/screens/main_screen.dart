@@ -99,7 +99,7 @@ class _MainScreenState extends State<MainScreen> {
 
     // Attempt to automatically update firebase tokens if the token was changed.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      String newToken = await StorageUtil.getNewFirebaseToken();
+      String newToken = await FirebaseMessaging().getToken();
 
       if ((await StorageUtil.getCurrentFirebaseToken()) != newToken &&
           newToken != null) {
@@ -555,7 +555,7 @@ class _MainScreenState extends State<MainScreen> {
       });
 
       if (response.statusCode == 200) {
-        log('Updating firebase token for push token: ${p.serial} succeeded!');
+        log('Updating firebase token for push token: ${p.serial} succeeded!', name: 'main_screen.dart');
       } else {
         log('Updating firebase token for push token: ${p.serial} failed!',
             name: 'main_screen.dart');

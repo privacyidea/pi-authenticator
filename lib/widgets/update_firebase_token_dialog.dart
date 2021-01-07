@@ -33,7 +33,6 @@ import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 class UpdateFirebaseTokenDialog extends StatefulWidget {
-  UpdateFirebaseTokenDialog();
 
   @override
   State<StatefulWidget> createState() => _UpdateFirebaseTokenDialogState();
@@ -68,7 +67,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
   void _updateFbTokens() async {
     log(
       'Starting update of firebase token.',
-      name: 'update_firebase_token_dialog.dart',
+      name: 'update_firebase_token_dialog.dart'
     );
 
     String token = await FirebaseMessaging().getToken();
@@ -109,10 +108,10 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
       });
 
       if (response.statusCode == 200) {
-        log('Updating firebase token for push token: ${p.serial} succeeded!');
+        log('Updating firebase token for push token: ${p.serial} succeeded!',name: 'update_firebase_token_dialog.dart');
       } else {
         log('Updating firebase token for push token: ${p.serial} failed!',
-            name: 'main_screen.dart');
+            name: 'update_firebase_token_dialog.dart');
         tokenWithFailedUpdate.add(p);
       }
     }

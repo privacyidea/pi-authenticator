@@ -371,7 +371,7 @@ class Localization {
 
   String get synchronizePushTitle {
     return Intl.message(
-      'Synchronize push token',
+      'Synchronize push tokens',
       desc: 'Title of synchronizing push tokens in settings.',
       locale: localeName,
     );
@@ -395,7 +395,7 @@ class Localization {
 
   String get synchronizePushDialogTitle {
     return Intl.message(
-      'Synchronizing Tokens',
+      'Synchronizing tokens.',
       desc: 'Title of the push synchronization dialog.',
       locale: localeName,
     );
@@ -403,7 +403,7 @@ class Localization {
 
   String get allTokensSynchronized {
     return Intl.message(
-      'All tokens synchronized.',
+      'All tokens are synchronized.',
       desc:
           'Content of the push synchronization dialog. Signaling the user that'
           ' everything worked.',
