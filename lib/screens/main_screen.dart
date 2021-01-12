@@ -42,6 +42,7 @@ import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
+import 'package:privacyidea_authenticator/screens/guide_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
@@ -688,15 +689,17 @@ class _MainScreenState extends State<MainScreen> {
                 MaterialPageRoute(
                   builder: (context) => SettingsScreen('Settings'),
                 ));
+          } else if (value == 'guide') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GuideScreen(),
+              ),
+            );
           }
         },
         elevation: 5.0,
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          PopupMenuItem<String>(
-            value: "about",
-            child: Text(Localization.of(context).about),
-          ),
-          PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "add_manually",
             child: Text(Localization.of(context).addManually),
@@ -705,6 +708,16 @@ class _MainScreenState extends State<MainScreen> {
           PopupMenuItem<String>(
             value: "settings",
             child: Text(Localization.of(context).settings),
+          ),
+          PopupMenuDivider(),
+          PopupMenuItem<String>(
+            value: "about",
+            child: Text(Localization.of(context).about),
+          ),
+          PopupMenuDivider(),
+          PopupMenuItem<String>(
+            value: "guide",
+            child: Text(Localization.of(context).guide),
           ),
         ],
       ),
