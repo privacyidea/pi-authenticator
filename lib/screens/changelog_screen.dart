@@ -10,6 +10,8 @@ import 'package:url_launcher/url_launcher.dart';
 // TODO Format as Markdown?
 
 class ChangelogScreen extends StatelessWidget {
+  final ScrollController _controller = ScrollController(initialScrollOffset: 2);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,13 +28,18 @@ class ChangelogScreen extends StatelessWidget {
           future: DefaultAssetBundle.of(context).loadString('CHANGELOG.md'),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return Markdown(
-                data: snapshot.data,
-                onTapLink: (String text, String href, String title) =>
-                    _launchURL(href),
+              return Scrollbar(
+                controller: _controller,
+                isAlwaysShown: true,
+                child: Markdown(
+                  controller: _controller,
+                  data: snapshot.data,
+                  onTapLink: (String text, String href, String title) =>
+                      _launchURL(href),
+                ),
               );
             }
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           },
         ));
   }
