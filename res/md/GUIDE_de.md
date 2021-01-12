@@ -3,10 +3,10 @@ Hier wird Ihnen ein kurzer Einblick in die Funktionen der App gegeben.
 
 + Das Menü ist über den Schalter `⋮` oder `…` in der oberen rechten Ecke erreichbar,
  dort stehen folgende Punkte zur Auswahl:
-    + Zugriff auf diese Einführung über `Guide`
-    + Manuelles hinzufügen von Token über `Add tokens`
-    + Bearbeitung der Einstellungen über `Settings`
-    + Informationen über die Applikation über `About`
+    + Zugriff auf diese Einführung über `Anleitung`
+    + Manuelles hinzufügen von Token über `Token hinzufügen`
+    + Bearbeitung der Einstellungen über `Einstellungen`
+    + Informationen über die Applikation über `Über`
     
 + Token können wie zuvor beschrieben manuelle hinzugefügt werden, alternativ können QR-Codes
 eingescannt werden indem der `+` Schalter in der unteren rechten Ecke gedrückt wird.
