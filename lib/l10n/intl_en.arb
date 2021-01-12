@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2021-01-12T17:21:40.782505",
+  "@@last_modified": "2021-01-12T17:39:37.559359",
   "Guide": "Guide",
   "@Guide": {
     "description": "Button to open the guide screen.",
@@ -99,6 +99,12 @@
   "Dismiss": "Dismiss",
   "@Dismiss": {
     "description": "Text of a button that closes a dialog.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Show this screen on start:": "Show this screen on start:",
+  "@Show this screen on start:": {
+    "description": "Description for checkbox, if the checkbox is ticked, the guide screen is shown on every app start.",
     "type": "text",
     "placeholders": {}
   },

@@ -175,6 +175,15 @@ class Localization {
   // OTHERS
   // ###########################################################################
 
+  String get showThisOnStart {
+    return Intl.message(
+      'Show this screen on start:',
+      desc: 'Description for checkbox, if the checkbox is ticked, the guide '
+          'screen is shown on every app start.',
+      locale: localeName,
+    );
+  }
+
   String get somethingWentWrong {
     return Intl.message(
       'Something went wrong.',
@@ -194,7 +203,7 @@ class Localization {
   String get scanQr {
     return Intl.message(
       'Scan QR-Code',
-      desc: 'The button to scan otpauto qr-codes.',
+      desc: 'The button to scan otpauth qr-codes.',
       locale: localeName,
     );
   }

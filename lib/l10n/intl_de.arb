@@ -361,5 +361,11 @@
     "description": "Tells the user that something went wrong.",
     "type": "text",
     "placeholders": {}
+  },
+  "Show this screen on start:": "Zeige bei App-Start:",
+  "@Show this screen on start:": {
+    "description": "Description for checkbox, if the checkbox is ticked, the guide screen is shown on every app start.",
+    "type": "text",
+    "placeholders": {}
   }
 }

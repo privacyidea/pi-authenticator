@@ -62,7 +62,7 @@ class GuideScreen extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Show this screen on start'),
+            title: Text(Localization.of(context).showThisOnStart),
             trailing: StreamBuilder(
               stream: AppSettings.of(context).showGuideOnStartStream(),
               initialData: true,

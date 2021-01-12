@@ -71,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Scan QR-Code" : MessageLookupByLibrary.simpleMessage("QR-Code scannen"),
     "Secret" : MessageLookupByLibrary.simpleMessage("Geheimnis"),
     "Settings" : MessageLookupByLibrary.simpleMessage("Einstellungen"),
+    "Show this screen on start:" : MessageLookupByLibrary.simpleMessage("Zeige bei App-Start:"),
     "Some of the tokens are outdated and do not support polling" : MessageLookupByLibrary.simpleMessage("Einige der Token sind veraltet und unterstützen keine aktiven Anfragen"),
     "Something went wrong." : MessageLookupByLibrary.simpleMessage("Etwas ist schiefgelaufen."),
     "The firebase configuration is corrupted and cannot be used." : MessageLookupByLibrary.simpleMessage("Die Firebase-Konfiguration ist beschädigt und kann nicht genutzt werden."),
