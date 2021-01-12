@@ -6,11 +6,12 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// TODO Check if the app was updated -> If yes, show this page, make accessible from settings?
-// TODO Show Information for each update version / changelog
-// TODO Format as Markdown?
+// TODO make accessible from settings?
 
 class ChangelogScreen extends StatelessWidget {
+  // Without the offset the scroll bar is not shown the first time the sceen
+  // is displayed. This is a workaround for that bug and hopefully works on
+  // all devices.
   final ScrollController _controller = ScrollController(initialScrollOffset: 2);
 
   @override

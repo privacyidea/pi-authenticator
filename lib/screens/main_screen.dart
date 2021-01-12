@@ -100,7 +100,6 @@ class _MainScreenState extends State<MainScreen> {
 
     // Show changelog and welcome screen
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
-
       // Do not show these info when running driver tests
       if (!AppSettings.of(context).isTestMode) {
         PackageInfo info = await PackageInfo.fromPlatform();
@@ -115,8 +114,11 @@ class _MainScreenState extends State<MainScreen> {
         }
 
         // Show the guide screen in front of the changelog -> load it last
-        if(AppSettings.of(context).showGuideOnStart){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => GuideScreen()),);
+        if (AppSettings.of(context).showGuideOnStart) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => GuideScreen()),
+          );
         }
       }
     });
