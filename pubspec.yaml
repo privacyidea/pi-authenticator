@@ -106,7 +106,8 @@ flutter:
     - res/logo/app_logo_light.png
     - res/logo/app_logo_dark.png
     - CHANGELOG.md
-    - res/md/GUIDE.md
+    - res/md/GUIDE_de.md
+    - res/md/GUIDE_en.md
     - res/gif/help_delete_rename.gif
     - res/gif/help_manual_poll.gif
 

@@ -21,6 +21,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:privacyidea_authenticator/screens/settings_screen.dart';
+import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 
 class GuideScreen extends StatelessWidget {
@@ -29,30 +31,62 @@ class GuideScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            Localization.of(context).guide,
-            overflow: TextOverflow.ellipsis,
-            // maxLines: 2 only works like this.
-            maxLines: 2, // Title can be shown on small screens too.
-          ),
+      appBar: AppBar(
+        title: Text(
+          Localization.of(context).guide,
+          overflow: TextOverflow.ellipsis,
+          // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
         ),
-        body: FutureBuilder<String>(
-          future: DefaultAssetBundle.of(context).loadString('res/md/GUIDE.md'),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Scrollbar(
-                controller: _controller,
-                isAlwaysShown: true,
-                child: Markdown(
-                  controller: _controller,
-                  data: snapshot.data,
-                ),
-              );
-            }
-            return Center(
-                child: Text(Localization.of(context).somethingWentWrong));
-          },
-        ));
+      ),
+      body: Column(
+        children: [
+          FutureBuilder<String>(
+            future: DefaultAssetBundle.of(context).loadString(
+                'res/md/GUIDE_${Localization.of(context).localeName}.md'),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Expanded(
+                  child: Scrollbar(
+                    controller: _controller,
+                    isAlwaysShown: true,
+                    child: Markdown(
+                      controller: _controller,
+                      data: snapshot.data,
+                    ),
+                  ),
+                );
+              }
+              return Center(
+                  child: Text(Localization.of(context).somethingWentWrong));
+            },
+          ),
+          ListTile(
+            title: Text('Show this screen on start'),
+            trailing: StreamBuilder(
+              stream: AppSettings.of(context).showGuideOnStartStream(),
+              initialData: true,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Checkbox(
+                    value: snapshot.data,
+                    onChanged: (value) =>
+                        AppSettings.of(context).showGuideOnStart = value,
+                    activeColor: Colors.grey, // TODO Find a nice color for this
+                  );
+                } else {
+                  // If the stream has no data, show an out-grayed checkbox
+                  return Checkbox(
+                    value: AppSettings.of(context).showGuideOnStart,
+                    onChanged: null,
+                  );
+                }
+              },
+            ),
+            tileColor: PRIMARY_COLOR,
+          ),
+        ],
+      ),
+    );
   }
 }
