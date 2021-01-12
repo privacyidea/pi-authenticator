@@ -349,5 +349,17 @@
   "@Polling for new challenges": {
     "type": "text",
     "placeholders": {}
+  },
+  "Guide": "Anleitung",
+  "@Guide": {
+    "description": "Button to open the guide screen.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Something went wrong.": "Etwas ist schiefgelaufen.",
+  "@Something went wrong.": {
+    "description": "Tells the user that something went wrong.",
+    "type": "text",
+    "placeholders": {}
   }
 }
