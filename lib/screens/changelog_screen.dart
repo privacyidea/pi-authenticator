@@ -6,7 +6,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// TODO make accessible from settings?
+// TODO Make accessible from settings?
 
 class ChangelogScreen extends StatelessWidget {
   // Without the offset the scroll bar is not shown the first time the sceen

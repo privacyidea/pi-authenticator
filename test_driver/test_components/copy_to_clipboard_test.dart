@@ -47,12 +47,27 @@ void copyToClipboardTest() {
 
     test('Copy otp value', () async {
       await doLongPress(driver, find.text(tokenName));
+    });
 
-      await driver.tap(find.byType("PopupMenuButton<String>"));
-      await driver.tap(find.text("Add token"));
+    test('Clean up', () async {
+      await driver.scroll(
+          find.text("TokenName"), -500, 0, Duration(milliseconds: 100));
+
+      // Delete the token.
+      await driver.tap(find.text("Delete"));
+
+      // Wait for the dialog to open.
+      await driver.waitFor(find.text("Confirm deletion"));
+
+      await driver.tap(find.text("Delete"));
+
+      await driver.waitForAbsent(find.text("TestName"));
     });
 
     test('Verify value is in clipboard', () async {
+      await driver.tap(find.byType("PopupMenuButton<String>"));
+      await driver.tap(find.text("Add token"));
+
       await doLongPress(
           driver,
           find.ancestor(

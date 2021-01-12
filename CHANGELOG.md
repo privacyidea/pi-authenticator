@@ -1,11 +1,19 @@
 # Changelog
 
+## [3.0.8] - 2021-01-07
+
+## Added
+
+- Automatic synchronization of push tokens
+- Manual synchronization of push tokens through apps settings
+- Added user agent property to network requests
+
 ## [3.0.7] - 2020-11-12
 
 ### Fixed
 
-- fixed showing push notifications that were received when the app is closed
-- fixed deleting expired push request when the app is opened
+- Fixed showing push notifications that were received when the app is closed
+- Fixed deleting expired push request when the app is opened
 
 
 ## [3.0.6] - 2020-11-11
@@ -36,6 +44,7 @@
 - parallel development of android and ios version
 
 
+[3.0.8]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.7...v3.0.8
 [3.0.7]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.6...v3.0.7
 [3.0.6]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.4...v3.0.6
 [3.0.4]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.0...v3.0.4

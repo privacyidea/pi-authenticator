@@ -69,6 +69,8 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     super.dispose();
   }
 
+  final ScrollController controller = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,41 +81,46 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
           maxLines: 2, // Title can be shown on small screens too.
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: <Widget>[
-            _buildTextInputForm(),
-            _buildDropdownButtonWithLabel(Localization.of(context).encoding,
-                _selectedEncoding, Encodings.values),
-            _buildDropdownButtonWithLabel(Localization.of(context).algorithm,
-                _selectedAlgorithm, Algorithms.values),
-            _buildDropdownButtonWithLabel(Localization.of(context).digits,
-                _selectedDigits, allowedDigits),
-            _buildDropdownButtonWithLabel(
-                Localization.of(context).type,
-                _selectedType,
-                List.from(TokenTypes.values)..remove(TokenTypes.PIPUSH)),
-            Visibility(
+      body: Scrollbar(
+        isAlwaysShown: true,
+        controller: controller,
+        child: SingleChildScrollView(
+          controller: controller,
+          padding: EdgeInsets.all(20),
+          child: Column(
+            children: <Widget>[
+              _buildTextInputForm(),
+              _buildDropdownButtonWithLabel(Localization.of(context).encoding,
+                  _selectedEncoding, Encodings.values),
+              _buildDropdownButtonWithLabel(Localization.of(context).algorithm,
+                  _selectedAlgorithm, Algorithms.values),
+              _buildDropdownButtonWithLabel(Localization.of(context).digits,
+                  _selectedDigits, allowedDigits),
+              _buildDropdownButtonWithLabel(
+                  Localization.of(context).type,
+                  _selectedType,
+                  List.from(TokenTypes.values)..remove(TokenTypes.PIPUSH)),
+              Visibility(
 //               the period is only used by TOTP tokens
-              visible: _selectedType.value == TokenTypes.TOTP,
-              child: _buildDropdownButtonWithLabel(
-                  Localization.of(context).period,
-                  _selectedPeriod,
-                  allowedPeriods,
-                  postFix: 's'),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedButton(
-                child: Text(
-                  Localization.of(context).addToken,
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                onPressed: () => _returnTokenIfValid(),
+                visible: _selectedType.value == TokenTypes.TOTP,
+                child: _buildDropdownButtonWithLabel(
+                    Localization.of(context).period,
+                    _selectedPeriod,
+                    allowedPeriods,
+                    postFix: 's'),
               ),
-            ),
-          ],
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                  child: Text(
+                    Localization.of(context).addToken,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  onPressed: () => _returnTokenIfValid(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
