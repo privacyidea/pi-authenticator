@@ -75,17 +75,13 @@ class StorageUtil {
 
       try {
         serializedToken = jsonDecode(value);
-      } on FormatException catch (e) {
-        log('Could not interprete this as a token: $value',
-            name: 'storage_utils.dart');
+      } on FormatException {
         continue;
       }
 
       if (serializedToken == null || !serializedToken.containsKey('type')) {
         continue;
       }
-
-      if (!serializedToken.containsKey('type')) continue;
 
       // TODO when the token version (token.version) changed handle this here.
 
@@ -138,6 +134,23 @@ class StorageUtil {
         ? null
         : FirebaseConfig.fromJson(jsonDecode(serializedConfig));
   }
+
+  static const _CURRENT_APP_TOKEN_KEY = _GLOBAL_PREFIX + "CURRENT_APP_TOKEN";
+
+  static Future<void> setCurrentFirebaseToken(String str) async =>
+      _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str);
+
+  static Future<String> getCurrentFirebaseToken() async =>
+      _storage.read(key: _CURRENT_APP_TOKEN_KEY);
+
+  static const _NEW_APP_TOKEN_KEY = _GLOBAL_PREFIX + "NEW_APP_TOKEN";
+
+  // This is used for checking if the token was updated.
+  static Future<void> setNewFirebaseToken(String str) async =>
+      _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
+
+  static Future<String> getNewFirebaseToken() async =>
+      _storage.read(key: _NEW_APP_TOKEN_KEY);
 
   // ###########################################################################
   // FIREBASE PER TOKEN

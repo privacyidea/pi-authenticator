@@ -66,3 +66,6 @@ const String URI_SSL_VERIFY = "URI_SSL_VERIFY";
 
 // Crypto stuff:
 const String SIGNING_ALGORITHM = 'SHA-256/RSA';
+
+// Http:
+const String USER_AGENT_STRING = "privacyIDEA-App";

@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// TODO Check if the app was updated -> If yes, show this page, make accessible from settings?
-// TODO Show Information for each update version / changelog
-// TODO Format as Markdown?
+// TODO Make accessible from settings?
 
 class ChangelogScreen extends StatelessWidget {
   @override

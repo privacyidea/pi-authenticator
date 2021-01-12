@@ -197,13 +197,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.16.2"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.3"
   dart_style:
     dependency: transitive
     description:
@@ -355,6 +348,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutterlifecyclehooks:
+    dependency: "direct main"
+    description:
+      name: flutterlifecyclehooks
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   fuchsia_remote_debug_protocol:
     dependency: transitive
     description: flutter
@@ -744,7 +744,7 @@ packages:
       name: shelf_static
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.8"
+    version: "0.2.9+1"
   shelf_web_socket:
     dependency: transitive
     description:

@@ -108,7 +108,8 @@ class Localization {
     return Intl.message(
       'Digits',
       desc:
-          'Title of the dropdown button where the number of digits for the opt value is selecte.',
+          'Title of the dropdown button where the number of digits for the opt'
+          ' value is selected.',
       locale: localeName,
     );
   }
@@ -264,8 +265,8 @@ class Localization {
   String get twoStepDialogTitleGenerate {
     return Intl.message(
       'Generating phone part',
-      desc:
-          'Title of a dialog telling the user that the phone part gets generated right now.',
+      desc: 'Title of a dialog telling the user that the phone part gets'
+          ' generated right now.',
       locale: localeName,
     );
   }
@@ -273,8 +274,8 @@ class Localization {
   String get twoStepDialogTitlePhonePart {
     return Intl.message(
       'Phone part:',
-      desc:
-          'Title of a dialog telling the user that the phone was generated, and it is shown to the user.',
+      desc: 'Title of a dialog telling the user that the phone was generated,'
+          ' and it is shown to the user.',
       locale: localeName,
     );
   }
@@ -291,13 +292,21 @@ class Localization {
   }
 
   // ###########################################################################
-  // SETTINGS
+  //                                 SETTINGS
   // ###########################################################################
 
   String get settings {
     return Intl.message(
       'Settings',
       desc: 'Button to open the settings page.',
+      locale: localeName,
+    );
+  }
+
+  String get push {
+    return Intl.message(
+      'Push Token',
+      desc: 'Title for the settings block concerning the push tokens.',
       locale: localeName,
     );
   }
@@ -360,6 +369,66 @@ class Localization {
     );
   }
 
+  String get synchronizePushTitle {
+    return Intl.message(
+      'Synchronize push tokens',
+      desc: 'Title of synchronizing push tokens in settings.',
+      locale: localeName,
+    );
+  }
+
+  String get synchronizePushDescription {
+    return Intl.message(
+      'Synchronizes tokens with the privacyIDEA server.',
+      desc: 'Description of synchronizing push tokens in settings.',
+      locale: localeName,
+    );
+  }
+
+  String get sync {
+    return Intl.message(
+      'Sync',
+      desc: 'Text of button that is used to synchronize push tokens.',
+      locale: localeName,
+    );
+  }
+
+  String get synchronizePushDialogTitle {
+    return Intl.message(
+      'Synchronizing tokens.',
+      desc: 'Title of the push synchronization dialog.',
+      locale: localeName,
+    );
+  }
+
+  String get allTokensSynchronized {
+    return Intl.message(
+      'All tokens are synchronized.',
+      desc:
+          'Content of the push synchronization dialog. Signaling the user that'
+          ' everything worked.',
+      locale: localeName,
+    );
+  }
+
+  String get synchronizationFailedForTheseTokens {
+    return Intl.message(
+      'Synchronization failed for the following tokens, please try again:',
+      desc: 'Headline for the list of tokens where the synchronization failed.',
+      locale: localeName,
+    );
+  }
+
+  String get synchronizationNotSupportedForTheseTokens {
+    return Intl.message(
+      'The following tokens do not support synchronization'
+      ' and must be rolled out again:',
+      desc: 'Informs the user that the following tokens'
+          ' cannot be synchronized as they do not support that.',
+      locale: localeName,
+    );
+  }
+
   // ###########################################################################
   //                                PUSH TOKENS:
   // ###########################################################################
@@ -396,8 +465,8 @@ class Localization {
       name: "errorRollOutFailed",
       args: [name, errorCode],
       examples: const {'name': 'PUSH1234A', 'errorCode': "500"},
-      desc:
-          'Tells the user that the token could not be rolled out, because a network error occured.',
+      desc: 'Tells the user that the token could not be rolled out, because a'
+          ' network error occurred.',
       locale: localeName,
     );
   }
