@@ -50,7 +50,8 @@ class GuideScreen extends StatelessWidget {
                 ),
               );
             }
-            return Center(child: CircularProgressIndicator());
+            return Center(
+                child: Text(Localization.of(context).somethingWentWrong));
           },
         ));
   }

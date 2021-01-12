@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // TODO Check if the app was updated -> If yes, show this page, make accessible from settings?
@@ -39,7 +40,8 @@ class ChangelogScreen extends StatelessWidget {
                 ),
               );
             }
-            return Center(child: CircularProgressIndicator());
+            return Center(
+                child: Text(Localization.of(context).somethingWentWrong));
           },
         ));
   }

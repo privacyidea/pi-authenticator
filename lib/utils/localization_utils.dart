@@ -175,6 +175,14 @@ class Localization {
   // OTHERS
   // ###########################################################################
 
+  String get somethingWentWrong {
+    return Intl.message(
+      'Something went wrong.',
+      desc: 'Tells the user that something went wrong.',
+      locale: localeName,
+    );
+  }
+
   String get addManually {
     return Intl.message(
       'Add token',
