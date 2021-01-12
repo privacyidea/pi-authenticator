@@ -29,6 +29,14 @@ class Localization {
   // WORDS (E.G. FOR BUTTONS)
   // ###########################################################################
 
+  String get guide {
+    return Intl.message(
+      'Guide',
+      desc: 'Button to open the guide screen.',
+      locale: localeName,
+    );
+  }
+
   String get next {
     return Intl.message(
       'Next',
