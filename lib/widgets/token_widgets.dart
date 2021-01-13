@@ -276,6 +276,10 @@ class _PushWidgetState extends _TokenWidgetState {
         setState(() {}); // Update ui
       }
     });
+
+    // Delete expired tokens, because the timer may not run the function
+    // immediately.
+    _deleteExpiredRequests(_token);
   }
 
   void _deleteExpiredRequests(PushToken t) {
