@@ -349,5 +349,23 @@
   "@Polling for new challenges": {
     "type": "text",
     "placeholders": {}
+  },
+  "Guide": "Anleitung",
+  "@Guide": {
+    "description": "Button to open the guide screen.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Something went wrong.": "Etwas ist schiefgelaufen.",
+  "@Something went wrong.": {
+    "description": "Tells the user that something went wrong.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Show this screen on start:": "Zeige bei App-Start:",
+  "@Show this screen on start:": {
+    "description": "Description for checkbox, if the checkbox is ticked, the guide screen is shown on every app start.",
+    "type": "text",
+    "placeholders": {}
   }
 }

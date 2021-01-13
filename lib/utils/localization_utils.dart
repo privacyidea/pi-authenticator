@@ -29,6 +29,14 @@ class Localization {
   // WORDS (E.G. FOR BUTTONS)
   // ###########################################################################
 
+  String get guide {
+    return Intl.message(
+      'Guide',
+      desc: 'Button to open the guide screen.',
+      locale: localeName,
+    );
+  }
+
   String get next {
     return Intl.message(
       'Next',
@@ -168,6 +176,23 @@ class Localization {
   // OTHERS
   // ###########################################################################
 
+  String get showThisOnStart {
+    return Intl.message(
+      'Show this screen on start:',
+      desc: 'Description for checkbox, if the checkbox is ticked, the guide '
+          'screen is shown on every app start.',
+      locale: localeName,
+    );
+  }
+
+  String get somethingWentWrong {
+    return Intl.message(
+      'Something went wrong.',
+      desc: 'Tells the user that something went wrong.',
+      locale: localeName,
+    );
+  }
+
   String get addManually {
     return Intl.message(
       'Add token',
@@ -179,7 +204,7 @@ class Localization {
   String get scanQr {
     return Intl.message(
       'Scan QR-Code',
-      desc: 'The button to scan otpauto qr-codes.',
+      desc: 'The button to scan otpauth qr-codes.',
       locale: localeName,
     );
   }

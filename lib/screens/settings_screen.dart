@@ -241,6 +241,7 @@ class AppSettings extends InheritedWidget {
   static String _prefHideOtps = 'KEY_HIDE_OTPS';
   static String _prefEnablePoll = 'KEY_ENABLE_POLLING';
   static String _loadLegacyKey = 'KEY_LOAD_LEGACY';
+  static String _showGuideOnStartKey = 'KEY_SHOW_GUIDE_ON_START';
   final bool isTestMode;
 
   @override
@@ -256,11 +257,14 @@ class AppSettings extends InheritedWidget {
         _loadLegacy = preferences.getBool(_loadLegacyKey, defaultValue: true),
         isTestMode =
             const bool.fromEnvironment('testing_mode', defaultValue: false),
+        _showGuideOnStart =
+            preferences.getBool(_showGuideOnStartKey, defaultValue: true),
         super(child: child);
 
   final Preference<bool> _hideOpts;
   final Preference<bool> _enablePolling;
   final Preference<bool> _loadLegacy;
+  final Preference<bool> _showGuideOnStart;
 
   Stream<bool> streamHideOpts() => _hideOpts;
 
@@ -273,4 +277,10 @@ class AppSettings extends InheritedWidget {
   void setLoadLegacy(bool value) => _loadLegacy.setValue(value);
 
   bool getLoadLegacy() => _loadLegacy.getValue();
+
+  bool get showGuideOnStart => _showGuideOnStart.getValue();
+
+  set showGuideOnStart(bool value) => _showGuideOnStart.setValue(value);
+
+  Stream<bool> showGuideOnStartStream() => _showGuideOnStart;
 }

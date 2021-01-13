@@ -41,6 +41,7 @@ import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
+import 'package:privacyidea_authenticator/screens/guide_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
@@ -107,8 +108,9 @@ class _MainScreenState extends State<MainScreen> {
       }
     });
 
-    // Show changelog
+    // Show changelog and welcome screen
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
+      // Do not show these info when running driver tests
       if (!AppSettings.of(context).isTestMode) {
         PackageInfo info = await PackageInfo.fromPlatform();
 
@@ -119,6 +121,14 @@ class _MainScreenState extends State<MainScreen> {
             MaterialPageRoute(builder: (context) => ChangelogScreen()),
           );
           StorageUtil.setCurrentVersion(info.version);
+        }
+
+        // Show the guide screen in front of the changelog -> load it last
+        if (AppSettings.of(context).showGuideOnStart) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => GuideScreen()),
+          );
         }
       }
     });
@@ -775,15 +785,17 @@ class _MainScreenState extends State<MainScreen> {
                 MaterialPageRoute(
                   builder: (context) => SettingsScreen('Settings'),
                 ));
+          } else if (value == 'guide') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GuideScreen(),
+              ),
+            );
           }
         },
         elevation: 5.0,
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          PopupMenuItem<String>(
-            value: "about",
-            child: Text(Localization.of(context).about),
-          ),
-          PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "add_manually",
             child: Text(Localization.of(context).addManually),
@@ -792,6 +804,16 @@ class _MainScreenState extends State<MainScreen> {
           PopupMenuItem<String>(
             value: "settings",
             child: Text(Localization.of(context).settings),
+          ),
+          PopupMenuDivider(),
+          PopupMenuItem<String>(
+            value: "about",
+            child: Text(Localization.of(context).about),
+          ),
+          PopupMenuDivider(),
+          PopupMenuItem<String>(
+            value: "guide",
+            child: Text(Localization.of(context).guide),
           ),
         ],
       ),

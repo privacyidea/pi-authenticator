@@ -1,5 +1,11 @@
 {
-  "@@last_modified": "2020-11-04T12:40:18.589114",
+  "@@last_modified": "2021-01-12T17:39:37.559359",
+  "Guide": "Guide",
+  "@Guide": {
+    "description": "Button to open the guide screen.",
+    "type": "text",
+    "placeholders": {}
+  },
   "Next": "Next",
   "@Next": {
     "description": "The text of the button to calculate the next otp value.",
@@ -96,6 +102,18 @@
     "type": "text",
     "placeholders": {}
   },
+  "Show this screen on start:": "Show this screen on start:",
+  "@Show this screen on start:": {
+    "description": "Description for checkbox, if the checkbox is ticked, the guide screen is shown on every app start.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Something went wrong.": "Something went wrong.",
+  "@Something went wrong.": {
+    "description": "Tells the user that something went wrong.",
+    "type": "text",
+    "placeholders": {}
+  },
   "Add token": "Add token",
   "@Add token": {
     "description": "The button to open the screen to add tokens by hand.",
@@ -104,7 +122,7 @@
   },
   "Scan QR-Code": "Scan QR-Code",
   "@Scan QR-Code": {
-    "description": "The button to scan otpauto qr-codes.",
+    "description": "The button to scan otpauth qr-codes.",
     "type": "text",
     "placeholders": {}
   },

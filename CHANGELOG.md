@@ -7,6 +7,7 @@
 - Automatic synchronization of push tokens
 - Manual synchronization of push tokens through apps settings
 - Added user agent property to network requests
+- User guide on app start, that explains some functionality
 
 ## [3.0.7] - 2020-11-12
 
