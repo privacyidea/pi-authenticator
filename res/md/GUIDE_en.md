@@ -1,4 +1,4 @@
-# Welcome to the privacyIDEA authenticator.
+# Welcome to the PrivacyIDEA Authenticator.
 This screen gives you a quick introduction to the app.
 
 + The menu button `⋮` or `…` in the upper right corner of the screen gives access to several things:
@@ -13,7 +13,7 @@ in the lower right corner of the screen.
 + Tokens can be deleted and renamed by swiping left and clicking the corresponding button:
 ![Renaming and deleting tokens by swiping left](resource:res/gif/help_delete_rename.gif)
 
-# privacyIDEA push token:
+# PrivacyIDEA Push Token:
 
 + If privacyIDEAs push tokens are used, pending challenges can be polled by swiping down:
 ![Manually polling by swiping down](resource:res/gif/help_manual_poll.gif)
