@@ -133,7 +133,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               FlatButton(
                 child: Text(
                   Localization.of(context).cancel,
-                  style: getDialogTextStyle(isDarkModeOn(context)),
+                  style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
