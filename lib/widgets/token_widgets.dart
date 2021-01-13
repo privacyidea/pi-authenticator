@@ -3,7 +3,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
 
-  Copyright (c) 2017-2019 NetKnights GmbH
+  Copyright (c) 2017-2021 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -133,7 +133,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               FlatButton(
                 child: Text(
                   Localization.of(context).cancel,
-                  style: getDialogTextStyle(isDarkModeOn(context)),
+                  style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
@@ -276,6 +276,10 @@ class _PushWidgetState extends _TokenWidgetState {
         setState(() {}); // Update ui
       }
     });
+
+    // Delete expired tokens, because the timer may not run the function
+    // immediately.
+    _deleteExpiredRequests(_token);
   }
 
   void _deleteExpiredRequests(PushToken t) {
