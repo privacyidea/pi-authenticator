@@ -5,14 +5,16 @@ import '../l10n/messages_all.dart';
 import 'identifiers.dart';
 
 class Localization {
-  String localeName;
+  static String localeName;
 
-  Localization(this.localeName);
+  Localization(String localeName) {
+    Localization.localeName = localeName;
+  }
 
   static Future<Localization> load(Locale locale) {
     final String name =
         locale.countryCode.isEmpty ? locale.languageCode : locale.toString();
-    final String localeName = Intl.canonicalizedLocale(name);
+    localeName = Intl.canonicalizedLocale(name);
 
     return initializeMessages(localeName).then((_) {
       return Localization(localeName);

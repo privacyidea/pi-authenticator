@@ -18,6 +18,8 @@
   limitations under the License.
 */
 
+import 'dart:io';
+
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -161,29 +163,42 @@ class SettingsScreenState extends State<SettingsScreen> {
                 StreamBuilder<Locale>(
                   stream: AppSettings.of(context).streamLocalePreference(),
                   builder: (context, snapshot) {
-                    // FIXME Do not return null, set device locale here instead.
-                    if (!snapshot.hasData || snapshot.hasError) return null;
+                    Locale myLocale = Locale('system');
 
-                    return DropdownButton<Locale>(
-                      isExpanded: true,
-                      value: snapshot.data,
-                      // Initial value and current value
-                      items: supportedLocales
-                          .map<DropdownMenuItem<Locale>>((Locale value) {
-                        return DropdownMenuItem<Locale>(
-                          value: value,
-                          child: Text(
-                            "$value",
-                            style: Theme.of(context).textTheme.subhead,
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (Locale locale) {
-                        AppSettings.of(context).setLocalePreference(locale);
-                        // FIXME Change app language here (this does not work)
-                        Localization.load(locale);
-                      },
-                    );
+                    List<Locale> list = []..addAll(supportedLocales)
+//                      ..add(myLocale)
+                        ;
+
+                    print(list);
+
+                    if (!snapshot.hasData || snapshot.hasError) {
+                      return Placeholder();
+                    } else {
+                      return DropdownButton<Locale>(
+                        isExpanded: true,
+                        value: snapshot.data,
+                        // Initial value and current value
+                        items:
+                            list.map<DropdownMenuItem<Locale>>((Locale value) {
+                          return DropdownMenuItem<Locale>(
+                            value: value,
+                            child: Text(
+                              "$value",
+                              style: Theme.of(context).textTheme.subhead,
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (Locale locale) {
+//                          if (locale == myLocale) {
+//                            locale = Locale(Platform.localeName.split('_')[0]);
+//                          }
+
+                          AppSettings.of(context).setLocalePreference(locale);
+                          Localization.load(locale);
+                          setState(() {});
+                        },
+                      );
+                    }
                   },
                 ),
               ],
@@ -263,7 +278,11 @@ class AppSettings extends InheritedWidget {
             preferences.getBool(_prefEnablePoll, defaultValue: false),
         _loadLegacy = preferences.getBool(_loadLegacyKey, defaultValue: true),
         _localePreference = preferences.getString(_localePreferenceKey,
-            defaultValue: _encodeLocale(supportedLocales[0])),
+//            defaultValue: _encodeLocale(supportedLocales[0])),
+            defaultValue:
+                supportedLocales.contains(Platform.localeName.split('_')[0])
+                    ? Platform.localeName.split('_')[0]
+                    : _encodeLocale(supportedLocales[0])),
         super(child: child);
 
   final Preference<bool> _hideOpts;
@@ -286,7 +305,7 @@ class AppSettings extends InheritedWidget {
   void setLocalePreference(Locale locale) =>
       _localePreference.setValue(_encodeLocale(locale));
 
-//  Locale getLocalePreference() => _decodeLocale(_localePreference.getValue());
+  Locale getLocalePreference() => _decodeLocale(_localePreference.getValue());
 
   Stream<Locale> streamLocalePreference() {
     return _localePreference.map((String str) => _decodeLocale(str));
