@@ -22,19 +22,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
-import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
+import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomLicenseScreen extends StatefulWidget {
-  final String applicationName = "privacyIDEA Authenticator";
+  final String applicationName = "PrivacyIDEA Authenticator";
   final Widget applicationIcon = Padding(
     padding: EdgeInsets.all(40.0),
     child: Image.asset('res/logo/app_logo_light.png'),
   );
   final String applicationLegalese = "Apache License 2.0";
   final Uri gitHubLink =
-  Uri.parse("https://github.com/privacyidea/pi-authenticator");
+      Uri.parse("https://github.com/privacyidea/pi-authenticator");
   final Uri websiteLink = Uri.parse("https://netknights.it");
 
   @override
@@ -59,18 +59,28 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
               future: _info,
               builder: (context, snapshot) {
                 if (snapshot.hasData)
-                  return Text('Version ${snapshot.data.version}');
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Version ${snapshot.data.version}'),
+                      FlatButton(
+                        child: Text('Changelog'),
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChangelogScreen(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
                 else
                   return CircularProgressIndicator();
               },
             ),
-            Container(
-              height: 16,
-            ),
             FlatButton(
               child: Text(
                 "${widget.applicationLegalese}",
-                style: Theme.of(context).textTheme.caption,
               ),
               onPressed: _showAppLicenseDialog,
             ),
@@ -126,8 +136,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          Localization.of(context).about, // TODO Fix title
-//          textScaleFactor: screenTitleScaleFactor,
+          Localization.of(context).about,
         ),
       ),
       body: StreamBuilder<List<Widget>>(

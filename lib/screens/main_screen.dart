@@ -54,6 +54,8 @@ import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uuid/uuid.dart';
 
+import 'custom_about_screen.dart';
+
 class MainScreen extends StatefulWidget {
   MainScreen({Key key, this.title}) : super(key: key);
   final String title;
@@ -758,21 +760,26 @@ class _MainScreenState extends State<MainScreen> {
       PopupMenuButton<String>(
         onSelected: (String value) async {
           if (value == "about") {
-            PackageInfo info = await PackageInfo.fromPlatform();
 //              clearLicenses(), // This is used for testing purposes only.
             addAllLicenses();
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => LicensePage(
-                          applicationName: "privacyIDEA Authenticator",
-                          applicationVersion: info.version,
-                          applicationIcon: Padding(
-                            padding: EdgeInsets.all(40.0),
-                            child: Image.asset('res/logo/app_logo_light.png'),
-                          ),
-                          applicationLegalese: "Apache License 2.0",
-                        )));
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+//                LicensePage(
+//                  applicationName: "privacyIDEA Authenticator",
+//                  applicationVersion: info.version,
+//                  applicationIcon: Padding(
+//                    padding: EdgeInsets.all(40.0),
+//                    child: Image.asset('res/logo/app_logo_light.png'),
+//                  ),
+//                  applicationLegalese: "Apache License 2.0",
+//                ),
+//              ),
+//            )
+                    CustomLicenseScreen(),
+              ),
+            );
           } else if (value == "add_manually") {
             Navigator.push(
                 context,
