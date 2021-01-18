@@ -6,10 +6,8 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// TODO Make accessible from settings?
-
 class ChangelogScreen extends StatelessWidget {
-  // Without the offset the scroll bar is not shown the first time the sceen
+  // Without the offset the scroll bar is not shown the first time the screen
   // is displayed. This is a workaround for that bug and hopefully works on
   // all devices.
   final ScrollController _controller = ScrollController(initialScrollOffset: 2);

@@ -26,7 +26,7 @@ import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 
 class GuideScreen extends StatelessWidget {
-  // Without the offset the scroll bar is not shown the first time the sceen
+  // Without the offset the scroll bar is not shown the first time the screen
   // is displayed. This is a workaround for that bug and hopefully works on
   // all devices.
   final ScrollController _controller = ScrollController(initialScrollOffset: 2);
