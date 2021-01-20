@@ -344,5 +344,23 @@
   "@The firebase configuration is corrupted and cannot be used.": {
     "type": "text",
     "placeholders": {}
+  },
+  "Language": "Sprache",
+  "@Language": {
+    "description": "Title of language setting group.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Use device language": "Nutze Systemsprache",
+  "@Use device language": {
+    "description": "Title of the switch tile where using the devices language can be enabled.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Use device language if it is supported, otherwise default to english.": "Nutze Systemsprache, falls diese unterstützt wird. Anderenfalls nutze Englisch.",
+  "@Use device language if it is supported, otherwise default to english.": {
+    "description": "Description of the switch tile where using the devices language can be enabled.",
+    "type": "text",
+    "placeholders": {}
   }
 }

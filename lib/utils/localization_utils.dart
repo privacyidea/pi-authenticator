@@ -34,6 +34,14 @@ class Localization {
   // WORDS (E.G. FOR BUTTONS)
   // ###########################################################################
 
+  String get language {
+    return Intl.message(
+      'Language',
+      desc: 'Title of language setting group.',
+      locale: localeName,
+    );
+  }
+
   String get next {
     return Intl.message(
       'Next',
@@ -298,6 +306,25 @@ class Localization {
   // ###########################################################################
   // SETTINGS
   // ###########################################################################
+
+  String get useDeviceLocaleTitle {
+    return Intl.message(
+      'Use device language',
+      desc:
+          'Title of the switch tile where using the devices language can be enabled.',
+      locale: localeName,
+    );
+  }
+
+  String get useDeviceLocaleDescription {
+    return Intl.message(
+      'Use device language if it is supported,'
+      ' otherwise default to english.',
+      desc:
+          'Description of the switch tile where using the devices language can be enabled.',
+      locale: localeName,
+    );
+  }
 
   String get settings {
     return Intl.message(

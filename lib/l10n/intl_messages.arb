@@ -1,5 +1,11 @@
 {
-  "@@last_modified": "2020-10-21T15:41:30.972614",
+  "@@last_modified": "2021-01-20T14:59:43.311018",
+  "Language": "Language",
+  "@Language": {
+    "description": "Title of language setting group.",
+    "type": "text",
+    "placeholders": {}
+  },
   "Next": "Next",
   "@Next": {
     "description": "The text of the button to calculate the next otp value.",
@@ -181,6 +187,18 @@
         "example": "055374"
       }
     }
+  },
+  "Use device language": "Use device language",
+  "@Use device language": {
+    "description": "Title of the switch tile where using the devices language can be enabled.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Use device language if it is supported, otherwise default to english.": "Use device language if it is supported, otherwise default to english.",
+  "@Use device language if it is supported, otherwise default to english.": {
+    "description": "Description of the switch tile where using the devices language can be enabled.",
+    "type": "text",
+    "placeholders": {}
   },
   "Settings": "Settings",
   "@Settings": {

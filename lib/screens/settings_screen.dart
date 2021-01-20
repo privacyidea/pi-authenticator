@@ -154,7 +154,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             ),
             Divider(),
             SettingsGroup(
-              title: 'Language', // TODO Add translation
+              title: Localization.of(context).language,
               children: [
                 StreamBuilder<bool>(
                   stream: AppSettings.of(context).streamUseSystemLocale(),
@@ -181,11 +181,11 @@ class SettingsScreenState extends State<SettingsScreen> {
                       };
                     }
 
-                    // TODO Add Title and description
                     return SwitchListTile(
-                        title: Text('Use device language'),
-                        subtitle: Text('Use device language if it is supported,'
-                            ' otherwise default to english.'),
+                        title:
+                            Text(Localization.of(context).useDeviceLocaleTitle),
+                        subtitle: Text(Localization.of(context)
+                            .useDeviceLocaleDescription),
                         value: isActive,
                         onChanged: onChanged);
                   },
