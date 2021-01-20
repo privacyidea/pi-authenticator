@@ -74,10 +74,12 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
+    // Set language if defined by user
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      Locale pref = AppSettings.of(context).getLocalePreference();
-      print('loading locale $pref');
-      Localization.load(pref);
+      if (!AppSettings.of(context).getUseSystemLocale()) {
+        Locale pref = AppSettings.of(context).getLocalePreference();
+        Localization.load(pref);
+      }
     });
 
     // Start polling timer

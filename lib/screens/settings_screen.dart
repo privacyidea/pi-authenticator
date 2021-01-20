@@ -160,45 +160,95 @@ class SettingsScreenState extends State<SettingsScreen> {
             SettingsGroup(
               title: 'Language', // TODO Add translation
               children: [
-                StreamBuilder<Locale>(
-                  stream: AppSettings.of(context).streamLocalePreference(),
+                StreamBuilder<bool>(
+                  stream: AppSettings.of(context).streamUseSystemLocale(),
                   builder: (context, snapshot) {
-                    Locale myLocale = Locale('system');
+                    bool isActive = true;
+                    Function onChanged;
 
-                    List<Locale> list = []..addAll(supportedLocales)
-//                      ..add(myLocale)
-                        ;
+                    if (snapshot.hasData) {
+                      isActive = snapshot.data;
+                      onChanged = (value) {
+                        AppSettings.of(context).setUseSystemLocale(value);
+                        // Add locale that represents the devices language
+                        Locale locale;
+                        if (value) {
+                          List split = Platform.localeName.split("_");
+                          locale = Locale(split[0], split[1]);
+                        } else {
+                          locale =
+                              AppSettings.of(context).getLocalePreference();
+                        }
 
-                    print(list);
+                        Localization.load(locale);
+                        setState(() {});
+                      };
+                    }
 
-                    if (!snapshot.hasData || snapshot.hasError) {
-                      return Placeholder();
-                    } else {
-                      return DropdownButton<Locale>(
-                        isExpanded: true,
-                        value: snapshot.data,
-                        // Initial value and current value
-                        items:
-                            list.map<DropdownMenuItem<Locale>>((Locale value) {
-                          return DropdownMenuItem<Locale>(
-                            value: value,
-                            child: Text(
-                              "$value",
-                              style: Theme.of(context).textTheme.subhead,
+                    // TODO Add Title and description
+                    return SwitchListTile(
+                        title: Text('Use device language'),
+                        subtitle: Text('Use device language if it is supported,'
+                            ' otherwise default to english.'),
+                        value: isActive,
+                        onChanged: onChanged);
+                  },
+                ),
+                StreamBuilder<bool>(
+                  stream: AppSettings.of(context).streamUseSystemLocale(),
+                  builder: (context, snapshot) {
+                    bool isActive = false;
+                    Function onChanged;
+
+                    if (snapshot.hasData) {
+                      isActive = !snapshot.data;
+                    }
+
+                    if (isActive) {
+                      onChanged = (Locale locale) {
+                        AppSettings.of(context).setLocalePreference(locale);
+                        Localization.load(locale);
+                        setState(() {});
+                      };
+                    }
+
+                    return StreamBuilder<Locale>(
+                      stream: AppSettings.of(context).streamLocalePreference(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData || snapshot.hasError) {
+                          return Placeholder();
+                        } else {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: DropdownButton<Locale>(
+                              disabledHint: Text(
+                                "${snapshot.data}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1
+                                    .copyWith(color: Colors.grey),
+                              ),
+                              isExpanded: true,
+                              value: snapshot.data,
+                              // Initial value and current value
+                              items: supportedLocales
+                                  .map<DropdownMenuItem<Locale>>(
+                                      (Locale value) {
+                                return DropdownMenuItem<Locale>(
+                                  value: value,
+                                  child: Text(
+                                    "$value",
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1,
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: onChanged,
                             ),
                           );
-                        }).toList(),
-                        onChanged: (Locale locale) {
-//                          if (locale == myLocale) {
-//                            locale = Locale(Platform.localeName.split('_')[0]);
-//                          }
-
-                          AppSettings.of(context).setLocalePreference(locale);
-                          Localization.load(locale);
-                          setState(() {});
-                        },
-                      );
-                    }
+                        }
+                      },
+                    );
                   },
                 ),
               ],
@@ -265,6 +315,7 @@ class AppSettings extends InheritedWidget {
   static String _prefEnablePoll = 'KEY_ENABLE_POLLING';
   static String _loadLegacyKey = 'KEY_LOAD_LEGACY';
   static String _localePreferenceKey = 'KEY_LOCALE_PREFERENCE';
+  static String _useSystemLocaleKey = 'KEY_USE_SYSTEM_LOCALE';
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
@@ -278,17 +329,22 @@ class AppSettings extends InheritedWidget {
             preferences.getBool(_prefEnablePoll, defaultValue: false),
         _loadLegacy = preferences.getBool(_loadLegacyKey, defaultValue: true),
         _localePreference = preferences.getString(_localePreferenceKey,
-//            defaultValue: _encodeLocale(supportedLocales[0])),
-            defaultValue:
-                supportedLocales.contains(Platform.localeName.split('_')[0])
-                    ? Platform.localeName.split('_')[0]
-                    : _encodeLocale(supportedLocales[0])),
+            defaultValue: _encodeLocale(supportedLocales[0])),
+        _useSystemLocale =
+            preferences.getBool(_useSystemLocaleKey, defaultValue: true),
         super(child: child);
 
   final Preference<bool> _hideOpts;
   final Preference<bool> _enablePolling;
   final Preference<bool> _loadLegacy;
   final Preference<String> _localePreference;
+  final Preference<bool> _useSystemLocale;
+
+  Stream<bool> streamUseSystemLocale() => _useSystemLocale;
+
+  bool getUseSystemLocale() => _useSystemLocale.getValue();
+
+  void setUseSystemLocale(bool value) => _useSystemLocale.setValue(value);
 
   Stream<bool> streamHideOpts() => _hideOpts;
 
