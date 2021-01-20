@@ -105,6 +105,7 @@ String calculateTotpValue(TOTPToken token) {
     length: token.digits,
     algorithm: _mapAlgorithms(token.algorithm),
     interval: token.period,
+    isGoogle: true,
   )}";
 }
 
