@@ -32,10 +32,6 @@ import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
-  SettingsScreen(this._title);
-
-  final String _title;
-
   @override
   State<StatefulWidget> createState() => SettingsScreenState();
 }
@@ -49,7 +45,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget._title,
+          Localization.of(context).settings,
           textScaleFactor: screenTitleScaleFactor,
         ),
       ),
@@ -197,14 +193,14 @@ class SettingsScreenState extends State<SettingsScreen> {
                 StreamBuilder<bool>(
                   stream: AppSettings.of(context).streamUseSystemLocale(),
                   builder: (context, snapshot) {
-                    bool isActive = false;
+                    bool enableDropDown = false;
                     Function onChanged;
 
                     if (snapshot.hasData) {
-                      isActive = !snapshot.data;
+                      enableDropDown = !snapshot.data;
                     }
 
-                    if (isActive) {
+                    if (enableDropDown) {
                       onChanged = (Locale locale) {
                         AppSettings.of(context).setLocalePreference(locale);
                         Localization.load(locale);
