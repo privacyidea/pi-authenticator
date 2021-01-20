@@ -2,12 +2,16 @@
 
 ## [3.0.8] - 2021-01-07
 
-## Added
+### Added
 
 - Automatic synchronization of push tokens
 - Manual synchronization of push tokens through apps settings
 - Added user agent property to network requests
 - User guide on app start, that explains some functionality
+
+### Fixed
+
+- Fixed calculation of otp for TOTP tokens with shorter seed length
 
 ## [3.0.7] - 2020-11-12
 
