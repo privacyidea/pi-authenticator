@@ -89,10 +89,8 @@ bool isValidEncoding(String secret, Encodings encoding) {
 }
 
 String calculateHotpValue(HOTPToken token) {
-  Uint8List binarySecret = decodeSecretToUint8(token.secret, Encodings.base32);
-  String base32Secret = Base32Converter.base32.encode(binarySecret);
   return "${OTPLibrary.OTP.generateHOTPCode(
-    base32Secret,
+    token.secret,
     token.counter,
     length: token.digits,
     algorithm: _mapAlgorithms(token.algorithm),
@@ -101,10 +99,8 @@ String calculateHotpValue(HOTPToken token) {
 
 // TODO test this method, may use mockito for 'faking' the system time
 String calculateTotpValue(TOTPToken token) {
-  Uint8List binarySecret = decodeSecretToUint8(token.secret, Encodings.base32);
-  String base32Secret = Base32Converter.base32.encode(binarySecret);
   return "${OTPLibrary.OTP.generateTOTPCode(
-    base32Secret,
+    token.secret,
     DateTime.now().millisecondsSinceEpoch,
     length: token.digits,
     algorithm: _mapAlgorithms(token.algorithm),
