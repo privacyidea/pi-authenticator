@@ -9,6 +9,10 @@
 - Added user agent property to network requests
 - User guide on app start, that explains some functionality
 
+### Changed
+
+- Changed logos in app from png to svg to better support different screen sizes
+
 ### Fixed
 
 - Fixed calculation of otp for TOTP tokens with shorter seed length
