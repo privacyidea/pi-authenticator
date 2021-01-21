@@ -73,6 +73,7 @@ dependencies:
   flutterlifecyclehooks: ^1.0.1
   flutter_markdown: ^0.5.1
   url_launcher: ^5.7.10
+  flutter_svg: ^0.19.1
 
   flutter_cupertino_localizations: ^1.0.1
   intl: ^0.16.0
@@ -104,8 +105,7 @@ flutter:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
   assets:
-    - res/logo/app_logo_light.png
-    - res/logo/app_logo_dark.png
+    - res/logo/app_logo_light.svg
     - CHANGELOG.md
     - res/md/GUIDE_de.md
     - res/md/GUIDE_en.md
