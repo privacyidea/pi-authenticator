@@ -89,35 +89,35 @@ bool isValidEncoding(String secret, Encodings encoding) {
 }
 
 String calculateHotpValue(HOTPToken token) {
-  return "${OTPLibrary.OTP.generateHOTPCode(
+  return OTPLibrary.OTP.generateHOTPCodeString(
     token.secret,
     token.counter,
     length: token.digits,
     algorithm: _mapAlgorithms(token.algorithm),
-  )}";
+  );
 }
 
 // TODO test this method, may use mockito for 'faking' the system time
 String calculateTotpValue(TOTPToken token) {
-  return "${OTPLibrary.OTP.generateTOTPCode(
+  return OTPLibrary.OTP.generateTOTPCodeString(
     token.secret,
     DateTime.now().millisecondsSinceEpoch,
     length: token.digits,
     algorithm: _mapAlgorithms(token.algorithm),
     interval: token.period,
     isGoogle: true,
-  )}";
+  );
 }
 
 String calculateOtpValue(OTPToken token) {
   if (token is HOTPToken) {
-    return calculateHotpValue(token).padLeft(token.digits, '0');
+    return calculateHotpValue(token);
   } else if (token is TOTPToken) {
-    return calculateTotpValue(token).padLeft(token.digits, '0');
+    return calculateTotpValue(token);
   }
 
   throw ArgumentError.value(token, "token",
-      "The token kind of $token is not supported by this method");
+      "The token kind of $token is not supported by this method.");
 }
 
 OTPLibrary.Algorithm _mapAlgorithms(Algorithms algorithm) {
@@ -132,7 +132,7 @@ OTPLibrary.Algorithm _mapAlgorithms(Algorithms algorithm) {
       return OTPLibrary.Algorithm.SHA512;
     default:
       throw ArgumentError.value(algorithm, "algorithmName",
-          "This algortihm is unknown and not supported!");
+          "This algorithm is unknown and not supported!");
   }
 }
 
