@@ -772,7 +772,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     SystemChannels.lifecycle.setMessageHandler((msg) {
       log(
         "SystemChannels:",
-        name: "totpwidget.dart",
+        name: "totp_widgets.dart",
         error: msg,
       );
       if (msg == AppLifecycleState.resumed.toString()) {
