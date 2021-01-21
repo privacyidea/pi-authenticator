@@ -21,6 +21,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
@@ -28,10 +29,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CustomLicenseScreen extends StatefulWidget {
   final String applicationName = "PrivacyIDEA Authenticator";
-  final Widget applicationIcon = Padding(
-    padding: EdgeInsets.all(40.0),
-    child: Image.asset('res/logo/app_logo_light.png'),
-  );
+  final Widget applicationIcon =
+      SvgPicture.asset('res/logo/app_logo_light.svg', width: 330,);
   final String applicationLegalese = "Apache License 2.0";
   final Uri gitHubLink =
       Uri.parse("https://github.com/privacyidea/pi-authenticator");

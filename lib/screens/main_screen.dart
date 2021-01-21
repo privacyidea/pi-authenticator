@@ -17,13 +17,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:base32/base32.dart';
@@ -34,6 +32,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
@@ -243,10 +242,7 @@ class _MainScreenState extends State<MainScreen> {
           maxLines: 2, // Title can be shown on small screens too.
         ),
         actions: _buildActionMenu(),
-        leading: Padding(
-          padding: EdgeInsets.all(4.0),
-          child: Image.asset('res/logo/app_logo_light.png'),
-        ),
+        leading: SvgPicture.asset('res/logo/app_logo_light.svg'),
       ),
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
