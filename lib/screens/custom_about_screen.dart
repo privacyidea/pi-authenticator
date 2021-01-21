@@ -28,7 +28,7 @@ import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomLicenseScreen extends StatefulWidget {
-  final String applicationName = "PrivacyIDEA Authenticator";
+  final String applicationName = "privacyIDEA Authenticator";
   final Widget applicationIcon = SvgPicture.asset(
     'res/logo/app_logo_light.svg',
     width: 330,
