@@ -28,9 +28,11 @@ import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomLicenseScreen extends StatefulWidget {
-  final String applicationName = "PrivacyIDEA Authenticator";
-  final Widget applicationIcon =
-      SvgPicture.asset('res/logo/app_logo_light.svg', width: 330,);
+  final String applicationName = "privacyIDEA Authenticator";
+  final Widget applicationIcon = SvgPicture.asset(
+    'res/logo/app_logo_light.svg',
+    width: 330,
+  );
   final String applicationLegalese = "Apache License 2.0";
   final Uri gitHubLink =
       Uri.parse("https://github.com/privacyidea/pi-authenticator");

@@ -21,18 +21,67 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:developer';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
 import 'package:hex/hex.dart' as HexConverter;
-import 'package:http/http.dart';
-import 'package:http/io_client.dart';
 import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:privacyidea_authenticator/model/tokens.dart';
 
 import 'identifiers.dart';
 
+/// Inserts [char] at the position [pos] in the given String ([str]),
+/// and returns the resulting String.
+///
+/// Example: insertCharAt("ABCD", " ", 2) --> "AB CD"
+String insertCharAt(String str, String char, int pos) {
+  return str.substring(0, pos) + char + str.substring(pos, str.length);
+}
+
+/// Inserts [' '] after every [period] characters in [str].
+/// Trims leading and trailing whitespaces. Returns the resulting String.
+///
+/// Example: "ABCD", 1 --> "A B C D"
+/// Example: "ABCD", 2 --> "AB CD"
+String splitPeriodically(String str, int period) {
+  String result = "";
+  for (int i = 0; i < str.length; i++) {
+    i % 4 == 0 ? result += " ${str[i]}" : result += str[i];
+  }
+
+  return result.trim();
+}
+
+Algorithms mapStringToAlgorithm(String algoAsString) {
+  for (Algorithms alg in Algorithms.values) {
+    if (equalsIgnoreCase(enumAsString(alg), algoAsString)) {
+      return alg;
+    }
+  }
+
+  throw ArgumentError.value(algoAsString, "algorAsString",
+      "$algoAsString cannot be mapped to $Algorithms");
+}
+
+/// This implementation is taken from the library
+/// [foundation](https://api.flutter.dev/flutter/foundation/describeEnum.html).
+/// That library sadly depends on [dart.ui] and thus cannot be used in tests.
+/// Therefor only using this code enables us to use this library ([utils.dart])
+/// in tests.
+String enumAsString(Object enumEntry) {
+  final String description = enumEntry.toString();
+  final int indexOfDot = description.indexOf('.');
+  assert(indexOfDot != -1 && indexOfDot < description.length - 1);
+  return description.substring(indexOfDot + 1);
+}
+
+bool equalsIgnoreCase(String s1, String s2) {
+  return s1.toLowerCase() == s2.toLowerCase();
+}
+
+// TODO Everything after this line should be in 'crypto_utils.dart,
+//   but that depends on foundations.dart and that depends on dart.ui,
+//   which ultimately makes it impossible to run driver tests.
 Uint8List decodeSecretToUint8(String secret, Encodings encoding) {
   ArgumentError.checkNotNull(secret, "secret");
   ArgumentError.checkNotNull(encoding, "encoding");
@@ -89,35 +138,35 @@ bool isValidEncoding(String secret, Encodings encoding) {
 }
 
 String calculateHotpValue(HOTPToken token) {
-  return "${OTPLibrary.OTP.generateHOTPCode(
+  return OTPLibrary.OTP.generateHOTPCodeString(
     token.secret,
     token.counter,
     length: token.digits,
     algorithm: _mapAlgorithms(token.algorithm),
-  )}";
+  );
 }
 
 // TODO test this method, may use mockito for 'faking' the system time
 String calculateTotpValue(TOTPToken token) {
-  return "${OTPLibrary.OTP.generateTOTPCode(
+  return OTPLibrary.OTP.generateTOTPCodeString(
     token.secret,
     DateTime.now().millisecondsSinceEpoch,
     length: token.digits,
     algorithm: _mapAlgorithms(token.algorithm),
     interval: token.period,
     isGoogle: true,
-  )}";
+  );
 }
 
 String calculateOtpValue(OTPToken token) {
   if (token is HOTPToken) {
-    return calculateHotpValue(token).padLeft(token.digits, '0');
+    return calculateHotpValue(token);
   } else if (token is TOTPToken) {
-    return calculateTotpValue(token).padLeft(token.digits, '0');
+    return calculateTotpValue(token);
   }
 
   throw ArgumentError.value(token, "token",
-      "The token kind of $token is not supported by this method");
+      "The token kind of $token is not supported by this method.");
 }
 
 OTPLibrary.Algorithm _mapAlgorithms(Algorithms algorithm) {
@@ -132,116 +181,6 @@ OTPLibrary.Algorithm _mapAlgorithms(Algorithms algorithm) {
       return OTPLibrary.Algorithm.SHA512;
     default:
       throw ArgumentError.value(algorithm, "algorithmName",
-          "This algortihm is unknown and not supported!");
+          "This algorithm is unknown and not supported!");
   }
-}
-
-/// Inserts [char] at the position [pos] in the given String ([str]),
-/// and returns the resulting String.
-///
-/// Example: insertCharAt("ABCD", " ", 2) --> "AB CD"
-String insertCharAt(String str, String char, int pos) {
-  return str.substring(0, pos) + char + str.substring(pos, str.length);
-}
-
-/// Inserts [' '] after every [period] characters in [str].
-/// Trims leading and trailing whitespaces. Returns the resulting String.
-///
-/// Example: "ABCD", 1 --> "A B C D"
-/// Example: "ABCD", 2 --> "AB CD"
-String splitPeriodically(String str, int period) {
-  String result = "";
-  for (int i = 0; i < str.length; i++) {
-    i % 4 == 0 ? result += " ${str[i]}" : result += str[i];
-  }
-
-  return result.trim();
-}
-
-Algorithms mapStringToAlgorithm(String algoAsString) {
-  for (Algorithms alg in Algorithms.values) {
-    if (equalsIgnoreCase(enumAsString(alg), algoAsString)) {
-      return alg;
-    }
-  }
-
-  throw ArgumentError.value(algoAsString, "algorAsString",
-      "$algoAsString cannot be mapped to $Algorithms");
-}
-
-/// This implementation is taken from the library
-/// [foundation](https://api.flutter.dev/flutter/foundation/describeEnum.html).
-/// That library sadly depends on [dart.ui] and thus cannot be used in tests.
-/// Therefor only using this code enables us to use this library ([utils.dart])
-/// in tests.
-String enumAsString(Object enumEntry) {
-  final String description = enumEntry.toString();
-  final int indexOfDot = description.indexOf('.');
-  assert(indexOfDot != -1 && indexOfDot < description.length - 1);
-  return description.substring(indexOfDot + 1);
-}
-
-bool equalsIgnoreCase(String s1, String s2) =>
-    s1.toLowerCase() == s2.toLowerCase();
-
-/// Custom POST request allows to not verify certificates
-Future<Response> doPost(
-    {bool sslVerify, Uri url, Map<String, String> body}) async {
-  log("Sending post request",
-      name: "utils.dart",
-      error: "URI: $url, SSLVerify: $sslVerify, Body: $body");
-
-  if (body.entries.any((element) => element.value == null)) {
-    throw ArgumentError(
-        "Can not send request because the [body] contains a null value,"
-        " this is not permitted.");
-  }
-
-  HttpClient httpClient = HttpClient();
-  httpClient.badCertificateCallback =
-      ((X509Certificate cert, String host, int port) => !sslVerify);
-  httpClient.userAgent = USER_AGENT_STRING;
-
-  IOClient ioClient = IOClient(httpClient);
-
-  Response response = await ioClient.post(url, body: body);
-
-  log("Received response",
-      name: "utils.dart",
-      error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
-
-  ioClient.close();
-
-  return response;
-}
-
-Future<Response> doGet(
-    {Uri url, Map<String, String> parameters, bool sslVerify = true}) async {
-  ArgumentError.checkNotNull(
-      sslVerify, 'Parameter [sslVerify] must not be null!');
-
-  HttpClient httpClient = HttpClient();
-  httpClient.badCertificateCallback =
-      ((X509Certificate cert, String host, int port) => !sslVerify);
-  httpClient.userAgent = USER_AGENT_STRING;
-
-  IOClient ioClient = IOClient(httpClient);
-  // TODO Make this more general!
-  // TODO Are the parameters the headers?
-  String urlWithParameters = '$url?serial=${parameters['serial']}'
-      '&timestamp=${parameters['timestamp']}'
-      '&signature=${parameters['signature']}';
-  Response response = await ioClient.get(urlWithParameters);
-
-//  String urlWithParameters = '$url';
-//  parameters.forEach((key, value) => urlWithParameters += '&$key=$value');
-//  print('$urlWithParameters');
-//  Response response = await ioClient.get(urlWithParameters);
-
-  log("Received response",
-      name: "utils.dart",
-      error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
-
-  ioClient.close();
-  return response;
 }
