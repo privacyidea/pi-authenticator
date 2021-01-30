@@ -38,6 +38,7 @@ import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
@@ -772,7 +773,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     SystemChannels.lifecycle.setMessageHandler((msg) {
       log(
         "SystemChannels:",
-        name: "totpwidget.dart",
+        name: "totp_widgets.dart",
         error: msg,
       );
       if (msg == AppLifecycleState.resumed.toString()) {
