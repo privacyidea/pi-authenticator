@@ -5,6 +5,7 @@
 ### Changed
 
 - Notification with sound is shown when the app is open now too
+- Synchronized progress indicator of totp tokens
 
 
 ## [3.0.8] - 2021-01-07
