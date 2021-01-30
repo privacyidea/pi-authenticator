@@ -659,8 +659,7 @@ class _MainScreenState extends State<MainScreen> {
           token.knownPushRequests.put(pushRequest.id);
 
           StorageUtil.saveOrReplaceToken(token); // Save the pending request.
-
-          if (inBackground) _showNotification(token, pushRequest, false);
+          _showNotification(token, pushRequest, false);
         } else {
           log(
               "The push request $pushRequest already exists "

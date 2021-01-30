@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.9] - 2021-xx-xx
+
+### Changed
+
+- Notification with sound is shown when the app is open now too
+
+
 ## [3.0.8] - 2021-01-07
 
 ### Added
