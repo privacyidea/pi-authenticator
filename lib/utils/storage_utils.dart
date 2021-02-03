@@ -188,7 +188,16 @@ class StorageUtil {
   static Future<List<Token>> loadAllTokensLegacy() async {
     List<Token> tokenList = [];
 
-    for (var tokenMap in jsonDecode(await Legacy.loadAllTokens())) {
+    var legacyStr, legacy;
+    try {
+      legacyStr = await Legacy.loadAllTokens();
+      legacy = jsonDecode(legacyStr);
+    } on FormatException {
+      //print("Could not decode legacy string $legacyStr");
+      return tokenList;
+    }
+
+    for (var tokenMap in legacy) {
       Token token;
       if (tokenMap['type'] == 'hotp') {
         token = HOTPToken(
