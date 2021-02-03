@@ -122,7 +122,9 @@ public class Util {
     public String loadTokensJSON() throws IOException, GeneralSecurityException {
         logprint("LOADING TOKEN");
         byte[] data = loadDataFromFile(DATAFILE);
-
+        if (data == null) {
+            return "";
+        }
         String out = new String(data);
         out = out.replaceAll("Hmac", "");
         return out;
