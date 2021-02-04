@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.0.9] - 2021-xx-xx
+## [3.0.11] - 2021-xx-xx
 
 ### Changed
 
