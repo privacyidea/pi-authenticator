@@ -20,6 +20,7 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -33,17 +34,23 @@ import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 class UpdateFirebaseTokenDialog extends StatefulWidget {
+  final GlobalKey<ScaffoldState>
+      _scaffoldKey; // Used to display messages to user.
+
+  const UpdateFirebaseTokenDialog(
+      {Key key, GlobalKey<ScaffoldState> scaffoldKey})
+      : this._scaffoldKey = scaffoldKey,
+        super(key: key);
+
   @override
   State<StatefulWidget> createState() => _UpdateFirebaseTokenDialogState();
 }
 
 class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
-  String _title;
   Widget _content = Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[CircularProgressIndicator()],
   );
-  bool _showDismiss = false;
 
   @override
   void initState() {
@@ -59,12 +66,9 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
         title: Text(Localization.of(context).synchronizePushDialogTitle),
         content: _content,
         actions: <Widget>[
-          Visibility(
-            visible: _showDismiss,
-            child: RaisedButton(
-              child: Text(Localization.of(context).dismiss),
-              onPressed: () => Navigator.pop(context),
-            ),
+          RaisedButton(
+            child: Text(Localization.of(context).dismiss),
+            onPressed: () => Navigator.pop(context),
           ),
         ],
       ),
@@ -104,15 +108,27 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
           ? await Legacy.sign(p.serial, message)
           : createBase32Signature(p.getPrivateTokenKey(), utf8.encode(message));
 
-      Response response =
-          await doPost(sslVerify: p.sslVerify, url: p.url, body: {
-        'new_fb_token': token,
-        'serial': p.serial,
-        'timestamp': timestamp,
-        'signature': signature
-      });
+      Response response;
+      try {
+        response = await doPost(sslVerify: p.sslVerify, url: p.url, body: {
+          'new_fb_token': token,
+          'serial': p.serial,
+          'timestamp': timestamp,
+          'signature': signature
+        });
+      } on SocketException catch (e) {
+        log('Socket exception occurred: $e',
+            name: 'update_firebase_token_dialog.dart');
+        widget._scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(
+              Localization.of(context).errorSynchronizationNoNetworkConnection),
+          duration: Duration(seconds: 3),
+        ));
+        Navigator.pop(context);
+        return;
+      }
 
-      if (response.statusCode == 200) {
+      if (response != null && response.statusCode == 200) {
         log('Updating firebase token for push token: ${p.serial} succeeded!',
             name: 'update_firebase_token_dialog.dart');
       } else {
@@ -125,7 +141,6 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     if (tokenWithFailedUpdate.isEmpty && tokenWithOutUrl.isEmpty) {
       setState(() {
         _content = Text(Localization.of(context).allTokensSynchronized);
-        _showDismiss = true;
       });
     } else {
       List<Widget> children = [];
@@ -164,7 +179,6 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
             ),
           ),
         );
-        _showDismiss = true;
       });
     }
   }
