@@ -6,6 +6,11 @@
 
 - Notification with sound is shown when the app is open now too
 - Synchronized progress indicator of totp tokens
+- Synchronization of push tokens can be canceled
+
+### Fixed
+
+- Handle failing synchronization of push tokens by informing the user and closing the dialog
 
 
 ## [3.0.8] - 2021-01-07
