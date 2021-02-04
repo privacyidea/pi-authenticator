@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2021-01-12T17:39:37.559359",
+  "@@last_modified": "2021-02-04T11:51:13.167335",
   "Guide": "Guide",
   "@Guide": {
     "description": "Button to open the guide screen.",
@@ -62,7 +62,7 @@
   },
   "Digits": "Digits",
   "@Digits": {
-    "description": "Title of the dropdown button where the number of digits for the opt value is selecte.",
+    "description": "Title of the dropdown button where the number of digits for the opt value is selected.",
     "type": "text",
     "placeholders": {}
   },
@@ -206,6 +206,12 @@
     "type": "text",
     "placeholders": {}
   },
+  "Push Token": "Push Token",
+  "@Push Token": {
+    "description": "Title for the settings block concerning the push tokens.",
+    "type": "text",
+    "placeholders": {}
+  },
   "Theme": "Theme",
   "@Theme": {
     "description": "Title of the setting group where the theme can be selected.",
@@ -248,6 +254,48 @@
     "type": "text",
     "placeholders": {}
   },
+  "Synchronize push tokens": "Synchronize push tokens",
+  "@Synchronize push tokens": {
+    "description": "Title of synchronizing push tokens in settings.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Synchronizes tokens with the privacyIDEA server.": "Synchronizes tokens with the privacyIDEA server.",
+  "@Synchronizes tokens with the privacyIDEA server.": {
+    "description": "Description of synchronizing push tokens in settings.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Sync": "Sync",
+  "@Sync": {
+    "description": "Text of button that is used to synchronize push tokens.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Synchronizing tokens.": "Synchronizing tokens.",
+  "@Synchronizing tokens.": {
+    "description": "Title of the push synchronization dialog.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "All tokens are synchronized.": "All tokens are synchronized.",
+  "@All tokens are synchronized.": {
+    "description": "Content of the push synchronization dialog. Signaling the user that everything worked.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Synchronization failed for the following tokens, please try again:": "Synchronization failed for the following tokens, please try again:",
+  "@Synchronization failed for the following tokens, please try again:": {
+    "description": "Headline for the list of tokens where the synchronization failed.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "The following tokens do not support synchronization and must be rolled out again:": "The following tokens do not support synchronization and must be rolled out again:",
+  "@The following tokens do not support synchronization and must be rolled out again:": {
+    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that.",
+    "type": "text",
+    "placeholders": {}
+  },
   "errorOnlyOneFirebaseProjectIsSupported": "The firebase configuration of {name} differs from the one currently used by the app. Currently only one is supported.",
   "@errorOnlyOneFirebaseProjectIsSupported": {
     "description": "Tells the user that the token can not be used because it has a different firebase configuration than the current used configuration of the application.",
@@ -270,7 +318,7 @@
   },
   "errorRollOutFailed": "Rolling out token {name} failed. Error code: {errorCode}",
   "@errorRollOutFailed": {
-    "description": "Tells the user that the token could not be rolled out, because a network error occured.",
+    "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "type": "text",
     "placeholders": {
       "name": {
@@ -280,6 +328,12 @@
         "example": "500"
       }
     }
+  },
+  "errorSynchronizationNoNetworkConnection": "Synchronizing tokens failed, privacyIDEA server could not be reached.",
+  "@errorSynchronizationNoNetworkConnection": {
+    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached.",
+    "type": "text",
+    "placeholders": {}
   },
   "errorRollOutNoNetworkConnection": "No network connection. Roll-out not possible.",
   "@errorRollOutNoNetworkConnection": {

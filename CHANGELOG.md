@@ -2,6 +2,10 @@
 
 ## [3.0.11] - 2021-xx-xx
 
+### Added
+
+- Added missing german translations for synchronizing push tokens
+
 ### Changed
 
 - Notification with sound is shown when the app is open now too

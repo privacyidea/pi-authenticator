@@ -367,5 +367,59 @@
     "description": "Description for checkbox, if the checkbox is ticked, the guide screen is shown on every app start.",
     "type": "text",
     "placeholders": {}
+  },
+  "errorSynchronizationNoNetworkConnection": "Die Synchronisation ist fehlgeschlagen, da der privacyIDEA Server nicht erreicht werden konnte.",
+  "@errorSynchronizationNoNetworkConnection": {
+    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Push Token": "Push Token",
+  "@Push Token": {
+    "description": "Title for the settings block concerning the push tokens.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Synchronize push tokens": "Synchronisiere Push Tokens",
+  "@Synchronize push tokens": {
+    "description": "Title of synchronizing push tokens in settings.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Synchronizes tokens with the privacyIDEA server.": "Synchronisiert Push Tokens mit dem privacyIDEA Server.",
+  "@Synchronizes tokens with the privacyIDEA server.": {
+    "description": "Description of synchronizing push tokens in settings.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Sync": "Sync",
+  "@Sync": {
+    "description": "Text of button that is used to synchronize push tokens.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Synchronizing tokens.": "Synchronisiere Tokens.",
+  "@Synchronizing tokens.": {
+    "description": "Title of the push synchronization dialog.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "All tokens are synchronized.": "Alle Token wurden synchronisiert.",
+  "@All tokens are synchronized.": {
+    "description": "Content of the push synchronization dialog. Signaling the user that everything worked.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Synchronization failed for the following tokens, please try again:": "Synchronisation ist für die folgenden Tokens fehlgeschlagen, bitte versuchen Sie es erneut:",
+  "@Synchronization failed for the following tokens, please try again:": {
+    "description": "Headline for the list of tokens where the synchronization failed.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "The following tokens do not support synchronization and must be rolled out again:": "Die folgenden Tokens unterstützen keine Synchronisation und müssen neu ausgerollt werden:",
+  "@The following tokens do not support synchronization and must be rolled out again:": {
+    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that.",
+    "type": "text",
+    "placeholders": {}
   }
 }
