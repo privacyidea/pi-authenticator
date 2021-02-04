@@ -750,7 +750,6 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     /// Calculate the progress of the LinearProgressIndicator depending on the
     /// current time. The Indicator takes values in [0.0, 1.0].
     double getCurrentProgress() {
-      // FIXME The tokens are still slightly out of sync!
       int unixTime = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
 
       return (unixTime % (_token.period)) * (1 / _token.period);
