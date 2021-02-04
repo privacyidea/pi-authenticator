@@ -237,7 +237,8 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   Map<String, dynamic> uriMap = Map();
 
   uriMap[URI_TYPE] = uri.host;
-  uriMap[URI_ISSUER] = uri.queryParameters['issuer'];
+
+  uriMap[URI_ISSUER] = Uri.decodeFull(uri.queryParameters['issuer']);
 
   // If we do not support the version of this piauth url, we can stop here.
   String pushVersionAsString = uri.queryParameters["v"];
@@ -323,7 +324,7 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
 
   // parse.host -> Type totp or hotp
   uriMap[URI_TYPE] = uri.host;
-  uriMap[URI_ISSUER] = uri.queryParameters['issuer'];
+  uriMap[URI_ISSUER] = Uri.decodeFull(uri.queryParameters['issuer']);
 
 // parse.path.substring(1) -> Label
   log("Key: [..] | Value: [..]");
@@ -465,7 +466,7 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
 }
 
 String _parseLabel(Uri uri) {
-  return uri.path.substring(1);
+  return Uri.decodeFull(uri.path.substring(1));
 }
 
 bool is2StepURI(Uri uri) {
