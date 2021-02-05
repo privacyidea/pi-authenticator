@@ -18,12 +18,15 @@
   limitations under the License.
 */
 
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
@@ -71,9 +74,24 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
           Visibility(
             visible: problem != null,
             child: RaisedButton(
+              child: Text('Save'),
+              onPressed: () async {
+                final params = SaveFileDialogParams(
+                  sourceFilePath: null,
+                  fileName: 'privacyIDEA_authenticator_${DateTime.now()}.log',
+                  data: utf8.encode('$problem'),
+                );
+
+                await FlutterFileDialog.saveFile(params: params);
+              },
+            ),
+          ),
+          Visibility(
+            visible: problem != null,
+            child: RaisedButton(
               onPressed: () =>
                   Clipboard.setData(new ClipboardData(text: '$problem')),
-              child: Text('Copy to clipboard'),
+              child: Text('Copy'),
             ),
           ),
           RaisedButton(
@@ -102,11 +120,10 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
       for (Token t in legacyTokens) {
         await StorageUtil.saveOrReplaceToken(t);
       }
-
-      throw Exception('Example exception');
     } catch (e, stacktrace) {
       // Catch Exceptions and Errors together with stacktrace:
-      problem = [e, stacktrace];
+      String version = (await PackageInfo.fromPlatform()).version;
+      problem = 'Version: $version\n$e\n$stacktrace';
 
       children.add(
         RichText(
