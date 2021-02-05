@@ -47,8 +47,8 @@ class StorageUtil {
 
   /// Saves [token] securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
-  static void saveOrReplaceToken(Token token) async => await _storage.write(
-      key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
+  static Future<void> saveOrReplaceToken(Token token) async => await _storage
+      .write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
 
   static Future<Token> loadToken(String id) async =>
       (await loadAllTokens()).firstWhere((t) => t.id == id, orElse: () => null);
@@ -57,15 +57,15 @@ class StorageUtil {
   /// this device.
   /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
   ///
-  static Future<List<Token>> loadAllTokens({bool loadLegacy = false}) async {
-    if (loadLegacy) {
-      // Load legacy tokens and add them to the storage.
-      List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
-
-      for (Token t in legacyTokens) {
-        await StorageUtil.saveOrReplaceToken(t);
-      }
-    }
+  static Future<List<Token>> loadAllTokens() async {
+//    if (loadLegacy) {
+//      // Load legacy tokens and add them to the storage.
+//      List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
+//
+//      for (Token t in legacyTokens) {
+//        await StorageUtil.saveOrReplaceToken(t);
+//      }
+//    }
 
     Map<String, String> keyValueMap = await _storage.readAll();
 

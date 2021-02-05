@@ -220,16 +220,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _loadTokenList() async {
-    AppSettings settings = AppSettings.of(context);
-
-    List<Token> l1 =
-        await StorageUtil.loadAllTokens(loadLegacy: settings.getLoadLegacy());
+    List<Token> l1 = await StorageUtil.loadAllTokens();
     // Prevent the list items from skipping around on ui updates
     l1.sort((a, b) => a.id.hashCode.compareTo(b.id.hashCode));
 
     setState(() => this._tokenList = l1);
-    // Because we only want to load legacy tokens once:
-    settings.setLoadLegacy(false);
   }
 
   @override
