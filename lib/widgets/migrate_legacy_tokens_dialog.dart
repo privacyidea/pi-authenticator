@@ -115,9 +115,15 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
     log('Attempt to load legacy tokens.',
         name: 'migrate_legacy_tokens_dialog.dart');
     try {
+      List<Token> existingTokens = await StorageUtil.loadAllTokens();
       List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
 
       for (Token t in legacyTokens) {
+        // Prevent migrating token if it already was migrated!
+        // This would likely overwrite the existing token.
+        if (existingTokens.any((e) => e.id == t.id)) {
+          continue;
+        }
         await StorageUtil.saveOrReplaceToken(t);
       }
     } catch (e, stacktrace) {
