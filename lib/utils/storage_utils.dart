@@ -28,6 +28,7 @@ import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
+import 'package:uuid/uuid.dart';
 
 // TODO test the behavior of this class.
 class StorageUtil {
@@ -186,10 +187,12 @@ class StorageUtil {
 
     for (var tokenMap in jsonDecode(await Legacy.loadAllTokens())) {
       Token token;
+      String id = Uuid().v4();
+
       if (tokenMap['type'] == 'hotp') {
         token = HOTPToken(
           issuer: tokenMap['label'],
-          id: tokenMap['serial'],
+          id: id,
           label: tokenMap['label'],
           counter: tokenMap['counter'],
           digits: tokenMap['digits'],
@@ -199,7 +202,7 @@ class StorageUtil {
       } else if (tokenMap['type'] == 'totp') {
         token = TOTPToken(
           issuer: tokenMap['label'],
-          id: tokenMap['serial'],
+          id: id,
           label: tokenMap['label'],
           period: tokenMap['period'],
           digits: tokenMap['digits'],
@@ -210,7 +213,7 @@ class StorageUtil {
         token = PushToken(
           issuer: tokenMap['label'],
           label: tokenMap['label'],
-          id: tokenMap['serial'],
+          id: id,
           serial: tokenMap['serial'],
           expirationDate: DateTime.now().subtract(Duration(minutes: 60)),
           enrollmentCredentials: null,
