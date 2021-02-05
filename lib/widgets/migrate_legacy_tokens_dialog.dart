@@ -121,7 +121,14 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
       for (Token t in legacyTokens) {
         // Prevent migrating token if it already was migrated!
         // This would likely overwrite the existing token.
-        if (existingTokens.any((e) => e.id == t.id)) {
+        if ((t is OTPToken &&
+                existingTokens
+                    .whereType<OTPToken>()
+                    .any((e) => e.secret == t.secret)) ||
+            (t is PushToken &&
+                existingTokens
+                    .whereType<PushToken>()
+                    .any((e) => e.serial == t.serial))) {
           continue;
         }
         await StorageUtil.saveOrReplaceToken(t);
