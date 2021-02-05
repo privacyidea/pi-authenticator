@@ -756,19 +756,7 @@ class _MainScreenState extends State<MainScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-//                LicensePage(
-//                  applicationName: "privacyIDEA Authenticator",
-//                  applicationVersion: info.version,
-//                  applicationIcon: Padding(
-//                    padding: EdgeInsets.all(40.0),
-//                    child: Image.asset('res/logo/app_logo_light.png'),
-//                  ),
-//                  applicationLegalese: "Apache License 2.0",
-//                ),
-//              ),
-//            )
-                    CustomLicenseScreen(),
+                builder: (context) => CustomLicenseScreen(),
               ),
             );
           } else if (value == "add_manually") {
@@ -782,7 +770,7 @@ class _MainScreenState extends State<MainScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => SettingsScreen('Settings'),
-                ));
+                )).then((value) => _loadTokenList());
           } else if (value == 'guide') {
             Navigator.push(
               context,
