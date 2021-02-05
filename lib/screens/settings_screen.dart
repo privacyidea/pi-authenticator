@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
+import 'package:privacyidea_authenticator/widgets/migrate_legacy_tokens_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
 import 'package:privacyidea_authenticator/widgets/update_firebase_token_dialog.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
@@ -179,6 +180,21 @@ class SettingsScreenState extends State<SettingsScreen> {
                 );
               },
             ),
+            SettingsGroup(
+              title: 'Migration',
+              children: [
+                ListTile(
+                  title: Text('Migrate tokens from previous app version.'),
+                  trailing: RaisedButton(
+                    child: Text('Migrate'),
+                    onPressed: () => showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => MigrateLegacyTokensDialog()),
+                  ),
+                ),
+              ],
+            ),
 
 //            Divider(),
 //            SettingsGroup(
@@ -240,9 +256,7 @@ class AppSettings extends InheritedWidget {
   // Preferences
   static String _prefHideOtps = 'KEY_HIDE_OTPS';
   static String _prefEnablePoll = 'KEY_ENABLE_POLLING';
-  static String _loadLegacyKey = 'KEY_LOAD_LEGACY';
   static String _showGuideOnStartKey = 'KEY_SHOW_GUIDE_ON_START';
-  final bool isTestMode;
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
@@ -254,7 +268,6 @@ class AppSettings extends InheritedWidget {
       : _hideOpts = preferences.getBool(_prefHideOtps, defaultValue: false),
         _enablePolling =
             preferences.getBool(_prefEnablePoll, defaultValue: false),
-        _loadLegacy = preferences.getBool(_loadLegacyKey, defaultValue: true),
         isTestMode =
             const bool.fromEnvironment('testing_mode', defaultValue: false),
         _showGuideOnStart =
@@ -263,8 +276,8 @@ class AppSettings extends InheritedWidget {
 
   final Preference<bool> _hideOpts;
   final Preference<bool> _enablePolling;
-  final Preference<bool> _loadLegacy;
   final Preference<bool> _showGuideOnStart;
+  final bool isTestMode;
 
   Stream<bool> streamHideOpts() => _hideOpts;
 
@@ -273,10 +286,6 @@ class AppSettings extends InheritedWidget {
   void setHideOpts(bool value) => _hideOpts.setValue(value);
 
   void setEnablePolling(bool value) => _enablePolling.setValue(value);
-
-  void setLoadLegacy(bool value) => _loadLegacy.setValue(value);
-
-  bool getLoadLegacy() => _loadLegacy.getValue();
 
   bool get showGuideOnStart => _showGuideOnStart.getValue();
 
