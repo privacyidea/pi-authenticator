@@ -119,18 +119,18 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
       List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
 
       for (Token t in legacyTokens) {
-        // Prevent migrating token if it already was migrated!
+        // TODO? Prevent migrating token if it already was migrated!
         // This would likely overwrite the existing token.
-        if ((t is OTPToken &&
-                existingTokens
-                    .whereType<OTPToken>()
-                    .any((e) => e.secret == t.secret)) ||
-            (t is PushToken &&
-                existingTokens
-                    .whereType<PushToken>()
-                    .any((e) => e.serial == t.serial))) {
-          continue;
-        }
+//        if ((t is OTPToken &&
+//                existingTokens
+//                    .whereType<OTPToken>()
+//                    .any((e) => e.secret == t.secret && e.type == t.type)) ||
+//            (t is PushToken &&
+//                existingTokens
+//                    .whereType<PushToken>()
+//                    .any((e) => e.serial == t.serial))) {
+//          continue;
+//        }
         await StorageUtil.saveOrReplaceToken(t);
       }
     } catch (e, stacktrace) {
