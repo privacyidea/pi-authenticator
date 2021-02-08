@@ -181,12 +181,12 @@ class SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             SettingsGroup(
-              title: 'Migration',
+              title: Localization.of(context).migration,
               children: [
                 ListTile(
-                  title: Text('Migrate tokens from previous app version.'),
+                  title: Text(Localization.of(context).migrationDesc),
                   trailing: RaisedButton(
-                    child: Text('Migrate'),
+                    child: Text(Localization.of(context).migrate),
                     onPressed: () => showDialog(
                         context: context,
                         barrierDismissible: false,

@@ -606,6 +606,58 @@ class Localization {
   String get pollNow {
     return Intl.message('Polling for new challenges', locale: localeName);
   }
+
+  // ###########################################################################
+  //                                   Migration
+  // ###########################################################################
+
+  String get migrationDesc {
+    return Intl.message(
+      'Migrate tokens from previous app version.',
+      desc: 'Description of migration.',
+      locale: localeName,
+    );
+  }
+
+  String get migrate {
+    return Intl.message(
+      'Migrate',
+      desc: 'Text of button to start migration.',
+      locale: localeName,
+    );
+  }
+
+  String get migration {
+    return Intl.message(
+      'Migration',
+      desc: 'Title of settings group for migrating tokens.',
+      locale: localeName,
+    );
+  }
+
+  String get migrationSuccess {
+    return Intl.message(
+      'All tokens migrated successfully.',
+      desc: 'Tells the user that all tokens are migrated successfully.',
+      locale: localeName,
+    );
+  }
+
+  String get migrationNoTokens {
+    return Intl.message(
+      'No tokens exist that could be migrated.',
+      desc: 'Tells the user that no tokens exist that could be migrated.',
+      locale: localeName,
+    );
+  }
+
+  String get migrationDialogTitle {
+    return Intl.message(
+      'Migrating Token',
+      desc: 'Title of migration dialog.',
+      locale: localeName,
+    );
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<Localization> {

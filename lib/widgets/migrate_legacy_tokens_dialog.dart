@@ -65,7 +65,7 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
-        title: Text('Migrating tokens from previous version'),
+        title: Text(Localization.of(context).migrationDialogTitle),
         content: _content,
         actions: <Widget>[
           RaisedButton(
@@ -96,14 +96,14 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
       }
 
       if (legacyTokens.isEmpty) {
-        children.add(Text('No tokens exist that could be migrated.'));
+        children.add(Text(Localization.of(context).migrationNoTokens));
       }
     } catch (e) {
       // Catch Exceptions and Errors together with stacktrace:
       String version = (await PackageInfo.fromPlatform()).version;
       problem = 'Version: $version\n$e';
 
-      children.add(Text('Something went wrong:'));
+      children.add(Text(Localization.of(context).somethingWentWrong));
       children.add(Padding(
         padding: EdgeInsets.only(top: 10),
         child: Container(
@@ -114,7 +114,7 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
     }
 
     if (children.isEmpty) {
-      children.add(Text('All tokens migrated successfully'));
+      children.add(Text(Localization.of(context).migrationSuccess));
     }
 
     final ScrollController controller = ScrollController();
