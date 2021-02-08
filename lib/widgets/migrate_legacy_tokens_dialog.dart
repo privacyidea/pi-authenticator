@@ -68,14 +68,6 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
         title: Text('Migrating tokens from previous version'),
         content: _content,
         actions: <Widget>[
-//          Visibility(
-//            visible: problem != null,
-//            child: RaisedButton(
-//              onPressed: () =>
-//                  Clipboard.setData(new ClipboardData(text: '$problem')),
-//              child: Text('Copy'),
-//            ),
-//          ),
           RaisedButton(
             child: Text(Localization.of(context).dismiss),
             onPressed: () => Navigator.pop(context),
@@ -97,22 +89,9 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
     log('Attempt to load legacy tokens.',
         name: 'migrate_legacy_tokens_dialog.dart');
     try {
-      List<Token> existingTokens = await StorageUtil.loadAllTokens();
       List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
 
       for (Token t in legacyTokens) {
-        // TODO? Prevent migrating token if it already was migrated!
-        // This would likely overwrite the existing token.
-//        if ((t is OTPToken &&
-//                existingTokens
-//                    .whereType<OTPToken>()
-//                    .any((e) => e.secret == t.secret && e.type == t.type)) ||
-//            (t is PushToken &&
-//                existingTokens
-//                    .whereType<PushToken>()
-//                    .any((e) => e.serial == t.serial))) {
-//          continue;
-//        }
         await StorageUtil.saveOrReplaceToken(t);
       }
 
@@ -124,27 +103,6 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
       String version = (await PackageInfo.fromPlatform()).version;
       problem = 'Version: $version\n$e';
 
-//      children.add(
-//        RichText(
-//          text: TextSpan(
-//              children: [
-//                TextSpan(
-//                  text: '${widget._githubLink}',
-//                  recognizer: _tabRecognizer,
-//                  style: Theme.of(context)
-//                      .textTheme
-//                      .subtitle1
-//                      .copyWith(color: Colors.blue),
-//                ),
-//                TextSpan(
-//                  text: ' with the error information below:',
-//                  style: Theme.of(context).textTheme.subtitle1,
-//                ),
-//              ],
-//              text: 'Something went wrong, please submit an issue under ',
-//              style: Theme.of(context).textTheme.subtitle1),
-//        ),
-//      );
       children.add(Text('Something went wrong:'));
       children.add(Padding(
         padding: EdgeInsets.only(top: 10),
