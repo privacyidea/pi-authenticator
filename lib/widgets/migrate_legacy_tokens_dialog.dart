@@ -18,14 +18,11 @@
   limitations under the License.
 */
 
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
@@ -71,29 +68,14 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
         title: Text('Migrating tokens from previous version'),
         content: _content,
         actions: <Widget>[
-          Visibility(
-            visible: problem != null,
-            child: RaisedButton(
-              child: Text('Save'),
-              onPressed: () async {
-                final params = SaveFileDialogParams(
-                  sourceFilePath: null,
-                  fileName: 'privacyIDEA_authenticator_${DateTime.now()}.log',
-                  data: utf8.encode('$problem'),
-                );
-
-                await FlutterFileDialog.saveFile(params: params);
-              },
-            ),
-          ),
-          Visibility(
-            visible: problem != null,
-            child: RaisedButton(
-              onPressed: () =>
-                  Clipboard.setData(new ClipboardData(text: '$problem')),
-              child: Text('Copy'),
-            ),
-          ),
+//          Visibility(
+//            visible: problem != null,
+//            child: RaisedButton(
+//              onPressed: () =>
+//                  Clipboard.setData(new ClipboardData(text: '$problem')),
+//              child: Text('Copy'),
+//            ),
+//          ),
           RaisedButton(
             child: Text(Localization.of(context).dismiss),
             onPressed: () => Navigator.pop(context),
@@ -133,32 +115,34 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
 //        }
         await StorageUtil.saveOrReplaceToken(t);
       }
-    } catch (e, stacktrace) {
+      throw Exception('Something went wrong');
+    } catch (e) {
       // Catch Exceptions and Errors together with stacktrace:
       String version = (await PackageInfo.fromPlatform()).version;
-      problem = 'Version: $version\n$e\n$stacktrace';
+      problem = 'Version: $version\n$e';
 
-      children.add(
-        RichText(
-          text: TextSpan(
-              children: [
-                TextSpan(
-                  text: '${widget._githubLink}',
-                  recognizer: _tabRecognizer,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1
-                      .copyWith(color: Colors.blue),
-                ),
-                TextSpan(
-                  text: ' with the error information below:',
-                  style: Theme.of(context).textTheme.subtitle1,
-                ),
-              ],
-              text: 'Something went wrong, please submit an issue under ',
-              style: Theme.of(context).textTheme.subtitle1),
-        ),
-      );
+//      children.add(
+//        RichText(
+//          text: TextSpan(
+//              children: [
+//                TextSpan(
+//                  text: '${widget._githubLink}',
+//                  recognizer: _tabRecognizer,
+//                  style: Theme.of(context)
+//                      .textTheme
+//                      .subtitle1
+//                      .copyWith(color: Colors.blue),
+//                ),
+//                TextSpan(
+//                  text: ' with the error information below:',
+//                  style: Theme.of(context).textTheme.subtitle1,
+//                ),
+//              ],
+//              text: 'Something went wrong, please submit an issue under ',
+//              style: Theme.of(context).textTheme.subtitle1),
+//        ),
+//      );
+      children.add(Text('Something went wrong:'));
       children.add(Padding(
         padding: EdgeInsets.only(top: 10),
         child: Container(
