@@ -12,6 +12,10 @@
 
 - Fixed errors occurring by automatic migration of tokens from prior versions by removing automatic migration
 
+### Fixed
+
+- Uri encoded characters (e.g. @ as %40) are now correctly displayed for token labels 
+
 
 ## [3.0.8] - 2021-01-07
 
