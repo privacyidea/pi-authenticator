@@ -115,7 +115,10 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
 //        }
         await StorageUtil.saveOrReplaceToken(t);
       }
-      throw Exception('Something went wrong');
+
+      if (legacyTokens.isEmpty) {
+        children.add(Text('No tokens exist that could be migrated.'));
+      }
     } catch (e) {
       // Catch Exceptions and Errors together with stacktrace:
       String version = (await PackageInfo.fromPlatform()).version;

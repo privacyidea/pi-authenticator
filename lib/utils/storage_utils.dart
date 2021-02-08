@@ -185,7 +185,13 @@ class StorageUtil {
   static Future<List<Token>> loadAllTokensLegacy() async {
     List<Token> tokenList = [];
 
-    for (var tokenMap in jsonDecode(await Legacy.loadAllTokens())) {
+    String json = await Legacy.loadAllTokens();
+
+    if (json == null || json == "") {
+      return tokenList;
+    }
+
+    for (var tokenMap in jsonDecode(json)) {
       Token token;
       String id = Uuid().v4();
 
