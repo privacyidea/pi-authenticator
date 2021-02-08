@@ -38,7 +38,7 @@ abstract class Token {
 
   String get tokenVersion => _tokenVersion;
 
-  String get label => _label;
+  String get label => _label == null ? "" : Uri.decodeFull(_label);
 
   set label(String label) {
     this._label = label;
@@ -46,7 +46,7 @@ abstract class Token {
 
   String get id => _id;
 
-  String get issuer => _issuer;
+  String get issuer => _issuer == null ? "" : Uri.decodeFull(_issuer);
 
   Token(this._label, this._issuer, this._id, this.type);
 
