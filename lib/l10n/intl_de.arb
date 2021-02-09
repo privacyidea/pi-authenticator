@@ -56,7 +56,7 @@
   },
   "Digits": "Ziffern",
   "@Digits": {
-    "description": "Title of the dropdown button where the number of digits for the opt value is selecte.",
+    "description": "Title of the dropdown button where the number of digits for the opt value is selected.",
     "type": "text",
     "placeholders": {}
   },
@@ -228,7 +228,7 @@
   },
   "errorRollOutFailed": "Ausrollen von {name} ist fehlgeschlagen. Fehlercode: {errorCode}",
   "@errorRollOutFailed": {
-    "description": "Tells the user that the token could not be rolled out, because a network error occured.",
+    "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "type": "text",
     "placeholders": {
       "name": {
@@ -368,15 +368,15 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorSynchronizationNoNetworkConnection": "Die Synchronisation ist fehlgeschlagen, da der privacyIDEA Server nicht erreicht werden konnte.",
-  "@errorSynchronizationNoNetworkConnection": {
-    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached.",
-    "type": "text",
-    "placeholders": {}
-  },
   "Push Token": "Push Token",
   "@Push Token": {
     "description": "Title for the settings block concerning the push tokens.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorSynchronizationNoNetworkConnection": "Die Synchronisation ist fehlgeschlagen, da der privacyIDEA Server nicht erreicht werden konnte.",
+  "@errorSynchronizationNoNetworkConnection": {
+    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached.",
     "type": "text",
     "placeholders": {}
   },
@@ -419,6 +419,42 @@
   "The following tokens do not support synchronization and must be rolled out again:": "Die folgenden Tokens unterstützen keine Synchronisation und müssen neu ausgerollt werden:",
   "@The following tokens do not support synchronization and must be rolled out again:": {
     "description": "Informs the user that the following tokens cannot be synchronized as they do not support that.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Migrate tokens from previous app version.": "Migriere Token aus der vorherigen App Version.",
+  "@Migrate tokens from previous app version.": {
+    "description": "Description of migration.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Migrate": "Migriere",
+  "@Migrate": {
+    "description": "Text of button to start migration.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Migration": "Migration",
+  "@Migration": {
+    "description": "Title of settings group for migrating tokens.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "All tokens migrated successfully.": "Alle Token wurden erfolgreich migriert.",
+  "@All tokens migrated successfully.": {
+    "description": "Tells the user that all tokens are migrated successfully.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "No tokens exist that could be migrated.": "Es existieren keine Token, die migriert werden könnten.",
+  "@No tokens exist that could be migrated.": {
+    "description": "Tells the user that no tokens exist that could be migrated.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "Migrating Token": "Migriere Token",
+  "@Migrating Token": {
+    "description": "Title of migration dialog.",
     "type": "text",
     "placeholders": {}
   }

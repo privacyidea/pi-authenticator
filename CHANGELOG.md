@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.0.11] - 2021-xx-xx
+## [3.0.12] - 2021-xx-xx
 
 ### Added
 
@@ -10,10 +10,12 @@
 
 - Notification with sound is shown when the app is open now too
 - Synchronized progress indicator of totp tokens
+- Migrating tokens from app versions prior to 3.0.0 is now a manual process accessible in the settings
 - Synchronization of push tokens can be canceled
 
 ### Fixed
 
+- Fixed errors occurring by automatic migration of tokens from prior versions by removing automatic migration
 - Handle failing synchronization of push tokens by informing the user and closing the dialog
 
 ### Fixed
