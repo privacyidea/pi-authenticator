@@ -496,6 +496,16 @@ class Localization {
     );
   }
 
+  String get errorSynchronizationNoNetworkConnection {
+    return Intl.message(
+      'Synchronizing tokens failed, privacyIDEA server could not be reached.',
+      name: 'errorSynchronizationNoNetworkConnection',
+      desc: 'Tells the user that synchronizing the push tokens failed because '
+          'the server could not be reached.',
+      locale: localeName,
+    );
+  }
+
   String get errorRollOutNoNetworkConnection {
     return Intl.message(
       "No network connection. Roll-out not possible.",

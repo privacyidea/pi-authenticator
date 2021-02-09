@@ -40,12 +40,15 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     bool isSystemDarkMode =
         MediaQuery.of(context).platformBrightness == Brightness.dark;
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           widget._title,
@@ -116,7 +119,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                           onPressed: () => showDialog(
                             context: context,
                             barrierDismissible: false,
-                            builder: (context) => UpdateFirebaseTokenDialog(),
+                            builder: (context) => UpdateFirebaseTokenDialog(
+                                scaffoldKey: _scaffoldKey),
                           ),
                         ),
                       ),
