@@ -1,5 +1,4 @@
 # Welcome to the privacyIDEA Authenticator.
-This screen gives you a quick introduction to the app.
 
 + Token form the previous App version can be loaded via the `Settings` in the `Migration` section.
 

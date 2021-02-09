@@ -1,5 +1,4 @@
 # Willkommen im privacyIDEA Authenticator
-Hier wird Ihnen ein kurzer Einblick in die Funktionen der App gegeben.
 
 + Token aus der vorherigen App Version können in den `Einstellungen` im Bereich `Migration` geladen werden.
     
