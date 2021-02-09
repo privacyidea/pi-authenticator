@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.0.12] - 2021-xx-xx
+## [3.0.12] - 2021-02-09
 
 ### Added
 
@@ -17,6 +17,7 @@
 
 - Fixed errors occurring by automatic migration of tokens from prior versions by removing automatic migration
 - Handle failing synchronization of push tokens by informing the user and closing the dialog
+- To prevent bugs, push settings are only accessible if at least one push token is fully enrolled
 
 ### Fixed
 
