@@ -104,6 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "errorRollOutFailed" : m6,
     "errorRollOutNoNetworkConnection" : MessageLookupByLibrary.simpleMessage("No network connection. Roll-out not possible."),
     "errorRollOutUnknownError" : m7,
+    "errorSynchronizationNoNetworkConnection" : MessageLookupByLibrary.simpleMessage("Synchronizing tokens failed, privacyIDEA server could not be reached."),
     "errorTokenExpired" : m8,
     "otpValueCopiedMessage" : m9,
     "retry" : MessageLookupByLibrary.simpleMessage("Retry"),

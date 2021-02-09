@@ -2,15 +2,21 @@
 
 ## [3.0.12] - 2021-xx-xx
 
+### Added
+
+- Added missing German translations for synchronizing push tokens
+
 ### Changed
 
 - Notification with sound is shown when the app is open now too
 - Synchronized progress indicator of totp tokens
 - Migrating tokens from app versions prior to 3.0.0 is now a manual process accessible in the settings
+- Synchronization of push tokens can be canceled
 
 ### Fixed
 
 - Fixed errors occurring by automatic migration of tokens from prior versions by removing automatic migration
+- Handle failing synchronization of push tokens by informing the user and closing the dialog
 
 ### Fixed
 
@@ -74,4 +80,3 @@
 [3.0.7]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.6...v3.0.7
 [3.0.6]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.4...v3.0.6
 [3.0.4]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.0...v3.0.4
-

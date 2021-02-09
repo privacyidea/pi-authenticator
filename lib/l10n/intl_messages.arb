@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2021-02-08T15:53:27.303244",
+  "@@last_modified": "2021-02-09T12:52:12.206680",
   "Guide": "Guide",
   "@Guide": {
     "description": "Button to open the guide screen.",
@@ -328,6 +328,12 @@
         "example": "500"
       }
     }
+  },
+  "errorSynchronizationNoNetworkConnection": "Synchronizing tokens failed, privacyIDEA server could not be reached.",
+  "@errorSynchronizationNoNetworkConnection": {
+    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached.",
+    "type": "text",
+    "placeholders": {}
   },
   "errorRollOutNoNetworkConnection": "No network connection. Roll-out not possible.",
   "@errorRollOutNoNetworkConnection": {
