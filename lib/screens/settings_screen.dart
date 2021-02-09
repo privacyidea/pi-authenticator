@@ -95,11 +95,14 @@ class SettingsScreenState extends State<SettingsScreen> {
               builder: (context, snapshot) {
                 bool showPushSettingsGroup = true;
 
-                List<PushToken> pushTokenList = snapshot.hasData
-                    ? snapshot.data.whereType<PushToken>().toList()
+                List<PushToken> enrolledPushTokenList = snapshot.hasData
+                    ? snapshot.data
+                        .whereType<PushToken>()
+                        .where((e) => e.isRolledOut)
+                        .toList()
                     : [];
 
-                if (pushTokenList.isEmpty) {
+                if (enrolledPushTokenList.isEmpty) {
                   log('No push tokens exist, push settings are hidden.',
                       name: 'settings_screen.dart');
                   showPushSettingsGroup = false;
@@ -130,11 +133,11 @@ class SettingsScreenState extends State<SettingsScreen> {
                             AppSettings.of(context).streamEnablePolling(),
                         builder: (context, value) {
                           Function onChange;
-                          List<PushToken> unsupported = pushTokenList
+                          List<PushToken> unsupported = enrolledPushTokenList
                               .where((e) => e.url == null)
                               .toList();
 
-                          if (pushTokenList.any((element) =>
+                          if (enrolledPushTokenList.any((element) =>
                               element.isRolledOut && element.url != null)) {
                             // Set onChange to activate switch in ui.
                             onChange = (value) =>
@@ -153,7 +156,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                                   child: Padding(
                                     padding: EdgeInsets.only(left: 10),
                                     child: unsupported.isNotEmpty &&
-                                            pushTokenList.isNotEmpty
+                                            enrolledPushTokenList.isNotEmpty
                                         ? GestureDetector(
                                             onTap: () =>
                                                 _showPollingInfo(unsupported),
