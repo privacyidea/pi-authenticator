@@ -25,8 +25,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MigrateLegacyTokensDialog extends StatefulWidget {
@@ -91,8 +93,20 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
     try {
       List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
 
-      for (Token t in legacyTokens) {
-        await StorageUtil.saveOrReplaceToken(t);
+      List<Token> currentPushToken = await StorageUtil.loadAllTokens();
+      currentPushToken = currentPushToken
+          .where((element) => element.type == enumAsString(TokenTypes.PIPUSH))
+          .toList();
+
+      for (Token old in legacyTokens) {
+        // Skip push token which already exist (by serial)
+        if (old.type == enumAsString(TokenTypes.PIPUSH)) {
+          if (currentPushToken.indexWhere((element) =>
+                  (old as PushToken).serial == (element as PushToken).serial) > -1) {
+            continue;
+          }
+        }
+        await StorageUtil.saveOrReplaceToken(old);
       }
 
       if (legacyTokens.isEmpty) {
