@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+import 'package:catcher/catcher.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,13 +32,36 @@ import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp(preferences: await StreamingSharedPreferences.instance));
+//  runApp(PrivacyIDEAAuthenticator(preferences: await StreamingSharedPreferences.instance));
+
+//  CatcherOptions debugOptions = CatcherOptions(SilentReportMode(), [
+//    ConsoleHandler(
+//        enableApplicationParameters: false,
+//        enableDeviceParameters: false,
+//        enableCustomParameters: false,
+//        enableStackTrace: true)
+//  ]);
+
+  CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
+    EmailManualHandler(["support@email.com"])
+  ]);
+
+  CatcherOptions debugOptions =
+      releaseOptions; // TODO Replace this with real debug config!
+
+  Catcher(
+    rootWidget: PrivacyIDEAAuthenticator(
+        preferences: await StreamingSharedPreferences.instance),
+    debugConfig: debugOptions,
+    releaseConfig: releaseOptions,
+//    ensureInitialized: true,
+  );
 }
 
-class MyApp extends StatelessWidget {
+class PrivacyIDEAAuthenticator extends StatelessWidget {
   final StreamingSharedPreferences _preferences;
 
-  const MyApp({StreamingSharedPreferences preferences})
+  const PrivacyIDEAAuthenticator({StreamingSharedPreferences preferences})
       : this._preferences = preferences;
 
   static List<Locale> _supportedLocales = [
@@ -58,6 +82,8 @@ class MyApp extends StatelessWidget {
           data: (brightness) => getApplicationTheme(brightness),
           themedWidgetBuilder: (context, theme) {
             return MaterialApp(
+              navigatorKey: Catcher.navigatorKey,
+              // Needed to display dialogs etc.
               localizationsDelegates: [
                 const MyLocalizationsDelegate(),
                 GlobalMaterialLocalizations.delegate,

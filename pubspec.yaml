@@ -74,6 +74,7 @@ dependencies:
   flutter_markdown: ^0.5.1
   url_launcher: ^5.7.10
   flutter_svg: ^0.19.1
+  catcher: ^0.4.1
 
   flutter_cupertino_localizations: ^1.0.1
   intl: ^0.16.0

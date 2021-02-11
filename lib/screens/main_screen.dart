@@ -242,7 +242,8 @@ class _MainScreenState extends State<MainScreen> {
       ),
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _scanQRCode(),
+//        onPressed: () => _scanQRCode(),
+        onPressed: () => throw Exception('Oh no! Something happened.'), // TODO Reset this!
         tooltip: Localization.of(context).scanQRTooltip,
         child: Icon(Icons.add),
       ),
@@ -759,6 +760,7 @@ class _MainScreenState extends State<MainScreen> {
                 builder: (context) => CustomLicenseScreen(),
               ),
             );
+//            throw Exception('Oh no! Something happened.');
           } else if (value == "add_manually") {
             Navigator.push(
                 context,
