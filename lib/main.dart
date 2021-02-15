@@ -42,7 +42,7 @@ void main() async {
 //        enableStackTrace: true)
 //  ]);
 
-  CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
+  CatcherOptions releaseOptions = CatcherOptions(PageReportMode(), [
     EmailManualHandler(["support@email.com"])
   ]);
 
