@@ -28,6 +28,7 @@ import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:privacyidea_authenticator/widgets/CustomPageReportMode.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 void main() async {
@@ -42,8 +43,8 @@ void main() async {
 //        enableStackTrace: true)
 //  ]);
 
-  CatcherOptions releaseOptions = CatcherOptions(PageReportMode(), [
-    EmailManualHandler(["support@email.com"])
+  CatcherOptions releaseOptions = CatcherOptions(CustomPageReportMode(), [
+    EmailManualHandler(["support@email.com"], enableCustomParameters: false)
   ]);
 
   CatcherOptions debugOptions =
