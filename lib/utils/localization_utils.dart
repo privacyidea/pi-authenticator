@@ -681,13 +681,16 @@ class Localization {
     );
   }
 
-  String get pageReportModeBody {
+  String pageReportModeBody(String accept, String cancel) {
     return Intl.message(
-      "An unexpected error occurred in the application, the"
+      "An unexpected error occurred in the application. The"
       " information below can be send to the developers by email"
       " to help prevent this error in the future."
       " Press '$accept' to send the information or '$cancel' to"
       " not send any information.",
+      args: [accept, cancel],
+      examples: const {'accept': 'accept', 'cancel': 'cancel'},
+      name: 'pageReportModeBody',
       desc:
           'Description shown to the user about what info the error report contains.',
       locale: localeName,

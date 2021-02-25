@@ -111,8 +111,10 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text( Localization.of(context).pageReportModeBody
-              ,
+            child: Text(
+              Localization.of(context).pageReportModeBody(
+                  Localization.of(context).accept,
+                  Localization.of(context).cancel),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.subtitle2,
             ),

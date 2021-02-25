@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m9(otpValue) => "Passwort \"${otpValue}\" wurde in die Zwischenablage kopiert.";
 
+  static m10(accept, cancel) => "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden um zu helfen diesen Fehler in Zukunft zu vermeiden. Drücken Sie \'${accept}\' um die Informationen zu senden oder \'${cancel}\' um nichts zu senden.";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "About" : MessageLookupByLibrary.simpleMessage("Über"),
@@ -92,6 +94,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "The secret does not fit the current encoding" : MessageLookupByLibrary.simpleMessage("Das Geheimnis entspricht nicht der gewählten\n Verschlüsselung."),
     "Theme" : MessageLookupByLibrary.simpleMessage("Thema"),
     "Type" : MessageLookupByLibrary.simpleMessage("Art"),
+    "Unexpected Error" : MessageLookupByLibrary.simpleMessage("Unbekannter Fehler"),
     "accept" : MessageLookupByLibrary.simpleMessage("Akzeptieren"),
     "acceptPushAuthRequestFor" : m0,
     "confirmDeletionOf" : m1,
@@ -107,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "errorSynchronizationNoNetworkConnection" : MessageLookupByLibrary.simpleMessage("Die Synchronisation ist fehlgeschlagen, da der privacyIDEA Server nicht erreicht werden konnte."),
     "errorTokenExpired" : m8,
     "otpValueCopiedMessage" : m9,
+    "pageReportModeBody" : m10,
     "retry" : MessageLookupByLibrary.simpleMessage("Erneut versuchen"),
     "retryRollOut" : MessageLookupByLibrary.simpleMessage("Ausrollen fehlgeschlagen, nochmal versuchen?"),
     "rollingOut" : MessageLookupByLibrary.simpleMessage("Ausrollen")

@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2021-02-09T12:52:12.206680",
+  "@@last_modified": "2021-02-25T12:30:00.793083",
   "Guide": "Guide",
   "@Guide": {
     "description": "Button to open the guide screen.",
@@ -457,5 +457,24 @@
     "description": "Title of migration dialog.",
     "type": "text",
     "placeholders": {}
+  },
+  "Unexpected Error": "Unexpected Error",
+  "@Unexpected Error": {
+    "description": "Title of page report mode.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pageReportModeBody": "An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future. Press '{accept}' to send the information or '{cancel}' to not send any information.",
+  "@pageReportModeBody": {
+    "description": "Description shown to the user about what info the error report contains.",
+    "type": "text",
+    "placeholders": {
+      "accept": {
+        "example": "accept"
+      },
+      "cancel": {
+        "example": "cancel"
+      }
+    }
   }
 }
