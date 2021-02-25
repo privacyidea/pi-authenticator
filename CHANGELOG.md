@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.1.0] - 2021-02-09
+
+### Added
+
+- Added error reporting to the application. If an uncaught error occurs, the information is shown to the user and an e-mail can be send to support. 
+
 ## [3.0.12] - 2021-02-09
 
 ### Added
