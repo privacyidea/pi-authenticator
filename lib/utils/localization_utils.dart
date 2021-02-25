@@ -668,6 +668,31 @@ class Localization {
       locale: localeName,
     );
   }
+
+  // #########################################################################
+  //                           Error Reporting
+  // #########################################################################
+
+  String get pageReportModeTitle {
+    return Intl.message(
+      'Unexpected Error',
+      desc: 'Title of page report mode.',
+      locale: localeName,
+    );
+  }
+
+  String get pageReportModeBody {
+    return Intl.message(
+      "An unexpected error occurred in the application, the"
+      " information below can be send to the developers by email"
+      " to help prevent this error in the future."
+      " Press '$accept' to send the information or '$cancel' to"
+      " not send any information.",
+      desc:
+          'Description shown to the user about what info the error report contains.',
+      locale: localeName,
+    );
+  }
 }
 
 class MyLocalizationsDelegate extends LocalizationsDelegate<Localization> {

@@ -5,14 +5,9 @@ import 'package:catcher/utils/catcher_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 
 class CustomPageReportMode extends ReportMode {
-  final bool showStackTrace;
-
-  CustomPageReportMode({
-    this.showStackTrace = true,
-  }) : assert(showStackTrace != null, "showStackTrace can't be null");
-
   @override
   void requestAction(Report report, BuildContext context) {
     _navigateToPageWidget(report, context);
@@ -67,8 +62,7 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
   Widget _buildMaterialPage() {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text(widget.pageReportMode.localizationOptions.pageReportModeTitle),
+        title: Text(Localization.of(context).pageReportModeTitle),
       ),
       body: _buildInnerWidget(),
     );
@@ -77,8 +71,7 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
   Widget _buildCupertinoPage() {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle:
-            Text(widget.pageReportMode.localizationOptions.pageReportModeTitle),
+        middle: Text(Localization.of(context).pageReportModeTitle),
       ),
       child: SafeArea(
         child: _buildInnerWidget(),
@@ -118,12 +111,8 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "An unexpected error occurred in the application, the following"
-              " information can be send to the developers by email"
-              " to help prevent this error in the future."
-              " Press 'accept' to send the information or 'cancel' to"
-              " not send any information.", // TODO Make custom Text here
+            child: Text( Localization.of(context).pageReportModeBody
+              ,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.subtitle2,
             ),
@@ -144,48 +133,17 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
             children: <Widget>[
               TextButton(
                 onPressed: () => _onAcceptClicked(),
-                child: Text(widget
-                    .pageReportMode.localizationOptions.pageReportModeAccept),
+                child: Text(Localization.of(context).accept),
               ),
               TextButton(
                 onPressed: () => _onCancelClicked(),
-                child: Text(widget
-                    .pageReportMode.localizationOptions.pageReportModeCancel),
+                child: Text(Localization.of(context).cancel),
               ),
             ],
           )
         ],
       ),
     );
-  }
-
-  TextStyle _getTextStyle(double fontSize) {
-    return TextStyle(
-      fontSize: fontSize,
-      decoration: TextDecoration.none,
-    );
-  }
-
-  Widget _getStackTraceWidget() {
-    if (widget.pageReportMode.showStackTrace) {
-      final items = widget.report.stackTrace.toString().split("\n");
-      return SizedBox(
-        height: 300.0,
-        child: ListView.builder(
-          padding: const EdgeInsets.all(8.0),
-          itemCount: items.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Text(
-              // ignore: unnecessary_string_interpolations
-              '${items[index]}',
-              style: _getTextStyle(10),
-            );
-          },
-        ),
-      );
-    } else {
-      return Container();
-    }
   }
 
   void _onAcceptClicked() {

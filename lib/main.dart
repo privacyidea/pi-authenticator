@@ -44,7 +44,9 @@ void main() async {
 //  ]);
 
   CatcherOptions releaseOptions = CatcherOptions(CustomPageReportMode(), [
-    EmailManualHandler(["support@email.com"], enableCustomParameters: false)
+    EmailManualHandler(['timo.sturm@netknights.it'],
+        enableCustomParameters: false)
+    // TODO Change e-mail address.
   ]);
 
   CatcherOptions debugOptions =
