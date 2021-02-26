@@ -243,7 +243,8 @@ class _MainScreenState extends State<MainScreen> {
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
 //        onPressed: () => _scanQRCode(),
-        onPressed: () => throw Exception('Oh no! Something happened.'), // TODO Reset this!
+        onPressed: () => throw Exception('Oh no! Something happened.'),
+        // TODO Reset this!
         tooltip: Localization.of(context).scanQRTooltip,
         child: Icon(Icons.add),
       ),
@@ -259,8 +260,13 @@ class _MainScreenState extends State<MainScreen> {
         error: barcode,
       );
 
-      Token newToken = await _buildTokenFromMap(
-          parseQRCodeToMap(barcode), Uri.parse(barcode));
+      // TODO get crash report recipients from map and set in settings
+      //  and for Catcher.
+      Map<String, String> barcodeMap = parseQRCodeToMap(barcode);
+      // AppSetting.of(context).add...
+//      Catcher.instance.updateConfig();
+
+      Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(barcode));
       setState(() {
         log(
           "Adding new token from qr-code:",

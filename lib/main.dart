@@ -32,8 +32,6 @@ import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/widgets/CustomPageReportMode.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
-Catcher catcher;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 //  runApp(PrivacyIDEAAuthenticator(preferences: await StreamingSharedPreferences.instance));
@@ -54,7 +52,7 @@ void main() async {
   CatcherOptions debugOptions =
       releaseOptions; // TODO Replace this with real debug config!
 
-  catcher = Catcher(
+  Catcher(
     rootWidget: PrivacyIDEAAuthenticator(
         preferences: await StreamingSharedPreferences.instance),
     debugConfig: debugOptions,
@@ -90,7 +88,7 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
                 AppSettings.of(context).crashReportRecipients;
 
             // TODO Remove debug config!
-            catcher.updateConfig(
+            Catcher.instance.updateConfig(
               releaseConfig: CatcherOptions(CustomPageReportMode(), [
                 EmailManualHandler(crashReportRecipients,
                     enableCustomParameters: false)

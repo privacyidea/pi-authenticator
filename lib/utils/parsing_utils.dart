@@ -198,6 +198,8 @@ Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
     error: uri,
   );
 
+  // TODO Parse crash report recipients
+
   if (uri.scheme != "otpauth") {
     throw ArgumentError.value(
       uri,

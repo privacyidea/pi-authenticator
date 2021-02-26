@@ -123,10 +123,12 @@ packages:
   catcher:
     dependency: "direct main"
     description:
-      name: catcher
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.1"
+      path: "."
+      ref: HEAD
+      resolved-ref: d4d5314f8ff9acd647ebbe6181b21b3e260c05d9
+      url: "https://github.com/timosturm/catcher.git"
+    source: git
+    version: "0.4.2"
   characters:
     dependency: transitive
     description:
