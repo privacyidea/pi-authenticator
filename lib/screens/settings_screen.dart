@@ -24,6 +24,7 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/widgets/migrate_legacy_tokens_dialog.dart';
@@ -264,6 +265,7 @@ class AppSettings extends InheritedWidget {
   static String _prefHideOtps = 'KEY_HIDE_OTPS';
   static String _prefEnablePoll = 'KEY_ENABLE_POLLING';
   static String _showGuideOnStartKey = 'KEY_SHOW_GUIDE_ON_START';
+  static String _crashReportRecipientsKey = 'KEY_CRASH_REPORT_RECIPIENTS';
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
@@ -279,12 +281,27 @@ class AppSettings extends InheritedWidget {
             const bool.fromEnvironment('testing_mode', defaultValue: false),
         _showGuideOnStart =
             preferences.getBool(_showGuideOnStartKey, defaultValue: true),
+        _crashReportRecipients = preferences.getStringList(
+            _crashReportRecipientsKey,
+            defaultValue: [defaultCrashReportRecipient]),
         super(child: child);
 
   final Preference<bool> _hideOpts;
   final Preference<bool> _enablePolling;
   final Preference<bool> _showGuideOnStart;
+  final Preference<List<String>> _crashReportRecipients;
+
   final bool isTestMode;
+
+  void addCrashReportRecipient(String email) {
+    var current = _crashReportRecipients.getValue();
+    if (!current.contains(email)) {
+      current.add(email);
+    }
+    _crashReportRecipients.setValue(current);
+  }
+
+  List<String> get crashReportRecipients => _crashReportRecipients.getValue();
 
   Stream<bool> streamHideOpts() => _hideOpts;
 
