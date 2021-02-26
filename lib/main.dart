@@ -27,9 +27,12 @@ import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/widgets/CustomPageReportMode.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
+
+Catcher catcher;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,15 +47,14 @@ void main() async {
 //  ]);
 
   CatcherOptions releaseOptions = CatcherOptions(CustomPageReportMode(), [
-    EmailManualHandler(['timo.sturm@netknights.it'],
+    EmailManualHandler([defaultCrashReportRecipient],
         enableCustomParameters: false)
-    // TODO Change e-mail address.
   ]);
 
   CatcherOptions debugOptions =
       releaseOptions; // TODO Replace this with real debug config!
 
-  Catcher(
+  catcher = Catcher(
     rootWidget: PrivacyIDEAAuthenticator(
         preferences: await StreamingSharedPreferences.instance),
     debugConfig: debugOptions,
@@ -84,6 +86,21 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
           defaultBrightness: Brightness.light,
           data: (brightness) => getApplicationTheme(brightness),
           themedWidgetBuilder: (context, theme) {
+            var crashReportRecipients =
+                AppSettings.of(context).crashReportRecipients;
+
+            // TODO Remove debug config!
+            catcher.updateConfig(
+              releaseConfig: CatcherOptions(CustomPageReportMode(), [
+                EmailManualHandler(crashReportRecipients,
+                    enableCustomParameters: false)
+              ]),
+              debugConfig: CatcherOptions(CustomPageReportMode(), [
+                EmailManualHandler(crashReportRecipients,
+                    enableCustomParameters: false)
+              ]),
+            );
+
             return MaterialApp(
               navigatorKey: Catcher.navigatorKey,
               // Needed to display dialogs etc.
