@@ -19,7 +19,7 @@
 */
 
 // default email address for crash reports
-const defaultCrashReportRecipient = 'timo.sturm@netknights.it';
+const defaultCrashReportRecipient = 'app-crash@netknights.it';
 
 enum Encodings {
   none,
