@@ -57,5 +57,7 @@
 	<false/>
 	<key>FirebaseMessagingAutoInitEnabled</key>
 	<false/>
+	<key>FIREBASE_ANALYTICS_COLLECTION_DISABLED</key>
+	<true/>
 </dict>
 </plist>
