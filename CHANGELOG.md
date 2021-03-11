@@ -4,7 +4,7 @@
 
 ### Added
 
-- Added error reporting to the application. If an uncaught error occurs, the information is shown to the user and an e-mail can be send to support. 
+- Added error reporting to the application. Uncaught errors can be voluntarily send to support via e-mail. 
 
 ## [3.0.12] - 2021-02-09
 
