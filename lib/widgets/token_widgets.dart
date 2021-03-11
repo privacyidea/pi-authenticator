@@ -24,6 +24,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:catcher/catcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -386,13 +387,14 @@ class _PushWidgetState extends _TokenWidgetState {
       setState(() => _rollOutFailed = true);
 
       _showMessage(Localization.of(context).errorRollOutNoNetworkConnection, 3);
-    } on Exception catch (e) {
+    } on Exception catch (e, stack) {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
 
       setState(() => _rollOutFailed = true);
 
-      _showMessage(Localization.of(context).errorRollOutUnknownError(e), 5);
+//      _showMessage(Localization.of(context).errorRollOutUnknownError(e), 5);
+      Catcher.reportCheckedError(e, stack);
     }
   }
 
