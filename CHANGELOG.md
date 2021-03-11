@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.1.0] - 2021-02-09
+
+### Added
+
+- Added error reporting to the application. If an uncaught error occurs, the information is shown to the user and an e-mail can be send to support. 
+
 ## [3.0.12] - 2021-02-09
 
 ### Added
@@ -77,6 +83,7 @@
 - parallel development of android and ios version
 
 
+[3.1.0]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.12...v3.1.0
 [3.0.12]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.8...v3.0.12
 [3.0.8]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.7...v3.0.8
 [3.0.7]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.6...v3.0.7

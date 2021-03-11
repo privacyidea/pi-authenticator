@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2020-05-22T12:03:54.642044",
+  "@@last_modified": "2021-02-25T12:30:00.793083",
   "Next": "Weiter",
   "@Next": {
     "description": "The text of the button to calculate the next otp value.",
@@ -294,7 +294,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "retryRollOut": "Ausrollen fehlgeschlagen, nochmal versuchen?",
+  "retryRollOut": "Erneut ausrollen.",
   "@retryRollOut": {
     "description": "Label for e.g. a button. Tells the user that rolling out the token failed. Roll out can be retried by clicking this button.",
     "type": "text",
@@ -457,5 +457,24 @@
     "description": "Title of migration dialog.",
     "type": "text",
     "placeholders": {}
+  },
+  "Unexpected Error": "Unbekannter Fehler",
+  "@Unexpected Error": {
+    "description": "Title of page report mode.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pageReportModeBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden um zu helfen diesen Fehler in Zukunft zu vermeiden. Drücken Sie '{accept}' um die Informationen zu senden oder '{cancel}' um nichts zu senden.",
+  "@pageReportModeBody": {
+    "description": "Description shown to the user about what info the error report contains.",
+    "type": "text",
+    "placeholders": {
+      "accept": {
+        "example": "accept"
+      },
+      "cancel": {
+        "example": "cancel"
+      }
+    }
   }
 }

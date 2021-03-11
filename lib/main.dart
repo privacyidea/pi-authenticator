@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+import 'package:catcher/catcher.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,18 +27,39 @@ import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:privacyidea_authenticator/widgets/CustomPageReportMode.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp(preferences: await StreamingSharedPreferences.instance));
+
+  CatcherOptions debugOptions = CatcherOptions(SilentReportMode(), [
+    ConsoleHandler(
+        enableApplicationParameters: false,
+        enableDeviceParameters: false,
+        enableCustomParameters: false,
+        enableStackTrace: true)
+  ]);
+
+  CatcherOptions releaseOptions = CatcherOptions(CustomPageReportMode(), [
+    EmailManualHandler([defaultCrashReportRecipient],
+        enableCustomParameters: false)
+  ]);
+
+  Catcher(
+    rootWidget: PrivacyIDEAAuthenticator(
+        preferences: await StreamingSharedPreferences.instance),
+    debugConfig: debugOptions,
+    releaseConfig: releaseOptions,
+  );
 }
 
-class MyApp extends StatelessWidget {
+class PrivacyIDEAAuthenticator extends StatelessWidget {
   final StreamingSharedPreferences _preferences;
 
-  const MyApp({StreamingSharedPreferences preferences})
+  const PrivacyIDEAAuthenticator({StreamingSharedPreferences preferences})
       : this._preferences = preferences;
 
   static List<Locale> _supportedLocales = [
@@ -57,7 +79,20 @@ class MyApp extends StatelessWidget {
           defaultBrightness: Brightness.light,
           data: (brightness) => getApplicationTheme(brightness),
           themedWidgetBuilder: (context, theme) {
+            var crashReportRecipients =
+                AppSettings.of(context).crashReportRecipients;
+
+            // Override release config to use custom e-mail recipients
+            Catcher.instance.updateConfig(
+              releaseConfig: CatcherOptions(CustomPageReportMode(), [
+                EmailManualHandler(crashReportRecipients,
+                    enableCustomParameters: false)
+              ]),
+            );
+
             return MaterialApp(
+              navigatorKey: Catcher.navigatorKey,
+              // Needed to display dialogs etc.
               localizationsDelegates: [
                 const MyLocalizationsDelegate(),
                 GlobalMaterialLocalizations.delegate,

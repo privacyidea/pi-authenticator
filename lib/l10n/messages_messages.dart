@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m9(otpValue) => "Password \"${otpValue}\" copied to clipboard.";
 
+  static m10(accept, cancel) => "An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future. Press \'${accept}\' to send the information or \'${cancel}\' to not send any information.";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "About" : MessageLookupByLibrary.simpleMessage("About"),
@@ -92,6 +94,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "The secret does not fit the current encoding" : MessageLookupByLibrary.simpleMessage("The secret does not fit the current encoding"),
     "Theme" : MessageLookupByLibrary.simpleMessage("Theme"),
     "Type" : MessageLookupByLibrary.simpleMessage("Type"),
+    "Unexpected Error" : MessageLookupByLibrary.simpleMessage("Unexpected Error"),
     "accept" : MessageLookupByLibrary.simpleMessage("Accept"),
     "acceptPushAuthRequestFor" : m0,
     "confirmDeletionOf" : m1,
@@ -107,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "errorSynchronizationNoNetworkConnection" : MessageLookupByLibrary.simpleMessage("Synchronizing tokens failed, privacyIDEA server could not be reached."),
     "errorTokenExpired" : m8,
     "otpValueCopiedMessage" : m9,
+    "pageReportModeBody" : m10,
     "retry" : MessageLookupByLibrary.simpleMessage("Retry"),
     "retryRollOut" : MessageLookupByLibrary.simpleMessage("Roll-out failed, please try again."),
     "rollingOut" : MessageLookupByLibrary.simpleMessage("Rolling out")

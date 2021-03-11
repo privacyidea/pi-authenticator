@@ -18,6 +18,9 @@
   limitations under the License.
 */
 
+// default email address for crash reports
+const defaultCrashReportRecipient = 'app-crash@netknights.it';
+
 enum Encodings {
   none,
   base32,

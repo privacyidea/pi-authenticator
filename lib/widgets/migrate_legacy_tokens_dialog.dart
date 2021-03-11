@@ -21,18 +21,12 @@
 import 'dart:developer';
 import 'dart:ui';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MigrateLegacyTokensDialog extends StatefulWidget {
-  final Uri _githubLink =
-      Uri.parse('https://github.com/privacyidea/pi-authenticator/issues');
-
   @override
   State<StatefulWidget> createState() => _MigrateLegacyTokensDialogState();
 }
@@ -43,20 +37,14 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
     children: <Widget>[CircularProgressIndicator()],
   );
 
-  TapGestureRecognizer _tabRecognizer;
-  var problem; // I.e. Error or Exception
-
   @override
   void initState() {
     super.initState();
-    _tabRecognizer = TapGestureRecognizer()
-      ..onTap = () => _launchUri(widget._githubLink);
     _migrateTokens();
   }
 
   @override
   void dispose() {
-    _tabRecognizer?.dispose();
     super.dispose();
   }
 
@@ -77,52 +65,33 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
     );
   }
 
-  void _launchUri(Uri link) async {
-    String uri = link.toString();
-    if (await canLaunch(uri)) launch(uri);
-  }
-
   void _migrateTokens() async {
     List<Widget> children = [];
 
     // Load legacy tokens and add them to the storage.
     log('Attempt to load legacy tokens.',
         name: 'migrate_legacy_tokens_dialog.dart');
-    try {
-      List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
-      List<PushToken> currentPushToken =
-          (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
 
-      for (Token old in legacyTokens) {
-        // Skip push token which already exist (by serial)
-        if (old is PushToken) {
-          if (currentPushToken.any((e) => old.serial == e.serial)) {
-            continue;
-          }
+    List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
+    List<PushToken> currentPushToken =
+        (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
+
+    for (Token old in legacyTokens) {
+      // Skip push token which already exist (by serial)
+      if (old is PushToken) {
+        if (currentPushToken.any((e) => old.serial == e.serial)) {
+          continue;
         }
-        await StorageUtil.saveOrReplaceToken(old);
       }
-
-      if (legacyTokens.isEmpty) {
-        children.add(Text(Localization.of(context).migrationNoTokens));
-      }
-    } catch (e) {
-      // Catch Exceptions and Errors together with stacktrace:
-      String version = (await PackageInfo.fromPlatform()).version;
-      problem = 'Version: $version\n$e';
-
-      children.add(Text(Localization.of(context).somethingWentWrong));
-      children.add(Padding(
-        padding: EdgeInsets.only(top: 10),
-        child: Container(
-          child: Text('$problem'),
-          color: Colors.black26,
-        ),
-      ));
+      await StorageUtil.saveOrReplaceToken(old);
     }
 
-    if (children.isEmpty) {
-      children.add(Text(Localization.of(context).migrationSuccess));
+    String text;
+
+    if (legacyTokens.isEmpty) {
+      text = Localization.of(context).migrationNoTokens;
+    } else {
+      text = Localization.of(context).migrationSuccess;
     }
 
     final ScrollController controller = ScrollController();
@@ -135,7 +104,7 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
           controller: controller,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: children,
+            children: [Text(text)],
           ),
         ),
       );

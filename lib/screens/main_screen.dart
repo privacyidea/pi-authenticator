@@ -25,6 +25,7 @@ import 'dart:typed_data';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:base32/base32.dart';
+import 'package:catcher/catcher.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -258,8 +259,13 @@ class _MainScreenState extends State<MainScreen> {
         error: barcode,
       );
 
-      Token newToken = await _buildTokenFromMap(
-          parseQRCodeToMap(barcode), Uri.parse(barcode));
+      // TODO get crash report recipients from map and set in settings
+      //  and for Catcher.
+      Map<String, dynamic> barcodeMap = parseQRCodeToMap(barcode);
+      // AppSetting.of(context).add...
+//      Catcher.instance.updateConfig();
+
+      Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(barcode));
       setState(() {
         log(
           "Adding new token from qr-code:",
@@ -276,16 +282,17 @@ class _MainScreenState extends State<MainScreen> {
 
         _tokenList.add(newToken);
       });
-    } on PlatformException catch (e) {
+    } on PlatformException catch (e, stack) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         //  Camera access was denied
       } else {
         //  Unknown error
-        throw e;
+//        throw e;
+        Catcher.reportCheckedError(e, stack);
       }
     } on FormatException catch (e) {
       //  User returned by pressing the back button (can have other causes too!)
-      throw e;
+//      throw e;
     } on ArgumentError catch (e) {
       // Error while parsing qr code.
       // Show the error message to the user.
@@ -297,9 +304,10 @@ class _MainScreenState extends State<MainScreen> {
         name: "main_screen.dart",
         error: e.stackTrace,
       );
-    } catch (e) {
+    } catch (e, stack) {
       //  Unknown error
-      throw e;
+//      throw e;
+      Catcher.reportCheckedError(e, stack);
     }
   }
 
