@@ -301,8 +301,7 @@ class AppSettings extends InheritedWidget {
     _crashReportRecipients.setValue(current);
   }
 
-//  List<String> get crashReportRecipients => _crashReportRecipients.getValue();
-  List<String> get crashReportRecipients => ['a@b.com', 'c@d.org'];
+  List<String> get crashReportRecipients => _crashReportRecipients.getValue();
 
   Stream<bool> streamHideOpts() => _hideOpts;
 
