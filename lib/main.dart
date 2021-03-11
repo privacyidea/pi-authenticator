@@ -34,30 +34,25 @@ import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-//  runApp(PrivacyIDEAAuthenticator(preferences: await StreamingSharedPreferences.instance));
 
-//  CatcherOptions debugOptions = CatcherOptions(SilentReportMode(), [
-//    ConsoleHandler(
-//        enableApplicationParameters: false,
-//        enableDeviceParameters: false,
-//        enableCustomParameters: false,
-//        enableStackTrace: true)
-//  ]);
+  CatcherOptions debugOptions = CatcherOptions(SilentReportMode(), [
+    ConsoleHandler(
+        enableApplicationParameters: false,
+        enableDeviceParameters: false,
+        enableCustomParameters: false,
+        enableStackTrace: true)
+  ]);
 
   CatcherOptions releaseOptions = CatcherOptions(CustomPageReportMode(), [
     EmailManualHandler([defaultCrashReportRecipient],
         enableCustomParameters: false)
   ]);
 
-  CatcherOptions debugOptions =
-      releaseOptions; // TODO Replace this with real debug config!
-
   Catcher(
     rootWidget: PrivacyIDEAAuthenticator(
         preferences: await StreamingSharedPreferences.instance),
     debugConfig: debugOptions,
     releaseConfig: releaseOptions,
-//    ensureInitialized: true,
   );
 }
 
@@ -87,13 +82,9 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
             var crashReportRecipients =
                 AppSettings.of(context).crashReportRecipients;
 
-            // TODO Remove debug config!
+            // Override release config to use custom e-mail recipients
             Catcher.instance.updateConfig(
               releaseConfig: CatcherOptions(CustomPageReportMode(), [
-                EmailManualHandler(crashReportRecipients,
-                    enableCustomParameters: false)
-              ]),
-              debugConfig: CatcherOptions(CustomPageReportMode(), [
                 EmailManualHandler(crashReportRecipients,
                     enableCustomParameters: false)
               ]),
