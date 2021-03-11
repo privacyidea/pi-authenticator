@@ -112,7 +112,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "otpValueCopiedMessage" : m9,
     "pageReportModeBody" : m10,
     "retry" : MessageLookupByLibrary.simpleMessage("Erneut versuchen"),
-    "retryRollOut" : MessageLookupByLibrary.simpleMessage("Ausrollen fehlgeschlagen, nochmal versuchen?"),
+    "retryRollOut" : MessageLookupByLibrary.simpleMessage("Erneut ausrollen."),
     "rollingOut" : MessageLookupByLibrary.simpleMessage("Ausrollen")
   };
 }

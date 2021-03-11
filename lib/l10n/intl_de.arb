@@ -294,7 +294,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "retryRollOut": "Ausrollen fehlgeschlagen, nochmal versuchen?",
+  "retryRollOut": "Erneut ausrollen.",
   "@retryRollOut": {
     "description": "Label for e.g. a button. Tells the user that rolling out the token failed. Roll out can be retried by clicking this button.",
     "type": "text",
