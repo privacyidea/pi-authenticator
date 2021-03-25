@@ -75,11 +75,10 @@ class TokenWidget extends StatefulWidget {
 abstract class _TokenWidgetState extends State<TokenWidget> {
   Token _token;
   static final SlidableController _slidableController = SlidableController();
-  String _label;
+
 
   _TokenWidgetState(this._token) {
     _saveThisToken();
-    _label = _token.label;
   }
 
   @override
@@ -110,7 +109,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   void _renameTokenDialog() {
     final _nameInputKey = GlobalKey<FormFieldState>();
-    String _selectedName = _label;
+    String _selectedName = _token.label;
 
     showDialog(
         context: context,
@@ -119,9 +118,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             title: Text(Localization.of(context).renameDialogTitle),
             content: TextFormField(
               autofocus: true,
-              initialValue: _label,
+              initialValue: _selectedName,
               key: _nameInputKey,
-              onChanged: (value) => this.setState(() => _selectedName = value),
+              onChanged: (value) {
+                if (mounted) {
+                  setState(() => _selectedName = value);
+                }
+              },
               decoration:
                   InputDecoration(labelText: Localization.of(context).name),
               validator: (value) {
@@ -156,18 +159,18 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         });
   }
 
-  void _renameClicked(String newLabel) {
+  void _renameClicked(String newLabel) async {
     _token.label = newLabel;
-    _saveThisToken();
+    await _saveThisToken();
     log(
       "Renamed token:",
       name: "token_widgets.dart",
       error: "\"${_token.label}\" changed to \"$newLabel\"",
     );
 
-    setState(() {
-      _label = _token.label;
-    });
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _deleteTokenDialog() {
@@ -177,7 +180,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
           return AlertDialog(
             title: Text(Localization.of(context).deleteDialogTitle),
             content: Text(
-              Localization.of(context).confirmDeletionOf(_label),
+              Localization.of(context).confirmDeletionOf(_token.label),
             ),
             actions: <Widget>[
               FlatButton(
@@ -262,11 +265,12 @@ class _PushWidgetState extends _TokenWidgetState {
             name: "token_widgets.dart");
 
         _deleteExpiredRequests(t);
+        _token = t;
+        await _saveThisToken();
 
-        setState(() {
-          _token = t;
-          _saveThisToken();
-        });
+        if (mounted) {
+          setState(() {});
+        }
       }
     });
 
@@ -275,7 +279,10 @@ class _PushWidgetState extends _TokenWidgetState {
       if (_token.pushRequests != null && _token.pushRequests.isNotEmpty) {
         _deleteExpiredRequests(_token);
         _saveThisToken();
-        setState(() {}); // Update ui
+
+        if (mounted) {
+          setState(() {}); // Update ui
+        }
       }
     });
 
@@ -301,7 +308,9 @@ class _PushWidgetState extends _TokenWidgetState {
   }
 
   void _rollOutToken() async {
-    setState(() => _rollOutFailed = false);
+    if (mounted) {
+      setState(() => _rollOutFailed = false);
+    }
 
     if (await StorageUtil.globalFirebaseConfigExists() &&
         await StorageUtil.loadFirebaseConfig(_token) !=
@@ -316,7 +325,9 @@ class _PushWidgetState extends _TokenWidgetState {
               .errorOnlyOneFirebaseProjectIsSupported(_token.label),
           5);
 
-      setState(() => _rollOutFailed = true);
+      if (mounted) {
+        setState(() => _rollOutFailed = true);
+      }
 
       return;
     }
@@ -328,7 +339,9 @@ class _PushWidgetState extends _TokenWidgetState {
             _token.expirationDate
           ]}, Token: $_token");
 
-      setState(() => _rollOutFailed = true);
+      if (mounted) {
+        setState(() => _rollOutFailed = true);
+      }
 
       _showMessage(Localization.of(context).errorTokenExpired(_token.label), 3);
       return;
@@ -366,14 +379,18 @@ class _PushWidgetState extends _TokenWidgetState {
 
         _token.isRolledOut = true;
         await _saveThisToken();
-        setState(() => {}); // Update ui
+        if (mounted) {
+          setState(() => {}); // Update ui
+        }
       } else {
         log("Post request on roll out failed.",
             name: "token_widgets.dart",
             error: "Token: $_token, Status code: ${response.statusCode},"
                 " Body: ${response.body}");
 
-        setState(() => _rollOutFailed = true);
+        if (mounted) {
+          setState(() => _rollOutFailed = true);
+        }
 
         _showMessage(
             Localization.of(context)
@@ -384,14 +401,18 @@ class _PushWidgetState extends _TokenWidgetState {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
 
-      setState(() => _rollOutFailed = true);
+      if (mounted) {
+        setState(() => _rollOutFailed = true);
+      }
 
       _showMessage(Localization.of(context).errorRollOutNoNetworkConnection, 3);
     } on Exception catch (e, stack) {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
 
-      setState(() => _rollOutFailed = true);
+      if (mounted) {
+        setState(() => _rollOutFailed = true);
+      }
 
 //      _showMessage(Localization.of(context).errorRollOutUnknownError(e), 5);
       Catcher.reportCheckedError(e, stack);
@@ -451,7 +472,10 @@ class _PushWidgetState extends _TokenWidgetState {
             name: "token_widgets.dart",
             error: "Token: $_token, Status code: ${response.statusCode}, "
                 "Body: ${response.body}");
-        setState(() => _acceptFailed = true);
+
+        if (mounted) {
+          setState(() => _acceptFailed = true);
+        }
 
         _showMessage(
             Localization.of(context).errorPushAuthRequestFailedFor(
@@ -461,7 +485,10 @@ class _PushWidgetState extends _TokenWidgetState {
     } on SocketException catch (e) {
       log("Accept push auth request for [$_token] failed.",
           name: "token_widgets.dart", error: e);
-      setState(() => _acceptFailed = true);
+
+      if (mounted) {
+        setState(() => _acceptFailed = true);
+      }
 
       _showMessage(
           Localization.of(context)
@@ -470,7 +497,10 @@ class _PushWidgetState extends _TokenWidgetState {
     } catch (e) {
       log("Accept push auth request for [$_token] failed.",
           name: "token_widgets.dart", error: e);
-      setState(() => _acceptFailed = true);
+
+      if (mounted) {
+        setState(() => _acceptFailed = true);
+      }
 
       _showMessage(
           Localization.of(context).errorAuthenticationFailedUnknownError(e), 5);
@@ -490,19 +520,33 @@ class _PushWidgetState extends _TokenWidgetState {
     flutterLocalNotificationsPlugin.cancel(request?.id);
     await _saveThisToken();
 
-    setState(() => _acceptFailed = false);
+    if (mounted) {
+      setState(() => _acceptFailed = false);
+    }
   }
 
   void _disableRetryButtonForSomeTime() {
-    setState(() => _retryButtonIsEnabled = false);
-    Timer(Duration(seconds: 3),
-        () => setState(() => _retryButtonIsEnabled = true));
+    if (mounted) {
+      setState(() => _retryButtonIsEnabled = false);
+    }
+
+    Timer(Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() => _retryButtonIsEnabled = true);
+      }
+    });
   }
 
   void _disableAcceptButtonForSomeTime() {
-    setState(() => _acceptButtonIsEnabled = false);
-    Timer(Duration(seconds: 1),
-        () => setState(() => _acceptButtonIsEnabled = true));
+    if (mounted) {
+      setState(() => _acceptButtonIsEnabled = false);
+    }
+
+    Timer(Duration(seconds: 1), () {
+      if (mounted) {
+        setState(() => _acceptButtonIsEnabled = true);
+      }
+    });
   }
 
   @override
@@ -518,8 +562,7 @@ class _PushWidgetState extends _TokenWidgetState {
                   style: Theme.of(context).textTheme.headline4,
                 ),
                 subtitle: Text(
-                  _label,
-//                  '$_label, ${_token.pushRequests.length}',
+                  _token.label,
                   style: Theme.of(context).textTheme.headline5,
                 ),
                 trailing: Icon(Icons.message),
@@ -682,19 +725,22 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
 
   @override
   void _updateOtpValue() {
-    setState(() {
-      _token.incrementCounter();
-      _otpValue = calculateOtpValue(_token);
-      _saveThisToken(); // When the app reloads the counter should not be reset.
+    _token.incrementCounter();
+    _saveThisToken(); // When the app reloads the counter should not be reset.
 
-      _disableButtonForSomeTime();
+    if (mounted) {
+      setState(() {
+        _otpValue = calculateOtpValue(_token);
+        // Disable the button for 1 s.
+        buttonIsDisabled = true;
+      });
+    }
+
+    Timer(Duration(seconds: 1), () {
+      if (mounted) {
+        setState(() => buttonIsDisabled = false);
+      }
     });
-  }
-
-  void _disableButtonForSomeTime() {
-    // Disable the button for 1 s.
-    buttonIsDisabled = true;
-    Timer(Duration(seconds: 1), () => setState(() => buttonIsDisabled = false));
   }
 
   @override
@@ -707,7 +753,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             style: Theme.of(context).textTheme.headline4,
           ),
           subtitle: Text(
-            _label,
+            _token.label,
             style: Theme.of(context).textTheme.headline5,
           ),
         ),
@@ -760,14 +806,12 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     controller = AnimationController(
       duration: Duration(seconds: _token.period),
       // Animate the progress for the duration of the tokens period.
-      vsync:
-          this, // By extending SingleTickerProviderStateMixin we can use this object as vsync, this prevents offscreen animations.
+      vsync: this,
     )
       ..addListener(() {
-        // Adding a listener to update the view for the animation steps.
-        setState(() => {
-              // The state that has changed here is the animation object’s value.
-            });
+        if (mounted) {
+          setState(() {});
+        }
       })
       ..addStatusListener((status) {
         // Add listener to restart the animation after the period, also updates the otp value.
@@ -809,7 +853,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
             style: Theme.of(context).textTheme.headline4,
           ),
           subtitle: Text(
-            _label,
+            _token.label,
             style: Theme.of(context).textTheme.headline5,
           ),
         ),
