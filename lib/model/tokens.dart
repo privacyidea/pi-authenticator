@@ -38,7 +38,7 @@ abstract class Token {
 
   String get tokenVersion => _tokenVersion;
 
-  String get label => _label == null ? "" : Uri.decodeFull(_label);
+  String get label => _label == null ? "" : _label;
 
   set label(String label) {
     this._label = label;
