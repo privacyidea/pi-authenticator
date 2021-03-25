@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.1.1] - XXX
+
+### Fixed
+
+- Fixed attempt ui update on non-existing elements
+
 ## [3.1.0] - 2021-02-09
 
 ### Added
@@ -24,9 +30,6 @@
 - Fixed errors occurring by automatic migration of tokens from prior versions by removing automatic migration
 - Handle failing synchronization of push tokens by informing the user and closing the dialog
 - To prevent bugs, push settings are only accessible if at least one push token is fully enrolled
-
-### Fixed
-
 - Uri encoded characters (e.g. @ as %40) are now correctly displayed for token labels 
 
 

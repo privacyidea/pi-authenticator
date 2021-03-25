@@ -72,9 +72,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                   groupValue: Theme.of(context).brightness,
                   controlAffinity: ListTileControlAffinity.trailing,
                   onChanged: !isSystemDarkMode
-                      ? (value) {
-                          setState(() => _changeBrightness(value));
-                        }
+                      ? (value) => _changeBrightness(value)
                       : null,
                 ),
                 RadioListTile(
@@ -83,9 +81,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                   groupValue: Theme.of(context).brightness,
                   controlAffinity: ListTileControlAffinity.trailing,
                   onChanged: !isSystemDarkMode
-                      ? (value) {
-                          setState(() => _changeBrightness(value));
-                        }
+                      ? (value) => _changeBrightness(value)
                       : null,
                 ),
               ],
@@ -228,6 +224,10 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   void _changeBrightness(Brightness value) {
     DynamicTheme.of(context).setBrightness(value);
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   /// Shows a dialog to the user that displays all push tokens that do not support polling.
