@@ -224,8 +224,11 @@ class _MainScreenState extends State<MainScreen> {
     List<Token> l1 = await StorageUtil.loadAllTokens();
     // Prevent the list items from skipping around on ui updates
     l1.sort((a, b) => a.id.hashCode.compareTo(b.id.hashCode));
+    this._tokenList = l1;
 
-    setState(() => this._tokenList = l1);
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -266,22 +269,25 @@ class _MainScreenState extends State<MainScreen> {
 //      Catcher.instance.updateConfig();
 
       Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(barcode));
-      setState(() {
-        log(
-          "Adding new token from qr-code:",
-          name: "main_screen.dart",
-          error: newToken,
-        );
 
-        if (newToken is PushToken && _tokenList.contains(newToken)) {
-          _showMessage(
-              "A token with the serial ${newToken.serial} already exists!",
-              Duration(seconds: 2));
-          return;
-        }
+      log(
+        "Adding new token from qr-code:",
+        name: "main_screen.dart",
+        error: newToken,
+      );
 
-        _tokenList.add(newToken);
-      });
+      if (newToken is PushToken && _tokenList.contains(newToken)) {
+        _showMessage(
+            "A token with the serial ${newToken.serial} already exists!",
+            Duration(seconds: 2));
+        return;
+      }
+
+      _tokenList.add(newToken);
+
+      if (mounted) {
+        setState(() {});
+      }
     } on PlatformException catch (e, stack) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         //  Camera access was denied
@@ -817,9 +823,11 @@ class _MainScreenState extends State<MainScreen> {
   _addToken(Token newToken) {
     log("Adding new token:", name: "main_screen.dart", error: newToken);
     if (newToken != null) {
-      setState(() {
-        _tokenList.add(newToken);
-      });
+      _tokenList.add(newToken);
+
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
