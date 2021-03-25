@@ -18,5 +18,6 @@ jobs:
         with:
           channel: 'stable'
           flutter-version: '1.22.5'
+      - run: "flutter --version"
       - run: flutter pub get
       - run: flutter test
