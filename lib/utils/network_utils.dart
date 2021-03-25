@@ -23,8 +23,7 @@ import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
-
-import 'identifiers.dart';
+import 'package:package_info/package_info.dart';
 
 /// Custom POST request allows to not verify certificates
 Future<Response> doPost(
@@ -42,7 +41,9 @@ Future<Response> doPost(
   HttpClient httpClient = HttpClient();
   httpClient.badCertificateCallback =
       ((X509Certificate cert, String host, int port) => !sslVerify);
-  httpClient.userAgent = USER_AGENT_STRING;
+  httpClient.userAgent = "privacyIDEA-App /"
+      " ${Platform.operatingSystem}"
+      " ${(await PackageInfo.fromPlatform()).version}";
 
   IOClient ioClient = IOClient(httpClient);
 
@@ -65,7 +66,9 @@ Future<Response> doGet(
   HttpClient httpClient = HttpClient();
   httpClient.badCertificateCallback =
       ((X509Certificate cert, String host, int port) => !sslVerify);
-  httpClient.userAgent = USER_AGENT_STRING;
+  httpClient.userAgent = "privacyIDEA-App /"
+      " ${Platform.operatingSystem}"
+      " ${(await PackageInfo.fromPlatform()).version}";
 
   IOClient ioClient = IOClient(httpClient);
   // TODO Make this more general!
