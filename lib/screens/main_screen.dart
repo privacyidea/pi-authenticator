@@ -46,7 +46,7 @@ import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
@@ -247,7 +247,7 @@ class _MainScreenState extends State<MainScreen> {
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _scanQRCode(),
-        tooltip: Localization.of(context).scanQRTooltip,
+        tooltip: AppLocalizations.of(context).scanQrCode,
         child: Icon(Icons.add),
       ),
     );
@@ -435,7 +435,7 @@ class _MainScreenState extends State<MainScreen> {
           error: config,
         );
 
-        _showMessage(Localization.of(context).errorFirebaseConfigCorrupted,
+        _showMessage(AppLocalizations.of(context).firebaseConfigCorrupted,
             Duration(seconds: 15));
         return null;
       }
@@ -740,8 +740,8 @@ class _MainScreenState extends State<MainScreen> {
         ? RefreshIndicator(
             child: list,
             onRefresh: () async {
-              _showMessage(
-                  Localization.of(context).pollNow, Duration(seconds: 1));
+              _showMessage(AppLocalizations.of(context).pollingChallenges,
+                  Duration(seconds: 1));
               await _pollForRequests();
             },
           )
@@ -798,22 +798,22 @@ class _MainScreenState extends State<MainScreen> {
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
             value: "add_manually",
-            child: Text(Localization.of(context).addManually),
+            child: Text(AppLocalizations.of(context).addToken),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "settings",
-            child: Text(Localization.of(context).settings),
+            child: Text(AppLocalizations.of(context).settings),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "about",
-            child: Text(Localization.of(context).about),
+            child: Text(AppLocalizations.of(context).about),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "guide",
-            child: Text(Localization.of(context).guide),
+            child: Text(AppLocalizations.of(context).guide),
           ),
         ],
       ),

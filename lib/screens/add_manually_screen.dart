@@ -21,7 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
@@ -76,7 +76,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          Localization.of(context).addManuallyTitle,
+          AppLocalizations.of(context).enterDetailsForToken,
           overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
@@ -90,21 +90,25 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
           child: Column(
             children: <Widget>[
               _buildTextInputForm(),
-              _buildDropdownButtonWithLabel(Localization.of(context).encoding,
-                  _selectedEncoding, Encodings.values),
-              _buildDropdownButtonWithLabel(Localization.of(context).algorithm,
-                  _selectedAlgorithm, Algorithms.values),
-              _buildDropdownButtonWithLabel(Localization.of(context).digits,
+              _buildDropdownButtonWithLabel(
+                  AppLocalizations.of(context).encoding,
+                  _selectedEncoding,
+                  Encodings.values),
+              _buildDropdownButtonWithLabel(
+                  AppLocalizations.of(context).algorithm,
+                  _selectedAlgorithm,
+                  Algorithms.values),
+              _buildDropdownButtonWithLabel(AppLocalizations.of(context).digits,
                   _selectedDigits, allowedDigits),
               _buildDropdownButtonWithLabel(
-                  Localization.of(context).type,
+                  AppLocalizations.of(context).type,
                   _selectedType,
                   List.from(TokenTypes.values)..remove(TokenTypes.PIPUSH)),
               Visibility(
 //               the period is only used by TOTP tokens
                 visible: _selectedType.value == TokenTypes.TOTP,
                 child: _buildDropdownButtonWithLabel(
-                    Localization.of(context).period,
+                    AppLocalizations.of(context).period,
                     _selectedPeriod,
                     allowedPeriods,
                     postFix: 's'),
@@ -113,7 +117,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
                 width: double.infinity,
                 child: RaisedButton(
                   child: Text(
-                    Localization.of(context).addToken,
+                    AppLocalizations.of(context).addToken,
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   onPressed: () => _returnTokenIfValid(),
@@ -225,10 +229,11 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             focusNode: _nameFieldFocus,
             onSaved: (value) => this.setState(() => _selectedName = value),
             decoration:
-                InputDecoration(labelText: Localization.of(context).name),
+                InputDecoration(labelText: AppLocalizations.of(context).name),
             validator: (value) {
               if (value.isEmpty) {
-                return Localization.of(context).hintEmptyName;
+                return AppLocalizations.of(context)
+                    .pleaseEnterANameForThisToken;
               }
               return null;
             },
@@ -239,14 +244,16 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             focusNode: _secretFieldFocus,
             onSaved: (value) => this.setState(() => _selectedSecret = value),
             decoration: InputDecoration(
-              labelText: Localization.of(context).secret,
+              labelText: AppLocalizations.of(context).secret,
             ),
             validator: (value) {
               if (value.isEmpty) {
 //                FocusScope.of(context).requestFocus(_secretFieldFocus);
-                return Localization.of(context).hintEmptySecret;
+                return AppLocalizations.of(context)
+                    .pleaseEnterASecretForThisToken;
               } else if (!isValidEncoding(value, _selectedEncoding.value)) {
-                return Localization.of(context).hintInvalidSecret;
+                return AppLocalizations.of(context)
+                    .theSecretDoesNotFitTheCurrentEncoding;
               }
               return null;
             },

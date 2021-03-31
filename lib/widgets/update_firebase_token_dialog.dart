@@ -29,7 +29,7 @@ import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
@@ -63,11 +63,11 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
-        title: Text(Localization.of(context).synchronizePushDialogTitle),
+        title: Text(AppLocalizations.of(context).synchronizingTokens),
         content: _content,
         actions: <Widget>[
           RaisedButton(
-            child: Text(Localization.of(context).dismiss),
+            child: Text(AppLocalizations.of(context).dismiss),
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -120,8 +120,8 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
         log('Socket exception occurred: $e',
             name: 'update_firebase_token_dialog.dart');
         widget._scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(
-              Localization.of(context).errorSynchronizationNoNetworkConnection),
+          content: Text(AppLocalizations.of(context)
+              .errorSynchronizationNoNetworkConnection),
           duration: Duration(seconds: 3),
         ));
         Navigator.pop(context);
@@ -140,14 +140,13 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
     if (tokenWithFailedUpdate.isEmpty && tokenWithOutUrl.isEmpty) {
       setState(() {
-        _content = Text(Localization.of(context).allTokensSynchronized);
+        _content = Text(AppLocalizations.of(context).allTokensSynchronized);
       });
     } else {
       List<Widget> children = [];
 
       if (tokenWithFailedUpdate.isNotEmpty) {
-        children.add(
-            Text(Localization.of(context).synchronizationFailedForTheseTokens));
+        children.add(Text(AppLocalizations.of(context).synchronizationFailed));
         for (PushToken p in tokenWithFailedUpdate) {
           children.add(Text('• ${p.label}'));
         }
@@ -158,8 +157,8 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
           children.add(Divider());
         }
 
-        children.add(Text(Localization.of(context)
-            .synchronizationNotSupportedForTheseTokens));
+        children.add(Text(
+            AppLocalizations.of(context).tokensDoNotSupportSynchronization));
         for (PushToken p in tokenWithOutUrl) {
           children.add(Text('• ${p.label}'));
         }

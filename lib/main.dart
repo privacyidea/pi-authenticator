@@ -22,13 +22,12 @@ import 'package:catcher/catcher.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/widgets/CustomPageReportMode.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
@@ -62,15 +61,6 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
   const PrivacyIDEAAuthenticator({StreamingSharedPreferences preferences})
       : this._preferences = preferences;
 
-  static List<Locale> _supportedLocales = [
-    const Locale('en', ''),
-    const Locale('de', ''),
-  ];
-
-  static set supportedLocales(List<Locale> supportedLocales) {
-    _supportedLocales = supportedLocales;
-  }
-
   @override
   Widget build(BuildContext context) {
     return AppSettings(
@@ -92,15 +82,8 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
 
             return MaterialApp(
               navigatorKey: Catcher.navigatorKey,
-              // Needed to display dialogs etc.
-              localizationsDelegates: [
-                const MyLocalizationsDelegate(),
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-                DefaultCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: _supportedLocales,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
               title: applicationName,
               theme: theme,
               darkTheme: getApplicationTheme(Brightness.dark),
