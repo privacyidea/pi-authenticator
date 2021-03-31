@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fixed attempt ui update on non-existing elements
+- Fixed parsing of token issuer and label
 
 ## [3.1.0] - 2021-02-09
 
