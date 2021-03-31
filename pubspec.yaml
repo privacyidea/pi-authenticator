@@ -28,6 +28,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  intl: ^0.16.0
+#  intl_translation: any
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   #  cupertino_icons: ^0.1.2
@@ -81,8 +84,6 @@ dependencies:
     git:
       url: https://github.com/timosturm/catcher.git
 
-  intl: ^0.16.0
-  intl_translation: any
 
 dev_dependencies:
   flutter_driver:
@@ -99,6 +100,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

@@ -1,19 +1,19 @@
 {
   "@@last_modified": "2021-02-25T12:30:00.793083",
-  "Guide": "Guide",
-  "@Guide": {
+  "guide": "Guide",
+  "@guide": {
     "description": "Button to open the guide screen.",
     "type": "text",
     "placeholders": {}
   },
-  "Next": "Next",
-  "@Next": {
+  "next": "Next",
+  "@next": {
     "description": "The text of the button to calculate the next otp value.",
     "type": "text",
     "placeholders": {}
   },
-  "About": "About",
-  "@About": {
+  "about": "About",
+  "@about": {
     "description": "Button to open the about page.",
     "type": "text",
     "placeholders": {}
@@ -36,128 +36,128 @@
     "type": "text",
     "placeholders": {}
   },
-  "Name": "Name",
-  "@Name": {
+  "name": "Name",
+  "@name": {
     "description": "Describes the field where the tokens name should be entered.",
     "type": "text",
     "placeholders": {}
   },
-  "Secret": "Secret",
-  "@Secret": {
+  "secret": "Secret",
+  "@secret": {
     "description": "Describes the field where the tokens secret should be entered.",
     "type": "text",
     "placeholders": {}
   },
-  "Encoding": "Encoding",
-  "@Encoding": {
+  "encoding": "Encoding",
+  "@encoding": {
     "description": "Title of the dropdown button where the encoding is selected.",
     "type": "text",
     "placeholders": {}
   },
-  "Algorithm": "Algorithm",
-  "@Algorithm": {
+  "algorithm": "Algorithm",
+  "@algorithm": {
     "description": "Title of the dropdown button where the encoding is selected.",
     "type": "text",
     "placeholders": {}
   },
-  "Digits": "Digits",
-  "@Digits": {
+  "digits": "Digits",
+  "@digits": {
     "description": "Title of the dropdown button where the number of digits for the opt value is selected.",
     "type": "text",
     "placeholders": {}
   },
-  "Type": "Type",
-  "@Type": {
+  "type": "Type",
+  "@type": {
     "description": "Title of the dropdown button where the type of the token is selected.",
     "type": "text",
     "placeholders": {}
   },
-  "Period": "Period",
-  "@Period": {
+  "period": "Period",
+  "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected.",
     "type": "text",
     "placeholders": {}
   },
-  "Rename": "Rename",
-  "@Rename": {
+  "rename": "Rename",
+  "@rename": {
     "description": "Label that describes renaming the token.",
     "type": "text",
     "placeholders": {}
   },
-  "Cancel": "Cancel",
-  "@Cancel": {
+  "cancel": "Cancel",
+  "@cancel": {
     "description": "Button to cancel an action.",
     "type": "text",
     "placeholders": {}
   },
-  "Delete": "Delete",
-  "@Delete": {
+  "delete": "Delete",
+  "@delete": {
     "description": "Label that describes deleting the token.",
     "type": "text",
     "placeholders": {}
   },
-  "Dismiss": "Dismiss",
-  "@Dismiss": {
+  "dismiss": "Dismiss",
+  "@dismiss": {
     "description": "Text of a button that closes a dialog.",
     "type": "text",
     "placeholders": {}
   },
-  "Show this screen on start:": "Show this screen on start:",
-  "@Show this screen on start:": {
+  "showThisScreenOnStart": "Show this screen on start:",
+  "@showThisScreenOnStart": {
     "description": "Description for checkbox, if the checkbox is ticked, the guide screen is shown on every app start.",
     "type": "text",
     "placeholders": {}
   },
-  "Something went wrong.": "Something went wrong.",
-  "@Something went wrong.": {
+  "somethingWentWrong": "Something went wrong.",
+  "@somethingWentWrong": {
     "description": "Tells the user that something went wrong.",
     "type": "text",
     "placeholders": {}
   },
-  "Add token": "Add token",
-  "@Add token": {
+  "addToken": "Add token",
+  "@addToken": {
     "description": "The button to open the screen to add tokens by hand.",
     "type": "text",
     "placeholders": {}
   },
-  "Scan QR-Code": "Scan QR-Code",
-  "@Scan QR-Code": {
+  "scanQrCode": "Scan QR-Code",
+  "@scanQrCode": {
     "description": "The button to scan otpauth qr-codes.",
     "type": "text",
     "placeholders": {}
   },
-  "Enter details for token": "Enter details for token",
-  "@Enter details for token": {
+  "enterDetailsForToken": "Enter details for token",
+  "@enterDetailsForToken": {
     "description": "Title of the screen where tokens are created manually, tells the user to enter all required values.",
     "type": "text",
     "placeholders": {}
   },
-  "Please enter a name for this token.": "Please enter a name for this token.",
-  "@Please enter a name for this token.": {
+  "pleaseEnterANameForThisToken": "Please enter a name for this token.",
+  "@pleaseEnterANameForThisToken": {
     "description": "Hint telling the user to enter a name for a token.",
     "type": "text",
     "placeholders": {}
   },
-  "Please enter a secret for this token.": "Please enter a secret for this token.",
-  "@Please enter a secret for this token.": {
+  "pleaseEnterASecretForThisToken": "Please enter a secret for this token.",
+  "@pleaseEnterASecretForThisToken": {
     "description": "Hint telling the user to enter a secret for a token.",
     "type": "text",
     "placeholders": {}
   },
-  "The secret does not fit the current encoding": "The secret does not fit the current encoding",
-  "@The secret does not fit the current encoding": {
+  "theSecretDoesNotFitTheCurrentEncoding": "The secret does not fit the current encoding",
+  "@theSecretDoesNotFitTheCurrentEncoding": {
     "description": "Hint telling the user that the secret does not fit the selected encoding.",
     "type": "text",
     "placeholders": {}
   },
-  "Rename token": "Rename token",
-  "@Rename token": {
+  "renameToken": "Rename token",
+  "@renameToken": {
     "description": "Title of the dialog where a new name for a token can be entered.",
     "type": "text",
     "placeholders": {}
   },
-  "Confirm deletion": "Confirm deletion",
-  "@Confirm deletion": {
+  "confirmDeletion": "Confirm deletion",
+  "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted.",
     "type": "text",
     "placeholders": {}
@@ -172,20 +172,14 @@
       }
     }
   },
-  "Scan QR code": "Scan QR code",
-  "@Scan QR code": {
-    "description": "Tooltip for button that starts scanning for qr code.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "Generating phone part": "Generating phone part",
-  "@Generating phone part": {
+  "generatingPhonePart": "Generating phone part",
+  "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now.",
     "type": "text",
     "placeholders": {}
   },
-  "Phone part:": "Phone part:",
-  "@Phone part:": {
+  "phonePart": "Phone part:",
+  "@phonePart": {
     "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user.",
     "type": "text",
     "placeholders": {}
@@ -200,98 +194,98 @@
       }
     }
   },
-  "Settings": "Settings",
-  "@Settings": {
+  "settings": "Settings",
+  "@settings": {
     "description": "Button to open the settings page.",
     "type": "text",
     "placeholders": {}
   },
-  "Push Token": "Push Token",
-  "@Push Token": {
+  "pushToken": "Push Token",
+  "@pushToken": {
     "description": "Title for the settings block concerning the push tokens.",
     "type": "text",
     "placeholders": {}
   },
-  "Theme": "Theme",
-  "@Theme": {
+  "theme": "Theme",
+  "@theme": {
     "description": "Title of the setting group where the theme can be selected.",
     "type": "text",
     "placeholders": {}
   },
-  "Light theme": "Light theme",
-  "@Light theme": {
+  "lightTheme": "Light theme",
+  "@lightTheme": {
     "description": "The light theme.",
     "type": "text",
     "placeholders": {}
   },
-  "Dark theme": "Dark theme",
-  "@Dark theme": {
+  "darkTheme": "Dark theme",
+  "@darkTheme": {
     "description": "The dark theme.",
     "type": "text",
     "placeholders": {}
   },
-  "Some of the tokens are outdated and do not support polling": "Some of the tokens are outdated and do not support polling",
-  "@Some of the tokens are outdated and do not support polling": {
+  "someTokensDoNotSupportPolling": "Some of the tokens are outdated and do not support polling",
+  "@someTokensDoNotSupportPolling": {
     "description": "Tells the user, that the following tokens do not support polling.",
     "type": "text",
     "placeholders": {}
   },
-  "Enable polling": "Enable polling",
-  "@Enable polling": {
+  "enablePolling": "Enable polling",
+  "@enablePolling": {
     "description": "Name of the setting switch that enables polling.",
     "type": "text",
     "placeholders": {}
   },
-  "Miscellaneous": "Miscellaneous",
-  "@Miscellaneous": {
+  "miscellaneous": "Miscellaneous",
+  "@miscellaneous": {
     "description": "Title for misc settings.",
     "type": "text",
     "placeholders": {}
   },
-  "Request push challenges from the server periodically. Enable this if push challenges are not received normally.": "Request push challenges from the server periodically. Enable this if push challenges are not received normally.",
-  "@Request push challenges from the server periodically. Enable this if push challenges are not received normally.": {
+  "requestPushChallengesPeriodically": "Request push challenges from the server periodically. Enable this if push challenges are not received normally.",
+  "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature.",
     "type": "text",
     "placeholders": {}
   },
-  "Synchronize push tokens": "Synchronize push tokens",
-  "@Synchronize push tokens": {
+  "synchronizePushTokens": "Synchronize push tokens",
+  "@synchronizePushTokens": {
     "description": "Title of synchronizing push tokens in settings.",
     "type": "text",
     "placeholders": {}
   },
-  "Synchronizes tokens with the privacyIDEA server.": "Synchronizes tokens with the privacyIDEA server.",
-  "@Synchronizes tokens with the privacyIDEA server.": {
+  "synchronizesTokensWithServer": "Synchronizes tokens with the privacyIDEA server.",
+  "@synchronizesTokensWithServer": {
     "description": "Description of synchronizing push tokens in settings.",
     "type": "text",
     "placeholders": {}
   },
-  "Sync": "Sync",
-  "@Sync": {
+  "sync": "Sync",
+  "@sync": {
     "description": "Text of button that is used to synchronize push tokens.",
     "type": "text",
     "placeholders": {}
   },
-  "Synchronizing tokens.": "Synchronizing tokens.",
-  "@Synchronizing tokens.": {
+  "synchronizingTokens": "Synchronizing tokens.",
+  "@synchronizingTokens": {
     "description": "Title of the push synchronization dialog.",
     "type": "text",
     "placeholders": {}
   },
-  "All tokens are synchronized.": "All tokens are synchronized.",
-  "@All tokens are synchronized.": {
+  "allTokensSynchronized": "All tokens are synchronized.",
+  "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked.",
     "type": "text",
     "placeholders": {}
   },
-  "Synchronization failed for the following tokens, please try again:": "Synchronization failed for the following tokens, please try again:",
-  "@Synchronization failed for the following tokens, please try again:": {
+  "synchronizationFailed": "Synchronization failed for the following tokens, please try again:",
+  "@synchronizationFailed": {
     "description": "Headline for the list of tokens where the synchronization failed.",
     "type": "text",
     "placeholders": {}
   },
-  "The following tokens do not support synchronization and must be rolled out again:": "The following tokens do not support synchronization and must be rolled out again:",
-  "@The following tokens do not support synchronization and must be rolled out again:": {
+  "tokensDoNotSupportSynchronization": "The following tokens do not support synchronization and must be rolled out again:",
+  "@tokensDoNotSupportSynchronization": {
     "description": "Informs the user that the following tokens cannot be synchronized as they do not support that.",
     "type": "text",
     "placeholders": {}
@@ -412,54 +406,54 @@
       }
     }
   },
-  "The firebase configuration is corrupted and cannot be used.": "The firebase configuration is corrupted and cannot be used.",
-  "@The firebase configuration is corrupted and cannot be used.": {
+  "firebaseConfigCorrupted": "The firebase configuration is corrupted and cannot be used.",
+  "@firebaseConfigCorrupted": {
     "type": "text",
     "placeholders": {}
   },
-  "Polling for new challenges": "Polling for new challenges",
-  "@Polling for new challenges": {
+  "pollingChallenges": "Polling for new challenges",
+  "@pollingChallenges": {
     "type": "text",
     "placeholders": {}
   },
-  "Migrate tokens from previous app version.": "Migrate tokens from previous app version.",
-  "@Migrate tokens from previous app version.": {
+  "migrateTokens": "Migrate tokens from previous app version.",
+  "@migrateTokens": {
     "description": "Description of migration.",
     "type": "text",
     "placeholders": {}
   },
-  "Migrate": "Migrate",
-  "@Migrate": {
+  "migrate": "Migrate",
+  "@migrate": {
     "description": "Text of button to start migration.",
     "type": "text",
     "placeholders": {}
   },
-  "Migration": "Migration",
-  "@Migration": {
+  "migration": "Migration",
+  "@migration": {
     "description": "Title of settings group for migrating tokens.",
     "type": "text",
     "placeholders": {}
   },
-  "All tokens migrated successfully.": "All tokens migrated successfully.",
-  "@All tokens migrated successfully.": {
+  "migrationSuccess": "All tokens migrated successfully.",
+  "@migrationSuccess": {
     "description": "Tells the user that all tokens are migrated successfully.",
     "type": "text",
     "placeholders": {}
   },
-  "No tokens exist that could be migrated.": "No tokens exist that could be migrated.",
-  "@No tokens exist that could be migrated.": {
+  "noTokensForMigration": "No tokens exist that could be migrated.",
+  "@noTokensForMigration": {
     "description": "Tells the user that no tokens exist that could be migrated.",
     "type": "text",
     "placeholders": {}
   },
-  "Migrating Token": "Migrating Token",
-  "@Migrating Token": {
+  "migratingToken": "Migrating Token",
+  "@migratingToken": {
     "description": "Title of migration dialog.",
     "type": "text",
     "placeholders": {}
   },
-  "Unexpected Error": "Unexpected Error",
-  "@Unexpected Error": {
+  "unexpectedError": "Unexpected Error",
+  "@unexpectedError": {
     "description": "Title of page report mode.",
     "type": "text",
     "placeholders": {}
@@ -476,5 +470,10 @@
         "example": "cancel"
       }
     }
+  },
+  "pageReportModeTitle": "Unexpected Error",
+  "@pageReportModeTitle": {
+    "description": "Title of the page report screen",
+    "type": "text"
   }
 }
