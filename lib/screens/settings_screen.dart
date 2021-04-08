@@ -33,9 +33,6 @@ import 'package:privacyidea_authenticator/widgets/update_firebase_token_dialog.d
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
-  SettingsScreen(this._title);
-
-  final String _title;
 
   @override
   State<StatefulWidget> createState() => SettingsScreenState();
@@ -53,7 +50,7 @@ class SettingsScreenState extends State<SettingsScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
-          widget._title,
+          AppLocalizations.of(context).settings,
           overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),

@@ -783,7 +783,7 @@ class _MainScreenState extends State<MainScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettingsScreen('Settings'),
+                  builder: (context) => SettingsScreen(),
                 )).then((value) => _loadTokenList());
           } else if (value == 'guide') {
             Navigator.push(
