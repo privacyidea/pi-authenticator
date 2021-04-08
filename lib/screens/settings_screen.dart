@@ -25,7 +25,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/widgets/migrate_legacy_tokens_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
@@ -33,9 +33,6 @@ import 'package:privacyidea_authenticator/widgets/update_firebase_token_dialog.d
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
-  SettingsScreen(this._title);
-
-  final String _title;
 
   @override
   State<StatefulWidget> createState() => SettingsScreenState();
@@ -53,7 +50,7 @@ class SettingsScreenState extends State<SettingsScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
-          widget._title,
+          AppLocalizations.of(context).settings,
           overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
@@ -64,10 +61,10 @@ class SettingsScreenState extends State<SettingsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SettingsGroup(
-              title: Localization.of(context).theme,
+              title: AppLocalizations.of(context).theme,
               children: <Widget>[
                 RadioListTile(
-                  title: Text(Localization.of(context).lightTheme),
+                  title: Text(AppLocalizations.of(context).lightTheme),
                   value: Brightness.light,
                   groupValue: Theme.of(context).brightness,
                   controlAffinity: ListTileControlAffinity.trailing,
@@ -76,7 +73,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                       : null,
                 ),
                 RadioListTile(
-                  title: Text(Localization.of(context).darkTheme),
+                  title: Text(AppLocalizations.of(context).darkTheme),
                   value: Brightness.dark,
                   groupValue: Theme.of(context).brightness,
                   controlAffinity: ListTileControlAffinity.trailing,
@@ -108,15 +105,15 @@ class SettingsScreenState extends State<SettingsScreen> {
                 return Visibility(
                   visible: showPushSettingsGroup,
                   child: SettingsGroup(
-                    title: Localization.of(context).push,
+                    title: AppLocalizations.of(context).pushToken,
                     children: <Widget>[
                       ListTile(
-                        title:
-                            Text(Localization.of(context).synchronizePushTitle),
-                        subtitle: Text(Localization.of(context)
-                            .synchronizePushDescription),
+                        title: Text(
+                            AppLocalizations.of(context).synchronizePushTokens),
+                        subtitle: Text(AppLocalizations.of(context)
+                            .synchronizesTokensWithServer),
                         trailing: RaisedButton(
-                          child: Text(Localization.of(context).sync),
+                          child: Text(AppLocalizations.of(context).sync),
                           onPressed: () => showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -145,7 +142,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: Localization.of(context).enablePolling,
+                                  text: AppLocalizations.of(context)
+                                      .enablePolling,
                                   style: Theme.of(context).textTheme.subtitle1,
                                 ),
                                 // Add clickable icon to inform user of unsupported push tokens (for polling)
@@ -170,8 +168,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                           );
                           return ListTile(
                             title: title,
-                            subtitle: Text(
-                                Localization.of(context).pollingDescription),
+                            subtitle: Text(AppLocalizations.of(context)
+                                .requestPushChallengesPeriodically),
                             trailing: Switch(
                               value: value,
                               onChanged: onChange,
@@ -185,12 +183,12 @@ class SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             SettingsGroup(
-              title: Localization.of(context).migration,
+              title: AppLocalizations.of(context).migration,
               children: [
                 ListTile(
-                  title: Text(Localization.of(context).migrationDesc),
+                  title: Text(AppLocalizations.of(context).migrateTokens),
                   trailing: RaisedButton(
-                    child: Text(Localization.of(context).migrate),
+                    child: Text(AppLocalizations.of(context).migrate),
                     onPressed: () => showDialog(
                         context: context,
                         barrierDismissible: false,
@@ -236,7 +234,9 @@ class SettingsScreenState extends State<SettingsScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(Localization.of(context).pollingInfoTitle + ':'),
+            title: Text(
+                AppLocalizations.of(context).someTokensDoNotSupportPolling +
+                    ':'),
             content: Scrollbar(
               child: ListView.separated(
                 shrinkWrap: true,
@@ -249,7 +249,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             actions: <Widget>[
               FlatButton(
                 child: Text(
-                  Localization.of(context).dismiss,
+                  AppLocalizations.of(context).dismiss,
                   style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () => Navigator.of(context).pop(),

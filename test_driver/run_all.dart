@@ -18,14 +18,15 @@
   limitations under the License.
 */
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_driver/driver_extension.dart';
 import 'package:privacyidea_authenticator/main.dart' as app;
 
 void main() {
   // Override the supported locales of the application to prevent buttons having
   //  different text values.
-  app.PrivacyIDEAAuthenticator.supportedLocales = [Locale('en', '')];
+  
+  // FIXME Find a new way to do this?
+//  app.PrivacyIDEAAuthenticator.supportedLocales = [Locale('en', '')];
 
   // This line enables the extension.
   enableFlutterDriverExtension();

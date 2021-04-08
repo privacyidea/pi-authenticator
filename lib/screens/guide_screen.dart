@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GuideScreen extends StatelessWidget {
   // Without the offset the scroll bar is not shown the first time the screen
@@ -36,7 +36,7 @@ class GuideScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          Localization.of(context).guide,
+          AppLocalizations.of(context).guide,
           overflow: TextOverflow.ellipsis,
           // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
@@ -47,7 +47,7 @@ class GuideScreen extends StatelessWidget {
           FutureBuilder<String>(
             // localeName defaults to en if an unsupported locale is set on the phone.
             future: DefaultAssetBundle.of(context).loadString(
-                'res/md/GUIDE_${Localization.of(context).localeName}.md'),
+                'res/md/GUIDE_${AppLocalizations.of(context).localeName}.md'),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Expanded(
@@ -62,11 +62,11 @@ class GuideScreen extends StatelessWidget {
                 );
               }
               return Center(
-                  child: Text(Localization.of(context).somethingWentWrong));
+                  child: Text(AppLocalizations.of(context).somethingWentWrong));
             },
           ),
           ListTile(
-            title: Text(Localization.of(context).showThisOnStart),
+            title: Text(AppLocalizations.of(context).showThisScreenOnStart),
             trailing: StreamBuilder(
               stream: AppSettings.of(context).showGuideOnStartStream(),
               initialData: true,

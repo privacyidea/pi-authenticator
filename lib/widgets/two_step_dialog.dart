@@ -24,7 +24,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 class TwoStepDialog extends StatefulWidget {
@@ -65,7 +65,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _title = Localization.of(context).twoStepDialogTitleGenerate;
+    _title = AppLocalizations.of(context).generatingPhonePart;
   }
 
   @override
@@ -102,12 +102,12 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
 
     // Update UI.
     setState(() {
-      _title = Localization.of(context).twoStepDialogTitlePhonePart;
+      _title = AppLocalizations.of(context).phonePart;
       _content = Text("$show");
       _button = RaisedButton(
         color: Colors.white70,
         child: Text(
-          Localization.of(context).dismiss,
+          AppLocalizations.of(context).dismiss,
           style: Theme.of(context).textTheme.headline6,
         ),
         onPressed: () => Navigator.of(context).pop(generatedSecret),

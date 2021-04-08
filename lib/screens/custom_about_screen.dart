@@ -24,7 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomLicenseScreen extends StatefulWidget {
@@ -137,7 +137,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          Localization.of(context).about,
+          AppLocalizations.of(context).about,
         ),
       ),
       body: StreamBuilder<List<Widget>>(

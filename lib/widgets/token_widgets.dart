@@ -38,7 +38,7 @@ import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
@@ -76,7 +76,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   Token _token;
   static final SlidableController _slidableController = SlidableController();
 
-
   _TokenWidgetState(this._token) {
     _saveThisToken();
   }
@@ -92,13 +91,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       child: _buildTile(),
       secondaryActions: <Widget>[
         IconSlideAction(
-          caption: Localization.of(context).delete,
+          caption: AppLocalizations.of(context).delete,
           color: getTonedColor(Colors.red, isDarkModeOn(context)),
           icon: Icons.delete,
           onTap: () => _deleteTokenDialog(),
         ),
         IconSlideAction(
-          caption: Localization.of(context).rename,
+          caption: AppLocalizations.of(context).rename,
           color: getTonedColor(Colors.blue, isDarkModeOn(context)),
           icon: Icons.edit,
           onTap: () => _renameTokenDialog(),
@@ -115,7 +114,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(Localization.of(context).renameDialogTitle),
+            title: Text(AppLocalizations.of(context).renameToken),
             content: TextFormField(
               autofocus: true,
               initialValue: _selectedName,
@@ -126,10 +125,10 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 }
               },
               decoration:
-                  InputDecoration(labelText: Localization.of(context).name),
+                  InputDecoration(labelText: AppLocalizations.of(context).name),
               validator: (value) {
                 if (value.isEmpty) {
-                  return Localization.of(context).name;
+                  return AppLocalizations.of(context).name;
                 }
                 return null;
               },
@@ -137,14 +136,14 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             actions: <Widget>[
               FlatButton(
                 child: Text(
-                  Localization.of(context).cancel,
+                  AppLocalizations.of(context).cancel,
                   style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               FlatButton(
                 child: Text(
-                  Localization.of(context).rename,
+                  AppLocalizations.of(context).rename,
                   style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () {
@@ -178,15 +177,15 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(Localization.of(context).deleteDialogTitle),
+            title: Text(AppLocalizations.of(context).confirmDeletion),
             content: Text(
-              Localization.of(context).confirmDeletionOf(_token.label),
+              AppLocalizations.of(context).confirmDeletionOf(_token.label),
             ),
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
-                  Localization.of(context).cancel,
+                  AppLocalizations.of(context).cancel,
                   style: Theme.of(context).textTheme.headline6,
                 ),
               ),
@@ -196,7 +195,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   Navigator.of(context).pop();
                 },
                 child: Text(
-                  Localization.of(context).delete,
+                  AppLocalizations.of(context).delete,
                   style: Theme.of(context).textTheme.headline6,
                 ),
               ),
@@ -321,7 +320,7 @@ class _PushWidgetState extends _TokenWidgetState {
           name: "token_widgets.dart");
 
       _showMessage(
-          Localization.of(context)
+          AppLocalizations.of(context)
               .errorOnlyOneFirebaseProjectIsSupported(_token.label),
           5);
 
@@ -343,7 +342,8 @@ class _PushWidgetState extends _TokenWidgetState {
         setState(() => _rollOutFailed = true);
       }
 
-      _showMessage(Localization.of(context).errorTokenExpired(_token.label), 3);
+      _showMessage(
+          AppLocalizations.of(context).errorTokenExpired(_token.label), 3);
       return;
     }
 
@@ -393,7 +393,7 @@ class _PushWidgetState extends _TokenWidgetState {
         }
 
         _showMessage(
-            Localization.of(context)
+            AppLocalizations.of(context)
                 .errorRollOutFailed(_token.label, response.statusCode),
             3);
       }
@@ -405,7 +405,8 @@ class _PushWidgetState extends _TokenWidgetState {
         setState(() => _rollOutFailed = true);
       }
 
-      _showMessage(Localization.of(context).errorRollOutNoNetworkConnection, 3);
+      _showMessage(
+          AppLocalizations.of(context).errorRollOutNoNetworkConnection, 3);
     } on Exception catch (e, stack) {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
@@ -414,7 +415,7 @@ class _PushWidgetState extends _TokenWidgetState {
         setState(() => _rollOutFailed = true);
       }
 
-//      _showMessage(Localization.of(context).errorRollOutUnknownError(e), 5);
+//      _showMessage(AppLocalizations.of(context).errorRollOutUnknownError(e), 5);
       Catcher.reportCheckedError(e, stack);
     }
   }
@@ -465,7 +466,8 @@ class _PushWidgetState extends _TokenWidgetState {
 
       if (response.statusCode == 200) {
         _showMessage(
-            Localization.of(context).acceptPushAuthRequestFor(_token.label), 2);
+            AppLocalizations.of(context).acceptPushAuthRequestFor(_token.label),
+            2);
         removeCurrentRequest();
       } else {
         log("Accepting push auth request failed.",
@@ -478,7 +480,7 @@ class _PushWidgetState extends _TokenWidgetState {
         }
 
         _showMessage(
-            Localization.of(context).errorPushAuthRequestFailedFor(
+            AppLocalizations.of(context).errorPushAuthRequestFailedFor(
                 _token.label, response.statusCode),
             3);
       }
@@ -491,7 +493,7 @@ class _PushWidgetState extends _TokenWidgetState {
       }
 
       _showMessage(
-          Localization.of(context)
+          AppLocalizations.of(context)
               .errorAuthenticationNotPossibleWithoutNetworkAccess,
           3);
     } catch (e) {
@@ -503,13 +505,15 @@ class _PushWidgetState extends _TokenWidgetState {
       }
 
       _showMessage(
-          Localization.of(context).errorAuthenticationFailedUnknownError(e), 5);
+          AppLocalizations.of(context).errorAuthenticationFailedUnknownError(e),
+          5);
     }
   }
 
   void declineRequest() async {
     _showMessage(
-        Localization.of(context).decliningPushAuthRequestFor(_token.label), 2);
+        AppLocalizations.of(context).decliningPushAuthRequestFor(_token.label),
+        2);
     removeCurrentRequest();
   }
 
@@ -590,7 +594,7 @@ class _PushWidgetState extends _TokenWidgetState {
                               ? Row(
                                   children: <Widget>[
                                     Text(
-                                      Localization.of(context).retry,
+                                      AppLocalizations.of(context).retry,
                                       style:
                                           Theme.of(context).textTheme.headline6,
                                     ),
@@ -600,7 +604,7 @@ class _PushWidgetState extends _TokenWidgetState {
                               : Row(
                                   children: <Widget>[
                                     Text(
-                                      Localization.of(context).accept,
+                                      AppLocalizations.of(context).accept,
                                       style:
                                           Theme.of(context).textTheme.headline6,
                                     ),
@@ -618,7 +622,7 @@ class _PushWidgetState extends _TokenWidgetState {
                           child: Row(
                             children: <Widget>[
                               Text(
-                                Localization.of(context).decline,
+                                AppLocalizations.of(context).decline,
                                 style: Theme.of(context).textTheme.headline6,
                               ),
                               Icon(Icons.clear),
@@ -644,7 +648,7 @@ class _PushWidgetState extends _TokenWidgetState {
                   children: <Widget>[
                     RaisedButton(
                       child: Text(
-                        Localization.of(context).retryRollOut,
+                        AppLocalizations.of(context).retryRollOut,
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       onPressed: _retryButtonIsEnabled
@@ -668,7 +672,7 @@ class _PushWidgetState extends _TokenWidgetState {
                 title: Column(
                   children: <Widget>[
                     CircularProgressIndicator(),
-                    Text(Localization.of(context).rollingOut),
+                    Text(AppLocalizations.of(context).rollingOut),
                   ],
                 ),
               ),
@@ -705,8 +709,8 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
       onLongPress: () {
         Clipboard.setData(ClipboardData(text: _otpValue));
         Scaffold.of(context).showSnackBar(SnackBar(
-          content:
-              Text(Localization.of(context).otpValueCopiedMessage(_otpValue)),
+          content: Text(
+              AppLocalizations.of(context).otpValueCopiedMessage(_otpValue)),
         ));
       },
       child: _buildNonClickableTile(),
@@ -764,7 +768,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             child: RaisedButton(
               onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
               child: Text(
-                Localization.of(context).next,
+                AppLocalizations.of(context).next,
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),

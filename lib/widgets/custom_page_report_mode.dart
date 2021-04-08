@@ -5,7 +5,7 @@ import 'package:catcher/utils/catcher_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomPageReportMode extends ReportMode {
   @override
@@ -62,7 +62,7 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
   Widget _buildMaterialPage() {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Localization.of(context).pageReportModeTitle),
+        title: Text(AppLocalizations.of(context).unexpectedError),
       ),
       body: _buildInnerWidget(),
     );
@@ -71,7 +71,7 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
   Widget _buildCupertinoPage() {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text(Localization.of(context).pageReportModeTitle),
+        middle: Text(AppLocalizations.of(context).unexpectedError),
       ),
       child: SafeArea(
         child: _buildInnerWidget(),
@@ -112,9 +112,9 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              Localization.of(context).pageReportModeBody(
-                  Localization.of(context).accept,
-                  Localization.of(context).cancel),
+              AppLocalizations.of(context).pageReportModeBody(
+                  AppLocalizations.of(context).accept,
+                  AppLocalizations.of(context).cancel),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.subtitle2,
             ),
@@ -135,11 +135,11 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
             children: <Widget>[
               TextButton(
                 onPressed: () => _onAcceptClicked(),
-                child: Text(Localization.of(context).accept),
+                child: Text(AppLocalizations.of(context).accept),
               ),
               TextButton(
                 onPressed: () => _onCancelClicked(),
-                child: Text(Localization.of(context).cancel),
+                child: Text(AppLocalizations.of(context).cancel),
               ),
             ],
           )

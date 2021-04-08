@@ -22,8 +22,8 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 class MigrateLegacyTokensDialog extends StatefulWidget {
@@ -53,11 +53,11 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
-        title: Text(Localization.of(context).migrationDialogTitle),
+        title: Text(AppLocalizations.of(context).migratingToken),
         content: _content,
         actions: <Widget>[
           RaisedButton(
-            child: Text(Localization.of(context).dismiss),
+            child: Text(AppLocalizations.of(context).dismiss),
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -89,9 +89,9 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
     String text;
 
     if (legacyTokens.isEmpty) {
-      text = Localization.of(context).migrationNoTokens;
+      text = AppLocalizations.of(context).noTokensForMigration;
     } else {
-      text = Localization.of(context).migrationSuccess;
+      text = AppLocalizations.of(context).migrationSuccess;
     }
 
     final ScrollController controller = ScrollController();
