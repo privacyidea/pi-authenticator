@@ -62,7 +62,7 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
   Widget _buildMaterialPage() {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).pageReportModeTitle),
+        title: Text(AppLocalizations.of(context).unexpectedError),
       ),
       body: _buildInnerWidget(),
     );
@@ -71,7 +71,7 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
   Widget _buildCupertinoPage() {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text(AppLocalizations.of(context).pageReportModeTitle),
+        middle: Text(AppLocalizations.of(context).unexpectedError),
       ),
       child: SafeArea(
         child: _buildInnerWidget(),
