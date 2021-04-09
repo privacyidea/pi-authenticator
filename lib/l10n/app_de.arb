@@ -470,5 +470,10 @@
         "example": "cancel"
       }
     }
+  },"pollingfFailNoNetworkConnection": "Abfrage fehlgeschlagen, der Server ist nicht erreichbar.",
+  "@pollingfFailNoNetworkConnection": {
+    "description": "Tells the user that the roll-out failed because no network connection is available.",
+    "type": "text",
+    "placeholders": {}
   }
 }
