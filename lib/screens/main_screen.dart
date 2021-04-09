@@ -137,7 +137,7 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  _pollForRequests() async {
+  Future<bool> _pollForRequests() async {
     // Get all push tokens
     List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
         .whereType<PushToken>()
@@ -152,7 +152,7 @@ class _MainScreenState extends State<MainScreen> {
       log('No push token is available for polling, polling is disabled.',
           name: 'main_screen.dart');
       AppSettings.of(context).setEnablePolling(false);
-      return;
+      return false;
     }
 
     // Start request for each token
@@ -185,15 +185,19 @@ class _MainScreenState extends State<MainScreen> {
             _handleIncomingAuthRequest({'data': value});
           }
         } else {
-          // Error messages can only be distinguished by their text content, not by their error code. This would make error handling complex.
+          // Error messages can only be distinguished by their text content,
+          // not by their error code. This would make error handling complex.
         }
       } on SocketException {
         log(
           'Polling push tokens not working, server can not be reached.',
           name: 'main_screen.dart',
         );
+        return false;
       }
     }
+
+    return true;
   }
 
   @override
@@ -742,7 +746,14 @@ class _MainScreenState extends State<MainScreen> {
             onRefresh: () async {
               _showMessage(AppLocalizations.of(context).pollingChallenges,
                   Duration(seconds: 1));
-              await _pollForRequests();
+              bool success = await _pollForRequests();
+              if (!success) {
+
+                _showMessage(
+                  AppLocalizations.of(context).pollingfFailNoNetworkConnection,
+                  Duration(seconds: 3),
+                );
+              }
             },
           )
         : list;
