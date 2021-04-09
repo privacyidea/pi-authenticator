@@ -23,15 +23,13 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:base32/base32.dart';
-import 'package:catcher/catcher.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart';
@@ -42,11 +40,11 @@ import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
 import 'package:privacyidea_authenticator/screens/guide_screen.dart';
+import 'package:privacyidea_authenticator/screens/scanner_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
@@ -254,67 +252,74 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _scanQRCode() async {
-    try {
-      String barcode = await BarcodeScanner.scan();
-      log(
-        "Barcode scanned:",
-        name: "main_screen.dart",
-        error: barcode,
-      );
+    String code = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => QRScannerScreen()),
+    );
 
-      // TODO get crash report recipients from map and set in settings
-      //  and for Catcher.
-      Map<String, dynamic> barcodeMap = parseQRCodeToMap(barcode);
-      // AppSetting.of(context).add...
-//      Catcher.instance.updateConfig();
+    print(code);
 
-      Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(barcode));
-
-      log(
-        "Adding new token from qr-code:",
-        name: "main_screen.dart",
-        error: newToken,
-      );
-
-      if (newToken is PushToken && _tokenList.contains(newToken)) {
-        _showMessage(
-            "A token with the serial ${newToken.serial} already exists!",
-            Duration(seconds: 2));
-        return;
-      }
-
-      _tokenList.add(newToken);
-
-      if (mounted) {
-        setState(() {});
-      }
-    } on PlatformException catch (e, stack) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
-        //  Camera access was denied
-      } else {
-        //  Unknown error
-//        throw e;
-        Catcher.reportCheckedError(e, stack);
-      }
-    } on FormatException catch (e) {
-      //  User returned by pressing the back button (can have other causes too!)
-//      throw e;
-    } on ArgumentError catch (e) {
-      // Error while parsing qr code.
-      // Show the error message to the user.
-      _showMessage(
-          "${e.message}\n Please inform the creator of this qr code about the problem.",
-          Duration(seconds: 8));
-      log(
-        "Malformed QR code:",
-        name: "main_screen.dart",
-        error: e.stackTrace,
-      );
-    } catch (e, stack) {
-      //  Unknown error
-//      throw e;
-      Catcher.reportCheckedError(e, stack);
-    }
+//    try {
+//      String barcode = await BarcodeScanner.scan();
+//      log(
+//        "Barcode scanned:",
+//        name: "main_screen.dart",
+//        error: barcode,
+//      );
+//
+//      // TODO get crash report recipients from map and set in settings
+//      //  and for Catcher.
+//      Map<String, dynamic> barcodeMap = parseQRCodeToMap(barcode);
+//      // AppSetting.of(context).add...
+////      Catcher.instance.updateConfig();
+//
+//      Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(barcode));
+//
+//      log(
+//        "Adding new token from qr-code:",
+//        name: "main_screen.dart",
+//        error: newToken,
+//      );
+//
+//      if (newToken is PushToken && _tokenList.contains(newToken)) {
+//        _showMessage(
+//            "A token with the serial ${newToken.serial} already exists!",
+//            Duration(seconds: 2));
+//        return;
+//      }
+//
+//      _tokenList.add(newToken);
+//
+//      if (mounted) {
+//        setState(() {});
+//      }
+//    } on PlatformException catch (e, stack) {
+//      if (e.code == BarcodeScanner.CameraAccessDenied) {
+//        //  Camera access was denied
+//      } else {
+//        //  Unknown error
+////        throw e;
+//        Catcher.reportCheckedError(e, stack);
+//      }
+//    } on FormatException catch (e) {
+//      //  User returned by pressing the back button (can have other causes too!)
+////      throw e;
+//    } on ArgumentError catch (e) {
+//      // Error while parsing qr code.
+//      // Show the error message to the user.
+//      _showMessage(
+//          "${e.message}\n Please inform the creator of this qr code about the problem.",
+//          Duration(seconds: 8));
+//      log(
+//        "Malformed QR code:",
+//        name: "main_screen.dart",
+//        error: e.stackTrace,
+//      );
+//    } catch (e, stack) {
+//      //  Unknown error
+////      throw e;
+//      Catcher.reportCheckedError(e, stack);
+//    }
   }
 
   Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {

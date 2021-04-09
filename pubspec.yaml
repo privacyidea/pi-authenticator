@@ -41,8 +41,7 @@ dependencies:
   base32: ^1.1.1 # https://pub.dev/packages/base32
   # dependency for calculating otp values
   otp: ^2.0.3 # https://pub.dev/packages/otp
-  # dependency for scanning barcodes
-  barcode_scan: ^2.0.1
+  qr_mobile_vision: ^2.0.0
   # dependency to generate IDs for tokens
   uuid: ^2.2.0
   # dependency to save to secure storage under android and ios
