@@ -23,14 +23,11 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:base32/base32.dart';
-import 'package:catcher/catcher.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -43,6 +40,7 @@ import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
 import 'package:privacyidea_authenticator/screens/guide_screen.dart';
+import 'package:privacyidea_authenticator/screens/scanner_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
@@ -141,7 +139,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   void onResume() {}
 
   Future<bool> _pollForRequests() async {
-
     // Get all push tokens
     List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
         .whereType<PushToken>()
@@ -262,14 +259,23 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   _scanQRCode() async {
-    try {
-      String barcode = await BarcodeScanner.scan();
-      log(
-        "Barcode scanned:",
-        name: "main_screen.dart",
-        error: barcode,
-      );
+    String barcode = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => QRScannerScreen()),
+    );
 
+    if (barcode == null) {
+      // User canceled scanning.
+      return;
+    }
+
+    log(
+      "Barcode scanned:",
+      name: "main_screen.dart",
+      error: barcode,
+    );
+
+    try {
       // TODO get crash report recipients from map and set in settings
       //  and for Catcher.
       Map<String, dynamic> barcodeMap = parseQRCodeToMap(barcode);
@@ -296,20 +302,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       if (mounted) {
         setState(() {});
       }
-    } on PlatformException catch (e, stack) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
-        //  Camera access was denied
-      } else {
-        //  Unknown error
-//        throw e;
-        Catcher.reportCheckedError(e, stack);
-      }
-    } on FormatException catch (e) {
-      //  User returned by pressing the back button (can have other causes too!)
-//      throw e;
     } on ArgumentError catch (e) {
       // Error while parsing qr code.
-      // Show the error message to the user.
       _showMessage(
           "${e.message}\n Please inform the creator of this qr code about the problem.",
           Duration(seconds: 8));
@@ -318,10 +312,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         name: "main_screen.dart",
         error: e.stackTrace,
       );
-    } catch (e, stack) {
-      //  Unknown error
-//      throw e;
-      Catcher.reportCheckedError(e, stack);
     }
   }
 
@@ -752,7 +742,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
                   Duration(seconds: 1));
               bool success = await _pollForRequests();
               if (!success) {
-
                 _showMessage(
                   AppLocalizations.of(context).pollingfFailNoNetworkConnection,
                   Duration(seconds: 3),
