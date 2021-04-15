@@ -252,74 +252,60 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _scanQRCode() async {
-    String code = await Navigator.push(
+    String barcode = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => QRScannerScreen()),
     );
 
-    print(code);
+    if (barcode == null) {
+      // User canceled scanning.
+      return;
+    }
 
-//    try {
-//      String barcode = await BarcodeScanner.scan();
-//      log(
-//        "Barcode scanned:",
-//        name: "main_screen.dart",
-//        error: barcode,
-//      );
-//
-//      // TODO get crash report recipients from map and set in settings
-//      //  and for Catcher.
-//      Map<String, dynamic> barcodeMap = parseQRCodeToMap(barcode);
-//      // AppSetting.of(context).add...
-////      Catcher.instance.updateConfig();
-//
-//      Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(barcode));
-//
-//      log(
-//        "Adding new token from qr-code:",
-//        name: "main_screen.dart",
-//        error: newToken,
-//      );
-//
-//      if (newToken is PushToken && _tokenList.contains(newToken)) {
-//        _showMessage(
-//            "A token with the serial ${newToken.serial} already exists!",
-//            Duration(seconds: 2));
-//        return;
-//      }
-//
-//      _tokenList.add(newToken);
-//
-//      if (mounted) {
-//        setState(() {});
-//      }
-//    } on PlatformException catch (e, stack) {
-//      if (e.code == BarcodeScanner.CameraAccessDenied) {
-//        //  Camera access was denied
-//      } else {
-//        //  Unknown error
-////        throw e;
-//        Catcher.reportCheckedError(e, stack);
-//      }
-//    } on FormatException catch (e) {
-//      //  User returned by pressing the back button (can have other causes too!)
-////      throw e;
-//    } on ArgumentError catch (e) {
-//      // Error while parsing qr code.
-//      // Show the error message to the user.
-//      _showMessage(
-//          "${e.message}\n Please inform the creator of this qr code about the problem.",
-//          Duration(seconds: 8));
-//      log(
-//        "Malformed QR code:",
-//        name: "main_screen.dart",
-//        error: e.stackTrace,
-//      );
-//    } catch (e, stack) {
-//      //  Unknown error
-////      throw e;
-//      Catcher.reportCheckedError(e, stack);
-//    }
+    log(
+      "Barcode scanned:",
+      name: "main_screen.dart",
+      error: barcode,
+    );
+
+    try {
+      // TODO get crash report recipients from map and set in settings
+      //  and for Catcher.
+      Map<String, dynamic> barcodeMap = parseQRCodeToMap(barcode);
+      // AppSetting.of(context).add...
+//      Catcher.instance.updateConfig();
+
+      Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(barcode));
+
+      log(
+        "Adding new token from qr-code:",
+        name: "main_screen.dart",
+        error: newToken,
+      );
+
+      if (newToken is PushToken && _tokenList.contains(newToken)) {
+        _showMessage(
+            "A token with the serial ${newToken.serial} already exists!",
+            Duration(seconds: 2));
+        return;
+      }
+
+      _tokenList.add(newToken);
+
+      if (mounted) {
+        setState(() {});
+      }
+    } on ArgumentError catch (e) {
+      // Error while parsing qr code.
+      _showMessage(
+          "${e.message}\n Please inform the creator of this qr code about the problem.",
+          Duration(seconds: 8));
+      log(
+        "Malformed QR code:",
+        name: "main_screen.dart",
+        error: e.stackTrace,
+      );
+    }
   }
 
   Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
