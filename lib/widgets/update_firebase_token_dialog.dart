@@ -23,13 +23,12 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
@@ -79,7 +78,8 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     log('Starting update of firebase token.',
         name: 'update_firebase_token_dialog.dart');
 
-    String token = await FirebaseMessaging().getToken();
+//    String token = await FirebaseMessaging().getToken();
+    String token = 'nothing';
 
     List<PushToken> tokenList =
         (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();

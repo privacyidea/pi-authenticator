@@ -470,8 +470,8 @@
         "example": "cancel"
       }
     }
-  },"pollingfFailNoNetworkConnection": "Polling failed. Server cannot be reached.",
-  "@pollingfFailNoNetworkConnection": {
+  },"pollingFailNoNetworkConnection": "Polling failed. Server cannot be reached.",
+  "@pollingFailNoNetworkConnection": {
     "description": "Tells the user that the roll-out failed because no network connection is available.",
     "type": "text",
     "placeholders": {}

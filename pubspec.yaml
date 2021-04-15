@@ -58,10 +58,10 @@ dependencies:
   dynamic_theme: ^1.0.1 # https://pub.dev/packages/dynamic_theme
   # dependency for push tokens https://github.com/privacyidea/privacyidea/wiki/concept%3A-PushToken
   # firebase_messaging: ^6.0.9
-  firebase_messaging:
-    path: ./local_plugins/firebase_messaging-6.0.16
+#  firebase_messaging:
+#    path: ./local_plugins/firebase_messaging-6.0.16
   # dependency for firebase configuration
-  firebase_core: ^0.4.0
+#  firebase_core: ^0.4.0
   # dependency for http requests https://pub.dev/packages/http#-readme-tab-
   http: ^0.12.0+4
   # for parsing ASN1 encoded stuff
