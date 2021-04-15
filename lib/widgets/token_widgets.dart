@@ -29,7 +29,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
@@ -38,7 +40,6 @@ import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
@@ -214,7 +215,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   Widget _buildTile();
 }
 
-class _PushWidgetState extends _TokenWidgetState {
+class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   _PushWidgetState(Token token) : super(token);
 
   PushToken get _token => super._token as PushToken;
@@ -240,39 +241,6 @@ class _PushWidgetState extends _TokenWidgetState {
   void initState() {
     super.initState();
 
-    if (!_token.isRolledOut) {
-      SchedulerBinding.instance.addPostFrameCallback((_) => _rollOutToken());
-    }
-
-    // TODO Check if onResume could be used here!
-    // Push requests that were received in background can only be saved to
-    // the storage, the ui must be updated here.
-    // ignore: missing_return
-    SystemChannels.lifecycle.setMessageHandler((msg) async {
-      PushToken t = await StorageUtil.loadToken(_token.id);
-
-      // TODO Maybe we should simply reload all tokens on resume?
-      // This throws errors because the token [t] is null, why?
-      // The error does not seem to break anything
-      // It indicates that this method is executed after the token was removed.
-      if (t == null) return;
-
-      if (msg == "AppLifecycleState.resumed" && t.pushRequests.isNotEmpty) {
-        log(
-            "Push token may have received a request while app was "
-            "in background. Updating UI.",
-            name: "token_widgets.dart");
-
-        _deleteExpiredRequests(t);
-        _token = t;
-        await _saveThisToken();
-
-        if (mounted) {
-          setState(() {});
-        }
-      }
-    });
-
     // Delete expired push requests periodically.
     _deleteTimer = Timer.periodic(Duration(seconds: 30), (_) {
       if (_token.pushRequests != null && _token.pushRequests.isNotEmpty) {
@@ -288,6 +256,44 @@ class _PushWidgetState extends _TokenWidgetState {
     // Delete expired tokens, because the timer may not run the function
     // immediately.
     _deleteExpiredRequests(_token);
+  }
+
+  @override
+  void afterFirstRender() {
+    if (!_token.isRolledOut) {
+      _rollOutToken();
+    }
+  }
+
+  @override
+  void onPause() {}
+
+  @override
+  void onResume() {
+    _checkForModelUpdate();
+  }
+
+  void _checkForModelUpdate() async {
+    PushToken t = await StorageUtil.loadToken(_token.id);
+
+    // TODO Maybe we should simply reload all tokens on resume?
+    // This throws errors because the token [t] is null, why?
+    // The error does not seem to break anything
+    // It indicates that this method is executed after the token was removed.
+    if (t == null) return;
+
+    log(
+        "Push token may have received a request while app was "
+        "in background. Updating UI.",
+        name: "token_widgets.dart");
+
+    _deleteExpiredRequests(t);
+    _token = t;
+    await _saveThisToken();
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _deleteExpiredRequests(PushToken t) {
@@ -780,7 +786,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
 }
 
 class _TotpWidgetState extends _OTPTokenWidgetState
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, LifecycleMixin {
   AnimationController
       controller; // Controller for animating the LinearProgressAnimator
 
@@ -795,17 +801,17 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     });
   }
 
+  /// Calculate the progress of the LinearProgressIndicator depending on the
+  /// current time. The Indicator takes values in [0.0, 1.0].
+  double _getCurrentProgress() {
+    int unixTime = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
+
+    return (unixTime % (_token.period)) * (1 / _token.period);
+  }
+
   @override
   void initState() {
     super.initState();
-
-    /// Calculate the progress of the LinearProgressIndicator depending on the
-    /// current time. The Indicator takes values in [0.0, 1.0].
-    double getCurrentProgress() {
-      int unixTime = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
-
-      return (unixTime % (_token.period)) * (1 / _token.period);
-    }
 
     controller = AnimationController(
       duration: Duration(seconds: _token.period),
@@ -820,25 +826,20 @@ class _TotpWidgetState extends _OTPTokenWidgetState
       ..addStatusListener((status) {
         // Add listener to restart the animation after the period, also updates the otp value.
         if (status == AnimationStatus.completed) {
-          controller.forward(from: getCurrentProgress());
+          controller.forward(from: _getCurrentProgress());
           _updateOtpValue();
         }
       })
-      ..forward(from: getCurrentProgress()); // Start the animation.
+      ..forward(from: _getCurrentProgress()); // Start the animation.
+  }
 
-    // Update the otp value when the android app resumes, this prevents outdated otp values
-    // ignore: missing_return
-    SystemChannels.lifecycle.setMessageHandler((msg) {
-      log(
-        "SystemChannels:",
-        name: "totp_widgets.dart",
-        error: msg,
-      );
-      if (msg == AppLifecycleState.resumed.toString()) {
-        _updateOtpValue();
-        controller.forward(from: getCurrentProgress());
-      }
-    });
+  @override
+  void onPause() {}
+
+  @override
+  void onResume() {
+    _updateOtpValue();
+    controller.forward(from: _getCurrentProgress());
   }
 
   @override
