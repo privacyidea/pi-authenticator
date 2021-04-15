@@ -28,10 +28,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:http/http.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
@@ -66,76 +66,79 @@ class MainScreen extends StatefulWidget {
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   List<Token> _tokenList = List<Token>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Timer _pollTimer;
 
-  @override
-  void initState() {
-    super.initState();
+  void _showChangelogAndGuide() async {
+    // Do not show these info when running driver tests
+    if (!AppSettings.of(context).isTestMode) {
+      PackageInfo info = await PackageInfo.fromPlatform();
 
-    // Start polling timer
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      AppSettings.of(context).streamEnablePolling().listen(
-        (bool event) {
-          if (event) {
-            log('Polling is enabled.', name: 'main_screen.dart');
-            _pollTimer = Timer.periodic(
-                Duration(seconds: 10), (_) => _pollForRequests());
-            _pollForRequests();
-          } else {
-            log('Polling is disabled.', name: 'main_screen.dart');
-            _pollTimer?.cancel();
-            _pollTimer = null;
-          }
-        },
-        cancelOnError: false,
-        onError: (error) => log('$error', name: 'polling timer'),
-      );
-    });
-
-    // Load UI elements
-    SchedulerBinding.instance.addPostFrameCallback((_) => _loadEverything());
-
-    // Attempt to automatically update firebase tokens if the token was changed.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      String newToken = await StorageUtil.getNewFirebaseToken();
-
-      if ((await StorageUtil.getCurrentFirebaseToken()) != newToken &&
-          newToken != null) {
-        _updateFirebaseToken();
+      // Check if the app was updated
+      if (info.version != await StorageUtil.getCurrentVersion()) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ChangelogScreen()),
+        );
+        StorageUtil.setCurrentVersion(info.version);
       }
-    });
 
-    // Show changelog and welcome screen
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
-      // Do not show these info when running driver tests
-      if (!AppSettings.of(context).isTestMode) {
-        PackageInfo info = await PackageInfo.fromPlatform();
-
-        // Check if the app was updated
-        if (info.version != await StorageUtil.getCurrentVersion()) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ChangelogScreen()),
-          );
-          StorageUtil.setCurrentVersion(info.version);
-        }
-
-        // Show the guide screen in front of the changelog -> load it last
-        if (AppSettings.of(context).showGuideOnStart) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => GuideScreen()),
-          );
-        }
+      // Show the guide screen in front of the changelog -> load it last
+      if (AppSettings.of(context).showGuideOnStart) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GuideScreen()),
+        );
       }
-    });
+    }
   }
 
-  _pollForRequests() async {
+  void _updateFbTokenOnChange() async {
+    String newToken = await StorageUtil.getNewFirebaseToken();
+
+    if ((await StorageUtil.getCurrentFirebaseToken()) != newToken &&
+        newToken != null) {
+      _updateFirebaseToken();
+    }
+  }
+
+  void _startPollingIfEnabled() {
+    AppSettings.of(context).streamEnablePolling().listen(
+      (bool event) {
+        if (event) {
+          log('Polling is enabled.', name: 'main_screen.dart');
+          _pollTimer =
+              Timer.periodic(Duration(seconds: 10), (_) => _pollForRequests());
+          _pollForRequests();
+        } else {
+          log('Polling is disabled.', name: 'main_screen.dart');
+          _pollTimer?.cancel();
+          _pollTimer = null;
+        }
+      },
+      cancelOnError: false,
+      onError: (error) => log('$error', name: 'polling timer'),
+    );
+  }
+
+  @override
+  void afterFirstRender() {
+    _showChangelogAndGuide();
+    _updateFbTokenOnChange();
+    _startPollingIfEnabled();
+    _loadEverything();
+  }
+
+  @override
+  void onPause() {}
+
+  @override
+  void onResume() {}
+
+  Future<bool> _pollForRequests() async {
     // Get all push tokens
     List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
         .whereType<PushToken>()
@@ -150,7 +153,7 @@ class _MainScreenState extends State<MainScreen> {
       log('No push token is available for polling, polling is disabled.',
           name: 'main_screen.dart');
       AppSettings.of(context).setEnablePolling(false);
-      return;
+      return false;
     }
 
     // Start request for each token
@@ -183,15 +186,19 @@ class _MainScreenState extends State<MainScreen> {
             _handleIncomingAuthRequest({'data': value});
           }
         } else {
-          // Error messages can only be distinguished by their text content, not by their error code. This would make error handling complex.
+          // Error messages can only be distinguished by their text content,
+          // not by their error code. This would make error handling complex.
         }
       } on SocketException {
         log(
           'Polling push tokens not working, server can not be reached.',
           name: 'main_screen.dart',
         );
+        return false;
       }
     }
+
+    return true;
   }
 
   @override
@@ -733,7 +740,13 @@ class _MainScreenState extends State<MainScreen> {
             onRefresh: () async {
               _showMessage(AppLocalizations.of(context).pollingChallenges,
                   Duration(seconds: 1));
-              await _pollForRequests();
+              bool success = await _pollForRequests();
+              if (!success) {
+                _showMessage(
+                  AppLocalizations.of(context).pollingfFailNoNetworkConnection,
+                  Duration(seconds: 3),
+                );
+              }
             },
           )
         : list;
