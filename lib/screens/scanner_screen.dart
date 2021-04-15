@@ -23,7 +23,14 @@ import 'package:flutter/rendering.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
 import 'package:qr_mobile_vision/qr_mobile_vision.dart';
 
-class QRScannerScreen extends StatelessWidget {
+class QRScannerScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => QRScannerScreenState();
+}
+
+class QRScannerScreenState extends State<QRScannerScreen> {
+  final GlobalKey<QrCameraState> key = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,12 +39,16 @@ class QRScannerScreen extends StatelessWidget {
       ),
       body: SizedBox.expand(
         child: QrCamera(
+          key: key,
           formats: [BarcodeFormats.QR_CODE],
           onError: (context, error) => Text(
             error.toString(),
             style: TextStyle(color: Colors.red),
           ),
-          qrCodeCallback: (code) => Navigator.pop(context, code),
+          qrCodeCallback: (code) {
+            Navigator.pop(context, code);
+            key.currentState.stop();
+          },
         ),
       ),
     );
