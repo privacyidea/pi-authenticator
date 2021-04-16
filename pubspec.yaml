@@ -55,7 +55,7 @@ dependencies:
   # dependency for cryptographic algorithms
   pointycastle: ^1.0.2
   # dependency for changing the theme of the app
-  dynamic_theme: ^1.0.1 # https://pub.dev/packages/dynamic_theme
+#  dynamic_theme: ^1.0.1 # https://pub.dev/packages/dynamic_theme
   # dependency for push tokens https://github.com/privacyidea/privacyidea/wiki/concept%3A-PushToken
   # firebase_messaging: ^6.0.9
 #  firebase_messaging:
@@ -82,6 +82,8 @@ dependencies:
   catcher:
     git:
       url: https://github.com/timosturm/catcher.git
+
+  easy_dynamic_theme: ^1.0.0
 
 
 dev_dependencies:

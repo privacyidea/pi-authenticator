@@ -20,12 +20,12 @@
 
 import 'dart:developer';
 
-import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/widgets/migrate_legacy_tokens_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
@@ -33,7 +33,6 @@ import 'package:privacyidea_authenticator/widgets/update_firebase_token_dialog.d
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() => SettingsScreenState();
 }
@@ -43,9 +42,6 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isSystemDarkMode =
-        MediaQuery.of(context).platformBrightness == Brightness.dark;
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -56,7 +52,7 @@ class SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -65,21 +61,27 @@ class SettingsScreenState extends State<SettingsScreen> {
               children: <Widget>[
                 RadioListTile(
                   title: Text(AppLocalizations.of(context).lightTheme),
-                  value: Brightness.light,
-                  groupValue: Theme.of(context).brightness,
+                  value: ThemeMode.light,
+                  groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: !isSystemDarkMode
-                      ? (value) => _changeBrightness(value)
-                      : null,
+                  onChanged: (value) => EasyDynamicTheme.of(context)
+                      .changeTheme(dynamic: false, dark: false),
                 ),
                 RadioListTile(
                   title: Text(AppLocalizations.of(context).darkTheme),
-                  value: Brightness.dark,
-                  groupValue: Theme.of(context).brightness,
+                  value: ThemeMode.dark,
+                  groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: !isSystemDarkMode
-                      ? (value) => _changeBrightness(value)
-                      : null,
+                  onChanged: (value) => EasyDynamicTheme.of(context)
+                      .changeTheme(dynamic: false, dark: true),
+                ),
+                RadioListTile(
+                  title: Text(AppLocalizations.of(context).systemTheme),
+                  value: ThemeMode.system,
+                  groupValue: EasyDynamicTheme.of(context).themeMode,
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  onChanged: (value) => EasyDynamicTheme.of(context)
+                      .changeTheme(dynamic: true, dark: false),
                 ),
               ],
             ),
@@ -218,14 +220,6 @@ class SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
     );
-  }
-
-  void _changeBrightness(Brightness value) {
-    DynamicTheme.of(context).setBrightness(value);
-
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   /// Shows a dialog to the user that displays all push tokens that do not support polling.
