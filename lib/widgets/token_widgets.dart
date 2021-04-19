@@ -38,7 +38,6 @@ import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
-import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
@@ -93,13 +92,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       secondaryActions: <Widget>[
         IconSlideAction(
           caption: AppLocalizations.of(context).delete,
-          color: getTonedColor(Colors.red, isDarkModeOn(context)),
+          color: Colors.red,
           icon: Icons.delete,
           onTap: () => _deleteTokenDialog(),
         ),
         IconSlideAction(
           caption: AppLocalizations.of(context).rename,
-          color: getTonedColor(Colors.blue, isDarkModeOn(context)),
+          color: Colors.blue,
           icon: Icons.edit,
           onTap: () => _renameTokenDialog(),
         ),
