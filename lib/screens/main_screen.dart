@@ -262,7 +262,7 @@ class _MainScreenState extends State<MainScreen> {
         error: barcode,
       );
 
-      if (barcode == null){
+      if (barcode == null) {
         // No barcode was scanned
         return;
       }
@@ -294,7 +294,8 @@ class _MainScreenState extends State<MainScreen> {
         setState(() {});
       }
     } on PlatformException catch (e, stack) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
+      if (e.code == BarcodeScanner.CameraAccessDenied ||
+          e.code == BarcodeScanner.UserCanceled) {
         //  Camera access was denied
       } else {
         //  Unknown error
