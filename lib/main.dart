@@ -72,7 +72,7 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
                 AppSettings.of(context).crashReportRecipients;
 
             // Override release config to use custom e-mail recipients
-            Catcher.instance.updateConfig(
+            Catcher.getInstance().updateConfig(
               releaseConfig: CatcherOptions(CustomPageReportMode(), [
                 EmailManualHandler(crashReportRecipients,
                     enableCustomParameters: false)

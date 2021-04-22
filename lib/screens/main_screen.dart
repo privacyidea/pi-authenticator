@@ -436,12 +436,12 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 //        return null;
 //      }
 //
-//      var initializationSettingsAndroid =
-//          AndroidInitializationSettings('app_icon');
-//      var initializationSettingsIOS = IOSInitializationSettings();
-//      var initializationSettings = InitializationSettings(
-//          initializationSettingsAndroid, initializationSettingsIOS);
-//      await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 //    } else if (await StorageUtil.loadGlobalFirebaseConfig() != config) {
 //      log("Given firebase config does not equal the existing config.",
 //          name: "main_screen.dart",
@@ -454,8 +454,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 //    FirebaseMessaging firebaseMessaging = FirebaseMessaging()
 //      ..setApplicationName(name);
 //
-//    // Ask user to allow notifications, if declined no notifications are shown
-//    //  for incoming push requests.
+////     Ask user to allow notifications, if declined no notifications are shown
+////      for incoming push requests.
 //    if (Platform.isIOS) {
 //      await firebaseMessaging.requestNotificationPermissions();
 //    }
@@ -707,7 +707,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       pushRequest.title,
       pushRequest.question,
       NotificationDetails(
-          androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics),
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics,
+      ),
     );
   }
 

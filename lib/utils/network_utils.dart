@@ -73,9 +73,9 @@ Future<Response> doGet(
   IOClient ioClient = IOClient(httpClient);
   // TODO Make this more general!
   // TODO Are the parameters the headers?
-  String urlWithParameters = '$url?serial=${parameters['serial']}'
+  Uri urlWithParameters = Uri.parse('$url?serial=${parameters['serial']}'
       '&timestamp=${parameters['timestamp']}'
-      '&signature=${parameters['signature']}';
+      '&signature=${parameters['signature']}');
   Response response = await ioClient.get(urlWithParameters);
 
 //  String urlWithParameters = '$url';

@@ -13,7 +13,7 @@ repository: https://github.com/privacyidea/pi-authenticator
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.1.1+0301001 # TODO Set the right version number
+version: 3.2.0+0302000 # TODO Set the right version number
 # version: major.minor.build          + 2x major|2x minor|3x build
 # version: version number             + build number (optional)
 # android: build-name                 + versionCode
@@ -28,72 +28,53 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  intl: ^0.16.0
-#  intl_translation: any
+  intl: ^0.17.0
+  hex: ^0.2.0
+  base32: ^2.0.0-nullsafety.1
+  otp: ^3.0.0-nullsafety.0
+  qr_mobile_vision: ^3.0.0
+  flutter_secure_storage: ^4.1.0
+  json_annotation: ^4.0.1
+  flutter_slidable: ^0.6.0
+  package_info: ^2.0.0
+  asn1lib: ^1.0.0
+  flutter_markdown: ^0.6.1
+  url_launcher: ^6.0.3
+  catcher: ^0.6.5
+  uuid: ^3.0.4
+  http: ^0.13.1
+  pointycastle: ^3.0.1
+  flutter_local_notifications: ^5.0.0+1
+  mutex: ^3.0.0
+  flutterlifecyclehooks: ^2.0.0-nullsafety.0
+  streaming_shared_preferences: ^2.0.0
+  flutter_svg: ^0.21.0+1
+  easy_dynamic_theme: ^2.0.0
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  #  cupertino_icons: ^0.1.2
 
-  # dependency for decoding (and encoding) strings to hex
-  hex: ^0.1.2 # https://pub.dev/packages/hex#-installing-tab-
-  # dependency for decoding (and encoding) strings to base32
-  base32: ^1.1.1 # https://pub.dev/packages/base32
-  # dependency for calculating otp values
-  otp: ^2.0.3 # https://pub.dev/packages/otp
-  qr_mobile_vision: ^2.0.0
-  # dependency to generate IDs for tokens
-  uuid: ^2.2.0
-  # dependency to save to secure storage under android and ios
-  flutter_secure_storage: ^3.3.1+1
-  # dependency to serialize objects to json
-  json_annotation: ^3.0.1 # run "flutter pub run build_runner build" in terminal to build tokens.g.dart
-  # dependency for slide options in list
-  flutter_slidable: ^0.5.4
-  # dependency for automatically showing the version number
-  package_info: ^0.4.0+13 # https://pub.dev/packages/package_info
-  # dependency for cryptographic algorithms
-  pointycastle: ^1.0.2
-  # dependency for changing the theme of the app
-#  dynamic_theme: ^1.0.1 # https://pub.dev/packages/dynamic_theme
-  # dependency for push tokens https://github.com/privacyidea/privacyidea/wiki/concept%3A-PushToken
-  # firebase_messaging: ^6.0.9
-#  firebase_messaging:
-#    path: ./local_plugins/firebase_messaging-6.0.16
+
+  #  firebase_messaging:
+  #    path: ./local_plugins/firebase_messaging-6.0.16
   # dependency for firebase configuration
-#  firebase_core: ^0.4.0
-  # dependency for http requests https://pub.dev/packages/http#-readme-tab-
-  http: ^0.12.0+4
-  # for parsing ASN1 encoded stuff
-  asn1lib: ^0.6.4
-  # for displaying incoming push requests as notifications
-  flutter_local_notifications: ^1.4.1 # https://pub.dev/packages/flutter_local_notifications#-installing-tab-
-  # legacy support for loading old tokens:
+  #  firebase_core: ^0.4.0
   pi_authenticator_legacy:
     path: ./local_plugins/pi-authenticator-legacy
-  # manage settings
-  streaming_shared_preferences: ^1.0.1
-  mutex: ^1.1.0
-  flutterlifecyclehooks: ^1.0.1
-  flutter_markdown: ^0.5.1
-  url_launcher: ^5.7.10
-  flutter_svg: ^0.19.1
-  #  catcher: ^0.4.1
-  catcher:
-    git:
-      url: https://github.com/timosturm/catcher.git
 
-  easy_dynamic_theme: ^1.0.0
 
+dependency_overrides:
+  crypto: ^3.0.0-nullsafety
+  convert: ^3.0.0
+  args: ^2.0.0
 
 dev_dependencies:
   flutter_driver:
     sdk: flutter
   test: any
 
+
   # dependencies to serialize objects to json
-  build_runner: ^1.10.1
-  json_serializable: ^3.4.1
+  build_runner: any
+  json_serializable: ^4.1.0
 
 
 # For information on the generic Dart part of this file, see the
@@ -102,7 +83,7 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
 
-  generate: true
+  generate: true # For translations
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
