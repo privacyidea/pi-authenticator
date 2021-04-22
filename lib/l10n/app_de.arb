@@ -212,15 +212,21 @@
     "type": "text",
     "placeholders": {}
   },
-  "lightTheme": "Helles Thema",
+  "lightTheme": "Hell",
   "@lightTheme": {
     "description": "The light theme.",
     "type": "text",
     "placeholders": {}
   },
-  "darkTheme": "Dunkles Thema",
+  "darkTheme": "Dunkel",
   "@darkTheme": {
     "description": "The dark theme.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "systemTheme": "Gerät",
+  "@systemTheme": {
+    "description": "The systems theme.",
     "type": "text",
     "placeholders": {}
   },
@@ -470,7 +476,8 @@
         "example": "cancel"
       }
     }
-  },"pollingFailNoNetworkConnection": "Abfrage fehlgeschlagen, der Server ist nicht erreichbar.",
+  },
+  "pollingFailNoNetworkConnection": "Abfrage fehlgeschlagen, der Server ist nicht erreichbar.",
   "@pollingFailNoNetworkConnection": {
     "description": "Tells the user that the roll-out failed because no network connection is available.",
     "type": "text",

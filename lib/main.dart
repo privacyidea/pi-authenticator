@@ -19,15 +19,15 @@
 */
 
 import 'package:catcher/catcher.dart';
-import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
-import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/themes.dart';
 import 'package:privacyidea_authenticator/widgets/custom_page_report_mode.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
@@ -63,12 +63,11 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppSettings(
-      preferences: this._preferences,
-      child: DynamicTheme(
-          defaultBrightness: Brightness.light,
-          data: (brightness) => getApplicationTheme(brightness),
-          themedWidgetBuilder: (context, theme) {
+    return EasyDynamicThemeWidget(
+      child: AppSettings(
+        preferences: this._preferences,
+        child: Builder(
+          builder: (context) {
             var crashReportRecipients =
                 AppSettings.of(context).crashReportRecipients;
 
@@ -85,11 +84,14 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
               title: applicationName,
-              theme: theme,
-              darkTheme: getApplicationTheme(Brightness.dark),
+              theme: lightThemeData,
+              darkTheme: darkThemeData,
+              themeMode: EasyDynamicTheme.of(context).themeMode,
               home: MainScreen(title: applicationName),
             );
-          }),
+          },
+        ),
+      ),
     );
   }
 }
