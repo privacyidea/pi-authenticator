@@ -262,6 +262,11 @@ class _MainScreenState extends State<MainScreen> {
         error: barcode,
       );
 
+      if (barcode == null){
+        // No barcode was scanned
+        return;
+      }
+
       // TODO get crash report recipients from map and set in settings
       //  and for Catcher.
       Map<String, dynamic> barcodeMap = parseQRCodeToMap(barcode);
