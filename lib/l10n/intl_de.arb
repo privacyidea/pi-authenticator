@@ -476,5 +476,23 @@
         "example": "cancel"
       }
     }
+  },
+  "paddingExceptionTitle": "Ein bekannter Fehler ist aufgetreten",
+  "@paddingExceptionTitle": {
+    "description": "Title for padding exception dialog.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "paddingExceptionBody": "Ein bekannter Fehler mit der Gerätekonfiguration ist aufgetreten, bitte löschen Sie die App-Daten über die Geräteeinstellungen und versuchen Sie es erneut.",
+  "@paddingExceptionBody": {
+    "description": "Body for padding exception dialog.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "reportIssue": "Fehler trotztem melden",
+  "@reportIssue": {
+    "description": "Button text.",
+    "type": "text",
+    "placeholders": {}
   }
 }
