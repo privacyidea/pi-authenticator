@@ -7,6 +7,7 @@
 - Fixed broken ui updates for TOTP tokens
 - Fixed parsing issues for QR codes
 - Fixed error when scanning qr codes is interrupted
+- Added fix for secure storage issue, including dialog to inform affected users how to fix the error
 
 ## [3.1.1] - 2021-03-31
 
