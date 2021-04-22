@@ -59,15 +59,6 @@ class StorageUtil {
   /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
   ///
   static Future<List<Token>> loadAllTokens() async {
-//    if (loadLegacy) {
-//      // Load legacy tokens and add them to the storage.
-//      List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
-//
-//      for (Token t in legacyTokens) {
-//        await StorageUtil.saveOrReplaceToken(t);
-//      }
-//    }
-
     Map<String, String> keyValueMap = await _storage.readAll();
 
     List<Token> tokenList = [];
