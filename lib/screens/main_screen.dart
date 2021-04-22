@@ -127,7 +127,6 @@ class _MainScreenState extends State<MainScreen> {
         } else {
           throw e;
         }
-        // TODO Add something to the application xml
       }
 
       // Attempts to automatically update firebase tokens
@@ -243,13 +242,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _loadTokenList() async {
-    throw PlatformException(
-      code: '123',
-      message: "This is a test",
-      details: "BadPaddingException details blub bla",
-      stacktrace: 'Blub stacktrace',
-    );
-
     List<Token> l1 = await StorageUtil.loadAllTokens();
     // Prevent the list items from skipping around on ui updates
     l1.sort((a, b) => a.id.hashCode.compareTo(b.id.hashCode));
