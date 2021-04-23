@@ -24,6 +24,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -178,10 +180,10 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           // The signature of this message must not be verified as each push
           // request gets verified independently.
           Map<String, dynamic> result = jsonDecode(response.body)['result'];
-          List values = result['value'];
+          List dataList = result['value'];
 
-          for (Map<String, dynamic> value in values) {
-            _handleIncomingAuthRequest({'data': value});
+          for (Map<String, dynamic> data in dataList) {
+            _handleIncomingAuthRequest(RemoteMessage(data: data));
           }
         } else {
           // Error messages can only be distinguished by their text content,
@@ -400,124 +402,114 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   Future<String> _initFirebase(FirebaseConfig config) async {
-//    ArgumentError.checkNotNull(config, "config");
-//
-//    log("Initializing firebase.", name: "main_screen.dart");
-//
-//    // Used to identify a firebase app, this is nothing more than an id.
-//    final String name = "privacyidea_authenticator";
-//
-//    if (!await StorageUtil.globalFirebaseConfigExists() ||
-//        await StorageUtil.loadGlobalFirebaseConfig() == config) {
-//      log("Creating firebaseApp from config.",
-//          name: "main_screen.dart", error: config);
-//
-//      try {
-//        await FirebaseApp.configure(
-//          name: name,
-//          options: FirebaseOptions(
-//            googleAppID: config.appID,
-//            apiKey: config.apiKey,
-//            databaseURL: "https://" + config.projectID + ".firebaseio.com",
-//            storageBucket: config.projectID + ".appspot.com",
-//            projectID: config.projectID,
-//            gcmSenderID: config.projectNumber,
-//          ),
-//        );
-//      } on ArgumentError {
-//        log(
-//          "Invalid firebase configuration provided.",
-//          name: "main_screen.dart",
-//          error: config,
-//        );
-//
-//        _showMessage(AppLocalizations.of(context).firebaseConfigCorrupted,
-//            Duration(seconds: 15));
-//        return null;
-//      }
-//
-    var initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
-    var initializationSettingsIOS = IOSInitializationSettings();
-    var initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-//    } else if (await StorageUtil.loadGlobalFirebaseConfig() != config) {
-//      log("Given firebase config does not equal the existing config.",
-//          name: "main_screen.dart",
-//          error: "Existing: ${await StorageUtil.loadGlobalFirebaseConfig()}"
-//              "\n Given:    $config");
-//
-//      return null;
-//    }
-//
-//    FirebaseMessaging firebaseMessaging = FirebaseMessaging()
-//      ..setApplicationName(name);
-//
-////     Ask user to allow notifications, if declined no notifications are shown
-////      for incoming push requests.
-//    if (Platform.isIOS) {
-//      await firebaseMessaging.requestNotificationPermissions();
-//    }
-//
-//    // onResume and onLaunch is not configured see:
-//    //  https://pub.dev/packages/firebase_messaging#-readme-tab-
-//    //  but the solution there does not seem to work?
-//    //  These functions do not seem to serve a purpose, as the background
-//    //  message handling seems to do just that.
-//    firebaseMessaging.configure(
-//      onMessage: (Map<String, dynamic> message) async {
-//        // Used by Android and iOS
-//        log("onMessage: ");
-//        _handleIncomingAuthRequest(message);
-//      },
-//      onLaunch: (Map<String, dynamic> message) async {
-//        // Does not seem to be used by Android or iOS
-//        log("onLaunch: ");
-//        _handleIncomingAuthRequest(message);
-//      },
-//      onResume: (Map<String, dynamic> message) async {
-//        // Used by iOS only (?)
-//        log("onResume: ");
-//        _handleIncomingAuthRequest(message);
-//      },
-//      onBackgroundMessage: Platform.isIOS
-//          ? null
-//          : // iOS does not support this.
-//          myBackgroundMessageHandler,
-//    );
-//
-//    String firebaseToken = await firebaseMessaging.getToken();
-//
-//    log("Firebase initialized, token added",
-//        name: "main_screen.dart", error: firebaseToken);
-//
-//    StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
-//
-//    // The Firebase Plugin will throw a network exception, but that does not reach
-//    //  the flutter part of the app. That is why we need to throw our own socket-
-//    //  exception in this case.
-//    if (firebaseToken == null) {
-//      throw SocketException(
-//          "Firebase token could not be retrieved, the only know cause of this is"
-//          " that the firebase servers could not be reached.");
-//    }
-//
-//    if (await StorageUtil.getCurrentFirebaseToken() == null) {
-//      // This is the initial setup
-//      await StorageUtil.setCurrentFirebaseToken(firebaseToken);
-//    }
-//
-//    firebaseMessaging.onTokenRefresh.listen((newToken) async {
-//      if ((await StorageUtil.getCurrentFirebaseToken()) != newToken) {
-//        log("New firebase token generated: $newToken",
-//            name: 'main_screen.dart');
-//        await StorageUtil.setNewFirebaseToken(newToken);
-//        _updateFirebaseToken();
-//      }
-//    });
-//
-//    return firebaseToken;
+    ArgumentError.checkNotNull(config, "config");
+
+    log("Initializing firebase.", name: "main_screen.dart");
+
+    // Used to identify a firebase app, this is nothing more than an id.
+    final String name = "privacyidea_authenticator";
+
+    if (!await StorageUtil.globalFirebaseConfigExists() ||
+        await StorageUtil.loadGlobalFirebaseConfig() == config) {
+      log("Creating firebaseApp from config.",
+          name: "main_screen.dart", error: config);
+
+      try {
+        await Firebase.initializeApp(
+            name: '[DEFAULT]',
+            options: FirebaseOptions(
+              appId: config.appID,
+              apiKey: config.apiKey,
+              databaseURL: "https://" + config.projectID + ".firebaseio.com",
+              storageBucket: config.projectID + ".appspot.com",
+              projectId: config.projectID,
+              messagingSenderId: config.projectNumber,
+            ));
+      } on ArgumentError {
+        log(
+          "Invalid firebase configuration provided.",
+          name: "main_screen.dart",
+          error: config,
+        );
+
+        _showMessage(AppLocalizations.of(context).firebaseConfigCorrupted,
+            Duration(seconds: 15));
+        return null;
+      }
+
+      var initializationSettingsAndroid =
+          AndroidInitializationSettings('app_icon');
+      var initializationSettingsIOS = IOSInitializationSettings();
+      var initializationSettings = InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsIOS);
+      await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    } else if (await StorageUtil.loadGlobalFirebaseConfig() != config) {
+      log("Given firebase config does not equal the existing config.",
+          name: "main_screen.dart",
+          error: "Existing: ${await StorageUtil.loadGlobalFirebaseConfig()}"
+              "\n Given:    $config");
+
+      return null;
+    }
+
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+      if ((await StorageUtil.getCurrentFirebaseToken()) != newToken) {
+        log("New firebase token generated: $newToken",
+            name: 'main_screen.dart');
+        await StorageUtil.setNewFirebaseToken(newToken);
+        _updateFirebaseToken();
+      }
+    });
+    FirebaseMessaging.onMessage
+        .listen((RemoteMessage message) => _handleIncomingAuthRequest(message));
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    // TODO Find out if this is necessary on ios (we do not want firebase to
+    //  show any notifications itself)
+    //Ask user to allow notifications
+    //, if declined no notifications are shown
+    //for incoming push requests.
+    // if (Platform.isIOS) {
+    //   await firebaseMessaging.requestNotificationPermissions();
+    // }
+
+    String firebaseToken = await FirebaseMessaging.instance.getToken();
+    log("Firebase initialized, token added",
+        name: "main_screen.dart", error: firebaseToken);
+    // The Firebase Plugin will throw a network exception, but that does not reach
+    //  the flutter part of the app. That is why we need to throw our own socket-
+    //  exception in this case.
+    if (firebaseToken == null) {
+      throw SocketException(
+          "Firebase token could not be retrieved, the only know cause of this is"
+          " that the firebase servers could not be reached.");
+    }
+
+    StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
+
+    if (await StorageUtil.getCurrentFirebaseToken() == null) {
+      // This is the initial setup
+      await StorageUtil.setCurrentFirebaseToken(firebaseToken);
+    }
+
+    return firebaseToken;
+  }
+
+  static Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
+    log("Background message received.",
+        name: "main_screen.dart", error: message);
+    await StorageUtil.protect(() async => _handleIncomingRequest(
+        message, await StorageUtil.loadAllTokens(), true));
+  }
+
+  void _handleIncomingAuthRequest(RemoteMessage message) async {
+    log("Foreground message received.",
+        name: "main_screen.dart", error: message);
+    await StorageUtil.protect(() async => _handleIncomingRequest(
+        message, await StorageUtil.loadAllTokens(), false));
+    _loadTokenList(); // Update UI
   }
 
   /// This method attempts to update the fbToken for all PushTokens that can be
@@ -583,29 +575,13 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     }
   }
 
-  static Future<dynamic> myBackgroundMessageHandler(
-      Map<String, dynamic> message) async {
-    log("Background message received.",
-        name: "main_screen.dart", error: message);
-    await StorageUtil.protect(() async => _handleIncomingRequest(
-        message, await StorageUtil.loadAllTokens(), true));
-  }
-
-  void _handleIncomingAuthRequest(Map<String, dynamic> message) async {
-    log("Foreground message received.",
-        name: "main_screen.dart", error: message);
-
-    await StorageUtil.protect(() async => _handleIncomingRequest(
-        message, await StorageUtil.loadAllTokens(), false));
-    _loadTokenList(); // Update UI
-  }
-
   /// Handles incoming push requests by verifying the challenge and adding it
   /// to the token. This should be guarded by a lock.
-  static Future<void> _handleIncomingRequest(Map<String, dynamic> message,
-      List<Token> tokenList, bool inBackground) async {
+  static Future<void> _handleIncomingRequest(
+      RemoteMessage message, List<Token> tokenList, bool inBackground) async {
     // This allows for handling push on ios, android and polling.
-    var data = message['data'] == null ? message : message['data'];
+    // var data = message['data'] == null ? message : message['data'];
+    var data = message.data;
 
     Uri requestUri = Uri.parse(data['url']);
     String requestedSerial = data['serial'];
