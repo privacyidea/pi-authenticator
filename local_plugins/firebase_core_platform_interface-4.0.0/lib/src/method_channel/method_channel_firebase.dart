@@ -67,13 +67,6 @@ class MethodChannelFirebase extends FirebasePlatform {
     String? name,
     FirebaseOptions? options,
   }) async {
-
-    print('This very important method was called!');
-
-    // if (name == defaultFirebaseAppName) {
-    //   throw noDefaultAppInitialization();
-    // }
-
     // Ensure that core has been initialized on the first usage of
     // initializeApp
     if (!isCoreInitialized) {
