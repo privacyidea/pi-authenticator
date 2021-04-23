@@ -50,19 +50,19 @@ dependencies:
   streaming_shared_preferences: ^2.0.0
   flutter_svg: ^0.21.0+1
   easy_dynamic_theme: ^2.0.0
-
-
   firebase_messaging: ^9.1.2
-  # dependency for firebase configuration
   firebase_core: ^1.0.4
   pi_authenticator_legacy:
     path: local_plugins/pi-authenticator-legacy
 
 
 dependency_overrides:
+  # Temporary fixes for flutter_driver
   crypto: ^3.0.0-nullsafety
   convert: ^3.0.0
   args: ^2.0.0
+
+  # To use custom plugin for all other plugins that depend on it
   firebase_core_platform_interface:
     path: local_plugins/firebase_core_platform_interface-4.0.0
 
@@ -82,8 +82,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-
-  generate: true # For translations
+  # Automatically create files used for localization
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
