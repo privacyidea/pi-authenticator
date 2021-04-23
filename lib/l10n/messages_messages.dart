@@ -110,7 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "errorSynchronizationNoNetworkConnection" : MessageLookupByLibrary.simpleMessage("Synchronizing tokens failed, privacyIDEA server could not be reached."),
     "errorTokenExpired" : m8,
     "otpValueCopiedMessage" : m9,
-    "paddingExceptionBody" : MessageLookupByLibrary.simpleMessage("A known issue was encountered with the device configuration, please clear the app data for this application from the devices settings and try again."),
+    "paddingExceptionBody" : MessageLookupByLibrary.simpleMessage("A known issue was encountered with the device configuration, please clear the app data for this application from the devices settings or remove and reinstall the app and try again."),
     "paddingExceptionTitle" : MessageLookupByLibrary.simpleMessage("Known issue encountered"),
     "pageReportModeBody" : m10,
     "reportIssue" : MessageLookupByLibrary.simpleMessage("Report error anyway"),

@@ -38,7 +38,8 @@ class Localization {
     return Intl.message(
       'A known issue was encountered with the device'
       ' configuration, please clear the app data for this'
-      ' application from the devices settings and try again.',
+      ' application from the devices settings or remove and reinstall the app'
+      ' and try again.',
       desc: 'Body for padding exception dialog.',
       locale: localeName,
       name: 'paddingExceptionBody',
