@@ -472,7 +472,7 @@ String _parseLabel(Uri uri) {
 
   try {
     label = Uri.decodeFull(param);
-  } on ArgumentError {
+  } on Error {
     label = param;
   }
 
@@ -485,7 +485,7 @@ String _parseIssuer(Uri uri) {
 
   try {
     issuer = Uri.decodeFull(param);
-  } on ArgumentError {
+  } on Error {
     issuer = param;
   }
 

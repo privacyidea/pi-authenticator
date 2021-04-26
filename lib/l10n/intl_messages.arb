@@ -1,5 +1,23 @@
 {
-  "@@last_modified": "2021-02-25T12:30:00.793083",
+  "@@last_modified": "2021-04-23T12:57:32.299967",
+  "paddingExceptionTitle": "Known issue encountered",
+  "@paddingExceptionTitle": {
+    "description": "Title for padding exception dialog.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "paddingExceptionBody": "A known issue was encountered with the device configuration, please clear the app data for this application from the devices settings or remove and reinstall the app and try again.",
+  "@paddingExceptionBody": {
+    "description": "Body for padding exception dialog.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "reportIssue": "Report error anyway",
+  "@reportIssue": {
+    "description": "Button text.",
+    "type": "text",
+    "placeholders": {}
+  },
   "Guide": "Guide",
   "@Guide": {
     "description": "Button to open the guide screen.",

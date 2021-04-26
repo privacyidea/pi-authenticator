@@ -110,7 +110,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "errorSynchronizationNoNetworkConnection" : MessageLookupByLibrary.simpleMessage("Die Synchronisation ist fehlgeschlagen, da der privacyIDEA Server nicht erreicht werden konnte."),
     "errorTokenExpired" : m8,
     "otpValueCopiedMessage" : m9,
+    "paddingExceptionBody" : MessageLookupByLibrary.simpleMessage("Ein bekannter Fehler mit der Gerätekonfiguration ist aufgetreten, bitte löschen Sie die App-Daten über die Geräteeinstellungen und versuchen es erneut oder deinstallieren Sie die App und installieren Sie sie erneut."),
+    "paddingExceptionTitle" : MessageLookupByLibrary.simpleMessage("Ein bekannter Fehler ist aufgetreten"),
     "pageReportModeBody" : m10,
+    "reportIssue" : MessageLookupByLibrary.simpleMessage("Fehler trotztem melden"),
     "retry" : MessageLookupByLibrary.simpleMessage("Erneut versuchen"),
     "retryRollOut" : MessageLookupByLibrary.simpleMessage("Erneut ausrollen."),
     "rollingOut" : MessageLookupByLibrary.simpleMessage("Ausrollen")

@@ -78,8 +78,8 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
-    // Start polling timer
     SchedulerBinding.instance.addPostFrameCallback((_) async {
+      // Start polling timer
       AppSettings.of(context).streamEnablePolling().listen(
         (bool event) {
           if (event) {
@@ -96,23 +96,49 @@ class _MainScreenState extends State<MainScreen> {
         cancelOnError: false,
         onError: (error) => log('$error', name: 'polling timer'),
       );
-    });
 
-    // Load UI elements
-    SchedulerBinding.instance.addPostFrameCallback((_) => _loadEverything());
+      // Load ui elements
+      try {
+        await _loadTokenList();
+        await _loadFirebase();
+      } on PlatformException catch (e, s) {
+        if (e.details.toString().contains('BadPaddingException')) {
+          await showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) => AlertDialog(
+              title: Text(Localization.of(context).paddingExceptionTitle),
+              content: Text(Localization.of(context).paddingExceptionBody),
+              actions: [
+                FlatButton(
+                  onPressed: () {
+                    Catcher.reportCheckedError(e, s);
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(Localization.of(context).reportIssue),
+                ),
+                FlatButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(Localization.of(context).dismiss),
+                )
+              ],
+            ),
+          );
+        } else {
+          throw e;
+        }
+      }
 
-    // Attempt to automatically update firebase tokens if the token was changed.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      // Attempts to automatically update firebase tokens
+      // if the token was changed.
       String newToken = await StorageUtil.getNewFirebaseToken();
 
       if ((await StorageUtil.getCurrentFirebaseToken()) != newToken &&
           newToken != null) {
         _updateFirebaseToken();
       }
-    });
 
-    // Show changelog and welcome screen
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
+      // Show guid and changelog
       // Do not show these info when running driver tests
       if (!AppSettings.of(context).isTestMode) {
         PackageInfo info = await PackageInfo.fromPlatform();
@@ -202,11 +228,6 @@ class _MainScreenState extends State<MainScreen> {
     super.dispose();
   }
 
-  _loadEverything() async {
-    await _loadTokenList();
-    await _loadFirebase();
-  }
-
   _loadFirebase() async {
     // If no push tokens exist, the firebase config is deleted here.
     if (!(await StorageUtil.loadAllTokens())
@@ -262,6 +283,11 @@ class _MainScreenState extends State<MainScreen> {
         error: barcode,
       );
 
+      if (barcode == null) {
+        // No barcode was scanned
+        return;
+      }
+
       // TODO get crash report recipients from map and set in settings
       //  and for Catcher.
       Map<String, dynamic> barcodeMap = parseQRCodeToMap(barcode);
@@ -289,7 +315,8 @@ class _MainScreenState extends State<MainScreen> {
         setState(() {});
       }
     } on PlatformException catch (e, stack) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
+      if (e.code == BarcodeScanner.CameraAccessDenied ||
+          e.code == BarcodeScanner.UserCanceled) {
         //  Camera access was denied
       } else {
         //  Unknown error

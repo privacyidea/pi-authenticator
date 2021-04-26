@@ -76,7 +76,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   Token _token;
   static final SlidableController _slidableController = SlidableController();
 
-
   _TokenWidgetState(this._token) {
     _saveThisToken();
   }
@@ -786,9 +785,9 @@ class _TotpWidgetState extends _OTPTokenWidgetState
 
   @override
   void _updateOtpValue() {
-    setState(() {
-      _otpValue = calculateOtpValue(_token);
-    });
+    if (mounted) {
+      setState(() => _otpValue = calculateOtpValue(_token));
+    }
   }
 
   @override

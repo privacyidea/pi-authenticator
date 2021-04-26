@@ -25,6 +25,36 @@ class Localization {
         Localization('');
   }
 
+  get paddingExceptionTitle {
+    return Intl.message(
+      'Known issue encountered',
+      desc: 'Title for padding exception dialog.',
+      locale: localeName,
+      name: 'paddingExceptionTitle',
+    );
+  }
+
+  get paddingExceptionBody {
+    return Intl.message(
+      'A known issue was encountered with the device'
+      ' configuration, please clear the app data for this'
+      ' application from the devices settings or remove and reinstall the app'
+      ' and try again.',
+      desc: 'Body for padding exception dialog.',
+      locale: localeName,
+      name: 'paddingExceptionBody',
+    );
+  }
+
+  get reportIssue {
+    return Intl.message(
+      'Report error anyway',
+      desc: 'Button text.',
+      locale: localeName,
+      name: 'reportIssue',
+    );
+  }
+
   // ###########################################################################
   // WORDS (E.G. FOR BUTTONS)
   // ###########################################################################
