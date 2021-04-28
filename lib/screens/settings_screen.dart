@@ -38,12 +38,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context).settings,
@@ -114,13 +111,12 @@ class SettingsScreenState extends State<SettingsScreen> {
                             AppLocalizations.of(context).synchronizePushTokens),
                         subtitle: Text(AppLocalizations.of(context)
                             .synchronizesTokensWithServer),
-                        trailing: RaisedButton(
+                        trailing: ElevatedButton(
                           child: Text(AppLocalizations.of(context).sync),
                           onPressed: () => showDialog(
                             context: context,
                             barrierDismissible: false,
-                            builder: (context) => UpdateFirebaseTokenDialog(
-                                scaffoldKey: _scaffoldKey),
+                            builder: (context) => UpdateFirebaseTokenDialog(),
                           ),
                         ),
                       ),
@@ -189,7 +185,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               children: [
                 ListTile(
                   title: Text(AppLocalizations.of(context).migrateTokens),
-                  trailing: RaisedButton(
+                  trailing: ElevatedButton(
                     child: Text(AppLocalizations.of(context).migrate),
                     onPressed: () => showDialog(
                         context: context,
@@ -241,7 +237,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(
                   AppLocalizations.of(context).dismiss,
                   style: Theme.of(context).textTheme.headline6,

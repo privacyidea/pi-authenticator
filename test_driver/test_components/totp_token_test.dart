@@ -69,7 +69,7 @@ void totpTokenUpdateTest() {
     });
 
     test("Click 'add token'", () async {
-      await driver.tap(find.byType("RaisedButton"));
+      await driver.tap(find.text("Add token"));
     });
 
     test("Assert otp value gets updated", () async {

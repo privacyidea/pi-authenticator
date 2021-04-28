@@ -67,7 +67,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 class _MainScreenState extends State<MainScreen> with LifecycleMixin {
-  List<Token> _tokenList = List<Token>();
+  List<Token> _tokenList = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Timer _pollTimer;
@@ -406,9 +406,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
     log("Initializing firebase.", name: "main_screen.dart");
 
-    // Used to identify a firebase app, this is nothing more than an id.
-    final String name = "privacyidea_authenticator";
-
     if (!await StorageUtil.globalFirebaseConfigExists() ||
         await StorageUtil.loadGlobalFirebaseConfig() == config) {
       log("Creating firebaseApp from config.",
@@ -416,7 +413,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
       try {
         await Firebase.initializeApp(
-            name: '[DEFAULT]',
+            name: defaultFirebaseAppName,
             options: FirebaseOptions(
               appId: config.appID,
               apiKey: config.apiKey,
@@ -607,9 +604,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           '${data['title']}|'
           '${data['sslverify']}';
 
-      bool sslVerify = int.parse(data['sslverify'], onError: (parse) => 1) == 0
-          ? false
-          : true;
+      bool sslVerify = int.tryParse(data['sslverify']) ?? 0 == 1;
 
       // Re-add url and sslverify to android legacy tokens:
       token.url ??= Uri.parse(data['url']);
@@ -812,7 +807,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   _showMessage(String message, Duration duration) {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(message),
       duration: duration,
     ));

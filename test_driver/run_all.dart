@@ -24,7 +24,7 @@ import 'package:privacyidea_authenticator/main.dart' as app;
 void main() {
   // Override the supported locales of the application to prevent buttons having
   //  different text values.
-  
+
   // FIXME Find a new way to do this?
 //  app.PrivacyIDEAAuthenticator.supportedLocales = [Locale('en', '')];
 

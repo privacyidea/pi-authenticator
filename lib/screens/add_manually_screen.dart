@@ -19,9 +19,9 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
@@ -47,7 +47,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
   // fields needed to manage the widget
   final _secretInputKey = GlobalKey<FormFieldState>();
   final _nameInputKey = GlobalKey<FormFieldState>();
-  bool _autoValidateSecret = false;
+  AutovalidateMode _autoValidateSecret = AutovalidateMode.disabled;
 
   // used to handle focusing certain input fields
   FocusNode _nameFieldFocus;
@@ -115,7 +115,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
               ),
               SizedBox(
                 width: double.infinity,
-                child: RaisedButton(
+                child: ElevatedButton(
                   child: Text(
                     AppLocalizations.of(context).addToken,
                     style: Theme.of(context).textTheme.headline6,
@@ -178,9 +178,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
       _secretInputKey.currentState.save();
     } else {
       FocusScope.of(context).requestFocus(_secretFieldFocus);
-      setState(() {
-        _autoValidateSecret = true;
-      });
+      setState(() => _autoValidateSecret = AutovalidateMode.always);
       return false;
     }
 
@@ -193,7 +191,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text(label, style: Theme.of(context).textTheme.body1),
+        Text(label, style: Theme.of(context).textTheme.bodyText2),
         Container(
           width: 100,
           child: DropdownButton<T>(
@@ -205,7 +203,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
                 child: Text(
                   "${value is String || value is int || value is double ? value : enumAsString(value)}"
                   "$postFix",
-                  style: Theme.of(context).textTheme.subhead,
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
               );
             }).toList(),
@@ -240,7 +238,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
           ),
           TextFormField(
             key: _secretInputKey,
-            autovalidate: _autoValidateSecret,
+            autovalidateMode: _autoValidateSecret,
             focusNode: _secretFieldFocus,
             onSaved: (value) => this.setState(() => _selectedSecret = value),
             decoration: InputDecoration(
