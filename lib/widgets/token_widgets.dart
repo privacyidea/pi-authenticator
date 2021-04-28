@@ -398,18 +398,14 @@ class _PushWidgetState extends _TokenWidgetState {
             3);
       }
     } on PlatformException catch (e, s) {
+      log("Roll out push token [$_token] failed.",
+          name: "token_widgets.dart", error: e);
+
       if (mounted) {
         setState(() => _rollOutFailed = true);
       }
 
       if (e.code == FIREBASE_TOKEN_ERROR_CODE) {
-        log("Roll out push token [$_token] failed.",
-            name: "token_widgets.dart", error: e);
-
-        if (mounted) {
-          setState(() => _rollOutFailed = true);
-        }
-
         _showMessage(
             Localization.of(context).errorRollOutNoNetworkConnection, 3);
       } else {
