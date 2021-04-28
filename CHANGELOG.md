@@ -9,6 +9,10 @@
 - Fixed error when scanning qr codes is interrupted
 - Added fix for secure storage issue, including dialog to inform affected users how to fix the error
 
+### Changed
+
+- Removed error reporting on known exception when push tokens are used but no network connection is available
+
 ## [3.1.1] - 2021-03-31
 
 ### Fixed
