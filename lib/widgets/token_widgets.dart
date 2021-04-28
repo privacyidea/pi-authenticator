@@ -38,6 +38,7 @@ import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
@@ -396,6 +397,24 @@ class _PushWidgetState extends _TokenWidgetState {
                 .errorRollOutFailed(_token.label, response.statusCode),
             3);
       }
+    } on PlatformException catch (e, s) {
+      if (mounted) {
+        setState(() => _rollOutFailed = true);
+      }
+
+      if (e.code == FIREBASE_TOKEN_ERROR_CODE) {
+        log("Roll out push token [$_token] failed.",
+            name: "token_widgets.dart", error: e);
+
+        if (mounted) {
+          setState(() => _rollOutFailed = true);
+        }
+
+        _showMessage(
+            Localization.of(context).errorRollOutNoNetworkConnection, 3);
+      } else {
+        Catcher.reportCheckedError(e, s);
+      }
     } on SocketException catch (e) {
       log("Roll out push token [$_token] failed.",
           name: "token_widgets.dart", error: e);
@@ -413,7 +432,6 @@ class _PushWidgetState extends _TokenWidgetState {
         setState(() => _rollOutFailed = true);
       }
 
-//      _showMessage(Localization.of(context).errorRollOutUnknownError(e), 5);
       Catcher.reportCheckedError(e, stack);
     }
   }

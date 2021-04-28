@@ -237,7 +237,15 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     if (await StorageUtil.globalFirebaseConfigExists()) {
-      _initFirebase(await StorageUtil.loadGlobalFirebaseConfig());
+      try {
+        _initFirebase(await StorageUtil.loadGlobalFirebaseConfig());
+      } on PlatformException catch (e, s) {
+        if (e.code == FIREBASE_TOKEN_ERROR_CODE) {
+          // Do nothing, this error is of no interest here.
+        } else {
+          Catcher.reportCheckedError(e, s);
+        }
+      }
     }
   }
 
@@ -525,15 +533,6 @@ class _MainScreenState extends State<MainScreen> {
 
     StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
 
-    // The Firebase Plugin will throw a network exception, but that does not reach
-    //  the flutter part of the app. That is why we need to throw our own socket-
-    //  exception in this case.
-    if (firebaseToken == null) {
-      throw SocketException(
-          "Firebase token could not be retrieved, the only know cause of this is"
-          " that the firebase servers could not be reached.");
-    }
-
     if (await StorageUtil.getCurrentFirebaseToken() == null) {
       // This is the initial setup
       await StorageUtil.setCurrentFirebaseToken(firebaseToken);
@@ -547,6 +546,17 @@ class _MainScreenState extends State<MainScreen> {
         _updateFirebaseToken();
       }
     });
+
+    // The Firebase Plugin will throw a network exception, but that does not reach
+    //  the flutter part of the app. That is why we need to throw our own
+    //  exception in this case.
+    if (firebaseToken == null) {
+      throw PlatformException(
+          message:
+              "Firebase token could not be retrieved, the only know cause of this is"
+              " that the firebase servers could not be reached.",
+          code: FIREBASE_TOKEN_ERROR_CODE);
+    }
 
     return firebaseToken;
   }
