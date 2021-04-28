@@ -68,7 +68,7 @@ void addTokenTest() {
     });
 
     test("Click 'add token'", () async {
-      await driver.tap(find.byType("RaisedButton"));
+      await driver.tap(find.text("Add token"));
     });
 
     test("Assert the token exists", () async {

@@ -67,7 +67,7 @@ Future<String> generatePhoneChecksum({Uint8List phonePart}) async {
   Uint8List checksum = hash.sublist(0, 4);
 
   // Use List<int> for combining because Uint8List does not work somehow.
-  List<int> toEncode = List();
+  List<int> toEncode = [];
   toEncode..addAll(checksum)..addAll(phonePart);
 
   // 3. Return checksum + salt as BASE32 String without '='.

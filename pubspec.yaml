@@ -2,6 +2,7 @@ name: privacyidea_authenticator
 description: An OTP Authenticator App for privacyIDEA Authentication Server.
 homepage: https://netknights.it
 repository: https://github.com/privacyidea/pi-authenticator
+publish_to: none
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43

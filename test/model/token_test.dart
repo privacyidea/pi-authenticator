@@ -199,7 +199,7 @@ void verifyCustomStringBufferWorks() {
   group('test custom string buffer', () {
     test('put elements in', () {
       CustomIntBuffer buffer = CustomIntBuffer();
-      buffer.list = List();
+      buffer.list = [];
 
       expect(buffer.maxSize, 30);
       expect(buffer.length, 0);

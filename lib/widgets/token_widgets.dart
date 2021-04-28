@@ -134,14 +134,14 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               },
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(
                   AppLocalizations.of(context).cancel,
                   style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
-              FlatButton(
+              TextButton(
                 child: Text(
                   AppLocalizations.of(context).rename,
                   style: Theme.of(context).textTheme.headline6,
@@ -182,14 +182,14 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               AppLocalizations.of(context).confirmDeletionOf(_token.label),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   AppLocalizations.of(context).cancel,
                   style: Theme.of(context).textTheme.headline6,
                 ),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   _onDeleteClicked();
                   Navigator.of(context).pop();
@@ -594,7 +594,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
-                        RaisedButton(
+                        ElevatedButton(
                           child: _acceptFailed
                               ? Row(
                                   children: <Widget>[
@@ -623,7 +623,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                                 }
                               : null,
                         ),
-                        RaisedButton(
+                        ElevatedButton(
                           child: Row(
                             children: <Widget>[
                               Text(
@@ -651,7 +651,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    RaisedButton(
+                    ElevatedButton(
                       child: Text(
                         AppLocalizations.of(context).retryRollOut,
                         style: Theme.of(context).textTheme.headline6,
@@ -692,7 +692,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     ArgumentError.checkNotNull(message, "message");
     ArgumentError.checkNotNull(seconds, "seconds");
 
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message), duration: Duration(seconds: seconds)));
   }
 }
@@ -704,7 +704,7 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
       : _otpValue = calculateOtpValue(token),
         super(token);
 
-  // This gets overridden in subclasses.
+  // ignore: UNUSED_ELEMENT
   void _updateOtpValue();
 
   @override
@@ -713,7 +713,7 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
       splashColor: Theme.of(context).primaryColor,
       onLongPress: () {
         Clipboard.setData(ClipboardData(text: _otpValue));
-        Scaffold.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
               AppLocalizations.of(context).otpValueCopiedMessage(_otpValue)),
         ));
@@ -770,7 +770,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
               child: Text(
                 AppLocalizations.of(context).next,

@@ -33,14 +33,6 @@ import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 class UpdateFirebaseTokenDialog extends StatefulWidget {
-  final GlobalKey<ScaffoldState>
-      _scaffoldKey; // Used to display messages to user.
-
-  const UpdateFirebaseTokenDialog(
-      {Key key, GlobalKey<ScaffoldState> scaffoldKey})
-      : this._scaffoldKey = scaffoldKey,
-        super(key: key);
-
   @override
   State<StatefulWidget> createState() => _UpdateFirebaseTokenDialogState();
 }
@@ -65,7 +57,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
         title: Text(AppLocalizations.of(context).synchronizingTokens),
         content: _content,
         actions: <Widget>[
-          RaisedButton(
+          TextButton(
             child: Text(AppLocalizations.of(context).dismiss),
             onPressed: () => Navigator.pop(context),
           ),
@@ -119,7 +111,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
       } on SocketException catch (e) {
         log('Socket exception occurred: $e',
             name: 'update_firebase_token_dialog.dart');
-        widget._scaffoldKey.currentState.showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(AppLocalizations.of(context)
               .errorSynchronizationNoNetworkConnection),
           duration: Duration(seconds: 3),

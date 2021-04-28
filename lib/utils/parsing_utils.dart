@@ -150,11 +150,13 @@ String serializeRSAPrivateKeyPKCS1(RSAPrivateKey key) {
     ..add(ASN1Integer.fromInt(0)) // version
     ..add(ASN1Integer(key.modulus)) // modulus
     ..add(ASN1Integer(key.exponent)) // e
-    ..add(ASN1Integer(key.d)) // d
+    ..add(ASN1Integer(key.privateExponent)) // d
     ..add(ASN1Integer(key.p)) // p
     ..add(ASN1Integer(key.q)) // q
-    ..add(ASN1Integer(key.d % (key.p - BigInt.one))) // d mod (p-1)
-    ..add(ASN1Integer(key.d % (key.q - BigInt.one))) // d mod (q-1)
+    ..add(
+        ASN1Integer(key.privateExponent % (key.p - BigInt.one))) // d mod (p-1)
+    ..add(
+        ASN1Integer(key.privateExponent % (key.q - BigInt.one))) // d mod (q-1)
     ..add(ASN1Integer(key.q.modInverse(key.p))); // q^(-1) mod p
 
   return base64.encode(s.encodedBytes);

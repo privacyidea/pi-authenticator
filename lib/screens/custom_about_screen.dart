@@ -21,10 +21,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomLicenseScreen extends StatefulWidget {
@@ -64,7 +64,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('Version ${snapshot.data.version}'),
-                      FlatButton(
+                      TextButton(
                         child: Text('Changelog'),
                         onPressed: () => Navigator.push(
                           context,
@@ -79,20 +79,20 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
                   return CircularProgressIndicator();
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 "${widget.applicationLegalese}",
               ),
               onPressed: _showAppLicenseDialog,
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 '${widget.gitHubLink}',
                 style: TextStyle(decoration: TextDecoration.underline),
               ),
               onPressed: () => _launchUri(widget.gitHubLink),
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 '${widget.websiteLink}',
                 style: TextStyle(decoration: TextDecoration.underline),
@@ -181,7 +181,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
   }
 
   Widget _buildSingleLicense(LicenseEntry entry) {
-    List<Widget> paragraphs = List<Widget>();
+    List<Widget> paragraphs = [];
 
     double spaceBetweenParagraphs = 8;
 
