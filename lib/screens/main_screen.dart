@@ -604,7 +604,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           '${data['title']}|'
           '${data['sslverify']}';
 
-      bool sslVerify = int.tryParse(data['sslverify']) ?? 0 == 1;
+      bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
 
       // Re-add url and sslverify to android legacy tokens:
       token.url ??= Uri.parse(data['url']);
