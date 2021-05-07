@@ -829,7 +829,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
       ..addStatusListener((status) {
         // Add listener to restart the animation after the period, also updates the otp value.
         if (status == AnimationStatus.completed) {
-          controller.forward(from: getCurrentProgress());
+          controller?.forward(from: getCurrentProgress());
           _updateOtpValue();
         }
       })
@@ -845,14 +845,14 @@ class _TotpWidgetState extends _OTPTokenWidgetState
       );
       if (msg == AppLifecycleState.resumed.toString()) {
         _updateOtpValue();
-        controller.forward(from: getCurrentProgress());
+        controller?.forward(from: getCurrentProgress());
       }
     });
   }
 
   @override
   void dispose() {
-    controller.dispose(); // Dispose the controller to prevent memory leak.
+    controller?.dispose(); // Dispose the controller to prevent memory leak.
     super.dispose();
   }
 
@@ -871,7 +871,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
           ),
         ),
         LinearProgressIndicator(
-          value: controller.value,
+          value: controller?.value,
         ),
       ],
     );
