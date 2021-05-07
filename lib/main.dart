@@ -32,6 +32,8 @@ import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/widgets/CustomPageReportMode.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
+import 'widgets/CustomEmailManualHandler.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -44,7 +46,7 @@ void main() async {
   ]);
 
   CatcherOptions releaseOptions = CatcherOptions(CustomPageReportMode(), [
-    EmailManualHandler([defaultCrashReportRecipient],
+    CustomEmailManualHandler([defaultCrashReportRecipient],
         enableCustomParameters: false)
   ]);
 
@@ -85,7 +87,7 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
             // Override release config to use custom e-mail recipients
             Catcher.instance.updateConfig(
               releaseConfig: CatcherOptions(CustomPageReportMode(), [
-                EmailManualHandler(crashReportRecipients,
+                CustomEmailManualHandler(crashReportRecipients,
                     enableCustomParameters: false)
               ]),
             );
