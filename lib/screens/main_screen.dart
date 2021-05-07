@@ -112,7 +112,13 @@ class _MainScreenState extends State<MainScreen> {
               actions: [
                 FlatButton(
                   onPressed: () {
-                    Catcher.reportCheckedError(e, s);
+                    PlatformException newE = PlatformException(
+                        code: e.code,
+                        details: e.details,
+                        message: e.message + ">>> WE ALREADY KNOW ABOUT THIS <<<",
+                        stacktrace: e.stacktrace);
+
+                    Catcher.reportCheckedError(newE, s);
                     Navigator.of(context).pop();
                   },
                   child: Text(Localization.of(context).reportIssue),
