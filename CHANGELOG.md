@@ -1,10 +1,14 @@
 # Changelog
 
-## [3.1.3] - 2021-04-29
+## [3.1.3] - 2021-05-07
 
 ### Changed
 
 - Removed error reporting on known exception when push tokens are used but no network connection is available
+
+### Fixed
+
+- Fixed calling animation controller when it doesn't exist
 
 ## [3.1.2] - 2021-04-22
 
