@@ -113,9 +113,9 @@ class _MainScreenState extends State<MainScreen> {
                 FlatButton(
                   onPressed: () {
                     PlatformException newE = PlatformException(
-                        code: e.code,
+                        code: e.code + ">>> WE ALREADY KNOW ABOUT THIS <<<",
                         details: e.details,
-                        message: e.message + ">>> WE ALREADY KNOW ABOUT THIS <<<",
+                        message: e.message,
                         stacktrace: e.stacktrace);
 
                     Catcher.reportCheckedError(newE, s);
