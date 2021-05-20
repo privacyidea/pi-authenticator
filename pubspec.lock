@@ -23,7 +23,7 @@ packages:
     source: hosted
     version: "3.1.2"
   args:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: args
       url: "https://pub.dartlang.org"
@@ -170,7 +170,7 @@ packages:
     source: hosted
     version: "1.15.0"
   convert:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: convert
       url: "https://pub.dartlang.org"
@@ -184,7 +184,7 @@ packages:
     source: hosted
     version: "1.0.2"
   crypto:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: crypto
       url: "https://pub.dartlang.org"
