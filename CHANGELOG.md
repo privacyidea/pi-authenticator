@@ -87,7 +87,6 @@
 - parallel development of android and ios version
 
 
-
 [3.1.1]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.12...v3.1.0
 [3.0.12]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.8...v3.0.12
