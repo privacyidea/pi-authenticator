@@ -1,24 +1,5 @@
 # Changelog
 
-## [3.1.3] - 2021-05-07
-
-### Changed
-
-- Removed error reporting on known exception when push tokens are used but no network connection is available
-
-### Fixed
-
-- Fixed calling animation controller when it doesn't exist
-
-## [3.1.2] - 2021-04-22
-
-### Fixed
-
-- Fixed broken ui updates for TOTP tokens
-- Fixed parsing issues for QR codes
-- Fixed error when scanning qr codes is interrupted
-- Added fix for secure storage issue, including dialog to inform affected users how to fix the error
-
 ## [3.1.1] - 2021-03-31
 
 ### Fixed
@@ -106,8 +87,7 @@
 - parallel development of android and ios version
 
 
-[3.1.3]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.2...v3.1.3
-[3.1.2]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.1...v3.1.2
+
 [3.1.1]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.12...v3.1.0
 [3.0.12]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.8...v3.0.12
