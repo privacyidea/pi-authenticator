@@ -56,9 +56,6 @@ dependencies:
   pi_authenticator_legacy:
     path: local_plugins/pi-authenticator-legacy
 
-  # To use custom plugin for all other plugins that depend on it
-  firebase_core_platform_interface:
-    path: local_plugins/firebase_core_platform_interface-4.0.0
 
 dev_dependencies:
   flutter_driver:

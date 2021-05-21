@@ -21,9 +21,9 @@ packages:
       name: archive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.13"
+    version: "3.1.2"
   args:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: args
       url: "https://pub.dartlang.org"
@@ -42,7 +42,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.5.0"
+    version: "2.6.1"
   base32:
     dependency: "direct main"
     description:
@@ -170,7 +170,7 @@ packages:
     source: hosted
     version: "1.15.0"
   convert:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: convert
       url: "https://pub.dartlang.org"
@@ -182,9 +182,9 @@ packages:
       name: coverage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.15.2"
+    version: "1.0.2"
   crypto:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: crypto
       url: "https://pub.dartlang.org"
@@ -273,7 +273,7 @@ packages:
       name: file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.0"
+    version: "6.1.0"
   firebase_core:
     dependency: "direct main"
     description:
@@ -282,12 +282,12 @@ packages:
     source: hosted
     version: "1.1.0"
   firebase_core_platform_interface:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "local_plugins/firebase_core_platform_interface-4.0.0"
-      relative: true
-    source: path
-    version: "4.0.0"
+      name: firebase_core_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.1"
   firebase_core_web:
     dependency: transitive
     description:
@@ -555,7 +555,7 @@ packages:
       name: node_preamble
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.13"
+    version: "2.0.0"
   otp:
     dependency: "direct main"
     description:
@@ -716,7 +716,7 @@ packages:
       name: process
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.0"
+    version: "4.2.1"
   pub_semver:
     dependency: transitive
     description:
@@ -847,7 +847,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.0"
+    version: "1.8.1"
   stack_trace:
     dependency: transitive
     description:
@@ -889,7 +889,7 @@ packages:
       name: sync_http
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0"
+    version: "0.3.0"
   term_glyph:
     dependency: transitive
     description:
@@ -903,21 +903,21 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.16.5"
+    version: "1.16.8"
   test_api:
     dependency: transitive
     description:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.19"
+    version: "0.3.0"
   test_core:
     dependency: transitive
     description:
       name: test_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.15"
+    version: "0.3.19"
   timezone:
     dependency: transitive
     description:
@@ -1008,7 +1008,7 @@ packages:
       name: vm_service
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.5.0"
+    version: "6.2.0"
   watcher:
     dependency: transitive
     description:
@@ -1029,7 +1029,7 @@ packages:
       name: webdriver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2"
+    version: "3.0.0"
   webkit_inspection_protocol:
     dependency: transitive
     description:
