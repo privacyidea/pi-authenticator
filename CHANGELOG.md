@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.4] - 2021-XX-XX
+
+### Changed
+
+- The issuer of tokens is shown additionally to its label
+- The issuer of tokens is parsed from the label part of the otpauth URI also
+
 ## [3.1.3] - 2021-05-07
 
 ### Changed
@@ -105,7 +112,7 @@
 - Using new engine to program the app
 - parallel development of android and ios version
 
-
+[3.1.4]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.3...v3.1.4
 [3.1.3]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.2...v3.1.3
 [3.1.2]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.0...v3.1.1
