@@ -662,6 +662,9 @@ class _MainScreenState extends State<MainScreen> {
       log("The requested token does not exist or is not rolled out.",
           name: "main_screen.dart", error: requestedSerial);
     } else {
+      // Uri requestUri = data['uri'] == null ? token.url : Uri.parse(data['url']);
+      Uri requestUri = Uri.parse(data['url']);
+
       log('Token matched requested token',
           name: 'main_screen.dart', error: token);
       String signature = data['signature'];
