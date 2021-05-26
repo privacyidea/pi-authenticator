@@ -312,9 +312,10 @@ class _PushWidgetState extends _TokenWidgetState {
       setState(() => _rollOutFailed = false);
     }
 
+    FirebaseConfig tokenConfig = await StorageUtil.loadFirebaseConfig(_token);
     if (await StorageUtil.globalFirebaseConfigExists() &&
-        await StorageUtil.loadFirebaseConfig(_token) !=
-            await StorageUtil.loadGlobalFirebaseConfig()) {
+        tokenConfig.projectID != null && // Does not exist for poll only tokens
+        tokenConfig != await StorageUtil.loadGlobalFirebaseConfig()) {
       // The firebase config of this token is different to the existing
       // firebase config in this app.
       log("Token has different firebase config than existing.",
@@ -362,14 +363,21 @@ class _PushWidgetState extends _TokenWidgetState {
     }
 
     try {
-      Response response =
-          await doPost(sslVerify: _token.sslVerify, url: _token.url, body: {
+      Map<String, String> body = {
         'enrollment_credential': _token.enrollmentCredentials,
         'serial': _token.serial,
-        'fbtoken': await widget
-            ._getFirebaseToken(await StorageUtil.loadFirebaseConfig(_token)),
         'pubkey': serializeRSAPublicKeyPKCS8(_token.getPublicTokenKey()),
-      });
+      };
+
+      // Don't do this for poll only token
+      body['fbtoken'] = 'null';
+      if (tokenConfig.projectID != null) {
+        body['fbtoken'] = await widget
+            ._getFirebaseToken(await StorageUtil.loadFirebaseConfig(_token));
+      }
+
+      Response response = await doPost(
+          sslVerify: _token.sslVerify, url: _token.url, body: body);
 
       if (response.statusCode == 200) {
         RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
