@@ -81,6 +81,26 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     _saveThisToken();
   }
 
+  List<Widget> _getSubtitle() {
+    List<Widget> children = [];
+    if (_token.label.isNotEmpty) {
+      children.add(Text(
+        _token.label,
+        style: Theme.of(context).textTheme.headline5,
+      ));
+    }
+    if (_token.issuer.isNotEmpty) {
+      children.add(Text(
+        _token.issuer,
+        style: Theme.of(context)
+            .textTheme
+            .headline6
+            .copyWith(fontWeight: FontWeight.normal),
+      ));
+    }
+    return children;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Slidable(
@@ -574,9 +594,10 @@ class _PushWidgetState extends _TokenWidgetState {
                   _token.serial,
                   style: Theme.of(context).textTheme.headline4,
                 ),
-                subtitle: Text(
-                  _token.label,
-                  style: Theme.of(context).textTheme.headline5,
+                subtitle: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _getSubtitle(),
                 ),
                 trailing: Icon(Icons.message),
               ),
@@ -765,9 +786,10 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             style: Theme.of(context).textTheme.headline4,
           ),
-          subtitle: Text(
-            _token.label,
-            style: Theme.of(context).textTheme.headline5,
+          subtitle: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _getSubtitle(),
           ),
         ),
         Align(
@@ -865,9 +887,10 @@ class _TotpWidgetState extends _OTPTokenWidgetState
             insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             style: Theme.of(context).textTheme.headline4,
           ),
-          subtitle: Text(
-            _token.label,
-            style: Theme.of(context).textTheme.headline5,
+          subtitle: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _getSubtitle(),
           ),
         ),
         LinearProgressIndicator(
