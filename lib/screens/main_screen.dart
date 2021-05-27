@@ -101,6 +101,7 @@ class _MainScreenState extends State<MainScreen> {
       try {
         await _loadTokenList();
         await _loadFirebase();
+        await _initNotifications();
       } on PlatformException catch (e, s) {
         if (e.details.toString().contains('BadPaddingException')) {
           await showDialog(
@@ -226,6 +227,22 @@ class _MainScreenState extends State<MainScreen> {
   void dispose() {
     _pollTimer?.cancel();
     super.dispose();
+  }
+
+  _initNotifications() async {
+    // Stop here if no push tokens exist, we do not want to ask for permissions
+    // on iOS.
+    if (!(await StorageUtil.loadAllTokens())
+        .any((element) => element is PushToken)) {
+      return;
+    }
+
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   _loadFirebase() async {
@@ -475,12 +492,7 @@ class _MainScreenState extends State<MainScreen> {
         return null;
       }
 
-      var initializationSettingsAndroid =
-          AndroidInitializationSettings('app_icon');
-      var initializationSettingsIOS = IOSInitializationSettings();
-      var initializationSettings = InitializationSettings(
-          initializationSettingsAndroid, initializationSettingsIOS);
-      await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+      _initNotifications();
     } else if (await StorageUtil.loadGlobalFirebaseConfig() != config) {
       log("Given firebase config does not equal the existing config.",
           name: "main_screen.dart",
