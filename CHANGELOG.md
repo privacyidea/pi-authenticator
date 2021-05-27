@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.1.4] - 2021-XX-XX
+
+### Added
+
+- Added support for poll-only tokens introduced in privacyIDEA v3.7.+
+
 ## [3.1.3] - 2021-05-07
 
 ### Changed
@@ -106,6 +112,7 @@
 - parallel development of android and ios version
 
 
+[3.1.4]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.3...v3.1.4
 [3.1.3]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.2...v3.1.3
 [3.1.2]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.0...v3.1.1
