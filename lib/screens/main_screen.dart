@@ -340,6 +340,8 @@ class _MainScreenState extends State<MainScreen> {
         return;
       }
 
+      await StorageUtil.saveOrReplaceToken(newToken);
+      await _initNotifications();
       _tokenList.add(newToken);
 
       if (mounted) {
@@ -464,6 +466,8 @@ class _MainScreenState extends State<MainScreen> {
   Future<String> _initFirebase(FirebaseConfig config) async {
     ArgumentError.checkNotNull(config, "config");
 
+    _initNotifications();
+
     log("Initializing firebase.", name: "main_screen.dart");
 
     // Used to identify a firebase app, this is nothing more than an id.
@@ -497,8 +501,6 @@ class _MainScreenState extends State<MainScreen> {
             Duration(seconds: 15));
         return null;
       }
-
-      _initNotifications();
     } else if (await StorageUtil.loadGlobalFirebaseConfig() != config) {
       log("Given firebase config does not equal the existing config.",
           name: "main_screen.dart",
