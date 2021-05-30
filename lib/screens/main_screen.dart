@@ -101,6 +101,7 @@ class _MainScreenState extends State<MainScreen> {
       try {
         await _loadTokenList();
         await _loadFirebase();
+        await _initNotifications();
       } on PlatformException catch (e, s) {
         if (e.details.toString().contains('BadPaddingException')) {
           await showDialog(
@@ -234,6 +235,22 @@ class _MainScreenState extends State<MainScreen> {
     super.dispose();
   }
 
+  _initNotifications() async {
+    // Stop here if no push tokens exist, we do not want to ask for permissions
+    // on iOS.
+    if (!(await StorageUtil.loadAllTokens())
+        .any((element) => element is PushToken)) {
+      return;
+    }
+
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
   _loadFirebase() async {
     // If no push tokens exist, the firebase config is deleted here.
     if (!(await StorageUtil.loadAllTokens())
@@ -323,6 +340,8 @@ class _MainScreenState extends State<MainScreen> {
         return;
       }
 
+      await StorageUtil.saveOrReplaceToken(newToken);
+      await _initNotifications();
       _tokenList.add(newToken);
 
       if (mounted) {
@@ -447,6 +466,8 @@ class _MainScreenState extends State<MainScreen> {
   Future<String> _initFirebase(FirebaseConfig config) async {
     ArgumentError.checkNotNull(config, "config");
 
+    _initNotifications();
+
     log("Initializing firebase.", name: "main_screen.dart");
 
     // Used to identify a firebase app, this is nothing more than an id.
@@ -480,13 +501,6 @@ class _MainScreenState extends State<MainScreen> {
             Duration(seconds: 15));
         return null;
       }
-
-      var initializationSettingsAndroid =
-          AndroidInitializationSettings('app_icon');
-      var initializationSettingsIOS = IOSInitializationSettings();
-      var initializationSettings = InitializationSettings(
-          initializationSettingsAndroid, initializationSettingsIOS);
-      await flutterLocalNotificationsPlugin.initialize(initializationSettings);
     } else if (await StorageUtil.loadGlobalFirebaseConfig() != config) {
       log("Given firebase config does not equal the existing config.",
           name: "main_screen.dart",
@@ -668,6 +682,9 @@ class _MainScreenState extends State<MainScreen> {
       log("The requested token does not exist or is not rolled out.",
           name: "main_screen.dart", error: requestedSerial);
     } else {
+      // Uri requestUri = data['uri'] == null ? token.url : Uri.parse(data['url']);
+      Uri requestUri = Uri.parse(data['url']);
+
       log('Token matched requested token',
           name: 'main_screen.dart', error: token);
       String signature = data['signature'];

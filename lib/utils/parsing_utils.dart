@@ -274,22 +274,16 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   ArgumentError.checkNotNull(uriMap[URI_SERIAL], "serial");
 
   uriMap[URI_PROJECT_ID] = uri.queryParameters["projectid"];
-  ArgumentError.checkNotNull(uriMap[URI_PROJECT_ID], "projectid");
 
   uriMap[URI_APP_ID] = uri.queryParameters["appid"];
-  ArgumentError.checkNotNull(uriMap[URI_APP_ID], "appid");
 
   uriMap[URI_APP_ID_IOS] = uri.queryParameters["appidios"];
-  ArgumentError.checkNotNull(uriMap[URI_APP_ID_IOS], "appidios");
 
   uriMap[URI_API_KEY] = uri.queryParameters["apikey"];
-  ArgumentError.checkNotNull(uriMap[URI_API_KEY], "apikey");
 
   uriMap[URI_API_KEY_IOS] = uri.queryParameters["apikeyios"];
-  ArgumentError.checkNotNull(uriMap[URI_API_KEY_IOS], "apikeyios");
 
   uriMap[URI_PROJECT_NUMBER] = uri.queryParameters["projectnumber"];
-  ArgumentError.checkNotNull(uriMap[URI_PROJECT_NUMBER], "projectnumber");
 
   String url = uri.queryParameters["url"];
   try {

@@ -2,6 +2,10 @@
 
 ## [3.1.4] - 2021-XX-XX
 
+### Added
+
+- Added support for poll-only tokens introduced in privacyIDEA v3.7.+
+
 ### Changed
 
 - The issuer of tokens is shown additionally to its label

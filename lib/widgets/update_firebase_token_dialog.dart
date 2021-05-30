@@ -27,6 +27,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
+import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/localization_utils.dart';
@@ -79,10 +80,25 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     log('Starting update of firebase token.',
         name: 'update_firebase_token_dialog.dart');
 
-    String token = await FirebaseMessaging().getToken();
-
     List<PushToken> tokenList =
         (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
+
+    // Filter poll-only tokens, they cannot be synced here.
+    Map<PushToken, FirebaseConfig> configMap = {};
+    for (PushToken p in tokenList) {
+      configMap[p] = await StorageUtil.loadFirebaseConfig(p);
+    }
+
+    tokenList.removeWhere((e) => configMap[e].projectID == null);
+
+    if (tokenList.isEmpty) {
+      setState(() {
+        _content = Text(Localization.of(context).allTokensSynchronized);
+      });
+      return;
+    }
+
+    String token = await FirebaseMessaging().getToken();
 
     // TODO Is there a good way to handle these tokens?
     List<PushToken> tokenWithOutUrl =
