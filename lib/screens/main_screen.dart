@@ -674,9 +674,9 @@ class _MainScreenState extends State<MainScreen> {
     log('Incoming push auth request for token with serial.',
         name: 'main_screen.dart', error: requestedSerial);
 
-    PushToken token = tokenList
-        .whereType<PushToken>()
-        .firstWhere((t) => t.serial == requestedSerial && t.isRolledOut);
+    PushToken token = tokenList.whereType<PushToken>().firstWhere(
+        (t) => t.serial == requestedSerial && t.isRolledOut,
+        orElse: () => null);
 
     if (token == null) {
       log("The requested token does not exist or is not rolled out.",

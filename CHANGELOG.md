@@ -11,6 +11,10 @@
 - The issuer of tokens is shown additionally to its label
 - The issuer of tokens is parsed from the label part of the otpauth URI also
 
+### Fixed
+
+- Fixed error when receiving challenges for non-existing tokens
+
 ## [3.1.3] - 2021-05-07
 
 ### Changed
