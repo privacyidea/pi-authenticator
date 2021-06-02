@@ -795,9 +795,9 @@ class _TotpWidgetState extends _OTPTokenWidgetState
 
   @override
   void _updateOtpValue() {
-    setState(() {
-      _otpValue = calculateOtpValue(_token);
-    });
+    if (mounted) {
+      setState(() => _otpValue = calculateOtpValue(_token));
+    }
   }
 
   /// Calculate the progress of the LinearProgressIndicator depending on the
