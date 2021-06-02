@@ -58,11 +58,6 @@ dependencies:
 
 
 dependency_overrides:
-  # Temporary fixes for flutter_driver
-  crypto: ^3.0.0-nullsafety
-  convert: ^3.0.0
-  args: ^2.0.0
-
   # To use custom plugin for all other plugins that depend on it
   firebase_core_platform_interface:
     path: local_plugins/firebase_core_platform_interface-4.0.0
