@@ -38,7 +38,7 @@ const String PARAMETER_SIGNATURE = "signature";
 class Legacy {
   static const MethodChannel _channel = const MethodChannel(METHOD_CHANNEL_ID);
 
-  static Future<String?> sign(String serial, String message) async =>
+  static Future<String> sign(String serial, String message) async =>
       await (_channel.invokeMethod(METHOD_SIGN, {
         PARAMETER_SERIAL: serial,
         PARAMETER_MESSAGE: message,
@@ -50,9 +50,9 @@ class Legacy {
         );
         throw PlatformException(
             message: "Signing failed.", code: LEGACY_SIGNING_ERROR);
-      }) as FutureOr<String?>);
+      }) as FutureOr<String>);
 
-  static Future<bool?> verify(
+  static Future<bool> verify(
           String serial, String signedData, String signature) async =>
       await (_channel.invokeMethod(METHOD_VERIFY, {
         PARAMETER_SERIAL: serial,
@@ -66,9 +66,9 @@ class Legacy {
         );
 
         return false;
-      }) as FutureOr<bool?>);
+      }) as FutureOr<bool>);
 
-  static Future<String?> loadAllTokens() async => await (_channel
+  static Future<String> loadAllTokens() async => await (_channel
           .invokeMethod(METHOD_LOAD_ALL_TOKENS)
           .catchError((dynamic, stackTrace) {
         log(
@@ -78,9 +78,9 @@ class Legacy {
         );
 
         return "[]";
-      }) as FutureOr<String?>);
+      }) as FutureOr<String>);
 
-  static Future<String?> loadFirebaseConfig() async => await (_channel
+  static Future<String> loadFirebaseConfig() async => await (_channel
           .invokeMethod(METHOD_LOAD_FIREBASE_CONFIG)
           .catchError((dynamic, stackTrace) {
         log(
@@ -90,5 +90,5 @@ class Legacy {
         );
 
         return "{}";
-      }) as FutureOr<String?>);
+      }) as FutureOr<String>);
 }
