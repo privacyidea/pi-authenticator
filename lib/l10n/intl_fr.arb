@@ -288,13 +288,13 @@
       }
     }
   },
-  "rollingOut": "désenrôler",
+  "rollingOut": "Enrôlement en cours",
   "@rollingOut": {
     "description": "Label that tells the user that the token is being rolled out.",
     "type": "text",
     "placeholders": {}
   },
-  "retryRollOut": "Retenter le désenrôlement.",
+  "retryRollOut": "Retenter l'enrôlement",
   "@retryRollOut": {
     "description": "Label for e.g. a button. Tells the user that rolling out the token failed. Roll out can be retried by clicking this button.",
     "type": "text",
