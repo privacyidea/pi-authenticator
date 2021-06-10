@@ -45,14 +45,15 @@ import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
-typedef GetFBTokenCallback = Future<String?> Function(FirebaseConfig);
+typedef GetFBTokenCallback = Future<String?> Function(FirebaseConfig?);
 
 class TokenWidget extends StatefulWidget {
   final Token _token;
   final VoidCallback _onDeleteClicked;
   final GetFBTokenCallback _getFirebaseToken;
 
-  TokenWidget(Token token, {required onDeleteClicked, required getFirebaseToken})
+  TokenWidget(Token token,
+      {required onDeleteClicked, required getFirebaseToken})
       : this._token = token,
         this._onDeleteClicked = onDeleteClicked,
         this._getFirebaseToken = getFirebaseToken,
@@ -125,8 +126,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   setState(() => _selectedName = value);
                 }
               },
-              decoration:
-                  InputDecoration(labelText: AppLocalizations.of(context)!.name),
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.name),
               validator: (value) {
                 if (value!.isEmpty) {
                   return AppLocalizations.of(context)!.name;
@@ -274,7 +275,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   }
 
   void _checkForModelUpdate() async {
-    PushToken? t = await (StorageUtil.loadToken(_token.id) as FutureOr<PushToken?>);
+    PushToken? t =
+        await (StorageUtil.loadToken(_token.id) as FutureOr<PushToken?>);
 
     // TODO Maybe we should simply reload all tokens on resume?
     // This throws errors because the token [t] is null, why?
@@ -373,7 +375,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
         'enrollment_credential': _token.enrollmentCredentials,
         'serial': _token.serial,
         'fbtoken': await widget
-            ._getFirebaseToken(await (StorageUtil.loadFirebaseConfig(_token) as FutureOr<FirebaseConfig>)),
+            ._getFirebaseToken(await (StorageUtil.loadFirebaseConfig(_token))),
         'pubkey': serializeRSAPublicKeyPKCS8(_token.getPublicTokenKey()!),
       });
 
@@ -454,7 +456,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     String msg = '${pushRequest.nonce}|${_token.serial}';
     String signature = _token.privateTokenKey == null
         ? await Legacy.sign(_token.serial, msg)
-        : createBase32Signature(_token.getPrivateTokenKey()!, utf8.encode(msg) as Uint8List);
+        : createBase32Signature(
+            _token.getPrivateTokenKey()!, utf8.encode(msg) as Uint8List);
 
     //    POST https://privacyideaserver/validate/check
     //    nonce=<nonce_from_request>
@@ -472,7 +475,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
       if (response.statusCode == 200) {
         _showMessage(
-            AppLocalizations.of(context)!.acceptPushAuthRequestFor(_token.label),
+            AppLocalizations.of(context)!
+                .acceptPushAuthRequestFor(_token.label),
             2);
         removeCurrentRequest();
       } else {
@@ -511,7 +515,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       }
 
       _showMessage(
-          AppLocalizations.of(context)!.errorAuthenticationFailedUnknownError(e),
+          AppLocalizations.of(context)!
+              .errorAuthenticationFailedUnknownError(e),
           5);
     }
   }

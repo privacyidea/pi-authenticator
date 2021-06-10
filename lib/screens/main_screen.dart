@@ -402,8 +402,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     return token;
   }
 
-  Future<String?> _initFirebase(FirebaseConfig config) async {
+  Future<String?> _initFirebase(FirebaseConfig? config) async {
     ArgumentError.checkNotNull(config, "config");
+    config = config!; // Fix null checks
 
     log("Initializing firebase.", name: "main_screen.dart");
 
@@ -696,7 +697,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           return TokenWidget(
             token,
             onDeleteClicked: () => _removeToken(token),
-            getFirebaseToken: (FirebaseConfig config) => _initFirebase(config),
+            getFirebaseToken: (FirebaseConfig? config) => _initFirebase(config),
           );
         },
         separatorBuilder: (context, index) {
