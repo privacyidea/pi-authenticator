@@ -67,6 +67,7 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
   static List<Locale> _supportedLocales = [
     const Locale('en', ''),
     const Locale('de', ''),
+    const Locale('fr', '')
   ];
 
   static set supportedLocales(List<Locale> supportedLocales) {
