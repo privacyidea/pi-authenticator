@@ -164,7 +164,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       String message = '${p.serial}|$timestamp';
       String signature = p.privateTokenKey == null
           ? await Legacy.sign(p.serial, message)
-          : createBase32Signature(p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
+          : createBase32Signature(
+              p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
 
       Map<String, String> parameters = {
         'serial': p.serial,
@@ -182,7 +183,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           Map<String, dynamic> result = jsonDecode(response.body)['result'];
           List dataList = result['value'];
 
-          for (Map<String, dynamic> data in dataList as Iterable<Map<String, dynamic>>) {
+          for (Map<String, dynamic> data
+              in dataList as Iterable<Map<String, dynamic>>) {
             _handleIncomingAuthRequest(RemoteMessage(data: data));
           }
         } else {
@@ -221,7 +223,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     }
 
     if (await StorageUtil.globalFirebaseConfigExists()) {
-      _initFirebase(await (StorageUtil.loadGlobalFirebaseConfig() as FutureOr<FirebaseConfig>));
+      _initFirebase(await (StorageUtil.loadGlobalFirebaseConfig()
+          as FutureOr<FirebaseConfig>));
     }
   }
 
@@ -328,8 +331,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     String algorithm = uriMap[URI_ALGORITHM];
     int digits = uriMap[URI_DIGITS];
     Uint8List secret = uriMap[URI_SECRET];
-    int counter = uriMap[URI_COUNTER];
-    int period = uriMap[URI_PERIOD];
     String issuer = uriMap[URI_ISSUER];
 
     if (is2StepURI(uri)) {
@@ -355,7 +356,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         algorithm: mapStringToAlgorithm(algorithm),
         digits: digits,
         secret: encodeSecretAs(secret, Encodings.base32),
-        counter: counter,
+        counter: uriMap[URI_COUNTER],
       );
     } else if (type == "totp") {
       return TOTPToken(
@@ -365,7 +366,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         algorithm: mapStringToAlgorithm(algorithm),
         digits: digits,
         secret: encodeSecretAs(secret, Encodings.base32),
-        period: period,
+        period: uriMap[URI_PERIOD],
       );
     } else {
       throw ArgumentError.value(
@@ -547,7 +548,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
       String signature = p.privateTokenKey == null
           ? await Legacy.sign(p.serial, message)
-          : createBase32Signature(p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
+          : createBase32Signature(
+              p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
 
       Response response =
           await doPost(sslVerify: p.sslVerify!, url: p.url!, body: {
