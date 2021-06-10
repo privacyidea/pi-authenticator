@@ -31,7 +31,10 @@ import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'identifiers.dart';
 
 Future<Uint8List> pbkdf2(
-    {required Uint8List salt, required int iterations, required int keyLength, required Uint8List password}) async {
+    {required Uint8List salt,
+    required int iterations,
+    required int keyLength,
+    required Uint8List password}) async {
   ArgumentError.checkNotNull(salt);
   ArgumentError.checkNotNull(iterations);
   ArgumentError.checkNotNull(keyLength);
@@ -50,7 +53,8 @@ Future<Uint8List> pbkdf2(
 
 Uint8List _pbkdfIsolate(Map<String, dynamic> arguments) {
   // Setup algorithm (PBKDF2 - HMAC - SHA1).
-  PBKDF2KeyDerivator keyDerivator = KeyDerivator('SHA-1/HMAC/PBKDF2') as PBKDF2KeyDerivator;
+  PBKDF2KeyDerivator keyDerivator =
+      KeyDerivator('SHA-1/HMAC/PBKDF2') as PBKDF2KeyDerivator;
 
   Pbkdf2Parameters pbkdf2parameters = Pbkdf2Parameters(
       arguments["salt"], arguments["iterations"], arguments["keyLength"]);
@@ -114,7 +118,8 @@ SecureRandom secureRandom() {
 /// signedMessage is what was allegedly signed, signature gets validated
 bool verifyRSASignature(
     RSAPublicKey publicKey, Uint8List signedMessage, Uint8List signature) {
-  RSASigner signer = Signer(SIGNING_ALGORITHM) as RSASigner; // Get algorithm from registry
+  RSASigner signer =
+      Signer(SIGNING_ALGORITHM) as RSASigner; // Get algorithm from registry
   signer.init(
       false, PublicKeyParameter<RSAPublicKey>(publicKey)); // false to validate
 
@@ -134,7 +139,8 @@ String createBase32Signature(RSAPrivateKey privateKey, Uint8List dataToSign) {
 }
 
 Uint8List createRSASignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
-  RSASigner signer = Signer(SIGNING_ALGORITHM) as RSASigner; // Get algorithm from registry
+  RSASigner signer =
+      Signer(SIGNING_ALGORITHM) as RSASigner; // Get algorithm from registry
   signer.init(
       true, PrivateKeyParameter<RSAPrivateKey>(privateKey)); // true to sign
 

@@ -39,7 +39,8 @@ RSAPublicKey deserializeRSAPublicKeyPKCS1(String keyStr) {
   ASN1Sequence asn1sequence =
       ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
   BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger!;
-  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
+  BigInt exponent =
+      (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
 
   return RSAPublicKey(modulus, exponent);
 }
@@ -94,7 +95,8 @@ RSAPublicKey deserializeRSAPublicKeyPKCS8(String keyStr) {
       ASN1Parser(encodedKey.contentBytes()!).nextObject() as ASN1Sequence;
 
   BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger!;
-  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
+  BigInt exponent =
+      (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
 
   return RSAPublicKey(modulus, exponent);
 }
@@ -153,10 +155,10 @@ String serializeRSAPrivateKeyPKCS1(RSAPrivateKey key) {
     ..add(ASN1Integer(key.privateExponent!)) // d
     ..add(ASN1Integer(key.p!)) // p
     ..add(ASN1Integer(key.q!)) // q
-    ..add(
-        ASN1Integer(key.privateExponent! % (key.p! - BigInt.one))) // d mod (p-1)
-    ..add(
-        ASN1Integer(key.privateExponent! % (key.q! - BigInt.one))) // d mod (q-1)
+    ..add(ASN1Integer(
+        key.privateExponent! % (key.p! - BigInt.one))) // d mod (p-1)
+    ..add(ASN1Integer(
+        key.privateExponent! % (key.q! - BigInt.one))) // d mod (q-1)
     ..add(ASN1Integer(key.q!.modInverse(key.p!))); // q^(-1) mod p
 
   return base64.encode(s.encodedBytes);
@@ -184,7 +186,8 @@ RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String keyStr) {
   ASN1Sequence asn1sequence =
       ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
   BigInt modulus = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
-  BigInt exponent = (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger!;
+  BigInt exponent =
+      (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger!;
   BigInt p = (asn1sequence.elements[4] as ASN1Integer).valueAsBigInteger!;
   BigInt q = (asn1sequence.elements[5] as ASN1Integer).valueAsBigInteger!;
 

@@ -100,8 +100,10 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
                   AppLocalizations.of(context)!.algorithm,
                   _selectedAlgorithm,
                   Algorithms.values),
-              _buildDropdownButtonWithLabel(AppLocalizations.of(context)!.digits,
-                  _selectedDigits, allowedDigits),
+              _buildDropdownButtonWithLabel(
+                  AppLocalizations.of(context)!.digits,
+                  _selectedDigits,
+                  allowedDigits),
               _buildDropdownButtonWithLabel(
                   AppLocalizations.of(context)!.type,
                   _selectedType,
@@ -138,7 +140,8 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     String uuid = Uuid().v4();
     List<int> secretByte =
         decodeSecretToUint8(_selectedSecret, _selectedEncoding.value);
-    String secretBase32 = encodeSecretAs(secretByte as Uint8List, Encodings.base32);
+    String secretBase32 =
+        encodeSecretAs(secretByte as Uint8List, Encodings.base32);
     OTPToken? newToken;
     if (_selectedType.value == TokenTypes.HOTP) {
       newToken = HOTPToken(

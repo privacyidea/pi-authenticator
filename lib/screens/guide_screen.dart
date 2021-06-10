@@ -62,7 +62,8 @@ class GuideScreen extends StatelessWidget {
                 );
               }
               return Center(
-                  child: Text(AppLocalizations.of(context)!.somethingWentWrong));
+                  child:
+                      Text(AppLocalizations.of(context)!.somethingWentWrong));
             },
           ),
           ListTile(

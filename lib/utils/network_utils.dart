@@ -27,7 +27,9 @@ import 'package:package_info/package_info.dart';
 
 /// Custom POST request allows to not verify certificates
 Future<Response> doPost(
-    {required Uri url, required Map<String, String?> body, bool sslVerify = true}) async {
+    {required Uri url,
+    required Map<String, String?> body,
+    bool sslVerify = true}) async {
   log("Sending post request",
       name: "utils.dart",
       error: "URI: $url, SSLVerify: $sslVerify, Body: $body");
@@ -53,8 +55,9 @@ Future<Response> doPost(
 }
 
 Future<Response> doGet(
-    {required Uri url, required Map<String, String> parameters, bool? sslVerify = true}) async {
-
+    {required Uri url,
+    required Map<String, String> parameters,
+    bool? sslVerify = true}) async {
   HttpClient httpClient = HttpClient();
   httpClient.badCertificateCallback =
       ((X509Certificate cert, String host, int port) => !sslVerify!);

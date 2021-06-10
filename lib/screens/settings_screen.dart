@@ -107,8 +107,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                     title: AppLocalizations.of(context)!.pushToken,
                     children: <Widget>[
                       ListTile(
-                        title: Text(
-                            AppLocalizations.of(context)!.synchronizePushTokens),
+                        title: Text(AppLocalizations.of(context)!
+                            .synchronizePushTokens),
                         subtitle: Text(AppLocalizations.of(context)!
                             .synchronizesTokensWithServer),
                         trailing: ElevatedButton(
@@ -121,8 +121,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       PreferenceBuilder<bool>(
-                        preference:
-                            AppSettings.of(context).streamEnablePolling() as Preference<bool>,
+                        preference: AppSettings.of(context)
+                            .streamEnablePolling() as Preference<bool>,
                         builder: (context, value) {
                           Function? onChange;
                           List<PushToken> unsupported = enrolledPushTokenList
@@ -263,7 +263,8 @@ class AppSettings extends InheritedWidget {
   static AppSettings of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<AppSettings>()!;
 
-  AppSettings({required Widget child, required StreamingSharedPreferences preferences})
+  AppSettings(
+      {required Widget child, required StreamingSharedPreferences preferences})
       : _hideOpts = preferences.getBool(_prefHideOtps, defaultValue: false),
         _enablePolling =
             preferences.getBool(_prefEnablePoll, defaultValue: false),

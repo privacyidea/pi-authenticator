@@ -224,8 +224,7 @@ class StorageUtil {
         }
 
         if (tokenMap['enrollment_url'] != null) {
-          token.url =
-              Uri.parse((tokenMap['enrollment_url'] as String));
+          token.url = Uri.parse((tokenMap['enrollment_url'] as String));
         }
 
         var configMap = jsonDecode(await Legacy.loadFirebaseConfig());

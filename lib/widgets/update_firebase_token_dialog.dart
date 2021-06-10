@@ -99,7 +99,8 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
       String signature = p.privateTokenKey == null
           ? await Legacy.sign(p.serial, message)
-          : createBase32Signature(p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
+          : createBase32Signature(
+              p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
 
       Response response;
       try {
