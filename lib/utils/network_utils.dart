@@ -27,16 +27,10 @@ import 'package:package_info/package_info.dart';
 
 /// Custom POST request allows to not verify certificates
 Future<Response> doPost(
-    {bool sslVerify, Uri url, Map<String, String> body}) async {
+    {required Uri url, required Map<String, String?> body, bool sslVerify = true}) async {
   log("Sending post request",
       name: "utils.dart",
       error: "URI: $url, SSLVerify: $sslVerify, Body: $body");
-
-  if (body.entries.any((element) => element.value == null)) {
-    throw ArgumentError(
-        "Can not send request because the [body] contains a null value,"
-        " this is not permitted.");
-  }
 
   HttpClient httpClient = HttpClient();
   httpClient.badCertificateCallback =
@@ -59,13 +53,11 @@ Future<Response> doPost(
 }
 
 Future<Response> doGet(
-    {Uri url, Map<String, String> parameters, bool sslVerify = true}) async {
-  ArgumentError.checkNotNull(
-      sslVerify, 'Parameter [sslVerify] must not be null!');
+    {required Uri url, required Map<String, String> parameters, bool? sslVerify = true}) async {
 
   HttpClient httpClient = HttpClient();
   httpClient.badCertificateCallback =
-      ((X509Certificate cert, String host, int port) => !sslVerify);
+      ((X509Certificate cert, String host, int port) => !sslVerify!);
   httpClient.userAgent = "privacyIDEA-App /"
       " ${Platform.operatingSystem}"
       " ${(await PackageInfo.fromPlatform()).version}";

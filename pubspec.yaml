@@ -21,7 +21,7 @@ version: 3.2.0+0302000 # TODO Set the right version number
 # iOS    : CFBundleShortVersionString + CFBundleVersion
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -55,6 +55,7 @@ dependencies:
   firebase_core: ^1.0.4
   pi_authenticator_legacy:
     path: local_plugins/pi-authenticator-legacy
+  collection: ^1.15.0-nullsafety.4
 
 
 dev_dependencies:

@@ -24,7 +24,7 @@ class SettingsGroup extends StatelessWidget {
   final String title;
   final List<Widget> children;
 
-  SettingsGroup({this.title, this.children});
+  SettingsGroup({required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class SettingsGroup extends StatelessWidget {
           dense: true,
           leading: Text(
             title,
-            style: Theme.of(context).textTheme.subtitle1.copyWith(
+            style: Theme.of(context).textTheme.subtitle1!.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),

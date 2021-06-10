@@ -58,7 +58,7 @@ void main() async {
 class PrivacyIDEAAuthenticator extends StatelessWidget {
   final StreamingSharedPreferences _preferences;
 
-  const PrivacyIDEAAuthenticator({StreamingSharedPreferences preferences})
+  const PrivacyIDEAAuthenticator({required StreamingSharedPreferences preferences})
       : this._preferences = preferences;
 
   @override

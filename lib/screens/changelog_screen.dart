@@ -33,14 +33,14 @@ class ChangelogScreen extends StatelessWidget {
                 isAlwaysShown: true,
                 child: Markdown(
                   controller: _controller,
-                  data: snapshot.data,
-                  onTapLink: (String text, String href, String title) =>
-                      _launchURL(href),
+                  data: snapshot.data!,
+                  onTapLink: ((String text, String? href, String? title) =>
+                      _launchURL(href!)),
                 ),
               );
             }
             return Center(
-                child: Text(AppLocalizations.of(context).somethingWentWrong));
+                child: Text(AppLocalizations.of(context)!.somethingWentWrong));
           },
         ));
   }

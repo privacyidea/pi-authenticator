@@ -21,6 +21,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
@@ -36,7 +37,7 @@ class StorageUtil {
   static final Mutex _m = Mutex();
 
   /// Function [f] is executed, protected by Mutex [_m]. That means, that calls of this method will always be executed serial.
-  static protect(Function f) => _m.protect(f);
+  static protect(Function f) => _m.protect(f as Future<Object> Function());
 
   static final FlutterSecureStorage _storage = FlutterSecureStorage();
 
@@ -51,19 +52,18 @@ class StorageUtil {
   static Future<void> saveOrReplaceToken(Token token) async => await _storage
       .write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
 
-  static Future<Token> loadToken(String id) async =>
-      (await loadAllTokens()).firstWhere((t) => t.id == id, orElse: () => null);
+  static Future<Token?> loadToken(String id) async =>
+      (await loadAllTokens()).firstWhereOrNull((t) => t.id == id);
 
   /// Returns a list of all Tokens that are saved in the secure storage of
   /// this device.
   /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
-  ///
   static Future<List<Token>> loadAllTokens() async {
     Map<String, String> keyValueMap = await _storage.readAll();
 
     List<Token> tokenList = [];
     for (String value in keyValueMap.values) {
-      Map<String, dynamic> serializedToken;
+      Map<String, dynamic>? serializedToken;
 
       try {
         serializedToken = jsonDecode(value);
@@ -118,8 +118,8 @@ class StorageUtil {
   static Future<bool> globalFirebaseConfigExists() async =>
       await loadGlobalFirebaseConfig() != null;
 
-  static Future<FirebaseConfig> loadGlobalFirebaseConfig() async {
-    String serializedConfig =
+  static Future<FirebaseConfig?> loadGlobalFirebaseConfig() async {
+    String? serializedConfig =
         await _storage.read(key: _GLOBAL_FIREBASE_CONFIG_KEY);
 
     return serializedConfig == null
@@ -132,7 +132,7 @@ class StorageUtil {
   static Future<void> setCurrentFirebaseToken(String str) async =>
       _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str);
 
-  static Future<String> getCurrentFirebaseToken() async =>
+  static Future<String?> getCurrentFirebaseToken() async =>
       _storage.read(key: _CURRENT_APP_TOKEN_KEY);
 
   static const _NEW_APP_TOKEN_KEY = _GLOBAL_PREFIX + "NEW_APP_TOKEN";
@@ -141,7 +141,7 @@ class StorageUtil {
   static Future<void> setNewFirebaseToken(String str) async =>
       _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
 
-  static Future<String> getNewFirebaseToken() async =>
+  static Future<String?> getNewFirebaseToken() async =>
       _storage.read(key: _NEW_APP_TOKEN_KEY);
 
   // ###########################################################################
@@ -157,8 +157,8 @@ class StorageUtil {
         value: jsonEncode(config));
   }
 
-  static Future<FirebaseConfig> loadFirebaseConfig(Token token) async {
-    String serializedConfig =
+  static Future<FirebaseConfig?> loadFirebaseConfig(Token token) async {
+    String? serializedConfig =
         await _storage.read(key: _GLOBAL_PREFIX + token.id + _KEY_POSTFIX);
 
     return serializedConfig == null
@@ -220,11 +220,11 @@ class StorageUtil {
         (token as PushToken).isRolledOut = true;
 
         if (tokenMap['sslVerify'] != null) {
-          (token as PushToken).sslVerify = tokenMap['sslVerify'];
+          token.sslVerify = tokenMap['sslVerify'];
         }
 
         if (tokenMap['enrollment_url'] != null) {
-          (token as PushToken).url =
+          token.url =
               Uri.parse((tokenMap['enrollment_url'] as String));
         }
 
@@ -260,7 +260,7 @@ class StorageUtil {
 
   static const _KEY_VERSION = _GLOBAL_PREFIX + "_app_version";
 
-  static Future<String> getCurrentVersion() async {
+  static Future<String?> getCurrentVersion() async {
     return await _storage.read(key: _KEY_VERSION);
   }
 

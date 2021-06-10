@@ -38,8 +38,8 @@ import 'identifiers.dart';
 RSAPublicKey deserializeRSAPublicKeyPKCS1(String keyStr) {
   ASN1Sequence asn1sequence =
       ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
-  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
-  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
+  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger!;
+  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
 
   return RSAPublicKey(modulus, exponent);
 }
@@ -53,8 +53,8 @@ RSAPublicKey deserializeRSAPublicKeyPKCS1(String keyStr) {
 /// }
 String serializeRSAPublicKeyPKCS1(RSAPublicKey publicKey) {
   ASN1Sequence s = ASN1Sequence()
-    ..add(ASN1Integer(publicKey.modulus))
-    ..add(ASN1Integer(publicKey.exponent));
+    ..add(ASN1Integer(publicKey.modulus!))
+    ..add(ASN1Integer(publicKey.exponent!));
 
   return base64.encode(s.encodedBytes);
 }
@@ -77,7 +77,7 @@ RSAPublicKey deserializeRSAPublicKeyPKCS8(String keyStr) {
 
   var encodedAlgorithm = baseSequence.elements[0];
 
-  var algorithm = ASN1Parser(encodedAlgorithm.contentBytes()).nextObject()
+  var algorithm = ASN1Parser(encodedAlgorithm.contentBytes()!).nextObject()
       as ASN1ObjectIdentifier;
 
   if (algorithm.identifier != "1.2.840.113549.1.1.1") {
@@ -91,10 +91,10 @@ RSAPublicKey deserializeRSAPublicKeyPKCS8(String keyStr) {
   var encodedKey = baseSequence.elements[1];
 
   var asn1sequence =
-      ASN1Parser(encodedKey.contentBytes()).nextObject() as ASN1Sequence;
+      ASN1Parser(encodedKey.contentBytes()!).nextObject() as ASN1Sequence;
 
-  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
-  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
+  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger!;
+  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
 
   return RSAPublicKey(modulus, exponent);
 }
@@ -118,8 +118,8 @@ String serializeRSAPublicKeyPKCS8(RSAPublicKey key) {
     ..add(ASN1Null());
 
   var keySequence = ASN1Sequence()
-    ..add(ASN1Integer(key.modulus))
-    ..add(ASN1Integer(key.exponent));
+    ..add(ASN1Integer(key.modulus!))
+    ..add(ASN1Integer(key.exponent!));
 
   var publicKey = ASN1BitString(keySequence.encodedBytes);
 
@@ -148,16 +148,16 @@ String serializeRSAPublicKeyPKCS8(RSAPublicKey key) {
 String serializeRSAPrivateKeyPKCS1(RSAPrivateKey key) {
   ASN1Sequence s = ASN1Sequence()
     ..add(ASN1Integer.fromInt(0)) // version
-    ..add(ASN1Integer(key.modulus)) // modulus
-    ..add(ASN1Integer(key.exponent)) // e
-    ..add(ASN1Integer(key.privateExponent)) // d
-    ..add(ASN1Integer(key.p)) // p
-    ..add(ASN1Integer(key.q)) // q
+    ..add(ASN1Integer(key.modulus!)) // modulus
+    ..add(ASN1Integer(key.exponent!)) // e
+    ..add(ASN1Integer(key.privateExponent!)) // d
+    ..add(ASN1Integer(key.p!)) // p
+    ..add(ASN1Integer(key.q!)) // q
     ..add(
-        ASN1Integer(key.privateExponent % (key.p - BigInt.one))) // d mod (p-1)
+        ASN1Integer(key.privateExponent! % (key.p! - BigInt.one))) // d mod (p-1)
     ..add(
-        ASN1Integer(key.privateExponent % (key.q - BigInt.one))) // d mod (q-1)
-    ..add(ASN1Integer(key.q.modInverse(key.p))); // q^(-1) mod p
+        ASN1Integer(key.privateExponent! % (key.q! - BigInt.one))) // d mod (q-1)
+    ..add(ASN1Integer(key.q!.modInverse(key.p!))); // q^(-1) mod p
 
   return base64.encode(s.encodedBytes);
 }
@@ -183,10 +183,10 @@ String serializeRSAPrivateKeyPKCS1(RSAPrivateKey key) {
 RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String keyStr) {
   ASN1Sequence asn1sequence =
       ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
-  BigInt modulus = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
-  BigInt exponent = (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger;
-  BigInt p = (asn1sequence.elements[4] as ASN1Integer).valueAsBigInteger;
-  BigInt q = (asn1sequence.elements[5] as ASN1Integer).valueAsBigInteger;
+  BigInt modulus = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
+  BigInt exponent = (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger!;
+  BigInt p = (asn1sequence.elements[4] as ASN1Integer).valueAsBigInteger!;
+  BigInt q = (asn1sequence.elements[5] as ASN1Integer).valueAsBigInteger!;
 
   return RSAPrivateKey(modulus, exponent, p, q);
 }
@@ -244,7 +244,7 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   uriMap[URI_ISSUER] = _parseIssuer(uri);
 
   // If we do not support the version of this piauth url, we can stop here.
-  String pushVersionAsString = uri.queryParameters["v"];
+  String? pushVersionAsString = uri.queryParameters["v"];
 
   if (pushVersionAsString == null) {
     throw ArgumentError.value(uri, "uri",
@@ -291,14 +291,14 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   uriMap[URI_PROJECT_NUMBER] = uri.queryParameters["projectnumber"];
   ArgumentError.checkNotNull(uriMap[URI_PROJECT_NUMBER], "projectnumber");
 
-  String url = uri.queryParameters["url"];
+  String? url = uri.queryParameters["url"];
+  ArgumentError.checkNotNull(url);
   try {
-    uriMap[URI_ROLLOUT_URL] = Uri.parse(url);
+    uriMap[URI_ROLLOUT_URL] = Uri.parse(url!);
   } on FormatException catch (e) {
     throw ArgumentError.value(
-        uri, "uri", "[$url] is not a valid Uri. error: ${e.message}");
+        uri, "uri", "[$url] is not a valid Uri. Error: ${e.message}");
   }
-  ArgumentError.checkNotNull(uriMap[URI_ROLLOUT_URL], "url");
 
   String ttlAsString = uri.queryParameters["ttl"] ?? "10";
   try {
@@ -369,13 +369,14 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   uriMap[URI_DIGITS] = digits;
 
   // Parse secret.
-  String secretAsString = uri.queryParameters["secret"];
+  String? secretAsString = uri.queryParameters["secret"];
+  ArgumentError.checkNotNull(secretAsString);
 
   // This is a fix for omitted padding in base32 encoded secrets.
   //
   // According to https://github.com/google/google-authenticator/wiki/Key-Uri-Format,
   // the padding can be omitted, but the libraries for base32 do not allow this.
-  if (secretAsString != null && secretAsString.length % 2 == 1) {
+  if (secretAsString!.length % 2 == 1) {
     secretAsString += "=";
   }
 
@@ -393,7 +394,7 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
 
   if (uriMap[URI_TYPE] == "hotp") {
     // Parse counter.
-    String counterAsString = uri.queryParameters["counter"];
+    String? counterAsString = uri.queryParameters["counter"];
     try {
       if (counterAsString == null) {
         throw ArgumentError.value(
@@ -482,16 +483,16 @@ String _parseLabel(Uri uri) {
 }
 
 String _parseIssuer(Uri uri) {
-  String issuer;
-  String param = uri.queryParameters['issuer'];
+  String? issuer;
+  String? param = uri.queryParameters['issuer'];
 
   try {
-    issuer = Uri.decodeFull(param);
+    issuer = Uri.decodeFull(param!);
   } on Error {
     issuer = param;
   }
 
-  return issuer;
+  return issuer ?? "";
 }
 
 bool is2StepURI(Uri uri) {

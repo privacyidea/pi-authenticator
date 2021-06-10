@@ -36,7 +36,7 @@ class GuideScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context).guide,
+          AppLocalizations.of(context)!.guide,
           overflow: TextOverflow.ellipsis,
           // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
@@ -47,7 +47,7 @@ class GuideScreen extends StatelessWidget {
           FutureBuilder<String>(
             // localeName defaults to en if an unsupported locale is set on the phone.
             future: DefaultAssetBundle.of(context).loadString(
-                'res/md/GUIDE_${AppLocalizations.of(context).localeName}.md'),
+                'res/md/GUIDE_${AppLocalizations.of(context)!.localeName}.md'),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Expanded(
@@ -56,18 +56,18 @@ class GuideScreen extends StatelessWidget {
                     isAlwaysShown: true,
                     child: Markdown(
                       controller: _controller,
-                      data: snapshot.data,
+                      data: snapshot.data!,
                     ),
                   ),
                 );
               }
               return Center(
-                  child: Text(AppLocalizations.of(context).somethingWentWrong));
+                  child: Text(AppLocalizations.of(context)!.somethingWentWrong));
             },
           ),
           ListTile(
-            title: Text(AppLocalizations.of(context).showThisScreenOnStart),
-            trailing: StreamBuilder(
+            title: Text(AppLocalizations.of(context)!.showThisScreenOnStart),
+            trailing: StreamBuilder<bool>(
               stream: AppSettings.of(context).showGuideOnStartStream(),
               initialData: true,
               builder: (context, snapshot) {
@@ -75,7 +75,7 @@ class GuideScreen extends StatelessWidget {
                   return Checkbox(
                     value: snapshot.data,
                     onChanged: (value) =>
-                        AppSettings.of(context).showGuideOnStart = value,
+                        AppSettings.of(context).showGuideOnStart = value!,
                     activeColor: Colors.grey, // TODO Find a nice color for this
                   );
                 } else {

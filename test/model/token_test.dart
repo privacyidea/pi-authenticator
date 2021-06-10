@@ -43,6 +43,7 @@ void verifyCustomListBehavesLikeQueue() {
         nonce: "nonce",
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
 
       expect(fifo.isNotEmpty, false);
@@ -77,6 +78,7 @@ void verifyCustomListBehavesLikeQueue() {
         nonce: "nonce",
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var two = PushRequest(
         title: "two",
@@ -85,6 +87,7 @@ void verifyCustomListBehavesLikeQueue() {
         nonce: "nonce",
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var three = PushRequest(
         title: "three",
@@ -93,6 +96,7 @@ void verifyCustomListBehavesLikeQueue() {
         nonce: "nonce",
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var four = PushRequest(
         title: "four",
@@ -101,6 +105,7 @@ void verifyCustomListBehavesLikeQueue() {
         nonce: "nonce",
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var five = PushRequest(
         title: "five",
@@ -109,6 +114,7 @@ void verifyCustomListBehavesLikeQueue() {
         nonce: "nonce",
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
 
       queue.addLast(one);
@@ -146,6 +152,7 @@ void verifyCustomListBehavesLikeQueue() {
         nonce: "nonce",
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var two = PushRequest(
         title: "two",
@@ -154,6 +161,7 @@ void verifyCustomListBehavesLikeQueue() {
         nonce: "nonce",
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var three = PushRequest(
         title: "three",
@@ -162,6 +170,7 @@ void verifyCustomListBehavesLikeQueue() {
         nonce: "nonce",
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var four = PushRequest(
         title: "four",
@@ -170,6 +179,7 @@ void verifyCustomListBehavesLikeQueue() {
         nonce: "nonce",
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var five = PushRequest(
         title: "five",
@@ -178,6 +188,7 @@ void verifyCustomListBehavesLikeQueue() {
         nonce: "nonce",
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
 
       fifo.add(one);

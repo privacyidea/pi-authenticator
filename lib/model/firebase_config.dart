@@ -30,7 +30,7 @@ class FirebaseConfig {
   String _apiKey;
 
   FirebaseConfig(
-      {String projectID, String projectNumber, String appID, String apiKey})
+      {required String projectID, required String projectNumber, required String appID, required String apiKey})
       : this._projectID = projectID,
         this._projectNumber = projectNumber,
         this._appID = appID,

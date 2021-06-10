@@ -43,7 +43,7 @@ class CustomLicenseScreen extends StatefulWidget {
 }
 
 class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
-  Future<PackageInfo> _info;
+  Future<PackageInfo>? _info;
 
   Stream<List<Widget>> widgetListStream() async* {
     List<Widget> initialList = [
@@ -63,7 +63,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Version ${snapshot.data.version}'),
+                      Text('Version ${snapshot.data!.version}'),
                       TextButton(
                         child: Text('Changelog'),
                         onPressed: () => Navigator.push(
@@ -137,7 +137,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context).about,
+          AppLocalizations.of(context)!.about,
         ),
       ),
       body: StreamBuilder<List<Widget>>(
@@ -145,8 +145,8 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (context, index) => snapshot.data[index],
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) => snapshot.data![index],
             );
           } else
             return Column();
@@ -160,13 +160,13 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
       context: context,
       builder: (context) {
         return Dialog(
-          child: StreamBuilder(
+          child: StreamBuilder<LicenseEntry>(
             stream: LicenseRegistry.licenses.where((event) =>
                 event.packages.contains("privacyIDEA Authenticator")),
             builder: (context, snapshot) {
               if (snapshot.hasData)
                 return SingleChildScrollView(
-                  child: _buildSingleLicense(snapshot.data),
+                  child: _buildSingleLicense(snapshot.data!),
                 );
               else
                 return Column(
@@ -185,7 +185,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
 
     double spaceBetweenParagraphs = 8;
 
-    TextStyle textStyle = Theme.of(context).textTheme.caption;
+    TextStyle textStyle = Theme.of(context).textTheme.caption!;
 
     for (LicenseParagraph paragraph in entry.paragraphs) {
       if (paragraph.indent == LicenseParagraph.centeredIndent) {
@@ -220,7 +220,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
             entry.packages.join(', '),
             style: Theme.of(context)
                 .textTheme
-                .caption
+                .caption!
                 .copyWith(fontWeight: FontWeight.bold),
           ),
           Divider(),

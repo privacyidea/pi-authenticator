@@ -90,12 +90,12 @@ class HOTPToken extends OTPToken {
   void incrementCounter() => _counter++;
 
   HOTPToken(
-      {String label,
-      String issuer,
-      String id,
-      Algorithms algorithm,
-      int digits,
-      String secret,
+      {required String label,
+      required String issuer,
+      required String id,
+      required Algorithms algorithm,
+      required int digits,
+      required String secret,
       int counter = 0})
       : this._counter = counter,
         super(label, issuer, id, enumAsString(TokenTypes.HOTP), algorithm,
@@ -123,13 +123,13 @@ class TOTPToken extends OTPToken {
   int get period => _period;
 
   TOTPToken(
-      {String label,
-      String issuer,
-      String id,
-      Algorithms algorithm,
-      int digits,
-      String secret,
-      int period})
+      {required String label,
+      required String issuer,
+      required String id,
+      required Algorithms algorithm,
+      required int digits,
+      required String secret,
+      required int period})
       : this._period = period,
         super(label, issuer, id, enumAsString(TokenTypes.TOTP), algorithm,
             digits, secret);
@@ -150,28 +150,28 @@ class PushToken extends Token {
   String _serial;
 
   // Roll out
-  bool _sslVerify;
-  String _enrollmentCredentials;
-  Uri url; // Full access to allow adding to legacy android tokens
+  bool? _sslVerify;
+  String? _enrollmentCredentials;
+  Uri? url; // Full access to allow adding to legacy android tokens
   bool isRolledOut = false;
 
   // RSA keys - String values for backward compatibility with serialization
-  String publicServerKey;
-  String privateTokenKey;
-  String publicTokenKey;
+  String? publicServerKey;
+  String? privateTokenKey;
+  String? publicTokenKey;
 
   // Custom getter and setter for RSA keys
-  RSAPublicKey getPublicServerKey() => publicServerKey == null
+  RSAPublicKey? getPublicServerKey() => publicServerKey == null
       ? null
-      : deserializeRSAPublicKeyPKCS1(publicServerKey);
+      : deserializeRSAPublicKeyPKCS1(publicServerKey!);
 
-  RSAPublicKey getPublicTokenKey() => publicTokenKey == null
+  RSAPublicKey? getPublicTokenKey() => publicTokenKey == null
       ? null
-      : deserializeRSAPublicKeyPKCS1(publicTokenKey);
+      : deserializeRSAPublicKeyPKCS1(publicTokenKey!);
 
-  RSAPrivateKey getPrivateTokenKey() => privateTokenKey == null
+  RSAPrivateKey? getPrivateTokenKey() => privateTokenKey == null
       ? null
-      : deserializeRSAPrivateKeyPKCS1(privateTokenKey);
+      : deserializeRSAPrivateKeyPKCS1(privateTokenKey!);
 
   void setPublicServerKey(RSAPublicKey key) =>
       publicServerKey = serializeRSAPublicKeyPKCS1(key);
@@ -186,20 +186,20 @@ class PushToken extends Token {
 
   String get serial => _serial;
 
-  bool get sslVerify => _sslVerify;
+  bool? get sslVerify => _sslVerify;
 
-  set sslVerify(bool sslVerify) => this._sslVerify = sslVerify;
+  set sslVerify(bool? sslVerify) => this._sslVerify = sslVerify;
 
-  String get enrollmentCredentials => _enrollmentCredentials;
+  String? get enrollmentCredentials => _enrollmentCredentials;
 
   DateTime get expirationDate => _expirationDate;
 
-  PushRequestQueue _pushRequests;
+  PushRequestQueue? _pushRequests;
 
   // The get and set methods are needed for serialization.
   PushRequestQueue get pushRequests {
     _pushRequests ??= PushRequestQueue();
-    return _pushRequests;
+    return _pushRequests!;
   }
 
   set pushRequests(PushRequestQueue queue) {
@@ -211,12 +211,12 @@ class PushToken extends Token {
     this._pushRequests = queue;
   }
 
-  CustomIntBuffer _knownPushRequests;
+  CustomIntBuffer? _knownPushRequests;
 
   // The get and set methods are needed for serialization.
   CustomIntBuffer get knownPushRequests {
     _knownPushRequests ??= CustomIntBuffer();
-    return _knownPushRequests;
+    return _knownPushRequests!;
   }
 
   set knownPushRequests(CustomIntBuffer buffer) {
@@ -235,15 +235,15 @@ class PushToken extends Token {
   }
 
   PushToken({
-    String label,
-    String serial,
-    String issuer,
-    String id,
+    required String label,
+    required String serial,
+    required String issuer,
+    required String id,
     // 2. step
-    bool sslVerify,
-    String enrollmentCredentials,
-    Uri url,
-    DateTime expirationDate,
+    bool? sslVerify,
+    String? enrollmentCredentials,
+    Uri? url,
+    required DateTime expirationDate,
   })  : this._serial = serial,
         this._sslVerify = sslVerify,
         this._enrollmentCredentials = enrollmentCredentials,
@@ -305,13 +305,13 @@ class PushRequest {
   String get title => _title;
 
   PushRequest(
-      {String title,
-      String question,
-      Uri uri,
-      String nonce,
-      bool sslVerify,
-      int id,
-      DateTime expirationDate})
+      {required String title,
+      required String question,
+      required Uri uri,
+      required String nonce,
+      required bool sslVerify,
+      required int id,
+      required DateTime expirationDate})
       : this._title = title,
         this._question = question,
         this._uri = uri,
@@ -346,12 +346,12 @@ class PushRequest {
 class PushRequestQueue {
   PushRequestQueue();
 
-  List<PushRequest> _list;
+  List<PushRequest>? _list;
 
   // The get and set methods are needed for serialization.
   List<PushRequest> get list {
     _list ??= [];
-    return _list;
+    return _list!;
   }
 
   set list(List<PushRequest> l) {
@@ -369,17 +369,17 @@ class PushRequestQueue {
 
   void removeWhere(bool f(PushRequest request)) => list.removeWhere(f);
 
-  Iterable<PushRequest> where(bool f(PushRequest request)) => _list.where(f);
+  Iterable<PushRequest> where(bool f(PushRequest request)) => list.where(f);
 
-  bool any(bool f(PushRequest element)) => _list.any(f);
+  bool any(bool f(PushRequest element)) => list.any(f);
 
-  void remove(PushRequest request) => _list.remove(request);
+  void remove(PushRequest request) => list.remove(request);
 
   bool get isEmpty => list.isEmpty;
 
   bool get isNotEmpty => list.isNotEmpty;
 
-  bool contains(PushRequest r) => _list.contains(r);
+  bool contains(PushRequest r) => list.contains(r);
 
   void add(PushRequest pushRequest) => list.add(pushRequest);
 
@@ -446,12 +446,12 @@ class CustomIntBuffer {
 
   CustomIntBuffer();
 
-  List<int> _list;
+  List<int>? _list;
 
   // The get and set methods are needed for serialization.
   List<int> get list {
     _list ??= [];
-    return _list;
+    return _list!;
   }
 
   set list(List<int> l) {
@@ -469,13 +469,13 @@ class CustomIntBuffer {
   }
 
   void put(int value) {
-    if (_list.length >= maxSize) list.removeAt(0);
-    _list.add(value);
+    if (list.length >= maxSize) list.removeAt(0);
+    list.add(value);
   }
 
-  int get length => _list.length;
+  int get length => list.length;
 
-  bool contains(int value) => _list.contains(value);
+  bool contains(int value) => list.contains(value);
 
   factory CustomIntBuffer.fromJson(Map<String, dynamic> json) =>
       _$CustomIntBufferFromJson(json);

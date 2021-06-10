@@ -18,6 +18,8 @@
   limitations under the License.
 */
 
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
@@ -35,8 +37,8 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
   static final List<int> allowedPeriods = [30, 60];
 
   // fields needed to build a token
-  String _selectedName;
-  String _selectedSecret;
+  String _selectedName = "";
+  String _selectedSecret = "";
 
   _Wrapper<Encodings> _selectedEncoding = _Wrapper(Encodings.none);
   _Wrapper<Algorithms> _selectedAlgorithm = _Wrapper(Algorithms.SHA1);
@@ -50,8 +52,8 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
   AutovalidateMode _autoValidateSecret = AutovalidateMode.disabled;
 
   // used to handle focusing certain input fields
-  FocusNode _nameFieldFocus;
-  FocusNode _secretFieldFocus;
+  late final FocusNode _nameFieldFocus;
+  late final FocusNode _secretFieldFocus;
 
   @override
   void initState() {
@@ -76,7 +78,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context).enterDetailsForToken,
+          AppLocalizations.of(context)!.enterDetailsForToken,
           overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
@@ -91,24 +93,24 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             children: <Widget>[
               _buildTextInputForm(),
               _buildDropdownButtonWithLabel(
-                  AppLocalizations.of(context).encoding,
+                  AppLocalizations.of(context)!.encoding,
                   _selectedEncoding,
                   Encodings.values),
               _buildDropdownButtonWithLabel(
-                  AppLocalizations.of(context).algorithm,
+                  AppLocalizations.of(context)!.algorithm,
                   _selectedAlgorithm,
                   Algorithms.values),
-              _buildDropdownButtonWithLabel(AppLocalizations.of(context).digits,
+              _buildDropdownButtonWithLabel(AppLocalizations.of(context)!.digits,
                   _selectedDigits, allowedDigits),
               _buildDropdownButtonWithLabel(
-                  AppLocalizations.of(context).type,
+                  AppLocalizations.of(context)!.type,
                   _selectedType,
                   List.from(TokenTypes.values)..remove(TokenTypes.PIPUSH)),
               Visibility(
 //               the period is only used by TOTP tokens
                 visible: _selectedType.value == TokenTypes.TOTP,
                 child: _buildDropdownButtonWithLabel(
-                    AppLocalizations.of(context).period,
+                    AppLocalizations.of(context)!.period,
                     _selectedPeriod,
                     allowedPeriods,
                     postFix: 's'),
@@ -117,7 +119,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   child: Text(
-                    AppLocalizations.of(context).addToken,
+                    AppLocalizations.of(context)!.addToken,
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   onPressed: () => _returnTokenIfValid(),
@@ -136,12 +138,12 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     String uuid = Uuid().v4();
     List<int> secretByte =
         decodeSecretToUint8(_selectedSecret, _selectedEncoding.value);
-    String secretBase32 = encodeSecretAs(secretByte, Encodings.base32);
-    OTPToken newToken;
+    String secretBase32 = encodeSecretAs(secretByte as Uint8List, Encodings.base32);
+    OTPToken? newToken;
     if (_selectedType.value == TokenTypes.HOTP) {
       newToken = HOTPToken(
         label: _selectedName,
-        issuer: null,
+        issuer: "",
         id: uuid,
         algorithm: _selectedAlgorithm.value,
         digits: _selectedDigits.value,
@@ -150,7 +152,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     } else if (_selectedType.value == TokenTypes.TOTP) {
       newToken = TOTPToken(
         label: _selectedName,
-        issuer: null,
+        issuer: "",
         id: uuid,
         algorithm: _selectedAlgorithm.value,
         digits: _selectedDigits.value,
@@ -167,15 +169,15 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
   }
 
   bool inputIsValid() {
-    if (_nameInputKey.currentState.validate()) {
-      _nameInputKey.currentState.save();
+    if (_nameInputKey.currentState!.validate()) {
+      _nameInputKey.currentState!.save();
     } else {
       FocusScope.of(context).requestFocus(_nameFieldFocus);
       return false;
     }
 
-    if (_secretInputKey.currentState.validate()) {
-      _secretInputKey.currentState.save();
+    if (_secretInputKey.currentState!.validate()) {
+      _secretInputKey.currentState!.save();
     } else {
       FocusScope.of(context).requestFocus(_secretFieldFocus);
       setState(() => _autoValidateSecret = AutovalidateMode.always);
@@ -201,13 +203,13 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
               return DropdownMenuItem<T>(
                 value: value,
                 child: Text(
-                  "${value is String || value is int || value is double ? value : enumAsString(value)}"
+                  "${value is String || value is int || value is double ? value : enumAsString(value!)}"
                   "$postFix",
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
               );
             }).toList(),
-            onChanged: (T newValue) {
+            onChanged: (T? newValue) {
               setState(() {
                 reference.value = newValue;
               });
@@ -225,12 +227,12 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
           TextFormField(
             key: _nameInputKey,
             focusNode: _nameFieldFocus,
-            onSaved: (value) => this.setState(() => _selectedName = value),
+            onSaved: (value) => this.setState(() => _selectedName = value!),
             decoration:
-                InputDecoration(labelText: AppLocalizations.of(context).name),
+                InputDecoration(labelText: AppLocalizations.of(context)!.name),
             validator: (value) {
-              if (value.isEmpty) {
-                return AppLocalizations.of(context)
+              if (value!.isEmpty) {
+                return AppLocalizations.of(context)!
                     .pleaseEnterANameForThisToken;
               }
               return null;
@@ -240,17 +242,17 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             key: _secretInputKey,
             autovalidateMode: _autoValidateSecret,
             focusNode: _secretFieldFocus,
-            onSaved: (value) => this.setState(() => _selectedSecret = value),
+            onSaved: (value) => this.setState(() => _selectedSecret = value!),
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).secret,
+              labelText: AppLocalizations.of(context)!.secret,
             ),
             validator: (value) {
-              if (value.isEmpty) {
+              if (value!.isEmpty) {
 //                FocusScope.of(context).requestFocus(_secretFieldFocus);
-                return AppLocalizations.of(context)
+                return AppLocalizations.of(context)!
                     .pleaseEnterASecretForThisToken;
               } else if (!isValidEncoding(value, _selectedEncoding.value)) {
-                return AppLocalizations.of(context)
+                return AppLocalizations.of(context)!
                     .theSecretDoesNotFitTheCurrentEncoding;
               }
               return null;

@@ -43,7 +43,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context).settings,
+          AppLocalizations.of(context)!.settings,
           overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
@@ -54,30 +54,30 @@ class SettingsScreenState extends State<SettingsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SettingsGroup(
-              title: AppLocalizations.of(context).theme,
+              title: AppLocalizations.of(context)!.theme,
               children: <Widget>[
                 RadioListTile(
-                  title: Text(AppLocalizations.of(context).lightTheme),
+                  title: Text(AppLocalizations.of(context)!.lightTheme),
                   value: ThemeMode.light,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: (value) => EasyDynamicTheme.of(context)
+                  onChanged: (dynamic value) => EasyDynamicTheme.of(context)
                       .changeTheme(dynamic: false, dark: false),
                 ),
                 RadioListTile(
-                  title: Text(AppLocalizations.of(context).darkTheme),
+                  title: Text(AppLocalizations.of(context)!.darkTheme),
                   value: ThemeMode.dark,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: (value) => EasyDynamicTheme.of(context)
+                  onChanged: (dynamic value) => EasyDynamicTheme.of(context)
                       .changeTheme(dynamic: false, dark: true),
                 ),
                 RadioListTile(
-                  title: Text(AppLocalizations.of(context).systemTheme),
+                  title: Text(AppLocalizations.of(context)!.systemTheme),
                   value: ThemeMode.system,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: (value) => EasyDynamicTheme.of(context)
+                  onChanged: (dynamic value) => EasyDynamicTheme.of(context)
                       .changeTheme(dynamic: true, dark: false),
                 ),
               ],
@@ -89,7 +89,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                 bool showPushSettingsGroup = true;
 
                 List<PushToken> enrolledPushTokenList = snapshot.hasData
-                    ? snapshot.data
+                    ? snapshot.data!
                         .whereType<PushToken>()
                         .where((e) => e.isRolledOut)
                         .toList()
@@ -104,15 +104,15 @@ class SettingsScreenState extends State<SettingsScreen> {
                 return Visibility(
                   visible: showPushSettingsGroup,
                   child: SettingsGroup(
-                    title: AppLocalizations.of(context).pushToken,
+                    title: AppLocalizations.of(context)!.pushToken,
                     children: <Widget>[
                       ListTile(
                         title: Text(
-                            AppLocalizations.of(context).synchronizePushTokens),
-                        subtitle: Text(AppLocalizations.of(context)
+                            AppLocalizations.of(context)!.synchronizePushTokens),
+                        subtitle: Text(AppLocalizations.of(context)!
                             .synchronizesTokensWithServer),
                         trailing: ElevatedButton(
-                          child: Text(AppLocalizations.of(context).sync),
+                          child: Text(AppLocalizations.of(context)!.sync),
                           onPressed: () => showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -122,9 +122,9 @@ class SettingsScreenState extends State<SettingsScreen> {
                       ),
                       PreferenceBuilder<bool>(
                         preference:
-                            AppSettings.of(context).streamEnablePolling(),
+                            AppSettings.of(context).streamEnablePolling() as Preference<bool>,
                         builder: (context, value) {
-                          Function onChange;
+                          Function? onChange;
                           List<PushToken> unsupported = enrolledPushTokenList
                               .where((e) => e.url == null)
                               .toList();
@@ -140,7 +140,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: AppLocalizations.of(context)
+                                  text: AppLocalizations.of(context)!
                                       .enablePolling,
                                   style: Theme.of(context).textTheme.subtitle1,
                                 ),
@@ -166,11 +166,11 @@ class SettingsScreenState extends State<SettingsScreen> {
                           );
                           return ListTile(
                             title: title,
-                            subtitle: Text(AppLocalizations.of(context)
+                            subtitle: Text(AppLocalizations.of(context)!
                                 .requestPushChallengesPeriodically),
                             trailing: Switch(
                               value: value,
-                              onChanged: onChange,
+                              onChanged: onChange as void Function(bool)?,
                             ),
                           );
                         },
@@ -181,12 +181,12 @@ class SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             SettingsGroup(
-              title: AppLocalizations.of(context).migration,
+              title: AppLocalizations.of(context)!.migration,
               children: [
                 ListTile(
-                  title: Text(AppLocalizations.of(context).migrateTokens),
+                  title: Text(AppLocalizations.of(context)!.migrateTokens),
                   trailing: ElevatedButton(
-                    child: Text(AppLocalizations.of(context).migrate),
+                    child: Text(AppLocalizations.of(context)!.migrate),
                     onPressed: () => showDialog(
                         context: context,
                         barrierDismissible: false,
@@ -225,7 +225,7 @@ class SettingsScreenState extends State<SettingsScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-                AppLocalizations.of(context).someTokensDoNotSupportPolling +
+                AppLocalizations.of(context)!.someTokensDoNotSupportPolling +
                     ':'),
             content: Scrollbar(
               child: ListView.separated(
@@ -239,7 +239,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             actions: <Widget>[
               TextButton(
                 child: Text(
-                  AppLocalizations.of(context).dismiss,
+                  AppLocalizations.of(context)!.dismiss,
                   style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
@@ -261,9 +261,9 @@ class AppSettings extends InheritedWidget {
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
 
   static AppSettings of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<AppSettings>();
+      context.dependOnInheritedWidgetOfExactType<AppSettings>()!;
 
-  AppSettings({Widget child, StreamingSharedPreferences preferences})
+  AppSettings({required Widget child, required StreamingSharedPreferences preferences})
       : _hideOpts = preferences.getBool(_prefHideOtps, defaultValue: false),
         _enablePolling =
             preferences.getBool(_prefEnablePoll, defaultValue: false),

@@ -29,8 +29,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomPageReportMode extends ReportMode {
   @override
-  void requestAction(Report report, BuildContext context) {
-    _navigateToPageWidget(report, context);
+  void requestAction(Report report, BuildContext? context) {
+    _navigateToPageWidget(report, context!);
   }
 
   void _navigateToPageWidget(Report report, BuildContext context) async {
@@ -60,7 +60,7 @@ class CustomPageWidget extends StatefulWidget {
   const CustomPageWidget(
     this.pageReportMode,
     this.report, {
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -82,7 +82,7 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
   Widget _buildMaterialPage() {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).unexpectedError),
+        title: Text(AppLocalizations.of(context)!.unexpectedError),
       ),
       body: _buildInnerWidget(),
     );
@@ -91,7 +91,7 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
   Widget _buildCupertinoPage() {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text(AppLocalizations.of(context).unexpectedError),
+        middle: Text(AppLocalizations.of(context)!.unexpectedError),
       ),
       child: SafeArea(
         child: _buildInnerWidget(),
@@ -132,9 +132,9 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              AppLocalizations.of(context).pageReportModeBody(
-                  AppLocalizations.of(context).accept,
-                  AppLocalizations.of(context).cancel),
+              AppLocalizations.of(context)!.pageReportModeBody(
+                  AppLocalizations.of(context)!.accept,
+                  AppLocalizations.of(context)!.cancel),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.subtitle2,
             ),
@@ -155,11 +155,11 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
             children: <Widget>[
               TextButton(
                 onPressed: () => _onAcceptClicked(),
-                child: Text(AppLocalizations.of(context).accept),
+                child: Text(AppLocalizations.of(context)!.accept),
               ),
               TextButton(
                 onPressed: () => _onCancelClicked(),
-                child: Text(AppLocalizations.of(context).cancel),
+                child: Text(AppLocalizations.of(context)!.cancel),
               ),
             ],
           )
