@@ -5,6 +5,7 @@
 ### Added
 
 - Added support for poll-only tokens introduced in privacyIDEA v3.7.+
+- Added french translation
 
 ### Changed
 
