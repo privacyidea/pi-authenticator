@@ -111,8 +111,7 @@ flutter:
   assets:
     - res/logo/app_logo_light.svg
     - CHANGELOG.md
-    - res/md/GUIDE_de.md
-    - res/md/GUIDE_en.md
+    - res/guide/
     - res/gif/help_delete_rename.gif
     - res/gif/help_manual_poll.gif
 
