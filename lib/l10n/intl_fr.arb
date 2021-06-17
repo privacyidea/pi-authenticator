@@ -494,5 +494,11 @@
     "description": "Button text.",
     "type": "text",
     "placeholders": {}
+  },
+  "deleteCache": "Effacer les données de l'application.",
+  "@deleteCache": {
+    "description": "Button text.",
+    "type": "text",
+    "placeholders": {}
   }
 }
