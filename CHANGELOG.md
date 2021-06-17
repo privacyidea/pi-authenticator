@@ -15,6 +15,7 @@
 ### Fixed
 
 - Fixed error when receiving challenges for non-existing tokens
+- Fixed PaddingError on loading tokens on some devices
 
 ## [3.1.3] - 2021-05-07
 
