@@ -9,18 +9,18 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <application
         android:name=".Application"
-        android:label="privacyIDEA Authenticator"
-        android:icon="@mipmap/ic_launcher">
-        <activity android:name="com.apptreesoftware.barcodescan.BarcodeScannerActivity"/>
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="privacyIDEA Authenticator">
+        <activity android:name="com.apptreesoftware.barcodescan.BarcodeScannerActivity" />
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize"
-            android:allowBackup="false"
-            android:fullBackupContent="false">
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:windowSoftInputMode="adjustResize">
             <!-- This keeps the window background of the activity showing
                  until Flutter renders its first frame. It can be removed if
                  there is no splash screen (such as the default splash screen
@@ -29,8 +29,8 @@
                 android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
                 android:value="true" />
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
