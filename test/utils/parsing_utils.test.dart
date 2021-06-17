@@ -267,6 +267,14 @@ void _testParseOtpAuth() {
             throwsA(TypeMatcher<ArgumentError>()));
       });
 
+      test("Test longer values for period", () {
+        expect(
+                () => parseQRCodeToMap("otpauth://totp/ACME%20Co:john@example.com?"
+                "secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co"
+                "&algorithm=SHA1&digits=6&period=124432"),
+            throwsA(TypeMatcher<ArgumentError>()));
+      });
+
       test("Test valid totp uri", () {
         Map<String, dynamic> map = parseQRCodeToMap(
             "otpauth://totp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ"

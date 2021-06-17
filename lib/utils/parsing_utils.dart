@@ -411,13 +411,6 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   if (uriMap[URI_TYPE] == "totp") {
     // Parse period.
     String periodAsString = uri.queryParameters["period"] ?? "30";
-    if (periodAsString != "30" && periodAsString != "60") {
-      throw ArgumentError.value(
-        uri,
-        "uri",
-        "[$periodAsString] is not a valid value for the paramerter [period].",
-      );
-    }
 
     uriMap[URI_PERIOD] = int.parse(periodAsString);
   }
