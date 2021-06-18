@@ -53,8 +53,8 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[CircularProgressIndicator()],
   );
-  ButtonStyleButton? _button;
-  Uint8List? generatedSecret;
+  VoidCallback? _onPressed;
+  late Uint8List _generatedSecret;
 
   @override
   void initState() {
@@ -80,7 +80,15 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
         child: AlertDialog(
           title: Text(_title),
           content: _content,
-          actions: List<Widget>.from([_button]),
+          actions: [
+            TextButton(
+              child: Text(
+                AppLocalizations.of(context)!.dismiss,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              onPressed: _onPressed,
+            )
+          ],
         ),
       ),
     );
@@ -91,7 +99,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     Uint8List salt = secureRandom().nextBytes(widget._saltLength);
 
     // 2. Generate secret.
-    generatedSecret = await pbkdf2(
+    _generatedSecret = await pbkdf2(
       salt: salt,
       iterations: widget._iterations,
       keyLength: widget._keyLength,
@@ -106,13 +114,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     setState(() {
       _title = AppLocalizations.of(context)!.phonePart;
       _content = Text("$show");
-      _button = TextButton(
-        child: Text(
-          AppLocalizations.of(context)!.dismiss,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        onPressed: () => Navigator.of(context).pop(generatedSecret),
-      );
+      _onPressed = () => Navigator.of(context).pop(_generatedSecret);
     });
   }
 }

@@ -335,7 +335,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
     if (is2StepURI(uri)) {
       // Calculate the whole secret.
-      secret = await (showDialog(
+      secret = (await showDialog<Uint8List>(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) => TwoStepDialog(
@@ -344,7 +344,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           saltLength: uriMap[URI_SALT_LENGTH],
           password: secret,
         ),
-      ) as FutureOr<Uint8List>);
+      ))!;
     }
 
     // uri.host -> totp or hotp
