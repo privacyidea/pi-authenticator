@@ -45,7 +45,7 @@ import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
-typedef GetFBTokenCallback = Future<String?> Function(FirebaseConfig?);
+typedef GetFBTokenCallback = Future<String?> Function(FirebaseConfig);
 
 class TokenWidget extends StatefulWidget {
   final Token _token;
@@ -374,8 +374,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           await doPost(sslVerify: _token.sslVerify!, url: _token.url!, body: {
         'enrollment_credential': _token.enrollmentCredentials,
         'serial': _token.serial,
-        'fbtoken': await widget
-            ._getFirebaseToken(await (StorageUtil.loadFirebaseConfig(_token))),
+        'fbtoken': await widget._getFirebaseToken(
+            (await (StorageUtil.loadFirebaseConfig(_token)))!),
         'pubkey': serializeRSAPublicKeyPKCS8(_token.getPublicTokenKey()!),
       });
 

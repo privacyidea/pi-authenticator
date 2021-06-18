@@ -223,8 +223,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     }
 
     if (await StorageUtil.globalFirebaseConfigExists()) {
-      _initFirebase(await (StorageUtil.loadGlobalFirebaseConfig()
-          as FutureOr<FirebaseConfig>));
+      _initFirebase((await (StorageUtil.loadGlobalFirebaseConfig()))!);
     }
   }
 
@@ -402,10 +401,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     return token;
   }
 
-  Future<String?> _initFirebase(FirebaseConfig? config) async {
-    ArgumentError.checkNotNull(config, "config");
-    config = config!; // Fix null checks
-
+  Future<String?> _initFirebase(FirebaseConfig config) async {
     log("Initializing firebase.", name: "main_screen.dart");
 
     if (!await StorageUtil.globalFirebaseConfigExists() ||
@@ -697,7 +693,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           return TokenWidget(
             token,
             onDeleteClicked: () => _removeToken(token),
-            getFirebaseToken: (FirebaseConfig? config) => _initFirebase(config),
+            getFirebaseToken: (FirebaseConfig config) => _initFirebase(config),
           );
         },
         separatorBuilder: (context, index) {
