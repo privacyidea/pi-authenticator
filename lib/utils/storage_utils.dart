@@ -78,6 +78,11 @@ class StorageUtil {
 
       // TODO when the token version (token.version) changed handle this here.
 
+
+      // Handle new fields here
+      serializedToken['issuer'] ??= "";
+      serializedToken['label'] ??= "";
+
       if (serializedToken['type'] == enumAsString(TokenTypes.HOTP)) {
         tokenList.add(HOTPToken.fromJson(serializedToken));
       } else if (serializedToken['type'] == enumAsString(TokenTypes.TOTP)) {
