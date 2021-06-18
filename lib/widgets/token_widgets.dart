@@ -261,7 +261,7 @@ class _PushWidgetState extends _TokenWidgetState {
   void initState() {
     super.initState();
 
-    if (!_token.isRolledOut) {
+    if (!_token.isRolledOut && !DateTime.now().isAfter(_token.expirationDate)) {
       SchedulerBinding.instance.addPostFrameCallback((_) => _rollOutToken());
     }
 
@@ -350,21 +350,6 @@ class _PushWidgetState extends _TokenWidgetState {
         setState(() => _rollOutFailed = true);
       }
 
-      return;
-    }
-
-    if (DateTime.now().isAfter(_token.expirationDate)) {
-      log("Token is expired, abort roll-out and delete it.",
-          name: "token_widgets.dart",
-          error: "Now: ${DateTime.now()}, Token expires at ${[
-            _token.expirationDate
-          ]}, Token: $_token");
-
-      if (mounted) {
-        setState(() => _rollOutFailed = true);
-      }
-
-      _showMessage(Localization.of(context).errorTokenExpired(_token.label), 3);
       return;
     }
 
