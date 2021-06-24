@@ -82,6 +82,92 @@ class SettingsScreenState extends State<SettingsScreen> {
                 ),
               ],
             ),
+            Divider(),
+            SettingsGroup(
+              title: 'Language', // TODO Translate
+              children: [
+                StreamBuilder<bool>(
+                  stream: AppSettings.of(context).streamUseSystemLocale(),
+                  builder: (context, snapshot) {
+                    bool isActive = true;
+                    var onChanged; // TODO What is this?
+
+                    if (snapshot.hasData) {
+                      isActive = snapshot.data!;
+                      onChanged = (value) {
+                        AppSettings.of(context).setUseSystemLocale(value);
+                      };
+                    }
+
+                    return SwitchListTile(
+                        // title:
+                        // Text(Localization.of(context).useDeviceLocaleTitle),
+                        // subtitle: Text(Localization.of(context)
+                        //     .useDeviceLocaleDescription),
+                        title: Text('Use device locale'), // TODO Translate
+                        subtitle: Text('Description'), // TODO Translate
+                        value: isActive,
+                        onChanged: onChanged);
+                  },
+                ),
+                StreamBuilder<bool>(
+                  stream: AppSettings.of(context).streamUseSystemLocale(),
+                  builder: (context, snapshot) {
+                    bool enableDropDown = false;
+                    var onChanged; // TODO What is this?
+
+                    if (snapshot.hasData) {
+                      enableDropDown = !snapshot.data!;
+                    }
+
+                    if (enableDropDown) {
+                      onChanged = (Locale? locale) {
+                        AppSettings.of(context).setLocalePreference(locale!);
+                      };
+                    }
+
+                    return StreamBuilder<Locale>(
+                      stream: AppSettings.of(context).streamLocalePreference(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData || snapshot.hasError) {
+                          return Placeholder();
+                        } else {
+                          print(snapshot.data);
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: DropdownButton<Locale>(
+                              disabledHint: Text(
+                                "${snapshot.data}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1!
+                                    .copyWith(color: Colors.grey),
+                              ),
+                              isExpanded: true,
+                              value: snapshot.data,
+                              // Initial value and current value
+                              items: AppLocalizations.supportedLocales
+                                  .map<DropdownMenuItem<Locale>>(
+                                      (Locale value) {
+                                return DropdownMenuItem<Locale>(
+                                  value: value,
+                                  child: Text(
+                                    "$value",
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1,
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: onChanged,
+                            ),
+                          );
+                        }
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
             FutureBuilder<List<Token>>(
               initialData: [],
               future: StorageUtil.loadAllTokens(),
