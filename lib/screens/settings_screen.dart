@@ -84,7 +84,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             ),
             Divider(),
             SettingsGroup(
-              title: 'Language', // TODO Translate
+              title: AppLocalizations.of(context)!.language,
               children: [
                 StreamBuilder<bool>(
                   stream: AppSettings.of(context).streamUseSystemLocale(),
@@ -100,12 +100,10 @@ class SettingsScreenState extends State<SettingsScreen> {
                     }
 
                     return SwitchListTile(
-                        // title:
-                        // Text(Localization.of(context).useDeviceLocaleTitle),
-                        // subtitle: Text(Localization.of(context)
-                        //     .useDeviceLocaleDescription),
-                        title: Text('Use device locale'), // TODO Translate
-                        subtitle: Text('Description'), // TODO Translate
+                        title: Text(
+                            AppLocalizations.of(context)!.useDeviceLocaleTitle),
+                        subtitle: Text(AppLocalizations.of(context)!
+                            .useDeviceLocaleDescription),
                         value: isActive,
                         onChanged: onChanged);
                   },
