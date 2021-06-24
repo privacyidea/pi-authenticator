@@ -21,6 +21,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -54,11 +55,11 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
-        title: Text(AppLocalizations.of(context).synchronizingTokens),
+        title: Text(AppLocalizations.of(context)!.synchronizingTokens),
         content: _content,
         actions: <Widget>[
           TextButton(
-            child: Text(AppLocalizations.of(context).dismiss),
+            child: Text(AppLocalizations.of(context)!.dismiss),
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -98,11 +99,12 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
       String signature = p.privateTokenKey == null
           ? await Legacy.sign(p.serial, message)
-          : createBase32Signature(p.getPrivateTokenKey(), utf8.encode(message));
+          : createBase32Signature(
+              p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
 
       Response response;
       try {
-        response = await doPost(sslVerify: p.sslVerify, url: p.url, body: {
+        response = await doPost(sslVerify: p.sslVerify!, url: p.url!, body: {
           'new_fb_token': token,
           'serial': p.serial,
           'timestamp': timestamp,
@@ -112,7 +114,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
         log('Socket exception occurred: $e',
             name: 'update_firebase_token_dialog.dart');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context)
+          content: Text(AppLocalizations.of(context)!
               .errorSynchronizationNoNetworkConnection),
           duration: Duration(seconds: 3),
         ));
@@ -132,13 +134,13 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
     if (tokenWithFailedUpdate.isEmpty && tokenWithOutUrl.isEmpty) {
       setState(() {
-        _content = Text(AppLocalizations.of(context).allTokensSynchronized);
+        _content = Text(AppLocalizations.of(context)!.allTokensSynchronized);
       });
     } else {
       List<Widget> children = [];
 
       if (tokenWithFailedUpdate.isNotEmpty) {
-        children.add(Text(AppLocalizations.of(context).synchronizationFailed));
+        children.add(Text(AppLocalizations.of(context)!.synchronizationFailed));
         for (PushToken p in tokenWithFailedUpdate) {
           children.add(Text('• ${p.label}'));
         }
@@ -150,7 +152,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
         }
 
         children.add(Text(
-            AppLocalizations.of(context).tokensDoNotSupportSynchronization));
+            AppLocalizations.of(context)!.tokensDoNotSupportSynchronization));
         for (PushToken p in tokenWithOutUrl) {
           children.add(Text('• ${p.label}'));
         }

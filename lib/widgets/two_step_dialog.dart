@@ -34,7 +34,10 @@ class TwoStepDialog extends StatefulWidget {
   final Uint8List _password;
 
   TwoStepDialog(
-      {int saltLength, int iterations, int keyLength, Uint8List password})
+      {required int saltLength,
+      required int iterations,
+      required int keyLength,
+      required Uint8List password})
       : _saltLength = saltLength,
         _iterations = iterations,
         _keyLength = keyLength,
@@ -45,13 +48,13 @@ class TwoStepDialog extends StatefulWidget {
 }
 
 class _TwoStepDialogState extends State<TwoStepDialog> {
-  String _title;
+  late String _title;
   Widget _content = Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[CircularProgressIndicator()],
   );
-  ButtonStyleButton _button;
-  Uint8List generatedSecret;
+  VoidCallback? _onPressed;
+  late Uint8List _generatedSecret;
 
   @override
   void initState() {
@@ -64,7 +67,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _title = AppLocalizations.of(context).generatingPhonePart;
+    _title = AppLocalizations.of(context)!.generatingPhonePart;
   }
 
   @override
@@ -77,7 +80,15 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
         child: AlertDialog(
           title: Text(_title),
           content: _content,
-          actions: <Widget>[_button],
+          actions: [
+            TextButton(
+              child: Text(
+                AppLocalizations.of(context)!.dismiss,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              onPressed: _onPressed,
+            )
+          ],
         ),
       ),
     );
@@ -88,7 +99,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     Uint8List salt = secureRandom().nextBytes(widget._saltLength);
 
     // 2. Generate secret.
-    generatedSecret = await pbkdf2(
+    _generatedSecret = await pbkdf2(
       salt: salt,
       iterations: widget._iterations,
       keyLength: widget._keyLength,
@@ -101,15 +112,9 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
 
     // Update UI.
     setState(() {
-      _title = AppLocalizations.of(context).phonePart;
+      _title = AppLocalizations.of(context)!.phonePart;
       _content = Text("$show");
-      _button = TextButton(
-        child: Text(
-          AppLocalizations.of(context).dismiss,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        onPressed: () => Navigator.of(context).pop(generatedSecret),
-      );
+      _onPressed = () => Navigator.of(context).pop(_generatedSecret);
     });
   }
 }

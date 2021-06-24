@@ -56,7 +56,7 @@ import 'package:uuid/uuid.dart';
 import 'custom_about_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  MainScreen({Key key, this.title}) : super(key: key);
+  MainScreen({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
@@ -70,7 +70,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   List<Token> _tokenList = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  Timer _pollTimer;
+  Timer? _pollTimer;
 
   void _showChangelogAndGuide() async {
     // Do not show these info when running driver tests
@@ -97,10 +97,10 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   void _updateFbTokenOnChange() async {
-    String newToken = await StorageUtil.getNewFirebaseToken();
+    String? newToken = await StorageUtil.getNewFirebaseToken();
 
-    if ((await StorageUtil.getCurrentFirebaseToken()) != newToken &&
-        newToken != null) {
+    if (newToken != null &&
+        (await StorageUtil.getCurrentFirebaseToken()) != newToken) {
       _updateFirebaseToken();
     }
   }
@@ -164,7 +164,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       String message = '${p.serial}|$timestamp';
       String signature = p.privateTokenKey == null
           ? await Legacy.sign(p.serial, message)
-          : createBase32Signature(p.getPrivateTokenKey(), utf8.encode(message));
+          : createBase32Signature(
+              p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
 
       Map<String, String> parameters = {
         'serial': p.serial,
@@ -174,7 +175,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
       try {
         Response response = await doGet(
-            url: p.url, parameters: parameters, sslVerify: p.sslVerify);
+            url: p.url!, parameters: parameters, sslVerify: p.sslVerify);
 
         if (response.statusCode == 200) {
           // The signature of this message must not be verified as each push
@@ -182,7 +183,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           Map<String, dynamic> result = jsonDecode(response.body)['result'];
           List dataList = result['value'];
 
-          for (Map<String, dynamic> data in dataList) {
+          for (Map<String, dynamic> data
+              in dataList as Iterable<Map<String, dynamic>>) {
             _handleIncomingAuthRequest(RemoteMessage(data: data));
           }
         } else {
@@ -221,7 +223,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     }
 
     if (await StorageUtil.globalFirebaseConfigExists()) {
-      _initFirebase(await StorageUtil.loadGlobalFirebaseConfig());
+      _initFirebase((await (StorageUtil.loadGlobalFirebaseConfig()))!);
     }
   }
 
@@ -252,14 +254,14 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _scanQRCode(),
-        tooltip: AppLocalizations.of(context).scanQrCode,
+        tooltip: AppLocalizations.of(context)!.scanQrCode,
         child: Icon(Icons.add),
       ),
     );
   }
 
   _scanQRCode() async {
-    String barcode = await Navigator.push(
+    String? barcode = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => QRScannerScreen()),
     );
@@ -328,13 +330,11 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     String algorithm = uriMap[URI_ALGORITHM];
     int digits = uriMap[URI_DIGITS];
     Uint8List secret = uriMap[URI_SECRET];
-    int counter = uriMap[URI_COUNTER];
-    int period = uriMap[URI_PERIOD];
     String issuer = uriMap[URI_ISSUER];
 
     if (is2StepURI(uri)) {
       // Calculate the whole secret.
-      secret = await showDialog(
+      secret = (await showDialog<Uint8List>(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) => TwoStepDialog(
@@ -343,7 +343,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           saltLength: uriMap[URI_SALT_LENGTH],
           password: secret,
         ),
-      );
+      ))!;
     }
 
     // uri.host -> totp or hotp
@@ -355,7 +355,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         algorithm: mapStringToAlgorithm(algorithm),
         digits: digits,
         secret: encodeSecretAs(secret, Encodings.base32),
-        counter: counter,
+        counter: uriMap[URI_COUNTER],
       );
     } else if (type == "totp") {
       return TOTPToken(
@@ -365,7 +365,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         algorithm: mapStringToAlgorithm(algorithm),
         digits: digits,
         secret: encodeSecretAs(secret, Encodings.base32),
-        period: period,
+        period: uriMap[URI_PERIOD],
       );
     } else {
       throw ArgumentError.value(
@@ -401,9 +401,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     return token;
   }
 
-  Future<String> _initFirebase(FirebaseConfig config) async {
-    ArgumentError.checkNotNull(config, "config");
-
+  Future<String?> _initFirebase(FirebaseConfig config) async {
     log("Initializing firebase.", name: "main_screen.dart");
 
     if (!await StorageUtil.globalFirebaseConfigExists() ||
@@ -429,7 +427,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           error: config,
         );
 
-        _showMessage(AppLocalizations.of(context).firebaseConfigCorrupted,
+        _showMessage(AppLocalizations.of(context)!.firebaseConfigCorrupted,
             Duration(seconds: 15));
         return null;
       }
@@ -471,7 +469,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     //   await firebaseMessaging.requestNotificationPermissions();
     // }
 
-    String firebaseToken = await FirebaseMessaging.instance.getToken();
+    String? firebaseToken = await FirebaseMessaging.instance.getToken();
     log("Firebase initialized, token added",
         name: "main_screen.dart", error: firebaseToken);
     // The Firebase Plugin will throw a network exception, but that does not reach
@@ -518,7 +516,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   /// as this can not be guaranteed to work, there is a manual option available
   /// through the settings also.
   void _updateFirebaseToken() async {
-    String newToken = await StorageUtil.getNewFirebaseToken();
+    String? newToken = await StorageUtil.getNewFirebaseToken();
 
     if (newToken == null) {
       // Nothing to update here!
@@ -547,10 +545,11 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
       String signature = p.privateTokenKey == null
           ? await Legacy.sign(p.serial, message)
-          : createBase32Signature(p.getPrivateTokenKey(), utf8.encode(message));
+          : createBase32Signature(
+              p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
 
       Response response =
-          await doPost(sslVerify: p.sslVerify, url: p.url, body: {
+          await doPost(sslVerify: p.sslVerify!, url: p.url!, body: {
         'new_fb_token': newToken,
         'serial': p.serial,
         'timestamp': timestamp,
@@ -586,7 +585,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     log('Incoming push auth request for token with serial.',
         name: 'main_screen.dart', error: requestedSerial);
 
-    PushToken token = tokenList
+    PushToken? token = tokenList
         .whereType<PushToken>()
         .firstWhere((t) => t.serial == requestedSerial && t.isRolledOut);
 
@@ -612,8 +611,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
       bool isVerified = token.privateTokenKey == null
           ? await Legacy.verify(token.serial, signedData, signature)
-          : verifyRSASignature(token.getPublicServerKey(),
-              utf8.encode(signedData), base32.decode(signature));
+          : verifyRSASignature(token.getPublicServerKey()!,
+              utf8.encode(signedData) as Uint8List, base32.decode(signature));
 
       if (isVerified) {
         log('Validating incoming message was successful.',
@@ -694,7 +693,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           return TokenWidget(
             token,
             onDeleteClicked: () => _removeToken(token),
-            getFirebaseToken: (config) => _initFirebase(config),
+            getFirebaseToken: (FirebaseConfig config) => _initFirebase(config),
           );
         },
         separatorBuilder: (context, index) {
@@ -709,12 +708,12 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         ? RefreshIndicator(
             child: list,
             onRefresh: () async {
-              _showMessage(AppLocalizations.of(context).pollingChallenges,
+              _showMessage(AppLocalizations.of(context)!.pollingChallenges,
                   Duration(seconds: 1));
               bool success = await _pollForRequests();
               if (!success) {
                 _showMessage(
-                  AppLocalizations.of(context).pollingFailNoNetworkConnection,
+                  AppLocalizations.of(context)!.pollingFailNoNetworkConnection,
                   Duration(seconds: 3),
                 );
               }
@@ -773,29 +772,29 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
             value: "add_manually",
-            child: Text(AppLocalizations.of(context).addToken),
+            child: Text(AppLocalizations.of(context)!.addToken),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "settings",
-            child: Text(AppLocalizations.of(context).settings),
+            child: Text(AppLocalizations.of(context)!.settings),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "about",
-            child: Text(AppLocalizations.of(context).about),
+            child: Text(AppLocalizations.of(context)!.about),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "guide",
-            child: Text(AppLocalizations.of(context).guide),
+            child: Text(AppLocalizations.of(context)!.guide),
           ),
         ],
       ),
     ];
   }
 
-  _addToken(Token newToken) {
+  _addToken(Token? newToken) {
     log("Adding new token:", name: "main_screen.dart", error: newToken);
     if (newToken != null) {
       _tokenList.add(newToken);

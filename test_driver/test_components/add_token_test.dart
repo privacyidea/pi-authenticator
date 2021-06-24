@@ -25,7 +25,7 @@ import 'package:test/test.dart';
 
 void addTokenTest() {
   group('Add token manually', () {
-    FlutterDriver driver;
+    FlutterDriver? driver;
 
     // Connect to the Flutter driver before running any tests.
     setUpAll(() async {
@@ -35,7 +35,7 @@ void addTokenTest() {
     // Close the connection to the driver after the tests have completed.
     tearDownAll(() async {
       if (driver != null) {
-        driver.close();
+        driver!.close();
       }
     });
 
@@ -43,52 +43,52 @@ void addTokenTest() {
     final addTokenButton = find.text("Add token");
 
     test("Click the 'add' button", () async {
-      await driver.tap(buttonFinder);
-      await driver.tap(addTokenButton);
+      await driver!.tap(buttonFinder);
+      await driver!.tap(addTokenButton);
     });
 
     test("Enter name and secret", () async {
-      await driver.tap(find.ancestor(
+      await driver!.tap(find.ancestor(
           of: find.text("Name"), matching: find.byType("TextFormField")));
 
-      await driver.enterText("TestName");
+      await driver!.enterText("TestName");
 
-      await driver.tap(find.ancestor(
+      await driver!.tap(find.ancestor(
           of: find.text("Secret"), matching: find.byType("TextFormField")));
 
-      await driver.enterText("TestSecret");
+      await driver!.enterText("TestSecret");
     });
 
     test("Change token type", () async {
-      await driver.tap(find.text("SHA1"));
-      await driver.tap(find.text("SHA512"));
+      await driver!.tap(find.text("SHA1"));
+      await driver!.tap(find.text("SHA512"));
 
-      await driver.tap(find.text("6"));
-      await driver.tap(find.text("8"));
+      await driver!.tap(find.text("6"));
+      await driver!.tap(find.text("8"));
     });
 
     test("Click 'add token'", () async {
-      await driver.tap(find.text("Add token"));
+      await driver!.tap(find.text("Add token"));
     });
 
     test("Assert the token exists", () async {
-      await driver.tap(find.text("TestName"));
-      await driver.tap(find.text("3058 7488"));
+      await driver!.tap(find.text("TestName"));
+      await driver!.tap(find.text("3058 7488"));
     });
 
     test('Clean up', () async {
-      await driver.scroll(
+      await driver!.scroll(
           find.text("TestName"), -500, 0, Duration(milliseconds: 100));
 
       // Delete the token.
-      await driver.tap(find.text("Delete"));
+      await driver!.tap(find.text("Delete"));
 
       // Wait for the dialog to open.
-      await driver.waitFor(find.text("Confirm deletion"));
+      await driver!.waitFor(find.text("Confirm deletion"));
 
-      await driver.tap(find.text("Delete"));
+      await driver!.tap(find.text("Delete"));
 
-      await driver.waitForAbsent(find.text("TestName"));
+      await driver!.waitForAbsent(find.text("TestName"));
     });
   });
 }

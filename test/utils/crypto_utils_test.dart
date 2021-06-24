@@ -837,10 +837,10 @@ void _testRSASigning() {
 
       String message = 'I am a signature.';
 
-      var signature = createRSASignature(privateKey, utf8.encode(message));
+      var signature = createRSASignature(privateKey, utf8.encode(message) as Uint8List);
 
       expect(
-          true, verifyRSASignature(publicKey, utf8.encode(message), signature));
+          true, verifyRSASignature(publicKey, utf8.encode(message) as Uint8List, signature));
     }, timeout: Timeout(Duration(minutes: 5)));
 
     test('Signature is invalid', () async {
@@ -850,13 +850,13 @@ void _testRSASigning() {
 
       String message = 'I am a signature.';
 
-      var signature = createRSASignature(privateKey, utf8.encode(message));
+      var signature = createRSASignature(privateKey, utf8.encode(message) as Uint8List);
 
       expect(
           false,
           verifyRSASignature(
               publicKey,
-              utf8.encode('I am not the signature you are looking for.'),
+              utf8.encode('I am not the signature you are looking for.') as Uint8List,
               signature));
     }, timeout: Timeout(Duration(minutes: 5)));
   }, timeout: Timeout(Duration(minutes: 16)));

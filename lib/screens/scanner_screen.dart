@@ -47,7 +47,7 @@ class QRScannerScreenState extends State<QRScannerScreen> {
           ),
           qrCodeCallback: (code) {
             Navigator.pop(context, code);
-            key.currentState.stop();
+            key.currentState!.stop();
           },
         ),
       ),

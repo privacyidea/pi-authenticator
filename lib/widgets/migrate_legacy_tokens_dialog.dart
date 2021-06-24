@@ -53,11 +53,11 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
-        title: Text(AppLocalizations.of(context).migratingToken),
+        title: Text(AppLocalizations.of(context)!.migratingToken),
         content: _content,
         actions: <Widget>[
           TextButton(
-            child: Text(AppLocalizations.of(context).dismiss),
+            child: Text(AppLocalizations.of(context)!.dismiss),
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -87,9 +87,9 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
     String text;
 
     if (legacyTokens.isEmpty) {
-      text = AppLocalizations.of(context).noTokensForMigration;
+      text = AppLocalizations.of(context)!.noTokensForMigration;
     } else {
-      text = AppLocalizations.of(context).migrationSuccess;
+      text = AppLocalizations.of(context)!.migrationSuccess;
     }
 
     final ScrollController controller = ScrollController();

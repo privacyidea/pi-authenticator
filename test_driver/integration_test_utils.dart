@@ -25,7 +25,7 @@ import 'package:test/test.dart';
 
 void addTokenRoutine(String name, String secret) {
   group('Copy otp value to clipboard', () {
-    FlutterDriver driver;
+    FlutterDriver? driver;
 
     // Connect to the Flutter driver before running any tests.
     setUpAll(() async {
@@ -35,35 +35,35 @@ void addTokenRoutine(String name, String secret) {
     // Close the connection to the driver after the tests have completed.
     tearDownAll(() async {
       if (driver != null) {
-        driver.close();
+        driver!.close();
       }
     });
 
     test("Click the 'add' button", () async {
-      await driver.tap(find.byType("PopupMenuButton<String>"));
-      await driver.tap(find.text("Add token"));
+      await driver!.tap(find.byType("PopupMenuButton<String>"));
+      await driver!.tap(find.text("Add token"));
     });
 
     test("Enter name and secret", () async {
       // Enter the name.
-      await driver.tap(find.ancestor(
+      await driver!.tap(find.ancestor(
           of: find.text("Name"), matching: find.byType("TextFormField")));
 
-      await driver.enterText(name);
+      await driver!.enterText(name);
 
       // Enter the secret.
-      await driver.tap(find.ancestor(
+      await driver!.tap(find.ancestor(
           of: find.text("Secret"), matching: find.byType("TextFormField")));
 
-      await driver.enterText(secret);
+      await driver!.enterText(secret);
     });
 
     test("Click 'add token'", () async {
-      await driver.tap(find.text("Add token"));
+      await driver!.tap(find.text("Add token"));
     });
 
     test("Assert the token exists", () async {
-      await driver.tap(find.text(name));
+      await driver!.tap(find.text(name));
     });
   });
 }

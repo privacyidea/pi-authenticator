@@ -27,7 +27,7 @@ import '../integration_test_utils.dart';
 
 void copyToClipboardTest() {
   group('Copy otp value to clipboard', () {
-    FlutterDriver driver;
+    FlutterDriver? driver;
 
     // Connect to the Flutter driver before running any tests.
     setUpAll(() async {
@@ -37,7 +37,7 @@ void copyToClipboardTest() {
     // Close the connection to the driver after the tests have completed.
     tearDownAll(() async {
       if (driver != null) {
-        driver.close();
+        driver!.close();
       }
     });
 
@@ -46,36 +46,36 @@ void copyToClipboardTest() {
     addTokenRoutine(tokenName, secret);
 
     test('Copy otp value', () async {
-      await doLongPress(driver, find.text(tokenName));
+      await doLongPress(driver!, find.text(tokenName));
     });
 
     test('Clean up', () async {
-      await driver.scroll(
+      await driver!.scroll(
           find.text("TokenName"), -500, 0, Duration(milliseconds: 100));
 
       // Delete the token.
-      await driver.tap(find.text("Delete"));
+      await driver!.tap(find.text("Delete"));
 
       // Wait for the dialog to open.
-      await driver.waitFor(find.text("Confirm deletion"));
+      await driver!.waitFor(find.text("Confirm deletion"));
 
-      await driver.tap(find.text("Delete"));
+      await driver!.tap(find.text("Delete"));
 
-      await driver.waitForAbsent(find.text("TestName"));
+      await driver!.waitForAbsent(find.text("TestName"));
     });
 
     test('Verify value is in clipboard', () async {
-      await driver.tap(find.byType("PopupMenuButton<String>"));
-      await driver.tap(find.text("Add token"));
+      await driver!.tap(find.byType("PopupMenuButton<String>"));
+      await driver!.tap(find.text("Add token"));
 
       await doLongPress(
-          driver,
+          driver!,
           find.ancestor(
               of: find.text("Name"), matching: find.byType("TextFormField")));
 
-      await driver.tap(find.text("Paste"));
+      await driver!.tap(find.text("Paste"));
 
-      await driver.waitFor(find.text('591668'));
+      await driver!.waitFor(find.text('591668'));
     });
   });
 }
