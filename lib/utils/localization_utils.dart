@@ -55,6 +55,15 @@ class Localization {
     );
   }
 
+  get deleteCache {
+    return Intl.message(
+      'Delete Application Cache',
+      desc: 'Button text.',
+      locale: localeName,
+      name: 'deleteCache',
+    );
+  }
+
   // ###########################################################################
   // WORDS (E.G. FOR BUTTONS)
   // ###########################################################################

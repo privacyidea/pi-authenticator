@@ -494,5 +494,11 @@
         "example": "cancel"
       }
     }
+  },
+  "deleteCache": "Delete Application Cache",
+  "@deleteCache": {
+    "description": "Button text.",
+    "type": "text",
+    "placeholders": {}
   }
 }

@@ -100,6 +100,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "confirmDeletionOf" : m1,
     "decline" : MessageLookupByLibrary.simpleMessage("Refuser"),
     "decliningPushAuthRequestFor" : m2,
+    "deleteCache" : MessageLookupByLibrary.simpleMessage("Effacer les données de l\'application."),
     "errorAuthenticationFailedUnknownError" : m3,
     "errorAuthenticationNotPossibleWithoutNetworkAccess" : MessageLookupByLibrary.simpleMessage("Aucune connectivité réseau. Authentification impossible."),
     "errorOnlyOneFirebaseProjectIsSupported" : m4,

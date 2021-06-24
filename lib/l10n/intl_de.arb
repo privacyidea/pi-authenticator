@@ -494,5 +494,11 @@
     "description": "Button text.",
     "type": "text",
     "placeholders": {}
+  },
+  "deleteCache": "Lösche Appdaten",
+  "@deleteCache": {
+    "description": "Button text.",
+    "type": "text",
+    "placeholders": {}
   }
 }

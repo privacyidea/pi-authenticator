@@ -112,6 +112,13 @@ class _MainScreenState extends State<MainScreen> {
               content: Text(Localization.of(context).paddingExceptionBody),
               actions: [
                 FlatButton(
+                  onPressed: () async {
+                    await StorageUtil.deleteEverything();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(Localization.of(context).deleteCache),
+                ),
+                FlatButton(
                   onPressed: () {
                     PlatformException newE = PlatformException(
                         code: e.code + ">>> WE ALREADY KNOW ABOUT THIS <<<",
