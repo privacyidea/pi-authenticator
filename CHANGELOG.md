@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.1.4] - 2021-XX-XX
+## [3.1.3] - 2021-06-24
 
 ### Added
 
@@ -9,23 +9,15 @@
 
 ### Changed
 
+- Removed error reporting on known exception when push tokens are used but no network connection is available
 - The issuer of tokens is shown additionally to its label
 - The issuer of tokens is parsed from the label part of the otpauth URI also
 
 ### Fixed
 
+- Fixed calling animation controller when it doesn't exist
 - Fixed error when receiving challenges for non-existing tokens
 - Fixed PaddingError on loading tokens on some devices
-
-## [3.1.3] - 2021-05-07
-
-### Changed
-
-- Removed error reporting on known exception when push tokens are used but no network connection is available
-
-### Fixed
-
-- Fixed calling animation controller when it doesn't exist
 
 ## [3.1.2] - 2021-04-22
 
