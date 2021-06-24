@@ -90,7 +90,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                   stream: AppSettings.of(context).streamUseSystemLocale(),
                   builder: (context, snapshot) {
                     bool isActive = true;
-                    var onChanged; // TODO What is this?
+                    ValueChanged<bool>? onChanged;
 
                     if (snapshot.hasData) {
                       isActive = snapshot.data!;
@@ -112,7 +112,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                   stream: AppSettings.of(context).streamUseSystemLocale(),
                   builder: (context, snapshot) {
                     bool enableDropDown = false;
-                    var onChanged; // TODO What is this?
+                    ValueChanged<Locale?>? onChanged;
 
                     if (snapshot.hasData) {
                       enableDropDown = !snapshot.data!;
