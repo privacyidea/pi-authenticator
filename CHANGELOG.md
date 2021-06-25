@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.1.4] - 2021-XX-XX
+
+### Changed
+
+- Changed android api target level to 30
+
 ## [3.1.3] - 2021-06-24
 
 ### Added
