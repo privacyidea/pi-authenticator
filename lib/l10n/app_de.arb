@@ -482,5 +482,23 @@
     "description": "Tells the user that the roll-out failed because no network connection is available.",
     "type": "text",
     "placeholders": {}
+  },
+  "useDeviceLocaleTitle": "Nutze Systemsprache",
+  "@useDeviceLocaleTitle": {
+    "description": "Title of the switch tile where using the devices language can be enabled.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "useDeviceLocaleDescription": "Nutze Systemsprache, falls diese unterstützt wird. Anderenfalls nutze Englisch. ",
+  "@useDeviceLocaleDescription": {
+    "description": "Description of the switch tile where using the devices language can be enabled.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "language": "Sprache",
+  "@language": {
+    "description": "Title of language setting group.",
+    "type": "text",
+    "placeholders": {}
   }
 }

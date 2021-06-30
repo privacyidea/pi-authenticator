@@ -82,6 +82,90 @@ class SettingsScreenState extends State<SettingsScreen> {
                 ),
               ],
             ),
+            Divider(),
+            SettingsGroup(
+              title: AppLocalizations.of(context)!.language,
+              children: [
+                StreamBuilder<bool>(
+                  stream: AppSettings.of(context).streamUseSystemLocale(),
+                  builder: (context, snapshot) {
+                    bool isActive = true;
+                    ValueChanged<bool>? onChanged;
+
+                    if (snapshot.hasData) {
+                      isActive = snapshot.data!;
+                      onChanged = (value) {
+                        AppSettings.of(context).setUseSystemLocale(value);
+                      };
+                    }
+
+                    return SwitchListTile(
+                        title: Text(
+                            AppLocalizations.of(context)!.useDeviceLocaleTitle),
+                        subtitle: Text(AppLocalizations.of(context)!
+                            .useDeviceLocaleDescription),
+                        value: isActive,
+                        onChanged: onChanged);
+                  },
+                ),
+                StreamBuilder<bool>(
+                  stream: AppSettings.of(context).streamUseSystemLocale(),
+                  builder: (context, snapshot) {
+                    bool enableDropDown = false;
+                    ValueChanged<Locale?>? onChanged;
+
+                    if (snapshot.hasData) {
+                      enableDropDown = !snapshot.data!;
+                    }
+
+                    if (enableDropDown) {
+                      onChanged = (Locale? locale) {
+                        AppSettings.of(context).setLocalePreference(locale!);
+                      };
+                    }
+
+                    return StreamBuilder<Locale>(
+                      stream: AppSettings.of(context).streamLocalePreference(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData || snapshot.hasError) {
+                          return Placeholder();
+                        } else {
+                          print(snapshot.data);
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: DropdownButton<Locale>(
+                              disabledHint: Text(
+                                "${snapshot.data}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1!
+                                    .copyWith(color: Colors.grey),
+                              ),
+                              isExpanded: true,
+                              value: snapshot.data,
+                              // Initial value and current value
+                              items: AppLocalizations.supportedLocales
+                                  .map<DropdownMenuItem<Locale>>(
+                                      (Locale value) {
+                                return DropdownMenuItem<Locale>(
+                                  value: value,
+                                  child: Text(
+                                    "$value",
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1,
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: onChanged,
+                            ),
+                          );
+                        }
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
             FutureBuilder<List<Token>>(
               initialData: [],
               future: StorageUtil.loadAllTokens(),
@@ -256,6 +340,8 @@ class AppSettings extends InheritedWidget {
   static String _prefEnablePoll = 'KEY_ENABLE_POLLING';
   static String _showGuideOnStartKey = 'KEY_SHOW_GUIDE_ON_START';
   static String _crashReportRecipientsKey = 'KEY_CRASH_REPORT_RECIPIENTS';
+  static String _localePreferenceKey = 'KEY_LOCALE_PREFERENCE';
+  static String _useSystemLocaleKey = 'KEY_USE_SYSTEM_LOCALE';
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
@@ -275,12 +361,18 @@ class AppSettings extends InheritedWidget {
         _crashReportRecipients = preferences.getStringList(
             _crashReportRecipientsKey,
             defaultValue: [defaultCrashReportRecipient]),
+        _localePreference = preferences.getString(_localePreferenceKey,
+            defaultValue: _encodeLocale(AppLocalizations.supportedLocales[0])),
+        _useSystemLocale =
+            preferences.getBool(_useSystemLocaleKey, defaultValue: true),
         super(child: child);
 
   final Preference<bool> _hideOpts;
   final Preference<bool> _enablePolling;
   final Preference<bool> _showGuideOnStart;
   final Preference<List<String>> _crashReportRecipients;
+  final Preference<String> _localePreference;
+  final Preference<bool> _useSystemLocale;
 
   final bool isTestMode;
 
@@ -307,4 +399,28 @@ class AppSettings extends InheritedWidget {
   set showGuideOnStart(bool value) => _showGuideOnStart.setValue(value);
 
   Stream<bool> showGuideOnStartStream() => _showGuideOnStart;
+
+  void setLocalePreference(Locale locale) =>
+      _localePreference.setValue(_encodeLocale(locale));
+
+  Locale getLocalePreference() => _decodeLocale(_localePreference.getValue());
+
+  Stream<Locale> streamLocalePreference() {
+    return _localePreference.map((String str) => _decodeLocale(str));
+  }
+
+  Stream<bool> streamUseSystemLocale() => _useSystemLocale;
+
+  bool getUseSystemLocale() => _useSystemLocale.getValue();
+
+  void setUseSystemLocale(bool value) => _useSystemLocale.setValue(value);
+
+  static String _encodeLocale(Locale locale) {
+    return '${locale.languageCode}#${locale.countryCode}';
+  }
+
+  static Locale _decodeLocale(String str) {
+    var split = str.split('#');
+    return split[1] == "null" ? Locale(split[0]) : Locale(split[0], split[1]);
+  }
 }

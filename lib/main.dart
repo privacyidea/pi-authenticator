@@ -80,15 +80,37 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
               ]),
             );
 
-            return MaterialApp(
-              navigatorKey: Catcher.navigatorKey,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              title: applicationName,
-              theme: lightThemeData,
-              darkTheme: darkThemeData,
-              themeMode: EasyDynamicTheme.of(context).themeMode,
-              home: MainScreen(title: applicationName),
+            return StreamBuilder<bool>(
+              stream: AppSettings.of(context).streamUseSystemLocale(),
+              builder: (context, snapshot) {
+                bool useSystemLocale = true;
+                if (snapshot.hasData) {
+                  useSystemLocale = snapshot.data!;
+                }
+
+                return StreamBuilder<Locale>(
+                  stream: AppSettings.of(context).streamLocalePreference(),
+                  builder: (context, snapshot) {
+                    Locale? locale;
+                    if (!useSystemLocale && snapshot.hasData) {
+                      locale = snapshot.data!;
+                    }
+
+                    return MaterialApp(
+                      navigatorKey: Catcher.navigatorKey,
+                      localizationsDelegates:
+                          AppLocalizations.localizationsDelegates,
+                      supportedLocales: AppLocalizations.supportedLocales,
+                      locale: locale,
+                      title: applicationName,
+                      theme: lightThemeData,
+                      darkTheme: darkThemeData,
+                      themeMode: EasyDynamicTheme.of(context).themeMode,
+                      home: MainScreen(title: applicationName),
+                    );
+                  },
+                );
+              },
             );
           },
         ),
