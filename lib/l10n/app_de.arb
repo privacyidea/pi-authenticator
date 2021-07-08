@@ -500,5 +500,11 @@
     "description": "Title of language setting group.",
     "type": "text",
     "placeholders": {}
+  },
+  "handlingOtpAuthLinkFailed": "Der übergebene Link konnte nicht verarbeitet werden. Grund dafür ist eine Fehlerhafte Kommunikation mit der unterliegenden Platform.",
+  "@handlingOtpAuthLinkFailed": {
+    "description": "Message that tells the user that handling a link failed. This link was provided through the 'open link with app' on android or iOS.",
+    "type": "text",
+    "placeholders": {}
   }
 }
