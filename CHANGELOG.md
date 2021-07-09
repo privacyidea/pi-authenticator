@@ -5,6 +5,7 @@
 ### Changed
 
 - Changed android api target level to 30
+- Subject of error reports now start with version number
 
 ## [3.1.3] - 2021-06-24
 
