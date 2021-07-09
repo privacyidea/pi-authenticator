@@ -81,8 +81,7 @@ class CustomEmailManualHandler extends ReportHandler {
   }
 
   String _getTitle(Report report) {
-    return "Error report: >> ${report.error}"
-        " (${report.applicationParameters.entries.where((e) => e.key == 'version').first.value}) <<";
+    return "(${report.applicationParameters.entries.where((e) => e.key == 'version').first.value}) Error report: >> ${report.error} <<";
   }
 
   String _getBody(Report report) {
