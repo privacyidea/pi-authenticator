@@ -2,6 +2,10 @@ PODS:
   - barcode_scan (0.0.1):
     - Flutter
     - MTBBarcodeScanner
+  - catcher (0.0.1):
+    - Flutter
+  - device_info (0.0.1):
+    - Flutter
   - Firebase/Core (6.34.0):
     - Firebase/CoreOnly
     - FirebaseAnalytics (= 6.9.0)
@@ -56,8 +60,13 @@ PODS:
   - Flutter (1.0.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
+  - flutter_mailer (0.0.1):
+    - Flutter
   - flutter_secure_storage (3.3.1):
     - Flutter
+  - fluttertoast (0.0.2):
+    - Flutter
+    - Toast
   - GoogleAppMeasurement (6.9.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 6.7)
     - GoogleUtilities/MethodSwizzler (~> 6.7)
@@ -103,16 +112,21 @@ PODS:
   - SwiftyRSA (1.5.0):
     - SwiftyRSA/ObjC (= 1.5.0)
   - SwiftyRSA/ObjC (1.5.0)
+  - Toast (4.0.0)
   - url_launcher (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - barcode_scan (from `.symlinks/plugins/barcode_scan/ios`)
+  - catcher (from `.symlinks/plugins/catcher/ios`)
+  - device_info (from `.symlinks/plugins/device_info/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
+  - flutter_mailer (from `.symlinks/plugins/flutter_mailer/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - pi_authenticator_legacy (from `.symlinks/plugins/pi_authenticator_legacy/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
@@ -135,10 +149,15 @@ SPEC REPOS:
     - PromisesObjC
     - Protobuf
     - SwiftyRSA
+    - Toast
 
 EXTERNAL SOURCES:
   barcode_scan:
     :path: ".symlinks/plugins/barcode_scan/ios"
+  catcher:
+    :path: ".symlinks/plugins/catcher/ios"
+  device_info:
+    :path: ".symlinks/plugins/device_info/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_messaging:
@@ -147,8 +166,12 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
+  flutter_mailer:
+    :path: ".symlinks/plugins/flutter_mailer/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   pi_authenticator_legacy:
@@ -160,6 +183,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   barcode_scan: 33f586d02270046fc6559135038b34b5754eaa4f
+  catcher: e5585ed31458c849f4fd9c3719b2fcb0188b8918
+  device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Firebase: c23a36d9e4cdf7877dfcba8dd0c58add66358999
   firebase_core: 335c02abd48672b7c83c683df833d0488a72e73e
   firebase_messaging: 21344b3b3a7d9d325d63a70e3750c0c798fe1e03
@@ -171,7 +196,9 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 5eca4ef173de76253352511aafef774caa1cba2a
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
+  flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
+  fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   GoogleAppMeasurement: a6a3a066369828db64eda428cb2856dc1cdc7c4e
   GoogleDataTransport: f56af7caa4ed338dc8e138a5d7c5973e66440833
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
@@ -183,8 +210,9 @@ SPEC CHECKSUMS:
   Protobuf: 0cde852566359049847168e51bd1c690e0f70056
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   SwiftyRSA: 6e528fb1b1a87d5111c48081083b141d6d65f1cf
+  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: 6fdd8a8a766b9af82ee9dcd89b2adc9144e2b847
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1
