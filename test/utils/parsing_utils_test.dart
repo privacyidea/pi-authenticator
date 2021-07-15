@@ -268,11 +268,12 @@ void _testParseOtpAuth() {
       });
 
       test("Test longer values for period", () {
-        expect(
-                () => parseQRCodeToMap("otpauth://totp/ACME%20Co:john@example.com?"
+        Map<String, dynamic> map =
+            parseQRCodeToMap("otpauth://totp/ACME%20Co:john@example.com?"
                 "secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co"
-                "&algorithm=SHA1&digits=6&period=124432"),
-            throwsA(TypeMatcher<ArgumentError>()));
+                "&algorithm=SHA1&digits=6&period=124432");
+
+        expect(map[URI_PERIOD], 124432);
       });
 
       test("Test valid totp uri", () {
