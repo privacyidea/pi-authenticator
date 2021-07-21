@@ -59,5 +59,7 @@
 	<false/>
 	<key>FIREBASE_ANALYTICS_COLLECTION_DISABLED</key>
 	<true/>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Network access is required to roll out push tokens.</string>
 </dict>
 </plist>
