@@ -6,7 +6,7 @@
 
 - Changed android api target level to 30
 - Subject of error reports now start with version number
-- Enable automatic polling per default on iOS devices (to fix missing push challenges)
+- Enable automatic polling per default on all devices (to fix missing push challenges on iOS)
 
 ## [3.1.3] - 2021-06-24
 

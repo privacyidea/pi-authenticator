@@ -277,7 +277,7 @@ class AppSettings extends InheritedWidget {
   AppSettings({Widget child, StreamingSharedPreferences preferences})
       : _hideOpts = preferences.getBool(_prefHideOtps, defaultValue: false),
         _enablePolling =
-            preferences.getBool(_prefEnablePoll, defaultValue: false),
+            preferences.getBool(_prefEnablePoll, defaultValue: true),
         isTestMode =
             const bool.fromEnvironment('testing_mode', defaultValue: false),
         _showGuideOnStart =
