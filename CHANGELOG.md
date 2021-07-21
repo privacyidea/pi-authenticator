@@ -2,11 +2,19 @@
 
 ## [3.1.4] - 2021-XX-XX
 
+### Added
+
+- Added description for network access on iOS
+
 ### Changed
 
 - Changed android api target level to 30
 - Subject of error reports now start with version number
 - Enable automatic polling per default on iOS devices (to fix missing push challenges)
+
+### Fixed
+
+- Fixed failing network request when rolling out push tokens on iOS
 
 ## [3.1.3] - 2021-06-24
 
