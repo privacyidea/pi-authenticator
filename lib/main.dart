@@ -18,6 +18,8 @@
   limitations under the License.
 */
 
+import 'dart:io';
+
 import 'package:catcher/catcher.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -82,8 +84,13 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
           defaultBrightness: Brightness.light,
           data: (brightness) => getApplicationTheme(brightness),
           themedWidgetBuilder: (context, theme) {
-            var crashReportRecipients =
-                AppSettings.of(context).crashReportRecipients;
+            final settings = AppSettings.of(context);
+
+            var crashReportRecipients = settings.crashReportRecipients;
+
+            if (Platform.isIOS && settings.isFirstRun) {
+              settings.enablePolling = true;
+            }
 
             // Override release config to use custom e-mail recipients
             Catcher.instance.updateConfig(
@@ -92,6 +99,9 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
                     enableCustomParameters: false)
               ]),
             );
+
+            // Update indicator after al setup code is done.
+            settings.isFirstRun = false;
 
             return MaterialApp(
               navigatorKey: Catcher.navigatorKey,

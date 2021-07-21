@@ -191,7 +191,7 @@ class _MainScreenState extends State<MainScreen> {
     if (pushTokens.isEmpty) {
       log('No push token is available for polling, polling is disabled.',
           name: 'main_screen.dart');
-      AppSettings.of(context).setEnablePolling(false);
+      AppSettings.of(context).enablePolling = false;
       return;
     }
 
