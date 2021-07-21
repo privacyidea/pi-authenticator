@@ -819,17 +819,17 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     }
   }
 
+  /// Calculate the progress of the LinearProgressIndicator depending on the
+  /// current time. The Indicator takes values in [0.0, 1.0].
+  double _getCurrentProgress() {
+    int unixTime = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
+
+    return (unixTime % (_token.period)) * (1 / _token.period);
+  }
+
   @override
   void initState() {
     super.initState();
-
-    /// Calculate the progress of the LinearProgressIndicator depending on the
-    /// current time. The Indicator takes values in [0.0, 1.0].
-    double getCurrentProgress() {
-      int unixTime = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
-
-      return (unixTime % (_token.period)) * (1 / _token.period);
-    }
 
     controller = AnimationController(
       duration: Duration(seconds: _token.period),
@@ -844,11 +844,11 @@ class _TotpWidgetState extends _OTPTokenWidgetState
       ..addStatusListener((status) {
         // Add listener to restart the animation after the period, also updates the otp value.
         if (status == AnimationStatus.completed) {
-          controller?.forward(from: getCurrentProgress());
+          controller?.forward(from: _getCurrentProgress());
           _updateOtpValue();
         }
       })
-      ..forward(from: getCurrentProgress()); // Start the animation.
+      ..forward(from: _getCurrentProgress()); // Start the animation.
 
     // Update the otp value when the android app resumes, this prevents outdated otp values
     // ignore: missing_return
@@ -860,7 +860,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
       );
       if (msg == AppLifecycleState.resumed.toString()) {
         _updateOtpValue();
-        controller?.forward(from: getCurrentProgress());
+        controller?.forward(from: _getCurrentProgress());
       }
     });
   }
