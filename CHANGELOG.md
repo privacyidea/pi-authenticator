@@ -9,6 +9,11 @@
 - Enable automatic polling per default on all devices (to fix missing push challenges on iOS)
 - Reduced automatic polling interval to three (3) seconds
 
+
+### Fixed
+
+- Added fix for null check operator being used on null value in the animation controller for TOTP tokens
+
 ## [3.1.3] - 2021-06-24
 
 ### Added
