@@ -28,7 +28,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera permission is required for barcode scanning.</string>
+	<string>Camera permission is required for scanning QR codes.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
