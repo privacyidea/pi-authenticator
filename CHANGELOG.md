@@ -16,6 +16,7 @@
 ### Fixed
 
 - Fixed failing network request when rolling out push tokens on iOS
+- Added fix for null check operator being used on null value in the animation controller for TOTP tokens
 
 ## [3.1.3] - 2021-06-24
 

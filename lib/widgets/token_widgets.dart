@@ -811,7 +811,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
 class _TotpWidgetState extends _OTPTokenWidgetState
     with SingleTickerProviderStateMixin {
   AnimationController
-      controller; // Controller for animating the LinearProgressAnimator
+      _controller; // Controller for animating the LinearProgressAnimator
 
   TOTPToken get _token => super._token as TOTPToken;
 
@@ -836,7 +836,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
   void initState() {
     super.initState();
 
-    controller = AnimationController(
+    _controller = AnimationController(
       duration: Duration(seconds: _token.period),
       // Animate the progress for the duration of the tokens period.
       vsync: this,
@@ -849,7 +849,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
       ..addStatusListener((status) {
         // Add listener to restart the animation after the period, also updates the otp value.
         if (status == AnimationStatus.completed) {
-          controller?.forward(from: _getCurrentProgress());
+          _controller?.forward(from: _getCurrentProgress());
           _updateOtpValue();
         }
       })
@@ -865,14 +865,18 @@ class _TotpWidgetState extends _OTPTokenWidgetState
       );
       if (msg == AppLifecycleState.resumed.toString()) {
         _updateOtpValue();
-        controller?.forward(from: _getCurrentProgress());
+        _controller?.forward(from: _getCurrentProgress());
       }
     });
   }
 
   @override
   void dispose() {
-    controller?.dispose(); // Dispose the controller to prevent memory leak.
+    _controller?.dispose(); // Dispose the controller to prevent memory leak.
+    // Set controller to null to prevent it being used after disposing.
+    // This may occur on state changes of the application and cause exceptions
+    // even if the widget was disposed.
+    _controller = null;
     super.dispose();
   }
 
@@ -892,7 +896,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
           ),
         ),
         LinearProgressIndicator(
-          value: controller?.value,
+          value: _controller?.value,
         ),
       ],
     );
