@@ -88,7 +88,7 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
 
             var crashReportRecipients = settings.crashReportRecipients;
 
-            if (Platform.isIOS && settings.isFirstRun) {
+            if (settings.isFirstRun) {
               settings.enablePolling = true;
             }
 

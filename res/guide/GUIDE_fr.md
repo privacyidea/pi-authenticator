@@ -11,6 +11,6 @@
 # Jetons Push privacyIDEA
 
 + Si les jetons privacyIDEA push sont utilisés, les challenges en attente peuvent être intérrogés en glissant bas:
-![Interrogation manuelle en glissant bas](resource:res/gif/help_delete_rename.gif)
+![Interrogation manuelle en glissant bas](resource:res/gif/help_manual_poll.gif)
 
 + Si l'application est ouverte, une interrogation automatique peut être activée dans les paramètres.
