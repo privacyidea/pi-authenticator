@@ -16,8 +16,8 @@ jobs:
       # matrix job fails.
       fail-fast: false
       matrix:
-        api-level: [21, 28, 30] # [minSdk, most used, newest] 19 would be minSDK but does not support x86_64
-        target: [google_apis] # [default, google_apis]
+        api-level: [21, 28, 29] # [minSdk, most used, newest (30 is not working :(] 19 would be minSDK but does not support x86_64
+        target: [default] # [default, google_apis]
     steps:
     - uses: actions/checkout@v2
     - uses: subosito/flutter-action@v1
