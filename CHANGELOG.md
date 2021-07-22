@@ -4,7 +4,7 @@
 
 ### Added
 
-- Added description for network access on iOS
+- Added description for why the app need network access on iOS
 
 ### Changed
 
