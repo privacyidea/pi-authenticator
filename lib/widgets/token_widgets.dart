@@ -332,6 +332,11 @@ class _PushWidgetState extends _TokenWidgetState {
       setState(() => _rollOutFailed = false);
     }
 
+    // Trigger network permission request on iOS
+    if (Platform.isIOS) {
+      await dummyRequest(_token.url, sslVerify: _token.sslVerify);
+    }
+
     FirebaseConfig tokenConfig = await StorageUtil.loadFirebaseConfig(_token);
     if (await StorageUtil.globalFirebaseConfigExists() &&
         tokenConfig.projectID != null && // Does not exist for poll only tokens

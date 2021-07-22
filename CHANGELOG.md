@@ -2,6 +2,10 @@
 
 ## [3.1.4] - 2021-XX-XX
 
+### Added
+
+- Added description for network access on iOS
+
 ### Changed
 
 - Changed android api target level to 30
@@ -9,9 +13,9 @@
 - Enable automatic polling per default on all devices (to fix missing push challenges on iOS)
 - Reduced automatic polling interval to three (3) seconds
 
-
 ### Fixed
 
+- Fixed failing network request when rolling out push tokens on iOS
 - Added fix for null check operator being used on null value in the animation controller for TOTP tokens
 
 ## [3.1.3] - 2021-06-24
