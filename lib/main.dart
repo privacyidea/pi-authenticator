@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:catcher/catcher.dart';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,6 +34,20 @@ import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  AwesomeNotifications().initialize(
+      null, // Use default icon
+      [
+        NotificationChannel(
+            channelKey: NOTIFICATION_CHANNEL_ANDROID,
+            channelName: 'Push Challenges',
+            channelDescription: 'Notifications are shown for incoming push challenges.',
+            defaultColor: Color(0xFF9D50DD),
+            ledColor: Colors.white
+        )
+      ]
+  );
+
 
   CatcherOptions debugOptions = CatcherOptions(SilentReportMode(), [
     ConsoleHandler(

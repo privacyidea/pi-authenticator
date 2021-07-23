@@ -69,3 +69,9 @@ const String URI_SSL_VERIFY = "URI_SSL_VERIFY";
 
 // Crypto stuff:
 const String SIGNING_ALGORITHM = 'SHA-256/RSA';
+
+// Notifications:
+const String BUTTON_ACCEPT = "ACCEPT";
+const String BUTTON_DECLINE = "DECLINE";
+
+const String NOTIFICATION_CHANNEL_ANDROID = "privacy_idea_authenticator_push";

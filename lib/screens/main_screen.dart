@@ -23,13 +23,13 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:base32/base32.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:http/http.dart';
@@ -62,9 +62,6 @@ class MainScreen extends StatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
 }
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
 
 class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   List<Token> _tokenList = [];
@@ -126,6 +123,26 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   @override
   void afterFirstRender() {
+    AwesomeNotifications().actionStream.listen((receivedNotification) {
+      // TODO Handle the buttons here!
+      print('Received notification: ${receivedNotification.buttonKeyPressed}');
+
+      print(receivedNotification);
+      PushToken token =
+          _tokenList.whereType<PushToken>().firstWhere((element) => false);
+
+      switch (receivedNotification.buttonKeyPressed) {
+        case BUTTON_ACCEPT:
+          // TODO
+          break;
+        case BUTTON_DECLINE:
+          // TODO
+          break;
+        default:
+        // Non of the buttons was clicked
+      }
+    });
+
     _showChangelogAndGuide();
     _updateFbTokenOnChange();
     _startPollingIfEnabled();
@@ -432,13 +449,13 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         return null;
       }
 
-      var initializationSettingsAndroid =
-          AndroidInitializationSettings('app_icon');
-      var initializationSettingsIOS = IOSInitializationSettings();
-      var initializationSettings = InitializationSettings(
-          android: initializationSettingsAndroid,
-          iOS: initializationSettingsIOS);
-      await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+      // var initializationSettingsAndroid =
+      //     AndroidInitializationSettings('app_icon');
+      // var initializationSettingsIOS = IOSInitializationSettings();
+      // var initializationSettings = InitializationSettings(
+      //     android: initializationSettingsAndroid,
+      //     iOS: initializationSettingsIOS);
+      // await flutterLocalNotificationsPlugin.initialize(initializationSettings);
     } else if (await StorageUtil.loadGlobalFirebaseConfig() != config) {
       log("Given firebase config does not equal the existing config.",
           name: "main_screen.dart",
@@ -653,34 +670,57 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   static void _showNotification(
       PushToken token, PushRequest pushRequest, bool silent) async {
-    var iOSPlatformChannelSpecifics =
-        IOSNotificationDetails(presentSound: !silent);
+    // var iOSPlatformChannelSpecifics =
+    //     IOSNotificationDetails(presentSound: !silent);
+    //
+    // var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
+    //     htmlFormatBigText: true,
+    //     contentTitle: pushRequest.title,
+    //     htmlFormatContentTitle: true,
+    //     summaryText: 'Token <i>${token.label}</i>',
+    //     htmlFormatSummaryText: true);
+    // var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    //   'privacy_idea_authenticator_push',
+    //   'Push challenges',
+    //   'Push challenges are received over firebase, if the app is in background,'
+    //       'a notification for each request is shown.',
+    //   ticker: 'ticker',
+    //   playSound: silent,
+    //   styleInformation: bigTextStyleInformation, // To display token name.
+    // );
+    //
+    // await flutterLocalNotificationsPlugin.show(
+    //   pushRequest.id.hashCode, // ID of the notification
+    //   pushRequest.title,
+    //   pushRequest.question,
+    //   NotificationDetails(
+    //     android: androidPlatformChannelSpecifics,
+    //     iOS: iOSPlatformChannelSpecifics,
+    //   ),
+    // );
 
-    var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
-        htmlFormatBigText: true,
-        contentTitle: pushRequest.title,
-        htmlFormatContentTitle: true,
-        summaryText: 'Token <i>${token.label}</i>',
-        htmlFormatSummaryText: true);
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'privacy_idea_authenticator_push',
-      'Push challenges',
-      'Push challenges are received over firebase, if the app is in background,'
-          'a notification for each request is shown.',
-      ticker: 'ticker',
-      playSound: silent,
-      styleInformation: bigTextStyleInformation, // To display token name.
-    );
-
-    await flutterLocalNotificationsPlugin.show(
-      pushRequest.id.hashCode, // ID of the notification
-      pushRequest.title,
-      pushRequest.question,
-      NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-        iOS: iOSPlatformChannelSpecifics,
-      ),
-    );
+    // TODO Customize this?
+    AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: pushRequest.id.hashCode,
+          channelKey: NOTIFICATION_CHANNEL_ANDROID,
+          title: pushRequest.title,
+          body: pushRequest.question,
+        ),
+        actionButtons: [
+          NotificationActionButton(
+            buttonType: ActionButtonType.Default,
+            autoCancel: true,
+            label: BUTTON_ACCEPT, // TODO Translate
+            key: BUTTON_ACCEPT,
+          ),
+          NotificationActionButton(
+            buttonType: ActionButtonType.Default,
+            autoCancel: true,
+            label: BUTTON_DECLINE, // TODO Translate
+            key: BUTTON_DECLINE,
+          ),
+        ]);
   }
 
   /// Builds the body of the screen. If any tokens supports polling,

@@ -25,6 +25,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:catcher/catcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -232,8 +233,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   @override
   void _onDeleteClicked() {
     // Delete all push notifications for a when the token is deleted.
-    _token.pushRequests.forEach(
-        (element) => flutterLocalNotificationsPlugin.cancel(element.id));
+    _token.pushRequests
+        .forEach((element) => AwesomeNotifications().cancel(element.id));
 
     super._onDeleteClicked();
   }
@@ -276,7 +277,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
   void _checkForModelUpdate() async {
     PushToken? t =
-        await (StorageUtil.loadToken(_token.id) as FutureOr<PushToken?>);
+        (await StorageUtil.loadToken(_token.id)) as PushToken?;
 
     // TODO Maybe we should simply reload all tokens on resume?
     // This throws errors because the token [t] is null, why?
@@ -302,9 +303,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     var f = (PushRequest r) => DateTime.now().isAfter(r.expirationDate);
 
     // Remove requests from queue and remove their notifications.
-    t.pushRequests
-        .where(f)
-        .forEach((r) => flutterLocalNotificationsPlugin.cancel(r.id));
+    t.pushRequests.where(f).forEach((r) => AwesomeNotifications().cancel(r.id));
     t.pushRequests.removeWhere(f);
   }
 
@@ -338,6 +337,14 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
       return;
     }
+
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        // TODO (?) Insert here your friendly dialog box before call the request method
+        // This is very important to not harm the user experience
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
 
     if (DateTime.now().isAfter(_token.expirationDate)) {
       log("Token is expired, abort roll-out and delete it.",
@@ -532,7 +539,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   void removeCurrentRequest() async {
     PushRequest request = _token.pushRequests.pop();
 
-    flutterLocalNotificationsPlugin.cancel(request.id);
+    AwesomeNotifications().cancel(request.id);
     await _saveThisToken();
 
     if (mounted) {
