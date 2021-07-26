@@ -75,3 +75,7 @@ const String BUTTON_ACCEPT = "ACCEPT";
 const String BUTTON_DECLINE = "DECLINE";
 
 const String NOTIFICATION_CHANNEL_ANDROID = "privacy_idea_authenticator_push";
+
+// Internal error codes
+const int EXCEPTION_CODE = 000;
+const int SOCKET_EXCEPTION_CODE = 111;

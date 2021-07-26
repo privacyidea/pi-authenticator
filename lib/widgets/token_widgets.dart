@@ -41,6 +41,7 @@ import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
@@ -276,8 +277,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   }
 
   void _checkForModelUpdate() async {
-    PushToken? t =
-        (await StorageUtil.loadToken(_token.id)) as PushToken?;
+    PushToken? t = (await StorageUtil.loadToken(_token.id)) as PushToken?;
 
     // TODO Maybe we should simply reload all tokens on resume?
     // This throws errors because the token [t] is null, why?
@@ -459,51 +459,34 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     log('Push auth request accepted, sending message',
         name: 'token_widgets.dart', error: 'Url: ${pushRequest.uri}');
 
-    // signature ::=  {nonce}|{serial}
-    String msg = '${pushRequest.nonce}|${_token.serial}';
-    String signature = _token.privateTokenKey == null
-        ? await Legacy.sign(_token.serial, msg)
-        : createBase32Signature(
-            _token.getPrivateTokenKey()!, utf8.encode(msg) as Uint8List);
+    Map<String, dynamic> map = await acceptPushRequest(_token, pushRequest);
+    int status = map['status'];
+    String message = map['message'];
 
-    //    POST https://privacyideaserver/validate/check
-    //    nonce=<nonce_from_request>
-    //    serial=<serial>
-    //    signature=<signature>
-    Map<String, String> body = {
-      'nonce': pushRequest.nonce,
-      'serial': _token.serial,
-      'signature': signature,
-    };
+    if (status == 200) {
+      _showMessage(
+          AppLocalizations.of(context)!.acceptPushAuthRequestFor(_token.label),
+          2);
+      removeCurrentRequest();
+    } else {
+      log("Accepting push auth request failed.",
+          name: "token_widgets.dart",
+          error: "Token: $_token, Status code: $status, "
+              "Body: $message");
 
-    try {
-      Response response = await doPost(
-          sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
-
-      if (response.statusCode == 200) {
-        _showMessage(
-            AppLocalizations.of(context)!
-                .acceptPushAuthRequestFor(_token.label),
-            2);
-        removeCurrentRequest();
-      } else {
-        log("Accepting push auth request failed.",
-            name: "token_widgets.dart",
-            error: "Token: $_token, Status code: ${response.statusCode}, "
-                "Body: ${response.body}");
-
-        if (mounted) {
-          setState(() => _acceptFailed = true);
-        }
-
-        _showMessage(
-            AppLocalizations.of(context)!.errorPushAuthRequestFailedFor(
-                _token.label, response.statusCode),
-            3);
+      if (mounted) {
+        setState(() => _acceptFailed = true);
       }
-    } on SocketException catch (e) {
+
+      _showMessage(
+          AppLocalizations.of(context)!
+              .errorPushAuthRequestFailedFor(_token.label, status),
+          3);
+    }
+
+    if (status == SOCKET_EXCEPTION_CODE) {
       log("Accept push auth request for [$_token] failed.",
-          name: "token_widgets.dart", error: e);
+          name: "token_widgets.dart", error: message);
 
       if (mounted) {
         setState(() => _acceptFailed = true);
@@ -513,9 +496,10 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           AppLocalizations.of(context)!
               .errorAuthenticationNotPossibleWithoutNetworkAccess,
           3);
-    } catch (e) {
+    } else
+    /*if (status == EXCEPTION_CODE)*/ {
       log("Accept push auth request for [$_token] failed.",
-          name: "token_widgets.dart", error: e);
+          name: "token_widgets.dart", error: message);
 
       if (mounted) {
         setState(() => _acceptFailed = true);
@@ -523,7 +507,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
       _showMessage(
           AppLocalizations.of(context)!
-              .errorAuthenticationFailedUnknownError(e),
+              .errorAuthenticationFailedUnknownError(message),
           5);
     }
   }

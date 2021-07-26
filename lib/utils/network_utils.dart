@@ -18,12 +18,19 @@
   limitations under the License.
 */
 
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'package:package_info/package_info.dart';
+import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
+import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
+
+import 'crypto_utils.dart';
 
 /// Custom POST request allows to not verify certificates
 Future<Response> doPost(
@@ -84,4 +91,42 @@ Future<Response> doGet(
 
   ioClient.close();
   return response;
+}
+
+Future<Map<String, dynamic>> acceptPushRequest(
+    PushToken token, PushRequest pushRequest) async {
+  // signature ::=  {nonce}|{serial}
+  String msg = '${pushRequest.nonce}|${token.serial}';
+  String signature = token.privateTokenKey == null
+      ? await Legacy.sign(token.serial, msg)
+      : createBase32Signature(
+          token.getPrivateTokenKey()!, utf8.encode(msg) as Uint8List);
+
+  //    POST https://privacyideaserver/validate/check
+  //    nonce=<nonce_from_request>
+  //    serial=<serial>
+  //    signature=<signature>
+  Map<String, String> body = {
+    'nonce': pushRequest.nonce,
+    'serial': token.serial,
+    'signature': signature,
+  };
+
+  int status;
+  String message;
+
+  try {
+    Response response = await doPost(
+        sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
+    status = response.statusCode;
+    message = response.body;
+  } on SocketException catch (e) {
+    status = SOCKET_EXCEPTION_CODE;
+    message = e.toString();
+  } catch (e) {
+    status = EXCEPTION_CODE;
+    message = e.toString();
+  }
+
+  return {'status': status, 'message': message};
 }
