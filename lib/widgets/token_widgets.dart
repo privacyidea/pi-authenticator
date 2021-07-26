@@ -468,6 +468,30 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           AppLocalizations.of(context)!.acceptPushAuthRequestFor(_token.label),
           2);
       removeCurrentRequest();
+    } else if (status == SOCKET_EXCEPTION_CODE) {
+      log("Accept push auth request for [$_token] failed.",
+          name: "token_widgets.dart", error: message);
+
+      if (mounted) {
+        setState(() => _acceptFailed = true);
+      }
+
+      _showMessage(
+          AppLocalizations.of(context)!
+              .errorAuthenticationNotPossibleWithoutNetworkAccess,
+          3);
+    } else if (status == EXCEPTION_CODE) {
+      log("Accept push auth request for [$_token] failed.",
+          name: "token_widgets.dart", error: message);
+
+      if (mounted) {
+        setState(() => _acceptFailed = true);
+      }
+
+      _showMessage(
+          AppLocalizations.of(context)!
+              .errorAuthenticationFailedUnknownError(message),
+          5);
     } else {
       log("Accepting push auth request failed.",
           name: "token_widgets.dart",
@@ -482,33 +506,6 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           AppLocalizations.of(context)!
               .errorPushAuthRequestFailedFor(_token.label, status),
           3);
-    }
-
-    if (status == SOCKET_EXCEPTION_CODE) {
-      log("Accept push auth request for [$_token] failed.",
-          name: "token_widgets.dart", error: message);
-
-      if (mounted) {
-        setState(() => _acceptFailed = true);
-      }
-
-      _showMessage(
-          AppLocalizations.of(context)!
-              .errorAuthenticationNotPossibleWithoutNetworkAccess,
-          3);
-    } else
-    /*if (status == EXCEPTION_CODE)*/ {
-      log("Accept push auth request for [$_token] failed.",
-          name: "token_widgets.dart", error: message);
-
-      if (mounted) {
-        setState(() => _acceptFailed = true);
-      }
-
-      _showMessage(
-          AppLocalizations.of(context)!
-              .errorAuthenticationFailedUnknownError(message),
-          5);
     }
   }
 

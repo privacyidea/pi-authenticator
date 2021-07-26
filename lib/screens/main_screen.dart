@@ -124,29 +124,72 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   @override
   void afterFirstRender() {
     AwesomeNotifications().actionStream.listen((receivedNotification) {
-      // TODO Handle the buttons here!
-      print('Received notification: ${receivedNotification.buttonKeyPressed}');
-
-      print(receivedNotification);
-      PushToken token =
-          _tokenList.whereType<PushToken>().firstWhere((element) => false);
-
-      switch (receivedNotification.buttonKeyPressed) {
-        case BUTTON_ACCEPT:
-          // TODO
-          break;
-        case BUTTON_DECLINE:
-          // TODO
-          break;
-        default:
-        // Non of the buttons was clicked
-      }
+      _handleButtons(receivedNotification);
     });
 
     _showChangelogAndGuide();
     _updateFbTokenOnChange();
     _startPollingIfEnabled();
     _loadEverything();
+  }
+
+  void _handleButtons(ReceivedAction receivedNotification) async {
+    Map<String, String> payload = receivedNotification.payload!;
+
+    PushToken token = (await StorageUtil.loadAllTokens())
+        .whereType<PushToken>()
+        .firstWhere((e) => e.serial == payload['serial']);
+
+    PushRequest pushRequest = token.pushRequests
+        .firstWhere((request) => '${request.id}' == payload['push_id']);
+
+    // TODO Handle no such pushRequest / token
+
+    switch (receivedNotification.buttonKeyPressed) {
+      case BUTTON_ACCEPT:
+        _handleAcceptButton(token, pushRequest);
+        break;
+      case BUTTON_DECLINE:
+        _handleDeclineButton(token, pushRequest);
+        break;
+      default:
+      // Non of the buttons was clicked, open app
+    }
+  }
+
+  void _handleAcceptButton(PushToken token, PushRequest pushRequest) async {
+    Map<String, dynamic> map = await acceptPushRequest(token, pushRequest);
+    int status = map['status'];
+    String message = map['message'];
+
+    if (status == 200) {
+      token.pushRequests.remove(pushRequest);
+      StorageUtil.saveOrReplaceToken(token);
+      _tokenList = await StorageUtil.loadAllTokens();
+
+      if (mounted) {
+        setState(() {});
+      }
+    } else {
+      // TODO Some better handling?
+      AwesomeNotifications().createNotification(
+          content: NotificationContent(
+        id: pushRequest.id.hashCode,
+        channelKey: NOTIFICATION_CHANNEL_ANDROID,
+        title: 'Accepting the challenge failed, please use the app interface.',
+        body: '',
+      ));
+    }
+  }
+
+  void _handleDeclineButton(PushToken token, PushRequest pushRequest) async {
+    token.pushRequests.remove(pushRequest);
+    StorageUtil.saveOrReplaceToken(token);
+    _tokenList = await StorageUtil.loadAllTokens();
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -706,6 +749,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           channelKey: NOTIFICATION_CHANNEL_ANDROID,
           title: pushRequest.title,
           body: pushRequest.question,
+          payload: {'serial': token.serial, 'push_id': '${pushRequest.id}'},
         ),
         actionButtons: [
           NotificationActionButton(

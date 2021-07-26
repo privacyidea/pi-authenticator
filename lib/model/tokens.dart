@@ -365,6 +365,8 @@ class PushRequestQueue {
 
   int get length => list.length;
 
+  PushRequest firstWhere(bool f(PushRequest request)) => list.firstWhere(f);
+
   void forEach(void f(PushRequest request)) => list.forEach((f));
 
   void removeWhere(bool f(PushRequest request)) => list.removeWhere(f);
