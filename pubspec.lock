@@ -298,9 +298,9 @@ packages:
   firebase_messaging:
     dependency: "direct main"
     description:
-      name: firebase_messaging
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "local_plugins/firebase_messaging-10.0.4"
+      relative: true
+    source: path
     version: "10.0.4"
   firebase_messaging_platform_interface:
     dependency: transitive

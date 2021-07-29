@@ -61,6 +61,8 @@ dependency_overrides:
   # To use custom plugin for all other plugins that depend on it
   firebase_core_platform_interface:
     path: local_plugins/firebase_core_platform_interface-4.0.0
+  firebase_messaging:
+    path: local_plugins/firebase_messaging-10.0.4
 
 dev_dependencies:
   flutter_driver:
