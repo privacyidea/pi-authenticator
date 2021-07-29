@@ -402,6 +402,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   Future<String?> _initFirebase(FirebaseConfig config) async {
+    // TODO For migration the config from 'privacyidea_authenticator' must be
+    //   set for the default firebase app and the custom one removed.
+
     log("Initializing firebase.", name: "main_screen.dart");
 
     if (!await StorageUtil.globalFirebaseConfigExists() ||
@@ -410,16 +413,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           name: "main_screen.dart", error: config);
 
       try {
-        await Firebase.initializeApp(
-            name: defaultFirebaseAppName,
-            options: FirebaseOptions(
-              appId: config.appID,
-              apiKey: config.apiKey,
-              databaseURL: "https://" + config.projectID + ".firebaseio.com",
-              storageBucket: config.projectID + ".appspot.com",
-              projectId: config.projectID,
-              messagingSenderId: config.projectNumber,
-            ));
+        await _initializeOrReplaceDefaultFirebaseApp(config);
       } on ArgumentError {
         log(
           "Invalid firebase configuration provided.",
@@ -810,5 +804,25 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       content: Text(message),
       duration: duration,
     ));
+  }
+
+  _initializeOrReplaceDefaultFirebaseApp(FirebaseConfig config) async {
+    FirebaseApp defaultApp = Firebase.app(defaultFirebaseAppName);
+    FirebaseOptions options = FirebaseOptions(
+      appId: config.appID,
+      apiKey: config.apiKey,
+      databaseURL: "https://" + config.projectID + ".firebaseio.com",
+      storageBucket: config.projectID + ".appspot.com",
+      projectId: config.projectID,
+      messagingSenderId: config.projectNumber,
+    );
+
+    if (defaultApp.options == options) {
+      return;
+    }
+
+    await defaultApp.delete();
+    await Firebase.initializeApp(
+        name: defaultFirebaseAppName, options: options);
   }
 }
