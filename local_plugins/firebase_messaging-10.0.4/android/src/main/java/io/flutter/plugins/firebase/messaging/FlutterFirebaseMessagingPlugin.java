@@ -123,6 +123,7 @@ public class FlutterFirebaseMessagingPlugin extends BroadcastReceiver
   @Override
   public void onReceive(Context context, Intent intent) {
     String action = intent.getAction();
+    System.out.println(intent);
 
     if (action == null) {
       return;

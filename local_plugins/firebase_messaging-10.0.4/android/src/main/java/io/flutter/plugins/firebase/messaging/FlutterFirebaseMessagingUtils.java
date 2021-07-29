@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import com.google.firebase.FirebaseApp;
 
 class FlutterFirebaseMessagingUtils {
   static final String IS_AUTO_INIT_ENABLED = "isAutoInitEnabled";
@@ -196,7 +197,9 @@ class FlutterFirebaseMessagingUtils {
   // Extracted to handle multi-app support in the future.
   // arguments.get("appName") - to get the Firebase app name.
   static FirebaseMessaging getFirebaseMessagingForArguments(Map<String, Object> arguments) {
-    return FirebaseMessaging.getInstance();
+    String appName = (String) arguments.get("appName");
+    FirebaseApp app = FirebaseApp.getInstance(appName);
+    return FirebaseMessaging.getInstance(app);
   }
 
   /**
