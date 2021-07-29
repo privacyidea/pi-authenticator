@@ -410,9 +410,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           name: "main_screen.dart", error: config);
 
       try {
-
-        FirebaseApp().
-
         await Firebase.initializeApp(
             name: 'timo.netknights.firebase',
             // name: defaultFirebaseAppName,
