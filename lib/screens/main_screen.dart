@@ -820,7 +820,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       }
 
       await defaultApp.delete();
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       // Happens if no default app exists; ignore this
     }
     await Firebase.initializeApp(
