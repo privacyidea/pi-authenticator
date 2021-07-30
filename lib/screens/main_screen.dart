@@ -413,6 +413,12 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         // TODO For migration the config from 'privacyidea_authenticator' must be
         //   set for the default firebase app and the custom one removed.
 
+        try {
+          Firebase.app('privacyidea_authenticator').delete();
+        } on FirebaseException catch (e) {
+          print(e);
+        }
+
         await _initializeOrReplaceDefaultFirebaseApp(config);
       } on ArgumentError {
         log(
