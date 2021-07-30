@@ -38,9 +38,9 @@ class MethodChannelFirebaseApp extends FirebaseAppPlatform {
   /// The default app cannot be deleted.
   @override
   Future<void> delete() async {
-    if (_isDefault) {
-      throw noDefaultAppDelete();
-    }
+    // if (_isDefault) {
+    //   throw noDefaultAppDelete();
+    // }
 
     if (_isDeleted) {
       return;
