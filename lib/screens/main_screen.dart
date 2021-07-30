@@ -442,14 +442,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       return null;
     }
 
-    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
-      if ((await StorageUtil.getCurrentFirebaseToken()) != newToken) {
-        log("New firebase token generated: $newToken",
-            name: 'main_screen.dart');
-        await StorageUtil.setNewFirebaseToken(newToken);
-        _updateFirebaseToken();
-      }
-    });
     FirebaseMessaging.onMessage
         .listen((RemoteMessage message) => _handleIncomingAuthRequest(message));
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -481,6 +473,15 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       // This is the initial setup
       await StorageUtil.setCurrentFirebaseToken(firebaseToken);
     }
+
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+      if ((await StorageUtil.getCurrentFirebaseToken()) != newToken) {
+        log("New firebase token generated: $newToken",
+            name: 'main_screen.dart');
+        await StorageUtil.setNewFirebaseToken(newToken);
+        _updateFirebaseToken();
+      }
+    });
 
     return firebaseToken;
   }
@@ -807,7 +808,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   _initializeOrReplaceDefaultFirebaseApp(FirebaseConfig config) async {
-    FirebaseApp defaultApp = Firebase.app(defaultFirebaseAppName);
     FirebaseOptions options = FirebaseOptions(
       appId: config.appID,
       apiKey: config.apiKey,
@@ -817,11 +817,17 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       messagingSenderId: config.projectNumber,
     );
 
-    if (defaultApp.options == options) {
-      return;
-    }
+    try {
+      FirebaseApp defaultApp = Firebase.app(defaultFirebaseAppName);
 
-    await defaultApp.delete();
+      if (defaultApp.options == options) {
+        return;
+      }
+
+      await defaultApp.delete();
+    } on FirebaseException catch (e) {
+      // Happens if no default app exists; ignore this
+    }
     await Firebase.initializeApp(
         name: defaultFirebaseAppName, options: options);
   }
