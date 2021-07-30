@@ -402,9 +402,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   Future<String?> _initFirebase(FirebaseConfig config) async {
-    // TODO For migration the config from 'privacyidea_authenticator' must be
-    //   set for the default firebase app and the custom one removed.
-
     log("Initializing firebase.", name: "main_screen.dart");
 
     if (!await StorageUtil.globalFirebaseConfigExists() ||
@@ -413,6 +410,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           name: "main_screen.dart", error: config);
 
       try {
+        // TODO For migration the config from 'privacyidea_authenticator' must be
+        //   set for the default firebase app and the custom one removed.
+
         await _initializeOrReplaceDefaultFirebaseApp(config);
       } on ArgumentError {
         log(
@@ -426,13 +426,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         return null;
       }
 
-      var initializationSettingsAndroid =
-          AndroidInitializationSettings('app_icon');
-      var initializationSettingsIOS = IOSInitializationSettings();
-      var initializationSettings = InitializationSettings(
-          android: initializationSettingsAndroid,
-          iOS: initializationSettingsIOS);
-      await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+      await _initNotifications();
     } else if (await StorageUtil.loadGlobalFirebaseConfig() != config) {
       log("Given firebase config does not equal the existing config.",
           name: "main_screen.dart",
@@ -807,7 +801,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     ));
   }
 
-  _initializeOrReplaceDefaultFirebaseApp(FirebaseConfig config) async {
+  Future<void> _initializeOrReplaceDefaultFirebaseApp(
+      FirebaseConfig config) async {
     FirebaseOptions options = FirebaseOptions(
       appId: config.appID,
       apiKey: config.apiKey,
@@ -830,5 +825,14 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     }
     await Firebase.initializeApp(
         name: defaultFirebaseAppName, options: options);
+  }
+
+  Future<void> _initNotifications() async {
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 }

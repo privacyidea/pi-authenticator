@@ -276,7 +276,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
   void _checkForModelUpdate() async {
     PushToken? t =
-        await (StorageUtil.loadToken(_token.id) as FutureOr<PushToken?>);
+        (await StorageUtil.loadToken(_token.id)) as PushToken?;
 
     // TODO Maybe we should simply reload all tokens on resume?
     // This throws errors because the token [t] is null, why?
