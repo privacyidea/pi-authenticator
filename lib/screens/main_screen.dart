@@ -416,7 +416,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         try {
           Firebase.app('privacyidea_authenticator').delete();
         } on FirebaseException catch (e) {
-          print(e);
+          // ignore if it does not exist
         }
 
         await _initializeOrReplaceDefaultFirebaseApp(config);
