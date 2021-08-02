@@ -10,6 +10,8 @@ on:
 jobs:
   drive:
     runs-on: macos-latest
+    timeout-minutes: 40
+
     strategy:
       # When set to true, GitHub cancels all in-progress jobs if any        
       # matrix job fails.
@@ -17,6 +19,7 @@ jobs:
       matrix:
         api-level: [21, 28, 29] # [minSdk, most used, newest] 18 would be minSDK but does not support x86_64
         target: [default] # [default, google_apis]
+
     steps:
     - uses: actions/checkout@v2
     - uses: subosito/flutter-action@v1
