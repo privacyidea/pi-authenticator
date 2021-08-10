@@ -77,15 +77,16 @@ class StorageUtil {
 
       // TODO when the token version (token.version) changed handle this here.
 
-      if (serializedToken['type'] == enumAsString(TokenTypes.HOTP)) {
+      String type = serializedToken['type'];
+      if (type == enumAsString(TokenTypes.HOTP)) {
         tokenList.add(HOTPToken.fromJson(serializedToken));
-      } else if (serializedToken['type'] == enumAsString(TokenTypes.TOTP)) {
+      } else if (type == enumAsString(TokenTypes.TOTP)) {
         tokenList.add(TOTPToken.fromJson(serializedToken));
-      } else if (serializedToken['type'] == enumAsString(TokenTypes.PIPUSH)) {
+      } else if (type == enumAsString(TokenTypes.PIPUSH)) {
         tokenList.add(PushToken.fromJson(serializedToken));
       } else {
         log(
-          'Type ${serializedToken['type']} is unknown.',
+          'Type $type is unknown.',
           name: 'storage_utils.dart',
         );
       }
@@ -108,7 +109,8 @@ class StorageUtil {
   static const _GLOBAL_FIREBASE_CONFIG_KEY =
       _GLOBAL_PREFIX + "cc0d13b2-9ce1-11ea-bb37-0242ac130002";
 
-  static void saveOrReplaceGlobalFirebaseConfig(FirebaseConfig config) async =>
+  static Future<void> saveOrReplaceGlobalFirebaseConfig(
+          FirebaseConfig config) async =>
       await _storage.write(
           key: _GLOBAL_FIREBASE_CONFIG_KEY, value: jsonEncode(config));
 
@@ -186,7 +188,8 @@ class StorageUtil {
       Token token;
       String id = Uuid().v4();
 
-      if (tokenMap['type'] == 'hotp') {
+      String type = tokenMap['type'];
+      if (type == 'hotp') {
         token = HOTPToken(
           issuer: tokenMap['label'],
           id: id,
@@ -196,7 +199,7 @@ class StorageUtil {
           secret: tokenMap['secret'],
           algorithm: mapStringToAlgorithm(tokenMap['algorithm']),
         );
-      } else if (tokenMap['type'] == 'totp') {
+      } else if (type == 'totp') {
         token = TOTPToken(
           issuer: tokenMap['label'],
           id: id,
@@ -206,7 +209,7 @@ class StorageUtil {
           secret: tokenMap['secret'],
           algorithm: mapStringToAlgorithm(tokenMap['algorithm']),
         );
-      } else if (tokenMap['type'] == 'pipush') {
+      } else if (type == 'pipush') {
         token = PushToken(
           issuer: tokenMap['label'],
           label: tokenMap['label'],
@@ -237,8 +240,8 @@ class StorageUtil {
           projectNumber: configMap['projectnumber'],
         );
 
-        StorageUtil.saveOrReplaceFirebaseConfig(token, config);
-        StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
+        await StorageUtil.saveOrReplaceFirebaseConfig(token, config);
+        await StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
       } else {
         log(
           "Unknown token type encountered",
