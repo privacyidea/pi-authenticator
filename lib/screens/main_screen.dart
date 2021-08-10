@@ -84,8 +84,8 @@ class _MainScreenState extends State<MainScreen> {
         (bool event) {
           if (event) {
             log('Polling is enabled.', name: 'main_screen.dart');
-            _pollTimer = Timer.periodic(
-                Duration(seconds: 3), (_) => _pollForRequests());
+            _pollTimer =
+                Timer.periodic(Duration(seconds: 3), (_) => _pollForRequests());
             _pollForRequests();
           } else {
             log('Polling is disabled.', name: 'main_screen.dart');

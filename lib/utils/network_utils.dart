@@ -54,9 +54,15 @@ Future<Response> doPost(
       name: "utils.dart",
       error: "URI: $url, SSLVerify: $sslVerify, Body: $body");
 
-  if (body.entries.any((element) => element.value == null)) {
+  List<MapEntry> entries =
+      body.entries.where((element) => element.value == null).toList();
+  if (entries.isNotEmpty) {
+    List<String> nullEntries = [];
+    for (MapEntry entry in entries) {
+      nullEntries.add(entry.key);
+    }
     throw ArgumentError(
-        "Can not send request because the [body] contains a null value,"
+        "Can not send request because the [body] contains a null values at entries $nullEntries,"
         " this is not permitted.");
   }
 
