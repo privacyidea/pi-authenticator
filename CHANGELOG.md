@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.1.5] - 2021-XX-XX
+
+### Changed
+
+- Changed error message on failing POST request (due to null values in body) to be more informative.
+
 ## [3.1.4] - 2021-07-22
 
 ### Added
