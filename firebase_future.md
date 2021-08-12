@@ -47,6 +47,8 @@ Con:
 - Needs mayor changes on app and server side
 - Mayor change for customers / firebase is not in their hands anymore (and never was for iOS?)
 - netknights is responsible for the firebase project
+- Need a possibility to reach the firebase service which requires a service key. Generating a service key for each privacyIDEA instance seems infeasible.
+    - Maybe we provide an API endpoint and redirect to firebase?
 - More work when building app / app may be needed to be build multiple times
 
 Because firebase only acts as the delivery service for challenges it should not be a big challenge to change which project is used.
