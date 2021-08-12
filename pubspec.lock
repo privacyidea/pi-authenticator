@@ -282,12 +282,12 @@ packages:
     source: hosted
     version: "1.4.0"
   firebase_core_platform_interface:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "local_plugins/firebase_core_platform_interface-4.0.0"
-      relative: true
-    source: path
-    version: "4.0.0"
+      name: firebase_core_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.1"
   firebase_core_web:
     dependency: transitive
     description:

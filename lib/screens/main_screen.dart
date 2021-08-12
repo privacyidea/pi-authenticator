@@ -35,7 +35,6 @@ import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:http/http.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
-import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
@@ -211,20 +210,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   _loadEverything() async {
     await _loadTokenList();
-    await _loadFirebase();
-  }
-
-  _loadFirebase() async {
-    // If no push tokens exist, the firebase config is deleted here.
-    if (!(await StorageUtil.loadAllTokens())
-        .any((element) => element is PushToken)) {
-      StorageUtil.deleteGlobalFirebaseConfig();
-      return;
-    }
-
-    if (await StorageUtil.globalFirebaseConfigExists()) {
-      _initFirebase((await (StorageUtil.loadGlobalFirebaseConfig()))!);
-    }
+    await _initFirebase();
   }
 
   _loadTokenList() async {
@@ -378,13 +364,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   Future<PushToken> _buildPushToken(
       Map<String, dynamic> uriMap, String uuid) async {
-    FirebaseConfig config = FirebaseConfig(
-        projectID: uriMap[URI_PROJECT_ID],
-        projectNumber: uriMap[URI_PROJECT_NUMBER],
-        appID: Platform.isIOS ? uriMap[URI_APP_ID_IOS] : uriMap[URI_APP_ID],
-        apiKey: Platform.isIOS ? uriMap[URI_API_KEY_IOS] : uriMap[URI_API_KEY]);
-
-    PushToken token = PushToken(
+    return PushToken(
       serial: uriMap[URI_SERIAL],
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
@@ -394,53 +374,21 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
       url: uriMap[URI_ROLLOUT_URL],
     );
-
-    // Save the config for this token to use it when rolling out.
-    await StorageUtil.saveOrReplaceFirebaseConfig(token, config);
-
-    return token;
   }
 
-  Future<String?> _initFirebase(FirebaseConfig config) async {
+  Future<String?> _initFirebase() async {
     log("Initializing firebase.", name: "main_screen.dart");
 
-    if (!await StorageUtil.globalFirebaseConfigExists() ||
-        await StorageUtil.loadGlobalFirebaseConfig() == config) {
-      log("Creating firebaseApp from config.",
-          name: "main_screen.dart", error: config);
-
-      try {
-        // TODO For migration the config from 'privacyidea_authenticator' must be
-        //   set for the default firebase app and the custom one removed.
-
-        try {
-          Firebase.app('privacyidea_authenticator').delete();
-        } on FirebaseException catch (e) {
-          // ignore if it does not exist
-        }
-
-        await _initializeOrReplaceDefaultFirebaseApp(config);
-      } on ArgumentError {
-        log(
-          "Invalid firebase configuration provided.",
-          name: "main_screen.dart",
-          error: config,
-        );
-
-        _showMessage(AppLocalizations.of(context)!.firebaseConfigCorrupted,
-            Duration(seconds: 15));
-        return null;
-      }
-
-      await _initNotifications();
-    } else if (await StorageUtil.loadGlobalFirebaseConfig() != config) {
-      log("Given firebase config does not equal the existing config.",
-          name: "main_screen.dart",
-          error: "Existing: ${await StorageUtil.loadGlobalFirebaseConfig()}"
-              "\n Given:    $config");
-
-      return null;
+    // Delete old / secondary firebase app if it exists.
+    try {
+      Firebase.app('privacyidea_authenticator').delete();
+    } on FirebaseException {
+      // ignore if it does not exist
     }
+
+    await Firebase.initializeApp();
+
+    await _initNotifications();
 
     FirebaseMessaging.onMessage
         .listen((RemoteMessage message) => _handleIncomingAuthRequest(message));
@@ -466,8 +414,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           "Firebase token could not be retrieved, the only know cause of this is"
           " that the firebase servers could not be reached.");
     }
-
-    StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
 
     if (await StorageUtil.getCurrentFirebaseToken() == null) {
       // This is the initial setup
@@ -584,6 +530,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         .whereType<PushToken>()
         .firstWhere((t) => t.serial == requestedSerial && t.isRolledOut);
 
+    // FIXME What if the tokens does not exist? firstWhere cannot handle that
     if (token == null) {
       log("The requested token does not exist or is not rolled out.",
           name: "main_screen.dart", error: requestedSerial);
@@ -688,7 +635,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           return TokenWidget(
             token,
             onDeleteClicked: () => _removeToken(token),
-            getFirebaseToken: (FirebaseConfig config) => _initFirebase(config),
+            getFirebaseToken: () => _initFirebase(),
           );
         },
         separatorBuilder: (context, index) {
@@ -720,12 +667,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   void _removeToken(Token token) async {
     log("Remove: $token");
     await StorageUtil.deleteToken(token);
-
-    if (!(await StorageUtil.loadAllTokens())
-        .any((element) => element is PushToken)) {
-      StorageUtil.deleteGlobalFirebaseConfig();
-    }
-
     await _loadTokenList();
   }
 
@@ -805,32 +746,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       content: Text(message),
       duration: duration,
     ));
-  }
-
-  Future<void> _initializeOrReplaceDefaultFirebaseApp(
-      FirebaseConfig config) async {
-    FirebaseOptions options = FirebaseOptions(
-      appId: config.appID,
-      apiKey: config.apiKey,
-      databaseURL: "https://" + config.projectID + ".firebaseio.com",
-      storageBucket: config.projectID + ".appspot.com",
-      projectId: config.projectID,
-      messagingSenderId: config.projectNumber,
-    );
-
-    try {
-      FirebaseApp defaultApp = Firebase.app(defaultFirebaseAppName);
-
-      if (defaultApp.options == options) {
-        return;
-      }
-
-      await defaultApp.delete();
-    } on FirebaseException {
-      // Happens if no default app exists; ignore this
-    }
-    await Firebase.initializeApp(
-        name: defaultFirebaseAppName, options: options);
   }
 
   Future<void> _initNotifications() async {

@@ -36,7 +36,6 @@ import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
@@ -45,7 +44,7 @@ import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
-typedef GetFBTokenCallback = Future<String?> Function(FirebaseConfig);
+typedef GetFBTokenCallback = Future<String?> Function();
 
 class TokenWidget extends StatefulWidget {
   final Token _token;
@@ -275,8 +274,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   }
 
   void _checkForModelUpdate() async {
-    PushToken? t =
-        (await StorageUtil.loadToken(_token.id)) as PushToken?;
+    PushToken? t = (await StorageUtil.loadToken(_token.id)) as PushToken?;
 
     // TODO Maybe we should simply reload all tokens on resume?
     // This throws errors because the token [t] is null, why?
@@ -319,26 +317,6 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       setState(() => _rollOutFailed = false);
     }
 
-    if (await StorageUtil.globalFirebaseConfigExists() &&
-        await StorageUtil.loadFirebaseConfig(_token) !=
-            await StorageUtil.loadGlobalFirebaseConfig()) {
-      // The firebase config of this token is different to the existing
-      // firebase config in this app.
-      log("Token has different firebase config than existing.",
-          name: "token_widgets.dart");
-
-      _showMessage(
-          AppLocalizations.of(context)!
-              .errorOnlyOneFirebaseProjectIsSupported(_token.label),
-          5);
-
-      if (mounted) {
-        setState(() => _rollOutFailed = true);
-      }
-
-      return;
-    }
-
     if (DateTime.now().isAfter(_token.expirationDate)) {
       log("Token is expired, abort roll-out and delete it.",
           name: "token_widgets.dart",
@@ -374,8 +352,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           await doPost(sslVerify: _token.sslVerify!, url: _token.url!, body: {
         'enrollment_credential': _token.enrollmentCredentials,
         'serial': _token.serial,
-        'fbtoken': await widget._getFirebaseToken(
-            (await (StorageUtil.loadFirebaseConfig(_token)))!),
+        'fbtoken': await widget._getFirebaseToken(),
         'pubkey': serializeRSAPublicKeyPKCS8(_token.getPublicTokenKey()!),
       });
 
