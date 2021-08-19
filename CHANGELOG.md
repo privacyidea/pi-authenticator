@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.2.0] - 2021-XX-XX
+
+### Changed
+
+- Updated plugins
+- Replaced deprecated plugins for app theme and QR-code scanning
+- Refactored for better life-cycle handling
+- Use new framework for localizations and translations
+- Migrated app to null-safety
+- Added debug-'flavor' to allow parallel install of release and debug version on Android
+- Add default firebase configuration for app
+
+### Removed
+
+- Removed support for custom firebase projects for non-SLA customers
+
 ## [3.1.1] - 2021-03-31
 
 ### Fixed
@@ -87,6 +103,7 @@
 - parallel development of android and ios version
 
 
+[3.2.0]: https://github.com/privacyidea/pi-authenticator/compare/vX.X.X...v3.2.0
 [3.1.1]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.12...v3.1.0
 [3.0.12]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.8...v3.0.12
