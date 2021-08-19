@@ -2,6 +2,10 @@
 
 ## [3.2.0] - 2021-XX-XX
 
+### Added
+
+- Registered app to handle 'otpauth' links on Android and iOS
+
 ### Changed
 
 - Updated plugins
@@ -10,7 +14,6 @@
 - Use new framework for localizations and translations
 - Migrated app to null-safety
 - Added debug-'flavor' to allow parallel install of release and debug version on Android
-
 
 ## [3.1.1] - 2021-03-31
 

@@ -500,5 +500,11 @@
     "description": "Title of language setting group.",
     "type": "text",
     "placeholders": {}
+  },
+  "handlingOtpAuthLinkFailed": "Handling the provided link failed. Error in communication with the underlying platform.",
+  "@handlingOtpAuthLinkFailed": {
+    "description": "Message that tells the user that handling a link failed. This link was provided through the 'open link with app' on android or iOS.",
+    "type": "text",
+    "placeholders": {}
   }
 }
