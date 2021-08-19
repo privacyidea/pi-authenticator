@@ -442,6 +442,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       return null;
     }
 
+    FirebaseMessaging.instance.requestPermission();
     FirebaseMessaging.onMessage
         .listen((RemoteMessage message) => _handleIncomingAuthRequest(message));
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -508,7 +509,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   /// give any feedback!.
   ///
   /// This should only be used to attempt to update the fbToken automatically,
-  /// as this can not be guaranteed to work, there is a manual option available
+  /// as this can not be guaranteed to work. There is a manual option available
   /// through the settings also.
   void _updateFirebaseToken() async {
     String? newToken = await StorageUtil.getNewFirebaseToken();

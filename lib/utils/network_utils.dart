@@ -25,6 +25,29 @@ import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'package:package_info/package_info.dart';
 
+/// Dummy network request can be used to trigger the network access permission
+/// on iOS devices. Doing this at an appropriate place in the code can prevent
+/// SocketExceptions.
+Future<void> dummyRequest(Uri url, {bool sslVerify = true}) async {
+  IOClient? ioClient;
+  try {
+    HttpClient httpClient = HttpClient();
+    httpClient.badCertificateCallback =
+        ((X509Certificate cert, String host, int port) => !sslVerify);
+    httpClient.userAgent = "privacyIDEA-App /"
+        " ${Platform.operatingSystem}"
+        " ${(await PackageInfo.fromPlatform()).version}";
+
+    ioClient = IOClient(httpClient);
+
+    await ioClient.post(url, body: "");
+  } on SocketException {
+    // ignore
+  } finally {
+    ioClient?.close();
+  }
+}
+
 /// Custom POST request allows to not verify certificates
 Future<Response> doPost(
     {required Uri url,

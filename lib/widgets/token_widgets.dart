@@ -275,8 +275,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   }
 
   void _checkForModelUpdate() async {
-    PushToken? t =
-        (await StorageUtil.loadToken(_token.id)) as PushToken?;
+    PushToken? t = (await StorageUtil.loadToken(_token.id)) as PushToken?;
 
     // TODO Maybe we should simply reload all tokens on resume?
     // This throws errors because the token [t] is null, why?
@@ -317,6 +316,11 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   void _rollOutToken() async {
     if (mounted) {
       setState(() => _rollOutFailed = false);
+    }
+
+    // Trigger network permission request on iOS
+    if (Platform.isIOS) {
+      await dummyRequest(_token.url!, sslVerify: _token.sslVerify!);
     }
 
     if (await StorageUtil.globalFirebaseConfigExists() &&
