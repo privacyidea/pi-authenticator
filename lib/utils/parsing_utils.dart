@@ -244,7 +244,6 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   Map<String, dynamic> uriMap = Map();
 
   uriMap[URI_TYPE] = uri.host;
-  uriMap[URI_ISSUER] = _parseIssuer(uri);
 
   // If we do not support the version of this piauth url, we can stop here.
   String? pushVersionAsString = uri.queryParameters["v"];
@@ -326,9 +325,8 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
 
   // parse.host -> Type totp or hotp
   uriMap[URI_TYPE] = uri.host;
-  uriMap[URI_ISSUER] = _parseIssuer(uri);
 
-// parse.path.substring(1) -> Label
+  // parse.path.substring(1) -> Label
   log("Key: [..] | Value: [..]");
   uri.queryParameters.forEach((key, value) {
     log("  $key | $value");
@@ -479,6 +477,7 @@ List _parseLabelAndIssuer(Uri uri) {
       label = split[1];
     } else {
       label = param;
+      issuer = _parseIssuer(uri);
     }
   } on Error {
     label = param;

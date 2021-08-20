@@ -56,7 +56,7 @@ void _testParsingLabelAndIssuer() {
     test("Test parse issuer from param and label", () {
       Map<String, dynamic> map = parseQRCodeToMap(uriWithIssuerParamAndIssuer);
       expect(map[URI_LABEL], "alice@google.com");
-      expect(map[URI_ISSUER], "ACME Co");
+      expect(map[URI_ISSUER], "Example");
     });
   });
 }
