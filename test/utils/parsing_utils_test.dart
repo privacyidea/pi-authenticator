@@ -328,12 +328,6 @@ void _testParseOtpAuth() {
             "&ttl=2"
             "&issuer=privacyIDEA"
             "&enrollment_credential=69fe"
-            "&projectnumber=1234"
-            "&projectid=this_is_my_id"
-            "&appid=appIdAndroid"
-            "&apikey=apiKeyAndroid"
-            "&appidios=appIdIos"
-            "&apikeyios=apiKeyIos"
             "&v=1"
             "&serial=PIPU0001353C"
             "&sslverify=0"));
@@ -343,12 +337,6 @@ void _testParseOtpAuth() {
         expect(uriMap[URI_TTL], 2);
         expect(uriMap[URI_ISSUER], "privacyIDEA");
         expect(uriMap[URI_ENROLLMENT_CREDENTIAL], "69fe");
-        expect(uriMap[URI_PROJECT_NUMBER], "1234");
-        expect(uriMap[URI_PROJECT_ID], "this_is_my_id");
-        expect(uriMap[URI_APP_ID], "appIdAndroid");
-        expect(uriMap[URI_APP_ID_IOS], "appIdIos");
-        expect(uriMap[URI_API_KEY], "apiKeyAndroid");
-        expect(uriMap[URI_API_KEY_IOS], "apiKeyIos");
         expect(uriMap[URI_SSL_VERIFY], false);
       });
     });
