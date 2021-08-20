@@ -24,6 +24,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart';
+import 'package:catcher/catcher.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -116,7 +117,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         if (event) {
           log('Polling is enabled.', name: 'main_screen.dart');
           _pollTimer =
-              Timer.periodic(Duration(seconds: 10), (_) => _pollForRequests());
+              Timer.periodic(Duration(seconds: 3), (_) => _pollForRequests());
           _pollForRequests();
         } else {
           log('Polling is disabled.', name: 'main_screen.dart');
@@ -160,7 +161,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     _showChangelogAndGuide();
     _updateFbTokenOnChange();
     _startPollingIfEnabled();
-    _loadEverything();
   }
 
   @override
@@ -183,7 +183,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     if (pushTokens.isEmpty) {
       log('No push token is available for polling, polling is disabled.',
           name: 'main_screen.dart');
-      AppSettings.of(context).setEnablePolling(false);
+      AppSettings.of(context).enablePolling = false;
       return false;
     }
 
@@ -241,9 +241,20 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     super.dispose();
   }
 
-  _loadEverything() async {
-    await _loadTokenList();
-    await _loadFirebase();
+  _initNotifications() async {
+    // Stop here if no push tokens exist, we do not want to ask for permissions
+    // on iOS.
+    if (!(await StorageUtil.loadAllTokens())
+        .any((element) => element is PushToken)) {
+      return;
+    }
+
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   _loadFirebase() async {
@@ -255,7 +266,15 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     }
 
     if (await StorageUtil.globalFirebaseConfigExists()) {
-      _initFirebase((await (StorageUtil.loadGlobalFirebaseConfig()))!);
+      try {
+        _initFirebase((await (StorageUtil.loadGlobalFirebaseConfig()))!);
+      } on PlatformException catch (e, s) {
+        if (e.code == FIREBASE_TOKEN_ERROR_CODE) {
+          // Do nothing, this error is of no interest here.
+        } else {
+          Catcher.reportCheckedError(e, s);
+        }
+      }
     }
   }
 
@@ -326,6 +345,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         return;
       }
 
+      await StorageUtil.saveOrReplaceToken(newToken);
+      await _initNotifications();
       _tokenList.add(newToken);
 
       if (mounted) {
@@ -437,6 +458,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   Future<String?> _initFirebase(FirebaseConfig config) async {
+    _initNotifications();
+
     log("Initializing firebase.", name: "main_screen.dart");
 
     if (!await StorageUtil.globalFirebaseConfigExists() ||
@@ -466,14 +489,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
             Duration(seconds: 15));
         return null;
       }
-
-      var initializationSettingsAndroid =
-          AndroidInitializationSettings('app_icon');
-      var initializationSettingsIOS = IOSInitializationSettings();
-      var initializationSettings = InitializationSettings(
-          android: initializationSettingsAndroid,
-          iOS: initializationSettingsIOS);
-      await flutterLocalNotificationsPlugin.initialize(initializationSettings);
     } else if (await StorageUtil.loadGlobalFirebaseConfig() != config) {
       log("Given firebase config does not equal the existing config.",
           name: "main_screen.dart",
@@ -620,6 +635,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     log('Incoming push auth request for token with serial.',
         name: 'main_screen.dart', error: requestedSerial);
 
+    // TODO What to do if it does not exist?
     PushToken? token = tokenList
         .whereType<PushToken>()
         .firstWhere((t) => t.serial == requestedSerial && t.isRolledOut);
@@ -628,6 +644,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       log("The requested token does not exist or is not rolled out.",
           name: "main_screen.dart", error: requestedSerial);
     } else {
+      // Uri requestUri = data['uri'] == null ? token.url : Uri.parse(data['url']);
+      Uri requestUri = Uri.parse(data['url']);
+
       log('Token matched requested token',
           name: 'main_screen.dart', error: token);
       String signature = data['signature'];

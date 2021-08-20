@@ -15,6 +15,59 @@
 - Migrated app to null-safety
 - Added debug-'flavor' to allow parallel install of release and debug version on Android
 
+
+## [3.1.5] - 2021-XX-XX
+
+### Changed
+
+- Changed error message on failing POST request (due to null values in body) to be more informative.
+
+## [3.1.4] - 2021-07-22
+
+### Added
+
+- Added description for why the app need network access on iOS
+
+### Changed
+
+- Changed android api target level to 30
+- Subject of error reports now start with version number
+- Enable automatic polling per default on all devices (to fix missing push challenges on iOS)
+- Reduced automatic polling interval to three (3) seconds
+
+### Fixed
+
+- Fixed failing network request when rolling out push tokens on iOS 14+
+- Added fix for null check operator being used on null value in the animation controller for TOTP tokens
+
+## [3.1.3] - 2021-06-24
+
+### Added
+
+- Added support for poll-only tokens introduced in privacyIDEA v3.7.+
+- Added french translation, thanks to *NicolasB CD48* 
+
+### Changed
+
+- Removed error reporting on known exception when push tokens are used but no network connection is available
+- The issuer of tokens is shown additionally to its label
+- The issuer of tokens is parsed from the label part of the otpauth URI also
+
+### Fixed
+
+- Fixed calling animation controller when it doesn't exist
+- Fixed error when receiving challenges for non-existing tokens
+- Fixed PaddingError on loading tokens on some devices
+
+## [3.1.2] - 2021-04-22
+
+### Fixed
+
+- Fixed broken ui updates for TOTP tokens
+- Fixed parsing issues for QR codes
+- Fixed error when scanning qr codes is interrupted
+- Added fix for secure storage issue, including dialog to inform affected users how to fix the error
+
 ## [3.1.1] - 2021-03-31
 
 ### Fixed
@@ -101,8 +154,11 @@
 - Using new engine to program the app
 - parallel development of android and ios version
 
-
-[3.2.0]: https://github.com/privacyidea/pi-authenticator/compare/vX.X.X...v3.2.0
+[3.2.0]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.5...v3.2.0
+[3.1.5]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.4...v3.1.5
+[3.1.4]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.3...v3.1.4
+[3.1.3]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.2...v3.1.3
+[3.1.2]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.12...v3.1.0
 [3.0.12]: https://github.com/privacyidea/pi-authenticator/compare/v3.0.8...v3.0.12

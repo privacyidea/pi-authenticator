@@ -69,3 +69,6 @@ const String URI_SSL_VERIFY = "URI_SSL_VERIFY";
 
 // Crypto stuff:
 const String SIGNING_ALGORITHM = 'SHA-256/RSA';
+
+// Custom error identifiers
+const String FIREBASE_TOKEN_ERROR_CODE = "FIREBASE_TOKEN_ERROR_CODE";
