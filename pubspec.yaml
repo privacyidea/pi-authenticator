@@ -56,6 +56,7 @@ dependencies:
   pi_authenticator_legacy:
     path: local_plugins/pi-authenticator-legacy
   collection: ^1.15.0
+  uni_links: ^0.5.1
 
 dev_dependencies:
   flutter_driver:

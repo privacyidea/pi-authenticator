@@ -28,6 +28,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -50,6 +51,7 @@ import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
+import 'package:uni_links/uni_links.dart';
 import 'package:uuid/uuid.dart';
 
 import 'custom_about_screen.dart';
@@ -70,6 +72,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Timer? _pollTimer;
+
+  // Used for handling links the app is registered to handle.
+  StreamSubscription? _uniLinkStream;
 
   void _showChangelogAndGuide() async {
     // Do not show these info when running driver tests
@@ -121,6 +126,32 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       cancelOnError: false,
       onError: (error) => log('$error', name: 'polling timer'),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initLinkHandling();
+  }
+
+  Future<void> _initLinkHandling() async {
+    _uniLinkStream = linkStream.listen((String? link) {
+      _handleOtpAuth(link);
+    }, onError: (err) {
+      _showMessage(AppLocalizations.of(context)!.handlingOtpAuthLinkFailed,
+          Duration(seconds: 4));
+    });
+
+    try {
+      String? link = await getInitialLink();
+      if (link == null) {
+        return; // Do not cause an Exception here if no link exists.
+      }
+      _handleOtpAuth(link);
+    } on PlatformException {
+      _showMessage(AppLocalizations.of(context)!.handlingOtpAuthLinkFailed,
+          Duration(seconds: 4));
+    }
   }
 
   @override
@@ -205,6 +236,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   @override
   void dispose() {
     _pollTimer?.cancel();
+    _uniLinkStream?.cancel();
     super.dispose();
   }
 
@@ -231,7 +263,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       appBar: AppBar(
         title: Text(
           widget.title,
-          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          overflow: TextOverflow.ellipsis,
+          // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
         actions: _buildActionMenu(),
@@ -246,31 +279,25 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     );
   }
 
-  _scanQRCode() async {
-    String? barcode = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => QRScannerScreen()),
-    );
-
-    if (barcode == null) {
-      // User canceled scanning.
+  _handleOtpAuth(String? otpAuth) async {
+    if (otpAuth == null) {
       return;
     }
 
     log(
-      "Barcode scanned:",
+      "Try to handle otpAuth:",
       name: "main_screen.dart",
-      error: barcode,
+      error: otpAuth,
     );
 
     try {
       // TODO get crash report recipients from map and set in settings
       //  and for Catcher.
-      Map<String, dynamic> barcodeMap = parseQRCodeToMap(barcode);
+      Map<String, dynamic> barcodeMap = parseQRCodeToMap(otpAuth);
       // AppSetting.of(context).add...
 //      Catcher.instance.updateConfig();
 
-      Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(barcode));
+      Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(otpAuth));
 
       log(
         "Adding new token from qr-code:",
@@ -301,6 +328,14 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         error: e.stackTrace,
       );
     }
+  }
+
+  _scanQRCode() async {
+    String? barcode = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => QRScannerScreen()),
+    );
+    await _handleOtpAuth(barcode);
   }
 
   Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {

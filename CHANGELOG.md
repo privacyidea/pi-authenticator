@@ -2,6 +2,10 @@
 
 ## [3.2.0] - 2021-XX-XX
 
+### Added
+
+- Registered app to handle 'otpauth' links on Android and iOS
+
 ### Changed
 
 - Updated plugins
