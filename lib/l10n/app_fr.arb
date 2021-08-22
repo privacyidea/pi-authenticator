@@ -1,0 +1,474 @@
+{
+  "@@last_modified": "2021-02-25T12:30:00.793083",
+  "guide": "Assistant",
+  "@guide": {
+    "description": "Button to open the guide screen.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "next": "Suivant",
+  "@next": {
+    "description": "The text of the button to calculate the next otp value.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "about": "À propos",
+  "@about": {
+    "description": "Button to open the about page.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "retry": "Réessayer",
+  "@retry": {
+    "description": "Label for e.g. a button. Something is tried to be done again.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "accept": "Accepter",
+  "@accept": {
+    "description": "Label for e.g. a button. Something gets accepted by the user.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "decline": "Refuser",
+  "@decline": {
+    "description": "Label for e.g. a button. Something gets declined by the user.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "name": "Nom",
+  "@name": {
+    "description": "Describes the field where the tokens name should be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "secret": "Secret",
+  "@secret": {
+    "description": "Describes the field where the tokens secret should be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "encoding": "Encodage",
+  "@encoding": {
+    "description": "Title of the dropdown button where the encoding is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "algorithm": "Algorithme",
+  "@algorithm": {
+    "description": "Title of the dropdown button where the encoding is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "digits": "Chiffres",
+  "@digits": {
+    "description": "Title of the dropdown button where the number of digits for the opt value is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "type": "Type",
+  "@type": {
+    "description": "Title of the dropdown button where the type of the token is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "period": "Période",
+  "@period": {
+    "description": "Title of the dropdown button where the period of the totp token is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "rename": "Renommer",
+  "@rename": {
+    "description": "Label that describes renaming the token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "cancel": "Annuler",
+  "@cancel": {
+    "description": "Button to cancel an action.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "delete": "Supprimer",
+  "@delete": {
+    "description": "Label that describes deleting the token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "dismiss": "Fermer",
+  "@dismiss": {
+    "description": "Text of a button that closes a dialog.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "showThisScreenOnStart": "Afficher cet écran au démarrage",
+  "@showThisScreenOnStart": {
+    "description": "Description for checkbox, if the checkbox is ticked, the guide screen is shown on every app start.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "somethingWentWrong": "Une erreur est survenue.",
+  "@somethingWentWrong": {
+    "description": "Tells the user that something went wrong.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addToken": "Ajouter un jeton",
+  "@addToken": {
+    "description": "The button to open the screen to add tokens by hand.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "scanQrCode": "Numériser QR-Code",
+  "@scanQrCode": {
+    "description": "The button to scan otpauth qr-codes.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterDetailsForToken": "Saisissez les détails du jeton",
+  "@enterDetailsForToken": {
+    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseEnterANameForThisToken": "Veuillez saisir un nom pour ce jeton.",
+  "@pleaseEnterANameForThisToken": {
+    "description": "Hint telling the user to enter a name for a token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseEnterASecretForThisToken": "Veuillez saisir un secret pour ce jeton.",
+  "@pleaseEnterASecretForThisToken": {
+    "description": "Hint telling the user to enter a secret for a token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "theSecretDoesNotFitTheCurrentEncoding": "Le secret n'est pas compatible avec \nl'encodage actuel.",
+  "@theSecretDoesNotFitTheCurrentEncoding": {
+    "description": "Hint telling the user that the secret does not fit the selected encoding.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "renameToken": "Renommer jeton",
+  "@renameToken": {
+    "description": "Title of the dialog where a new name for a token can be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "confirmDeletion": "Confirmer suppression",
+  "@confirmDeletion": {
+    "description": "Title of the dialog where a token can be deleted.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "confirmDeletionOf": "Confirmer la suppression de {name}?",
+  "@confirmDeletionOf": {
+    "description": "Asks for confirmation on deleting a token.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234"
+      }
+    }
+  },
+  "generatingPhonePart": "Générer la part du téléphone",
+  "@generatingPhonePart": {
+    "description": "Title of a dialog telling the user that the phone part gets generated right now.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "phonePart": "Part du téléphone:",
+  "@phonePart": {
+    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "otpValueCopiedMessage": "Le mot de passe \"{otpValue}\" a été copié dans le presse-papier.",
+  "@otpValueCopiedMessage": {
+    "description": "Tells the user that the otp value was copied to the clipboard.",
+    "type": "text",
+    "placeholders": {
+      "otpValue": {
+        "example": "055374"
+      }
+    }
+  },
+  "settings": "Paramètres",
+  "@settings": {
+    "description": "Button to open the settings page.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pushToken": "Jeton de type Push",
+  "@pushToken": {
+    "description": "Title for the settings block concerning the push tokens.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "theme": "Thème",
+  "@theme": {
+    "description": "Title of the setting group where the theme can be selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "lightTheme": "Thème lumineux",
+  "@lightTheme": {
+    "description": "The light theme.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "darkTheme": "Thème sombre",
+  "@darkTheme": {
+    "description": "The dark theme.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "someTokensDoNotSupportPolling": "Certains jetons sont obsolètes et ne supportent pas l'interrogation.",
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "enablePolling": "Activer l'interrogation.",
+  "@enablePolling": {
+    "description": "Name of the setting switch that enables polling.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "miscellaneous": "Divers",
+  "@miscellaneous": {
+    "description": "Title for misc settings.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "requestPushChallengesPeriodically": "Demander des challenges push depuis le serveur périodiquement. Activer cette fonction si les challenges push ne sont pas reçus normalement.",
+  "@requestPushChallengesPeriodically": {
+    "description": "The description of the polling feature.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "synchronizePushTokens": "Synchoniser les jetons Push",
+  "@synchronizePushTokens": {
+    "description": "Title of synchronizing push tokens in settings.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "synchronizesTokensWithServer": "Synchroniser les jeton Push avec le serveur privacyIDEA.",
+  "@synchronizesTokensWithServer": {
+    "description": "Description of synchronizing push tokens in settings.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "sync": "Synchroniser",
+  "@sync": {
+    "description": "Text of button that is used to synchronize push tokens.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "synchronizingTokens": "Synchroniser les jetons.",
+  "@synchronizingTokens": {
+    "description": "Title of the push synchronization dialog.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "allTokensSynchronized": "Tous les jetons ont été synchronisés.",
+  "@allTokensSynchronized": {
+    "description": "Content of the push synchronization dialog. Signaling the user that everything worked.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "synchronizationFailed": "La synchronisation a échoué pour ces jetons, veuillez reéssayer:",
+  "@synchronizationFailed": {
+    "description": "Headline for the list of tokens where the synchronization failed.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "tokensDoNotSupportSynchronization": "Ces jetons ne supportent pas la synchronisation et doivent être désenrôlés:",
+  "@tokensDoNotSupportSynchronization": {
+    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorOnlyOneFirebaseProjectIsSupported": "La configuration firebase des jetons {name} ne correspond à celle utilisée actuellement par l'application et ne peut donc pas être utilisée.",
+  "@errorOnlyOneFirebaseProjectIsSupported": {
+    "description": "Tells the user that the token can not be used because it has a different firebase configuration than the current used configuration of the application.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "errorTokenExpired": "Le jeton {name} a expiré et ne plus être enrôlé.",
+  "@errorTokenExpired": {
+    "description": "Tells the user that the token can not be rolled out, because it expired.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "errorRollOutFailed": "L'enrôlement du jeton {name} a échoué. Erreur réseau: {errorCode}",
+  "@errorRollOutFailed": {
+    "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      },
+      "errorCode": {
+        "example": "500"
+      }
+    }
+  },
+  "errorSynchronizationNoNetworkConnection": "La synchronization a échoué car le serveur est injoignable.",
+  "@errorSynchronizationNoNetworkConnection": {
+    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorRollOutNoNetworkConnection": "Pas de connectivité réseau. Enrôlement impossible.",
+  "@errorRollOutNoNetworkConnection": {
+    "description": "Tells the user that the roll-out failed because no network connection is available.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorRollOutUnknownError": "L'enrôlement a échoué suite à une erreur inconnue: {e}",
+  "@errorRollOutUnknownError": {
+    "description": "Tells the user that the roll-out failed because of an unknown error.",
+    "type": "text",
+    "placeholders": {
+      "e": {
+        "example": "IllegalArgumentException on Line 5 ..."
+      }
+    }
+  },
+  "acceptPushAuthRequestFor": "La requête push a été accepté pour le jeton {name}.",
+  "@acceptPushAuthRequestFor": {
+    "description": "Tells the user that a push request for a specific token was accepted.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "decliningPushAuthRequestFor": "Le requête push a été refusé pour le jeton {name}.",
+  "@decliningPushAuthRequestFor": {
+    "description": "Tells the user that a push request for a specific token was declined.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "errorPushAuthRequestFailedFor": "La requête push pour le jeton {name} a échoué. Code d'erreur: {errorCode}",
+  "@errorPushAuthRequestFailedFor": {
+    "description": "Tells the user that a push auth request could not be accepted for a token.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      },
+      "errorCode": {
+        "example": "500"
+      }
+    }
+  },
+  "rollingOut": "Enrôlement en cours",
+  "@rollingOut": {
+    "description": "Label that tells the user that the token is being rolled out.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "retryRollOut": "Retenter l'enrôlement",
+  "@retryRollOut": {
+    "description": "Label for e.g. a button. Tells the user that rolling out the token failed. Roll out can be retried by clicking this button.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorAuthenticationNotPossibleWithoutNetworkAccess": "Aucune connectivité réseau. Authentification impossible.",
+  "@errorAuthenticationNotPossibleWithoutNetworkAccess": {
+    "description": "Error message tell the user that accepting a push request failed.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorAuthenticationFailedUnknownError": "L'authentication a échoué pour une raison inconnue: {e}",
+  "@errorAuthenticationFailedUnknownError": {
+    "description": "Tells the user that the authentication could not be accepted because of an unknown error.",
+    "type": "text",
+    "placeholders": {
+      "e": {
+        "example": "IllegalArgumentException on line 5, ..."
+      }
+    }
+  },
+  "firebaseConfigCorrupted": "La configuration firebase est corrompue et ne peut être utilisée.",
+  "@firebaseConfigCorrupted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pollingChallenges": "Vérification de nouveaux challenges",
+  "@pollingChallenges": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "migrateTokens": "Migrer les jetons depuis une version précédente de l'application.",
+  "@migrateTokens": {
+    "description": "Description of migration.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "migrate": "Migrer",
+  "@migrate": {
+    "description": "Text of button to start migration.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "migration": "Migration",
+  "@migration": {
+    "description": "Title of settings group for migrating tokens.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "migrationSuccess": "Tous les jetons ont été migré.",
+  "@migrationSuccess": {
+    "description": "Tells the user that all tokens are migrated successfully.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "noTokensForMigration": "Il n'y a aucun jeton qui puisse être migrer.",
+  "@noTokensForMigration": {
+    "description": "Tells the user that no tokens exist that could be migrated.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "migratingToken": "Migration des jetons",
+  "@migratingToken": {
+    "description": "Title of migration dialog.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "unexpectedError": "Erreur inattendue",
+  "@unexpectedError": {
+    "description": "Title of page report mode.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pageReportModeBody": "Une erreur inattendue est survenue dans l'application. L'information suivante peut être transmise aux développeurs par email afin d'aider à corriger cette erreur dans le futur. Appuyer sur '{accept}' pour envoyer l'information ou '{cancel}' pour ne rien envoyer.",
+  "@pageReportModeBody": {
+    "description": "Description shown to the user about what info the error report contains.",
+    "type": "text",
+    "placeholders": {
+      "accept": {
+        "example": "accept"
+      },
+      "cancel": {
+        "example": "cancel"
+      }
+    }
+  }
+}

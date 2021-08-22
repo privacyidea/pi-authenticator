@@ -30,3 +30,26 @@ Tests are located under `app/test`. These can be run from within Android Studio,
 If you want to contribute to this repository you can view the current todos under the issues tab. Ideas and pull requests are much welcome.
 
 For setting up the development environment please visit the official [get startet guide](https://flutter.dev/docs/get-started/install).
+
+## Translations
+
+If you want to help making this app more accessible for others you can translate this app into your native language.
+
+Two files must be translated for this:
+
+The first one is `pi-authenticator/lib/l10n/app_en.arb` that contains the (default) english translation. For translating the file to french for example, this file must be copied and the suffix must be changed accordingly:`app_fr.arb`. The file contains translations in the form:
+~~~~
+"otpValueCopiedMessage": "Password \"{otpValue}\" copied to clipboard.",
+  "@otpValueCopiedMessage": {
+    "description": "Tells the user that the otp value was copied to the clipboard.",
+    "type": "text",
+    "placeholders": {
+      "otpValue": {
+        "example": "055374"
+      }
+    }
+  }
+~~~~
+where the part `Password \"{otpValue}\" copied to clipboard.` must be translated. Special signs such as `\"` and parameters such as `{otpValue}` must not be changed but can be rearanged to fit the translation.
+
+The second file that must be translated is `pi-authenticator/res/guide/GUIDE_en.md`, which must also be copied and the suffix must also be changed, e.g., to `GUIDE_fr.md`. Words that reference the app, such as `Settings`, should be changed in accordance. For links, e.g., `![Manually polling by swiping down](resource:res/gif/help_manual_poll.gif)`, only the text part must be changed. In this case `Manually polling by swiping down`.

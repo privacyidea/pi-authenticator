@@ -39,6 +39,7 @@ import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
@@ -79,6 +80,26 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   _TokenWidgetState(this._token) {
     _saveThisToken();
+  }
+
+  List<Widget> _getSubtitle() {
+    List<Widget> children = [];
+    if (_token.label.isNotEmpty) {
+      children.add(Text(
+        _token.label,
+        style: Theme.of(context).textTheme.headline5,
+      ));
+    }
+    if (_token.issuer.isNotEmpty) {
+      children.add(Text(
+        _token.issuer,
+        style: Theme.of(context)
+            .textTheme
+            .headline6!
+            .copyWith(fontWeight: FontWeight.normal),
+      ));
+    }
+    return children;
   }
 
   @override
@@ -243,7 +264,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
     // Delete expired push requests periodically.
     _deleteTimer = Timer.periodic(Duration(seconds: 30), (_) {
-      if (_token.pushRequests != null && _token.pushRequests.isNotEmpty) {
+      if (_token.pushRequests.isNotEmpty) {
         _deleteExpiredRequests(_token);
         _saveThisToken();
 
@@ -318,23 +339,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     }
 
     if (Platform.isIOS) {
-      await dummyRequest(_token.url!, sslVerify: _token.sslVerify!);
-    }
-
-    if (DateTime.now().isAfter(_token.expirationDate)) {
-      log("Token is expired, abort roll-out and delete it.",
-          name: "token_widgets.dart",
-          error: "Now: ${DateTime.now()}, Token expires at ${[
-            _token.expirationDate
-          ]}, Token: $_token");
-
-      if (mounted) {
-        setState(() => _rollOutFailed = true);
-      }
-
-      _showMessage(
-          AppLocalizations.of(context)!.errorTokenExpired(_token.label), 3);
-      return;
+      await dummyRequest(url:_token.url!, sslVerify: _token.sslVerify!);
     }
 
     if (_token.privateTokenKey == null) {
@@ -352,6 +357,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     }
 
     try {
+      // TODO What to do with poll only tokens if google-services is used?
       Response response =
           await doPost(sslVerify: _token.sslVerify!, url: _token.url!, body: {
         'enrollment_credential': _token.enrollmentCredentials,
@@ -385,6 +391,20 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
             AppLocalizations.of(context)!
                 .errorRollOutFailed(_token.label, response.statusCode),
             3);
+      }
+    } on PlatformException catch (e, s) {
+      log("Roll out push token [$_token] failed.",
+          name: "token_widgets.dart", error: e);
+
+      if (mounted) {
+        setState(() => _rollOutFailed = true);
+      }
+
+      if (e.code == FIREBASE_TOKEN_ERROR_CODE) {
+        _showMessage(
+            AppLocalizations.of(context)!.errorRollOutNoNetworkConnection, 3);
+      } else {
+        Catcher.reportCheckedError(e, s);
       }
     } on SocketException catch (e) {
       log("Roll out push token [$_token] failed.",
@@ -557,9 +577,10 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                   _token.serial,
                   style: Theme.of(context).textTheme.headline4,
                 ),
-                subtitle: Text(
-                  _token.label,
-                  style: Theme.of(context).textTheme.headline5,
+                subtitle: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _getSubtitle(),
                 ),
                 trailing: Icon(Icons.message),
               ),
@@ -748,9 +769,10 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             style: Theme.of(context).textTheme.headline4,
           ),
-          subtitle: Text(
-            _token.label,
-            style: Theme.of(context).textTheme.headline5,
+          subtitle: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _getSubtitle(),
           ),
         ),
         Align(
@@ -774,7 +796,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
 class _TotpWidgetState extends _OTPTokenWidgetState
     with SingleTickerProviderStateMixin, LifecycleMixin {
   late AnimationController
-      controller; // Controller for animating the LinearProgressAnimator
+      _controller; // Controller for animating the LinearProgressAnimator
 
   TOTPToken get _token => super._token as TOTPToken;
 
@@ -799,7 +821,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
   void initState() {
     super.initState();
 
-    controller = AnimationController(
+    _controller = AnimationController(
       duration: Duration(seconds: _token.period),
       // Animate the progress for the duration of the tokens period.
       vsync: this,
@@ -812,7 +834,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
       ..addStatusListener((status) {
         // Add listener to restart the animation after the period, also updates the otp value.
         if (status == AnimationStatus.completed) {
-          controller.forward(from: _getCurrentProgress());
+          _controller.forward(from: _getCurrentProgress());
           _updateOtpValue();
         }
       })
@@ -825,12 +847,12 @@ class _TotpWidgetState extends _OTPTokenWidgetState
   @override
   void onResume() {
     _updateOtpValue();
-    controller.forward(from: _getCurrentProgress());
+    _controller.forward(from: _getCurrentProgress());
   }
 
   @override
   void dispose() {
-    controller.dispose(); // Dispose the controller to prevent memory leak.
+    _controller.dispose(); // Dispose the controller to prevent memory leak.
     super.dispose();
   }
 
@@ -843,13 +865,14 @@ class _TotpWidgetState extends _OTPTokenWidgetState
             insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             style: Theme.of(context).textTheme.headline4,
           ),
-          subtitle: Text(
-            _token.label,
-            style: Theme.of(context).textTheme.headline5,
+          subtitle: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _getSubtitle(),
           ),
         ),
         LinearProgressIndicator(
-          value: controller.value,
+          value: _controller.value,
         ),
       ],
     );

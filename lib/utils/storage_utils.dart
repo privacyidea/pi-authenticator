@@ -211,4 +211,10 @@ class StorageUtil {
   static Future<void> setCurrentVersion(String version) async {
     await _storage.write(key: _KEY_VERSION, value: version);
   }
+
+  // #########################################################################
+  // Misc
+  // #########################################################################
+
+  static Future<void> deleteEverything() async => _storage.deleteAll();
 }

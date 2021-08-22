@@ -28,23 +28,22 @@ import 'package:package_info/package_info.dart';
 /// Dummy network request can be used to trigger the network access permission
 /// on iOS devices. Doing this at an appropriate place in the code can prevent
 /// SocketExceptions.
-Future<void> dummyRequest(Uri url, {bool sslVerify = true}) async {
-  IOClient? ioClient;
+Future<void> dummyRequest({required Uri url, bool sslVerify = true}) async {
+  HttpClient httpClient = HttpClient();
+  httpClient.badCertificateCallback =
+      ((X509Certificate cert, String host, int port) => !sslVerify);
+  httpClient.userAgent = "privacyIDEA-App /"
+      " ${Platform.operatingSystem}"
+      " ${(await PackageInfo.fromPlatform()).version}";
+
+  IOClient ioClient = IOClient(httpClient);
+
   try {
-    HttpClient httpClient = HttpClient();
-    httpClient.badCertificateCallback =
-        ((X509Certificate cert, String host, int port) => !sslVerify);
-    httpClient.userAgent = "privacyIDEA-App /"
-        " ${Platform.operatingSystem}"
-        " ${(await PackageInfo.fromPlatform()).version}";
-
-    ioClient = IOClient(httpClient);
-
     await ioClient.post(url, body: "");
   } on SocketException {
     // ignore
   } finally {
-    ioClient?.close();
+    ioClient.close();
   }
 }
 
@@ -56,6 +55,18 @@ Future<Response> doPost(
   log("Sending post request",
       name: "utils.dart",
       error: "URI: $url, SSLVerify: $sslVerify, Body: $body");
+
+  List<MapEntry> entries =
+      body.entries.where((element) => element.value == null).toList();
+  if (entries.isNotEmpty) {
+    List<String> nullEntries = [];
+    for (MapEntry entry in entries) {
+      nullEntries.add(entry.key);
+    }
+    throw ArgumentError(
+        "Can not send request because the [body] contains a null values at entries $nullEntries,"
+        " this is not permitted.");
+  }
 
   HttpClient httpClient = HttpClient();
   httpClient.badCertificateCallback =

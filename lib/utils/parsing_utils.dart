@@ -244,7 +244,6 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   Map<String, dynamic> uriMap = Map();
 
   uriMap[URI_TYPE] = uri.host;
-  uriMap[URI_ISSUER] = _parseIssuer(uri);
 
   // If we do not support the version of this piauth url, we can stop here.
   String? pushVersionAsString = uri.queryParameters["v"];
@@ -271,7 +270,9 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
         "[$pushVersionAsString] is not a valid value for parameter [v].");
   }
 
-  uriMap[URI_LABEL] = _parseLabel(uri);
+  List labelIssuerList = _parseLabelAndIssuer(uri);
+  uriMap[URI_LABEL] = labelIssuerList[0];
+  uriMap[URI_ISSUER] ??= labelIssuerList[1];
 
   uriMap[URI_SERIAL] = uri.queryParameters["serial"];
   ArgumentError.checkNotNull(uriMap[URI_SERIAL], "serial");
@@ -312,15 +313,16 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
 
   // parse.host -> Type totp or hotp
   uriMap[URI_TYPE] = uri.host;
-  uriMap[URI_ISSUER] = _parseIssuer(uri);
 
-// parse.path.substring(1) -> Label
+  // parse.path.substring(1) -> Label
   log("Key: [..] | Value: [..]");
   uri.queryParameters.forEach((key, value) {
     log("  $key | $value");
   });
 
-  uriMap[URI_LABEL] = _parseLabel(uri);
+  List labelIssuerList = _parseLabelAndIssuer(uri);
+  uriMap[URI_LABEL] = labelIssuerList[0];
+  uriMap[URI_ISSUER] ??= labelIssuerList[1];
 
   String algorithm = uri.queryParameters["algorithm"] ??
       enumAsString(Algorithms.SHA1); // Optional parameter
@@ -401,15 +403,10 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   if (uriMap[URI_TYPE] == "totp") {
     // Parse period.
     String periodAsString = uri.queryParameters["period"] ?? "30";
-    if (periodAsString != "30" && periodAsString != "60") {
-      throw ArgumentError.value(
-        uri,
-        "uri",
-        "[$periodAsString] is not a valid value for the paramerter [period].",
-      );
-    }
 
-    uriMap[URI_PERIOD] = int.parse(periodAsString);
+    uriMap[URI_PERIOD] = int.parse(periodAsString,
+        onError: (e) => throw ArgumentError(
+            "Value [$periodAsString] for parameter [period] is invalid."));
   }
 
   if (is2StepURI(uri)) {
@@ -454,17 +451,27 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   return uriMap;
 }
 
-String _parseLabel(Uri uri) {
-  String label;
+/// Parse the label and the issuer (if it exists) from the url.
+List _parseLabelAndIssuer(Uri uri) {
+  String label = "";
+  String issuer = "";
   String param = uri.path.substring(1);
+  param = Uri.decodeFull(param);
 
   try {
-    label = Uri.decodeFull(param);
+    if (param.contains(":")) {
+      List split = param.split(":");
+      issuer = split[0];
+      label = split[1];
+    } else {
+      label = param;
+      issuer = _parseIssuer(uri);
+    }
   } on Error {
     label = param;
   }
 
-  return label;
+  return [label, issuer];
 }
 
 String _parseIssuer(Uri uri) {

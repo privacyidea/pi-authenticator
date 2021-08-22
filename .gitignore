@@ -79,3 +79,5 @@ coverage/
 
 **/android/key.properties
 **/android/app/google-services.json
+
+lib/l10n/untranslated.txt

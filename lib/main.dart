@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+
 import 'package:catcher/catcher.dart';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,6 +32,8 @@ import 'package:privacyidea_authenticator/utils/themes.dart';
 import 'package:privacyidea_authenticator/widgets/custom_page_report_mode.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
+import 'widgets/CustomEmailManualHandler.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -43,7 +46,7 @@ void main() async {
   ]);
 
   CatcherOptions releaseOptions = CatcherOptions(CustomPageReportMode(), [
-    EmailManualHandler([defaultCrashReportRecipient],
+    CustomEmailManualHandler([defaultCrashReportRecipient],
         enableCustomParameters: false)
   ]);
 
@@ -69,19 +72,20 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
         preferences: this._preferences,
         child: Builder(
           builder: (context) {
-            var crashReportRecipients =
-                AppSettings.of(context).crashReportRecipients;
+            final settings = AppSettings.of(context);
+
+            var crashReportRecipients = settings.crashReportRecipients;
 
             // Override release config to use custom e-mail recipients
             Catcher.getInstance().updateConfig(
               releaseConfig: CatcherOptions(CustomPageReportMode(), [
-                EmailManualHandler(crashReportRecipients,
+                CustomEmailManualHandler(crashReportRecipients,
                     enableCustomParameters: false)
               ]),
             );
 
             return StreamBuilder<bool>(
-              stream: AppSettings.of(context).streamUseSystemLocale(),
+              stream: settings.streamUseSystemLocale(),
               builder: (context, snapshot) {
                 bool useSystemLocale = true;
                 if (snapshot.hasData) {
@@ -89,12 +93,15 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
                 }
 
                 return StreamBuilder<Locale>(
-                  stream: AppSettings.of(context).streamLocalePreference(),
+                  stream: settings.streamLocalePreference(),
                   builder: (context, snapshot) {
                     Locale? locale;
                     if (!useSystemLocale && snapshot.hasData) {
                       locale = snapshot.data!;
                     }
+
+                    // Update indicator after al setup code is done.
+                    settings.isFirstRun = false;
 
                     return MaterialApp(
                       navigatorKey: Catcher.navigatorKey,

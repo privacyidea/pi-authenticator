@@ -24,6 +24,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart';
+import 'package:catcher/catcher.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -115,7 +116,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         if (event) {
           log('Polling is enabled.', name: 'main_screen.dart');
           _pollTimer =
-              Timer.periodic(Duration(seconds: 10), (_) => _pollForRequests());
+              Timer.periodic(Duration(seconds: 3), (_) => _pollForRequests());
           _pollForRequests();
         } else {
           log('Polling is disabled.', name: 'main_screen.dart');
@@ -159,7 +160,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     _showChangelogAndGuide();
     _updateFbTokenOnChange();
     _startPollingIfEnabled();
-    _loadEverything();
   }
 
   @override
@@ -182,7 +182,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     if (pushTokens.isEmpty) {
       log('No push token is available for polling, polling is disabled.',
           name: 'main_screen.dart');
-      AppSettings.of(context).setEnablePolling(false);
+      AppSettings.of(context).enablePolling = false;
       return false;
     }
 
@@ -238,11 +238,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     _pollTimer?.cancel();
     _uniLinkStream?.cancel();
     super.dispose();
-  }
-
-  _loadEverything() async {
-    await _loadTokenList();
-    await _initFirebase();
   }
 
   _loadTokenList() async {
@@ -312,6 +307,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         return;
       }
 
+      await StorageUtil.saveOrReplaceToken(newToken);
+      await _initNotifications();
       _tokenList.add(newToken);
 
       if (mounted) {
@@ -412,6 +409,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   Future<String?> _initFirebase() async {
+    _initNotifications();
     log("Initializing firebase.", name: "main_screen.dart");
 
     // Delete old / secondary firebase app if it exists.
@@ -448,7 +446,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     if (firebaseToken == null) {
       throw SocketException(
           "Firebase token could not be retrieved, the only know cause of this is"
-          " that the firebase servers could not be reached.");
+          " that the firebase servers could not be reached."
+          );
     }
 
     if (await StorageUtil.getCurrentFirebaseToken() == null) {
@@ -571,6 +570,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       log("The requested token does not exist or is not rolled out.",
           name: "main_screen.dart", error: requestedSerial);
     } else {
+      // Uri requestUri = data['uri'] == null ? token.url : Uri.parse(data['url']);
+      Uri requestUri = Uri.parse(data['url']);
+
       log('Token matched requested token',
           name: 'main_screen.dart', error: token);
       String signature = data['signature'];
@@ -785,6 +787,12 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   Future<void> _initNotifications() async {
+    // Stop here if no push tokens exist, we do not want to ask for permissions
+    // on iOS.
+    if (!(await StorageUtil.loadAllTokens())
+        .any((element) => element is PushToken)) {
+      return;
+    }
     var initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS = IOSInitializationSettings();

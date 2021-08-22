@@ -8,6 +8,57 @@ import 'package:test/test.dart';
 void main() {
   _testSerializingRSAKeys();
   _testParseOtpAuth();
+  _testParsingLabelAndIssuer();
+}
+
+void _testParsingLabelAndIssuer() {
+  group("Parsing Label and Issuer", () {
+    String uriWithIssuerParam =
+        "otpauth://totp/alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ"
+        "&issuer=ACME%20Co&algorithm=SHA512&digits=8&period=60";
+    String uriWithIssuer =
+        "otpauth://totp/Example:alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ"
+        "&algorithm=SHA512&digits=8&period=60";
+    String uriWithIssuerAndUriEncoding =
+        "otpauth://totp/Example%3Aalice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ"
+        "&algorithm=SHA512&digits=8&period=60";
+    String uriWithIssuerParamAndIssuer =
+        "otpauth://totp/Example:alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ"
+        "&issuer=ACME%20Co&algorithm=SHA512&digits=8&period=60";
+    String uriWithoutIssuerAndLabel =
+        "otpauth://totp/?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ"
+        "&algorithm=SHA512&digits=8&period=60";
+
+    test("Test parse issuer from param", () {
+      Map<String, dynamic> map = parseQRCodeToMap(uriWithoutIssuerAndLabel);
+      expect(map[URI_LABEL], "");
+      expect(map[URI_ISSUER], "");
+    });
+
+    test("Test parse issuer from param", () {
+      Map<String, dynamic> map = parseQRCodeToMap(uriWithIssuerParam);
+      expect(map[URI_LABEL], "alice@google.com");
+      expect(map[URI_ISSUER], "ACME Co");
+    });
+
+    test("Test parse issuer from label", () {
+      Map<String, dynamic> map = parseQRCodeToMap(uriWithIssuer);
+      expect(map[URI_LABEL], "alice@google.com");
+      expect(map[URI_ISSUER], "Example");
+    });
+
+    test("Test parse issuer from label with uri encoding", () {
+      Map<String, dynamic> map = parseQRCodeToMap(uriWithIssuerAndUriEncoding);
+      expect(map[URI_LABEL], "alice@google.com");
+      expect(map[URI_ISSUER], "Example");
+    });
+
+    test("Test parse issuer from param and label", () {
+      Map<String, dynamic> map = parseQRCodeToMap(uriWithIssuerParamAndIssuer);
+      expect(map[URI_LABEL], "alice@google.com");
+      expect(map[URI_ISSUER], "Example");
+    });
+  });
 }
 
 void _testSerializingRSAKeys() {
@@ -214,6 +265,15 @@ void _testParseOtpAuth() {
                 "secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co"
                 "&algorithm=SHA1&digits=6&period=aa"),
             throwsA(TypeMatcher<ArgumentError>()));
+      });
+
+      test("Test longer values for period", () {
+        Map<String, dynamic> map =
+            parseQRCodeToMap("otpauth://totp/ACME%20Co:john@example.com?"
+                "secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co"
+                "&algorithm=SHA1&digits=6&period=124432");
+
+        expect(map[URI_PERIOD], 124432);
       });
 
       test("Test valid totp uri", () {
