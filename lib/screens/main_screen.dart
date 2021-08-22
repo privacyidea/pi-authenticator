@@ -440,14 +440,16 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     String? firebaseToken = await FirebaseMessaging.instance.getToken();
     log("Firebase initialized, token added",
         name: "main_screen.dart", error: firebaseToken);
+
     // The Firebase Plugin will throw a network exception, but that does not reach
-    //  the flutter part of the app. That is why we need to throw our own socket-
+    //  the flutter part of the app. That is why we need to throw our own
     //  exception in this case.
     if (firebaseToken == null) {
-      throw SocketException(
+      throw PlatformException(
+          message:
           "Firebase token could not be retrieved, the only know cause of this is"
-          " that the firebase servers could not be reached."
-          );
+              " that the firebase servers could not be reached.",
+          code: FIREBASE_TOKEN_ERROR_CODE);
     }
 
     if (await StorageUtil.getCurrentFirebaseToken() == null) {
