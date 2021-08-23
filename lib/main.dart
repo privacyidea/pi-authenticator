@@ -18,7 +18,6 @@
   limitations under the License.
 */
 
-
 import 'package:catcher/catcher.dart';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';

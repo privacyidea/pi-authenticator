@@ -404,9 +404,12 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
     // Parse period.
     String periodAsString = uri.queryParameters["period"] ?? "30";
 
-    uriMap[URI_PERIOD] = int.parse(periodAsString,
-        onError: (e) => throw ArgumentError(
-            "Value [$periodAsString] for parameter [period] is invalid."));
+    int? period = int.tryParse(periodAsString);
+    if (period == null) {
+      throw ArgumentError(
+          "Value [$periodAsString] for parameter [period] is invalid.");
+    }
+    uriMap[URI_PERIOD] = period;
   }
 
   if (is2StepURI(uri)) {

@@ -397,9 +397,9 @@ class AppSettings extends InheritedWidget {
 
   Stream<bool> streamEnablePolling() => _enablePolling;
 
-  void set hideOTPs(bool value) => _hideOpts.setValue(value);
+  set hideOTPs(bool value) => _hideOpts.setValue(value);
 
-  void set enablePolling(bool value) => _enablePolling.setValue(value);
+  set enablePolling(bool value) => _enablePolling.setValue(value);
 
   bool get showGuideOnStart => _showGuideOnStart.getValue();
 

@@ -339,7 +339,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     }
 
     if (Platform.isIOS) {
-      await dummyRequest(url:_token.url!, sslVerify: _token.sslVerify!);
+      await dummyRequest(url: _token.url!, sslVerify: _token.sslVerify!);
     }
 
     if (_token.privateTokenKey == null) {

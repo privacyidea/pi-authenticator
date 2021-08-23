@@ -24,7 +24,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart';
-import 'package:catcher/catcher.dart';
+import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -447,7 +447,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     if (firebaseToken == null) {
       throw PlatformException(
           message:
-          "Firebase token could not be retrieved, the only know cause of this is"
+              "Firebase token could not be retrieved, the only know cause of this is"
               " that the firebase servers could not be reached.",
           code: FIREBASE_TOKEN_ERROR_CODE);
     }
@@ -565,21 +565,17 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
     PushToken? token = tokenList
         .whereType<PushToken>()
-        .firstWhere((t) => t.serial == requestedSerial && t.isRolledOut);
+        .firstWhereOrNull((t) => t.serial == requestedSerial && t.isRolledOut);
 
-    // FIXME What if the tokens does not exist? firstWhere cannot handle that
     if (token == null) {
       log("The requested token does not exist or is not rolled out.",
           name: "main_screen.dart", error: requestedSerial);
     } else {
-      // Uri requestUri = data['uri'] == null ? token.url : Uri.parse(data['url']);
-      Uri requestUri = Uri.parse(data['url']);
-
       log('Token matched requested token',
           name: 'main_screen.dart', error: token);
       String signature = data['signature'];
       String signedData = '${data['nonce']}|'
-          '${data['url']}|'
+          '$requestUri|'
           '${data['serial']}|'
           '${data['question']}|'
           '${data['title']}|'
@@ -588,7 +584,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
 
       // Re-add url and sslverify to android legacy tokens:
-      token.url ??= Uri.parse(data['url']);
+      token.url ??= requestUri;
       token.sslVerify ??= sslVerify;
 
       bool isVerified = token.privateTokenKey == null
