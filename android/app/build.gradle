@@ -81,9 +81,9 @@ android {
                     'proguard-rules.pro'
         }
 
-//        debug {
-//            applicationIdSuffix ".debug"
-//        }
+        debug {
+            applicationIdSuffix ".debug"
+        }
     }
 }
 
