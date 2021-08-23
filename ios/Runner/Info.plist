@@ -75,6 +75,6 @@
         </dict>
       </array>
       <key>NSLocalNetworkUsageDescription</key>
-      <string>Network access is required to roll out push tokens.</st
+      <string>Network access is required to roll out push tokens.</string>
 </dict>
 </plist>
