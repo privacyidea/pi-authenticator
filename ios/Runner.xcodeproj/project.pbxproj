@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0DA36CBD26D4E8F400CDA64B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0DA36CBC26D4E8F400CDA64B /* GoogleService-Info.plist */; };
-		0DCCE7B526CE7AA30029E1D5 /* (null) in Resources */ = {isa = PBXBuildFile; };
+		0DCCE7B526CE7AA30029E1D5 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
@@ -54,6 +54,7 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD2CC78FDDF5F533B933143A /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAC9142D0606238F50D5B1AB /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +82,7 @@
 			children = (
 				882A7BA5858C3914F4A99862 /* Pods-Runner.release.xcconfig */,
 				7B7B5125A3C23A2C7C115A92 /* Pods-Runner.profile.xcconfig */,
+				FAC9142D0606238F50D5B1AB /* Pods-Runner.debug.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -208,7 +210,7 @@
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
-				0DCCE7B526CE7AA30029E1D5 /* (null) in Resources */,
+				0DCCE7B526CE7AA30029E1D5 /* BuildFile in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 				0DA36CBD26D4E8F400CDA64B /* GoogleService-Info.plist in Resources */,

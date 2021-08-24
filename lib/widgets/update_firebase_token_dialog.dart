@@ -24,6 +24,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart';
@@ -76,8 +77,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
     // TODO What to do with poll only tokens if google-services is used?
 
-    //String token = await FirebaseMessaging().getToken();
-    String token = "";
+    String token = (await FirebaseMessaging.instance.getToken())!;
 
     // TODO Is there a good way to handle these tokens?
     List<PushToken> tokenWithOutUrl =

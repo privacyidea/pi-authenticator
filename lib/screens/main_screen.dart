@@ -160,6 +160,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     _showChangelogAndGuide();
     _updateFbTokenOnChange();
     _startPollingIfEnabled();
+    _initFirebase();
+    _loadTokenList();
   }
 
   @override
@@ -482,7 +484,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         name: "main_screen.dart", error: message);
     await StorageUtil.protect(() async => _handleIncomingRequest(
         message, await StorageUtil.loadAllTokens(), false));
-    _loadTokenList(); // Update UI
+    await _loadTokenList(); // Update UI
   }
 
   /// This method attempts to update the fbToken for all PushTokens that can be
@@ -730,7 +732,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
                 context,
                 MaterialPageRoute(
                   builder: (context) => SettingsScreen(),
-                )).then((value) => _loadTokenList());
+                )).then((_) => _loadTokenList());
           } else if (value == 'guide') {
             Navigator.push(
               context,
