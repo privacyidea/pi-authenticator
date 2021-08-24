@@ -101,7 +101,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     }
   }
 
-  void _updateFbTokenOnChange() async {
+  void _updateFbTokenIfChanged() async {
     String? newToken = await StorageUtil.getNewFirebaseToken();
 
     if (newToken != null &&
@@ -158,7 +158,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   @override
   void afterFirstRender() {
     _showChangelogAndGuide();
-    _updateFbTokenOnChange();
+    _updateFbTokenIfChanged();
     _startPollingIfEnabled();
     _initFirebase();
     _loadTokenList();
