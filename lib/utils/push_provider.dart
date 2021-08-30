@@ -44,9 +44,9 @@ typedef IncomingMessageHandler = Future<void> Function(RemoteMessage);
 
 class PushProvider {
   static bool _initialized = false;
-  
-  static void _checkInitialized(){
-    if(!_initialized){
+
+  static void _checkInitialized() {
+    if (!_initialized) {
       throw NotInitializedError();
     }
   }
@@ -230,7 +230,7 @@ class PushProvider {
 
   static Future<bool> pollForRequests(BuildContext context) async {
     _checkInitialized();
-    
+
     // Get all push tokens
     List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
         .whereType<PushToken>()
@@ -297,7 +297,7 @@ class PushProvider {
 
   static void updateFbTokenIfChanged() async {
     _checkInitialized();
-    
+
     String? newToken = await StorageUtil.getNewFirebaseToken();
 
     if (newToken != null &&
