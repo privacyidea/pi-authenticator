@@ -40,14 +40,12 @@ import 'crypto_utils.dart';
 import 'identifiers.dart';
 import 'network_utils.dart';
 
-typedef IncomingMessageHandler = Future<void> Function(RemoteMessage);
-
 class PushProvider {
-  static var _backgroundHandler;
-  static late IncomingMessageHandler _incomingHandler;
+  static late BackgroundMessageHandler _backgroundHandler;
+  static late BackgroundMessageHandler _incomingHandler;
 
   static Future<void> initialize({
-    required IncomingMessageHandler handleIncomingMessage,
+    required BackgroundMessageHandler handleIncomingMessage,
     required BackgroundMessageHandler backgroundMessageHandler,
   }) async {
     _incomingHandler = handleIncomingMessage;
