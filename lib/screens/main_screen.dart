@@ -337,7 +337,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       }
 
       await StorageUtil.saveOrReplaceToken(newToken);
-      //await _initNotifications();
+      await PushProvider.initNotifications();
       _tokenList.add(newToken);
 
       if (mounted) {

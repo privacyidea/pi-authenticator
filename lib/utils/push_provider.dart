@@ -54,7 +54,7 @@ class PushProvider {
     _backgroundHandler = backgroundMessageHandler;
 
     await _initFirebase();
-    await _initNotifications();
+    await initNotifications();
   }
 
   static Future<String?> _initFirebase() async {
@@ -86,7 +86,7 @@ class PushProvider {
     });
   }
 
-  static Future<void> _initNotifications() async {
+  static Future<void> initNotifications() async {
     // Stop here if no push tokens exist, we do not want to ask for permissions
     // on iOS.
     if (!(await StorageUtil.loadAllTokens())
