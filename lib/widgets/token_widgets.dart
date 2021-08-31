@@ -42,21 +42,17 @@ import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
+import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-
-typedef GetFBTokenCallback = Future<String?> Function();
 
 class TokenWidget extends StatefulWidget {
   final Token _token;
   final VoidCallback _onDeleteClicked;
-  final GetFBTokenCallback _getFirebaseToken;
 
-  TokenWidget(Token token,
-      {required onDeleteClicked, required getFirebaseToken})
+  TokenWidget(Token token, {required onDeleteClicked})
       : this._token = token,
         this._onDeleteClicked = onDeleteClicked,
-        this._getFirebaseToken = getFirebaseToken,
         super(key: ObjectKey(token));
 
   @override
@@ -362,7 +358,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           await doPost(sslVerify: _token.sslVerify!, url: _token.url!, body: {
         'enrollment_credential': _token.enrollmentCredentials,
         'serial': _token.serial,
-        'fbtoken': await widget._getFirebaseToken(),
+        'fbtoken': await PushProvider.getFBToken(),
         'pubkey': serializeRSAPublicKeyPKCS8(_token.getPublicTokenKey()!),
       });
 
