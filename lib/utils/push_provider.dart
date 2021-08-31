@@ -43,14 +43,6 @@ import 'network_utils.dart';
 typedef IncomingMessageHandler = Future<void> Function(RemoteMessage);
 
 class PushProvider {
-  static bool _initialized = false;
-
-  static void _checkInitialized() {
-    if (!_initialized) {
-      throw NotInitializedError();
-    }
-  }
-
   static var _backgroundHandler;
   static late IncomingMessageHandler _incomingHandler;
 
@@ -63,8 +55,6 @@ class PushProvider {
 
     await _initFirebase();
     await _initNotifications();
-
-    _initialized = true;
   }
 
   static Future<String?> _initFirebase() async {
@@ -115,7 +105,6 @@ class PushProvider {
   /// PlatformException with a custom error code if retrieving the firebase
   /// token failed. This may happen if, e.g., no network connection is available.
   static Future<String> getFBToken() async {
-    _checkInitialized();
     String? firebaseToken = await FirebaseMessaging.instance.getToken();
 
     if (firebaseToken == null) {
@@ -129,75 +118,8 @@ class PushProvider {
     return firebaseToken;
   }
 
-  /// This method attempts to update the fbToken for all PushTokens that can be
-  /// updated. I.e. all tokens that know the url of their respective privacyIDEA
-  /// server. If the update fails for one or all tokens, this method does *not*
-  /// give any feedback!.
-  ///
-  /// This should only be used to attempt to update the fbToken automatically,
-  /// as this can not be guaranteed to work. There is a manual option available
-  /// through the settings also.
-  static void _updateFirebaseToken() async {
-    _checkInitialized();
-    String? newToken = await StorageUtil.getNewFirebaseToken();
-
-    if (newToken == null) {
-      // Nothing to update here!
-      return;
-    }
-
-    List<PushToken> tokenList = (await StorageUtil.loadAllTokens())
-        .whereType<PushToken>()
-        .where((t) => t.url != null)
-        .toList();
-
-    bool allUpdated = true;
-
-    for (PushToken p in tokenList) {
-      // POST /ttype/push HTTP/1.1
-      //Host: example.com
-      //
-      //new_fb_token=<new firebase token>
-      //serial=<tokenserial>element
-      //timestamp=<timestamp>
-      //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
-
-      String timestamp = DateTime.now().toUtc().toIso8601String();
-
-      String message = '$newToken|${p.serial}|$timestamp';
-
-      String signature = p.privateTokenKey == null
-          ? await Legacy.sign(p.serial, message)
-          : createBase32Signature(
-              p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
-
-      Response response =
-          await doPost(sslVerify: p.sslVerify!, url: p.url!, body: {
-        'new_fb_token': newToken,
-        'serial': p.serial,
-        'timestamp': timestamp,
-        'signature': signature
-      });
-
-      if (response.statusCode == 200) {
-        log('Updating firebase token for push token: ${p.serial} succeeded!',
-            name: 'main_screen.dart');
-      } else {
-        log('Updating firebase token for push token: ${p.serial} failed!',
-            name: 'main_screen.dart');
-        allUpdated = false;
-      }
-    }
-
-    if (allUpdated) {
-      StorageUtil.setCurrentFirebaseToken(newToken);
-    }
-  }
-
   static void showNotification(
       PushToken token, PushRequest pushRequest, bool silent) async {
-    _checkInitialized();
-
     var iOSPlatformChannelSpecifics =
         IOSNotificationDetails(presentSound: !silent);
 
@@ -229,8 +151,6 @@ class PushProvider {
   }
 
   static Future<bool> pollForRequests(BuildContext context) async {
-    _checkInitialized();
-
     // Get all push tokens
     List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
         .whereType<PushToken>()
@@ -295,9 +215,7 @@ class PushProvider {
     return true;
   }
 
-  static void updateFbTokenIfChanged() async {
-    _checkInitialized();
-
+  static Future<void> updateFbTokenIfChanged() async {
     String? newToken = await StorageUtil.getNewFirebaseToken();
 
     if (newToken != null &&
@@ -305,14 +223,68 @@ class PushProvider {
       _updateFirebaseToken();
     }
   }
-}
 
-class NotInitializedError extends Error {
-  static String _message =
-      "Provider is not initialized. Call MyPushProvider.initialize first.";
+  /// This method attempts to update the fbToken for all PushTokens that can be
+  /// updated. I.e. all tokens that know the url of their respective privacyIDEA
+  /// server. If the update fails for one or all tokens, this method does *not*
+  /// give any feedback!.
+  ///
+  /// This should only be used to attempt to update the fbToken automatically,
+  /// as this can not be guaranteed to work. There is a manual option available
+  /// through the settings also.
+  static void _updateFirebaseToken() async {
+    String? newToken = await StorageUtil.getNewFirebaseToken();
 
-  @override
-  String toString() {
-    return 'NotInitializedError{message: $_message}';
+    if (newToken == null) {
+      // Nothing to update here!
+      return;
+    }
+
+    List<PushToken> tokenList = (await StorageUtil.loadAllTokens())
+        .whereType<PushToken>()
+        .where((t) => t.url != null)
+        .toList();
+
+    bool allUpdated = true;
+
+    for (PushToken p in tokenList) {
+      // POST /ttype/push HTTP/1.1
+      //Host: example.com
+      //
+      //new_fb_token=<new firebase token>
+      //serial=<tokenserial>element
+      //timestamp=<timestamp>
+      //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
+
+      String timestamp = DateTime.now().toUtc().toIso8601String();
+
+      String message = '$newToken|${p.serial}|$timestamp';
+
+      String signature = p.privateTokenKey == null
+          ? await Legacy.sign(p.serial, message)
+          : createBase32Signature(
+              p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
+
+      Response response =
+          await doPost(sslVerify: p.sslVerify!, url: p.url!, body: {
+        'new_fb_token': newToken,
+        'serial': p.serial,
+        'timestamp': timestamp,
+        'signature': signature
+      });
+
+      if (response.statusCode == 200) {
+        log('Updating firebase token for push token: ${p.serial} succeeded!',
+            name: 'main_screen.dart');
+      } else {
+        log('Updating firebase token for push token: ${p.serial} failed!',
+            name: 'main_screen.dart');
+        allUpdated = false;
+      }
+    }
+
+    if (allUpdated) {
+      StorageUtil.setCurrentFirebaseToken(newToken);
+    }
   }
 }

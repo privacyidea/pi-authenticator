@@ -205,17 +205,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    PushProvider.initialize(
-      handleIncomingMessage: (RemoteMessage message) =>
-          _handleIncomingAuthRequest(message),
-      backgroundMessageHandler: _firebaseMessagingBackgroundHandler,
-    );
-    _initLinkHandling();
-  }
-
   Future<void> _initLinkHandling() async {
     _uniLinkStream = linkStream.listen((String? link) {
       _handleOtpAuth(link);
@@ -245,10 +234,25 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _initLinkHandling();
+    _initStateAsync();
+  }
+
+  void _initStateAsync() async {
+    await PushProvider.initialize(
+      handleIncomingMessage: (RemoteMessage message) =>
+          _handleIncomingAuthRequest(message),
+      backgroundMessageHandler: _firebaseMessagingBackgroundHandler,
+    );
+    _startPollingIfEnabled();
+    await PushProvider.updateFbTokenIfChanged();
+  }
+
+  @override
   void afterFirstRender() {
     _showChangelogAndGuide();
-    PushProvider.updateFbTokenIfChanged();
-    _startPollingIfEnabled();
     _loadTokenList();
   }
 
