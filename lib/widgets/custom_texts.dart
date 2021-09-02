@@ -22,6 +22,24 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+class HideableTextController {
+  var _controller = StreamController<bool>.broadcast();
+
+  void tap() {
+    _controller.add(true);
+  }
+
+  void listen(void onData(bool event)?,
+      {Function? onError, void onDone()?, bool? cancelOnError}) {
+    _controller.stream.listen(onData,
+        onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+  }
+
+  void close() {
+    _controller.close();
+  }
+}
+
 class HideableText extends StatefulWidget {
   final String text;
   final bool hideOnDefault;
@@ -31,6 +49,7 @@ class HideableText extends StatefulWidget {
   final bool enabled;
   final String replaceCharacter;
   final bool replaceWhitespaces;
+  final HideableTextController? controller;
 
   const HideableText(
       {Key? key,
@@ -41,7 +60,8 @@ class HideableText extends StatefulWidget {
       this.textStyle,
       this.enabled = true,
       this.replaceCharacter = "\u2022",
-      this.replaceWhitespaces = false})
+      this.replaceWhitespaces = false,
+      this.controller})
       : super(key: key);
 
   @override
@@ -50,38 +70,48 @@ class HideableText extends StatefulWidget {
 }
 
 class HideableTextState extends State<HideableText> {
-  bool isHidden;
+  late bool _isHidden;
 
-  HideableTextState({required bool isHidden}) : this.isHidden = isHidden;
+  HideableTextState({required bool isHidden}) : this._isHidden = isHidden;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller?.listen((event) => showText(), cancelOnError: false);
+  }
 
   void showText() {
-    if (!widget.enabled || !isHidden) return;
-    setState(() => isHidden = false);
+    if (!widget.enabled || !_isHidden) return;
+    _isHidden = false;
+    if (mounted) setState(() {});
+
     Timer(widget.hideDuration, () {
-      isHidden = true;
-      if (mounted) {
-        setState(() {});
-      }
+      _isHidden = true;
+      if (mounted) setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Text(
-        isHidden && widget.enabled
-            ? widget.text.replaceAll(
-                RegExp(widget.replaceWhitespaces ? r'.' : r'[^\s]'),
-                widget.replaceCharacter)
-            : widget.text,
-        textScaleFactor: widget.textScaleFactor,
-        style: widget.textStyle ??
-            TextStyle(
-              fontFamily: "monospace",
-              fontWeight: FontWeight.bold,
-            ),
-      ),
-      onTap: showText,
+    Text text = Text(
+      _isHidden && widget.enabled
+          ? widget.text.replaceAll(
+              RegExp(widget.replaceWhitespaces ? r'.' : r'[^\s]'),
+              widget.replaceCharacter)
+          : widget.text,
+      textScaleFactor: widget.textScaleFactor,
+      style: widget.textStyle ??
+          TextStyle(
+            fontFamily: "monospace",
+            fontWeight: FontWeight.bold,
+          ),
     );
+
+    return widget.controller == null
+        ? GestureDetector(
+            child: text,
+            onTap: showText,
+          )
+        : text;
   }
 }
