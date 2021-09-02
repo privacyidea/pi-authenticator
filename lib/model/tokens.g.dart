@@ -15,10 +15,14 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) {
     digits: json['digits'] as int,
     secret: json['secret'] as String,
     counter: json['counter'] as int,
+    isLocked: json['isLocked'] as bool,
+    canToggleLock: json['canToggleLock'] as bool,
   )..type = json['type'] as String;
 }
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
+      'canToggleLock': instance.canToggleLock,
+      'isLocked': instance.isLocked,
       'type': instance.type,
       'label': instance.label,
       'id': instance.id,
@@ -70,10 +74,14 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) {
     digits: json['digits'] as int,
     secret: json['secret'] as String,
     period: json['period'] as int,
+    isLocked: json['isLocked'] as bool,
+    canToggleLock: json['canToggleLock'] as bool,
   )..type = json['type'] as String;
 }
 
 Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
+      'canToggleLock': instance.canToggleLock,
+      'isLocked': instance.isLocked,
       'type': instance.type,
       'label': instance.label,
       'id': instance.id,
@@ -90,6 +98,8 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
     serial: json['serial'] as String,
     issuer: json['issuer'] as String,
     id: json['id'] as String,
+    isLocked: json['isLocked'] as bool,
+    canToggleLock: json['canToggleLock'] as bool,
     sslVerify: json['sslVerify'] as bool?,
     enrollmentCredentials: json['enrollmentCredentials'] as String?,
     url: json['url'] == null ? null : Uri.parse(json['url'] as String),
@@ -107,6 +117,8 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
+      'canToggleLock': instance.canToggleLock,
+      'isLocked': instance.isLocked,
       'type': instance.type,
       'label': instance.label,
       'id': instance.id,
