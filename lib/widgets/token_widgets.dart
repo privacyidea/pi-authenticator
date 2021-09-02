@@ -826,7 +826,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.0,
             enabled: _token.isLocked,
-            hideDuration: Duration(seconds: 4),
+            hideDuration: Duration(seconds: 6),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -925,7 +925,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.0,
             enabled: _token.isLocked,
-            hideDuration: Duration(seconds: 4),
+            hideDuration: Duration(seconds: 6),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
