@@ -46,6 +46,8 @@ import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
+import 'custom_texts.dart';
+
 class TokenWidget extends StatefulWidget {
   final Token _token;
   final VoidCallback _onDeleteClicked;
@@ -751,6 +753,13 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
 abstract class _OTPTokenWidgetState extends _TokenWidgetState {
   String _otpValue;
+  final HideableTextController _hideableController = HideableTextController();
+
+  @override
+  void dispose() {
+    _hideableController.close();
+    super.dispose();
+  }
 
   _OTPTokenWidgetState(OTPToken token)
       : _otpValue = calculateOtpValue(token),
@@ -763,13 +772,16 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
   Widget _buildTile() {
     return InkWell(
       splashColor: Theme.of(context).primaryColor,
-      onLongPress: () {
-        Clipboard.setData(ClipboardData(text: _otpValue));
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              AppLocalizations.of(context)!.otpValueCopiedMessage(_otpValue)),
-        ));
-      },
+      onTap: _hideableController.tap,
+      onLongPress: super._token.isLocked
+          ? null
+          : () {
+              Clipboard.setData(ClipboardData(text: _otpValue));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(AppLocalizations.of(context)!
+                    .otpValueCopiedMessage(_otpValue)),
+              ));
+            },
       child: _buildNonClickableTile(),
     );
   }
@@ -809,9 +821,12 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
     return Stack(
       children: <Widget>[
         ListTile(
-          title: Text(
-            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            style: Theme.of(context).textTheme.headline4,
+          title: HideableText(
+            controller: _hideableController,
+            text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
+            textScaleFactor: 2.0,
+            enabled: _token.isLocked,
+            hideDuration: Duration(seconds: 4),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -905,9 +920,12 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     return Column(
       children: <Widget>[
         ListTile(
-          title: Text(
-            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            style: Theme.of(context).textTheme.headline4,
+          title: HideableText(
+            controller: _hideableController,
+            text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
+            textScaleFactor: 2.0,
+            enabled: _token.isLocked,
+            hideDuration: Duration(seconds: 4),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
