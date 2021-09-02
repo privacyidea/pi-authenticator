@@ -677,7 +677,9 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                                 ),
                           onPressed: _acceptButtonIsEnabled
                               ? () {
-                                  acceptRequest();
+                                  if (_unlock()) {
+                                    acceptRequest();
+                                  }
                                   _disableAcceptButtonForSomeTime();
                                 }
                               : null,
@@ -748,9 +750,6 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   }
 
   void _showMessage(String message, int seconds) {
-    ArgumentError.checkNotNull(message, "message");
-    ArgumentError.checkNotNull(seconds, "seconds");
-
     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message), duration: Duration(seconds: seconds)));
   }
