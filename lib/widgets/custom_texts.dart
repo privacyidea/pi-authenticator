@@ -57,7 +57,12 @@ class HideableTextState extends State<HideableText> {
   void showText() {
     if (!widget.enabled || !isHidden) return;
     setState(() => isHidden = false);
-    Timer(widget.hideDuration, () => setState(() => isHidden = true));
+    Timer(widget.hideDuration, () {
+      isHidden = true;
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -66,7 +71,7 @@ class HideableTextState extends State<HideableText> {
       child: Text(
         isHidden && widget.enabled
             ? widget.text.replaceAll(
-                widget.replaceWhitespaces ? r'.' : r'[^\s]',
+                RegExp(widget.replaceWhitespaces ? r'.' : r'[^\s]'),
                 widget.replaceCharacter)
             : widget.text,
         textScaleFactor: widget.textScaleFactor,
