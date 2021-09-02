@@ -120,8 +120,56 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
           icon: Icons.edit,
           onTap: () => _renameTokenDialog(),
         ),
+        IconSlideAction(
+          caption: _token.isLocked ? "Unlock" : "Lock", // TODO Translate
+          color: Colors.grey,
+          icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
+          onTap: _token.canToggleLock
+              ? () => _changeLockStatus()
+              : null, // TODO Signal to user when this is unavailable
+        ),
       ],
     );
+  }
+
+  void _changeLockStatus() async {
+    if (_token.canToggleLock) {
+      log('Changing lock status of token ${_token.label}.',
+          name: 'token_widgets.dart');
+      bool didAuthenticate = true; // TODO Change this to false!
+
+//       // TODO Check device lock // TODO Make this a function!
+//       var localAuth = LocalAuthentication();
+//
+//       print('Is supported? ${await localAuth.isDeviceSupported()}');
+//
+//       try {
+//         didAuthenticate = await localAuth.authenticate(
+//           localizedReason: 'Please authenticate to show', // TODO Translate
+//         );
+//       } on PlatformException catch (error, stack) {
+//         switch (error.code) {
+//           case auth_error.notAvailable:
+//           case auth_error.passcodeNotSet:
+//           case auth_error.notEnrolled:
+//           case auth_error.lockedOut:
+//           case auth_error.otherOperatingSystem:
+//           case auth_error.permanentlyLockedOut:
+//           default:
+// //            Catcher.reportCheckedError(error, stack); // TODO Add this
+//             throw error;
+//         }
+//       }
+
+      if (didAuthenticate) {
+        _token.isLocked = !_token.isLocked;
+        await _saveThisToken();
+        setState(() {});
+      }
+    } else {
+      log('Lock status of token ${_token.label} can not be changed!',
+          name: 'token_widgets.dart');
+    }
   }
 
   void _renameTokenDialog() {
