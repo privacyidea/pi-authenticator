@@ -138,7 +138,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     if (_token.canToggleLock) {
       log('Changing lock status of token ${_token.label}.',
           name: 'token_widgets.dart');
-      bool didAuthenticate = true; // TODO Change this to false!
+      bool didAuthenticate = _unlock(); // TODO Change this to false!
 
 //       // TODO Check device lock // TODO Make this a function!
 //       var localAuth = LocalAuthentication();
@@ -172,6 +172,11 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       log('Lock status of token ${_token.label} can not be changed!',
           name: 'token_widgets.dart');
     }
+  }
+
+  bool _unlock() {
+    // TODO Ask user for device credentials and return accordingly.
+    return true;
   }
 
   void _renameTokenDialog() {
@@ -772,8 +777,12 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
   Widget _buildTile() {
     return InkWell(
       splashColor: Theme.of(context).primaryColor,
-      onTap: _hideableController.tap,
-      onLongPress: super._token.isLocked
+      onTap: () {
+        if (_token.isLocked && _unlock()) {
+          _hideableController.tap();
+        }
+      },
+      onLongPress: _token.isLocked
           ? null
           : () {
               Clipboard.setData(ClipboardData(text: _otpValue));
