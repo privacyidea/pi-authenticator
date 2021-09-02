@@ -34,6 +34,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:http/http.dart';
+import 'package:local_auth/error_codes.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
@@ -138,32 +140,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     if (_token.canToggleLock) {
       log('Changing lock status of token ${_token.label}.',
           name: 'token_widgets.dart');
-      bool didAuthenticate = _unlock(); // TODO Change this to false!
 
-//       // TODO Check device lock // TODO Make this a function!
-//       var localAuth = LocalAuthentication();
-//
-//       print('Is supported? ${await localAuth.isDeviceSupported()}');
-//
-//       try {
-//         didAuthenticate = await localAuth.authenticate(
-//           localizedReason: 'Please authenticate to show', // TODO Translate
-//         );
-//       } on PlatformException catch (error, stack) {
-//         switch (error.code) {
-//           case auth_error.notAvailable:
-//           case auth_error.passcodeNotSet:
-//           case auth_error.notEnrolled:
-//           case auth_error.lockedOut:
-//           case auth_error.otherOperatingSystem:
-//           case auth_error.permanentlyLockedOut:
-//           default:
-// //            Catcher.reportCheckedError(error, stack); // TODO Add this
-//             throw error;
-//         }
-//       }
-
-      if (didAuthenticate) {
+      if (await _unlock()) {
         _token.isLocked = !_token.isLocked;
         await _saveThisToken();
         setState(() {});
@@ -174,9 +152,30 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     }
   }
 
-  bool _unlock() {
-    // TODO Ask user for device credentials and return accordingly.
-    return true;
+  Future<bool> _unlock() async {
+    bool didAuthenticate = false;
+    var localAuth = LocalAuthentication();
+
+    print('Is supported? ${await localAuth.isDeviceSupported()}');
+
+    try {
+      didAuthenticate = await localAuth.authenticate(
+        localizedReason: 'Please authenticate to show', // TODO Translate
+      );
+    } on PlatformException catch (error, stack) {
+      // TODO Handle some of these errors!
+      switch (error.code) {
+        case notAvailable:
+        case passcodeNotSet:
+        case notEnrolled:
+        case lockedOut:
+        case otherOperatingSystem:
+        case permanentlyLockedOut:
+        default:
+          Catcher.reportCheckedError(error, stack);
+      }
+    }
+    return didAuthenticate;
   }
 
   void _renameTokenDialog() {
@@ -676,8 +675,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                                   ],
                                 ),
                           onPressed: _acceptButtonIsEnabled
-                              ? () {
-                                  if (_unlock()) {
+                              ? () async {
+                                  if (await _unlock()) {
                                     acceptRequest();
                                   }
                                   _disableAcceptButtonForSomeTime();
@@ -776,8 +775,8 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
   Widget _buildTile() {
     return InkWell(
       splashColor: Theme.of(context).primaryColor,
-      onTap: () {
-        if (_token.isLocked && _unlock()) {
+      onTap: () async {
+        if (_token.isLocked && await _unlock()) {
           _hideableController.tap();
         }
       },
