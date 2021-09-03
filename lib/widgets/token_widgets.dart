@@ -159,25 +159,31 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   Future<bool> _unlock() async {
     bool didAuthenticate = false;
-    var localAuth = LocalAuthentication();
+    LocalAuthentication localAuth = LocalAuthentication();
 
-    print('Is supported? ${await localAuth.isDeviceSupported()}');
+    if (!(await localAuth.isDeviceSupported())) {
+      _showMessage("Set device something, please.", 3); // TODO Translate
+      return didAuthenticate;
+    }
 
     try {
       didAuthenticate = await localAuth.authenticate(
-        localizedReason: 'Please authenticate to show', // TODO Translate
+        localizedReason: 'Please authenticate to showw', // TODO Translate
+        useErrorDialogs: true, // FIXME This does not work
       );
-    } on PlatformException catch (error, stack) {
-      // TODO Handle some of these errors!
+    } on PlatformException catch (error, stacktrace) {
+      log('Error: ${error.code}', name: 'token_widgets.dart');
       switch (error.code) {
         case notAvailable:
         case passcodeNotSet:
-        case notEnrolled:
-        case lockedOut:
-        case otherOperatingSystem:
         case permanentlyLockedOut:
+        case lockedOut:
+          break;
+        case otherOperatingSystem:
+        case notEnrolled:
+        // Should fall back to pin itself
         default:
-          Catcher.reportCheckedError(error, stack);
+          Catcher.reportCheckedError(error, stacktrace);
       }
     }
     return didAuthenticate;
