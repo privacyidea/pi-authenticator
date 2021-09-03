@@ -757,11 +757,6 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       ),
     );
   }
-
-  void _showMessage(String message, int seconds) {
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message), duration: Duration(seconds: seconds)));
-  }
 }
 
 abstract class _OTPTokenWidgetState extends _TokenWidgetState {
