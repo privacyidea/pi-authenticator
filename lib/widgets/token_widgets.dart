@@ -289,6 +289,11 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   }
 
   Widget _buildTile();
+
+  void _showMessage(String message, int seconds) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message), duration: Duration(seconds: seconds)));
+  }
 }
 
 class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
