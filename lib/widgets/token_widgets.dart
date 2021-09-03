@@ -104,6 +104,32 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> secondaryActions = [
+      IconSlideAction(
+        caption: AppLocalizations.of(context)!.delete,
+        color: Colors.red,
+        icon: Icons.delete,
+        onTap: () => _deleteTokenDialog(),
+      ),
+      IconSlideAction(
+        caption: AppLocalizations.of(context)!.rename,
+        color: Colors.blue,
+        icon: Icons.edit,
+        onTap: () => _renameTokenDialog(),
+      ),
+    ];
+
+    if (_token.canToggleLock) {
+      secondaryActions.add(IconSlideAction(
+        caption: _token.isLocked ? "Unlock" : "Lock", // TODO Translate
+        color: Colors.yellow,
+        icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
+        onTap: _token.canToggleLock
+            ? () => _changeLockStatus()
+            : null, // TODO Signal to user when this is unavailable
+      ));
+    }
+
     return Slidable(
       key: ValueKey(_token.id),
       // This is used to only let one Slidable be open at a time.
@@ -111,28 +137,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
       child: _buildTile(),
-      secondaryActions: <Widget>[
-        IconSlideAction(
-          caption: AppLocalizations.of(context)!.delete,
-          color: Colors.red,
-          icon: Icons.delete,
-          onTap: () => _deleteTokenDialog(),
-        ),
-        IconSlideAction(
-          caption: AppLocalizations.of(context)!.rename,
-          color: Colors.blue,
-          icon: Icons.edit,
-          onTap: () => _renameTokenDialog(),
-        ),
-        IconSlideAction(
-          caption: _token.isLocked ? "Unlock" : "Lock", // TODO Translate
-          color: Colors.grey,
-          icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
-          onTap: _token.canToggleLock
-              ? () => _changeLockStatus()
-              : null, // TODO Signal to user when this is unavailable
-        ),
-      ],
+      secondaryActions: secondaryActions,
     );
   }
 
