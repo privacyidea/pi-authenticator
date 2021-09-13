@@ -125,9 +125,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         caption: _token.isLocked ? "Unlock" : "Lock", // TODO Translate
         color: Colors.yellow,
         icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
-        onTap: _token.canToggleLock
-            ? () => _changeLockStatus()
-            : null, // TODO Signal to user when this is unavailable
+        onTap: () => _changeLockStatus(),
       ));
     }
 
@@ -184,8 +182,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
           });
       return didAuthenticate;
     }
-
-    //AppLocalizations.of(context)!
 
     AndroidAuthMessages androidAuthStrings = AndroidAuthMessages(
       biometricRequiredTitle:
