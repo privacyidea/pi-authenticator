@@ -122,7 +122,9 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
     if (_token.canToggleLock) {
       secondaryActions.add(IconSlideAction(
-        caption: _token.isLocked ? "Unlock" : "Lock", // TODO Translate
+        caption: _token.isLocked
+            ? AppLocalizations.of(context)!.unlock
+            : AppLocalizations.of(context)!.lock,
         color: Colors.yellow,
         icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
         onTap: () => _changeLockStatus(),

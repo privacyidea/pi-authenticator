@@ -584,5 +584,15 @@
   "@authNotSupportedBody": {
     "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action.",
     "type": "text"
+  },
+  "lock": "Sperren",
+  "@lock": {
+    "description": "Description of button that locks a token.",
+    "type": "text"
+  },
+  "unlock": "Entsperren",
+  "@unlock": {
+    "description": "Description of button that unlocks a token.",
+    "type": "text"
   }
 }
