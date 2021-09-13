@@ -165,38 +165,59 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     LocalAuthentication localAuth = LocalAuthentication();
 
     if (!(await localAuth.isDeviceSupported())) {
-      _showMessage("Set device something, please.", 3); // TODO Translate
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: ListTile(
+                title: Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.authNotSupportedTitle,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
+                leading: Icon(Icons.lock),
+                trailing: Icon(Icons.lock),
+              ),
+              content: Text(AppLocalizations.of(context)!.authNotSupportedBody),
+            );
+          });
       return didAuthenticate;
     }
 
     //AppLocalizations.of(context)!
 
-    // TODO Find out where exactly these strings are used!
     AndroidAuthMessages androidAuthStrings = AndroidAuthMessages(
-      biometricRequiredTitle: "biotitle",
-      biometricHint: "biohint",
-      deviceCredentialsRequiredTitle: "devtitle",
-      signInTitle: "Authenticate",
-      biometricNotRecognized: "bioNotRec",
-      biometricSuccess: "bioSucc",
+      biometricRequiredTitle:
+          AppLocalizations.of(context)!.biometricRequiredTitle,
+      biometricHint: AppLocalizations.of(context)!.biometricHint,
+      biometricNotRecognized:
+          AppLocalizations.of(context)!.biometricNotRecognized,
+      biometricSuccess: AppLocalizations.of(context)!.biometricSuccess,
+      deviceCredentialsRequiredTitle:
+          AppLocalizations.of(context)!.deviceCredentialsRequiredTitle,
+      deviceCredentialsSetupDescription:
+          AppLocalizations.of(context)!.deviceCredentialsSetupDescription,
+      signInTitle: AppLocalizations.of(context)!.signInTitle,
+      goToSettingsButton: AppLocalizations.of(context)!.goToSettingsButton,
+      goToSettingsDescription:
+          AppLocalizations.of(context)!.goToSettingsDescription,
       cancelButton: AppLocalizations.of(context)!.cancel,
-      deviceCredentialsSetupDescription: "devCredSetup",
-      goToSettingsButton: "gtSett",
-      goToSettingsDescription: "gtSettDes",
     );
 
-    var iOSAuthStrings = IOSAuthMessages(
-        goToSettingsDescription: "gtSettDes",
-        goToSettingsButton: "gtSett",
-        cancelButton: AppLocalizations.of(context)!.cancel,
-        lockOut: "lkOut");
+    IOSAuthMessages iOSAuthStrings = IOSAuthMessages(
+      lockOut: AppLocalizations.of(context)!.lockOut,
+      goToSettingsButton: AppLocalizations.of(context)!.goToSettingsButton,
+      goToSettingsDescription:
+          AppLocalizations.of(context)!.goToSettingsDescription,
+      cancelButton: AppLocalizations.of(context)!.cancel,
+    );
 
     try {
       didAuthenticate = await localAuth.authenticate(
         localizedReason: localizedReason,
         androidAuthStrings: androidAuthStrings,
         iOSAuthStrings: iOSAuthStrings,
-        useErrorDialogs: true, // FIXME This does not work
       );
     } on PlatformException catch (error, stacktrace) {
       log('Error: ${error.code}', name: 'token_widgets.dart');
