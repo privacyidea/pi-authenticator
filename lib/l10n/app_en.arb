@@ -506,5 +506,23 @@
     "description": "Message that tells the user that handling a link failed. This link was provided through the 'open link with app' on android or iOS.",
     "type": "text",
     "placeholders": {}
+  },
+  "authenticateToAcceptPush": "Please authenticate to accept the push challenge.",
+  "@authenticateToAcceptPush": {
+    "description": "Reason to authenticate when clicking the 'accept' button of a push token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "authenticateToShowOtp": "Please authenticate to show one time password.",
+  "@authenticateToShowOtp": {
+    "description": "Reason to authenticate when trying to view a one time password.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "authenticateToUnLockToken": "Please authenticate to change the lock status of the token.",
+  "@authenticateToUnLockToken": {
+    "description": "Reason to authenticate when trying to lock or unlock a token.",
+    "type": "text",
+    "placeholders": {}
   }
 }

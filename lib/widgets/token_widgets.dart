@@ -34,6 +34,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:http/http.dart';
+import 'package:local_auth/auth_strings.dart';
 import 'package:local_auth/error_codes.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
@@ -146,7 +147,9 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       log('Changing lock status of token ${_token.label}.',
           name: 'token_widgets.dart');
 
-      if (await _unlock()) {
+      if (await _unlock(
+          localizedReason:
+              AppLocalizations.of(context)!.authenticateToUnLockToken)) {
         _token.isLocked = !_token.isLocked;
         await _saveThisToken();
         setState(() {});
@@ -157,7 +160,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     }
   }
 
-  Future<bool> _unlock() async {
+  Future<bool> _unlock({required String localizedReason}) async {
     bool didAuthenticate = false;
     LocalAuthentication localAuth = LocalAuthentication();
 
@@ -166,9 +169,33 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       return didAuthenticate;
     }
 
+    //AppLocalizations.of(context)!
+
+    // TODO Find out where exactly these strings are used!
+    AndroidAuthMessages androidAuthStrings = AndroidAuthMessages(
+      biometricRequiredTitle: "biotitle",
+      biometricHint: "biohint",
+      deviceCredentialsRequiredTitle: "devtitle",
+      signInTitle: "Authenticate",
+      biometricNotRecognized: "bioNotRec",
+      biometricSuccess: "bioSucc",
+      cancelButton: AppLocalizations.of(context)!.cancel,
+      deviceCredentialsSetupDescription: "devCredSetup",
+      goToSettingsButton: "gtSett",
+      goToSettingsDescription: "gtSettDes",
+    );
+
+    var iOSAuthStrings = IOSAuthMessages(
+        goToSettingsDescription: "gtSettDes",
+        goToSettingsButton: "gtSett",
+        cancelButton: AppLocalizations.of(context)!.cancel,
+        lockOut: "lkOut");
+
     try {
       didAuthenticate = await localAuth.authenticate(
-        localizedReason: 'Please authenticate to showw', // TODO Translate
+        localizedReason: localizedReason,
+        androidAuthStrings: androidAuthStrings,
+        iOSAuthStrings: iOSAuthStrings,
         useErrorDialogs: true, // FIXME This does not work
       );
     } on PlatformException catch (error, stacktrace) {
@@ -692,7 +719,10 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                                 ),
                           onPressed: _acceptButtonIsEnabled
                               ? () async {
-                                  if (await _unlock()) {
+                                  if (await _unlock(
+                                      localizedReason:
+                                          AppLocalizations.of(context)!
+                                              .authenticateToAcceptPush)) {
                                     acceptRequest();
                                   }
                                   _disableAcceptButtonForSomeTime();
@@ -787,7 +817,10 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
     return InkWell(
       splashColor: Theme.of(context).primaryColor,
       onTap: () async {
-        if (_token.isLocked && await _unlock()) {
+        if (_token.isLocked &&
+            await _unlock(
+                localizedReason:
+                    AppLocalizations.of(context)!.authenticateToShowOtp)) {
           _hideableController.tap();
         }
       },
