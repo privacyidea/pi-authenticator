@@ -107,13 +107,23 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     final List<Widget> secondaryActions = [
       IconSlideAction(
         caption: AppLocalizations.of(context)!.delete,
-        color: Colors.red,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.red.shade400
+            : Colors.red.shade800,
+        foregroundColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
         icon: Icons.delete,
         onTap: () => _deleteTokenDialog(),
       ),
       IconSlideAction(
         caption: AppLocalizations.of(context)!.rename,
-        color: Colors.blue,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.blue.shade400
+            : Colors.blue.shade800,
+        foregroundColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
         icon: Icons.edit,
         onTap: () => _renameTokenDialog(),
       ),
@@ -124,7 +134,12 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         caption: _token.isLocked
             ? AppLocalizations.of(context)!.unlock
             : AppLocalizations.of(context)!.lock,
-        color: Colors.yellow,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.yellow.shade400
+            : Colors.yellow.shade800,
+        foregroundColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
         icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
         onTap: () => _changeLockStatus(),
       ));
