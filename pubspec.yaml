@@ -2,6 +2,7 @@ name: privacyidea_authenticator
 description: An OTP Authenticator App for privacyIDEA Authentication Server.
 homepage: https://netknights.it
 repository: https://github.com/privacyidea/pi-authenticator
+publish_to: none
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -32,36 +33,31 @@ dependencies:
   intl: ^0.17.0
   hex: ^0.2.0
   base32: ^2.0.0
-  otp: ^3.0.0
+  otp: ^3.0.1
   qr_mobile_vision: ^3.0.0
-  flutter_secure_storage: ^4.2.0
+  flutter_secure_storage: ^4.2.1
   json_annotation: ^4.0.1
   flutter_slidable: ^0.6.0
   package_info: ^2.0.2
   asn1lib: ^1.0.2
-  flutter_markdown: ^0.6.2
+  flutter_markdown: ^0.6.4
   url_launcher: ^6.0.3
-  catcher: ^0.6.7
+  catcher: ^0.6.8
   uuid: ^3.0.4
   http: ^0.13.3
-  pointycastle: ^3.1.3
-  flutter_local_notifications: ^6.0.0
+  pointycastle: ^3.3.1
+  flutter_local_notifications: ^8.1.1+1
   mutex: ^3.0.0
   flutterlifecyclehooks: ^2.0.0-nullsafety.0
   streaming_shared_preferences: ^2.0.0
   flutter_svg: ^0.22.0
   easy_dynamic_theme: ^2.2.0
-  firebase_messaging: ^10.0.4
-  firebase_core: ^1.4.0
+  firebase_messaging: ^10.0.5
+  firebase_core: ^1.5.0
   pi_authenticator_legacy:
     path: local_plugins/pi-authenticator-legacy
   collection: ^1.15.0
   uni_links: ^0.5.1
-
-dependency_overrides:
-  # To use custom plugin for all other plugins that depend on it
-  firebase_core_platform_interface:
-    path: local_plugins/firebase_core_platform_interface-4.0.0
 
 dev_dependencies:
   flutter_driver:

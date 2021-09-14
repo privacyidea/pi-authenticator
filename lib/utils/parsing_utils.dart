@@ -224,7 +224,7 @@ Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
   throw ArgumentError.value(
     uri,
     "uri",
-    "The token type [$type] is not supported",
+    "The token type [$type] is not supported.",
   );
 }
 
@@ -276,18 +276,6 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
 
   uriMap[URI_SERIAL] = uri.queryParameters["serial"];
   ArgumentError.checkNotNull(uriMap[URI_SERIAL], "serial");
-
-  uriMap[URI_PROJECT_ID] = uri.queryParameters["projectid"];
-
-  uriMap[URI_APP_ID] = uri.queryParameters["appid"];
-
-  uriMap[URI_APP_ID_IOS] = uri.queryParameters["appidios"];
-
-  uriMap[URI_API_KEY] = uri.queryParameters["apikey"];
-
-  uriMap[URI_API_KEY_IOS] = uri.queryParameters["apikeyios"];
-
-  uriMap[URI_PROJECT_NUMBER] = uri.queryParameters["projectnumber"];
 
   String? url = uri.queryParameters["url"];
   ArgumentError.checkNotNull(url);
@@ -416,9 +404,12 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
     // Parse period.
     String periodAsString = uri.queryParameters["period"] ?? "30";
 
-    uriMap[URI_PERIOD] = int.parse(periodAsString,
-        onError: (e) => throw ArgumentError(
-            "Value [$periodAsString] for parameter [period] is invalid."));
+    int? period = int.tryParse(periodAsString);
+    if (period == null) {
+      throw ArgumentError(
+          "Value [$periodAsString] for parameter [period] is invalid.");
+    }
+    uriMap[URI_PERIOD] = period;
   }
 
   if (is2StepURI(uri)) {

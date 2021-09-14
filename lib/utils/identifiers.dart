@@ -56,12 +56,6 @@ const String URI_ITERATIONS = "URI_ITERATIONS";
 
 // push token:
 const String URI_SERIAL = "URI_SERIAL";
-const String URI_PROJECT_ID = "URI_PROJECT_ID";
-const String URI_APP_ID = "URI_APP_ID";
-const String URI_APP_ID_IOS = "URI_APP_ID_IOS";
-const String URI_API_KEY = "URI_API_KEY";
-const String URI_API_KEY_IOS = "URI_API_KEY_IOS";
-const String URI_PROJECT_NUMBER = "URI_PROJECT_NUMBER";
 const String URI_ROLLOUT_URL = "URI_ROLLOUT_URL";
 const String URI_TTL = "URI_TTL";
 const String URI_ENROLLMENT_CREDENTIAL = "URI_ENROLLMENT_CREDENTIALS";

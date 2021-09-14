@@ -24,6 +24,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart';
@@ -31,6 +32,7 @@ import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
+import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 class UpdateFirebaseTokenDialog extends StatefulWidget {
@@ -76,8 +78,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
     // TODO What to do with poll only tokens if google-services is used?
 
-    //String token = await FirebaseMessaging().getToken();
-    String token = "";
+    String token = await PushProvider.getFBToken();
 
     // TODO Is there a good way to handle these tokens?
     List<PushToken> tokenWithOutUrl =

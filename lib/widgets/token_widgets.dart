@@ -36,28 +36,23 @@ import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
+import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-
-typedef GetFBTokenCallback = Future<String?> Function(FirebaseConfig);
 
 class TokenWidget extends StatefulWidget {
   final Token _token;
   final VoidCallback _onDeleteClicked;
-  final GetFBTokenCallback _getFirebaseToken;
 
-  TokenWidget(Token token,
-      {required onDeleteClicked, required getFirebaseToken})
+  TokenWidget(Token token, {required onDeleteClicked})
       : this._token = token,
         this._onDeleteClicked = onDeleteClicked,
-        this._getFirebaseToken = getFirebaseToken,
         super(key: ObjectKey(token));
 
   @override
@@ -296,8 +291,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   }
 
   void _checkForModelUpdate() async {
-    PushToken? t =
-        await (StorageUtil.loadToken(_token.id) as FutureOr<PushToken?>);
+    PushToken? t = (await StorageUtil.loadToken(_token.id)) as PushToken?;
 
     // TODO Maybe we should simply reload all tokens on resume?
     // This throws errors because the token [t] is null, why?
@@ -340,31 +334,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       setState(() => _rollOutFailed = false);
     }
 
-    // Trigger network permission request on iOS
     if (Platform.isIOS) {
       await dummyRequest(url: _token.url!, sslVerify: _token.sslVerify!);
-    }
-
-    FirebaseConfig tokenConfig =
-        (await StorageUtil.loadFirebaseConfig(_token))!;
-    if (await StorageUtil.globalFirebaseConfigExists() &&
-        tokenConfig.projectID != null && // Does not exist for poll only tokens
-        tokenConfig != await StorageUtil.loadGlobalFirebaseConfig()) {
-      // The firebase config of this token is different to the existing
-      // firebase config in this app.
-      log("Token has different firebase config than existing.",
-          name: "token_widgets.dart");
-
-      _showMessage(
-          AppLocalizations.of(context)!
-              .errorOnlyOneFirebaseProjectIsSupported(_token.label),
-          5);
-
-      if (mounted) {
-        setState(() => _rollOutFailed = true);
-      }
-
-      return;
     }
 
     if (_token.privateTokenKey == null) {
@@ -387,8 +358,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           await doPost(sslVerify: _token.sslVerify!, url: _token.url!, body: {
         'enrollment_credential': _token.enrollmentCredentials,
         'serial': _token.serial,
-        'fbtoken': await widget._getFirebaseToken(
-            (await (StorageUtil.loadFirebaseConfig(_token)))!),
+        'fbtoken': await PushProvider.getFBToken(),
         'pubkey': serializeRSAPublicKeyPKCS8(_token.getPublicTokenKey()!),
       });
 

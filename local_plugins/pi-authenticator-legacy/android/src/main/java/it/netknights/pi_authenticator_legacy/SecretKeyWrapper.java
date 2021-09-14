@@ -83,7 +83,6 @@ public class SecretKeyWrapper {
 
         // TODO This should not be needed?
         if (!keyStore.containsAlias("settings")) {
-            // generateKeyPair("settings", context);
             mPair = null;
             return;
         }

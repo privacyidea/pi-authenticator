@@ -25,7 +25,6 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
-import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
@@ -91,7 +90,7 @@ class StorageUtil {
         tokenList.add(PushToken.fromJson(serializedToken));
       } else {
         log(
-          'Type $type is unknown.',
+          'Token type $type is unknown.',
           name: 'storage_utils.dart',
         );
       }
@@ -101,38 +100,13 @@ class StorageUtil {
   }
 
   /// Deletes the saved json of [token] from the secure storage.
-  /// If the token is a PushToken, its firebase config is deleted too.
   static Future<void> deleteToken(Token token) async {
     _storage.delete(key: _GLOBAL_PREFIX + token.id);
-    if (token is PushToken) deleteFirebaseConfig(token);
   }
 
   // ###########################################################################
-  // GLOBAL FIREBASE CONFIG
+  // FIREBASE CONFIG
   // ###########################################################################
-
-  static const _GLOBAL_FIREBASE_CONFIG_KEY =
-      _GLOBAL_PREFIX + "cc0d13b2-9ce1-11ea-bb37-0242ac130002";
-
-  static Future<void> saveOrReplaceGlobalFirebaseConfig(
-          FirebaseConfig config) async =>
-      await _storage.write(
-          key: _GLOBAL_FIREBASE_CONFIG_KEY, value: jsonEncode(config));
-
-  static void deleteGlobalFirebaseConfig() async =>
-      await _storage.delete(key: _GLOBAL_FIREBASE_CONFIG_KEY);
-
-  static Future<bool> globalFirebaseConfigExists() async =>
-      await loadGlobalFirebaseConfig() != null;
-
-  static Future<FirebaseConfig?> loadGlobalFirebaseConfig() async {
-    String? serializedConfig =
-        await _storage.read(key: _GLOBAL_FIREBASE_CONFIG_KEY);
-
-    return serializedConfig == null
-        ? null
-        : FirebaseConfig.fromJson(jsonDecode(serializedConfig));
-  }
 
   static const _CURRENT_APP_TOKEN_KEY = _GLOBAL_PREFIX + "CURRENT_APP_TOKEN";
 
@@ -152,31 +126,6 @@ class StorageUtil {
       _storage.read(key: _NEW_APP_TOKEN_KEY);
 
   // ###########################################################################
-  // FIREBASE PER TOKEN
-  // ###########################################################################
-
-  static const _KEY_POSTFIX = "_firebase_config";
-
-  static Future<void> saveOrReplaceFirebaseConfig(
-      Token token, FirebaseConfig config) async {
-    await _storage.write(
-        key: _GLOBAL_PREFIX + token.id + _KEY_POSTFIX,
-        value: jsonEncode(config));
-  }
-
-  static Future<FirebaseConfig?> loadFirebaseConfig(Token token) async {
-    String? serializedConfig =
-        await _storage.read(key: _GLOBAL_PREFIX + token.id + _KEY_POSTFIX);
-
-    return serializedConfig == null
-        ? null
-        : FirebaseConfig.fromJson(jsonDecode(serializedConfig));
-  }
-
-  static void deleteFirebaseConfig(Token token) async =>
-      _storage.delete(key: _GLOBAL_PREFIX + token.id + _KEY_POSTFIX);
-
-  // ###########################################################################
   // LEGACY
   // ###########################################################################
 
@@ -185,7 +134,7 @@ class StorageUtil {
 
     String json = await Legacy.loadAllTokens();
 
-    if (json == null || json == "") {
+    if (json == "") {
       return tokenList;
     }
 
@@ -234,18 +183,6 @@ class StorageUtil {
         if (tokenMap['enrollment_url'] != null) {
           token.url = Uri.parse((tokenMap['enrollment_url'] as String));
         }
-
-        var configMap = jsonDecode(await Legacy.loadFirebaseConfig());
-
-        FirebaseConfig config = FirebaseConfig(
-          appID: configMap['appid'],
-          apiKey: configMap['apikey'],
-          projectID: configMap['projectid'],
-          projectNumber: configMap['projectnumber'],
-        );
-
-        await StorageUtil.saveOrReplaceFirebaseConfig(token, config);
-        await StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
       } else {
         log(
           "Unknown token type encountered",
