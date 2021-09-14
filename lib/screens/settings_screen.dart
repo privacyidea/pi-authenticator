@@ -115,7 +115,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                     ValueChanged<Locale?>? onChanged;
 
                     if (snapshot.hasData) {
-                      enableDropDown = !snapshot.data!;
+                      enableDropDown = !(snapshot.data!);
                     }
 
                     if (enableDropDown) {
@@ -151,8 +151,14 @@ class SettingsScreenState extends State<SettingsScreen> {
                                   value: value,
                                   child: Text(
                                     "$value",
-                                    style:
-                                        Theme.of(context).textTheme.subtitle1,
+                                    style: onChanged == null
+                                        ? Theme.of(context)
+                                            .textTheme
+                                            .subtitle1!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .disabledColor)
+                                        : Theme.of(context).textTheme.subtitle1,
                                   ),
                                 );
                               }).toList(),
