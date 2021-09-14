@@ -88,7 +88,7 @@ class GuideScreen extends StatelessWidget {
                 }
               },
             ),
-            tileColor: PRIMARY_COLOR,
+            tileColor: Theme.of(context).primaryColor,
           ),
         ],
       ),
