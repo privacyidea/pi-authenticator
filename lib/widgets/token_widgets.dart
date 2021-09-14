@@ -48,7 +48,6 @@ import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-
 import 'custom_texts.dart';
 
 class TokenWidget extends StatefulWidget {

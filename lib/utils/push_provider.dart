@@ -105,6 +105,11 @@ class PushProvider {
   static Future<String> getFBToken() async {
     String? firebaseToken = await FirebaseMessaging.instance.getToken();
 
+    // Fall back to the last known firebase token
+    if (firebaseToken == null) {
+      firebaseToken = await StorageUtil.getCurrentFirebaseToken();
+    }
+
     if (firebaseToken == null) {
       throw PlatformException(
           message:
@@ -113,6 +118,7 @@ class PushProvider {
           code: FIREBASE_TOKEN_ERROR_CODE);
     }
 
+    await StorageUtil.setCurrentFirebaseToken(firebaseToken);
     return firebaseToken;
   }
 

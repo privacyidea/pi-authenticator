@@ -19,7 +19,7 @@
 
 ### Removed
 
-- Removed support for custom firebase projects for non-SLA customers
+- Removed support for custom firebase projects
 
 
 ## [3.1.5] - 2021-XX-XX
