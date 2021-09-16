@@ -100,11 +100,13 @@ class HideableTextState extends State<HideableText> {
               widget.replaceCharacter)
           : widget.text,
       textScaleFactor: widget.textScaleFactor,
-      style: widget.textStyle ??
-          TextStyle(
-            fontFamily: "monospace",
-            fontWeight: FontWeight.bold,
-          ),
+      style: widget.textStyle != null
+          ? widget.textStyle!
+              .copyWith(fontFamily: 'monospace', fontWeight: FontWeight.bold)
+          : TextStyle(
+              fontFamily: "monospace",
+              fontWeight: FontWeight.bold,
+            ),
     );
 
     return widget.controller == null
