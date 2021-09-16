@@ -84,7 +84,6 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
             TextButton(
               child: Text(
                 AppLocalizations.of(context)!.dismiss,
-                style: Theme.of(context).textTheme.headline6,
               ),
               onPressed: _onPressed,
             )

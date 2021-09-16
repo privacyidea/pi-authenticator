@@ -48,6 +48,7 @@ import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
+
 import 'custom_texts.dart';
 
 class TokenWidget extends StatefulWidget {
@@ -280,14 +281,12 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.cancel,
-                  style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.rename,
-                  style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () {
                   if (_nameInputKey.currentState!.validate()) {
@@ -329,7 +328,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   AppLocalizations.of(context)!.cancel,
-                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
               TextButton(
@@ -339,7 +337,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 },
                 child: Text(
                   AppLocalizations.of(context)!.delete,
-                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
             ],
