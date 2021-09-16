@@ -20,35 +20,19 @@
 
 import 'package:flutter/material.dart';
 
-var lightPrim = Colors.blue.shade300;
-var darkPrim = Colors.blue.shade900;
+// var primarySwatch = PRIMARY_COLOR; // TODO Use this when customizing
+var primarySwatch = Colors.lightBlue;
 
 var lightThemeData = new ThemeData(
-  primaryColor: lightPrim,
-  textTheme: new TextTheme(button: TextStyle(color: Colors.white70)),
+  primarySwatch: primarySwatch,
+  accentColor: primarySwatch, // floating action button
+  toggleableActiveColor: primarySwatch, // switches and radio buttons
   brightness: Brightness.light,
-  accentColor: lightPrim,
-  toggleableActiveColor: lightPrim,
-  colorScheme: ColorScheme.light(
-    primary: lightPrim,
-    primaryVariant: lightPrim,
-    background: lightPrim.withOpacity(0.5),
-    secondary: lightPrim,
-    secondaryVariant: lightPrim,
-  ),
 );
 
 var darkThemeData = ThemeData(
-  primaryColor: darkPrim,
-  textTheme: new TextTheme(button: TextStyle(color: Colors.black54)),
+  primarySwatch: primarySwatch,
+  accentColor: primarySwatch,
+  toggleableActiveColor: primarySwatch,
   brightness: Brightness.dark,
-  accentColor: darkPrim,
-  toggleableActiveColor: darkPrim,
-  colorScheme: ColorScheme.dark(
-    primary: darkPrim,
-    primaryVariant: darkPrim,
-    background: darkPrim.withOpacity(0.5),
-    secondary: darkPrim,
-    secondaryVariant: darkPrim,
-  ),
 );
