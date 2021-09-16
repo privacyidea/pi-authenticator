@@ -88,7 +88,10 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     if (_token.label.isNotEmpty) {
       children.add(Text(
         _token.label,
-        style: Theme.of(context).textTheme.headline5,
+        style: Theme.of(context)
+            .textTheme
+            .headline6!
+            .copyWith(fontWeight: FontWeight.normal),
       ));
     }
     if (_token.issuer.isNotEmpty) {
@@ -698,7 +701,12 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
               ListTile(
                 title: Text(
                   _token.serial,
-                  style: Theme.of(context).textTheme.headline4,
+                  textScaleFactor: 2.5,
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                        // color: Theme.of(context).accentColor,
+                        fontFamily: "monospace",
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 subtitle: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -905,9 +913,13 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            textScaleFactor: 2.0,
+            textScaleFactor: 3.0,
             enabled: _token.isLocked,
             hideDuration: Duration(seconds: 6),
+            textStyle: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: Theme.of(context).accentColor),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -1004,9 +1016,13 @@ class _TotpWidgetState extends _OTPTokenWidgetState
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            textScaleFactor: 2.0,
+            textScaleFactor: 3.0,
             enabled: _token.isLocked,
             hideDuration: Duration(seconds: 6),
+            textStyle: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: Theme.of(context).accentColor),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
