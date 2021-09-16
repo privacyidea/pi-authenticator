@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.2.0] - 2021-XX-XX
+## [4.0.0] - 2021-XX-XX
 
 ### Added
 
@@ -160,7 +160,7 @@
 - Using new engine to program the app
 - parallel development of android and ios version
 
-[3.2.0]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.5...v3.2.0
+[3.2.0]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.5...v4.0.0
 [3.1.5]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.4...v3.1.5
 [3.1.4]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.3...v3.1.4
 [3.1.3]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.2...v3.1.3
