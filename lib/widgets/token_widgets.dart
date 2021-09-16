@@ -913,7 +913,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            textScaleFactor: 3.0,
+            textScaleFactor: 2.5,
             enabled: _token.isLocked,
             hideDuration: Duration(seconds: 6),
             textStyle: Theme.of(context)
@@ -1016,7 +1016,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            textScaleFactor: 3.0,
+            textScaleFactor: 2.5,
             enabled: _token.isLocked,
             hideDuration: Duration(seconds: 6),
             textStyle: Theme.of(context)
