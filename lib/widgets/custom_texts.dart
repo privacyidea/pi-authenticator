@@ -117,3 +117,23 @@ class HideableTextState extends State<HideableText> {
         : text;
   }
 }
+
+class MenuItemWithIcon extends StatelessWidget {
+  final Icon icon;
+  final Text text;
+
+  MenuItemWithIcon({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(right: 10),
+          child: icon,
+        ),
+        text,
+      ],
+    );
+  }
+}

@@ -270,6 +270,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                 );
               },
             ),
+            Divider(),
             SettingsGroup(
               title: AppLocalizations.of(context)!.migration,
               children: [
@@ -285,23 +286,6 @@ class SettingsScreenState extends State<SettingsScreen> {
                 ),
               ],
             ),
-
-//            Divider(),
-//            SettingsGroup(
-//              title: 'Behavior',
-//              children: <Widget>[
-//                ListTile(
-//                  title: Text('Hide otp'),
-//                  subtitle: Text('Description'),
-//                  trailing: Switch(
-//                    value: _hideOTP,
-//                    onChanged: (value) {
-//                      _hideOTP = value;
-//                    },
-//                  ),
-//                ),
-//              ],
-//            ),
           ],
         ),
       ),
