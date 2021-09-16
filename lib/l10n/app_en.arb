@@ -224,7 +224,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "systemTheme": "Device",
+  "systemTheme": "Use device's theme",
   "@systemTheme": {
     "description": "The systems theme.",
     "type": "text",

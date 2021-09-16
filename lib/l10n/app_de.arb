@@ -48,7 +48,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "encoding": "Verschlüsselung",
+  "encoding": "Kodierung",
   "@encoding": {
     "description": "Title of the dropdown button where the encoding is selected.",
     "type": "text",
@@ -224,7 +224,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "systemTheme": "Gerät",
+  "systemTheme": "Nutze Thema des Geräts",
   "@systemTheme": {
     "description": "The systems theme.",
     "type": "text",
