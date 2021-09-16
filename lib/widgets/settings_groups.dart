@@ -35,8 +35,8 @@ class SettingsGroup extends StatelessWidget {
           dense: true,
           leading: Text(
             title,
-            style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  fontWeight: FontWeight.bold,
+            style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                  color: Theme.of(context).accentColor,
                 ),
           ),
         ),
