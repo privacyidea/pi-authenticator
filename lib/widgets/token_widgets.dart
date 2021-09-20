@@ -54,6 +54,7 @@ import 'custom_texts.dart';
 class TokenWidget extends StatefulWidget {
   final Token _token;
   final VoidCallback _onDeleteClicked;
+  final double avatarRadius = 40;
 
   TokenWidget(Token token, {required onDeleteClicked})
       : this._token = token,
@@ -698,22 +699,33 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
         children: <Widget>[
           Column(
             children: <Widget>[
-              ListTile(
-                title: Text(
-                  _token.serial,
-                  textScaleFactor: 2.5,
-                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                        // color: Theme.of(context).accentColor,
-                        fontFamily: "monospace",
-                        fontWeight: FontWeight.bold,
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(5),
+                    child: CircleAvatar(
+                      radius: widget.avatarRadius,
+                    ),
+                  ),
+                  Expanded(
+                    child: ListTile(
+                      title: Text(
+                        _token.serial,
+                        textScaleFactor: 2.5,
+                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                              // color: Theme.of(context).accentColor,
+                              fontFamily: "monospace",
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
-                ),
-                subtitle: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: _getSubtitle(),
-                ),
-                trailing: Icon(Icons.message),
+                      subtitle: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: _getSubtitle(),
+                      ),
+                    ),
+                  )
+                ],
               ),
               Visibility(
                 // Accept / decline push auth request.
@@ -909,37 +921,53 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
   Widget _buildNonClickableTile() {
     return Stack(
       children: <Widget>[
-        ListTile(
-          title: HideableText(
-            controller: _hideableController,
-            text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            textScaleFactor: 2.5,
-            enabled: _token.isLocked,
-            hideDuration: Duration(seconds: 6),
-            textStyle: Theme.of(context)
-                .textTheme
-                .subtitle2!
-                .copyWith(color: Theme.of(context).accentColor),
-          ),
-          subtitle: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _getSubtitle(),
-          ),
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-            child: ElevatedButton(
-              onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
-              child: Text(
-                AppLocalizations.of(context)!.next,
-                style: Theme.of(context).textTheme.headline6,
+        Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(5),
+              child: CircleAvatar(
+                radius: widget.avatarRadius,
               ),
             ),
-          ),
+            Expanded(
+              child: ListTile(
+                title: HideableText(
+                  controller: _hideableController,
+                  text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
+                  textScaleFactor: 2.5,
+                  enabled: _token.isLocked,
+                  hideDuration: Duration(seconds: 6),
+                  textStyle: Theme.of(context)
+                      .textTheme
+                      .subtitle2!
+                      .copyWith(color: Theme.of(context).accentColor),
+                ),
+                subtitle: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _getSubtitle(),
+                ),
+                trailing: ElevatedButton(
+                  child: Icon(Icons.navigate_next_rounded),
+                  onPressed: () => null,
+                ),
+              ),
+            )
+          ],
         ),
+        // Align(
+        //   alignment: Alignment.centerRight,
+        //   child: Padding(
+        //     padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+        //     child: ElevatedButton(
+        //       onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
+        //       child: Text(
+        //         AppLocalizations.of(context)!.next,
+        //         style: Theme.of(context).textTheme.headline6,
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
@@ -1012,23 +1040,35 @@ class _TotpWidgetState extends _OTPTokenWidgetState
   Widget _buildNonClickableTile() {
     return Column(
       children: <Widget>[
-        ListTile(
-          title: HideableText(
-            controller: _hideableController,
-            text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            textScaleFactor: 2.5,
-            enabled: _token.isLocked,
-            hideDuration: Duration(seconds: 6),
-            textStyle: Theme.of(context)
-                .textTheme
-                .subtitle2!
-                .copyWith(color: Theme.of(context).accentColor),
-          ),
-          subtitle: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _getSubtitle(),
-          ),
+        Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(5),
+              child: CircleAvatar(
+                radius: widget.avatarRadius,
+              ),
+            ),
+            Expanded(
+              child: ListTile(
+                title: HideableText(
+                  controller: _hideableController,
+                  text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
+                  textScaleFactor: 2.5,
+                  enabled: _token.isLocked,
+                  hideDuration: Duration(seconds: 6),
+                  textStyle: Theme.of(context)
+                      .textTheme
+                      .subtitle2!
+                      .copyWith(color: Theme.of(context).accentColor),
+                ),
+                subtitle: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _getSubtitle(),
+                ),
+              ),
+            ),
+          ],
         ),
         LinearProgressIndicator(
           value: _controller.value,
