@@ -944,27 +944,31 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: _getSubtitle(),
                 ),
-                trailing: ElevatedButton(
-                  child: Icon(Icons.navigate_next_rounded),
-                  onPressed: () => null,
-                ),
               ),
+            ),
+            IconButton(
+              iconSize: 30,
+              icon: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).accentColor,
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black
+                          : Colors.grey,
+                      blurRadius: 1.0,
+                      offset: Offset(1, 1),
+                    )
+                  ],
+                ),
+                child: Icon(Icons.navigate_next_rounded),
+              ),
+              onPressed: () =>
+                  buttonIsDisabled ? null : () => _updateOtpValue(),
             )
           ],
         ),
-        // Align(
-        //   alignment: Alignment.centerRight,
-        //   child: Padding(
-        //     padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-        //     child: ElevatedButton(
-        //       onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
-        //       child: Text(
-        //         AppLocalizations.of(context)!.next,
-        //         style: Theme.of(context).textTheme.headline6,
-        //       ),
-        //     ),
-        //   ),
-        // ),
       ],
     );
   }
