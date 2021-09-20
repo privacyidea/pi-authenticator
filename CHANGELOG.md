@@ -5,6 +5,10 @@
 ### Added
 
 - Registered app to handle 'otpauth' links on Android and iOS
+- Added debug-'flavor' to allow parallel install of release and debug version on Android
+- Add default firebase configuration for app
+- Added option to secure tokens by requiring device credentials or biometrics to access otps and to accept push challenges
+- Added icon to tokens that can be customized by the user
 
 ### Changed
 
@@ -13,9 +17,7 @@
 - Refactored for better life-cycle handling
 - Use new framework for localizations and translations
 - Migrated app to null-safety
-- Added debug-'flavor' to allow parallel install of release and debug version on Android
-- Add default firebase configuration for app
-- Added option to secure tokens by requiring device credentials or biometrics to access otps and to accept push challenges
+- Improved the user interface, especially the theming
 
 ### Removed
 
