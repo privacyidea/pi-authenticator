@@ -40,25 +40,26 @@ dependencies:
   flutter_slidable: ^0.6.0
   package_info: ^2.0.2
   asn1lib: ^1.0.2
-  flutter_markdown: ^0.6.4
-  url_launcher: ^6.0.3
+  flutter_markdown: ^0.6.6
+  url_launcher: ^6.0.11
   catcher: ^0.6.8
   uuid: ^3.0.4
   http: ^0.13.3
-  pointycastle: ^3.3.1
-  flutter_local_notifications: ^8.1.1+1
+  pointycastle: ^3.3.4
+  flutter_local_notifications: ^8.2.0
   mutex: ^3.0.0
   flutterlifecyclehooks: ^2.0.0-nullsafety.0
   streaming_shared_preferences: ^2.0.0
   flutter_svg: ^0.22.0
   easy_dynamic_theme: ^2.2.0
-  firebase_messaging: ^10.0.5
-  firebase_core: ^1.5.0
+  firebase_messaging: ^10.0.7
+  firebase_core: ^1.6.0
   pi_authenticator_legacy:
     path: local_plugins/pi-authenticator-legacy
   collection: ^1.15.0
   uni_links: ^0.5.1
-  local_auth: ^1.1.7
+  local_auth: ^1.1.8
+  image_picker: ^0.8.4+2
 
 dev_dependencies:
   flutter_driver:

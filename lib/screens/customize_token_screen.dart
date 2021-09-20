@@ -18,9 +18,13 @@
   limitations under the License.
 */
 
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 
 class CustomizeTokenScreen extends StatefulWidget {
@@ -35,8 +39,29 @@ class CustomizeTokenScreen extends StatefulWidget {
 class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
   final Token _token;
   String _selectedName;
+  String? _selectedPath;
 
   _CustomizeTokenScreenState(this._token) : _selectedName = _token.label;
+
+  void _pickImage() async {
+    // TODO Safe the picture somewhere and add an appropriate field to the token
+
+    try {
+      final XFile? image =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      _selectedPath =
+          image?.path; // If no image is selected this sets it to null
+
+      setState(() {});
+    } on PlatformException {
+      // Permission was denied
+      return;
+    }
+  }
+
+  void _pickColor() {
+    print("pick color");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,19 +82,17 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
               alignment: Alignment.bottomRight,
               children: [
                 GestureDetector(
-                  onTap: () => print("edit image"), // TODO
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: null,
-                        radius: 80,
-                      ),
-                      Icon(
-                        Icons.add_photo_alternate_outlined,
-                        size: 40,
-                      ),
-                    ],
+                  onTap: _pickImage,
+                  child: CircleAvatar(
+                    child: Icon(
+                      Icons.add_photo_alternate_outlined,
+                      size: 40,
+                    ),
+                    backgroundImage: _selectedPath == null
+                        ? null
+                        : FileImage(File(_selectedPath!)),
+                    backgroundColor: null,
+                    radius: 80,
                   ),
                 ),
                 Container(
@@ -80,7 +103,7 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
                   ),
                   child: IconButton(
                     icon: Icon(Icons.brush),
-                    onPressed: () => print("edit background"), // TODO
+                    onPressed: _pickColor,
                   ),
                 ),
               ],
