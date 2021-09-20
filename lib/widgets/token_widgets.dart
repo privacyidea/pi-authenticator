@@ -86,23 +86,20 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   List<Widget> _getSubtitle() {
     List<Widget> children = [];
+    TextStyle style = Theme.of(context)
+        .textTheme
+        .headline6!
+        .copyWith(fontWeight: FontWeight.normal);
+
     if (_token.label.isNotEmpty) {
-      children.add(Text(
-        _token.label,
-        style: Theme.of(context)
-            .textTheme
-            .headline6!
-            .copyWith(fontWeight: FontWeight.normal),
-      ));
+      if (_token is PushToken) {
+        children.add(Text((_token as PushToken).serial, style: style));
+      } else {
+        children.add(Text(_token.label, style: style));
+      }
     }
     if (_token.issuer.isNotEmpty) {
-      children.add(Text(
-        _token.issuer,
-        style: Theme.of(context)
-            .textTheme
-            .headline6!
-            .copyWith(fontWeight: FontWeight.normal),
-      ));
+      children.add(Text(_token.issuer, style: style));
     }
     return children;
   }
@@ -710,7 +707,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                   Expanded(
                     child: ListTile(
                       title: Text(
-                        _token.serial,
+                        _token.label,
                         textScaleFactor: 2.5,
                         style: Theme.of(context).textTheme.subtitle2!.copyWith(
                               // color: Theme.of(context).accentColor,
