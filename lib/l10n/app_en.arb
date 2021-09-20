@@ -78,9 +78,9 @@
     "type": "text",
     "placeholders": {}
   },
-  "rename": "Rename",
-  "@rename": {
-    "description": "Label that describes renaming the token.",
+  "customize": "Customize",
+  "@customize": {
+    "description": "Label that describes customizing the token.",
     "type": "text",
     "placeholders": {}
   },

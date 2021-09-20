@@ -38,6 +38,7 @@ import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
+import 'package:privacyidea_authenticator/screens/custom_about_screen.dart';
 import 'package:privacyidea_authenticator/screens/guide_screen.dart';
 import 'package:privacyidea_authenticator/screens/scanner_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
@@ -53,8 +54,6 @@ import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:uuid/uuid.dart';
-
-import 'custom_about_screen.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen({Key? key, required this.title}) : super(key: key);

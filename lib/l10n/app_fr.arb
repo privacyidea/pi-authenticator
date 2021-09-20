@@ -78,12 +78,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "rename": "Renommer",
-  "@rename": {
-    "description": "Label that describes renaming the token.",
-    "type": "text",
-    "placeholders": {}
-  },
   "cancel": "Annuler",
   "@cancel": {
     "description": "Button to cancel an action.",

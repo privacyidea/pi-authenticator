@@ -40,6 +40,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/screens/customize_token_screen.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
@@ -119,15 +120,25 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         onTap: () => _deleteTokenDialog(),
       ),
       IconSlideAction(
-        caption: AppLocalizations.of(context)!.rename,
+        caption: AppLocalizations.of(context)!.customize,
         color: Theme.of(context).brightness == Brightness.light
             ? Colors.blue.shade400
             : Colors.blue.shade800,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
-        icon: Icons.edit,
-        onTap: () => _renameTokenDialog(),
+        icon: Icons.brush,
+        onTap: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => CustomizeTokenScreen(_token),
+            ),
+          );
+
+          if (mounted) {
+            setState(() {});
+          }
+        },
       ),
     ];
 
@@ -249,70 +260,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       }
     }
     return didAuthenticate;
-  }
-
-  void _renameTokenDialog() {
-    final _nameInputKey = GlobalKey<FormFieldState>();
-    String _selectedName = _token.label;
-
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.renameToken),
-            content: TextFormField(
-              autofocus: true,
-              initialValue: _selectedName,
-              key: _nameInputKey,
-              onChanged: (value) {
-                if (mounted) {
-                  setState(() => _selectedName = value);
-                }
-              },
-              decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.name),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return AppLocalizations.of(context)!.name;
-                }
-                return null;
-              },
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  AppLocalizations.of(context)!.cancel,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              TextButton(
-                child: Text(
-                  AppLocalizations.of(context)!.rename,
-                ),
-                onPressed: () {
-                  if (_nameInputKey.currentState!.validate()) {
-                    _renameClicked(_selectedName);
-                    Navigator.of(context).pop();
-                  }
-                },
-              ),
-            ],
-          );
-        });
-  }
-
-  void _renameClicked(String newLabel) async {
-    _token.label = newLabel;
-    await _saveThisToken();
-    log(
-      "Renamed token:",
-      name: "token_widgets.dart",
-      error: "\"${_token.label}\" changed to \"$newLabel\"",
-    );
-
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   void _deleteTokenDialog() {
