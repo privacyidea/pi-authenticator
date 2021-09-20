@@ -950,7 +950,9 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
               iconSize: 30,
               icon: Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).accentColor,
+                  color: buttonIsDisabled
+                      ? Theme.of(context).disabledColor
+                      : Theme.of(context).accentColor,
                   borderRadius: BorderRadius.circular(5),
                   boxShadow: [
                     BoxShadow(
@@ -964,8 +966,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
                 ),
                 child: Icon(Icons.navigate_next_rounded),
               ),
-              onPressed: () =>
-                  buttonIsDisabled ? null : () => _updateOtpValue(),
+              onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
             )
           ],
         ),
