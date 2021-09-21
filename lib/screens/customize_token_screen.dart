@@ -20,6 +20,7 @@
 
 import 'dart:io';
 
+import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,10 +43,14 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
   final Token _token;
   String _selectedName;
   String? _selectedPath;
+  Color? _selectedColor;
 
   _CustomizeTokenScreenState(this._token)
       : _selectedName = _token.label,
-        _selectedPath = _token.imagePath;
+        _selectedPath = _token.avatarPath,
+        _selectedColor = _token.avatarColor == null
+            ? null
+            : Color(_token.avatarColor!); // TODO Use color of token
 
   void _pickImage() async {
     try {
@@ -67,8 +72,35 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
     }
   }
 
-  void _pickColor() {
-    print("pick color");
+  void _pickColor() async {
+    _selectedColor = await showColorPickerDialog(
+      context,
+      _selectedColor ?? Theme.of(context).accentColor,
+      title: Text('ColorPicker', style: Theme.of(context).textTheme.headline6),
+      enableOpacity: false,
+      showColorCode: false,
+      colorCodeHasColor: false,
+      showRecentColors: false,
+      enableShadesSelection: false,
+      pickersEnabled: <ColorPickerType, bool>{
+        ColorPickerType.wheel: true,
+        ColorPickerType.primary: false,
+        ColorPickerType.accent: false,
+      },
+      copyPasteBehavior: ColorPickerCopyPasteBehavior(
+        copyButton: false,
+        pasteButton: false,
+        longPressMenu: false,
+      ),
+      actionButtons: ColorPickerActionButtons(
+        okButton: false,
+        closeButton: false,
+        dialogOkButtonLabel: AppLocalizations.of(context)!.accept,
+        dialogCancelButtonLabel: AppLocalizations.of(context)!.cancel,
+      ),
+    );
+
+    setState(() {});
   }
 
   @override
@@ -81,11 +113,12 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.check),
         onPressed: () {
-          // TODO Delete the image if aborting and also delete the image if the token is deleted
+          // TODO Delete the image if the token is deleted!
           // TODO Validate token name
           // TODO Set the name on the token
 
-          _token.imagePath = _selectedPath;
+          _token.avatarPath = _selectedPath;
+          _token.avatarColor = _selectedColor?.value;
           StorageUtil.saveOrReplaceToken(_token);
           Navigator.of(context).pop(_token);
         },
@@ -107,7 +140,7 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
                     backgroundImage: _selectedPath == null
                         ? null
                         : FileImage(File(_selectedPath!)),
-                    backgroundColor: null,
+                    backgroundColor: _selectedColor,
                     radius: 80,
                   ),
                 ),

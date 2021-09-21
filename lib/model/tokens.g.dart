@@ -18,12 +18,14 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) {
     isLocked: json['isLocked'] as bool,
     canToggleLock: json['canToggleLock'] as bool,
   )
-    ..imagePath = json['imagePath'] as String?
+    ..avatarPath = json['avatarPath'] as String?
+    ..avatarColor = json['avatarColor'] as int?
     ..type = json['type'] as String;
 }
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
-      'imagePath': instance.imagePath,
+      'avatarPath': instance.avatarPath,
+      'avatarColor': instance.avatarColor,
       'canToggleLock': instance.canToggleLock,
       'isLocked': instance.isLocked,
       'type': instance.type,
@@ -80,12 +82,14 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) {
     isLocked: json['isLocked'] as bool,
     canToggleLock: json['canToggleLock'] as bool,
   )
-    ..imagePath = json['imagePath'] as String?
+    ..avatarPath = json['avatarPath'] as String?
+    ..avatarColor = json['avatarColor'] as int?
     ..type = json['type'] as String;
 }
 
 Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
-      'imagePath': instance.imagePath,
+      'avatarPath': instance.avatarPath,
+      'avatarColor': instance.avatarColor,
       'canToggleLock': instance.canToggleLock,
       'isLocked': instance.isLocked,
       'type': instance.type,
@@ -111,7 +115,8 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
     url: json['url'] == null ? null : Uri.parse(json['url'] as String),
     expirationDate: DateTime.parse(json['expirationDate'] as String),
   )
-    ..imagePath = json['imagePath'] as String?
+    ..avatarPath = json['avatarPath'] as String?
+    ..avatarColor = json['avatarColor'] as int?
     ..type = json['type'] as String
     ..isRolledOut = json['isRolledOut'] as bool
     ..publicServerKey = json['publicServerKey'] as String?
@@ -124,7 +129,8 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
-      'imagePath': instance.imagePath,
+      'avatarPath': instance.avatarPath,
+      'avatarColor': instance.avatarColor,
       'canToggleLock': instance.canToggleLock,
       'isLocked': instance.isLocked,
       'type': instance.type,

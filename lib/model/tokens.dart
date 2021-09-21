@@ -36,7 +36,8 @@ abstract class Token {
   bool _isLocked;
   bool _canToggleLock;
 
-  String? imagePath;
+  String? avatarPath;
+  int? avatarColor;
 
   bool get canToggleLock => _canToggleLock;
 

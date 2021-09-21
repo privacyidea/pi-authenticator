@@ -648,9 +648,10 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                   Padding(
                     padding: EdgeInsets.all(5),
                     child: CircleAvatar(
-                      backgroundImage: _token.imagePath == null
+                      backgroundColor: _token.avatarColor == null ? null:Color(_token.avatarColor!),
+                      backgroundImage: _token.avatarPath == null
                           ? null
-                          : FileImage(File(_token.imagePath!)),
+                          : FileImage(File(_token.avatarPath!)),
                       radius: widget.avatarRadius,
                     ),
                   ),
@@ -873,9 +874,10 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             Padding(
               padding: EdgeInsets.all(5),
               child: CircleAvatar(
-                backgroundImage: _token.imagePath == null
+                backgroundColor: _tokeavatarColoror == null ? null:Color(_tokeavatarColoror!),
+                backgroundImage: _token.avatarPath == null
                     ? null
-                    : FileImage(File(_token.imagePath!)),
+                    : FileImage(File(_token.avatarPath!)),
                 radius: widget.avatarRadius,
               ),
             ),
@@ -1000,9 +1002,10 @@ class _TotpWidgetState extends _OTPTokenWidgetState
             Padding(
               padding: EdgeInsets.all(5),
               child: CircleAvatar(
-                backgroundImage: _token.imagePath == null
+                backgroundColor: _toavatarColorolor == null ? null:Color(_toavatarColorolor!),
+                backgroundImage: _token.avatarPath == null
                     ? null
-                    : FileImage(File(_token.imagePath!)),
+                    : FileImage(File(_token.avatarPath!)),
                 radius: widget.avatarRadius,
               ),
             ),
