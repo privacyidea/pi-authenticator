@@ -129,7 +129,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             : Colors.white,
         icon: Icons.brush,
         onTap: () async {
-          await Navigator.of(context).push(
+          _token = await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => CustomizeTokenScreen(_token),
             ),
@@ -648,6 +648,9 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                   Padding(
                     padding: EdgeInsets.all(5),
                     child: CircleAvatar(
+                      backgroundImage: _token.imagePath == null
+                          ? null
+                          : FileImage(File(_token.imagePath!)),
                       radius: widget.avatarRadius,
                     ),
                   ),
@@ -870,6 +873,9 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             Padding(
               padding: EdgeInsets.all(5),
               child: CircleAvatar(
+                backgroundImage: _token.imagePath == null
+                    ? null
+                    : FileImage(File(_token.imagePath!)),
                 radius: widget.avatarRadius,
               ),
             ),
@@ -994,6 +1000,9 @@ class _TotpWidgetState extends _OTPTokenWidgetState
             Padding(
               padding: EdgeInsets.all(5),
               child: CircleAvatar(
+                backgroundImage: _token.imagePath == null
+                    ? null
+                    : FileImage(File(_token.imagePath!)),
                 radius: widget.avatarRadius,
               ),
             ),

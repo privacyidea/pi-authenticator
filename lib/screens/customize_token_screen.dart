@@ -25,7 +25,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 class CustomizeTokenScreen extends StatefulWidget {
   final Token _token;
@@ -41,16 +43,22 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
   String _selectedName;
   String? _selectedPath;
 
-  _CustomizeTokenScreenState(this._token) : _selectedName = _token.label;
+  _CustomizeTokenScreenState(this._token)
+      : _selectedName = _token.label,
+        _selectedPath = _token.imagePath;
 
   void _pickImage() async {
-    // TODO Safe the picture somewhere and add an appropriate field to the token
-
     try {
-      final XFile? image =
-          await ImagePicker().pickImage(source: ImageSource.gallery);
-      _selectedPath =
-          image?.path; // If no image is selected this sets it to null
+      XFile? image = await ImagePicker()
+          .pickImage(source: ImageSource.gallery, imageQuality: 10);
+      if (image != null) {
+        // Save a copy of the image
+        String path = (await getApplicationDocumentsDirectory()).path;
+        File imageCopy = await File(image.path).copy('$path/${_token.id}');
+        _selectedPath = imageCopy.path;
+      } else {
+        _selectedPath = null;
+      }
 
       setState(() {});
     } on PlatformException {
@@ -72,7 +80,15 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
       // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.check),
-        onPressed: null,
+        onPressed: () {
+          // TODO Delete the image if aborting and also delete the image if the token is deleted
+          // TODO Validate token name
+          // TODO Set the name on the token
+
+          _token.imagePath = _selectedPath;
+          StorageUtil.saveOrReplaceToken(_token);
+          Navigator.of(context).pop(_token);
+        },
       ),
       body: Padding(
         padding: EdgeInsets.all(20),
