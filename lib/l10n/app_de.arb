@@ -506,5 +506,93 @@
     "description": "Message that tells the user that handling a link failed. This link was provided through the 'open link with app' on android or iOS.",
     "type": "text",
     "placeholders": {}
+  },
+  "authenticateToAcceptPush": "Bitte authentifizieren Sie sich, um die Push-Anfrage zu akzeptieren.",
+  "@authenticateToAcceptPush": {
+    "description": "Reason to authenticate when clicking the 'accept' button of a push token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "authenticateToShowOtp": "Bitte authentifizieren Sie sich, um das Einmalpasswort anzuzeigen.",
+  "@authenticateToShowOtp": {
+    "description": "Reason to authenticate when trying to view a one time password.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "authenticateToUnLockToken": "Bitte authentifizieren Sie sich, um den Sperrstatus des Tokens zu ändern.",
+  "@authenticateToUnLockToken": {
+    "description": "Reason to authenticate when trying to lock or unlock a token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "biometricRequiredTitle": "Biometrie ist nicht eingerichtet",
+  "@biometricRequiredTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "biometricHint": "Authentifizierung wird benötigt",
+  "@biometricHint": {
+    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "biometricNotRecognized": "Biometrie wurde nicht erkannt, bitte versuchen Sie es erneut",
+  "@biometricNotRecognized": {
+    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "biometricSuccess": "Authentifizierung erfolgreich",
+  "@biometricSuccess": {
+    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "deviceCredentialsRequiredTitle": "Gerätepasswort ist nicht eingerichtet",
+  "@deviceCredentialsRequiredTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "deviceCredentialsSetupDescription": "Setzen Sie bitte ein Gerätepasswort in den Einstellungen",
+  "@deviceCredentialsSetupDescription": {
+    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side.",
+    "type": "text"
+  },
+  "signInTitle": "Authentifizierung wird benötigt",
+  "@signInTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "goToSettingsButton": "Gehe zu Einstellungen",
+  "@goToSettingsButton": {
+    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters.",
+    "type": "text"
+  },
+  "goToSettingsDescription": "Authentifizierung durch Gerätepasswort oder Biometrie ist nicht eingerichtet. Bitte aktivieren Sie dies in den Geräteeinstellungen.",
+  "@goToSettingsDescription": {
+    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device.",
+    "type": "text"
+  },
+  "lockOut": "Biometrische Authentifizierung ist deaktiviert. Bitte sperren und entsperren Sie Ihren Bildschirm um sie zu aktivieren.",
+  "@lockOut": {
+    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side.",
+    "type": "text"
+  },
+  "authNotSupportedTitle": "Gerätepasswort oder biometrische Authentifikation wird benötigt",
+  "@authNotSupportedTitle": {
+    "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action.",
+    "type": "text"
+  },
+  "authNotSupportedBody": "Diese Aktion erfordert, dass das Gerät von einem Passwort oder biometrischer Authentifikation geschützt wird.",
+  "@authNotSupportedBody": {
+    "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action.",
+    "type": "text"
+  },
+  "lock": "Sperren",
+  "@lock": {
+    "description": "Description of button that locks a token.",
+    "type": "text"
+  },
+  "unlock": "Entsperren",
+  "@unlock": {
+    "description": "Description of button that unlocks a token.",
+    "type": "text"
   }
 }

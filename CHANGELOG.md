@@ -15,6 +15,7 @@
 - Migrated app to null-safety
 - Added debug-'flavor' to allow parallel install of release and debug version on Android
 - Add default firebase configuration for app
+- Added option to secure tokens by requiring device credentials or biometrics to access otps and to accept push challenges
 
 ### Removed
 
