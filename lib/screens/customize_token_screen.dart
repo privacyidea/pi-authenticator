@@ -29,6 +29,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
+import 'package:privacyidea_authenticator/utils/themes.dart';
 
 class CustomizeTokenScreen extends StatefulWidget {
   final Token _token;
@@ -156,6 +157,10 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
                     child: Icon(
                       Icons.add_photo_alternate_outlined,
                       size: 40,
+                      color: isColorBright(_selectedAvatarColor ??
+                              Theme.of(context).colorScheme.primary)
+                          ? Colors.black
+                          : Colors.white,
                     ),
                     backgroundImage: _selectedAvatarImagePath == null
                         ? null
@@ -167,7 +172,9 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
                 Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.secondary,
-                    border: Border.all(color: Colors.grey.shade500, width: 1),
+                    border: Border.all(
+                        color: Theme.of(context).colorScheme.onSecondary,
+                        width: 1),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: IconButton(
