@@ -23,7 +23,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 // var primarySwatch = PRIMARY_COLOR; // TODO Use this when customizing
-var primarySwatch = Colors.white;
+var primarySwatch = Colors.lightBlue;
 
 // Calculate HSP and check if the primary color is bright or dark
 // brightness  =  sqrt( .299 R^2 + .587 G^2 + .114 B^2 ) // http://alienryderflex.com/hsp.html
