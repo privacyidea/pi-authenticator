@@ -21,6 +21,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart';
@@ -444,7 +445,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     ListView list = ListView.separated(
         itemBuilder: (context, index) {
           Token token = _tokenList[index];
-          return TokenWidget(token, onDeleteClicked: () => _removeToken(token));
+          return TokenWidget(token, onDeleteClicked: () => _deleteToken(token));
         },
         separatorBuilder: (context, index) {
           return Divider();
@@ -472,9 +473,15 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         : list;
   }
 
-  void _removeToken(Token token) async {
-    log("Remove: $token");
+  void _deleteToken(Token token) async {
+    log("Delete: $token");
     await StorageUtil.deleteToken(token);
+
+    // Delete token avatar image
+    if (token.avatarPath != null) {
+      await File(token.avatarPath!).delete();
+    }
+
     await _loadTokenList();
   }
 
