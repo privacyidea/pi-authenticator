@@ -130,10 +130,11 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         icon: Icons.brush,
         onTap: () async {
           _token = await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => CustomizeTokenScreen(_token),
-            ),
-          );
+                MaterialPageRoute(
+                  builder: (context) => CustomizeTokenScreen(_token),
+                ),
+              ) ??
+              _token;
 
           if (mounted) {
             setState(() {});
