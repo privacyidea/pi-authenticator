@@ -36,12 +36,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "name": "Nom",
-  "@name": {
-    "description": "Describes the field where the tokens name should be entered.",
-    "type": "text",
-    "placeholders": {}
-  },
   "secret": "Secret",
   "@secret": {
     "description": "Describes the field where the tokens secret should be entered.",
@@ -126,12 +120,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "pleaseEnterANameForThisToken": "Veuillez saisir un nom pour ce jeton.",
-  "@pleaseEnterANameForThisToken": {
-    "description": "Hint telling the user to enter a name for a token.",
-    "type": "text",
-    "placeholders": {}
-  },
   "pleaseEnterASecretForThisToken": "Veuillez saisir un secret pour ce jeton.",
   "@pleaseEnterASecretForThisToken": {
     "description": "Hint telling the user to enter a secret for a token.",
@@ -144,24 +132,18 @@
     "type": "text",
     "placeholders": {}
   },
-  "renameToken": "Renommer jeton",
-  "@renameToken": {
-    "description": "Title of the dialog where a new name for a token can be entered.",
-    "type": "text",
-    "placeholders": {}
-  },
   "confirmDeletion": "Confirmer suppression",
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted.",
     "type": "text",
     "placeholders": {}
   },
-  "confirmDeletionOf": "Confirmer la suppression de {name}?",
+  "confirmDeletionOf": "Confirmer la suppression de {label}?",
   "@confirmDeletionOf": {
     "description": "Asks for confirmation on deleting a token.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234"
       }
     }
@@ -226,7 +208,7 @@
   },
   "enablePolling": "Activer l'interrogation.",
   "@enablePolling": {
-    "description": "Name of the setting switch that enables polling.",
+    "description": "Description of the setting switch that enables polling.",
     "type": "text",
     "placeholders": {}
   },
@@ -284,32 +266,32 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorOnlyOneFirebaseProjectIsSupported": "La configuration firebase des jetons {name} ne correspond à celle utilisée actuellement par l'application et ne peut donc pas être utilisée.",
+  "errorOnlyOneFirebaseProjectIsSupported": "La configuration firebase des jetons {label} ne correspond à celle utilisée actuellement par l'application et ne peut donc pas être utilisée.",
   "@errorOnlyOneFirebaseProjectIsSupported": {
     "description": "Tells the user that the token can not be used because it has a different firebase configuration than the current used configuration of the application.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234A"
       }
     }
   },
-  "errorTokenExpired": "Le jeton {name} a expiré et ne plus être enrôlé.",
+  "errorTokenExpired": "Le jeton {label} a expiré et ne plus être enrôlé.",
   "@errorTokenExpired": {
     "description": "Tells the user that the token can not be rolled out, because it expired.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234A"
       }
     }
   },
-  "errorRollOutFailed": "L'enrôlement du jeton {name} a échoué. Erreur réseau: {errorCode}",
+  "errorRollOutFailed": "L'enrôlement du jeton {label} a échoué. Erreur réseau: {errorCode}",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234A"
       },
       "errorCode": {
@@ -339,32 +321,32 @@
       }
     }
   },
-  "acceptPushAuthRequestFor": "La requête push a été accepté pour le jeton {name}.",
+  "acceptPushAuthRequestFor": "La requête push a été accepté pour le jeton {label}.",
   "@acceptPushAuthRequestFor": {
     "description": "Tells the user that a push request for a specific token was accepted.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234A"
       }
     }
   },
-  "decliningPushAuthRequestFor": "Le requête push a été refusé pour le jeton {name}.",
+  "decliningPushAuthRequestFor": "Le requête push a été refusé pour le jeton {label}.",
   "@decliningPushAuthRequestFor": {
     "description": "Tells the user that a push request for a specific token was declined.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234A"
       }
     }
   },
-  "errorPushAuthRequestFailedFor": "La requête push pour le jeton {name} a échoué. Code d'erreur: {errorCode}",
+  "errorPushAuthRequestFailedFor": "La requête push pour le jeton {label} a échoué. Code d'erreur: {errorCode}",
   "@errorPushAuthRequestFailedFor": {
     "description": "Tells the user that a push auth request could not be accepted for a token.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234A"
       },
       "errorCode": {

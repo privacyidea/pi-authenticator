@@ -36,9 +36,9 @@
     "type": "text",
     "placeholders": {}
   },
-  "name": "Name",
-  "@name": {
-    "description": "Describes the field where the tokens name should be entered.",
+  "label": "Bezeichnung",
+  "@label": {
+    "description": "Describes the field where the tokens label should be entered.",
     "type": "text",
     "placeholders": {}
   },
@@ -132,9 +132,9 @@
     "type": "text",
     "placeholders": {}
   },
-  "pleaseEnterANameForThisToken": "Bitte geben Sie einen Namen ein.",
-  "@pleaseEnterANameForThisToken": {
-    "description": "Hint telling the user to enter a name for a token.",
+  "pleaseEnterALabelForThisToken": "Bitte geben Sie eine Bezeichnung ein.",
+  "@pleaseEnterALabelForThisToken": {
+    "description": "Hint telling the user to enter a label for a token.",
     "type": "text",
     "placeholders": {}
   },
@@ -150,24 +150,18 @@
     "type": "text",
     "placeholders": {}
   },
-  "renameToken": "Token umbenennen",
-  "@renameToken": {
-    "description": "Title of the dialog where a new name for a token can be entered.",
-    "type": "text",
-    "placeholders": {}
-  },
   "confirmDeletion": "Löschen bestätigen",
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted.",
     "type": "text",
     "placeholders": {}
   },
-  "confirmDeletionOf": "Bestätigen Sie das Löschen von {name}?",
+  "confirmDeletionOf": "Bestätigen Sie das Löschen von {label}?",
   "@confirmDeletionOf": {
     "description": "Asks for confirmation on deleting a token.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234"
       }
     }
@@ -238,7 +232,7 @@
   },
   "enablePolling": "Aktives Stellen von Push-Anfragen",
   "@enablePolling": {
-    "description": "Name of the setting switch that enables polling.",
+    "description": "Description of the setting switch that enables polling.",
     "type": "text",
     "placeholders": {}
   },
@@ -296,32 +290,32 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorOnlyOneFirebaseProjectIsSupported": "Die Firebase-Konfiguration des Tokens {name} unterscheidet sich von der zur Zeit von der App verwendeten. Zwei verschiedene Konfigurationen werden nicht unterstützt.",
+  "errorOnlyOneFirebaseProjectIsSupported": "Die Firebase-Konfiguration des Tokens {label} unterscheidet sich von der zur Zeit von der App verwendeten. Zwei verschiedene Konfigurationen werden nicht unterstützt.",
   "@errorOnlyOneFirebaseProjectIsSupported": {
     "description": "Tells the user that the token can not be used because it has a different firebase configuration than the current used configuration of the application.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234A"
       }
     }
   },
-  "errorTokenExpired": "Der Token {name} ist nicht mehr gültig, ausrollen ist daher nicht möglich.",
+  "errorTokenExpired": "Der Token {label} ist nicht mehr gültig, ausrollen ist daher nicht möglich.",
   "@errorTokenExpired": {
     "description": "Tells the user that the token can not be rolled out, because it expired.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234A"
       }
     }
   },
-  "errorRollOutFailed": "Ausrollen von {name} ist fehlgeschlagen. Fehlercode: {errorCode}",
+  "errorRollOutFailed": "Ausrollen von {label} ist fehlgeschlagen. Fehlercode: {errorCode}",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234A"
       },
       "errorCode": {
@@ -351,32 +345,32 @@
       }
     }
   },
-  "acceptPushAuthRequestFor": "Akzeptiere Authentifizierungsanfrage für {name}.",
+  "acceptPushAuthRequestFor": "Akzeptiere Authentifizierungsanfrage für {label}.",
   "@acceptPushAuthRequestFor": {
     "description": "Tells the user that a push request for a specific token was accepted.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234A"
       }
     }
   },
-  "decliningPushAuthRequestFor": "Lehne Authentifizierungsanfrage für {name} ab.",
+  "decliningPushAuthRequestFor": "Lehne Authentifizierungsanfrage für {label} ab.",
   "@decliningPushAuthRequestFor": {
     "description": "Tells the user that a push request for a specific token was declined.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234A"
       }
     }
   },
-  "errorPushAuthRequestFailedFor": "Akzeptieren der Authentifizierungsanfrage für {name} fehlgeschlagen. Fehlercode: {errorCode}",
+  "errorPushAuthRequestFailedFor": "Akzeptieren der Authentifizierungsanfrage für {label} fehlgeschlagen. Fehlercode: {errorCode}",
   "@errorPushAuthRequestFailedFor": {
     "description": "Tells the user that a push auth request could not be accepted for a token.",
     "type": "text",
     "placeholders": {
-      "name": {
+      "label": {
         "example": "PUSH1234A"
       },
       "errorCode": {

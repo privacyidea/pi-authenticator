@@ -1,7 +1,6 @@
 name: pi_authenticator_legacy
 description: Plugin for loading tokens that were added in the native Android or iOS app.
 version: 1.0.0
-author:
 homepage:
 
 environment:

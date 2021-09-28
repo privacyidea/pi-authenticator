@@ -41,13 +41,28 @@ class CustomizeTokenScreen extends StatefulWidget {
 
 class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
   final Token _token;
-  String _selectedName;
+  String _selectedLabel;
   String? _selectedAvatarImagePath;
   Color? _selectedAvatarColor;
-  final _nameInputKey = GlobalKey<FormFieldState>();
+  final _labelInputKey = GlobalKey<FormFieldState>();
+  late final FocusNode _labelFieldFocus;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _labelFieldFocus = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _labelFieldFocus.dispose();
+
+    super.dispose();
+  }
 
   _CustomizeTokenScreenState(this._token)
-      : _selectedName = _token.label,
+      : _selectedLabel = _token.label,
         _selectedAvatarImagePath = _token.avatarPath,
         _selectedAvatarColor =
             _token.avatarColor == null ? null : Color(_token.avatarColor!);
@@ -104,10 +119,10 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.check),
         onPressed: () async {
-          if (_nameInputKey.currentState!.validate()) {
-            _token.label = _nameInputKey.currentState!.value;
+          if (_labelInputKey.currentState!.validate()) {
+            _token.label = _selectedLabel;
           } else {
-            // TODO Set focus on input field
+            _labelFieldFocus.requestFocus();
             return;
           }
 
@@ -161,18 +176,20 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
             ),
             TextFormField(
               autofocus: false,
-              initialValue: _selectedName,
-              key: _nameInputKey,
+              focusNode: _labelFieldFocus,
+              initialValue: _selectedLabel,
+              key: _labelInputKey,
               onChanged: (value) {
                 if (mounted) {
-                  setState(() => _selectedName = value);
+                  setState(() => _selectedLabel = value);
                 }
               },
               decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.name),
+                  labelText: AppLocalizations.of(context)!.label),
               validator: (value) {
                 if (value!.isEmpty) {
-                  return AppLocalizations.of(context)!.name;
+                  return AppLocalizations.of(context)!
+                      .pleaseEnterALabelForThisToken;
                 }
                 return null;
               },

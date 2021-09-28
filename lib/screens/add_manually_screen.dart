@@ -37,7 +37,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
   static final List<int> allowedPeriods = [30, 60];
 
   // fields needed to build a token
-  String _selectedName = "";
+  String _selectedLabel = "";
   String _selectedSecret = "";
 
   _Wrapper<Encodings> _selectedEncoding = _Wrapper(Encodings.none);
@@ -48,24 +48,24 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
 
   // fields needed to manage the widget
   final _secretInputKey = GlobalKey<FormFieldState>();
-  final _nameInputKey = GlobalKey<FormFieldState>();
+  final _labelInputKey = GlobalKey<FormFieldState>();
   AutovalidateMode _autoValidateSecret = AutovalidateMode.disabled;
 
   // used to handle focusing certain input fields
-  late final FocusNode _nameFieldFocus;
+  late final FocusNode _labelFieldFocus;
   late final FocusNode _secretFieldFocus;
 
   @override
   void initState() {
     super.initState();
 
-    _nameFieldFocus = FocusNode();
+    _labelFieldFocus = FocusNode();
     _secretFieldFocus = FocusNode();
   }
 
   @override
   void dispose() {
-    _nameFieldFocus.dispose();
+    _labelFieldFocus.dispose();
     _secretFieldFocus.dispose();
 
     super.dispose();
@@ -145,7 +145,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     OTPToken? newToken;
     if (_selectedType.value == TokenTypes.HOTP) {
       newToken = HOTPToken(
-        label: _selectedName,
+        label: _selectedLabel,
         issuer: "",
         id: uuid,
         algorithm: _selectedAlgorithm.value,
@@ -154,7 +154,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
       );
     } else if (_selectedType.value == TokenTypes.TOTP) {
       newToken = TOTPToken(
-        label: _selectedName,
+        label: _selectedLabel,
         issuer: "",
         id: uuid,
         algorithm: _selectedAlgorithm.value,
@@ -172,10 +172,10 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
   }
 
   bool inputIsValid() {
-    if (_nameInputKey.currentState!.validate()) {
-      _nameInputKey.currentState!.save();
+    if (_labelInputKey.currentState!.validate()) {
+      _labelInputKey.currentState!.save();
     } else {
-      FocusScope.of(context).requestFocus(_nameFieldFocus);
+      FocusScope.of(context).requestFocus(_labelFieldFocus);
       return false;
     }
 
@@ -228,15 +228,15 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
       child: Column(
         children: <Widget>[
           TextFormField(
-            key: _nameInputKey,
-            focusNode: _nameFieldFocus,
-            onSaved: (value) => this.setState(() => _selectedName = value!),
+            key: _labelInputKey,
+            focusNode: _labelFieldFocus,
+            onSaved: (value) => this.setState(() => _selectedLabel = value!),
             decoration:
-                InputDecoration(labelText: AppLocalizations.of(context)!.name),
+                InputDecoration(labelText: AppLocalizations.of(context)!.label),
             validator: (value) {
               if (value!.isEmpty) {
                 return AppLocalizations.of(context)!
-                    .pleaseEnterANameForThisToken;
+                    .pleaseEnterALabelForThisToken;
               }
               return null;
             },
