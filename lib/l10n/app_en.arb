@@ -593,5 +593,10 @@
   "@customizeTokenTitle": {
     "description": "Title of the customization screen.",
     "type": "text"
+  },
+  "pickColorDialogTitle": "Pick a color",
+  "@pickColorDialogTitle": {
+    "description": "Title of the dialog where a user can chose a color for a token's avatar.",
+    "type": "text"
   }
 }

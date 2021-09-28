@@ -83,7 +83,10 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
     _selectedAvatarColor = await showColorPickerDialog(
       context,
       _selectedAvatarColor ?? Theme.of(context).colorScheme.secondary,
-      title: Text('ColorPicker', style: Theme.of(context).textTheme.headline6),
+      title: Text(
+        AppLocalizations.of(context)!.pickColorDialogTitle,
+        style: Theme.of(context).textTheme.headline6,
+      ),
       enableOpacity: false,
       showColorCode: false,
       colorCodeHasColor: false,

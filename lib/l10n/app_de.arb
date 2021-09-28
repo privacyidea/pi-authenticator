@@ -589,9 +589,14 @@
     "description": "Description of button that unlocks a token.",
     "type": "text"
   },
-  "customizeTokenTitle": "Token personalisieren",
+  "customizeTokenTitle": "Token anpassen",
   "@customizeTokenTitle": {
     "description": "Title of the customization screen.",
+    "type": "text"
+  },
+  "pickColorDialogTitle": "Wählen sie eine Farbe",
+  "@pickColorDialogTitle": {
+    "description": "Title of the dialog where a user can chose a color for a token's avatar.",
     "type": "text"
   }
 }
