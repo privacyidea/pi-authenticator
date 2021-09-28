@@ -114,7 +114,7 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Customize token'), // TODO Translate
+        title: Text(AppLocalizations.of(context)!.customizeTokenTitle),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.check),
