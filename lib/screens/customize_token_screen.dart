@@ -42,29 +42,21 @@ class CustomizeTokenScreen extends StatefulWidget {
 class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
   final Token _token;
   String _selectedName;
-  String? _selectedPath;
-  Color? _selectedColor;
+  String? _selectedAvatarImagePath;
+  Color? _selectedAvatarColor;
+  final _nameInputKey = GlobalKey<FormFieldState>();
 
   _CustomizeTokenScreenState(this._token)
       : _selectedName = _token.label,
-        _selectedPath = _token.avatarPath,
-        _selectedColor = _token.avatarColor == null
-            ? null
-            : Color(_token.avatarColor!); // TODO Use color of token
+        _selectedAvatarImagePath = _token.avatarPath,
+        _selectedAvatarColor =
+            _token.avatarColor == null ? null : Color(_token.avatarColor!);
 
   void _pickImage() async {
     try {
       XFile? image = await ImagePicker()
           .pickImage(source: ImageSource.gallery, imageQuality: 10);
-      if (image != null) {
-        // Save a copy of the image
-        String path = (await getApplicationDocumentsDirectory()).path;
-        File imageCopy = await File(image.path).copy('$path/${_token.id}');
-        _selectedPath = imageCopy.path;
-      } else {
-        _selectedPath = null;
-      }
-
+      _selectedAvatarImagePath = image?.path;
       setState(() {});
     } on PlatformException {
       // Permission was denied
@@ -73,9 +65,9 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
   }
 
   void _pickColor() async {
-    _selectedColor = await showColorPickerDialog(
+    _selectedAvatarColor = await showColorPickerDialog(
       context,
-      _selectedColor ?? Theme.of(context).accentColor,
+      _selectedAvatarColor ?? Theme.of(context).accentColor,
       title: Text('ColorPicker', style: Theme.of(context).textTheme.headline6),
       enableOpacity: false,
       showColorCode: false,
@@ -109,16 +101,26 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
       appBar: AppBar(
         title: Text('Customize token'), // TODO Translate
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.check),
-        onPressed: () {
-          // TODO Delete the image if the token is deleted!
-          // TODO Validate token name
-          // TODO Set the name on the token
+        onPressed: () async {
+          if (_nameInputKey.currentState!.validate()) {
+            _token.label = _nameInputKey.currentState!.value;
+          } else {
+            // TODO Set focus on input field
+            return;
+          }
 
-          _token.avatarPath = _selectedPath;
-          _token.avatarColor = _selectedColor?.value;
+          if (_selectedAvatarImagePath != null) {
+            // Save a copy of the image
+            String documentsPath =
+                (await getApplicationDocumentsDirectory()).path;
+            File imageCopy = await File(_selectedAvatarImagePath!)
+                .copy('$documentsPath/${_token.id}');
+            _token.avatarPath = imageCopy.path;
+          }
+
+          _token.avatarColor = _selectedAvatarColor?.value;
           StorageUtil.saveOrReplaceToken(_token);
           Navigator.of(context).pop(_token);
         },
@@ -137,10 +139,10 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
                       Icons.add_photo_alternate_outlined,
                       size: 40,
                     ),
-                    backgroundImage: _selectedPath == null
+                    backgroundImage: _selectedAvatarImagePath == null
                         ? null
-                        : FileImage(File(_selectedPath!)),
-                    backgroundColor: _selectedColor,
+                        : FileImage(File(_selectedAvatarImagePath!)),
+                    backgroundColor: _selectedAvatarColor,
                     radius: 80,
                   ),
                 ),
@@ -160,7 +162,7 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
             TextFormField(
               autofocus: false,
               initialValue: _selectedName,
-              // key: _nameInputKey,
+              key: _nameInputKey,
               onChanged: (value) {
                 if (mounted) {
                   setState(() => _selectedName = value);
