@@ -41,45 +41,49 @@ void renameAndDeleteTest() {
       }
     });
 
-    String tokenName = 'TokenName';
+    String tokenLabel = 'TokenLabel';
     String secret = 'TokenSecret';
-    addTokenRoutine(tokenName, secret);
+    addTokenRoutine(tokenLabel, secret);
 
     test("Assert renaming works", () async {
-      await driver!.scroll(
-          find.text(tokenName), -500, 0, Duration(milliseconds: 100));
+      await driver!
+          .scroll(find.text(tokenLabel), -500, 0, Duration(milliseconds: 100));
 
-      await driver!.tap(find.text("Rename"));
+      await driver!.tap(find.text("Customize"));
 
       // Wait for the dialog to open.
-      await driver!.waitFor(find.text("Rename token"));
+      await driver!.waitFor(find.text("Customize token"));
 
-      await driver!.enterText("NewTestName");
-      await driver!.tap(find.text("Rename"));
+      await driver!.tap(find.byType("TextFormField"));
+
+      await driver!.enterText("NewTestLabel");
+      await driver!.tap(find.byType("FloatingActionButton"));
 
       // Assert new name is shown.
-      await driver!.tap(find.text("NewTestName"));
+      await driver!.tap(find.text("NewTestLabel"));
     });
 
     test("Assert renaming works again", () async {
       await driver!.scroll(
-          find.text("NewTestName"), -500, 0, Duration(milliseconds: 100));
+          find.text("NewTestLabel"), -500, 0, Duration(milliseconds: 100));
 
-      await driver!.tap(find.text("Rename"));
+      await driver!.tap(find.text("Customize"));
 
       // Wait for the dialog to open.
-      await driver!.waitFor(find.text("Rename token"));
+      await driver!.waitFor(find.text("Customize token"));
 
-      await driver!.enterText("OldTestName");
-      await driver!.tap(find.text("Rename"));
+      await driver!.tap(find.byType("TextFormField"));
+
+      await driver!.enterText("OldTestLabel");
+      await driver!.tap(find.byType("FloatingActionButton"));
 
       // Assert new name is shown.
-      await driver!.tap(find.text("OldTestName"));
+      await driver!.tap(find.text("OldTestLabel"));
     });
 
     test("Assert delete works", () async {
       await driver!.scroll(
-          find.text("OldTestName"), -500, 0, Duration(milliseconds: 100));
+          find.text("OldTestLabel"), -500, 0, Duration(milliseconds: 100));
 
       // Delete the token.
       await driver!.tap(find.text("Delete"));
@@ -89,7 +93,7 @@ void renameAndDeleteTest() {
 
       await driver!.tap(find.text("Delete"));
 
-      await driver!.waitForAbsent(find.text("OldTestName"));
+      await driver!.waitForAbsent(find.text("OldTestLabel"));
     });
   });
 }

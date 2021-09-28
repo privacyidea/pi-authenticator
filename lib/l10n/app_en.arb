@@ -589,7 +589,7 @@
     "description": "Description of button that unlocks a token.",
     "type": "text"
   },
-  "customizeTokenTitle": "Customize Token",
+  "customizeTokenTitle": "Customize token",
   "@customizeTokenTitle": {
     "description": "Title of the customization screen.",
     "type": "text"

@@ -41,17 +41,17 @@ void copyToClipboardTest() {
       }
     });
 
-    String tokenName = 'TokenName';
+    String tokenLabel = 'TokenLabel';
     String secret = 'TokenSecret';
-    addTokenRoutine(tokenName, secret);
+    addTokenRoutine(tokenLabel, secret);
 
     test('Copy otp value', () async {
-      await doLongPress(driver!, find.text(tokenName));
+      await doLongPress(driver!, find.text(tokenLabel));
     });
 
     test('Clean up', () async {
       await driver!.scroll(
-          find.text("TokenName"), -500, 0, Duration(milliseconds: 100));
+          find.text(tokenLabel), -500, 0, Duration(milliseconds: 100));
 
       // Delete the token.
       await driver!.tap(find.text("Delete"));
@@ -61,7 +61,7 @@ void copyToClipboardTest() {
 
       await driver!.tap(find.text("Delete"));
 
-      await driver!.waitForAbsent(find.text("TestName"));
+      await driver!.waitForAbsent(find.text(tokenLabel));
     });
 
     test('Verify value is in clipboard', () async {
@@ -71,7 +71,7 @@ void copyToClipboardTest() {
       await doLongPress(
           driver!,
           find.ancestor(
-              of: find.text("Name"), matching: find.byType("TextFormField")));
+              of: find.text("Label"), matching: find.byType("TextFormField")));
 
       await driver!.tap(find.text("Paste"));
 

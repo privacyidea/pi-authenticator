@@ -24,6 +24,8 @@ import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
 void addTokenTest() {
+  String testLabel = "TestLabel";
+
   group('Add token manually', () {
     FlutterDriver? driver;
 
@@ -49,9 +51,9 @@ void addTokenTest() {
 
     test("Enter name and secret", () async {
       await driver!.tap(find.ancestor(
-          of: find.text("Name"), matching: find.byType("TextFormField")));
+          of: find.text("Label"), matching: find.byType("TextFormField")));
 
-      await driver!.enterText("TestName");
+      await driver!.enterText(testLabel);
 
       await driver!.tap(find.ancestor(
           of: find.text("Secret"), matching: find.byType("TextFormField")));
@@ -72,13 +74,13 @@ void addTokenTest() {
     });
 
     test("Assert the token exists", () async {
-      await driver!.tap(find.text("TestName"));
+      await driver!.tap(find.text(testLabel));
       await driver!.tap(find.text("3058 7488"));
     });
 
     test('Clean up', () async {
       await driver!.scroll(
-          find.text("TestName"), -500, 0, Duration(milliseconds: 100));
+          find.text(testLabel), -500, 0, Duration(milliseconds: 100));
 
       // Delete the token.
       await driver!.tap(find.text("Delete"));
@@ -88,7 +90,7 @@ void addTokenTest() {
 
       await driver!.tap(find.text("Delete"));
 
-      await driver!.waitForAbsent(find.text("TestName"));
+      await driver!.waitForAbsent(find.text(testLabel));
     });
   });
 }

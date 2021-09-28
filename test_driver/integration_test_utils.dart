@@ -23,48 +23,46 @@
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
-void addTokenRoutine(String name, String secret) {
-  group('Copy otp value to clipboard', () {
-    FlutterDriver? driver;
+void addTokenRoutine(String label, String secret) {
+  FlutterDriver? driver;
 
-    // Connect to the Flutter driver before running any tests.
-    setUpAll(() async {
-      driver = await FlutterDriver.connect();
-    });
+  // Connect to the Flutter driver before running any tests.
+  setUpAll(() async {
+    driver = await FlutterDriver.connect();
+  });
 
-    // Close the connection to the driver after the tests have completed.
-    tearDownAll(() async {
-      if (driver != null) {
-        driver!.close();
-      }
-    });
+  // Close the connection to the driver after the tests have completed.
+  tearDownAll(() async {
+    if (driver != null) {
+      driver!.close();
+    }
+  });
 
-    test("Click the 'add' button", () async {
-      await driver!.tap(find.byType("PopupMenuButton<String>"));
-      await driver!.tap(find.text("Add token"));
-    });
+  test("Click the 'add' button", () async {
+    await driver!.tap(find.byType("PopupMenuButton<String>"));
+    await driver!.tap(find.text("Add token"));
+  });
 
-    test("Enter name and secret", () async {
-      // Enter the name.
-      await driver!.tap(find.ancestor(
-          of: find.text("Name"), matching: find.byType("TextFormField")));
+  test("Enter label and secret", () async {
+    // Enter the name.
+    await driver!.tap(find.ancestor(
+        of: find.text("Label"), matching: find.byType("TextFormField")));
 
-      await driver!.enterText(name);
+    await driver!.enterText(label);
 
-      // Enter the secret.
-      await driver!.tap(find.ancestor(
-          of: find.text("Secret"), matching: find.byType("TextFormField")));
+    // Enter the secret.
+    await driver!.tap(find.ancestor(
+        of: find.text("Secret"), matching: find.byType("TextFormField")));
 
-      await driver!.enterText(secret);
-    });
+    await driver!.enterText(secret);
+  });
 
-    test("Click 'add token'", () async {
-      await driver!.tap(find.text("Add token"));
-    });
+  test("Click 'add token'", () async {
+    await driver!.tap(find.text("Add token"));
+  });
 
-    test("Assert the token exists", () async {
-      await driver!.tap(find.text(name));
-    });
+  test("Assert the token exists", () async {
+    await driver!.tap(find.text(label));
   });
 }
 
