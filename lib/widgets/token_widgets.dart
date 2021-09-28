@@ -48,7 +48,6 @@ import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-
 import 'custom_texts.dart';
 
 class TokenWidget extends StatefulWidget {
@@ -703,7 +702,6 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                   _token.serial,
                   textScaleFactor: 2.5,
                   style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                        // color: Theme.of(context).accentColor,
                         fontFamily: "monospace",
                         fontWeight: FontWeight.bold,
                       ),
@@ -915,7 +913,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
             enabled: _token.isLocked,
-            hideDuration: Duration(seconds: 6),
+            hideDuration: Duration(seconds: 10),
             textStyle: Theme.of(context)
                 .textTheme
                 .subtitle2!
@@ -1018,7 +1016,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
             enabled: _token.isLocked,
-            hideDuration: Duration(seconds: 6),
+            hideDuration: Duration(seconds: 10),
             textStyle: Theme.of(context)
                 .textTheme
                 .subtitle2!
