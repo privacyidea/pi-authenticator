@@ -23,20 +23,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 // var primarySwatch = PRIMARY_COLOR; // TODO Use this when customizing
-var primarySwatch = Colors.lightBlue;
-
-// Calculate HSP and check if the primary color is bright or dark
-// brightness  =  sqrt( .299 R^2 + .587 G^2 + .114 B^2 ) // http://alienryderflex.com/hsp.html
-bool isBright = isColorBright(primarySwatch);
-
-bool isColorBright(Color color) {
-  return math.sqrt(0.299 * math.pow(color.red, 2) +
-          0.587 * math.pow(color.green, 2) +
-          0.114 * math.pow(color.blue, 2)) >
-      150;
-}
-
-Color onPrimary = isBright ? Colors.black : Colors.white;
+Color primarySwatch = Colors.lightBlue;
+Color onPrimary = isColorBright(primarySwatch) ? Colors.black : Colors.white;
 
 var lightThemeData = new ThemeData(
   toggleableActiveColor: primarySwatch,
@@ -65,3 +53,12 @@ var darkThemeData = ThemeData(
   ),
   iconTheme: IconThemeData(color: onPrimary),
 );
+
+/// Calculate HSP and check if the primary color is bright or dark
+/// brightness  =  sqrt( .299 R^2 + .587 G^2 + .114 B^2 ) // http://alienryderflex.com/hsp.html
+bool isColorBright(Color color) {
+  return math.sqrt(0.299 * math.pow(color.red, 2) +
+          0.587 * math.pow(color.green, 2) +
+          0.114 * math.pow(color.blue, 2)) >
+      150;
+}
