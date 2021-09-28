@@ -18,21 +18,50 @@
   limitations under the License.
 */
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 // var primarySwatch = PRIMARY_COLOR; // TODO Use this when customizing
-var primarySwatch = Colors.lightBlue;
+var primarySwatch = Colors.white;
+
+// Calculate HSP and check if the primary color is bright or dark
+// brightness  =  sqrt( .299 R^2 + .587 G^2 + .114 B^2 ) // http://alienryderflex.com/hsp.html
+bool isBright = isColorBright(primarySwatch);
+
+bool isColorBright(Color color) {
+  return math.sqrt(0.299 * math.pow(color.red, 2) +
+          0.587 * math.pow(color.green, 2) +
+          0.114 * math.pow(color.blue, 2)) >
+      150;
+}
+
+Color onPrimary = isBright ? Colors.black : Colors.white;
 
 var lightThemeData = new ThemeData(
-  primarySwatch: primarySwatch,
-  toggleableActiveColor: primarySwatch, // switches and radio buttons
+  toggleableActiveColor: primarySwatch,
   brightness: Brightness.light,
-  colorScheme: ColorScheme.light(secondary: primarySwatch),
+  primaryColorLight: primarySwatch,
+  primaryColorDark: primarySwatch,
+  colorScheme: ColorScheme.light(
+    primary: primarySwatch,
+    secondary: primarySwatch,
+    onPrimary: onPrimary,
+    onSecondary: onPrimary,
+  ),
+  iconTheme: IconThemeData(color: onPrimary),
 );
 
 var darkThemeData = ThemeData(
-  primarySwatch: primarySwatch,
   toggleableActiveColor: primarySwatch,
   brightness: Brightness.dark,
-  colorScheme: ColorScheme.dark(secondary: primarySwatch),
+  primaryColorLight: primarySwatch,
+  primaryColorDark: primarySwatch,
+  colorScheme: ColorScheme.dark(
+    primary: primarySwatch,
+    secondary: primarySwatch,
+    onPrimary: onPrimary,
+    onSecondary: onPrimary,
+  ),
+  iconTheme: IconThemeData(color: onPrimary),
 );
