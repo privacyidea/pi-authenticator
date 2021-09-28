@@ -82,7 +82,7 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
   void _pickColor() async {
     _selectedAvatarColor = await showColorPickerDialog(
       context,
-      _selectedAvatarColor ?? Theme.of(context).accentColor,
+      _selectedAvatarColor ?? Theme.of(context).colorScheme.secondary,
       title: Text('ColorPicker', style: Theme.of(context).textTheme.headline6),
       enableOpacity: false,
       showColorCode: false,
@@ -163,7 +163,7 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).colorScheme.secondary,
                     border: Border.all(color: Colors.grey.shade500, width: 1),
                     borderRadius: BorderRadius.circular(100),
                   ),

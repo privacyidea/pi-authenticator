@@ -25,14 +25,14 @@ var primarySwatch = Colors.lightBlue;
 
 var lightThemeData = new ThemeData(
   primarySwatch: primarySwatch,
-  accentColor: primarySwatch, // floating action button
   toggleableActiveColor: primarySwatch, // switches and radio buttons
   brightness: Brightness.light,
+  colorScheme: ColorScheme.light(secondary: primarySwatch),
 );
 
 var darkThemeData = ThemeData(
   primarySwatch: primarySwatch,
-  accentColor: primarySwatch,
   toggleableActiveColor: primarySwatch,
   brightness: Brightness.dark,
+  colorScheme: ColorScheme.dark(secondary: primarySwatch),
 );

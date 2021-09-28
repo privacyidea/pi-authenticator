@@ -896,7 +896,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
                   textStyle: Theme.of(context)
                       .textTheme
                       .subtitle2!
-                      .copyWith(color: Theme.of(context).accentColor),
+                      .copyWith(color: Theme.of(context).colorScheme.secondary),
                 ),
                 subtitle: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -911,7 +911,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
                 decoration: BoxDecoration(
                   color: buttonIsDisabled
                       ? Theme.of(context).disabledColor
-                      : Theme.of(context).accentColor,
+                      : Theme.of(context).colorScheme.secondary,
                   borderRadius: BorderRadius.circular(5),
                   boxShadow: [
                     BoxShadow(
@@ -1026,7 +1026,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
                   textStyle: Theme.of(context)
                       .textTheme
                       .subtitle2!
-                      .copyWith(color: Theme.of(context).accentColor),
+                      .copyWith(color: Theme.of(context).colorScheme.secondary),
                 ),
                 subtitle: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
