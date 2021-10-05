@@ -62,8 +62,8 @@ Future<Response> doPost(
       nullEntries.add(entry.key);
     }
     throw ArgumentError(
-        "Can not send request because the [body] contains a null values at entries $nullEntries,"
-        " this is not permitted.");
+        "Can not send request because the argument [body] contains a null values"
+        " at entries $nullEntries, this is not permitted.");
   }
 
   HttpClient httpClient = HttpClient();
@@ -91,6 +91,18 @@ Future<Response> doGet(
   ArgumentError.checkNotNull(
       sslVerify, 'Parameter [sslVerify] must not be null!');
 
+  List<MapEntry> entries =
+      parameters.entries.where((element) => element.value == null).toList();
+  if (entries.isNotEmpty) {
+    List<String> nullEntries = [];
+    for (MapEntry entry in entries) {
+      nullEntries.add(entry.key);
+    }
+    throw ArgumentError(
+        "Can not send request because the argument [parameters] contains a "
+        "null values at entries $nullEntries, this is not permitted.");
+  }
+
   HttpClient httpClient = HttpClient();
   httpClient.badCertificateCallback =
       ((X509Certificate cert, String host, int port) => !sslVerify);
@@ -99,17 +111,14 @@ Future<Response> doGet(
       " ${(await PackageInfo.fromPlatform()).version}";
 
   IOClient ioClient = IOClient(httpClient);
-  // TODO Make this more general!
-  // TODO Are the parameters the headers?
-  String urlWithParameters = '$url?serial=${parameters['serial']}'
-      '&timestamp=${parameters['timestamp']}'
-      '&signature=${parameters['signature']}';
-  Response response = await ioClient.get(urlWithParameters);
 
-//  String urlWithParameters = '$url';
-//  parameters.forEach((key, value) => urlWithParameters += '&$key=$value');
-//  print('$urlWithParameters');
-//  Response response = await ioClient.get(urlWithParameters);
+  StringBuffer buffer = StringBuffer(url);
+
+  if (parameters.isNotEmpty) {
+    buffer.write('?');
+    buffer.writeAll(parameters.entries.map((e) => '${e.key}=${e.value}'), '&');
+  }
+  Response response = await ioClient.get(buffer.toString());
 
   log("Received response",
       name: "utils.dart",
