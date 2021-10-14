@@ -100,7 +100,8 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
   }
 
   Widget _buildInnerWidget() {
-    String text = "${widget.report.error}\n";
+    String text =
+        "${widget.report.error.runtimeType}: ${widget.report.error}\n";
 
     text += "\n";
 
