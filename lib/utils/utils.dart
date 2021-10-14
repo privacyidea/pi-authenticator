@@ -89,13 +89,10 @@ Uint8List decodeSecretToUint8(String secret, Encodings encoding) {
   switch (encoding) {
     case Encodings.none:
       return Uint8List.fromList(utf8.encode(secret));
-      break;
     case Encodings.hex:
       return Uint8List.fromList(HexConverter.HEX.decode(secret));
-      break;
     case Encodings.base32:
       return Uint8List.fromList(Base32Converter.base32.decode(secret));
-      break;
     default:
       throw ArgumentError.value(
           encoding, "encoding", "The encoding is unknown and not supported!");
@@ -109,13 +106,10 @@ String encodeSecretAs(Uint8List secret, Encodings encoding) {
   switch (encoding) {
     case Encodings.none:
       return utf8.decode(secret);
-      break;
     case Encodings.hex:
       return HexConverter.HEX.encode(secret);
-      break;
     case Encodings.base32:
       return Base32Converter.base32.encode(secret);
-      break;
     default:
       throw ArgumentError.value(
           encoding, "encoding", "The encoding is unknown and not supported!");

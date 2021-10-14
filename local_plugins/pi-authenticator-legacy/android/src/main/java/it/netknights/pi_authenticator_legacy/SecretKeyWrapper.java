@@ -82,9 +82,10 @@ public class SecretKeyWrapper {
         keyStore.load(null);
 
         // TODO This should not be needed?
-//        if (!keyStore.containsAlias("settings")) {
-//            generateKeyPair("settings", context);
-//        }
+        if (!keyStore.containsAlias("settings")) {
+            mPair = null;
+            return;
+        }
 
         // Even if we just generated the key, always read it back to ensure we
         // can read it successfully.

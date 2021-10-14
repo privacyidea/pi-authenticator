@@ -217,7 +217,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                               element.isRolledOut && element.url != null)) {
                             // Set onChange to activate switch in ui.
                             onChange = (value) =>
-                                AppSettings.of(context).setEnablePolling(value);
+                                AppSettings.of(context).enablePolling = value;
                           }
 
                           Widget title = RichText(
@@ -342,6 +342,7 @@ class AppSettings extends InheritedWidget {
   static String _crashReportRecipientsKey = 'KEY_CRASH_REPORT_RECIPIENTS';
   static String _localePreferenceKey = 'KEY_LOCALE_PREFERENCE';
   static String _useSystemLocaleKey = 'KEY_USE_SYSTEM_LOCALE';
+  static String _isFirstRunKey = 'KEY_IS_FIRST_RUN';
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
@@ -353,7 +354,7 @@ class AppSettings extends InheritedWidget {
       {required Widget child, required StreamingSharedPreferences preferences})
       : _hideOpts = preferences.getBool(_prefHideOtps, defaultValue: false),
         _enablePolling =
-            preferences.getBool(_prefEnablePoll, defaultValue: false),
+            preferences.getBool(_prefEnablePoll, defaultValue: true),
         isTestMode =
             const bool.fromEnvironment('testing_mode', defaultValue: false),
         _showGuideOnStart =
@@ -365,8 +366,10 @@ class AppSettings extends InheritedWidget {
             defaultValue: _encodeLocale(AppLocalizations.supportedLocales[0])),
         _useSystemLocale =
             preferences.getBool(_useSystemLocaleKey, defaultValue: true),
+        _isFirstRun = preferences.getBool(_isFirstRunKey, defaultValue: true),
         super(child: child);
 
+  final Preference<bool> _isFirstRun;
   final Preference<bool> _hideOpts;
   final Preference<bool> _enablePolling;
   final Preference<bool> _showGuideOnStart;
@@ -386,13 +389,17 @@ class AppSettings extends InheritedWidget {
 
   List<String> get crashReportRecipients => _crashReportRecipients.getValue();
 
+  set isFirstRun(bool value) => _isFirstRun.setValue(value);
+
+  bool get isFirstRun => _isFirstRun.getValue();
+
   Stream<bool> streamHideOpts() => _hideOpts;
 
   Stream<bool> streamEnablePolling() => _enablePolling;
 
-  void setHideOpts(bool value) => _hideOpts.setValue(value);
+  set hideOTPs(bool value) => _hideOpts.setValue(value);
 
-  void setEnablePolling(bool value) => _enablePolling.setValue(value);
+  set enablePolling(bool value) => _enablePolling.setValue(value);
 
   bool get showGuideOnStart => _showGuideOnStart.getValue();
 

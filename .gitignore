@@ -68,6 +68,7 @@ coverage/
 **/ios/Flutter/flutter_export_environment.sh
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
+**/ios/Flutter/Flutter.podspec
 
 # Exceptions to above rules.
 !**/ios/**/default.mode1v3
@@ -78,3 +79,5 @@ coverage/
 
 **/android/key.properties
 **/android/app/google-services.json
+
+lib/l10n/untranslated.txt

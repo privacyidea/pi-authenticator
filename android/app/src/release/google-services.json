@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "258156671446",
+    "firebase_url": "https://piauthenticator-dfbc6.firebaseio.com",
+    "project_id": "piauthenticator-dfbc6",
+    "storage_bucket": "piauthenticator-dfbc6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:258156671446:android:a14220ab99606769253477",
+        "android_client_info": {
+          "package_name": "it.netknights.piauthenticator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "258156671446-8kt55rm3als63ragnaj8hnliq5vcg48l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpLxCidyK8fX4_v7hHzRYGXcJ6PC12TuA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "258156671446-8kt55rm3als63ragnaj8hnliq5vcg48l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

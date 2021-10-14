@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>258156671446-npfngvja43874lernvse96f7c44sotdh.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.258156671446-npfngvja43874lernvse96f7c44sotdh</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCHISaDD-Db44Cu9b0_AOyY9q4qUetLOvw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>258156671446</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>privacyidea.authenticator</string>
+	<key>PROJECT_ID</key>
+	<string>piauthenticator-dfbc6</string>
+	<key>STORAGE_BUCKET</key>
+	<string>piauthenticator-dfbc6.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:258156671446:ios:f43e5ff74af21419253477</string>
+	<key>DATABASE_URL</key>
+	<string>https://piauthenticator-dfbc6.firebaseio.com</string>
+</dict>
+</plist>

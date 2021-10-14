@@ -31,6 +31,7 @@ import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
+import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 class UpdateFirebaseTokenDialog extends StatefulWidget {
@@ -71,11 +72,12 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     log('Starting update of firebase token.',
         name: 'update_firebase_token_dialog.dart');
 
-//    String token = await FirebaseMessaging().getToken();
-    String token = 'nothing';
-
     List<PushToken> tokenList =
         (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
+
+    // TODO What to do with poll only tokens if google-services is used?
+
+    String token = await PushProvider.getFBToken();
 
     // TODO Is there a good way to handle these tokens?
     List<PushToken> tokenWithOutUrl =
@@ -110,6 +112,15 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
           'timestamp': timestamp,
           'signature': signature
         });
+
+        if (response.statusCode == 200) {
+          log('Updating firebase token for push token: ${p.serial} succeeded!',
+              name: 'update_firebase_token_dialog.dart');
+        } else {
+          log('Updating firebase token for push token: ${p.serial} failed!',
+              name: 'update_firebase_token_dialog.dart');
+          tokenWithFailedUpdate.add(p);
+        }
       } on SocketException catch (e) {
         log('Socket exception occurred: $e',
             name: 'update_firebase_token_dialog.dart');
@@ -120,15 +131,6 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
         ));
         Navigator.pop(context);
         return;
-      }
-
-      if (response != null && response.statusCode == 200) {
-        log('Updating firebase token for push token: ${p.serial} succeeded!',
-            name: 'update_firebase_token_dialog.dart');
-      } else {
-        log('Updating firebase token for push token: ${p.serial} failed!',
-            name: 'update_firebase_token_dialog.dart');
-        tokenWithFailedUpdate.add(p);
       }
     }
 

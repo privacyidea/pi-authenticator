@@ -17,25 +17,24 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:base32/base32.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:collection/collection.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
-import 'package:http/http.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
-import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
@@ -47,10 +46,12 @@ import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
+import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
+import 'package:uni_links/uni_links.dart';
 import 'package:uuid/uuid.dart';
 
 import 'custom_about_screen.dart';
@@ -68,6 +69,115 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Timer? _pollTimer;
+
+  // Used for handling links the app is registered to handle.
+  StreamSubscription? _uniLinkStream;
+
+  void _startPollingIfEnabled() {
+    AppSettings.of(context).streamEnablePolling().listen(
+      (bool event) {
+        if (event) {
+          log('Polling is enabled.', name: 'main_screen.dart');
+
+          _pollTimer = Timer.periodic(Duration(seconds: 3),
+              (_) => PushProvider.pollForRequests(context));
+          PushProvider.pollForRequests(context);
+        } else {
+          log('Polling is disabled.', name: 'main_screen.dart');
+          _pollTimer?.cancel();
+          _pollTimer = null;
+        }
+      },
+      cancelOnError: false,
+      onError: (error) => log('$error', name: 'polling timer'),
+    );
+  }
+
+  /// Handles incoming push requests by verifying the challenge and adding it
+  /// to the token. This should be guarded by a lock.
+  static Future<void> _handleIncomingRequest(
+      RemoteMessage message, List<Token> tokenList, bool inBackground) async {
+    var data = message.data;
+
+    Uri requestUri = Uri.parse(data['url']);
+    String requestedSerial = data['serial'];
+
+    log('Incoming push auth request for token with serial.',
+        name: 'main_screen.dart', error: requestedSerial);
+
+    PushToken? token = tokenList
+        .whereType<PushToken>()
+        .firstWhereOrNull((t) => t.serial == requestedSerial && t.isRolledOut);
+
+    if (token == null) {
+      log("The requested token does not exist or is not rolled out.",
+          name: "main_screen.dart", error: requestedSerial);
+    } else {
+      log('Token matched requested token',
+          name: 'main_screen.dart', error: token);
+      String signature = data['signature'];
+      String signedData = '${data['nonce']}|'
+          '$requestUri|'
+          '${data['serial']}|'
+          '${data['question']}|'
+          '${data['title']}|'
+          '${data['sslverify']}';
+
+      bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
+
+      // Re-add url and sslverify to android legacy tokens:
+      token.url ??= requestUri;
+      token.sslVerify ??= sslVerify;
+
+      bool isVerified = token.privateTokenKey == null
+          ? await Legacy.verify(token.serial, signedData, signature)
+          : verifyRSASignature(token.getPublicServerKey()!,
+              utf8.encode(signedData) as Uint8List, base32.decode(signature));
+
+      if (isVerified) {
+        log('Validating incoming message was successful.',
+            name: 'main_screen.dart');
+
+        PushRequest pushRequest = PushRequest(
+            title: data['title'],
+            question: data['question'],
+            uri: requestUri,
+            nonce: data['nonce'],
+            sslVerify: sslVerify,
+            id: data['nonce'].hashCode,
+            // FIXME This is not guaranteed to not lead to collisions, but they might be unlikely in this case.
+            expirationDate: DateTime.now().add(
+              Duration(minutes: 2),
+            )); // Push requests expire after 2 minutes.
+
+        if (!token.knowsRequestWithId(pushRequest.id)) {
+          token.pushRequests.add(pushRequest);
+          token.knownPushRequests.put(pushRequest.id);
+
+          StorageUtil.saveOrReplaceToken(token); // Save the pending request.
+          PushProvider.showNotification(token, pushRequest, false);
+        } else {
+          log(
+              "The push request $pushRequest already exists "
+              "for the token with serial ${token.serial}",
+              name: "main_screen.dart");
+        }
+      } else {
+        log('Validating incoming message failed.',
+            name: 'main_screen.dart',
+            error:
+                'Signature $signature does not match signed data: $signedData');
+      }
+    }
+  }
+
+  Future<void> _handleIncomingAuthRequest(RemoteMessage message) async {
+    log("Foreground message received.",
+        name: "main_screen.dart", error: message);
+    await StorageUtil.protect(() async => _handleIncomingRequest(
+        message, await StorageUtil.loadAllTokens(), false));
+    await _loadTokenList(); // Update UI
+  }
 
   void _showChangelogAndGuide() async {
     // Do not show these info when running driver tests
@@ -93,32 +203,49 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     }
   }
 
-  void _updateFbTokenOnChange() async {
-    String? newToken = await StorageUtil.getNewFirebaseToken();
+  Future<void> _initLinkHandling() async {
+    _uniLinkStream = linkStream.listen((String? link) {
+      _handleOtpAuth(link);
+    }, onError: (err) {
+      _showMessage(AppLocalizations.of(context)!.handlingOtpAuthLinkFailed,
+          Duration(seconds: 4));
+    });
 
-    if (newToken != null &&
-        (await StorageUtil.getCurrentFirebaseToken()) != newToken) {
-      _updateFirebaseToken();
+    try {
+      String? link = await getInitialLink();
+      if (link == null) {
+        return; // Do not cause an Exception here if no link exists.
+      }
+      _handleOtpAuth(link);
+    } on PlatformException {
+      _showMessage(AppLocalizations.of(context)!.handlingOtpAuthLinkFailed,
+          Duration(seconds: 4));
     }
   }
 
-  void _startPollingIfEnabled() {
-    AppSettings.of(context).streamEnablePolling().listen(
-      (bool event) {
-        if (event) {
-          log('Polling is enabled.', name: 'main_screen.dart');
-          _pollTimer =
-              Timer.periodic(Duration(seconds: 10), (_) => _pollForRequests());
-          _pollForRequests();
-        } else {
-          log('Polling is disabled.', name: 'main_screen.dart');
-          _pollTimer?.cancel();
-          _pollTimer = null;
-        }
-      },
-      cancelOnError: false,
-      onError: (error) => log('$error', name: 'polling timer'),
+  static Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
+    log("Background message received.",
+        name: "main_screen.dart", error: message);
+    await StorageUtil.protect(() async => _handleIncomingRequest(
+        message, await StorageUtil.loadAllTokens(), true));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initLinkHandling();
+    _initStateAsync();
+  }
+
+  void _initStateAsync() async {
+    await PushProvider.initialize(
+      handleIncomingMessage: (RemoteMessage message) =>
+          _handleIncomingAuthRequest(message),
+      backgroundMessageHandler: _firebaseMessagingBackgroundHandler,
     );
+    _startPollingIfEnabled();
+    await PushProvider.updateFbTokenIfChanged();
   }
 
   @override
@@ -128,9 +255,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     });
 
     _showChangelogAndGuide();
-    _updateFbTokenOnChange();
-    _startPollingIfEnabled();
-    _loadEverything();
+    _loadTokenList();
   }
 
   void _handleButtons(ReceivedAction receivedNotification) async {
@@ -198,93 +323,11 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   @override
   void onResume() {}
 
-  Future<bool> _pollForRequests() async {
-    // Get all push tokens
-    List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
-        .whereType<PushToken>()
-        .where((t) =>
-            t.isRolledOut &&
-            t.url !=
-                null) // Legacy tokens can not poll, because the url is missing!
-        .toList();
-
-    // Disable polling if no push tokens exist
-    if (pushTokens.isEmpty) {
-      log('No push token is available for polling, polling is disabled.',
-          name: 'main_screen.dart');
-      AppSettings.of(context).setEnablePolling(false);
-      return false;
-    }
-
-    // Start request for each token
-    for (PushToken p in pushTokens) {
-      String timestamp = DateTime.now().toUtc().toIso8601String();
-
-      // Legacy android tokens are signed differently
-      String message = '${p.serial}|$timestamp';
-      String signature = p.privateTokenKey == null
-          ? await Legacy.sign(p.serial, message)
-          : createBase32Signature(
-              p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
-
-      Map<String, String> parameters = {
-        'serial': p.serial,
-        'timestamp': timestamp,
-        'signature': signature,
-      };
-
-      try {
-        Response response = await doGet(
-            url: p.url!, parameters: parameters, sslVerify: p.sslVerify);
-
-        if (response.statusCode == 200) {
-          // The signature of this message must not be verified as each push
-          // request gets verified independently.
-          Map<String, dynamic> result = jsonDecode(response.body)['result'];
-          List dataList = result['value'];
-
-          for (Map<String, dynamic> data
-              in dataList as Iterable<Map<String, dynamic>>) {
-            _handleIncomingAuthRequest(RemoteMessage(data: data));
-          }
-        } else {
-          // Error messages can only be distinguished by their text content,
-          // not by their error code. This would make error handling complex.
-        }
-      } on SocketException {
-        log(
-          'Polling push tokens not working, server can not be reached.',
-          name: 'main_screen.dart',
-        );
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   @override
   void dispose() {
     _pollTimer?.cancel();
+    _uniLinkStream?.cancel();
     super.dispose();
-  }
-
-  _loadEverything() async {
-    await _loadTokenList();
-    await _loadFirebase();
-  }
-
-  _loadFirebase() async {
-    // If no push tokens exist, the firebase config is deleted here.
-    if (!(await StorageUtil.loadAllTokens())
-        .any((element) => element is PushToken)) {
-      StorageUtil.deleteGlobalFirebaseConfig();
-      return;
-    }
-
-    if (await StorageUtil.globalFirebaseConfigExists()) {
-      _initFirebase((await (StorageUtil.loadGlobalFirebaseConfig()))!);
-    }
   }
 
   _loadTokenList() async {
@@ -305,7 +348,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       appBar: AppBar(
         title: Text(
           widget.title,
-          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          overflow: TextOverflow.ellipsis,
+          // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
         actions: _buildActionMenu(),
@@ -320,31 +364,25 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     );
   }
 
-  _scanQRCode() async {
-    String? barcode = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => QRScannerScreen()),
-    );
-
-    if (barcode == null) {
-      // User canceled scanning.
+  _handleOtpAuth(String? otpAuth) async {
+    if (otpAuth == null) {
       return;
     }
 
     log(
-      "Barcode scanned:",
+      "Try to handle otpAuth:",
       name: "main_screen.dart",
-      error: barcode,
+      error: otpAuth,
     );
 
     try {
       // TODO get crash report recipients from map and set in settings
       //  and for Catcher.
-      Map<String, dynamic> barcodeMap = parseQRCodeToMap(barcode);
+      Map<String, dynamic> barcodeMap = parseQRCodeToMap(otpAuth);
       // AppSetting.of(context).add...
 //      Catcher.instance.updateConfig();
 
-      Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(barcode));
+      Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(otpAuth));
 
       log(
         "Adding new token from qr-code:",
@@ -359,6 +397,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         return;
       }
 
+      await StorageUtil.saveOrReplaceToken(newToken);
+      // await PushProvider.initNotifications();
       _tokenList.add(newToken);
 
       if (mounted) {
@@ -375,6 +415,14 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         error: e.stackTrace,
       );
     }
+  }
+
+  _scanQRCode() async {
+    String? barcode = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => QRScannerScreen()),
+    );
+    await _handleOtpAuth(barcode);
   }
 
   Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
@@ -438,13 +486,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   Future<PushToken> _buildPushToken(
       Map<String, dynamic> uriMap, String uuid) async {
-    FirebaseConfig config = FirebaseConfig(
-        projectID: uriMap[URI_PROJECT_ID],
-        projectNumber: uriMap[URI_PROJECT_NUMBER],
-        appID: Platform.isIOS ? uriMap[URI_APP_ID_IOS] : uriMap[URI_APP_ID],
-        apiKey: Platform.isIOS ? uriMap[URI_API_KEY_IOS] : uriMap[URI_API_KEY]);
-
-    PushToken token = PushToken(
+    return PushToken(
       serial: uriMap[URI_SERIAL],
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
@@ -454,317 +496,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
       url: uriMap[URI_ROLLOUT_URL],
     );
-
-    // Save the config for this token to use it when rolling out.
-    await StorageUtil.saveOrReplaceFirebaseConfig(token, config);
-
-    return token;
-  }
-
-  Future<String?> _initFirebase(FirebaseConfig config) async {
-    log("Initializing firebase.", name: "main_screen.dart");
-
-    if (!await StorageUtil.globalFirebaseConfigExists() ||
-        await StorageUtil.loadGlobalFirebaseConfig() == config) {
-      log("Creating firebaseApp from config.",
-          name: "main_screen.dart", error: config);
-
-      try {
-        await Firebase.initializeApp(
-            name: defaultFirebaseAppName,
-            options: FirebaseOptions(
-              appId: config.appID,
-              apiKey: config.apiKey,
-              databaseURL: "https://" + config.projectID + ".firebaseio.com",
-              storageBucket: config.projectID + ".appspot.com",
-              projectId: config.projectID,
-              messagingSenderId: config.projectNumber,
-            ));
-      } on ArgumentError {
-        log(
-          "Invalid firebase configuration provided.",
-          name: "main_screen.dart",
-          error: config,
-        );
-
-        _showMessage(AppLocalizations.of(context)!.firebaseConfigCorrupted,
-            Duration(seconds: 15));
-        return null;
-      }
-
-      // var initializationSettingsAndroid =
-      //     AndroidInitializationSettings('app_icon');
-      // var initializationSettingsIOS = IOSInitializationSettings();
-      // var initializationSettings = InitializationSettings(
-      //     android: initializationSettingsAndroid,
-      //     iOS: initializationSettingsIOS);
-      // await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-    } else if (await StorageUtil.loadGlobalFirebaseConfig() != config) {
-      log("Given firebase config does not equal the existing config.",
-          name: "main_screen.dart",
-          error: "Existing: ${await StorageUtil.loadGlobalFirebaseConfig()}"
-              "\n Given:    $config");
-
-      return null;
-    }
-
-    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
-      if ((await StorageUtil.getCurrentFirebaseToken()) != newToken) {
-        log("New firebase token generated: $newToken",
-            name: 'main_screen.dart');
-        await StorageUtil.setNewFirebaseToken(newToken);
-        _updateFirebaseToken();
-      }
-    });
-    FirebaseMessaging.onMessage
-        .listen((RemoteMessage message) => _handleIncomingAuthRequest(message));
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-    // TODO Find out if this is necessary on ios (we do not want firebase to
-    //  show any notifications itself)
-    //Ask user to allow notifications
-    //, if declined no notifications are shown
-    //for incoming push requests.
-    // if (Platform.isIOS) {
-    //   await firebaseMessaging.requestNotificationPermissions();
-    // }
-
-    String? firebaseToken = await FirebaseMessaging.instance.getToken();
-    log("Firebase initialized, token added",
-        name: "main_screen.dart", error: firebaseToken);
-    // The Firebase Plugin will throw a network exception, but that does not reach
-    //  the flutter part of the app. That is why we need to throw our own socket-
-    //  exception in this case.
-    if (firebaseToken == null) {
-      throw SocketException(
-          "Firebase token could not be retrieved, the only know cause of this is"
-          " that the firebase servers could not be reached.");
-    }
-
-    StorageUtil.saveOrReplaceGlobalFirebaseConfig(config);
-
-    if (await StorageUtil.getCurrentFirebaseToken() == null) {
-      // This is the initial setup
-      await StorageUtil.setCurrentFirebaseToken(firebaseToken);
-    }
-
-    return firebaseToken;
-  }
-
-  static Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
-    log("Background message received.",
-        name: "main_screen.dart", error: message);
-    await StorageUtil.protect(() async => _handleIncomingRequest(
-        message, await StorageUtil.loadAllTokens(), true));
-  }
-
-  void _handleIncomingAuthRequest(RemoteMessage message) async {
-    log("Foreground message received.",
-        name: "main_screen.dart", error: message);
-    await StorageUtil.protect(() async => _handleIncomingRequest(
-        message, await StorageUtil.loadAllTokens(), false));
-    _loadTokenList(); // Update UI
-  }
-
-  /// This method attempts to update the fbToken for all PushTokens that can be
-  /// updated. I.e. all tokens that know the url of their respective privacyIDEA
-  /// server. If the update fails for one or all tokens, this method does *not*
-  /// give any feedback!.
-  ///
-  /// This should only be used to attempt to update the fbToken automatically,
-  /// as this can not be guaranteed to work, there is a manual option available
-  /// through the settings also.
-  void _updateFirebaseToken() async {
-    String? newToken = await StorageUtil.getNewFirebaseToken();
-
-    if (newToken == null) {
-      // Nothing to update here!
-      return;
-    }
-
-    List<PushToken> tokenList = (await StorageUtil.loadAllTokens())
-        .whereType<PushToken>()
-        .where((t) => t.url != null)
-        .toList();
-
-    bool allUpdated = true;
-
-    for (PushToken p in tokenList) {
-      // POST /ttype/push HTTP/1.1
-      //Host: example.com
-      //
-      //new_fb_token=<new firebase token>
-      //serial=<tokenserial>element
-      //timestamp=<timestamp>
-      //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
-
-      String timestamp = DateTime.now().toUtc().toIso8601String();
-
-      String message = '$newToken|${p.serial}|$timestamp';
-
-      String signature = p.privateTokenKey == null
-          ? await Legacy.sign(p.serial, message)
-          : createBase32Signature(
-              p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
-
-      Response response =
-          await doPost(sslVerify: p.sslVerify!, url: p.url!, body: {
-        'new_fb_token': newToken,
-        'serial': p.serial,
-        'timestamp': timestamp,
-        'signature': signature
-      });
-
-      if (response.statusCode == 200) {
-        log('Updating firebase token for push token: ${p.serial} succeeded!',
-            name: 'main_screen.dart');
-      } else {
-        log('Updating firebase token for push token: ${p.serial} failed!',
-            name: 'main_screen.dart');
-        allUpdated = false;
-      }
-    }
-
-    if (allUpdated) {
-      StorageUtil.setCurrentFirebaseToken(newToken);
-    }
-  }
-
-  /// Handles incoming push requests by verifying the challenge and adding it
-  /// to the token. This should be guarded by a lock.
-  static Future<void> _handleIncomingRequest(
-      RemoteMessage message, List<Token> tokenList, bool inBackground) async {
-    // This allows for handling push on ios, android and polling.
-    // var data = message['data'] == null ? message : message['data'];
-    var data = message.data;
-
-    Uri requestUri = Uri.parse(data['url']);
-    String requestedSerial = data['serial'];
-
-    log('Incoming push auth request for token with serial.',
-        name: 'main_screen.dart', error: requestedSerial);
-
-    PushToken? token = tokenList
-        .whereType<PushToken>()
-        .firstWhere((t) => t.serial == requestedSerial && t.isRolledOut);
-
-    if (token == null) {
-      log("The requested token does not exist or is not rolled out.",
-          name: "main_screen.dart", error: requestedSerial);
-    } else {
-      log('Token matched requested token',
-          name: 'main_screen.dart', error: token);
-      String signature = data['signature'];
-      String signedData = '${data['nonce']}|'
-          '${data['url']}|'
-          '${data['serial']}|'
-          '${data['question']}|'
-          '${data['title']}|'
-          '${data['sslverify']}';
-
-      bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
-
-      // Re-add url and sslverify to android legacy tokens:
-      token.url ??= Uri.parse(data['url']);
-      token.sslVerify ??= sslVerify;
-
-      bool isVerified = token.privateTokenKey == null
-          ? await Legacy.verify(token.serial, signedData, signature)
-          : verifyRSASignature(token.getPublicServerKey()!,
-              utf8.encode(signedData) as Uint8List, base32.decode(signature));
-
-      if (isVerified) {
-        log('Validating incoming message was successful.',
-            name: 'main_screen.dart');
-
-        PushRequest pushRequest = PushRequest(
-            title: data['title'],
-            question: data['question'],
-            uri: requestUri,
-            nonce: data['nonce'],
-            sslVerify: sslVerify,
-            id: data['nonce'].hashCode,
-            // FIXME This is not guaranteed to not lead to collisions, but they might be unlikely in this case.
-            expirationDate: DateTime.now().add(
-              Duration(minutes: 2),
-            )); // Push requests expire after 2 minutes.
-
-        if (!token.knowsRequestWithId(pushRequest.id)) {
-          token.pushRequests.add(pushRequest);
-          token.knownPushRequests.put(pushRequest.id);
-
-          StorageUtil.saveOrReplaceToken(token); // Save the pending request.
-          _showNotification(token, pushRequest, false);
-        } else {
-          log(
-              "The push request $pushRequest already exists "
-              "for the token with serial ${token.serial}",
-              name: "main_screen.dart");
-        }
-      } else {
-        log('Validating incoming message failed.',
-            name: 'main_screen.dart',
-            error:
-                'Signature $signature does not match signed data: $signedData');
-      }
-    }
-  }
-
-  static void _showNotification(
-      PushToken token, PushRequest pushRequest, bool silent) async {
-    // var iOSPlatformChannelSpecifics =
-    //     IOSNotificationDetails(presentSound: !silent);
-    //
-    // var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
-    //     htmlFormatBigText: true,
-    //     contentTitle: pushRequest.title,
-    //     htmlFormatContentTitle: true,
-    //     summaryText: 'Token <i>${token.label}</i>',
-    //     htmlFormatSummaryText: true);
-    // var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-    //   'privacy_idea_authenticator_push',
-    //   'Push challenges',
-    //   'Push challenges are received over firebase, if the app is in background,'
-    //       'a notification for each request is shown.',
-    //   ticker: 'ticker',
-    //   playSound: silent,
-    //   styleInformation: bigTextStyleInformation, // To display token name.
-    // );
-    //
-    // await flutterLocalNotificationsPlugin.show(
-    //   pushRequest.id.hashCode, // ID of the notification
-    //   pushRequest.title,
-    //   pushRequest.question,
-    //   NotificationDetails(
-    //     android: androidPlatformChannelSpecifics,
-    //     iOS: iOSPlatformChannelSpecifics,
-    //   ),
-    // );
-
-    // TODO Customize this?
-    AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: pushRequest.id.hashCode,
-          channelKey: NOTIFICATION_CHANNEL_ANDROID,
-          title: pushRequest.title,
-          body: pushRequest.question,
-          payload: {'serial': token.serial, 'push_id': '${pushRequest.id}'},
-        ),
-        actionButtons: [
-          NotificationActionButton(
-            buttonType: ActionButtonType.Default,
-            autoCancel: true,
-            label: BUTTON_ACCEPT, // TODO Translate
-            key: BUTTON_ACCEPT,
-          ),
-          NotificationActionButton(
-            buttonType: ActionButtonType.Default,
-            autoCancel: true,
-            label: BUTTON_DECLINE, // TODO Translate
-            key: BUTTON_DECLINE,
-          ),
-        ]);
   }
 
   /// Builds the body of the screen. If any tokens supports polling,
@@ -774,11 +505,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     ListView list = ListView.separated(
         itemBuilder: (context, index) {
           Token token = _tokenList[index];
-          return TokenWidget(
-            token,
-            onDeleteClicked: () => _removeToken(token),
-            getFirebaseToken: (FirebaseConfig config) => _initFirebase(config),
-          );
+          return TokenWidget(token, onDeleteClicked: () => _removeToken(token));
         },
         separatorBuilder: (context, index) {
           return Divider();
@@ -794,7 +521,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
             onRefresh: () async {
               _showMessage(AppLocalizations.of(context)!.pollingChallenges,
                   Duration(seconds: 1));
-              bool success = await _pollForRequests();
+              bool success = await PushProvider.pollForRequests(context);
               if (!success) {
                 _showMessage(
                   AppLocalizations.of(context)!.pollingFailNoNetworkConnection,
@@ -809,12 +536,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   void _removeToken(Token token) async {
     log("Remove: $token");
     await StorageUtil.deleteToken(token);
-
-    if (!(await StorageUtil.loadAllTokens())
-        .any((element) => element is PushToken)) {
-      StorageUtil.deleteGlobalFirebaseConfig();
-    }
-
     await _loadTokenList();
   }
 
@@ -842,7 +563,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
                 context,
                 MaterialPageRoute(
                   builder: (context) => SettingsScreen(),
-                )).then((value) => _loadTokenList());
+                )).then((_) => _loadTokenList());
           } else if (value == 'guide') {
             Navigator.push(
               context,

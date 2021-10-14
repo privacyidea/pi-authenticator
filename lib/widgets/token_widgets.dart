@@ -22,7 +22,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -35,30 +34,28 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:http/http.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
+import 'package:local_auth/auth_strings.dart';
+import 'package:local_auth/error_codes.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/model/firebase_config.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
+import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
-typedef GetFBTokenCallback = Future<String?> Function(FirebaseConfig);
+import 'custom_texts.dart';
 
 class TokenWidget extends StatefulWidget {
   final Token _token;
   final VoidCallback _onDeleteClicked;
-  final GetFBTokenCallback _getFirebaseToken;
 
-  TokenWidget(Token token,
-      {required onDeleteClicked, required getFirebaseToken})
+  TokenWidget(Token token, {required onDeleteClicked})
       : this._token = token,
         this._onDeleteClicked = onDeleteClicked,
-        this._getFirebaseToken = getFirebaseToken,
         super(key: ObjectKey(token));
 
   @override
@@ -84,8 +81,54 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     _saveThisToken();
   }
 
+  List<Widget> _getSubtitle() {
+    List<Widget> children = [];
+    if (_token.label.isNotEmpty) {
+      children.add(Text(
+        _token.label,
+        style: Theme.of(context).textTheme.headline5,
+      ));
+    }
+    if (_token.issuer.isNotEmpty) {
+      children.add(Text(
+        _token.issuer,
+        style: Theme.of(context)
+            .textTheme
+            .headline6!
+            .copyWith(fontWeight: FontWeight.normal),
+      ));
+    }
+    return children;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final List<Widget> secondaryActions = [
+      IconSlideAction(
+        caption: AppLocalizations.of(context)!.delete,
+        color: Colors.red,
+        icon: Icons.delete,
+        onTap: () => _deleteTokenDialog(),
+      ),
+      IconSlideAction(
+        caption: AppLocalizations.of(context)!.rename,
+        color: Colors.blue,
+        icon: Icons.edit,
+        onTap: () => _renameTokenDialog(),
+      ),
+    ];
+
+    if (_token.canToggleLock) {
+      secondaryActions.add(IconSlideAction(
+        caption: _token.isLocked
+            ? AppLocalizations.of(context)!.unlock
+            : AppLocalizations.of(context)!.lock,
+        color: Colors.yellow,
+        icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
+        onTap: () => _changeLockStatus(),
+      ));
+    }
+
     return Slidable(
       key: ValueKey(_token.id),
       // This is used to only let one Slidable be open at a time.
@@ -93,21 +136,101 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
       child: _buildTile(),
-      secondaryActions: <Widget>[
-        IconSlideAction(
-          caption: AppLocalizations.of(context)!.delete,
-          color: Colors.red,
-          icon: Icons.delete,
-          onTap: () => _deleteTokenDialog(),
-        ),
-        IconSlideAction(
-          caption: AppLocalizations.of(context)!.rename,
-          color: Colors.blue,
-          icon: Icons.edit,
-          onTap: () => _renameTokenDialog(),
-        ),
-      ],
+      secondaryActions: secondaryActions,
     );
+  }
+
+  void _changeLockStatus() async {
+    if (_token.canToggleLock) {
+      log('Changing lock status of token ${_token.label}.',
+          name: 'token_widgets.dart');
+
+      if (await _unlock(
+          localizedReason:
+              AppLocalizations.of(context)!.authenticateToUnLockToken)) {
+        _token.isLocked = !_token.isLocked;
+        await _saveThisToken();
+        setState(() {});
+      }
+    } else {
+      log('Lock status of token ${_token.label} can not be changed!',
+          name: 'token_widgets.dart');
+    }
+  }
+
+  Future<bool> _unlock({required String localizedReason}) async {
+    bool didAuthenticate = false;
+    LocalAuthentication localAuth = LocalAuthentication();
+
+    if (!(await localAuth.isDeviceSupported())) {
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: ListTile(
+                title: Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.authNotSupportedTitle,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
+                leading: Icon(Icons.lock),
+                trailing: Icon(Icons.lock),
+              ),
+              content: Text(AppLocalizations.of(context)!.authNotSupportedBody),
+            );
+          });
+      return didAuthenticate;
+    }
+
+    AndroidAuthMessages androidAuthStrings = AndroidAuthMessages(
+      biometricRequiredTitle:
+          AppLocalizations.of(context)!.biometricRequiredTitle,
+      biometricHint: AppLocalizations.of(context)!.biometricHint,
+      biometricNotRecognized:
+          AppLocalizations.of(context)!.biometricNotRecognized,
+      biometricSuccess: AppLocalizations.of(context)!.biometricSuccess,
+      deviceCredentialsRequiredTitle:
+          AppLocalizations.of(context)!.deviceCredentialsRequiredTitle,
+      deviceCredentialsSetupDescription:
+          AppLocalizations.of(context)!.deviceCredentialsSetupDescription,
+      signInTitle: AppLocalizations.of(context)!.signInTitle,
+      goToSettingsButton: AppLocalizations.of(context)!.goToSettingsButton,
+      goToSettingsDescription:
+          AppLocalizations.of(context)!.goToSettingsDescription,
+      cancelButton: AppLocalizations.of(context)!.cancel,
+    );
+
+    IOSAuthMessages iOSAuthStrings = IOSAuthMessages(
+      lockOut: AppLocalizations.of(context)!.lockOut,
+      goToSettingsButton: AppLocalizations.of(context)!.goToSettingsButton,
+      goToSettingsDescription:
+          AppLocalizations.of(context)!.goToSettingsDescription,
+      cancelButton: AppLocalizations.of(context)!.cancel,
+    );
+
+    try {
+      didAuthenticate = await localAuth.authenticate(
+        localizedReason: localizedReason,
+        androidAuthStrings: androidAuthStrings,
+        iOSAuthStrings: iOSAuthStrings,
+      );
+    } on PlatformException catch (error, stacktrace) {
+      log('Error: ${error.code}', name: 'token_widgets.dart');
+      switch (error.code) {
+        case notAvailable:
+        case passcodeNotSet:
+        case permanentlyLockedOut:
+        case lockedOut:
+          break;
+        case otherOperatingSystem:
+        case notEnrolled:
+        // Should fall back to pin itself
+        default:
+          Catcher.reportCheckedError(error, stacktrace);
+      }
+    }
+    return didAuthenticate;
   }
 
   void _renameTokenDialog() {
@@ -216,6 +339,11 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   }
 
   Widget _buildTile();
+
+  void _showMessage(String message, int seconds) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message), duration: Duration(seconds: seconds)));
+  }
 }
 
 class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
@@ -246,7 +374,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
     // Delete expired push requests periodically.
     _deleteTimer = Timer.periodic(Duration(seconds: 30), (_) {
-      if (_token.pushRequests != null && _token.pushRequests.isNotEmpty) {
+      if (_token.pushRequests.isNotEmpty) {
         _deleteExpiredRequests(_token);
         _saveThisToken();
 
@@ -318,49 +446,18 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       setState(() => _rollOutFailed = false);
     }
 
-    if (await StorageUtil.globalFirebaseConfigExists() &&
-        await StorageUtil.loadFirebaseConfig(_token) !=
-            await StorageUtil.loadGlobalFirebaseConfig()) {
-      // The firebase config of this token is different to the existing
-      // firebase config in this app.
-      log("Token has different firebase config than existing.",
-          name: "token_widgets.dart");
-
-      _showMessage(
-          AppLocalizations.of(context)!
-              .errorOnlyOneFirebaseProjectIsSupported(_token.label),
-          5);
-
-      if (mounted) {
-        setState(() => _rollOutFailed = true);
-      }
-
-      return;
+    if (Platform.isIOS) {
+      await dummyRequest(url: _token.url!, sslVerify: _token.sslVerify!);
     }
 
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      if (!isAllowed) {
-        // TODO (?) Insert here your friendly dialog box before call the request method
-        // This is very important to not harm the user experience
-        AwesomeNotifications().requestPermissionToSendNotifications();
-      }
-    });
-
-    if (DateTime.now().isAfter(_token.expirationDate)) {
-      log("Token is expired, abort roll-out and delete it.",
-          name: "token_widgets.dart",
-          error: "Now: ${DateTime.now()}, Token expires at ${[
-            _token.expirationDate
-          ]}, Token: $_token");
-
-      if (mounted) {
-        setState(() => _rollOutFailed = true);
-      }
-
-      _showMessage(
-          AppLocalizations.of(context)!.errorTokenExpired(_token.label), 3);
-      return;
-    }
+    // TODO Move this to PushProvider ?
+    // AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+    //       if (!isAllowed) {
+    //         // TODO (?) Insert here your friendly dialog box before call the request method
+    //         // This is very important to not harm the user experience
+    //         AwesomeNotifications().requestPermissionToSendNotifications();
+    //       }
+    //     });
 
     if (_token.privateTokenKey == null) {
       final keyPair = await generateRSAKeyPair();
@@ -377,12 +474,12 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     }
 
     try {
+      // TODO What to do with poll only tokens if google-services is used?
       Response response =
           await doPost(sslVerify: _token.sslVerify!, url: _token.url!, body: {
         'enrollment_credential': _token.enrollmentCredentials,
         'serial': _token.serial,
-        'fbtoken': await widget._getFirebaseToken(
-            (await (StorageUtil.loadFirebaseConfig(_token)))!),
+        'fbtoken': await PushProvider.getFBToken(),
         'pubkey': serializeRSAPublicKeyPKCS8(_token.getPublicTokenKey()!),
       });
 
@@ -411,6 +508,20 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
             AppLocalizations.of(context)!
                 .errorRollOutFailed(_token.label, response.statusCode),
             3);
+      }
+    } on PlatformException catch (e, s) {
+      log("Roll out push token [$_token] failed.",
+          name: "token_widgets.dart", error: e);
+
+      if (mounted) {
+        setState(() => _rollOutFailed = true);
+      }
+
+      if (e.code == FIREBASE_TOKEN_ERROR_CODE) {
+        _showMessage(
+            AppLocalizations.of(context)!.errorRollOutNoNetworkConnection, 3);
+      } else {
+        Catcher.reportCheckedError(e, s);
       }
     } on SocketException catch (e) {
       log("Roll out push token [$_token] failed.",
@@ -564,9 +675,10 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                   _token.serial,
                   style: Theme.of(context).textTheme.headline4,
                 ),
-                subtitle: Text(
-                  _token.label,
-                  style: Theme.of(context).textTheme.headline5,
+                subtitle: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _getSubtitle(),
                 ),
                 trailing: Icon(Icons.message),
               ),
@@ -611,8 +723,13 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                                   ],
                                 ),
                           onPressed: _acceptButtonIsEnabled
-                              ? () {
-                                  acceptRequest();
+                              ? () async {
+                                  if (await _unlock(
+                                      localizedReason:
+                                          AppLocalizations.of(context)!
+                                              .authenticateToAcceptPush)) {
+                                    acceptRequest();
+                                  }
                                   _disableAcceptButtonForSomeTime();
                                 }
                               : null,
@@ -681,18 +798,17 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       ),
     );
   }
-
-  void _showMessage(String message, int seconds) {
-    ArgumentError.checkNotNull(message, "message");
-    ArgumentError.checkNotNull(seconds, "seconds");
-
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message), duration: Duration(seconds: seconds)));
-  }
 }
 
 abstract class _OTPTokenWidgetState extends _TokenWidgetState {
   String _otpValue;
+  final HideableTextController _hideableController = HideableTextController();
+
+  @override
+  void dispose() {
+    _hideableController.close();
+    super.dispose();
+  }
 
   _OTPTokenWidgetState(OTPToken token)
       : _otpValue = calculateOtpValue(token),
@@ -705,13 +821,23 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
   Widget _buildTile() {
     return InkWell(
       splashColor: Theme.of(context).primaryColor,
-      onLongPress: () {
-        Clipboard.setData(ClipboardData(text: _otpValue));
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              AppLocalizations.of(context)!.otpValueCopiedMessage(_otpValue)),
-        ));
+      onTap: () async {
+        if (_token.isLocked &&
+            await _unlock(
+                localizedReason:
+                    AppLocalizations.of(context)!.authenticateToShowOtp)) {
+          _hideableController.tap();
+        }
       },
+      onLongPress: _token.isLocked
+          ? null
+          : () {
+              Clipboard.setData(ClipboardData(text: _otpValue));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(AppLocalizations.of(context)!
+                    .otpValueCopiedMessage(_otpValue)),
+              ));
+            },
       child: _buildNonClickableTile(),
     );
   }
@@ -751,13 +877,17 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
     return Stack(
       children: <Widget>[
         ListTile(
-          title: Text(
-            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            style: Theme.of(context).textTheme.headline4,
+          title: HideableText(
+            controller: _hideableController,
+            text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
+            textScaleFactor: 2.0,
+            enabled: _token.isLocked,
+            hideDuration: Duration(seconds: 6),
           ),
-          subtitle: Text(
-            _token.label,
-            style: Theme.of(context).textTheme.headline5,
+          subtitle: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _getSubtitle(),
           ),
         ),
         Align(
@@ -781,7 +911,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
 class _TotpWidgetState extends _OTPTokenWidgetState
     with SingleTickerProviderStateMixin, LifecycleMixin {
   late AnimationController
-      controller; // Controller for animating the LinearProgressAnimator
+      _controller; // Controller for animating the LinearProgressAnimator
 
   TOTPToken get _token => super._token as TOTPToken;
 
@@ -806,7 +936,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
   void initState() {
     super.initState();
 
-    controller = AnimationController(
+    _controller = AnimationController(
       duration: Duration(seconds: _token.period),
       // Animate the progress for the duration of the tokens period.
       vsync: this,
@@ -819,7 +949,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
       ..addStatusListener((status) {
         // Add listener to restart the animation after the period, also updates the otp value.
         if (status == AnimationStatus.completed) {
-          controller.forward(from: _getCurrentProgress());
+          _controller.forward(from: _getCurrentProgress());
           _updateOtpValue();
         }
       })
@@ -832,12 +962,12 @@ class _TotpWidgetState extends _OTPTokenWidgetState
   @override
   void onResume() {
     _updateOtpValue();
-    controller.forward(from: _getCurrentProgress());
+    _controller.forward(from: _getCurrentProgress());
   }
 
   @override
   void dispose() {
-    controller.dispose(); // Dispose the controller to prevent memory leak.
+    _controller.dispose(); // Dispose the controller to prevent memory leak.
     super.dispose();
   }
 
@@ -846,17 +976,21 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     return Column(
       children: <Widget>[
         ListTile(
-          title: Text(
-            insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            style: Theme.of(context).textTheme.headline4,
+          title: HideableText(
+            controller: _hideableController,
+            text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
+            textScaleFactor: 2.0,
+            enabled: _token.isLocked,
+            hideDuration: Duration(seconds: 6),
           ),
-          subtitle: Text(
-            _token.label,
-            style: Theme.of(context).textTheme.headline5,
+          subtitle: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _getSubtitle(),
           ),
         ),
         LinearProgressIndicator(
-          value: controller.value,
+          value: _controller.value,
         ),
       ],
     );

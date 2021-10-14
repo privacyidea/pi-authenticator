@@ -47,7 +47,7 @@ class GuideScreen extends StatelessWidget {
           FutureBuilder<String>(
             // localeName defaults to en if an unsupported locale is set on the phone.
             future: DefaultAssetBundle.of(context).loadString(
-                'res/md/GUIDE_${AppLocalizations.of(context)!.localeName}.md'),
+                'res/guide/GUIDE_${AppLocalizations.of(context)!.localeName}.md'),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Expanded(
