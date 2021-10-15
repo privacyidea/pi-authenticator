@@ -100,11 +100,13 @@ class HideableTextState extends State<HideableText> {
               widget.replaceCharacter)
           : widget.text,
       textScaleFactor: widget.textScaleFactor,
-      style: widget.textStyle ??
-          TextStyle(
-            fontFamily: "monospace",
-            fontWeight: FontWeight.bold,
-          ),
+      style: widget.textStyle != null
+          ? widget.textStyle!
+              .copyWith(fontFamily: 'monospace', fontWeight: FontWeight.bold)
+          : TextStyle(
+              fontFamily: "monospace",
+              fontWeight: FontWeight.bold,
+            ),
     );
 
     return widget.controller == null
@@ -113,5 +115,25 @@ class HideableTextState extends State<HideableText> {
             onTap: showText,
           )
         : text;
+  }
+}
+
+class MenuItemWithIcon extends StatelessWidget {
+  final Icon icon;
+  final Text text;
+
+  MenuItemWithIcon({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(right: 10),
+          child: icon,
+        ),
+        text,
+      ],
+    );
   }
 }

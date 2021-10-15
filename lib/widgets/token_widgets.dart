@@ -87,7 +87,10 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     if (_token.label.isNotEmpty) {
       children.add(Text(
         _token.label,
-        style: Theme.of(context).textTheme.headline5,
+        style: Theme.of(context)
+            .textTheme
+            .headline6!
+            .copyWith(fontWeight: FontWeight.normal),
       ));
     }
     if (_token.issuer.isNotEmpty) {
@@ -107,13 +110,23 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     final List<Widget> secondaryActions = [
       IconSlideAction(
         caption: AppLocalizations.of(context)!.delete,
-        color: Colors.red,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.red.shade400
+            : Colors.red.shade800,
+        foregroundColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
         icon: Icons.delete,
         onTap: () => _deleteTokenDialog(),
       ),
       IconSlideAction(
         caption: AppLocalizations.of(context)!.rename,
-        color: Colors.blue,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.blue.shade400
+            : Colors.blue.shade800,
+        foregroundColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
         icon: Icons.edit,
         onTap: () => _renameTokenDialog(),
       ),
@@ -124,7 +137,12 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         caption: _token.isLocked
             ? AppLocalizations.of(context)!.unlock
             : AppLocalizations.of(context)!.lock,
-        color: Colors.yellow,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.yellow.shade400
+            : Colors.yellow.shade800,
+        foregroundColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
         icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
         onTap: () => _changeLockStatus(),
       ));
@@ -265,14 +283,12 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.cancel,
-                  style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.rename,
-                  style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () {
                   if (_nameInputKey.currentState!.validate()) {
@@ -314,7 +330,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   AppLocalizations.of(context)!.cancel,
-                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
               TextButton(
@@ -324,7 +339,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 },
                 child: Text(
                   AppLocalizations.of(context)!.delete,
-                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
             ],
@@ -686,7 +700,11 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
               ListTile(
                 title: Text(
                   _token.serial,
-                  style: Theme.of(context).textTheme.headline4,
+                  textScaleFactor: 2.5,
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                        fontFamily: "monospace",
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 subtitle: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -893,9 +911,13 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            textScaleFactor: 2.0,
+            textScaleFactor: 2.5,
             enabled: _token.isLocked,
-            hideDuration: Duration(seconds: 6),
+            hideDuration: Duration(seconds: 10),
+            textStyle: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: Theme.of(context).accentColor),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -992,9 +1014,13 @@ class _TotpWidgetState extends _OTPTokenWidgetState
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            textScaleFactor: 2.0,
+            textScaleFactor: 2.5,
             enabled: _token.isLocked,
-            hideDuration: Duration(seconds: 6),
+            hideDuration: Duration(seconds: 10),
+            textStyle: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: Theme.of(context).accentColor),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
