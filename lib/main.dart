@@ -42,9 +42,11 @@ void main() async {
         NotificationChannel(
             channelKey: NOTIFICATION_CHANNEL_ANDROID,
             channelName: 'Push Challenges',
+            // TODO Localize
             channelDescription:
                 'Notifications are shown for incoming push challenges.',
-            defaultColor: Color(0xFF9D50DD),
+            // TODO Localize
+            defaultColor: primarySwatch,
             ledColor: Colors.white)
       ]);
 

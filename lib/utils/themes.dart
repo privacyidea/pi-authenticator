@@ -20,6 +20,8 @@
 
 import 'package:flutter/material.dart';
 
+var primarySwatch = Colors.lightBlue;
+
 var lightThemeData = new ThemeData(
   primaryColor: Colors.blue,
   textTheme: new TextTheme(button: TextStyle(color: Colors.white70)),
