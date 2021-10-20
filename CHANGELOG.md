@@ -6,7 +6,7 @@
 
 - Changed error message on failing POST request (due to null values in body) to be more informative
 - Generalized custom method for GET requests and added error handling for parameters that are null
-- Automatic polling stays active even if no push token exists
+- Automatic polling does not get deactivated if no push token exists
 
 ## [3.1.4] - 2021-07-22
 

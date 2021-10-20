@@ -187,13 +187,10 @@ class _MainScreenState extends State<MainScreen> {
                 null) // Legacy tokens can not poll, because the url is missing!
         .toList();
 
-    // Disable polling if no push tokens exist
-    // if (pushTokens.isEmpty) {
-    //   log('No push token is available for polling, polling is disabled.',
-    //       name: 'main_screen.dart');
-    //   AppSettings.of(context).enablePolling = false;
-    //   return;
-    // }
+    if (pushTokens.isEmpty) {
+      log('No push token is available for polling.', name: 'main_screen.dart');
+      return;
+    }
 
     // Start request for each token
     for (PushToken p in pushTokens) {
@@ -363,7 +360,7 @@ class _MainScreenState extends State<MainScreen> {
 //        throw e;
         Catcher.reportCheckedError(e, stack);
       }
-    } on FormatException{
+    } on FormatException {
       //  User returned by pressing the back button (can have other causes too!)
 //      throw e;
     } on ArgumentError catch (e) {
