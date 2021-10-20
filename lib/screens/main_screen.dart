@@ -188,12 +188,12 @@ class _MainScreenState extends State<MainScreen> {
         .toList();
 
     // Disable polling if no push tokens exist
-    if (pushTokens.isEmpty) {
-      log('No push token is available for polling, polling is disabled.',
-          name: 'main_screen.dart');
-      AppSettings.of(context).enablePolling = false;
-      return;
-    }
+    // if (pushTokens.isEmpty) {
+    //   log('No push token is available for polling, polling is disabled.',
+    //       name: 'main_screen.dart');
+    //   AppSettings.of(context).enablePolling = false;
+    //   return;
+    // }
 
     // Start request for each token
     for (PushToken p in pushTokens) {
@@ -363,7 +363,7 @@ class _MainScreenState extends State<MainScreen> {
 //        throw e;
         Catcher.reportCheckedError(e, stack);
       }
-    } on FormatException catch (e) {
+    } on FormatException{
       //  User returned by pressing the back button (can have other causes too!)
 //      throw e;
     } on ArgumentError catch (e) {
@@ -675,7 +675,6 @@ class _MainScreenState extends State<MainScreen> {
     // This allows for handling push on ios, android and polling.
     var data = message['data'] == null ? message : message['data'];
 
-    Uri requestUri = Uri.parse(data['url']);
     String requestedSerial = data['serial'];
 
     log('Incoming push auth request for token with serial.',
