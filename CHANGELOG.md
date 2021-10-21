@@ -1,12 +1,13 @@
 # Changelog
 
-## [3.1.5] - 2021-XX-XX
+## [3.1.5] - 2021-10-21
 
 ### Changed
 
 - Changed error message on failing POST request (due to null values in body) to be more informative
 - Generalized custom method for GET requests and added error handling for parameters that are null
 - Automatic polling does not get deactivated if no push token exists
+- Made error reports more helpful by also reporting the error type besides it's own description
 
 ## [3.1.4] - 2021-07-22
 
