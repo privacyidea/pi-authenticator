@@ -6,10 +6,10 @@
 + Token werden durch das scannen von QR-Codes hinzugefügt. Drücken Sie dazu `+` in der unteren
   rechten Ecke. Alternativ können Token auch manuell über das `Menü` hinzugefügt werden.
 
-+ Token können gelöscht oder umbenannt werden, indem Sie sie nach links wischen:
-  ![Renaming and deleting tokens by swiping left](resource:res/gif/help_delete_rename.gif)
-  Das Token kann auch gesperrt werden um den Zugriff nur nach Authentifizierung des Nutzers zu
-  erlauben.
++ Token specific options are available by swiping
+  left: ![Renaming and deleting tokens by swiping left](resource:res/gif/help_slider.gif)
+  The token can be deleted, locked to require the device credentials for access, or customized to
+  change the label, or avatar.
 
 # privacyIDEA Push Token:
 

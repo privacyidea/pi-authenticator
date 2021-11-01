@@ -96,8 +96,7 @@ flutter:
     - res/logo/app_logo_light.svg
     - CHANGELOG.md
     - res/guide/
-    - res/gif/help_delete_rename.gif
-    - res/gif/help_manual_poll.gif
+    - res/gif/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
