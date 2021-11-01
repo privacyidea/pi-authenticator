@@ -33,11 +33,11 @@ abstract class Token {
   String _issuer; // The issuer of this token, currently unused.
   String _id; // this is the identifier of the token
 
-  bool _isLocked;
-  bool _canToggleLock;
-
   String? avatarPath;
   int? avatarColor;
+
+  bool _isLocked;
+  bool _canToggleLock;
 
   bool get canToggleLock => _canToggleLock;
 

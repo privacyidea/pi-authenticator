@@ -197,10 +197,9 @@ class PushProvider {
           // The signature of this message must not be verified as each push
           // request gets verified independently.
           Map<String, dynamic> result = jsonDecode(response.body)['result'];
-          List dataList = result['value'];
+          List dataList = result['value'].cast<Map<String, dynamic>>();
 
-          for (Map<String, dynamic> data
-              in dataList as Iterable<Map<String, dynamic>>) {
+          for (Map<String, dynamic> data in dataList) {
             _incomingHandler(RemoteMessage(data: data));
           }
         } else {
