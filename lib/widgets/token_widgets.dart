@@ -49,7 +49,6 @@ import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'custom_texts.dart';
 
 import 'custom_texts.dart';
 
@@ -664,11 +663,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                       title: Text(
                         _token.label,
                         textScaleFactor: 2.5,
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                              // color: Theme.of(context).accentColor,
-                              fontFamily: "monospace",
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style: Theme.of(context).textTheme.subtitle2,
                       ),
                       subtitle: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
