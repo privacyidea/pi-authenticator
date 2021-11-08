@@ -51,7 +51,7 @@ import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/custom_texts.dart';
-import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
+import 'package:privacyidea_authenticator/widgets/tokens/token_widgets.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:uuid/uuid.dart';
