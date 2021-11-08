@@ -105,6 +105,17 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     return children;
   }
 
+  _getAvatar() {
+    return CircleAvatar(
+      backgroundColor:
+          _token.avatarColor == null ? null : Color(_token.avatarColor!),
+      backgroundImage: _token.avatarPath == null
+          ? null
+          : FileImage(File(_token.avatarPath!)),
+      radius: widget.avatarRadius,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> secondaryActions = [
@@ -648,15 +659,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                 children: [
                   Padding(
                     padding: EdgeInsets.all(5),
-                    child: CircleAvatar(
-                      backgroundColor: _token.avatarColor == null
-                          ? null
-                          : Color(_token.avatarColor!),
-                      backgroundImage: _token.avatarPath == null
-                          ? null
-                          : FileImage(File(_token.avatarPath!)),
-                      radius: widget.avatarRadius,
-                    ),
+                    child: _getAvatar(),
                   ),
                   Expanded(
                     child: ListTile(
@@ -872,15 +875,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
           children: [
             Padding(
               padding: EdgeInsets.all(5),
-              child: CircleAvatar(
-                backgroundColor: _token.avatarColor == null
-                    ? null
-                    : Color(_token.avatarColor!),
-                backgroundImage: _token.avatarPath == null
-                    ? null
-                    : FileImage(File(_token.avatarPath!)),
-                radius: widget.avatarRadius,
-              ),
+              child: _getAvatar(),
             ),
             Expanded(
               child: ListTile(
@@ -1002,15 +997,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
           children: [
             Padding(
               padding: EdgeInsets.all(5),
-              child: CircleAvatar(
-                backgroundColor: _token.avatarColor == null
-                    ? null
-                    : Color(_token.avatarColor!),
-                backgroundImage: _token.avatarPath == null
-                    ? null
-                    : FileImage(File(_token.avatarPath!)),
-                radius: widget.avatarRadius,
-              ),
+              child: _getAvatar(),
             ),
             Expanded(
               child: ListTile(
