@@ -29,39 +29,39 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  cupertino_icons: ^1.0.3
+  cupertino_icons: ^1.0.4
 
   intl: ^0.17.0
   hex: ^0.2.0
-  base32: ^2.0.0
+  base32: ^2.1.1
   otp: ^3.0.1
-  qr_mobile_vision: ^3.0.0
+  qr_mobile_vision: ^3.0.1
   flutter_secure_storage: ^4.2.1
-  json_annotation: ^4.0.1
+  json_annotation: ^4.0.1 # Don't touch this!
   flutter_slidable: ^0.6.0
   package_info: ^2.0.2
   asn1lib: ^1.0.2
-  flutter_markdown: ^0.6.6
-  url_launcher: ^6.0.11
-  catcher: ^0.6.8
-  uuid: ^3.0.4
-  http: ^0.13.3
-  pointycastle: ^3.3.4
-  flutter_local_notifications: ^8.2.0
+  flutter_markdown: ^0.6.8
+  url_launcher: ^6.0.12
+  catcher: ^0.6.9
+  uuid: ^3.0.5
+  http: ^0.13.4
+  pointycastle: ^3.3.5
+  flutter_local_notifications: ^9.0.3
   mutex: ^3.0.0
   flutterlifecyclehooks: ^2.0.0-nullsafety.0
   streaming_shared_preferences: ^2.0.0
-  flutter_svg: ^0.22.0
+  flutter_svg: ^0.23.0+1
   easy_dynamic_theme: ^2.2.0
-  firebase_messaging: ^10.0.7
-  firebase_core: ^1.6.0
+  firebase_messaging: ^11.1.0
+  firebase_core: ^1.10.0
   pi_authenticator_legacy:
     path: local_plugins/pi-authenticator-legacy
   collection: ^1.15.0
   uni_links: ^0.5.1
   local_auth: ^1.1.8
-  path_provider: ^2.0.5
-  image_picker: ^0.8.4+2
+  path_provider: ^2.0.6
+  image_picker: ^0.8.4+4
   flex_color_picker: ^2.1.2
 
 dev_dependencies:
@@ -72,7 +72,7 @@ dev_dependencies:
 
   # dependencies to serialize objects to json
   build_runner: any
-  json_serializable: ^4.1.0
+  json_serializable: ^4.1.0 # Don't touch this!
 
 
 # For information on the generic Dart part of this file, see the
