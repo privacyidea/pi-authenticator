@@ -130,7 +130,6 @@ class SettingsScreenState extends State<SettingsScreen> {
                         if (!snapshot.hasData || snapshot.hasError) {
                           return Placeholder();
                         } else {
-                          print(snapshot.data);
                           return Padding(
                             padding: EdgeInsets.symmetric(horizontal: 20),
                             child: DropdownButton<Locale>(
