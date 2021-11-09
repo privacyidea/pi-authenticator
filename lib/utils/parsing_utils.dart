@@ -18,13 +18,16 @@
   limitations under the License.
 */
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:asn1lib/asn1lib.dart';
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
+import 'package:uuid/uuid.dart';
 
 import 'identifiers.dart';
 
@@ -125,7 +128,9 @@ String serializeRSAPublicKeyPKCS8(RSAPublicKey key) {
 
   var publicKey = ASN1BitString(keySequence.encodedBytes);
 
-  var asn1sequence = ASN1Sequence()..add(algorithm)..add(publicKey);
+  var asn1sequence = ASN1Sequence()
+    ..add(algorithm)
+    ..add(publicKey);
   return base64.encode(asn1sequence.encodedBytes);
 }
 
@@ -494,4 +499,72 @@ bool is2StepURI(Uri uri) {
   return uri.queryParameters["2step_salt"] != null ||
       uri.queryParameters["2step_output"] != null ||
       uri.queryParameters["2step_difficulty"] != null;
+}
+
+Future<PushToken> buildPushToken(
+    Map<String, dynamic> uriMap, String uuid) async {
+  return PushToken(
+    serial: uriMap[URI_SERIAL],
+    label: uriMap[URI_LABEL],
+    issuer: uriMap[URI_ISSUER],
+    id: uuid,
+    sslVerify: uriMap[URI_SSL_VERIFY],
+    expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
+    enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
+    url: uriMap[URI_ROLLOUT_URL],
+  );
+}
+
+typedef FutureOr<Uint8List> Get2StepSecretCallback(
+    Map<String, dynamic> uriMap, Uint8List secret);
+
+Future<Token> buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri,
+    {required Get2StepSecretCallback get2StepSecretCallback}) async {
+  String uuid = Uuid().v4();
+  String type = uriMap[URI_TYPE];
+
+  // Push token do not need any of the other parameters.
+  if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
+    return buildPushToken(uriMap, uuid);
+  }
+
+  String label = uriMap[URI_LABEL];
+  String algorithm = uriMap[URI_ALGORITHM];
+  int digits = uriMap[URI_DIGITS];
+  Uint8List secret = uriMap[URI_SECRET];
+  String issuer = uriMap[URI_ISSUER];
+
+  if (is2StepURI(uri)) {
+    // Calculate the whole secret.
+    secret = await get2StepSecretCallback(uriMap, secret);
+  }
+
+  // uri.host -> totp or hotp
+  if (type == "hotp") {
+    return HOTPToken(
+      label: label,
+      issuer: issuer,
+      id: uuid,
+      algorithm: mapStringToAlgorithm(algorithm),
+      digits: digits,
+      secret: encodeSecretAs(secret, Encodings.base32),
+      counter: uriMap[URI_COUNTER],
+    );
+  } else if (type == "totp") {
+    return TOTPToken(
+      label: label,
+      issuer: issuer,
+      id: uuid,
+      algorithm: mapStringToAlgorithm(algorithm),
+      digits: digits,
+      secret: encodeSecretAs(secret, Encodings.base32),
+      period: uriMap[URI_PERIOD],
+    );
+  } else {
+    throw ArgumentError.value(
+        uri,
+        "uri",
+        "Building the token type "
+            "[$type] is not a supported right now.");
+  }
 }

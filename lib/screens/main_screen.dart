@@ -49,12 +49,10 @@ import 'package:privacyidea_authenticator/utils/license_utils.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/custom_texts.dart';
 import 'package:privacyidea_authenticator/widgets/tokens/token_widgets.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:uuid/uuid.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen({Key? key, required this.title}) : super(key: key);
@@ -292,10 +290,29 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
-        actions: _buildActionMenu(),
+        actions: [
+          MainScreenActions(
+            addManuallyCallback: _addToken,
+            settingsCallback: _loadTokenList,
+          ),
+        ],
         leading: SvgPicture.asset('res/logo/app_logo_light.svg'),
       ),
-      body: _buildBody(),
+      body: TokenListView(
+        tokenList: _tokenList,
+        onDeleteCallback: _deleteToken,
+        refreshIndicatorCallback: () async {
+          _showMessage(AppLocalizations.of(context)!.pollingChallenges,
+              Duration(seconds: 1));
+          bool success = await PushProvider.pollForRequests(context);
+          if (!success) {
+            _showMessage(
+              AppLocalizations.of(context)!.pollingFailNoNetworkConnection,
+              Duration(seconds: 3),
+            );
+          }
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _scanQRCode(),
         tooltip: AppLocalizations.of(context)!.scanQrCode,
@@ -322,7 +339,18 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       // AppSetting.of(context).add...
 //      Catcher.instance.updateConfig();
 
-      Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(otpAuth));
+      Token newToken = await buildTokenFromMap(barcodeMap, Uri.parse(otpAuth),
+          get2StepSecretCallback: (uriMap, secret) async =>
+              (await showDialog<Uint8List>(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) => TwoStepDialog(
+                  iterations: uriMap[URI_ITERATIONS],
+                  keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
+                  saltLength: uriMap[URI_SALT_LENGTH],
+                  password: secret,
+                ),
+              ))!);
 
       log(
         "Adding new token from qr-code:",
@@ -365,114 +393,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     await _handleOtpAuth(barcode);
   }
 
-  Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
-    String uuid = Uuid().v4();
-    String type = uriMap[URI_TYPE];
-
-    // Push token do not need any of the other parameters.
-    if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
-      return _buildPushToken(uriMap, uuid);
-    }
-
-    String label = uriMap[URI_LABEL];
-    String algorithm = uriMap[URI_ALGORITHM];
-    int digits = uriMap[URI_DIGITS];
-    Uint8List secret = uriMap[URI_SECRET];
-    String issuer = uriMap[URI_ISSUER];
-
-    if (is2StepURI(uri)) {
-      // Calculate the whole secret.
-      secret = (await showDialog<Uint8List>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => TwoStepDialog(
-          iterations: uriMap[URI_ITERATIONS],
-          keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
-          saltLength: uriMap[URI_SALT_LENGTH],
-          password: secret,
-        ),
-      ))!;
-    }
-
-    // uri.host -> totp or hotp
-    if (type == "hotp") {
-      return HOTPToken(
-        label: label,
-        issuer: issuer,
-        id: uuid,
-        algorithm: mapStringToAlgorithm(algorithm),
-        digits: digits,
-        secret: encodeSecretAs(secret, Encodings.base32),
-        counter: uriMap[URI_COUNTER],
-      );
-    } else if (type == "totp") {
-      return TOTPToken(
-        label: label,
-        issuer: issuer,
-        id: uuid,
-        algorithm: mapStringToAlgorithm(algorithm),
-        digits: digits,
-        secret: encodeSecretAs(secret, Encodings.base32),
-        period: uriMap[URI_PERIOD],
-      );
-    } else {
-      throw ArgumentError.value(
-          uri,
-          "uri",
-          "Building the token type "
-              "[$type] is not a supported right now.");
-    }
-  }
-
-  Future<PushToken> _buildPushToken(
-      Map<String, dynamic> uriMap, String uuid) async {
-    return PushToken(
-      serial: uriMap[URI_SERIAL],
-      label: uriMap[URI_LABEL],
-      issuer: uriMap[URI_ISSUER],
-      id: uuid,
-      sslVerify: uriMap[URI_SSL_VERIFY],
-      expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
-      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-      url: uriMap[URI_ROLLOUT_URL],
-    );
-  }
-
-  /// Builds the body of the screen. If any tokens supports polling,
-  /// returns a list wrapped in a RefreshIndicator to manually poll.
-  /// If not returns the list only.
-  Widget _buildBody() {
-    ListView list = ListView.separated(
-        itemBuilder: (context, index) {
-          Token token = _tokenList[index];
-          return TokenWidget(token, onDeleteClicked: () => _deleteToken(token));
-        },
-        separatorBuilder: (context, index) {
-          return Divider();
-        },
-        itemCount: _tokenList.length);
-
-    bool allowManualRefresh =
-        _tokenList.any((t) => t is PushToken && t.url != null);
-
-    return allowManualRefresh
-        ? RefreshIndicator(
-            child: list,
-            onRefresh: () async {
-              _showMessage(AppLocalizations.of(context)!.pollingChallenges,
-                  Duration(seconds: 1));
-              bool success = await PushProvider.pollForRequests(context);
-              if (!success) {
-                _showMessage(
-                  AppLocalizations.of(context)!.pollingFailNoNetworkConnection,
-                  Duration(seconds: 3),
-                );
-              }
-            },
-          )
-        : list;
-  }
-
   void _deleteToken(Token token) async {
     log("Delete: $token");
     await StorageUtil.deleteToken(token);
@@ -483,78 +403,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     }
 
     await _loadTokenList();
-  }
-
-  List<Widget> _buildActionMenu() {
-    return <Widget>[
-      PopupMenuButton<String>(
-        onSelected: (String value) async {
-          if (value == "about") {
-//              clearLicenses(), // This is used for testing purposes only.
-            addAllLicenses();
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CustomLicenseScreen(),
-              ),
-            );
-          } else if (value == "add_manually") {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddTokenManuallyScreen(),
-                )).then((newToken) => _addToken(newToken));
-          } else if (value == "settings") {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SettingsScreen(),
-                )).then((_) => _loadTokenList());
-          } else if (value == 'guide') {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => GuideScreen(),
-              ),
-            );
-          }
-        },
-        elevation: 5.0,
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          PopupMenuItem<String>(
-            value: "add_manually",
-            child: MenuItemWithIcon(
-              icon: Icon(Icons.add_outlined),
-              text: Text(AppLocalizations.of(context)!.addToken),
-            ),
-          ),
-          PopupMenuDivider(),
-          PopupMenuItem<String>(
-            value: "settings",
-            child: MenuItemWithIcon(
-              icon: Icon(Icons.settings_outlined),
-              text: Text(AppLocalizations.of(context)!.settings),
-            ),
-          ),
-          PopupMenuDivider(),
-          PopupMenuItem<String>(
-            value: "about",
-            child: MenuItemWithIcon(
-              icon: Icon(Icons.info_outline),
-              text: Text(AppLocalizations.of(context)!.about),
-            ),
-          ),
-          PopupMenuDivider(),
-          PopupMenuItem<String>(
-            value: "guide",
-            child: MenuItemWithIcon(
-              icon: Icon(Icons.help_outline),
-              text: Text(AppLocalizations.of(context)!.guide),
-            ),
-          ),
-        ],
-      ),
-    ];
   }
 
   _addToken(Token? newToken) {
@@ -573,5 +421,123 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       content: Text(message),
       duration: duration,
     ));
+  }
+}
+
+class TokenListView extends StatelessWidget {
+  final List<Token> _tokenList;
+  final _onDeleteCallback;
+  final _refreshIndicatorCallback;
+
+  TokenListView(
+      {required tokenList,
+      required onDeleteCallback,
+      required refreshIndicatorCallback})
+      : _tokenList = tokenList,
+        _onDeleteCallback = onDeleteCallback,
+        _refreshIndicatorCallback = refreshIndicatorCallback;
+
+  @override
+  Widget build(BuildContext context) {
+    ListView list = ListView.separated(
+        itemBuilder: (context, index) {
+          Token token = _tokenList[index];
+          return TokenWidget(token,
+              onDeleteClicked: () => _onDeleteCallback(token));
+        },
+        separatorBuilder: (context, index) {
+          return Divider();
+        },
+        itemCount: _tokenList.length);
+
+    bool allowManualRefresh =
+        _tokenList.any((t) => t is PushToken && t.url != null);
+
+    return allowManualRefresh
+        ? RefreshIndicator(
+            child: list,
+            onRefresh: _refreshIndicatorCallback,
+          )
+        : list;
+  }
+}
+
+class MainScreenActions extends StatelessWidget {
+  final _addManuallyCallback;
+  final _settingsCallback;
+
+  MainScreenActions({required addManuallyCallback, required settingsCallback})
+      : _addManuallyCallback = addManuallyCallback,
+        _settingsCallback = settingsCallback;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      onSelected: (String value) async {
+        if (value == "about") {
+//              clearLicenses(), // This is used for testing purposes only.
+          addAllLicenses();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CustomLicenseScreen(),
+            ),
+          );
+        } else if (value == "add_manually") {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddTokenManuallyScreen(),
+              )).then((newToken) => _addManuallyCallback(newToken));
+        } else if (value == "settings") {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SettingsScreen(),
+              )).then((_) => _settingsCallback());
+        } else if (value == 'guide') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => GuideScreen(),
+            ),
+          );
+        }
+      },
+      elevation: 5.0,
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        PopupMenuItem<String>(
+          value: "add_manually",
+          child: MenuItemWithIcon(
+            icon: Icon(Icons.add_outlined),
+            text: Text(AppLocalizations.of(context)!.addToken),
+          ),
+        ),
+        PopupMenuDivider(),
+        PopupMenuItem<String>(
+          value: "settings",
+          child: MenuItemWithIcon(
+            icon: Icon(Icons.settings_outlined),
+            text: Text(AppLocalizations.of(context)!.settings),
+          ),
+        ),
+        PopupMenuDivider(),
+        PopupMenuItem<String>(
+          value: "about",
+          child: MenuItemWithIcon(
+            icon: Icon(Icons.info_outline),
+            text: Text(AppLocalizations.of(context)!.about),
+          ),
+        ),
+        PopupMenuDivider(),
+        PopupMenuItem<String>(
+          value: "guide",
+          child: MenuItemWithIcon(
+            icon: Icon(Icons.help_outline),
+            text: Text(AppLocalizations.of(context)!.guide),
+          ),
+        ),
+      ],
+    );
   }
 }
