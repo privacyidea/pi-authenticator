@@ -10,7 +10,7 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
       label: json['label'] as String,
       issuer: json['issuer'] as String,
       id: json['id'] as String,
-      algorithm: _$enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
+      algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,
       secret: json['secret'] as String,
       counter: json['counter'] as int? ?? 0,
@@ -31,32 +31,6 @@ Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
       'counter': instance.counter,
     };
 
-K _$enumDecode<K, V>(
-  Map<K, V> enumValues,
-  Object? source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError(
-      'A value must be provided. Supported values: '
-      '${enumValues.values.join(', ')}',
-    );
-  }
-
-  return enumValues.entries.singleWhere(
-    (e) => e.value == source,
-    orElse: () {
-      if (unknownValue == null) {
-        throw ArgumentError(
-          '`$source` is not one of the supported values: '
-          '${enumValues.values.join(', ')}',
-        );
-      }
-      return MapEntry(unknownValue, enumValues.values.first);
-    },
-  ).key;
-}
-
 const _$AlgorithmsEnumMap = {
   Algorithms.SHA1: 'SHA1',
   Algorithms.SHA256: 'SHA256',
@@ -67,7 +41,7 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
       label: json['label'] as String,
       issuer: json['issuer'] as String,
       id: json['id'] as String,
-      algorithm: _$enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
+      algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,
       secret: json['secret'] as String,
       period: json['period'] as int,
