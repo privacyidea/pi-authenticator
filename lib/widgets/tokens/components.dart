@@ -61,10 +61,16 @@ class TokenAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print(File(_avatarImagePath!).lengthSync());
+    var image =
+        _avatarImagePath == null ? null : FileImage(File(_avatarImagePath!));
+    var color = _avatarColor == null ? null : Color(_avatarColor!);
+
     return CircleAvatar(
-      backgroundColor: _avatarColor == null ? null : Color(_avatarColor!),
-      backgroundImage:
-          _avatarImagePath == null ? null : FileImage(File(_avatarImagePath!)),
+      backgroundColor: color,
+      backgroundImage: image,
+      // AssetImage('res/example.png'),
+      // AssetImage('res/example.jpg'),
       radius: _radius,
     );
   }

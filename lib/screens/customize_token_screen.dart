@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
@@ -132,10 +133,11 @@ class _CustomizeTokenScreenState extends State<CustomizeTokenScreen> {
 
           if (_selectedAvatarImagePath != null) {
             // Save a copy of the image
+            String extension = p.extension(_selectedAvatarImagePath!);
             String documentsPath =
                 (await getApplicationDocumentsDirectory()).path;
             File imageCopy = await File(_selectedAvatarImagePath!)
-                .copy('$documentsPath/${_token.id}');
+                .copy('$documentsPath/${_token.id}.$extension');
             _token.avatarPath = imageCopy.path;
           }
 
