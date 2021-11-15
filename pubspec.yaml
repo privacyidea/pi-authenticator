@@ -36,18 +36,18 @@ dependencies:
   base32: ^2.1.1
   otp: ^3.0.1
   qr_mobile_vision: ^3.0.1
-  flutter_secure_storage: ^4.2.1
+  flutter_secure_storage: ^5.0.2
   json_annotation: ^4.0.1 # Don't touch this!
-  flutter_slidable: ^0.6.0
+  flutter_slidable: ^1.1.0
   package_info: ^2.0.2
-  asn1lib: ^1.0.2
+  asn1lib: ^1.0.3
   flutter_markdown: ^0.6.8
   url_launcher: ^6.0.12
   catcher: ^0.6.9
   uuid: ^3.0.5
   http: ^0.13.4
-  pointycastle: ^3.3.5
-  flutter_local_notifications: ^9.0.3
+  pointycastle: ^3.4.0
+  flutter_local_notifications: ^9.1.2
   mutex: ^3.0.0
   flutterlifecyclehooks: ^2.0.0-nullsafety.0
   streaming_shared_preferences: ^2.0.0
@@ -60,7 +60,7 @@ dependencies:
   collection: ^1.15.0
   uni_links: ^0.5.1
   local_auth: ^1.1.8
-  path_provider: ^2.0.6
+  path_provider: ^2.0.7
   image_picker: ^0.8.4+4
   flex_color_picker: ^2.1.2
 
@@ -97,6 +97,8 @@ flutter:
     - CHANGELOG.md
     - res/guide/
     - res/gif/
+    - res/example.jpg
+    - res/example.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
