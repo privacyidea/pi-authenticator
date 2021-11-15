@@ -69,8 +69,6 @@ class TokenAvatar extends StatelessWidget {
     return CircleAvatar(
       backgroundColor: color,
       backgroundImage: image,
-      // AssetImage('res/example.png'),
-      // AssetImage('res/example.jpg'),
       radius: _radius,
     );
   }

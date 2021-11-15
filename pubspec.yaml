@@ -97,8 +97,6 @@ flutter:
     - CHANGELOG.md
     - res/guide/
     - res/gif/
-    - res/example.jpg
-    - res/example.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

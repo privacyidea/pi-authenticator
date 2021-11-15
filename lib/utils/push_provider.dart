@@ -136,7 +136,8 @@ class PushProvider {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'privacy_idea_authenticator_push',
       'Push challenges',
-      channelDescription: 'Push challenges are received over firebase, if the app is in background,'
+      channelDescription:
+          'Push challenges are received over firebase, if the app is in background,'
           'a notification for each request is shown.',
       ticker: 'ticker',
       playSound: silent,
