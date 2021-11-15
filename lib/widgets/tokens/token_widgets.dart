@@ -87,7 +87,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> secondaryActions = [
+    final List<Widget> actions = [
       SlidableAction(
         label: AppLocalizations.of(context)!.delete,
         backgroundColor: Theme.of(context).brightness == Brightness.light
@@ -124,7 +124,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     ];
 
     if (_token.canToggleLock) {
-      secondaryActions.add(SlidableAction(
+      actions.add(SlidableAction(
         label: _token.isLocked
             ? AppLocalizations.of(context)!.unlock
             : AppLocalizations.of(context)!.lock,
@@ -145,7 +145,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
         extentRatio: 1,
-        children: secondaryActions,
+        children: actions,
       ),
       child: _buildTile(),
     );
