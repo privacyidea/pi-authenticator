@@ -80,7 +80,6 @@ class TokenWidget extends StatefulWidget {
 
 abstract class _TokenWidgetState extends State<TokenWidget> {
   Token _token;
-  final SlidableController _slidableController = SlidableController();
 
   _TokenWidgetState(this._token) {
     _saveThisToken();
@@ -89,27 +88,27 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> secondaryActions = [
-      IconSlideAction(
-        caption: AppLocalizations.of(context)!.delete,
-        color: Theme.of(context).brightness == Brightness.light
+      SlidableAction(
+        label: AppLocalizations.of(context)!.delete,
+        backgroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.red.shade400
             : Colors.red.shade800,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
         icon: Icons.delete,
-        onTap: () => _showDeleteTokenDialog(),
+        onPressed: (_) => _showDeleteTokenDialog(),
       ),
-      IconSlideAction(
-        caption: AppLocalizations.of(context)!.customize,
-        color: Theme.of(context).brightness == Brightness.light
+      SlidableAction(
+        label: AppLocalizations.of(context)!.customize,
+        backgroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.blue.shade400
             : Colors.blue.shade800,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
         icon: Icons.brush,
-        onTap: () async {
+        onPressed: (_) async {
           _token = await Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => CustomizeTokenScreen(_token),
@@ -125,29 +124,30 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     ];
 
     if (_token.canToggleLock) {
-      secondaryActions.add(IconSlideAction(
-        caption: _token.isLocked
+      secondaryActions.add(SlidableAction(
+        label: _token.isLocked
             ? AppLocalizations.of(context)!.unlock
             : AppLocalizations.of(context)!.lock,
-        color: Theme.of(context).brightness == Brightness.light
+        backgroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.yellow.shade400
             : Colors.yellow.shade800,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
         icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
-        onTap: () => _changeLockStatus(),
+        onPressed: (_) => _changeLockStatus(),
       ));
     }
 
     return Slidable(
+      groupTag: 'myTag', // Only one in the same group can be open at a time.
       key: ValueKey(_token.id),
-      // This is used to only let one Slidable be open at a time.
-      controller: _slidableController,
-      actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.25,
+      endActionPane: ActionPane(
+        motion: const DrawerMotion(),
+        extentRatio: 1,
+        children: secondaryActions,
+      ),
       child: _buildTile(),
-      secondaryActions: secondaryActions,
     );
   }
 
