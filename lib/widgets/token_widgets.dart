@@ -48,6 +48,7 @@ import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
+
 import 'custom_texts.dart';
 
 class TokenWidget extends StatefulWidget {
@@ -76,7 +77,6 @@ class TokenWidget extends StatefulWidget {
 
 abstract class _TokenWidgetState extends State<TokenWidget> {
   Token _token;
-  static final SlidableController _slidableController = SlidableController();
 
   _TokenWidgetState(this._token) {
     _saveThisToken();
@@ -107,55 +107,56 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> secondaryActions = [
-      IconSlideAction(
-        caption: AppLocalizations.of(context)!.delete,
-        color: Theme.of(context).brightness == Brightness.light
+    final List<Widget> actions = [
+      SlidableAction(
+        label: AppLocalizations.of(context)!.delete,
+        backgroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.red.shade400
             : Colors.red.shade800,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
         icon: Icons.delete,
-        onTap: () => _deleteTokenDialog(),
+        onPressed: (_) => _deleteTokenDialog(),
       ),
-      IconSlideAction(
-        caption: AppLocalizations.of(context)!.rename,
-        color: Theme.of(context).brightness == Brightness.light
+      SlidableAction(
+        label: AppLocalizations.of(context)!.rename,
+        backgroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.blue.shade400
             : Colors.blue.shade800,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
         icon: Icons.edit,
-        onTap: () => _renameTokenDialog(),
+        onPressed: (_) => _renameTokenDialog(),
       ),
     ];
 
     if (_token.canToggleLock) {
-      secondaryActions.add(IconSlideAction(
-        caption: _token.isLocked
+      actions.add(SlidableAction(
+        label: _token.isLocked
             ? AppLocalizations.of(context)!.unlock
             : AppLocalizations.of(context)!.lock,
-        color: Theme.of(context).brightness == Brightness.light
+        backgroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.yellow.shade400
             : Colors.yellow.shade800,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
         icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
-        onTap: () => _changeLockStatus(),
+        onPressed: (_) => _changeLockStatus(),
       ));
     }
 
     return Slidable(
       key: ValueKey(_token.id),
-      // This is used to only let one Slidable be open at a time.
-      controller: _slidableController,
-      actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.25,
+      groupTag: 'myTag', // This is used to only let one be open at a time.
+      endActionPane: ActionPane(
+        motion: const DrawerMotion(),
+        extentRatio: 1,
+        children: actions,
+      ),
       child: _buildTile(),
-      secondaryActions: secondaryActions,
     );
   }
 

@@ -31,6 +31,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:package_info/package_info.dart';
@@ -442,22 +443,25 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   /// returns a list wrapped in a RefreshIndicator to manually poll.
   /// If not returns the list only.
   Widget _buildBody() {
-    ListView list = ListView.separated(
-        itemBuilder: (context, index) {
-          Token token = _tokenList[index];
-          return TokenWidget(token, onDeleteClicked: () => _removeToken(token));
-        },
-        separatorBuilder: (context, index) {
-          return Divider();
-        },
-        itemCount: _tokenList.length);
+    Widget child = SlidableAutoCloseBehavior(
+      child: ListView.separated(
+          itemBuilder: (context, index) {
+            Token token = _tokenList[index];
+            return TokenWidget(token,
+                onDeleteClicked: () => _removeToken(token));
+          },
+          separatorBuilder: (context, index) {
+            return Divider();
+          },
+          itemCount: _tokenList.length),
+    );
 
     bool allowManualRefresh =
         _tokenList.any((t) => t is PushToken && t.url != null);
 
     return allowManualRefresh
         ? RefreshIndicator(
-            child: list,
+            child: child,
             onRefresh: () async {
               _showMessage(AppLocalizations.of(context)!.pollingChallenges,
                   Duration(seconds: 1));
@@ -470,7 +474,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
               }
             },
           )
-        : list;
+        : child;
   }
 
   void _removeToken(Token token) async {
