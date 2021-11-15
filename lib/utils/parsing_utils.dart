@@ -125,7 +125,9 @@ String serializeRSAPublicKeyPKCS8(RSAPublicKey key) {
 
   var publicKey = ASN1BitString(keySequence.encodedBytes);
 
-  var asn1sequence = ASN1Sequence()..add(algorithm)..add(publicKey);
+  var asn1sequence = ASN1Sequence()
+    ..add(algorithm)
+    ..add(publicKey);
   return base64.encode(asn1sequence.encodedBytes);
 }
 
