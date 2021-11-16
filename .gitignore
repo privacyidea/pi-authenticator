@@ -120,7 +120,7 @@ captures/
 .externalNativeBuild
 
 # Google Services (e.g. APIs or Firebase)
-google-services.json
+../../../Desktop/google-services.json
 
 # Freeline
 freeline.py
