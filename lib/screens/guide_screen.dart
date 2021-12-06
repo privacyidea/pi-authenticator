@@ -23,7 +23,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
 
 class GuideScreen extends StatelessWidget {
   // Without the offset the scroll bar is not shown the first time the screen
@@ -88,7 +87,7 @@ class GuideScreen extends StatelessWidget {
                 }
               },
             ),
-            tileColor: PRIMARY_COLOR,
+            tileColor: Theme.of(context).primaryColor,
           ),
         ],
       ),

@@ -120,7 +120,6 @@ public class Util {
     }
 
     public String loadTokensJSON() throws IOException, GeneralSecurityException {
-        logprint("LOADING TOKEN");
         byte[] data = loadDataFromFile(DATAFILE);
 
         String out = new String(data);
@@ -375,7 +374,6 @@ public class Util {
      * @return An ArrayList of Tokens
      */
     public ArrayList<Token> loadTokens() throws IOException, GeneralSecurityException {
-        logprint("LOADING TOKEN");
         ArrayList<Token> tokens = new ArrayList<>();
         try {
             byte[] data = loadDataFromFile(DATAFILE);

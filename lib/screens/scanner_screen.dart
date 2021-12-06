@@ -19,7 +19,6 @@
 */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
 import 'package:qr_mobile_vision/qr_mobile_vision.dart';
 
@@ -34,17 +33,19 @@ class QRScannerScreenState extends State<QRScannerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Plugin example app'),
-      ),
       body: SizedBox.expand(
         child: QrCamera(
           key: key,
           formats: [BarcodeFormats.QR_CODE],
-          onError: (context, error) => Text(
-            error.toString(),
-            style: TextStyle(color: Colors.red),
-          ),
+          onError: (context, _) {
+            Navigator.pop(context, null);
+            key.currentState!.stop();
+
+            return Text(""); // Must return a widget
+          },
+          child: Text(""),
+          notStartedBuilder: (_) => Text(""),
+          offscreenBuilder: (_) => Text(""),
           qrCodeCallback: (code) {
             Navigator.pop(context, code);
             key.currentState!.stop();

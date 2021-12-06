@@ -115,7 +115,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                     ValueChanged<Locale?>? onChanged;
 
                     if (snapshot.hasData) {
-                      enableDropDown = !snapshot.data!;
+                      enableDropDown = !(snapshot.data!);
                     }
 
                     if (enableDropDown) {
@@ -130,7 +130,6 @@ class SettingsScreenState extends State<SettingsScreen> {
                         if (!snapshot.hasData || snapshot.hasError) {
                           return Placeholder();
                         } else {
-                          print(snapshot.data);
                           return Padding(
                             padding: EdgeInsets.symmetric(horizontal: 20),
                             child: DropdownButton<Locale>(
@@ -151,8 +150,14 @@ class SettingsScreenState extends State<SettingsScreen> {
                                   value: value,
                                   child: Text(
                                     "$value",
-                                    style:
-                                        Theme.of(context).textTheme.subtitle1,
+                                    style: onChanged == null
+                                        ? Theme.of(context)
+                                            .textTheme
+                                            .subtitle1!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .disabledColor)
+                                        : Theme.of(context).textTheme.subtitle1,
                                   ),
                                 );
                               }).toList(),
@@ -264,6 +269,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                 );
               },
             ),
+            Divider(),
             SettingsGroup(
               title: AppLocalizations.of(context)!.migration,
               children: [
@@ -279,23 +285,6 @@ class SettingsScreenState extends State<SettingsScreen> {
                 ),
               ],
             ),
-
-//            Divider(),
-//            SettingsGroup(
-//              title: 'Behavior',
-//              children: <Widget>[
-//                ListTile(
-//                  title: Text('Hide otp'),
-//                  subtitle: Text('Description'),
-//                  trailing: Switch(
-//                    value: _hideOTP,
-//                    onChanged: (value) {
-//                      _hideOTP = value;
-//                    },
-//                  ),
-//                ),
-//              ],
-//            ),
           ],
         ),
       ),

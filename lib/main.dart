@@ -113,7 +113,7 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
                       locale = snapshot.data!;
                     }
 
-                    // Update indicator after al setup code is done.
+                    // Update indicator after all setup code is done.
                     settings.isFirstRun = false;
 
                     return MaterialApp(

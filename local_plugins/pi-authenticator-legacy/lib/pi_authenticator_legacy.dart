@@ -50,7 +50,7 @@ class Legacy {
         );
         throw PlatformException(
             message: "Signing failed.", code: LEGACY_SIGNING_ERROR);
-      }) as FutureOr<String>);
+      }));
 
   static Future<bool> verify(
           String serial, String signedData, String signature) async =>
@@ -66,7 +66,7 @@ class Legacy {
         );
 
         return false;
-      }) as FutureOr<bool>);
+      }));
 
   static Future<String> loadAllTokens() async => await (_channel
           .invokeMethod(METHOD_LOAD_ALL_TOKENS)
@@ -78,7 +78,7 @@ class Legacy {
         );
 
         return "[]";
-      }) as FutureOr<String>);
+      }));
 
   static Future<String> loadFirebaseConfig() async => await (_channel
           .invokeMethod(METHOD_LOAD_FIREBASE_CONFIG)
@@ -90,5 +90,5 @@ class Legacy {
         );
 
         return "{}";
-      }) as FutureOr<String>);
+      }));
 }

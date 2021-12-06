@@ -75,7 +75,6 @@ class TokenWidget extends StatefulWidget {
 
 abstract class _TokenWidgetState extends State<TokenWidget> {
   Token _token;
-  static final SlidableController _slidableController = SlidableController();
 
   _TokenWidgetState(this._token) {
     _saveThisToken();
@@ -86,7 +85,10 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     if (_token.label.isNotEmpty) {
       children.add(Text(
         _token.label,
-        style: Theme.of(context).textTheme.headline5,
+        style: Theme.of(context)
+            .textTheme
+            .headline6!
+            .copyWith(fontWeight: FontWeight.normal),
       ));
     }
     if (_token.issuer.isNotEmpty) {
@@ -103,40 +105,56 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> secondaryActions = [
-      IconSlideAction(
-        caption: AppLocalizations.of(context)!.delete,
-        color: Colors.red,
+    final List<Widget> actions = [
+      SlidableAction(
+        label: AppLocalizations.of(context)!.delete,
+        backgroundColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.red.shade400
+            : Colors.red.shade800,
+        foregroundColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
         icon: Icons.delete,
-        onTap: () => _deleteTokenDialog(),
+        onPressed: (_) => _deleteTokenDialog(),
       ),
-      IconSlideAction(
-        caption: AppLocalizations.of(context)!.rename,
-        color: Colors.blue,
+      SlidableAction(
+        label: AppLocalizations.of(context)!.rename,
+        backgroundColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.blue.shade400
+            : Colors.blue.shade800,
+        foregroundColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
         icon: Icons.edit,
-        onTap: () => _renameTokenDialog(),
+        onPressed: (_) => _renameTokenDialog(),
       ),
     ];
 
     if (_token.canToggleLock) {
-      secondaryActions.add(IconSlideAction(
-        caption: _token.isLocked
+      actions.add(SlidableAction(
+        label: _token.isLocked
             ? AppLocalizations.of(context)!.unlock
             : AppLocalizations.of(context)!.lock,
-        color: Colors.yellow,
+        backgroundColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.yellow.shade400
+            : Colors.yellow.shade800,
+        foregroundColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
         icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
-        onTap: () => _changeLockStatus(),
+        onPressed: (_) => _changeLockStatus(),
       ));
     }
 
     return Slidable(
       key: ValueKey(_token.id),
-      // This is used to only let one Slidable be open at a time.
-      controller: _slidableController,
-      actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.25,
+      groupTag: 'myTag', // This is used to only let one be open at a time.
+      endActionPane: ActionPane(
+        motion: const DrawerMotion(),
+        extentRatio: 1,
+        children: actions,
+      ),
       child: _buildTile(),
-      secondaryActions: secondaryActions,
     );
   }
 
@@ -264,14 +282,12 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.cancel,
-                  style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.rename,
-                  style: Theme.of(context).textTheme.headline6,
                 ),
                 onPressed: () {
                   if (_nameInputKey.currentState!.validate()) {
@@ -313,7 +329,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   AppLocalizations.of(context)!.cancel,
-                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
               TextButton(
@@ -323,7 +338,6 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 },
                 child: Text(
                   AppLocalizations.of(context)!.delete,
-                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
             ],
@@ -673,7 +687,11 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
               ListTile(
                 title: Text(
                   _token.serial,
-                  style: Theme.of(context).textTheme.headline4,
+                  textScaleFactor: 2.5,
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                        fontFamily: "monospace",
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 subtitle: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -880,9 +898,13 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            textScaleFactor: 2.0,
+            textScaleFactor: 2.5,
             enabled: _token.isLocked,
-            hideDuration: Duration(seconds: 6),
+            hideDuration: Duration(seconds: 10),
+            textStyle: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: Theme.of(context).accentColor),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -979,9 +1001,13 @@ class _TotpWidgetState extends _OTPTokenWidgetState
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
-            textScaleFactor: 2.0,
+            textScaleFactor: 2.5,
             enabled: _token.isLocked,
-            hideDuration: Duration(seconds: 6),
+            hideDuration: Duration(seconds: 10),
+            textStyle: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: Theme.of(context).accentColor),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,

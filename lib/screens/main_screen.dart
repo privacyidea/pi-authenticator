@@ -31,6 +31,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:package_info/package_info.dart';
@@ -49,6 +50,7 @@ import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
+import 'package:privacyidea_authenticator/widgets/custom_texts.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uni_links/uni_links.dart';
@@ -502,22 +504,25 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   /// returns a list wrapped in a RefreshIndicator to manually poll.
   /// If not returns the list only.
   Widget _buildBody() {
-    ListView list = ListView.separated(
-        itemBuilder: (context, index) {
-          Token token = _tokenList[index];
-          return TokenWidget(token, onDeleteClicked: () => _removeToken(token));
-        },
-        separatorBuilder: (context, index) {
-          return Divider();
-        },
-        itemCount: _tokenList.length);
+    Widget child = SlidableAutoCloseBehavior(
+      child: ListView.separated(
+          itemBuilder: (context, index) {
+            Token token = _tokenList[index];
+            return TokenWidget(token,
+                onDeleteClicked: () => _removeToken(token));
+          },
+          separatorBuilder: (context, index) {
+            return Divider();
+          },
+          itemCount: _tokenList.length),
+    );
 
     bool allowManualRefresh =
         _tokenList.any((t) => t is PushToken && t.url != null);
 
     return allowManualRefresh
         ? RefreshIndicator(
-            child: list,
+            child: child,
             onRefresh: () async {
               _showMessage(AppLocalizations.of(context)!.pollingChallenges,
                   Duration(seconds: 1));
@@ -530,7 +535,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
               }
             },
           )
-        : list;
+        : child;
   }
 
   void _removeToken(Token token) async {
@@ -577,22 +582,34 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
             value: "add_manually",
-            child: Text(AppLocalizations.of(context)!.addToken),
+            child: MenuItemWithIcon(
+              icon: Icon(Icons.add_outlined),
+              text: Text(AppLocalizations.of(context)!.addToken),
+            ),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "settings",
-            child: Text(AppLocalizations.of(context)!.settings),
+            child: MenuItemWithIcon(
+              icon: Icon(Icons.settings_outlined),
+              text: Text(AppLocalizations.of(context)!.settings),
+            ),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "about",
-            child: Text(AppLocalizations.of(context)!.about),
+            child: MenuItemWithIcon(
+              icon: Icon(Icons.info_outline),
+              text: Text(AppLocalizations.of(context)!.about),
+            ),
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
             value: "guide",
-            child: Text(AppLocalizations.of(context)!.guide),
+            child: MenuItemWithIcon(
+              icon: Icon(Icons.help_outline),
+              text: Text(AppLocalizations.of(context)!.guide),
+            ),
           ),
         ],
       ),
