@@ -742,10 +742,14 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                                 ),
                           onPressed: _acceptButtonIsEnabled
                               ? () async {
-                                  if (await _unlock(
-                                      localizedReason:
-                                          AppLocalizations.of(context)!
-                                              .authenticateToAcceptPush)) {
+                                  if (_token.isLocked) {
+                                    if (await _unlock(
+                                        localizedReason:
+                                            AppLocalizations.of(context)!
+                                                .authenticateToAcceptPush)) {
+                                      acceptRequest();
+                                    }
+                                  } else {
                                     acceptRequest();
                                   }
                                   _disableAcceptButtonForSomeTime();
