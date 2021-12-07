@@ -573,7 +573,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     }
   }
 
-  void acceptRequest() async {
+  Future<void> acceptRequest() async {
     var pushRequest = _token.pushRequests.peek();
 
     log('Push auth request accepted, sending message',
@@ -761,10 +761,20 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                                         localizedReason:
                                             AppLocalizations.of(context)!
                                                 .authenticateToAcceptPush)) {
-                                      acceptRequest();
+
+                                      if (mounted) {
+                                        setState(() => _acceptButtonIsEnabled = false);
+                                      }
+
+                                      await acceptRequest();
                                     }
                                   } else {
-                                    acceptRequest();
+
+                                    if (mounted) {
+                                      setState(() => _acceptButtonIsEnabled = false);
+                                    }
+
+                                    await acceptRequest();
                                   }
                                   _disableAcceptButtonForSomeTime();
                                 }
