@@ -77,7 +77,12 @@ Future<Response> doPost(
 
   IOClient ioClient = IOClient(httpClient);
 
-  Response response = await ioClient.post(url, body: body);
+  Response response;
+  try {
+    response = await ioClient.post(url, body: body);
+  } on SocketException catch (e, s) {
+    response = Response('${e.runtimeType} : $s', 404);
+  }
 
   log("Received response",
       name: "utils.dart",
@@ -105,7 +110,13 @@ Future<Response> doGet(
   Uri urlWithParameters = Uri.parse('$url?serial=${parameters['serial']}'
       '&timestamp=${parameters['timestamp']}'
       '&signature=${parameters['signature']}');
-  Response response = await ioClient.get(urlWithParameters);
+
+  Response response;
+  try {
+    response = await ioClient.get(urlWithParameters);
+  } on SocketException catch (e, s) {
+    response = Response('${e.runtimeType} : $s', 404);
+  }
 
 //  String urlWithParameters = '$url';
 //  parameters.forEach((key, value) => urlWithParameters += '&$key=$value');
