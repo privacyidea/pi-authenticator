@@ -573,7 +573,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     }
   }
 
-  void acceptRequest() async {
+  Future<void> acceptRequest() async {
     var pushRequest = _token.pushRequests.peek();
 
     log('Push auth request accepted, sending message',
@@ -756,11 +756,25 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                                 ),
                           onPressed: _acceptButtonIsEnabled
                               ? () async {
-                                  if (await _unlock(
-                                      localizedReason:
-                                          AppLocalizations.of(context)!
-                                              .authenticateToAcceptPush)) {
-                                    acceptRequest();
+                                  if (_token.isLocked) {
+                                    if (await _unlock(
+                                        localizedReason:
+                                            AppLocalizations.of(context)!
+                                                .authenticateToAcceptPush)) {
+
+                                      if (mounted) {
+                                        setState(() => _acceptButtonIsEnabled = false);
+                                      }
+
+                                      await acceptRequest();
+                                    }
+                                  } else {
+
+                                    if (mounted) {
+                                      setState(() => _acceptButtonIsEnabled = false);
+                                    }
+
+                                    await acceptRequest();
                                   }
                                   _disableAcceptButtonForSomeTime();
                                 }
@@ -918,7 +932,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             textStyle: Theme.of(context)
                 .textTheme
                 .subtitle2!
-                .copyWith(color: Theme.of(context).accentColor),
+                .copyWith(color: Theme.of(context).colorScheme.secondary),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -1021,7 +1035,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
             textStyle: Theme.of(context)
                 .textTheme
                 .subtitle2!
-                .copyWith(color: Theme.of(context).accentColor),
+                .copyWith(color: Theme.of(context).colorScheme.secondary),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,

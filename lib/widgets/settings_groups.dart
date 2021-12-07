@@ -36,7 +36,7 @@ class SettingsGroup extends StatelessWidget {
           leading: Text(
             title,
             style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
           ),
         ),
