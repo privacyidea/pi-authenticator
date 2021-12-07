@@ -17,6 +17,11 @@ specified in our
 
 We use the [Flutter](https://flutter.dev/) framework for developing our application. This enables us to use a single code base for both Android and iOS, for development itself we use [Android Studio](https://developer.android.com/studio) with the official [Flutter plugin](https://github.com/flutter/flutter-intellij).
 
+The app can be build for android by running `flutter build apk [--release | --debug]` at the root of the project, for building the iOS version the command is `flutter build ipa`. Building for iOS requires to run this on an Apple device.
+For testing purposes the application can be run in release mode by running `flutter run --release`.
+
+For serializing the model of this application (i.e., the tokens) we use generated files. If the model was changed, run the script `update_serialization.sh` to update the generated files.
+
 # Tests
 
 Tests are located under `app/test`. These can be run from within Android Studio, if the necessary plugins are installed or directly by running `flutter test` at the root of the project. For additional information please view the official [Flutter documentation](https://flutter.dev/docs/testing).
@@ -24,6 +29,8 @@ Tests are located under `app/test`. These can be run from within Android Studio,
 ![Unit and widget tests](https://github.com/privacyidea/pi-authenticator/workflows/flutter%20test/badge.svg?branch=master)
 
 ![Integrations tests](https://github.com/privacyidea/pi-authenticator/workflows/flutter%20driver/badge.svg?branch=master)
+
+Integrations tests can be run by executing the shell script `run_driver.sh` directly.
 
 # Contribution
 
