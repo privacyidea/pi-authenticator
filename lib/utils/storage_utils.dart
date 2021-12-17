@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -83,8 +83,8 @@ class StorageUtil {
       // TODO Is this still needed? Can a json annotation be used instead to
       //  define default values?
       // Handle new fields here
-      serializedToken['issuer'] ??= "";
-      serializedToken['label'] ??= "";
+      serializedToken['issuer'] ??= '';
+      serializedToken['label'] ??= '';
 
       String type = serializedToken['type'];
       if (type == enumAsString(TokenTypes.HOTP)) {
@@ -113,7 +113,7 @@ class StorageUtil {
   // FIREBASE CONFIG
   // ###########################################################################
 
-  static const _CURRENT_APP_TOKEN_KEY = _GLOBAL_PREFIX + "CURRENT_APP_TOKEN";
+  static const _CURRENT_APP_TOKEN_KEY = _GLOBAL_PREFIX + 'CURRENT_APP_TOKEN';
 
   static Future<void> setCurrentFirebaseToken(String str) async =>
       _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str);
@@ -121,7 +121,7 @@ class StorageUtil {
   static Future<String?> getCurrentFirebaseToken() async =>
       _storage.read(key: _CURRENT_APP_TOKEN_KEY);
 
-  static const _NEW_APP_TOKEN_KEY = _GLOBAL_PREFIX + "NEW_APP_TOKEN";
+  static const _NEW_APP_TOKEN_KEY = _GLOBAL_PREFIX + 'NEW_APP_TOKEN';
 
   // This is used for checking if the token was updated.
   static Future<void> setNewFirebaseToken(String str) async =>
@@ -190,7 +190,7 @@ class StorageUtil {
         }
       } else {
         log(
-          "Unknown token type encountered",
+          'Unknown token type encountered',
           name: 'storage_utils.dart#loadAllTokensLegacy',
           error: tokenMap,
         );
@@ -207,7 +207,7 @@ class StorageUtil {
 // Update information
 // ###########################################################################
 
-  static const _KEY_VERSION = _GLOBAL_PREFIX + "_app_version";
+  static const _KEY_VERSION = _GLOBAL_PREFIX + '_app_version';
 
   static Future<String?> getCurrentVersion() async {
     return await _storage.read(key: _KEY_VERSION);

@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -134,7 +134,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 20),
                             child: DropdownButton<Locale>(
                               disabledHint: Text(
-                                "${snapshot.data}",
+                                '${snapshot.data}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .subtitle1!
@@ -149,7 +149,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                                 return DropdownMenuItem<Locale>(
                                   value: value,
                                   child: Text(
-                                    "$value",
+                                    '$value',
                                     style: onChanged == null
                                         ? Theme.of(context)
                                             .textTheme
@@ -331,7 +331,8 @@ class AppSettings extends InheritedWidget {
   static String _prefHideOtps = 'KEY_HIDE_OTPS';
   static String _prefEnablePoll = 'KEY_ENABLE_POLLING';
   static String _showGuideOnStartKey = 'KEY_SHOW_GUIDE_ON_START';
-  static String _crashReportRecipientsKey = 'KEY_CRASH_REPORT_RECIPIENTS'; // TODO Use this if the server supports it
+  static String _crashReportRecipientsKey =
+      'KEY_CRASH_REPORT_RECIPIENTS'; // TODO Use this if the server supports it
   static String _localePreferenceKey = 'KEY_LOCALE_PREFERENCE';
   static String _useSystemLocaleKey = 'KEY_USE_SYSTEM_LOCALE';
   static String _isFirstRunKey = 'KEY_IS_FIRST_RUN';
@@ -420,6 +421,6 @@ class AppSettings extends InheritedWidget {
 
   static Locale _decodeLocale(String str) {
     var split = str.split('#');
-    return split[1] == "null" ? Locale(split[0]) : Locale(split[0], split[1]);
+    return split[1] == 'null' ? Locale(split[0]) : Locale(split[0], split[1]);
   }
 }

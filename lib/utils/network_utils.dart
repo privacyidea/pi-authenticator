@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -32,14 +32,14 @@ Future<void> dummyRequest({required Uri url, bool sslVerify = true}) async {
   HttpClient httpClient = HttpClient();
   httpClient.badCertificateCallback =
       ((X509Certificate cert, String host, int port) => !sslVerify);
-  httpClient.userAgent = "privacyIDEA-App /"
-      " ${Platform.operatingSystem}"
-      " ${(await PackageInfo.fromPlatform()).version}";
+  httpClient.userAgent = 'privacyIDEA-App /'
+      ' ${Platform.operatingSystem}'
+      ' ${(await PackageInfo.fromPlatform()).version}';
 
   IOClient ioClient = IOClient(httpClient);
 
   try {
-    await ioClient.post(url, body: "");
+    await ioClient.post(url, body: '');
   } on SocketException {
     // ignore
   } finally {
@@ -52,9 +52,9 @@ Future<Response> doPost(
     {required Uri url,
     required Map<String, String?> body,
     bool sslVerify = true}) async {
-  log("Sending post request",
-      name: "utils.dart#doPost",
-      error: "URI: $url, SSLVerify: $sslVerify, Body: $body");
+  log('Sending post request',
+      name: 'utils.dart#doPost',
+      error: 'URI: $url, SSLVerify: $sslVerify, Body: $body');
 
   List<MapEntry> entries =
       body.entries.where((element) => element.value == null).toList();
@@ -64,16 +64,16 @@ Future<Response> doPost(
       nullEntries.add(entry.key);
     }
     throw ArgumentError(
-        "Can not send request because the [body] contains a null values at entries $nullEntries,"
-        " this is not permitted.");
+        'Can not send request because the [body] contains a null values at entries $nullEntries,'
+        ' this is not permitted.');
   }
 
   HttpClient httpClient = HttpClient();
   httpClient.badCertificateCallback =
       ((X509Certificate cert, String host, int port) => !sslVerify);
-  httpClient.userAgent = "privacyIDEA-App /"
-      " ${Platform.operatingSystem}"
-      " ${(await PackageInfo.fromPlatform()).version}";
+  httpClient.userAgent = 'privacyIDEA-App /'
+      ' ${Platform.operatingSystem}'
+      ' ${(await PackageInfo.fromPlatform()).version}';
 
   IOClient ioClient = IOClient(httpClient);
 
@@ -84,8 +84,8 @@ Future<Response> doPost(
     response = Response('${e.runtimeType} : $s', 404);
   }
 
-  log("Received response",
-      name: "utils.dart#doPost",
+  log('Received response',
+      name: 'utils.dart#doPost',
       error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
 
   ioClient.close();
@@ -100,9 +100,9 @@ Future<Response> doGet(
   HttpClient httpClient = HttpClient();
   httpClient.badCertificateCallback =
       ((X509Certificate cert, String host, int port) => !sslVerify!);
-  httpClient.userAgent = "privacyIDEA-App /"
-      " ${Platform.operatingSystem}"
-      " ${(await PackageInfo.fromPlatform()).version}";
+  httpClient.userAgent = 'privacyIDEA-App /'
+      ' ${Platform.operatingSystem}'
+      ' ${(await PackageInfo.fromPlatform()).version}';
 
   IOClient ioClient = IOClient(httpClient);
   // TODO Make this more general!
@@ -123,8 +123,8 @@ Future<Response> doGet(
 //  print('$urlWithParameters');
 //  Response response = await ioClient.get(urlWithParameters);
 
-  log("Received response",
-      name: "utils.dart#doGet",
+  log('Received response',
+      name: 'utils.dart#doGet',
       error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
 
   ioClient.close();

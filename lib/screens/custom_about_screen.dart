@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -28,15 +28,15 @@ import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomLicenseScreen extends StatefulWidget {
-  final String applicationName = "privacyIDEA Authenticator";
+  final String applicationName = 'privacyIDEA Authenticator';
   final Widget applicationIcon = SvgPicture.asset(
     'res/logo/app_logo_light.svg',
     width: 330,
   );
-  final String applicationLegalese = "Apache License 2.0";
+  final String applicationLegalese = 'Apache License 2.0';
   final Uri gitHubLink =
-      Uri.parse("https://github.com/privacyidea/pi-authenticator");
-  final Uri websiteLink = Uri.parse("https://netknights.it");
+      Uri.parse('https://github.com/privacyidea/pi-authenticator');
+  final Uri websiteLink = Uri.parse('https://netknights.it');
 
   @override
   State<StatefulWidget> createState() => _CustomLicenseScreenState();
@@ -52,7 +52,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
         child: Column(
           children: <Widget>[
             Text(
-              "${widget.applicationName}",
+              '${widget.applicationName}',
               style: Theme.of(context).textTheme.headline5,
             ),
             widget.applicationIcon,
@@ -81,7 +81,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
             ),
             TextButton(
               child: Text(
-                "${widget.applicationLegalese}",
+                '${widget.applicationLegalese}',
               ),
               onPressed: _showAppLicenseDialog,
             ),
@@ -162,7 +162,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
         return Dialog(
           child: StreamBuilder<LicenseEntry>(
             stream: LicenseRegistry.licenses.where((event) =>
-                event.packages.contains("privacyIDEA Authenticator")),
+                event.packages.contains('privacyIDEA Authenticator')),
             builder: (context, snapshot) {
               if (snapshot.hasData)
                 return SingleChildScrollView(

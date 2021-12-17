@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2020 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -43,7 +43,7 @@ class CustomEmailManualHandler extends ReportHandler {
   final String? emailHeader;
   final bool sendHtml;
   final bool printLogs;
-  final Logger _logger = Logger("EmailManualHandler");
+  final Logger _logger = Logger('EmailManualHandler');
 
   CustomEmailManualHandler(this.recipients,
       {this.enableDeviceParameters = true,
@@ -68,18 +68,18 @@ class CustomEmailManualHandler extends ReportHandler {
         recipients: recipients,
         isHTML: sendHtml,
       );
-      _printLog("Creating mail request");
+      _printLog('Creating mail request');
       await FlutterMailer.send(mailOptions);
-      _printLog("Creating mail request success");
+      _printLog('Creating mail request success');
       return true;
     } catch (exc, stackTrace) {
-      _printLog("Exception occured: $exc stack: $stackTrace");
+      _printLog('Exception occured: $exc stack: $stackTrace');
       return false;
     }
   }
 
   String _getTitle(Report report) {
-    return "(${report.applicationParameters.entries.where((e) => e.key == 'version').first.value}) Error report: >> ${report.error} <<";
+    return '(${report.applicationParameters.entries.where((e) => e.key == 'version').first.value}) Error report: >> ${report.error} <<';
   }
 
   String _getBody(Report report) {
@@ -94,37 +94,37 @@ class CustomEmailManualHandler extends ReportHandler {
     final StringBuffer buffer = StringBuffer();
     if (emailHeader?.isNotEmpty == true) {
       buffer.write(emailHeader);
-      buffer.write("<hr><br>");
+      buffer.write('<hr><br>');
     }
 
-    buffer.write("<h2>Error:</h2>");
+    buffer.write('<h2>Error:</h2>');
     buffer.write(report.error.toString());
-    buffer.write("<hr><br>");
+    buffer.write('<hr><br>');
     if (enableStackTrace) {
-      buffer.write("<h2>Stack trace:</h2>");
-      buffer.write(report.stackTrace.toString().replaceAll("\n", "<br>"));
-      buffer.write("<hr><br>");
+      buffer.write('<h2>Stack trace:</h2>');
+      buffer.write(report.stackTrace.toString().replaceAll('\n', '<br>'));
+      buffer.write('<hr><br>');
     }
     if (enableDeviceParameters) {
-      buffer.write("<h2>Device parameters:</h2>");
+      buffer.write('<h2>Device parameters:</h2>');
       for (final entry in report.deviceParameters.entries) {
-        buffer.write("<b>${entry.key}</b>: ${entry.value}<br>");
+        buffer.write('<b>${entry.key}</b>: ${entry.value}<br>');
       }
-      buffer.write("<hr><br>");
+      buffer.write('<hr><br>');
     }
     if (enableApplicationParameters) {
-      buffer.write("<h2>Application parameters:</h2>");
+      buffer.write('<h2>Application parameters:</h2>');
       for (final entry in report.applicationParameters.entries) {
-        buffer.write("<b>${entry.key}</b>: ${entry.value}<br>");
+        buffer.write('<b>${entry.key}</b>: ${entry.value}<br>');
       }
-      buffer.write("<br><br>");
+      buffer.write('<br><br>');
     }
     if (enableCustomParameters) {
-      buffer.write("<h2>Custom parameters:</h2>");
+      buffer.write('<h2>Custom parameters:</h2>');
       for (final entry in report.customParameters.entries) {
-        buffer.write("<b>${entry.key}</b>: ${entry.value}<br>");
+        buffer.write('<b>${entry.key}</b>: ${entry.value}<br>');
       }
-      buffer.write("<br><br>");
+      buffer.write('<br><br>');
     }
 
     return buffer.toString();
@@ -134,37 +134,37 @@ class CustomEmailManualHandler extends ReportHandler {
     final StringBuffer buffer = StringBuffer();
     if (emailHeader?.isNotEmpty == true) {
       buffer.write(emailHeader);
-      buffer.write("\n\n");
+      buffer.write('\n\n');
     }
 
-    buffer.write("Error:\n");
+    buffer.write('Error:\n');
     buffer.write(report.error.toString());
-    buffer.write("\n\n");
+    buffer.write('\n\n');
     if (enableStackTrace) {
-      buffer.write("Stack trace:\n");
+      buffer.write('Stack trace:\n');
       buffer.write(report.stackTrace.toString());
-      buffer.write("\n\n");
+      buffer.write('\n\n');
     }
     if (enableDeviceParameters) {
-      buffer.write("Device parameters:\n");
+      buffer.write('Device parameters:\n');
       for (final entry in report.deviceParameters.entries) {
-        buffer.write("${entry.key}: ${entry.value}\n");
+        buffer.write('${entry.key}: ${entry.value}\n');
       }
-      buffer.write("\n\n");
+      buffer.write('\n\n');
     }
     if (enableApplicationParameters) {
-      buffer.write("Application parameters:\n");
+      buffer.write('Application parameters:\n');
       for (final entry in report.applicationParameters.entries) {
-        buffer.write("${entry.key}: ${entry.value}\n");
+        buffer.write('${entry.key}: ${entry.value}\n');
       }
-      buffer.write("\n\n");
+      buffer.write('\n\n');
     }
     if (enableCustomParameters) {
-      buffer.write("Custom parameters:\n");
+      buffer.write('Custom parameters:\n');
       for (final entry in report.customParameters.entries) {
-        buffer.write("${entry.key}: ${entry.value}\n");
+        buffer.write('${entry.key}: ${entry.value}\n');
       }
-      buffer.write("\n\n");
+      buffer.write('\n\n');
     }
 
     return buffer.toString();
@@ -255,25 +255,25 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
   }
 
   Widget _buildInnerWidget() {
-    String text = "${widget.report.error}\n";
+    String text = '${widget.report.error}\n';
 
-    text += "\n";
+    text += '\n';
 
-    text += "Stack trace:\n";
-    text += "${widget.report.stackTrace}\n";
+    text += 'Stack trace:\n';
+    text += '${widget.report.stackTrace}\n';
 
-    text += "\n";
+    text += '\n';
 
-    text += "Device parameters:\n";
+    text += 'Device parameters:\n';
     for (final entry in widget.report.deviceParameters.entries) {
-      text += "${entry.key}: ${entry.value}\n";
+      text += '${entry.key}: ${entry.value}\n';
     }
 
-    text += "\n";
+    text += '\n';
 
-    text += "Application parameters:\n";
+    text += 'Application parameters:\n';
     for (final entry in widget.report.applicationParameters.entries) {
-      text += "${entry.key}: ${entry.value}\n";
+      text += '${entry.key}: ${entry.value}\n';
     }
 
     return Container(

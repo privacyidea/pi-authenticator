@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -69,8 +69,8 @@ class TokenWidget extends StatefulWidget {
     } else if (_token is PushToken) {
       return _PushWidgetState(_token);
     } else {
-      throw ArgumentError.value(_token, "token",
-          "The token [$_token] is of unknown type and not supported.");
+      throw ArgumentError.value(_token, 'token',
+          'The token [$_token] is of unknown type and not supported.');
     }
   }
 }
@@ -307,9 +307,9 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     _token.label = newLabel;
     await _saveThisToken();
     log(
-      "Renamed token:",
-      name: "token_widgets.dart",
-      error: "\"${_token.label}\" changed to \"$newLabel\"",
+      'Renamed token:',
+      name: 'token_widgets.dart',
+      error: '\'${_token.label}\' changed to \'$newLabel\'',
     );
 
     if (mounted) {
@@ -430,9 +430,9 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     if (t == null) return;
 
     log(
-        "Push token may have received a request while app was "
-        "in background. Updating UI.",
-        name: "token_widgets.dart");
+        'Push token may have received a request while app was '
+        'in background. Updating UI.',
+        name: 'token_widgets.dart');
 
     _deleteExpiredRequests(t);
     _token = t;
@@ -472,9 +472,9 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       final keyPair = await generateRSAKeyPair();
 
       log(
-        "Setting private key for token",
-        name: "token_widgets.dart",
-        error: "Token: $_token, key: ${keyPair.privateKey}",
+        'Setting private key for token',
+        name: 'token_widgets.dart',
+        error: 'Token: $_token, key: ${keyPair.privateKey}',
       );
       _token
         ..setPrivateTokenKey(keyPair.privateKey)
@@ -504,10 +504,10 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           setState(() => {}); // Update ui
         }
       } else {
-        log("Post request on roll out failed.",
-            name: "token_widgets.dart",
-            error: "Token: $_token, Status code: ${response.statusCode},"
-                " Body: ${response.body}");
+        log('Post request on roll out failed.',
+            name: 'token_widgets.dart',
+            error: 'Token: $_token, Status code: ${response.statusCode},'
+                ' Body: ${response.body}');
 
         if (mounted) {
           setState(() => _rollOutFailed = true);
@@ -519,8 +519,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
             3);
       }
     } on PlatformException catch (e, s) {
-      log("Roll out push token [$_token] failed.",
-          name: "token_widgets.dart", error: e);
+      log('Roll out push token [$_token] failed.',
+          name: 'token_widgets.dart', error: e);
 
       if (mounted) {
         setState(() => _rollOutFailed = true);
@@ -533,8 +533,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
         Catcher.reportCheckedError(e, s);
       }
     } on SocketException catch (e) {
-      log("Roll out push token [$_token] failed.",
-          name: "token_widgets.dart", error: e);
+      log('Roll out push token [$_token] failed.',
+          name: 'token_widgets.dart', error: e);
 
       if (mounted) {
         setState(() => _rollOutFailed = true);
@@ -543,8 +543,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       _showMessage(
           AppLocalizations.of(context)!.errorRollOutNoNetworkConnection, 3);
     } on Exception catch (e, stack) {
-      log("Roll out push token [$_token] failed.",
-          name: "token_widgets.dart", error: e);
+      log('Roll out push token [$_token] failed.',
+          name: 'token_widgets.dart', error: e);
 
       if (mounted) {
         setState(() => _rollOutFailed = true);
@@ -556,20 +556,20 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   }
 
   Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
-    log("Parsing rollout response, try to extract public_key.",
-        name: "token_widgets.dart", error: response.body);
+    log('Parsing rollout response, try to extract public_key.',
+        name: 'token_widgets.dart', error: response.body);
 
     try {
       String key = json.decode(response.body)['detail']['public_key'];
       key = key.replaceAll('\n', '');
 
-      log("Extracting public key was successful.",
-          name: "token_widgets.dart", error: key);
+      log('Extracting public key was successful.',
+          name: 'token_widgets.dart', error: key);
 
       return deserializeRSAPublicKeyPKCS1(key);
     } on FormatException catch (e) {
       throw FormatException(
-          "Response body does not contain RSA public key.", e);
+          'Response body does not contain RSA public key.', e);
     }
   }
 
@@ -607,10 +607,10 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
             2);
         removeCurrentRequest();
       } else {
-        log("Accepting push auth request failed.",
-            name: "token_widgets.dart",
-            error: "Token: $_token, Status code: ${response.statusCode}, "
-                "Body: ${response.body}");
+        log('Accepting push auth request failed.',
+            name: 'token_widgets.dart',
+            error: 'Token: $_token, Status code: ${response.statusCode}, '
+                'Body: ${response.body}');
 
         if (mounted) {
           setState(() => _acceptFailed = true);
@@ -622,8 +622,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
             3);
       }
     } on SocketException catch (e) {
-      log("Accept push auth request for [$_token] failed.",
-          name: "token_widgets.dart", error: e);
+      log('Accept push auth request for [$_token] failed.',
+          name: 'token_widgets.dart', error: e);
 
       if (mounted) {
         setState(() => _acceptFailed = true);
@@ -634,8 +634,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
               .errorAuthenticationNotPossibleWithoutNetworkAccess,
           3);
     } catch (e) {
-      log("Accept push auth request for [$_token] failed.",
-          name: "token_widgets.dart", error: e);
+      log('Accept push auth request for [$_token] failed.',
+          name: 'token_widgets.dart', error: e);
 
       if (mounted) {
         setState(() => _acceptFailed = true);
@@ -703,7 +703,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                   _token.serial,
                   textScaleFactor: 2.5,
                   style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                        fontFamily: "monospace",
+                        fontFamily: 'monospace',
                         fontWeight: FontWeight.bold,
                       ),
                 ),
@@ -761,17 +761,17 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                                         localizedReason:
                                             AppLocalizations.of(context)!
                                                 .authenticateToAcceptPush)) {
-
                                       if (mounted) {
-                                        setState(() => _acceptButtonIsEnabled = false);
+                                        setState(() =>
+                                            _acceptButtonIsEnabled = false);
                                       }
 
                                       await acceptRequest();
                                     }
                                   } else {
-
                                     if (mounted) {
-                                      setState(() => _acceptButtonIsEnabled = false);
+                                      setState(
+                                          () => _acceptButtonIsEnabled = false);
                                     }
 
                                     await acceptRequest();
@@ -925,7 +925,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
         ListTile(
           title: HideableText(
             controller: _hideableController,
-            text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
+            text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
             textScaleFactor: 2.5,
             enabled: _token.isLocked,
             showDuration: Duration(seconds: 10),
@@ -1028,7 +1028,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
         ListTile(
           title: HideableText(
             controller: _hideableController,
-            text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
+            text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
             textScaleFactor: 2.5,
             enabled: _token.isLocked,
             showDuration: Duration(seconds: 10),
