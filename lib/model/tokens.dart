@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -28,7 +28,7 @@ part 'tokens.g.dart';
 
 abstract class Token {
   String _tokenVersion =
-      "v1.0.0"; // The version of this token, this is used for serialization.
+      'v1.0.0'; // The version of this token, this is used for serialization.
   String _label; // the name of the token, it cannot be uses as an identifier
   String _issuer; // The issuer of this token, currently unused.
   String _id; // this is the identifier of the token
@@ -235,7 +235,7 @@ class PushToken extends Token {
   set pushRequests(PushRequestQueue queue) {
     if (_pushRequests != null) {
       throw ArgumentError(
-          "Initializing [pushRequests] in [PushToken] is only allowed once.");
+          'Initializing [pushRequests] in [PushToken] is only allowed once.');
     }
 
     this._pushRequests = queue;
@@ -252,7 +252,7 @@ class PushToken extends Token {
   set knownPushRequests(CustomIntBuffer buffer) {
     if (_knownPushRequests != null) {
       throw ArgumentError(
-          "Initializing [knownPushRequests] in [PushToken] is only allowed once.");
+          'Initializing [knownPushRequests] in [PushToken] is only allowed once.');
     }
 
     this._knownPushRequests = buffer;
@@ -390,7 +390,7 @@ class PushRequestQueue {
   set list(List<PushRequest> l) {
     if (_list != null) {
       throw ArgumentError(
-          "Initializing [list] in [PushRequestQueue] is only allowed once.");
+          'Initializing [list] in [PushRequestQueue] is only allowed once.');
     }
 
     this._list = l;
@@ -490,7 +490,7 @@ class CustomIntBuffer {
   set list(List<int> l) {
     if (_list != null) {
       throw ArgumentError(
-          "Initializing [list] in [CustomStringBuffer] is only allowed once.");
+          'Initializing [list] in [CustomStringBuffer] is only allowed once.');
     }
 
     if (l.length > maxSize) {

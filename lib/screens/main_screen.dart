@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -82,19 +82,22 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     AppSettings.of(context).streamEnablePolling().listen(
       (bool event) {
         if (event) {
-          log('Polling is enabled.', name: 'main_screen.dart');
+          log('Polling is enabled.',
+              name: 'main_screen.dart#_startPollingIfEnabled');
 
           _pollTimer = Timer.periodic(Duration(seconds: 3),
-              (_) => PushProvider.pollForRequests(context));
-          PushProvider.pollForRequests(context);
+              (_) => PushProvider.pollForChallenges(context));
+          PushProvider.pollForChallenges(context);
         } else {
-          log('Polling is disabled.', name: 'main_screen.dart');
+          log('Polling is disabled.',
+              name: 'main_screen.dart#_startPollingIfEnabled');
           _pollTimer?.cancel();
           _pollTimer = null;
         }
       },
       cancelOnError: false,
-      onError: (error) => log('$error', name: 'polling timer'),
+      onError: (error) =>
+          log('$error', name: 'main_screen.dart#_startPollingIfEnabled'),
     );
   }
 
@@ -107,19 +110,21 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     Uri requestUri = Uri.parse(data['url']);
     String requestedSerial = data['serial'];
 
-    log('Incoming push auth request for token with serial.',
-        name: 'main_screen.dart', error: requestedSerial);
+    log('Incoming push challenge for token with serial.',
+        name: 'main_screen.dart#_handleIncomingChallenge',
+        error: requestedSerial);
 
     PushToken? token = tokenList
         .whereType<PushToken>()
         .firstWhereOrNull((t) => t.serial == requestedSerial && t.isRolledOut);
 
     if (token == null) {
-      log("The requested token does not exist or is not rolled out.",
-          name: "main_screen.dart", error: requestedSerial);
+      log('The requested token does not exist or is not rolled out.',
+          name: 'main_screen.dart#_handleIncomingChallenge',
+          error: requestedSerial);
     } else {
       log('Token matched requested token',
-          name: 'main_screen.dart', error: token);
+          name: 'main_screen.dart#_handleIncomingChallenge', error: token);
       String signature = data['signature'];
       String signedData = '${data['nonce']}|'
           '$requestUri|'
@@ -141,7 +146,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
       if (isVerified) {
         log('Validating incoming message was successful.',
-            name: 'main_screen.dart');
+            name: 'main_screen.dart#_handleIncomingChallenge');
 
         PushRequest pushRequest = PushRequest(
             title: data['title'],
@@ -163,13 +168,13 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           PushProvider.showNotification(token, pushRequest, false);
         } else {
           log(
-              "The push request $pushRequest already exists "
-              "for the token with serial ${token.serial}",
-              name: "main_screen.dart");
+              'The push request $pushRequest already exists '
+              'for the token with serial ${token.serial}',
+              name: 'main_screen.dart#_handleIncomingChallenge');
         }
       } else {
         log('Validating incoming message failed.',
-            name: 'main_screen.dart',
+            name: 'main_screen.dart#_handleIncomingChallenge',
             error:
                 'Signature $signature does not match signed data: $signedData');
       }
@@ -177,8 +182,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   Future<void> _handleIncomingAuthRequest(RemoteMessage message) async {
-    log("Foreground message received.",
-        name: "main_screen.dart", error: message);
+    log('Foreground message received.',
+        name: 'main_screen.dart#_handleIncomingAuthRequest', error: message);
     await StorageUtil.protect(() async => _handleIncomingRequest(
         message, await StorageUtil.loadAllTokens(), false));
     await _loadTokenList(); // Update UI
@@ -230,8 +235,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   static Future<void> _firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
-    log("Background message received.",
-        name: "main_screen.dart", error: message);
+    log('Background message received.',
+        name: 'main_screen.dart#_firebaseMessagingBackgroundHandler',
+        error: message);
     await StorageUtil.protect(() async => _handleIncomingRequest(
         message, await StorageUtil.loadAllTokens(), true));
   }
@@ -273,7 +279,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     super.dispose();
   }
 
-  _loadTokenList() async {
+  Future<void> _loadTokenList() async {
     List<Token> l1 = await StorageUtil.loadAllTokens();
     // Sort the list to prevent items from jumping around on ui updates
     l1.sort((a, b) => a.id.hashCode.compareTo(b.id.hashCode));
@@ -310,14 +316,14 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   /// Handles an otpauth link by parsing it and building a token. The token
   /// is then automatically added to the `_tokenList`. If an error occurs,
   /// a message is shown to the user.
-  _handleOtpAuth(String? otpAuth) async {
+  Future<void> _handleOtpAuth(String? otpAuth) async {
     if (otpAuth == null) {
       return;
     }
 
     log(
-      "Try to handle otpAuth:",
-      name: "main_screen.dart",
+      'Try to handle otpAuth:',
+      name: 'main_screen.dart#_handleOtpAuth',
       error: otpAuth,
     );
 
@@ -331,14 +337,14 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(otpAuth));
 
       log(
-        "Adding new token from qr-code:",
-        name: "main_screen.dart",
+        'Adding new token from qr-code:',
+        name: 'main_screen.dart#_handleOtpAuth',
         error: newToken,
       );
 
       if (newToken is PushToken && _tokenList.contains(newToken)) {
         _showMessage(
-            "A token with the serial ${newToken.serial} already exists!",
+            'A token with the serial ${newToken.serial} already exists!',
             Duration(seconds: 2));
         return;
       }
@@ -353,20 +359,20 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     } on ArgumentError catch (e) {
       // Error while parsing qr code.
       log(
-        "Malformed QR code:",
-        name: "main_screen.dart",
+        'Malformed QR code:',
+        name: 'main_screen.dart#_handleOtpAuth',
         error: e.stackTrace,
       );
 
       _showMessage(
-          "${e.message}\n Please inform the creator of this qr code about the problem.",
+          '${e.message}\n Please inform the creator of this qr code about the problem.',
           Duration(seconds: 8));
     }
   }
 
   /// Open the QR-code scanner and call `_handleOtpAuth`, with the scanned
   /// code as the argument.
-  _scanQRCode() async {
+  void _scanQRCode() async {
     String? barcode = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => QRScannerScreen()),
@@ -415,7 +421,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     }
 
     // uri.host -> totp or hotp
-    if (type == "hotp") {
+    if (type == 'hotp') {
       return HOTPToken(
         label: label,
         issuer: issuer,
@@ -425,7 +431,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         secret: encodeSecretAs(secret, Encodings.base32),
         counter: uriMap[URI_COUNTER],
       );
-    } else if (type == "totp") {
+    } else if (type == 'totp') {
       return TOTPToken(
         label: label,
         issuer: issuer,
@@ -438,9 +444,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     } else {
       throw ArgumentError.value(
           uri,
-          "uri",
-          "Building the token type "
-              "[$type] is not a supported right now.");
+          'uri',
+          'Building the token type '
+              '[$type] is not a supported right now.');
     }
   }
 
@@ -470,7 +476,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
             onRefresh: () async {
               _showMessage(AppLocalizations.of(context)!.pollingChallenges,
                   Duration(seconds: 1));
-              bool success = await PushProvider.pollForRequests(context);
+              bool success = await PushProvider.pollForChallenges(context);
               if (!success) {
                 _showMessage(
                   AppLocalizations.of(context)!.pollingFailNoNetworkConnection,
@@ -482,14 +488,15 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         : child;
   }
 
-  void _removeToken(Token token) async {
-    log("Remove: $token");
+  Future<void> _removeToken(Token token) async {
+    log('Remove: $token');
     await StorageUtil.deleteToken(token);
     await _loadTokenList();
   }
 
-  _addToken(Token? newToken) {
-    log("Adding new token:", name: "main_screen.dart", error: newToken);
+  void _addToken(Token? newToken) {
+    log('Adding new token:',
+        name: 'main_screen.dart#_addToken', error: newToken);
     if (newToken != null) {
       _tokenList.add(newToken);
 
@@ -505,7 +512,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     return <Widget>[
       PopupMenuButton<String>(
         onSelected: (String value) async {
-          if (value == "about") {
+          if (value == 'about') {
             // clearLicenses(), // This is used for testing purposes only.
             addAllLicenses();
             Navigator.push(
@@ -514,13 +521,13 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
                 builder: (context) => CustomLicenseScreen(),
               ),
             );
-          } else if (value == "add_manually") {
+          } else if (value == 'add_manually') {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => AddTokenManuallyScreen(),
                 )).then((newToken) => _addToken(newToken));
-          } else if (value == "settings") {
+          } else if (value == 'settings') {
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -538,7 +545,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         elevation: 5.0,
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
-            value: "add_manually",
+            value: 'add_manually',
             child: MenuItemWithIcon(
               icon: Icon(Icons.add_outlined),
               text: Text(AppLocalizations.of(context)!.addToken),
@@ -546,7 +553,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
-            value: "settings",
+            value: 'settings',
             child: MenuItemWithIcon(
               icon: Icon(Icons.settings_outlined),
               text: Text(AppLocalizations.of(context)!.settings),
@@ -554,7 +561,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
-            value: "about",
+            value: 'about',
             child: MenuItemWithIcon(
               icon: Icon(Icons.info_outline),
               text: Text(AppLocalizations.of(context)!.about),
@@ -562,7 +569,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           ),
           PopupMenuDivider(),
           PopupMenuItem<String>(
-            value: "guide",
+            value: 'guide',
             child: MenuItemWithIcon(
               icon: Icon(Icons.help_outline),
               text: Text(AppLocalizations.of(context)!.guide),

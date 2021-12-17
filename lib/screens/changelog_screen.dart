@@ -49,7 +49,8 @@ class ChangelogScreen extends StatelessWidget {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      log('Could not launch url $url', name: 'changelog_screen.dart');
+      log('Could not launch url $url',
+          name: 'changelog_screen.dart#_launchURL');
     }
   }
 }

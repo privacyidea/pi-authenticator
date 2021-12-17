@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -81,12 +81,12 @@ RSAPublicKey deserializeRSAPublicKeyPKCS8(String keyStr) {
   var algorithm = ASN1Parser(encodedAlgorithm.contentBytes()!).nextObject()
       as ASN1ObjectIdentifier;
 
-  if (algorithm.identifier != "1.2.840.113549.1.1.1") {
+  if (algorithm.identifier != '1.2.840.113549.1.1.1') {
     throw ArgumentError.value(
         algorithm.identifier,
-        "algorithm.identifier",
-        "Identifier of algorgorithm does not math identifier of RSA "
-            "(1.2.840.113549.1.1.1).");
+        'algorithm.identifier',
+        'Identifier of algorgorithm does not math identifier of RSA '
+            '(1.2.840.113549.1.1.1).');
   }
 
   var encodedKey = baseSequence.elements[1];
@@ -200,18 +200,18 @@ RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String keyStr) {
 Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
   Uri uri = Uri.parse(uriAsString);
   log(
-    "Barcode is valid Uri:",
-    name: "utils.dart",
+    'Barcode is valid Uri:',
+    name: 'utils.dart#parseQRCodeToMap',
     error: uri,
   );
 
   // TODO Parse crash report recipients
 
-  if (uri.scheme != "otpauth") {
+  if (uri.scheme != 'otpauth') {
     throw ArgumentError.value(
       uri,
-      "uri",
-      "The uri is not a valid otpauth uri but a(n) [${uri.scheme}] uri instead.",
+      'uri',
+      'The uri is not a valid otpauth uri but a(n) [${uri.scheme}] uri instead.',
     );
   }
 
@@ -225,8 +225,8 @@ Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
 
   throw ArgumentError.value(
     uri,
-    "uri",
-    "The token type [$type] is not supported.",
+    'uri',
+    'The token type [$type] is not supported.',
   );
 }
 
@@ -248,60 +248,61 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   uriMap[URI_TYPE] = uri.host;
 
   // If we do not support the version of this piauth url, we can stop here.
-  String? pushVersionAsString = uri.queryParameters["v"];
+  String? pushVersionAsString = uri.queryParameters['v'];
 
   if (pushVersionAsString == null) {
-    throw ArgumentError.value(uri, "uri",
-        "Parameter [v] is not an optional parameter and is missing.");
+    throw ArgumentError.value(uri, 'uri',
+        'Parameter [v] is not an optional parameter and is missing.');
   }
 
   try {
     int pushVersion = int.parse(pushVersionAsString);
 
-    log('Parsing push token with version: $pushVersion');
+    log('Parsing push token with version: $pushVersion',
+        name: 'parsing_utils.dart#parsePiAuth');
 
     if (pushVersion > 1) {
       throw ArgumentError.value(
           uri,
-          "uri",
-          "The piauth version [$pushVersionAsString] "
-              "is not supported by this version of the app.");
+          'uri',
+          'The piauth version [$pushVersionAsString] '
+              'is not supported by this version of the app.');
     }
   } on FormatException {
-    throw ArgumentError.value(uri, "uri",
-        "[$pushVersionAsString] is not a valid value for parameter [v].");
+    throw ArgumentError.value(uri, 'uri',
+        '[$pushVersionAsString] is not a valid value for parameter [v].');
   }
 
   List labelIssuerList = _parseLabelAndIssuer(uri);
   uriMap[URI_LABEL] = labelIssuerList[0];
   uriMap[URI_ISSUER] ??= labelIssuerList[1];
 
-  uriMap[URI_SERIAL] = uri.queryParameters["serial"];
-  ArgumentError.checkNotNull(uriMap[URI_SERIAL], "serial");
+  uriMap[URI_SERIAL] = uri.queryParameters['serial'];
+  ArgumentError.checkNotNull(uriMap[URI_SERIAL], 'serial');
 
-  String? url = uri.queryParameters["url"];
+  String? url = uri.queryParameters['url'];
   ArgumentError.checkNotNull(url);
   try {
     uriMap[URI_ROLLOUT_URL] = Uri.parse(url!);
   } on FormatException catch (e) {
     throw ArgumentError.value(
-        uri, "uri", "[$url] is not a valid Uri. Error: ${e.message}");
+        uri, 'uri', '[$url] is not a valid Uri. Error: ${e.message}');
   }
 
-  String ttlAsString = uri.queryParameters["ttl"] ?? "10";
+  String ttlAsString = uri.queryParameters['ttl'] ?? '10';
   try {
     uriMap[URI_TTL] = int.parse(ttlAsString);
   } on FormatException {
     throw ArgumentError.value(
-        uri, "uri", "[$ttlAsString] is not a valid value for parameter [ttl].");
+        uri, 'uri', '[$ttlAsString] is not a valid value for parameter [ttl].');
   }
 
   uriMap[URI_ENROLLMENT_CREDENTIAL] =
-      uri.queryParameters["enrollment_credential"];
+      uri.queryParameters['enrollment_credential'];
   ArgumentError.checkNotNull(
-      uriMap[URI_ENROLLMENT_CREDENTIAL], "enrollment_credential");
+      uriMap[URI_ENROLLMENT_CREDENTIAL], 'enrollment_credential');
 
-  uriMap[URI_SSL_VERIFY] = (uri.queryParameters["sslverify"] ?? "1") == "1";
+  uriMap[URI_SSL_VERIFY] = (uri.queryParameters['sslverify'] ?? '1') == '1';
 
   return uriMap;
 }
@@ -317,16 +318,16 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   uriMap[URI_TYPE] = uri.host;
 
   // parse.path.substring(1) -> Label
-  log("Key: [..] | Value: [..]");
+  log('Key: [..] | Value: [..]', name: 'parsing_utils.dart#parseOtpAuth');
   uri.queryParameters.forEach((key, value) {
-    log("  $key | $value");
+    log('  $key | $value', name: 'parsing_utils.dart#parseOtpAuth');
   });
 
   List labelIssuerList = _parseLabelAndIssuer(uri);
   uriMap[URI_LABEL] = labelIssuerList[0];
   uriMap[URI_ISSUER] ??= labelIssuerList[1];
 
-  String algorithm = uri.queryParameters["algorithm"] ??
+  String algorithm = uri.queryParameters['algorithm'] ??
       enumAsString(Algorithms.SHA1); // Optional parameter
 
   if (!equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA1)) &&
@@ -334,8 +335,8 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
       !equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA512))) {
     throw ArgumentError.value(
       uri,
-      "uri",
-      "The algorithm [$algorithm] is not supported",
+      'uri',
+      'The algorithm [$algorithm] is not supported',
     );
   }
 
@@ -343,13 +344,13 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
 
   // Parse digits.
   String digitsAsString =
-      uri.queryParameters["digits"] ?? "6"; // Optional parameter
+      uri.queryParameters['digits'] ?? '6'; // Optional parameter
 
-  if (digitsAsString != "6" && digitsAsString != "8") {
+  if (digitsAsString != '6' && digitsAsString != '8') {
     throw ArgumentError.value(
       uri,
-      "uri",
-      "[$digitsAsString] is not a valid number of digits",
+      'uri',
+      '[$digitsAsString] is not a valid number of digits',
     );
   }
 
@@ -358,7 +359,7 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   uriMap[URI_DIGITS] = digits;
 
   // Parse secret.
-  String? secretAsString = uri.queryParameters["secret"];
+  String? secretAsString = uri.queryParameters['secret'];
   ArgumentError.checkNotNull(secretAsString);
 
   // This is a fix for omitted padding in base32 encoded secrets.
@@ -366,14 +367,14 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   // According to https://github.com/google/google-authenticator/wiki/Key-Uri-Format,
   // the padding can be omitted, but the libraries for base32 do not allow this.
   if (secretAsString!.length % 2 == 1) {
-    secretAsString += "=";
+    secretAsString += '=';
   }
 
   if (!isValidEncoding(secretAsString, Encodings.base32)) {
     throw ArgumentError.value(
       uri,
-      "uri",
-      "[${enumAsString(Encodings.base32)}] is not a valid encoding for [$secretAsString].",
+      'uri',
+      '[${enumAsString(Encodings.base32)}] is not a valid encoding for [$secretAsString].',
     );
   }
 
@@ -381,46 +382,46 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
 
   uriMap[URI_SECRET] = secret;
 
-  if (uriMap[URI_TYPE] == "hotp") {
+  if (uriMap[URI_TYPE] == 'hotp') {
     // Parse counter.
-    String? counterAsString = uri.queryParameters["counter"];
+    String? counterAsString = uri.queryParameters['counter'];
     try {
       if (counterAsString == null) {
         throw ArgumentError.value(
           uri,
-          "uri",
-          "Value for parameter [counter] is not optional and is missing.",
+          'uri',
+          'Value for parameter [counter] is not optional and is missing.',
         );
       }
       uriMap[URI_COUNTER] = int.parse(counterAsString);
     } on FormatException {
       throw ArgumentError.value(
         uri,
-        "uri",
-        "[$counterAsString] is not a valid value for uri parameter [counter].",
+        'uri',
+        '[$counterAsString] is not a valid value for uri parameter [counter].',
       );
     }
   }
 
-  if (uriMap[URI_TYPE] == "totp") {
+  if (uriMap[URI_TYPE] == 'totp') {
     // Parse period.
-    String periodAsString = uri.queryParameters["period"] ?? "30";
+    String periodAsString = uri.queryParameters['period'] ?? '30';
 
     int? period = int.tryParse(periodAsString);
     if (period == null) {
       throw ArgumentError(
-          "Value [$periodAsString] for parameter [period] is invalid.");
+          'Value [$periodAsString] for parameter [period] is invalid.');
     }
     uriMap[URI_PERIOD] = period;
   }
 
   if (is2StepURI(uri)) {
     // Parse for 2 step roll out.
-    String saltLengthAsString = uri.queryParameters["2step_salt"] ?? "10";
+    String saltLengthAsString = uri.queryParameters['2step_salt'] ?? '10';
     String outputLengthInByteAsString =
-        uri.queryParameters["2step_output"] ?? "20";
+        uri.queryParameters['2step_output'] ?? '20';
     String iterationsAsString =
-        uri.queryParameters["2step_difficulty"] ?? "10000";
+        uri.queryParameters['2step_difficulty'] ?? '10000';
 
     // Parse parameters
     try {
@@ -428,8 +429,8 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
     } on FormatException {
       throw ArgumentError.value(
         uri,
-        "uri",
-        "[$saltLengthAsString] is not a valid value for parameter [2step_salt].",
+        'uri',
+        '[$saltLengthAsString] is not a valid value for parameter [2step_salt].',
       );
     }
     try {
@@ -438,8 +439,8 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
     } on FormatException {
       throw ArgumentError.value(
         uri,
-        "uri",
-        "[$outputLengthInByteAsString] is not a valid value for parameter [2step_output].",
+        'uri',
+        '[$outputLengthInByteAsString] is not a valid value for parameter [2step_output].',
       );
     }
     try {
@@ -447,8 +448,8 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
     } on FormatException {
       throw ArgumentError.value(
         uri,
-        "uri",
-        "[$iterationsAsString] is not a valid value for parameter [2step_difficulty].",
+        'uri',
+        '[$iterationsAsString] is not a valid value for parameter [2step_difficulty].',
       );
     }
   }
@@ -458,14 +459,14 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
 
 /// Parse the label and the issuer (if it exists) from the url.
 List _parseLabelAndIssuer(Uri uri) {
-  String label = "";
-  String issuer = "";
+  String label = '';
+  String issuer = '';
   String param = uri.path.substring(1);
   param = Uri.decodeFull(param);
 
   try {
-    if (param.contains(":")) {
-      List split = param.split(":");
+    if (param.contains(':')) {
+      List split = param.split(':');
       issuer = split[0];
       label = split[1];
     } else {
@@ -489,11 +490,11 @@ String _parseIssuer(Uri uri) {
     issuer = param;
   }
 
-  return issuer ?? "";
+  return issuer ?? '';
 }
 
 bool is2StepURI(Uri uri) {
-  return uri.queryParameters["2step_salt"] != null ||
-      uri.queryParameters["2step_output"] != null ||
-      uri.queryParameters["2step_difficulty"] != null;
+  return uri.queryParameters['2step_salt'] != null ||
+      uri.queryParameters['2step_output'] != null ||
+      uri.queryParameters['2step_difficulty'] != null;
 }

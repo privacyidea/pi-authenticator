@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -37,8 +37,8 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
   static final List<int> allowedPeriods = [30, 60];
 
   // fields needed to build a token
-  String _selectedName = "";
-  String _selectedSecret = "";
+  String _selectedName = '';
+  String _selectedSecret = '';
 
   _Wrapper<Encodings> _selectedEncoding = _Wrapper(Encodings.none);
   _Wrapper<Algorithms> _selectedAlgorithm = _Wrapper(Algorithms.SHA1);
@@ -210,8 +210,8 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
               return DropdownMenuItem<T>(
                 value: value,
                 child: Text(
-                  "${value is String || value is int || value is double ? value : enumAsString(value!)}"
-                  "$postFix",
+                  '${value is String || value is int || value is double ? value : enumAsString(value!)}'
+                  '$postFix',
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
               );

@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -40,6 +40,8 @@ import 'crypto_utils.dart';
 import 'identifiers.dart';
 import 'network_utils.dart';
 
+/// This class bundles all logic that is needed to handle PushTokens, e.g.,
+/// firebase, polling, notifications.
 class PushProvider {
   static late BackgroundMessageHandler _backgroundHandler;
   static late BackgroundMessageHandler _incomingHandler;
@@ -76,21 +78,24 @@ class PushProvider {
     }
     FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
       if ((await StorageUtil.getCurrentFirebaseToken()) != newToken) {
-        log("New firebase token generated: $newToken",
-            name: 'main_screen.dart');
+        log('New firebase token generated: $newToken',
+            name: 'push_provider.dart#_initFirebase');
         await StorageUtil.setNewFirebaseToken(newToken);
         _updateFirebaseToken();
       }
     });
   }
 
+  /// Initializes the notification plugin, notifications are used to inform the
+  /// user about incoming push challenges.
   static Future<void> initNotifications() async {
-    // Stop here if no push tokens exist, we do not want to ask for permissions
-    // on iOS.
+    // Stop here if no push tokens exist, we do not want to ask for notification
+    // permissions on iOS if we do not use them.
     if (!(await StorageUtil.loadAllTokens())
         .any((element) => element is PushToken)) {
       return;
     }
+
     var initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS = IOSInitializationSettings();
@@ -111,10 +116,12 @@ class PushProvider {
     }
 
     if (firebaseToken == null) {
+      // This error should be handled in all cases, the user might be informed
+      // in the form of a pop-up message.
       throw PlatformException(
           message:
-              "Firebase token could not be retrieved, the only know cause of this is"
-              " that the firebase servers could not be reached.",
+              'Firebase token could not be retrieved, the only know cause of this is'
+              ' that the firebase servers could not be reached.',
           code: FIREBASE_TOKEN_ERROR_CODE);
     }
 
@@ -122,17 +129,20 @@ class PushProvider {
     return firebaseToken;
   }
 
+  /// Shows a notification to the user, the content depends on the [challenge].
   static void showNotification(
-      PushToken token, PushRequest pushRequest, bool silent) async {
+      PushToken token, PushRequest challenge, bool silent) async {
     var iOSPlatformChannelSpecifics =
         IOSNotificationDetails(presentSound: !silent);
 
-    var bigTextStyleInformation = BigTextStyleInformation(pushRequest.question,
+    var bigTextStyleInformation = BigTextStyleInformation(challenge.question,
         htmlFormatBigText: true,
-        contentTitle: pushRequest.title,
+        contentTitle: challenge.title,
         htmlFormatContentTitle: true,
         summaryText: 'Token <i>${token.label}</i>',
         htmlFormatSummaryText: true);
+
+    // TODO How to localize this information?
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'privacy_idea_authenticator_push',
       'Push challenges',
@@ -145,9 +155,9 @@ class PushProvider {
     );
 
     await flutterLocalNotificationsPlugin.show(
-      pushRequest.id.hashCode, // ID of the notification
-      pushRequest.title,
-      pushRequest.question,
+      challenge.id.hashCode, // ID of the notification
+      challenge.title,
+      challenge.question,
       NotificationDetails(
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics,
@@ -155,7 +165,7 @@ class PushProvider {
     );
   }
 
-  static Future<bool> pollForRequests(BuildContext context) async {
+  static Future<bool> pollForChallenges(BuildContext context) async {
     // Get all push tokens
     List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
         .whereType<PushToken>()
@@ -168,7 +178,7 @@ class PushProvider {
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
       log('No push token is available for polling, polling is disabled.',
-          name: 'main_screen.dart');
+          name: 'push_provider.dart#pollForChallenges');
       AppSettings.of(context).enablePolling = false;
       return false;
     }
@@ -198,10 +208,10 @@ class PushProvider {
           // The signature of this message must not be verified as each push
           // request gets verified independently.
           Map<String, dynamic> result = jsonDecode(response.body)['result'];
-          List dataList = result['value'].cast<Map<String, dynamic>>();
+          List challengeList = result['value'].cast<Map<String, dynamic>>();
 
-          for (Map<String, dynamic> data in dataList) {
-            _incomingHandler(RemoteMessage(data: data));
+          for (Map<String, dynamic> challenge in challengeList) {
+            _incomingHandler(RemoteMessage(data: challenge));
           }
         } else {
           // Error messages can only be distinguished by their text content,
@@ -210,7 +220,7 @@ class PushProvider {
       } on SocketException {
         log(
           'Polling push tokens not working, server can not be reached.',
-          name: 'main_screen.dart',
+          name: 'push_provider.dart#pollForChallenges',
         );
         return false;
       }
@@ -219,6 +229,7 @@ class PushProvider {
     return true;
   }
 
+  /// Checks if the firebase token was changed and updates it if necessary.
   static Future<void> updateFbTokenIfChanged() async {
     String? newToken = await StorageUtil.getNewFirebaseToken();
 
@@ -279,10 +290,10 @@ class PushProvider {
 
       if (response.statusCode == 200) {
         log('Updating firebase token for push token: ${p.serial} succeeded!',
-            name: 'main_screen.dart');
+            name: 'push_provider.dart#_updateFirebaseToken');
       } else {
         log('Updating firebase token for push token: ${p.serial} failed!',
-            name: 'main_screen.dart');
+            name: 'push_provider.dart#_updateFirebaseToken');
         allUpdated = false;
       }
     }

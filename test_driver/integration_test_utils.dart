@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -39,30 +39,30 @@ void addTokenRoutine(String name, String secret) {
       }
     });
 
-    test("Click the 'add' button", () async {
-      await driver!.tap(find.byType("PopupMenuButton<String>"));
-      await driver!.tap(find.text("Add token"));
+    test('Click the "add" button', () async {
+      await driver!.tap(find.byType('PopupMenuButton<String>'));
+      await driver!.tap(find.text('Add token'));
     });
 
-    test("Enter name and secret", () async {
+    test('Enter name and secret', () async {
       // Enter the name.
       await driver!.tap(find.ancestor(
-          of: find.text("Name"), matching: find.byType("TextFormField")));
+          of: find.text('Name'), matching: find.byType('TextFormField')));
 
       await driver!.enterText(name);
 
       // Enter the secret.
       await driver!.tap(find.ancestor(
-          of: find.text("Secret"), matching: find.byType("TextFormField")));
+          of: find.text('Secret'), matching: find.byType('TextFormField')));
 
       await driver!.enterText(secret);
     });
 
-    test("Click 'add token'", () async {
-      await driver!.tap(find.text("Add token"));
+    test('Click "add" token', () async {
+      await driver!.tap(find.text('Add token'));
     });
 
-    test("Assert the token exists", () async {
+    test('Assert the token exists', () async {
       await driver!.tap(find.text(name));
     });
   });

@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2020 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  Unless required b"y applicable law or agreed to in writing, software
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -28,10 +28,9 @@ import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/themes.dart';
-import 'package:privacyidea_authenticator/widgets/custom_page_report_mode.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
-import 'widgets/CustomEmailManualHandler.dart';
+import 'widgets/custom_catcher.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
