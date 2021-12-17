@@ -22,6 +22,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+/// Text widget that allows obfuscation of its content.
 class HideableTextController {
   var _controller = StreamController<bool>.broadcast();
 
@@ -40,11 +41,26 @@ class HideableTextController {
   }
 }
 
+/// Text widget that allows obfuscation of its content. This allows to show the
+/// content for a specific amount of time before it is hidden.
+/// [text] is the un-obfuscated content.
+/// If [hideOnDefault] is true, the [text] is obfuscated, if set to false the
+/// [text] is visible to the user.
+/// [textScaleFactor] mirrors the field of the [Text] widget.
+/// [showDuration] specifies how long the [text] should be shown to the user
+/// before it is hidden again.
+/// [textStyle] mirrors the field of the [Text] widget.
+/// If [enabled] is set to true, the widget can be toggled to show its content.
+/// [replaceCharacter] defines the character that is shown to the user instead
+/// of the real characters in [text].
+/// If [replaceWhitespaces] is true, whitespaces in [text] are replaced by
+/// [replaceCharacter] too.
+/// [controller] handles the tap detection on the widget that un-hides the content.
 class HideableText extends StatefulWidget {
   final String text;
   final bool hideOnDefault;
   final double textScaleFactor;
-  final Duration hideDuration;
+  final Duration showDuration;
   final TextStyle? textStyle;
   final bool enabled;
   final String replaceCharacter;
@@ -56,7 +72,7 @@ class HideableText extends StatefulWidget {
       required this.text,
       this.hideOnDefault = true,
       this.textScaleFactor = 1.0,
-      required this.hideDuration,
+      required this.showDuration,
       this.textStyle,
       this.enabled = true,
       this.replaceCharacter = "\u2022",
@@ -85,7 +101,7 @@ class HideableTextState extends State<HideableText> {
     _isHidden = false;
     if (mounted) setState(() {});
 
-    Timer(widget.hideDuration, () {
+    Timer(widget.showDuration, () {
       _isHidden = true;
       if (mounted) setState(() {});
     });

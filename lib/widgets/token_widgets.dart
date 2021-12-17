@@ -928,7 +928,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
             enabled: _token.isLocked,
-            hideDuration: Duration(seconds: 10),
+            showDuration: Duration(seconds: 10),
             textStyle: Theme.of(context)
                 .textTheme
                 .subtitle2!
@@ -1031,7 +1031,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
             text: insertCharAt(_otpValue, " ", _token.digits ~/ 2),
             textScaleFactor: 2.5,
             enabled: _token.isLocked,
-            hideDuration: Duration(seconds: 10),
+            showDuration: Duration(seconds: 10),
             textStyle: Theme.of(context)
                 .textTheme
                 .subtitle2!

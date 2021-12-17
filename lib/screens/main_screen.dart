@@ -85,8 +85,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           log('Polling is enabled.', name: 'main_screen.dart');
 
           _pollTimer = Timer.periodic(Duration(seconds: 3),
-              (_) => PushProvider.pollForRequests(context));
-          PushProvider.pollForRequests(context);
+              (_) => PushProvider.pollForChallenges(context));
+          PushProvider.pollForChallenges(context);
         } else {
           log('Polling is disabled.', name: 'main_screen.dart');
           _pollTimer?.cancel();
@@ -470,7 +470,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
             onRefresh: () async {
               _showMessage(AppLocalizations.of(context)!.pollingChallenges,
                   Duration(seconds: 1));
-              bool success = await PushProvider.pollForRequests(context);
+              bool success = await PushProvider.pollForChallenges(context);
               if (!success) {
                 _showMessage(
                   AppLocalizations.of(context)!.pollingFailNoNetworkConnection,

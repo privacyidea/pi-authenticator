@@ -66,7 +66,7 @@ Algorithms mapStringToAlgorithm(String algoAsString) {
 /// This implementation is taken from the library
 /// [foundation](https://api.flutter.dev/flutter/foundation/describeEnum.html).
 /// That library sadly depends on [dart.ui] and thus cannot be used in tests.
-/// Therefor only using this code enables us to use this library ([utils.dart])
+/// Therefore, only using this code enables us to use this library ([utils.dart])
 /// in tests.
 String enumAsString(Object enumEntry) {
   final String description = enumEntry.toString();

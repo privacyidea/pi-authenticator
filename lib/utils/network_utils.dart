@@ -47,13 +47,13 @@ Future<void> dummyRequest({required Uri url, bool sslVerify = true}) async {
   }
 }
 
-/// Custom POST request allows to not verify certificates
+/// Custom POST request allows to not verify certificates.
 Future<Response> doPost(
     {required Uri url,
     required Map<String, String?> body,
     bool sslVerify = true}) async {
   log("Sending post request",
-      name: "utils.dart",
+      name: "utils.dart#doPost",
       error: "URI: $url, SSLVerify: $sslVerify, Body: $body");
 
   List<MapEntry> entries =
@@ -85,7 +85,7 @@ Future<Response> doPost(
   }
 
   log("Received response",
-      name: "utils.dart",
+      name: "utils.dart#doPost",
       error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
 
   ioClient.close();
@@ -124,7 +124,7 @@ Future<Response> doGet(
 //  Response response = await ioClient.get(urlWithParameters);
 
   log("Received response",
-      name: "utils.dart",
+      name: "utils.dart#doGet",
       error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
 
   ioClient.close();

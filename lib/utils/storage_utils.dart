@@ -30,7 +30,7 @@ import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
-// TODO test the behavior of this class.
+// TODO How to test the behavior of this class?
 class StorageUtil {
   // Use this to lock critical sections of code.
   static final Mutex _m = Mutex();
@@ -55,7 +55,7 @@ class StorageUtil {
   static Future<Token?> loadToken(String id) async =>
       (await loadAllTokens()).firstWhereOrNull((t) => t.id == id);
 
-  /// Returns a list of all Tokens that are saved in the secure storage of
+  /// Returns a list of all tokens that are saved in the secure storage of
   /// this device.
   /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
   static Future<List<Token>> loadAllTokens() async {
@@ -68,15 +68,20 @@ class StorageUtil {
       try {
         serializedToken = jsonDecode(value);
       } on FormatException {
+        // Skip everything that does not fit a serialized token
         continue;
       }
 
       if (serializedToken == null || !serializedToken.containsKey('type')) {
+        // Skip everything that fits for deserialization but is not a token
         continue;
       }
 
+      // TODO token.version might be deprecated, is there a reason to use it?
       // TODO when the token version (token.version) changed handle this here.
 
+      // TODO Is this still needed? Can a json annotation be used instead to
+      //  define default values?
       // Handle new fields here
       serializedToken['issuer'] ??= "";
       serializedToken['label'] ??= "";
@@ -134,7 +139,7 @@ class StorageUtil {
 
     String json = await Legacy.loadAllTokens();
 
-    if (json == "") {
+    if (json == '') {
       return tokenList;
     }
 

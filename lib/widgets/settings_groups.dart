@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 
+/// Widget that defines the structure and look of groups on the settings screen.
 class SettingsGroup extends StatelessWidget {
   final String title;
   final List<Widget> children;

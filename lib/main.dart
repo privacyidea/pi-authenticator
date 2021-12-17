@@ -28,10 +28,9 @@ import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/themes.dart';
-import 'package:privacyidea_authenticator/widgets/custom_page_report_mode.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
-import 'widgets/CustomEmailManualHandler.dart';
+import 'widgets/custom_catcher.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
