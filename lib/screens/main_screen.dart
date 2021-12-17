@@ -72,6 +72,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   List<Token> _tokenList = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  // Used for periodically polling for push challenges
   Timer? _pollTimer;
 
   // Used for handling links the app is registered to handle.
@@ -242,6 +243,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     _initStateAsync();
   }
 
+  /// Handles asynchronous calls that should be triggered by `initState`.
   void _initStateAsync() async {
     await PushProvider.initialize(
       handleIncomingMessage: (RemoteMessage message) =>
@@ -273,7 +275,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   _loadTokenList() async {
     List<Token> l1 = await StorageUtil.loadAllTokens();
-    // Prevent the list items from skipping around on ui updates
+    // Sort the list to prevent items from jumping around on ui updates
     l1.sort((a, b) => a.id.hashCode.compareTo(b.id.hashCode));
     this._tokenList = l1;
 
@@ -305,6 +307,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     );
   }
 
+  /// Handles an otpauth link by parsing it and building a token. The token
+  /// is then automatically added to the `_tokenList`. If an error occurs,
+  /// a message is shown to the user.
   _handleOtpAuth(String? otpAuth) async {
     if (otpAuth == null) {
       return;
@@ -347,17 +352,20 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       }
     } on ArgumentError catch (e) {
       // Error while parsing qr code.
-      _showMessage(
-          "${e.message}\n Please inform the creator of this qr code about the problem.",
-          Duration(seconds: 8));
       log(
         "Malformed QR code:",
         name: "main_screen.dart",
         error: e.stackTrace,
       );
+
+      _showMessage(
+          "${e.message}\n Please inform the creator of this qr code about the problem.",
+          Duration(seconds: 8));
     }
   }
 
+  /// Open the QR-code scanner and call `_handleOtpAuth`, with the scanned
+  /// code as the argument.
   _scanQRCode() async {
     String? barcode = await Navigator.push(
       context,
@@ -366,13 +374,24 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     await _handleOtpAuth(barcode);
   }
 
+  /// Builds and returns a token from a given map, that contains all necessary
+  /// fields.
   Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
     String uuid = Uuid().v4();
     String type = uriMap[URI_TYPE];
 
     // Push token do not need any of the other parameters.
     if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
-      return _buildPushToken(uriMap, uuid);
+      return PushToken(
+        serial: uriMap[URI_SERIAL],
+        label: uriMap[URI_LABEL],
+        issuer: uriMap[URI_ISSUER],
+        id: uuid,
+        sslVerify: uriMap[URI_SSL_VERIFY],
+        expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
+        enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
+        url: uriMap[URI_ROLLOUT_URL],
+      );
     }
 
     String label = uriMap[URI_LABEL];
@@ -425,20 +444,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     }
   }
 
-  Future<PushToken> _buildPushToken(
-      Map<String, dynamic> uriMap, String uuid) async {
-    return PushToken(
-      serial: uriMap[URI_SERIAL],
-      label: uriMap[URI_LABEL],
-      issuer: uriMap[URI_ISSUER],
-      id: uuid,
-      sslVerify: uriMap[URI_SSL_VERIFY],
-      expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
-      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-      url: uriMap[URI_ROLLOUT_URL],
-    );
-  }
-
   /// Builds the body of the screen. If any tokens supports polling,
   /// returns a list wrapped in a RefreshIndicator to manually poll.
   /// If not returns the list only.
@@ -483,12 +488,25 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     await _loadTokenList();
   }
 
+  _addToken(Token? newToken) {
+    log("Adding new token:", name: "main_screen.dart", error: newToken);
+    if (newToken != null) {
+      _tokenList.add(newToken);
+
+      if (mounted) {
+        setState(() {});
+      }
+    }
+  }
+
+  /// Builds the `ActionMenu` that allow the user to access, e.g., settings and
+  /// information about the app.
   List<Widget> _buildActionMenu() {
     return <Widget>[
       PopupMenuButton<String>(
         onSelected: (String value) async {
           if (value == "about") {
-//              clearLicenses(), // This is used for testing purposes only.
+            // clearLicenses(), // This is used for testing purposes only.
             addAllLicenses();
             Navigator.push(
               context,
@@ -555,17 +573,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     ];
   }
 
-  _addToken(Token? newToken) {
-    log("Adding new token:", name: "main_screen.dart", error: newToken);
-    if (newToken != null) {
-      _tokenList.add(newToken);
-
-      if (mounted) {
-        setState(() {});
-      }
-    }
-  }
-
+  /// Shows a message to the user for a given `Duration`.
   _showMessage(String message, Duration duration) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(message),

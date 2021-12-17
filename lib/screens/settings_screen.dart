@@ -291,7 +291,8 @@ class SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  /// Shows a dialog to the user that displays all push tokens that do not support polling.
+  /// Shows a dialog to the user that displays all push tokens that do not
+  /// support polling.
   void _showPollingInfo(List<PushToken> unsupported) {
     showDialog(
         context: context,
@@ -323,12 +324,14 @@ class SettingsScreenState extends State<SettingsScreen> {
   }
 }
 
+/// This class contains all device specific settings. E.g., the language used,
+/// if the app was started before.
 class AppSettings extends InheritedWidget {
   // Preferences
   static String _prefHideOtps = 'KEY_HIDE_OTPS';
   static String _prefEnablePoll = 'KEY_ENABLE_POLLING';
   static String _showGuideOnStartKey = 'KEY_SHOW_GUIDE_ON_START';
-  static String _crashReportRecipientsKey = 'KEY_CRASH_REPORT_RECIPIENTS';
+  static String _crashReportRecipientsKey = 'KEY_CRASH_REPORT_RECIPIENTS'; // TODO Use this if the server supports it
   static String _localePreferenceKey = 'KEY_LOCALE_PREFERENCE';
   static String _useSystemLocaleKey = 'KEY_USE_SYSTEM_LOCALE';
   static String _isFirstRunKey = 'KEY_IS_FIRST_RUN';

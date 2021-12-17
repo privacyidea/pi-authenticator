@@ -28,27 +28,30 @@ class QRScannerScreen extends StatefulWidget {
 }
 
 class QRScannerScreenState extends State<QRScannerScreen> {
-  final GlobalKey<QrCameraState> key = GlobalKey();
+  final GlobalKey<QrCameraState> _key = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SizedBox.expand(
         child: QrCamera(
-          key: key,
-          formats: [BarcodeFormats.QR_CODE],
+          key: _key,
+          formats: [BarcodeFormats.QR_CODE], // Ignore other codes than qr codes
           onError: (context, _) {
             Navigator.pop(context, null);
-            key.currentState!.stop();
+            _key.currentState!.stop();
 
-            return Text(""); // Must return a widget
+            // Method must return a widget, so return one that does not display anything.
+            return Text('');
           },
-          child: Text(""),
-          notStartedBuilder: (_) => Text(""),
-          offscreenBuilder: (_) => Text(""),
+          // We have nothing to display in these cases, overwrite default
+          // behaviour with 'non-visible' content.
+          child: Text(''),
+          notStartedBuilder: (_) => Text(''),
+          offscreenBuilder: (_) => Text(''),
           qrCodeCallback: (code) {
             Navigator.pop(context, code);
-            key.currentState!.stop();
+            _key.currentState!.stop();
           },
         ),
       ),

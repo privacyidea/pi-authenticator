@@ -30,6 +30,7 @@ import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import 'identifiers.dart';
 
+
 Future<Uint8List> pbkdf2(
     {required Uint8List salt,
     required int iterations,
@@ -51,6 +52,7 @@ Future<Uint8List> pbkdf2(
   return compute(_pbkdfIsolate, map);
 }
 
+/// Computationally costly method to be run in an isolate.
 Uint8List _pbkdfIsolate(Map<String, dynamic> arguments) {
   // Setup algorithm (PBKDF2 - HMAC - SHA1).
   PBKDF2KeyDerivator keyDerivator =
@@ -84,13 +86,13 @@ Future<AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>>
     generateRSAKeyPair() async {
   log("Start generating RSA key pair", name: "crypto_utils.dart");
   AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> keyPair =
-      await compute(_generateRSAKeyPair, 4096);
+      await compute(_generateRSAKeyPairIsolate, 4096);
   log("Finished generating RSA key pair", name: "crypto_utils.dart");
   return keyPair;
 }
 
 /// Computationally costly method to be run in an isolate.
-AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> _generateRSAKeyPair(
+AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> _generateRSAKeyPairIsolate(
     int bitLength) {
   final keyGen = RSAKeyGenerator()
     ..init(ParametersWithRandom(
