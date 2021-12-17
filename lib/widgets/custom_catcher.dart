@@ -43,7 +43,7 @@ class CustomEmailManualHandler extends ReportHandler {
   final String? emailHeader;
   final bool sendHtml;
   final bool printLogs;
-  final Logger _logger = Logger('EmailManualHandler');
+  final Logger _logger = Logger('CustomEmailManualHandler');
 
   CustomEmailManualHandler(this.recipients,
       {this.enableDeviceParameters = true,
@@ -79,7 +79,8 @@ class CustomEmailManualHandler extends ReportHandler {
   }
 
   String _getTitle(Report report) {
-    return '(${report.applicationParameters.entries.where((e) => e.key == 'version').first.value}) Error report: >> ${report.error} <<';
+    return '(${report.applicationParameters.entries.where((e) => e.key == 'version').first.value})'
+        ' Error report: >> ${report.error.runtimeType}: ${report.error}<<';
   }
 
   String _getBody(Report report) {
@@ -255,7 +256,8 @@ class CustomPageWidgetState extends State<CustomPageWidget> {
   }
 
   Widget _buildInnerWidget() {
-    String text = '${widget.report.error}\n';
+    String text =
+        '${widget.report.error.runtimeType}: ${widget.report.error}\n';
 
     text += '\n';
 
