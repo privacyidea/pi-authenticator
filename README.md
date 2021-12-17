@@ -22,6 +22,8 @@ For testing purposes the application can be run in release mode by running `flut
 
 For serializing the model of this application (i.e., the tokens) we use generated files. If the model was changed, run the script `update_serialization.sh` to update the generated files.
 
+Building a version of the app prior to `v4.0.0` requires an old version of flutter, this can be done by, e.g., `git checkout tags/1.22.6`.
+
 # Tests
 
 Tests are located under `app/test`. These can be run from within Android Studio, if the necessary plugins are installed or directly by running `flutter test` at the root of the project. For additional information please view the official [Flutter documentation](https://flutter.dev/docs/testing).
