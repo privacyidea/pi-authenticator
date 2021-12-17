@@ -201,7 +201,7 @@ Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
   Uri uri = Uri.parse(uriAsString);
   log(
     'Barcode is valid Uri:',
-    name: 'utils.dart',
+    name: 'utils.dart#parseQRCodeToMap',
     error: uri,
   );
 
@@ -258,7 +258,8 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   try {
     int pushVersion = int.parse(pushVersionAsString);
 
-    log('Parsing push token with version: $pushVersion');
+    log('Parsing push token with version: $pushVersion',
+        name: 'parsing_utils.dart#parsePiAuth');
 
     if (pushVersion > 1) {
       throw ArgumentError.value(
@@ -317,9 +318,9 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   uriMap[URI_TYPE] = uri.host;
 
   // parse.path.substring(1) -> Label
-  log('Key: [..] | Value: [..]');
+  log('Key: [..] | Value: [..]', name: 'parsing_utils.dart#parseOtpAuth');
   uri.queryParameters.forEach((key, value) {
-    log('  $key | $value');
+    log('  $key | $value', name: 'parsing_utils.dart#parseOtpAuth');
   });
 
   List labelIssuerList = _parseLabelAndIssuer(uri);

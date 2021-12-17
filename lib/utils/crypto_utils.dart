@@ -83,10 +83,12 @@ Future<String> generatePhoneChecksum({required Uint8List phonePart}) async {
 
 Future<AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>>
     generateRSAKeyPair() async {
-  log('Start generating RSA key pair', name: 'crypto_utils.dart');
+  log('Start generating RSA key pair',
+      name: 'crypto_utils.dart#generateRSAKeyPair');
   AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> keyPair =
       await compute(_generateRSAKeyPairIsolate, 4096);
-  log('Finished generating RSA key pair', name: 'crypto_utils.dart');
+  log('Finished generating RSA key pair',
+      name: 'crypto_utils.dart#generateRSAKeyPair');
   return keyPair;
 }
 
@@ -131,7 +133,7 @@ bool verifyRSASignature(
     isVerified = signer.verifySignature(signedMessage, RSASignature(signature));
   } on ArgumentError catch (e) {
     log('Verifying signature failed due to ${e.name}',
-        name: 'crypto_utils.dart', error: e);
+        name: 'crypto_utils.dart#verifyRSASignature', error: e);
   }
 
   return isVerified;

@@ -68,7 +68,7 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
   void _migrateTokens() async {
     // Load legacy tokens and add them to the storage.
     log('Attempt to load legacy tokens.',
-        name: 'migrate_legacy_tokens_dialog.dart');
+        name: 'migrate_legacy_tokens_dialog.dart#_migrateTokens');
 
     List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
     List<PushToken> currentPushToken =

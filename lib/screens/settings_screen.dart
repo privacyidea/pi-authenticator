@@ -186,7 +186,7 @@ class SettingsScreenState extends State<SettingsScreen> {
 
                 if (enrolledPushTokenList.isEmpty) {
                   log('No push tokens exist, push settings are hidden.',
-                      name: 'settings_screen.dart');
+                      name: 'settings_screen.dart#build');
                   showPushSettingsGroup = false;
                 }
 

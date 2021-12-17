@@ -82,19 +82,22 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     AppSettings.of(context).streamEnablePolling().listen(
       (bool event) {
         if (event) {
-          log('Polling is enabled.', name: 'main_screen.dart');
+          log('Polling is enabled.',
+              name: 'main_screen.dart#_startPollingIfEnabled');
 
           _pollTimer = Timer.periodic(Duration(seconds: 3),
               (_) => PushProvider.pollForChallenges(context));
           PushProvider.pollForChallenges(context);
         } else {
-          log('Polling is disabled.', name: 'main_screen.dart');
+          log('Polling is disabled.',
+              name: 'main_screen.dart#_startPollingIfEnabled');
           _pollTimer?.cancel();
           _pollTimer = null;
         }
       },
       cancelOnError: false,
-      onError: (error) => log('$error', name: 'polling timer'),
+      onError: (error) =>
+          log('$error', name: 'main_screen.dart#_startPollingIfEnabled'),
     );
   }
 
@@ -107,8 +110,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     Uri requestUri = Uri.parse(data['url']);
     String requestedSerial = data['serial'];
 
-    log('Incoming push auth request for token with serial.',
-        name: 'main_screen.dart', error: requestedSerial);
+    log('Incoming push challenge for token with serial.',
+        name: 'main_screen.dart#_handleIncomingChallenge',
+        error: requestedSerial);
 
     PushToken? token = tokenList
         .whereType<PushToken>()
@@ -116,10 +120,11 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
     if (token == null) {
       log('The requested token does not exist or is not rolled out.',
-          name: 'main_screen.dart', error: requestedSerial);
+          name: 'main_screen.dart#_handleIncomingChallenge',
+          error: requestedSerial);
     } else {
       log('Token matched requested token',
-          name: 'main_screen.dart', error: token);
+          name: 'main_screen.dart#_handleIncomingChallenge', error: token);
       String signature = data['signature'];
       String signedData = '${data['nonce']}|'
           '$requestUri|'
@@ -141,7 +146,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
       if (isVerified) {
         log('Validating incoming message was successful.',
-            name: 'main_screen.dart');
+            name: 'main_screen.dart#_handleIncomingChallenge');
 
         PushRequest pushRequest = PushRequest(
             title: data['title'],
@@ -165,11 +170,11 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           log(
               'The push request $pushRequest already exists '
               'for the token with serial ${token.serial}',
-              name: 'main_screen.dart');
+              name: 'main_screen.dart#_handleIncomingChallenge');
         }
       } else {
         log('Validating incoming message failed.',
-            name: 'main_screen.dart',
+            name: 'main_screen.dart#_handleIncomingChallenge',
             error:
                 'Signature $signature does not match signed data: $signedData');
       }
@@ -178,7 +183,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   Future<void> _handleIncomingAuthRequest(RemoteMessage message) async {
     log('Foreground message received.',
-        name: 'main_screen.dart', error: message);
+        name: 'main_screen.dart#_handleIncomingAuthRequest', error: message);
     await StorageUtil.protect(() async => _handleIncomingRequest(
         message, await StorageUtil.loadAllTokens(), false));
     await _loadTokenList(); // Update UI
@@ -231,7 +236,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   static Future<void> _firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
     log('Background message received.',
-        name: 'main_screen.dart', error: message);
+        name: 'main_screen.dart#_firebaseMessagingBackgroundHandler',
+        error: message);
     await StorageUtil.protect(() async => _handleIncomingRequest(
         message, await StorageUtil.loadAllTokens(), true));
   }
@@ -273,7 +279,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     super.dispose();
   }
 
-  _loadTokenList() async {
+  Future<void> _loadTokenList() async {
     List<Token> l1 = await StorageUtil.loadAllTokens();
     // Sort the list to prevent items from jumping around on ui updates
     l1.sort((a, b) => a.id.hashCode.compareTo(b.id.hashCode));
@@ -310,14 +316,14 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   /// Handles an otpauth link by parsing it and building a token. The token
   /// is then automatically added to the `_tokenList`. If an error occurs,
   /// a message is shown to the user.
-  _handleOtpAuth(String? otpAuth) async {
+  Future<void> _handleOtpAuth(String? otpAuth) async {
     if (otpAuth == null) {
       return;
     }
 
     log(
       'Try to handle otpAuth:',
-      name: 'main_screen.dart',
+      name: 'main_screen.dart#_handleOtpAuth',
       error: otpAuth,
     );
 
@@ -332,7 +338,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
       log(
         'Adding new token from qr-code:',
-        name: 'main_screen.dart',
+        name: 'main_screen.dart#_handleOtpAuth',
         error: newToken,
       );
 
@@ -354,7 +360,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       // Error while parsing qr code.
       log(
         'Malformed QR code:',
-        name: 'main_screen.dart',
+        name: 'main_screen.dart#_handleOtpAuth',
         error: e.stackTrace,
       );
 
@@ -366,7 +372,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   /// Open the QR-code scanner and call `_handleOtpAuth`, with the scanned
   /// code as the argument.
-  _scanQRCode() async {
+  void _scanQRCode() async {
     String? barcode = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => QRScannerScreen()),
@@ -482,14 +488,15 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         : child;
   }
 
-  void _removeToken(Token token) async {
+  Future<void> _removeToken(Token token) async {
     log('Remove: $token');
     await StorageUtil.deleteToken(token);
     await _loadTokenList();
   }
 
-  _addToken(Token? newToken) {
-    log('Adding new token:', name: 'main_screen.dart', error: newToken);
+  void _addToken(Token? newToken) {
+    log('Adding new token:',
+        name: 'main_screen.dart#_addToken', error: newToken);
     if (newToken != null) {
       _tokenList.add(newToken);
 

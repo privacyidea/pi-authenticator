@@ -96,7 +96,7 @@ class StorageUtil {
       } else {
         log(
           'Token type $type is unknown.',
-          name: 'storage_utils.dart',
+          name: 'storage_utils.dart#loadAllTokens',
         );
       }
     }

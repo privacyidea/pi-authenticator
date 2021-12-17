@@ -79,7 +79,7 @@ class PushProvider {
     FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
       if ((await StorageUtil.getCurrentFirebaseToken()) != newToken) {
         log('New firebase token generated: $newToken',
-            name: 'main_screen.dart');
+            name: 'push_provider.dart#_initFirebase');
         await StorageUtil.setNewFirebaseToken(newToken);
         _updateFirebaseToken();
       }
@@ -178,7 +178,7 @@ class PushProvider {
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
       log('No push token is available for polling, polling is disabled.',
-          name: 'main_screen.dart');
+          name: 'push_provider.dart#pollForChallenges');
       AppSettings.of(context).enablePolling = false;
       return false;
     }
@@ -220,7 +220,7 @@ class PushProvider {
       } on SocketException {
         log(
           'Polling push tokens not working, server can not be reached.',
-          name: 'main_screen.dart#pollForChallenges',
+          name: 'push_provider.dart#pollForChallenges',
         );
         return false;
       }
@@ -290,10 +290,10 @@ class PushProvider {
 
       if (response.statusCode == 200) {
         log('Updating firebase token for push token: ${p.serial} succeeded!',
-            name: 'main_screen.dart');
+            name: 'push_provider.dart#_updateFirebaseToken');
       } else {
         log('Updating firebase token for push token: ${p.serial} failed!',
-            name: 'main_screen.dart');
+            name: 'push_provider.dart#_updateFirebaseToken');
         allUpdated = false;
       }
     }

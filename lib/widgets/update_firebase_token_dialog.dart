@@ -70,7 +70,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
   void _updateFbTokens() async {
     log('Starting update of firebase token.',
-        name: 'update_firebase_token_dialog.dart');
+        name: 'update_firebase_token_dialog.dart#_updateFbTokens');
 
     List<PushToken> tokenList =
         (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
@@ -115,15 +115,15 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
         if (response.statusCode == 200) {
           log('Updating firebase token for push token: ${p.serial} succeeded!',
-              name: 'update_firebase_token_dialog.dart');
+              name: 'update_firebase_token_dialog.dart#_updateFbTokens');
         } else {
           log('Updating firebase token for push token: ${p.serial} failed!',
-              name: 'update_firebase_token_dialog.dart');
+              name: 'update_firebase_token_dialog.dart#_updateFbTokens');
           tokenWithFailedUpdate.add(p);
         }
       } on SocketException catch (e) {
         log('Socket exception occurred: $e',
-            name: 'update_firebase_token_dialog.dart');
+            name: 'update_firebase_token_dialog.dart#_updateFbTokens');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(AppLocalizations.of(context)!
               .errorSynchronizationNoNetworkConnection),
