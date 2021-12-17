@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>258156671446-npfngvja43874lernvse96f7c44sotdh.apps.googleusercontent.com</string>
+	<string>838329625695-2atauche4u5p406p0pklghk2fu25jago.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.258156671446-npfngvja43874lernvse96f7c44sotdh</string>
+	<string>com.googleusercontent.apps.838329625695-2atauche4u5p406p0pklghk2fu25jago</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCHISaDD-Db44Cu9b0_AOyY9q4qUetLOvw</string>
+	<string>AIzaSyAwOd_C2jPeHTCgw74VBTqm8zMr2BOWCeg</string>
 	<key>GCM_SENDER_ID</key>
-	<string>258156671446</string>
+	<string>838329625695</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>privacyidea.authenticator</string>
 	<key>PROJECT_ID</key>
-	<string>piauthenticator-dfbc6</string>
+	<string>privacyidea-4c8c1</string>
 	<key>STORAGE_BUCKET</key>
-	<string>piauthenticator-dfbc6.appspot.com</string>
+	<string>privacyidea-4c8c1.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:258156671446:ios:f43e5ff74af21419253477</string>
-	<key>DATABASE_URL</key>
-	<string>https://piauthenticator-dfbc6.firebaseio.com</string>
+	<string>1:838329625695:ios:9926651df24088af243fea</string>
 </dict>
 </plist>
