@@ -115,7 +115,7 @@ void _testPbkdf2() {
   //  print(']', end='')
   // ```
 
-  group('pbkfd2', () {
+  group('pbkdf2', () {
     Uint8List password = Uint8List.fromList([
       4,
       142,
