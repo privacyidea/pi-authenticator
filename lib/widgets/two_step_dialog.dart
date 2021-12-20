@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -23,8 +23,8 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 class TwoStepDialog extends StatefulWidget {
@@ -34,7 +34,10 @@ class TwoStepDialog extends StatefulWidget {
   final Uint8List _password;
 
   TwoStepDialog(
-      {int saltLength, int iterations, int keyLength, Uint8List password})
+      {required int saltLength,
+      required int iterations,
+      required int keyLength,
+      required Uint8List password})
       : _saltLength = saltLength,
         _iterations = iterations,
         _keyLength = keyLength,
@@ -45,14 +48,13 @@ class TwoStepDialog extends StatefulWidget {
 }
 
 class _TwoStepDialogState extends State<TwoStepDialog> {
-  String _title;
+  late String _title;
   Widget _content = Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[CircularProgressIndicator()],
   );
-  MaterialButton _button;
-
-  Uint8List generatedSecret;
+  VoidCallback? _onPressed;
+  late Uint8List _generatedSecret;
 
   @override
   void initState() {
@@ -65,7 +67,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _title = Localization.of(context).twoStepDialogTitleGenerate;
+    _title = AppLocalizations.of(context)!.generatingPhonePart;
   }
 
   @override
@@ -78,7 +80,14 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
         child: AlertDialog(
           title: Text(_title),
           content: _content,
-          actions: <Widget>[_button],
+          actions: [
+            TextButton(
+              child: Text(
+                AppLocalizations.of(context)!.dismiss,
+              ),
+              onPressed: _onPressed,
+            )
+          ],
         ),
       ),
     );
@@ -89,7 +98,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     Uint8List salt = secureRandom().nextBytes(widget._saltLength);
 
     // 2. Generate secret.
-    generatedSecret = await pbkdf2(
+    _generatedSecret = await pbkdf2(
       salt: salt,
       iterations: widget._iterations,
       keyLength: widget._keyLength,
@@ -102,16 +111,9 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
 
     // Update UI.
     setState(() {
-      _title = Localization.of(context).twoStepDialogTitlePhonePart;
-      _content = Text("$show");
-      _button = RaisedButton(
-        color: Colors.white70,
-        child: Text(
-          Localization.of(context).dismiss,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        onPressed: () => Navigator.of(context).pop(generatedSecret),
-      );
+      _title = AppLocalizations.of(context)!.phonePart;
+      _content = Text('$show');
+      _onPressed = () => Navigator.of(context).pop(_generatedSecret);
     });
   }
 }

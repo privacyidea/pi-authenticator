@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSFaceIDUsageDescription</key>
+    <string>Use face id to prevent unauthorized access to tokens.</string>
     <key>ITSAppUsesNonExemptEncryption</key>
     <false/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -27,6 +29,12 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FIREBASE_ANALYTICS_COLLECTION_DISABLED</key>
+	<true/>
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<false/>
+	<key>FirebaseScreenReportingEnabled</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
@@ -55,13 +63,20 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>FirebaseScreenReportingEnabled</key>
-	<false/>
-	<key>FirebaseMessagingAutoInitEnabled</key>
-	<false/>
-	<key>FIREBASE_ANALYTICS_COLLECTION_DISABLED</key>
-	<true/>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Network access is required to roll out push tokens.</string>
+	  <key>CFBundleURLTypes</key>
+      <array>
+        <dict>
+          <key>CFBundleTypeRole</key>
+          <string>Editor</string>
+          <key>CFBundleURLName</key>
+          <string>it.netknights.otpauth</string>
+          <key>CFBundleURLSchemes</key>
+          <array>
+            <string>otpauth</string>
+          </array>
+        </dict>
+      </array>
+      <key>NSLocalNetworkUsageDescription</key>
+      <string>Network access is required to roll out push tokens.</string>
 </dict>
 </plist>

@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -27,7 +27,7 @@ import '../integration_test_utils.dart';
 
 void copyToClipboardTest() {
   group('Copy otp value to clipboard', () {
-    FlutterDriver driver;
+    FlutterDriver? driver;
 
     // Connect to the Flutter driver before running any tests.
     setUpAll(() async {
@@ -37,7 +37,7 @@ void copyToClipboardTest() {
     // Close the connection to the driver after the tests have completed.
     tearDownAll(() async {
       if (driver != null) {
-        driver.close();
+        driver!.close();
       }
     });
 
@@ -46,36 +46,36 @@ void copyToClipboardTest() {
     addTokenRoutine(tokenName, secret);
 
     test('Copy otp value', () async {
-      await doLongPress(driver, find.text(tokenName));
+      await doLongPress(driver!, find.text(tokenName));
     });
 
     test('Clean up', () async {
-      await driver.scroll(
-          find.text("TokenName"), -500, 0, Duration(milliseconds: 100));
+      await driver!.scroll(
+          find.text('TokenName'), -500, 0, Duration(milliseconds: 100));
 
       // Delete the token.
-      await driver.tap(find.text("Delete"));
+      await driver!.tap(find.text('Delete'));
 
       // Wait for the dialog to open.
-      await driver.waitFor(find.text("Confirm deletion"));
+      await driver!.waitFor(find.text('Confirm deletion'));
 
-      await driver.tap(find.text("Delete"));
+      await driver!.tap(find.text('Delete'));
 
-      await driver.waitForAbsent(find.text("TestName"));
+      await driver!.waitForAbsent(find.text('TestName'));
     });
 
     test('Verify value is in clipboard', () async {
-      await driver.tap(find.byType("PopupMenuButton<String>"));
-      await driver.tap(find.text("Add token"));
+      await driver!.tap(find.byType('PopupMenuButton<String>'));
+      await driver!.tap(find.text('Add token'));
 
       await doLongPress(
-          driver,
+          driver!,
           find.ancestor(
-              of: find.text("Name"), matching: find.byType("TextFormField")));
+              of: find.text('Name'), matching: find.byType('TextFormField')));
 
-      await driver.tap(find.text("Paste"));
+      await driver!.tap(find.text('Paste'));
 
-      await driver.waitFor(find.text('591668'));
+      await driver!.waitFor(find.text('591668'));
     });
   });
 }

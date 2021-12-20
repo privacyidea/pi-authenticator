@@ -5,34 +5,32 @@
 
   Copyright (c) 2017-2020 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  Unless required b"y applicable law or agreed to in writing, software
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
 */
 
 import 'package:catcher/catcher.dart';
-import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
-import 'package:privacyidea_authenticator/utils/application_theme_utils.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
-import 'package:privacyidea_authenticator/widgets/CustomPageReportMode.dart';
+import 'package:privacyidea_authenticator/utils/themes.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
-import 'widgets/CustomEmailManualHandler.dart';
+import 'widgets/custom_catcher.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,63 +59,67 @@ void main() async {
 class PrivacyIDEAAuthenticator extends StatelessWidget {
   final StreamingSharedPreferences _preferences;
 
-  const PrivacyIDEAAuthenticator({StreamingSharedPreferences preferences})
+  const PrivacyIDEAAuthenticator(
+      {required StreamingSharedPreferences preferences})
       : this._preferences = preferences;
-
-  static List<Locale> _supportedLocales = [
-    const Locale('en', ''),
-    const Locale('de', ''),
-    const Locale('fr', '')
-  ];
-
-  static set supportedLocales(List<Locale> supportedLocales) {
-    _supportedLocales = supportedLocales;
-  }
 
   @override
   Widget build(BuildContext context) {
-    return AppSettings(
-      preferences: this._preferences,
-      child: DynamicTheme(
-          defaultBrightness: Brightness.light,
-          data: (brightness) => getApplicationTheme(brightness),
-          themedWidgetBuilder: (context, theme) {
+    return EasyDynamicThemeWidget(
+      child: AppSettings(
+        preferences: this._preferences,
+        child: Builder(
+          builder: (context) {
             final settings = AppSettings.of(context);
 
             var crashReportRecipients = settings.crashReportRecipients;
 
-            if (settings.isFirstRun) {
-              settings.enablePolling = true;
-            }
-
             // Override release config to use custom e-mail recipients
-            Catcher.instance.updateConfig(
+            Catcher.getInstance().updateConfig(
               releaseConfig: CatcherOptions(CustomPageReportMode(), [
                 CustomEmailManualHandler(crashReportRecipients,
                     enableCustomParameters: false)
               ]),
             );
 
-            // Update indicator after al setup code is done.
-            settings.isFirstRun = false;
+            return StreamBuilder<bool>(
+              stream: settings.streamUseSystemLocale(),
+              builder: (context, snapshot) {
+                bool useSystemLocale = true;
+                if (snapshot.hasData) {
+                  useSystemLocale = snapshot.data!;
+                }
 
-            return MaterialApp(
-              navigatorKey: Catcher.navigatorKey,
-              // Needed to display dialogs etc.
-              localizationsDelegates: [
-                const MyLocalizationsDelegate(),
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-                DefaultCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: _supportedLocales,
-              title: applicationName,
-              theme: theme,
-              darkTheme: getApplicationTheme(Brightness.dark),
-              home: MainScreen(title: applicationName),
+                return StreamBuilder<Locale>(
+                  stream: settings.streamLocalePreference(),
+                  builder: (context, snapshot) {
+                    Locale? locale;
+                    if (!useSystemLocale && snapshot.hasData) {
+                      locale = snapshot.data!;
+                    }
+
+                    // Update indicator after all setup code is done.
+                    settings.isFirstRun = false;
+
+                    return MaterialApp(
+                      navigatorKey: Catcher.navigatorKey,
+                      localizationsDelegates:
+                          AppLocalizations.localizationsDelegates,
+                      supportedLocales: AppLocalizations.supportedLocales,
+                      locale: locale,
+                      title: applicationName,
+                      theme: lightThemeData,
+                      darkTheme: darkThemeData,
+                      themeMode: EasyDynamicTheme.of(context).themeMode,
+                      home: MainScreen(title: applicationName),
+                    );
+                  },
+                );
+              },
             );
-          }),
+          },
+        ),
+      ),
     );
   }
 }

@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -31,44 +31,51 @@ import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'identifiers.dart';
 
 Future<Uint8List> pbkdf2(
-    {Uint8List salt, int iterations, int keyLength, Uint8List password}) async {
+    {required Uint8List salt,
+    required int iterations,
+    required int keyLength,
+    required Uint8List password}) async {
   ArgumentError.checkNotNull(salt);
   ArgumentError.checkNotNull(iterations);
   ArgumentError.checkNotNull(keyLength);
   ArgumentError.checkNotNull(password);
 
   Map<String, dynamic> map = new Map();
-  map["salt"] = salt;
-  map["iterations"] = iterations;
-  map["keyLength"] = keyLength;
+  map['salt'] = salt;
+  map['iterations'] = iterations;
+  map['keyLength'] = keyLength;
 
   // Funky converting of password because that is what the server does too.
-  map["password"] = utf8.encode(encodeAsHex(password));
+  map['password'] = utf8.encode(encodeAsHex(password));
 
   return compute(_pbkdfIsolate, map);
 }
 
+/// Computationally costly method to be run in an isolate.
 Uint8List _pbkdfIsolate(Map<String, dynamic> arguments) {
   // Setup algorithm (PBKDF2 - HMAC - SHA1).
-  PBKDF2KeyDerivator keyDerivator = KeyDerivator('SHA-1/HMAC/PBKDF2');
+  PBKDF2KeyDerivator keyDerivator =
+      KeyDerivator('SHA-1/HMAC/PBKDF2') as PBKDF2KeyDerivator;
 
   Pbkdf2Parameters pbkdf2parameters = Pbkdf2Parameters(
-      arguments["salt"], arguments["iterations"], arguments["keyLength"]);
+      arguments['salt'], arguments['iterations'], arguments['keyLength']);
   keyDerivator.init(pbkdf2parameters);
 
-  return keyDerivator.process(arguments["password"]);
+  return keyDerivator.process(arguments['password']);
 }
 
-Future<String> generatePhoneChecksum({Uint8List phonePart}) async {
+Future<String> generatePhoneChecksum({required Uint8List phonePart}) async {
   // 1. Generate SHA1 the of salt.
-  Uint8List hash = Digest("SHA-1").process(phonePart);
+  Uint8List hash = Digest('SHA-1').process(phonePart);
 
   // 2. Trim SHA1 result to first four bytes.
   Uint8List checksum = hash.sublist(0, 4);
 
   // Use List<int> for combining because Uint8List does not work somehow.
-  List<int> toEncode = List();
-  toEncode..addAll(checksum)..addAll(phonePart);
+  List<int> toEncode = [];
+  toEncode
+    ..addAll(checksum)
+    ..addAll(phonePart);
 
   // 3. Return checksum + salt as BASE32 String without '='.
   return base32.encode(Uint8List.fromList(toEncode)).replaceAll('=', '');
@@ -76,15 +83,17 @@ Future<String> generatePhoneChecksum({Uint8List phonePart}) async {
 
 Future<AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>>
     generateRSAKeyPair() async {
-  log("Start generating RSA key pair", name: "crypto_utils.dart");
+  log('Start generating RSA key pair',
+      name: 'crypto_utils.dart#generateRSAKeyPair');
   AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> keyPair =
-      await compute(_generateRSAKeyPair, 4096);
-  log("Finished generating RSA key pair", name: "crypto_utils.dart");
+      await compute(_generateRSAKeyPairIsolate, 4096);
+  log('Finished generating RSA key pair',
+      name: 'crypto_utils.dart#generateRSAKeyPair');
   return keyPair;
 }
 
 /// Computationally costly method to be run in an isolate.
-AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> _generateRSAKeyPair(
+AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> _generateRSAKeyPairIsolate(
     int bitLength) {
   final keyGen = RSAKeyGenerator()
     ..init(ParametersWithRandom(
@@ -94,7 +103,7 @@ AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> _generateRSAKeyPair(
   final pair = keyGen.generateKeyPair();
 
   return AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>(
-      pair.publicKey, pair.privateKey);
+      pair.publicKey as RSAPublicKey, pair.privateKey as RSAPrivateKey);
 }
 
 /// Provides a secure random number generator.
@@ -104,7 +113,7 @@ SecureRandom secureRandom() {
   final seedSource = math.Random.secure();
   final seeds = <int>[];
   for (int i = 0; i < 32; i++) {
-    seeds.add(seedSource.nextInt(255));
+    seeds.add(seedSource.nextInt(256));
   }
   secureRandom.seed(KeyParameter(Uint8List.fromList(seeds)));
 
@@ -114,7 +123,8 @@ SecureRandom secureRandom() {
 /// signedMessage is what was allegedly signed, signature gets validated
 bool verifyRSASignature(
     RSAPublicKey publicKey, Uint8List signedMessage, Uint8List signature) {
-  RSASigner signer = Signer(SIGNING_ALGORITHM); // Get algorithm from registry
+  RSASigner signer =
+      Signer(SIGNING_ALGORITHM) as RSASigner; // Get algorithm from registry
   signer.init(
       false, PublicKeyParameter<RSAPublicKey>(publicKey)); // false to validate
 
@@ -123,7 +133,7 @@ bool verifyRSASignature(
     isVerified = signer.verifySignature(signedMessage, RSASignature(signature));
   } on ArgumentError catch (e) {
     log('Verifying signature failed due to ${e.name}',
-        name: 'crypto_utils.dart', error: e);
+        name: 'crypto_utils.dart#verifyRSASignature', error: e);
   }
 
   return isVerified;
@@ -134,7 +144,8 @@ String createBase32Signature(RSAPrivateKey privateKey, Uint8List dataToSign) {
 }
 
 Uint8List createRSASignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
-  RSASigner signer = Signer(SIGNING_ALGORITHM); // Get algorithm from registry
+  RSASigner signer =
+      Signer(SIGNING_ALGORITHM) as RSASigner; // Get algorithm from registry
   signer.init(
       true, PrivateKeyParameter<RSAPrivateKey>(privateKey)); // true to sign
 

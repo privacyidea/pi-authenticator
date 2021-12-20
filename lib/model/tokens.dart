@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -28,17 +28,36 @@ part 'tokens.g.dart';
 
 abstract class Token {
   String _tokenVersion =
-      "v1.0.0"; // The version of this token, this is used for serialization.
+      'v1.0.0'; // The version of this token, this is used for serialization.
   String _label; // the name of the token, it cannot be uses as an identifier
   String _issuer; // The issuer of this token, currently unused.
   String _id; // this is the identifier of the token
+
+  bool _isLocked;
+  bool _canToggleLock;
+
+  bool get canToggleLock => _canToggleLock;
+
+  bool get isLocked => _isLocked;
+
+  set isLocked(bool value) {
+    if (!_canToggleLock) {
+      throw ArgumentError.value(
+          value,
+          'isLocked',
+          'This value may not be changed, '
+              'because [_canToggleLock] is [false]!');
+    }
+
+    _isLocked = value;
+  }
 
   // Must be string representation of TokenType enum.
   String type; // Used to identify the token when deserializing.
 
   String get tokenVersion => _tokenVersion;
 
-  String get label => _label == null ? "" : _label;
+  String get label => _label;
 
   set label(String label) {
     this._label = label;
@@ -46,14 +65,17 @@ abstract class Token {
 
   String get id => _id;
 
-  String get issuer => _issuer == null ? "" : _issuer;
+  String get issuer => _issuer;
 
-  Token(this._label, this._issuer, this._id, this.type);
+  Token(this._label, this._issuer, this._id, this.type,
+      {bool isLocked: false, bool canToggleLock: true})
+      : this._isLocked = isLocked,
+        this._canToggleLock = canToggleLock;
 
   @override
   String toString() {
-    return 'Label $label | Issuer $issuer'
-        ' | Version $tokenVersion | ID $id';
+    return 'Token{_label: $_label, _issuer: $_issuer, _id: $_id,'
+        ' _isLocked: $_isLocked, _canToggleLock: $_canToggleLock}';
   }
 }
 
@@ -71,8 +93,10 @@ abstract class OTPToken extends Token {
   String get secret => _secret;
 
   OTPToken(String label, String issuer, String id, String type, this._algorithm,
-      this._digits, this._secret)
-      : super(label, issuer, id, type);
+      this._digits, this._secret,
+      {bool isLocked: false, bool canToggleLock: true})
+      : super(label, issuer, id, type,
+            isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
   String toString() {
@@ -90,16 +114,19 @@ class HOTPToken extends OTPToken {
   void incrementCounter() => _counter++;
 
   HOTPToken(
-      {String label,
-      String issuer,
-      String id,
-      Algorithms algorithm,
-      int digits,
-      String secret,
-      int counter = 0})
+      {required String label,
+      required String issuer,
+      required String id,
+      required Algorithms algorithm,
+      required int digits,
+      required String secret,
+      int counter = 0,
+      bool isLocked: false,
+      bool canToggleLock: true})
       : this._counter = counter,
         super(label, issuer, id, enumAsString(TokenTypes.HOTP), algorithm,
-            digits, secret);
+            digits, secret,
+            isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
   String toString() {
@@ -123,16 +150,19 @@ class TOTPToken extends OTPToken {
   int get period => _period;
 
   TOTPToken(
-      {String label,
-      String issuer,
-      String id,
-      Algorithms algorithm,
-      int digits,
-      String secret,
-      int period})
+      {required String label,
+      required String issuer,
+      required String id,
+      required Algorithms algorithm,
+      required int digits,
+      required String secret,
+      required int period,
+      bool isLocked: false,
+      bool canToggleLock: true})
       : this._period = period,
         super(label, issuer, id, enumAsString(TokenTypes.TOTP), algorithm,
-            digits, secret);
+            digits, secret,
+            isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
   String toString() {
@@ -150,28 +180,28 @@ class PushToken extends Token {
   String _serial;
 
   // Roll out
-  bool _sslVerify;
-  String _enrollmentCredentials;
-  Uri url; // Full access to allow adding to legacy android tokens
+  bool? _sslVerify;
+  String? _enrollmentCredentials;
+  Uri? url; // Full access to allow adding to legacy android tokens
   bool isRolledOut = false;
 
   // RSA keys - String values for backward compatibility with serialization
-  String publicServerKey;
-  String privateTokenKey;
-  String publicTokenKey;
+  String? publicServerKey;
+  String? privateTokenKey;
+  String? publicTokenKey;
 
   // Custom getter and setter for RSA keys
-  RSAPublicKey getPublicServerKey() => publicServerKey == null
+  RSAPublicKey? getPublicServerKey() => publicServerKey == null
       ? null
-      : deserializeRSAPublicKeyPKCS1(publicServerKey);
+      : deserializeRSAPublicKeyPKCS1(publicServerKey!);
 
-  RSAPublicKey getPublicTokenKey() => publicTokenKey == null
+  RSAPublicKey? getPublicTokenKey() => publicTokenKey == null
       ? null
-      : deserializeRSAPublicKeyPKCS1(publicTokenKey);
+      : deserializeRSAPublicKeyPKCS1(publicTokenKey!);
 
-  RSAPrivateKey getPrivateTokenKey() => privateTokenKey == null
+  RSAPrivateKey? getPrivateTokenKey() => privateTokenKey == null
       ? null
-      : deserializeRSAPrivateKeyPKCS1(privateTokenKey);
+      : deserializeRSAPrivateKeyPKCS1(privateTokenKey!);
 
   void setPublicServerKey(RSAPublicKey key) =>
       publicServerKey = serializeRSAPublicKeyPKCS1(key);
@@ -186,43 +216,43 @@ class PushToken extends Token {
 
   String get serial => _serial;
 
-  bool get sslVerify => _sslVerify;
+  bool? get sslVerify => _sslVerify;
 
-  set sslVerify(bool sslVerify) => this._sslVerify = sslVerify;
+  set sslVerify(bool? sslVerify) => this._sslVerify = sslVerify;
 
-  String get enrollmentCredentials => _enrollmentCredentials;
+  String? get enrollmentCredentials => _enrollmentCredentials;
 
   DateTime get expirationDate => _expirationDate;
 
-  PushRequestQueue _pushRequests;
+  PushRequestQueue? _pushRequests;
 
   // The get and set methods are needed for serialization.
   PushRequestQueue get pushRequests {
     _pushRequests ??= PushRequestQueue();
-    return _pushRequests;
+    return _pushRequests!;
   }
 
   set pushRequests(PushRequestQueue queue) {
     if (_pushRequests != null) {
       throw ArgumentError(
-          "Initializing [pushRequests] in [PushToken] is only allowed once.");
+          'Initializing [pushRequests] in [PushToken] is only allowed once.');
     }
 
     this._pushRequests = queue;
   }
 
-  CustomIntBuffer _knownPushRequests;
+  CustomIntBuffer? _knownPushRequests;
 
   // The get and set methods are needed for serialization.
   CustomIntBuffer get knownPushRequests {
     _knownPushRequests ??= CustomIntBuffer();
-    return _knownPushRequests;
+    return _knownPushRequests!;
   }
 
   set knownPushRequests(CustomIntBuffer buffer) {
     if (_knownPushRequests != null) {
       throw ArgumentError(
-          "Initializing [knownPushRequests] in [PushToken] is only allowed once.");
+          'Initializing [knownPushRequests] in [PushToken] is only allowed once.');
     }
 
     this._knownPushRequests = buffer;
@@ -235,21 +265,24 @@ class PushToken extends Token {
   }
 
   PushToken({
-    String label,
-    String serial,
-    String issuer,
-    String id,
+    required String label,
+    required String serial,
+    required String issuer,
+    required String id,
+    bool isLocked: false,
+    bool canToggleLock: true,
     // 2. step
-    bool sslVerify,
-    String enrollmentCredentials,
-    Uri url,
-    DateTime expirationDate,
+    bool? sslVerify,
+    String? enrollmentCredentials,
+    Uri? url,
+    required DateTime expirationDate,
   })  : this._serial = serial,
         this._sslVerify = sslVerify,
         this._enrollmentCredentials = enrollmentCredentials,
         this.url = url,
         this._expirationDate = expirationDate,
-        super(label, issuer, id, enumAsString(TokenTypes.PIPUSH));
+        super(label, issuer, id, enumAsString(TokenTypes.PIPUSH),
+            isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
   bool operator ==(Object other) =>
@@ -305,13 +338,13 @@ class PushRequest {
   String get title => _title;
 
   PushRequest(
-      {String title,
-      String question,
-      Uri uri,
-      String nonce,
-      bool sslVerify,
-      int id,
-      DateTime expirationDate})
+      {required String title,
+      required String question,
+      required Uri uri,
+      required String nonce,
+      required bool sslVerify,
+      required int id,
+      required DateTime expirationDate})
       : this._title = title,
         this._question = question,
         this._uri = uri,
@@ -346,18 +379,18 @@ class PushRequest {
 class PushRequestQueue {
   PushRequestQueue();
 
-  List<PushRequest> _list;
+  List<PushRequest>? _list;
 
   // The get and set methods are needed for serialization.
   List<PushRequest> get list {
-    _list ??= List();
-    return _list;
+    _list ??= [];
+    return _list!;
   }
 
   set list(List<PushRequest> l) {
     if (_list != null) {
       throw ArgumentError(
-          "Initializing [list] in [PushRequestQueue] is only allowed once.");
+          'Initializing [list] in [PushRequestQueue] is only allowed once.');
     }
 
     this._list = l;
@@ -369,17 +402,17 @@ class PushRequestQueue {
 
   void removeWhere(bool f(PushRequest request)) => list.removeWhere(f);
 
-  Iterable<PushRequest> where(bool f(PushRequest request)) => _list.where(f);
+  Iterable<PushRequest> where(bool f(PushRequest request)) => list.where(f);
 
-  bool any(bool f(PushRequest element)) => _list.any(f);
+  bool any(bool f(PushRequest element)) => list.any(f);
 
-  void remove(PushRequest request) => _list.remove(request);
+  void remove(PushRequest request) => list.remove(request);
 
   bool get isEmpty => list.isEmpty;
 
   bool get isNotEmpty => list.isNotEmpty;
 
-  bool contains(PushRequest r) => _list.contains(r);
+  bool contains(PushRequest r) => list.contains(r);
 
   void add(PushRequest pushRequest) => list.add(pushRequest);
 
@@ -446,18 +479,18 @@ class CustomIntBuffer {
 
   CustomIntBuffer();
 
-  List<int> _list;
+  List<int>? _list;
 
   // The get and set methods are needed for serialization.
   List<int> get list {
-    _list ??= List();
-    return _list;
+    _list ??= [];
+    return _list!;
   }
 
   set list(List<int> l) {
     if (_list != null) {
       throw ArgumentError(
-          "Initializing [list] in [CustomStringBuffer] is only allowed once.");
+          'Initializing [list] in [CustomStringBuffer] is only allowed once.');
     }
 
     if (l.length > maxSize) {
@@ -469,13 +502,13 @@ class CustomIntBuffer {
   }
 
   void put(int value) {
-    if (_list.length >= maxSize) list.removeAt(0);
-    _list.add(value);
+    if (list.length >= maxSize) list.removeAt(0);
+    list.add(value);
   }
 
-  int get length => _list.length;
+  int get length => list.length;
 
-  bool contains(int value) => _list.contains(value);
+  bool contains(int value) => list.contains(value);
 
   factory CustomIntBuffer.fromJson(Map<String, dynamic> json) =>
       _$CustomIntBufferFromJson(json);

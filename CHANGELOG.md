@@ -1,5 +1,27 @@
 # Changelog
 
+## [4.0.0] - 2021-XX-XX
+
+### Added
+
+- Registered app to handle 'otpauth' links on Android and iOS
+
+### Changed
+
+- Updated plugins
+- Replaced deprecated plugins for app theme and QR-code scanning
+- Refactored for better life-cycle handling
+- Use new framework for localizations and translations
+- Migrated app to null-safety
+- Added debug-'flavor' to allow parallel install of release and debug version on Android
+- Add default firebase configuration for app
+- Added option to secure tokens by requiring device credentials or biometrics to access otps and to accept push challenges
+
+### Removed
+
+- Removed support for custom firebase projects
+
+
 ## [3.1.5] - 2021-10-21
 
 ### Changed
@@ -142,6 +164,8 @@
 
 - Using new engine to program the app
 - parallel development of android and ios version
+
+[4.0.0]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.5...v4.0.0
 
 [3.1.5]: https://github.com/privacyidea/pi-authenticator/compare/v3.1.4...v3.1.5
 

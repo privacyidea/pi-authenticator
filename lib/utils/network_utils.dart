@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -28,31 +28,33 @@ import 'package:package_info/package_info.dart';
 /// Dummy network request can be used to trigger the network access permission
 /// on iOS devices. Doing this at an appropriate place in the code can prevent
 /// SocketExceptions.
-Future<void> dummyRequest(Uri url, {bool sslVerify}) async {
+Future<void> dummyRequest({required Uri url, bool sslVerify = true}) async {
+  HttpClient httpClient = HttpClient();
+  httpClient.badCertificateCallback =
+      ((X509Certificate cert, String host, int port) => !sslVerify);
+  httpClient.userAgent = 'privacyIDEA-App /'
+      ' ${Platform.operatingSystem}'
+      ' ${(await PackageInfo.fromPlatform()).version}';
+
+  IOClient ioClient = IOClient(httpClient);
+
   try {
-    HttpClient httpClient = HttpClient();
-    httpClient.badCertificateCallback =
-        ((X509Certificate cert, String host, int port) => !sslVerify);
-    httpClient.userAgent = "privacyIDEA-App /"
-        " ${Platform.operatingSystem}"
-        " ${(await PackageInfo.fromPlatform()).version}";
-
-    IOClient ioClient = IOClient(httpClient);
-
-    await ioClient.post(url, body: "");
-
-    ioClient.close();
+    await ioClient.post(url, body: '');
   } on SocketException {
     // ignore
+  } finally {
+    ioClient.close();
   }
 }
 
-/// Custom POST request allows to not verify certificates
+/// Custom POST request allows to not verify certificates.
 Future<Response> doPost(
-    {bool sslVerify, Uri url, Map<String, String> body}) async {
-  log("Sending post request",
-      name: "utils.dart",
-      error: "URI: $url, SSLVerify: $sslVerify, Body: $body");
+    {required Uri url,
+    required Map<String, String?> body,
+    bool sslVerify = true}) async {
+  log('Sending post request',
+      name: 'utils.dart#doPost',
+      error: 'URI: $url, SSLVerify: $sslVerify, Body: $body');
 
   List<MapEntry> entries =
       body.entries.where((element) => element.value == null).toList();
@@ -62,23 +64,28 @@ Future<Response> doPost(
       nullEntries.add(entry.key);
     }
     throw ArgumentError(
-        "Can not send request because the argument [body] contains a null values"
-        " at entries $nullEntries, this is not permitted.");
+        'Can not send request because the argument [body] contains a null values'
+        ' at entries $nullEntries, this is not permitted.');
   }
 
   HttpClient httpClient = HttpClient();
   httpClient.badCertificateCallback =
       ((X509Certificate cert, String host, int port) => !sslVerify);
-  httpClient.userAgent = "privacyIDEA-App /"
-      " ${Platform.operatingSystem}"
-      " ${(await PackageInfo.fromPlatform()).version}";
+  httpClient.userAgent = 'privacyIDEA-App /'
+      ' ${Platform.operatingSystem}'
+      ' ${(await PackageInfo.fromPlatform()).version}';
 
   IOClient ioClient = IOClient(httpClient);
 
-  Response response = await ioClient.post(url, body: body);
+  Response response;
+  try {
+    response = await ioClient.post(url, body: body);
+  } on SocketException catch (e, s) {
+    response = Response('${e.runtimeType} : $s', 404);
+  }
 
-  log("Received response",
-      name: "utils.dart",
+  log('Received response',
+      name: 'utils.dart#doPost',
       error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
 
   ioClient.close();
@@ -87,10 +94,9 @@ Future<Response> doPost(
 }
 
 Future<Response> doGet(
-    {Uri url, Map<String, String> parameters, bool sslVerify = true}) async {
-  ArgumentError.checkNotNull(
-      sslVerify, 'Parameter [sslVerify] must not be null!');
-
+    {required Uri url,
+    required Map<String, String?> parameters,
+    bool? sslVerify = true}) async {
   List<MapEntry> entries =
       parameters.entries.where((element) => element.value == null).toList();
   if (entries.isNotEmpty) {
@@ -105,10 +111,10 @@ Future<Response> doGet(
 
   HttpClient httpClient = HttpClient();
   httpClient.badCertificateCallback =
-      ((X509Certificate cert, String host, int port) => !sslVerify);
-  httpClient.userAgent = "privacyIDEA-App /"
-      " ${Platform.operatingSystem}"
-      " ${(await PackageInfo.fromPlatform()).version}";
+      ((X509Certificate cert, String host, int port) => !sslVerify!);
+  httpClient.userAgent = 'privacyIDEA-App /'
+      ' ${Platform.operatingSystem}'
+      ' ${(await PackageInfo.fromPlatform()).version}';
 
   IOClient ioClient = IOClient(httpClient);
 
@@ -118,10 +124,17 @@ Future<Response> doGet(
     buffer.write('?');
     buffer.writeAll(parameters.entries.map((e) => '${e.key}=${e.value}'), '&');
   }
-  Response response = await ioClient.get(buffer.toString());
 
-  log("Received response",
-      name: "utils.dart",
+  Response response;
+  try {
+    Uri uri = Uri.parse(buffer.toString());
+    response = await ioClient.get(uri);
+  } on SocketException catch (e, s) {
+    response = Response('${e.runtimeType} : $s', 404);
+  }
+
+  log('Received response',
+      name: 'utils.dart#doGet',
       error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
 
   ioClient.close();

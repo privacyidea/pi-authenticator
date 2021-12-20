@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -33,7 +33,7 @@ import 'identifiers.dart';
 /// Inserts [char] at the position [pos] in the given String ([str]),
 /// and returns the resulting String.
 ///
-/// Example: insertCharAt("ABCD", " ", 2) --> "AB CD"
+/// Example: insertCharAt('ABCD', ' ', 2) --> 'AB CD'
 String insertCharAt(String str, String char, int pos) {
   return str.substring(0, pos) + char + str.substring(pos, str.length);
 }
@@ -41,12 +41,12 @@ String insertCharAt(String str, String char, int pos) {
 /// Inserts [' '] after every [period] characters in [str].
 /// Trims leading and trailing whitespaces. Returns the resulting String.
 ///
-/// Example: "ABCD", 1 --> "A B C D"
-/// Example: "ABCD", 2 --> "AB CD"
+/// Example: 'ABCD', 1 --> 'A B C D'
+/// Example: 'ABCD', 2 --> 'AB CD'
 String splitPeriodically(String str, int period) {
-  String result = "";
+  String result = '';
   for (int i = 0; i < str.length; i++) {
-    i % 4 == 0 ? result += " ${str[i]}" : result += str[i];
+    i % 4 == 0 ? result += ' ${str[i]}' : result += str[i];
   }
 
   return result.trim();
@@ -59,14 +59,14 @@ Algorithms mapStringToAlgorithm(String algoAsString) {
     }
   }
 
-  throw ArgumentError.value(algoAsString, "algorAsString",
-      "$algoAsString cannot be mapped to $Algorithms");
+  throw ArgumentError.value(algoAsString, 'algorAsString',
+      '$algoAsString cannot be mapped to $Algorithms');
 }
 
 /// This implementation is taken from the library
 /// [foundation](https://api.flutter.dev/flutter/foundation/describeEnum.html).
 /// That library sadly depends on [dart.ui] and thus cannot be used in tests.
-/// Therefor only using this code enables us to use this library ([utils.dart])
+/// Therefore, only using this code enables us to use this library ([utils.dart])
 /// in tests.
 String enumAsString(Object enumEntry) {
   final String description = enumEntry.toString();
@@ -83,42 +83,36 @@ bool equalsIgnoreCase(String s1, String s2) {
 //   but that depends on foundations.dart and that depends on dart.ui,
 //   which ultimately makes it impossible to run driver tests.
 Uint8List decodeSecretToUint8(String secret, Encodings encoding) {
-  ArgumentError.checkNotNull(secret, "secret");
-  ArgumentError.checkNotNull(encoding, "encoding");
+  ArgumentError.checkNotNull(secret, 'secret');
+  ArgumentError.checkNotNull(encoding, 'encoding');
 
   switch (encoding) {
     case Encodings.none:
       return Uint8List.fromList(utf8.encode(secret));
-      break;
     case Encodings.hex:
       return Uint8List.fromList(HexConverter.HEX.decode(secret));
-      break;
     case Encodings.base32:
       return Uint8List.fromList(Base32Converter.base32.decode(secret));
-      break;
     default:
       throw ArgumentError.value(
-          encoding, "encoding", "The encoding is unknown and not supported!");
+          encoding, 'encoding', 'The encoding is unknown and not supported!');
   }
 }
 
 String encodeSecretAs(Uint8List secret, Encodings encoding) {
-  ArgumentError.checkNotNull(secret, "secret");
-  ArgumentError.checkNotNull(encoding, "encoding");
+  ArgumentError.checkNotNull(secret, 'secret');
+  ArgumentError.checkNotNull(encoding, 'encoding');
 
   switch (encoding) {
     case Encodings.none:
       return utf8.decode(secret);
-      break;
     case Encodings.hex:
       return HexConverter.HEX.encode(secret);
-      break;
     case Encodings.base32:
       return Base32Converter.base32.encode(secret);
-      break;
     default:
       throw ArgumentError.value(
-          encoding, "encoding", "The encoding is unknown and not supported!");
+          encoding, 'encoding', 'The encoding is unknown and not supported!');
   }
 }
 
@@ -165,12 +159,12 @@ String calculateOtpValue(OTPToken token) {
     return calculateTotpValue(token);
   }
 
-  throw ArgumentError.value(token, "token",
-      "The token kind of $token is not supported by this method.");
+  throw ArgumentError.value(token, 'token',
+      'The token kind of $token is not supported by this method.');
 }
 
 OTPLibrary.Algorithm _mapAlgorithms(Algorithms algorithm) {
-  ArgumentError.checkNotNull(algorithm, "algorithmName");
+  ArgumentError.checkNotNull(algorithm, 'algorithmName');
 
   switch (algorithm) {
     case Algorithms.SHA1:
@@ -180,7 +174,7 @@ OTPLibrary.Algorithm _mapAlgorithms(Algorithms algorithm) {
     case Algorithms.SHA512:
       return OTPLibrary.Algorithm.SHA512;
     default:
-      throw ArgumentError.value(algorithm, "algorithmName",
-          "This algorithm is unknown and not supported!");
+      throw ArgumentError.value(algorithm, 'algorithmName',
+          'This algorithm is unknown and not supported!');
   }
 }

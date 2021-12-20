@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -21,29 +21,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomLicenseScreen extends StatefulWidget {
-  final String applicationName = "privacyIDEA Authenticator";
+  final String applicationName = 'privacyIDEA Authenticator';
   final Widget applicationIcon = SvgPicture.asset(
     'res/logo/app_logo_light.svg',
     width: 330,
   );
-  final String applicationLegalese = "Apache License 2.0";
+  final String applicationLegalese = 'Apache License 2.0';
   final Uri gitHubLink =
-      Uri.parse("https://github.com/privacyidea/pi-authenticator");
-  final Uri websiteLink = Uri.parse("https://netknights.it");
+      Uri.parse('https://github.com/privacyidea/pi-authenticator');
+  final Uri websiteLink = Uri.parse('https://netknights.it');
 
   @override
   State<StatefulWidget> createState() => _CustomLicenseScreenState();
 }
 
 class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
-  Future<PackageInfo> _info;
+  Future<PackageInfo>? _info;
 
   Stream<List<Widget>> widgetListStream() async* {
     List<Widget> initialList = [
@@ -52,7 +52,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
         child: Column(
           children: <Widget>[
             Text(
-              "${widget.applicationName}",
+              '${widget.applicationName}',
               style: Theme.of(context).textTheme.headline5,
             ),
             widget.applicationIcon,
@@ -63,8 +63,8 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Version ${snapshot.data.version}'),
-                      FlatButton(
+                      Text('Version ${snapshot.data!.version}'),
+                      TextButton(
                         child: Text('Changelog'),
                         onPressed: () => Navigator.push(
                           context,
@@ -79,20 +79,20 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
                   return CircularProgressIndicator();
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(
-                "${widget.applicationLegalese}",
+                '${widget.applicationLegalese}',
               ),
               onPressed: _showAppLicenseDialog,
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 '${widget.gitHubLink}',
                 style: TextStyle(decoration: TextDecoration.underline),
               ),
               onPressed: () => _launchUri(widget.gitHubLink),
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 '${widget.websiteLink}',
                 style: TextStyle(decoration: TextDecoration.underline),
@@ -137,7 +137,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          Localization.of(context).about,
+          AppLocalizations.of(context)!.about,
         ),
       ),
       body: StreamBuilder<List<Widget>>(
@@ -145,8 +145,8 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (context, index) => snapshot.data[index],
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) => snapshot.data![index],
             );
           } else
             return Column();
@@ -160,13 +160,13 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
       context: context,
       builder: (context) {
         return Dialog(
-          child: StreamBuilder(
+          child: StreamBuilder<LicenseEntry>(
             stream: LicenseRegistry.licenses.where((event) =>
-                event.packages.contains("privacyIDEA Authenticator")),
+                event.packages.contains('privacyIDEA Authenticator')),
             builder: (context, snapshot) {
               if (snapshot.hasData)
                 return SingleChildScrollView(
-                  child: _buildSingleLicense(snapshot.data),
+                  child: _buildSingleLicense(snapshot.data!),
                 );
               else
                 return Column(
@@ -181,11 +181,11 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
   }
 
   Widget _buildSingleLicense(LicenseEntry entry) {
-    List<Widget> paragraphs = List<Widget>();
+    List<Widget> paragraphs = [];
 
     double spaceBetweenParagraphs = 8;
 
-    TextStyle textStyle = Theme.of(context).textTheme.caption;
+    TextStyle textStyle = Theme.of(context).textTheme.caption!;
 
     for (LicenseParagraph paragraph in entry.paragraphs) {
       if (paragraph.indent == LicenseParagraph.centeredIndent) {
@@ -220,7 +220,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
             entry.packages.join(', '),
             style: Theme.of(context)
                 .textTheme
-                .caption
+                .caption!
                 .copyWith(fontWeight: FontWeight.bold),
           ),
           Divider(),

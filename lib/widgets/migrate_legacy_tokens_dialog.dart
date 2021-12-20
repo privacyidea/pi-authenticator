@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -22,8 +22,8 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/utils/localization_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 class MigrateLegacyTokensDialog extends StatefulWidget {
@@ -53,11 +53,11 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
-        title: Text(Localization.of(context).migrationDialogTitle),
+        title: Text(AppLocalizations.of(context)!.migratingToken),
         content: _content,
         actions: <Widget>[
-          RaisedButton(
-            child: Text(Localization.of(context).dismiss),
+          TextButton(
+            child: Text(AppLocalizations.of(context)!.dismiss),
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -68,7 +68,7 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
   void _migrateTokens() async {
     // Load legacy tokens and add them to the storage.
     log('Attempt to load legacy tokens.',
-        name: 'migrate_legacy_tokens_dialog.dart');
+        name: 'migrate_legacy_tokens_dialog.dart#_migrateTokens');
 
     List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
     List<PushToken> currentPushToken =
@@ -87,9 +87,9 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
     String text;
 
     if (legacyTokens.isEmpty) {
-      text = Localization.of(context).migrationNoTokens;
+      text = AppLocalizations.of(context)!.noTokensForMigration;
     } else {
-      text = Localization.of(context).migrationSuccess;
+      text = AppLocalizations.of(context)!.migrationSuccess;
     }
 
     final ScrollController controller = ScrollController();

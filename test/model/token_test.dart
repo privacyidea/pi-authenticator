@@ -5,14 +5,14 @@
 
   Copyright (c) 2017-2021 NetKnights GmbH
 
-  Licensed under the Apache License, Version 2.0 (the "License");
+  Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
+  distributed under the License is distributed on an 'AS IS' BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
@@ -31,18 +31,19 @@ void main() {
 }
 
 void verifyCustomListBehavesLikeQueue() {
-  group("Test custom queue", () {
-    Uri uri = Uri.parse("http://www.example.com");
+  group('Test custom queue', () {
+    Uri uri = Uri.parse('http://www.example.com');
 
-    test("isEmpty", () {
+    test('isEmpty', () {
       PushRequestQueue fifo = PushRequestQueue();
       var pushRequest = PushRequest(
-        title: "title",
-        question: "question",
+        title: 'title',
+        question: 'question',
         uri: uri,
-        nonce: "nonce",
+        nonce: 'nonce',
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
 
       expect(fifo.isNotEmpty, false);
@@ -66,49 +67,54 @@ void verifyCustomListBehavesLikeQueue() {
       expect(fifo.isEmpty, true);
     });
 
-    test("behaves like queue", () {
+    test('behaves like queue', () {
       Queue<PushRequest> queue = Queue();
       PushRequestQueue fifo = PushRequestQueue();
 
       var one = PushRequest(
-        title: "one",
-        question: "question",
+        title: 'one',
+        question: 'question',
         uri: uri,
-        nonce: "nonce",
+        nonce: 'nonce',
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var two = PushRequest(
-        title: "two",
-        question: "question",
+        title: 'two',
+        question: 'question',
         uri: uri,
-        nonce: "nonce",
+        nonce: 'nonce',
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var three = PushRequest(
-        title: "three",
-        question: "question",
+        title: 'three',
+        question: 'question',
         uri: uri,
-        nonce: "nonce",
+        nonce: 'nonce',
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var four = PushRequest(
-        title: "four",
-        question: "question",
+        title: 'four',
+        question: 'question',
         uri: uri,
-        nonce: "nonce",
+        nonce: 'nonce',
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var five = PushRequest(
-        title: "five",
-        question: "question",
+        title: 'five',
+        question: 'question',
         uri: uri,
-        nonce: "nonce",
+        nonce: 'nonce',
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
 
       queue.addLast(one);
@@ -136,48 +142,53 @@ void verifyCustomListBehavesLikeQueue() {
       expect(queue.isEmpty, true);
     });
 
-    test("serialization", () {
+    test('serialization', () {
       PushRequestQueue fifo = PushRequestQueue();
 
       var one = PushRequest(
-        title: "one",
-        question: "question",
+        title: 'one',
+        question: 'question',
         uri: uri,
-        nonce: "nonce",
+        nonce: 'nonce',
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var two = PushRequest(
-        title: "two",
-        question: "question",
+        title: 'two',
+        question: 'question',
         uri: uri,
-        nonce: "nonce",
+        nonce: 'nonce',
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var three = PushRequest(
-        title: "three",
-        question: "question",
+        title: 'three',
+        question: 'question',
         uri: uri,
-        nonce: "nonce",
+        nonce: 'nonce',
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var four = PushRequest(
-        title: "four",
-        question: "question",
+        title: 'four',
+        question: 'question',
         uri: uri,
-        nonce: "nonce",
+        nonce: 'nonce',
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
       var five = PushRequest(
-        title: "five",
-        question: "question",
+        title: 'five',
+        question: 'question',
         uri: uri,
-        nonce: "nonce",
+        nonce: 'nonce',
         sslVerify: false,
         id: Uuid().v4().hashCode,
+        expirationDate: DateTime.utc(3333),
       );
 
       fifo.add(one);
@@ -199,7 +210,7 @@ void verifyCustomStringBufferWorks() {
   group('test custom string buffer', () {
     test('put elements in', () {
       CustomIntBuffer buffer = CustomIntBuffer();
-      buffer.list = List();
+      buffer.list = [];
 
       expect(buffer.maxSize, 30);
       expect(buffer.length, 0);
