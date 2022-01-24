@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:838329625695:android:b2c30ebc37698bc3243fea",
         "android_client_info": {
-          "package_name": "it.netknights.piauthenticator"
+          "package_name": "it.netknights.piauthenticator.debug"
         }
       },
       "oauth_client": [
