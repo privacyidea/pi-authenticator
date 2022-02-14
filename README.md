@@ -38,7 +38,7 @@ Integrations tests can be run by executing the shell script `run_driver.sh` dire
 
 If you want to contribute to this repository you can view the current todos under the issues tab. Ideas and pull requests are much welcome.
 
-For setting up the development environment please visit the official [get startet guide](https://flutter.dev/docs/get-started/install).
+For setting up the development environment please visit the official [get started guide](https://flutter.dev/docs/get-started/install).
 
 ## Translations
 
