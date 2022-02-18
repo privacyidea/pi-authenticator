@@ -9,7 +9,7 @@ on:
 
 jobs:
   drive:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 40
     strategy:
       # When set to true, GitHub cancels all in-progress jobs if any        
@@ -23,10 +23,10 @@ jobs:
     - uses: actions/setup-java@v1
       with:
         java-version: '11.x'
-    - uses: subosito/flutter-action@v1
+    - uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
-        flutter-version: '2.10.0'
+        flutter-version: '2.10.1'
     - run: "flutter --version"
     - run: "flutter pub get"
     - run: "flutter build apk"
