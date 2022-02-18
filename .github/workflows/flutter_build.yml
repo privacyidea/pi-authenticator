@@ -8,7 +8,7 @@ on:
 
 jobs:
   build_ios:
-    name: Build Flutter (iOS)
+    name: (iOS)
     runs-on: macos-latest
     timeout-minutes: 15
     strategy:
@@ -32,7 +32,7 @@ jobs:
     - run: "flutter build ios --no-codesign"
 
   build_appbundle:
-    name: Build Flutter (Android)
+    name: (Android)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
