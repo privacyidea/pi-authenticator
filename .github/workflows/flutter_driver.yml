@@ -1,4 +1,4 @@
-name: flutter driver
+name: flutter build
 
 on: 
    push:
@@ -16,7 +16,7 @@ jobs:
       # matrix job fails.
       fail-fast: false
       matrix:
-        api-level: [21, 28, 29] # [minSdk, most used, newest (30 is not working :(] 19 would be minSDK but does not support x86_64
+        api-level: [21,31] # [minSdk, most used, newest (30 is not working :(] 19 would be minSDK but does not support x86_64
         target: [default] # [default, google_apis]
     steps:
     - uses: actions/checkout@v2
@@ -26,10 +26,10 @@ jobs:
     - uses: subosito/flutter-action@v1
       with:
         channel: 'stable'
-        flutter-version: '2.5.2'
+        flutter-version: '2.10.0'
     - run: "flutter --version"
     - run: "flutter pub get"
-    - run: "flutter build apk --debug"
+    - run: "flutter build apk"
 
     - name: "List all test files"
       run: "ls -R test_driver"
