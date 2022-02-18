@@ -1,5 +1,4 @@
-
-on: 
+on:
    push:
       branches:
          - master
@@ -12,7 +11,7 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 15
     strategy:
-      # When set to true, GitHub cancels all in-progress jobs if any        
+      # When set to true, GitHub cancels all in-progress jobs if any
       # matrix job fails.
       fail-fast: false
       matrix:
@@ -29,12 +28,11 @@ jobs:
         flutter-version: '2.10.1'
     - run: "flutter --version"
     - run: "flutter pub get"
-    - run: 'flutter clean'
     - run: "flutter build ios --no-codesign"
 
   build_appbundle:
     name: Build Flutter (Android)
-    runs-on: ubuntu-latest-
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       # When set to true, GitHub cancels all in-progress jobs if any
