@@ -1,4 +1,4 @@
-name: flutter build
+name: flutter build (iOS)
 
 on: 
    push:
@@ -9,8 +9,8 @@ on:
 
 jobs:
   drive:
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
+    runs-on: macos-latest
+    timeout-minutes: 15
     strategy:
       # When set to true, GitHub cancels all in-progress jobs if any        
       # matrix job fails.
@@ -29,17 +29,4 @@ jobs:
         flutter-version: '2.10.1'
     - run: "flutter --version"
     - run: "flutter pub get"
-    - run: "flutter build apk --debug"
-
-    - name: "List all test files"
-      run: "ls -R test_driver"
-
-    - name: run tests
-      uses: reactivecircus/android-emulator-runner@v2
-      with:
-        api-level: ${{ matrix.api-level }}
-        target: ${{ matrix.target }}
-        arch: x86_64
-        profile: Nexus 6
-        script: "flutter driver --dart-define=testing_mode=true --target=test_driver/run_all.dart"
-
+    - run: "flutter build ios --no-codesign"
