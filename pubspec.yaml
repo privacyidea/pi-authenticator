@@ -59,6 +59,7 @@ dependencies:
   collection: ^1.15.0
   uni_links: ^0.5.1
   local_auth: ^1.1.8
+  percent_indicator: ^3.4.0
 
 dev_dependencies:
   flutter_driver:

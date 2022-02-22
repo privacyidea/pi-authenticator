@@ -37,6 +37,7 @@ import 'package:http/http.dart';
 import 'package:local_auth/auth_strings.dart';
 import 'package:local_auth/error_codes.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
@@ -1023,9 +1024,13 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     super.dispose();
   }
 
+  int? calculateRemainingTotpDuration() {
+    return _token.period - ( DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000) % _token.period;
+  }
+
   @override
   Widget _buildNonClickableTile() {
-    return Column(
+    return Stack(
       children: <Widget>[
         ListTile(
           title: HideableText(
@@ -1045,8 +1050,19 @@ class _TotpWidgetState extends _OTPTokenWidgetState
             children: _getSubtitle(),
           ),
         ),
-        LinearProgressIndicator(
-          value: _controller.value,
+        Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 32.0,top: 32.0,),
+            child: CircularPercentIndicator(
+              radius: 45,
+              backgroundColor: Colors.black12,
+              percent: _controller.value,
+              progressColor: Colors.lightBlueAccent,
+              circularStrokeCap: CircularStrokeCap.round,
+              center: Text('${calculateRemainingTotpDuration()}'),
+            ),
+          ),
         ),
       ],
     );

@@ -464,6 +464,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           separatorBuilder: (context, index) {
             return Divider();
           },
+          // add padding for floating action button
+          padding: EdgeInsets.only(bottom: 80),
           itemCount: _tokenList.length),
     );
 
