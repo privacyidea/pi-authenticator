@@ -293,121 +293,117 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky,
-        overlays: []);
     final Size size = MediaQuery.of(context).size;
-    return SafeArea(
-      child: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          elevation: 0,
-          title: Text(
-            widget.title,
-            overflow: TextOverflow.ellipsis,
-            // maxLines: 2 only works like this.
-            maxLines: 2, // Title can be shown on small screens too.
-          ),
-          leading: SvgPicture.asset('res/logo/app_logo_light.svg'),
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(
+          widget.title,
+          overflow: TextOverflow.ellipsis,
+          // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
         ),
-        extendBodyBehindAppBar: false,
-        body: Stack(
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          children: [
-            _buildBody(),
-            Positioned(
-              child: Container(
-                width: size.width,
-                height: 80,
-                child: Stack(
-                  children: [
-                    CustomPaint(
-                      size: Size(size.width, 80),
-                      painter: CustomPaintAppBar(buildContext: context),
+        leading: SvgPicture.asset('res/logo/app_logo_light.svg'),
+      ),
+      extendBodyBehindAppBar: false,
+      body: Stack(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        children: [
+          _buildBody(),
+          Positioned(
+            child: Container(
+              width: size.width,
+              height: 80,
+              child: Stack(
+                children: [
+                  CustomPaint(
+                    size: Size(size.width, 80),
+                    painter: CustomPaintAppBar(buildContext: context),
+                  ),
+                  Center(
+                    heightFactor: 0.6,
+                    child: FloatingActionButton(
+                      onPressed: () => _scanQRCode(),
+                      tooltip: AppLocalizations.of(context)!.scanQrCode,
+                      child: Icon(Icons.qr_code),
                     ),
-                    Center(
-                      heightFactor: 0.6,
-                      child: FloatingActionButton(
-                        onPressed: () => _scanQRCode(),
-                        tooltip: AppLocalizations.of(context)!.scanQrCode,
-                        child: Icon(Icons.qr_code),
-                      ),
-                    ),
-                    Container(
-                      width: size.width,
-                      height: 80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                addAllLicenses();
-                                Navigator.push(
+                  ),
+                  Container(
+                    width: size.width,
+                    height: 80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              addAllLicenses();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CustomLicenseScreen(),
+                                ),
+                              );
+                            },
+                            icon: Icon(
+                              Icons.info_outline,
+                              color: Colors.black,
+                              size: 24,
+                            )),
+                        IconButton(
+                            onPressed: () {
+                              Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => CustomLicenseScreen(),
-                                  ),
-                                );
-                              },
-                              icon: Icon(
-                                Icons.info_outline,
-                                color: Colors.black,
-                                size: 24,
-                              )),
-                          IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddTokenManuallyScreen(),
-                                    )).then((newToken) => _addToken(newToken));
-                              },
-                              icon: Icon(
-                                Icons.add_moderator,
-                                color: Colors.black,
-                                size: 24,
-                              )),
-                          Container(
-                            width: size.width * 0.20,
-                          ),
-                          IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => SettingsScreen(),
-                                    )).then((_) => _loadTokenList());
-                              },
-                              icon: Icon(
-                                Icons.settings,
-                                color: Colors.black,
-                                size: 24,
-                              )),
-                          IconButton(
-                              onPressed: () {
-                                Navigator.push(
+                                    builder: (context) =>
+                                        AddTokenManuallyScreen(),
+                                  )).then((newToken) => _addToken(newToken));
+                            },
+                            icon: Icon(
+                              Icons.add_moderator,
+                              color: Colors.black,
+                              size: 24,
+                            )),
+                        Container(
+                          width: size.width * 0.20,
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => GuideScreen(),
-                                  ),
-                                );
-                              },
-                              icon: Icon(
-                                Icons.help_outline,
-                                color: Colors.black,
-                                size: 24,
-                              ))
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                                    builder: (context) => SettingsScreen(),
+                                  )).then((_) => _loadTokenList());
+                            },
+                            icon: Icon(
+                              Icons.settings,
+                              color: Colors.black,
+                              size: 24,
+                            )),
+                        IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => GuideScreen(),
+                                ),
+                              );
+                            },
+                            icon: Icon(
+                              Icons.help_outline,
+                              color: Colors.black,
+                              size: 24,
+                            ))
+                      ],
+                    ),
+                  )
+                ],
               ),
-              bottom: 0,
-              left: 0,
             ),
-          ],
-        ),
+            bottom: 0,
+            left: 0,
+          ),
+        ],
       ),
     );
   }
@@ -569,7 +565,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
               thickness: 1.5,
               indent: 8,
               endIndent: 8,
-
             );
           },
           // add padding for floating action button
