@@ -49,6 +49,7 @@ import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
+import 'package:privacyidea_authenticator/widgets/app_bar_item.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uni_links/uni_links.dart';
@@ -334,37 +335,33 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        IconButton(
-                            onPressed: () {
-                              addAllLicenses();
-                              Navigator.push(
+                        AppBarItem(
+                          onPressed: () {
+                            addAllLicenses();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CustomLicenseScreen(),
+                              ),
+                            );
+                          },
+                          icon: Icons.info_outline,
+                        ),
+                        AppBarItem(
+                          onPressed: () {
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => CustomLicenseScreen(),
-                                ),
-                              );
-                            },
-                            icon: Icon(
-                              Icons.info_outline,
-                              size: 24,
-                            )),
-                        IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        AddTokenManuallyScreen(),
-                                  )).then((newToken) => _addToken(newToken));
-                            },
-                            icon: Icon(
-                              Icons.add_moderator,
-                              size: 24,
-                            )),
+                                  builder: (context) =>
+                                      AddTokenManuallyScreen(),
+                                )).then((newToken) => _addToken(newToken));
+                          },
+                          icon: Icons.add_moderator,
+                        ),
                         Container(
                           width: size.width * 0.20,
                         ),
-                        IconButton(
+                        AppBarItem(
                             onPressed: () {
                               Navigator.push(
                                   context,
@@ -372,23 +369,18 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
                                     builder: (context) => SettingsScreen(),
                                   )).then((_) => _loadTokenList());
                             },
-                            icon: Icon(
-                              Icons.settings,
-                              size: 24,
-                            )),
-                        IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => GuideScreen(),
-                                ),
-                              );
-                            },
-                            icon: Icon(
-                              Icons.help_outline,
-                              size: 24,
-                            ))
+                            icon: Icons.settings),
+                        AppBarItem(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => GuideScreen(),
+                              ),
+                            );
+                          },
+                          icon: Icons.help_outline,
+                        )
                       ],
                     ),
                   )
