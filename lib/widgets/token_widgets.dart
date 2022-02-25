@@ -716,8 +716,11 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                   children: _getSubtitle(),
                 ),
                 trailing: Container(
-                    padding: EdgeInsets.only(right: 36.0),
-                    child: Icon(Icons.message)),
+                    padding: EdgeInsets.only(right: 36.0, top: 8),
+                    child: Icon(
+                      Icons.notifications,
+                      size: 26,
+                    )),
               ),
               Visibility(
                 // Accept / decline push auth request.

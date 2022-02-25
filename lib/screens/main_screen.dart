@@ -49,13 +49,12 @@ import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/widgets/custom_paint_app_bar.dart';
-import 'package:privacyidea_authenticator/widgets/custom_texts.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:uuid/uuid.dart';
 
+import '../widgets/custom_paint_app_bar.dart';
 import 'custom_about_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -347,7 +346,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
                             },
                             icon: Icon(
                               Icons.info_outline,
-                              color: Colors.black,
                               size: 24,
                             )),
                         IconButton(
@@ -361,7 +359,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
                             },
                             icon: Icon(
                               Icons.add_moderator,
-                              color: Colors.black,
                               size: 24,
                             )),
                         Container(
@@ -377,7 +374,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
                             },
                             icon: Icon(
                               Icons.settings,
-                              color: Colors.black,
                               size: 24,
                             )),
                         IconButton(
@@ -391,7 +387,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
                             },
                             icon: Icon(
                               Icons.help_outline,
-                              color: Colors.black,
                               size: 24,
                             ))
                       ],
@@ -553,12 +548,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       child: ListView.separated(
           itemBuilder: (context, index) {
             Token token = _tokenList[index];
-            return Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
-              child: TokenWidget(token,
-                  onDeleteClicked: () => _removeToken(token)),
-            );
+            return TokenWidget(token,
+                onDeleteClicked: () => _removeToken(token));
           },
           separatorBuilder: (context, index) {
             return Divider(
@@ -609,80 +600,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         setState(() {});
       }
     }
-  }
-
-  /// Builds the `ActionMenu` that allow the user to access, e.g., settings and
-  /// information about the app.
-  List<Widget> _buildActionMenu() {
-    return <Widget>[
-      PopupMenuButton<String>(
-        onSelected: (String value) async {
-          if (value == 'about') {
-            // clearLicenses(), // This is used for testing purposes only.
-            addAllLicenses();
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CustomLicenseScreen(),
-              ),
-            );
-          } else if (value == 'add_manually') {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddTokenManuallyScreen(),
-                )).then((newToken) => _addToken(newToken));
-          } else if (value == 'settings') {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SettingsScreen(),
-                )).then((_) => _loadTokenList());
-          } else if (value == 'guide') {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => GuideScreen(),
-              ),
-            );
-          }
-        },
-        elevation: 5.0,
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          PopupMenuItem<String>(
-            value: 'add_manually',
-            child: MenuItemWithIcon(
-              icon: Icon(Icons.add_outlined),
-              text: Text(AppLocalizations.of(context)!.addToken),
-            ),
-          ),
-          PopupMenuDivider(),
-          PopupMenuItem<String>(
-            value: 'settings',
-            child: MenuItemWithIcon(
-              icon: Icon(Icons.settings_outlined),
-              text: Text(AppLocalizations.of(context)!.settings),
-            ),
-          ),
-          PopupMenuDivider(),
-          PopupMenuItem<String>(
-            value: 'about',
-            child: MenuItemWithIcon(
-              icon: Icon(Icons.info_outline),
-              text: Text(AppLocalizations.of(context)!.about),
-            ),
-          ),
-          PopupMenuDivider(),
-          PopupMenuItem<String>(
-            value: 'guide',
-            child: MenuItemWithIcon(
-              icon: Icon(Icons.help_outline),
-              text: Text(AppLocalizations.of(context)!.guide),
-            ),
-          ),
-        ],
-      ),
-    ];
   }
 
   /// Shows a message to the user for a given `Duration`.

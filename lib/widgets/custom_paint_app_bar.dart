@@ -6,12 +6,14 @@ class CustomPaintAppBar extends CustomPainter {
 
   CustomPaintAppBar({required this.buildContext});
 
-  //ThemeData = Theme.of(buildContext).
-
+  // paints the curves of the appbar
   @override
   void paint(Canvas canvas, Size size) {
+    final ThemeData mode = Theme.of(buildContext);
+    Color appBarColor =
+        mode.brightness == Brightness.dark ? Color(0xFF303030) : Colors.white;
     Paint paint = Paint()
-      ..color = Colors.white
+      ..color = appBarColor
       ..style = PaintingStyle.fill;
     Path path = Path()..moveTo(0, 20);
     path.quadraticBezierTo(size.width * 0.20, 0, size.width * 0.35, 0);
