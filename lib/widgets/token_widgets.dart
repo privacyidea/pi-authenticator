@@ -1033,7 +1033,6 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     return Stack(
       children: <Widget>[
         ListTile(
-          //   leading: Icon(Icons.dashboard_customize_outlined),
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
