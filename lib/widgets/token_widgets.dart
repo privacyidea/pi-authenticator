@@ -945,7 +945,6 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: _getSubtitle(),
       ),
-      //   leading: Icon(Icons.data_saver_off_outlined),
       trailing: Container(
         padding: const EdgeInsets.only(right: 24.0),
         child: IconButton(
