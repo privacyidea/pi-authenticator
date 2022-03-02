@@ -297,7 +297,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        elevation: 0,
         title: Text(
           widget.title,
           overflow: TextOverflow.ellipsis,
