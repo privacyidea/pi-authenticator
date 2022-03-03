@@ -31,13 +31,15 @@ var lightThemeData = new ThemeData(
   brightness: Brightness.light,
   primaryColorLight: primarySwatch,
   primaryColorDark: primarySwatch,
+  appBarTheme:
+      AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
   colorScheme: ColorScheme.light(
     primary: primarySwatch,
     secondary: primarySwatch,
     onPrimary: onPrimary,
     onSecondary: onPrimary,
   ),
-  iconTheme: IconThemeData(color: onPrimary),
+  iconTheme: IconThemeData(color: Colors.black),
 );
 
 var darkThemeData = ThemeData(
@@ -45,13 +47,15 @@ var darkThemeData = ThemeData(
   brightness: Brightness.dark,
   primaryColorLight: primarySwatch,
   primaryColorDark: primarySwatch,
+  appBarTheme:
+      AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
   colorScheme: ColorScheme.dark(
     primary: primarySwatch,
     secondary: primarySwatch,
     onPrimary: onPrimary,
     onSecondary: onPrimary,
   ),
-  iconTheme: IconThemeData(color: onPrimary),
+  iconTheme: IconThemeData(color: Colors.white),
 );
 
 /// Calculate HSP and check if the primary color is bright or dark

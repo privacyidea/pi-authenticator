@@ -90,7 +90,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         _token.label,
         style: Theme.of(context)
             .textTheme
-            .headline6!
+            .subtitle1!
             .copyWith(fontWeight: FontWeight.normal),
       ));
     }
@@ -99,7 +99,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         _token.issuer,
         style: Theme.of(context)
             .textTheme
-            .headline6!
+            .subtitle2!
             .copyWith(fontWeight: FontWeight.normal),
       ));
     }
@@ -704,18 +704,23 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
               ListTile(
                 title: Text(
                   _token.serial,
-                  textScaleFactor: 2.5,
-                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                        fontFamily: 'monospace',
-                        fontWeight: FontWeight.bold,
-                      ),
+                  textScaleFactor: 2.0,
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle2!
+                      .copyWith(color: Theme.of(context).colorScheme.secondary),
                 ),
                 subtitle: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: _getSubtitle(),
                 ),
-                trailing: Icon(Icons.message),
+                trailing: Container(
+                    padding: EdgeInsets.only(right: 36.0, top: 8),
+                    child: Icon(
+                      Icons.notifications,
+                      size: 26,
+                    )),
               ),
               Visibility(
                 // Accept / decline push auth request.
@@ -923,40 +928,33 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
 
   @override
   Widget _buildNonClickableTile() {
-    return Stack(
-      children: <Widget>[
-        ListTile(
-          title: HideableText(
-            controller: _hideableController,
-            text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
-            textScaleFactor: 2.5,
-            enabled: _token.isLocked,
-            showDuration: Duration(seconds: 10),
-            textStyle: Theme.of(context)
-                .textTheme
-                .subtitle2!
-                .copyWith(color: Theme.of(context).colorScheme.secondary),
-          ),
-          subtitle: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _getSubtitle(),
-          ),
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-            child: ElevatedButton(
-              onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
-              child: Text(
-                AppLocalizations.of(context)!.next,
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
+    return ListTile(
+      title: HideableText(
+        controller: _hideableController,
+        text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
+        textScaleFactor: 2.0,
+        enabled: _token.isLocked,
+        showDuration: Duration(seconds: 10),
+        textStyle: Theme.of(context)
+            .textTheme
+            .subtitle2!
+            .copyWith(color: Theme.of(context).colorScheme.secondary),
+      ),
+      subtitle: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: _getSubtitle(),
+      ),
+      trailing: Container(
+        padding: const EdgeInsets.only(right: 24.0),
+        child: IconButton(
+          iconSize: 32,
+          onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
+          icon: Icon(
+            Icons.replay,
           ),
         ),
-      ],
+      ),
     );
   }
 }
@@ -1025,7 +1023,8 @@ class _TotpWidgetState extends _OTPTokenWidgetState
   }
 
   int? calculateRemainingTotpDuration() {
-    return _token.period - ( DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000) % _token.period;
+    return _token.period -
+        (DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000) % _token.period;
   }
 
   @override
@@ -1036,7 +1035,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
-            textScaleFactor: 2.5,
+            textScaleFactor: 2.0,
             enabled: _token.isLocked,
             showDuration: Duration(seconds: 10),
             textStyle: Theme.of(context)
@@ -1049,11 +1048,8 @@ class _TotpWidgetState extends _OTPTokenWidgetState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: _getSubtitle(),
           ),
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 32.0,top: 32.0,),
+          trailing: Padding(
+            padding: const EdgeInsets.only(right: 24.0),
             child: CircularPercentIndicator(
               radius: 45,
               backgroundColor: Colors.black12,
