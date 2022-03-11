@@ -594,5 +594,51 @@
   "@unlock": {
     "description": "Description of button that unlocks a token.",
     "type": "text"
-  }
+  },
+  "noResultTitle": "No tokens installed yet.",
+  "@noResultTitle": {
+    "description": "No tokens installed yet.",
+    "type": "text"
+  },
+  "noResultText1": "tap the ",
+  "@noResultText1": {
+    "description": "first noresult text",
+    "type": "text"
+  },
+  "noResultText2": " button to get started!",
+  "@noResultText2": {
+    "description": "second noresult text",
+    "type": "text"
+  },
+  "onBoardingTitle1": "Welcome to privacyIDEA",
+  "@onBoardingTitle1": {
+    "description": "onboardingTitle1",
+    "type": "text"
+  },
+    "onBoardingText1": "two-factor authentication, \n done the right way. \n",
+    "@onBoardingText1": {
+      "description": "onboardingText1",
+      "type": "text"
+    },
+  "onBoardingTitle2": "100% Secure",
+  "@onBoardingTitle2": {
+    "description": "onBoardingTitle2",
+    "type": "text"
+  },
+   "onBoardingText2": "Store tokens on your device  \n secured by your biometrics",
+      "@onBoardingText2":
+      {
+        "description": "onboardingText2" ,
+        "type": "text"
+      },
+  "onBoardingTitle3": "Visit us at Github",
+    "@onBoardingTitle3": {
+      "description": "onBoardingTitle3",
+      "type": "text"
+    },
+     "onBoardingText3": "privacyIDEA is  \n 100% open source",
+        "@onBoardingTitle3": {
+          "description": "onBoardingTitle3",
+          "type": "text"
+        }
 }

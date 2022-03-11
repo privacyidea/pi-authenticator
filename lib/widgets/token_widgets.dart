@@ -807,6 +807,11 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                         ),
                       ],
                     ),
+                    Divider(
+                      thickness: 1.5,
+                      indent: 8,
+                      endIndent: 8,
+                    )
                   ],
                 ),
               ),
@@ -873,27 +878,7 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
 
   @override
   Widget _buildTile() {
-    return InkWell(
-      splashColor: Theme.of(context).primaryColor,
-      onTap: () async {
-        if (_token.isLocked &&
-            await _unlock(
-                localizedReason:
-                    AppLocalizations.of(context)!.authenticateToShowOtp)) {
-          _hideableController.tap();
-        }
-      },
-      onLongPress: _token.isLocked
-          ? null
-          : () {
-              Clipboard.setData(ClipboardData(text: _otpValue));
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(AppLocalizations.of(context)!
-                    .otpValueCopiedMessage(_otpValue)),
-              ));
-            },
-      child: _buildNonClickableTile(),
-    );
+    return _buildNonClickableTile();
   }
 
   Widget _buildNonClickableTile();
@@ -928,33 +913,49 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
 
   @override
   Widget _buildNonClickableTile() {
-    return ListTile(
-      title: HideableText(
-        controller: _hideableController,
-        text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
-        textScaleFactor: 2.0,
-        enabled: _token.isLocked,
-        showDuration: Duration(seconds: 10),
-        textStyle: Theme.of(context)
-            .textTheme
-            .subtitle2!
-            .copyWith(color: Theme.of(context).colorScheme.secondary),
-      ),
-      subtitle: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _getSubtitle(),
-      ),
-      trailing: Container(
-        padding: const EdgeInsets.only(right: 24.0),
-        child: IconButton(
-          iconSize: 32,
-          onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
-          icon: Icon(
-            Icons.replay,
+    return Column(
+      children: [
+        ListTile(
+          title: HideableText(
+            controller: _hideableController,
+            text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
+            textScaleFactor: 2.0,
+            enabled: _token.isLocked,
+            showDuration: Duration(seconds: 10),
+            textStyle: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: Theme.of(context).colorScheme.secondary),
           ),
+          subtitle: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _getSubtitle(),
+          ),
+          trailing: Container(
+            padding: const EdgeInsets.only(right: 24.0),
+            child: IconButton(
+              iconSize: 32,
+              onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
+              icon: Icon(
+                Icons.replay,
+              ),
+            ),
+          ),
+          onTap: () {
+            Clipboard.setData(ClipboardData(text: _otpValue));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(AppLocalizations.of(context)!
+                  .otpValueCopiedMessage(_otpValue)),
+            ));
+          },
         ),
-      ),
+        Divider(
+          thickness: 1.5,
+          indent: 8,
+          endIndent: 8,
+        )
+      ],
     );
   }
 }
@@ -1029,7 +1030,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
 
   @override
   Widget _buildNonClickableTile() {
-    return Stack(
+    return Column(
       children: <Widget>[
         ListTile(
           title: HideableText(
@@ -1059,7 +1060,19 @@ class _TotpWidgetState extends _OTPTokenWidgetState
               center: Text('${calculateRemainingTotpDuration()}'),
             ),
           ),
+          onTap: () {
+            Clipboard.setData(ClipboardData(text: _otpValue));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(AppLocalizations.of(context)!
+                  .otpValueCopiedMessage(_otpValue)),
+            ));
+          },
         ),
+        Divider(
+          thickness: 1.5,
+          indent: 8,
+          endIndent: 8,
+        )
       ],
     );
   }

@@ -22,7 +22,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 
 class GuideScreen extends StatelessWidget {
   // Without the offset the scroll bar is not shown the first time the screen
@@ -64,30 +63,6 @@ class GuideScreen extends StatelessWidget {
                   child:
                       Text(AppLocalizations.of(context)!.somethingWentWrong));
             },
-          ),
-          ListTile(
-            title: Text(AppLocalizations.of(context)!.showThisScreenOnStart),
-            trailing: StreamBuilder<bool>(
-              stream: AppSettings.of(context).showGuideOnStartStream(),
-              initialData: true,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Checkbox(
-                    value: snapshot.data,
-                    onChanged: (value) =>
-                        AppSettings.of(context).showGuideOnStart = value!,
-                    activeColor: Colors.grey, // TODO Find a nice color for this
-                  );
-                } else {
-                  // If the stream has no data, show an out-grayed checkbox
-                  return Checkbox(
-                    value: AppSettings.of(context).showGuideOnStart,
-                    onChanged: null,
-                  );
-                }
-              },
-            ),
-            tileColor: Theme.of(context).primaryColor,
           ),
         ],
       ),

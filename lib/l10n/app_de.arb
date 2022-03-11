@@ -594,5 +594,51 @@
   "@unlock": {
     "description": "Description of button that unlocks a token.",
     "type": "text"
-  }
+  },
+    "noResultTitle": "Keine Token vorhanden.",
+      "@noResultTitle": {
+        "description": "No tokens installed yet.",
+        "type": "text"
+      },
+     "noResultText1": "tippe auf das ",
+        "@noResultText1": {
+          "description": "first noresult text",
+          "type": "text"
+        },
+     "noResultText2": " Icon um loszulegen",
+       "@noResultText2": {
+         "description": "second noresult text",
+         "type": "text"
+       },
+        "onBoardingTitle1": "Wilkommen in privacyIDEA",
+         "@onBoardingTitle1": {
+           "description": "onboardingTitle1",
+           "type": "text"
+         },
+           "onBoardingText1": "Zwei-Faktor-Authentifizierung \n richtig gemacht. ",
+           "@onBoardingText1": {
+             "description": "onboardingText1",
+             "type": "text"
+           },
+         "onBoardingTitle2": "100% Secure",
+         "@onBoardingTitle2": {
+           "description": "onBoardingTitle2",
+           "type": "text"
+         },
+          "onBoardingText2": "Speichern Sie Token auf \n Ihrem Gerät,\n die durch Ihre biometrischen Daten \n gesichert sind.",
+             "@onBoardingText2":
+             {
+               "description": "onboardingText2" ,
+               "type": "text"
+             },
+         "onBoardingTitle3": "Besuchen Sie uns auf Github",
+           "@onBoardingTitle3": {
+             "description": "onBoardingTitle3",
+             "type": "text"
+           },
+            "onBoardingText3": "privacyIDEA ist zu \n 100% open source",
+               "@onBoardingTitle3": {
+                 "description": "onBoardingTitle3",
+                 "type": "text"
+               }
 }
