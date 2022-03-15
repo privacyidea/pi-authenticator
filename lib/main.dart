@@ -110,8 +110,8 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
                       darkTheme: darkThemeData,
                       themeMode: EasyDynamicTheme.of(context).themeMode,
                       home: settings.isFirstRun
-                          ? MainScreen(title: 'privacyIDEA Authenticator')
-                          : OnboardingScreen(),
+                          ? OnboardingScreen()
+                          : MainScreen(title: 'privacyIDEA Authenticator'),
                     );
                   },
                 );
