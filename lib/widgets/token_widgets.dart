@@ -704,7 +704,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
               ListTile(
                 title: Text(
                   _token.serial,
-                  textScaleFactor: 2.0,
+                  textScaleFactor: 2.1,
                   style: Theme.of(context)
                       .textTheme
                       .subtitle2!
@@ -919,7 +919,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
-            textScaleFactor: 2.0,
+            textScaleFactor: 2.1,
             enabled: _token.isLocked,
             showDuration: Duration(seconds: 10),
             textStyle: Theme.of(context)
@@ -1036,7 +1036,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
-            textScaleFactor: 2.0,
+            textScaleFactor: 2.1,
             enabled: _token.isLocked,
             showDuration: Duration(seconds: 10),
             textStyle: Theme.of(context)

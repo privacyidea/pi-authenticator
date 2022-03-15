@@ -256,8 +256,13 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   Future<void> _loadTokenList() async {
     List<Token> l1 = await StorageUtil.loadAllTokens();
-    // Sort the list to prevent items from jumping around on ui updates
-    l1.sort((a, b) => a.id.hashCode.compareTo(b.id.hashCode));
+    // Sort the list by the sortIndex stored in localStorage
+    l1.sort((a, b) {
+      if (a.sortIndex != null && b.sortIndex != null) {
+        return a.sortIndex!.compareTo(b.sortIndex as int);
+      }
+      return a.id.hashCode.compareTo(b.id.hashCode);
+    });
     this._tokenList = l1;
 
     if (mounted) {
@@ -516,6 +521,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     Widget child = SlidableAutoCloseBehavior(
       child: ReorderableListView.builder(
         itemBuilder: (context, index) {
+          if (_tokenList[index].sortIndex == null) {
+            _tokenList[index].sortIndex = index;
+          }
           Token token = _tokenList[index];
           return TokenWidget(token, onDeleteClicked: () => _removeToken(token));
         },
@@ -527,6 +535,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
             final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
             final token = _tokenList.removeAt(oldIndex);
             _tokenList.insert(index, token);
+            _updateSortIndex();
           });
         },
       ),
@@ -563,6 +572,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     log('Adding new token:',
         name: 'main_screen.dart#_addToken', error: newToken);
     if (newToken != null) {
+      // add last index
+      newToken.sortIndex = _tokenList.length;
+
       _tokenList.add(newToken);
 
       if (mounted) {
@@ -577,5 +589,15 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       content: Text(message),
       duration: duration,
     ));
+  }
+
+  // on reorder list, update sortIndex of every element
+  _updateSortIndex() {
+    for (int i = 0; i < _tokenList.length; i++) {
+      if (_tokenList[i].sortIndex != null) {
+        _tokenList[i].sortIndex = i;
+        StorageUtil.saveOrReplaceToken(_tokenList[i]);
+      }
+    }
   }
 }
