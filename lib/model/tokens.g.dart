@@ -16,9 +16,12 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
       counter: json['counter'] as int? ?? 0,
       isLocked: json['isLocked'] as bool? ?? false,
       canToggleLock: json['canToggleLock'] as bool? ?? true,
-    )..type = json['type'] as String;
+    )
+      ..sortIndex = json['sortIndex'] as int?
+      ..type = json['type'] as String;
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
+      'sortIndex': instance.sortIndex,
       'canToggleLock': instance.canToggleLock,
       'isLocked': instance.isLocked,
       'type': instance.type,
@@ -47,9 +50,12 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
       period: json['period'] as int,
       isLocked: json['isLocked'] as bool? ?? false,
       canToggleLock: json['canToggleLock'] as bool? ?? true,
-    )..type = json['type'] as String;
+    )
+      ..sortIndex = json['sortIndex'] as int?
+      ..type = json['type'] as String;
 
 Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
+      'sortIndex': instance.sortIndex,
       'canToggleLock': instance.canToggleLock,
       'isLocked': instance.isLocked,
       'type': instance.type,
@@ -72,8 +78,10 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       sslVerify: json['sslVerify'] as bool?,
       enrollmentCredentials: json['enrollmentCredentials'] as String?,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
+      listIndex: json['listIndex'] as int?,
       expirationDate: DateTime.parse(json['expirationDate'] as String),
     )
+      ..sortIndex = json['sortIndex'] as int?
       ..type = json['type'] as String
       ..isRolledOut = json['isRolledOut'] as bool
       ..publicServerKey = json['publicServerKey'] as String?
@@ -85,6 +93,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
           json['knownPushRequests'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
+      'sortIndex': instance.sortIndex,
       'canToggleLock': instance.canToggleLock,
       'isLocked': instance.isLocked,
       'type': instance.type,
@@ -93,6 +102,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'issuer': instance.issuer,
       'url': instance.url?.toString(),
       'isRolledOut': instance.isRolledOut,
+      'listIndex': instance.listIndex,
       'publicServerKey': instance.publicServerKey,
       'privateTokenKey': instance.privateTokenKey,
       'publicTokenKey': instance.publicTokenKey,
