@@ -60,6 +60,8 @@ dependencies:
   uni_links: ^0.5.1
   local_auth: ^1.1.8
   percent_indicator: ^3.4.0
+  lottie: ^1.2.2
+  flare_flutter: any
 
 dev_dependencies:
   flutter_driver:
@@ -95,6 +97,13 @@ flutter:
     - res/guide/
     - res/gif/help_delete_rename.gif
     - res/gif/help_manual_poll.gif
+    - res/lottie/onboarding_secure_animation.json
+    - res/rive/success_check.flr
+    - res/lottie/security-cloud.json
+    - res/lottie/941-submit-smile.json
+    - res/lottie/lock_shield.json
+    - res/logo/github.png
+    - res/lottie/github-logo.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

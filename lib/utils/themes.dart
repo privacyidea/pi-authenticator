@@ -43,6 +43,7 @@ var lightThemeData = new ThemeData(
 );
 
 var darkThemeData = ThemeData(
+  scaffoldBackgroundColor: Color(0xFF303030),
   toggleableActiveColor: primarySwatch,
   brightness: Brightness.dark,
   primaryColorLight: primarySwatch,

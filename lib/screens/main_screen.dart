@@ -34,12 +34,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
-import 'package:package_info/package_info.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
-import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
-import 'package:privacyidea_authenticator/screens/guide_screen.dart';
+import 'package:privacyidea_authenticator/screens/onboarding_screen.dart';
 import 'package:privacyidea_authenticator/screens/scanner_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
@@ -50,6 +48,7 @@ import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/app_bar_item.dart';
+import 'package:privacyidea_authenticator/widgets/no_token_screen.dart';
 import 'package:privacyidea_authenticator/widgets/token_widgets.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uni_links/uni_links.dart';
@@ -190,30 +189,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     await _loadTokenList(); // Update UI
   }
 
-  void _showChangelogAndGuide() async {
-    // Do not show these info when running driver tests
-    if (!AppSettings.of(context).isTestMode) {
-      PackageInfo info = await PackageInfo.fromPlatform();
-
-      // Check if the app was updated
-      if (info.version != await StorageUtil.getCurrentVersion()) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ChangelogScreen()),
-        );
-        StorageUtil.setCurrentVersion(info.version);
-      }
-
-      // Show the guide screen in front of the changelog -> load it last
-      if (AppSettings.of(context).showGuideOnStart) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => GuideScreen()),
-        );
-      }
-    }
-  }
-
   Future<void> _initLinkHandling() async {
     _uniLinkStream = linkStream.listen((String? link) {
       _handleOtpAuth(link);
@@ -263,7 +238,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   @override
   void afterFirstRender() {
-    _showChangelogAndGuide();
     _loadTokenList();
   }
 
@@ -282,8 +256,13 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   Future<void> _loadTokenList() async {
     List<Token> l1 = await StorageUtil.loadAllTokens();
-    // Sort the list to prevent items from jumping around on ui updates
-    l1.sort((a, b) => a.id.hashCode.compareTo(b.id.hashCode));
+    // Sort the list by the sortIndex stored in localStorage
+    l1.sort((a, b) {
+      if (a.sortIndex != null && b.sortIndex != null) {
+        return a.sortIndex!.compareTo(b.sortIndex as int);
+      }
+      return a.id.hashCode.compareTo(b.id.hashCode);
+    });
     this._tokenList = l1;
 
     if (mounted) {
@@ -306,90 +285,94 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         leading: SvgPicture.asset('res/logo/app_logo_light.svg'),
       ),
       extendBodyBehindAppBar: false,
-      body: Stack(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        children: [
-          _buildBody(),
-          Positioned(
-            child: Container(
-              width: size.width,
-              height: 80,
-              child: Stack(
-                children: [
-                  CustomPaint(
-                    size: Size(size.width, 80),
-                    painter: CustomPaintAppBar(buildContext: context),
-                  ),
-                  Center(
-                    heightFactor: 0.6,
-                    child: FloatingActionButton(
-                      onPressed: () => _scanQRCode(),
-                      tooltip: AppLocalizations.of(context)!.scanQrCode,
-                      child: Icon(Icons.qr_code),
+      body: Container(
+        width: size.width,
+        height: size.height,
+        child: Stack(
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          children: [
+            _tokenList.isEmpty ? NoTokenScreen() : _buildBody(),
+            Positioned(
+              child: Container(
+                width: size.width,
+                height: 80,
+                child: Stack(
+                  children: [
+                    CustomPaint(
+                      size: Size(size.width, 80),
+                      painter: CustomPaintAppBar(buildContext: context),
                     ),
-                  ),
-                  Container(
-                    width: size.width,
-                    height: 80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        AppBarItem(
-                          onPressed: () {
-                            addAllLicenses();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CustomLicenseScreen(),
-                              ),
-                            );
-                          },
-                          icon: Icons.info_outline,
-                        ),
-                        AppBarItem(
-                          onPressed: () {
-                            Navigator.push(
+                    Center(
+                      heightFactor: 0.6,
+                      child: FloatingActionButton(
+                        onPressed: () => _scanQRCode(),
+                        tooltip: AppLocalizations.of(context)!.scanQrCode,
+                        child: Icon(Icons.qr_code_scanner_outlined),
+                      ),
+                    ),
+                    Container(
+                      width: size.width,
+                      height: 80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          AppBarItem(
+                            onPressed: () {
+                              addAllLicenses();
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddTokenManuallyScreen(),
-                                )).then((newToken) => _addToken(newToken));
-                          },
-                          icon: Icons.add_moderator,
-                        ),
-                        Container(
-                          width: size.width * 0.20,
-                        ),
-                        AppBarItem(
+                                  builder: (context) => CustomLicenseScreen(),
+                                ),
+                              );
+                            },
+                            icon: Icons.info_outline,
+                          ),
+                          AppBarItem(
                             onPressed: () {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => SettingsScreen(),
-                                  )).then((_) => _loadTokenList());
+                                    builder: (context) =>
+                                        AddTokenManuallyScreen(),
+                                  )).then((newToken) => _addToken(newToken));
                             },
-                            icon: Icons.settings),
-                        AppBarItem(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => GuideScreen(),
-                              ),
-                            );
-                          },
-                          icon: Icons.help_outline,
-                        )
-                      ],
-                    ),
-                  )
-                ],
+                            icon: Icons.add_moderator,
+                          ),
+                          Container(
+                            width: size.width * 0.20,
+                          ),
+                          AppBarItem(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SettingsScreen(),
+                                    )).then((_) => _loadTokenList());
+                              },
+                              icon: Icons.settings),
+                          AppBarItem(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => OnboardingScreen(),
+                                ),
+                              );
+                            },
+                            icon: Icons.help_outline,
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
+              bottom: 0,
+              left: 0,
             ),
-            bottom: 0,
-            left: 0,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -536,22 +519,26 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   /// If not returns the list only.
   Widget _buildBody() {
     Widget child = SlidableAutoCloseBehavior(
-      child: ListView.separated(
-          itemBuilder: (context, index) {
-            Token token = _tokenList[index];
-            return TokenWidget(token,
-                onDeleteClicked: () => _removeToken(token));
-          },
-          separatorBuilder: (context, index) {
-            return Divider(
-              thickness: 1.5,
-              indent: 8,
-              endIndent: 8,
-            );
-          },
-          // add padding for floating action button
-          padding: EdgeInsets.only(bottom: 80),
-          itemCount: _tokenList.length),
+      child: ReorderableListView.builder(
+        itemBuilder: (context, index) {
+          if (_tokenList[index].sortIndex == null) {
+            _tokenList[index].sortIndex = index;
+          }
+          Token token = _tokenList[index];
+          return TokenWidget(token, onDeleteClicked: () => _removeToken(token));
+        },
+        // add padding for floating action button
+        padding: EdgeInsets.only(bottom: 80),
+        itemCount: _tokenList.length,
+        onReorder: (int oldIndex, int newIndex) {
+          setState(() {
+            final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
+            final token = _tokenList.removeAt(oldIndex);
+            _tokenList.insert(index, token);
+            _updateSortIndex();
+          });
+        },
+      ),
     );
 
     bool allowManualRefresh =
@@ -585,6 +572,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     log('Adding new token:',
         name: 'main_screen.dart#_addToken', error: newToken);
     if (newToken != null) {
+      // add last index
+      newToken.sortIndex = _tokenList.length;
+
       _tokenList.add(newToken);
 
       if (mounted) {
@@ -599,5 +589,15 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       content: Text(message),
       duration: duration,
     ));
+  }
+
+  // on reorder list, update sortIndex of every element
+  _updateSortIndex() {
+    for (int i = 0; i < _tokenList.length; i++) {
+      if (_tokenList[i].sortIndex != null) {
+        _tokenList[i].sortIndex = i;
+        StorageUtil.saveOrReplaceToken(_tokenList[i]);
+      }
+    }
   }
 }

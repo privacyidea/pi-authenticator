@@ -36,6 +36,8 @@ abstract class Token {
   bool _isLocked;
   bool _canToggleLock;
 
+  int? sortIndex;
+
   bool get canToggleLock => _canToggleLock;
 
   bool get isLocked => _isLocked;
@@ -120,6 +122,7 @@ class HOTPToken extends OTPToken {
       required Algorithms algorithm,
       required int digits,
       required String secret,
+      int? listIndex,
       int counter = 0,
       bool isLocked: false,
       bool canToggleLock: true})
@@ -157,6 +160,7 @@ class TOTPToken extends OTPToken {
       required int digits,
       required String secret,
       required int period,
+      int? listIndex,
       bool isLocked: false,
       bool canToggleLock: true})
       : this._period = period,
@@ -184,6 +188,7 @@ class PushToken extends Token {
   String? _enrollmentCredentials;
   Uri? url; // Full access to allow adding to legacy android tokens
   bool isRolledOut = false;
+  int? listIndex;
 
   // RSA keys - String values for backward compatibility with serialization
   String? publicServerKey;
@@ -275,6 +280,7 @@ class PushToken extends Token {
     bool? sslVerify,
     String? enrollmentCredentials,
     Uri? url,
+    int? listIndex,
     required DateTime expirationDate,
   })  : this._serial = serial,
         this._sslVerify = sslVerify,
