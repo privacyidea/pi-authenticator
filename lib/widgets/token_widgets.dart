@@ -807,11 +807,6 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                         ),
                       ],
                     ),
-                    Divider(
-                      thickness: 1.5,
-                      indent: 8,
-                      endIndent: 8,
-                    )
                   ],
                 ),
               ),
@@ -835,6 +830,11 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                     ),
                   ],
                 ),
+              ),
+              Divider(
+                thickness: 1.5,
+                indent: 8,
+                endIndent: 8,
               ),
             ],
           ),
