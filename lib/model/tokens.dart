@@ -33,8 +33,10 @@ abstract class Token {
   String _issuer; // The issuer of this token, currently unused.
   String _id; // this is the identifier of the token
 
+  bool relock;
   bool _isLocked;
   bool _canToggleLock;
+  bool? pin;
 
   int? sortIndex;
 
@@ -69,10 +71,11 @@ abstract class Token {
 
   String get issuer => _issuer;
 
-  Token(this._label, this._issuer, this._id, this.type,
-      {bool isLocked: false, bool canToggleLock: true})
+  Token(this._label, this._issuer, this._id, this.type, this.relock,
+      {bool isLocked: false, bool canToggleLock: true, bool pin: false})
       : this._isLocked = isLocked,
-        this._canToggleLock = canToggleLock;
+        this._canToggleLock = canToggleLock,
+        this.pin = pin;
 
   @override
   String toString() {
@@ -87,6 +90,10 @@ abstract class OTPToken extends Token {
   int _digits; // the number of digits the otp value will have
   String
       _secret; // the secret based on which the otp value is calculated in base32
+  bool?
+      pin; // backend can send pin = true, in that case the token should be locked by default
+  bool
+      relock; // if the token should be relocked on app close, pause, for security purposes
 
   Algorithms get algorithm => _algorithm;
 
@@ -95,9 +102,9 @@ abstract class OTPToken extends Token {
   String get secret => _secret;
 
   OTPToken(String label, String issuer, String id, String type, this._algorithm,
-      this._digits, this._secret,
+      this._digits, this._secret, this.pin, this.relock,
       {bool isLocked: false, bool canToggleLock: true})
-      : super(label, issuer, id, type,
+      : super(label, issuer, id, type, relock,
             isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
@@ -122,13 +129,15 @@ class HOTPToken extends OTPToken {
       required Algorithms algorithm,
       required int digits,
       required String secret,
+      relock = false,
+      bool? pin = false,
       int? listIndex,
       int counter = 0,
       bool isLocked: false,
       bool canToggleLock: true})
       : this._counter = counter,
         super(label, issuer, id, enumAsString(TokenTypes.HOTP), algorithm,
-            digits, secret,
+            digits, secret, pin, relock,
             isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
@@ -160,12 +169,14 @@ class TOTPToken extends OTPToken {
       required int digits,
       required String secret,
       required int period,
+      bool relock = false,
+      bool? pin = false,
       int? listIndex,
       bool isLocked: false,
       bool canToggleLock: true})
       : this._period = period,
         super(label, issuer, id, enumAsString(TokenTypes.TOTP), algorithm,
-            digits, secret,
+            digits, secret, pin, relock,
             isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
@@ -276,6 +287,7 @@ class PushToken extends Token {
     required String id,
     bool isLocked: false,
     bool canToggleLock: true,
+    bool relock: false,
     // 2. step
     bool? sslVerify,
     String? enrollmentCredentials,
@@ -287,8 +299,16 @@ class PushToken extends Token {
         this._enrollmentCredentials = enrollmentCredentials,
         this.url = url,
         this._expirationDate = expirationDate,
-        super(label, issuer, id, enumAsString(TokenTypes.PIPUSH),
-            isLocked: isLocked, canToggleLock: canToggleLock);
+        // pin == false because pin only works for otp tokens
+        super(
+          label,
+          issuer,
+          id,
+          enumAsString(TokenTypes.PIPUSH),
+          relock,
+          isLocked: isLocked,
+          canToggleLock: canToggleLock,
+        );
 
   @override
   bool operator ==(Object other) =>

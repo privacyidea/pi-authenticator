@@ -145,7 +145,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             ? Colors.black
             : Colors.white,
         icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
-        onPressed: (_) => _changeLockStatus(),
+        onPressed: (_) => _falseRelockAndLockStatus(),
       ));
     }
 
@@ -159,6 +159,11 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       ),
       child: _buildTile(),
     );
+  }
+
+  void _falseRelockAndLockStatus() async {
+    _changeLockStatus();
+    this._token.relock = false;
   }
 
   void _changeLockStatus() async {
@@ -704,7 +709,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
               ListTile(
                 title: Text(
                   _token.serial,
-                  textScaleFactor: 2.1,
+                  textScaleFactor: 2.0,
                   style: Theme.of(context)
                       .textTheme
                       .subtitle2!
@@ -919,7 +924,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
-            textScaleFactor: 2.1,
+            textScaleFactor: 2.0,
             enabled: _token.isLocked,
             showDuration: Duration(seconds: 10),
             textStyle: Theme.of(context)
@@ -942,13 +947,28 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
               ),
             ),
           ),
-          onTap: () {
-            Clipboard.setData(ClipboardData(text: _otpValue));
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(AppLocalizations.of(context)!
-                  .otpValueCopiedMessage(_otpValue)),
-            ));
-          },
+          onTap: _token.isLocked
+              ? () async {
+                  if (await _unlock(
+                      localizedReason: AppLocalizations.of(context)!
+                          .authenticateToShowOtp)) {
+                    // unlock token, flag it as relockable
+                    _token.isLocked = false;
+                    _token.relock = true;
+                    Clipboard.setData(ClipboardData(text: _otpValue));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(AppLocalizations.of(context)!
+                          .otpValueCopiedMessage(_otpValue)),
+                    ));
+                  }
+                }
+              : () {
+                  Clipboard.setData(ClipboardData(text: _otpValue));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(AppLocalizations.of(context)!
+                        .otpValueCopiedMessage(_otpValue)),
+                  ));
+                },
         ),
         Divider(
           thickness: 1.5,
@@ -1036,7 +1056,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
-            textScaleFactor: 2.1,
+            textScaleFactor: 2.0,
             enabled: _token.isLocked,
             showDuration: Duration(seconds: 10),
             textStyle: Theme.of(context)
@@ -1060,13 +1080,29 @@ class _TotpWidgetState extends _OTPTokenWidgetState
               center: Text('${calculateRemainingTotpDuration()}'),
             ),
           ),
-          onTap: () {
-            Clipboard.setData(ClipboardData(text: _otpValue));
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(AppLocalizations.of(context)!
-                  .otpValueCopiedMessage(_otpValue)),
-            ));
-          },
+          onTap: _token.isLocked
+              ? () async {
+                  if (await _unlock(
+                      localizedReason: AppLocalizations.of(context)!
+                          .authenticateToShowOtp)) {
+                    // unlock token, flag it as relockable
+                    _token.isLocked = false;
+                    _token.relock = true;
+                    Clipboard.setData(ClipboardData(text: _otpValue));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(AppLocalizations.of(context)!
+                          .otpValueCopiedMessage(_otpValue)),
+                    ));
+                    setState(() {});
+                  }
+                }
+              : () {
+                  Clipboard.setData(ClipboardData(text: _otpValue));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(AppLocalizations.of(context)!
+                        .otpValueCopiedMessage(_otpValue)),
+                  ));
+                },
         ),
         Divider(
           thickness: 1.5,

@@ -242,15 +242,37 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   @override
-  void onPause() {}
+  void onPause() {
+    for (Token token in _tokenList) {
+      if (token.relock) {
+        token.isLocked = true;
+      }
+    }
+  }
 
   @override
-  void onResume() {}
+  void onResume() {
+    setState(() {});
+  }
+
+  @override
+  void onDetached() {
+    for (Token token in _tokenList) {
+      if (token.relock) {
+        token.isLocked = true;
+      }
+    }
+  }
 
   @override
   void dispose() {
     _pollTimer?.cancel();
     _uniLinkStream?.cancel();
+    for (Token token in _tokenList) {
+      if (token.relock) {
+        token.isLocked = true;
+      }
+    }
     super.dispose();
   }
 
@@ -399,6 +421,11 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 //      Catcher.instance.updateConfig();
 
       Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(otpAuth));
+
+      //
+      if (newToken.pin != null) {
+        newToken.isLocked = true;
+      }
 
       log(
         'Adding new token from qr-code:',

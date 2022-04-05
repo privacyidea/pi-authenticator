@@ -13,6 +13,7 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,
       secret: json['secret'] as String,
+      pin: json['pin'] as bool? ?? false,
       counter: json['counter'] as int? ?? 0,
       isLocked: json['isLocked'] as bool? ?? false,
       canToggleLock: json['canToggleLock'] as bool? ?? true,
@@ -28,6 +29,7 @@ Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
       'label': instance.label,
       'id': instance.id,
       'issuer': instance.issuer,
+      'pin': instance.pin,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm],
       'digits': instance.digits,
       'secret': instance.secret,
@@ -48,6 +50,7 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
       digits: json['digits'] as int,
       secret: json['secret'] as String,
       period: json['period'] as int,
+      pin: json['pin'] as bool? ?? false,
       isLocked: json['isLocked'] as bool? ?? false,
       canToggleLock: json['canToggleLock'] as bool? ?? true,
     )
@@ -62,6 +65,7 @@ Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
       'label': instance.label,
       'id': instance.id,
       'issuer': instance.issuer,
+      'pin': instance.pin,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm],
       'digits': instance.digits,
       'secret': instance.secret,
@@ -81,6 +85,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       listIndex: json['listIndex'] as int?,
       expirationDate: DateTime.parse(json['expirationDate'] as String),
     )
+      ..pin = json['pin'] as bool?
       ..sortIndex = json['sortIndex'] as int?
       ..type = json['type'] as String
       ..isRolledOut = json['isRolledOut'] as bool
@@ -93,6 +98,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
           json['knownPushRequests'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
+      'pin': instance.pin,
       'sortIndex': instance.sortIndex,
       'canToggleLock': instance.canToggleLock,
       'isLocked': instance.isLocked,
