@@ -972,11 +972,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
                     if (_token.pin != null && _token.pin != false) {
                       _token.relock = true;
                     }
-                    Clipboard.setData(ClipboardData(text: _otpValue));
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(AppLocalizations.of(context)!
-                          .otpValueCopiedMessage(_otpValue)),
-                    ));
+                    setState(() {});
                   }
                 }
               : () {
@@ -1105,11 +1101,6 @@ class _TotpWidgetState extends _OTPTokenWidgetState
                     // unlock token, flag it as relockable
                     _token.isLocked = false;
                     _token.relock = true;
-                    Clipboard.setData(ClipboardData(text: _otpValue));
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(AppLocalizations.of(context)!
-                          .otpValueCopiedMessage(_otpValue)),
-                    ));
                     setState(() {});
                   }
                 }
