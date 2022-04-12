@@ -286,7 +286,7 @@ class PushToken extends Token {
     required String issuer,
     required String id,
     bool isLocked: false,
-    bool canToggleLock: true,
+    bool canToggleLock: false,
     bool relock: false,
     // 2. step
     bool? sslVerify,

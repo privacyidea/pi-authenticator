@@ -85,6 +85,20 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   List<Widget> _getSubtitle() {
     List<Widget> children = [];
+
+    if (_token is PushToken) {
+      if (_token.issuer.isNotEmpty) {
+        children.add(Text(
+          _token.issuer,
+          style: Theme.of(context)
+              .textTheme
+              .subtitle2!
+              .copyWith(fontWeight: FontWeight.normal),
+        ));
+      }
+      return children;
+    }
+
     if (_token.label.isNotEmpty) {
       children.add(Text(
         _token.label,
@@ -133,7 +147,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       ),
     ];
 
-    if (_token.canToggleLock) {
+    if ((_token.pin == null || _token.pin == false) && !(_token is PushToken)) {
       actions.add(SlidableAction(
         label: _token.isLocked
             ? AppLocalizations.of(context)!.unlock
@@ -708,7 +722,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
             children: <Widget>[
               ListTile(
                 title: Text(
-                  _token.serial,
+                  _token.label,
                   textScaleFactor: 2.0,
                   style: Theme.of(context)
                       .textTheme
@@ -954,7 +968,10 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
                           .authenticateToShowOtp)) {
                     // unlock token, flag it as relockable
                     _token.isLocked = false;
-                    _token.relock = true;
+
+                    if (_token.pin != null && _token.pin != false) {
+                      _token.relock = true;
+                    }
                     Clipboard.setData(ClipboardData(text: _otpValue));
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(AppLocalizations.of(context)!

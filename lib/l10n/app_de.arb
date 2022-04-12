@@ -206,7 +206,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "theme": "Thema",
+  "theme": "Design",
   "@theme": {
     "description": "Title of the setting group where the theme can be selected.",
     "type": "text",
@@ -600,12 +600,12 @@
         "description": "No tokens installed yet.",
         "type": "text"
       },
-     "noResultText1": "tippe auf das ",
+     "noResultText1": "Tippe auf das ",
         "@noResultText1": {
           "description": "first noresult text",
           "type": "text"
         },
-     "noResultText2": " Icon um loszulegen",
+     "noResultText2": " Icon um loszulegen!",
        "@noResultText2": {
          "description": "second noresult text",
          "type": "text"
@@ -639,6 +639,11 @@
             "onBoardingText3": "privacyIDEA ist zu \n 100% open source",
                "@onBoardingTitle3": {
                  "description": "onBoardingTitle3",
+                 "type": "text"
+               },
+        "unlockToCopy": "Entsperre den Token, mittels biometrischer Daten",
+               "@unlockToCopy": {
+                 "description": "unlockToCopy",
                  "type": "text"
                }
 }

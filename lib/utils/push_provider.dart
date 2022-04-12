@@ -66,8 +66,9 @@ class PushProvider {
 
     try {
       String? firebaseToken = await getFBToken();
-      if (await StorageUtil.getCurrentFirebaseToken() == null) {
-        await StorageUtil.setCurrentFirebaseToken(firebaseToken);
+
+      if (firebaseToken != await StorageUtil.getCurrentFirebaseToken()) {
+        _updateFirebaseToken(firebaseToken);
       }
     } on PlatformException catch (error, stacktrace) {
       if (error.code == FIREBASE_TOKEN_ERROR_CODE) {
@@ -78,10 +79,8 @@ class PushProvider {
     }
     FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
       if ((await StorageUtil.getCurrentFirebaseToken()) != newToken) {
-        log('New firebase token generated: $newToken',
-            name: 'push_provider.dart#_initFirebase');
         await StorageUtil.setNewFirebaseToken(newToken);
-        _updateFirebaseToken();
+        _updateFirebaseToken(newToken);
       }
     });
   }
@@ -125,7 +124,6 @@ class PushProvider {
           code: FIREBASE_TOKEN_ERROR_CODE);
     }
 
-    await StorageUtil.setCurrentFirebaseToken(firebaseToken);
     return firebaseToken;
   }
 
@@ -166,7 +164,7 @@ class PushProvider {
   }
 
   static Future<bool> pollForChallenges(BuildContext context) async {
-    // Get all push tokens
+    // Get all push tokens\
     List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
         .whereType<PushToken>()
         .where((t) =>
@@ -225,17 +223,16 @@ class PushProvider {
         return false;
       }
     }
-
     return true;
   }
 
   /// Checks if the firebase token was changed and updates it if necessary.
   static Future<void> updateFbTokenIfChanged() async {
-    String? newToken = await StorageUtil.getNewFirebaseToken();
+    String? firebaseToken = await getFBToken();
 
-    if (newToken != null &&
-        (await StorageUtil.getCurrentFirebaseToken()) != newToken) {
-      _updateFirebaseToken();
+    if (firebaseToken != null &&
+        (await StorageUtil.getCurrentFirebaseToken()) != firebaseToken) {
+      _updateFirebaseToken(firebaseToken);
     }
   }
 
@@ -247,10 +244,8 @@ class PushProvider {
   /// This should only be used to attempt to update the fbToken automatically,
   /// as this can not be guaranteed to work. There is a manual option available
   /// through the settings also.
-  static void _updateFirebaseToken() async {
-    String? newToken = await StorageUtil.getNewFirebaseToken();
-
-    if (newToken == null) {
+  static void _updateFirebaseToken(String? firebaseToken) async {
+    if (firebaseToken == null) {
       // Nothing to update here!
       return;
     }
@@ -273,7 +268,7 @@ class PushProvider {
 
       String timestamp = DateTime.now().toUtc().toIso8601String();
 
-      String message = '$newToken|${p.serial}|$timestamp';
+      String message = '$firebaseToken|${p.serial}|$timestamp';
 
       String signature = p.privateTokenKey == null
           ? await Legacy.sign(p.serial, message)
@@ -282,7 +277,7 @@ class PushProvider {
 
       Response response =
           await doPost(sslVerify: p.sslVerify!, url: p.url!, body: {
-        'new_fb_token': newToken,
+        'new_fb_token': firebaseToken,
         'serial': p.serial,
         'timestamp': timestamp,
         'signature': signature
@@ -299,7 +294,7 @@ class PushProvider {
     }
 
     if (allUpdated) {
-      StorageUtil.setCurrentFirebaseToken(newToken);
+      StorageUtil.setCurrentFirebaseToken(firebaseToken);
     }
   }
 }
