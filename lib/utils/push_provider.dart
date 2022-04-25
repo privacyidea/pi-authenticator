@@ -20,10 +20,8 @@
 
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:catcher/catcher.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +35,7 @@ import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 import 'crypto_utils.dart';
+import 'customizations.dart';
 import 'identifiers.dart';
 import 'network_utils.dart';
 
@@ -74,8 +73,20 @@ class PushProvider {
       if (error.code == FIREBASE_TOKEN_ERROR_CODE) {
         // ignore
       } else {
-        Catcher.reportCheckedError(error, stacktrace);
+        String errormessage = error.message ?? 'no Error message';
+        final SnackBar snackBar = SnackBar(
+            content: Text(
+                "Push cant be initialized, restart the app and try again" +
+                    error.code +
+                    'error message :' +
+                    errormessage));
+        snackbarKey.currentState?.showSnackBar(snackBar);
       }
+    } on FirebaseException catch (error, stacktrace) {
+      final SnackBar snackBar = SnackBar(
+          content: Text(
+              "Push cant be initialized, restart the app and try again" +
+                  error.toString()));
     }
     FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
       if ((await StorageUtil.getCurrentFirebaseToken()) != newToken) {
@@ -215,7 +226,12 @@ class PushProvider {
           // Error messages can only be distinguished by their text content,
           // not by their error code. This would make error handling complex.
         }
-      } on SocketException {
+      } on ClientException catch (error) {
+        final SnackBar snackBar = SnackBar(
+            content: Text(
+                "An error occured when polling for challanges \n ${error.toString()}"));
+        snackbarKey.currentState?.showSnackBar(snackBar);
+
         log(
           'Polling push tokens not working, server can not be reached.',
           name: 'push_provider.dart#pollForChallenges',

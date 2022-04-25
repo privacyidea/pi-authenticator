@@ -50,6 +50,7 @@ import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
+import '../utils/customizations.dart';
 import 'custom_texts.dart';
 
 class TokenWidget extends StatefulWidget {
@@ -551,7 +552,10 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
         _showMessage(
             AppLocalizations.of(context)!.errorRollOutNoNetworkConnection, 3);
       } else {
-        Catcher.reportCheckedError(e, s);
+        final SnackBar snackBar =
+            SnackBar(content: Text("Token could not be rolled out, try again"));
+        snackbarKey.currentState?.showSnackBar(snackBar);
+        //Catcher.reportCheckedError(e, s);
       }
     } on SocketException catch (e) {
       log('Roll out push token [$_token] failed.',
@@ -563,16 +567,16 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
       _showMessage(
           AppLocalizations.of(context)!.errorRollOutNoNetworkConnection, 3);
-    } on Exception catch (e, stack) {
+    } on HandshakeException catch (e, stack) {
       log('Roll out push token [$_token] failed.',
           name: 'token_widgets.dart#_rollOutToken', error: e);
 
       if (mounted) {
         setState(() => _rollOutFailed = true);
       }
-
-//      _showMessage(AppLocalizations.of(context).errorRollOutUnknownError(e), 5);
-      Catcher.reportCheckedError(e, stack);
+      _showMessage(
+          AppLocalizations.of(context)!.errorRollOutUnknownError(e), 3);
+      //Catcher.reportCheckedError(e, stack);
     }
   }
 
