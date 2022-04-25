@@ -594,5 +594,51 @@
   "@unlock": {
     "description": "Description of button that unlocks a token.",
     "type": "text"
-  }
+  },
+  "noResultTitle": "Nejsou nainstalovány žádné tokeny.",
+  "@noResultTitle": {
+    "description": "No tokens installed yet.",
+    "type": "text"
+  },
+  "noResultText1": "stiskněte tlačítko ",
+  "@noResultText1": {
+    "description": "first noresult text",
+    "type": "text"
+  },
+  "noResultText2": " a začněte s používáním.",
+  "@noResultText2": {
+    "description": "second noresult text",
+    "type": "text"
+  },
+  "onBoardingTitle1": "Vítejte v privacyIDEA",
+  "@onBoardingTitle1": {
+    "description": "onboardingTitle1",
+    "type": "text"
+  },
+    "onBoardingText1": "vícefázové ověření, \n jak má být. \n",
+    "@onBoardingText1": {
+      "description": "onboardingText1",
+      "type": "text"
+    },
+  "onBoardingTitle2": "100% bezpečné",
+  "@onBoardingTitle2": {
+    "description": "onBoardingTitle2",
+    "type": "text"
+  },
+   "onBoardingText2": "Uložte tokeny do svého zařízení  \n chráněné biometrickým ověřením",
+      "@onBoardingText2":
+      {
+        "description": "onboardingText2" ,
+        "type": "text"
+      },
+  "onBoardingTitle3": "Navštivte náš profil Github",
+    "@onBoardingTitle3": {
+      "description": "onBoardingTitle3",
+      "type": "text"
+    },
+     "onBoardingText3": "privacyIDEA má  \n 100% otevřený zdrojový kód",
+        "@onBoardingTitle3": {
+          "description": "onBoardingTitle3",
+          "type": "text"
+        }
 }
