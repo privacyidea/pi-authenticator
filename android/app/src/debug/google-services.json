@@ -29,6 +29,13 @@
             {
               "client_id": "838329625695-sb84hi21ds91m1afd7hta7rq5arr7ck9.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "838329625695-2atauche4u5p406p0pklghk2fu25jago.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "privacyidea.authenticator"
+              }
             }
           ]
         }

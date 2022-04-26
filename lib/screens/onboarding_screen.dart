@@ -138,7 +138,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           } else {
             _pageController.nextPage(
               duration: const Duration(milliseconds: 300),
-              curve: Curves.linear,
+              curve: Curves.ease,
             );
           }
         },
@@ -153,7 +153,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ? Colors.white
                     : Colors.black,
               ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Color(0xFF303030)
+            : Colors.grey[50],
         elevation: 0,
       ),
     );

@@ -635,10 +635,15 @@
     "@onBoardingTitle3": {
       "description": "onBoardingTitle3",
       "type": "text"
+ },
+ "onBoardingText3": "privacyIDEA is  \n 100% open source",
+    "@onBoardingTitle3": {
+      "description": "onBoardingTitle3",
+      "type": "text"
     },
-     "onBoardingText3": "privacyIDEA is  \n 100% open source",
-        "@onBoardingTitle3": {
-          "description": "onBoardingTitle3",
+  "unlockToCopy": "Use biometrics to unlock the token",
+        "@unlockToCopy": {
+          "description": "unlockToCopy",
           "type": "text"
         }
 }
