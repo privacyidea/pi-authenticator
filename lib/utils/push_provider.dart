@@ -175,7 +175,7 @@ class PushProvider {
   }
 
   static Future<bool> pollForChallenges(BuildContext context) async {
-    // Get all push tokens\
+    // Get all push tokens
     List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
         .whereType<PushToken>()
         .where((t) =>

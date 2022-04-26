@@ -555,7 +555,6 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
         final SnackBar snackBar =
             SnackBar(content: Text("Token could not be rolled out, try again"));
         snackbarKey.currentState?.showSnackBar(snackBar);
-        //Catcher.reportCheckedError(e, s);
       }
     } on SocketException catch (e) {
       log('Roll out push token [$_token] failed.',
@@ -576,7 +575,6 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       }
       _showMessage(
           AppLocalizations.of(context)!.errorRollOutUnknownError(e), 3);
-      //Catcher.reportCheckedError(e, stack);
     }
   }
 
