@@ -50,6 +50,7 @@ import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
+import '../utils/customizations.dart';
 import 'custom_texts.dart';
 
 class TokenWidget extends StatefulWidget {
@@ -85,6 +86,20 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   List<Widget> _getSubtitle() {
     List<Widget> children = [];
+
+    if (_token is PushToken) {
+      if (_token.issuer.isNotEmpty) {
+        children.add(Text(
+          _token.issuer,
+          style: Theme.of(context)
+              .textTheme
+              .subtitle2!
+              .copyWith(fontWeight: FontWeight.normal),
+        ));
+      }
+      return children;
+    }
+
     if (_token.label.isNotEmpty) {
       children.add(Text(
         _token.label,
@@ -133,7 +148,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       ),
     ];
 
-    if (_token.canToggleLock) {
+    if ((_token.pin == null || _token.pin == false) && !(_token is PushToken)) {
       actions.add(SlidableAction(
         label: _token.isLocked
             ? AppLocalizations.of(context)!.unlock
@@ -145,7 +160,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             ? Colors.black
             : Colors.white,
         icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
-        onPressed: (_) => _changeLockStatus(),
+        onPressed: (_) => _falseRelockAndLockStatus(),
       ));
     }
 
@@ -159,6 +174,11 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       ),
       child: _buildTile(),
     );
+  }
+
+  void _falseRelockAndLockStatus() async {
+    _changeLockStatus();
+    this._token.relock = false;
   }
 
   void _changeLockStatus() async {
@@ -532,7 +552,10 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
         _showMessage(
             AppLocalizations.of(context)!.errorRollOutNoNetworkConnection, 3);
       } else {
-        Catcher.reportCheckedError(e, s);
+        final SnackBar snackBar =
+            SnackBar(content: Text("Token could not be rolled out, try again"));
+        snackbarKey.currentState?.showSnackBar(snackBar);
+        //Catcher.reportCheckedError(e, s);
       }
     } on SocketException catch (e) {
       log('Roll out push token [$_token] failed.',
@@ -544,16 +567,16 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
       _showMessage(
           AppLocalizations.of(context)!.errorRollOutNoNetworkConnection, 3);
-    } on Exception catch (e, stack) {
+    } on HandshakeException catch (e, stack) {
       log('Roll out push token [$_token] failed.',
           name: 'token_widgets.dart#_rollOutToken', error: e);
 
       if (mounted) {
         setState(() => _rollOutFailed = true);
       }
-
-//      _showMessage(AppLocalizations.of(context).errorRollOutUnknownError(e), 5);
-      Catcher.reportCheckedError(e, stack);
+      _showMessage(
+          AppLocalizations.of(context)!.errorRollOutUnknownError(e), 3);
+      //Catcher.reportCheckedError(e, stack);
     }
   }
 
@@ -703,8 +726,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
             children: <Widget>[
               ListTile(
                 title: Text(
-                  _token.serial,
-                  textScaleFactor: 2.1,
+                  _token.label,
+                  textScaleFactor: 2.0,
                   style: Theme.of(context)
                       .textTheme
                       .subtitle2!
@@ -919,7 +942,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
-            textScaleFactor: 2.1,
+            textScaleFactor: 2.0,
             enabled: _token.isLocked,
             showDuration: Duration(seconds: 10),
             textStyle: Theme.of(context)
@@ -942,13 +965,27 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
               ),
             ),
           ),
-          onTap: () {
-            Clipboard.setData(ClipboardData(text: _otpValue));
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(AppLocalizations.of(context)!
-                  .otpValueCopiedMessage(_otpValue)),
-            ));
-          },
+          onTap: _token.isLocked
+              ? () async {
+                  if (await _unlock(
+                      localizedReason: AppLocalizations.of(context)!
+                          .authenticateToShowOtp)) {
+                    // unlock token, flag it as relockable
+                    _token.isLocked = false;
+
+                    if (_token.pin != null && _token.pin != false) {
+                      _token.relock = true;
+                    }
+                    setState(() {});
+                  }
+                }
+              : () {
+                  Clipboard.setData(ClipboardData(text: _otpValue));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(AppLocalizations.of(context)!
+                        .otpValueCopiedMessage(_otpValue)),
+                  ));
+                },
         ),
         Divider(
           thickness: 1.5,
@@ -1036,7 +1073,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
-            textScaleFactor: 2.1,
+            textScaleFactor: 2.0,
             enabled: _token.isLocked,
             showDuration: Duration(seconds: 10),
             textStyle: Theme.of(context)
@@ -1060,13 +1097,24 @@ class _TotpWidgetState extends _OTPTokenWidgetState
               center: Text('${calculateRemainingTotpDuration()}'),
             ),
           ),
-          onTap: () {
-            Clipboard.setData(ClipboardData(text: _otpValue));
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(AppLocalizations.of(context)!
-                  .otpValueCopiedMessage(_otpValue)),
-            ));
-          },
+          onTap: _token.isLocked
+              ? () async {
+                  if (await _unlock(
+                      localizedReason: AppLocalizations.of(context)!
+                          .authenticateToShowOtp)) {
+                    // unlock token, flag it as relockable
+                    _token.isLocked = false;
+                    _token.relock = true;
+                    setState(() {});
+                  }
+                }
+              : () {
+                  Clipboard.setData(ClipboardData(text: _otpValue));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(AppLocalizations.of(context)!
+                        .otpValueCopiedMessage(_otpValue)),
+                  ));
+                },
         ),
         Divider(
           thickness: 1.5,

@@ -48,6 +48,7 @@ const String URI_SECRET = 'URI_SECRET';
 const String URI_COUNTER = 'URI_COUNTER';
 const String URI_PERIOD = 'URI_PERIOD';
 const String URI_ISSUER = 'URI_ISSUER';
+const String URI_PIN = 'URI_PIN';
 
 // 2 step:
 const String URI_SALT_LENGTH = 'URI_SALT_LENGTH';

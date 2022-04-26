@@ -327,6 +327,10 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   uriMap[URI_LABEL] = labelIssuerList[0];
   uriMap[URI_ISSUER] ??= labelIssuerList[1];
 
+  if (uri.queryParameters['pin'] == 'True') {
+    uriMap[URI_PIN] = true;
+  }
+
   String algorithm = uri.queryParameters['algorithm'] ??
       enumAsString(Algorithms.SHA1); // Optional parameter
 

@@ -108,6 +108,7 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
                       title: applicationName,
                       theme: lightThemeData,
                       darkTheme: darkThemeData,
+                      scaffoldMessengerKey: snackbarKey, // <= this
                       themeMode: EasyDynamicTheme.of(context).themeMode,
                       home: settings.isFirstRun
                           ? OnboardingScreen()

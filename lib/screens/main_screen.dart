@@ -233,7 +233,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       backgroundMessageHandler: _firebaseMessagingBackgroundHandler,
     );
     _startPollingIfEnabled();
-    await PushProvider.updateFbTokenIfChanged();
   }
 
   @override
@@ -242,15 +241,41 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   @override
-  void onPause() {}
+  void onPause() {
+    for (Token token in _tokenList) {
+      if (token.relock) {
+        token.isLocked = true;
+      }
+    }
+    setState(() {});
+  }
 
   @override
-  void onResume() {}
+  void onResume() {
+    if (_isPushTokenAvaiable()) {
+      PushProvider.pollForChallenges(context);
+    }
+    setState(() {});
+  }
+
+  @override
+  void onDetached() {
+    for (Token token in _tokenList) {
+      if (token.relock) {
+        token.isLocked = true;
+      }
+    }
+  }
 
   @override
   void dispose() {
     _pollTimer?.cancel();
     _uniLinkStream?.cancel();
+    for (Token token in _tokenList) {
+      if (token.relock) {
+        token.isLocked = true;
+      }
+    }
     super.dispose();
   }
 
@@ -399,6 +424,10 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 //      Catcher.instance.updateConfig();
 
       Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(otpAuth));
+      
+      if (newToken.pin != null && newToken.pin != false) {
+        newToken.isLocked = true;
+      }
 
       log(
         'Adding new token from qr-code:',
@@ -415,6 +444,12 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
       await StorageUtil.saveOrReplaceToken(newToken);
       await PushProvider.initNotifications();
+
+      //enable polling on push token added
+      if (newToken is PushToken) {
+        AppSettings.of(context).enablePolling = true;
+      }
+
       _tokenList.add(newToken);
 
       if (mounted) {
@@ -469,6 +504,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     int digits = uriMap[URI_DIGITS];
     Uint8List secret = uriMap[URI_SECRET];
     String issuer = uriMap[URI_ISSUER];
+    bool? pin = uriMap[URI_PIN];
 
     if (is2StepURI(uri)) {
       // Calculate the whole secret.
@@ -487,24 +523,24 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     // uri.host -> totp or hotp
     if (type == 'hotp') {
       return HOTPToken(
-        label: label,
-        issuer: issuer,
-        id: uuid,
-        algorithm: mapStringToAlgorithm(algorithm),
-        digits: digits,
-        secret: encodeSecretAs(secret, Encodings.base32),
-        counter: uriMap[URI_COUNTER],
-      );
+          label: label,
+          issuer: issuer,
+          id: uuid,
+          algorithm: mapStringToAlgorithm(algorithm),
+          digits: digits,
+          secret: encodeSecretAs(secret, Encodings.base32),
+          counter: uriMap[URI_COUNTER],
+          pin: pin);
     } else if (type == 'totp') {
       return TOTPToken(
-        label: label,
-        issuer: issuer,
-        id: uuid,
-        algorithm: mapStringToAlgorithm(algorithm),
-        digits: digits,
-        secret: encodeSecretAs(secret, Encodings.base32),
-        period: uriMap[URI_PERIOD],
-      );
+          label: label,
+          issuer: issuer,
+          id: uuid,
+          algorithm: mapStringToAlgorithm(algorithm),
+          digits: digits,
+          secret: encodeSecretAs(secret, Encodings.base32),
+          period: uriMap[URI_PERIOD],
+          pin: pin);
     } else {
       throw ArgumentError.value(
           uri,
@@ -599,5 +635,14 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         StorageUtil.saveOrReplaceToken(_tokenList[i]);
       }
     }
+  }
+
+  bool _isPushTokenAvaiable() {
+    for (Token token in _tokenList) {
+      if (token is PushToken) {
+        return true;
+      }
+    }
+    return false;
   }
 }
