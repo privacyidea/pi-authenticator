@@ -424,7 +424,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 //      Catcher.instance.updateConfig();
 
       Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(otpAuth));
-      
+      print(newToken.imageUrl);
+      // newToken.imageUrl = barcodeMap[]
+
       if (newToken.pin != null && newToken.pin != false) {
         newToken.isLocked = true;
       }
@@ -505,6 +507,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     Uint8List secret = uriMap[URI_SECRET];
     String issuer = uriMap[URI_ISSUER];
     bool? pin = uriMap[URI_PIN];
+    String? imageURL = uriMap[URI_IMAGE];
 
     if (is2StepURI(uri)) {
       // Calculate the whole secret.
@@ -522,6 +525,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
     // uri.host -> totp or hotp
     if (type == 'hotp') {
+      print(imageURL! +
+          'ASJKDHASKJLDHASDHASDUHAIDUAS(*DYHUIHDYASHYUASUIHSDHYIIYHSIYULHIYUHDADSIYIDYASIYUDASYDSIIYDSUH');
       return HOTPToken(
           label: label,
           issuer: issuer,
@@ -530,7 +535,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           digits: digits,
           secret: encodeSecretAs(secret, Encodings.base32),
           counter: uriMap[URI_COUNTER],
-          pin: pin);
+          pin: pin,
+          imageURL: imageURL);
     } else if (type == 'totp') {
       return TOTPToken(
           label: label,

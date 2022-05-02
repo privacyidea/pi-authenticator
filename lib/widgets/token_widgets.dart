@@ -937,6 +937,12 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
     return Column(
       children: [
         ListTile(
+          leading: SizedBox(
+            width: 100,
+            height: 100,
+            child: Image.network(_token.imageURL ??
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcST2S0GupC6BjPo7CdVCgEDQ3MXMcKF_nCgBw&usqp=CAU'),
+          ),
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),

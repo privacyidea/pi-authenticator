@@ -37,6 +37,7 @@ abstract class Token {
   bool _isLocked;
   bool _canToggleLock;
   bool? pin;
+  String? imageUrl;
 
   int? sortIndex;
 
@@ -72,7 +73,11 @@ abstract class Token {
   String get issuer => _issuer;
 
   Token(this._label, this._issuer, this._id, this.type, this.relock,
-      {bool isLocked: false, bool canToggleLock: true, bool pin: false})
+      this.imageUrl,
+      {bool isLocked: false,
+      bool canToggleLock: true,
+      bool pin: false,
+      String? imageURL})
       : this._isLocked = isLocked,
         this._canToggleLock = canToggleLock,
         this.pin = pin;
@@ -95,6 +100,8 @@ abstract class OTPToken extends Token {
   bool
       relock; // if the token should be relocked on app close, pause, for security purposes
 
+  String? imageURL;
+
   Algorithms get algorithm => _algorithm;
 
   int get digits => _digits;
@@ -102,9 +109,9 @@ abstract class OTPToken extends Token {
   String get secret => _secret;
 
   OTPToken(String label, String issuer, String id, String type, this._algorithm,
-      this._digits, this._secret, this.pin, this.relock,
+      this._digits, this._secret, this.pin, this.relock, this.imageURL,
       {bool isLocked: false, bool canToggleLock: true})
-      : super(label, issuer, id, type, relock,
+      : super(label, issuer, id, type, relock, imageURL,
             isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
@@ -120,6 +127,8 @@ class HOTPToken extends OTPToken {
 
   int get counter => _counter;
 
+  String? imageURL;
+
   void incrementCounter() => _counter++;
 
   HOTPToken(
@@ -131,13 +140,15 @@ class HOTPToken extends OTPToken {
       required String secret,
       relock = false,
       bool? pin = false,
+      String? imageURL,
       int? listIndex,
       int counter = 0,
       bool isLocked: false,
       bool canToggleLock: true})
       : this._counter = counter,
+        this.imageURL = imageURL,
         super(label, issuer, id, enumAsString(TokenTypes.HOTP), algorithm,
-            digits, secret, pin, relock,
+            digits, secret, pin, relock, imageURL,
             isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
@@ -171,12 +182,13 @@ class TOTPToken extends OTPToken {
       required int period,
       bool relock = false,
       bool? pin = false,
+      String? imageURL,
       int? listIndex,
       bool isLocked: false,
       bool canToggleLock: true})
       : this._period = period,
         super(label, issuer, id, enumAsString(TokenTypes.TOTP), algorithm,
-            digits, secret, pin, relock,
+            digits, secret, pin, relock, imageURL,
             isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
@@ -290,6 +302,7 @@ class PushToken extends Token {
     bool relock: false,
     // 2. step
     bool? sslVerify,
+    String? imageURL,
     String? enrollmentCredentials,
     Uri? url,
     int? listIndex,
@@ -306,6 +319,7 @@ class PushToken extends Token {
           id,
           enumAsString(TokenTypes.PIPUSH),
           relock,
+          imageURL,
           isLocked: isLocked,
           canToggleLock: canToggleLock,
         );

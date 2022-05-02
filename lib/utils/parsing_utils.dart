@@ -332,6 +332,10 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
     uriMap[URI_PIN] = true;
   }
 
+  if (uri.queryParameters['image'] != null) {
+    uriMap[URI_IMAGE] = uri.queryParameters['image'];
+  }
+
   String algorithm = uri.queryParameters['algorithm'] ??
       enumAsString(Algorithms.SHA1); // Optional parameter
 
