@@ -30,7 +30,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
@@ -64,9 +63,6 @@ class MainScreen extends StatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
 }
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
 
 class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   List<Token> _tokenList = [];
@@ -157,7 +153,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
             id: data['nonce'].hashCode,
             // FIXME This is not guaranteed to not lead to collisions, but they might be unlikely in this case.
             expirationDate: DateTime.now().add(
-              Duration(minutes: 2),
+              Duration(seconds: 600),
             )); // Push requests expire after 2 minutes.
 
         if (!token.knowsRequestWithId(pushRequest.id)) {
@@ -165,7 +161,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           token.knownPushRequests.put(pushRequest.id);
 
           StorageUtil.saveOrReplaceToken(token); // Save the pending request.
-          PushProvider.showNotification(token, pushRequest, false);
+          // PushProvider.showNotification(token, pushRequest, false);
         } else {
           log(
               'The push request $pushRequest already exists '
@@ -424,7 +420,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 //      Catcher.instance.updateConfig();
 
       Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(otpAuth));
-      
+
       if (newToken.pin != null && newToken.pin != false) {
         newToken.isLocked = true;
       }
@@ -443,7 +439,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       }
 
       await StorageUtil.saveOrReplaceToken(newToken);
-      await PushProvider.initNotifications();
 
       //enable polling on push token added
       if (newToken is PushToken) {
