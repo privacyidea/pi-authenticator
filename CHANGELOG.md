@@ -5,6 +5,15 @@
 ### Added
 
 - Registered app to handle 'otpauth' links on Android and iOS
+- Totp percent indicator
+- Improved look and feel
+- Onboarding experience
+- Reorder token
+- Lock tokens by default functionality
+- Improved error handling
+- Automatically enable poll on push token
+- Poll on app resume
+
 
 ### Changed
 
