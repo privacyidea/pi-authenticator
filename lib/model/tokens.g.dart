@@ -13,15 +13,19 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,
       secret: json['secret'] as String,
+      relock: json['relock'] ?? false,
       pin: json['pin'] as bool? ?? false,
+      imageURL: json['imageURL'] as String?,
       counter: json['counter'] as int? ?? 0,
       isLocked: json['isLocked'] as bool? ?? false,
       canToggleLock: json['canToggleLock'] as bool? ?? true,
     )
+      ..imageUrl = json['imageUrl'] as String?
       ..sortIndex = json['sortIndex'] as int?
       ..type = json['type'] as String;
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
+      'imageUrl': instance.imageUrl,
       'sortIndex': instance.sortIndex,
       'canToggleLock': instance.canToggleLock,
       'isLocked': instance.isLocked,
@@ -30,10 +34,12 @@ Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
       'id': instance.id,
       'issuer': instance.issuer,
       'pin': instance.pin,
+      'relock': instance.relock,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm],
       'digits': instance.digits,
       'secret': instance.secret,
       'counter': instance.counter,
+      'imageURL': instance.imageURL,
     };
 
 const _$AlgorithmsEnumMap = {
@@ -50,14 +56,18 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
       digits: json['digits'] as int,
       secret: json['secret'] as String,
       period: json['period'] as int,
+      relock: json['relock'] as bool? ?? false,
       pin: json['pin'] as bool? ?? false,
+      imageURL: json['imageURL'] as String?,
       isLocked: json['isLocked'] as bool? ?? false,
       canToggleLock: json['canToggleLock'] as bool? ?? true,
     )
+      ..imageUrl = json['imageUrl'] as String?
       ..sortIndex = json['sortIndex'] as int?
       ..type = json['type'] as String;
 
 Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
+      'imageUrl': instance.imageUrl,
       'sortIndex': instance.sortIndex,
       'canToggleLock': instance.canToggleLock,
       'isLocked': instance.isLocked,
@@ -66,6 +76,8 @@ Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
       'id': instance.id,
       'issuer': instance.issuer,
       'pin': instance.pin,
+      'relock': instance.relock,
+      'imageURL': instance.imageURL,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm],
       'digits': instance.digits,
       'secret': instance.secret,
@@ -78,14 +90,17 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       issuer: json['issuer'] as String,
       id: json['id'] as String,
       isLocked: json['isLocked'] as bool? ?? false,
-      canToggleLock: json['canToggleLock'] as bool? ?? true,
+      canToggleLock: json['canToggleLock'] as bool? ?? false,
+      relock: json['relock'] as bool? ?? false,
       sslVerify: json['sslVerify'] as bool?,
       enrollmentCredentials: json['enrollmentCredentials'] as String?,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
       listIndex: json['listIndex'] as int?,
+      tokenImage: json['tokenImage'] as String?,
       expirationDate: DateTime.parse(json['expirationDate'] as String),
     )
       ..pin = json['pin'] as bool?
+      ..imageUrl = json['imageUrl'] as String?
       ..sortIndex = json['sortIndex'] as int?
       ..type = json['type'] as String
       ..isRolledOut = json['isRolledOut'] as bool
@@ -98,7 +113,9 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
           json['knownPushRequests'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
+      'relock': instance.relock,
       'pin': instance.pin,
+      'imageUrl': instance.imageUrl,
       'sortIndex': instance.sortIndex,
       'canToggleLock': instance.canToggleLock,
       'isLocked': instance.isLocked,
@@ -116,6 +133,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'sslVerify': instance.sslVerify,
       'enrollmentCredentials': instance.enrollmentCredentials,
       'expirationDate': instance.expirationDate.toIso8601String(),
+      'tokenImage': instance.tokenImage,
       'pushRequests': instance.pushRequests,
       'knownPushRequests': instance.knownPushRequests,
     };

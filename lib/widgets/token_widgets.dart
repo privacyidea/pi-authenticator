@@ -723,6 +723,15 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           Column(
             children: <Widget>[
               ListTile(
+                leading: _token.tokenImage != null
+                    ? Container(
+                        width: MediaQuery.of(context).size.width * 0.2,
+                        height: double.infinity,
+                        child: Align(
+                            alignment: Alignment.center,
+                            child: Image.network(_token.tokenImage!)),
+                      )
+                    : null,
                 title: Text(
                   _token.label,
                   textScaleFactor: 2.0,
@@ -937,16 +946,20 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
     return Column(
       children: [
         ListTile(
-          leading: SizedBox(
-            width: 100,
-            height: 100,
-            child: Image.network(_token.imageURL ??
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcST2S0GupC6BjPo7CdVCgEDQ3MXMcKF_nCgBw&usqp=CAU'),
-          ),
+          leading: _token.imageUrl != null
+              ? Container(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  height: double.infinity,
+                  child: Align(
+                      alignment: Alignment.center,
+                      child: Image.network(_token.imageUrl!)),
+                )
+              : null,
+          horizontalTitleGap: 8.0,
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
-            textScaleFactor: 2.0,
+            textScaleFactor: 1.9,
             enabled: _token.isLocked,
             showDuration: Duration(seconds: 10),
             textStyle: Theme.of(context)
@@ -1074,6 +1087,16 @@ class _TotpWidgetState extends _OTPTokenWidgetState
     return Column(
       children: <Widget>[
         ListTile(
+          leading: _token.imageUrl != null
+              ? Container(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  height: double.infinity,
+                  child: Align(
+                      alignment: Alignment.center,
+                      child: Image.network(_token.imageUrl!)),
+                )
+              : null,
+          horizontalTitleGap: 8.0,
           title: HideableText(
             controller: _hideableController,
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),

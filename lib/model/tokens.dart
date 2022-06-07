@@ -254,6 +254,8 @@ class PushToken extends Token {
 
   PushRequestQueue? _pushRequests;
 
+  String? tokenImage;
+
   // The get and set methods are needed for serialization.
   PushRequestQueue get pushRequests {
     _pushRequests ??= PushRequestQueue();
@@ -306,12 +308,14 @@ class PushToken extends Token {
     String? enrollmentCredentials,
     Uri? url,
     int? listIndex,
+    String? tokenImage,
     required DateTime expirationDate,
   })  : this._serial = serial,
         this._sslVerify = sslVerify,
         this._enrollmentCredentials = enrollmentCredentials,
         this.url = url,
         this._expirationDate = expirationDate,
+        this.tokenImage = tokenImage,
         // pin == false because pin only works for otp tokens
         super(
           label,

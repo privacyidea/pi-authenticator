@@ -206,7 +206,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "theme": "Design",
+  "theme": "Farbschema",
   "@theme": {
     "description": "Title of the setting group where the theme can be selected.",
     "type": "text",
@@ -224,7 +224,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "systemTheme": "Nutze Thema des Geräts",
+  "systemTheme": "Nutze Farbschema des Geräts",
   "@systemTheme": {
     "description": "The systems theme.",
     "type": "text",
