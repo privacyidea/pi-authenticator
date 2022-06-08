@@ -725,16 +725,17 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
               ListTile(
                 leading: _token.tokenImage != null
                     ? Container(
-                        width: MediaQuery.of(context).size.width * 0.2,
+                        width: MediaQuery.of(context).size.width * 0.3,
                         height: double.infinity,
                         child: Align(
                             alignment: Alignment.center,
                             child: Image.network(_token.tokenImage!)),
                       )
                     : null,
+                horizontalTitleGap: 8.0,
                 title: Text(
                   _token.label,
-                  textScaleFactor: 2.0,
+                  textScaleFactor: 1.9,
                   style: Theme.of(context)
                       .textTheme
                       .subtitle2!

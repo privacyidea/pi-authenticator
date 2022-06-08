@@ -273,6 +273,10 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
         '[$pushVersionAsString] is not a valid value for parameter [v].');
   }
 
+  if (uri.queryParameters['image'] != null) {
+    uriMap[URI_IMAGE] = uri.queryParameters['image'];
+  }
+
   List labelIssuerList = _parseLabelAndIssuer(uri);
   uriMap[URI_LABEL] = labelIssuerList[0];
   uriMap[URI_ISSUER] ??= labelIssuerList[1];

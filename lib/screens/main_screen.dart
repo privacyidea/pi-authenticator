@@ -424,8 +424,6 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 //      Catcher.instance.updateConfig();
 
       Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(otpAuth));
-      print(newToken.imageUrl);
-      // newToken.imageUrl = barcodeMap[]
 
       if (newToken.pin != null && newToken.pin != false) {
         newToken.isLocked = true;
