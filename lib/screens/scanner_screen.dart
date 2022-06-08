@@ -22,6 +22,8 @@ import 'package:flutter/material.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
 import 'package:qr_mobile_vision/qr_mobile_vision.dart';
 
+import '../widgets/qr_code_scanner_overlay.dart';
+
 class QRScannerScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => QRScannerScreenState();
@@ -33,27 +35,51 @@ class QRScannerScreenState extends State<QRScannerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: 32,
+            ),
+            onPressed: () {
+              Navigator.pop(context, null);
+            }),
+      ),
+      extendBodyBehindAppBar: true,
       body: SizedBox.expand(
-        child: QrCamera(
-          key: _key,
-          formats: [BarcodeFormats.QR_CODE],
-          // Ignore other codes than qr codes
-          onError: (context, _) {
-            Navigator.pop(context, null);
-            _key.currentState!.stop();
+        child: Stack(
+          children: [
+            QrCamera(
+              fit: BoxFit.cover,
+              key: _key,
+              formats: [BarcodeFormats.QR_CODE],
+              // Ignore other codes than qr codes
+              onError: (context, _) {
+                Navigator.pop(context, null);
+                _key.currentState!.stop();
 
-            // Method must return a widget, so return one that does not display anything.
-            return Text('');
-          },
-          // We have nothing to display in these cases, overwrite default
-          // behaviour with 'non-visible' content.
-          child: Text(''),
-          notStartedBuilder: (_) => Text(''),
-          offscreenBuilder: (_) => Text(''),
-          qrCodeCallback: (code) {
-            Navigator.pop(context, code);
-            _key.currentState!.stop();
-          },
+                // Method must return a widget, so return one that does not display anything.
+                return Text('');
+              },
+              // We have nothing to display in these cases, overwrite default
+              // behaviour with 'non-visible' content.
+              child: Text(''),
+              notStartedBuilder: (_) => Text(''),
+              offscreenBuilder: (_) => Text(''),
+              qrCodeCallback: (code) {
+                Navigator.pop(context, code);
+                _key.currentState!.stop();
+              },
+            ),
+            Container(
+              decoration: ShapeDecoration(shape: ScannerOverlayShape()),
+            )
+          ],
+          alignment: Alignment.center,
         ),
       ),
     );
