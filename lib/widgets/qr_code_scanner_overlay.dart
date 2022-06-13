@@ -100,7 +100,7 @@ class ScannerOverlayShape extends ShapeBorder {
         width - borderSize.width - borderOffset,
         height - borderSize.height - borderOffset + rect.top);
 
-    //Draw top right corner
+    // Draw top right corner
     canvas
       ..drawPath(
           Path()
@@ -118,7 +118,7 @@ class ScannerOverlayShape extends ShapeBorder {
         paint,
       )
 
-      //Draw top left corner
+      // Draw top left corner
       ..drawPath(
           Path()
             ..moveTo(realReact.left, realReact.top)
@@ -135,7 +135,7 @@ class ScannerOverlayShape extends ShapeBorder {
         paint,
       )
 
-      //Draw bottom right corner
+      // Draw bottom right corner
       ..drawPath(
           Path()
             ..moveTo(realReact.right, realReact.bottom)
@@ -152,7 +152,7 @@ class ScannerOverlayShape extends ShapeBorder {
         paint,
       )
 
-      //Draw bottom left corner
+      // Draw bottom left corner
       ..drawPath(
           Path()
             ..moveTo(realReact.left, realReact.bottom)
