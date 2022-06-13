@@ -273,6 +273,10 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
         '[$pushVersionAsString] is not a valid value for parameter [v].');
   }
 
+  if (uri.queryParameters['image'] != null) {
+    uriMap[URI_IMAGE] = uri.queryParameters['image'];
+  }
+
   List labelIssuerList = _parseLabelAndIssuer(uri);
   uriMap[URI_LABEL] = labelIssuerList[0];
   uriMap[URI_ISSUER] ??= labelIssuerList[1];
@@ -330,6 +334,10 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   // parse pin from response 'True'
   if (uri.queryParameters['pin'] == 'True') {
     uriMap[URI_PIN] = true;
+  }
+
+  if (uri.queryParameters['image'] != null) {
+    uriMap[URI_IMAGE] = uri.queryParameters['image'];
   }
 
   String algorithm = uri.queryParameters['algorithm'] ??

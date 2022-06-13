@@ -424,7 +424,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 //      Catcher.instance.updateConfig();
 
       Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(otpAuth));
-      
+
       if (newToken.pin != null && newToken.pin != false) {
         newToken.isLocked = true;
       }
@@ -488,15 +488,16 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     // Push token do not need any of the other parameters.
     if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
       return PushToken(
-        serial: uriMap[URI_SERIAL],
-        label: uriMap[URI_LABEL],
-        issuer: uriMap[URI_ISSUER],
-        id: uuid,
-        sslVerify: uriMap[URI_SSL_VERIFY],
-        expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
-        enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-        url: uriMap[URI_ROLLOUT_URL],
-      );
+          serial: uriMap[URI_SERIAL],
+          label: uriMap[URI_LABEL],
+          issuer: uriMap[URI_ISSUER],
+          id: uuid,
+          sslVerify: uriMap[URI_SSL_VERIFY],
+          expirationDate:
+              DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
+          enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
+          url: uriMap[URI_ROLLOUT_URL],
+          tokenImage: uriMap[URI_IMAGE]);
     }
 
     String label = uriMap[URI_LABEL];
@@ -505,6 +506,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     Uint8List secret = uriMap[URI_SECRET];
     String issuer = uriMap[URI_ISSUER];
     bool? pin = uriMap[URI_PIN];
+    String? imageURL = uriMap[URI_IMAGE];
 
     if (is2StepURI(uri)) {
       // Calculate the whole secret.
@@ -530,7 +532,8 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           digits: digits,
           secret: encodeSecretAs(secret, Encodings.base32),
           counter: uriMap[URI_COUNTER],
-          pin: pin);
+          pin: pin,
+          imageURL: imageURL);
     } else if (type == 'totp') {
       return TOTPToken(
           label: label,
@@ -538,6 +541,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           id: uuid,
           algorithm: mapStringToAlgorithm(algorithm),
           digits: digits,
+          imageURL: imageURL,
           secret: encodeSecretAs(secret, Encodings.base32),
           period: uriMap[URI_PERIOD],
           pin: pin);
