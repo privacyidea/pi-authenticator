@@ -308,6 +308,11 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
 
   uriMap[URI_SSL_VERIFY] = (uri.queryParameters['sslverify'] ?? '1') == '1';
 
+  // parse pin from response 'True'
+  if (uri.queryParameters['pin'] == 'True') {
+    uriMap[URI_PIN] = true;
+  }
+
   return uriMap;
 }
 

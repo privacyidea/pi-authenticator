@@ -497,6 +497,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
               DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
           enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
           url: uriMap[URI_ROLLOUT_URL],
+          pin: uriMap[URI_PIN],
           tokenImage: uriMap[URI_IMAGE]);
     }
 

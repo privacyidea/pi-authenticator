@@ -148,7 +148,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       ),
     ];
 
-    if ((_token.pin == null || _token.pin == false) && !(_token is PushToken)) {
+    if ((_token.pin == null || _token.pin == false)) {
       actions.add(SlidableAction(
         label: _token.isLocked
             ? AppLocalizations.of(context)!.unlock

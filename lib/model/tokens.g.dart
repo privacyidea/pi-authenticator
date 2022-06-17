@@ -90,8 +90,9 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       issuer: json['issuer'] as String,
       id: json['id'] as String,
       isLocked: json['isLocked'] as bool? ?? false,
-      canToggleLock: json['canToggleLock'] as bool? ?? false,
+      canToggleLock: json['canToggleLock'] as bool? ?? true,
       relock: json['relock'] as bool? ?? false,
+      pin: json['pin'] as bool? ?? false,
       sslVerify: json['sslVerify'] as bool?,
       enrollmentCredentials: json['enrollmentCredentials'] as String?,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
@@ -99,7 +100,6 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       tokenImage: json['tokenImage'] as String?,
       expirationDate: DateTime.parse(json['expirationDate'] as String),
     )
-      ..pin = json['pin'] as bool?
       ..imageUrl = json['imageUrl'] as String?
       ..sortIndex = json['sortIndex'] as int?
       ..type = json['type'] as String
@@ -114,7 +114,6 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'relock': instance.relock,
-      'pin': instance.pin,
       'imageUrl': instance.imageUrl,
       'sortIndex': instance.sortIndex,
       'canToggleLock': instance.canToggleLock,
@@ -126,6 +125,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'url': instance.url?.toString(),
       'isRolledOut': instance.isRolledOut,
       'listIndex': instance.listIndex,
+      'pin': instance.pin,
       'publicServerKey': instance.publicServerKey,
       'privateTokenKey': instance.privateTokenKey,
       'publicTokenKey': instance.publicTokenKey,
