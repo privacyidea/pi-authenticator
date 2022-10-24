@@ -212,6 +212,7 @@ class PushToken extends Token {
   Uri? url; // Full access to allow adding to legacy android tokens
   bool isRolledOut = false;
   int? listIndex;
+  bool? pin;
 
   // RSA keys - String values for backward compatibility with serialization
   String? publicServerKey;
@@ -267,7 +268,7 @@ class PushToken extends Token {
       throw ArgumentError(
           'Initializing [pushRequests] in [PushToken] is only allowed once.');
     }
-
+    //
     this._pushRequests = queue;
   }
 
@@ -300,8 +301,9 @@ class PushToken extends Token {
     required String issuer,
     required String id,
     bool isLocked: false,
-    bool canToggleLock: false,
+    bool canToggleLock: true,
     bool relock: false,
+    bool? pin = false,
     // 2. step
     bool? sslVerify,
     String? imageURL,
@@ -316,7 +318,7 @@ class PushToken extends Token {
         this.url = url,
         this._expirationDate = expirationDate,
         this.tokenImage = tokenImage,
-        // pin == false because pin only works for otp tokens
+        this.pin = pin,
         super(
           label,
           issuer,
