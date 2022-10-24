@@ -153,15 +153,14 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
             id: data['nonce'].hashCode,
             // FIXME This is not guaranteed to not lead to collisions, but they might be unlikely in this case.
             expirationDate: DateTime.now().add(
-              Duration(seconds: 600),
-            )); // Push requests expire after 2 minutes.
+              Duration(seconds: 120), // Push requests expire after 2 minutes.
+            ));
 
         if (!token.knowsRequestWithId(pushRequest.id)) {
           token.pushRequests.add(pushRequest);
           token.knownPushRequests.put(pushRequest.id);
-
-          StorageUtil.saveOrReplaceToken(token); // Save the pending request.
-          // PushProvider.showNotification(token, pushRequest, false);
+          // Save the pending request.
+          StorageUtil.saveOrReplaceToken(token);
         } else {
           log(
               'The push request $pushRequest already exists '
