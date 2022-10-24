@@ -224,13 +224,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "someTokensDoNotSupportPolling": "Certains jetons sont obsolètes et ne supportent pas l'interrogation.",
+  "someTokensDoNotSupportPolling": "Certains jetons sont obsolètes et ne supportent pas l'interrogation due serveur.",
   "@someTokensDoNotSupportPolling": {
     "description": "Tells the user, that the following tokens do not support polling.",
     "type": "text",
     "placeholders": {}
   },
-  "enablePolling": "Activer l'interrogation.",
+  "enablePolling": "Activer l'interrogation du serveur.",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling.",
     "type": "text",
@@ -254,7 +254,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "synchronizesTokensWithServer": "Synchroniser les jeton Push avec le serveur privacyIDEA.",
+  "synchronizesTokensWithServer": "Synchroniser les jetons Push avec le serveur privacyIDEA.",
   "@synchronizesTokensWithServer": {
     "description": "Description of synchronizing push tokens in settings.",
     "type": "text",
@@ -284,13 +284,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "tokensDoNotSupportSynchronization": "Ces jetons ne supportent pas la synchronisation et doivent être désenrôlés:",
+  "tokensDoNotSupportSynchronization": "Ces jetons ne supportent pas la synchronisation et doivent être de nouveau générés:",
   "@tokensDoNotSupportSynchronization": {
     "description": "Informs the user that the following tokens cannot be synchronized as they do not support that.",
     "type": "text",
     "placeholders": {}
   },
-  "errorOnlyOneFirebaseProjectIsSupported": "La configuration firebase des jetons {name} ne correspond à celle utilisée actuellement par l'application et ne peut donc pas être utilisée.",
+  "errorOnlyOneFirebaseProjectIsSupported": "La configuration firebase des jetons {name} ne correspond à celle utilisée actuellement par l'application. Deux configurations différentes ne sont pas prises en charge.",
   "@errorOnlyOneFirebaseProjectIsSupported": {
     "description": "Tells the user that the token can not be used because it has a different firebase configuration than the current used configuration of the application.",
     "type": "text",
@@ -300,7 +300,7 @@
       }
     }
   },
-  "errorTokenExpired": "Le jeton {name} a expiré et ne plus être enrôlé.",
+  "errorTokenExpired": "Le jeton {name} a expiré et ne plus être déployé.",
   "@errorTokenExpired": {
     "description": "Tells the user that the token can not be rolled out, because it expired.",
     "type": "text",
@@ -310,7 +310,7 @@
       }
     }
   },
-  "errorRollOutFailed": "L'enrôlement du jeton {name} a échoué. Erreur réseau: {errorCode}",
+  "errorRollOutFailed": "Le déploiement du jeton {name} a échoué. Erreur réseau: {errorCode}",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "type": "text",
@@ -329,13 +329,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorRollOutNoNetworkConnection": "Pas de connectivité réseau. Enrôlement impossible.",
+  "errorRollOutNoNetworkConnection": "Pas de connectivité réseau. déploiement impossible.",
   "@errorRollOutNoNetworkConnection": {
     "description": "Tells the user that the roll-out failed because no network connection is available.",
     "type": "text",
     "placeholders": {}
   },
-  "errorRollOutUnknownError": "L'enrôlement a échoué suite à une erreur inconnue: {e}",
+  "errorRollOutUnknownError": "Le déploiement a échoué suite à une erreur inconnue: {e}",
   "@errorRollOutUnknownError": {
     "description": "Tells the user that the roll-out failed because of an unknown error.",
     "type": "text",
@@ -378,13 +378,13 @@
       }
     }
   },
-  "rollingOut": "Enrôlement en cours",
+  "rollingOut": "Déploiement en cours",
   "@rollingOut": {
     "description": "Label that tells the user that the token is being rolled out.",
     "type": "text",
     "placeholders": {}
   },
-  "retryRollOut": "Retenter l'enrôlement",
+  "retryRollOut": "Retenter le déploiement",
   "@retryRollOut": {
     "description": "Label for e.g. a button. Tells the user that rolling out the token failed. Roll out can be retried by clicking this button.",
     "type": "text",
@@ -440,7 +440,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noTokensForMigration": "Il n'y a aucun jeton qui puisse être migrer.",
+  "noTokensForMigration": "Il n'y a aucun jeton qui puisse être migré.",
   "@noTokensForMigration": {
     "description": "Tells the user that no tokens exist that could be migrated.",
     "type": "text",
