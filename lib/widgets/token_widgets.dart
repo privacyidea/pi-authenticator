@@ -41,7 +41,6 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
@@ -397,15 +396,6 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   late Timer _deleteTimer; // Timer that deletes expired requests periodically.
 
   @override
-  void _onDeleteClicked() {
-    // Delete all push notifications for a when the token is deleted.
-    _token.pushRequests.forEach(
-        (element) => flutterLocalNotificationsPlugin.cancel(element.id));
-
-    super._onDeleteClicked();
-  }
-
-  @override
   void initState() {
     super.initState();
 
@@ -466,11 +456,6 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
   void _deleteExpiredRequests(PushToken t) {
     var f = (PushRequest r) => DateTime.now().isAfter(r.expirationDate);
-
-    // Remove requests from queue and remove their notifications.
-    t.pushRequests
-        .where(f)
-        .forEach((r) => flutterLocalNotificationsPlugin.cancel(r.id));
     t.pushRequests.removeWhere(f);
   }
 
@@ -629,7 +614,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
             AppLocalizations.of(context)!
                 .acceptPushAuthRequestFor(_token.label),
             2);
-        removeCurrentRequest();
+        updateTokenStatus();
       } else {
         log('Accepting push auth request failed.',
             name: 'token_widgets.dart#acceptRequest',
@@ -676,15 +661,19 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     _showMessage(
         AppLocalizations.of(context)!.decliningPushAuthRequestFor(_token.label),
         2);
-    removeCurrentRequest();
+    updateTokenStatus();
   }
 
   /// Reset the token status after push auth request was handled by the user.
-  void removeCurrentRequest() async {
+  void updateTokenStatus() async {
     PushRequest request = _token.pushRequests.pop();
-
-    flutterLocalNotificationsPlugin.cancel(request.id);
     await _saveThisToken();
+
+    _token.pushRequests.forEach((r) {
+      if (r == request) {
+        _token.pushRequests.remove(r);
+      }
+    });
 
     if (mounted) {
       setState(() => _acceptFailed = false);

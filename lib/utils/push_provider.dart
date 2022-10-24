@@ -26,11 +26,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
@@ -53,7 +51,6 @@ class PushProvider {
     _backgroundHandler = backgroundMessageHandler;
 
     await _initFirebase();
-    await initNotifications();
   }
 
   static Future<String?> _initFirebase() async {
@@ -96,24 +93,6 @@ class PushProvider {
     });
   }
 
-  /// Initializes the notification plugin, notifications are used to inform the
-  /// user about incoming push challenges.
-  static Future<void> initNotifications() async {
-    // Stop here if no push tokens exist, we do not want to ask for notification
-    // permissions on iOS if we do not use them.
-    if (!(await StorageUtil.loadAllTokens())
-        .any((element) => element is PushToken)) {
-      return;
-    }
-
-    var initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
-    var initializationSettingsIOS = IOSInitializationSettings();
-    var initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
-
   /// Returns the current firebase token of the app / device. Throws a
   /// PlatformException with a custom error code if retrieving the firebase
   /// token failed. This may happen if, e.g., no network connection is available.
@@ -136,42 +115,6 @@ class PushProvider {
     }
 
     return firebaseToken;
-  }
-
-  /// Shows a notification to the user, the content depends on the [challenge].
-  static void showNotification(
-      PushToken token, PushRequest challenge, bool silent) async {
-    var iOSPlatformChannelSpecifics =
-        IOSNotificationDetails(presentSound: !silent);
-
-    var bigTextStyleInformation = BigTextStyleInformation(challenge.question,
-        htmlFormatBigText: true,
-        contentTitle: challenge.title,
-        htmlFormatContentTitle: true,
-        summaryText: 'Token <i>${token.label}</i>',
-        htmlFormatSummaryText: true);
-
-    // TODO How to localize this information?
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'privacy_idea_authenticator_push',
-      'Push challenges',
-      channelDescription:
-          'Push challenges are received over firebase, if the app is in background,'
-          'a notification for each request is shown.',
-      ticker: 'ticker',
-      playSound: silent,
-      styleInformation: bigTextStyleInformation, // To display token name.
-    );
-
-    await flutterLocalNotificationsPlugin.show(
-      challenge.id.hashCode, // ID of the notification
-      challenge.title,
-      challenge.question,
-      NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-        iOS: iOSPlatformChannelSpecifics,
-      ),
-    );
   }
 
   static Future<bool> pollForChallenges(BuildContext context) async {
