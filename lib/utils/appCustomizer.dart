@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ApplicationCustomizer {
 
-  // Change application name
+  // CHANGE APPLICATION NAME
   static final String appName = "privacyIDEA Authenticator";
   // Edit in android/app/src/main/AndroidManifest.xml file
   // <application

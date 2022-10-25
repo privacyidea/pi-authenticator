@@ -39,6 +39,7 @@ import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
 import 'package:privacyidea_authenticator/screens/onboarding_screen.dart';
 import 'package:privacyidea_authenticator/screens/scanner_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
+import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
@@ -296,13 +297,14 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           widget.title,
           overflow: TextOverflow.ellipsis,
           // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
-        leading: SvgPicture.asset('res/logo/app_logo_light.svg'),
+        leading: SvgPicture.asset(ApplicationCustomizer.appIcon),
       ),
       extendBodyBehindAppBar: false,
       body: Container(

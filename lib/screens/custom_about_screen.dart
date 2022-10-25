@@ -25,18 +25,20 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
+import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../utils/storage_utils.dart';
+
 class CustomLicenseScreen extends StatefulWidget {
-  final String applicationName = 'privacyIDEA Authenticator';
-  final Widget applicationIcon = SvgPicture.asset(
-    'res/logo/app_logo_light.svg',
-    width: 330,
-  );
+   final Widget applicationIcon = SvgPicture.asset(
+     ApplicationCustomizer.appIcon,
+     width: 330,
+   );
   final String applicationLegalese = 'Apache License 2.0';
   final Uri gitHubLink =
       Uri.parse('https://github.com/privacyidea/pi-authenticator');
-  final Uri websiteLink = Uri.parse('https://netknights.it');
+  final Uri websiteLink = Uri.parse(ApplicationCustomizer.websiteLink);
 
   @override
   State<StatefulWidget> createState() => _CustomLicenseScreenState();
@@ -52,7 +54,8 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
         child: Column(
           children: <Widget>[
             Text(
-              '${widget.applicationName}',
+              ApplicationCustomizer.appName,
+              //'${widget.applicationName}',
               style: Theme.of(context).textTheme.headline5,
             ),
             widget.applicationIcon,

@@ -21,10 +21,10 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-
-// var primarySwatch = PRIMARY_COLOR; // TODO Use this when customizing
-Color primarySwatch = Colors.lightBlue;
-Color onPrimary = isColorBright(primarySwatch) ? Colors.black : Colors.white;
+import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
+//TODO Use this when customizing
+Color primarySwatch = ApplicationCustomizer.primaryColor;
+Color onPrimary = isColorBright(primarySwatch) ? ApplicationCustomizer.themeColorDark : ApplicationCustomizer.themeColorLight;
 
 var lightThemeData = new ThemeData(
   toggleableActiveColor: primarySwatch,
