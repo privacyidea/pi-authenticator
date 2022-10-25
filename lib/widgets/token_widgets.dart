@@ -41,6 +41,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
@@ -126,8 +127,10 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       SlidableAction(
         label: AppLocalizations.of(context)!.delete,
         backgroundColor: Theme.of(context).brightness == Brightness.light
-            ? Colors.red.shade400
-            : Colors.red.shade800,
+            //? Colors.red.shade400
+            //: Colors.red.shade800,
+          ? ApplicationCustomizer.deleteColorLight
+          : ApplicationCustomizer.deleteColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
@@ -137,8 +140,10 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       SlidableAction(
         label: AppLocalizations.of(context)!.rename,
         backgroundColor: Theme.of(context).brightness == Brightness.light
-            ? Colors.blue.shade400
-            : Colors.blue.shade800,
+            //? Colors.blue.shade400
+            //: Colors.blue.shade800,
+            ? ApplicationCustomizer.renameColorLight
+            : ApplicationCustomizer.renameColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
@@ -153,8 +158,10 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             ? AppLocalizations.of(context)!.unlock
             : AppLocalizations.of(context)!.lock,
         backgroundColor: Theme.of(context).brightness == Brightness.light
-            ? Colors.yellow.shade400
-            : Colors.yellow.shade800,
+            //? Colors.yellow.shade400
+            //: Colors.yellow.shade800,
+          ? ApplicationCustomizer.lockColorLight
+          : ApplicationCustomizer.lockColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
@@ -1109,7 +1116,8 @@ class _TotpWidgetState extends _OTPTokenWidgetState
               radius: 45,
               backgroundColor: Colors.black12,
               percent: _controller.value,
-              progressColor: Colors.lightBlueAccent,
+              //progressColor: Colors.lightBlueAccent,
+              progressColor: ApplicationCustomizer.primaryColor,
               circularStrokeCap: CircularStrokeCap.round,
               center: Text('${calculateRemainingTotpDuration()}'),
             ),
