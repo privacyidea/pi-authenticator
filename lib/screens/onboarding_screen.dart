@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
+import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:privacyidea_authenticator/widgets/dot_indicator.dart';
 import 'package:privacyidea_authenticator/widgets/onboarding_screens/onboarding_button_page.dart';
 import 'package:privacyidea_authenticator/widgets/onboarding_screens/onboarding_page.dart';
@@ -127,19 +128,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         onPressed: () {
           final settings = AppSettings.of(context);
 
-          if (_currentIndex == 2) {
-            settings.isFirstRun = false;
-
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MainScreen(title: applicationName)),
-            );
-          } else {
-            _pageController.nextPage(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.ease,
-            );
+          switch(_currentIndex) {
+            case 2:
+              if (settings.isFirstRun) {
+                settings.isFirstRun = false;
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          MainScreen(title: ApplicationCustomizer.appName)),
+                );
+              } else {
+                Navigator.of(context).pop();
+              }
+              break;
+            default:
+              _pageController.nextPage(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.ease,
+              );
           }
         },
         child: _currentIndex == 2
