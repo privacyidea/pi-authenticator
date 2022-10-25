@@ -387,7 +387,7 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   if (secretAsString!.length % 2 == 1) {
     secretAsString += '=';
   }
-
+  secretAsString = secretAsString.toUpperCase();
   if (!isValidEncoding(secretAsString, Encodings.base32)) {
     throw ArgumentError.value(
       uri,
