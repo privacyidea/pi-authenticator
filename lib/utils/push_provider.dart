@@ -56,7 +56,17 @@ class PushProvider {
   static Future<String?> _initFirebase() async {
     await Firebase.initializeApp();
 
-    FirebaseMessaging.instance.requestPermission();
+    try {
+      FirebaseMessaging.instance.requestPermission();
+    } on FirebaseException catch (ex) {
+      String errorMessage = ex.message ?? 'no error message';
+      final SnackBar snackBar = SnackBar(
+          content: Text(
+              "Firebase notification permission error! (" +
+                  errorMessage + ": " + ex.code));
+      snackbarKey.currentState?.showSnackBar(snackBar);
+    }
+
     FirebaseMessaging.onMessage.listen(_incomingHandler);
     FirebaseMessaging.onBackgroundMessage(_backgroundHandler);
 
@@ -97,7 +107,17 @@ class PushProvider {
   /// PlatformException with a custom error code if retrieving the firebase
   /// token failed. This may happen if, e.g., no network connection is available.
   static Future<String> getFBToken() async {
-    String? firebaseToken = await FirebaseMessaging.instance.getToken();
+    String? firebaseToken;
+    try {
+      firebaseToken = await FirebaseMessaging.instance.getToken();
+    } on FirebaseException catch (ex) {
+      String errorMessage = ex.message ?? 'no error message';
+      final SnackBar snackBar = SnackBar(
+          content: Text(
+              "Unable to retrieve Firebase token! (" +
+                 errorMessage + ": " + ex.code + ")"));
+      snackbarKey.currentState?.showSnackBar(snackBar);
+    }
 
     // Fall back to the last known firebase token
     if (firebaseToken == null) {
