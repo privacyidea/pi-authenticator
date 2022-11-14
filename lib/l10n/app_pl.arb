@@ -610,40 +610,45 @@
     "description": "second noresult text",
     "type": "text"
   },
-  "onBoardingTitle1": "Witamy w privacyIDEA",
+  "onBoardingTitle1": "Witamy w {appName}",
   "@onBoardingTitle1": {
     "description": "onboardingTitle1",
+    "type": "text",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "onBoardingText1": "uwierzytelnianie dwuskładnikowe \n zrobione jak należy. \n",
+  "@onBoardingText1": {
+    "description": "onboardingText1",
     "type": "text"
   },
-    "onBoardingText1": "uwierzytelnianie dwuskładnikowe \n zrobione jak należy. \n",
-    "@onBoardingText1": {
-      "description": "onboardingText1",
-      "type": "text"
-    },
   "onBoardingTitle2": "100% Bezpieczeństwa",
   "@onBoardingTitle2": {
     "description": "onBoardingTitle2",
     "type": "text"
   },
-   "onBoardingText2": "Przechowuj tokeny w swoim urządzeniu  \n zabezpieczone biometrycznie",
-      "@onBoardingText2":
-      {
-        "description": "onboardingText2" ,
-        "type": "text"
-      },
+  "onBoardingText2": "Przechowuj tokeny w swoim urządzeniu \n zabezpieczone biometrycznie",
+  "@onBoardingText2": {
+    "description": "onboardingText2",
+    "type": "text"
+  },
   "onBoardingTitle3": "Odwiedź nas na Github",
-    "@onBoardingTitle3": {
-      "description": "onBoardingTitle3",
-      "type": "text"
- },
- "onBoardingText3": "privacyIDEA jest w 100%  \n oprogramowaniem open source",
-    "@onBoardingTitle3": {
-      "description": "onBoardingTitle3",
-      "type": "text"
-    },
+  "@onBoardingTitle3": {
+    "description": "onBoardingTitle3",
+    "type": "text"
+  },
+  "onBoardingText3": "Ta aplikacja jest w \n 100% Open Source",
+  "@onBoardingText3": {
+    "description": "onBoardingTitle3",
+    "type": "text"
+  },
   "unlockToCopy": "Użyj uwierzytelniania biometrycznego, żeby odblokować token",
-        "@unlockToCopy": {
-          "description": "unlockToCopy",
-          "type": "text"
-        }
+  "@unlockToCopy": {
+    "description": "unlockToCopy",
+    "type": "text"
+  }
 }

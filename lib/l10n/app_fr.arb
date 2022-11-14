@@ -224,6 +224,12 @@
     "type": "text",
     "placeholders": {}
   },
+  "systemTheme": "Utiliser le thème de l'appareil",
+  "@systemTheme": {
+    "description": "The systems theme.",
+    "type": "text",
+    "placeholders": {}
+  },
   "someTokensDoNotSupportPolling": "Certains jetons sont obsolètes et ne supportent pas l'interrogation due serveur.",
   "@someTokensDoNotSupportPolling": {
     "description": "Tells the user, that the following tokens do not support polling.",
@@ -470,5 +476,179 @@
         "example": "cancel"
       }
     }
+  },
+  "pollingFailNoNetworkConnection": "L'interrogation a échoué. Le serveur est injoignable.",
+  "@pollingFailNoNetworkConnection": {
+    "description": "Tells the user that the roll-out failed because no network connection is available.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "useDeviceLocaleTitle": "Utiliser la langue de l'appareil",
+  "@useDeviceLocaleTitle": {
+    "description": "Title of the switch tile where using the devices language can be enabled.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "useDeviceLocaleDescription": "Utilisez la langue de l'appareil si elle est prise en charge, sinon l'anglais par défaut.",
+  "@useDeviceLocaleDescription": {
+    "description": "Description of the switch tile where using the devices language can be enabled.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "language": "Langue",
+  "@language": {
+    "description": "Title of language setting group.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "handlingOtpAuthLinkFailed": "La gestion du lien fourni a échoué. Erreur de communication avec la plateforme sous-jacente.",
+  "@handlingOtpAuthLinkFailed": {
+    "description": "Message that tells the user that handling a link failed. This link was provided through the 'open link with app' on android or iOS.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "authenticateToAcceptPush": "Veuillez vous authentifier pour accepter le défi push.",
+  "@authenticateToAcceptPush": {
+    "description": "Reason to authenticate when clicking the 'accept' button of a push token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "authenticateToShowOtp": "Veuillez vous authentifier pour afficher un mot de passe à usage unique.",
+  "@authenticateToShowOtp": {
+    "description": "Reason to authenticate when trying to view a one time password.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "authenticateToUnLockToken": "Veuillez vous authentifier pour modifier l'état de verrouillage du jeton.",
+  "@authenticateToUnLockToken": {
+    "description": "Reason to authenticate when trying to lock or unlock a token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "biometricRequiredTitle": "La biométrie n'est pas configurée",
+  "@biometricRequiredTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "biometricHint": "Authentification requise",
+  "@biometricHint": {
+    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "biometricNotRecognized": "Pas reconnu. Réessayer.",
+  "@biometricNotRecognized": {
+    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "biometricSuccess": "Authentification réussie",
+  "@biometricSuccess": {
+    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "deviceCredentialsRequiredTitle": "Les informations d'identification de l'appareil ne sont pas configurées",
+  "@deviceCredentialsRequiredTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "deviceCredentialsSetupDescription": "Configurer les informations d'identification de l'appareil dans les paramètres de l'appareil",
+  "@deviceCredentialsSetupDescription": {
+    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side.",
+    "type": "text"
+  },
+  "signInTitle": "Authentification requise",
+  "@signInTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "goToSettingsButton": "Aller aux paramètres",
+  "@goToSettingsButton": {
+    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters.",
+    "type": "text"
+  },
+  "goToSettingsDescription": "L'authentification par identifiants ou biométrie n'est pas configurée sur votre appareil. Veuillez le configurer dans les paramètres de l'appareil.",
+  "@goToSettingsDescription": {
+    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device.",
+    "type": "text"
+  },
+  "lockOut": "L'authentification biométrique est désactivée. Veuillez verrouiller et déverrouiller votre écran pour l'activer.",
+  "@lockOut": {
+    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side.",
+    "type": "text"
+  },
+  "authNotSupportedTitle": "Informations d'identification de l'appareil ou données biométriques requises",
+  "@authNotSupportedTitle": {
+    "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action.",
+    "type": "text"
+  },
+  "authNotSupportedBody": "Cette action nécessite que l'appareil soit sécurisé par des identifiants ou des données biométriques.",
+  "@authNotSupportedBody": {
+    "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action.",
+    "type": "text"
+  },
+  "lock": "Bloquer",
+  "@lock": {
+    "description": "Description of button that locks a token.",
+    "type": "text"
+  },
+  "unlock": "Ouvrir",
+  "@unlock": {
+    "description": "Description of button that unlocks a token.",
+    "type": "text"
+  },
+  "noResultTitle": "Aucun jeton n'est encore stocké.",
+  "@noResultTitle": {
+    "description": "No tokens stored yet.",
+    "type": "text"
+  },
+  "noResultText1": "Appuyez sur le \n",
+  "@noResultText1": {
+    "description": "first noresult text",
+    "type": "text"
+  },
+  "noResultText2": "bouton pour commencer!",
+  "@noResultText2": {
+    "description": "second noresult text",
+    "type": "text"
+  },
+  "onBoardingTitle1": "Bienvenue à {appName}",
+  "@onBoardingTitle1": {
+    "description": "onboardingTitle1",
+    "type": "text",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "onBoardingText1": "Authentification à deux facteurs - \n bien fait. \n",
+  "@onBoardingText1": {
+    "description": "onboardingText1",
+    "type": "text"
+  },
+  "onBoardingTitle2": "100% Sécurisé",
+  "@onBoardingTitle2": {
+    "description": "onBoardingTitle2",
+    "type": "text"
+  },
+  "onBoardingText2": "Stockez les jetons sur votre \nappareil en toute sécurité.\n Protégé par votre biométrie!",
+  "@onBoardingText2": {
+    "description": "onboardingText2",
+    "type": "text"
+  },
+  "onBoardingTitle3": "Rendez-nous visite sur Github",
+  "@onBoardingTitle3": {
+    "description": "onBoardingTitle3",
+    "type": "text"
+  },
+  "onBoardingText3": "Cette application est \n100% Open Source",
+  "@onBoardingText3": {
+    "description": "onBoardingText3",
+    "type": "text"
+  },
+  "unlockToCopy": "Utiliser la biométrie pour déverrouiller le jeton",
+  "@unlockToCopy": {
+    "description": "unlockToCopy",
+    "type": "text"
   }
 }

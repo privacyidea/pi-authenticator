@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -8,6 +7,7 @@ class OnboardingPage extends StatelessWidget {
 
   final String title;
   final String subtitle;
+
   @override
   Widget build(BuildContext context) {
     return Column(

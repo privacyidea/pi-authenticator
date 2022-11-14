@@ -464,7 +464,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "pageReportModeBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden um zu helfen diesen Fehler in Zukunft zu vermeiden. Drücken Sie '{accept}' um die Informationen zu senden oder '{cancel}' um nichts zu senden.",
+  "pageReportModeBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden. Drücken Sie '{accept}' um die Informationen zu senden oder '{cancel}' um nichts zu senden.",
   "@pageReportModeBody": {
     "description": "Description shown to the user about what info the error report contains.",
     "type": "text",
@@ -501,7 +501,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "handlingOtpAuthLinkFailed": "Der übergebene Link konnte nicht verarbeitet werden. Grund dafür ist eine Fehlerhafte Kommunikation mit der unterliegenden Platform.",
+  "handlingOtpAuthLinkFailed": "Der übergebene Link konnte nicht verarbeitet werden. Grund dafür ist eine fehlerhafte Kommunikation mit der unterliegenden Platform.",
   "@handlingOtpAuthLinkFailed": {
     "description": "Message that tells the user that handling a link failed. This link was provided through the 'open link with app' on android or iOS.",
     "type": "text",
@@ -570,17 +570,17 @@
     "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device.",
     "type": "text"
   },
-  "lockOut": "Biometrische Authentifizierung ist deaktiviert. Bitte sperren und entsperren Sie Ihren Bildschirm um sie zu aktivieren.",
+  "lockOut": "Biometrie ist deaktiviert. Bitte sperren und entsperren Sie Ihren Bildschirm um diese zu aktivieren.",
   "@lockOut": {
     "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side.",
     "type": "text"
   },
-  "authNotSupportedTitle": "Gerätepasswort oder biometrische Authentifikation wird benötigt",
+  "authNotSupportedTitle": "Gerätepasswort oder Biometrie wird benötigt",
   "@authNotSupportedTitle": {
     "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action.",
     "type": "text"
   },
-  "authNotSupportedBody": "Diese Aktion erfordert, dass das Gerät von einem Passwort oder biometrischer Authentifikation geschützt wird.",
+  "authNotSupportedBody": "Diese Aktion erfordert, dass auf dem Gerät ein Passwort oder Biometrie eingerichtet ist.",
   "@authNotSupportedBody": {
     "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action.",
     "type": "text"
@@ -595,55 +595,60 @@
     "description": "Description of button that unlocks a token.",
     "type": "text"
   },
-    "noResultTitle": "Keine Token vorhanden.",
-      "@noResultTitle": {
-        "description": "No tokens installed yet.",
-        "type": "text"
-      },
-     "noResultText1": "Tippe auf das ",
-        "@noResultText1": {
-          "description": "first noresult text",
-          "type": "text"
-        },
-     "noResultText2": " Icon um loszulegen!",
-       "@noResultText2": {
-         "description": "second noresult text",
-         "type": "text"
-       },
-        "onBoardingTitle1": "Wilkommen zu privacyIDEA",
-         "@onBoardingTitle1": {
-           "description": "onboardingTitle1",
-           "type": "text"
-         },
-           "onBoardingText1": "Zwei-Faktor-Authentifizierung \n richtig gemacht. ",
-           "@onBoardingText1": {
-             "description": "onboardingText1",
-             "type": "text"
-           },
-         "onBoardingTitle2": "100% Secure",
-         "@onBoardingTitle2": {
-           "description": "onBoardingTitle2",
-           "type": "text"
-         },
-          "onBoardingText2": "Speichern Sie Token auf \n Ihrem Gerät,\n die durch Ihre biometrischen Daten \n gesichert sind.",
-             "@onBoardingText2":
-             {
-               "description": "onboardingText2" ,
-               "type": "text"
-             },
-         "onBoardingTitle3": "Besuchen Sie uns auf Github",
-           "@onBoardingTitle3": {
-             "description": "onBoardingTitle3",
-             "type": "text"
-           },
-            "onBoardingText3": "privacyIDEA ist zu \n 100% open source",
-               "@onBoardingTitle3": {
-                 "description": "onBoardingTitle3",
-                 "type": "text"
-               },
-        "unlockToCopy": "Entsperre den Token, mittels biometrischer Daten",
-               "@unlockToCopy": {
-                 "description": "unlockToCopy",
-                 "type": "text"
-               }
+  "noResultTitle": "Keine Token vorhanden.",
+  "@noResultTitle": {
+    "description": "No tokens installed yet.",
+    "type": "text"
+  },
+  "noResultText1": "Tippe auf das ",
+  "@noResultText1": {
+    "description": "first noresult text",
+    "type": "text"
+  },
+  "noResultText2": " Icon um loszulegen!",
+  "@noResultText2": {
+    "description": "second noresult text",
+    "type": "text"
+  },
+  "onBoardingTitle1": "Willkommen zu {appName}",
+  "@onBoardingTitle1": {
+    "description": "onboardingTitle1",
+    "type": "text",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "onBoardingText1": "Zwei-Faktor-Authentifizierung -\n richtig gemacht. ",
+  "@onBoardingText1": {
+    "description": "onboardingText1",
+    "type": "text"
+  },
+  "onBoardingTitle2": "100% Sicher",
+  "@onBoardingTitle2": {
+    "description": "onBoardingTitle2",
+    "type": "text"
+  },
+  "onBoardingText2": "Speichern Sie Ihre Token sicher auf diesem Gerät.\nGeschützt durch Ihre biometrischen Daten!",
+  "@onBoardingText2": {
+    "description": "onboardingText2",
+    "type": "text"
+  },
+  "onBoardingTitle3": "Besuchen Sie uns auf Github",
+  "@onBoardingTitle3": {
+    "description": "onBoardingTitle3",
+    "type": "text"
+  },
+  "onBoardingText3": "Diese App ist zu \n 100% Open Source",
+  "@onBoardingText3": {
+    "description": "onBoardingTitle3",
+    "type": "text"
+  },
+  "unlockToCopy": "Entsperre den Token mittels biometrischer Daten",
+  "@unlockToCopy": {
+    "description": "unlockToCopy",
+    "type": "text"
+  }
 }

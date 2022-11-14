@@ -570,7 +570,7 @@
     "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device.",
     "type": "text"
   },
-    "lockOut": "Biometrische authenticatie staat uit. Vergrendel en ontgrendel het scherm om het aan te zetten.",
+  "lockOut": "Biometrische authenticatie staat uit. Vergrendel en ontgrendel het scherm om het aan te zetten.",
   "@lockOut": {
     "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side.",
     "type": "text"
@@ -593,6 +593,62 @@
   "unlock": "Ontgrendel",
   "@unlock": {
     "description": "Description of button that unlocks a token.",
+    "type": "text"
+  },
+  "noResultTitle": "Nog geen token opgeslagen.",
+  "@noResultTitle": {
+    "description": "No tokens installed yet.",
+    "type": "text"
+  },
+  "noResultText1": "Tik op ",
+  "@noResultText1": {
+    "description": "first noresult text",
+    "type": "text"
+  },
+  "noResultText2": " de knop om te beginnen!",
+  "@noResultText2": {
+    "description": "second noresult text",
+    "type": "text"
+  },
+  "onBoardingTitle1": "Welkom bij {appName}",
+  "@onBoardingTitle1": {
+    "description": "onboardingTitle1",
+    "type": "text",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "onBoardingText1": "Twee-factoren authenticatie, \n goed gedaan. \n",
+  "@onBoardingText1": {
+    "description": "onboardingText1",
+    "type": "text"
+  },
+  "onBoardingTitle2": "100% Zeker",
+  "@onBoardingTitle2": {
+    "description": "onBoardingTitle2",
+    "type": "text"
+  },
+  "onBoardingText2": "Bewaar tokens op uw apparaat \n beveiligd door uw biometrische gegevens",
+  "@onBoardingText2": {
+    "description": "onboardingText2",
+    "type": "text"
+  },
+  "onBoardingTitle3": "Bezoek ons \n op Github",
+  "@onBoardingTitle3": {
+    "description": "onBoardingTitle3",
+    "type": "text"
+  },
+  "onBoardingText3": "Deze app is \n 100% open source",
+  "@onBoardingText3": {
+    "description": "onBoardingText3",
+    "type": "text"
+  },
+  "unlockToCopy": "Gebruik biometrie om het token te ontgrendelen",
+  "@unlockToCopy": {
+    "description": "unlockToCopy",
     "type": "text"
   }
 }

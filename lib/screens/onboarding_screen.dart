@@ -61,28 +61,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       controller: _pageController,
                       itemCount: lottieFiles.length,
                       itemBuilder: (BuildContext context, int index) {
-                        LottieFiles tab = lottieFiles[index];
                         if (_currentIndex == 0) {
                           return OnboardingPage(
                               title: AppLocalizations.of(context)!
-                                  .onBoardingTitle1,
+                                  .onBoardingTitle1(
+                                      ApplicationCustomizer.appName),
                               subtitle: AppLocalizations.of(context)!
                                   .onBoardingText1);
                         }
                         if (_currentIndex == 1) {
-                          return OnboardingButtonPage(
+                          // TODO guide removed from here, put the new one here again?
+                          return OnboardingPage(
                               title: AppLocalizations.of(context)!
                                   .onBoardingTitle2,
-                              subtitle:
-                                  AppLocalizations.of(context)!.onBoardingText2,
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => GuideScreen()),
-                                );
-                              },
-                              buttonTitle: 'Guide');
+                              subtitle: AppLocalizations.of(context)!
+                                  .onBoardingText2);
                         }
                         if (_currentIndex == 2) {
                           return OnboardingButtonPage(
@@ -128,7 +121,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         onPressed: () {
           final settings = AppSettings.of(context);
 
-          switch(_currentIndex) {
+          switch (_currentIndex) {
             case 2:
               if (settings.isFirstRun) {
                 settings.isFirstRun = false;
