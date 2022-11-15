@@ -61,9 +61,10 @@ class PushProvider {
     } on FirebaseException catch (ex) {
       String errorMessage = ex.message ?? 'no error message';
       final SnackBar snackBar = SnackBar(
-          content: Text(
-              "Firebase notification permission error! (" +
-                  errorMessage + ": " + ex.code));
+          content: Text("Firebase notification permission error! (" +
+              errorMessage +
+              ": " +
+              ex.code));
       snackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -113,9 +114,11 @@ class PushProvider {
     } on FirebaseException catch (ex) {
       String errorMessage = ex.message ?? 'no error message';
       final SnackBar snackBar = SnackBar(
-          content: Text(
-              "Unable to retrieve Firebase token! (" +
-                 errorMessage + ": " + ex.code + ")"));
+          content: Text("Unable to retrieve Firebase token! (" +
+              errorMessage +
+              ": " +
+              ex.code +
+              ")"));
       snackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -161,10 +164,46 @@ class PushProvider {
 
       // Legacy android tokens are signed differently
       String message = '${p.serial}|$timestamp';
+      /* TODO
       String signature = p.privateTokenKey == null
           ? await Legacy.sign(p.serial, message)
           : createBase32Signature(
               p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
+      */
+      String? signature;
+      if (p.privateTokenKey == null) {
+        // It is a legacy token
+        try {
+          signature = await Legacy.sign(p.serial, message);
+        } catch (error) {
+          Widget okButton = TextButton(
+            child: Text("OK"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          );
+
+          AlertDialog alert = AlertDialog(
+            title: Text("Error"),
+            content: Text(
+                "An error occured while using the legacy token ${p.label}. The token was enrolled in a old version of this app, which may cause trouble using it. It is suggested to enroll a new push token if the problems persist!"),
+            actions: [
+              okButton,
+            ],
+          );
+
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return alert;
+            },
+          );
+        }
+        return false;
+      } else {
+        signature = createBase32Signature(
+            p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
+      }
 
       Map<String, String> parameters = {
         'serial': p.serial,
