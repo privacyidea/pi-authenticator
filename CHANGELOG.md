@@ -1,6 +1,21 @@
 # Changelog
 
-## [4.0.0] - 2021-XX-XX
+## [4.1.0] - TBD
+
+### Added
+
+- Push token can be locked
+- Polish translation
+- 'appimage' field in QR codes will be read and the image will be shown on the left side of the row
+
+### Fixed
+- Fixed several causes for app crashes
+- Fixed scanning of QR codes which do not adhere strictly to the standard
+- Fixed cancellation of scanning process on iOS
+- Fixed a problem where each time the onboarding screen was closed, a new main screen was stacked on top the already existing one
+
+
+## [4.0.0] - 2022-06-13
 
 ### Added
 
