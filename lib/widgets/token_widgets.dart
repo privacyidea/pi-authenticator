@@ -22,13 +22,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:catcher/catcher.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -38,7 +35,6 @@ import 'package:local_auth/auth_strings.dart';
 import 'package:local_auth/error_codes.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
@@ -424,7 +420,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   }
 
   @override
-  void afterFirstRender() {
+  void onContextReady() {
     if (!_token.isRolledOut) {
       _rollOutToken();
     }
@@ -532,7 +528,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                 .errorRollOutFailed(_token.label, response.statusCode),
             3);
       }
-    } on PlatformException catch (e, s) {
+    } on PlatformException catch (e) {
       log('Roll out push token [$_token] failed.',
           name: 'token_widgets.dart#_rollOutToken', error: e);
 
@@ -601,11 +597,16 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
     // signature ::=  {nonce}|{serial}
     String msg = '${pushRequest.nonce}|${_token.serial}';
+    String? signature = await trySignWithToken(_token, msg, context);
+    if (signature == null) {
+      return;
+    }
+    /*
     String signature = _token.privateTokenKey == null
         ? await Legacy.sign(_token.serial, msg)
         : createBase32Signature(
             _token.getPrivateTokenKey()!, utf8.encode(msg) as Uint8List);
-
+*/
     //    POST https://privacyideaserver/validate/check
     //    nonce=<nonce_from_request>
     //    serial=<serial>

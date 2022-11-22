@@ -20,13 +20,9 @@
 
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
-import 'package:catcher/model/report.dart';
-import 'package:catcher/model/report_handler.dart';
-import 'package:catcher/model/report_mode.dart';
 import 'package:catcher/utils/catcher_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:logging/logging.dart';

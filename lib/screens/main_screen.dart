@@ -26,7 +26,6 @@ import 'dart:typed_data';
 import 'package:base32/base32.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -232,7 +231,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   @override
-  void afterFirstRender() {
+  void onContextReady() {
     _loadTokenList();
   }
 
