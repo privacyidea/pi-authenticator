@@ -11,9 +11,6 @@ import 'package:privacyidea_authenticator/widgets/onboarding_screens/onboarding_
 import 'package:privacyidea_authenticator/widgets/onboarding_screens/onboarding_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../utils/customizations.dart';
-import 'guide_screen.dart';
-
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
 
@@ -85,8 +82,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 AppLocalizations.of(context)!.onBoardingText3,
                             buttonTitle: 'Github',
                             onPressed: () async {
-                              String url =
-                                  'https://github.com/privacyidea/pi-authenticator';
+                              String url = "https://github.com/privacyidea/pi-authenticator";
                               if (await canLaunch(url)) {
                                 await launch(url);
                               } else {
