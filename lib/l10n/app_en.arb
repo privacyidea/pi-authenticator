@@ -610,7 +610,7 @@
     "description": "second noresult text",
     "type": "text"
   },
-  "onBoardingTitle1": "Welcome to {appName}",
+  "onBoardingTitle1": "{appName}",
   "@onBoardingTitle1": {
     "description": "onboardingTitle1",
     "type": "text",
@@ -621,7 +621,7 @@
       }
     }
   },
-  "onBoardingText1": "Two-factor authentication - \n done right. \n",
+  "onBoardingText1": "Two-factor authentication - \n done right.\n",
   "@onBoardingText1": {
     "description": "onboardingText1",
     "type": "text"

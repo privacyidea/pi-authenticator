@@ -610,7 +610,7 @@
     "description": "second noresult text",
     "type": "text"
   },
-  "onBoardingTitle1": "Witamy w {appName}",
+  "onBoardingTitle1": "{appName}",
   "@onBoardingTitle1": {
     "description": "onboardingTitle1",
     "type": "text",

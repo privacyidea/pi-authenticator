@@ -80,13 +80,13 @@ class PushProvider {
       if (error.code == FIREBASE_TOKEN_ERROR_CODE) {
         // ignore
       } else {
-        String errormessage = error.message ?? 'no Error message';
+        String errorMessage = error.message ?? 'no error message';
         final SnackBar snackBar = SnackBar(
             content: Text(
                 "Push cant be initialized, restart the app and try again" +
                     error.code +
                     'error message :' +
-                    errormessage));
+                    errorMessage));
         snackbarKey.currentState?.showSnackBar(snackBar);
       }
     } on FirebaseException catch (error, stacktrace) {
@@ -94,6 +94,7 @@ class PushProvider {
           content: Text(
               "Push cant be initialized, restart the app and try again" +
                   error.toString()));
+      snackbarKey.currentState?.showSnackBar(snackBar);
     }
     FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
       if ((await StorageUtil.getCurrentFirebaseToken()) != newToken) {

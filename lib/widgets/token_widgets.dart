@@ -129,8 +129,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         backgroundColor: Theme.of(context).brightness == Brightness.light
             //? Colors.red.shade400
             //: Colors.red.shade800,
-          ? ApplicationCustomizer.deleteColorLight
-          : ApplicationCustomizer.deleteColorDark,
+            ? ApplicationCustomizer.deleteColorLight
+            : ApplicationCustomizer.deleteColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
@@ -160,8 +160,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         backgroundColor: Theme.of(context).brightness == Brightness.light
             //? Colors.yellow.shade400
             //: Colors.yellow.shade800,
-          ? ApplicationCustomizer.lockColorLight
-          : ApplicationCustomizer.lockColorDark,
+            ? ApplicationCustomizer.lockColorLight
+            : ApplicationCustomizer.lockColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
@@ -542,7 +542,9 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
       if (e.code == FIREBASE_TOKEN_ERROR_CODE) {
         _showMessage(
-            AppLocalizations.of(context)!.errorRollOutNoNetworkConnection, 3);
+            AppLocalizations.of(context)?.errorRollOutNoNetworkConnection ??
+                "No network connection!",
+            3);
       } else {
         final SnackBar snackBar =
             SnackBar(content: Text("Token could not be rolled out, try again"));
@@ -557,8 +559,10 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       }
 
       _showMessage(
-          AppLocalizations.of(context)!.errorRollOutNoNetworkConnection, 3);
-    } on HandshakeException catch (e, stack) {
+          AppLocalizations.of(context)?.errorRollOutNoNetworkConnection ??
+              "No network connection!",
+          3);
+    } on HandshakeException catch (e) {
       log('Roll out push token [$_token] failed.',
           name: 'token_widgets.dart#_rollOutToken', error: e);
 
