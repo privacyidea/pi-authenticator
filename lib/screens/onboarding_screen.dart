@@ -82,12 +82,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 AppLocalizations.of(context)!.onBoardingText3,
                             buttonTitle: 'Github',
                             onPressed: () async {
-                              Uri uri = Uri.parse(
-                                  "https://github.com/privacyidea/pi-authenticator");
-                              if (await canLaunchUrl(uri)) {
-                                await launchUrl(uri);
+                              String url = "https://github.com/privacyidea/pi-authenticator";
+                              if (await canLaunch(url)) {
+                                await launch(url);
                               } else {
-                                throw 'Could not launch ${uri.toString()}';
+                                throw 'Could not launch $url';
                               }
                             },
                           );

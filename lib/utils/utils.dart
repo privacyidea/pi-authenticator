@@ -24,13 +24,9 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:hex/hex.dart' as HexConverter;
 import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'crypto_utils.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 
 import 'identifiers.dart';
 

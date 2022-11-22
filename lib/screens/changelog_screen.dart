@@ -45,9 +45,8 @@ class ChangelogScreen extends StatelessWidget {
   }
 
   _launchURL(String url) async {
-    Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
+    if (await canLaunch(url)) {
+      await launch(url);
     } else {
       log('Could not launch url $url',
           name: 'changelog_screen.dart#_launchURL');

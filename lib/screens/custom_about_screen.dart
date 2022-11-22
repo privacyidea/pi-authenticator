@@ -33,9 +33,8 @@ class CustomLicenseScreen extends StatefulWidget {
     width: 330,
   );
   final String applicationLegalese = 'Apache License 2.0';
-  final Uri gitHubLink =
-      Uri.parse('https://github.com/privacyidea/pi-authenticator');
-  final Uri websiteLink = Uri.parse(ApplicationCustomizer.websiteLink);
+  final String gitHubLink = 'https://github.com/privacyidea/pi-authenticator';
+  final String websiteLink = ApplicationCustomizer.websiteLink;
 
   @override
   State<StatefulWidget> createState() => _CustomLicenseScreenState();
@@ -90,14 +89,14 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
                 '${widget.gitHubLink}',
                 style: TextStyle(decoration: TextDecoration.underline),
               ),
-              onPressed: () => _launchUri(widget.gitHubLink),
+              onPressed: () => _launch(widget.gitHubLink),
             ),
             TextButton(
               child: Text(
                 '${widget.websiteLink}',
                 style: TextStyle(decoration: TextDecoration.underline),
               ),
-              onPressed: () => _launchUri(widget.websiteLink),
+              onPressed: () => _launch(widget.websiteLink),
             ),
           ],
         ),
@@ -127,9 +126,9 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
     _info = PackageInfo.fromPlatform();
   }
 
-  void _launchUri(Uri uri) async {
-    if (await canLaunchUrl(uri)) {
-      launchUrl(uri);
+  void _launch(String url) async {
+    if (await canLaunch(url)) {
+      launch(url);
     }
   }
 
