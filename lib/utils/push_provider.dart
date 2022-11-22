@@ -20,14 +20,12 @@
 
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:typed_data';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
@@ -53,7 +51,7 @@ class PushProvider {
     await _initFirebase();
   }
 
-  static Future<String?> _initFirebase() async {
+  static Future<void> _initFirebase() async {
     await Firebase.initializeApp();
 
     try {
@@ -77,7 +75,7 @@ class PushProvider {
       if (firebaseToken != await StorageUtil.getCurrentFirebaseToken()) {
         _updateFirebaseToken(firebaseToken);
       }
-    } on PlatformException catch (error, stacktrace) {
+    } on PlatformException catch (error) {
       if (error.code == FIREBASE_TOKEN_ERROR_CODE) {
         // ignore
       } else {
@@ -90,11 +88,12 @@ class PushProvider {
                     errormessage));
         snackbarKey.currentState?.showSnackBar(snackBar);
       }
-    } on FirebaseException catch (error, stacktrace) {
+    } on FirebaseException catch (error) {
       final SnackBar snackBar = SnackBar(
           content: Text(
               "Push cant be initialized, restart the app and try again" +
                   error.toString()));
+      snackbarKey.currentState?.showSnackBar(snackBar);
     }
     FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
       if ((await StorageUtil.getCurrentFirebaseToken()) != newToken) {
@@ -107,7 +106,7 @@ class PushProvider {
   /// Returns the current firebase token of the app / device. Throws a
   /// PlatformException with a custom error code if retrieving the firebase
   /// token failed. This may happen if, e.g., no network connection is available.
-  static Future<String> getFBToken() async {
+  static Future<String?> getFBToken() async {
     String? firebaseToken;
     try {
       firebaseToken = await FirebaseMessaging.instance.getToken();
@@ -162,49 +161,12 @@ class PushProvider {
     for (PushToken p in pushTokens) {
       String timestamp = DateTime.now().toUtc().toIso8601String();
 
-      // Legacy android tokens are signed differently
       String message = '${p.serial}|$timestamp';
-      /* TODO
-      String signature = p.privateTokenKey == null
-          ? await Legacy.sign(p.serial, message)
-          : createBase32Signature(
-              p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
-      */
-      String? signature;
-      if (p.privateTokenKey == null) {
-        // It is a legacy token
-        try {
-          signature = await Legacy.sign(p.serial, message);
-        } catch (error) {
-          Widget okButton = TextButton(
-            child: Text("OK"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          );
 
-          AlertDialog alert = AlertDialog(
-            title: Text("Error"),
-            content: Text(
-                "An error occured while using the legacy token ${p.label}. The token was enrolled in a old version of this app, which may cause trouble using it. It is suggested to enroll a new push token if the problems persist!"),
-            actions: [
-              okButton,
-            ],
-          );
-
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return alert;
-            },
-          );
-        }
+      String? signature = await trySignWithToken(p, message, context);
+      if (signature == null) {
         return false;
-      } else {
-        signature = createBase32Signature(
-            p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
       }
-
       Map<String, String> parameters = {
         'serial': p.serial,
         'timestamp': timestamp,
@@ -287,12 +249,12 @@ class PushProvider {
       String timestamp = DateTime.now().toUtc().toIso8601String();
 
       String message = '$firebaseToken|${p.serial}|$timestamp';
-
-      String signature = p.privateTokenKey == null
-          ? await Legacy.sign(p.serial, message)
-          : createBase32Signature(
-              p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
-
+      // Because no context is available, trySignWithToken will fail without feedback for the user
+      // Just like this whole function // TODO improve that?
+      String? signature = await trySignWithToken(p, message, null);
+      if (signature == null) {
+        return;
+      }
       Response response =
           await doPost(sslVerify: p.sslVerify!, url: p.url!, body: {
         'new_fb_token': firebaseToken,

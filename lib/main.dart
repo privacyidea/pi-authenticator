@@ -20,7 +20,6 @@
 
 import 'package:catcher/catcher.dart';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
@@ -29,7 +28,6 @@ import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/themes.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 

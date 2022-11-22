@@ -77,7 +77,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
     // TODO What to do with poll only tokens if google-services is used?
 
-    String token = await PushProvider.getFBToken();
+    String? token = await PushProvider.getFBToken();
 
     // TODO Is there a good way to handle these tokens?
     List<PushToken> tokenWithOutUrl =
@@ -98,12 +98,16 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
       String timestamp = DateTime.now().toUtc().toIso8601String();
 
       String message = '$token|${p.serial}|$timestamp';
-
+      String? signature = await trySignWithToken(p, message, context);
+      if (signature == null) {
+        return;
+      }
+    /*
       String signature = p.privateTokenKey == null
           ? await Legacy.sign(p.serial, message)
           : createBase32Signature(
               p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
-
+*/
       Response response;
       try {
         response = await doPost(sslVerify: p.sslVerify!, url: p.url!, body: {

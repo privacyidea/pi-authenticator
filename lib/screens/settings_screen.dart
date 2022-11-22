@@ -21,7 +21,6 @@
 import 'dart:developer';
 
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';

@@ -18,7 +18,6 @@
   limitations under the License.
 */
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -28,13 +27,11 @@ import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
 import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../utils/storage_utils.dart';
-
 class CustomLicenseScreen extends StatefulWidget {
-   final Widget applicationIcon = SvgPicture.asset(
-     ApplicationCustomizer.appIcon,
-     width: 330,
-   );
+  final Widget applicationIcon = SvgPicture.asset(
+    ApplicationCustomizer.appIcon,
+    width: 330,
+  );
   final String applicationLegalese = 'Apache License 2.0';
   final Uri gitHubLink =
       Uri.parse('https://github.com/privacyidea/pi-authenticator');
@@ -130,9 +127,10 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
     _info = PackageInfo.fromPlatform();
   }
 
-  void _launchUri(Uri link) async {
-    String uri = link.toString();
-    if (await canLaunch(uri)) launch(uri);
+  void _launchUri(Uri uri) async {
+    if (await canLaunchUrl(uri)) {
+      launchUrl(uri);
+    }
   }
 
   @override

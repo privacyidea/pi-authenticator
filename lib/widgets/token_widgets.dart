@@ -26,9 +26,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:catcher/catcher.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -129,8 +127,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         backgroundColor: Theme.of(context).brightness == Brightness.light
             //? Colors.red.shade400
             //: Colors.red.shade800,
-          ? ApplicationCustomizer.deleteColorLight
-          : ApplicationCustomizer.deleteColorDark,
+            ? ApplicationCustomizer.deleteColorLight
+            : ApplicationCustomizer.deleteColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
@@ -160,8 +158,8 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         backgroundColor: Theme.of(context).brightness == Brightness.light
             //? Colors.yellow.shade400
             //: Colors.yellow.shade800,
-          ? ApplicationCustomizer.lockColorLight
-          : ApplicationCustomizer.lockColorDark,
+            ? ApplicationCustomizer.lockColorLight
+            : ApplicationCustomizer.lockColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white,
@@ -424,7 +422,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
   }
 
   @override
-  void afterFirstRender() {
+  void onContextReady() {
     if (!_token.isRolledOut) {
       _rollOutToken();
     }
@@ -532,7 +530,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                 .errorRollOutFailed(_token.label, response.statusCode),
             3);
       }
-    } on PlatformException catch (e, s) {
+    } on PlatformException catch (e) {
       log('Roll out push token [$_token] failed.',
           name: 'token_widgets.dart#_rollOutToken', error: e);
 
@@ -558,7 +556,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
       _showMessage(
           AppLocalizations.of(context)!.errorRollOutNoNetworkConnection, 3);
-    } on HandshakeException catch (e, stack) {
+    } on HandshakeException catch (e) {
       log('Roll out push token [$_token] failed.',
           name: 'token_widgets.dart#_rollOutToken', error: e);
 
@@ -597,11 +595,16 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
     // signature ::=  {nonce}|{serial}
     String msg = '${pushRequest.nonce}|${_token.serial}';
+    String? signature = await trySignWithToken(_token, msg, context);
+    if (signature == null) {
+      return;
+    }
+    /*
     String signature = _token.privateTokenKey == null
         ? await Legacy.sign(_token.serial, msg)
         : createBase32Signature(
             _token.getPrivateTokenKey()!, utf8.encode(msg) as Uint8List);
-
+*/
     //    POST https://privacyideaserver/validate/check
     //    nonce=<nonce_from_request>
     //    serial=<serial>
