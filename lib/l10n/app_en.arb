@@ -602,12 +602,12 @@
   },
   "noResultText1": "Tap the ",
   "@noResultText1": {
-    "description": "first noresult text",
+    "description": "first no result text",
     "type": "text"
   },
   "noResultText2": " button to get started!",
   "@noResultText2": {
-    "description": "second noresult text",
+    "description": "second no result text",
     "type": "text"
   },
   "onBoardingTitle1": "{appName}",
@@ -621,17 +621,17 @@
       }
     }
   },
-  "onBoardingText1": "Two-factor authentication - \n done right.\n",
+  "onBoardingText1": "Two-factor authentication\nmade easy",
   "@onBoardingText1": {
     "description": "onboardingText1",
     "type": "text"
   },
-  "onBoardingTitle2": "100% Secure",
+  "onBoardingTitle2": "Maximum Security",
   "@onBoardingTitle2": {
     "description": "onBoardingTitle2",
     "type": "text"
   },
-  "onBoardingText2": "Store tokens on your device securely \n Protected by your biometrics!",
+  "onBoardingText2": "Store tokens on your device securely\nProtected by your biometrics",
   "@onBoardingText2": {
     "description": "onboardingText2",
     "type": "text"
@@ -641,7 +641,7 @@
     "description": "onBoardingTitle3",
     "type": "text"
   },
-  "onBoardingText3": "This app is 100% Open Source",
+  "onBoardingText3": "This app is open source",
   "@onBoardingText3": {
     "description": "onBoardingText3",
     "type": "text"

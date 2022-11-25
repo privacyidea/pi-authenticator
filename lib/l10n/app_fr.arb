@@ -621,17 +621,17 @@
       }
     }
   },
-  "onBoardingText1": "Authentification à deux facteurs - \n bien fait. \n",
+  "onBoardingText1": "Authentification à deux facteurs\nrendue facile",
   "@onBoardingText1": {
     "description": "onboardingText1",
     "type": "text"
   },
-  "onBoardingTitle2": "100% Sécurisé",
+  "onBoardingTitle2": "Sécurité Maximale",
   "@onBoardingTitle2": {
     "description": "onBoardingTitle2",
     "type": "text"
   },
-  "onBoardingText2": "Stockez les jetons sur votre \nappareil en toute sécurité.\n Protégé par votre biométrie!",
+  "onBoardingText2": "Stockez les jetons sur votre \nappareil en toute sécurité\nProtégé par votre biométrie",
   "@onBoardingText2": {
     "description": "onboardingText2",
     "type": "text"
@@ -641,7 +641,7 @@
     "description": "onBoardingTitle3",
     "type": "text"
   },
-  "onBoardingText3": "Cette application est \n100% Open Source",
+  "onBoardingText3": "Cette application est open source",
   "@onBoardingText3": {
     "description": "onBoardingText3",
     "type": "text"

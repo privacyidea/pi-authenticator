@@ -621,17 +621,17 @@
       }
     }
   },
-  "onBoardingText1": "vícefázové ověření, \n jak má být. \n",
+  "onBoardingText1": "vícefázové ověření\nusnadněno",
   "@onBoardingText1": {
     "description": "onboardingText1",
     "type": "text"
   },
-  "onBoardingTitle2": "100% bezpečné",
+  "onBoardingTitle2": "Maximální Bezpečnost",
   "@onBoardingTitle2": {
     "description": "onBoardingTitle2",
     "type": "text"
   },
-  "onBoardingText2": "Uložte tokeny do svého zařízení  \n chráněné biometrickým ověřením",
+  "onBoardingText2": "Uložte tokeny do svého zařízení\nchráněné biometrickým ověřením",
   "@onBoardingText2": {
     "description": "onboardingText2",
     "type": "text"
@@ -641,7 +641,7 @@
     "description": "onBoardingTitle3",
     "type": "text"
   },
-  "onBoardingText3": "Tuto aplikaci má  \n 100% otevřený zdrojový kód",
+  "onBoardingText3": "Tuto aplikaci má open source",
   "@onBoardingText3": {
     "description": "onBoardingTitle3",
     "type": "text"

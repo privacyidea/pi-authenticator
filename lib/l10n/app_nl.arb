@@ -621,27 +621,27 @@
       }
     }
   },
-  "onBoardingText1": "Twee-factoren authenticatie, \n goed gedaan. \n",
+  "onBoardingText1": "Twee-factoren authenticatie\nmakkelijk gemaakt",
   "@onBoardingText1": {
     "description": "onboardingText1",
     "type": "text"
   },
-  "onBoardingTitle2": "100% Zeker",
+  "onBoardingTitle2": "Maximale Beveiliging",
   "@onBoardingTitle2": {
     "description": "onBoardingTitle2",
     "type": "text"
   },
-  "onBoardingText2": "Bewaar tokens op uw apparaat \n beveiligd door uw biometrische gegevens",
+  "onBoardingText2": "Bewaar tokens op uw apparaat\nbeveiligd door uw biometrische gegevens",
   "@onBoardingText2": {
     "description": "onboardingText2",
     "type": "text"
   },
-  "onBoardingTitle3": "Bezoek ons \n op Github",
+  "onBoardingTitle3": "Bezoek ons op Github",
   "@onBoardingTitle3": {
     "description": "onBoardingTitle3",
     "type": "text"
   },
-  "onBoardingText3": "Deze app is \n 100% open source",
+  "onBoardingText3": "Deze app is open source",
   "@onBoardingText3": {
     "description": "onBoardingText3",
     "type": "text"

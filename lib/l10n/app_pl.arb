@@ -621,17 +621,17 @@
       }
     }
   },
-  "onBoardingText1": "uwierzytelnianie dwuskładnikowe \n zrobione jak należy. \n",
+  "onBoardingText1": "Uwierzytelnianie dwuskładnikowe\nuczynione prostym",
   "@onBoardingText1": {
     "description": "onboardingText1",
     "type": "text"
   },
-  "onBoardingTitle2": "100% Bezpieczeństwa",
+  "onBoardingTitle2": "Maksymalne Bezpieczeństwo",
   "@onBoardingTitle2": {
     "description": "onBoardingTitle2",
     "type": "text"
   },
-  "onBoardingText2": "Przechowuj tokeny w swoim urządzeniu \n zabezpieczone biometrycznie",
+  "onBoardingText2": "Przechowuj tokeny w swoim urządzeniu\nzabezpieczone biometrycznie",
   "@onBoardingText2": {
     "description": "onboardingText2",
     "type": "text"
@@ -641,7 +641,7 @@
     "description": "onBoardingTitle3",
     "type": "text"
   },
-  "onBoardingText3": "Ta aplikacja jest w \n 100% Open Source",
+  "onBoardingText3": "Ta aplikacja jest w open source",
   "@onBoardingText3": {
     "description": "onBoardingTitle3",
     "type": "text"

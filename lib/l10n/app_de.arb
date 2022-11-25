@@ -602,12 +602,12 @@
   },
   "noResultText1": "Tippe auf das ",
   "@noResultText1": {
-    "description": "first noresult text",
+    "description": "first no result text",
     "type": "text"
   },
   "noResultText2": " Icon um loszulegen!",
   "@noResultText2": {
-    "description": "second noresult text",
+    "description": "second no result text",
     "type": "text"
   },
   "onBoardingTitle1": "{appName}",
@@ -621,17 +621,17 @@
       }
     }
   },
-  "onBoardingText1": "Zwei-Faktor-Authentifizierung -\n richtig gemacht.",
+  "onBoardingText1": "Zwei-Faktor-Authentifizierung\neinfach gemacht",
   "@onBoardingText1": {
     "description": "onboardingText1",
     "type": "text"
   },
-  "onBoardingTitle2": "100% Sicher",
+  "onBoardingTitle2": "Maximale Sicherheit",
   "@onBoardingTitle2": {
     "description": "onBoardingTitle2",
     "type": "text"
   },
-  "onBoardingText2": "Speichern Sie Ihre Token sicher auf diesem Gerät.\nGeschützt durch Ihre biometrischen Daten!",
+  "onBoardingText2": "Speichern Sie Ihre Token sicher auf diesem Gerät\nGeschützt durch Ihre biometrischen Daten",
   "@onBoardingText2": {
     "description": "onboardingText2",
     "type": "text"
@@ -641,7 +641,7 @@
     "description": "onBoardingTitle3",
     "type": "text"
   },
-  "onBoardingText3": "Diese App ist zu \n 100% Open Source",
+  "onBoardingText3": "Diese App ist Open Source",
   "@onBoardingText3": {
     "description": "onBoardingTitle3",
     "type": "text"
