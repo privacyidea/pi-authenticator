@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 
 class ApplicationCustomizer {
-
   // CHANGE APPLICATION NAME
   static final String appName = "privacyIDEA Authenticator";
+
   // Edit in android/app/src/main/AndroidManifest.xml file
-  // <application
-  //         android:label="app name">
+  // <application android:label="app name">
 
   // Edit in ios/Runner/Info.plist file
   // <key>CFBundleName</key>
-  // 	<string>app name</string>
+  // <string>app name</string>
 
-  // CHANGE PACKAGENAME
+  // CHANGE PACKAGE NAME
   // Type in terminal
   // flutter pub run change_app_package_name:main new.package.name
 
@@ -34,7 +33,7 @@ class ApplicationCustomizer {
   static final Color themeColorDark = Colors.black;
   static final Color themeColorLight = Colors.white;
 
-  // Slideable action
+  // Slide action
   static final Color deleteColorDark = Color(0xffCD3C14);
   static final Color deleteColorLight = deleteColorDark;
   static final Color renameColorDark = Color(0xff527EDB);

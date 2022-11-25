@@ -601,12 +601,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     if (signature == null) {
       return;
     }
-    /*
-    String signature = _token.privateTokenKey == null
-        ? await Legacy.sign(_token.serial, msg)
-        : createBase32Signature(
-            _token.getPrivateTokenKey()!, utf8.encode(msg) as Uint8List);
-*/
+
     //    POST https://privacyideaserver/validate/check
     //    nonce=<nonce_from_request>
     //    serial=<serial>
