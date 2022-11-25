@@ -413,13 +413,14 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     );
 
     try {
-      // TODO get crash report recipients from map and set in settings
-      //  and for Catcher.
-      Map<String, dynamic> barcodeMap = parseQRCodeToMap(otpAuth);
-      // AppSetting.of(context).add...
-//      Catcher.instance.updateConfig();
+      Map<String, dynamic> qrParameterMap = parseQRCodeToMap(otpAuth);
 
-      Token newToken = await _buildTokenFromMap(barcodeMap, Uri.parse(otpAuth));
+      Token? newToken =
+          await _buildTokenFromMap(qrParameterMap, Uri.parse(otpAuth));
+
+      if (newToken == null) {
+        return;
+      }
 
       if (newToken.pin != null && newToken.pin != false) {
         newToken.isLocked = true;
@@ -476,12 +477,27 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   /// Builds and returns a token from a given map, that contains all necessary
   /// fields.
-  Future<Token> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
+  Future<Token?> _buildTokenFromMap(
+      Map<String, dynamic> uriMap, Uri uri) async {
     String uuid = Uuid().v4();
     String type = uriMap[URI_TYPE];
 
     // Push token do not need any of the other parameters.
     if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
+      String? rolloutURL = uriMap[URI_ROLLOUT_URL];
+      if (rolloutURL == null || rolloutURL.isEmpty) {
+        _showMessage(
+            "QR code did not contain rollout URL!", new Duration(seconds: 3));
+        return null;
+      }
+      Uri? rolloutUri;
+      try {
+        rolloutUri = Uri.parse(rolloutURL);
+      } catch (e) {
+        _showMessage("rollout URL is malformed!", new Duration(seconds: 3));
+        return null;
+      }
+
       return PushToken(
           serial: uriMap[URI_SERIAL],
           label: uriMap[URI_LABEL],
@@ -491,7 +507,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           expirationDate:
               DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
           enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-          url: uriMap[URI_ROLLOUT_URL],
+          url: rolloutUri,
           pin: uriMap[URI_PIN],
           tokenImage: uriMap[URI_IMAGE]);
     }
