@@ -99,12 +99,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
       if (signature == null) {
         return;
       }
-    /*
-      String signature = p.privateTokenKey == null
-          ? await Legacy.sign(p.serial, message)
-          : createBase32Signature(
-              p.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
-*/
+
       Response response;
       try {
         response = await doPost(sslVerify: p.sslVerify!, url: p.url!, body: {

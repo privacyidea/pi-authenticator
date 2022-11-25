@@ -21,14 +21,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:package_info/package_info.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
 import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomLicenseScreen extends StatefulWidget {
-  final Widget applicationIcon = SvgPicture.asset(
+  final Widget applicationIcon = Image.asset(
     ApplicationCustomizer.appIcon,
     width: 330,
   );
