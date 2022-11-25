@@ -30,7 +30,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
@@ -303,7 +302,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
-        leading: SvgPicture.asset(ApplicationCustomizer.appIcon),
+        leading: Image.asset(ApplicationCustomizer.appIcon),
       ),
       extendBodyBehindAppBar: false,
       body: Container(

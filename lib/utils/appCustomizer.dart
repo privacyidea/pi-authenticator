@@ -18,7 +18,7 @@ class ApplicationCustomizer {
 
   static final String websiteLink = 'https://netknights.it/';
 
-  static final String appIcon = 'res/logo/app_logo_light.svg';
+  static final String appIcon = 'res/logo/app_logo_light.png';
 
   // CHANGE LAUNCHER ICONS
   // Edit in pubspec.yaml file
