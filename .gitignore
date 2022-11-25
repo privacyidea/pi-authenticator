@@ -892,3 +892,4 @@ DerivedData/
 ### Custom
 .flutter-plugins-dependencies
 lib/l10n/untranslated.txt
+*.jks
