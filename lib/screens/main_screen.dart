@@ -483,17 +483,10 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
     // Push token do not need any of the other parameters.
     if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
-      String? rolloutURL = uriMap[URI_ROLLOUT_URL];
-      if (rolloutURL == null || rolloutURL.isEmpty) {
+      Uri? rolloutURL = uriMap[URI_ROLLOUT_URL];
+      if (rolloutURL == null) {
         _showMessage(
             "QR code did not contain rollout URL!", new Duration(seconds: 3));
-        return null;
-      }
-      Uri? rolloutUri;
-      try {
-        rolloutUri = Uri.parse(rolloutURL);
-      } catch (e) {
-        _showMessage("rollout URL is malformed!", new Duration(seconds: 3));
         return null;
       }
 
@@ -506,7 +499,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           expirationDate:
               DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
           enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-          url: rolloutUri,
+          url: rolloutURL,
           pin: uriMap[URI_PIN],
           tokenImage: uriMap[URI_IMAGE]);
     }
