@@ -713,6 +713,15 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
   @override
   Widget _buildTile() {
+    Image? tokenImage;
+    try {
+      tokenImage = Image.network(_token.tokenImage!);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Unable to retrieve token image from ${_token.tokenImage!}."),
+      ));
+    }
+
     return ClipRect(
       child: Stack(
         children: <Widget>[
@@ -725,7 +734,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                         height: double.infinity,
                         child: Align(
                             alignment: Alignment.center,
-                            child: Image.network(_token.tokenImage!)),
+                            child: tokenImage,)
                       )
                     : null,
                 horizontalTitleGap: 8.0,
