@@ -507,7 +507,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "authenticateToAcceptPush": "Veuillez vous authentifier pour accepter le défi push.",
+  "authenticateToAcceptPush": "Veuillez vous authentifier pour utiliser ce jeton push.",
   "@authenticateToAcceptPush": {
     "description": "Reason to authenticate when clicking the 'accept' button of a push token.",
     "type": "text",

@@ -26,6 +26,7 @@ import 'dart:typed_data';
 import 'package:base32/base32.dart' as Base32Converter;
 import 'package:hex/hex.dart' as HexConverter;
 import 'package:otp/otp.dart' as OTPLibrary;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 
 import 'identifiers.dart';
@@ -77,6 +78,18 @@ String enumAsString(Object enumEntry) {
 
 bool equalsIgnoreCase(String s1, String s2) {
   return s1.toLowerCase() == s2.toLowerCase();
+}
+
+/// If permission is already given, this function does nothing
+void checkNotificationPermission() async {
+  var status = await Permission.notification.status;
+  // TODO what to do if permanently denied?
+  // Add a dialog before requesting?
+  if (!status.isPermanentlyDenied) {
+    if (status.isDenied) {
+      await Permission.notification.request();
+    }
+  }
 }
 
 // TODO Everything after this line should be in 'crypto_utils.dart,

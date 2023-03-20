@@ -48,7 +48,7 @@ Future<void> dummyRequest({required Uri url, bool sslVerify = true}) async {
 }
 
 /// Custom POST request allows to not verify certificates.
-Future<Response> doPost(
+Future<Response> postRequest(
     {required Uri url,
     required Map<String, String?> body,
     bool sslVerify = true}) async {
@@ -93,7 +93,7 @@ Future<Response> doPost(
   return response;
 }
 
-Future<Response> doGet(
+Future<Response> getRequest(
     {required Uri url,
     required Map<String, String?> parameters,
     bool? sslVerify = true}) async {

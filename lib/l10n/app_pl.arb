@@ -507,7 +507,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "authenticateToAcceptPush": "Zweryfikuj tożsamość, żeby zaakceptować wiadomość push.",
+  "authenticateToAcceptPush": "Uwierzytelnij się, aby użyć tego tokena wypychania.",
   "@authenticateToAcceptPush": {
     "description": "Reason to authenticate when clicking the 'accept' button of a push token.",
     "type": "text",

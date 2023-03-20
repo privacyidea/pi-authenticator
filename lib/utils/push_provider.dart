@@ -174,7 +174,7 @@ class PushProvider {
       };
 
       try {
-        Response response = await doGet(
+        Response response = await getRequest(
             url: p.url!, parameters: parameters, sslVerify: p.sslVerify);
 
         if (response.statusCode == 200) {
@@ -256,7 +256,7 @@ class PushProvider {
         return;
       }
       Response response =
-          await doPost(sslVerify: p.sslVerify!, url: p.url!, body: {
+          await postRequest(sslVerify: p.sslVerify!, url: p.url!, body: {
         'new_fb_token': firebaseToken,
         'serial': p.serial,
         'timestamp': timestamp,

@@ -507,7 +507,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "authenticateToAcceptPush": "Pro potvrzení push notifikace se přihlaste.",
+  "authenticateToAcceptPush": "Pro použití tohoto push tokenu se prosím ověřte.",
   "@authenticateToAcceptPush": {
     "description": "Reason to authenticate when clicking the 'accept' button of a push token.",
     "type": "text",

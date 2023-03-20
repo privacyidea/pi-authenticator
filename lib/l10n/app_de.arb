@@ -507,7 +507,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "authenticateToAcceptPush": "Bitte authentifizieren Sie sich, um die Push-Anfrage zu akzeptieren.",
+  "authenticateToAcceptPush": "Bitte authentifizieren Sie sich, um diesen Push-Token zu verwenden!.",
   "@authenticateToAcceptPush": {
     "description": "Reason to authenticate when clicking the 'accept' button of a push token.",
     "type": "text",

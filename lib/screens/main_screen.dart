@@ -31,6 +31,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
@@ -232,6 +233,9 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   @override
   void onContextReady() {
     _loadTokenList();
+    if(_tokenList.firstWhereOrNull((element) => element.type == "push") != null) {
+      checkNotificationPermission();
+    }
   }
 
   @override

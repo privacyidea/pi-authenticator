@@ -489,17 +489,21 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
         ..setPrivateTokenKey(keyPair.privateKey)
         ..setPublicTokenKey(keyPair.publicKey);
       await _saveThisToken();
+
+      checkNotificationPermission();
     }
 
     try {
       // TODO What to do with poll only tokens if google-services is used?
-      Response response =
-          await doPost(sslVerify: _token.sslVerify!, url: _token.url!, body: {
-        'enrollment_credential': _token.enrollmentCredentials,
-        'serial': _token.serial,
-        'fbtoken': await PushProvider.getFBToken(),
-        'pubkey': serializeRSAPublicKeyPKCS8(_token.getPublicTokenKey()!),
-      });
+      Response response = await postRequest(
+          sslVerify: _token.sslVerify!,
+          url: _token.url!,
+          body: {
+            'enrollment_credential': _token.enrollmentCredentials,
+            'serial': _token.serial,
+            'fbtoken': await PushProvider.getFBToken(),
+            'pubkey': serializeRSAPublicKeyPKCS8(_token.getPublicTokenKey()!),
+          });
 
       if (response.statusCode == 200) {
         RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
@@ -588,15 +592,44 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     }
   }
 
-  Future<void> acceptRequest() async {
-    var pushRequest = _token.pushRequests.peek();
+  void handlePushRequest(bool accepted) async {
+    // Check if PIN/Biometric is required to interact with the token
+    if (_token.isLocked) {
+      if (await _unlock(
+          localizedReason:
+              AppLocalizations.of(context)!.authenticateToAcceptPush)) {
+        if (mounted) {
+          setState(() => _acceptButtonIsEnabled = false);
+        }
+      }
+    } else {
+      if (mounted) {
+        setState(() => _acceptButtonIsEnabled = false);
+      }
+    }
+    _disableAcceptButtonForSomeTime();
 
-    log('Push auth request accepted, sending message',
-        name: 'token_widgets.dart#acceptRequest',
+    if (accepted) {
+      _showMessage(
+          AppLocalizations.of(context)!.acceptPushAuthRequestFor(_token.label),
+          2);
+    } else {
+      _showMessage(
+          AppLocalizations.of(context)!
+              .decliningPushAuthRequestFor(_token.label),
+          2);
+    }
+
+    var pushRequest = _token.pushRequests.peek();
+    log('Push auth request accepted=$accepted, sending response to privacyidea',
+        name: 'token_widgets.dart#handlePushRequest',
         error: 'Url: ${pushRequest.uri}');
 
-    // signature ::=  {nonce}|{serial}
+    // signature ::=  {nonce}|{serial}[|decline]
     String msg = '${pushRequest.nonce}|${_token.serial}';
+    if (!accepted) {
+      msg += '|decline';
+    }
     String? signature = await trySignWithToken(_token, msg, context);
     if (signature == null) {
       return;
@@ -606,69 +639,58 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     //    nonce=<nonce_from_request>
     //    serial=<serial>
     //    signature=<signature>
-    Map<String, String> body = {
+    //    decline=1 (optional)
+    final Map<String, String> body = {
       'nonce': pushRequest.nonce,
       'serial': _token.serial,
       'signature': signature,
     };
+    if (!accepted) {
+      body["decline"] = "1";
+    }
 
+    print("sending push request response...");
+    bool success = true;
     try {
-      Response response = await doPost(
+      Response response = await postRequest(
           sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
-
       if (response.statusCode == 200) {
-        _showMessage(
-            AppLocalizations.of(context)!
-                .acceptPushAuthRequestFor(_token.label),
-            2);
         updateTokenStatus();
       } else {
-        log('Accepting push auth request failed.',
-            name: 'token_widgets.dart#acceptRequest',
+        log('Sending push request response failed.',
+            name: 'token_widgets.dart#handlePushRequest',
             error: 'Token: $_token, Status code: ${response.statusCode}, '
                 'Body: ${response.body}');
-
-        if (mounted) {
-          setState(() => _acceptFailed = true);
-        }
 
         _showMessage(
             AppLocalizations.of(context)!.errorPushAuthRequestFailedFor(
                 _token.label, response.statusCode),
             3);
+        success = false;
       }
     } on SocketException catch (e) {
-      log('Accept push auth request for [$_token] failed.',
-          name: 'token_widgets.dart#acceptRequest', error: e);
-
-      if (mounted) {
-        setState(() => _acceptFailed = true);
-      }
+      log('Push auth request for [$_token] failed, accept=$accepted.',
+          name: 'token_widgets.dart#handlePushRequest', error: e);
 
       _showMessage(
           AppLocalizations.of(context)!
               .errorAuthenticationNotPossibleWithoutNetworkAccess,
           3);
+      success = false;
     } catch (e) {
-      log('Accept push auth request for [$_token] failed.',
-          name: 'token_widgets.dart#acceptRequest', error: e);
-
-      if (mounted) {
-        setState(() => _acceptFailed = true);
-      }
+      log('Push auth request for [$_token] failed, accept=$accepted.',
+          name: 'token_widgets.dart#handlePushRequest', error: e);
 
       _showMessage(
           AppLocalizations.of(context)!
               .errorAuthenticationFailedUnknownError(e),
           5);
+      success = false;
     }
-  }
 
-  void declineRequest() async {
-    _showMessage(
-        AppLocalizations.of(context)!.decliningPushAuthRequestFor(_token.label),
-        2);
-    updateTokenStatus();
+    if (!success && mounted) {
+      setState(() => _acceptFailed = true);
+    }
   }
 
   /// Reset the token status after push auth request was handled by the user.
@@ -719,7 +741,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
         tokenImage = Image.network(_token.tokenImage!);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Unable to retrieve token image from ${_token.tokenImage!}."),
+          content: Text(
+              "Unable to retrieve token image from ${_token.tokenImage!}."),
         ));
       }
     }
@@ -735,9 +758,9 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                         width: MediaQuery.of(context).size.width * 0.3,
                         height: double.infinity,
                         child: Align(
-                            alignment: Alignment.center,
-                            child: tokenImage,)
-                      )
+                          alignment: Alignment.center,
+                          child: tokenImage,
+                        ))
                     : null,
                 horizontalTitleGap: 8.0,
                 title: Text(
@@ -802,27 +825,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                                 ),
                           onPressed: _acceptButtonIsEnabled
                               ? () async {
-                                  if (_token.isLocked) {
-                                    if (await _unlock(
-                                        localizedReason:
-                                            AppLocalizations.of(context)!
-                                                .authenticateToAcceptPush)) {
-                                      if (mounted) {
-                                        setState(() =>
-                                            _acceptButtonIsEnabled = false);
-                                      }
-
-                                      await acceptRequest();
-                                    }
-                                  } else {
-                                    if (mounted) {
-                                      setState(
-                                          () => _acceptButtonIsEnabled = false);
-                                    }
-
-                                    await acceptRequest();
-                                  }
-                                  _disableAcceptButtonForSomeTime();
+                                  handlePushRequest(true);
                                 }
                               : null,
                         ),
@@ -838,7 +841,8 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                           ),
                           onPressed: _acceptButtonIsEnabled
                               ? () {
-                                  declineRequest();
+                                  handlePushRequest(false);
+                                  //declineRequest();
                                   _disableAcceptButtonForSomeTime();
                                 }
                               : null,
