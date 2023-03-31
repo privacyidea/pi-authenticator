@@ -94,11 +94,25 @@ class PushProvider {
               "Push cant be initialized, restart the app and try again" +
                   error.toString()));
       snackbarKey.currentState?.showSnackBar(snackBar);
+    } catch (error) {
+      final SnackBar snackBar = SnackBar(
+          content:
+              Text("Unknown error: ${error.toString()}" + error.toString()));
+      snackbarKey.currentState?.showSnackBar(snackBar);
     }
+
     FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
       if ((await StorageUtil.getCurrentFirebaseToken()) != newToken) {
         await StorageUtil.setNewFirebaseToken(newToken);
-        _updateFirebaseToken(newToken);
+        // TODO what if this fails, when should a retry be attempted?
+        try {
+          _updateFirebaseToken(newToken);
+        } catch (error) {
+          final SnackBar snackBar = SnackBar(
+              content: Text(
+                  "Unknown error: ${error.toString()}" + error.toString()));
+          snackbarKey.currentState?.showSnackBar(snackBar);
+        }
       }
     });
   }
@@ -190,7 +204,7 @@ class PushProvider {
           // Error messages can only be distinguished by their text content,
           // not by their error code. This would make error handling complex.
         }
-      } on ClientException catch (error) {
+      } catch (error) {
         final SnackBar snackBar = SnackBar(
             content: Text(
                 "An error occured when polling for challanges \n ${error.toString()}"));
@@ -212,7 +226,14 @@ class PushProvider {
 
     if (firebaseToken != null &&
         (await StorageUtil.getCurrentFirebaseToken()) != firebaseToken) {
-      _updateFirebaseToken(firebaseToken);
+      try {
+        _updateFirebaseToken(firebaseToken);
+      } catch (error) {
+        final SnackBar snackBar = SnackBar(
+            content:
+                Text("Unknown error: ${error.toString()}" + error.toString()));
+        snackbarKey.currentState?.showSnackBar(snackBar);
+      }
     }
   }
 

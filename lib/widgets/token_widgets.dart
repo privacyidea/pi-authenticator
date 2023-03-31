@@ -562,7 +562,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           AppLocalizations.of(context)?.errorRollOutNoNetworkConnection ??
               "No network connection!",
           3);
-    } on HandshakeException catch (e) {
+    } catch (e) {
       log('Roll out push token [$_token] failed.',
           name: 'token_widgets.dart#_rollOutToken', error: e);
 
