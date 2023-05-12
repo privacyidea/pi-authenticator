@@ -740,7 +740,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
       try {
         tokenImage = Image.network(_token.tokenImage!, errorBuilder: (BuildContext context, Object exception,
             StackTrace? stackTrace) {
-          return const Text('Error loading image 😢');
+          return const Text('Error loading image');
         });
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
