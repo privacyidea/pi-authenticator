@@ -1,6 +1,12 @@
 # Changelog
 
-## [4.1.0] - TBD
+## [4.1.1] - 2023-05-12
+
+- Communicate declined push requests to the server 
+- Fixed notification permissions for Android 13
+- Fixed causes for crashes related to networking
+
+## [4.1.0] - 2022-11-25
 
 ### Added
 
