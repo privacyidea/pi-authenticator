@@ -207,7 +207,7 @@ class PushProvider {
       } catch (error) {
         final SnackBar snackBar = SnackBar(
             content: Text(
-                "An error occured when polling for challanges \n ${error.toString()}"));
+                "An error occured when polling for challenges \n ${error.toString()}"));
         snackbarKey.currentState?.showSnackBar(snackBar);
 
         log(
