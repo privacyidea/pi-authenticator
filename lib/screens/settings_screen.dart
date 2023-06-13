@@ -19,6 +19,7 @@
 */
 
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
@@ -355,7 +356,7 @@ class AppSettings extends InheritedWidget {
             _crashReportRecipientsKey,
             defaultValue: [defaultCrashReportRecipient]),
         _localePreference = preferences.getString(_localePreferenceKey,
-            defaultValue: _encodeLocale(AppLocalizations.supportedLocales[0])),
+            defaultValue: _encodeLocale(AppLocalizations.supportedLocales.firstWhere((locale) => locale.languageCode  == Platform.localeName.substring(0,2) , orElse: () => Locale('en')))),
         _useSystemLocale =
             preferences.getBool(_useSystemLocaleKey, defaultValue: true),
         _isFirstRun = preferences.getBool(_isFirstRunKey, defaultValue: true),
