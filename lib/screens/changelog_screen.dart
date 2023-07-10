@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ChangelogScreen extends StatelessWidget {
@@ -29,17 +30,15 @@ class ChangelogScreen extends StatelessWidget {
             if (snapshot.hasData) {
               return Scrollbar(
                 controller: _controller,
-                isAlwaysShown: true,
+                thumbVisibility: true,
                 child: Markdown(
                   controller: _controller,
                   data: snapshot.data!,
-                  onTapLink: ((String text, String? href, String? title) =>
-                      _launchURL(href!)),
+                  onTapLink: ((String text, String? href, String? title) => _launchURL(href!)),
                 ),
               );
             }
-            return Center(
-                child: Text(AppLocalizations.of(context)!.somethingWentWrong));
+            return Center(child: Text(AppLocalizations.of(context)!.somethingWentWrong));
           },
         ));
   }
@@ -48,8 +47,7 @@ class ChangelogScreen extends StatelessWidget {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      log('Could not launch url $url',
-          name: 'changelog_screen.dart#_launchURL');
+      Logger.warning('Could not launch url $url', name: 'changelog_screen.dart#_launchURL');
     }
   }
 }

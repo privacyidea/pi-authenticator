@@ -464,7 +464,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "pageReportModeBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden. Drücken Sie '{accept}' um die Informationen zu senden oder '{cancel}' um nichts zu senden.",
+  "pageReportModeBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden. Drücken Sie {accept} um die Informationen zu senden oder {cancel} um nichts zu senden.",
   "@pageReportModeBody": {
     "description": "Description shown to the user about what info the error report contains.",
     "type": "text",
@@ -649,6 +649,81 @@
   "unlockToCopy": "Entsperre den Token mittels biometrischer Daten",
   "@unlockToCopy": {
     "description": "unlockToCopy",
+    "type": "text"
+  },
+  "errorLogTitle": "Fehlerprotokolle",
+  "@errorLogTitle": {
+    "description": "errorLogTitle",
+    "type": "text"
+  },
+  "sendErrorHint": "Senden Sie uns das Fehlerprotokoll per E-Mail",
+  "@sendErrorHint": {
+    "description": "Hint for the user about what he will send.",
+    "type": "text"
+  },
+  "enableVerboseLogging": "Fehler ausführlich protokollieren",
+  "@enableVerboseLogging": {
+    "description": "enableVerboseLogging",
+    "type": "text"
+  },
+  "clearErrorLogHint": "Löscht die lokale Fehlerprotokolldatei",
+  "@clearErrorLogHint": {
+    "description": "clearErrorLogHint",
+    "type": "text"
+  },
+  "logMenu": "Protokollmenu",
+  "@logMenu": {
+    "description": "logMenu",
+    "type": "text"
+  },
+  "send": "Senden",
+  "@send": {
+    "description": "Senden",
+    "type": "text"
+  },
+  "sendErrorDialogHeader": "Per E-Mail senden",
+  "@sendErrorDialogHeader": {
+    "description": "sendErrorDialogHeader",
+    "type": "text"
+  },
+  "ok": "Ok",
+  "@ok": {
+    "description": "ok",
+    "type": "text"
+  },
+  "noLogToSend": "Es gibt kein Protokoll zu senden.",
+  "@noLogToSend": {
+    "description": "noLogToSend",
+    "type": "text"
+  },
+  "errorLogFileAttached": "Die Fehlerprotokolldatei ist angehängt.",
+  "@errorLogFileAttached": {
+    "description": "Message for email body",
+    "type": "text"
+  },
+  "errorLogCleared": "Fehlerprotokolle gelöscht",
+  "@errorLogCleared": {
+    "description": "errorLogCleared",
+    "type": "text"
+  },
+  "errorOccurred": "Ein Fehler ist aufgetreten.",
+  "@errorOccurred": {
+    "description": "errorOccurred",
+    "type": "text"
+  },
+  "showDetails": "Details anzeigen",
+  "@showDetails": {
+    "description": "showDetails",
+    "type": "text"
+  },
+  "open": "Öffnen",
+  "@open": {
+    "description": "open",
+    "type": "text"
+  },
+  "sendErrorDialogBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden.",
+  "@sendErrorDialogBody": {
+    "description": "Description shown to the user about what info the error report contains.",
     "type": "text"
   }
 }

@@ -24,6 +24,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 class MigrateLegacyTokensDialog extends StatefulWidget {
@@ -67,12 +68,10 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
 
   void _migrateTokens() async {
     // Load legacy tokens and add them to the storage.
-    log('Attempt to load legacy tokens.',
-        name: 'migrate_legacy_tokens_dialog.dart#_migrateTokens');
+    Logger.info('Attempt to load legacy tokens.', name: 'migrate_legacy_tokens_dialog.dart#_migrateTokens');
 
     List<Token> legacyTokens = await StorageUtil.loadAllTokensLegacy();
-    List<PushToken> currentPushToken =
-        (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
+    List<PushToken> currentPushToken = (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
 
     for (Token old in legacyTokens) {
       // Skip push token which already exist (by serial)
@@ -96,7 +95,7 @@ class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
 
     setState(() {
       _content = Scrollbar(
-        isAlwaysShown: true,
+        thumbVisibility: true,
         controller: controller,
         child: SingleChildScrollView(
           controller: controller,

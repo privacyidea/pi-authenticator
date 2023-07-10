@@ -21,7 +21,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:typed_data';
 
 import 'package:base32/base32.dart';
 import 'package:collection/collection.dart';
@@ -31,7 +30,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/screens/add_manually_screen.dart';
@@ -42,6 +40,7 @@ import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/license_utils.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
@@ -78,49 +77,37 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     AppSettings.of(context).streamEnablePolling().listen(
       (bool event) {
         if (event) {
-          log('Polling is enabled.',
-              name: 'main_screen.dart#_startPollingIfEnabled');
+          Logger.info('Polling is enabled.', name: 'main_screen.dart#_startPollingIfEnabled');
 
-          _pollTimer = Timer.periodic(Duration(seconds: 3),
-              (_) => PushProvider.pollForChallenges(context));
+          _pollTimer = Timer.periodic(Duration(seconds: 3), (_) => PushProvider.pollForChallenges(context));
           PushProvider.pollForChallenges(context);
         } else {
-          log('Polling is disabled.',
-              name: 'main_screen.dart#_startPollingIfEnabled');
+          Logger.info('Polling is disabled.', name: 'main_screen.dart#_startPollingIfEnabled');
           _pollTimer?.cancel();
           _pollTimer = null;
         }
       },
       cancelOnError: false,
-      onError: (error) =>
-          log('$error', name: 'main_screen.dart#_startPollingIfEnabled'),
+      onError: (error) => Logger.error('$error', name: 'main_screen.dart#_startPollingIfEnabled'),
     );
   }
 
   /// Handles incoming push requests by verifying the challenge and adding it
   /// to the token. This should be guarded by a lock.
-  static Future<void> _handleIncomingRequest(
-      RemoteMessage message, List<Token> tokenList, bool inBackground) async {
+  static Future<void> _handleIncomingRequest(RemoteMessage message, List<Token> tokenList, bool inBackground) async {
     var data = message.data;
 
     Uri requestUri = Uri.parse(data['url']);
     String requestedSerial = data['serial'];
 
-    log('Incoming push challenge for token with serial.',
-        name: 'main_screen.dart#_handleIncomingChallenge',
-        error: requestedSerial);
+    Logger.info('Incoming push challenge for token with serial.', name: 'main_screen.dart#_handleIncomingChallenge', error: requestedSerial);
 
-    PushToken? token = tokenList
-        .whereType<PushToken>()
-        .firstWhereOrNull((t) => t.serial == requestedSerial && t.isRolledOut);
+    PushToken? token = tokenList.whereType<PushToken>().firstWhereOrNull((t) => t.serial == requestedSerial && t.isRolledOut);
 
     if (token == null) {
-      log('The requested token does not exist or is not rolled out.',
-          name: 'main_screen.dart#_handleIncomingChallenge',
-          error: requestedSerial);
+      Logger.warning('The requested token does not exist or is not rolled out.', name: 'main_screen.dart#_handleIncomingChallenge', error: requestedSerial);
     } else {
-      log('Token matched requested token',
-          name: 'main_screen.dart#_handleIncomingChallenge', error: token);
+      Logger.info('Token matched requested token', name: 'main_screen.dart#_handleIncomingChallenge', error: token);
       String signature = data['signature'];
       String signedData = '${data['nonce']}|'
           '$requestUri|'
@@ -137,12 +124,10 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
       bool isVerified = token.privateTokenKey == null
           ? await Legacy.verify(token.serial, signedData, signature)
-          : verifyRSASignature(token.getPublicServerKey()!,
-              utf8.encode(signedData) as Uint8List, base32.decode(signature));
+          : verifyRSASignature(token.getPublicServerKey()!, utf8.encode(signedData) as Uint8List, base32.decode(signature));
 
       if (isVerified) {
-        log('Validating incoming message was successful.',
-            name: 'main_screen.dart#_handleIncomingChallenge');
+        Logger.info('Validating incoming message was successful.', name: 'main_screen.dart#_handleIncomingChallenge');
 
         PushRequest pushRequest = PushRequest(
             title: data['title'],
@@ -162,25 +147,21 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           // Save the pending request.
           StorageUtil.saveOrReplaceToken(token);
         } else {
-          log(
+          Logger.warning(
               'The push request $pushRequest already exists '
               'for the token with serial ${token.serial}',
               name: 'main_screen.dart#_handleIncomingChallenge');
         }
       } else {
-        log('Validating incoming message failed.',
-            name: 'main_screen.dart#_handleIncomingChallenge',
-            error:
-                'Signature $signature does not match signed data: $signedData');
+        Logger.warning('Validating incoming message failed.',
+            name: 'main_screen.dart#_handleIncomingChallenge', error: 'Signature $signature does not match signed data: $signedData');
       }
     }
   }
 
   Future<void> _handleIncomingAuthRequest(RemoteMessage message) async {
-    log('Foreground message received.',
-        name: 'main_screen.dart#_handleIncomingAuthRequest', error: message);
-    await StorageUtil.protect(() async => _handleIncomingRequest(
-        message, await StorageUtil.loadAllTokens(), false));
+    Logger.info('Foreground message received.', name: 'main_screen.dart#_handleIncomingAuthRequest', error: message);
+    await StorageUtil.protect(() async => _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), false));
     await _loadTokenList(); // Update UI
   }
 
@@ -188,8 +169,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     _uniLinkStream = linkStream.listen((String? link) {
       _handleOtpAuth(link);
     }, onError: (err) {
-      _showMessage(AppLocalizations.of(context)!.handlingOtpAuthLinkFailed,
-          Duration(seconds: 4));
+      _showMessage(AppLocalizations.of(context)!.handlingOtpAuthLinkFailed, Duration(seconds: 4));
     });
 
     try {
@@ -199,18 +179,13 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       }
       _handleOtpAuth(link);
     } on PlatformException {
-      _showMessage(AppLocalizations.of(context)!.handlingOtpAuthLinkFailed,
-          Duration(seconds: 4));
+      _showMessage(AppLocalizations.of(context)!.handlingOtpAuthLinkFailed, Duration(seconds: 4));
     }
   }
 
-  static Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
-    log('Background message received.',
-        name: 'main_screen.dart#_firebaseMessagingBackgroundHandler',
-        error: message);
-    await StorageUtil.protect(() async => _handleIncomingRequest(
-        message, await StorageUtil.loadAllTokens(), true));
+  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    Logger.info('Background message received.', name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: message);
+    await StorageUtil.protect(() async => _handleIncomingRequest(message, await StorageUtil.loadAllTokens(), true));
   }
 
   @override
@@ -223,8 +198,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   /// Handles asynchronous calls that should be triggered by `initState`.
   void _initStateAsync() async {
     await PushProvider.initialize(
-      handleIncomingMessage: (RemoteMessage message) =>
-          _handleIncomingAuthRequest(message),
+      handleIncomingMessage: (RemoteMessage message) => _handleIncomingAuthRequest(message),
       backgroundMessageHandler: _firebaseMessagingBackgroundHandler,
     );
     _startPollingIfEnabled();
@@ -233,7 +207,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   @override
   void onContextReady() {
     _loadTokenList();
-    if(_tokenList.firstWhereOrNull((element) => element.type == "push") != null) {
+    if (_tokenList.firstWhereOrNull((element) => element.type == "push") != null) {
       checkNotificationPermission();
     }
   }
@@ -357,8 +331,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        AddTokenManuallyScreen(),
+                                    builder: (context) => AddTokenManuallyScreen(),
                                   )).then((newToken) => _addToken(newToken));
                             },
                             icon: Icons.add_moderator,
@@ -409,7 +382,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       return;
     }
 
-    log(
+    Logger.info(
       'Try to handle otpAuth:',
       name: 'main_screen.dart#_handleOtpAuth',
       error: otpAuth,
@@ -418,8 +391,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     try {
       Map<String, dynamic> qrParameterMap = parseQRCodeToMap(otpAuth);
 
-      Token? newToken =
-          await _buildTokenFromMap(qrParameterMap, Uri.parse(otpAuth));
+      Token? newToken = await _buildTokenFromMap(qrParameterMap, Uri.parse(otpAuth));
 
       if (newToken == null) {
         return;
@@ -429,16 +401,14 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
         newToken.isLocked = true;
       }
 
-      log(
+      Logger.info(
         'Adding new token from qr-code:',
         name: 'main_screen.dart#_handleOtpAuth',
         error: newToken,
       );
 
       if (newToken is PushToken && _tokenList.contains(newToken)) {
-        _showMessage(
-            'A token with the serial ${newToken.serial} already exists!',
-            Duration(seconds: 2));
+        _showMessage('A token with the serial ${newToken.serial} already exists!', Duration(seconds: 2));
         return;
       }
 
@@ -456,15 +426,13 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       }
     } on ArgumentError catch (e) {
       // Error while parsing qr code.
-      log(
+      Logger.warning(
         'Malformed QR code:',
         name: 'main_screen.dart#_handleOtpAuth',
         error: e.stackTrace,
       );
 
-      _showMessage(
-          '${e.message}\n Please inform the creator of this qr code about the problem.',
-          Duration(seconds: 8));
+      _showMessage('${e.message}\n Please inform the creator of this qr code about the problem.', Duration(seconds: 8));
     }
   }
 
@@ -480,8 +448,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
 
   /// Builds and returns a token from a given map, that contains all necessary
   /// fields.
-  Future<Token?> _buildTokenFromMap(
-      Map<String, dynamic> uriMap, Uri uri) async {
+  Future<Token?> _buildTokenFromMap(Map<String, dynamic> uriMap, Uri uri) async {
     String uuid = Uuid().v4();
     String type = uriMap[URI_TYPE];
 
@@ -489,8 +456,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
     if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
       Uri? rolloutURL = uriMap[URI_ROLLOUT_URL];
       if (rolloutURL == null) {
-        _showMessage(
-            "QR code did not contain rollout URL!", new Duration(seconds: 3));
+        _showMessage("QR code did not contain rollout URL!", new Duration(seconds: 3));
         return null;
       }
 
@@ -500,8 +466,7 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
           issuer: uriMap[URI_ISSUER],
           id: uuid,
           sslVerify: uriMap[URI_SSL_VERIFY],
-          expirationDate:
-              DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
+          expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
           enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
           url: rolloutURL,
           pin: uriMap[URI_PIN],
@@ -589,15 +554,13 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
       ),
     );
 
-    bool allowManualRefresh =
-        _tokenList.any((t) => t is PushToken && t.url != null);
+    bool allowManualRefresh = _tokenList.any((t) => t is PushToken && t.url != null);
 
     return allowManualRefresh
         ? RefreshIndicator(
             child: child,
             onRefresh: () async {
-              _showMessage(AppLocalizations.of(context)!.pollingChallenges,
-                  Duration(seconds: 1));
+              _showMessage(AppLocalizations.of(context)!.pollingChallenges, Duration(seconds: 1));
               bool success = await PushProvider.pollForChallenges(context);
               if (!success) {
                 _showMessage(
@@ -611,14 +574,13 @@ class _MainScreenState extends State<MainScreen> with LifecycleMixin {
   }
 
   Future<void> _removeToken(Token token) async {
-    log('Remove: $token');
+    Logger.info('Remove: $token');
     await StorageUtil.deleteToken(token);
     await _loadTokenList();
   }
 
   void _addToken(Token? newToken) {
-    log('Adding new token:',
-        name: 'main_screen.dart#_addToken', error: newToken);
+    Logger.info('Adding new token:', name: 'main_screen.dart#_addToken', error: newToken);
     if (newToken != null) {
       // add last index
       newToken.sortIndex = _tokenList.length;

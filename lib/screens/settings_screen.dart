@@ -26,7 +26,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
+import 'package:privacyidea_authenticator/widgets/logging_menu.dart';
 import 'package:privacyidea_authenticator/widgets/migrate_legacy_tokens_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/settings_groups.dart';
 import 'package:privacyidea_authenticator/widgets/update_firebase_token_dialog.dart';
@@ -40,6 +42,22 @@ class SettingsScreen extends StatefulWidget {
 class SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
+    Logger.warning('''SettingsScreen
+    sadf
+    asd
+    f
+    sad
+    f
+    sad
+    fsa
+    df
+    sad
+    f
+    sadf
+    s
+    adf
+    sa
+    dfasdf.build(f)''');
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -61,24 +79,21 @@ class SettingsScreenState extends State<SettingsScreen> {
                   value: ThemeMode.light,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: (dynamic value) => EasyDynamicTheme.of(context)
-                      .changeTheme(dynamic: false, dark: false),
+                  onChanged: (dynamic value) => EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: false),
                 ),
                 RadioListTile(
                   title: Text(AppLocalizations.of(context)!.darkTheme),
                   value: ThemeMode.dark,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: (dynamic value) => EasyDynamicTheme.of(context)
-                      .changeTheme(dynamic: false, dark: true),
+                  onChanged: (dynamic value) => EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: true),
                 ),
                 RadioListTile(
                   title: Text(AppLocalizations.of(context)!.systemTheme),
                   value: ThemeMode.system,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: (dynamic value) => EasyDynamicTheme.of(context)
-                      .changeTheme(dynamic: true, dark: false),
+                  onChanged: (dynamic value) => EasyDynamicTheme.of(context).changeTheme(dynamic: true, dark: false),
                 ),
               ],
             ),
@@ -91,7 +106,6 @@ class SettingsScreenState extends State<SettingsScreen> {
                   builder: (context, snapshot) {
                     bool isActive = true;
                     ValueChanged<bool>? onChanged;
-
                     if (snapshot.hasData) {
                       isActive = snapshot.data!;
                       onChanged = (value) {
@@ -100,10 +114,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                     }
 
                     return SwitchListTile(
-                        title: Text(
-                            AppLocalizations.of(context)!.useDeviceLocaleTitle),
-                        subtitle: Text(AppLocalizations.of(context)!
-                            .useDeviceLocaleDescription),
+                        title: Text(AppLocalizations.of(context)!.useDeviceLocaleTitle),
+                        subtitle: Text(AppLocalizations.of(context)!.useDeviceLocaleDescription),
                         value: isActive,
                         onChanged: onChanged);
                   },
@@ -135,29 +147,19 @@ class SettingsScreenState extends State<SettingsScreen> {
                             child: DropdownButton<Locale>(
                               disabledHint: Text(
                                 '${snapshot.data}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1!
-                                    .copyWith(color: Colors.grey),
+                                style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.grey),
                               ),
                               isExpanded: true,
                               value: snapshot.data,
                               // Initial value and current value
-                              items: AppLocalizations.supportedLocales
-                                  .map<DropdownMenuItem<Locale>>(
-                                      (Locale value) {
+                              items: AppLocalizations.supportedLocales.map<DropdownMenuItem<Locale>>((Locale value) {
                                 return DropdownMenuItem<Locale>(
                                   value: value,
                                   child: Text(
                                     '$value',
                                     style: onChanged == null
-                                        ? Theme.of(context)
-                                            .textTheme
-                                            .subtitle1!
-                                            .copyWith(
-                                                color: Theme.of(context)
-                                                    .disabledColor)
-                                        : Theme.of(context).textTheme.subtitle1,
+                                        ? Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).disabledColor)
+                                        : Theme.of(context).textTheme.titleMedium,
                                   ),
                                 );
                               }).toList(),
@@ -177,16 +179,10 @@ class SettingsScreenState extends State<SettingsScreen> {
               builder: (context, snapshot) {
                 bool showPushSettingsGroup = true;
 
-                List<PushToken> enrolledPushTokenList = snapshot.hasData
-                    ? snapshot.data!
-                        .whereType<PushToken>()
-                        .where((e) => e.isRolledOut)
-                        .toList()
-                    : [];
+                List<PushToken> enrolledPushTokenList = snapshot.hasData ? snapshot.data!.whereType<PushToken>().where((e) => e.isRolledOut).toList() : [];
 
                 if (enrolledPushTokenList.isEmpty) {
-                  log('No push tokens exist, push settings are hidden.',
-                      name: 'settings_screen.dart#build');
+                  Logger.info('No push tokens exist, push settings are hidden.', name: 'settings_screen.dart#build');
                   showPushSettingsGroup = false;
                 }
 
@@ -196,10 +192,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                     title: AppLocalizations.of(context)!.pushToken,
                     children: <Widget>[
                       ListTile(
-                        title: Text(AppLocalizations.of(context)!
-                            .synchronizePushTokens),
-                        subtitle: Text(AppLocalizations.of(context)!
-                            .synchronizesTokensWithServer),
+                        title: Text(AppLocalizations.of(context)!.synchronizePushTokens),
+                        subtitle: Text(AppLocalizations.of(context)!.synchronizesTokensWithServer),
                         trailing: ElevatedButton(
                           child: Text(AppLocalizations.of(context)!.sync),
                           onPressed: () => showDialog(
@@ -210,38 +204,30 @@ class SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       PreferenceBuilder<bool>(
-                        preference: AppSettings.of(context)
-                            .streamEnablePolling() as Preference<bool>,
+                        preference: AppSettings.of(context).streamEnablePolling() as Preference<bool>,
                         builder: (context, value) {
                           Function? onChange;
-                          List<PushToken> unsupported = enrolledPushTokenList
-                              .where((e) => e.url == null)
-                              .toList();
+                          List<PushToken> unsupported = enrolledPushTokenList.where((e) => e.url == null).toList();
 
-                          if (enrolledPushTokenList.any((element) =>
-                              element.isRolledOut && element.url != null)) {
+                          if (enrolledPushTokenList.any((element) => element.isRolledOut && element.url != null)) {
                             // Set onChange to activate switch in ui.
-                            onChange = (value) =>
-                                AppSettings.of(context).enablePolling = value;
+                            onChange = (value) => AppSettings.of(context).enablePolling = value;
                           }
 
                           Widget title = RichText(
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: AppLocalizations.of(context)!
-                                      .enablePolling,
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                  text: AppLocalizations.of(context)!.enablePolling,
+                                  style: Theme.of(context).textTheme.titleMedium,
                                 ),
                                 // Add clickable icon to inform user of unsupported push tokens (for polling)
                                 WidgetSpan(
                                   child: Padding(
                                     padding: EdgeInsets.only(left: 10),
-                                    child: unsupported.isNotEmpty &&
-                                            enrolledPushTokenList.isNotEmpty
+                                    child: unsupported.isNotEmpty && enrolledPushTokenList.isNotEmpty
                                         ? GestureDetector(
-                                            onTap: () =>
-                                                _showPollingInfo(unsupported),
+                                            onTap: () => _showPollingInfo(unsupported),
                                             child: Icon(
                                               Icons.info_outline,
                                               color: Colors.red,
@@ -255,8 +241,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                           );
                           return ListTile(
                             title: title,
-                            subtitle: Text(AppLocalizations.of(context)!
-                                .requestPushChallengesPeriodically),
+                            subtitle: Text(AppLocalizations.of(context)!.requestPushChallengesPeriodically),
                             trailing: Switch(
                               value: value,
                               onChanged: onChange as void Function(bool)?,
@@ -277,14 +262,27 @@ class SettingsScreenState extends State<SettingsScreen> {
                   title: Text(AppLocalizations.of(context)!.migrateTokens),
                   trailing: ElevatedButton(
                     child: Text(AppLocalizations.of(context)!.migrate),
-                    onPressed: () => showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (context) => MigrateLegacyTokensDialog()),
+                    onPressed: () => showDialog(context: context, barrierDismissible: false, builder: (context) => MigrateLegacyTokensDialog()),
                   ),
                 ),
               ],
             ),
+            Divider(),
+            SettingsGroup(title: AppLocalizations.of(context)!.errorLogTitle, children: [
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.logMenu),
+                style: ListTileStyle.list,
+                trailing: ElevatedButton(
+                  child: Text(AppLocalizations.of(context)!.open),
+                  onPressed: () => showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => LoggingMenu(),
+                  ),
+                ),
+              ),
+            ]),
+            ElevatedButton(onPressed: () => throw UnimplementedError('This Should not Happen'), child: Text('Test')),
           ],
         ),
       ),
@@ -298,15 +296,12 @@ class SettingsScreenState extends State<SettingsScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(
-                AppLocalizations.of(context)!.someTokensDoNotSupportPolling +
-                    ':'),
+            title: Text(AppLocalizations.of(context)!.someTokensDoNotSupportPolling + ':'),
             content: Scrollbar(
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: unsupported.length,
-                itemBuilder: (context, index) =>
-                    Text('${unsupported[index].label}'),
+                itemBuilder: (context, index) => Text('${unsupported[index].label}'),
                 separatorBuilder: (context, index) => Divider(),
               ),
             ),
@@ -314,7 +309,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.dismiss,
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
@@ -331,35 +326,29 @@ class AppSettings extends InheritedWidget {
   static String _prefHideOtps = 'KEY_HIDE_OTPS';
   static String _prefEnablePoll = 'KEY_ENABLE_POLLING';
   static String _showGuideOnStartKey = 'KEY_SHOW_GUIDE_ON_START';
-  static String _crashReportRecipientsKey =
-      'KEY_CRASH_REPORT_RECIPIENTS'; // TODO Use this if the server supports it
+  static String _crashReportRecipientsKey = 'KEY_CRASH_REPORT_RECIPIENTS'; // TODO Use this if the server supports it
   static String _localePreferenceKey = 'KEY_LOCALE_PREFERENCE';
   static String _useSystemLocaleKey = 'KEY_USE_SYSTEM_LOCALE';
   static String _isFirstRunKey = 'KEY_IS_FIRST_RUN';
+  static String _enableLoggingKey = 'KEY_VERBOSE_LOGGING';
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
 
-  static AppSettings of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<AppSettings>()!;
+  static AppSettings of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<AppSettings>()!;
 
-  AppSettings(
-      {required Widget child, required StreamingSharedPreferences preferences})
+  AppSettings({required Widget child, required StreamingSharedPreferences preferences})
       : _hideOpts = preferences.getBool(_prefHideOtps, defaultValue: false),
-        _enablePolling =
-            preferences.getBool(_prefEnablePoll, defaultValue: true),
-        isTestMode =
-            const bool.fromEnvironment('testing_mode', defaultValue: false),
-        _showGuideOnStart =
-            preferences.getBool(_showGuideOnStartKey, defaultValue: true),
-        _crashReportRecipients = preferences.getStringList(
-            _crashReportRecipientsKey,
-            defaultValue: [defaultCrashReportRecipient]),
+        _enablePolling = preferences.getBool(_prefEnablePoll, defaultValue: true),
+        isTestMode = const bool.fromEnvironment('testing_mode', defaultValue: false),
+        _showGuideOnStart = preferences.getBool(_showGuideOnStartKey, defaultValue: true),
+        _crashReportRecipients = preferences.getStringList(_crashReportRecipientsKey, defaultValue: [defaultCrashReportRecipient]),
         _localePreference = preferences.getString(_localePreferenceKey,
-            defaultValue: _encodeLocale(AppLocalizations.supportedLocales.firstWhere((locale) => locale.languageCode  == Platform.localeName.substring(0,2) , orElse: () => Locale('en')))),
-        _useSystemLocale =
-            preferences.getBool(_useSystemLocaleKey, defaultValue: true),
+            defaultValue: _encodeLocale(AppLocalizations.supportedLocales
+                .firstWhere((locale) => locale.languageCode == Platform.localeName.substring(0, 2), orElse: () => Locale('en')))),
+        _useSystemLocale = preferences.getBool(_useSystemLocaleKey, defaultValue: true),
         _isFirstRun = preferences.getBool(_isFirstRunKey, defaultValue: true),
+        _verboseLogging = preferences.getBool(_enableLoggingKey, defaultValue: false),
         super(child: child);
 
   final Preference<bool> _isFirstRun;
@@ -369,6 +358,7 @@ class AppSettings extends InheritedWidget {
   final Preference<List<String>> _crashReportRecipients;
   final Preference<String> _localePreference;
   final Preference<bool> _useSystemLocale;
+  final Preference<bool> _verboseLogging;
 
   final bool isTestMode;
 
@@ -400,8 +390,7 @@ class AppSettings extends InheritedWidget {
 
   Stream<bool> showGuideOnStartStream() => _showGuideOnStart;
 
-  void setLocalePreference(Locale locale) =>
-      _localePreference.setValue(_encodeLocale(locale));
+  void setLocalePreference(Locale locale) => _localePreference.setValue(_encodeLocale(locale));
 
   Locale getLocalePreference() => _decodeLocale(_localePreference.getValue());
 
@@ -414,6 +403,12 @@ class AppSettings extends InheritedWidget {
   bool getUseSystemLocale() => _useSystemLocale.getValue();
 
   void setUseSystemLocale(bool value) => _useSystemLocale.setValue(value);
+
+  void toggleVerboseLogging() => _verboseLogging.setValue(!_verboseLogging.getValue());
+
+  Stream<bool> streamVerboseLogging() => _verboseLogging;
+
+  bool getVerboseLogging() => _verboseLogging.getValue();
 
   static String _encodeLocale(Locale locale) {
     return '${locale.languageCode}#${locale.countryCode}';

@@ -464,7 +464,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "pageReportModeBody": "Se ha producido un error inesperado en la aplicación. La siguiente información puede ser enviada a los desarrolladores por correo electrónico para ayudar a prevenir este error en el futuro. Pulse '{aceptar}' para enviar la información o '{cancelar}' para no enviar ninguna información.",
+  "pageReportModeBody": "Se ha producido un error inesperado en la aplicación. La siguiente información puede ser enviada a los desarrolladores por correo electrónico para ayudar a prevenir este error en el futuro. Pulse {accept} para enviar la información o {cancel} para no enviar ninguna información.",
   "@pageReportModeBody": {
     "description": "Description shown to the user about what info the error report contains.",
     "type": "text",
@@ -649,6 +649,81 @@
   "unlockToCopy": "Utilizar la biometría para desbloquear el token",
   "@unlockToCopy": {
     "description": "unlockToCopy",
+    "type": "text"
+  },
+  "errorLogTitle": "Registros de errores",
+  "@errorLogTitle": {
+    "description": "errorLogTitle",
+    "type": "text"
+  },
+  "sendErrorHint": "Envíanos el registro de errores por correo electrónico",
+  "@sendErrorHint": {
+    "description": "Hint for the user about what he will send.",
+    "type": "text"
+  },
+  "enableVerboseLogging": "Activar el registro detallado",
+  "@enableVerboseLogging": {
+    "description": "enableVerboseLogging",
+    "type": "text"
+  },
+  "clearErrorLogHint": "Borra el archivo de registro de errores local",
+  "@clearErrorLogHint": {
+    "description": "clearErrorLogHint",
+    "type": "text"
+  },
+  "logMenu": "Menú Registros",
+  "@logMenu": {
+    "description": "deleteErrorLogs",
+    "type": "text"
+  },
+  "send": "Enviar",
+  "@send": {
+    "description": "send",
+    "type": "text"
+  },
+  "sendErrorDialogHeader": "Enviar por correo electrónico",
+  "@sendErrorDialogHeader": {
+    "description": "sendErrorDialogHeader",
+    "type": "text"
+  },
+  "ok": "Ok",
+  "@ok": {
+    "description": "ok",
+    "type": "text"
+  },
+  "noLogToSend": "Hay log para enviar",
+  "@noLogToSend": {
+    "description": "noLogToSend",
+    "type": "text"
+  },
+  "errorLogFileAttached": "Se adjunta el archivo de registro de errores",
+  "@errorLogFileAttached": {
+    "description": "Message for email body",
+    "type": "text"
+  },
+  "errorLogCleared": "Registros de error borrados",
+  "@errorLogCleared": {
+    "description": "errorLogCleared",
+    "type": "text"
+  },
+  "errorOccurred": "Se ha producido un error",
+  "@errorOccurred": {
+    "description": "errorOccurred",
+    "type": "text"
+  },
+  "showDetails": "Mostrar detalles",
+  "@showDetails": {
+    "description": "showDetails",
+    "type": "text"
+  },
+  "open": "Abrir",
+  "@open": {
+    "description": "open",
+    "type": "text"
+  },
+  "sendErrorDialogBody": "Se ha producido un error inesperado en la aplicación. La siguiente información puede ser enviada a los desarrolladores por correo electrónico para ayudar a prevenir este error en el futuro.",
+  "@sendErrorDialogBody": {
+    "description": "Description shown to the user about what info the error report contains.",
     "type": "text"
   }
 }

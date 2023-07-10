@@ -84,7 +84,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
         ),
       ),
       body: Scrollbar(
-        isAlwaysShown: true,
+        thumbVisibility: true,
         controller: controller,
         child: SingleChildScrollView(
           controller: controller,
@@ -92,37 +92,21 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
           child: Column(
             children: <Widget>[
               _buildTextInputForm(),
-              _buildDropdownButtonWithLabel(
-                  AppLocalizations.of(context)!.encoding,
-                  _selectedEncoding,
-                  Encodings.values),
-              _buildDropdownButtonWithLabel(
-                  AppLocalizations.of(context)!.algorithm,
-                  _selectedAlgorithm,
-                  Algorithms.values),
-              _buildDropdownButtonWithLabel(
-                  AppLocalizations.of(context)!.digits,
-                  _selectedDigits,
-                  allowedDigits),
-              _buildDropdownButtonWithLabel(
-                  AppLocalizations.of(context)!.type,
-                  _selectedType,
-                  List.from(TokenTypes.values)..remove(TokenTypes.PIPUSH)),
+              _buildDropdownButtonWithLabel(AppLocalizations.of(context)!.encoding, _selectedEncoding, Encodings.values),
+              _buildDropdownButtonWithLabel(AppLocalizations.of(context)!.algorithm, _selectedAlgorithm, Algorithms.values),
+              _buildDropdownButtonWithLabel(AppLocalizations.of(context)!.digits, _selectedDigits, allowedDigits),
+              _buildDropdownButtonWithLabel(AppLocalizations.of(context)!.type, _selectedType, List.from(TokenTypes.values)..remove(TokenTypes.PIPUSH)),
               Visibility(
                 // the period is only used by TOTP tokens
                 visible: _selectedType.value == TokenTypes.TOTP,
-                child: _buildDropdownButtonWithLabel(
-                    AppLocalizations.of(context)!.period,
-                    _selectedPeriod,
-                    allowedPeriods,
-                    postFix: 's' /*seconds*/),
+                child: _buildDropdownButtonWithLabel(AppLocalizations.of(context)!.period, _selectedPeriod, allowedPeriods, postFix: 's' /*seconds*/),
               ),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   child: Text(
                     AppLocalizations.of(context)!.addToken,
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   onPressed: () => _returnTokenIfValid(),
                 ),
@@ -140,10 +124,8 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     if (!_inputIsValid()) return;
 
     String uuid = Uuid().v4();
-    List<int> secretByte =
-        decodeSecretToUint8(_selectedSecret, _selectedEncoding.value);
-    String secretBase32 =
-        encodeSecretAs(secretByte as Uint8List, Encodings.base32);
+    List<int> secretByte = decodeSecretToUint8(_selectedSecret, _selectedEncoding.value);
+    String secretBase32 = encodeSecretAs(secretByte as Uint8List, Encodings.base32);
     OTPToken? newToken;
     if (_selectedType.value == TokenTypes.HOTP) {
       newToken = HOTPToken(
@@ -194,13 +176,11 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
     return true;
   }
 
-  Widget _buildDropdownButtonWithLabel<T>(
-      String label, _Wrapper reference, List<T> values,
-      {String postFix = ''}) {
+  Widget _buildDropdownButtonWithLabel<T>(String label, _Wrapper reference, List<T> values, {String postFix = ''}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text(label, style: Theme.of(context).textTheme.bodyText2),
+        Text(label, style: Theme.of(context).textTheme.bodyMedium),
         Container(
           width: 100,
           child: DropdownButton<T>(
@@ -212,7 +192,7 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
                 child: Text(
                   '${value is String || value is int || value is double ? value : enumAsString(value!)}'
                   '$postFix',
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               );
             }).toList(),
@@ -235,12 +215,10 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             key: _labelInputKey,
             focusNode: _labelFieldFocus,
             onSaved: (value) => this.setState(() => _selectedName = value!),
-            decoration:
-                InputDecoration(labelText: AppLocalizations.of(context)!.name),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
             validator: (value) {
               if (value!.isEmpty) {
-                return AppLocalizations.of(context)!
-                    .pleaseEnterANameForThisToken;
+                return AppLocalizations.of(context)!.pleaseEnterANameForThisToken;
               }
               return null;
             },
@@ -255,11 +233,9 @@ class AddTokenManuallyScreenState extends State<AddTokenManuallyScreen> {
             ),
             validator: (value) {
               if (value!.isEmpty) {
-                return AppLocalizations.of(context)!
-                    .pleaseEnterASecretForThisToken;
+                return AppLocalizations.of(context)!.pleaseEnterASecretForThisToken;
               } else if (!isValidEncoding(value, _selectedEncoding.value)) {
-                return AppLocalizations.of(context)!
-                    .theSecretDoesNotFitTheCurrentEncoding;
+                return AppLocalizations.of(context)!.theSecretDoesNotFitTheCurrentEncoding;
               }
               return null;
             },

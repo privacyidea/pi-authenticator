@@ -464,7 +464,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "pageReportModeBody": "Une erreur inattendue est survenue dans l'application. L'information suivante peut être transmise aux développeurs par email afin d'aider à corriger cette erreur dans le futur. Appuyer sur '{accept}' pour envoyer l'information ou '{cancel}' pour ne rien envoyer.",
+  "pageReportModeBody": "Une erreur inattendue est survenue dans l'application. L'information suivante peut être transmise aux développeurs par email afin d'aider à corriger cette erreur dans le futur. Appuyer sur {accept} pour envoyer l'information ou {cancel} pour ne rien envoyer.",
   "@pageReportModeBody": {
     "description": "Description shown to the user about what info the error report contains.",
     "type": "text",
@@ -649,6 +649,81 @@
   "unlockToCopy": "Utiliser la biométrie pour déverrouiller le jeton",
   "@unlockToCopy": {
     "description": "unlockToCopy",
+    "type": "text"
+  },
+  "errorLogTitle": "Journaux d'erreurs",
+  "@errorLogTitle": {
+    "description": "errorLogTitle",
+    "type": "text"
+  },
+  "sendErrorHint": "Envoyez-nous le journal des erreurs par courrier électronique",
+  "@sendErrorHint": {
+    "description": "Indice pour l'utilisateur sur ce qu'il va envoyer",
+    "type": "text"
+  },
+  "enableVerboseLogging": "Activer la journalisation verbeuse",
+  "@enableVerboseLogging": {
+    "description": "enableVerboseLogging",
+    "type": "text"
+  },
+  "clearErrorLogHint": "Efface le fichier journal des erreurs locales",
+  "@clearErrorLogHint": {
+    "description": "clearErrorLogHint",
+    "type": "text"
+  },
+  "logMenu": "Menu journal",
+  "@logMenu": {
+    "description": "logMenu",
+    "type": "text"
+  },
+  "send": "Envoyer",
+  "@send": {
+    "description": "send",
+    "type": "text"
+  },
+  "sendErrorDialogHeader": "Envoyer par e-mail",
+  "@sendErrorDialogHeader": {
+    "description": "sendErrorDialogHeader",
+    "type": "text"
+  },
+  "ok": "Ok",
+  "@ok": {
+    "description": "ok",
+    "type": "text"
+  },
+  "noLogToSend": "Il y a un journal à envoyer",
+  "@noLogToSend": {
+    "description": "noLogToSend",
+    "type": "text"
+  },
+  "errorLogFileAttached": "Le fichier journal des erreurs est joint",
+  "@errorLogFileAttached": {
+    "description": "Message pour le corps du courriel",
+    "type": "text"
+  },
+  "errorLogCleared": "Journaux d'erreur effacés",
+  "@errorLogCleared": {
+    "description": "errorLogsCleard",
+    "type": "text"
+  },
+  "errorOccurred": "Une erreur s'est produite",
+  "@errorOccurred": {
+    "description": "errorOccurred",
+    "type": "text"
+  },
+  "showDetails": "Afficher les détails",
+  "@showDetails": {
+    "description": "showDetails",
+    "type": "text"
+  },
+  "open": "Ouvrir",
+  "@open": {
+    "description": "open",
+    "type": "text"
+  },
+  "sendErrorDialogBody": "Une erreur inattendue est survenue dans l'application. L'information suivante peut être transmise aux développeurs par email afin d'aider à corriger cette erreur dans le futur.",
+  "@sendErrorDialogBody": {
+    "description": "Description shown to the user about what info the error report contains.",
     "type": "text"
   }
 }

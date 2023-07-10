@@ -24,17 +24,16 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:catcher/catcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:http/http.dart';
-import 'package:local_auth/auth_strings.dart';
+import 'package:local_auth_android/local_auth_android.dart';
+import 'package:local_auth_ios/local_auth_ios.dart';
 import 'package:local_auth/error_codes.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
@@ -47,6 +46,7 @@ import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import '../utils/customizations.dart';
+import '../utils/logger.dart';
 import 'custom_texts.dart';
 
 class TokenWidget extends StatefulWidget {
@@ -67,8 +67,7 @@ class TokenWidget extends StatefulWidget {
     } else if (_token is PushToken) {
       return _PushWidgetState(_token);
     } else {
-      throw ArgumentError.value(_token, 'token',
-          'The token [$_token] is of unknown type and not supported.');
+      throw ArgumentError.value(_token, 'token', 'The token [$_token] is of unknown type and not supported.');
     }
   }
 }
@@ -87,10 +86,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       if (_token.issuer.isNotEmpty) {
         children.add(Text(
           _token.issuer,
-          style: Theme.of(context)
-              .textTheme
-              .subtitle2!
-              .copyWith(fontWeight: FontWeight.normal),
+          style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.normal),
         ));
       }
       return children;
@@ -99,19 +95,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     if (_token.label.isNotEmpty) {
       children.add(Text(
         _token.label,
-        style: Theme.of(context)
-            .textTheme
-            .subtitle1!
-            .copyWith(fontWeight: FontWeight.normal),
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.normal),
       ));
     }
     if (_token.issuer.isNotEmpty) {
       children.add(Text(
         _token.issuer,
-        style: Theme.of(context)
-            .textTheme
-            .subtitle2!
-            .copyWith(fontWeight: FontWeight.normal),
+        style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.normal),
       ));
     }
     return children;
@@ -127,9 +117,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             //: Colors.red.shade800,
             ? ApplicationCustomizer.deleteColorLight
             : ApplicationCustomizer.deleteColorDark,
-        foregroundColor: Theme.of(context).brightness == Brightness.light
-            ? Colors.black
-            : Colors.white,
+        foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
         icon: Icons.delete,
         onPressed: (_) => _deleteTokenDialog(),
       ),
@@ -140,9 +128,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             //: Colors.blue.shade800,
             ? ApplicationCustomizer.renameColorLight
             : ApplicationCustomizer.renameColorDark,
-        foregroundColor: Theme.of(context).brightness == Brightness.light
-            ? Colors.black
-            : Colors.white,
+        foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
         icon: Icons.edit,
         onPressed: (_) => _renameTokenDialog(),
       ),
@@ -150,17 +136,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
     if ((_token.pin == null || _token.pin == false)) {
       actions.add(SlidableAction(
-        label: _token.isLocked
-            ? AppLocalizations.of(context)!.unlock
-            : AppLocalizations.of(context)!.lock,
+        label: _token.isLocked ? AppLocalizations.of(context)!.unlock : AppLocalizations.of(context)!.lock,
         backgroundColor: Theme.of(context).brightness == Brightness.light
             //? Colors.yellow.shade400
             //: Colors.yellow.shade800,
             ? ApplicationCustomizer.lockColorLight
             : ApplicationCustomizer.lockColorDark,
-        foregroundColor: Theme.of(context).brightness == Brightness.light
-            ? Colors.black
-            : Colors.white,
+        foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
         icon: _token.isLocked ? Icons.lock_open : Icons.lock_outline,
         onPressed: (_) => _falseRelockAndLockStatus(),
       ));
@@ -185,19 +167,15 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
 
   void _changeLockStatus() async {
     if (_token.canToggleLock) {
-      log('Changing lock status of token ${_token.label}.',
-          name: 'token_widgets.dart#_changeLockStatus');
+      Logger.info('Changing lock status of token ${_token.label}.', name: 'token_widgets.dart#_changeLockStatus');
 
-      if (await _unlock(
-          localizedReason:
-              AppLocalizations.of(context)!.authenticateToUnLockToken)) {
+      if (await _unlock(localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken)) {
         _token.isLocked = !_token.isLocked;
         await _saveThisToken();
         setState(() {});
       }
     } else {
-      log('Lock status of token ${_token.label} can not be changed!',
-          name: 'token_widgets.dart#_changeLockStatus');
+      Logger.info('Lock status of token ${_token.label} can not be changed!', name: 'token_widgets.dart#_changeLockStatus');
     }
   }
 
@@ -214,7 +192,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                 title: Center(
                   child: Text(
                     AppLocalizations.of(context)!.authNotSupportedTitle,
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
                 leading: Icon(Icons.lock),
@@ -227,50 +205,44 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     }
 
     AndroidAuthMessages androidAuthStrings = AndroidAuthMessages(
-      biometricRequiredTitle:
-          AppLocalizations.of(context)!.biometricRequiredTitle,
+      biometricRequiredTitle: AppLocalizations.of(context)!.biometricRequiredTitle,
       biometricHint: AppLocalizations.of(context)!.biometricHint,
-      biometricNotRecognized:
-          AppLocalizations.of(context)!.biometricNotRecognized,
+      biometricNotRecognized: AppLocalizations.of(context)!.biometricNotRecognized,
       biometricSuccess: AppLocalizations.of(context)!.biometricSuccess,
-      deviceCredentialsRequiredTitle:
-          AppLocalizations.of(context)!.deviceCredentialsRequiredTitle,
-      deviceCredentialsSetupDescription:
-          AppLocalizations.of(context)!.deviceCredentialsSetupDescription,
+      deviceCredentialsRequiredTitle: AppLocalizations.of(context)!.deviceCredentialsRequiredTitle,
+      deviceCredentialsSetupDescription: AppLocalizations.of(context)!.deviceCredentialsSetupDescription,
       signInTitle: AppLocalizations.of(context)!.signInTitle,
       goToSettingsButton: AppLocalizations.of(context)!.goToSettingsButton,
-      goToSettingsDescription:
-          AppLocalizations.of(context)!.goToSettingsDescription,
+      goToSettingsDescription: AppLocalizations.of(context)!.goToSettingsDescription,
       cancelButton: AppLocalizations.of(context)!.cancel,
     );
 
     IOSAuthMessages iOSAuthStrings = IOSAuthMessages(
       lockOut: AppLocalizations.of(context)!.lockOut,
       goToSettingsButton: AppLocalizations.of(context)!.goToSettingsButton,
-      goToSettingsDescription:
-          AppLocalizations.of(context)!.goToSettingsDescription,
+      goToSettingsDescription: AppLocalizations.of(context)!.goToSettingsDescription,
       cancelButton: AppLocalizations.of(context)!.cancel,
     );
 
     try {
-      didAuthenticate = await localAuth.authenticate(
-        localizedReason: localizedReason,
-        androidAuthStrings: androidAuthStrings,
-        iOSAuthStrings: iOSAuthStrings,
-      );
-    } on PlatformException catch (error, stacktrace) {
-      log('Error: ${error.code}', name: 'token_widgets.dart#_unlock');
+      didAuthenticate = await localAuth.authenticate(localizedReason: localizedReason, authMessages: [
+        androidAuthStrings,
+        iOSAuthStrings,
+      ]);
+    } on PlatformException catch (error, stackTrace) {
+      Logger.warning('Error: ${error.code}', name: 'token_widgets.dart#_unlock');
       switch (error.code) {
+        //FIXME: Waht are errors and waht are only warnings?
         case notAvailable:
         case passcodeNotSet:
         case permanentlyLockedOut:
         case lockedOut:
-          break;
+          throw error;
         case otherOperatingSystem:
         case notEnrolled:
         // Should fall back to pin itself
         default:
-          Catcher.reportCheckedError(error, stacktrace);
+          throw error;
       }
     }
     return didAuthenticate;
@@ -294,8 +266,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
                   setState(() => _selectedName = value);
                 }
               },
-              decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.name),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
               validator: (value) {
                 if (value!.isEmpty) {
                   return AppLocalizations.of(context)!.name;
@@ -329,7 +300,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   void _renameClicked(String newLabel) async {
     _token.label = newLabel;
     await _saveThisToken();
-    log(
+    Logger.info(
       'Renamed token:',
       name: 'token_widgets.dart#_renameClicked',
       error: '\'${_token.label}\' changed to \'$newLabel\'',
@@ -380,8 +351,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
   Widget _buildTile();
 
   void _showMessage(String message, int seconds) {
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message), duration: Duration(seconds: seconds)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message), duration: Duration(seconds: seconds)));
   }
 }
 
@@ -443,7 +413,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     // It indicates that this method is executed after the token was removed.
     if (t == null) return;
 
-    log(
+    Logger.info(
         'Push token may have received a request while app was '
         'in background. Updating UI.',
         name: 'token_widgets.dart#_checkForModelUpdate');
@@ -480,7 +450,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     if (_token.privateTokenKey == null) {
       final keyPair = await generateRSAKeyPair();
 
-      log(
+      Logger.info(
         'Setting private key for token',
         name: 'token_widgets.dart#_rollOutToken',
         error: 'Token: $_token, key: ${keyPair.privateKey}',
@@ -495,22 +465,18 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 
     try {
       // TODO What to do with poll only tokens if google-services is used?
-      Response response = await postRequest(
-          sslVerify: _token.sslVerify!,
-          url: _token.url!,
-          body: {
-            'enrollment_credential': _token.enrollmentCredentials,
-            'serial': _token.serial,
-            'fbtoken': await PushProvider.getFBToken(),
-            'pubkey': serializeRSAPublicKeyPKCS8(_token.getPublicTokenKey()!),
-          });
+      Response response = await postRequest(sslVerify: _token.sslVerify!, url: _token.url!, body: {
+        'enrollment_credential': _token.enrollmentCredentials,
+        'serial': _token.serial,
+        'fbtoken': await PushProvider.getFBToken(),
+        'pubkey': serializeRSAPublicKeyPKCS8(_token.getPublicTokenKey()!),
+      });
 
       if (response.statusCode == 200) {
         RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
         _token.setPublicServerKey(publicServerKey);
 
-        log('Roll out successful',
-            name: 'token_widgets.dart#_rollOutToken', error: _token);
+        Logger.info('Roll out successful', name: 'token_widgets.dart#_rollOutToken', error: _token);
 
         _token.isRolledOut = true;
         await _saveThisToken();
@@ -518,7 +484,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           setState(() => {}); // Update ui
         }
       } else {
-        log('Post request on roll out failed.',
+        Logger.warning('Post request on roll out failed.',
             name: 'token_widgets.dart#_rollOutToken',
             error: 'Token: $_token, Status code: ${response.statusCode},'
                 ' Body: ${response.body}');
@@ -527,77 +493,58 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
           setState(() => _rollOutFailed = true);
         }
 
-        _showMessage(
-            AppLocalizations.of(context)!
-                .errorRollOutFailed(_token.label, response.statusCode),
-            3);
+        _showMessage(AppLocalizations.of(context)!.errorRollOutFailed(_token.label, response.statusCode), 3);
       }
     } on PlatformException catch (e) {
-      log('Roll out push token [$_token] failed.',
-          name: 'token_widgets.dart#_rollOutToken', error: e);
+      Logger.warning('Roll out push token [$_token] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
 
       if (mounted) {
         setState(() => _rollOutFailed = true);
       }
 
       if (e.code == FIREBASE_TOKEN_ERROR_CODE) {
-        _showMessage(
-            AppLocalizations.of(context)?.errorRollOutNoNetworkConnection ??
-                "No network connection!",
-            3);
+        _showMessage(AppLocalizations.of(context)?.errorRollOutNoNetworkConnection ?? "No network connection!", 3);
       } else {
-        final SnackBar snackBar =
-            SnackBar(content: Text("Token could not be rolled out, try again"));
+        final SnackBar snackBar = SnackBar(content: Text("Token could not be rolled out, try again"));
         snackbarKey.currentState?.showSnackBar(snackBar);
       }
     } on SocketException catch (e) {
-      log('Roll out push token [$_token] failed.',
-          name: 'token_widgets.dart#_rollOutToken', error: e);
+      Logger.warning('Roll out push token [$_token] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
 
       if (mounted) {
         setState(() => _rollOutFailed = true);
       }
 
-      _showMessage(
-          AppLocalizations.of(context)?.errorRollOutNoNetworkConnection ??
-              "No network connection!",
-          3);
+      _showMessage(AppLocalizations.of(context)?.errorRollOutNoNetworkConnection ?? "No network connection!", 3);
     } catch (e) {
-      log('Roll out push token [$_token] failed.',
-          name: 'token_widgets.dart#_rollOutToken', error: e);
+      Logger.warning('Roll out push token [$_token] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
 
       if (mounted) {
         setState(() => _rollOutFailed = true);
       }
-      _showMessage(
-          AppLocalizations.of(context)!.errorRollOutUnknownError(e), 3);
+      _showMessage(AppLocalizations.of(context)!.errorRollOutUnknownError(e), 3);
     }
   }
 
   Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
-    log('Parsing rollout response, try to extract public_key.',
-        name: 'token_widgets.dart#_parseRollOutResponse', error: response.body);
+    Logger.info('Parsing rollout response, try to extract public_key.', name: 'token_widgets.dart#_parseRollOutResponse', error: response.body);
 
     try {
       String key = json.decode(response.body)['detail']['public_key'];
       key = key.replaceAll('\n', '');
 
-      log('Extracting public key was successful.',
-          name: 'token_widgets.dart#_parseRollOutResponse', error: key);
+      Logger.info('Extracting public key was successful.', name: 'token_widgets.dart#_parseRollOutResponse', error: key);
 
       return deserializeRSAPublicKeyPKCS1(key);
     } on FormatException catch (e) {
-      throw FormatException(
-          'Response body does not contain RSA public key.', e);
+      throw FormatException('Response body does not contain RSA public key.', e);
     }
   }
 
   void handlePushRequest(bool accepted) async {
     // Check if PIN/Biometric is required to interact with the token
     if (_token.isLocked) {
-      if (await _unlock(
-          localizedReason:
-              AppLocalizations.of(context)!.authenticateToAcceptPush)) {
+      if (await _unlock(localizedReason: AppLocalizations.of(context)!.authenticateToAcceptPush)) {
         if (mounted) {
           setState(() => _acceptButtonIsEnabled = false);
         }
@@ -610,20 +557,14 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     _disableAcceptButtonForSomeTime();
 
     if (accepted) {
-      _showMessage(
-          AppLocalizations.of(context)!.acceptPushAuthRequestFor(_token.label),
-          2);
+      _showMessage(AppLocalizations.of(context)!.acceptPushAuthRequestFor(_token.label), 2);
     } else {
-      _showMessage(
-          AppLocalizations.of(context)!
-              .decliningPushAuthRequestFor(_token.label),
-          2);
+      _showMessage(AppLocalizations.of(context)!.decliningPushAuthRequestFor(_token.label), 2);
     }
 
     var pushRequest = _token.pushRequests.peek();
-    log('Push auth request accepted=$accepted, sending response to privacyidea',
-        name: 'token_widgets.dart#handlePushRequest',
-        error: 'Url: ${pushRequest.uri}');
+    Logger.info('Push auth request accepted=$accepted, sending response to privacyidea',
+        name: 'token_widgets.dart#handlePushRequest', error: 'Url: ${pushRequest.uri}');
 
     // signature ::=  {nonce}|{serial}[|decline]
     String msg = '${pushRequest.nonce}|${_token.serial}';
@@ -652,39 +593,27 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     print("sending push request response...");
     bool success = true;
     try {
-      Response response = await postRequest(
-          sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
+      Response response = await postRequest(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
       if (response.statusCode == 200) {
         updateTokenStatus();
       } else {
-        log('Sending push request response failed.',
+        Logger.warning('Sending push request response failed.',
             name: 'token_widgets.dart#handlePushRequest',
             error: 'Token: $_token, Status code: ${response.statusCode}, '
                 'Body: ${response.body}');
 
-        _showMessage(
-            AppLocalizations.of(context)!.errorPushAuthRequestFailedFor(
-                _token.label, response.statusCode),
-            3);
+        _showMessage(AppLocalizations.of(context)!.errorPushAuthRequestFailedFor(_token.label, response.statusCode), 3);
         success = false;
       }
     } on SocketException catch (e) {
-      log('Push auth request for [$_token] failed, accept=$accepted.',
-          name: 'token_widgets.dart#handlePushRequest', error: e);
+      Logger.warning('Push auth request for [$_token] failed, accept=$accepted.', name: 'token_widgets.dart#handlePushRequest', error: e);
 
-      _showMessage(
-          AppLocalizations.of(context)!
-              .errorAuthenticationNotPossibleWithoutNetworkAccess,
-          3);
+      _showMessage(AppLocalizations.of(context)!.errorAuthenticationNotPossibleWithoutNetworkAccess, 3);
       success = false;
     } catch (e) {
-      log('Push auth request for [$_token] failed, accept=$accepted.',
-          name: 'token_widgets.dart#handlePushRequest', error: e);
+      Logger.warning('Push auth request for [$_token] failed, accept=$accepted.', name: 'token_widgets.dart#handlePushRequest', error: e);
 
-      _showMessage(
-          AppLocalizations.of(context)!
-              .errorAuthenticationFailedUnknownError(e),
-          5);
+      _showMessage(AppLocalizations.of(context)!.errorAuthenticationFailedUnknownError(e), 5);
       success = false;
     }
 
@@ -738,14 +667,12 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
     Image? tokenImage;
     if (_token.tokenImage is String) {
       try {
-        tokenImage = Image.network(_token.tokenImage!, errorBuilder: (BuildContext context, Object exception,
-            StackTrace? stackTrace) {
+        tokenImage = Image.network(_token.tokenImage!, errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
           return const Text('Error loading image');
         });
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              "Unable to retrieve token image from ${_token.tokenImage!}."),
+          content: Text("Unable to retrieve token image from ${_token.tokenImage!}."),
         ));
       }
     }
@@ -769,10 +696,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                 title: Text(
                   _token.label,
                   textScaleFactor: 1.9,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(color: Theme.of(context).colorScheme.secondary),
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
                 ),
                 subtitle: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -792,14 +716,10 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                 child: Column(
                   children: <Widget>[
                     _token.pushRequests.isNotEmpty
-                        ? Text(_token.pushRequests
-                            .peek()
-                            .title) // TODO Style this?
+                        ? Text(_token.pushRequests.peek().title) // TODO Style this?
                         : Placeholder(),
                     _token.pushRequests.isNotEmpty
-                        ? Text(_token.pushRequests
-                            .peek()
-                            .question) // TODO Style this?
+                        ? Text(_token.pushRequests.peek().question) // TODO Style this?
                         : Placeholder(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -810,8 +730,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                                   children: <Widget>[
                                     Text(
                                       AppLocalizations.of(context)!.retry,
-                                      style:
-                                          Theme.of(context).textTheme.headline6,
+                                      style: Theme.of(context).textTheme.titleLarge,
                                     ),
                                     Icon(Icons.replay),
                                   ],
@@ -820,8 +739,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                                   children: <Widget>[
                                     Text(
                                       AppLocalizations.of(context)!.accept,
-                                      style:
-                                          Theme.of(context).textTheme.headline6,
+                                      style: Theme.of(context).textTheme.titleLarge,
                                     ),
                                     Icon(Icons.check),
                                   ],
@@ -837,7 +755,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                             children: <Widget>[
                               Text(
                                 AppLocalizations.of(context)!.decline,
-                                style: Theme.of(context).textTheme.headline6,
+                                style: Theme.of(context).textTheme.titleLarge,
                               ),
                               Icon(Icons.clear),
                             ],
@@ -864,7 +782,7 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
                     ElevatedButton(
                       child: Text(
                         AppLocalizations.of(context)!.retryRollOut,
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       onPressed: _retryButtonIsEnabled
                           ? () {
@@ -965,9 +883,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
               ? Container(
                   width: MediaQuery.of(context).size.width * 0.3,
                   height: double.infinity,
-                  child: Align(
-                      alignment: Alignment.center,
-                      child: Image.network(_token.imageUrl!)),
+                  child: Align(alignment: Alignment.center, child: Image.network(_token.imageUrl!)),
                 )
               : null,
           horizontalTitleGap: 8.0,
@@ -977,10 +893,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             textScaleFactor: 1.9,
             enabled: _token.isLocked,
             showDuration: Duration(seconds: 10),
-            textStyle: Theme.of(context)
-                .textTheme
-                .subtitle2!
-                .copyWith(color: Theme.of(context).colorScheme.secondary),
+            textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -999,9 +912,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
           ),
           onTap: _token.isLocked
               ? () async {
-                  if (await _unlock(
-                      localizedReason: AppLocalizations.of(context)!
-                          .authenticateToShowOtp)) {
+                  if (await _unlock(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
                     // unlock token, flag it as relockable
                     _token.isLocked = false;
 
@@ -1014,8 +925,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
               : () {
                   Clipboard.setData(ClipboardData(text: _otpValue));
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(AppLocalizations.of(context)!
-                        .otpValueCopiedMessage(_otpValue)),
+                    content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(_otpValue)),
                   ));
                 },
         ),
@@ -1029,10 +939,8 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
   }
 }
 
-class _TotpWidgetState extends _OTPTokenWidgetState
-    with SingleTickerProviderStateMixin, LifecycleMixin {
-  late AnimationController
-      _controller; // Controller for animating the LinearProgressAnimator
+class _TotpWidgetState extends _OTPTokenWidgetState with SingleTickerProviderStateMixin, LifecycleMixin {
+  late AnimationController _controller; // Controller for animating the LinearProgressAnimator
 
   TOTPToken get _token => super._token as TOTPToken;
 
@@ -1093,8 +1001,11 @@ class _TotpWidgetState extends _OTPTokenWidgetState
   }
 
   int? calculateRemainingTotpDuration() {
-    return _token.period -
-        (DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000) % _token.period;
+    return _token.period - (DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000) % _token.period;
+  }
+
+  double calculateRemainingTotpDurationPercent() {
+    return (DateTime.now().toUtc().millisecondsSinceEpoch / 1000) % _token.period / _token.period;
   }
 
   @override
@@ -1106,9 +1017,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
               ? Container(
                   width: MediaQuery.of(context).size.width * 0.3,
                   height: double.infinity,
-                  child: Align(
-                      alignment: Alignment.center,
-                      child: Image.network(_token.imageUrl!)),
+                  child: Align(alignment: Alignment.center, child: Image.network(_token.imageUrl!)),
                 )
               : null,
           horizontalTitleGap: 8.0,
@@ -1118,10 +1027,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
             textScaleFactor: 2.0,
             enabled: _token.isLocked,
             showDuration: Duration(seconds: 10),
-            textStyle: Theme.of(context)
-                .textTheme
-                .subtitle2!
-                .copyWith(color: Theme.of(context).colorScheme.secondary),
+            textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
           ),
           subtitle: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -1130,21 +1036,24 @@ class _TotpWidgetState extends _OTPTokenWidgetState
           ),
           trailing: Padding(
             padding: const EdgeInsets.only(right: 24.0),
-            child: CircularPercentIndicator(
-              radius: 45,
-              backgroundColor: Colors.black12,
-              percent: _controller.value,
-              //progressColor: Colors.lightBlueAccent,
-              progressColor: ApplicationCustomizer.primaryColor,
-              circularStrokeCap: CircularStrokeCap.round,
-              center: Text('${calculateRemainingTotpDuration()}'),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.15,
+              height: MediaQuery.of(context).size.width * 0.15,
+              child: Stack(
+                children: [
+                  Center(child: Text('${calculateRemainingTotpDuration()}')),
+                  Center(
+                    child: CircularProgressIndicator(
+                      value: calculateRemainingTotpDurationPercent(),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           onTap: _token.isLocked
               ? () async {
-                  if (await _unlock(
-                      localizedReason: AppLocalizations.of(context)!
-                          .authenticateToShowOtp)) {
+                  if (await _unlock(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
                     // unlock token, flag it as relockable
                     _token.isLocked = false;
                     _token.relock = true;
@@ -1154,8 +1063,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState
               : () {
                   Clipboard.setData(ClipboardData(text: _otpValue));
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(AppLocalizations.of(context)!
-                        .otpValueCopiedMessage(_otpValue)),
+                    content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(_otpValue)),
                   ));
                 },
         ),

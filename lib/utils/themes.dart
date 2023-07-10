@@ -22,6 +22,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
+
 //TODO Use this when customizing
 Color primarySwatch = ApplicationCustomizer.primaryColor;
 Color onPrimary = isColorBright(primarySwatch) ? ApplicationCustomizer.themeColorDark : ApplicationCustomizer.themeColorLight;
@@ -31,8 +32,7 @@ var lightThemeData = new ThemeData(
   brightness: Brightness.light,
   primaryColorLight: primarySwatch,
   primaryColorDark: primarySwatch,
-  appBarTheme:
-      AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
+  appBarTheme: AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
   colorScheme: ColorScheme.light(
     primary: primarySwatch,
     secondary: primarySwatch,
@@ -44,12 +44,10 @@ var lightThemeData = new ThemeData(
 
 var darkThemeData = ThemeData(
   scaffoldBackgroundColor: Color(0xFF303030),
-  toggleableActiveColor: primarySwatch,
   brightness: Brightness.dark,
   primaryColorLight: primarySwatch,
   primaryColorDark: primarySwatch,
-  appBarTheme:
-      AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
+  appBarTheme: AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
   colorScheme: ColorScheme.dark(
     primary: primarySwatch,
     secondary: primarySwatch,
@@ -57,14 +55,53 @@ var darkThemeData = ThemeData(
     onSecondary: onPrimary,
   ),
   iconTheme: IconThemeData(color: Colors.white),
+  checkboxTheme: CheckboxThemeData(
+    fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+      if (states.contains(MaterialState.disabled)) {
+        return null;
+      }
+      if (states.contains(MaterialState.selected)) {
+        return primarySwatch;
+      }
+      return null;
+    }),
+  ),
+  radioTheme: RadioThemeData(
+    fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+      if (states.contains(MaterialState.disabled)) {
+        return null;
+      }
+      if (states.contains(MaterialState.selected)) {
+        return primarySwatch;
+      }
+      return null;
+    }),
+  ),
+  switchTheme: SwitchThemeData(
+    thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+      if (states.contains(MaterialState.disabled)) {
+        return null;
+      }
+      if (states.contains(MaterialState.selected)) {
+        return primarySwatch;
+      }
+      return null;
+    }),
+    trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+      if (states.contains(MaterialState.disabled)) {
+        return null;
+      }
+      if (states.contains(MaterialState.selected)) {
+        return primarySwatch;
+      }
+      return null;
+    }),
+  ),
 );
 
 /// Calculate HSP and check if the primary color is bright or dark
 /// brightness  =  sqrt( .299 R^2 + .587 G^2 + .114 B^2 )
 /// c.f., http://alienryderflex.com/hsp.html
 bool isColorBright(Color color) {
-  return math.sqrt(0.299 * math.pow(color.red, 2) +
-          0.587 * math.pow(color.green, 2) +
-          0.114 * math.pow(color.blue, 2)) >
-      150;
+  return math.sqrt(0.299 * math.pow(color.red, 2) + 0.587 * math.pow(color.green, 2) + 0.114 * math.pow(color.blue, 2)) > 150;
 }
