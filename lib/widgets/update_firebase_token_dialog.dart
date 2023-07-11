@@ -18,7 +18,6 @@
   limitations under the License.
 */
 
-import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 
@@ -27,6 +26,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
@@ -66,21 +66,17 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
   }
 
   void _updateFbTokens() async {
-    log('Starting update of firebase token.',
-        name: 'update_firebase_token_dialog.dart#_updateFbTokens');
+    Logger.info('Starting update of firebase token.', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
 
-    List<PushToken> tokenList =
-        (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
+    List<PushToken> tokenList = (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
 
     // TODO What to do with poll only tokens if google-services is used?
 
     String? token = await PushProvider.getFBToken();
 
     // TODO Is there a good way to handle these tokens?
-    List<PushToken> tokenWithOutUrl =
-        tokenList.where((e) => e.url == null).toList();
-    List<PushToken> tokenWithUrl =
-        tokenList.where((e) => e.url != null).toList();
+    List<PushToken> tokenWithOutUrl = tokenList.where((e) => e.url == null).toList();
+    List<PushToken> tokenWithUrl = tokenList.where((e) => e.url != null).toList();
     List<PushToken> tokenWithFailedUpdate = [];
 
     for (PushToken p in tokenWithUrl) {
@@ -102,27 +98,19 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
       Response response;
       try {
-        response = await postRequest(sslVerify: p.sslVerify!, url: p.url!, body: {
-          'new_fb_token': token,
-          'serial': p.serial,
-          'timestamp': timestamp,
-          'signature': signature
-        });
+        response = await postRequest(
+            sslVerify: p.sslVerify!, url: p.url!, body: {'new_fb_token': token, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
 
         if (response.statusCode == 200) {
-          log('Updating firebase token for push token: ${p.serial} succeeded!',
-              name: 'update_firebase_token_dialog.dart#_updateFbTokens');
+          Logger.info('Updating firebase token for push token: ${p.serial} succeeded!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
         } else {
-          log('Updating firebase token for push token: ${p.serial} failed!',
-              name: 'update_firebase_token_dialog.dart#_updateFbTokens');
+          Logger.warning('Updating firebase token for push token: ${p.serial} failed!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
           tokenWithFailedUpdate.add(p);
         }
       } on SocketException catch (e) {
-        log('Socket exception occurred: $e',
-            name: 'update_firebase_token_dialog.dart#_updateFbTokens');
+        Logger.warning('Socket exception occurred: $e', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context)!
-              .errorSynchronizationNoNetworkConnection),
+          content: Text(AppLocalizations.of(context)!.errorSynchronizationNoNetworkConnection),
           duration: Duration(seconds: 3),
         ));
         Navigator.pop(context);
@@ -149,8 +137,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
           children.add(Divider());
         }
 
-        children.add(Text(
-            AppLocalizations.of(context)!.tokensDoNotSupportSynchronization));
+        children.add(Text(AppLocalizations.of(context)!.tokensDoNotSupportSynchronization));
         for (PushToken p in tokenWithOutUrl) {
           children.add(Text('• ${p.label}'));
         }
@@ -160,7 +147,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
       setState(() {
         _content = Scrollbar(
-          isAlwaysShown: true,
+          thumbVisibility: true,
           controller: controller,
           child: SingleChildScrollView(
             controller: controller,

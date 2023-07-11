@@ -38,8 +38,7 @@ const String PARAMETER_SIGNATURE = "signature";
 class Legacy {
   static const MethodChannel _channel = const MethodChannel(METHOD_CHANNEL_ID);
 
-  static Future<String> sign(String serial, String message) async =>
-      await (_channel.invokeMethod(METHOD_SIGN, {
+  static Future<String> sign(String serial, String message) async => await (_channel.invokeMethod(METHOD_SIGN, {
         PARAMETER_SERIAL: serial,
         PARAMETER_MESSAGE: message,
       }).catchError((dynamic, stackTrace) {
@@ -48,13 +47,10 @@ class Legacy {
           name: "pi_authenticator_legacy.dart",
           error: dynamic,
         );
-        throw PlatformException(
-            message: "Signing failed.", code: LEGACY_SIGNING_ERROR);
+        throw PlatformException(message: "Signing failed.", code: LEGACY_SIGNING_ERROR);
       }));
 
-  static Future<bool> verify(
-          String serial, String signedData, String signature) async =>
-      await (_channel.invokeMethod(METHOD_VERIFY, {
+  static Future<bool> verify(String serial, String signedData, String signature) async => await (_channel.invokeMethod(METHOD_VERIFY, {
         PARAMETER_SERIAL: serial,
         PARAMETER_SIGNED_DATA: signedData,
         PARAMETER_SIGNATURE: signature,
@@ -68,9 +64,7 @@ class Legacy {
         return false;
       }));
 
-  static Future<String> loadAllTokens() async => await (_channel
-          .invokeMethod(METHOD_LOAD_ALL_TOKENS)
-          .catchError((dynamic, stackTrace) {
+  static Future<String> loadAllTokens() async => await (_channel.invokeMethod(METHOD_LOAD_ALL_TOKENS).catchError((dynamic, stackTrace) {
         log(
           "Error occurred in [loadAllTokens]",
           name: "pi_authenticator_legacy.dart",
@@ -80,9 +74,7 @@ class Legacy {
         return "[]";
       }));
 
-  static Future<String> loadFirebaseConfig() async => await (_channel
-          .invokeMethod(METHOD_LOAD_FIREBASE_CONFIG)
-          .catchError((dynamic, stackTrace) {
+  static Future<String> loadFirebaseConfig() async => await (_channel.invokeMethod(METHOD_LOAD_FIREBASE_CONFIG).catchError((dynamic, stackTrace) {
         log(
           "Error occurred in [loadFirebaseConfig]",
           name: "pi_authenticator_legacy.dart",

@@ -18,7 +18,6 @@
   limitations under the License.
 */
 
-import 'package:catcher/catcher.dart';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -27,42 +26,21 @@ import 'package:privacyidea_authenticator/screens/onboarding_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/themes.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
-import 'widgets/custom_catcher.dart';
-
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  CatcherOptions debugOptions = CatcherOptions(SilentReportMode(), [
-    ConsoleHandler(
-        enableApplicationParameters: false,
-        enableDeviceParameters: false,
-        enableCustomParameters: false,
-        enableStackTrace: true)
-  ]);
-
-  CatcherOptions releaseOptions = CatcherOptions(CustomPageReportMode(), [
-    CustomEmailManualHandler([defaultCrashReportRecipient],
-        enableCustomParameters: false)
-  ]);
-
-  Catcher(
-    rootWidget: PrivacyIDEAAuthenticator(
-        preferences: await StreamingSharedPreferences.instance),
-    debugConfig: debugOptions,
-    releaseConfig: releaseOptions,
-  );
+  Logger.init(appRunner: () async {
+    WidgetsFlutterBinding.ensureInitialized();
+    runApp(PrivacyIDEAAuthenticator(preferences: await StreamingSharedPreferences.instance));
+  });
 }
 
 class PrivacyIDEAAuthenticator extends StatelessWidget {
   final StreamingSharedPreferences _preferences;
 
-  const PrivacyIDEAAuthenticator(
-      {required StreamingSharedPreferences preferences})
-      : this._preferences = preferences;
+  const PrivacyIDEAAuthenticator({required StreamingSharedPreferences preferences}) : this._preferences = preferences;
 
   @override
   Widget build(BuildContext context) {
@@ -72,16 +50,6 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
         child: Builder(
           builder: (context) {
             final settings = AppSettings.of(context);
-
-            var crashReportRecipients = settings.crashReportRecipients;
-
-            // Override release config to use custom e-mail recipients
-            Catcher.getInstance().updateConfig(
-              releaseConfig: CatcherOptions(CustomPageReportMode(), [
-                CustomEmailManualHandler(crashReportRecipients,
-                    enableCustomParameters: false)
-              ]),
-            );
 
             return StreamBuilder<bool>(
               stream: settings.streamUseSystemLocale(),
@@ -101,9 +69,8 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
 
                     return MaterialApp(
                       debugShowCheckedModeBanner: true,
-                      navigatorKey: Catcher.navigatorKey,
-                      localizationsDelegates:
-                          AppLocalizations.localizationsDelegates,
+                      navigatorKey: Logger.navigatorKey,
+                      localizationsDelegates: AppLocalizations.localizationsDelegates,
                       supportedLocales: AppLocalizations.supportedLocales,
                       locale: locale,
                       title: ApplicationCustomizer.appName,
@@ -111,9 +78,7 @@ class PrivacyIDEAAuthenticator extends StatelessWidget {
                       darkTheme: darkThemeData,
                       scaffoldMessengerKey: snackbarKey, // <= this
                       themeMode: EasyDynamicTheme.of(context).themeMode,
-                      home: settings.isFirstRun
-                          ? OnboardingScreen()
-                          : MainScreen(title: ApplicationCustomizer.appName),
+                      home: settings.isFirstRun ? OnboardingScreen() : MainScreen(title: ApplicationCustomizer.appName),
                     );
                   },
                 );

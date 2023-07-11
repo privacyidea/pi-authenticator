@@ -19,7 +19,6 @@
 */
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -27,6 +26,7 @@ import 'package:mutex/mutex.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
@@ -49,11 +49,9 @@ class StorageUtil {
 
   /// Saves [token] securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
-  static Future<void> saveOrReplaceToken(Token token) async => await _storage
-      .write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
+  static Future<void> saveOrReplaceToken(Token token) async => await _storage.write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
 
-  static Future<Token?> loadToken(String id) async =>
-      (await loadAllTokens()).firstWhereOrNull((t) => t.id == id);
+  static Future<Token?> loadToken(String id) async => (await loadAllTokens()).firstWhereOrNull((t) => t.id == id);
 
   /// Returns a list of all tokens that are saved in the secure storage of
   /// this device.
@@ -94,7 +92,7 @@ class StorageUtil {
       } else if (type == enumAsString(TokenTypes.PIPUSH)) {
         tokenList.add(PushToken.fromJson(serializedToken));
       } else {
-        log(
+        Logger.error(
           'Token type $type is unknown.',
           name: 'storage_utils.dart#loadAllTokens',
         );
@@ -115,20 +113,16 @@ class StorageUtil {
 
   static const _CURRENT_APP_TOKEN_KEY = _GLOBAL_PREFIX + 'CURRENT_APP_TOKEN';
 
-  static Future<void> setCurrentFirebaseToken(String str) async =>
-      _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str);
+  static Future<void> setCurrentFirebaseToken(String str) async => _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str);
 
-  static Future<String?> getCurrentFirebaseToken() async =>
-      _storage.read(key: _CURRENT_APP_TOKEN_KEY);
+  static Future<String?> getCurrentFirebaseToken() async => _storage.read(key: _CURRENT_APP_TOKEN_KEY);
 
   static const _NEW_APP_TOKEN_KEY = _GLOBAL_PREFIX + 'NEW_APP_TOKEN';
 
   // This is used for checking if the token was updated.
-  static Future<void> setNewFirebaseToken(String str) async =>
-      _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
+  static Future<void> setNewFirebaseToken(String str) async => _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
 
-  static Future<String?> getNewFirebaseToken() async =>
-      _storage.read(key: _NEW_APP_TOKEN_KEY);
+  static Future<String?> getNewFirebaseToken() async => _storage.read(key: _NEW_APP_TOKEN_KEY);
 
   // ###########################################################################
   // LEGACY
@@ -189,7 +183,7 @@ class StorageUtil {
           token.url = Uri.parse((tokenMap['enrollment_url'] as String));
         }
       } else {
-        log(
+        Logger.error(
           'Unknown token type encountered',
           name: 'storage_utils.dart#loadAllTokensLegacy',
           error: tokenMap,
