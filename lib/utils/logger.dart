@@ -91,6 +91,7 @@ class Logger {
 
     _setupLogger().then((_) {
       if (_flutterIsRunning) _enableLoggingToFile = true;
+      _print(_flutterIsRunning.toString());
       _print('Logger initialized${_enableLoggingToFile ? '\nLogging to File is Enabled now.' : ''}');
     });
   }
@@ -204,10 +205,10 @@ class Logger {
       WidgetsFlutterBinding.ensureInitialized();
       return;
     }
-    runZonedGuarded<Future<void>>(
-      () async {
+    runZonedGuarded<void>(
+      () {
         if (_callback != null) {
-          await _callback!();
+          _callback!();
           _flutterIsRunning = true;
         } else if (_app != null) {
           runApp(_app!);
