@@ -95,7 +95,7 @@ class Logger {
     });
   }
 
-  // To enable logging to file, the app needs to be initialized with a appRunner or an app widget
+  // To enable logging to file, the app needs to be initialized with an appRunner or an app widget
   factory Logger.init({Function? appRunner, Widget? app}) {
     if (appRunner == null && app == null) {
       throw Exception('Logger.init() must be called with either a callback or an app Widget');
@@ -331,7 +331,7 @@ class Logger {
   }
 
   String _textFilter(String text) {
-    filterApiKeys.forEach((key) {
+    filterParameterKeys.forEach((key) {
       final regex = RegExp(r'(?<=' + key + r':\s).+?(?=[},])');
       text = text.replaceAll(regex, '***');
     });
@@ -356,6 +356,6 @@ class Logger {
   }
 }
 
-final filterApiKeys = <String>['fbtoken', 'new_fb_token'];
+final filterParameterKeys = <String>['fbtoken', 'new_fb_token'];
 
 enum LogLevel { INFO, WARNING, ERROR }

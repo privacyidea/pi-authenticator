@@ -121,7 +121,3 @@ Future<Response> getRequest({required Uri url, required Map<String, String?> par
   ioClient.close();
   return response;
 }
-/* 
-new_fb_token 
-fbtoken
-*/

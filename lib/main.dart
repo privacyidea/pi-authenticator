@@ -18,10 +18,6 @@
   limitations under the License.
 */
 
-// import 'package:catcher/catcher.dart';
-// import 'package:catcher/handlers/console_handler.dart';
-// import 'package:catcher/mode/silent_report_mode.dart';
-// import 'package:catcher/model/catcher_options.dart';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
