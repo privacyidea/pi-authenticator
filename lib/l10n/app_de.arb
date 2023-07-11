@@ -650,5 +650,25 @@
   "@unlockToCopy": {
     "description": "unlockToCopy",
     "type": "text"
+  },
+  "noFbToken": "Kein Firebase Token vorhanden",
+  "@noFbToken": {
+    "description": "noFbToken",
+    "type": "text"
+  },
+  "fireBaseToken": "Firebase Token",
+  "@fireBaseToken": {
+    "description": "fireBaseToken",
+    "type": "text"
+  },
+  "noPublicKey": "Kein öffentlicher Schlüssel vorhanden",
+  "@noPublicKey": {
+    "description": "noPublicKey",
+    "type": "text"
+  },
+  "publicKey": "Öffentlicher Schlüssel",
+  "@publicKey": {
+    "description": "publicKey",
+    "type": "text"
   }
 }
