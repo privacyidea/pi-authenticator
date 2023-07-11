@@ -19,7 +19,7 @@ class Logger {
   static Logger? _instance;
   static BuildContext get _context => navigatorKey.currentContext!;
   static String get _mailBody => AppLocalizations.of(_context)!.errorLogFileAttached;
-  static int get _lineLength => 250;
+  static int get _lineLength => 200;
   static printer.Logger print = printer.Logger(
     printer: printer.PrettyPrinter(
       lineLength: _lineLength + 5,
@@ -55,27 +55,32 @@ class Logger {
   /*----------- INSTANCE MEMBER & GETTER -----------*/
   Function? _callback;
   Widget? _app;
-  PackageInfo? _platformInfos;
   String _lastError = 'No error Message';
   GlobalKey<NavigatorState>? _navigatorKey;
+  PackageInfo? _platformInfos;
   String? _logPath;
+  bool _enableLoggingToFile = false;
+  bool _flutterIsRunning = false;
 
   String get _mailRecipient => 'app-crash@netknights.it';
-  String get _mailSubject => '(${_platformInfos!.version}) ${_platformInfos!.appName} >>> $_lastError';
+  String get _mailSubject =>
+      _platformInfos != null ? '(${_platformInfos!.version}) ${_platformInfos!.appName} >>> $_lastError' : 'PrivacyIDEA Authenticator >>> $_lastError';
   String get _filename => 'logfile.txt';
   String? get _fullPath => _logPath != null ? '$_logPath/$_filename' : null;
-  bool get _verbose => AppSettings.of(_navigatorKey!.currentContext!).getVerboseLogging();
+  bool get _verbose {
+    if (_navigatorKey == null || _navigatorKey!.currentContext == null) return false;
+    return AppSettings.of(_navigatorKey!.currentContext!).getVerboseLogging();
+  }
+
   bool get logfileHasContent {
     if (_fullPath == null) return false;
-    _print((File(_fullPath!).existsSync()).toString());
-    _print((File(_fullPath!).lengthSync() > 0).toString());
     return (File(_fullPath!).existsSync()) && (File(_fullPath!).lengthSync() > 0);
   }
 
   /*----------- CONSTRUCTORS/FACTORYS -----------*/
 
-  Logger._({Function? callback, Widget? app})
-      : _callback = callback,
+  Logger._({Function? appRunner, Widget? app})
+      : _callback = appRunner,
         _app = app {
     if (_instance != null) {
       _printWarning('Logger already initialized. Using existing instance');
@@ -85,18 +90,17 @@ class Logger {
     }
 
     _setupLogger().then((_) {
-      _print('Logger initialized');
+      if (_flutterIsRunning) _enableLoggingToFile = true;
+      _print('Logger initialized${_enableLoggingToFile ? '\nLogging to File is Enabled now.' : ''}');
     });
   }
 
-  factory Logger.init({Function? callback, Widget? app
-      // LoggerOptions? debugConfig,
-      // LoggerOptions? releaseConfig,
-      }) {
-    if (callback == null && app == null) {
+  // To enable logging to file, the app needs to be initialized with a appRunner or an app widget
+  factory Logger.init({Function? appRunner, Widget? app}) {
+    if (appRunner == null && app == null) {
       throw Exception('Logger.init() must be called with either a callback or an app Widget');
     }
-    return Logger._(callback: callback, app: app);
+    return Logger._(appRunner: appRunner, app: app);
   }
 
   /*----------- LOGGING METHODS -----------*/
@@ -129,6 +133,7 @@ class Logger {
   }
 
   Future<void> _logToFile(String fileMessage) async {
+    if (_enableLoggingToFile == false) return;
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/$_filename');
 
@@ -195,18 +200,40 @@ class Logger {
   }
 
   void _runZonedGuarded() {
+    if (_callback == null && _app == null) {
+      WidgetsFlutterBinding.ensureInitialized();
+      return;
+    }
     runZonedGuarded<Future<void>>(
       () async {
         if (_callback != null) {
           await _callback!();
+          _flutterIsRunning = true;
         } else if (_app != null) {
           runApp(_app!);
-        } else {
-          throw Exception('No callback or app provided');
+          _flutterIsRunning = true;
         }
       },
-      (error, stack) {},
+      (e, stack) {
+        error('Uncaught Error', error: e, stackTrace: stack);
+      },
     );
+    WidgetsFlutterBinding.ensureInitialized();
+  }
+
+  void _setupNavigatorKey([GlobalKey<NavigatorState>? navigatorKey]) {
+    _navigatorKey = navigatorKey ?? GlobalKey<NavigatorState>();
+  }
+
+  Future<void> _setupPlatformInfos() async {
+    if (_flutterIsRunning == false) return;
+    _platformInfos = await PackageInfo.fromPlatform();
+  }
+
+  Future<void> _setupLogPath() async {
+    if (_flutterIsRunning == false) return;
+    final directory = await getApplicationDocumentsDirectory();
+    _logPath = directory.path;
   }
 
   Future<void> _setupErrorHooks() async {
@@ -228,19 +255,6 @@ class Logger {
       );
     }
     _runZonedGuarded();
-  }
-
-  void _setupNavigatorKey([GlobalKey<NavigatorState>? navigatorKey]) {
-    _navigatorKey = navigatorKey ?? GlobalKey<NavigatorState>();
-  }
-
-  Future<void> _setupPlatformInfos() async {
-    _platformInfos = await PackageInfo.fromPlatform();
-  }
-
-  Future<void> _setupLogPath() async {
-    final directory = await getApplicationDocumentsDirectory();
-    _logPath = directory.path;
   }
 
   /*----------- PRINTS -----------*/
@@ -268,6 +282,7 @@ class Logger {
   /*----------- DISPLAY OUTPUTS -----------*/
 
   void _showSnackbar() {
+    if (_flutterIsRunning == false) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       snackbarKey.currentState?.showSnackBar(
         SnackBar(
@@ -284,6 +299,7 @@ class Logger {
   }
 
   void _showDialog() {
+    if (_flutterIsRunning == false) return;
     showDialog(
       context: navigatorKey.currentContext!,
       builder: (context) => SendErrorDialog(),
@@ -302,7 +318,7 @@ class Logger {
       final line = lines[i];
       // Every [length] characters in [text], add an \n for a new line
       for (var j = 0; j < line.length; j += length) {
-        lineSplittedText.write(line.substring(j, min<int>(j + length!, line.length)));
+        lineSplittedText.write(line.substring(j, min<int>(j + length, line.length)));
         if (j + length < line.length) {
           lineSplittedText.write('\n');
         }

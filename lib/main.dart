@@ -18,14 +18,11 @@
   limitations under the License.
 */
 
-import 'dart:async';
-
 // import 'package:catcher/catcher.dart';
 // import 'package:catcher/handlers/console_handler.dart';
 // import 'package:catcher/mode/silent_report_mode.dart';
 // import 'package:catcher/model/catcher_options.dart';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/screens/main_screen.dart';
@@ -33,15 +30,12 @@ import 'package:privacyidea_authenticator/screens/onboarding_screen.dart';
 import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/themes.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
-import 'widgets/custom_catcher.dart';
-
 void main() async {
-  Logger.init(callback: () async {
+  Logger.init(appRunner: () async {
     WidgetsFlutterBinding.ensureInitialized();
     runApp(PrivacyIDEAAuthenticator(preferences: await StreamingSharedPreferences.instance));
   });

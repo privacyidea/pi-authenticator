@@ -20,7 +20,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 
@@ -229,7 +228,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         androidAuthStrings,
         iOSAuthStrings,
       ]);
-    } on PlatformException catch (error, stackTrace) {
+    } on PlatformException catch (error) {
       Logger.warning('Error: ${error.code}', name: 'token_widgets.dart#_unlock');
       switch (error.code) {
         //FIXME: Waht are errors and waht are only warnings?

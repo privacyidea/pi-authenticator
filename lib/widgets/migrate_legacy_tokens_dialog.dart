@@ -18,7 +18,6 @@
   limitations under the License.
 */
 
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';

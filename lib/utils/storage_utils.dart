@@ -19,7 +19,6 @@
 */
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

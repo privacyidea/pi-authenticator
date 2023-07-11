@@ -20,7 +20,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:base32/base32.dart';
 import 'package:collection/collection.dart';

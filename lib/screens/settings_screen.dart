@@ -18,7 +18,6 @@
   limitations under the License.
 */
 
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
@@ -42,22 +41,6 @@ class SettingsScreen extends StatefulWidget {
 class SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
-    Logger.warning('''SettingsScreen
-    sadf
-    asd
-    f
-    sad
-    f
-    sad
-    fsa
-    df
-    sad
-    f
-    sadf
-    s
-    adf
-    sa
-    dfasdf.build(f)''');
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -282,7 +265,6 @@ class SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
             ]),
-            ElevatedButton(onPressed: () => throw UnimplementedError('This Should not Happen'), child: Text('Test')),
           ],
         ),
       ),
