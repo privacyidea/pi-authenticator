@@ -77,7 +77,7 @@ class Logger {
     return (File(_fullPath!).existsSync()) && (File(_fullPath!).lengthSync() > 0);
   }
 
-  /*----------- CONSTRUCTORS/FACTORYS -----------*/
+  /*----------- CONSTRUCTORS/FACTORIES -----------*/
 
   Logger._({Function? appRunner, Widget? app})
       : _callback = appRunner,
