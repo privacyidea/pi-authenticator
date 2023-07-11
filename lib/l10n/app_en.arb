@@ -464,7 +464,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "pageReportModeBody": "An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future. Press '{accept}' to send the information or '{cancel}' to not send any information.",
+  "pageReportModeBody": "An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future. Press {accept} to send the information or {cancel} to not send any information.",
   "@pageReportModeBody": {
     "description": "Description shown to the user about what info the error report contains.",
     "type": "text",
@@ -649,6 +649,81 @@
   "unlockToCopy": "Use biometrics to unlock the token",
   "@unlockToCopy": {
     "description": "unlockToCopy",
+    "type": "text"
+  },
+  "errorLogTitle": "Error logs",
+  "@errorLogTitle": {
+    "description": "errorLogTitle",
+    "type": "text"
+  },
+  "sendErrorHint": "Send us the error log via e-mail",
+  "@sendErrorHint": {
+    "description": "Hint for the user about what he will send.",
+    "type": "text"
+  },
+  "enableVerboseLogging": "Enable verbose logging",
+  "@enableVerboseLogging": {
+    "description": "enableVerboseLogging",
+    "type": "text"
+  },
+  "clearErrorLogHint": "Clears the local error log file",
+  "@clearErrorLogHint": {
+    "description": "clearErrorLogHint",
+    "type": "text"
+  },
+  "logMenu": "Log menu",
+  "@logMenu": {
+    "description": "logMenu",
+    "type": "text"
+  },
+  "send": "Send",
+  "@send": {
+    "description": "send",
+    "type": "text"
+  },
+  "sendErrorDialogHeader": "Send via e-mail",
+  "@sendErrorDialogHeader": {
+    "description": "sendErrorDialogHeader",
+    "type": "text"
+  },
+  "ok": "Ok",
+  "@ok": {
+    "description": "ok",
+    "type": "text"
+  },
+  "noLogToSend": "There is log to send.",
+  "@noLogToSend": {
+    "description": "noLogToSend",
+    "type": "text"
+  },
+  "errorLogFileAttached": "The error log file is attached.",
+  "@errorLogFileAttached": {
+    "description": "Message for email body",
+    "type": "text"
+  },
+  "errorLogCleared": "Error logs cleared.",
+  "@errorLogCleared": {
+    "description": "errorLogCleared",
+    "type": "text"
+  },
+  "errorOccurred": "An error has occurred.",
+  "@errorOccurred": {
+    "description": "errorOccurred",
+    "type": "text"
+  },
+  "showDetails": "Show details",
+  "@showDetails": {
+    "description": "showDetails",
+    "type": "text"
+  },
+  "open": "Open",
+  "@open": {
+    "description": "open",
+    "type": "text"
+  },
+  "sendErrorDialogBody": "An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.",
+  "@sendErrorDialogBody": {
+    "description": "Description shown to the user about what info the error report contains.",
     "type": "text"
   }
 }

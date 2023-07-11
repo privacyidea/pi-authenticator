@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 class OnboardingPage extends StatelessWidget {
-  const OnboardingPage(
-      {Key? key, required, required this.title, required this.subtitle})
-      : super(key: key);
+  const OnboardingPage({Key? key, required, required this.title, required this.subtitle}) : super(key: key);
 
   final String title;
   final String subtitle;
@@ -15,17 +13,12 @@ class OnboardingPage extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(
-              fontSize: 27.0,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).textTheme.subtitle1?.color),
+          style: TextStyle(fontSize: 27.0, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.titleMedium?.color),
         ),
         const SizedBox(height: 40),
         Text(
           subtitle,
-          style: TextStyle(
-              fontSize: 17.0,
-              color: Theme.of(context).textTheme.subtitle1?.color),
+          style: TextStyle(fontSize: 17.0, color: Theme.of(context).textTheme.titleMedium?.color),
           textAlign: TextAlign.center,
         )
       ],

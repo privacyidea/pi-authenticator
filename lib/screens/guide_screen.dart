@@ -43,14 +43,13 @@ class GuideScreen extends StatelessWidget {
         children: [
           FutureBuilder<String>(
             // localeName defaults to en if an unsupported locale is set on the phone.
-            future: DefaultAssetBundle.of(context).loadString(
-                'res/guide/GUIDE_${AppLocalizations.of(context)!.localeName}.md'),
+            future: DefaultAssetBundle.of(context).loadString('res/guide/GUIDE_${AppLocalizations.of(context)!.localeName}.md'),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Expanded(
                   child: Scrollbar(
                     controller: _controller,
-                    isAlwaysShown: true,
+                    thumbVisibility: true,
                     child: Markdown(
                       controller: _controller,
                       data: snapshot.data!,
@@ -58,9 +57,7 @@ class GuideScreen extends StatelessWidget {
                   ),
                 );
               }
-              return Center(
-                  child:
-                      Text(AppLocalizations.of(context)!.somethingWentWrong));
+              return Center(child: Text(AppLocalizations.of(context)!.somethingWentWrong));
             },
           ),
         ],

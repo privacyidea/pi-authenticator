@@ -21,7 +21,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:privacyidea_authenticator/screens/changelog_screen.dart';
 import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -51,7 +51,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
             Text(
               ApplicationCustomizer.appName,
               //'${widget.applicationName}',
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             widget.applicationIcon,
             FutureBuilder<PackageInfo>(
@@ -113,10 +113,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
 
     // Put initial content and licenses:
     List<LicenseEntry> licenses = await LicenseRegistry.licenses.toList();
-    yield [
-      ...initialList,
-      for (LicenseEntry entry in licenses) _buildSingleLicense(entry)
-    ];
+    yield [...initialList, for (LicenseEntry entry in licenses) _buildSingleLicense(entry)];
   }
 
   @override
@@ -160,8 +157,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
       builder: (context) {
         return Dialog(
           child: StreamBuilder<LicenseEntry>(
-            stream: LicenseRegistry.licenses.where((event) =>
-                event.packages.contains('privacyIDEA Authenticator')),
+            stream: LicenseRegistry.licenses.where((event) => event.packages.contains('privacyIDEA Authenticator')),
             builder: (context, snapshot) {
               if (snapshot.hasData)
                 return SingleChildScrollView(
@@ -184,7 +180,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
 
     double spaceBetweenParagraphs = 8;
 
-    TextStyle textStyle = Theme.of(context).textTheme.caption!;
+    TextStyle textStyle = Theme.of(context).textTheme.bodySmall!;
 
     for (LicenseParagraph paragraph in entry.paragraphs) {
       if (paragraph.indent == LicenseParagraph.centeredIndent) {
@@ -217,10 +213,7 @@ class _CustomLicenseScreenState extends State<CustomLicenseScreen> {
         children: <Widget>[
           Text(
             entry.packages.join(', '),
-            style: Theme.of(context)
-                .textTheme
-                .caption!
-                .copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold),
           ),
           Divider(),
           ...paragraphs,

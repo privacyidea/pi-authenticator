@@ -19,7 +19,6 @@
 */
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -33,6 +32,7 @@ import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'crypto_utils.dart';
 import 'customizations.dart';
 import 'identifiers.dart';
+import 'logger.dart';
 import 'network_utils.dart';
 
 /// This class bundles all logic that is needed to handle PushTokens, e.g.,
@@ -58,11 +58,7 @@ class PushProvider {
       FirebaseMessaging.instance.requestPermission();
     } on FirebaseException catch (ex) {
       String errorMessage = ex.message ?? 'no error message';
-      final SnackBar snackBar = SnackBar(
-          content: Text("Firebase notification permission error! (" +
-              errorMessage +
-              ": " +
-              ex.code));
+      final SnackBar snackBar = SnackBar(content: Text("Firebase notification permission error! (" + errorMessage + ": " + ex.code));
       snackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -80,24 +76,15 @@ class PushProvider {
         // ignore
       } else {
         String errorMessage = error.message ?? 'no error message';
-        final SnackBar snackBar = SnackBar(
-            content: Text(
-                "Push cant be initialized, restart the app and try again" +
-                    error.code +
-                    'error message :' +
-                    errorMessage));
+        final SnackBar snackBar =
+            SnackBar(content: Text("Push cant be initialized, restart the app and try again" + error.code + 'error message :' + errorMessage));
         snackbarKey.currentState?.showSnackBar(snackBar);
       }
     } on FirebaseException catch (error) {
-      final SnackBar snackBar = SnackBar(
-          content: Text(
-              "Push cant be initialized, restart the app and try again" +
-                  error.toString()));
+      final SnackBar snackBar = SnackBar(content: Text("Push cant be initialized, restart the app and try again" + error.toString()));
       snackbarKey.currentState?.showSnackBar(snackBar);
     } catch (error) {
-      final SnackBar snackBar = SnackBar(
-          content:
-              Text("Unknown error: ${error.toString()}" + error.toString()));
+      final SnackBar snackBar = SnackBar(content: Text("Unknown error: ${error.toString()}" + error.toString()));
       snackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -108,9 +95,7 @@ class PushProvider {
         try {
           _updateFirebaseToken(newToken);
         } catch (error) {
-          final SnackBar snackBar = SnackBar(
-              content: Text(
-                  "Unknown error: ${error.toString()}" + error.toString()));
+          final SnackBar snackBar = SnackBar(content: Text("Unknown error: ${error.toString()}" + error.toString()));
           snackbarKey.currentState?.showSnackBar(snackBar);
         }
       }
@@ -126,12 +111,7 @@ class PushProvider {
       firebaseToken = await FirebaseMessaging.instance.getToken();
     } on FirebaseException catch (ex) {
       String errorMessage = ex.message ?? 'no error message';
-      final SnackBar snackBar = SnackBar(
-          content: Text("Unable to retrieve Firebase token! (" +
-              errorMessage +
-              ": " +
-              ex.code +
-              ")"));
+      final SnackBar snackBar = SnackBar(content: Text("Unable to retrieve Firebase token! (" + errorMessage + ": " + ex.code + ")"));
       snackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -144,8 +124,7 @@ class PushProvider {
       // This error should be handled in all cases, the user might be informed
       // in the form of a pop-up message.
       throw PlatformException(
-          message:
-              'Firebase token could not be retrieved, the only know cause of this is'
+          message: 'Firebase token could not be retrieved, the only know cause of this is'
               ' that the firebase servers could not be reached.',
           code: FIREBASE_TOKEN_ERROR_CODE);
     }
@@ -157,16 +136,12 @@ class PushProvider {
     // Get all push tokens
     List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
         .whereType<PushToken>()
-        .where((t) =>
-            t.isRolledOut &&
-            t.url !=
-                null) // Legacy tokens can not poll, because the url is missing!
+        .where((t) => t.isRolledOut && t.url != null) // Legacy tokens can not poll, because the url is missing!
         .toList();
 
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
-      log('No push token is available for polling, polling is disabled.',
-          name: 'push_provider.dart#pollForChallenges');
+      Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
       AppSettings.of(context).enablePolling = false;
       return false;
     }
@@ -188,8 +163,7 @@ class PushProvider {
       };
 
       try {
-        Response response = await getRequest(
-            url: p.url!, parameters: parameters, sslVerify: p.sslVerify);
+        Response response = await getRequest(url: p.url!, parameters: parameters, sslVerify: p.sslVerify);
 
         if (response.statusCode == 200) {
           // The signature of this message must not be verified as each push
@@ -205,12 +179,10 @@ class PushProvider {
           // not by their error code. This would make error handling complex.
         }
       } catch (error) {
-        final SnackBar snackBar = SnackBar(
-            content: Text(
-                "An error occured when polling for challenges \n ${error.toString()}"));
+        final SnackBar snackBar = SnackBar(content: Text("An error occured when polling for challenges \n ${error.toString()}"));
         snackbarKey.currentState?.showSnackBar(snackBar);
 
-        log(
+        Logger.warning(
           'Polling push tokens not working, server can not be reached.',
           name: 'push_provider.dart#pollForChallenges',
         );
@@ -224,14 +196,11 @@ class PushProvider {
   static Future<void> updateFbTokenIfChanged() async {
     String? firebaseToken = await getFBToken();
 
-    if (firebaseToken != null &&
-        (await StorageUtil.getCurrentFirebaseToken()) != firebaseToken) {
+    if (firebaseToken != null && (await StorageUtil.getCurrentFirebaseToken()) != firebaseToken) {
       try {
         _updateFirebaseToken(firebaseToken);
       } catch (error) {
-        final SnackBar snackBar = SnackBar(
-            content:
-                Text("Unknown error: ${error.toString()}" + error.toString()));
+        final SnackBar snackBar = SnackBar(content: Text("Unknown error: ${error.toString()}" + error.toString()));
         snackbarKey.currentState?.showSnackBar(snackBar);
       }
     }
@@ -251,10 +220,7 @@ class PushProvider {
       return;
     }
 
-    List<PushToken> tokenList = (await StorageUtil.loadAllTokens())
-        .whereType<PushToken>()
-        .where((t) => t.url != null)
-        .toList();
+    List<PushToken> tokenList = (await StorageUtil.loadAllTokens()).whereType<PushToken>().where((t) => t.url != null).toList();
 
     bool allUpdated = true;
 
@@ -276,20 +242,13 @@ class PushProvider {
       if (signature == null) {
         return;
       }
-      Response response =
-          await postRequest(sslVerify: p.sslVerify!, url: p.url!, body: {
-        'new_fb_token': firebaseToken,
-        'serial': p.serial,
-        'timestamp': timestamp,
-        'signature': signature
-      });
+      Response response = await postRequest(
+          sslVerify: p.sslVerify!, url: p.url!, body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
 
       if (response.statusCode == 200) {
-        log('Updating firebase token for push token: ${p.serial} succeeded!',
-            name: 'push_provider.dart#_updateFirebaseToken');
+        Logger.info('Updating firebase token for push token: ${p.serial} succeeded!', name: 'push_provider.dart#_updateFirebaseToken');
       } else {
-        log('Updating firebase token for push token: ${p.serial} failed!',
-            name: 'push_provider.dart#_updateFirebaseToken');
+        Logger.warning('Updating firebase token for push token: ${p.serial} failed!', name: 'push_provider.dart#_updateFirebaseToken');
         allUpdated = false;
       }
     }

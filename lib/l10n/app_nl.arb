@@ -464,7 +464,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "pageReportModeBody": "Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen. Kies '{accept}' om het bericht te verzenden of '{cancel}' om geen informatie door te sturen.",
+  "pageReportModeBody": "Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen. Kies {accept} om het bericht te verzenden of {cancel} om geen informatie door te sturen.",
   "@pageReportModeBody": {
     "description": "Description shown to the user about what info the error report contains.",
     "type": "text",
@@ -649,6 +649,81 @@
   "unlockToCopy": "Gebruik biometrie om het token te ontgrendelen",
   "@unlockToCopy": {
     "description": "unlockToCopy",
+    "type": "text"
+  },
+  "errorLogTitle": "Foutlogs",
+  "@errorLogTitle": {
+    "description": "errorLogTitle",
+    "type": "text"
+  },
+  "sendErrorHint": "Stuur ons de error log via e-mail",
+  "@sendErrorHint": {
+    "description": "Hint for the user about what he will send.",
+    "type": "text"
+  },
+  "enableVerboseLogging": "Uitgebreide logboekregistratie inschakelen",
+  "@enableVerboseLogging": {
+    "description": "enableVerboseLogging",
+    "type": "text"
+  },
+  "clearErrorLogHint": "Wist het lokale foutenlogbestand",
+  "@clearErrorLogHint": {
+    "description": "clearErrorLogHint",
+    "type": "text"
+  },
+  "logMenu": "Logmenu",
+  "@logMenu": {
+    "description": "logMenu",
+    "type": "text"
+  },
+  "send": "verzenden",
+  "@send": {
+    "description": "send",
+    "type": "text"
+  },
+  "sendErrorDialogHeader": "Verzenden via e-mail",
+  "@sendErrorDialogHeader": {
+    "description": "sendErrorDialogHeader",
+    "type": "text"
+  },
+  "ok": "Ok",
+  "@ok": {
+    "description": "ok",
+    "type": "text"
+  },
+  "noLogToSend": "Er is een log om te verzenden.",
+  "@noLogToSend": {
+    "description": "noLogToSend",
+    "type": "text"
+  },
+  "errorLogFileAttached": "Het foutlogbestand is bijgevoegd.",
+  "@errorLogFileAttached": {
+    "description": "Message for email body",
+    "type": "text"
+  },
+  "errorLogCleared": "Foutlogs gewist",
+  "@errorLogCleared": {
+    "description": "errorLogCleared",
+    "type": "text"
+  },
+  "errorOccurred": "Er is een fout opgetreden.",
+  "@errorOccurred": {
+    "description": "errorOccurred",
+    "type": "text"
+  },
+  "showDetails": "Details tonen",
+  "@showDetails": {
+    "description": "showDetails",
+    "type": "text"
+  },
+  "open": "Openen",
+  "@open": {
+    "description": "open",
+    "type": "text"
+  },
+  "sendErrorDialogBody": "Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.",
+  "@sendErrorDialogBody": {
+    "description": "Description shown to the user about what info the error report contains.",
     "type": "text"
   }
 }
