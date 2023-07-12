@@ -725,5 +725,45 @@
   "@sendErrorDialogBody": {
     "description": "Description shown to the user about what info the error report contains.",
     "type": "text"
+  },
+  "noFbToken": "Pas de jeton Firebase",
+  "@noFbToken": {
+    "description": "noFbToken",
+    "type": "text"
+  },
+  "firebaseToken": "Jeton Firebase",
+  "@firebaseToken": {
+    "description": "firebaseToken",
+    "type": "text"
+  },
+  "serial": "Série",
+  "@serial": {
+    "description": "serial",
+    "type": "text"
+  },
+  "noPublicKey": "Pas de clé publique",
+  "@noPublicKey": {
+    "description": "noPublicKey",
+    "type": "text"
+  },
+  "publicKey": "Clé publique",
+  "@publicKey": {
+    "description": "publicKey",
+    "type": "text"
+  },
+  "editToken": "Modifier le jeton",
+  "@editToken": {
+    "description": "editToken",
+    "type": "text"
+  },
+  "edit": "Modifier",
+  "@edit": {
+    "description": "edit",
+    "type": "text"
+  },
+  "save": "Enregistrer",
+  "@save": {
+    "description": "save",
+    "type": "text"
   }
 }

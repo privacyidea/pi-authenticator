@@ -35,6 +35,7 @@ import 'package:local_auth/error_codes.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
@@ -121,7 +122,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         onPressed: (_) => _deleteTokenDialog(),
       ),
       SlidableAction(
-        label: AppLocalizations.of(context)!.rename,
+        label: (_token is PushToken) ? AppLocalizations.of(context)!.edit : AppLocalizations.of(context)!.rename,
         backgroundColor: Theme.of(context).brightness == Brightness.light
             //? Colors.blue.shade400
             //: Colors.blue.shade800,
@@ -129,7 +130,13 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
             : ApplicationCustomizer.renameColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
         icon: Icons.edit,
-        onPressed: (_) => _renameTokenDialog(),
+        onPressed: (_) {
+          if (_token is PushToken) {
+            _editTokenDialog();
+          } else {
+            _renameTokenDialog();
+          }
+        },
       ),
     ];
 
@@ -245,6 +252,115 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
       }
     }
     return didAuthenticate;
+  }
+
+  void _editTokenDialog() async {
+    if ((_token is PushToken) == false) {
+      throw Exception('Token is not a PushToken!');
+    }
+    if (_token.isLocked) {
+      if (await _unlock(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp) == false) {
+        return;
+      }
+    }
+
+    // This adds the posibility to edit token settings for push token, ex. URL to PI
+    final tokenLabel = TextEditingController(text: _token.label);
+    final tokenURL = TextEditingController(text: (_token as PushToken).url.toString());
+    final tokenPublicKey = (_token as PushToken).publicTokenKey;
+    final tokenSersial = (_token as PushToken).serial;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: AlertDialog(
+          titlePadding: EdgeInsets.all(12),
+          contentPadding: EdgeInsets.all(0),
+          title: Text(AppLocalizations.of(context)!.editToken),
+          actions: [
+            TextButton(
+              child: Text(AppLocalizations.of(context)!.cancel),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+                child: Text(AppLocalizations.of(context)!.save),
+                onPressed: () async {
+                  _token.label = tokenLabel.text;
+                  (_token as PushToken).url = Uri.parse(tokenURL.text);
+                  await _saveThisToken();
+                  setState(() {});
+                  Navigator.of(context).pop();
+                }),
+          ],
+          content: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    initialValue: tokenSersial,
+                    decoration: InputDecoration(labelText: 'Serial'),
+                    enabled: false,
+                  ),
+                  TextFormField(
+                    controller: tokenLabel,
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return AppLocalizations.of(context)!.name;
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: tokenURL,
+                    decoration: InputDecoration(labelText: 'URL'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'URL';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  ExpansionTile(
+                    title: Text(
+                      AppLocalizations.of(context)!.publicKey,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    children: [
+                      Text(tokenPublicKey != null ? tokenPublicKey : AppLocalizations.of(context)!.noPublicKey, style: Theme.of(context).textTheme.bodyMedium),
+                    ],
+                  ),
+                  Divider(),
+                  ExpansionTile(
+                    title: Text(AppLocalizations.of(context)!.firebaseToken, style: Theme.of(context).textTheme.titleMedium),
+                    children: [
+                      FutureBuilder(
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Text(snapshot.data != null ? snapshot.data.toString() : AppLocalizations.of(context)!.noFbToken);
+                          } else {
+                            return Text('');
+                          }
+                        },
+                        future: StorageUtil.getCurrentFirebaseToken(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   void _renameTokenDialog() {
@@ -843,7 +959,7 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
   }
 
   _OTPTokenWidgetState(OTPToken token)
-      : _otpValue = calculateOtpValue(token),
+      : _otpValue = token.calculateOtpValue(),
         super(token);
 
   // ignore: UNUSED_ELEMENT
@@ -871,7 +987,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
 
     if (mounted) {
       setState(() {
-        _otpValue = calculateOtpValue(_token);
+        _otpValue = _token.calculateOtpValue();
         // Disable the button for 1 s.
         buttonIsDisabled = true;
       });
@@ -968,7 +1084,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState with SingleTickerProviderSta
   @override
   void _updateOtpValue() {
     if (mounted) {
-      setState(() => _otpValue = calculateOtpValue(_token));
+      setState(() => _otpValue = _token.calculateOtpValue());
     }
   }
 

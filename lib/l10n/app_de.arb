@@ -725,5 +725,45 @@
   "@sendErrorDialogBody": {
     "description": "Description shown to the user about what info the error report contains.",
     "type": "text"
+  },
+  "noFbToken": "Kein Firebase Token vorhanden",
+  "@noFbToken": {
+    "description": "noFbToken",
+    "type": "text"
+  },
+  "firebaseToken": "Firebase Token",
+  "@firebaseToken": {
+    "description": "firebaseToken",
+    "type": "text"
+  },
+  "serial": "Seriennummer",
+  "@serial": {
+    "description": "serial",
+    "type": "text"
+  },
+  "noPublicKey": "Kein öffentlicher Schlüssel vorhanden",
+  "@noPublicKey": {
+    "description": "noPublicKey",
+    "type": "text"
+  },
+  "publicKey": "Öffentlicher Schlüssel",
+  "@publicKey": {
+    "description": "publicKey",
+    "type": "text"
+  },
+  "editToken": "Token bearbeiten",
+  "@editToken": {
+    "description": "editToken",
+    "type": "text"
+  },
+  "edit": "Bearbeiten",
+  "@edit": {
+    "description": "edit",
+    "type": "text"
+  },
+  "save": "Speichern",
+  "@save": {
+    "description": "save",
+    "type": "text"
   }
 }

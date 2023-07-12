@@ -53,13 +53,11 @@ void totpTokenUpdateTest() {
     });
 
     test('Enter name and secret', () async {
-      await driver!.tap(find.ancestor(
-          of: find.text('Name'), matching: find.byType('TextFormField')));
+      await driver!.tap(find.ancestor(of: find.text('Name'), matching: find.byType('TextFormField')));
 
       await driver!.enterText('TOTPTestName');
 
-      await driver!.tap(find.ancestor(
-          of: find.text('Secret'), matching: find.byType('TextFormField')));
+      await driver!.tap(find.ancestor(of: find.text('Secret'), matching: find.byType('TextFormField')));
 
       await driver!.enterText('TestSecret');
     });
@@ -81,15 +79,14 @@ void totpTokenUpdateTest() {
         id: '',
         algorithm: Algorithms.SHA1,
         digits: 6,
-        secret: encodeSecretAs(
-            utf8.encode('TestSecret') as Uint8List, Encodings.base32),
+        secret: encodeSecretAs(utf8.encode('TestSecret') as Uint8List, Encodings.base32),
         period: 30,
       );
 
       // We have to run this without waiting for all animations to stop
       // (the animation loops in this widget)
       await driver!.runUnsynchronized(() async {
-        String rawValue = calculateTotpValue(token).padLeft(6, '0');
+        String rawValue = token.calculateOtpValue().padLeft(6, '0');
         String value = insertCharAt(rawValue, ' ', rawValue.length ~/ 2);
         print('1. Value: $value');
 
@@ -100,7 +97,7 @@ void totpTokenUpdateTest() {
         // Wait until update is due.
         await Future.delayed(Duration(seconds: 32));
 
-        String rawValue = calculateTotpValue(token).padLeft(6, '0');
+        String rawValue = token.calculateOtpValue().padLeft(6, '0');
         String value = insertCharAt(rawValue, ' ', rawValue.length ~/ 2);
 
         print('2. Value: $value');
@@ -111,8 +108,7 @@ void totpTokenUpdateTest() {
 
     test('Clean up', () async {
       await driver!.runUnsynchronized(() async {
-        await driver!.scroll(
-            find.text('TOTPTestName'), -500, 0, Duration(milliseconds: 100));
+        await driver!.scroll(find.text('TOTPTestName'), -500, 0, Duration(milliseconds: 100));
 
         // Delete the token.
         await driver!.tap(find.text('Delete'));
