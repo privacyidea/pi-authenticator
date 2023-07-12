@@ -824,6 +824,17 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 abstract class _OTPTokenWidgetState extends _TokenWidgetState {
   String _otpValue;
   final HideableTextController _hideableController = HideableTextController();
+  bool _isHidden = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _hideableController.listen((isShown) {
+      setState(() {
+        _isHidden = !isShown;
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -840,10 +851,10 @@ abstract class _OTPTokenWidgetState extends _TokenWidgetState {
 
   @override
   Widget _buildTile() {
-    return _buildNonClickableTile();
+    return _buildClickableTile();
   }
 
-  Widget _buildNonClickableTile();
+  Widget _buildClickableTile();
 }
 
 class _HotpWidgetState extends _OTPTokenWidgetState {
@@ -874,7 +885,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
   }
 
   @override
-  Widget _buildNonClickableTile() {
+  Widget _buildClickableTile() {
     return Column(
       children: [
         ListTile(
@@ -887,11 +898,12 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
               : null,
           horizontalTitleGap: 8.0,
           title: HideableText(
+            key: Key(_token.hashCode.toString()),
             controller: _hideableController,
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
             textScaleFactor: 1.9,
             enabled: _token.isLocked,
-            showDuration: Duration(seconds: 10),
+            showDuration: Duration(seconds: 30),
             textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
           ),
           subtitle: Column(
@@ -900,25 +912,32 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             children: _getSubtitle(),
           ),
           trailing: Container(
-            padding: const EdgeInsets.only(right: 24.0),
-            child: IconButton(
-              iconSize: 32,
-              onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
-              icon: Icon(
-                Icons.replay,
-              ),
-            ),
-          ),
+              padding: const EdgeInsets.only(right: 24.0),
+              child: _token.isLocked && _isHidden
+                  ? IconButton(
+                      iconSize: 32,
+                      onPressed: buttonIsDisabled
+                          ? null
+                          : () async {
+                              if (await _unlock(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
+                                _hideableController.show();
+                              }
+                            },
+                      icon: Icon(
+                        Icons.remove_red_eye_outlined,
+                      ),
+                    )
+                  : IconButton(
+                      iconSize: 32,
+                      onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
+                      icon: Icon(
+                        Icons.replay,
+                      ),
+                    )),
           onTap: _token.isLocked
               ? () async {
                   if (await _unlock(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
-                    // unlock token, flag it as relockable
-                    _token.isLocked = false;
-
-                    if (_token.pin != null && _token.pin != false) {
-                      _token.relock = true;
-                    }
-                    setState(() {});
+                    _hideableController.show();
                   }
                 }
               : () {
@@ -940,6 +959,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
 
 class _TotpWidgetState extends _OTPTokenWidgetState with SingleTickerProviderStateMixin, LifecycleMixin {
   late AnimationController _controller; // Controller for animating the LinearProgressAnimator
+  bool _isHidden = true;
 
   TOTPToken get _token => super._token as TOTPToken;
 
@@ -982,6 +1002,14 @@ class _TotpWidgetState extends _OTPTokenWidgetState with SingleTickerProviderSta
         }
       })
       ..forward(from: _getCurrentProgress()); // Start the animation.
+
+    _hideableController.listen((isShown) {
+      if (mounted) {
+        setState(() {
+          _isHidden = !isShown;
+        });
+      }
+    });
   }
 
   @override
@@ -1008,7 +1036,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState with SingleTickerProviderSta
   }
 
   @override
-  Widget _buildNonClickableTile() {
+  Widget _buildClickableTile() {
     return Column(
       children: <Widget>[
         ListTile(
@@ -1025,7 +1053,7 @@ class _TotpWidgetState extends _OTPTokenWidgetState with SingleTickerProviderSta
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
             textScaleFactor: 2.0,
             enabled: _token.isLocked,
-            showDuration: Duration(seconds: 10),
+            showDuration: Duration(seconds: 30),
             textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
           ),
           subtitle: Column(
@@ -1038,25 +1066,35 @@ class _TotpWidgetState extends _OTPTokenWidgetState with SingleTickerProviderSta
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.15,
               height: MediaQuery.of(context).size.width * 0.15,
-              child: Stack(
-                children: [
-                  Center(child: Text('${calculateRemainingTotpDuration()}')),
-                  Center(
-                    child: CircularProgressIndicator(
-                      value: calculateRemainingTotpDurationPercent(),
+              child: _token.isLocked && _isHidden
+                  ? IconButton(
+                      onPressed: () async {
+                        if (await _unlock(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
+                          setState(() {
+                            _hideableController.show();
+                          });
+                        }
+                      },
+                      icon: Icon(Icons.remove_red_eye_outlined),
+                    )
+                  : Stack(
+                      children: [
+                        Center(child: Text('${calculateRemainingTotpDuration()}')),
+                        Center(
+                          child: CircularProgressIndicator(
+                            value: calculateRemainingTotpDurationPercent(),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
             ),
           ),
           onTap: _token.isLocked
               ? () async {
                   if (await _unlock(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
-                    // unlock token, flag it as relockable
-                    _token.isLocked = false;
-                    _token.relock = true;
-                    setState(() {});
+                    setState(() {
+                      _hideableController.show();
+                    });
                   }
                 }
               : () {
