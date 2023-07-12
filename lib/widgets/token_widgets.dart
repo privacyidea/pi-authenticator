@@ -35,6 +35,7 @@ import 'package:local_auth/error_codes.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/screens/settings_screen.dart';
 import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
@@ -121,7 +122,7 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
         onPressed: (_) => _deleteTokenDialog(),
       ),
       SlidableAction(
-        label: AppLocalizations.of(context)!.rename,
+        label: (_token is PushToken) ? AppLocalizations.of(context)!.edit : AppLocalizations.of(context)!.rename,
         backgroundColor: Theme.of(context).brightness == Brightness.light
             //? Colors.blue.shade400
             //: Colors.blue.shade800,
@@ -253,94 +254,131 @@ abstract class _TokenWidgetState extends State<TokenWidget> {
     return didAuthenticate;
   }
 
-  void _editTokenDialog() {
+  void _editTokenDialog() async {
     if ((_token is PushToken) == false) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(context)!.onlyPushTokensCanBeEdited),
-        duration: Duration(seconds: 2),
-      ));
-      return;
+      throw Exception('Token is not a PushToken!');
     }
     if (_token.isLocked) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(context)!.lockedTokensCanBeEdited),
-        duration: Duration(seconds: 2),
-      ));
-      return;
+      if (await _unlock(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp) == false) {
+        return;
+      }
     }
     // PushProvider: StorageUtil.getCurrentFirebaseToken()
     //add the posibility to edit token settings for push token, ex. URL to PI, public key, firebase token
     final tokenLabel = TextEditingController(text: _token.label);
     final tokenURL = TextEditingController(text: (_token as PushToken).url.toString());
     final tokenPublicKey = (_token as PushToken).publicTokenKey;
+    final tokenSersial = (_token as PushToken).serial;
 
     showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-          title: Text(AppLocalizations.of(context)!.editToken),
-          actions: [
-            TextButton(
-              child: Text(AppLocalizations.of(context)!.cancel),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text(AppLocalizations.of(context)!.save),
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  setState(() async {
-                    _token.label = tokenLabel.text;
-                    (_token as PushToken).url = Uri.parse(tokenURL.text);
-                    await _saveThisToken();
-                    Navigator.of(context).pop();
-                  });
-                }
-              },
-            ),
-          ],
-          content: Column(
-            children: [
-              TextFormField(
-                controller: tokenLabel,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return AppLocalizations.of(context)!.name;
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: tokenURL,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.url),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return AppLocalizations.of(context)!.url;
-                  }
-                  return null;
-                },
-              ),
-              ListTile(
-                title: AppLocalizations.of(context)!.publicKey,
-                leading: Text(tokenPublicKey != null ? tokenPublicKey : AppLocalizations.of(context)!.noPublicKey),
-              ),
-              ListTile(
-                title: AppLocalizations.of(context)!.firebaseToken,
-                leading: FutureBuilder(
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Text(snapshot.data != null ? snapshot.data.toString() : AppLocalizations.of(context)!.noFbToken);
-                    } else {
-                      return Text('');
-                    }
-                  },
-                  future: StorageUtil.getCurrentFirebaseToken(),
+        context: context,
+        builder: (BuildContext context) => BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: AlertDialog(
+                titlePadding: EdgeInsets.all(12),
+                contentPadding: EdgeInsets.all(0),
+                title: Text(AppLocalizations.of(context)!.editToken),
+                actions: [
+                  TextButton(
+                    child: Text(AppLocalizations.of(context)!.cancel),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                      child: Text(AppLocalizations.of(context)!.save),
+                      onPressed: () async {
+                        _token.label = tokenLabel.text;
+                        (_token as PushToken).url = Uri.parse(tokenURL.text);
+                        await _saveThisToken();
+                        setState(() {});
+                        Navigator.of(context).pop();
+                      }),
+                ],
+                content: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextFormField(
+                          initialValue: tokenSersial,
+                          decoration: InputDecoration(labelText: 'Serial'),
+                          enabled: false,
+                        ),
+                        TextFormField(
+                          controller: tokenLabel,
+                          decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return AppLocalizations.of(context)!.name;
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          controller: tokenURL,
+                          decoration: InputDecoration(labelText: 'URL'),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'URL';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 10),
+                        ExpansionTile(
+                          title: Text(
+                            AppLocalizations.of(context)!.publicKey,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          children: [
+                            Text(tokenPublicKey != null ? tokenPublicKey : AppLocalizations.of(context)!.noPublicKey,
+                                style: Theme.of(context).textTheme.bodyMedium),
+                          ],
+                        ),
+                        Divider(),
+                        ExpansionTile(
+                          title: Text(AppLocalizations.of(context)!.firebaseToken, style: Theme.of(context).textTheme.titleMedium),
+                          children: [
+                            FutureBuilder(
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Text(snapshot.data != null ? snapshot.data.toString() : AppLocalizations.of(context)!.noFbToken);
+                                } else {
+                                  return Text('');
+                                }
+                              },
+                              future: StorageUtil.getCurrentFirebaseToken(),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ],
-          )),
-    );
+            ));
+
+    // BackdropFilter(
+    //       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+    //       child: AlertDialog(
+    //           content: Column(
+    //             mainAxisSize: MainAxisSize.min,
+    //             children: [
+    //               ListTile(
+    //                 title: Text(AppLocalizations.of(context)!.publicKey),
+    //                 leading: Text(tokenPublicKey != null ? tokenPublicKey : AppLocalizations.of(context)!.noPublicKey),
+    //               ),
+    //               ListTile(
+    //                 title: Text(AppLocalizations.of(context)!.firebaseToken),
+    //                 leading:
+    //               ),
+    //             ],
+    //           )),
+    //     ));
   }
 
 /*
@@ -352,7 +390,6 @@ publicKey
 url
 save
 editToken
-lockedTokensCanBeEdited
 onlyPushTokensCanBeEdited
  */
 

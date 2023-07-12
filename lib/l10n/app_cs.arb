@@ -725,5 +725,45 @@
   "@sendErrorDialogBody": {
     "description": "Description shown to the user about what info the error report contains.",
     "type": "text"
+  },
+  "noFbToken": "Není k dispozici žádný token Firebase.",
+  "@noFbToken": {
+    "description": "noFbToken",
+    "type": "text"
+  },
+  "firebaseToken": "Token Firebase",
+  "@firebaseToken": {
+    "description": "firebaseToken",
+    "type": "text"
+  },
+  "serial": "Sériové číslo",
+  "@serial": {
+    "description": "serial",
+    "type": "text"
+  },
+  "noPublicKey": "Není k dispozici žádný veřejný klíč.",
+  "@noPublicKey": {
+    "description": "noPublicKey",
+    "type": "text"
+  },
+  "publicKey": "Veřejný klíč",
+  "@publicKey": {
+    "description": "publicKey",
+    "type": "text"
+  },
+  "editToken": "Upravit token",
+  "@editToken": {
+    "description": "editToken",
+    "type": "text"
+  },
+  "edit": "Upravit",
+  "@edit": {
+    "description": "edit",
+    "type": "text"
+  },
+  "save": "Uložit",
+  "@save": {
+    "description": "save",
+    "type": "text"
   }
 }

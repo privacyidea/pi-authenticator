@@ -731,9 +731,14 @@
     "description": "noFbToken",
     "type": "text"
   },
-  "fireBaseToken": "Firebase Token",
-  "@fireBaseToken": {
-    "description": "fireBaseToken",
+  "firebaseToken": "Firebase Token",
+  "@firebaseToken": {
+    "description": "firebaseToken",
+    "type": "text"
+  },
+  "serial": "Seriennummer",
+  "@serial": {
+    "description": "serial",
     "type": "text"
   },
   "noPublicKey": "Kein öffentlicher Schlüssel vorhanden",
@@ -744,6 +749,21 @@
   "publicKey": "Öffentlicher Schlüssel",
   "@publicKey": {
     "description": "publicKey",
+    "type": "text"
+  },
+  "editToken": "Token bearbeiten",
+  "@editToken": {
+    "description": "editToken",
+    "type": "text"
+  },
+  "edit": "Bearbeiten",
+  "@edit": {
+    "description": "edit",
+    "type": "text"
+  },
+  "save": "Speichern",
+  "@save": {
+    "description": "save",
     "type": "text"
   }
 }
