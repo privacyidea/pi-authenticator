@@ -145,39 +145,7 @@ bool isValidEncoding(String secret, Encodings encoding) {
   return true;
 }
 
-String calculateHotpValue(HOTPToken token) {
-  return OTPLibrary.OTP.generateHOTPCodeString(
-    token.secret,
-    token.counter,
-    length: token.digits,
-    algorithm: _mapAlgorithms(token.algorithm),
-    isGoogle: true,
-  );
-}
-
-// TODO test this method, may use mockito for 'faking' the system time
-String calculateTotpValue(TOTPToken token) {
-  return OTPLibrary.OTP.generateTOTPCodeString(
-    token.secret,
-    DateTime.now().millisecondsSinceEpoch,
-    length: token.digits,
-    algorithm: _mapAlgorithms(token.algorithm),
-    interval: token.period,
-    isGoogle: true,
-  );
-}
-
-String calculateOtpValue(OTPToken token) {
-  if (token is HOTPToken) {
-    return calculateHotpValue(token);
-  } else if (token is TOTPToken) {
-    return calculateTotpValue(token);
-  }
-
-  throw ArgumentError.value(token, 'token', 'The token kind of $token is not supported by this method.');
-}
-
-OTPLibrary.Algorithm _mapAlgorithms(Algorithms algorithm) {
+OTPLibrary.Algorithm mapAlgorithms(Algorithms algorithm) {
   ArgumentError.checkNotNull(algorithm, 'algorithmName');
 
   switch (algorithm) {

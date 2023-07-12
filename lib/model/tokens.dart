@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
@@ -97,16 +98,16 @@ abstract class OTPToken extends Token {
 
   int get digits => _digits;
 
-  String get secret => _secret;
-
   OTPToken(String label, String issuer, String id, String type, this._algorithm, this._digits, this._secret, this.pin, this.relock, this.imageURL,
       {bool isLocked = false, bool canToggleLock = true})
       : super(label, issuer, id, type, relock, imageURL, isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
   String toString() {
-    return super.toString() + ' | Algorithm $algorithm | Digits $digits | Secret $secret';
+    return super.toString() + ' | Algorithm $algorithm | Digits $digits';
   }
+
+  String calculateOtpValue();
 }
 
 @JsonSerializable()
@@ -114,6 +115,8 @@ class HOTPToken extends OTPToken {
   int _counter; // this value is used to calculate the current otp value
 
   int get counter => _counter;
+
+  String get secret => _secret;
 
   String? imageURL;
 
@@ -137,6 +140,16 @@ class HOTPToken extends OTPToken {
         this.imageURL = imageURL,
         super(label, issuer, id, enumAsString(TokenTypes.HOTP), algorithm, digits, secret, pin, relock, imageURL,
             isLocked: isLocked, canToggleLock: canToggleLock);
+  @override
+  String calculateOtpValue() {
+    return OTPLibrary.OTP.generateHOTPCodeString(
+      _secret,
+      counter,
+      length: digits,
+      algorithm: mapAlgorithms(algorithm),
+      isGoogle: true,
+    );
+  }
 
   @override
   String toString() {
@@ -158,6 +171,8 @@ class TOTPToken extends OTPToken {
 
   int get period => _period;
 
+  String get secret => _secret;
+
   TOTPToken(
       {required String label,
       required String issuer,
@@ -175,6 +190,18 @@ class TOTPToken extends OTPToken {
       : this._period = period,
         super(label, issuer, id, enumAsString(TokenTypes.TOTP), algorithm, digits, secret, pin, relock, imageURL,
             isLocked: isLocked, canToggleLock: canToggleLock);
+
+  @override
+  String calculateOtpValue() {
+    return OTPLibrary.OTP.generateTOTPCodeString(
+      _secret,
+      DateTime.now().millisecondsSinceEpoch,
+      length: digits,
+      algorithm: mapAlgorithms(algorithm),
+      interval: period,
+      isGoogle: true,
+    );
+  }
 
   @override
   String toString() {
