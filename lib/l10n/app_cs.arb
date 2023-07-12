@@ -464,7 +464,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "pageReportModeBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu. Zvolte '{accept}' pro odeslání informací nebo '{cancel}' pro zrušení odeslání.",
+  "pageReportModeBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu. Zvolte {accept} pro odeslání informací nebo {cancel} pro zrušení odeslání.",
   "@pageReportModeBody": {
     "description": "Description shown to the user about what info the error report contains.",
     "type": "text",
@@ -649,6 +649,81 @@
   "unlockToCopy": "K odemknutí tokenu použijte biometrii",
   "@unlockToCopy": {
     "description": "unlockToCopy",
+    "type": "text"
+  },
+  "errorLogTitle": "Protokoly o chybách",
+  "@errorLogTitle": {
+    "description": "errorLogTitle",
+    "type": "text"
+  },
+  "sendErrorHint": "Pošlete nám protokol o chybě e-mailem",
+  "@sendErrorHint": {
+    "description": "Hint for the user about what he will send.",
+    "type": "text"
+  },
+  "enableVerboseLogging": "Povolit slovní protokolování",
+  "@enableVerboseLogging": {
+    "description": "enableVerboseLogging",
+    "type": "text"
+  },
+  "clearErrorLogHint": "Vymaže místní soubor protokolu chyb",
+  "@clearErrorLogHint": {
+    "description": "clearErrorLogHint",
+    "type": "text"
+  },
+  "logMenu": "Nabídka protokolu",
+  "@logMenu": {
+    "description": "logMenu",
+    "type": "text"
+  },
+  "send": "Odeslat",
+  "@send": {
+    "description": "send",
+    "type": "text"
+  },
+  "sendErrorDialogHeader": "Odeslat e-mailem",
+  "@sendErrorDialogHeader": {
+    "description": "sendErrorDialogHeader",
+    "type": "text"
+  },
+  "ok": "Ok",
+  "@ok": {
+    "description": "ok",
+    "type": "text"
+  },
+  "noLogToSend": "Je třeba odeslat protokol.",
+  "@noLogToSend": {
+    "description": "noLogToSend",
+    "type": "text"
+  },
+  "errorLogFileAttached": "Přiložen je soubor protokolu o chybách.",
+  "@errorLogFileAttached": {
+    "description": "Message for email body",
+    "type": "text"
+  },
+  "errorLogCleared": "Protokoly chyb byly vymazány.",
+  "@errorLogCleared": {
+    "description": "errorLogCleared",
+    "type": "text"
+  },
+  "errorOccurred": "Došlo k chybě.",
+  "@errorOccurred": {
+    "description": "errorOccurred",
+    "type": "text"
+  },
+  "showDetails": "Zobrazit podrobnosti",
+  "@showDetails": {
+    "description": "showDetails",
+    "type": "text"
+  },
+  "open": "Otevřít",
+  "@open": {
+    "description": "open",
+    "type": "text"
+  },
+  "sendErrorDialogBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.",
+  "@sendErrorDialogBody": {
+    "description": "Description shown to the user about what info the error report contains.",
     "type": "text"
   }
 }

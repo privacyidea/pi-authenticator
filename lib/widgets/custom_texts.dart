@@ -26,14 +26,16 @@ import 'package:flutter/material.dart';
 class HideableTextController {
   var _controller = StreamController<bool>.broadcast();
 
-  void tap() {
+  void show() {
     _controller.add(true);
   }
 
-  void listen(void onData(bool event)?,
-      {Function? onError, void onDone()?, bool? cancelOnError}) {
-    _controller.stream.listen(onData,
-        onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+  void hide() {
+    _controller.add(false);
+  }
+
+  void listen(void onData(bool event)?, {Function? onError, void onDone()?, bool? cancelOnError}) {
+    _controller.stream.listen(onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
 
   void close() {
@@ -67,58 +69,59 @@ class HideableText extends StatefulWidget {
   final bool replaceWhitespaces;
   final HideableTextController? controller;
 
-  const HideableText(
-      {Key? key,
-      required this.text,
-      this.hideOnDefault = true,
-      this.textScaleFactor = 1.0,
-      required this.showDuration,
-      this.textStyle,
-      this.enabled = true,
-      this.replaceCharacter = '\u2022',
-      this.replaceWhitespaces = false,
-      this.controller})
-      : super(key: key);
+  const HideableText({
+    Key? key,
+    required this.text,
+    this.hideOnDefault = true,
+    this.textScaleFactor = 1.0,
+    required this.showDuration,
+    this.textStyle,
+    this.enabled = true,
+    this.replaceCharacter = '\u2022',
+    this.replaceWhitespaces = false,
+    this.controller,
+  }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() =>
-      HideableTextState(isHidden: this.hideOnDefault);
+  State<StatefulWidget> createState() => HideableTextState(isHidden: this.hideOnDefault);
 }
 
 class HideableTextState extends State<HideableText> {
   late bool _isHidden;
 
-  HideableTextState({required bool isHidden}) : this._isHidden = isHidden;
+  HideableTextState({required bool isHidden}) : _isHidden = isHidden;
 
   @override
   void initState() {
     super.initState();
-    widget.controller?.listen((event) => showText(), cancelOnError: false);
+    widget.controller?.listen((isShown) {
+      if (isShown) showText();
+    }, cancelOnError: false);
   }
 
   void showText() {
     if (!widget.enabled || !_isHidden) return;
-    _isHidden = false;
-    if (mounted) setState(() {});
+    if (mounted)
+      setState(() {
+        _isHidden = false;
+      });
 
     Timer(widget.showDuration, () {
-      _isHidden = true;
-      if (mounted) setState(() {});
+      if (mounted)
+        setState(() {
+          widget.controller?.hide();
+          _isHidden = true;
+        });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     Text text = Text(
-      _isHidden && widget.enabled
-          ? widget.text.replaceAll(
-              RegExp(widget.replaceWhitespaces ? r'.' : r'[^\s]'),
-              widget.replaceCharacter)
-          : widget.text,
+      _isHidden && widget.enabled ? widget.text.replaceAll(RegExp(widget.replaceWhitespaces ? r'.' : r'[^\s]'), widget.replaceCharacter) : widget.text,
       textScaleFactor: widget.textScaleFactor,
       style: widget.textStyle != null
-          ? widget.textStyle!
-              .copyWith(fontFamily: 'monospace', fontWeight: FontWeight.bold)
+          ? widget.textStyle!.copyWith(fontFamily: 'monospace', fontWeight: FontWeight.bold)
           : TextStyle(
               fontFamily: 'monospace',
               fontWeight: FontWeight.bold,

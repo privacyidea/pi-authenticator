@@ -19,7 +19,6 @@
 */
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -27,6 +26,7 @@ import 'package:mutex/mutex.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
@@ -92,7 +92,7 @@ class StorageUtil {
       } else if (type == enumAsString(TokenTypes.PIPUSH)) {
         tokenList.add(PushToken.fromJson(serializedToken));
       } else {
-        log(
+        Logger.error(
           'Token type $type is unknown.',
           name: 'storage_utils.dart#loadAllTokens',
         );
@@ -183,7 +183,7 @@ class StorageUtil {
           token.url = Uri.parse((tokenMap['enrollment_url'] as String));
         }
       } else {
-        log(
+        Logger.error(
           'Unknown token type encountered',
           name: 'storage_utils.dart#loadAllTokensLegacy',
           error: tokenMap,

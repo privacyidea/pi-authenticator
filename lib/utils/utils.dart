@@ -28,6 +28,7 @@ import 'package:hex/hex.dart' as HexConverter;
 import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import 'identifiers.dart';
 
@@ -60,8 +61,7 @@ Algorithms mapStringToAlgorithm(String algoAsString) {
     }
   }
 
-  throw ArgumentError.value(algoAsString, 'algorAsString',
-      '$algoAsString cannot be mapped to $Algorithms');
+  throw ArgumentError.value(algoAsString, 'algorAsString', '$algoAsString cannot be mapped to $Algorithms');
 }
 
 /// This implementation is taken from the library
@@ -107,12 +107,12 @@ Uint8List decodeSecretToUint8(String secret, Encodings encoding) {
     case Encodings.base32:
       return Uint8List.fromList(Base32Converter.base32.decode(secret));
     default:
-      throw ArgumentError.value(
-          encoding, 'encoding', 'The encoding is unknown and not supported!');
+      throw ArgumentError.value(encoding, 'encoding', 'The encoding is unknown and not supported!');
   }
 }
 
 String encodeSecretAs(Uint8List secret, Encodings encoding) {
+  log(secret.toString());
   ArgumentError.checkNotNull(secret, 'secret');
   ArgumentError.checkNotNull(encoding, 'encoding');
 
@@ -122,10 +122,11 @@ String encodeSecretAs(Uint8List secret, Encodings encoding) {
     case Encodings.hex:
       return HexConverter.HEX.encode(secret);
     case Encodings.base32:
+      final encodedString = Base32Converter.base32.encode(secret);
+      log(encodedString);
       return Base32Converter.base32.encode(secret);
     default:
-      throw ArgumentError.value(
-          encoding, 'encoding', 'The encoding is unknown and not supported!');
+      throw ArgumentError.value(encoding, 'encoding', 'The encoding is unknown and not supported!');
   }
 }
 
@@ -137,7 +138,7 @@ bool isValidEncoding(String secret, Encodings encoding) {
   try {
     decodeSecretToUint8(secret, encoding);
   } on Exception catch (e) {
-    log('${e.toString()}');
+    Logger.error('${e.toString()}');
     return false;
   }
 
@@ -150,6 +151,7 @@ String calculateHotpValue(HOTPToken token) {
     token.counter,
     length: token.digits,
     algorithm: _mapAlgorithms(token.algorithm),
+    isGoogle: true,
   );
 }
 
@@ -172,8 +174,7 @@ String calculateOtpValue(OTPToken token) {
     return calculateTotpValue(token);
   }
 
-  throw ArgumentError.value(token, 'token',
-      'The token kind of $token is not supported by this method.');
+  throw ArgumentError.value(token, 'token', 'The token kind of $token is not supported by this method.');
 }
 
 OTPLibrary.Algorithm _mapAlgorithms(Algorithms algorithm) {
@@ -187,7 +188,6 @@ OTPLibrary.Algorithm _mapAlgorithms(Algorithms algorithm) {
     case Algorithms.SHA512:
       return OTPLibrary.Algorithm.SHA512;
     default:
-      throw ArgumentError.value(algorithm, 'algorithmName',
-          'This algorithm is unknown and not supported!');
+      throw ArgumentError.value(algorithm, 'algorithmName', 'This algorithm is unknown and not supported!');
   }
 }

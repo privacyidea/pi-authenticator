@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 
 class OnboardingButtonPage extends StatelessWidget {
-  const OnboardingButtonPage(
-      {Key? key,
-      required,
-      required this.title,
-      required this.subtitle,
-      required this.onPressed,
-      required this.buttonTitle})
+  const OnboardingButtonPage({Key? key, required, required this.title, required this.subtitle, required this.onPressed, required this.buttonTitle})
       : super(key: key);
 
   final String title;
@@ -21,10 +15,7 @@ class OnboardingButtonPage extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(
-              fontSize: 27.0,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).textTheme.subtitle1?.color),
+          style: TextStyle(fontSize: 27.0, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.titleMedium?.color),
         ),
         const SizedBox(height: 40),
         Row(
@@ -34,7 +25,7 @@ class OnboardingButtonPage extends StatelessWidget {
               subtitle,
               style: TextStyle(
                 fontSize: 17.0,
-                color: Theme.of(context).textTheme.subtitle1?.color,
+                color: Theme.of(context).textTheme.titleMedium?.color,
               ),
               textAlign: TextAlign.center,
             ),

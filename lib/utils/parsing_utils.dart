@@ -19,11 +19,11 @@
 */
 
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:asn1lib/asn1lib.dart';
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import 'identifiers.dart';
@@ -36,11 +36,9 @@ import 'identifiers.dart';
 ///     publicExponent    INTEGER   -- e
 /// }
 RSAPublicKey deserializeRSAPublicKeyPKCS1(String keyStr) {
-  ASN1Sequence asn1sequence =
-      ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
+  ASN1Sequence asn1sequence = ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
   BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger!;
-  BigInt exponent =
-      (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
+  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
 
   return RSAPublicKey(modulus, exponent);
 }
@@ -73,13 +71,11 @@ String serializeRSAPublicKeyPKCS1(RSAPublicKey publicKey) {
 ///     parameters      ANY DEFINED BY algorithm OPTIONAL
 /// }
 RSAPublicKey deserializeRSAPublicKeyPKCS8(String keyStr) {
-  var baseSequence =
-      ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
+  var baseSequence = ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
 
   var encodedAlgorithm = baseSequence.elements[0];
 
-  var algorithm = ASN1Parser(encodedAlgorithm.contentBytes()!).nextObject()
-      as ASN1ObjectIdentifier;
+  var algorithm = ASN1Parser(encodedAlgorithm.contentBytes()!).nextObject() as ASN1ObjectIdentifier;
 
   if (algorithm.identifier != '1.2.840.113549.1.1.1') {
     throw ArgumentError.value(
@@ -91,12 +87,10 @@ RSAPublicKey deserializeRSAPublicKeyPKCS8(String keyStr) {
 
   var encodedKey = baseSequence.elements[1];
 
-  var asn1sequence =
-      ASN1Parser(encodedKey.contentBytes()!).nextObject() as ASN1Sequence;
+  var asn1sequence = ASN1Parser(encodedKey.contentBytes()!).nextObject() as ASN1Sequence;
 
   BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger!;
-  BigInt exponent =
-      (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
+  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
 
   return RSAPublicKey(modulus, exponent);
 }
@@ -157,10 +151,8 @@ String serializeRSAPrivateKeyPKCS1(RSAPrivateKey key) {
     ..add(ASN1Integer(key.privateExponent!)) // d
     ..add(ASN1Integer(key.p!)) // p
     ..add(ASN1Integer(key.q!)) // q
-    ..add(ASN1Integer(
-        key.privateExponent! % (key.p! - BigInt.one))) // d mod (p-1)
-    ..add(ASN1Integer(
-        key.privateExponent! % (key.q! - BigInt.one))) // d mod (q-1)
+    ..add(ASN1Integer(key.privateExponent! % (key.p! - BigInt.one))) // d mod (p-1)
+    ..add(ASN1Integer(key.privateExponent! % (key.q! - BigInt.one))) // d mod (q-1)
     ..add(ASN1Integer(key.q!.modInverse(key.p!))); // q^(-1) mod p
 
   return base64.encode(s.encodedBytes);
@@ -185,11 +177,9 @@ String serializeRSAPrivateKeyPKCS1(RSAPrivateKey key) {
 /// Version ::= INTEGER { two-prime(0), multi(1) }
 /// (CONSTRAINED BY {-- version must be multi if otherPrimeInfos present --})
 RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String keyStr) {
-  ASN1Sequence asn1sequence =
-      ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
+  ASN1Sequence asn1sequence = ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
   BigInt modulus = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
-  BigInt exponent =
-      (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger!;
+  BigInt exponent = (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger!;
   BigInt p = (asn1sequence.elements[4] as ASN1Integer).valueAsBigInteger!;
   BigInt q = (asn1sequence.elements[5] as ASN1Integer).valueAsBigInteger!;
 
@@ -199,7 +189,7 @@ RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String keyStr) {
 /// The method returns a map that contains all the uri parameters.
 Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
   Uri uri = Uri.parse(uriAsString);
-  log(
+  Logger.info(
     'Barcode is valid Uri:',
     name: 'utils.dart#parseQRCodeToMap',
     error: uri,
@@ -216,8 +206,7 @@ Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
   }
 
   String type = uri.host;
-  if (equalsIgnoreCase(type, enumAsString(TokenTypes.HOTP)) ||
-      equalsIgnoreCase(type, enumAsString(TokenTypes.TOTP))) {
+  if (equalsIgnoreCase(type, enumAsString(TokenTypes.HOTP)) || equalsIgnoreCase(type, enumAsString(TokenTypes.TOTP))) {
     return parseOtpAuth(uri);
   } else if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
     return parsePiAuth(uri);
@@ -251,15 +240,13 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   String? pushVersionAsString = uri.queryParameters['v'];
 
   if (pushVersionAsString == null) {
-    throw ArgumentError.value(uri, 'uri',
-        'Parameter [v] is not an optional parameter and is missing.');
+    throw ArgumentError.value(uri, 'uri', 'Parameter [v] is not an optional parameter and is missing.');
   }
 
   try {
     int pushVersion = int.parse(pushVersionAsString);
 
-    log('Parsing push token with version: $pushVersion',
-        name: 'parsing_utils.dart#parsePiAuth');
+    Logger.info('Parsing push token with version: $pushVersion', name: 'parsing_utils.dart#parsePiAuth');
 
     if (pushVersion > 1) {
       throw ArgumentError.value(
@@ -269,8 +256,7 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
               'is not supported by this version of the app.');
     }
   } on FormatException {
-    throw ArgumentError.value(uri, 'uri',
-        '[$pushVersionAsString] is not a valid value for parameter [v].');
+    throw ArgumentError.value(uri, 'uri', '[$pushVersionAsString] is not a valid value for parameter [v].');
   }
 
   if (uri.queryParameters['image'] != null) {
@@ -289,22 +275,18 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   try {
     uriMap[URI_ROLLOUT_URL] = Uri.parse(url!);
   } on FormatException catch (e) {
-    throw ArgumentError.value(
-        uri, 'uri', '[$url] is not a valid Uri. Error: ${e.message}');
+    throw ArgumentError.value(uri, 'uri', '[$url] is not a valid Uri. Error: ${e.message}');
   }
 
   String ttlAsString = uri.queryParameters['ttl'] ?? '10';
   try {
     uriMap[URI_TTL] = int.parse(ttlAsString);
   } on FormatException {
-    throw ArgumentError.value(
-        uri, 'uri', '[$ttlAsString] is not a valid value for parameter [ttl].');
+    throw ArgumentError.value(uri, 'uri', '[$ttlAsString] is not a valid value for parameter [ttl].');
   }
 
-  uriMap[URI_ENROLLMENT_CREDENTIAL] =
-      uri.queryParameters['enrollment_credential'];
-  ArgumentError.checkNotNull(
-      uriMap[URI_ENROLLMENT_CREDENTIAL], 'enrollment_credential');
+  uriMap[URI_ENROLLMENT_CREDENTIAL] = uri.queryParameters['enrollment_credential'];
+  ArgumentError.checkNotNull(uriMap[URI_ENROLLMENT_CREDENTIAL], 'enrollment_credential');
 
   uriMap[URI_SSL_VERIFY] = (uri.queryParameters['sslverify'] ?? '1') == '1';
 
@@ -327,9 +309,9 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   uriMap[URI_TYPE] = uri.host;
 
   // parse.path.substring(1) -> Label
-  log('Key: [..] | Value: [..]', name: 'parsing_utils.dart#parseOtpAuth');
+  Logger.info('Key: [..] | Value: [..]', name: 'parsing_utils.dart#parseOtpAuth');
   uri.queryParameters.forEach((key, value) {
-    log('  $key | $value', name: 'parsing_utils.dart#parseOtpAuth');
+    Logger.info('  $key | $value', name: 'parsing_utils.dart#parseOtpAuth');
   });
 
   List labelIssuerList = _parseLabelAndIssuer(uri);
@@ -345,8 +327,7 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
     uriMap[URI_IMAGE] = uri.queryParameters['image'];
   }
 
-  String algorithm = uri.queryParameters['algorithm'] ??
-      enumAsString(Algorithms.SHA1); // Optional parameter
+  String algorithm = uri.queryParameters['algorithm'] ?? enumAsString(Algorithms.SHA1); // Optional parameter
 
   if (!equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA1)) &&
       !equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA256)) &&
@@ -361,8 +342,7 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   uriMap[URI_ALGORITHM] = algorithm;
 
   // Parse digits.
-  String digitsAsString =
-      uri.queryParameters['digits'] ?? '6'; // Optional parameter
+  String digitsAsString = uri.queryParameters['digits'] ?? '6'; // Optional parameter
 
   if (digitsAsString != '6' && digitsAsString != '8') {
     throw ArgumentError.value(
@@ -427,8 +407,7 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
 
     int? period = int.tryParse(periodAsString);
     if (period == null) {
-      throw ArgumentError(
-          'Value [$periodAsString] for parameter [period] is invalid.');
+      throw ArgumentError('Value [$periodAsString] for parameter [period] is invalid.');
     }
     uriMap[URI_PERIOD] = period;
   }
@@ -436,10 +415,8 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
   if (is2StepURI(uri)) {
     // Parse for 2 step roll out.
     String saltLengthAsString = uri.queryParameters['2step_salt'] ?? '10';
-    String outputLengthInByteAsString =
-        uri.queryParameters['2step_output'] ?? '20';
-    String iterationsAsString =
-        uri.queryParameters['2step_difficulty'] ?? '10000';
+    String outputLengthInByteAsString = uri.queryParameters['2step_output'] ?? '20';
+    String iterationsAsString = uri.queryParameters['2step_difficulty'] ?? '10000';
 
     // Parse parameters
     try {
@@ -452,8 +429,7 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
       );
     }
     try {
-      uriMap[URI_OUTPUT_LENGTH_IN_BYTES] =
-          int.parse(outputLengthInByteAsString);
+      uriMap[URI_OUTPUT_LENGTH_IN_BYTES] = int.parse(outputLengthInByteAsString);
     } on FormatException {
       throw ArgumentError.value(
         uri,
@@ -512,7 +488,5 @@ String _parseIssuer(Uri uri) {
 }
 
 bool is2StepURI(Uri uri) {
-  return uri.queryParameters['2step_salt'] != null ||
-      uri.queryParameters['2step_output'] != null ||
-      uri.queryParameters['2step_difficulty'] != null;
+  return uri.queryParameters['2step_salt'] != null || uri.queryParameters['2step_output'] != null || uri.queryParameters['2step_difficulty'] != null;
 }

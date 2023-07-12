@@ -27,8 +27,7 @@ import 'package:privacyidea_authenticator/utils/utils.dart';
 part 'tokens.g.dart';
 
 abstract class Token {
-  String _tokenVersion =
-      'v1.0.0'; // The version of this token, this is used for serialization.
+  String _tokenVersion = 'v1.0.0'; // The version of this token, this is used for serialization.
   String _label; // the name of the token, it cannot be uses as an identifier
   String _issuer; // The issuer of this token, currently unused.
   String _id; // this is the identifier of the token
@@ -72,12 +71,8 @@ abstract class Token {
 
   String get issuer => _issuer;
 
-  Token(this._label, this._issuer, this._id, this.type, this.relock,
-      this.imageUrl,
-      {bool isLocked: false,
-      bool canToggleLock: true,
-      bool pin: false,
-      String? imageURL})
+  Token(this._label, this._issuer, this._id, this.type, this.relock, this.imageUrl,
+      {bool isLocked = false, bool canToggleLock = true, bool pin = false, String? imageURL})
       : this._isLocked = isLocked,
         this._canToggleLock = canToggleLock,
         this.pin = pin;
@@ -90,15 +85,11 @@ abstract class Token {
 }
 
 abstract class OTPToken extends Token {
-  Algorithms
-      _algorithm; // the hashing algorithm that is used to calculate the otp value
+  Algorithms _algorithm; // the hashing algorithm that is used to calculate the otp value
   int _digits; // the number of digits the otp value will have
-  String
-      _secret; // the secret based on which the otp value is calculated in base32
-  bool?
-      pin; // backend can send pin = true, in that case the token should be locked by default
-  bool
-      relock; // if the token should be relocked on app close, pause, for security purposes
+  String _secret; // the secret based on which the otp value is calculated in base32
+  bool? pin; // backend can send pin = true, in that case the token should be locked by default
+  bool relock; // if the token should be relocked on app close, pause, for security purposes
 
   String? imageURL;
 
@@ -108,16 +99,13 @@ abstract class OTPToken extends Token {
 
   String get secret => _secret;
 
-  OTPToken(String label, String issuer, String id, String type, this._algorithm,
-      this._digits, this._secret, this.pin, this.relock, this.imageURL,
-      {bool isLocked: false, bool canToggleLock: true})
-      : super(label, issuer, id, type, relock, imageURL,
-            isLocked: isLocked, canToggleLock: canToggleLock);
+  OTPToken(String label, String issuer, String id, String type, this._algorithm, this._digits, this._secret, this.pin, this.relock, this.imageURL,
+      {bool isLocked = false, bool canToggleLock = true})
+      : super(label, issuer, id, type, relock, imageURL, isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
   String toString() {
-    return super.toString() +
-        ' | Algorithm $algorithm | Digits $digits | Secret $secret';
+    return super.toString() + ' | Algorithm $algorithm | Digits $digits | Secret $secret';
   }
 }
 
@@ -143,12 +131,11 @@ class HOTPToken extends OTPToken {
       String? imageURL,
       int? listIndex,
       int counter = 0,
-      bool isLocked: false,
-      bool canToggleLock: true})
+      bool isLocked = false,
+      bool canToggleLock = true})
       : this._counter = counter,
         this.imageURL = imageURL,
-        super(label, issuer, id, enumAsString(TokenTypes.HOTP), algorithm,
-            digits, secret, pin, relock, imageURL,
+        super(label, issuer, id, enumAsString(TokenTypes.HOTP), algorithm, digits, secret, pin, relock, imageURL,
             isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
@@ -156,8 +143,7 @@ class HOTPToken extends OTPToken {
     return super.toString() + ' | Type HOTP | Counter $counter';
   }
 
-  factory HOTPToken.fromJson(Map<String, dynamic> json) =>
-      _$HOTPTokenFromJson(json);
+  factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json);
 
   Map<String, dynamic> toJson() => _$HOTPTokenToJson(this);
 }
@@ -184,11 +170,10 @@ class TOTPToken extends OTPToken {
       bool? pin = false,
       String? imageURL,
       int? listIndex,
-      bool isLocked: false,
-      bool canToggleLock: true})
+      bool isLocked = false,
+      bool canToggleLock = true})
       : this._period = period,
-        super(label, issuer, id, enumAsString(TokenTypes.TOTP), algorithm,
-            digits, secret, pin, relock, imageURL,
+        super(label, issuer, id, enumAsString(TokenTypes.TOTP), algorithm, digits, secret, pin, relock, imageURL,
             isLocked: isLocked, canToggleLock: canToggleLock);
 
   @override
@@ -196,8 +181,7 @@ class TOTPToken extends OTPToken {
     return super.toString() + ' | Type TOTP | Period $period';
   }
 
-  factory TOTPToken.fromJson(Map<String, dynamic> json) =>
-      _$TOTPTokenFromJson(json);
+  factory TOTPToken.fromJson(Map<String, dynamic> json) => _$TOTPTokenFromJson(json);
 
   Map<String, dynamic> toJson() => _$TOTPTokenToJson(this);
 }
@@ -220,26 +204,17 @@ class PushToken extends Token {
   String? publicTokenKey;
 
   // Custom getter and setter for RSA keys
-  RSAPublicKey? getPublicServerKey() => publicServerKey == null
-      ? null
-      : deserializeRSAPublicKeyPKCS1(publicServerKey!);
+  RSAPublicKey? getPublicServerKey() => publicServerKey == null ? null : deserializeRSAPublicKeyPKCS1(publicServerKey!);
 
-  RSAPublicKey? getPublicTokenKey() => publicTokenKey == null
-      ? null
-      : deserializeRSAPublicKeyPKCS1(publicTokenKey!);
+  RSAPublicKey? getPublicTokenKey() => publicTokenKey == null ? null : deserializeRSAPublicKeyPKCS1(publicTokenKey!);
 
-  RSAPrivateKey? getPrivateTokenKey() => privateTokenKey == null
-      ? null
-      : deserializeRSAPrivateKeyPKCS1(privateTokenKey!);
+  RSAPrivateKey? getPrivateTokenKey() => privateTokenKey == null ? null : deserializeRSAPrivateKeyPKCS1(privateTokenKey!);
 
-  void setPublicServerKey(RSAPublicKey key) =>
-      publicServerKey = serializeRSAPublicKeyPKCS1(key);
+  void setPublicServerKey(RSAPublicKey key) => publicServerKey = serializeRSAPublicKeyPKCS1(key);
 
-  void setPublicTokenKey(RSAPublicKey key) =>
-      publicTokenKey = serializeRSAPublicKeyPKCS1(key);
+  void setPublicTokenKey(RSAPublicKey key) => publicTokenKey = serializeRSAPublicKeyPKCS1(key);
 
-  void setPrivateTokenKey(RSAPrivateKey key) =>
-      privateTokenKey = serializeRSAPrivateKeyPKCS1(key);
+  void setPrivateTokenKey(RSAPrivateKey key) => privateTokenKey = serializeRSAPrivateKeyPKCS1(key);
 
   DateTime _expirationDate;
 
@@ -265,8 +240,7 @@ class PushToken extends Token {
 
   set pushRequests(PushRequestQueue queue) {
     if (_pushRequests != null) {
-      throw ArgumentError(
-          'Initializing [pushRequests] in [PushToken] is only allowed once.');
+      throw ArgumentError('Initializing [pushRequests] in [PushToken] is only allowed once.');
     }
     //
     this._pushRequests = queue;
@@ -282,8 +256,7 @@ class PushToken extends Token {
 
   set knownPushRequests(CustomIntBuffer buffer) {
     if (_knownPushRequests != null) {
-      throw ArgumentError(
-          'Initializing [knownPushRequests] in [PushToken] is only allowed once.');
+      throw ArgumentError('Initializing [knownPushRequests] in [PushToken] is only allowed once.');
     }
 
     this._knownPushRequests = buffer;
@@ -300,9 +273,9 @@ class PushToken extends Token {
     required String serial,
     required String issuer,
     required String id,
-    bool isLocked: false,
-    bool canToggleLock: true,
-    bool relock: false,
+    bool isLocked = false,
+    bool canToggleLock = true,
+    bool relock = false,
     bool? pin = false,
     // 2. step
     bool? sslVerify,
@@ -331,11 +304,7 @@ class PushToken extends Token {
         );
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is PushToken &&
-          runtimeType == other.runtimeType &&
-          _serial == other._serial;
+  bool operator ==(Object other) => identical(this, other) || other is PushToken && runtimeType == other.runtimeType && _serial == other._serial;
 
   @override
   int get hashCode => _serial.hashCode;
@@ -350,8 +319,7 @@ class PushToken extends Token {
         'id: $_id';
   }
 
-  factory PushToken.fromJson(Map<String, dynamic> json) =>
-      _$PushTokenFromJson(json);
+  factory PushToken.fromJson(Map<String, dynamic> json) => _$PushTokenFromJson(json);
 
   Map<String, dynamic> toJson() => _$PushTokenToJson(this);
 }
@@ -400,11 +368,7 @@ class PushRequest {
         this._expirationDate = expirationDate;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is PushRequest &&
-          runtimeType == other.runtimeType &&
-          _id == other._id;
+  bool operator ==(Object other) => identical(this, other) || other is PushRequest && runtimeType == other.runtimeType && _id == other._id;
 
   @override
   int get hashCode => _id.hashCode;
@@ -415,8 +379,7 @@ class PushRequest {
         ' _id: $_id, _uri: $_uri, _nonce: $_nonce, _sslVerify: $_sslVerify}';
   }
 
-  factory PushRequest.fromJson(Map<String, dynamic> json) =>
-      _$PushRequestFromJson(json);
+  factory PushRequest.fromJson(Map<String, dynamic> json) => _$PushRequestFromJson(json);
 
   Map<String, dynamic> toJson() => _$PushRequestToJson(this);
 }
@@ -435,8 +398,7 @@ class PushRequestQueue {
 
   set list(List<PushRequest> l) {
     if (_list != null) {
-      throw ArgumentError(
-          'Initializing [list] in [PushRequestQueue] is only allowed once.');
+      throw ArgumentError('Initializing [list] in [PushRequestQueue] is only allowed once.');
     }
 
     this._list = l;
@@ -472,11 +434,7 @@ class PushRequestQueue {
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is PushRequestQueue &&
-          runtimeType == other.runtimeType &&
-          _listsAreEqual(list, other.list);
+  bool operator ==(Object other) => identical(this, other) || other is PushRequestQueue && runtimeType == other.runtimeType && _listsAreEqual(list, other.list);
 
   bool _listsAreEqual(List<PushRequest> l1, List<PushRequest> l2) {
     if (l1.length != l2.length) return false;
@@ -491,30 +449,25 @@ class PushRequestQueue {
   @override
   int get hashCode => list.hashCode;
 
-  factory PushRequestQueue.fromJson(Map<String, dynamic> json) =>
-      _$PushRequestQueueFromJson(json);
+  factory PushRequestQueue.fromJson(Map<String, dynamic> json) => _$PushRequestQueueFromJson(json);
 
   Map<String, dynamic> toJson() => _$PushRequestQueueToJson(this);
 }
 
 @JsonSerializable()
 class SerializableRSAPublicKey extends RSAPublicKey {
-  SerializableRSAPublicKey(BigInt modulus, BigInt exponent)
-      : super(modulus, exponent);
+  SerializableRSAPublicKey(BigInt modulus, BigInt exponent) : super(modulus, exponent);
 
-  factory SerializableRSAPublicKey.fromJson(Map<String, dynamic> json) =>
-      _$SerializableRSAPublicKeyFromJson(json);
+  factory SerializableRSAPublicKey.fromJson(Map<String, dynamic> json) => _$SerializableRSAPublicKeyFromJson(json);
 
   Map<String, dynamic> toJson() => _$SerializableRSAPublicKeyToJson(this);
 }
 
 @JsonSerializable()
 class SerializableRSAPrivateKey extends RSAPrivateKey {
-  SerializableRSAPrivateKey(BigInt modulus, BigInt exponent, BigInt p, BigInt q)
-      : super(modulus, exponent, p, q);
+  SerializableRSAPrivateKey(BigInt modulus, BigInt exponent, BigInt p, BigInt q) : super(modulus, exponent, p, q);
 
-  factory SerializableRSAPrivateKey.fromJson(Map<String, dynamic> json) =>
-      _$SerializableRSAPrivateKeyFromJson(json);
+  factory SerializableRSAPrivateKey.fromJson(Map<String, dynamic> json) => _$SerializableRSAPrivateKeyFromJson(json);
 
   Map<String, dynamic> toJson() => _$SerializableRSAPrivateKeyToJson(this);
 }
@@ -535,13 +488,11 @@ class CustomIntBuffer {
 
   set list(List<int> l) {
     if (_list != null) {
-      throw ArgumentError(
-          'Initializing [list] in [CustomStringBuffer] is only allowed once.');
+      throw ArgumentError('Initializing [list] in [CustomStringBuffer] is only allowed once.');
     }
 
     if (l.length > maxSize) {
-      throw ArgumentError(
-          'The list $l is to long for a buffer of size $maxSize');
+      throw ArgumentError('The list $l is to long for a buffer of size $maxSize');
     }
 
     this._list = l;
@@ -556,8 +507,7 @@ class CustomIntBuffer {
 
   bool contains(int value) => list.contains(value);
 
-  factory CustomIntBuffer.fromJson(Map<String, dynamic> json) =>
-      _$CustomIntBufferFromJson(json);
+  factory CustomIntBuffer.fromJson(Map<String, dynamic> json) => _$CustomIntBufferFromJson(json);
 
   Map<String, dynamic> toJson() => _$CustomIntBufferToJson(this);
 }
