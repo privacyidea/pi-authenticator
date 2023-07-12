@@ -53,7 +53,7 @@ class Logger {
   }
 
   /*----------- INSTANCE MEMBER & GETTER -----------*/
-  Function? _callback;
+  Function? _appRunner;
   Widget? _app;
   String _lastError = 'No error Message';
   GlobalKey<NavigatorState>? _navigatorKey;
@@ -80,7 +80,7 @@ class Logger {
   /*----------- CONSTRUCTORS/FACTORIES -----------*/
 
   Logger._({Function? appRunner, Widget? app})
-      : _callback = appRunner,
+      : _appRunner = appRunner,
         _app = app {
     if (_instance != null) {
       _printWarning('Logger already initialized. Using existing instance');
@@ -91,7 +91,6 @@ class Logger {
 
     _setupLogger().then((_) {
       if (_flutterIsRunning) _enableLoggingToFile = true;
-      _print(_flutterIsRunning.toString());
       _print('Logger initialized${_enableLoggingToFile ? '\nLogging to File is Enabled now.' : ''}');
     });
   }
@@ -201,14 +200,14 @@ class Logger {
   }
 
   void _runZonedGuarded() {
-    if (_callback == null && _app == null) {
+    if (_appRunner == null && _app == null) {
       WidgetsFlutterBinding.ensureInitialized();
       return;
     }
     runZonedGuarded<void>(
       () {
-        if (_callback != null) {
-          _callback!();
+        if (_appRunner != null) {
+          _appRunner!();
           _flutterIsRunning = true;
         } else if (_app != null) {
           runApp(_app!);

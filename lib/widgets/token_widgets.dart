@@ -824,6 +824,18 @@ class _PushWidgetState extends _TokenWidgetState with LifecycleMixin {
 abstract class _OTPTokenWidgetState extends _TokenWidgetState {
   String _otpValue;
   final HideableTextController _hideableController = HideableTextController();
+  bool _isHidden = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _hideableController.listen((isShown) {
+      if (isShown) _updateOtpValue();
+      setState(() {
+        _isHidden = !isShown;
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -892,7 +904,7 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             text: insertCharAt(_otpValue, ' ', _token.digits ~/ 2),
             textScaleFactor: 1.9,
             enabled: _token.isLocked,
-            showDuration: Duration(seconds: 10),
+            showDuration: Duration(seconds: 30),
             textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
           ),
           subtitle: Column(
@@ -901,33 +913,32 @@ class _HotpWidgetState extends _OTPTokenWidgetState {
             children: _getSubtitle(),
           ),
           trailing: Container(
-            padding: const EdgeInsets.only(right: 24.0),
-            child: _token.isLocked
-                ? IconButton(
-                    iconSize: 32,
-                    onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
-                    icon: Icon(
-                      Icons.replay,
-                    ),
-                  )
-                : IconButton(
-                    iconSize: 32,
-                    onPressed: buttonIsDisabled ? null : () => _hideableController.tap(),
-                    icon: Icon(
-                      Icons.remove_red_eye_outlined,
-                    ),
-                  ),
-          ),
+              padding: const EdgeInsets.only(right: 24.0),
+              child: _token.isLocked && _isHidden
+                  ? IconButton(
+                      iconSize: 32,
+                      onPressed: buttonIsDisabled
+                          ? null
+                          : () async {
+                              if (await _unlock(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
+                                _hideableController.show();
+                              }
+                            },
+                      icon: Icon(
+                        Icons.remove_red_eye_outlined,
+                      ),
+                    )
+                  : IconButton(
+                      iconSize: 32,
+                      onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
+                      icon: Icon(
+                        Icons.replay,
+                      ),
+                    )),
           onTap: _token.isLocked
               ? () async {
                   if (await _unlock(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
-                    // unlock token, flag it as relockable
-                    _token.isLocked = false;
-
-                    if (_token.pin != null && _token.pin != false) {
-                      _token.relock = true;
-                    }
-                    setState(() {});
+                    _hideableController.show();
                   }
                 }
               : () {

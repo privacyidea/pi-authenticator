@@ -26,8 +26,12 @@ import 'package:flutter/material.dart';
 class HideableTextController {
   var _controller = StreamController<bool>.broadcast();
 
-  void tap() {
+  void show() {
     _controller.add(true);
+  }
+
+  void hide() {
+    _controller.add(false);
   }
 
   void listen(void onData(bool event)?, {Function? onError, void onDone()?, bool? cancelOnError}) {
@@ -64,8 +68,6 @@ class HideableText extends StatefulWidget {
   final String replaceCharacter;
   final bool replaceWhitespaces;
   final HideableTextController? controller;
-  final Function? onShow;
-  final Function? onHide;
 
   const HideableText({
     Key? key,
@@ -78,8 +80,6 @@ class HideableText extends StatefulWidget {
     this.replaceCharacter = '\u2022',
     this.replaceWhitespaces = false,
     this.controller,
-    this.onShow,
-    this.onHide,
   }) : super(key: key);
 
   @override
@@ -89,26 +89,27 @@ class HideableText extends StatefulWidget {
 class HideableTextState extends State<HideableText> {
   late bool _isHidden;
 
-  HideableTextState({required bool isHidden}) : this._isHidden = isHidden;
+  HideableTextState({required bool isHidden}) : _isHidden = isHidden;
 
   @override
   void initState() {
     super.initState();
-    widget.controller?.listen((event) => showText(), cancelOnError: false);
+    widget.controller?.listen((isShown) {
+      if (isShown) showText();
+    }, cancelOnError: false);
   }
 
   void showText() {
     if (!widget.enabled || !_isHidden) return;
     if (mounted)
       setState(() {
-        widget.onShow?.call();
         _isHidden = false;
       });
 
     Timer(widget.showDuration, () {
       if (mounted)
         setState(() {
-          widget.onHide?.call();
+          widget.controller?.hide();
           _isHidden = true;
         });
     });
