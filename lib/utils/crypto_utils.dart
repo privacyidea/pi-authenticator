@@ -27,9 +27,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/model/tokens.dart';
 import 'identifiers.dart';
 
 Future<Uint8List> pbkdf2({required Uint8List salt, required int iterations, required int keyLength, required Uint8List password}) async {
@@ -176,7 +176,7 @@ Future<String?> trySignWithToken(PushToken token, String message, BuildContext? 
       return null;
     }
   } else {
-    signature = createBase32Signature(token.getPrivateTokenKey()!, utf8.encode(message) as Uint8List);
+    signature = createBase32Signature(token.RSAPrivateTokenKey!, utf8.encode(message) as Uint8List);
   }
 
   return signature;

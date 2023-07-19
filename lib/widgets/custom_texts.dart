@@ -21,27 +21,39 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
-/// Text widget that allows obfuscation of its content.
-class HideableTextController {
-  var _controller = StreamController<bool>.broadcast();
+// /// Text widget that allows obfuscation of its content.
+// class HideableTextController {
+//   final Duration showDuration;
+//   final bool autoHide;
 
-  void show() {
-    _controller.add(true);
-  }
+//   HideableTextController({this.showDuration = const Duration(seconds: 5), this.autoHide = true}) {
+//     Logger.warning('HideableTextController created');
+//   }
 
-  void hide() {
-    _controller.add(false);
-  }
+//   final _controller = StreamController<bool>.broadcast();
+//   void show() {
+//     Logger.info('Show text');
+//     _controller.add(false);
+//     if (autoHide) Future.delayed(showDuration, () => hide());
+//   }
 
-  void listen(void onData(bool event)?, {Function? onError, void onDone()?, bool? cancelOnError}) {
-    _controller.stream.listen(onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
-  }
+//   void hide() {
+//     Logger.info('Hide text');
+//     _controller.add(true);
+//   }
 
-  void close() {
-    _controller.close();
-  }
-}
+//   // If isHidden is true, the text should be hidden.
+//   // If isHidden is false, the text should be shown.
+//   void listen(void onData(bool isHidden)?, {Function? onError, void onDone()?, bool? cancelOnError}) {
+//     _controller.stream.listen(onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+//   }
+
+//   void close() {
+//     _controller.close();
+//   }
+// }
 
 /// Text widget that allows obfuscation of its content. This allows to show the
 /// content for a specific amount of time before it is hidden.
@@ -57,83 +69,41 @@ class HideableTextController {
 /// of the real characters in [text].
 /// If [replaceWhitespaces] is true, whitespaces in [text] are replaced by
 /// [replaceCharacter] too.
-/// [controller] handles the tap detection on the widget that un-hides the content.
-class HideableText extends StatefulWidget {
+/// [isHiddenNotifier] handles the tap detection on the widget that un-hides the content.
+class HideableText extends StatelessWidget {
   final String text;
   final bool hideOnDefault;
   final double textScaleFactor;
-  final Duration showDuration;
   final TextStyle? textStyle;
   final bool enabled;
   final String replaceCharacter;
   final bool replaceWhitespaces;
-  final HideableTextController? controller;
+  final ValueNotifier<bool> isHiddenNotifier;
 
   const HideableText({
     Key? key,
     required this.text,
+    required this.isHiddenNotifier,
     this.hideOnDefault = true,
     this.textScaleFactor = 1.0,
-    required this.showDuration,
     this.textStyle,
     this.enabled = true,
     this.replaceCharacter = '\u2022',
     this.replaceWhitespaces = false,
-    this.controller,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => HideableTextState(isHidden: this.hideOnDefault);
-}
-
-class HideableTextState extends State<HideableText> {
-  late bool _isHidden;
-
-  HideableTextState({required bool isHidden}) : _isHidden = isHidden;
-
-  @override
-  void initState() {
-    super.initState();
-    widget.controller?.listen((isShown) {
-      if (isShown) showText();
-    }, cancelOnError: false);
-  }
-
-  void showText() {
-    if (!widget.enabled || !_isHidden) return;
-    if (mounted)
-      setState(() {
-        _isHidden = false;
-      });
-
-    Timer(widget.showDuration, () {
-      if (mounted)
-        setState(() {
-          widget.controller?.hide();
-          _isHidden = true;
-        });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    Text text = Text(
-      _isHidden && widget.enabled ? widget.text.replaceAll(RegExp(widget.replaceWhitespaces ? r'.' : r'[^\s]'), widget.replaceCharacter) : widget.text,
-      textScaleFactor: widget.textScaleFactor,
-      style: widget.textStyle != null
-          ? widget.textStyle!.copyWith(fontFamily: 'monospace', fontWeight: FontWeight.bold)
+    return Text(
+      isHiddenNotifier.value && enabled ? text.replaceAll(RegExp(replaceWhitespaces ? r'.' : r'[^\s]'), replaceCharacter) : text,
+      textScaleFactor: textScaleFactor,
+      style: textStyle != null
+          ? textStyle!.copyWith(fontFamily: 'monospace', fontWeight: FontWeight.bold)
           : TextStyle(
               fontFamily: 'monospace',
               fontWeight: FontWeight.bold,
             ),
     );
-
-    return widget.controller == null
-        ? GestureDetector(
-            child: text,
-            onTap: showText,
-          )
-        : text;
   }
 }
 

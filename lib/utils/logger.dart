@@ -6,20 +6,23 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:privacyidea_authenticator/screens/settings_screen.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
-import 'package:privacyidea_authenticator/widgets/send_error_dialog.dart';
+import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logger/logger.dart' as printer;
+
+final provider = Provider<int>((ref) => 0);
 
 class Logger {
   /*----------- STATIC FIELDS & GETTER -----------*/
   static Logger? _instance;
   static BuildContext get _context => navigatorKey.currentContext!;
   static String get _mailBody => AppLocalizations.of(_context)!.errorLogFileAttached;
-  static int get _lineLength => 200;
+  static int get _lineLength => 160;
   static printer.Logger print = printer.Logger(
     printer: printer.PrettyPrinter(
       lineLength: _lineLength + 5,
@@ -68,8 +71,8 @@ class Logger {
   String get _filename => 'logfile.txt';
   String? get _fullPath => _logPath != null ? '$_logPath/$_filename' : null;
   bool get _verbose {
-    if (_navigatorKey == null || _navigatorKey!.currentContext == null) return false;
-    return AppSettings.of(_navigatorKey!.currentContext!).getVerboseLogging();
+    if (globalRef == null) return false;
+    return globalRef!.read(settingsProvider).verboseLogging;
   }
 
   bool get logfileHasContent {

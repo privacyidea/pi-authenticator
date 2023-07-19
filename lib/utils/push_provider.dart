@@ -25,8 +25,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
-import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/screens/settings_screen.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 import 'crypto_utils.dart';
@@ -142,7 +142,7 @@ class PushProvider {
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
       Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
-      AppSettings.of(context).enablePolling = false;
+      globalRef?.read(settingsProvider.notifier).enablePolling();
       return false;
     }
 

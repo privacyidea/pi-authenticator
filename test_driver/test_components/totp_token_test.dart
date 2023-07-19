@@ -23,7 +23,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_driver/flutter_driver.dart';
-import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/model/tokens/otp_tokens/totp_token/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:test/test.dart';
@@ -86,7 +86,7 @@ void totpTokenUpdateTest() {
       // We have to run this without waiting for all animations to stop
       // (the animation loops in this widget)
       await driver!.runUnsynchronized(() async {
-        String rawValue = token.calculateOtpValue().padLeft(6, '0');
+        String rawValue = token.otpValue.padLeft(6, '0');
         String value = insertCharAt(rawValue, ' ', rawValue.length ~/ 2);
         print('1. Value: $value');
 
@@ -97,7 +97,7 @@ void totpTokenUpdateTest() {
         // Wait until update is due.
         await Future.delayed(Duration(seconds: 32));
 
-        String rawValue = token.calculateOtpValue().padLeft(6, '0');
+        String rawValue = token.otpValue.padLeft(6, '0');
         String value = insertCharAt(rawValue, ' ', rawValue.length ~/ 2);
 
         print('2. Value: $value');
