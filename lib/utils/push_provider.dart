@@ -112,12 +112,15 @@ class PushProvider {
     } on FirebaseException catch (ex) {
       String errorMessage = ex.message ?? 'no error message';
       final SnackBar snackBar = SnackBar(content: Text("Unable to retrieve Firebase token! (" + errorMessage + ": " + ex.code + ")"));
+      Logger.warning('Unable to retrieve Firebase token! (' + errorMessage + ': ' + ex.code + ')', name: 'push_provider.dart#getFBToken', error: ex);
       snackbarKey.currentState?.showSnackBar(snackBar);
     }
 
     // Fall back to the last known firebase token
     if (firebaseToken == null) {
       firebaseToken = await StorageUtil.getCurrentFirebaseToken();
+    } else {
+      await StorageUtil.setNewFirebaseToken(firebaseToken);
     }
 
     if (firebaseToken == null) {
@@ -185,6 +188,7 @@ class PushProvider {
         Logger.warning(
           'Polling push tokens not working, server can not be reached.',
           name: 'push_provider.dart#pollForChallenges',
+          error: error,
         );
         return false;
       }

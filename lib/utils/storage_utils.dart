@@ -53,6 +53,10 @@ class StorageUtil {
   /// Saves [token] securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
   static Future<void> saveOrReplaceToken(Token token) async {
+    if (token is PushToken && token.isRolledOut == false) {
+      Logger.info('Token not rolled out, not saving to secure storage');
+      return;
+    }
     await _storage.write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
     Logger.info('Token saved: ${token.id} to secure storage');
   }
@@ -68,16 +72,21 @@ class StorageUtil {
     Logger.info(keyValueMap.toString());
 
     List<Token> tokenList = [];
-    for (String value in keyValueMap.values) {
+
+    for (var i = 0; i < keyValueMap.length; i++) {
+      final value = keyValueMap.values.elementAt(i);
+      final key = keyValueMap.keys.elementAt(i);
+      // for (String value in keyValueMap.values) {
+
       Map<String, dynamic>? serializedToken;
 
       try {
         serializedToken = jsonDecode(value);
       } on FormatException {
-        Logger.error(
-          'Could not deserialize token from secure storage. Value: $value',
+        Logger.info(
+          'Could not deserialize token from secure storage. Value: $value, key: $key',
           name: 'storage_utils.dart#loadAllTokens',
-          error: FormatException('Could not deserialize token from secure storage. Value: $value'),
+          error: FormatException('Could not deserialize token from secure storage. Value: $value, key: $key'),
         );
         // Skip everything that does not fit a serialized token
         continue;
@@ -170,6 +179,7 @@ class StorageUtil {
         );
       } else if (type == 'pipush') {
         token = PushToken(
+          isRolledOut: tokenMap['isRolledOut'] ?? false,
           issuer: tokenMap['label'],
           label: tokenMap['label'],
           id: id,

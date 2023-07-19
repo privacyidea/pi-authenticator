@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,19 +38,18 @@ class TokenNotifier extends StateNotifier<List<Token>> {
 
   Future<void> _loadTokenList() async {
     List<Token> tokens = await StorageUtil.loadAllTokens();
-    final sortedTokens = _sortTokens(tokens);
-    state = sortedTokens;
+    _sortTokens(tokens);
+    state = tokens;
   }
 
   // Sort the list by the sortIndex stored in localStorage
-  List<Token> _sortTokens(List<Token> tokens) {
+  void _sortTokens(List<Token> tokens) {
     tokens.sort((a, b) {
       if (a.sortIndex != null && b.sortIndex != null) {
         return a.sortIndex!.compareTo(b.sortIndex as int);
       }
       return a.id.hashCode.compareTo(b.id.hashCode);
     });
-    return tokens;
   }
 
   void incrementCounter(HOTPToken token) {
@@ -63,8 +63,8 @@ class TokenNotifier extends StateNotifier<List<Token>> {
   void addToken(Token token) {
     final tempTokens = [...state];
     tempTokens.add(token);
-    final sortedTokens = _sortTokens(tempTokens);
-    state = sortedTokens;
+    _sortTokens(tempTokens);
+    state = tempTokens;
     StorageUtil.saveOrReplaceToken(token);
     _enablePollingIfNeeded();
   }
@@ -72,8 +72,8 @@ class TokenNotifier extends StateNotifier<List<Token>> {
   void addTokens(List<Token> tokens) {
     final tempTokens = [...state];
     tempTokens.addAll(tokens);
-    final sortedTokens = _sortTokens(tempTokens);
-    state = sortedTokens;
+    _sortTokens(tempTokens);
+    state = tempTokens;
     for (final token in tokens) {
       StorageUtil.saveOrReplaceToken(token);
     }
@@ -123,20 +123,53 @@ class TokenNotifier extends StateNotifier<List<Token>> {
     final tempTokens = [...state];
     final index = tempTokens.indexWhere((element) => element.id == token.id);
     tempTokens[index] = token;
-    final sortedTokens = _sortTokens(tempTokens);
-    state = sortedTokens;
+    _sortTokens(tempTokens);
+    state = tempTokens;
     StorageUtil.saveOrReplaceToken(token);
   }
 
-  void updateTokens(List<Token> tokens) {
+  void updateTokens(List<Token> updatedTokens) {
     final tempTokens = [...state];
-    for (final token in tokens) {
-      final index = tempTokens.indexWhere((element) => element.id == token.id);
-      tempTokens[index] = token;
-      StorageUtil.saveOrReplaceToken(token);
+    for (final updatedToken in updatedTokens) {
+      final index = tempTokens.indexWhere((oldToken) => oldToken.id == updatedToken.id);
+      Logger.warning('Replacing token\n${tempTokens[index]}\nwith\n${updatedToken}');
+      tempTokens[index] = updatedToken;
+      StorageUtil.saveOrReplaceToken(updatedToken);
     }
-    final sortedTokens = _sortTokens(tempTokens);
-    state = sortedTokens;
+    _sortTokens(tempTokens);
+    for (final token in tempTokens) {
+      Logger.warning('Sorted token ${token.label}: ${token.sortIndex}');
+    }
+    state = tempTokens;
+  }
+
+  void reorderToken(Token token, int newIndex) {
+    final oldIndex = token.sortIndex;
+    if (oldIndex == null) {
+      Logger.warning("Can't reorder Token ${token.label}. It has no sortIndex.");
+      return;
+    }
+
+    if (oldIndex == newIndex) return;
+    //If the selected token moved down all other tokens between old and new index must decrease their sort index by 1 to move up
+    //If the selected token moved up all other tokens between old and new index must increase their sort index by 1 to move down
+    final selectedTokenMovedDown = newIndex > oldIndex;
+    if (selectedTokenMovedDown) newIndex--;
+    final reorderedTokens = <Token>[];
+    for (int i = min(oldIndex, newIndex); i <= max(oldIndex, newIndex); i++) {
+      final token = state[i];
+      if (i == oldIndex) {
+        Logger.info('Token ${token.label}: ${token.sortIndex} -> $newIndex');
+        reorderedTokens.add(token.copyWith(sortIndex: newIndex));
+        continue;
+      }
+
+      final newIndexThisToken = selectedTokenMovedDown ? i - 1 : i + 1;
+      Logger.info('Token ${token.label}: ${token.sortIndex} -> $newIndexThisToken');
+      reorderedTokens.add(token.copyWith(sortIndex: newIndexThisToken));
+    }
+
+    updateTokens(reorderedTokens);
   }
 
   void addTokenFromQRCode({required String qrCode, required BuildContext context}) async {
@@ -298,8 +331,13 @@ class TokenNotifier extends StateNotifier<List<Token>> {
         name: 'token_widgets.dart#_rollOutToken',
         error: 'Token: $token, key: ${keyPair.privateKey}',
       );
-      token = token.withPrivateTokenKey(keyPair.privateKey).withPublicTokenKey(keyPair.publicKey);
-      addToken(token);
+      Logger.warning('Setting private key for token.$token', name: 'token_widgets.dart#_rollOutToken', error: keyPair.privateKey);
+      token = token.withPrivateTokenKey(keyPair.privateKey);
+      Logger.warning('Setting public key for token.$token', name: 'token_widgets.dart#_rollOutToken', error: keyPair.publicKey);
+      token = token.withPublicTokenKey(keyPair.publicKey);
+      Logger.warning('Set public and private key for token.$token', name: 'token_widgets.dart#_rollOutToken');
+      updateToken(token);
+      Logger.warning('Updated token.$token', name: 'token_widgets.dart#_rollOutToken', error: keyPair.publicKey);
 
       checkNotificationPermission();
     }
@@ -310,7 +348,7 @@ class TokenNotifier extends StateNotifier<List<Token>> {
         'enrollment_credential': token.enrollmentCredentials,
         'serial': token.serial,
         'fbtoken': await PushProvider.getFBToken(),
-        'pubkey': serializeRSAPublicKeyPKCS8(token.RSAPublicTokenKey!),
+        'pubkey': serializeRSAPublicKeyPKCS8(token.rsaPublicTokenKey!),
       });
 
       if (response.statusCode == 200) {
@@ -324,8 +362,7 @@ class TokenNotifier extends StateNotifier<List<Token>> {
       } else {
         Logger.warning('Post request on roll out failed.',
             name: 'token_widgets.dart#_rollOutToken',
-            error: 'Token: $token, Status code: ${response.statusCode},'
-                ' Body: ${response.body}');
+            error: 'Token: ${token.serial}\nStatus code: ${response.statusCode},\nURL:${response.request?.url}\nBody: ${response.body}');
         throw HttpException(response.statusCode.toString());
         // showMessage(
         //   context: context,
@@ -334,7 +371,7 @@ class TokenNotifier extends StateNotifier<List<Token>> {
         // );
       }
     } on PlatformException catch (e) {
-      Logger.warning('Roll out push token [$token] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
+      Logger.warning('Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
       rethrow;
       // if (e.code == FIREBASE_TOKEN_ERROR_CODE) {
       //   throw PlatformException(FIREBASE_TOKEN_ERROR_CODE);
@@ -348,7 +385,7 @@ class TokenNotifier extends StateNotifier<List<Token>> {
       //   snackbarKey.currentState?.showSnackBar(snackBar);
       // }
     } on SocketException catch (e) {
-      Logger.warning('Roll out push token [$token] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
+      Logger.warning('Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
       rethrow;
       // showMessage(
       //   context: context,
@@ -356,7 +393,7 @@ class TokenNotifier extends StateNotifier<List<Token>> {
       //   duration: Duration(seconds: 3),
       // );
     } catch (e) {
-      Logger.warning('Roll out push token [$token] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
+      Logger.warning('Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
       rethrow;
       // showMessage(
       //   context: context,

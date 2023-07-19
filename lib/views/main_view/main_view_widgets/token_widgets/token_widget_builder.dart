@@ -14,10 +14,10 @@ abstract class TokenWidgetBuilder extends StatelessWidget {
   @override
   TokenWidget build(BuildContext context);
 
-  factory TokenWidgetBuilder.fromToken(Token token) => switch (token.runtimeType) {
-        TOTPToken => TOTPTokenWidget(token as TOTPToken),
-        HOTPToken => HOTPTokenWidget(token as HOTPToken),
-        PushToken => PushTokenWidget(token as PushToken),
+  static TokenWidget fromToken(Token token, {Key? key}) => switch (token.runtimeType) {
+        TOTPToken => TOTPTokenWidget(token as TOTPToken, key: key),
+        HOTPToken => HOTPTokenWidget(token as HOTPToken, key: key),
+        PushToken => PushTokenWidget(token as PushToken, key: key),
         _ => throw UnimplementedError('Token type (${token.runtimeType}) not supported')
       };
 }

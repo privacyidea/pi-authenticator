@@ -9,7 +9,6 @@ abstract class Token {
   final String label; // the name of the token, it cannot be uses as an identifier
   final String issuer; // The issuer of this token, currently unused.
   final String id; // this is the identifier of the token
-
   final bool isLocked;
   final bool? pin;
   final String? imageURL;
@@ -50,7 +49,6 @@ abstract class Token {
 
   @override
   String toString() {
-    return 'Token{_label: $label, _issuer: $issuer, _id: $id,'
-        ' _isLocked: $isLocked';
+    return 'Token{label: $label, issuer: $issuer, id: $id, _sLocked: $isLocked, pin: $pin, imageURL: $imageURL, sortIndex: $sortIndex, type: $type ';
   }
 }

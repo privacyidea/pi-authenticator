@@ -80,7 +80,7 @@ class HOTPToken extends OTPToken {
 
   @override
   String toString() {
-    return super.toString() + ' | Type HOTP | Counter $counter';
+    return 'H' + super.toString() + 'counter: $counter}';
   }
 
   factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json);

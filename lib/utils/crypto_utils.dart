@@ -176,7 +176,7 @@ Future<String?> trySignWithToken(PushToken token, String message, BuildContext? 
       return null;
     }
   } else {
-    signature = createBase32Signature(token.RSAPrivateTokenKey!, utf8.encode(message) as Uint8List);
+    signature = createBase32Signature(token.rsaPrivateTokenKey!, utf8.encode(message) as Uint8List);
   }
 
   return signature;

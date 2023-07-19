@@ -85,7 +85,7 @@ class TOTPToken extends OTPToken {
 
   @override
   String toString() {
-    return super.toString() + ' | Type TOTP | Period $period';
+    return 'T' + super.toString() + 'period: $period';
   }
 
   factory TOTPToken.fromJson(Map<String, dynamic> json) => _$TOTPTokenFromJson(json);

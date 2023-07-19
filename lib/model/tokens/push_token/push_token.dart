@@ -28,11 +28,11 @@ class PushToken extends Token {
   final String? publicTokenKey;
 
   // Custom getter and setter for RSA keys
-  RSAPublicKey? get RSAPublicServerKey => publicServerKey == null ? null : deserializeRSAPublicKeyPKCS1(publicServerKey!);
+  RSAPublicKey? get rsaPublicServerKey => publicServerKey == null ? null : deserializeRSAPublicKeyPKCS1(publicServerKey!);
   PushToken withPublicServerKey(RSAPublicKey key) => this.copyWith(publicServerKey: serializeRSAPublicKeyPKCS1(key));
-  RSAPublicKey? get RSAPublicTokenKey => publicTokenKey == null ? null : deserializeRSAPublicKeyPKCS1(publicTokenKey!);
+  RSAPublicKey? get rsaPublicTokenKey => publicTokenKey == null ? null : deserializeRSAPublicKeyPKCS1(publicTokenKey!);
   PushToken withPublicTokenKey(RSAPublicKey key) => this.copyWith(publicTokenKey: serializeRSAPublicKeyPKCS1(key));
-  RSAPrivateKey? get RSAPrivateTokenKey => privateTokenKey == null ? null : deserializeRSAPrivateKeyPKCS1(privateTokenKey!);
+  RSAPrivateKey? get rsaPrivateTokenKey => privateTokenKey == null ? null : deserializeRSAPrivateKeyPKCS1(privateTokenKey!);
   PushToken withPrivateTokenKey(RSAPrivateKey key) => this.copyWith(privateTokenKey: serializeRSAPrivateKeyPKCS1(key));
 
   final PushRequestQueue pushRequests;
@@ -139,9 +139,9 @@ class PushToken extends Token {
       url: url ?? this.url,
       sortIndex: sortIndex ?? this.sortIndex,
       tokenImage: tokenImage ?? this.tokenImage,
-      publicServerKey: publicServerKey,
-      publicTokenKey: publicTokenKey,
-      privateTokenKey: privateTokenKey,
+      publicServerKey: publicServerKey ?? this.publicServerKey,
+      publicTokenKey: publicTokenKey ?? this.publicTokenKey,
+      privateTokenKey: privateTokenKey ?? this.privateTokenKey,
       expirationDate: expirationDate ?? this.expirationDate,
       isRolledOut: isRolledOut ?? this.isRolledOut,
     );
@@ -155,12 +155,20 @@ class PushToken extends Token {
 
   @override
   String toString() {
-    return 'PushToken{_serial: $serial, _sslVerify: $sslVerify, '
-        '_enrollmentCredentials: $enrollmentCredentials, url: $url, '
-        'isRolledOut: $isRolledOut, publicServerKey: $publicServerKey, '
-        'privateTokenKey: $privateTokenKey, publicTokenKey: $publicTokenKey, '
-        '_pushRequests: $pushRequests, _expirationDate: $expirationDate},'
-        'id: $id';
+    return 'Push' +
+        super.toString() +
+        'expirationDate: $expirationDate, ' +
+        'serial: $serial, sslVerify: $sslVerify, ' +
+        'enrollmentCredentials: $enrollmentCredentials, ' +
+        'url: $url, isRolledOut: $isRolledOut, ' +
+        'sortIndex: $sortIndex, ' +
+        'pin: $pin, ' +
+        'publicServerKey: $publicServerKey, ' +
+        'privateTokenKey: $privateTokenKey, ' +
+        'publicTokenKey: $publicTokenKey, ' +
+        'pushRequests: $pushRequests, ' +
+        'tokenImage: $tokenImage, ' +
+        '_knownPushRequests: $_knownPushRequests}';
   }
 
   factory PushToken.fromJson(Map<String, dynamic> json) => _$PushTokenFromJson(json);
