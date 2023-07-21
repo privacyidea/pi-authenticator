@@ -3,12 +3,14 @@ import 'package:privacyidea_authenticator/model/platform_info/platform_info_imp/
 import 'package:privacyidea_authenticator/model/platform_info/platform_info.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/states/app_state.dart';
+import 'package:privacyidea_authenticator/model/states/token_category_state.dart';
+import 'package:privacyidea_authenticator/model/states/token_state.dart';
 import 'package:privacyidea_authenticator/state_notifiers/app_state_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/push_request_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
+import 'package:privacyidea_authenticator/state_notifiers/token_category_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'logger.dart';
@@ -17,7 +19,7 @@ import 'logger.dart';
 // Otherwise the whole app will rebuild on every state change of the provider
 WidgetRef? globalRef;
 
-final tokenProvider = StateNotifierProvider<TokenNotifier, List<Token>>((ref) {
+final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
   final tokenNotifier = TokenNotifier();
 
   appStateProvider.addListener(
@@ -49,7 +51,7 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, List<Token>>((ref) {
     (previous, next) {
       if (next == null) return;
       if (next.accepted == null) {
-        tokenNotifier.addPushRequest(next);
+        tokenNotifier.addPushRequestToToken(next);
         return;
       }
       if (next.accepted != null) {
@@ -80,3 +82,5 @@ final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushReque
 );
 
 final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>((ref) => AppStateNotifier());
+
+final tokenCategoryProvider = StateNotifierProvider<TokenCategoryNotifier, TokenCategoryState>((ref) => TokenCategoryNotifier());

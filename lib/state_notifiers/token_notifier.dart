@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
+import 'package:privacyidea_authenticator/model/states/token_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/otp_tokens/hotp_token/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/otp_tokens/totp_token/totp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
@@ -31,10 +32,10 @@ import 'package:http/http.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 
-class TokenNotifier extends StateNotifier<List<Token>> {
-  TokenNotifier({List<Token>? initialState})
+class TokenNotifier extends StateNotifier<TokenState> {
+  TokenNotifier({TokenState? initialState})
       : super(
-          initialState ?? <Token>[],
+          initialState ?? TokenState(),
         ) {
     _loadTokenList();
   }
@@ -45,104 +46,68 @@ class TokenNotifier extends StateNotifier<List<Token>> {
 
   Future<void> _loadTokenList() async {
     List<Token> tokens = await StorageUtil.loadAllTokens();
-    _sortTokens(tokens);
-    state = tokens;
-  }
-
-  // Sort the list by the sortIndex stored in localStorage
-  void _sortTokens(List<Token> tokens) {
-    tokens.sort((a, b) {
-      if (a.sortIndex != null && b.sortIndex != null) {
-        return a.sortIndex!.compareTo(b.sortIndex as int);
-      }
-      return -1;
-    });
+    state = TokenState(tokens: tokens);
   }
 
   void incrementCounter(HOTPToken token) {
-    final tempTokens = [...state];
-    final index = tempTokens.indexWhere((element) => element.id == token.id);
-    tempTokens[index] = token.withNextCounter();
-    state = tempTokens;
-    StorageUtil.saveOrReplaceToken(tempTokens[index]);
+    token = token.copyWith(counter: token.counter + 1);
+    state = state.updateToken(token);
+    StorageUtil.saveOrReplaceToken(token);
   }
 
   void addToken(Token token) {
-    final tempTokens = [...state];
-    tempTokens.add(token);
-    _sortTokens(tempTokens);
-    state = tempTokens;
+    state = state.withToken(token);
     StorageUtil.saveOrReplaceToken(token);
   }
 
   void addTokens(List<Token> tokens) {
-    final tempTokens = [...state];
-    tempTokens.addAll(tokens);
-    _sortTokens(tempTokens);
-    state = tempTokens;
+    state = state.withTokens(tokens);
     for (final token in tokens) {
       StorageUtil.saveOrReplaceToken(token);
     }
   }
 
   void removeToken(Token token) {
-    final tempTokens = [...state];
-    tempTokens.remove(token);
-    state = tempTokens;
+    state = state.withoutToken(token);
     StorageUtil.deleteToken(token);
   }
 
   void removeTokens(List<Token> tokens) {
-    final tempTokens = [...state];
-    tempTokens.removeWhere((element) => tokens.contains(element));
-    state = tempTokens;
+    state = state.withoutTokens(tokens);
     for (final token in tokens) {
       StorageUtil.deleteToken(token);
     }
   }
 
   PushToken removePushTokenBySerial(String serial) {
-    final tempTokens = [...state];
-    final token = tempTokens.firstWhere((element) => element is PushToken && element.serial == serial);
-    removeToken(token);
+    final token = state.tokens.firstWhere((element) => element is PushToken && element.serial == serial);
+    state = state.withoutToken(token);
     return token as PushToken;
   }
 
   Token removeTokenById(String id) {
-    final tempTokens = [...state];
-    final token = tempTokens.firstWhere((element) => element.id == id);
-    removeToken(token);
+    final token = state.tokens.firstWhere((element) => element.id == id);
+    state = state.withoutToken(token);
     return token;
   }
 
   List<Token> removeTokensByIds(List<String> ids) {
-    final tempTokens = [...state];
+    final tempTokens = List<Token>.from(state.tokens);
     final tokensToRemove = tempTokens.where((element) => ids.contains(element.id)).toList();
     removeTokens(tokensToRemove);
     return tokensToRemove;
   }
 
   void updateToken(Token token) {
-    final tempTokens = [...state];
-    final index = tempTokens.indexWhere((element) => element.id == token.id);
-    tempTokens[index] = token;
-    _sortTokens(tempTokens);
-    state = tempTokens;
+    state = state.updateToken(token);
     StorageUtil.saveOrReplaceToken(token);
   }
 
   void updateTokens(List<Token> updatedTokens) {
-    final tempTokens = [...state];
-    for (final updatedToken in updatedTokens) {
-      final index = tempTokens.indexWhere((oldToken) => oldToken.id == updatedToken.id);
-      tempTokens[index] = updatedToken;
-      StorageUtil.saveOrReplaceToken(updatedToken);
+    state = state.updateTokens(updatedTokens);
+    for (Token token in updatedTokens) {
+      StorageUtil.saveOrReplaceToken(token);
     }
-    _sortTokens(tempTokens);
-    for (final token in tempTokens) {
-      Logger.warning('Sorted token ${token.label}: ${token.sortIndex}');
-    }
-    state = tempTokens;
   }
 
   void reorderToken(Token token, int newIndex) {
@@ -159,7 +124,7 @@ class TokenNotifier extends StateNotifier<List<Token>> {
     if (selectedTokenMovedDown) newIndex--;
     final reorderedTokens = <Token>[];
     for (int i = min(oldIndex, newIndex); i <= max(oldIndex, newIndex); i++) {
-      final token = state[i];
+      final token = state.tokens[i];
       if (i == oldIndex) {
         Logger.info('Token ${token.label}: ${token.sortIndex} -> $newIndex');
         reorderedTokens.add(token.copyWith(sortIndex: newIndex));
@@ -203,7 +168,7 @@ class TokenNotifier extends StateNotifier<List<Token>> {
         newToken = newToken.copyWith(isLocked: true);
       }
 
-      if (newToken is PushToken && state.contains(newToken)) {
+      if (newToken is PushToken && state.tokens.contains(newToken)) {
         showMessage(message: 'A token with the serial ${newToken.serial} already exists!', duration: Duration(seconds: 2), context: context);
         return;
       }
@@ -225,16 +190,8 @@ class TokenNotifier extends StateNotifier<List<Token>> {
     }
   }
 
-  void _enablePollingIfNeeded() {
-    if (globalRef?.read(settingsProvider).pollingEnabled == true) return;
-    if (state.whereType<PushToken>().isEmpty) return;
-
-    //enable polling on push token added
-    globalRef?.read(settingsProvider.notifier).enablePolling();
-  }
-
-  Future<void> addPushRequest(PushRequest pr) async {
-    PushToken? token = state.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pr.serial && t.isRolledOut);
+  Future<void> addPushRequestToToken(PushRequest pr) async {
+    PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pr.serial && t.isRolledOut);
 
     if (token == null) {
       Logger.warning('The requested token does not exist or is not rolled out.', name: 'main_screen.dart#_handleIncomingChallenge', error: pr.serial);
@@ -289,7 +246,7 @@ class TokenNotifier extends StateNotifier<List<Token>> {
 
   void removePushRequest(PushRequest pushRequest) {
     Logger.warning('Removing push request ${pushRequest.id}');
-    PushToken? token = state.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pushRequest.serial);
+    PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pushRequest.serial);
 
     if (token == null) {
       Logger.warning('The requested token does not exist.', name: 'main_screen.dart#_handleIncomingChallenge', error: pushRequest.serial);

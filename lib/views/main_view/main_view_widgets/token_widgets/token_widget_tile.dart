@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/widgets/custom_trailing.dart';
 
 class TokenWidgetTile extends ConsumerWidget {
   final Widget? title;
@@ -9,6 +10,7 @@ class TokenWidgetTile extends ConsumerWidget {
   final Visibility? overlay;
   final List<Visibility> trailingWidgets;
   final Function()? onTap;
+  final bool tokenIsLocked;
 
   const TokenWidgetTile({
     this.leading,
@@ -19,6 +21,7 @@ class TokenWidgetTile extends ConsumerWidget {
     this.trailingWidgets = const [],
     this.onTap,
     super.key,
+    this.tokenIsLocked = false,
   });
 
   @override
@@ -40,16 +43,23 @@ class TokenWidgetTile extends ConsumerWidget {
                     for (String subtitle in subtitles) Text(subtitle),
                   ],
                 ),
-                trailing: Container(
-                  margin: EdgeInsets.only(right: 20.0),
-                  width: MediaQuery.of(context).size.width * 0.15,
-                  height: MediaQuery.of(context).size.width * 0.15,
-                  child: trailing,
+                trailing: CustomTrailing(
+                  child: trailing ?? Container(),
                 ),
               ),
               for (Visibility widget in trailingWidgets) widget,
             ],
           ),
+          if (tokenIsLocked)
+            Positioned(
+              child: Icon(
+                Icons.lock,
+                color: Colors.yellow,
+                size: 18,
+              ),
+              right: 0,
+              bottom: 0,
+            ),
           if (overlay != null) overlay!
         ],
       ),

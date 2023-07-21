@@ -9,7 +9,7 @@ import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/toke
 import 'package:privacyidea_authenticator/widgets/custom_texts.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/widgets/hideable_widget_trailing.dart';
+import 'package:privacyidea_authenticator/widgets/hideable_widget_.dart';
 
 class HOTPTokenWidgetTile extends ConsumerStatefulWidget {
   final HOTPToken token;
@@ -55,6 +55,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
   @override
   Widget build(BuildContext context) {
     return TokenWidgetTile(
+        tokenIsLocked: widget.token.isLocked,
         title: HideableText(
           textScaleFactor: 1.9,
           isHiddenNotifier: isHidden,
@@ -63,7 +64,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
           textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
         ),
         subtitles: [widget.token.label],
-        trailing: HideableWidgetTrailing(
+        trailing: HideableWidget(
           token: widget.token,
           isHiddenNotifier: isHidden,
           child: IconButton(

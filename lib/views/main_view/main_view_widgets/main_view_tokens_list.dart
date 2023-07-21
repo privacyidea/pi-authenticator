@@ -22,6 +22,8 @@ class MainViewTokensList extends ConsumerWidget {
     });
     return SlidableAutoCloseBehavior(
       child: ReorderableListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
         itemBuilder: (context, index) {
           if (tokens[index].sortIndex == null) {
             tokens[index] = tokens[index].copyWith(sortIndex: index);
@@ -30,8 +32,6 @@ class MainViewTokensList extends ConsumerWidget {
           Token token = tokens[index];
           return TokenWidgetBuilder.fromToken(token, key: ValueKey(token.id));
         },
-        // add padding for floating action button
-        padding: EdgeInsets.only(bottom: 80),
         itemCount: tokens.length,
         onReorder: (int oldIndex, int newIndex) {
           if (oldIndex == newIndex) return;

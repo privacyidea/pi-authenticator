@@ -6,13 +6,15 @@ import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/toke
 
 class HOTPTokenWidget extends TokenWidget {
   final HOTPToken token;
+  final bool withDivider;
 
-  HOTPTokenWidget(this.token, {super.key});
+  HOTPTokenWidget(this.token, {this.withDivider = true, super.key});
   @override
   TokenWidgetBase build(BuildContext context) {
     return TokenWidgetBase(
       token: token,
       tile: HOTPTokenWidgetTile(token: token, key: ValueKey(token.id)),
+      withDivider: withDivider,
     );
   }
 }

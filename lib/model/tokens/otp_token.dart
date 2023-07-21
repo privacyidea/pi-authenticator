@@ -21,6 +21,8 @@ abstract class OTPToken extends Token {
     int? sortIndex,
     bool isLocked = false,
     bool canToggleLock = true,
+    int? categoryId,
+    bool isInEditMode = false,
   }) : super(
           label: label,
           issuer: issuer,
@@ -29,6 +31,8 @@ abstract class OTPToken extends Token {
           imageURL: imageURL,
           sortIndex: sortIndex,
           isLocked: isLocked,
+          categoryId: categoryId,
+          isInEditMode: isInEditMode,
         );
 
   OTPToken copyWith({
@@ -42,6 +46,8 @@ abstract class OTPToken extends Token {
     String? imageURL,
     int? sortIndex,
     bool? isLocked,
+    int? Function()? categoryId,
+    bool? isInEditMode,
   });
 
   @override

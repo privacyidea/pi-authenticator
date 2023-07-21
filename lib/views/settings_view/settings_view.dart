@@ -18,7 +18,7 @@ class SettingsView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
-    final tokens = ref.watch(tokenProvider);
+    final tokens = ref.watch(tokenProvider).tokens;
     final locale = settings.localePreference;
     final useSystemLocale = settings.useSystemLocale;
     final enablePolling = settings.pollingEnabled;

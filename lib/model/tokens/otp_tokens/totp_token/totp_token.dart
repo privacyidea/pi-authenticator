@@ -38,6 +38,8 @@ class TOTPToken extends OTPToken {
     int? sortIndex,
     bool isLocked = false,
     bool canToggleLock = true,
+    int? categoryId,
+    bool isInEditMode = false,
   }) : super(
           label: label,
           issuer: issuer,
@@ -51,6 +53,8 @@ class TOTPToken extends OTPToken {
           sortIndex: sortIndex,
           isLocked: isLocked,
           canToggleLock: canToggleLock,
+          categoryId: categoryId,
+          isInEditMode: isInEditMode,
         );
 
   TOTPToken copyWith({
@@ -65,7 +69,8 @@ class TOTPToken extends OTPToken {
     String? imageURL,
     int? sortIndex,
     bool? isLocked,
-    bool? canToggleLock,
+    int? Function()? categoryId,
+    bool? isInEditMode,
   }) {
     return TOTPToken(
       label: label ?? this.label,
@@ -79,6 +84,8 @@ class TOTPToken extends OTPToken {
       imageURL: imageURL ?? this.imageURL,
       sortIndex: sortIndex ?? this.sortIndex,
       isLocked: isLocked ?? this.isLocked,
+      categoryId: categoryId != null ? categoryId() : this.categoryId,
+      isInEditMode: isInEditMode ?? this.isInEditMode,
     );
   }
 

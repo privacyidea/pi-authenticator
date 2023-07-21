@@ -12,8 +12,9 @@ abstract class Token {
   final bool isLocked;
   final bool? pin;
   final String? imageURL;
-
+  final int? categoryId;
   final int? sortIndex;
+  final bool isInEditMode;
 
   // Must be string representation of TokenType enum.
   final String type; // Used to identify the token when deserializing.
@@ -35,6 +36,8 @@ abstract class Token {
     this.imageURL,
     this.sortIndex,
     this.isLocked = false,
+    this.categoryId,
+    this.isInEditMode = false,
   });
 
   Token copyWith({
@@ -45,10 +48,12 @@ abstract class Token {
     bool? pin,
     String? imageURL,
     int? sortIndex,
+    int? Function()? categoryId,
+    bool? isInEditMode,
   });
 
   @override
   String toString() {
-    return 'Token{label: $label, issuer: $issuer, id: $id, _sLocked: $isLocked, pin: $pin, imageURL: $imageURL, sortIndex: $sortIndex, type: $type ';
+    return 'Token{label: $label, issuer: $issuer, id: $id, _sLocked: $isLocked, pin: $pin, imageURL: $imageURL, sortIndex: $sortIndex, type: $type, categoryId: $categoryId, isInEditMode: $isInEditMode';
   }
 }

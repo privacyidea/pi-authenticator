@@ -10,6 +10,7 @@ class PushTokenWidgetTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return TokenWidgetTile(
+      tokenIsLocked: token.isLocked,
       leading: token.tokenImage != null
           ? Container(
               width: MediaQuery.of(context).size.width * 0.3,

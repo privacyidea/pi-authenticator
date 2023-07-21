@@ -9,24 +9,22 @@ import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/toke
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/token_action.dart';
 
 class TokenWidgetBase extends ConsumerWidget {
+  final Widget tile;
   final Token token;
   final TokenAction? deleteAction;
-
   final TokenAction? editAction;
-
   final TokenAction? lockAction;
-
-  final Widget tile;
-
   final List<Widget> stack;
+  final bool withDivider;
 
   const TokenWidgetBase({
+    required this.tile,
     required this.token,
     this.deleteAction,
     this.editAction,
     this.lockAction,
     this.stack = const <Widget>[],
-    required this.tile,
+    this.withDivider = true,
   });
 
   @override
@@ -59,11 +57,13 @@ class TokenWidgetBase extends ConsumerWidget {
             ],
           ),
         ),
-        Divider(
-          thickness: 1.5,
-          indent: 8,
-          endIndent: 8,
-        ),
+        withDivider
+            ? Divider(
+                thickness: 1.5,
+                indent: 8,
+                endIndent: 8,
+              )
+            : SizedBox(height: 16)
       ],
     );
   }

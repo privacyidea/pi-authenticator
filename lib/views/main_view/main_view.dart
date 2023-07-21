@@ -10,32 +10,8 @@ import 'package:privacyidea_authenticator/views/qr_scanner_view/scanner_view.dar
 import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/app_bar_item.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/custom_paint_app_bar.dart';
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:base32/base32.dart';
-import 'package:collection/collection.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
-import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
-import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/license_utils.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
-import 'package:privacyidea_authenticator/utils/push_provider.dart';
-import 'package:privacyidea_authenticator/utils/storage_utils.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
-import 'package:uni_links/uni_links.dart';
-import 'package:uuid/uuid.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/no_token_screen.dart';
 
 class MainView extends ConsumerStatefulWidget {
@@ -64,7 +40,7 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
 
   @override
   Widget build(BuildContext context) {
-    final tokenList = ref.watch(tokenProvider);
+    final tokenList = ref.watch(tokenProvider).tokens;
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(

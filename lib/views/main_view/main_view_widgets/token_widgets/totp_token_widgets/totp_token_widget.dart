@@ -6,14 +6,16 @@ import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/toke
 
 class TOTPTokenWidget extends TokenWidget {
   final TOTPToken token;
+  final bool withDivider;
 
-  TOTPTokenWidget(this.token, {super.key});
+  TOTPTokenWidget(this.token, {this.withDivider = true, super.key});
 
   @override
   TokenWidgetBase build(BuildContext context) {
     return TokenWidgetBase(
       token: token,
       tile: TOTPTokenWidgetTile(token),
+      withDivider: withDivider,
     );
   }
 }

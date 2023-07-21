@@ -33,6 +33,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
           ? null
           : CustomIntBuffer.fromJson(
               json['knownPushRequests'] as Map<String, dynamic>),
+      categoryId: json['categoryId'] as int?,
     );
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
@@ -41,6 +42,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'id': instance.id,
       'isLocked': instance.isLocked,
       'imageURL': instance.imageURL,
+      'categoryId': instance.categoryId,
       'type': instance.type,
       'expirationDate': instance.expirationDate.toIso8601String(),
       'serial': instance.serial,

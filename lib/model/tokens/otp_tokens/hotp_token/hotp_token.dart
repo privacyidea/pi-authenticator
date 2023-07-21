@@ -25,6 +25,8 @@ class HOTPToken extends OTPToken {
     int? sortIndex,
     bool isLocked = false,
     bool canToggleLock = true,
+    int? categoryId,
+    bool isInEditMode = false,
   }) : super(
           label: label,
           issuer: issuer,
@@ -38,6 +40,8 @@ class HOTPToken extends OTPToken {
           sortIndex: sortIndex,
           isLocked: isLocked,
           canToggleLock: canToggleLock,
+          categoryId: categoryId,
+          isInEditMode: isInEditMode,
         );
 
   @override
@@ -63,6 +67,8 @@ class HOTPToken extends OTPToken {
     String? imageURL,
     int? sortIndex,
     bool? isLocked,
+    int? Function()? categoryId,
+    bool? isInEditMode,
   }) =>
       HOTPToken(
         counter: counter ?? this.counter,
@@ -76,6 +82,8 @@ class HOTPToken extends OTPToken {
         imageURL: imageURL ?? this.imageURL,
         sortIndex: sortIndex ?? this.sortIndex,
         isLocked: isLocked ?? this.isLocked,
+        categoryId: categoryId != null ? categoryId() : this.categoryId,
+        isInEditMode: isInEditMode ?? this.isInEditMode,
       );
 
   @override

@@ -138,7 +138,7 @@ class PushProvider {
   static Future<bool> pollForChallenges() async {
     Logger.info('Polling for challenges', name: 'push_provider.dart#pollForChallenges');
     // Get all push tokens
-    List<PushToken> pushTokens = globalRef?.read(tokenProvider).whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
+    List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
 
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {

@@ -84,6 +84,8 @@ class PushToken extends Token {
     required DateTime expirationDate,
     bool isRolledOut = false,
     CustomIntBuffer? knownPushRequests,
+    int? categoryId,
+    bool isInEditMode = false,
   })  : this.publicServerKey = publicServerKey,
         this.publicTokenKey = publicTokenKey,
         this.privateTokenKey = privateTokenKey,
@@ -103,6 +105,7 @@ class PushToken extends Token {
           isLocked: isLocked,
           imageURL: imageURL,
           type: type ?? enumAsString(TokenTypes.PIPUSH),
+          isInEditMode: isInEditMode,
         ) {
     final now = DateTime.now();
     pushRequests?.removeWhere((request) => request.expirationDate.isBefore(now));
@@ -133,6 +136,8 @@ class PushToken extends Token {
     DateTime? expirationDate,
     bool? isRolledOut,
     CustomIntBuffer? knownPushRequests,
+    int? Function()? categoryId,
+    bool? isInEditMode,
   }) {
     return PushToken(
       label: label ?? this.label,
@@ -154,6 +159,8 @@ class PushToken extends Token {
       expirationDate: expirationDate ?? this.expirationDate,
       isRolledOut: isRolledOut ?? this.isRolledOut,
       knownPushRequests: knownPushRequests ?? this.knownPushRequests,
+      categoryId: categoryId != null ? categoryId() : this.categoryId,
+      isInEditMode: isInEditMode ?? this.isInEditMode,
     );
   }
 

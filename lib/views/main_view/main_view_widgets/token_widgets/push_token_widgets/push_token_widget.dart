@@ -10,14 +10,16 @@ import 'package:privacyidea_authenticator/widgets/press_button.dart';
 
 class PushTokenWidget extends TokenWidget {
   final PushToken token;
+  final bool withDivider;
 
-  PushTokenWidget(this.token, {super.key});
+  PushTokenWidget(this.token, {this.withDivider = true, super.key});
 
   @override
   TokenWidgetBase build(BuildContext context) {
     return TokenWidgetBase(
       token: token,
       tile: PushTokenWidgetTile(token),
+      withDivider: withDivider,
       stack: [
         Visibility(
           visible: !token.isRolledOut,

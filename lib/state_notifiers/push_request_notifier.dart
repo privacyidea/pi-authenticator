@@ -155,7 +155,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
 
     if (pushRequest.accepted == null) return false;
 
-    final token = globalRef?.read(tokenProvider).firstWhereOrNull((token) => token is PushToken && token.serial == pushRequest.serial);
+    final token = globalRef?.read(tokenProvider).tokens.firstWhereOrNull((token) => token is PushToken && token.serial == pushRequest.serial);
 
     if (token == null) {
       Logger.warning('Token not found.', name: 'token_widgets.dart#handleReaction', error: 'Serial: ${pushRequest.serial}');
