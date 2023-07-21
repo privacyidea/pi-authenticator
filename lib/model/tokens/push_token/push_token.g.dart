@@ -29,8 +29,11 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       privateTokenKey: json['privateTokenKey'] as String?,
       expirationDate: DateTime.parse(json['expirationDate'] as String),
       isRolledOut: json['isRolledOut'] as bool? ?? false,
-    )..knownPushRequests = CustomIntBuffer.fromJson(
-        json['knownPushRequests'] as Map<String, dynamic>);
+      knownPushRequests: json['knownPushRequests'] == null
+          ? null
+          : CustomIntBuffer.fromJson(
+              json['knownPushRequests'] as Map<String, dynamic>),
+    );
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'label': instance.label,

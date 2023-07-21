@@ -40,7 +40,12 @@ class TokenWidgetTile extends ConsumerWidget {
                     for (String subtitle in subtitles) Text(subtitle),
                   ],
                 ),
-                trailing: trailing,
+                trailing: Container(
+                  margin: EdgeInsets.only(right: 20.0),
+                  width: MediaQuery.of(context).size.width * 0.15,
+                  height: MediaQuery.of(context).size.width * 0.15,
+                  child: trailing,
+                ),
               ),
               for (Visibility widget in trailingWidgets) widget,
             ],

@@ -1,5 +1,7 @@
+import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/push_request_queue.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
@@ -35,23 +37,24 @@ class PushToken extends Token {
   RSAPrivateKey? get rsaPrivateTokenKey => privateTokenKey == null ? null : deserializeRSAPrivateKeyPKCS1(privateTokenKey!);
   PushToken withPrivateTokenKey(RSAPrivateKey key) => this.copyWith(privateTokenKey: serializeRSAPrivateKeyPKCS1(key));
 
-  final PushRequestQueue pushRequests;
+  PushToken withPushRequest(PushRequest pr) {
+    pushRequests.add(pr);
+    knownPushRequests.put(pr.id);
+    return this.copyWith(pushRequests: pushRequests, knownPushRequests: knownPushRequests);
+  }
+
+  PushToken withoutPushRequest(PushRequest pr) {
+    if (pushRequests.list.firstWhereOrNull((element) => element.id == pr.id) != null) {
+      pushRequests.remove(pr);
+    }
+    return this.copyWith(pushRequests: pushRequests);
+  }
+
+  late final PushRequestQueue pushRequests;
   final String? tokenImage;
-  CustomIntBuffer? _knownPushRequests;
+  final CustomIntBuffer knownPushRequests;
 
   // The get and set methods are needed for serialization.
-  CustomIntBuffer get knownPushRequests {
-    _knownPushRequests ??= CustomIntBuffer();
-    return _knownPushRequests!;
-  }
-
-  set knownPushRequests(CustomIntBuffer buffer) {
-    if (_knownPushRequests != null) {
-      throw ArgumentError('Initializing [knownPushRequests] in [PushToken] is only allowed once.');
-    }
-
-    this._knownPushRequests = buffer;
-  }
 
   bool knowsRequestWithId(int id) {
     bool exists = pushRequests.any((element) => element.id == id);
@@ -80,8 +83,8 @@ class PushToken extends Token {
     String? privateTokenKey,
     required DateTime expirationDate,
     bool isRolledOut = false,
-  })  : this.pushRequests = pushRequests ?? PushRequestQueue(),
-        this.publicServerKey = publicServerKey,
+    CustomIntBuffer? knownPushRequests,
+  })  : this.publicServerKey = publicServerKey,
         this.publicTokenKey = publicTokenKey,
         this.privateTokenKey = privateTokenKey,
         this.serial = serial,
@@ -92,6 +95,7 @@ class PushToken extends Token {
         this.tokenImage = tokenImage,
         this.pin = pin,
         this.isRolledOut = isRolledOut,
+        this.knownPushRequests = knownPushRequests ?? CustomIntBuffer(),
         super(
           label: label,
           issuer: issuer,
@@ -99,7 +103,11 @@ class PushToken extends Token {
           isLocked: isLocked,
           imageURL: imageURL,
           type: type ?? enumAsString(TokenTypes.PIPUSH),
-        );
+        ) {
+    final now = DateTime.now();
+    pushRequests?.removeWhere((request) => request.expirationDate.isBefore(now));
+    this.pushRequests = pushRequests ?? PushRequestQueue();
+  }
 
   @override
   PushToken copyWith({
@@ -124,6 +132,7 @@ class PushToken extends Token {
     String? privateTokenKey,
     DateTime? expirationDate,
     bool? isRolledOut,
+    CustomIntBuffer? knownPushRequests,
   }) {
     return PushToken(
       label: label ?? this.label,
@@ -144,6 +153,7 @@ class PushToken extends Token {
       privateTokenKey: privateTokenKey ?? this.privateTokenKey,
       expirationDate: expirationDate ?? this.expirationDate,
       isRolledOut: isRolledOut ?? this.isRolledOut,
+      knownPushRequests: knownPushRequests ?? this.knownPushRequests,
     );
   }
 
@@ -168,7 +178,7 @@ class PushToken extends Token {
         'publicTokenKey: $publicTokenKey, ' +
         'pushRequests: $pushRequests, ' +
         'tokenImage: $tokenImage, ' +
-        '_knownPushRequests: $_knownPushRequests}';
+        'knownPushRequests: $knownPushRequests}';
   }
 
   factory PushToken.fromJson(Map<String, dynamic> json) => _$PushTokenFromJson(json);

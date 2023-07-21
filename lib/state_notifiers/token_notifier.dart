@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
+import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/tokens/otp_tokens/hotp_token/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/otp_tokens/totp_token/totp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
@@ -21,9 +23,10 @@ import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:base32/base32.dart';
+
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
@@ -33,6 +36,10 @@ class TokenNotifier extends StateNotifier<List<Token>> {
       : super(
           initialState ?? <Token>[],
         ) {
+    _loadTokenList();
+  }
+
+  void refreshTokens() {
     _loadTokenList();
   }
 
@@ -48,7 +55,7 @@ class TokenNotifier extends StateNotifier<List<Token>> {
       if (a.sortIndex != null && b.sortIndex != null) {
         return a.sortIndex!.compareTo(b.sortIndex as int);
       }
-      return a.id.hashCode.compareTo(b.id.hashCode);
+      return -1;
     });
   }
 
@@ -66,7 +73,6 @@ class TokenNotifier extends StateNotifier<List<Token>> {
     _sortTokens(tempTokens);
     state = tempTokens;
     StorageUtil.saveOrReplaceToken(token);
-    _enablePollingIfNeeded();
   }
 
   void addTokens(List<Token> tokens) {
@@ -77,7 +83,6 @@ class TokenNotifier extends StateNotifier<List<Token>> {
     for (final token in tokens) {
       StorageUtil.saveOrReplaceToken(token);
     }
-    _enablePollingIfNeeded();
   }
 
   void removeToken(Token token) {
@@ -85,7 +90,6 @@ class TokenNotifier extends StateNotifier<List<Token>> {
     tempTokens.remove(token);
     state = tempTokens;
     StorageUtil.deleteToken(token);
-    _disablePollingIfNeeded();
   }
 
   void removeTokens(List<Token> tokens) {
@@ -95,7 +99,6 @@ class TokenNotifier extends StateNotifier<List<Token>> {
     for (final token in tokens) {
       StorageUtil.deleteToken(token);
     }
-    _disablePollingIfNeeded();
   }
 
   PushToken removePushTokenBySerial(String serial) {
@@ -132,7 +135,6 @@ class TokenNotifier extends StateNotifier<List<Token>> {
     final tempTokens = [...state];
     for (final updatedToken in updatedTokens) {
       final index = tempTokens.indexWhere((oldToken) => oldToken.id == updatedToken.id);
-      Logger.warning('Replacing token\n${tempTokens[index]}\nwith\n${updatedToken}');
       tempTokens[index] = updatedToken;
       StorageUtil.saveOrReplaceToken(updatedToken);
     }
@@ -172,17 +174,17 @@ class TokenNotifier extends StateNotifier<List<Token>> {
     updateTokens(reorderedTokens);
   }
 
-  void addTokenFromQRCode({required String qrCode, required BuildContext context}) async {
+  void addTokenFromOtpAuth({required String otpAuth, required BuildContext context}) async {
     Logger.info(
       'Try to handle otpAuth:',
-      name: 'token_notifier.dart#addTokenFromQRCode',
-      error: qrCode,
+      name: 'token_notifier.dart#addTokenFromOtpAuth',
+      error: otpAuth,
     );
 
     try {
-      Map<String, dynamic> qrParameterMap = parseQRCodeToMap(qrCode);
+      Map<String, dynamic> qrParameterMap = parseQRCodeToMap(otpAuth);
 
-      Token? newToken = await _buildTokenFromMap(uriMap: qrParameterMap, uri: Uri.parse(qrCode), context: context);
+      Token? newToken = await _buildTokenFromMap(uriMap: qrParameterMap, uri: Uri.parse(otpAuth), context: context);
 
       if (newToken == null) {
         Logger.warning(
@@ -231,12 +233,71 @@ class TokenNotifier extends StateNotifier<List<Token>> {
     globalRef?.read(settingsProvider.notifier).enablePolling();
   }
 
-  void _disablePollingIfNeeded() {
-    if (globalRef?.read(settingsProvider).pollingEnabled == false) return;
-    if (state.whereType<PushToken>().isNotEmpty) return;
+  Future<void> addPushRequest(PushRequest pr) async {
+    PushToken? token = state.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pr.serial && t.isRolledOut);
 
-    //disable polling when last push token is removed
-    globalRef?.read(settingsProvider.notifier).disablePolling();
+    if (token == null) {
+      Logger.warning('The requested token does not exist or is not rolled out.', name: 'main_screen.dart#_handleIncomingChallenge', error: pr.serial);
+    } else {
+      String signature = pr.signature;
+      String signedData = '${pr.nonce}|'
+          '${pr.uri}|'
+          '${pr.serial}|'
+          '${pr.question}|'
+          '${pr.title}|'
+          '${pr.sslVerify ? '1' : '0'}';
+
+      // Re-add url and sslverify to android legacy tokens:
+      if (token.url == null || token.sslVerify == null) {
+        token = token.copyWith(url: pr.uri, sslVerify: pr.sslVerify);
+      }
+
+      bool isVerified = token.privateTokenKey == null
+          ? await Legacy.verify(token.serial, signedData, signature)
+          : verifyRSASignature(token.rsaPublicServerKey!, utf8.encode(signedData) as Uint8List, base32.decode(signature));
+
+      if (!isVerified) {
+        Logger.warning(
+          'Validating incoming message failed.',
+          name: 'main_screen.dart#_handleIncomingChallenge',
+          error: 'Signature $signature does not match signed data: $signedData',
+        );
+        return;
+      }
+      Logger.info('Validating incoming message was successful.', name: 'main_screen.dart#_handleIncomingChallenge');
+
+      if (token.knowsRequestWithId(pr.id)) {
+        Logger.info(
+          'The push request ${pr.id} already exists '
+          'for the token with serial ${token.serial}',
+          name: 'main_screen.dart#_handleIncomingChallenge',
+        );
+        return;
+      }
+      // Save the pending request.
+      token = token.withPushRequest(pr);
+      updateToken(token);
+      Logger.info('Added push request ${pr.id} to token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
+      final timeUntilExpiration = pr.expirationDate.difference(DateTime.now());
+      Logger.warning('timeUntilExpiration: ${timeUntilExpiration.inMilliseconds} Milliseconds');
+      Future.delayed(
+        Duration(milliseconds: timeUntilExpiration.inMilliseconds),
+        () => removePushRequest(pr),
+      );
+    }
+  }
+
+  void removePushRequest(PushRequest pushRequest) {
+    Logger.warning('Removing push request ${pushRequest.id}');
+    PushToken? token = state.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pushRequest.serial);
+
+    if (token == null) {
+      Logger.warning('The requested token does not exist.', name: 'main_screen.dart#_handleIncomingChallenge', error: pushRequest.serial);
+      return;
+    }
+    token = token.withoutPushRequest(pushRequest);
+    updateToken(token);
+    Logger.info('Removed push request ${pushRequest.id} to token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
   }
 
   /// Builds and returns a token from a given map, that contains all necessary fields.

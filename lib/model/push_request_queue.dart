@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 
@@ -33,7 +34,11 @@ class PushRequestQueue {
 
   bool any(bool f(PushRequest element)) => list.any(f);
 
-  void remove(PushRequest request) => list.remove(request);
+  void remove(PushRequest request) {
+    final prToRemove = list.firstWhereOrNull((element) => element.id == request.id);
+    if (prToRemove == null) return;
+    list.remove(prToRemove);
+  }
 
   bool get isEmpty => list.isEmpty;
 
@@ -43,7 +48,7 @@ class PushRequestQueue {
 
   void add(PushRequest pushRequest) => list.add(pushRequest);
 
-  PushRequest peek() => list.first;
+  PushRequest? peek() => list.length > 0 ? list.first : null;
 
   PushRequest pop() => list.removeAt(0);
 

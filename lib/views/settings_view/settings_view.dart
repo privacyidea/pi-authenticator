@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/logging_menu.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/migrate_legacy_tokens_dialog.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/settings_groups.dart';
@@ -25,10 +22,9 @@ class SettingsView extends ConsumerWidget {
     final locale = settings.localePreference;
     final useSystemLocale = settings.useSystemLocale;
     final enablePolling = settings.pollingEnabled;
-
-    List<PushToken> enrolledPushTokenList = tokens.whereType<PushToken>().where((e) => e.isRolledOut).toList();
-
-    List<PushToken> unsupported = enrolledPushTokenList.where((e) => e.url == null).toList();
+    final enrolledPushTokenList = tokens.whereType<PushToken>().where((e) => e.isRolledOut).toList();
+    final unsupported = enrolledPushTokenList.where((e) => e.url == null).toList();
+    final showPushSettingsGroup = enrolledPushTokenList.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
@@ -104,70 +100,57 @@ class SettingsView extends ConsumerWidget {
                 ),
               ],
             ),
-            FutureBuilder<List<Token>>(
-              initialData: [],
-              future: StorageUtil.loadAllTokens(),
-              builder: (context, snapshot) {
-                bool showPushSettingsGroup = true;
-
-                if (enrolledPushTokenList.isEmpty) {
-                  Logger.info('No push tokens exist, push settings are hidden.', name: 'settings_screen.dart#build');
-                  showPushSettingsGroup = false;
-                }
-
-                return Visibility(
-                  visible: showPushSettingsGroup,
-                  child: SettingsGroup(
-                    title: AppLocalizations.of(context)!.pushToken,
-                    children: <Widget>[
-                      ListTile(
-                        title: Text(AppLocalizations.of(context)!.synchronizePushTokens),
-                        subtitle: Text(AppLocalizations.of(context)!.synchronizesTokensWithServer),
-                        trailing: ElevatedButton(
-                          child: Text(AppLocalizations.of(context)!.sync),
-                          onPressed: () => showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) => UpdateFirebaseTokenDialog(),
-                          ),
-                        ),
+            Visibility(
+              visible: showPushSettingsGroup,
+              child: SettingsGroup(
+                title: AppLocalizations.of(context)!.pushToken,
+                children: <Widget>[
+                  ListTile(
+                    title: Text(AppLocalizations.of(context)!.synchronizePushTokens),
+                    subtitle: Text(AppLocalizations.of(context)!.synchronizesTokensWithServer),
+                    trailing: ElevatedButton(
+                      child: Text(AppLocalizations.of(context)!.sync),
+                      onPressed: () => showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => UpdateFirebaseTokenDialog(),
                       ),
-                      ListTile(
-                        title: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: AppLocalizations.of(context)!.enablePolling,
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              // Add clickable icon to inform user of unsupported push tokens (for polling)
-                              WidgetSpan(
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 10),
-                                  child: unsupported.isNotEmpty && enrolledPushTokenList.isNotEmpty
-                                      ? GestureDetector(
-                                          onTap: () {}, // () => _showPollingInfo(unsupported),
-                                          child: Icon(
-                                            Icons.info_outline,
-                                            color: Colors.red,
-                                          ),
-                                        )
-                                      : null,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        subtitle: Text(AppLocalizations.of(context)!.requestPushChallengesPeriodically),
-                        trailing: Switch(
-                          value: enablePolling,
-                          onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                );
-              },
+                  ListTile(
+                    title: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: AppLocalizations.of(context)!.enablePolling,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          // Add clickable icon to inform user of unsupported push tokens (for polling)
+                          WidgetSpan(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 10),
+                              child: unsupported.isNotEmpty && enrolledPushTokenList.isNotEmpty
+                                  ? GestureDetector(
+                                      onTap: () {}, // () => _showPollingInfo(unsupported),
+                                      child: Icon(
+                                        Icons.info_outline,
+                                        color: Colors.red,
+                                      ),
+                                    )
+                                  : null,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    subtitle: Text(AppLocalizations.of(context)!.requestPushChallengesPeriodically),
+                    trailing: Switch(
+                      value: enablePolling,
+                      onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Divider(),
             SettingsGroup(

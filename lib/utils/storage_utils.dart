@@ -69,8 +69,6 @@ class StorageUtil {
   static Future<List<Token>> loadAllTokens() async {
     Map<String, String> keyValueMap = await _storage.readAll();
 
-    Logger.info(keyValueMap.toString());
-
     List<Token> tokenList = [];
 
     for (var i = 0; i < keyValueMap.length; i++) {
@@ -83,7 +81,10 @@ class StorageUtil {
       try {
         serializedToken = jsonDecode(value);
       } on FormatException {
-        Logger.info(
+        if (key == _CURRENT_APP_TOKEN_KEY || key == _NEW_APP_TOKEN_KEY) {
+          continue;
+        }
+        Logger.warning(
           'Could not deserialize token from secure storage. Value: $value, key: $key',
           name: 'storage_utils.dart#loadAllTokens',
           error: FormatException('Could not deserialize token from secure storage. Value: $value, key: $key'),

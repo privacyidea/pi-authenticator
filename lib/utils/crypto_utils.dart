@@ -19,12 +19,10 @@
 */
 
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
@@ -139,40 +137,19 @@ Uint8List createRSASignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
 /// if a [context] is provided, telling the users that it might be better to enroll a new
 /// push token so that the app can directly access the private key.
 /// Returns the signature on success and null on failure.
-Future<String?> trySignWithToken(PushToken token, String message, BuildContext? context) async {
+Future<String?> trySignWithToken(PushToken token, String message) async {
   String? signature;
   if (token.privateTokenKey == null) {
     // It is a legacy token so the operation could cause an exception
     try {
       signature = await Legacy.sign(token.serial, message);
-    } catch (error) {
-      if (context != null) {
-        Widget okButton = TextButton(
-          child: Text("OK"),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        );
-
-        AlertDialog alert = AlertDialog(
-          title: Text("Error"),
-          content: Text("An error occured while using the legacy token ${token.label}. "
+    } catch (error, stackTrace) {
+      Logger.error("Error",
+          error: "An error occured while using the legacy token ${token.label}. "
               "The token was enrolled in a old version of this app, which may cause trouble"
-              " using it. It is suggested to enroll a new push token if the problems persist!"),
-          actions: [
-            okButton,
-          ],
-        );
-
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return alert;
-          },
-        );
-      }
-
-      log("Failed to create signature with legacy token ${token.label}!", name: 'crypto_utils.dart#trySignWithToken');
+              " using it. It is suggested to enroll a new push token if the problems persist!",
+          name: 'crypto_utils.dart#trySignWithToken',
+          stackTrace: stackTrace);
       return null;
     }
   } else {

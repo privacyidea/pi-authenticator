@@ -29,7 +29,7 @@ class MainViewBody extends StatelessWidget {
                 duration: Duration(seconds: 1),
                 context: context,
               );
-              bool success = await PushProvider.pollForChallenges(context);
+              bool success = await PushProvider.pollForChallenges();
               if (!success) {
                 showMessage(
                   message: AppLocalizations.of(context)!.pollingFailNoNetworkConnection,

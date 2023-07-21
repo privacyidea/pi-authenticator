@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/states/app_state.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view.dart';
@@ -9,11 +10,35 @@ import 'package:privacyidea_authenticator/views/qr_scanner_view/scanner_view.dar
 import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/app_bar_item.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/custom_paint_app_bar.dart';
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:base32/base32.dart';
+import 'package:collection/collection.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
+import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
+import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
+import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/license_utils.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
+import 'package:privacyidea_authenticator/utils/push_provider.dart';
+import 'package:privacyidea_authenticator/utils/storage_utils.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
+import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
+import 'package:uni_links/uni_links.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/no_token_screen.dart';
 
-class MainView extends ConsumerWidget {
+class MainView extends ConsumerStatefulWidget {
   static const routeName = '/';
 
   final _title;
@@ -23,7 +48,22 @@ class MainView extends ConsumerWidget {
         super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MainView> createState() => _MainViewState();
+}
+
+class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
+  @override
+  void onResume() {
+    globalRef?.read(appStateProvider.notifier).setAppState(AppState.resume);
+  }
+
+  @override
+  void onPause() {
+    globalRef?.read(appStateProvider.notifier).setAppState(AppState.pause);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final tokenList = ref.watch(tokenProvider);
     final Size size = MediaQuery.of(context).size;
 
@@ -31,7 +71,7 @@ class MainView extends ConsumerWidget {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          _title,
+          widget._title,
           overflow: TextOverflow.ellipsis,
           // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
@@ -64,7 +104,7 @@ class MainView extends ConsumerWidget {
                           /// code as the argument.
 
                           final qrCode = await Navigator.push<String?>(context, MaterialPageRoute(builder: (context) => QRScannerView()));
-                          if (qrCode != null) ref.read(tokenProvider.notifier).addTokenFromQRCode(qrCode: qrCode, context: context);
+                          if (qrCode != null) ref.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: qrCode, context: context);
                         },
                         tooltip: AppLocalizations.of(context)!.scanQrCode,
                         child: Icon(Icons.qr_code_scanner_outlined),

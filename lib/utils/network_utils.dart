@@ -75,8 +75,9 @@ Future<Response> postRequest({required Uri url, required Map<String, String?> bo
     response = Response('${e.runtimeType} : $s', 404);
   }
 
-  Logger.info('Received response', name: 'utils.dart#doPost', error: 'Status code: ${response.statusCode}\nBody: ${response.body}');
-
+  if (response.statusCode != 200) {
+    Logger.warning('Received response', name: 'utils.dart#doGet', error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
+  }
   ioClient.close();
 
   return response;
@@ -115,8 +116,9 @@ Future<Response> getRequest({required Uri url, required Map<String, String?> par
   } on SocketException catch (e, s) {
     response = Response('${e.runtimeType} : $s', 404);
   }
-
-  Logger.info('Received response', name: 'utils.dart#doGet', error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
+  if (response.statusCode != 200) {
+    Logger.warning('Received response', name: 'utils.dart#doGet', error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
+  }
 
   ioClient.close();
   return response;

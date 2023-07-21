@@ -14,15 +14,21 @@ PushRequest _$PushRequestFromJson(Map<String, dynamic> json) => PushRequest(
       sslVerify: json['sslVerify'] as bool,
       id: json['id'] as int,
       expirationDate: DateTime.parse(json['expirationDate'] as String),
+      serial: json['serial'] as String?,
+      signature: json['signature'] as String?,
+      accepted: json['accepted'] as bool?,
     );
 
 Map<String, dynamic> _$PushRequestToJson(PushRequest instance) =>
     <String, dynamic>{
-      'expirationDate': instance.expirationDate.toIso8601String(),
+      'title': instance.title,
+      'question': instance.question,
       'id': instance.id,
+      'uri': instance.uri.toString(),
       'nonce': instance.nonce,
       'sslVerify': instance.sslVerify,
-      'uri': instance.uri.toString(),
-      'question': instance.question,
-      'title': instance.title,
+      'expirationDate': instance.expirationDate.toIso8601String(),
+      'serial': instance.serial,
+      'signature': instance.signature,
+      'accepted': instance.accepted,
     };

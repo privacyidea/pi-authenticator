@@ -135,12 +135,10 @@ class PushProvider {
     return firebaseToken;
   }
 
-  static Future<bool> pollForChallenges(BuildContext context) async {
+  static Future<bool> pollForChallenges() async {
+    Logger.info('Polling for challenges', name: 'push_provider.dart#pollForChallenges');
     // Get all push tokens
-    List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
-        .whereType<PushToken>()
-        .where((t) => t.isRolledOut && t.url != null) // Legacy tokens can not poll, because the url is missing!
-        .toList();
+    List<PushToken> pushTokens = globalRef?.read(tokenProvider).whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
 
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
@@ -155,7 +153,7 @@ class PushProvider {
 
       String message = '${p.serial}|$timestamp';
 
-      String? signature = await trySignWithToken(p, message, context);
+      String? signature = await trySignWithToken(p, message);
       if (signature == null) {
         return false;
       }
@@ -175,6 +173,7 @@ class PushProvider {
           List challengeList = result['value'].cast<Map<String, dynamic>>();
 
           for (Map<String, dynamic> challenge in challengeList) {
+            Logger.info('Received challenge ${challenge['nonce']}', name: 'push_provider.dart#pollForChallenges');
             _incomingHandler(RemoteMessage(data: challenge));
           }
         } else {
@@ -242,7 +241,7 @@ class PushProvider {
       String message = '$firebaseToken|${p.serial}|$timestamp';
       // Because no context is available, trySignWithToken will fail without feedback for the user
       // Just like this whole function // TODO improve that?
-      String? signature = await trySignWithToken(p, message, null);
+      String? signature = await trySignWithToken(p, message);
       if (signature == null) {
         return;
       }

@@ -91,7 +91,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
       String timestamp = DateTime.now().toUtc().toIso8601String();
 
       String message = '$token|${p.serial}|$timestamp';
-      String? signature = await trySignWithToken(p, message, context);
+      String? signature = await trySignWithToken(p, message);
       if (signature == null) {
         return;
       }

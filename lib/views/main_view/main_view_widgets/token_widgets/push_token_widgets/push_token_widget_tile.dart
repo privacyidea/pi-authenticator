@@ -32,12 +32,9 @@ class PushTokenWidgetTile extends ConsumerWidget {
       subtitles: [
         if (token.issuer.isNotEmpty) token.issuer,
       ],
-      trailing: Container(
-        padding: EdgeInsets.only(right: 36.0, top: 8),
-        child: Icon(
-          Icons.notifications,
-          size: 26,
-        ),
+      trailing: Icon(
+        Icons.notifications,
+        size: 26,
       ),
     );
   }

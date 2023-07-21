@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/lock_auth.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/default_delete_action.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/default_edit_action.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/default_lock_action.dart';
@@ -32,7 +30,6 @@ class TokenWidgetBase extends ConsumerWidget {
   });
 
   @override
-  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final List<TokenAction> actions = [
       deleteAction ?? DefaultDeleteAction(token: token),
@@ -55,7 +52,12 @@ class TokenWidgetBase extends ConsumerWidget {
             extentRatio: 1,
             children: actions,
           ),
-          child: tile,
+          child: Stack(
+            children: [
+              tile,
+              ...stack,
+            ],
+          ),
         ),
         Divider(
           thickness: 1.5,
@@ -63,36 +65,6 @@ class TokenWidgetBase extends ConsumerWidget {
           endIndent: 8,
         ),
       ],
-    );
-  }
-}
-
-class HideableWidgetTrailing extends StatelessWidget {
-  final Token token;
-  final ValueNotifier<bool> isHiddenNotifier;
-  final Widget child;
-  const HideableWidgetTrailing({
-    required this.child,
-    required this.token,
-    required this.isHiddenNotifier,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.15,
-      height: MediaQuery.of(context).size.width * 0.15,
-      child: token.isLocked && isHiddenNotifier.value
-          ? IconButton(
-              onPressed: () async {
-                if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
-                  isHiddenNotifier.value = false;
-                }
-              },
-              icon: Icon(Icons.remove_red_eye_outlined),
-            )
-          : child,
     );
   }
 }

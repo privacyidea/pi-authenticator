@@ -18,10 +18,7 @@
   limitations under the License.
 */
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
 // /// Text widget that allows obfuscation of its content.
 // class HideableTextController {

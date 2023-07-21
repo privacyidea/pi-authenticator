@@ -3,13 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/model/tokens/otp_tokens/totp_token/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/lock_auth.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_base.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_tile.dart';
 import 'package:privacyidea_authenticator/widgets/custom_texts.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/widgets/hideable_widget_trailing.dart';
 
 class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   final TOTPToken token;
@@ -42,8 +41,6 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   void initState() {
     super.initState();
     otpValue = widget.token.otpValue;
-
-    Logger.warning('Current progress: ${widget.token.currentProgress}');
 
     _animation = AnimationController(
       duration: Duration(seconds: widget.token.period),
