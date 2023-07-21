@@ -65,7 +65,6 @@ dependencies:
   logger: ^1.4.0
   flutter_riverpod: ^2.3.6
   shared_preferences: ^2.2.0
-  freezed: ^2.4.1
   lifecycle: ^0.7.0
 
 dev_dependencies:

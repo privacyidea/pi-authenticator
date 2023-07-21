@@ -16,11 +16,7 @@ class DefaultDeleteAction extends TokenAction {
   SlidableAction build(BuildContext context) {
     return SlidableAction(
       label: AppLocalizations.of(context)!.delete,
-      backgroundColor: Theme.of(context).brightness == Brightness.light
-          //? Colors.red.shade400
-          //: Colors.red.shade800,
-          ? ApplicationCustomizer.deleteColorLight
-          : ApplicationCustomizer.deleteColorDark,
+      backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.deleteColorLight : ApplicationCustomizer.deleteColorDark,
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       icon: Icons.delete,
       onPressed: (_) {

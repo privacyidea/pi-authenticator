@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:math';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +12,6 @@ import 'package:privacyidea_authenticator/model/tokens/otp_tokens/totp_token/tot
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
@@ -23,14 +21,13 @@ import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import 'package:privacyidea_authenticator/widgets/two_step_dialog.dart';
 import 'package:uuid/uuid.dart';
-
 import 'package:base32/base32.dart';
-
 import 'dart:async';
 import 'dart:io';
 import 'package:http/http.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TokenNotifier extends StateNotifier<TokenState> {
   TokenNotifier({TokenState? initialState})
@@ -174,7 +171,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       }
 
       if (newToken is PushToken) {
-        _rollOutToken(newToken);
+        _rollOutToken(newToken, context);
       }
 
       addToken(newToken);
@@ -336,7 +333,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
   }
 
-  void _rollOutToken(PushToken token) async {
+  void _rollOutToken(PushToken token, BuildContext context) async {
     if (Platform.isIOS) {
       await dummyRequest(url: token.url!, sslVerify: token.sslVerify!);
     }
@@ -381,43 +378,28 @@ class TokenNotifier extends StateNotifier<TokenState> {
         Logger.warning('Post request on roll out failed.',
             name: 'token_widgets.dart#_rollOutToken',
             error: 'Token: ${token.serial}\nStatus code: ${response.statusCode},\nURL:${response.request?.url}\nBody: ${response.body}');
-        throw HttpException(response.statusCode.toString());
-        // showMessage(
-        //   context: context,
-        //   message: AppLocalizations.of(context)!.errorRollOutFailed(token.label, response.statusCode),
-        //   duration: Duration(seconds: 3),
-        // );
+        showMessage(
+          context: context,
+          message: AppLocalizations.of(context)!.errorRollOutFailed(token.label, response.statusCode),
+          duration: Duration(seconds: 3),
+        );
       }
-    } on PlatformException catch (e) {
-      Logger.warning('Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
-      rethrow;
-      // if (e.code == FIREBASE_TOKEN_ERROR_CODE) {
-      //   throw PlatformException(FIREBASE_TOKEN_ERROR_CODE);
-      //   // showMessage(
-      //   //   context: context,
-      //   //   message: AppLocalizations.of(context)?.errorRollOutNoNetworkConnection ?? "No network connection!",
-      //   //   duration: Duration(seconds: 3),
-      //   // );
-      // } else {
-      //   final SnackBar snackBar = SnackBar(content: Text("Token could not be rolled out, try again"));
-      //   snackbarKey.currentState?.showSnackBar(snackBar);
-      // }
-    } on SocketException catch (e) {
-      Logger.warning('Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
-      rethrow;
-      // showMessage(
-      //   context: context,
-      //   message: AppLocalizations.of(context)?.errorRollOutNoNetworkConnection ?? "No network connection!",
-      //   duration: Duration(seconds: 3),
-      // );
     } catch (e) {
-      Logger.warning('Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
-      rethrow;
-      // showMessage(
-      //   context: context,
-      //   message: AppLocalizations.of(context)!.errorRollOutUnknownError(e),
-      //   duration: Duration(seconds: 3),
-      // );
+      if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException) {
+        Logger.warning('Connection error: Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
+        showMessage(
+          context: context,
+          message: AppLocalizations.of(context)?.errorRollOutNoNetworkConnection ?? "No network connection!",
+          duration: Duration(seconds: 3),
+        );
+      } else {
+        Logger.warning('Unknown error: Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
+        showMessage(
+          context: context,
+          message: AppLocalizations.of(context)!.errorRollOutUnknownError(e),
+          duration: Duration(seconds: 3),
+        );
+      }
     }
   }
 }

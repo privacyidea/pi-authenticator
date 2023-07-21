@@ -21,7 +21,6 @@ class MainViewBody extends StatelessWidget {
     /// Builds the body of the screen. If any tokens supports polling,
     /// returns a list wrapped in a RefreshIndicator to manually poll.
     /// If not returns the list only.
-
     final child = SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -33,7 +32,6 @@ class MainViewBody extends StatelessWidget {
         ],
       ),
     );
-
     return allowManualRefresh
         ? RefreshIndicator(
             child: child,

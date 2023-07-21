@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -32,11 +32,7 @@ class TwoStepDialog extends StatefulWidget {
   final int _keyLength;
   final Uint8List _password;
 
-  TwoStepDialog(
-      {required int saltLength,
-      required int iterations,
-      required int keyLength,
-      required Uint8List password})
+  TwoStepDialog({required int saltLength, required int iterations, required int keyLength, required Uint8List password})
       : _saltLength = saltLength,
         _iterations = iterations,
         _keyLength = keyLength,

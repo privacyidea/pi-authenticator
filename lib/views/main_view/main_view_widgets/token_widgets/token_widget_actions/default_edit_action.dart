@@ -16,11 +16,7 @@ class DefaultEditAction extends TokenAction {
   SlidableAction build(BuildContext context) {
     return SlidableAction(
         label: AppLocalizations.of(context)!.rename,
-        backgroundColor: Theme.of(context).brightness == Brightness.light
-            //? Colors.blue.shade400
-            //: Colors.blue.shade800,
-            ? ApplicationCustomizer.renameColorLight
-            : ApplicationCustomizer.renameColorDark,
+        backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
         icon: Icons.edit,
         onPressed: (context) {

@@ -122,7 +122,6 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
                   values: AddTokenManuallyView.allowedPeriods,
                   valueNotifier: _periodNotifier,
                   postFix: 's' /*seconds*/,
-                  //_buildDropdownButtonWithLabel(AppLocalizations.of(context)!.period, _selectedPeriod, allowedPeriods, postFix: 's' /*seconds*/),
                 ),
               ),
               SizedBox(
@@ -154,9 +153,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
     return switch (_typeNotifier.value) {
       TokenTypes.HOTP => _buildHOTPToken(),
       TokenTypes.TOTP => _buildTOTPToken(),
-      // TODO: Uncomment when dayPassword is implemented
-      // TokenTypes.dayPassword => _buildDayPasswordToken(),
-
+      // TokenTypes.dayPassword => _buildDayPasswordToken(), // TODO: Uncomment when dayPassword is implemented
       _ => null,
     };
   }
@@ -182,11 +179,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
         period: _periodNotifier.value,
       );
 
-  /// Validates the inputs, builds the token instances and returns them by
-  /// popping the screen.
-
-  /// Validates the inputs of the label and secret. Returns true if the input
-  /// is valid and false if not.
+  /// Validates the inputs of the label and secret.
   bool _inputIsValid(BuildContext context) {
     if (_labelInputKey.currentState!.validate()) {
       _labelInputKey.currentState!.save();

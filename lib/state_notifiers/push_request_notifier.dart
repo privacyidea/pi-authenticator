@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -151,17 +151,14 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
   }
 
   Future<bool> handleReaction(PushRequest pushRequest) async {
-    // Check if PIN/Biometric is required to interact with the token
-
     if (pushRequest.accepted == null) return false;
 
-    final token = globalRef?.read(tokenProvider).tokens.firstWhereOrNull((token) => token is PushToken && token.serial == pushRequest.serial);
+    final token = globalRef?.read(tokenProvider).tokens.firstWhereOrNull((token) => token is PushToken && token.serial == pushRequest.serial) as PushToken?;
 
     if (token == null) {
       Logger.warning('Token not found.', name: 'token_widgets.dart#handleReaction', error: 'Serial: ${pushRequest.serial}');
       return false;
     }
-    token as PushToken; // Cast to PushToken to access PushToken-specific attributes
 
     Logger.info('Push auth request accepted=${pushRequest.accepted}, sending response to privacyidea',
         name: 'token_widgets.dart#handleReaction', error: 'Url: ${pushRequest.uri}');
@@ -189,8 +186,6 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
     if (pushRequest.accepted! == false) {
       body["decline"] = "1";
     }
-
-    print("sending push request response...");
 
     Response response = await postRequest(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
     if (response.statusCode != 200) {

@@ -76,9 +76,7 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
                       heightFactor: 0.6,
                       child: FloatingActionButton(
                         onPressed: () async {
-                          /// Open the QR-code scanner and call `_handleOtpAuth`, with the scanned
-                          /// code as the argument.
-
+                          /// Open the QR-code scanner and call `_handleOtpAuth`, with the scanned code as the argument.
                           final qrCode = await Navigator.push<String?>(context, MaterialPageRoute(builder: (context) => QRScannerView()));
                           if (qrCode != null) ref.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: qrCode, context: context);
                         },
@@ -102,7 +100,7 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
                                     applicationIcon: Image.asset(ApplicationCustomizer.appIcon),
                                     applicationLegalese: ApplicationCustomizer.websiteLink,
                                     applicationVersion: ref.read(platformInfoProvider).appVersion,
-                                  ), //TODO: Test this
+                                  ),
                                 ),
                               );
                             },

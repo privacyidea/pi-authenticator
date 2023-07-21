@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -81,12 +81,12 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
     for (PushToken p in tokenWithUrl) {
       // POST /ttype/push HTTP/1.1
-      //Host: example.com
+      // Host: example.com
       //
-      //new_fb_token=<new firebase token>
-      //serial=<tokenserial>element
-      //timestamp=<timestamp>
-      //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
+      // new_fb_token=<new firebase token>
+      // serial=<tokenserial>element
+      // timestamp=<timestamp>
+      // signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
 
       String timestamp = DateTime.now().toUtc().toIso8601String();
 
