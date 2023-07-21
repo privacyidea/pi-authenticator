@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -48,13 +48,11 @@ void addTokenTest() {
     });
 
     test('Enter name and secret', () async {
-      await driver!.tap(find.ancestor(
-          of: find.text('Name'), matching: find.byType('TextFormField')));
+      await driver!.tap(find.ancestor(of: find.text('Name'), matching: find.byType('TextFormField')));
 
       await driver!.enterText('TestName');
 
-      await driver!.tap(find.ancestor(
-          of: find.text('Secret'), matching: find.byType('TextFormField')));
+      await driver!.tap(find.ancestor(of: find.text('Secret'), matching: find.byType('TextFormField')));
 
       await driver!.enterText('TestSecret');
     });
@@ -77,8 +75,7 @@ void addTokenTest() {
     });
 
     test('Clean up', () async {
-      await driver!.scroll(
-          find.text('TestName'), -500, 0, Duration(milliseconds: 100));
+      await driver!.scroll(find.text('TestName'), -500, 0, Duration(milliseconds: 100));
 
       // Delete the token.
       await driver!.tap(find.text('Delete'));

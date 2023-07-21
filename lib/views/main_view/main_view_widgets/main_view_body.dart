@@ -19,7 +19,6 @@ class MainViewBody extends StatelessWidget {
     /// Builds the body of the screen. If any tokens supports polling,
     /// returns a list wrapped in a RefreshIndicator to manually poll.
     /// If not returns the list only.
-
     return allowManualRefresh
         ? RefreshIndicator(
             child: MainViewTokensList(tokens),

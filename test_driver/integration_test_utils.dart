@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -46,14 +46,12 @@ void addTokenRoutine(String name, String secret) {
 
     test('Enter name and secret', () async {
       // Enter the name.
-      await driver!.tap(find.ancestor(
-          of: find.text('Name'), matching: find.byType('TextFormField')));
+      await driver!.tap(find.ancestor(of: find.text('Name'), matching: find.byType('TextFormField')));
 
       await driver!.enterText(name);
 
       // Enter the secret.
-      await driver!.tap(find.ancestor(
-          of: find.text('Secret'), matching: find.byType('TextFormField')));
+      await driver!.tap(find.ancestor(of: find.text('Secret'), matching: find.byType('TextFormField')));
 
       await driver!.enterText(secret);
     });
@@ -68,8 +66,7 @@ void addTokenRoutine(String name, String secret) {
   });
 }
 
-Future<bool> doLongPress(
-    FlutterDriver driver, SerializableFinder target) async {
+Future<bool> doLongPress(FlutterDriver driver, SerializableFinder target) async {
   // Pressing 2 seconds is needed to start the 'paste' dialog on a text field.
   await driver.scroll(target, 0, 0, Duration(seconds: 2));
   return true;

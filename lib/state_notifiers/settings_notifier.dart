@@ -10,7 +10,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 /// This class provies access to the device specific settings.
 /// It also ensures that the settings are saved to the device.
 /// To Update a state use: ref.read(settingsProvider.notifier).anyMethod(value)
-
 class SettingsNotifier extends StateNotifier<SettingsState> {
   static String _isFirstRunKey = 'KEY_IS_FIRST_RUN';
   static bool get _isFirstRunDefault => true;

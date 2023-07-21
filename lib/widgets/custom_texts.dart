@@ -2,8 +2,9 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
+           Frank Merkel <frank.merkel@netknights.it>
 
-  Copyright (c) 2017-2021 NetKnights GmbH
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -17,40 +18,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-
 import 'package:flutter/material.dart';
-
-// /// Text widget that allows obfuscation of its content.
-// class HideableTextController {
-//   final Duration showDuration;
-//   final bool autoHide;
-
-//   HideableTextController({this.showDuration = const Duration(seconds: 5), this.autoHide = true}) {
-//     Logger.warning('HideableTextController created');
-//   }
-
-//   final _controller = StreamController<bool>.broadcast();
-//   void show() {
-//     Logger.info('Show text');
-//     _controller.add(false);
-//     if (autoHide) Future.delayed(showDuration, () => hide());
-//   }
-
-//   void hide() {
-//     Logger.info('Hide text');
-//     _controller.add(true);
-//   }
-
-//   // If isHidden is true, the text should be hidden.
-//   // If isHidden is false, the text should be shown.
-//   void listen(void onData(bool isHidden)?, {Function? onError, void onDone()?, bool? cancelOnError}) {
-//     _controller.stream.listen(onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
-//   }
-
-//   void close() {
-//     _controller.close();
-//   }
-// }
 
 /// Text widget that allows obfuscation of its content. This allows to show the
 /// content for a specific amount of time before it is hidden.
@@ -100,26 +68,6 @@ class HideableText extends StatelessWidget {
               fontFamily: 'monospace',
               fontWeight: FontWeight.bold,
             ),
-    );
-  }
-}
-
-class MenuItemWithIcon extends StatelessWidget {
-  final Icon icon;
-  final Text text;
-
-  MenuItemWithIcon({required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Padding(
-          padding: EdgeInsets.only(right: 10),
-          child: icon,
-        ),
-        text,
-      ],
     );
   }
 }

@@ -35,8 +35,8 @@ class MainViewTokensList extends ConsumerWidget {
         itemCount: tokens.length,
         onReorder: (int oldIndex, int newIndex) {
           if (oldIndex == newIndex) return;
-          //If the selected token moved down all other tokens between old and new index must decrease their sort index by 1 to move up
-          //If the selected token moved up all other tokens between old and new index must increase their sort index by 1 to move down
+          // If the selected token moved down all other tokens between old and new index must decrease their sort index by 1 to move up
+          // If the selected token moved up all other tokens between old and new index must increase their sort index by 1 to move down
           final selectedTokenMovedDown = newIndex > oldIndex;
           if (selectedTokenMovedDown) newIndex--;
           final reorderedTokens = <Token>[];
