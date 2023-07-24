@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -20,15 +20,12 @@
 
 import 'dart:convert';
 import 'dart:core';
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
 import 'package:hex/hex.dart' as HexConverter;
 import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import 'identifiers.dart';
 
@@ -112,7 +109,6 @@ Uint8List decodeSecretToUint8(String secret, Encodings encoding) {
 }
 
 String encodeSecretAs(Uint8List secret, Encodings encoding) {
-  log(secret.toString());
   ArgumentError.checkNotNull(secret, 'secret');
   ArgumentError.checkNotNull(encoding, 'encoding');
 
@@ -122,8 +118,6 @@ String encodeSecretAs(Uint8List secret, Encodings encoding) {
     case Encodings.hex:
       return HexConverter.HEX.encode(secret);
     case Encodings.base32:
-      final encodedString = Base32Converter.base32.encode(secret);
-      log(encodedString);
       return Base32Converter.base32.encode(secret);
     default:
       throw ArgumentError.value(encoding, 'encoding', 'The encoding is unknown and not supported!');
@@ -137,11 +131,9 @@ String encodeAsHex(Uint8List secret) {
 bool isValidEncoding(String secret, Encodings encoding) {
   try {
     decodeSecretToUint8(secret, encoding);
-  } on Exception catch (e) {
-    Logger.error('${e.toString()}');
+  } on Exception catch (_) {
     return false;
   }
-
   return true;
 }
 

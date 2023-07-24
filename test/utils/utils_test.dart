@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/model/tokens/otp_tokens/hotp_token/hotp_token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
@@ -82,13 +82,13 @@ void _testcalculateOtpValue() {
           secret: encodeSecretAs(utf8.encode('secret') as Uint8List, Encodings.base32),
           counter: 8);
 
-      test('OTP for counter == 0', () => expect(token0.calculateOtpValue(), '814628'));
+      test('OTP for counter == 0', () => expect(token0.otpValue, '814628'));
 
-      test('OTP for counter == 1', () => expect(token1.calculateOtpValue(), '533881'));
+      test('OTP for counter == 1', () => expect(token1.otpValue, '533881'));
 
-      test('OTP for counter == 2', () => expect(token2.calculateOtpValue(), '720111'));
+      test('OTP for counter == 2', () => expect(token2.otpValue, '720111'));
 
-      test('OTP for counter == 8', () => expect(token8.calculateOtpValue(), '963685'));
+      test('OTP for counter == 8', () => expect(token8.otpValue, '963685'));
     });
 
     group('different couters 8 digits', () {
@@ -127,13 +127,13 @@ void _testcalculateOtpValue() {
           secret: encodeSecretAs(utf8.encode('secret') as Uint8List, Encodings.base32),
           counter: 8);
 
-      test('OTP for counter == 0', () => expect(token0.calculateOtpValue(), '31814628'));
+      test('OTP for counter == 0', () => expect(token0.otpValue, '31814628'));
 
-      test('OTP for counter == 1', () => expect(token1.calculateOtpValue(), '28533881'));
+      test('OTP for counter == 1', () => expect(token1.otpValue, '28533881'));
 
-      test('OTP for counter == 2', () => expect(token2.calculateOtpValue(), '31720111'));
+      test('OTP for counter == 2', () => expect(token2.otpValue, '31720111'));
 
-      test('OTP for counter == 8', () => expect(token8.calculateOtpValue(), '15963685'));
+      test('OTP for counter == 8', () => expect(token8.otpValue, '15963685'));
     });
 
     group('different algorithms 6 digits', () {
@@ -164,11 +164,11 @@ void _testcalculateOtpValue() {
           secret: encodeSecretAs(utf8.encode('Secret') as Uint8List, Encodings.base32),
           counter: 0);
 
-      test('OTP for sha1', () => expect(token0.calculateOtpValue(), '292574'));
+      test('OTP for sha1', () => expect(token0.otpValue, '292574'));
 
-      test('OTP for sha256', () => expect(token1.calculateOtpValue(), '203782'));
+      test('OTP for sha256', () => expect(token1.otpValue, '203782'));
 
-      test('OTP for sha512', () => expect(token2.calculateOtpValue(), '636350'));
+      test('OTP for sha512', () => expect(token2.otpValue, '636350'));
     });
 
     group('different algorithms 8 digits', () {
@@ -199,11 +199,11 @@ void _testcalculateOtpValue() {
           secret: encodeSecretAs(utf8.encode('Secret') as Uint8List, Encodings.base32),
           counter: 0);
 
-      test('OTP for sha1', () => expect(token0.calculateOtpValue(), '25292574'));
+      test('OTP for sha1', () => expect(token0.otpValue, '25292574'));
 
-      test('OTP for sha256', () => expect(token1.calculateOtpValue(), '25203782'));
+      test('OTP for sha256', () => expect(token1.otpValue, '25203782'));
 
-      test('OTP for sha512', () => expect(token2.calculateOtpValue(), '99636350'));
+      test('OTP for sha512', () => expect(token2.otpValue, '99636350'));
     });
   });
 }

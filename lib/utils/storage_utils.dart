@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -24,11 +24,14 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
-import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/model/tokens/otp_tokens/hotp_token/hotp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/otp_tokens/totp_token/totp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:uuid/uuid.dart';
+
+import '../model/tokens/push_token/push_token.dart';
 
 // TODO How to test the behavior of this class?
 class StorageUtil {
@@ -49,7 +52,14 @@ class StorageUtil {
 
   /// Saves [token] securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
-  static Future<void> saveOrReplaceToken(Token token) async => await _storage.write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
+  static Future<void> saveOrReplaceToken(Token token) async {
+    if (token is PushToken && token.isRolledOut == false) {
+      Logger.info('Token not rolled out, not saving to secure storage');
+      return;
+    }
+    await _storage.write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
+    Logger.info('Token saved: ${token.id} to secure storage');
+  }
 
   static Future<Token?> loadToken(String id) async => (await loadAllTokens()).firstWhereOrNull((t) => t.id == id);
 
@@ -60,17 +70,33 @@ class StorageUtil {
     Map<String, String> keyValueMap = await _storage.readAll();
 
     List<Token> tokenList = [];
-    for (String value in keyValueMap.values) {
+
+    for (var i = 0; i < keyValueMap.length; i++) {
+      final value = keyValueMap.values.elementAt(i);
+      final key = keyValueMap.keys.elementAt(i);
+      // for (String value in keyValueMap.values) {
+
       Map<String, dynamic>? serializedToken;
 
       try {
         serializedToken = jsonDecode(value);
       } on FormatException {
+        if (key == _CURRENT_APP_TOKEN_KEY || key == _NEW_APP_TOKEN_KEY) {
+          continue;
+        }
+        Logger.warning(
+          'Could not deserialize token from secure storage. Value: $value, key: $key',
+          name: 'storage_utils.dart#loadAllTokens',
+          error: FormatException('Could not deserialize token from secure storage. Value: $value, key: $key'),
+        );
         // Skip everything that does not fit a serialized token
         continue;
       }
 
       if (serializedToken == null || !serializedToken.containsKey('type')) {
+        Logger.warning(
+            'Could not deserialize token from secure storage. Value: $value\nserializedToken = $serializedToken\ncontainsKey(type) = ${serializedToken?.containsKey('type')} ',
+            name: 'storage_utils.dart#loadAllTokens');
         // Skip everything that fits for deserialization but is not a token
         continue;
       }
@@ -84,27 +110,17 @@ class StorageUtil {
       serializedToken['issuer'] ??= '';
       serializedToken['label'] ??= '';
 
-      String type = serializedToken['type'];
-      if (type == enumAsString(TokenTypes.HOTP)) {
-        tokenList.add(HOTPToken.fromJson(serializedToken));
-      } else if (type == enumAsString(TokenTypes.TOTP)) {
-        tokenList.add(TOTPToken.fromJson(serializedToken));
-      } else if (type == enumAsString(TokenTypes.PIPUSH)) {
-        tokenList.add(PushToken.fromJson(serializedToken));
-      } else {
-        Logger.error(
-          'Token type $type is unknown.',
-          name: 'storage_utils.dart#loadAllTokens',
-        );
-      }
+      tokenList.add(Token.fromJson(serializedToken));
     }
 
+    Logger.info('Loaded ${tokenList.length} tokens from secure storage');
     return tokenList;
   }
 
   /// Deletes the saved json of [token] from the secure storage.
   static Future<void> deleteToken(Token token) async {
     _storage.delete(key: _GLOBAL_PREFIX + token.id);
+    Logger.info('Token deleted: ${token.id} from secure storage');
   }
 
   // ###########################################################################
@@ -164,6 +180,7 @@ class StorageUtil {
         );
       } else if (type == 'pipush') {
         token = PushToken(
+          isRolledOut: tokenMap['isRolledOut'] ?? false,
           issuer: tokenMap['label'],
           label: tokenMap['label'],
           id: id,
@@ -173,14 +190,14 @@ class StorageUtil {
           sslVerify: null,
           url: null,
         );
-        (token as PushToken).isRolledOut = true;
+        token = (token as PushToken).copyWith(isRolledOut: true);
 
         if (tokenMap['sslVerify'] != null) {
-          token.sslVerify = tokenMap['sslVerify'];
+          token = token.copyWith(sslVerify: tokenMap['sslVerify']);
         }
 
         if (tokenMap['enrollment_url'] != null) {
-          token.url = Uri.parse((tokenMap['enrollment_url'] as String));
+          token = token.copyWith(url: Uri.parse((tokenMap['enrollment_url'] as String)));
         }
       } else {
         Logger.error(

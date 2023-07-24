@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -50,8 +50,7 @@ void copyToClipboardTest() {
     });
 
     test('Clean up', () async {
-      await driver!.scroll(
-          find.text('TokenName'), -500, 0, Duration(milliseconds: 100));
+      await driver!.scroll(find.text('TokenName'), -500, 0, Duration(milliseconds: 100));
 
       // Delete the token.
       await driver!.tap(find.text('Delete'));
@@ -68,10 +67,7 @@ void copyToClipboardTest() {
       await driver!.tap(find.byType('PopupMenuButton<String>'));
       await driver!.tap(find.text('Add token'));
 
-      await doLongPress(
-          driver!,
-          find.ancestor(
-              of: find.text('Name'), matching: find.byType('TextFormField')));
+      await doLongPress(driver!, find.ancestor(of: find.text('Name'), matching: find.byType('TextFormField')));
 
       await driver!.tap(find.text('Paste'));
 

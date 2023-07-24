@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -21,7 +21,9 @@
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:privacyidea_authenticator/model/tokens.dart';
+import 'package:privacyidea_authenticator/model/push_request.dart';
+import 'package:privacyidea_authenticator/model/push_request_queue.dart';
+import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
 import 'package:test/test.dart';
 import 'package:uuid/uuid.dart';
 
@@ -198,8 +200,7 @@ void verifyCustomListBehavesLikeQueue() {
       fifo.add(five);
 
       var encoded = jsonEncode(fifo);
-      var decoded = PushRequestQueue.fromJson(
-          jsonDecode(encoded) as Map<String, dynamic>);
+      var decoded = PushRequestQueue.fromJson(jsonDecode(encoded) as Map<String, dynamic>);
 
       expect(decoded, fifo);
     });

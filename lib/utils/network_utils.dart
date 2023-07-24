@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -75,8 +75,9 @@ Future<Response> postRequest({required Uri url, required Map<String, String?> bo
     response = Response('${e.runtimeType} : $s', 404);
   }
 
-  Logger.info('Received response', name: 'utils.dart#doPost', error: 'Status code: ${response.statusCode}\nBody: ${response.body}');
-
+  if (response.statusCode != 200) {
+    Logger.warning('Received response', name: 'utils.dart#doGet', error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
+  }
   ioClient.close();
 
   return response;
@@ -115,8 +116,9 @@ Future<Response> getRequest({required Uri url, required Map<String, String?> par
   } on SocketException catch (e, s) {
     response = Response('${e.runtimeType} : $s', 404);
   }
-
-  Logger.info('Received response', name: 'utils.dart#doGet', error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
+  if (response.statusCode != 200) {
+    Logger.warning('Received response', name: 'utils.dart#doGet', error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
+  }
 
   ioClient.close();
   return response;

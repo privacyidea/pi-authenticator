@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ Color primarySwatch = ApplicationCustomizer.primaryColor;
 Color onPrimary = isColorBright(primarySwatch) ? ApplicationCustomizer.themeColorDark : ApplicationCustomizer.themeColorLight;
 
 var lightThemeData = new ThemeData(
-  toggleableActiveColor: primarySwatch,
   brightness: Brightness.light,
   primaryColorLight: primarySwatch,
   primaryColorDark: primarySwatch,
@@ -40,6 +39,48 @@ var lightThemeData = new ThemeData(
     onSecondary: onPrimary,
   ),
   iconTheme: IconThemeData(color: Colors.black),
+  checkboxTheme: CheckboxThemeData(
+    fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+      if (states.contains(MaterialState.disabled)) {
+        return null;
+      }
+      if (states.contains(MaterialState.selected)) {
+        return primarySwatch;
+      }
+      return null;
+    }),
+  ),
+  radioTheme: RadioThemeData(
+    fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+      if (states.contains(MaterialState.disabled)) {
+        return null;
+      }
+      if (states.contains(MaterialState.selected)) {
+        return primarySwatch;
+      }
+      return null;
+    }),
+  ),
+  switchTheme: SwitchThemeData(
+    thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+      if (states.contains(MaterialState.disabled)) {
+        return null;
+      }
+      if (states.contains(MaterialState.selected)) {
+        return primarySwatch;
+      }
+      return null;
+    }),
+    trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+      if (states.contains(MaterialState.disabled)) {
+        return null;
+      }
+      if (states.contains(MaterialState.selected)) {
+        return primarySwatch;
+      }
+      return null;
+    }),
+  ),
 );
 
 var darkThemeData = ThemeData(

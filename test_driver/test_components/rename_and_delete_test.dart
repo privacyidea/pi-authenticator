@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -46,8 +46,7 @@ void renameAndDeleteTest() {
     addTokenRoutine(tokenName, secret);
 
     test('Assert renaming works', () async {
-      await driver!.scroll(
-          find.text(tokenName), -500, 0, Duration(milliseconds: 100));
+      await driver!.scroll(find.text(tokenName), -500, 0, Duration(milliseconds: 100));
 
       await driver!.tap(find.text('Rename'));
 
@@ -62,8 +61,7 @@ void renameAndDeleteTest() {
     });
 
     test('Assert renaming works again', () async {
-      await driver!.scroll(
-          find.text('NewTestName'), -500, 0, Duration(milliseconds: 100));
+      await driver!.scroll(find.text('NewTestName'), -500, 0, Duration(milliseconds: 100));
 
       await driver!.tap(find.text('Rename'));
 
@@ -78,8 +76,7 @@ void renameAndDeleteTest() {
     });
 
     test('Assert delete works', () async {
-      await driver!.scroll(
-          find.text('OldTestName'), -500, 0, Duration(milliseconds: 100));
+      await driver!.scroll(find.text('OldTestName'), -500, 0, Duration(milliseconds: 100));
 
       // Delete the token.
       await driver!.tap(find.text('Delete'));

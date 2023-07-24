@@ -2,8 +2,8 @@
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
-
-  Copyright (c) 2017-2021 NetKnights GmbH
+           Frank Merkel <frank.merkel@netknights.it>
+  Copyright (c) 2017-2023 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
-import 'package:privacyidea_authenticator/model/tokens.dart';
-import 'package:privacyidea_authenticator/screens/settings_screen.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 import 'crypto_utils.dart';
@@ -112,12 +112,15 @@ class PushProvider {
     } on FirebaseException catch (ex) {
       String errorMessage = ex.message ?? 'no error message';
       final SnackBar snackBar = SnackBar(content: Text("Unable to retrieve Firebase token! (" + errorMessage + ": " + ex.code + ")"));
+      Logger.warning('Unable to retrieve Firebase token! (' + errorMessage + ': ' + ex.code + ')', name: 'push_provider.dart#getFBToken', error: ex);
       snackbarKey.currentState?.showSnackBar(snackBar);
     }
 
     // Fall back to the last known firebase token
     if (firebaseToken == null) {
       firebaseToken = await StorageUtil.getCurrentFirebaseToken();
+    } else {
+      await StorageUtil.setNewFirebaseToken(firebaseToken);
     }
 
     if (firebaseToken == null) {
@@ -132,17 +135,15 @@ class PushProvider {
     return firebaseToken;
   }
 
-  static Future<bool> pollForChallenges(BuildContext context) async {
+  static Future<bool> pollForChallenges() async {
+    Logger.info('Polling for challenges', name: 'push_provider.dart#pollForChallenges');
     // Get all push tokens
-    List<PushToken> pushTokens = (await StorageUtil.loadAllTokens())
-        .whereType<PushToken>()
-        .where((t) => t.isRolledOut && t.url != null) // Legacy tokens can not poll, because the url is missing!
-        .toList();
+    List<PushToken> pushTokens = globalRef?.read(tokenProvider).whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
 
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
       Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
-      AppSettings.of(context).enablePolling = false;
+      globalRef?.read(settingsProvider.notifier).enablePolling();
       return false;
     }
 
@@ -152,7 +153,7 @@ class PushProvider {
 
       String message = '${p.serial}|$timestamp';
 
-      String? signature = await trySignWithToken(p, message, context);
+      String? signature = await trySignWithToken(p, message);
       if (signature == null) {
         return false;
       }
@@ -172,6 +173,7 @@ class PushProvider {
           List challengeList = result['value'].cast<Map<String, dynamic>>();
 
           for (Map<String, dynamic> challenge in challengeList) {
+            Logger.info('Received challenge ${challenge['nonce']}', name: 'push_provider.dart#pollForChallenges');
             _incomingHandler(RemoteMessage(data: challenge));
           }
         } else {
@@ -185,6 +187,7 @@ class PushProvider {
         Logger.warning(
           'Polling push tokens not working, server can not be reached.',
           name: 'push_provider.dart#pollForChallenges',
+          error: error,
         );
         return false;
       }
@@ -238,7 +241,7 @@ class PushProvider {
       String message = '$firebaseToken|${p.serial}|$timestamp';
       // Because no context is available, trySignWithToken will fail without feedback for the user
       // Just like this whole function // TODO improve that?
-      String? signature = await trySignWithToken(p, message, null);
+      String? signature = await trySignWithToken(p, message);
       if (signature == null) {
         return;
       }
