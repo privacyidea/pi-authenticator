@@ -19,12 +19,13 @@
 */
 
 import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
@@ -45,7 +46,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
     // Start polling if enabled and not already polling
     if (pollingEnabled && _pollTimer == null) {
       Logger.info('Polling is enabled.', name: 'main_screen.dart#_startPollingIfEnabled');
-      _pollTimer = Timer.periodic(Duration(seconds: 3), (_) => PushProvider.pollForChallenges());
+      _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) => PushProvider.pollForChallenges());
       PushProvider.pollForChallenges();
       return;
     }
@@ -103,7 +104,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
         id: data['nonce'].hashCode,
         // FIXME This is not guaranteed to not lead to collisions, but they might be unlikely in this case.
         expirationDate: DateTime.now().add(
-          Duration(seconds: 120), // Push requests expire after 2 minutes.
+          const Duration(seconds: 120), // Push requests expire after 2 minutes.
         ),
         serial: data['serial'],
         signature: data['signature']);

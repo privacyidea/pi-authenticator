@@ -22,7 +22,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_tokens/hotp_token/hotp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
@@ -33,7 +33,7 @@ void main() {
 }
 
 void _testInsertCharAt() {
-  final String str = 'ABCD';
+  const String str = 'ABCD';
 
   group('insertCharAt', () {
     test('Insert at start', () => expect('XABCD', insertCharAt(str, 'X', 0)));
@@ -211,9 +211,9 @@ void _testcalculateOtpValue() {
 void _testDecodeSecretToUint8() {
   group('decodeSecretToUint8', () {
     test('Test non hex secret', () {
-      expect(() => decodeSecretToUint8('oo', Encodings.hex), throwsA(TypeMatcher<FormatException>()));
+      expect(() => decodeSecretToUint8('oo', Encodings.hex), throwsA(const TypeMatcher<FormatException>()));
 
-      expect(() => decodeSecretToUint8('1Aö', Encodings.hex), throwsA(TypeMatcher<FormatException>()));
+      expect(() => decodeSecretToUint8('1Aö', Encodings.hex), throwsA(const TypeMatcher<FormatException>()));
     });
 
     test('Test hex secret', () {
@@ -223,9 +223,9 @@ void _testDecodeSecretToUint8() {
     });
 
     test('Test non base32 secret', () {
-      expect(() => decodeSecretToUint8('p', Encodings.base32), throwsA(TypeMatcher<FormatException>()));
+      expect(() => decodeSecretToUint8('p', Encodings.base32), throwsA(const TypeMatcher<FormatException>()));
 
-      expect(() => decodeSecretToUint8('AAAAAAöA', Encodings.base32), throwsA(TypeMatcher<FormatException>()));
+      expect(() => decodeSecretToUint8('AAAAAAöA', Encodings.base32), throwsA(const TypeMatcher<FormatException>()));
     });
 
     test('Test base32 secret', () {

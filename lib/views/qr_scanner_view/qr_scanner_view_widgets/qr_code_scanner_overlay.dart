@@ -7,14 +7,14 @@ class ScannerOverlayShape extends ShapeBorder {
   final double borderWidth;
   final Color overlayColor;
 
-  ScannerOverlayShape({
+  const ScannerOverlayShape({
     this.borderColor = Colors.white,
     this.borderWidth = 1.0,
     this.overlayColor = const Color(0x88000000),
   });
 
   @override
-  EdgeInsetsGeometry get dimensions => EdgeInsets.all(10.0);
+  EdgeInsetsGeometry get dimensions => const EdgeInsets.all(10.0);
 
   @override
   Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
@@ -26,14 +26,14 @@ class ScannerOverlayShape extends ShapeBorder {
   @override
   Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
     {
-      Path _getLeftTopPath(Rect rect) {
+      Path getLeftTopPath(Rect rect) {
         return Path()
           ..moveTo(rect.left, rect.bottom)
           ..lineTo(rect.left, rect.top)
           ..lineTo(rect.right, rect.top);
       }
 
-      return _getLeftTopPath(rect)
+      return getLeftTopPath(rect)
         ..lineTo(
           rect.right,
           rect.bottom,
@@ -65,26 +65,19 @@ class ScannerOverlayShape extends ShapeBorder {
 
     canvas
       ..drawRect(
-        Rect.fromLTRB(
-            rect.left, rect.top, rect.right, borderSize.height + rect.top),
+        Rect.fromLTRB(rect.left, rect.top, rect.right, borderSize.height + rect.top),
         paint,
       )
       ..drawRect(
-        Rect.fromLTRB(rect.left, rect.bottom - borderSize.height, rect.right,
-            rect.bottom),
+        Rect.fromLTRB(rect.left, rect.bottom - borderSize.height, rect.right, rect.bottom),
         paint,
       )
       ..drawRect(
-        Rect.fromLTRB(rect.left, rect.top + borderSize.height,
-            rect.left + borderSize.width, rect.bottom - borderSize.height),
+        Rect.fromLTRB(rect.left, rect.top + borderSize.height, rect.left + borderSize.width, rect.bottom - borderSize.height),
         paint,
       )
       ..drawRect(
-        Rect.fromLTRB(
-            rect.right - borderSize.width,
-            rect.top + borderSize.height,
-            rect.right,
-            rect.bottom - borderSize.height),
+        Rect.fromLTRB(rect.right - borderSize.width, rect.top + borderSize.height, rect.right, rect.bottom - borderSize.height),
         paint,
       );
 
@@ -94,10 +87,7 @@ class ScannerOverlayShape extends ShapeBorder {
       ..strokeWidth = borderWidth;
 
     final borderOffset = borderWidth / 2;
-    final realReact = Rect.fromLTRB(
-        borderSize.width + borderOffset,
-        borderSize.height + borderOffset + rect.top,
-        width - borderSize.width - borderOffset,
+    final realReact = Rect.fromLTRB(borderSize.width + borderOffset, borderSize.height + borderOffset + rect.top, width - borderSize.width - borderOffset,
         height - borderSize.height - borderOffset + rect.top);
 
     // Draw top right corner

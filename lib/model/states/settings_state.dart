@@ -2,40 +2,24 @@ import 'dart:ui';
 
 /// This class contains all device specific settings. E.g., the language used, whether to show the guide on start, etc.
 class SettingsState {
-  final bool _isFirstRun;
-  bool get isFirstRun => _isFirstRun;
-  final bool _showGuideOnStart;
-  bool get showGuideOnStart => _showGuideOnStart;
-  final bool _hideOpts;
-  bool get hideOpts => _hideOpts;
-  final bool _enablePolling;
-  bool get pollingEnabled => _enablePolling;
-  final Set<String> _crashReportRecipients;
-  Set<String> get crashReportRecipients => _crashReportRecipients;
-  final Locale _localePreference;
-  Locale get localePreference => _localePreference;
-  final bool _useSystemLocale;
-  bool get useSystemLocale => _useSystemLocale;
-  final bool _verboseLogging;
-  bool get verboseLogging => _verboseLogging;
+  final bool isFirstRun;
+  final bool showGuideOnStart;
+  final bool hideOpts;
+  final bool enablePolling;
+  final Set<String> crashReportRecipients;
+  final Locale localePreference;
+  final bool useSystemLocale;
+  final bool verboseLogging;
 
   SettingsState(
-      {required bool isFirstRun,
-      required bool showGuideOnStart,
-      required bool hideOpts,
-      required bool enablePolling,
-      required Set<String> crashReportRecipients,
-      required Locale localePreference,
-      required bool useSystemLocale,
-      required bool verboseLogging})
-      : _isFirstRun = isFirstRun,
-        _showGuideOnStart = showGuideOnStart,
-        _hideOpts = hideOpts,
-        _enablePolling = enablePolling,
-        _crashReportRecipients = crashReportRecipients,
-        _localePreference = localePreference,
-        _useSystemLocale = useSystemLocale,
-        _verboseLogging = verboseLogging;
+      {required this.isFirstRun,
+      required this.showGuideOnStart,
+      required this.hideOpts,
+      required this.enablePolling,
+      required this.crashReportRecipients,
+      required this.localePreference,
+      required this.useSystemLocale,
+      required this.verboseLogging});
 
   SettingsState copyWith({
     bool? isFirstRun,
@@ -43,23 +27,23 @@ class SettingsState {
     bool? hideOpts,
     bool? enablePolling,
     Set<String>? crashReportRecipients,
-    Locale? locale,
+    Locale? localePreference,
     bool? useSystemLocale,
     bool? verboseLogging,
   }) {
     return SettingsState(
-      isFirstRun: isFirstRun ?? this._isFirstRun,
-      hideOpts: hideOpts ?? this._hideOpts,
-      enablePolling: enablePolling ?? this._enablePolling,
-      showGuideOnStart: showGuideOnStart ?? this._showGuideOnStart,
-      crashReportRecipients: crashReportRecipients ?? this._crashReportRecipients,
-      localePreference: locale ?? this._localePreference,
-      useSystemLocale: useSystemLocale ?? this._useSystemLocale,
-      verboseLogging: verboseLogging ?? this._verboseLogging,
+      isFirstRun: isFirstRun ?? this.isFirstRun,
+      hideOpts: hideOpts ?? this.hideOpts,
+      enablePolling: enablePolling ?? this.enablePolling,
+      showGuideOnStart: showGuideOnStart ?? this.showGuideOnStart,
+      crashReportRecipients: crashReportRecipients ?? this.crashReportRecipients,
+      localePreference: localePreference ?? this.localePreference,
+      useSystemLocale: useSystemLocale ?? this.useSystemLocale,
+      verboseLogging: verboseLogging ?? this.verboseLogging,
     );
   }
 
   @override
   String toString() =>
-      'SettingsState(isFirstRun: $_isFirstRun, showGuideOnStart: $_showGuideOnStart, hideOpts: $_hideOpts, enablePolling: $_enablePolling, crashReportRecipients: $_crashReportRecipients, localePreference: $_localePreference, useSystemLocale: $_useSystemLocale, verboseLogging: $_verboseLogging)';
+      'SettingsState(isFirstRun: $isFirstRun, showGuideOnStart: $showGuideOnStart, hideOpts: $hideOpts, enablePolling: $enablePolling, crashReportRecipients: $crashReportRecipients, localePreference: $localePreference, useSystemLocale: $useSystemLocale, verboseLogging: $verboseLogging)';
 }

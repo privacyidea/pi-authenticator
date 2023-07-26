@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
@@ -5,15 +7,16 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart' as printer;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/send_error_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:logger/logger.dart' as printer;
+
+import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
+import 'customizations.dart';
+import 'riverpod_providers.dart';
 
 final provider = Provider<int>((ref) => 0);
 
@@ -305,7 +308,7 @@ class Logger {
     if (_flutterIsRunning == false) return;
     showDialog(
       context: navigatorKey.currentContext!,
-      builder: (context) => SendErrorDialog(),
+      builder: (context) => const SendErrorDialog(),
     );
   }
 
@@ -334,10 +337,10 @@ class Logger {
   }
 
   String _textFilter(String text) {
-    filterParameterKeys.forEach((key) {
+    for (var key in filterParameterKeys) {
       final regex = RegExp(r'(?<=' + key + r':\s).+?(?=[},])');
       text = text.replaceAll(regex, '***');
-    });
+    }
     return text;
   }
 
@@ -347,13 +350,13 @@ class Logger {
     fileMessage += error != null ? '\n$error' : '';
     fileMessage += stackTrace != null ? '\nStacktrace:\n$stackTrace' : '';
 
-    List<String> _lineSeparatedStrings = fileMessage.split("\n");
+    List<String> lineSeparatedStrings = fileMessage.split("\n");
     fileMessage = '';
-    for (var i = 0; i < _lineSeparatedStrings.length; i++) {
-      final _line = _lineSeparatedStrings[i];
-      final _nextLine = _lineSeparatedStrings.length > i + 1 ? _lineSeparatedStrings[i + 1] : null;
-      if (_line != 'null' && _line != '') fileMessage += '[${logLevel.name}] $_line';
-      if (_nextLine != null && _nextLine != 'null' && _nextLine != '') fileMessage += '\n';
+    for (var i = 0; i < lineSeparatedStrings.length; i++) {
+      final line = lineSeparatedStrings[i];
+      final nextLine = lineSeparatedStrings.length > i + 1 ? lineSeparatedStrings[i + 1] : null;
+      if (line != 'null' && line != '') fileMessage += '[${logLevel.name}] $line';
+      if (nextLine != null && nextLine != 'null' && nextLine != '') fileMessage += '\n';
     }
     return fileMessage;
   }
@@ -361,4 +364,8 @@ class Logger {
 
 final filterParameterKeys = <String>['fbtoken', 'new_fb_token'];
 
-enum LogLevel { INFO, WARNING, ERROR }
+enum LogLevel {
+  INFO,
+  WARNING,
+  ERROR,
+}

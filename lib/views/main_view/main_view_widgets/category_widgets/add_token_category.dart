@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
+
+import '../../../../utils/riverpod_providers.dart';
 
 class AddTokenCategory extends ConsumerStatefulWidget {
   const AddTokenCategory({Key? key}) : super(key: key);
@@ -11,7 +12,7 @@ class AddTokenCategory extends ConsumerStatefulWidget {
 
 class _AddTokenCategoryWidgetState extends ConsumerState<AddTokenCategory> {
   bool addingCategory = false;
-  TextEditingController _folderNameController = TextEditingController();
+  final TextEditingController _folderNameController = TextEditingController();
 
   void onSubmitted(String value) {
     ref.read(tokenCategoryProvider.notifier).addCategory(value);
@@ -40,12 +41,12 @@ class _AddTokenCategoryWidgetState extends ConsumerState<AddTokenCategory> {
               onPressed: () {
                 onSubmitted(_folderNameController.text);
               },
-              icon: Icon(Icons.check),
+              icon: const Icon(Icons.check),
             ),
             title: TextField(
                 autofocus: true,
                 controller: _folderNameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'New folder name',
                   border: OutlineInputBorder(),
                 ),
@@ -54,18 +55,18 @@ class _AddTokenCategoryWidgetState extends ConsumerState<AddTokenCategory> {
               onPressed: () {
                 onSubmitted(_folderNameController.text);
               },
-              icon: Icon(Icons.close),
+              icon: const Icon(Icons.close),
             ),
           )
         : Center(
             child: GestureDetector(
+              onTap: startAddingCategory,
               child: Container(
                 color: Colors.transparent,
                 width: double.infinity,
                 height: 50,
-                child: Icon(Icons.create_new_folder),
+                child: const Icon(Icons.create_new_folder),
               ),
-              onTap: startAddingCategory,
             ),
           );
   }

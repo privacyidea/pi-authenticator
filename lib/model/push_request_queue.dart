@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/model/push_request.dart';
+
+import 'push_request.dart';
 
 part 'push_request_queue.g.dart';
 
@@ -21,18 +22,18 @@ class PushRequestQueue {
       throw ArgumentError('Initializing [list] in [PushRequestQueue] is only allowed once.');
     }
 
-    this._list = l;
+    _list = l;
   }
 
   int get length => list.length;
 
-  void forEach(void f(PushRequest request)) => list.forEach((f));
+  void forEach(void Function(PushRequest request) f) => list.forEach((f));
 
-  void removeWhere(bool f(PushRequest request)) => list.removeWhere(f);
+  void removeWhere(bool Function(PushRequest request) f) => list.removeWhere(f);
 
-  Iterable<PushRequest> where(bool f(PushRequest request)) => list.where(f);
+  Iterable<PushRequest> where(bool Function(PushRequest request) f) => list.where(f);
 
-  bool any(bool f(PushRequest element)) => list.any(f);
+  bool any(bool Function(PushRequest element) f) => list.any(f);
 
   void remove(PushRequest request) {
     final prToRemove = list.firstWhereOrNull((element) => element.id == request.id);
@@ -48,7 +49,7 @@ class PushRequestQueue {
 
   void add(PushRequest pushRequest) => list.add(pushRequest);
 
-  PushRequest? peek() => list.length > 0 ? list.first : null;
+  PushRequest? peek() => list.isNotEmpty ? list.first : null;
 
   PushRequest pop() => list.removeAt(0);
 

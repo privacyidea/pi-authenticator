@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_tile.dart';
+
+import '../../../../../model/tokens/push_token.dart';
+import '../token_widget_tile.dart';
 
 class PushTokenWidgetTile extends ConsumerWidget {
   final PushToken token;
@@ -12,7 +13,7 @@ class PushTokenWidgetTile extends ConsumerWidget {
     return TokenWidgetTile(
       tokenIsLocked: token.isLocked,
       leading: token.tokenImage != null
-          ? Container(
+          ? SizedBox(
               width: MediaQuery.of(context).size.width * 0.3,
               height: double.infinity,
               child: Align(
@@ -20,7 +21,7 @@ class PushTokenWidgetTile extends ConsumerWidget {
                 child: Image.network(
                   token.tokenImage!,
                   fit: BoxFit.contain,
-                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) => SizedBox(),
+                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) => const SizedBox(),
                 ),
               ),
             )
@@ -33,7 +34,7 @@ class PushTokenWidgetTile extends ConsumerWidget {
       subtitles: [
         if (token.issuer.isNotEmpty) token.issuer,
       ],
-      trailing: Icon(
+      trailing: const Icon(
         Icons.notifications,
         size: 26,
       ),

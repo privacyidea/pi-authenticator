@@ -32,7 +32,7 @@ class TwoStepDialog extends StatefulWidget {
   final int _keyLength;
   final Uint8List _password;
 
-  TwoStepDialog({required int saltLength, required int iterations, required int keyLength, required Uint8List password})
+  const TwoStepDialog({super.key, required int saltLength, required int iterations, required int keyLength, required Uint8List password})
       : _saltLength = saltLength,
         _iterations = iterations,
         _keyLength = keyLength,
@@ -44,7 +44,7 @@ class TwoStepDialog extends StatefulWidget {
 
 class _TwoStepDialogState extends State<TwoStepDialog> {
   late String _title;
-  Widget _content = Row(
+  Widget _content = const Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[CircularProgressIndicator()],
   );
@@ -77,10 +77,10 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
           content: _content,
           actions: [
             TextButton(
+              onPressed: _onPressed,
               child: Text(
                 AppLocalizations.of(context)!.dismiss,
               ),
-              onPressed: _onPressed,
             )
           ],
         ),
@@ -107,7 +107,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     // Update UI.
     setState(() {
       _title = AppLocalizations.of(context)!.phonePart;
-      _content = Text('$show');
+      _content = Text(show);
       _onPressed = () => Navigator.of(context).pop(_generatedSecret);
     });
   }

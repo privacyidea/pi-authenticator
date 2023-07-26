@@ -1,36 +1,38 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/states/settings_state.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../model/states/settings_state.dart';
+import '../utils/identifiers.dart';
+import '../utils/logger.dart';
 
 /// This class provies access to the device specific settings.
 /// It also ensures that the settings are saved to the device.
 /// To Update a state use: ref.read(settingsProvider.notifier).anyMethod(value)
 class SettingsNotifier extends StateNotifier<SettingsState> {
-  static String _isFirstRunKey = 'KEY_IS_FIRST_RUN';
+  static const String _isFirstRunKey = 'KEY_IS_FIRST_RUN';
   static bool get _isFirstRunDefault => true;
-  static String _showGuideOnStartKey = 'KEY_SHOW_GUIDE_ON_START';
+  static const String _showGuideOnStartKey = 'KEY_SHOW_GUIDE_ON_START';
   static bool get _showGuideOnStartDefault => true;
-  static String _prefHideOtps = 'KEY_HIDE_OTPS';
+  static const String _prefHideOtps = 'KEY_HIDE_OTPS';
   static bool get _hideOtpsDefault => false;
-  static String _prefEnablePoll = 'KEY_ENABLE_POLLING';
+  static const String _prefEnablePoll = 'KEY_ENABLE_POLLING';
   static bool get _enablePollDefault => false;
-  static String _crashReportRecipientsKey = 'KEY_CRASH_REPORT_RECIPIENTS'; // TODO Use this if the server supports it
+  static const String _crashReportRecipientsKey = 'KEY_CRASH_REPORT_RECIPIENTS'; // TODO Use this if the server supports it
   static Set<String> get _crashReportRecipientsDefault => {defaultCrashReportRecipient};
-  static String _localePreferenceKey = 'KEY_LOCALE_PREFERENCE';
+  static const String _localePreferenceKey = 'KEY_LOCALE_PREFERENCE';
   static String get _localePreferenceDefault => _encodeLocale(
-        AppLocalizations.supportedLocales.firstWhere((locale) => locale.languageCode == Platform.localeName.substring(0, 2), orElse: () => Locale('en')),
+        AppLocalizations.supportedLocales.firstWhere((locale) => locale.languageCode == Platform.localeName.substring(0, 2), orElse: () => const Locale('en')),
       );
-  static String _useSystemLocaleKey = 'KEY_USE_SYSTEM_LOCALE';
+  static const String _useSystemLocaleKey = 'KEY_USE_SYSTEM_LOCALE';
   static bool get _useSystemLocaleDefault => true;
-  static String _enableLoggingKey = 'KEY_VERBOSE_LOGGING';
+  static const String _enableLoggingKey = 'KEY_VERBOSE_LOGGING';
   static bool get _enableLoggingDefault => false;
 
-  SharedPreferences? _preferences;
+  final SharedPreferences? _preferences;
   late SettingsState _lastState;
 
   SettingsNotifier(SharedPreferences? preferences)
@@ -49,7 +51,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         )) {
     _lastState = state;
     addListener((state) {
-      print('Got new state: $state');
+      Logger.info('Got new state: $state');
       _savePreferences(state);
     });
   }
@@ -65,7 +67,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
   set showGuideOnStart(bool value) => state = state.copyWith(showGuideOnStart: value);
 
-  void setLocalePreference(Locale locale) => state = state.copyWith(locale: locale);
+  void setLocalePreference(Locale locale) => state = state.copyWith(localePreference: locale);
 
   void setUseSystemLocale(bool value) => state = state.copyWith(useSystemLocale: value);
 
@@ -75,7 +77,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
   void setPolling(bool value) => state = state.copyWith(enablePolling: value);
 
-  void setLocale(Locale locale) => state = state.copyWith(locale: locale);
+  void setLocale(Locale locale) => state = state.copyWith(localePreference: locale);
 
   void setVerboseLogging(bool value) => state = state.copyWith(verboseLogging: value);
 
@@ -96,9 +98,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     if (_lastState.isFirstRun != state.isFirstRun) _preferences?.setBool(_isFirstRunKey, state.isFirstRun);
     if (_lastState.showGuideOnStart != state.showGuideOnStart) _preferences?.setBool(_showGuideOnStartKey, state.showGuideOnStart);
     if (_lastState.hideOpts != state.hideOpts) _preferences?.setBool(_prefHideOtps, state.hideOpts);
-    if (_lastState.pollingEnabled != state.pollingEnabled) _preferences?.setBool(_prefEnablePoll, state.pollingEnabled);
-    if (_lastState.crashReportRecipients != state.crashReportRecipients)
+    if (_lastState.enablePolling != state.enablePolling) _preferences?.setBool(_prefEnablePoll, state.enablePolling);
+    if (_lastState.crashReportRecipients != state.crashReportRecipients) {
       _preferences?.setStringList(_crashReportRecipientsKey, state.crashReportRecipients.toList());
+    }
     if (_lastState.localePreference != state.localePreference) _preferences?.setString(_localePreferenceKey, _encodeLocale(state.localePreference));
     if (_lastState.useSystemLocale != state.useSystemLocale) _preferences?.setBool(_useSystemLocaleKey, state.useSystemLocale);
     if (_lastState.verboseLogging != state.verboseLogging) _preferences?.setBool(_enableLoggingKey, state.verboseLogging);

@@ -13,20 +13,15 @@ void main() {
 
 void _testParsingLabelAndIssuer() {
   group('Parsing Label and Issuer', () {
-    String uriWithIssuerParam =
-        'otpauth://totp/alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+    String uriWithIssuerParam = 'otpauth://totp/alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
         '&issuer=ACME%20Co&algorithm=SHA512&digits=8&period=60';
-    String uriWithIssuer =
-        'otpauth://totp/Example:alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+    String uriWithIssuer = 'otpauth://totp/Example:alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
         '&algorithm=SHA512&digits=8&period=60';
-    String uriWithIssuerAndUriEncoding =
-        'otpauth://totp/Example%3Aalice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+    String uriWithIssuerAndUriEncoding = 'otpauth://totp/Example%3Aalice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
         '&algorithm=SHA512&digits=8&period=60';
-    String uriWithIssuerParamAndIssuer =
-        'otpauth://totp/Example:alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+    String uriWithIssuerParamAndIssuer = 'otpauth://totp/Example:alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
         '&issuer=ACME%20Co&algorithm=SHA512&digits=8&period=60';
-    String uriWithoutIssuerAndLabel =
-        'otpauth://totp/?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+    String uriWithoutIssuerAndLabel = 'otpauth://totp/?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
         '&algorithm=SHA512&digits=8&period=60';
 
     test('Test parse issuer from param', () {
@@ -64,15 +59,14 @@ void _testParsingLabelAndIssuer() {
 void _testSerializingRSAKeys() {
   group('PKCS#1 format', () {
     test('Converting key', () async {
-      RSAPublicKey publicKey =
-          RSAPublicKey(BigInt.from(431254), BigInt.from(32545));
+      RSAPublicKey publicKey = RSAPublicKey(BigInt.from(431254), BigInt.from(32545));
 
       String base64String = serializeRSAPublicKeyPKCS1(publicKey);
       RSAPublicKey convertedKey = deserializeRSAPublicKeyPKCS1(base64String);
 
       expect(publicKey.modulus, convertedKey.modulus);
       expect(publicKey.exponent, convertedKey.exponent);
-    }, timeout: Timeout(Duration(seconds: 60)));
+    }, timeout: const Timeout(Duration(seconds: 60)));
 
     test('Converting generated key', () async {
       var asymmetricKeyPair = await generateRSAKeyPair();
@@ -83,7 +77,7 @@ void _testSerializingRSAKeys() {
 
       expect(publicKey.modulus, convertedKey.modulus);
       expect(publicKey.exponent, convertedKey.exponent);
-    }, timeout: Timeout(Duration(seconds: 60)));
+    }, timeout: const Timeout(Duration(seconds: 60)));
 
     test('Parsing existing key', () async {
       String serializedPublicKey = 'MIICCgKCAgEAtOE6hDrwB+9Quk5Ibp9DduUMAmQ'
@@ -99,24 +93,20 @@ void _testSerializingRSAKeys() {
           'WBf1mlwUNh1Vuu+ZGdTQKisxI4G8k2dZrlTWkQqOmLebCE3L38jnh0Oek+Jl9fNm'
           'TcMl8sPWxB8lgGpUCAwEAAQ==';
 
-      expect(
-          serializeRSAPublicKeyPKCS1(
-              deserializeRSAPublicKeyPKCS1(serializedPublicKey)),
-          serializedPublicKey);
-    }, timeout: Timeout(Duration(seconds: 60)));
-  }, timeout: Timeout(Duration(seconds: 300)));
+      expect(serializeRSAPublicKeyPKCS1(deserializeRSAPublicKeyPKCS1(serializedPublicKey)), serializedPublicKey);
+    }, timeout: const Timeout(Duration(seconds: 60)));
+  }, timeout: const Timeout(Duration(seconds: 300)));
 
   group('PKCS#8 format', () {
     test('Converting key', () async {
-      RSAPublicKey publicKey =
-          RSAPublicKey(BigInt.from(431254), BigInt.from(32545));
+      RSAPublicKey publicKey = RSAPublicKey(BigInt.from(431254), BigInt.from(32545));
 
       String base64String = serializeRSAPublicKeyPKCS8(publicKey);
       RSAPublicKey convertedKey = deserializeRSAPublicKeyPKCS8(base64String);
 
       expect(publicKey.modulus, convertedKey.modulus);
       expect(publicKey.exponent, convertedKey.exponent);
-    }, timeout: Timeout(Duration(seconds: 60)));
+    }, timeout: const Timeout(Duration(seconds: 60)));
 
     test('Converting generated key', () async {
       var asymmetricKeyPair = await generateRSAKeyPair();
@@ -127,7 +117,7 @@ void _testSerializingRSAKeys() {
 
       expect(publicKey.modulus, convertedKey.modulus);
       expect(publicKey.exponent, convertedKey.exponent);
-    }, timeout: Timeout(Duration(seconds: 60)));
+    }, timeout: const Timeout(Duration(seconds: 60)));
 
     test('Parse existing key', () async {
       String serializedPublicKey = 'MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCA'
@@ -143,12 +133,9 @@ void _testSerializingRSAKeys() {
           'nuwUCqJvPlKJHd/ikm2OfQS+BsPH8HDvrQGQyHyzBzV20oRfNGPIXVOXc9AEIJAPxB'
           'QYQE2aoTR+l7N4On4x59z8qU1UCAwEAAQ==';
 
-      expect(
-          serializeRSAPublicKeyPKCS8(
-              deserializeRSAPublicKeyPKCS8(serializedPublicKey)),
-          serializedPublicKey);
-    }, timeout: Timeout(Duration(seconds: 60)));
-  }, timeout: Timeout(Duration(seconds: 300)));
+      expect(serializeRSAPublicKeyPKCS8(deserializeRSAPublicKeyPKCS8(serializedPublicKey)), serializedPublicKey);
+    }, timeout: const Timeout(Duration(seconds: 60)));
+  }, timeout: const Timeout(Duration(seconds: 300)));
 
   group('Serialize RSA private keys', () {
     test('Converting key', () async {
@@ -161,8 +148,8 @@ void _testSerializingRSAKeys() {
       expect(privateKey.exponent, convertedKey.exponent);
       expect(privateKey.p, convertedKey.p);
       expect(privateKey.q, convertedKey.q);
-    }, timeout: Timeout(Duration(seconds: 60)));
-  }, timeout: Timeout(Duration(seconds: 300)));
+    }, timeout: const Timeout(Duration(seconds: 60)));
+  }, timeout: const Timeout(Duration(seconds: 300)));
 }
 
 void _testParseOtpAuth() {
@@ -172,7 +159,7 @@ void _testParseOtpAuth() {
           () => parseQRCodeToMap('http://totp/ACME%20Co:john@example.com?'
               'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
               '&algorithm=SHA1&digits=6&period=30'),
-          throwsA(TypeMatcher<ArgumentError>()));
+          throwsA(const TypeMatcher<ArgumentError>()));
     });
 
     test('Test with unknown type', () {
@@ -180,7 +167,7 @@ void _testParseOtpAuth() {
           () => parseQRCodeToMap('otpauth://asdf/ACME%20Co:john@example.com?'
               'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
               '&algorithm=SHA1&digits=6&period=30'),
-          throwsA(TypeMatcher<ArgumentError>()));
+          throwsA(const TypeMatcher<ArgumentError>()));
     });
 
     test('Test with missing type', () {
@@ -188,14 +175,13 @@ void _testParseOtpAuth() {
           () => parseQRCodeToMap('otpauth:///ACME%20Co:john@example.com?'
               'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
               '&algorithm=SHA1&digits=6&period=30'),
-          throwsA(TypeMatcher<ArgumentError>()));
+          throwsA(const TypeMatcher<ArgumentError>()));
     });
 
     test('Test missing algorithm', () {
-      Map<String, dynamic> map =
-          parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
-              'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
-              '&digits=6&period=30');
+      Map<String, dynamic> map = parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
+          'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
+          '&digits=6&period=30');
       expect(map[URI_ALGORITHM], 'SHA1'); // This is the default value
     });
 
@@ -204,14 +190,13 @@ void _testParseOtpAuth() {
           () => parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
               'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
               '&algorithm=BubbleSort&digits=6&period=30'),
-          throwsA(TypeMatcher<ArgumentError>()));
+          throwsA(const TypeMatcher<ArgumentError>()));
     });
 
     test('Test missing digits', () {
-      Map<String, dynamic> map =
-          parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
-              'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
-              '&period=30');
+      Map<String, dynamic> map = parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
+          'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
+          '&period=30');
       expect(map[URI_DIGITS], 6); // This is the default value
     });
 
@@ -221,7 +206,7 @@ void _testParseOtpAuth() {
           () => parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
               'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
               '&algorithm=SHA1&digits=66&period=30'),
-          throwsA(TypeMatcher<ArgumentError>()));
+          throwsA(const TypeMatcher<ArgumentError>()));
     });
 
     test('Test invalid characters for digits', () {
@@ -229,14 +214,14 @@ void _testParseOtpAuth() {
           () => parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
               'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
               '&algorithm=SHA1&digits=aA&period=30'),
-          throwsA(TypeMatcher<ArgumentError>()));
+          throwsA(const TypeMatcher<ArgumentError>()));
     });
 
     test('Test missing secret', () {
       expect(
           () => parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
               'issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30'),
-          throwsA(TypeMatcher<ArgumentError>()));
+          throwsA(const TypeMatcher<ArgumentError>()));
     });
 
     test('Test invalid secret', () {
@@ -244,15 +229,14 @@ void _testParseOtpAuth() {
           () => parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
               'secret=ÖÖ&issuer=ACME%20Co&algorithm=SHA1&digits=6'
               '&period=30'),
-          throwsA(TypeMatcher<ArgumentError>()));
+          throwsA(const TypeMatcher<ArgumentError>()));
     });
 
     // TOTP specific
     test('Test missing period', () {
-      Map<String, dynamic> map =
-          parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
-              'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
-              '&algorithm=SHA1&digits=6');
+      Map<String, dynamic> map = parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
+          'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
+          '&algorithm=SHA1&digits=6');
       expect(map[URI_PERIOD], 30);
     });
 
@@ -261,60 +245,49 @@ void _testParseOtpAuth() {
           () => parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
               'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
               '&algorithm=SHA1&digits=6&period=aa'),
-          throwsA(TypeMatcher<ArgumentError>()));
+          throwsA(const TypeMatcher<ArgumentError>()));
     });
 
     test('Test longer values for period', () {
-      Map<String, dynamic> map =
-          parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
-              'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
-              '&algorithm=SHA1&digits=6&period=124432');
+      Map<String, dynamic> map = parseQRCodeToMap('otpauth://totp/ACME%20Co:john@example.com?'
+          'secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co'
+          '&algorithm=SHA1&digits=6&period=124432');
 
       expect(map[URI_PERIOD], 124432);
     });
 
     test('Test valid totp uri', () {
-      Map<String, dynamic> map = parseQRCodeToMap(
-          'otpauth://totp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+      Map<String, dynamic> map = parseQRCodeToMap('otpauth://totp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
           '&issuer=ACME%20Co&algorithm=SHA512&digits=8&period=60');
       expect(map[URI_LABEL], 'Kitchen');
       expect(map[URI_ALGORITHM], 'SHA512');
       expect(map[URI_DIGITS], 8);
-      expect(
-          map[URI_SECRET],
-          decodeSecretToUint8(
-              'HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ', Encodings.base32));
+      expect(map[URI_SECRET], decodeSecretToUint8('HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ', Encodings.base32));
       expect(map[URI_PERIOD], 60);
     });
 
     // HOTP specific
     test('Test with missing counter', () {
       expect(
-          () => parseQRCodeToMap(
-              'otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+          () => parseQRCodeToMap('otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
               '&issuer=ACME%20Co&algorithm=SHA256&digits=8'),
-          throwsA(TypeMatcher<ArgumentError>()));
+          throwsA(const TypeMatcher<ArgumentError>()));
     });
 
     test('Test with invalid counter', () {
       expect(
-          () => parseQRCodeToMap(
-              'otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+          () => parseQRCodeToMap('otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
               '&issuer=ACME%20Co&algorithm=SHA256&digits=8&counter=aa'),
-          throwsA(TypeMatcher<ArgumentError>()));
+          throwsA(const TypeMatcher<ArgumentError>()));
     });
 
     test('Test valid hotp uri', () {
-      Map<String, dynamic> map = parseQRCodeToMap(
-          'otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+      Map<String, dynamic> map = parseQRCodeToMap('otpauth://hotp/Kitchen?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
           '&issuer=ACME%20Co&algorithm=SHA256&digits=8&counter=5');
       expect(map[URI_LABEL], 'Kitchen');
       expect(map[URI_ALGORITHM], 'SHA256');
       expect(map[URI_DIGITS], 8);
-      expect(
-          map[URI_SECRET],
-          decodeSecretToUint8(
-              'HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ', Encodings.base32));
+      expect(map[URI_SECRET], decodeSecretToUint8('HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ', Encodings.base32));
       expect(map[URI_COUNTER], 5);
     });
   });
@@ -333,20 +306,14 @@ void _testParseOtpAuth() {
           is2StepURI(Uri.parse(
               'otpauth://hotp/OATH0001F662?secret=HDOMWJ5GEQQA6RR34RAP55QBVCX3E2RE&counter=1&digits=6&issuer=privacyIDEA&2step_output=20&2step_difficulty=10000')),
           true);
-      expect(
-          is2StepURI(Uri.parse(
-              'otpauth://hotp/OATH0001F662?secret=HDOMWJ5GEQQA6RR34RAP55QBVCX3E2RE&counter=1&digits=6&issuer=privacyIDEA&2step_salt=8')),
+      expect(is2StepURI(Uri.parse('otpauth://hotp/OATH0001F662?secret=HDOMWJ5GEQQA6RR34RAP55QBVCX3E2RE&counter=1&digits=6&issuer=privacyIDEA&2step_salt=8')),
           true);
 
-      expect(
-          is2StepURI(Uri.parse(
-              'otpauth://hotp/OATH0001F662?secret=HDOMWJ5GEQQA6RR34RAP55QBVCX3E2RE&counter=1&digits=6&issuer=privacyIDEA')),
-          false);
+      expect(is2StepURI(Uri.parse('otpauth://hotp/OATH0001F662?secret=HDOMWJ5GEQQA6RR34RAP55QBVCX3E2RE&counter=1&digits=6&issuer=privacyIDEA')), false);
     });
 
     test('parse complete uri', () {
-      Map<String, dynamic> uriMap = parseOtpAuth(Uri.parse(
-          'otpauth://hotp/OATH0001F662?secret=HDOMWJ5GEQQA6RR34RAP55QBVCX3E2RE'
+      Map<String, dynamic> uriMap = parseOtpAuth(Uri.parse('otpauth://hotp/OATH0001F662?secret=HDOMWJ5GEQQA6RR34RAP55QBVCX3E2RE'
           '&counter=1&digits=6&issuer=privacyIDEA&2step_salt=54'
           '&2step_output=42&2step_difficulty=12345'));
 
@@ -357,20 +324,17 @@ void _testParseOtpAuth() {
 
     test('parse with default values', () {
       expect(
-          parseOtpAuth(Uri.parse(
-              'otpauth://hotp/OATH0001F662?secret=HDOMWJ5GEQQA6RR34RAP55QBVCX3E2RE'
+          parseOtpAuth(Uri.parse('otpauth://hotp/OATH0001F662?secret=HDOMWJ5GEQQA6RR34RAP55QBVCX3E2RE'
               '&counter=1&digits=6&issuer=privacyIDEA&2step_output=42'
               '&2step_difficulty=12345'))[URI_SALT_LENGTH],
           10);
       expect(
-          parseOtpAuth(Uri.parse(
-              'otpauth://hotp/OATH0001F662?secret=HDOMWJ5GEQQA6RR34RAP55QBVCX3E2RE'
+          parseOtpAuth(Uri.parse('otpauth://hotp/OATH0001F662?secret=HDOMWJ5GEQQA6RR34RAP55QBVCX3E2RE'
               '&counter=1&digits=6&issuer=privacyIDEA&2step_salt=54'
               '&2step_difficulty=12345'))[URI_OUTPUT_LENGTH_IN_BYTES],
           20);
       expect(
-          parseOtpAuth(Uri.parse(
-              'otpauth://hotp/OATH0001F662?secret=HDOMWJ5GEQQA6RR34RAP55QBVCX3E2RE'
+          parseOtpAuth(Uri.parse('otpauth://hotp/OATH0001F662?secret=HDOMWJ5GEQQA6RR34RAP55QBVCX3E2RE'
               '&counter=1&digits=6&issuer=privacyIDEA&2step_salt=54'
               '&2step_output=42'))[URI_ITERATIONS],
           10000);
@@ -379,8 +343,7 @@ void _testParseOtpAuth() {
 
   group('Push Token', () {
     test('parse complete uri', () {
-      Map<String, dynamic> uriMap = parsePiAuth(Uri.parse(
-          'otpauth://pipush/PIPU0001353C?url=https%3A//192.168.178.32/ttype/'
+      Map<String, dynamic> uriMap = parsePiAuth(Uri.parse('otpauth://pipush/PIPU0001353C?url=https%3A//192.168.178.32/ttype/'
           'push'
           '&ttl=2'
           '&issuer=privacyIDEA'

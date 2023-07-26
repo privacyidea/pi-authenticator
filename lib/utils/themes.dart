@@ -21,24 +21,24 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
+import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 
 //TODO Use this when customizing
 Color primarySwatch = ApplicationCustomizer.primaryColor;
 Color onPrimary = isColorBright(primarySwatch) ? ApplicationCustomizer.themeColorDark : ApplicationCustomizer.themeColorLight;
 
-var lightThemeData = new ThemeData(
+var lightThemeData = ThemeData(
   brightness: Brightness.light,
   primaryColorLight: primarySwatch,
   primaryColorDark: primarySwatch,
-  appBarTheme: AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
+  appBarTheme: const AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
   colorScheme: ColorScheme.light(
     primary: primarySwatch,
     secondary: primarySwatch,
     onPrimary: onPrimary,
     onSecondary: onPrimary,
   ),
-  iconTheme: IconThemeData(color: Colors.black),
+  iconTheme: const IconThemeData(color: Colors.black),
   checkboxTheme: CheckboxThemeData(
     fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
       if (states.contains(MaterialState.disabled)) {
@@ -84,18 +84,18 @@ var lightThemeData = new ThemeData(
 );
 
 var darkThemeData = ThemeData(
-  scaffoldBackgroundColor: Color(0xFF303030),
+  scaffoldBackgroundColor: const Color(0xFF303030),
   brightness: Brightness.dark,
   primaryColorLight: primarySwatch,
   primaryColorDark: primarySwatch,
-  appBarTheme: AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
+  appBarTheme: const AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
   colorScheme: ColorScheme.dark(
     primary: primarySwatch,
     secondary: primarySwatch,
     onPrimary: onPrimary,
     onSecondary: onPrimary,
   ),
-  iconTheme: IconThemeData(color: Colors.white),
+  iconTheme: const IconThemeData(color: Colors.white),
   checkboxTheme: CheckboxThemeData(
     fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
       if (states.contains(MaterialState.disabled)) {

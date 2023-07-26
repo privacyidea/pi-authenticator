@@ -1,18 +1,21 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/platform_info/platform_info_imp/dummy_platform_info.dart';
-import 'package:privacyidea_authenticator/model/platform_info/platform_info.dart';
-import 'package:privacyidea_authenticator/model/push_request.dart';
-import 'package:privacyidea_authenticator/model/states/app_state.dart';
-import 'package:privacyidea_authenticator/model/states/token_category_state.dart';
-import 'package:privacyidea_authenticator/model/states/token_state.dart';
-import 'package:privacyidea_authenticator/state_notifiers/app_state_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/push_request_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_category_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
-import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../model/mixins/sortable_mixin.dart';
+import '../model/platform_info/platform_info.dart';
+import '../model/platform_info/platform_info_imp/dummy_platform_info.dart';
+import '../model/push_request.dart';
+import '../model/states/app_state.dart';
+import '../model/states/settings_state.dart';
+import '../model/states/token_category_state.dart';
+import '../model/states/token_state.dart';
+import '../repo/preference_token_category_repository.dart';
+import '../state_notifiers/app_state_notifier.dart';
+import '../state_notifiers/push_request_notifier.dart';
+import '../state_notifiers/settings_notifier.dart';
+import '../state_notifiers/token_category_notifier.dart';
+import '../state_notifiers/token_notifier.dart';
 import 'logger.dart';
 
 // Never use globalRef to .watch() a provider. only use it to .read() a provider
@@ -69,18 +72,28 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
 });
 
 final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
-  print('settingsProvider: ${ref.watch(sharedPreferencesProvider)}');
+  if (kDebugMode) {
+    print('settingsProvider: ${ref.watch(sharedPreferencesProvider)}');
+  }
   return SettingsNotifier(ref.watch(sharedPreferencesProvider));
 });
 
 final sharedPreferencesProvider = StateProvider<SharedPreferences?>((ref) => null);
 
-final platformInfoProvider = StateProvider<PlatformInfo>((ref) => DummyPlatformInfo());
-
-final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>(
-  (ref) => PushRequestNotifier(null, pollingEnabled: ref.watch(settingsProvider).pollingEnabled),
+final platformInfoProvider = StateProvider<PlatformInfo>(
+  (ref) => DummyPlatformInfo(),
 );
 
-final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>((ref) => AppStateNotifier());
+final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>(
+  (ref) => PushRequestNotifier(null, pollingEnabled: ref.watch(settingsProvider).enablePolling),
+);
 
-final tokenCategoryProvider = StateNotifierProvider<TokenCategoryNotifier, TokenCategoryState>((ref) => TokenCategoryNotifier());
+final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>(
+  (ref) => AppStateNotifier(),
+);
+
+final tokenCategoryProvider = StateNotifierProvider<TokenCategoryNotifier, TokenCategoryState>(
+  (ref) => TokenCategoryNotifier(repositoy: PreferenceTokenCategoryRepotisory()),
+);
+
+final draggingSortableProvider = StateProvider<SortableMixin?>((ref) => null);

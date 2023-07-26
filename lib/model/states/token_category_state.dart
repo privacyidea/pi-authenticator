@@ -1,7 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/token_category.dart';
+
+import '../token_category.dart';
 
 @immutable
 class TokenCategoryState {
@@ -17,7 +18,25 @@ class TokenCategoryState {
 
   TokenCategoryState withCategory(String name) {
     final newCategorys = List<TokenCategory>.from(categorys);
-    newCategorys.add(TokenCategory(title: name, categoryId: newCategoryId));
+    newCategorys.add(TokenCategory(label: name, categoryId: newCategoryId));
+    return copyWith(categorys: newCategorys);
+  }
+
+  //replace all categorys where the categoryid is the same
+  TokenCategoryState withUpdated({List<TokenCategory>? categorys}) {
+    final newCategorys = List<TokenCategory>.from(this.categorys);
+    categorys?.forEach((newCategory) {
+      final index = newCategorys.indexWhere((oldCategory) => oldCategory.categoryId == newCategory.categoryId);
+      if (index != -1) {
+        newCategorys[index] = newCategory;
+      }
+    });
+    return copyWith(categorys: newCategorys);
+  }
+
+  TokenCategoryState withoutCategory(TokenCategory category) {
+    final newCategorys = List<TokenCategory>.from(categorys);
+    newCategorys.removeWhere((element) => element.categoryId == category.categoryId);
     return copyWith(categorys: newCategorys);
   }
 

@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_tokens/hotp_token/hotp_token.dart';
-import 'package:privacyidea_authenticator/utils/lock_auth.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_tile.dart';
-import 'package:privacyidea_authenticator/widgets/custom_texts.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/widgets/hideable_widget_.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../../model/tokens/hotp_token.dart';
+import '../../../../../utils/lock_auth.dart';
+import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/utils.dart';
+import '../../../../../widgets/custom_texts.dart';
+import '../../../../../widgets/hideable_widget_.dart';
+import '../token_widget_tile.dart';
 
 class HOTPTokenWidgetTile extends ConsumerStatefulWidget {
   final HOTPToken token;
 
-  HOTPTokenWidgetTile({required this.token, super.key});
+  const HOTPTokenWidgetTile({required this.token, super.key});
 
   @override
-  _HOTPTokenWidgetTileState createState() {
-    return _HOTPTokenWidgetTileState();
-  }
+  ConsumerState<HOTPTokenWidgetTile> createState() => _HOTPTokenWidgetTileState();
 }
 
 class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
@@ -31,7 +29,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
       globalRef?.read(tokenProvider.notifier).incrementCounter(widget.token);
       buttonIsDisabled = true;
     });
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         buttonIsDisabled = false;
       });
@@ -44,7 +42,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
     isHidden.addListener(() {
       setState(() {
         if (isHidden.value == false) {
-          Future.delayed(Duration(seconds: 30), () {
+          Future.delayed(const Duration(seconds: 30), () {
             isHidden.value = true;
           });
         }
@@ -70,7 +68,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
           child: IconButton(
             iconSize: 32,
             onPressed: buttonIsDisabled ? null : () => _updateOtpValue(),
-            icon: Icon(
+            icon: const Icon(
               Icons.replay,
             ),
           ),

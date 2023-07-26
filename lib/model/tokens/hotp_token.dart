@@ -1,9 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
-
+// ignore: library_prefixes
 import 'package:otp/otp.dart' as OTPLibrary;
+
+import '../../utils/identifiers.dart';
+import '../../utils/utils.dart';
+import 'otp_token.dart';
 
 part 'hotp_token.g.dart';
 
@@ -53,8 +54,9 @@ class HOTPToken extends OTPToken {
         isGoogle: true,
       );
 
-  HOTPToken withNextCounter() => this.copyWith(counter: this.counter + 1);
+  HOTPToken withNextCounter() => copyWith(counter: counter + 1);
 
+  @override
   HOTPToken copyWith({
     int? counter,
     String? label,
@@ -88,7 +90,7 @@ class HOTPToken extends OTPToken {
 
   @override
   String toString() {
-    return 'H' + super.toString() + 'counter: $counter}';
+    return 'H${super}counter: $counter}';
   }
 
   factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json);

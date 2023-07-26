@@ -22,18 +22,20 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 class MigrateLegacyTokensDialog extends StatefulWidget {
+  const MigrateLegacyTokensDialog({super.key});
+
   @override
   State<StatefulWidget> createState() => _MigrateLegacyTokensDialogState();
 }
 
 class _MigrateLegacyTokensDialogState extends State<MigrateLegacyTokensDialog> {
-  Widget _content = Row(
+  Widget _content = const Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[CircularProgressIndicator()],
   );

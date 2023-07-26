@@ -232,7 +232,7 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   // &apikeyios=AIzaSyBeFSjwJ8aEcHQaj4-isT-sLAX6lmSrvbb
   // &appidios=1:0123456789012:ios:0123456789abcdef
 
-  Map<String, dynamic> uriMap = Map();
+  Map<String, dynamic> uriMap = {};
 
   uriMap[URI_TYPE] = uri.host;
 
@@ -303,7 +303,7 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
 Map<String, dynamic> parseOtpAuth(Uri uri) {
   // otpauth://TYPE/LABEL?PARAMETERS
 
-  Map<String, dynamic> uriMap = Map();
+  Map<String, dynamic> uriMap = {};
 
   // parse.host -> Type totp or hotp
   uriMap[URI_TYPE] = uri.host;

@@ -25,8 +25,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 import 'crypto_utils.dart';
@@ -58,7 +58,7 @@ class PushProvider {
       FirebaseMessaging.instance.requestPermission();
     } on FirebaseException catch (ex) {
       String errorMessage = ex.message ?? 'no error message';
-      final SnackBar snackBar = SnackBar(content: Text("Firebase notification permission error! (" + errorMessage + ": " + ex.code));
+      final SnackBar snackBar = SnackBar(content: Text("Firebase notification permission error! ($errorMessage: ${ex.code}"));
       snackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -76,15 +76,14 @@ class PushProvider {
         // ignore
       } else {
         String errorMessage = error.message ?? 'no error message';
-        final SnackBar snackBar =
-            SnackBar(content: Text("Push cant be initialized, restart the app and try again" + error.code + 'error message :' + errorMessage));
+        final SnackBar snackBar = SnackBar(content: Text('Push cant be initialized, restart the app and try again${error.code}error message :$errorMessage'));
         snackbarKey.currentState?.showSnackBar(snackBar);
       }
     } on FirebaseException catch (error) {
-      final SnackBar snackBar = SnackBar(content: Text("Push cant be initialized, restart the app and try again" + error.toString()));
+      final SnackBar snackBar = SnackBar(content: Text("Push cant be initialized, restart the app and try again$error"));
       snackbarKey.currentState?.showSnackBar(snackBar);
     } catch (error) {
-      final SnackBar snackBar = SnackBar(content: Text("Unknown error: ${error.toString()}" + error.toString()));
+      final SnackBar snackBar = SnackBar(content: Text("Unknown error: ${error.toString()}$error"));
       snackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -95,7 +94,7 @@ class PushProvider {
         try {
           _updateFirebaseToken(newToken);
         } catch (error) {
-          final SnackBar snackBar = SnackBar(content: Text("Unknown error: ${error.toString()}" + error.toString()));
+          final SnackBar snackBar = SnackBar(content: Text("Unknown error: ${error.toString()}$error"));
           snackbarKey.currentState?.showSnackBar(snackBar);
         }
       }
@@ -111,8 +110,8 @@ class PushProvider {
       firebaseToken = await FirebaseMessaging.instance.getToken();
     } on FirebaseException catch (ex) {
       String errorMessage = ex.message ?? 'no error message';
-      final SnackBar snackBar = SnackBar(content: Text("Unable to retrieve Firebase token! (" + errorMessage + ": " + ex.code + ")"));
-      Logger.warning('Unable to retrieve Firebase token! (' + errorMessage + ': ' + ex.code + ')', name: 'push_provider.dart#getFBToken', error: ex);
+      final SnackBar snackBar = SnackBar(content: Text("Unable to retrieve Firebase token! ($errorMessage: ${ex.code})"));
+      Logger.warning('Unable to retrieve Firebase token! ($errorMessage: ${ex.code})', name: 'push_provider.dart#getFBToken', error: ex);
       snackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -203,7 +202,7 @@ class PushProvider {
       try {
         _updateFirebaseToken(firebaseToken);
       } catch (error) {
-        final SnackBar snackBar = SnackBar(content: Text("Unknown error: ${error.toString()}" + error.toString()));
+        final SnackBar snackBar = SnackBar(content: Text("Unknown error: ${error.toString()}$error"));
         snackbarKey.currentState?.showSnackBar(snackBar);
       }
     }

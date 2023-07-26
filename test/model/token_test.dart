@@ -44,7 +44,7 @@ void verifyCustomListBehavesLikeQueue() {
         uri: uri,
         nonce: 'nonce',
         sslVerify: false,
-        id: Uuid().v4().hashCode,
+        id: const Uuid().v4().hashCode,
         expirationDate: DateTime.utc(3333),
       );
 
@@ -79,7 +79,7 @@ void verifyCustomListBehavesLikeQueue() {
         uri: uri,
         nonce: 'nonce',
         sslVerify: false,
-        id: Uuid().v4().hashCode,
+        id: const Uuid().v4().hashCode,
         expirationDate: DateTime.utc(3333),
       );
       var two = PushRequest(
@@ -88,7 +88,7 @@ void verifyCustomListBehavesLikeQueue() {
         uri: uri,
         nonce: 'nonce',
         sslVerify: false,
-        id: Uuid().v4().hashCode,
+        id: const Uuid().v4().hashCode,
         expirationDate: DateTime.utc(3333),
       );
       var three = PushRequest(
@@ -97,7 +97,7 @@ void verifyCustomListBehavesLikeQueue() {
         uri: uri,
         nonce: 'nonce',
         sslVerify: false,
-        id: Uuid().v4().hashCode,
+        id: const Uuid().v4().hashCode,
         expirationDate: DateTime.utc(3333),
       );
       var four = PushRequest(
@@ -106,7 +106,7 @@ void verifyCustomListBehavesLikeQueue() {
         uri: uri,
         nonce: 'nonce',
         sslVerify: false,
-        id: Uuid().v4().hashCode,
+        id: const Uuid().v4().hashCode,
         expirationDate: DateTime.utc(3333),
       );
       var five = PushRequest(
@@ -115,7 +115,7 @@ void verifyCustomListBehavesLikeQueue() {
         uri: uri,
         nonce: 'nonce',
         sslVerify: false,
-        id: Uuid().v4().hashCode,
+        id: const Uuid().v4().hashCode,
         expirationDate: DateTime.utc(3333),
       );
 
@@ -153,7 +153,7 @@ void verifyCustomListBehavesLikeQueue() {
         uri: uri,
         nonce: 'nonce',
         sslVerify: false,
-        id: Uuid().v4().hashCode,
+        id: const Uuid().v4().hashCode,
         expirationDate: DateTime.utc(3333),
       );
       var two = PushRequest(
@@ -162,7 +162,7 @@ void verifyCustomListBehavesLikeQueue() {
         uri: uri,
         nonce: 'nonce',
         sslVerify: false,
-        id: Uuid().v4().hashCode,
+        id: const Uuid().v4().hashCode,
         expirationDate: DateTime.utc(3333),
       );
       var three = PushRequest(
@@ -171,7 +171,7 @@ void verifyCustomListBehavesLikeQueue() {
         uri: uri,
         nonce: 'nonce',
         sslVerify: false,
-        id: Uuid().v4().hashCode,
+        id: const Uuid().v4().hashCode,
         expirationDate: DateTime.utc(3333),
       );
       var four = PushRequest(
@@ -180,7 +180,7 @@ void verifyCustomListBehavesLikeQueue() {
         uri: uri,
         nonce: 'nonce',
         sslVerify: false,
-        id: Uuid().v4().hashCode,
+        id: const Uuid().v4().hashCode,
         expirationDate: DateTime.utc(3333),
       );
       var five = PushRequest(
@@ -189,7 +189,7 @@ void verifyCustomListBehavesLikeQueue() {
         uri: uri,
         nonce: 'nonce',
         sslVerify: false,
-        id: Uuid().v4().hashCode,
+        id: const Uuid().v4().hashCode,
         expirationDate: DateTime.utc(3333),
       );
 

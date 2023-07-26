@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 /*
   privacyIDEA Authenticator
 
@@ -24,14 +26,14 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_tokens/hotp_token/hotp_token.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_tokens/totp_token/totp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
-import '../model/tokens/push_token/push_token.dart';
+import '../model/tokens/push_token.dart';
 
 // TODO How to test the behavior of this class?
 class StorageUtil {
@@ -42,7 +44,7 @@ class StorageUtil {
   /// That means, that calls of this method will always be executed serial.
   static protect(Function f) => _m.protect(f as Future<dynamic> Function());
 
-  static final FlutterSecureStorage _storage = FlutterSecureStorage();
+  static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
   static const String _GLOBAL_PREFIX = 'app_v3_';
 
@@ -127,13 +129,13 @@ class StorageUtil {
   // FIREBASE CONFIG
   // ###########################################################################
 
-  static const _CURRENT_APP_TOKEN_KEY = _GLOBAL_PREFIX + 'CURRENT_APP_TOKEN';
+  static const _CURRENT_APP_TOKEN_KEY = '${_GLOBAL_PREFIX}CURRENT_APP_TOKEN';
 
   static Future<void> setCurrentFirebaseToken(String str) async => _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str);
 
   static Future<String?> getCurrentFirebaseToken() async => _storage.read(key: _CURRENT_APP_TOKEN_KEY);
 
-  static const _NEW_APP_TOKEN_KEY = _GLOBAL_PREFIX + 'NEW_APP_TOKEN';
+  static const _NEW_APP_TOKEN_KEY = '${_GLOBAL_PREFIX}NEW_APP_TOKEN';
 
   // This is used for checking if the token was updated.
   static Future<void> setNewFirebaseToken(String str) async => _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
@@ -155,7 +157,7 @@ class StorageUtil {
 
     for (var tokenMap in jsonDecode(json)) {
       Token token;
-      String id = Uuid().v4();
+      String id = const Uuid().v4();
 
       String type = tokenMap['type'];
       if (type == 'hotp') {
@@ -185,7 +187,7 @@ class StorageUtil {
           label: tokenMap['label'],
           id: id,
           serial: tokenMap['serial'],
-          expirationDate: DateTime.now().subtract(Duration(minutes: 60)),
+          expirationDate: DateTime.now().subtract(const Duration(minutes: 60)),
           enrollmentCredentials: null,
           sslVerify: null,
           url: null,
@@ -218,7 +220,7 @@ class StorageUtil {
 // Update information
 // ###########################################################################
 
-  static const _KEY_VERSION = _GLOBAL_PREFIX + '_app_version';
+  static const _KEY_VERSION = '${_GLOBAL_PREFIX}_app_version';
 
   static Future<String?> getCurrentVersion() async {
     return await _storage.read(key: _KEY_VERSION);

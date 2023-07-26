@@ -1,10 +1,14 @@
-import 'package:privacyidea_authenticator/model/tokens/otp_tokens/hotp_token/hotp_token.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_tokens/totp_token/totp_token.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
+import 'package:flutter/material.dart';
 
-abstract class Token {
+import '../../utils/identifiers.dart';
+import '../../utils/utils.dart';
+import '../mixins/sortable_mixin.dart';
+import 'hotp_token.dart';
+import 'push_token.dart';
+import 'totp_token.dart';
+
+@immutable
+abstract class Token with SortableMixin {
   final String tokenVersion = 'v1.0.0'; // The version of this token, this is used for serialization.
   final String label; // the name of the token, it cannot be uses as an identifier
   final String issuer; // The issuer of this token, currently unused.
@@ -13,8 +17,9 @@ abstract class Token {
   final bool? pin;
   final String? imageURL;
   final int? categoryId;
-  final int? sortIndex;
   final bool isInEditMode;
+  @override
+  final int? sortIndex;
 
   // Must be string representation of TokenType enum.
   final String type; // Used to identify the token when deserializing.
@@ -40,6 +45,7 @@ abstract class Token {
     this.isInEditMode = false,
   });
 
+  @override
   Token copyWith({
     String? label,
     String? issuer,

@@ -24,10 +24,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/model/platform_info/platform_info_imp/package_info_plus_platform_info.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
+import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/themes.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
@@ -38,11 +38,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   Logger.init(appRunner: () async {
     WidgetsFlutterBinding.ensureInitialized();
-    runApp(AppWrapper(child: PrivacyIDEAAuthenticator()));
+    runApp(const AppWrapper(child: PrivacyIDEAAuthenticator()));
   });
 }
 
 class PrivacyIDEAAuthenticator extends ConsumerWidget {
+  const PrivacyIDEAAuthenticator({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     globalRef = ref;
@@ -61,11 +63,11 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
       themeMode: EasyDynamicTheme.of(context).themeMode,
       initialRoute: SplashScreen.routeName,
       routes: {
-        MainView.routeName: (context) => MainView(title: ApplicationCustomizer.appName),
-        SplashScreen.routeName: (context) => SplashScreen(),
-        OnboardingView.routeName: (context) => OnboardingView(),
-        SettingsView.routeName: (context) => SettingsView(),
-        AddTokenManuallyView.routeName: (context) => AddTokenManuallyView(),
+        MainView.routeName: (context) => const MainView(title: ApplicationCustomizer.appName),
+        SplashScreen.routeName: (context) => const SplashScreen(),
+        OnboardingView.routeName: (context) => const OnboardingView(),
+        SettingsView.routeName: (context) => const SettingsView(),
+        AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
       },
     );
   }
@@ -87,6 +89,8 @@ class AppWrapper extends StatelessWidget {
 class SplashScreen extends ConsumerStatefulWidget {
   static const routeName = '/splash';
 
+  const SplashScreen({super.key});
+
   @override
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
@@ -101,10 +105,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     super.initState();
 
     Future.delayed(_splashScreenDelay, () {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _appIconIsVisible = true;
         });
+      }
     });
     _init();
   }
@@ -114,11 +119,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     ref.read(sharedPreferencesProvider.notifier).state = await SharedPreferences.getInstance();
     final isFirstRun = ref.read(settingsProvider).isFirstRun;
     await Future.delayed(_splashScreenDuration + _splashScreenDelay * 2);
-    final nextView;
+    final ConsumerStatefulWidget nextView;
     if (isFirstRun) {
-      nextView = OnboardingView();
+      nextView = const OnboardingView();
     } else {
-      nextView = MainView(
+      nextView = const MainView(
         title: ApplicationCustomizer.appName,
       );
     }
@@ -126,7 +131,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       context,
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => nextView,
-        transitionDuration: Duration(seconds: 1),
+        transitionDuration: const Duration(seconds: 1),
         transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
       ),
     );

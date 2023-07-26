@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/token_category.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
+
+import '../token_category.dart';
+import '../tokens/token.dart';
 
 @immutable
 class TokenState {
@@ -45,13 +46,14 @@ class TokenState {
 
   TokenState updateTokens(List<Token> tokens) {
     final newTokens = List<Token>.from(this.tokens);
-    tokens.forEach((token) {
+    for (var token in tokens) {
       final index = newTokens.indexWhere((element) => element.id == token.id);
       newTokens[index] = token;
-    });
+    }
     _sort(newTokens);
     return TokenState(tokens: newTokens);
   }
 
   List<Token> tokensInCategory(TokenCategory category) => tokens.where((token) => token.categoryId == category.categoryId).toList();
+  List<Token> tokensWithoutCategory() => tokens.where((token) => token.categoryId == null).toList();
 }

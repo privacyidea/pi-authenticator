@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_tokens/totp_token/totp_token.dart';
-import 'package:privacyidea_authenticator/utils/lock_auth.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_tile.dart';
-import 'package:privacyidea_authenticator/widgets/custom_texts.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/widgets/hideable_widget_.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../../model/tokens/totp_token.dart';
+import '../../../../../utils/lock_auth.dart';
+import '../../../../../utils/utils.dart';
+import '../../../../../widgets/custom_texts.dart';
+import '../../../../../widgets/hideable_widget_.dart';
+import '../token_widget_tile.dart';
 
 class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   final TOTPToken token;
 
-  TOTPTokenWidgetTile(this.token);
+  const TOTPTokenWidgetTile(this.token, {super.key});
 
   @override
   ConsumerState<TOTPTokenWidgetTile> createState() => _TOTPTokenWidgetTileState();
@@ -62,7 +62,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
     isHidden.addListener(() {
       setState(() {
         if (isHidden.value == false) {
-          Future.delayed(Duration(seconds: 30), () {
+          Future.delayed(const Duration(seconds: 30), () {
             isHidden.value = true;
           });
         }

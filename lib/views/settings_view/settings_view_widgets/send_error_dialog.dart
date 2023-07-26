@@ -1,10 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../utils/logger.dart';
+
 class SendErrorDialog extends StatelessWidget {
+  const SendErrorDialog({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BackdropFilter(
@@ -39,7 +42,7 @@ class SendErrorDialog extends StatelessWidget {
                 onPressed: () => Navigator.pop(context),
               ),
               TextButton(
-                child: Icon(Icons.email),
+                child: const Icon(Icons.email),
                 onPressed: () async {
                   Logger.sendErrorLog();
                 },
@@ -53,6 +56,8 @@ class SendErrorDialog extends StatelessWidget {
 }
 
 class NoLogDialog extends StatelessWidget {
+  const NoLogDialog({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BackdropFilter(

@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/token_action.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import '../../../../../model/token_category.dart';
+import '../../../../../utils/app_customizer.dart';
+import '../../../../../utils/logger.dart';
+import '../../../../../utils/riverpod_providers.dart';
 
-class DefaultEditAction extends TokenAction {
-  final Token token;
-  DefaultEditAction({required this.token, Key? key}) : super(key: key);
+class RenameTokenCategoryAction extends StatelessWidget {
+  final TokenCategory category;
+  const RenameTokenCategoryAction({required this.category, Key? key}) : super(key: key);
 
   @override
-  SlidableAction build(BuildContext context) {
+  Widget build(BuildContext context) {
     return SlidableAction(
         label: AppLocalizations.of(context)!.rename,
         backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
         icon: Icons.edit,
         onPressed: (context) {
-          TextEditingController _nameInputController = TextEditingController(text: token.label);
+          TextEditingController nameInputController = TextEditingController(text: category.label);
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -28,7 +26,7 @@ class DefaultEditAction extends TokenAction {
                   title: Text(AppLocalizations.of(context)!.renameToken),
                   content: TextFormField(
                     autofocus: true,
-                    controller: _nameInputController,
+                    controller: nameInputController,
                     onChanged: (value) {},
                     decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
                     validator: (value) {
@@ -50,14 +48,14 @@ class DefaultEditAction extends TokenAction {
                         AppLocalizations.of(context)!.rename,
                       ),
                       onPressed: () {
-                        final newLabel = _nameInputController.text.trim();
+                        final newLabel = nameInputController.text.trim();
                         if (newLabel.isEmpty) return;
-                        globalRef?.read(tokenProvider.notifier).updateToken(token.copyWith(label: newLabel));
+                        globalRef?.read(tokenCategoryProvider.notifier).updateCategory(category.copyWith(label: newLabel));
 
                         Logger.info(
                           'Renamed token:',
                           name: 'token_widget_base.dart#TextButton#renameClicked',
-                          error: '\'${token.label}\' changed to \'$newLabel\'',
+                          error: '\'${category.label}\' changed to \'$newLabel\'',
                         );
 
                         Navigator.of(context).pop();

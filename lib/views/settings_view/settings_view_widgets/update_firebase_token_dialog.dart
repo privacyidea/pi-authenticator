@@ -24,20 +24,23 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
+import '../../../model/tokens/push_token.dart';
+
 class UpdateFirebaseTokenDialog extends StatefulWidget {
+  const UpdateFirebaseTokenDialog({super.key});
+
   @override
   State<StatefulWidget> createState() => _UpdateFirebaseTokenDialogState();
 }
 
 class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
-  Widget _content = Row(
+  Widget _content = const Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[CircularProgressIndicator()],
   );
@@ -111,7 +114,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
         Logger.warning('Socket exception occurred: $e', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(AppLocalizations.of(context)!.errorSynchronizationNoNetworkConnection),
-          duration: Duration(seconds: 3),
+          duration: const Duration(seconds: 3),
         ));
         Navigator.pop(context);
         return;
@@ -134,7 +137,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
       if (tokenWithOutUrl.isNotEmpty) {
         if (children.isNotEmpty) {
-          children.add(Divider());
+          children.add(const Divider());
         }
 
         children.add(Text(AppLocalizations.of(context)!.tokensDoNotSupportSynchronization));

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/widgets/custom_trailing.dart';
+
+import '../../../../widgets/custom_trailing.dart';
 
 class TokenWidgetTile extends ConsumerWidget {
   final Widget? title;
@@ -51,14 +52,14 @@ class TokenWidgetTile extends ConsumerWidget {
             ],
           ),
           if (tokenIsLocked)
-            Positioned(
+            const Positioned(
+              right: 0,
+              bottom: 0,
               child: Icon(
                 Icons.lock,
                 color: Colors.yellow,
                 size: 18,
               ),
-              right: 0,
-              bottom: 0,
             ),
           if (overlay != null) overlay!
         ],

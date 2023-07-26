@@ -25,9 +25,9 @@ class SettingsGroup extends StatelessWidget {
   final String _title;
   final List<Widget> _children;
 
-  SettingsGroup({required String title, required List<Widget> children})
-      : this._title = title,
-        this._children = children;
+  const SettingsGroup({super.key, required String title, required List<Widget> children})
+      : _title = title,
+        _children = children;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,8 @@ class SettingsGroup extends StatelessWidget {
                 ),
           ),
         ),
-      ]..addAll(_children),
+        ..._children,
+      ],
     );
   }
 }

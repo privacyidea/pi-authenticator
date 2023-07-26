@@ -1,13 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/model/push_request.dart';
-import 'package:privacyidea_authenticator/model/push_request_queue.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
+
+import '../../utils/custom_int_buffer.dart';
+import '../../utils/identifiers.dart';
+import '../../utils/parsing_utils.dart';
+import '../../utils/utils.dart';
+import '../push_request.dart';
+import '../push_request_queue.dart';
+import 'token.dart';
 
 part 'push_token.g.dart';
 
@@ -21,8 +22,6 @@ class PushToken extends Token {
   final String? enrollmentCredentials;
   final Uri? url; // Full access to allow adding to legacy android tokens
   final bool isRolledOut;
-  final int? sortIndex;
-  final bool? pin;
 
   // RSA keys - String values for backward compatibility with serialization
   final String? publicServerKey;
@@ -31,23 +30,23 @@ class PushToken extends Token {
 
   // Custom getter and setter for RSA keys
   RSAPublicKey? get rsaPublicServerKey => publicServerKey == null ? null : deserializeRSAPublicKeyPKCS1(publicServerKey!);
-  PushToken withPublicServerKey(RSAPublicKey key) => this.copyWith(publicServerKey: serializeRSAPublicKeyPKCS1(key));
+  PushToken withPublicServerKey(RSAPublicKey key) => copyWith(publicServerKey: serializeRSAPublicKeyPKCS1(key));
   RSAPublicKey? get rsaPublicTokenKey => publicTokenKey == null ? null : deserializeRSAPublicKeyPKCS1(publicTokenKey!);
-  PushToken withPublicTokenKey(RSAPublicKey key) => this.copyWith(publicTokenKey: serializeRSAPublicKeyPKCS1(key));
+  PushToken withPublicTokenKey(RSAPublicKey key) => copyWith(publicTokenKey: serializeRSAPublicKeyPKCS1(key));
   RSAPrivateKey? get rsaPrivateTokenKey => privateTokenKey == null ? null : deserializeRSAPrivateKeyPKCS1(privateTokenKey!);
-  PushToken withPrivateTokenKey(RSAPrivateKey key) => this.copyWith(privateTokenKey: serializeRSAPrivateKeyPKCS1(key));
+  PushToken withPrivateTokenKey(RSAPrivateKey key) => copyWith(privateTokenKey: serializeRSAPrivateKeyPKCS1(key));
 
   PushToken withPushRequest(PushRequest pr) {
     pushRequests.add(pr);
     knownPushRequests.put(pr.id);
-    return this.copyWith(pushRequests: pushRequests, knownPushRequests: knownPushRequests);
+    return copyWith(pushRequests: pushRequests, knownPushRequests: knownPushRequests);
   }
 
   PushToken withoutPushRequest(PushRequest pr) {
     if (pushRequests.list.firstWhereOrNull((element) => element.id == pr.id) != null) {
       pushRequests.remove(pr);
     }
-    return this.copyWith(pushRequests: pushRequests);
+    return copyWith(pushRequests: pushRequests);
   }
 
   late final PushRequestQueue pushRequests;
@@ -59,45 +58,34 @@ class PushToken extends Token {
   bool knowsRequestWithId(int id) {
     bool exists = pushRequests.any((element) => element.id == id);
 
-    return this.knownPushRequests.contains(id) || exists;
+    return knownPushRequests.contains(id) || exists;
   }
 
   PushToken({
     required String label,
-    required String serial,
+    required this.serial,
     required String issuer,
     required String id,
     String? type,
     String? imageURL,
     PushRequestQueue? pushRequests,
     bool isLocked = false,
-    bool? pin = false,
+    super.pin = false,
     // 2. step
-    bool? sslVerify,
+    this.sslVerify,
     this.enrollmentCredentials,
-    Uri? url,
-    int? sortIndex,
-    String? tokenImage,
-    String? publicServerKey,
-    String? publicTokenKey,
-    String? privateTokenKey,
-    required DateTime expirationDate,
-    bool isRolledOut = false,
+    this.url,
+    super.sortIndex,
+    this.tokenImage,
+    this.publicServerKey,
+    this.publicTokenKey,
+    this.privateTokenKey,
+    required this.expirationDate,
+    this.isRolledOut = false,
     CustomIntBuffer? knownPushRequests,
     int? categoryId,
     bool isInEditMode = false,
-  })  : this.publicServerKey = publicServerKey,
-        this.publicTokenKey = publicTokenKey,
-        this.privateTokenKey = privateTokenKey,
-        this.serial = serial,
-        this.sslVerify = sslVerify,
-        this.expirationDate = expirationDate,
-        this.sortIndex = sortIndex,
-        this.url = url,
-        this.tokenImage = tokenImage,
-        this.pin = pin,
-        this.isRolledOut = isRolledOut,
-        this.knownPushRequests = knownPushRequests ?? CustomIntBuffer(),
+  })  : knownPushRequests = knownPushRequests ?? CustomIntBuffer(),
         super(
           label: label,
           issuer: issuer,
@@ -105,6 +93,7 @@ class PushToken extends Token {
           isLocked: isLocked,
           imageURL: imageURL,
           type: type ?? enumAsString(TokenTypes.PIPUSH),
+          categoryId: categoryId,
           isInEditMode: isInEditMode,
         ) {
     final now = DateTime.now();
@@ -172,19 +161,18 @@ class PushToken extends Token {
 
   @override
   String toString() {
-    return 'Push' +
-        super.toString() +
-        'expirationDate: $expirationDate, ' +
-        'serial: $serial, sslVerify: $sslVerify, ' +
-        'enrollmentCredentials: $enrollmentCredentials, ' +
-        'url: $url, isRolledOut: $isRolledOut, ' +
-        'sortIndex: $sortIndex, ' +
-        'pin: $pin, ' +
-        'publicServerKey: $publicServerKey, ' +
-        'privateTokenKey: $privateTokenKey, ' +
-        'publicTokenKey: $publicTokenKey, ' +
-        'pushRequests: $pushRequests, ' +
-        'tokenImage: $tokenImage, ' +
+    return 'Push${super.toString()}'
+        'expirationDate: $expirationDate, '
+        'serial: $serial, sslVerify: $sslVerify, '
+        'enrollmentCredentials: $enrollmentCredentials, '
+        'url: $url, isRolledOut: $isRolledOut, '
+        'sortIndex: $sortIndex, '
+        'pin: $pin, '
+        'publicServerKey: $publicServerKey, '
+        'privateTokenKey: $privateTokenKey, '
+        'publicTokenKey: $publicTokenKey, '
+        'pushRequests: $pushRequests, '
+        'tokenImage: $tokenImage, '
         'knownPushRequests: $knownPushRequests}';
   }
 

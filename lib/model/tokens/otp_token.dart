@@ -1,11 +1,10 @@
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import '../../utils/identifiers.dart';
+import 'token.dart';
 
 abstract class OTPToken extends Token {
   final Algorithms algorithm; // the hashing algorithm that is used to calculate the otp value
   final int digits; // the number of digits the otp value will have
   final String secret; // the secret based on which the otp value is calculated in base32
-  final bool? pin; // backend can send pin = true, in that case the token should be locked by default
   String get otpValue; // the current otp value
 
   const OTPToken({
@@ -16,7 +15,7 @@ abstract class OTPToken extends Token {
     required this.algorithm,
     required this.digits,
     required this.secret,
-    required this.pin,
+    required super.pin,
     String? imageURL,
     int? sortIndex,
     bool isLocked = false,
@@ -35,6 +34,7 @@ abstract class OTPToken extends Token {
           isInEditMode: isInEditMode,
         );
 
+  @override
   OTPToken copyWith({
     String? label,
     String? issuer,
@@ -52,6 +52,6 @@ abstract class OTPToken extends Token {
 
   @override
   String toString() {
-    return 'OTP' + super.toString() + 'algorithm: $algorithm, digits: $digits, pin: $pin, ';
+    return 'OTP${super}algorithm: $algorithm, digits: $digits, pin: $pin, ';
   }
 }
