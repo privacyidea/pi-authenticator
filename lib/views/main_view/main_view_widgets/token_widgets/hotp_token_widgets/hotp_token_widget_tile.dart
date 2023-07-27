@@ -40,13 +40,15 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
   void initState() {
     super.initState();
     isHidden.addListener(() {
-      setState(() {
-        if (isHidden.value == false) {
-          Future.delayed(const Duration(seconds: 30), () {
-            isHidden.value = true;
-          });
-        }
-      });
+      if (mounted) {
+        setState(() {
+          if (isHidden.value == false) {
+            Future.delayed(const Duration(seconds: 30), () {
+              isHidden.value = true;
+            });
+          }
+        });
+      }
     });
   }
 

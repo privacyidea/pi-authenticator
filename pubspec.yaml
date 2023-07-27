@@ -64,7 +64,7 @@ dependencies:
   flutter_mailer: ^2.1.1
   permission_handler: ^10.2.0
   path_provider: ^2.0.15
-  logger: ^1.4.0
+  logger: ^2.0.0
   flutter_riverpod: ^2.3.6
   shared_preferences: ^2.2.0
   lifecycle: ^0.7.0
@@ -78,7 +78,6 @@ dev_dependencies:
   # dependencies to serialize objects to json
   build_runner: any
   json_serializable: ^6.0.1
-  flutter_test: any 
 
 
 # For information on the generic Dart part of this file, see the

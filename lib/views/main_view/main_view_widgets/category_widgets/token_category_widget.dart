@@ -3,10 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/category_widgets/token_category_actions.dart/rename_token_category_action.dart';
+import 'token_category_actions.dart/rename_token_category_action.dart';
 
 import 'package:expandable/expandable.dart';
-import 'package:privacyidea_authenticator/widgets/custom_trailing.dart';
+import '../../../../widgets/custom_trailing.dart';
 
 import '../../../../model/token_category.dart';
 import '../../../../model/tokens/token.dart';
@@ -59,8 +59,8 @@ class _TokenCategoryWidgetState extends ConsumerState<TokenCategoryWidget> with 
       onDragStarted: () {
         ref.read(draggingSortableProvider.notifier).state = widget.category;
       },
-      onDragEnd: (details) {
-        if (details.wasAccepted) ref.read(draggingSortableProvider.notifier).state = null;
+      onDragCompleted: () {
+        globalRef?.read(draggingSortableProvider.notifier).state = null;
       },
       onDraggableCanceled: (velocity, offset) {
         globalRef?.read(draggingSortableProvider.notifier).state = null;
@@ -126,22 +126,12 @@ class _TokenCategoryWidgetState extends ConsumerState<TokenCategoryWidget> with 
                               ),
                             ),
                             CustomTrailing(
-                              child: SizedBox.expand(
-                                child: Center(
-                                  child: Container(
-                                    color: Colors.amber,
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    child: Center(
-                                      child: Stack(
-                                        children: [
-                                          Icon(Icons.folder_open, color: Theme.of(context).indicatorColor),
-                                          if (tokens.isNotEmpty)
-                                            FadeTransition(opacity: _animationController, child: Icon(Icons.folder, color: Theme.of(context).indicatorColor)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                              child: Center(
+                                child: Stack(
+                                  children: [
+                                    const Icon(Icons.folder_open),
+                                    if (tokens.isNotEmpty) FadeTransition(opacity: _animationController, child: const Icon(Icons.folder)),
+                                  ],
                                 ),
                               ),
                             ),
@@ -169,7 +159,7 @@ class _TokenCategoryWidgetState extends ConsumerState<TokenCategoryWidget> with 
                             withDivider: i < tokens.length - 1,
                           ),
                         ],
-                        if (tokens.isNotEmpty) DragTargetDivider<Token>(dependingCategory: widget.category, nextSortable: null),
+                        if (tokens.isNotEmpty && draggingSortable is Token) DragTargetDivider<Token>(dependingCategory: widget.category, nextSortable: null),
                       ],
                     ),
                   ),

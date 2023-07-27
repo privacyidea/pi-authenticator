@@ -117,8 +117,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Future<void> _init() async {
     ref.read(platformInfoProvider.notifier).state = await PackageInfoPlusPlatformInfo.loadInfos();
     ref.read(sharedPreferencesProvider.notifier).state = await SharedPreferences.getInstance();
-    final isFirstRun = ref.read(settingsProvider).isFirstRun;
     await Future.delayed(_splashScreenDuration + _splashScreenDelay * 2);
+    final isFirstRun = ref.read(settingsProvider).isFirstRun;
     final ConsumerStatefulWidget nextView;
     if (isFirstRun) {
       nextView = const OnboardingView();
@@ -127,6 +127,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         title: ApplicationCustomizer.appName,
       );
     }
+    // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(

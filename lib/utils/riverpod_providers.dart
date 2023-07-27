@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/repo/preference_settings_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/mixins/sortable_mixin.dart';
@@ -71,12 +71,10 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
   return tokenNotifier;
 });
 
-final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
-  if (kDebugMode) {
-    print('settingsProvider: ${ref.watch(sharedPreferencesProvider)}');
-  }
-  return SettingsNotifier(ref.watch(sharedPreferencesProvider));
-});
+final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) => SettingsNotifier(
+      repository: PreferenceSettingsRepository(),
+      initialState: SettingsState(),
+    ));
 
 final sharedPreferencesProvider = StateProvider<SharedPreferences?>((ref) => null);
 
@@ -92,8 +90,7 @@ final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>(
   (ref) => AppStateNotifier(),
 );
 
-final tokenCategoryProvider = StateNotifierProvider<TokenCategoryNotifier, TokenCategoryState>(
-  (ref) => TokenCategoryNotifier(repositoy: PreferenceTokenCategoryRepotisory()),
-);
+final tokenCategoryProvider =
+    StateNotifierProvider<TokenCategoryNotifier, TokenCategoryState>((ref) => TokenCategoryNotifier(repositoy: PreferenceTokenCategoryRepotisory()));
 
 final draggingSortableProvider = StateProvider<SortableMixin?>((ref) => null);

@@ -8,13 +8,10 @@ class CustomTrailing extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.green,
-      child: Container(
-        margin: const EdgeInsets.only(right: 20.0),
-        width: MediaQuery.of(context).size.width * 0.15,
-        height: MediaQuery.of(context).size.width * 0.15,
-        child: child,
-      ),
+      margin: const EdgeInsets.only(right: 20.0),
+      width: MediaQuery.of(context).size.width * 0.15,
+      height: MediaQuery.of(context).size.width * 0.15,
+      child: child,
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../repo/token_category_repository.dart';
-import '../model/token_category.dart';
 
 import '../model/states/token_category_state.dart';
+import '../model/token_category.dart';
+import '../repo/token_category_repository.dart';
 
 class TokenCategoryNotifier extends StateNotifier<TokenCategoryState> {
   final TokenCategoryRepositoy _repo;

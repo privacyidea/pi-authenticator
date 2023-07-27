@@ -22,7 +22,8 @@
 
 import 'package:flutter/material.dart';
 
-const MaterialColor PRIMARY_COLOR = Colors.blue; // Default: Color(0xff03a8f4)
+// Was unused... remove?
+//const MaterialColor PRIMARY_COLOR = Colors.blue; // Default: Color(0xff03a8f4)
 
 const String applicationName = 'privacyIDEA Authenticator'; // Default: privacyIDEA Authenticator
 

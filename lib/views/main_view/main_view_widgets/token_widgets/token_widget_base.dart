@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import '../../../../utils/riverpod_providers.dart';
 
 import '../../../../model/tokens/token.dart';
+import '../../../../utils/riverpod_providers.dart';
 import '../../../../utils/text_size.dart';
 import 'token_widget_actions/default_token_delete_action.dart';
 import 'token_widget_actions/default_token_edit_action.dart';
@@ -48,8 +48,8 @@ class TokenWidgetBase extends ConsumerWidget {
       onDragStarted: () {
         ref.read(draggingSortableProvider.notifier).state = token;
       },
-      onDragEnd: (details) {
-        if (details.wasAccepted) ref.read(draggingSortableProvider.notifier).state = null;
+      onDragCompleted: () {
+        globalRef?.read(draggingSortableProvider.notifier).state = null;
       },
       onDraggableCanceled: (velocity, offset) {
         globalRef?.read(draggingSortableProvider.notifier).state = null;

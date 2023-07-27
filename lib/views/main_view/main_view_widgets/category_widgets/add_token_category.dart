@@ -58,16 +58,6 @@ class _AddTokenCategoryWidgetState extends ConsumerState<AddTokenCategory> {
               icon: const Icon(Icons.close),
             ),
           )
-        : Center(
-            child: GestureDetector(
-              onTap: startAddingCategory,
-              child: Container(
-                color: Colors.transparent,
-                width: double.infinity,
-                height: 50,
-                child: const Icon(Icons.create_new_folder),
-              ),
-            ),
-          );
+        : SizedBox();
   }
 }

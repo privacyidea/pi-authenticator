@@ -52,6 +52,6 @@ abstract class OTPToken extends Token {
 
   @override
   String toString() {
-    return 'OTP${super}algorithm: $algorithm, digits: $digits, pin: $pin, ';
+    return 'OTP${super.toString()}algorithm: $algorithm, digits: $digits, pin: $pin, ';
   }
 }

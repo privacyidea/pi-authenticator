@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/widgets/drag_item_scroller.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_category.dart';
 import '../../../model/tokens/token.dart';
-import '../../../utils/logger.dart';
 import '../../../utils/riverpod_providers.dart';
+import 'main_view_tokens_list.dart';
 
 ///DragTargetDivider is used to create a divider that can be used to move a sortable up or down in the list
 ///It will accept a Sortable from the type T
 class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget {
   final TokenCategory? dependingCategory;
   final SortableMixin? nextSortable;
+  final bool isLastDivider;
 
   const DragTargetDivider({
     super.key,
     required this.dependingCategory,
     required this.nextSortable,
+    this.isLastDivider = false,
   });
 
   @override
@@ -34,15 +37,15 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
       duration: const Duration(milliseconds: 100),
     );
     expansionController.addListener(() {
-      setState(() {});
-      Logger.info('Expansion controller: ${expansionController.value}');
+      if (mounted) setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return DragTarget(onWillAccept: (data) {
+    final body = DragTarget(onWillAccept: (data) {
       if (data is T == false) return false;
+      if (ref.read(dragItemScrollerStateProvider)) return false;
       expansionController.forward();
       return true;
     }, onLeave: (data) {
@@ -105,5 +108,12 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
         margin: EdgeInsets.only(left: 8 - expansionController.value * 2, right: 8 - expansionController.value * 2, top: 4, bottom: 4),
       );
     });
+
+    return widget.isLastDivider
+        ? Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [body, SizedBox(height: 40 - 40 * expansionController.value)],
+          )
+        : body;
   }
 }

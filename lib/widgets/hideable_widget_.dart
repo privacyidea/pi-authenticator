@@ -18,18 +18,13 @@ class HideableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return token.isLocked && isHiddenNotifier.value
-        ? Container(
-            color: Colors.amber,
-            width: double.infinity,
-            height: double.infinity,
-            child: IconButton(
-              onPressed: () async {
-                if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
-                  isHiddenNotifier.value = false;
-                }
-              },
-              icon: const Icon(Icons.remove_red_eye_outlined),
-            ),
+        ? IconButton(
+            onPressed: () async {
+              if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
+                isHiddenNotifier.value = false;
+              }
+            },
+            icon: const Icon(Icons.remove_red_eye_outlined),
           )
         : child;
   }

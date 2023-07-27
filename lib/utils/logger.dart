@@ -279,10 +279,10 @@ class Logger {
     print.w(messageWithShorterLines);
   }
 
-  static void _printError(String? message, {dynamic error, dynamic stackTrace, String? name}) {
+  static void _printError(String? message, {dynamic error, StackTrace? stackTrace, String? name}) {
     if (!kDebugMode) return;
     final messageWithShorterLines = message != null ? _maxLineLengh(message) : null;
-    print.e(messageWithShorterLines, error, stackTrace);
+    print.e(messageWithShorterLines, error: error, stackTrace: stackTrace);
   }
 
   /*----------- DISPLAY OUTPUTS -----------*/
