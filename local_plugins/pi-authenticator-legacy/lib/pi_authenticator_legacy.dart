@@ -27,8 +27,6 @@ import 'package:pi_authenticator_legacy/identifiers.dart';
 const String METHOD_CHANNEL_ID = "it.netknights.piauthenticator.legacy";
 const String METHOD_SIGN = "sign";
 const String METHOD_VERIFY = "verify";
-const String METHOD_LOAD_ALL_TOKENS = "load_all_tokens";
-const String METHOD_LOAD_FIREBASE_CONFIG = "load_firebase_config";
 
 const String PARAMETER_SERIAL = "serial";
 const String PARAMETER_MESSAGE = "message";
@@ -62,25 +60,5 @@ class Legacy {
         );
 
         return false;
-      }));
-
-  static Future<String> loadAllTokens() async => await (_channel.invokeMethod(METHOD_LOAD_ALL_TOKENS).catchError((dynamic, stackTrace) {
-        log(
-          "Error occurred in [loadAllTokens]",
-          name: "pi_authenticator_legacy.dart",
-          error: dynamic,
-        );
-
-        return "[]";
-      }));
-
-  static Future<String> loadFirebaseConfig() async => await (_channel.invokeMethod(METHOD_LOAD_FIREBASE_CONFIG).catchError((dynamic, stackTrace) {
-        log(
-          "Error occurred in [loadFirebaseConfig]",
-          name: "pi_authenticator_legacy.dart",
-          error: dynamic,
-        );
-
-        return "{}";
       }));
 }

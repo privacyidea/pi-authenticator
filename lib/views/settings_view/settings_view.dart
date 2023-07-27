@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../model/tokens/push_token.dart';
 import '../../utils/riverpod_providers.dart';
 import 'settings_view_widgets/logging_menu.dart';
-import 'settings_view_widgets/migrate_legacy_tokens_dialog.dart';
 import 'settings_view_widgets/settings_groups.dart';
 import 'settings_view_widgets/update_firebase_token_dialog.dart';
 
@@ -151,19 +150,6 @@ class SettingsView extends ConsumerWidget {
                   ),
                 ],
               ),
-            ),
-            const Divider(),
-            SettingsGroup(
-              title: AppLocalizations.of(context)!.migration,
-              children: [
-                ListTile(
-                  title: Text(AppLocalizations.of(context)!.migrateTokens),
-                  trailing: ElevatedButton(
-                    child: Text(AppLocalizations.of(context)!.migrate),
-                    onPressed: () => showDialog(context: context, barrierDismissible: false, builder: (context) => const MigrateLegacyTokensDialog()),
-                  ),
-                ),
-              ],
             ),
             const Divider(),
             SettingsGroup(title: AppLocalizations.of(context)!.errorLogTitle, children: [
