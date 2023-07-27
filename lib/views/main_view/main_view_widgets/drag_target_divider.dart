@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/widgets/drag_item_scroller.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_category.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/riverpod_providers.dart';
-import 'main_view_tokens_list.dart';
+import '../../../widgets/drag_item_scroller.dart';
 
 ///DragTargetDivider is used to create a divider that can be used to move a sortable up or down in the list
 ///It will accept a Sortable from the type T

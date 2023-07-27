@@ -1,5 +1,5 @@
-import 'package:privacyidea_authenticator/model/states/settings_state.dart';
-import 'package:privacyidea_authenticator/repo/settings_repository.dart';
+import '../model/states/settings_state.dart';
+import 'settings_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenceSettingsRepository extends SettingsRepository {

@@ -1,16 +1,16 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/app_bar_item.dart';
 
 import '../../../utils/app_customizer.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../qr_scanner_view/scanner_view.dart';
 import '../../settings_view/settings_view.dart';
+import 'app_bar_item.dart';
 import 'custom_paint_app_bar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainViewNavigationButtions extends StatelessWidget {
   const MainViewNavigationButtions({Key? key}) : super(key: key);

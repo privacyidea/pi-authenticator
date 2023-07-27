@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/repo/preference_settings_repository.dart';
+import '../repo/preference_settings_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/mixins/sortable_mixin.dart';

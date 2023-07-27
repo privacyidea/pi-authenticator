@@ -9,6 +9,7 @@ import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/drag_item_scroller.dart';
+import '../deactivateable_refresh_indicator.dart';
 import 'category_widgets/add_token_category.dart';
 import 'drag_target_divider.dart';
 import 'no_token_screen.dart';
@@ -86,28 +87,5 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
         ),
       ),
     );
-  }
-}
-
-class DeactivateableRefreshIndicator extends StatelessWidget {
-  final Widget child;
-  final bool allowToRefresh;
-  final Future<void> Function() onRefresh;
-
-  const DeactivateableRefreshIndicator({
-    Key? key,
-    required this.child,
-    required this.allowToRefresh,
-    required this.onRefresh,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return allowToRefresh
-        ? RefreshIndicator(
-            onRefresh: onRefresh,
-            child: child,
-          )
-        : child;
   }
 }

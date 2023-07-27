@@ -1,20 +1,19 @@
 import 'dart:math';
 
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'token_category_actions.dart/rename_token_category_action.dart';
-
-import 'package:expandable/expandable.dart';
-import '../../../../widgets/custom_trailing.dart';
 
 import '../../../../model/token_category.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../utils/text_size.dart';
+import '../../../../widgets/custom_trailing.dart';
 import '../drag_target_divider.dart';
 import '../token_widgets/token_widget_builder.dart';
 import 'token_category_actions.dart/delete_token_category_action.dart';
+import 'token_category_actions.dart/rename_token_category_action.dart';
 
 class TokenCategoryWidget extends ConsumerStatefulWidget {
   final TokenCategory category;

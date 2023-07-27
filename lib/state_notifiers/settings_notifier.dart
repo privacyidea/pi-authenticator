@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/repo/settings_repository.dart';
+import '../repo/settings_repository.dart';
 
 import '../model/states/settings_state.dart';
 
