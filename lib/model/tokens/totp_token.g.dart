@@ -28,15 +28,15 @@ Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
       'issuer': instance.issuer,
       'id': instance.id,
       'isLocked': instance.isLocked,
+      'pin': instance.pin,
       'imageURL': instance.imageURL,
       'categoryId': instance.categoryId,
-      'sortIndex': instance.sortIndex,
       'isInEditMode': instance.isInEditMode,
+      'sortIndex': instance.sortIndex,
       'type': instance.type,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm]!,
       'digits': instance.digits,
       'secret': instance.secret,
-      'pin': instance.pin,
       'period': instance.period,
     };
 

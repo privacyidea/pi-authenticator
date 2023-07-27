@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../repo/preference_settings_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/mixins/sortable_mixin.dart';
@@ -10,6 +9,7 @@ import '../model/states/app_state.dart';
 import '../model/states/settings_state.dart';
 import '../model/states/token_category_state.dart';
 import '../model/states/token_state.dart';
+import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_category_repository.dart';
 import '../state_notifiers/app_state_notifier.dart';
 import '../state_notifiers/push_request_notifier.dart';

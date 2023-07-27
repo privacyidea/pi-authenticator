@@ -1,6 +1,7 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../model/states/settings_state.dart';
 import 'settings_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenceSettingsRepository extends SettingsRepository {
   static const String _isFirstRunKey = 'KEY_IS_FIRST_RUN';
@@ -53,8 +54,7 @@ class PreferenceSettingsRepository extends SettingsRepository {
       (await _preferences).setStringList(_crashReportRecipientsKey, settings.crashReportRecipients.toList());
     }
     if (_lastState?.localePreference != settings.localePreference) {
-      final asd = await (await _preferences).setString(_localePreferenceKey, SettingsState.encodeLocale(settings.localePreference));
-      final asdf = SettingsState.decodeLocale((await _preferences).getString(_localePreferenceKey)!);
+      await (await _preferences).setString(_localePreferenceKey, SettingsState.encodeLocale(settings.localePreference));
     }
     if (_lastState?.useSystemLocale != settings.useSystemLocale) (await _preferences).setBool(_useSystemLocaleKey, settings.useSystemLocale);
     if (_lastState?.verboseLogging != settings.verboseLogging) (await _preferences).setBool(_enableLoggingKey, settings.verboseLogging);

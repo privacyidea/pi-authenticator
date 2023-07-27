@@ -58,6 +58,6 @@ class _AddTokenCategoryWidgetState extends ConsumerState<AddTokenCategory> {
               icon: const Icon(Icons.close),
             ),
           )
-        : SizedBox();
+        : const SizedBox();
   }
 }
