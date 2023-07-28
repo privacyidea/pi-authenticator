@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
 
 import '../../utils/identifiers.dart';
 import '../../utils/utils.dart';
@@ -29,6 +30,7 @@ abstract class Token with SortableMixin {
     if (type == enumAsString(TokenTypes.HOTP)) return HOTPToken.fromJson(json);
     if (type == enumAsString(TokenTypes.TOTP)) return TOTPToken.fromJson(json);
     if (type == enumAsString(TokenTypes.PIPUSH)) return PushToken.fromJson(json);
+    if (type == enumAsString(TokenTypes.DAYPASSWORD)) return DayPasswordToken.fromJson(json);
     throw Exception('Unknown token type: $type');
   }
 

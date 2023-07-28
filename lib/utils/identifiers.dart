@@ -39,6 +39,7 @@ enum TokenTypes {
   HOTP,
   TOTP,
   PIPUSH,
+  DAYPASSWORD,
 }
 
 // qr codes:

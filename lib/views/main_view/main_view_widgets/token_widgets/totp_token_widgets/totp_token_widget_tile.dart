@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/day_password_token_widgets/day_password_token_widget_tile.dart';
 
 import '../../../../../model/tokens/totp_token.dart';
 import '../../../../../utils/lock_auth.dart';
@@ -20,56 +21,44 @@ class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
 }
 
 class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with SingleTickerProviderStateMixin {
-  String otpValue = '';
+  int secondsLeft = 0;
   late AnimationController _animation;
   final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
+
+  @override
+  void initState() {
+    super.initState();
+    secondsLeft = widget.token.secondsUntilNextOTP;
+    _animation = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: widget.token.period),
+      lowerBound: 0.0,
+      upperBound: widget.token.period.toDouble(),
+      value: widget.token.secondsUntilNextOTP.toDouble(),
+    );
+    GlobalTimer.addListener(_setNewTimer);
+  }
+
   @override
   dispose() {
     _animation.dispose(); // you need this
     super.dispose();
   }
 
-  int? calculateRemainingTotpDuration() {
-    return widget.token.period - (DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000) % widget.token.period;
-  }
-
-  double calculateRemainingTotpDurationPercent() {
-    return (DateTime.now().toUtc().millisecondsSinceEpoch / 1000) % widget.token.period / widget.token.period;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    otpValue = widget.token.otpValue;
-
-    _animation = AnimationController(
-      duration: Duration(seconds: widget.token.period),
-      value: widget.token.currentProgress,
-      // Animate the progress for the duration of the tokens period.
-      vsync: this,
-    )
-      ..addStatusListener((status) {
-        // Add listener to restart the animation after the period, also updates the otp value.
-        if (status == AnimationStatus.completed) {
-          setState(() {
-            otpValue = widget.token.otpValue;
-          });
-          _animation.forward(from: widget.token.currentProgress);
-        }
-      })
-      ..forward(from: widget.token.currentProgress); // Start the animation.
-
-    isHidden.addListener(() {
-      if (mounted) {
+  void _setNewTimer() {
+    if (mounted) {
+      if (secondsLeft > 0) {
         setState(() {
-          if (isHidden.value == false) {
-            Future.delayed(const Duration(seconds: 30), () {
-              isHidden.value = true;
-            });
-          }
+          secondsLeft--;
+        });
+      } else {
+        setState(() {
+          secondsLeft = widget.token.secondsUntilNextOTP;
         });
       }
-    });
+    } else {
+      GlobalTimer.removeListener(_setNewTimer);
+    }
   }
 
   @override
@@ -78,7 +67,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
       tokenIsLocked: widget.token.isLocked,
       title: HideableText(
         key: Key(widget.token.hashCode.toString()),
-        text: insertCharAt(otpValue, ' ', widget.token.digits ~/ 2),
+        text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
         textScaleFactor: 1.9,
         enabled: widget.token.isLocked,
         isHiddenNotifier: isHidden,
@@ -93,7 +82,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
           builder: (context, child) {
             return Stack(
               children: [
-                Center(child: Text('${calculateRemainingTotpDuration()}')),
+                Center(child: Text('$secondsLeft')),
                 Center(
                   child: CircularProgressIndicator(
                     value: _animation.value,
@@ -111,9 +100,9 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
               }
             }
           : () {
-              Clipboard.setData(ClipboardData(text: otpValue));
+              Clipboard.setData(ClipboardData(text: widget.token.otpValue));
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(otpValue)),
+                content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue)),
               ));
             },
     );

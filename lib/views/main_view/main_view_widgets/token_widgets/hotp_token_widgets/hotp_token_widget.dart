@@ -7,19 +7,11 @@ import 'hotp_token_widget_tile.dart';
 
 class HOTPTokenWidget extends TokenWidget {
   final HOTPToken token;
-  final bool withDivider;
-
-  const HOTPTokenWidget(
-    this.token, {
-    this.withDivider = true,
-    super.key,
-  });
+  const HOTPTokenWidget(this.token, {super.key});
   @override
-  TokenWidgetBase build(BuildContext context) {
-    return TokenWidgetBase(
-      token: token,
-      tile: HOTPTokenWidgetTile(token: token, key: ValueKey(token.id)),
-      dragIcon: Icons.replay,
-    );
-  }
+  TokenWidgetBase build(BuildContext context) => TokenWidgetBase(
+        token: token,
+        tile: HOTPTokenWidgetTile(token: token),
+        dragIcon: Icons.replay,
+      );
 }

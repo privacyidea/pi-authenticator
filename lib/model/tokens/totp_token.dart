@@ -34,28 +34,21 @@ class TOTPToken extends OTPToken {
     required int digits,
     required String secret,
     String? type,
-    bool? pin,
-    String? imageURL,
-    int? sortIndex,
-    bool isLocked = false,
-    bool canToggleLock = true,
-    int? categoryId,
-    bool isInEditMode = false,
+    super.pin,
+    super.imageURL,
+    super.sortIndex,
+    super.isLocked = false,
+    super.canToggleLock = true,
+    super.categoryId,
+    super.isInEditMode = false,
   }) : super(
           label: label,
           issuer: issuer,
           id: id,
-          type: type ?? enumAsString(TokenTypes.TOTP),
           algorithm: algorithm,
           digits: digits,
           secret: secret,
-          pin: pin,
-          imageURL: imageURL,
-          sortIndex: sortIndex,
-          isLocked: isLocked,
-          canToggleLock: canToggleLock,
-          categoryId: categoryId,
-          isInEditMode: isInEditMode,
+          type: type ?? enumAsString(TokenTypes.TOTP),
         );
 
   @override
@@ -99,8 +92,13 @@ class TOTPToken extends OTPToken {
   factory TOTPToken.fromJson(Map<String, dynamic> json) => _$TOTPTokenFromJson(json);
 
   double get currentProgress {
-    int unixTime = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
-    return (unixTime % (period)) * (1 / period);
+    final secondsSinceEpoch = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
+    return (secondsSinceEpoch % (period)) * (1 / period);
+  }
+
+  int get secondsUntilNextOTP {
+    final secondsSinceEpoch = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
+    return period - (secondsSinceEpoch % (period));
   }
 
   Map<String, dynamic> toJson() => _$TOTPTokenToJson(this);
