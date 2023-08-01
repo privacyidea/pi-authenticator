@@ -76,14 +76,17 @@ class PushProvider {
         // ignore
       } else {
         String errorMessage = error.message ?? 'no error message';
-        final SnackBar snackBar = SnackBar(content: Text('Push cant be initialized, restart the app and try again${error.code}error message :$errorMessage'));
+        final SnackBar snackBar = SnackBar(
+            content: Text(
+          'Push cant be initialized, restart the app and try again. ${error.code}: $errorMessage',
+        ));
         snackbarKey.currentState?.showSnackBar(snackBar);
       }
     } on FirebaseException catch (error) {
       final SnackBar snackBar = SnackBar(content: Text("Push cant be initialized, restart the app and try again$error"));
       snackbarKey.currentState?.showSnackBar(snackBar);
     } catch (error) {
-      final SnackBar snackBar = SnackBar(content: Text("Unknown error: ${error.toString()}$error"));
+      final SnackBar snackBar = SnackBar(content: Text("Unknown error: $error"));
       snackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -94,7 +97,7 @@ class PushProvider {
         try {
           _updateFirebaseToken(newToken);
         } catch (error) {
-          final SnackBar snackBar = SnackBar(content: Text("Unknown error: ${error.toString()}$error"));
+          final SnackBar snackBar = SnackBar(content: Text("Unknown error: $error"));
           snackbarKey.currentState?.showSnackBar(snackBar);
         }
       }
@@ -202,7 +205,7 @@ class PushProvider {
       try {
         _updateFirebaseToken(firebaseToken);
       } catch (error) {
-        final SnackBar snackBar = SnackBar(content: Text("Unknown error: ${error.toString()}$error"));
+        final SnackBar snackBar = SnackBar(content: Text("Unknown error: $error"));
         snackbarKey.currentState?.showSnackBar(snackBar);
       }
     }

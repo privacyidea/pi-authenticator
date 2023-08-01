@@ -33,7 +33,6 @@ import 'package:privacyidea_authenticator/views/add_token_manually_view/add_toke
 import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 import 'package:privacyidea_authenticator/views/onboarding_view/onboarding_view.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   Logger.init(appRunner: () async {
@@ -95,29 +94,17 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> {
-  var _appIconIsVisible = false;
-  final _splashScreenDuration = const Duration(milliseconds: 500);
-  final _splashScreenDelay = const Duration(milliseconds: 500);
-
+class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
 
-    Future.delayed(_splashScreenDelay, () {
-      if (mounted) {
-        setState(() {
-          _appIconIsVisible = true;
-        });
-      }
-    });
     _init();
   }
 
   Future<void> _init() async {
     ref.read(platformInfoProvider.notifier).state = await PackageInfoPlusPlatformInfo.loadInfos();
-    ref.read(sharedPreferencesProvider.notifier).state = await SharedPreferences.getInstance();
-    await Future.delayed(_splashScreenDuration + _splashScreenDelay * 2);
+    await Future.delayed(const Duration(microseconds: 0));
     final isFirstRun = ref.read(settingsProvider).isFirstRun;
     final ConsumerStatefulWidget nextView;
     if (isFirstRun) {
@@ -132,7 +119,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       context,
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => nextView,
-        transitionDuration: const Duration(seconds: 1),
+        transitionDuration: const Duration(seconds: 0),
         transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
       ),
     );
@@ -140,19 +127,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: AnimatedOpacity(
-          opacity: _appIconIsVisible ? 1.0 : 0.0,
-          curve: Curves.easeInOut,
-          duration: _splashScreenDuration,
-          child: Image.asset(
-            ApplicationCustomizer.appIcon,
-            width: 200,
-            height: 200,
-          ),
-        ),
-      ),
-    );
+    return const Scaffold(body: SizedBox());
   }
 }

@@ -90,24 +90,32 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
   /// to the token. This should be guarded by a lock.
   static Future<void> _handleIncomingRequest(RemoteMessage message, {bool inBackground = false}) async {
     Logger.warning('inBackground: $inBackground', name: 'main_screen.dart#_handleIncomingRequest');
+    // Android and iOS use different keys for the tag.
+    var tag = message.notification?.android;
+    Logger.warning('tag: ${tag?.toMap().toString()}', name: 'main_screen.dart#_handleIncomingRequest');
+    // tag ??= message.notification?.apple?.badge; //FIXME: Is this the tag for iOS?
+
     var data = message.data;
     Logger.info('Incoming push challenge.', name: 'main_screen.dart#_handleIncomingChallenge', error: data);
     Uri requestUri = Uri.parse(data['url']);
 
+    Logger.warning('message: $data', name: 'main_screen.dart#_handleIncomingRequest');
+
     bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
     PushRequest pushRequest = PushRequest(
-        title: data['title'],
-        question: data['question'],
-        uri: requestUri,
-        nonce: data['nonce'],
-        sslVerify: sslVerify,
-        id: data['nonce'].hashCode,
-        // FIXME This is not guaranteed to not lead to collisions, but they might be unlikely in this case.
-        expirationDate: DateTime.now().add(
-          const Duration(seconds: 120), // Push requests expire after 2 minutes.
-        ),
-        serial: data['serial'],
-        signature: data['signature']);
+      title: data['title'],
+      question: data['question'],
+      uri: requestUri,
+      nonce: data['nonce'],
+      sslVerify: sslVerify,
+      id: data['nonce'].hashCode,
+      // FIXME This is not guaranteed to not lead to collisions, but they might be unlikely in this case.
+      expirationDate: DateTime.now().add(
+        const Duration(seconds: 120), // Push requests expire after 2 minutes.
+      ),
+      serial: data['serial'],
+      signature: data['signature'],
+    );
 
     Logger.info('Incoming push challenge for token with serial.', name: 'main_screen.dart#_handleIncomingChallenge', error: pushRequest.serial);
     if (inBackground) {
