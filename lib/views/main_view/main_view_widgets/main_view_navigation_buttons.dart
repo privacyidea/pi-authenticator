@@ -33,10 +33,11 @@ class MainViewNavigationButtions extends StatelessWidget {
             Center(
               heightFactor: 0.6,
               child: FloatingActionButton(
-                onPressed: () async {
+                onPressed: () {
                   /// Open the QR-code scanner and call `_handleOtpAuth`, with the scanned code as the argument.
-                  final qrCode = await Navigator.push<String?>(context, MaterialPageRoute(builder: (context) => QRScannerView()));
-                  if (qrCode != null) globalRef?.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: qrCode, context: context);
+                  Navigator.pushNamed(context, QRScannerView.routeName).then((qrCode) {
+                    if (qrCode != null) globalRef?.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: qrCode as String, context: context);
+                  });
                 },
                 tooltip: AppLocalizations.of(context)!.scanQrCode,
                 child: const Icon(Icons.qr_code_scanner_outlined),

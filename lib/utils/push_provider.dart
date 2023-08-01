@@ -55,7 +55,11 @@ class PushProvider {
     await Firebase.initializeApp();
 
     try {
-      FirebaseMessaging.instance.requestPermission();
+      await FirebaseMessaging.instance.requestPermission(
+        alert: false,
+        badge: false,
+        sound: false,
+      );
     } on FirebaseException catch (ex) {
       String errorMessage = ex.message ?? 'no error message';
       final SnackBar snackBar = SnackBar(content: Text("Firebase notification permission error! ($errorMessage: ${ex.code}"));
@@ -145,7 +149,7 @@ class PushProvider {
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
       Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
-      globalRef?.read(settingsProvider.notifier).enablePolling();
+      globalRef?.read(settingsProvider.notifier).disablePolling();
       return false;
     }
 

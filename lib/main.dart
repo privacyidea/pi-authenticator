@@ -32,6 +32,7 @@ import 'package:privacyidea_authenticator/utils/themes.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 import 'package:privacyidea_authenticator/views/onboarding_view/onboarding_view.dart';
+import 'package:privacyidea_authenticator/views/qr_scanner_view/scanner_view.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
 
 void main() async {
@@ -67,6 +68,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
         OnboardingView.routeName: (context) => const OnboardingView(),
         SettingsView.routeName: (context) => const SettingsView(),
         AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
+        QRScannerView.routeName: (context) => QRScannerView(),
       },
     );
   }

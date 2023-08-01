@@ -69,8 +69,10 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
       handleIncomingMessage: (RemoteMessage message) => _handleIncomingAuthRequest(message),
       backgroundMessageHandler: _firebaseMessagingBackgroundHandler,
     );
-    PushProvider.pollForChallenges();
-    _startPollingIfEnabled();
+    if (pollingEnabled) {
+      PushProvider.pollForChallenges();
+      _startPollingIfEnabled();
+    }
   }
 
   // FOREGROUND HANDLING
