@@ -28,37 +28,32 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   @override
   void initState() {
     super.initState();
-    secondsLeft = widget.token.secondsUntilNextOTP;
     _animation = AnimationController(
       vsync: this,
       duration: Duration(seconds: widget.token.period),
-      lowerBound: 0.0,
-      upperBound: widget.token.period.toDouble(),
-      value: widget.token.secondsUntilNextOTP.toDouble(),
     );
-    GlobalTimer.addListener(_setNewTimer);
+    _countDown();
+    GlobalCountdownTimer.addListener(_countDown);
   }
 
   @override
   dispose() {
-    _animation.dispose(); // you need this
+    _animation.dispose();
+    GlobalCountdownTimer.removeListener(_countDown);
     super.dispose();
   }
 
-  void _setNewTimer() {
-    if (mounted) {
-      if (secondsLeft > 0) {
-        setState(() {
-          secondsLeft--;
-        });
-      } else {
-        setState(() {
-          secondsLeft = widget.token.secondsUntilNextOTP;
-        });
-      }
-    } else {
-      GlobalTimer.removeListener(_setNewTimer);
+  void _countDown() {
+    if (mounted == false) {
+      GlobalCountdownTimer.removeListener(_countDown);
+      return;
     }
+    if (secondsLeft > 1) {
+      setState(() => secondsLeft--);
+      return;
+    }
+    setState(() => secondsLeft = widget.token.secondsUntilNextOTP + 1);
+    _animation.forward(from: 1 - secondsLeft / widget.token.period);
   }
 
   @override

@@ -53,8 +53,8 @@ class PreferenceSettingsRepository extends SettingsRepository {
     if (_lastState?.crashReportRecipients != settings.crashReportRecipients) {
       (await _preferences).setStringList(_crashReportRecipientsKey, settings.crashReportRecipients.toList());
     }
-    if (_lastState?.localePreference != settings.localePreference) {
-      await (await _preferences).setString(_localePreferenceKey, SettingsState.encodeLocale(settings.localePreference));
+    if (_lastState?.currentLocale != settings.currentLocale) {
+      await (await _preferences).setString(_localePreferenceKey, SettingsState.encodeLocale(settings.currentLocale));
     }
     if (_lastState?.useSystemLocale != settings.useSystemLocale) (await _preferences).setBool(_useSystemLocaleKey, settings.useSystemLocale);
     if (_lastState?.verboseLogging != settings.verboseLogging) (await _preferences).setBool(_enableLoggingKey, settings.verboseLogging);

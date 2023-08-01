@@ -49,7 +49,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     globalRef = ref;
     final state = ref.watch(settingsProvider);
-    final locale = state.localePreference;
+    final locale = state.currentLocale;
     return MaterialApp(
       debugShowCheckedModeBanner: true,
       navigatorKey: Logger.navigatorKey,
@@ -97,8 +97,8 @@ class SplashScreen extends ConsumerStatefulWidget {
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
   var _appIconIsVisible = false;
-  final _splashScreenDuration = const Duration(milliseconds: 500);
-  final _splashScreenDelay = const Duration(milliseconds: 500);
+  final _splashScreenDuration = const Duration(milliseconds: 400);
+  final _splashScreenDelay = const Duration(milliseconds: 250);
 
   @override
   void initState() {
@@ -132,7 +132,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       context,
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => nextView,
-        transitionDuration: const Duration(seconds: 1),
+        transitionDuration: _splashScreenDuration * 2,
         transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
       ),
     );

@@ -18,7 +18,7 @@ class SettingsView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final tokens = ref.watch(tokenProvider).tokens;
-    final locale = settings.localePreference;
+    final locale = settings.currentLocale;
     final useSystemLocale = settings.useSystemLocale;
     final enablePolling = settings.enablePolling;
     final enrolledPushTokenList = tokens.whereType<PushToken>().where((e) => e.isRolledOut).toList();

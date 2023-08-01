@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
@@ -9,54 +12,58 @@ import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/toke
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
 
-class DayPasswordTokenWidgetTile extends StatefulWidget {
+class DayPasswordTokenWidgetTile extends ConsumerStatefulWidget {
   final DayPasswordToken token;
   const DayPasswordTokenWidgetTile(this.token, {super.key});
 
   @override
-  State<DayPasswordTokenWidgetTile> createState() => _DayPasswordTokenWidgetTileState();
+  ConsumerState<DayPasswordTokenWidgetTile> createState() => _DayPasswordTokenWidgetTileState();
 }
 
-class _DayPasswordTokenWidgetTileState extends State<DayPasswordTokenWidgetTile> {
-  int secondsLeft = 0;
+class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWidgetTile> {
+  int totalSecondsLeft = 0;
   final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
 
   @override
   void initState() {
     super.initState();
-    secondsLeft = widget.token.durationUntilNextOTP.inSeconds;
-    GlobalTimer.addListener(_setNewTimer);
+    totalSecondsLeft = widget.token.durationUntilNextOTP.inSeconds;
+    GlobalCountdownTimer.addListener(_setNewTimer);
   }
 
   @override
   void dispose() {
     super.dispose();
-    GlobalTimer.removeListener(_setNewTimer);
+    GlobalCountdownTimer.removeListener(_setNewTimer);
   }
 
   void _setNewTimer() {
     if (mounted) {
-      if (secondsLeft > 0) {
+      if (totalSecondsLeft > 0) {
         setState(() {
-          secondsLeft--;
+          totalSecondsLeft--;
         });
       } else {
         setState(() {
-          secondsLeft = widget.token.durationUntilNextOTP.inSeconds;
+          totalSecondsLeft = widget.token.durationUntilNextOTP.inSeconds;
         });
       }
     } else {
-      GlobalTimer.removeListener(_setNewTimer);
+      GlobalCountdownTimer.removeListener(_setNewTimer);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    //allways two digits
-    final hours = (secondsLeft ~/ 3600).toString().padLeft(2, '0');
-    //allways two digits
-    final minutes = ((secondsLeft % 3600) ~/ 60).toString().padLeft(2, '0');
-    final seconds = (secondsLeft % 60).toString().padLeft(2, '0');
+    final hoursLeft = (totalSecondsLeft ~/ 3600).toString().padLeft(2, '0');
+    final minutesLeft = ((totalSecondsLeft % 3600) ~/ 60).toString().padLeft(2, '0');
+    final secondsLeft = (totalSecondsLeft % 60).toString().padLeft(2, '0');
+
+    final dateTimeTokenEnd = widget.token.nextOTPTimeStart;
+    final currentLocale = ref.watch(settingsProvider).currentLocale;
+    final day = DateFormat.EEEE(currentLocale.languageCode).dateSymbols.SHORTWEEKDAYS[dateTimeTokenEnd.day];
+    final hour = dateTimeTokenEnd.hour.toString().padLeft(2, '0');
+    final minute = dateTimeTokenEnd.minute.toString().padLeft(2, '0');
     return TokenWidgetTile(
       tokenIsLocked: widget.token.isLocked,
       title: HideableText(
@@ -84,8 +91,15 @@ class _DayPasswordTokenWidgetTileState extends State<DayPasswordTokenWidgetTile>
           height: double.infinity,
           child: Center(
             child: switch (widget.token.viewMode) {
-              DayPasswordTokenViewMode.timeLeft => Text('${hours != '00' ? hours : ''}:$minutes:$seconds'),
-              DayPasswordTokenViewMode.timePeriod => Text('TimePeriod'),
+              DayPasswordTokenViewMode.timeLeft => Text(
+                  '${hoursLeft != '00' ? '$hoursLeft:' : ''}$minutesLeft:$secondsLeft',
+                  style: const TextStyle(fontSize: 15),
+                ),
+              DayPasswordTokenViewMode.timePeriod => Text(
+                  '$day $hour:$minute',
+                  style: const TextStyle(fontSize: 15),
+                  textAlign: TextAlign.center,
+                ),
             },
           ),
         ),
@@ -94,7 +108,8 @@ class _DayPasswordTokenWidgetTileState extends State<DayPasswordTokenWidgetTile>
   }
 }
 
-class GlobalTimer {
+/// Calls all listeners every second
+class GlobalCountdownTimer {
   static Timer? timer;
   static List<Function> listeners = [];
 

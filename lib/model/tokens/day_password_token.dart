@@ -85,7 +85,10 @@ class DayPasswordToken extends OTPToken {
 
   Duration get durationUntilNextOTP => period - durationSinceLastOTP;
   DateTime get thisOTPTimeStart => DateTime.now().subtract(durationSinceLastOTP);
-  DateTime get nextOTPTimeStart => DateTime.now().add(durationUntilNextOTP);
+  DateTime get nextOTPTimeStart {
+    // Sometimes there is an rounding error. For example it showes sometomes 23:59:59 instead of 00:00:00 so we add 1ms to be sure
+    return DateTime.now().add(durationUntilNextOTP + const Duration(milliseconds: 1));
+  }
 
   factory DayPasswordToken.fromJson(Map<String, dynamic> json) => _$DayPasswordTokenFromJson(json);
   Map<String, dynamic> toJson() => _$DayPasswordTokenToJson(this);

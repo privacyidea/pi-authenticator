@@ -23,7 +23,10 @@ class SettingsState {
   final bool hideOpts;
   final bool enablePolling;
   final Set<String> crashReportRecipients;
-  final Locale localePreference;
+  final Locale _localePreference;
+  Locale get currentLocale => useSystemLocale
+      ? AppLocalizations.supportedLocales.firstWhere((locale) => locale.languageCode == Platform.localeName.substring(0, 2), orElse: () => const Locale('en'))
+      : _localePreference;
   final bool useSystemLocale;
   final bool verboseLogging;
 
@@ -41,7 +44,7 @@ class SettingsState {
         hideOpts = hideOpts ?? _hideOtpsDefault,
         enablePolling = enablePolling ?? _enablePollDefault,
         crashReportRecipients = crashReportRecipients ?? _crashReportRecipientsDefault,
-        localePreference = localePreference ?? _localePreferenceDefault,
+        _localePreference = localePreference ?? _localePreferenceDefault,
         useSystemLocale = useSystemLocale ?? _useSystemLocaleDefault,
         verboseLogging = verboseLogging ?? _enableLoggingDefault;
 
@@ -61,7 +64,7 @@ class SettingsState {
       enablePolling: enablePolling ?? this.enablePolling,
       showGuideOnStart: showGuideOnStart ?? this.showGuideOnStart,
       crashReportRecipients: crashReportRecipients ?? this.crashReportRecipients,
-      localePreference: localePreference ?? this.localePreference,
+      localePreference: localePreference ?? this._localePreference,
       useSystemLocale: useSystemLocale ?? this.useSystemLocale,
       verboseLogging: verboseLogging ?? this.verboseLogging,
     );
@@ -69,7 +72,7 @@ class SettingsState {
 
   @override
   String toString() =>
-      'SettingsState(isFirstRun: $isFirstRun, showGuideOnStart: $showGuideOnStart, hideOpts: $hideOpts, enablePolling: $enablePolling, crashReportRecipients: $crashReportRecipients, localePreference: $localePreference, useSystemLocale: $useSystemLocale, verboseLogging: $verboseLogging)';
+      'SettingsState(isFirstRun: $isFirstRun, showGuideOnStart: $showGuideOnStart, hideOpts: $hideOpts, enablePolling: $enablePolling, crashReportRecipients: $crashReportRecipients, localePreference: $_localePreference, useSystemLocale: $useSystemLocale, verboseLogging: $verboseLogging)';
 
   static String encodeLocale(Locale locale) {
     return '${locale.languageCode}#${locale.countryCode}';
@@ -86,7 +89,7 @@ class SettingsState {
         other.hideOpts == hideOpts &&
         other.enablePolling == enablePolling &&
         other.crashReportRecipients.toString() == crashReportRecipients.toString() &&
-        other.localePreference.toString() == localePreference.toString() &&
+        other._localePreference.toString() == _localePreference.toString() &&
         other.useSystemLocale == useSystemLocale &&
         other.verboseLogging == verboseLogging;
   }

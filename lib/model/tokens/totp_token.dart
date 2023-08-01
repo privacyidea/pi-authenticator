@@ -97,7 +97,7 @@ class TOTPToken extends OTPToken {
   }
 
   int get secondsUntilNextOTP {
-    final secondsSinceEpoch = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
+    final secondsSinceEpoch = (DateTime.now().toUtc().millisecondsSinceEpoch / 1000).round();
     return period - (secondsSinceEpoch % (period));
   }
 
