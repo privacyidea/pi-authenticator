@@ -22,7 +22,7 @@ class TokenCategoryState {
     return copyWith(categorys: newCategorys);
   }
 
-  //replace all categorys where the categoryid is the same
+  // replace all categorys where the categoryid is the same
   TokenCategoryState withUpdated({List<TokenCategory>? categorys}) {
     final newCategorys = List<TokenCategory>.from(this.categorys);
     categorys?.forEach((newCategory) {

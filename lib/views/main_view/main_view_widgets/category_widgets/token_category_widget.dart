@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:expandable/expandable.dart';
@@ -25,22 +26,25 @@ class TokenCategoryWidget extends ConsumerStatefulWidget {
 }
 
 class _TokenCategoryWidgetState extends ConsumerState<TokenCategoryWidget> with SingleTickerProviderStateMixin {
-  late final AnimationController _animationController;
-  final ExpandableController _expandableController = ExpandableController();
+  Timer? _expandTimer;
+  late final AnimationController animationController;
+  late final ExpandableController expandableController;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    animationController = AnimationController(
       duration: const Duration(milliseconds: 250),
       value: 1.0,
       vsync: this,
     );
-    _expandableController.addListener(() {
-      if (_expandableController.expanded) {
-        _animationController.reverse();
+    expandableController = ExpandableController(initialExpanded: widget.category.isExpanded);
+    expandableController.addListener(() {
+      globalRef?.read(tokenCategoryProvider.notifier).updateCategory(widget.category.copyWith(isExpanded: expandableController.expanded));
+      if (expandableController.expanded) {
+        animationController.reverse();
       } else {
-        _animationController.forward();
+        animationController.forward();
       }
     });
   }
@@ -80,7 +84,7 @@ class _TokenCategoryWidgetState extends ConsumerState<TokenCategoryWidget> with 
           ? const SizedBox()
           : ExpandablePanel(
               theme: const ExpandableThemeData(hasIcon: false),
-              controller: _expandableController,
+              controller: expandableController,
               header: Slidable(
                 key: ValueKey('tokenCategory-${widget.category.categoryId}'),
                 groupTag: 'myTag',
@@ -93,9 +97,19 @@ class _TokenCategoryWidgetState extends ConsumerState<TokenCategoryWidget> with 
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 16),
+                  padding: const EdgeInsets.only(left: 15),
                   child: DragTarget(
-                    onWillAccept: (data) => data is Token && data.categoryId != widget.category.categoryId,
+                    onWillAccept: (data) {
+                      if (data is Token && data.categoryId != widget.category.categoryId) {
+                        _expandTimer?.cancel();
+                        _expandTimer = Timer(const Duration(milliseconds: 500), () {
+                          if (!expandableController.expanded) expandableController.toggle();
+                        });
+                        return true;
+                      }
+                      return false;
+                    },
+                    onLeave: (data) => _expandTimer?.cancel(),
                     onAccept: (data) {
                       final updatedToken = (data as Token).copyWith(categoryId: () => widget.category.categoryId);
                       ref.read(tokenProvider.notifier).updateToken(updatedToken);
@@ -106,13 +120,18 @@ class _TokenCategoryWidgetState extends ConsumerState<TokenCategoryWidget> with 
                         height: 50,
                         decoration: BoxDecoration(
                           color: willAccept.isNotEmpty ? Theme.of(context).dividerColor : null,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(8),
+                            topLeft: Radius.circular(8),
+                            bottomRight: Radius.circular(8),
+                            bottomLeft: Radius.circular(0),
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             RotationTransition(
-                                turns: Tween(begin: 0.25, end: 0.0).animate(_animationController),
+                                turns: Tween(begin: 0.25, end: 0.0).animate(animationController),
                                 child: SizedBox.square(
                                   dimension: 25,
                                   child: (tokens.isNotEmpty) ? const Icon(Icons.arrow_forward_ios_sharp) : null,
@@ -128,8 +147,18 @@ class _TokenCategoryWidgetState extends ConsumerState<TokenCategoryWidget> with 
                               child: Center(
                                 child: Stack(
                                   children: [
-                                    const Icon(Icons.folder_open),
-                                    if (tokens.isNotEmpty) FadeTransition(opacity: _animationController, child: const Icon(Icons.folder)),
+                                    Icon(
+                                      Icons.folder_open,
+                                      color: Theme.of(context).listTileTheme.iconColor,
+                                    ),
+                                    if (tokens.isNotEmpty)
+                                      FadeTransition(
+                                        opacity: animationController,
+                                        child: Icon(
+                                          Icons.folder,
+                                          color: Theme.of(context).listTileTheme.iconColor,
+                                        ),
+                                      ),
                                   ],
                                 ),
                               ),
@@ -142,25 +171,40 @@ class _TokenCategoryWidgetState extends ConsumerState<TokenCategoryWidget> with 
                 ),
               ),
               collapsed: Container(),
-              expanded: Center(
+              expanded: Container(
+                margin: const EdgeInsets.only(left: 15, bottom: 10),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).focusColor,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(4),
+                  ),
+                ),
                 child: Card(
-                  margin: const EdgeInsets.only(left: 15, bottom: 10),
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 5),
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        for (var i = 0; i < tokens.length; i++) ...[
-                          if (draggingSortable != tokens[i]) DragTargetDivider<Token>(dependingCategory: widget.category, nextSortable: tokens[i]),
-                          TokenWidgetBuilder.fromToken(
-                            tokens[i],
-                            withDivider: i < tokens.length - 1,
-                          ),
-                        ],
-                        if (tokens.isNotEmpty && draggingSortable is Token) DragTargetDivider<Token>(dependingCategory: widget.category, nextSortable: null),
-                      ],
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  //Only bottom left corner round the other corners sharp
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(4),
                     ),
+                  ),
+                  margin: const EdgeInsets.only(
+                    left: 4,
+                    bottom: 2,
+                  ),
+                  semanticContainer: false,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      for (var i = 0; i < tokens.length; i++) ...[
+                        if (draggingSortable != tokens[i] && (i != 0 || draggingSortable != null))
+                          DragTargetDivider<Token>(dependingCategory: widget.category, nextSortable: tokens[i]),
+                        TokenWidgetBuilder.fromToken(
+                          tokens[i],
+                          withDivider: i < tokens.length - 1,
+                        ),
+                      ],
+                      if (tokens.isNotEmpty && draggingSortable is Token) DragTargetDivider<Token>(dependingCategory: widget.category, nextSortable: null),
+                    ],
                   ),
                 ),
               ),

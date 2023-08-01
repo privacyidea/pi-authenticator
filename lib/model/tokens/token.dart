@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
 
 import '../../utils/identifiers.dart';
 import '../../utils/utils.dart';
 import '../mixins/sortable_mixin.dart';
+import 'day_password_token.dart';
 import 'hotp_token.dart';
 import 'push_token.dart';
 import 'totp_token.dart';

@@ -6,6 +6,7 @@ import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/toke
 
 import '../../../../../model/tokens/totp_token.dart';
 import '../../../../../utils/lock_auth.dart';
+import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
 import '../../../../../widgets/hideable_widget_.dart';
@@ -24,6 +25,19 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   int secondsLeft = 0;
   late AnimationController _animation;
   final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
+
+  void _copyOtpValue() {
+    if (globalRef?.read(disableCopyProvider) ?? false) return;
+
+    globalRef?.read(disableCopyProvider.notifier).state = true;
+    Clipboard.setData(ClipboardData(text: widget.token.otpValue));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue))),
+    );
+    Future.delayed(const Duration(seconds: 5), () {
+      globalRef?.read(disableCopyProvider.notifier).state = false;
+    });
+  }
 
   @override
   void initState() {

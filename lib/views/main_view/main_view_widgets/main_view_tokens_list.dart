@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/tokens/push_token.dart';
@@ -10,7 +11,6 @@ import '../../../utils/riverpod_providers.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/drag_item_scroller.dart';
 import '../deactivateable_refresh_indicator.dart';
-import 'category_widgets/add_token_category.dart';
 import 'drag_target_divider.dart';
 import 'no_token_screen.dart';
 import 'sortable_widget_builder.dart';
@@ -59,31 +59,33 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
           );
         }
       },
-      child: DragItemScroller(
-        listViewKey: listViewKey,
-        scrollController: scrollController,
-        itemIsDragged: draggingSortable != null,
-        child: CustomScrollView(
-          key: listViewKey,
-          controller: scrollController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  for (var i = 0; i < sortables.length; i++) ...[
-                    if (draggingSortable != sortables[i] && (i != 0 || draggingSortable != null))
-                      DragTargetDivider(dependingCategory: null, nextSortable: sortables[i]),
-                    SortableWidgetBuilder.fromSortable(sortables[i]),
+      child: SlidableAutoCloseBehavior(
+        child: DragItemScroller(
+          listViewKey: listViewKey,
+          scrollController: scrollController,
+          itemIsDragged: draggingSortable != null,
+          child: CustomScrollView(
+            key: listViewKey,
+            controller: scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    for (var i = 0; i < sortables.length; i++) ...[
+                      if (draggingSortable != sortables[i] && (i != 0 || draggingSortable != null))
+                        DragTargetDivider(dependingCategory: null, nextSortable: sortables[i]),
+                      SortableWidgetBuilder.fromSortable(sortables[i]),
+                    ],
+                    if (sortables.isNotEmpty && draggingSortable != null)
+                      const DragTargetDivider(dependingCategory: null, nextSortable: null, isLastDivider: true),
+                    if (sortables.isEmpty) const NoTokenScreen(),
+                    const SizedBox(height: 100),
                   ],
-                  if (sortables.isNotEmpty && draggingSortable != null)
-                    const DragTargetDivider(dependingCategory: null, nextSortable: null, isLastDivider: true),
-                  (sortables.isEmpty) ? const NoTokenScreen() : const AddTokenCategory(),
-                  const SizedBox(height: 100),
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -27,43 +27,32 @@ class TokenWidgetTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ClipRect(
-      child: Stack(
-        children: [
-          Column(
-            children: [
-              ListTile(
-                horizontalTitleGap: 8.0,
-                leading: leading,
-                onTap: () => onTap?.call(),
-                title: title,
-                subtitle: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (String subtitle in subtitles) Text(subtitle),
-                  ],
-                ),
-                trailing: CustomTrailing(
-                  child: trailing ?? Container(),
-                ),
+    return Stack(
+      children: [
+        Column(
+          children: [
+            ListTile(
+              horizontalTitleGap: 8.0,
+              leading: leading,
+              onTap: () => onTap?.call(),
+              title: title,
+              style: ListTileStyle.list,
+              subtitle: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (String subtitle in subtitles) Text(subtitle),
+                ],
               ),
-              for (Visibility widget in trailingWidgets) widget,
-            ],
-          ),
-          if (tokenIsLocked)
-            const Positioned(
-              right: 0,
-              bottom: 0,
-              child: Icon(
-                Icons.lock,
-                color: Colors.yellow,
-                size: 18,
+              trailing: CustomTrailing(
+                child: trailing ?? Container(),
               ),
             ),
-          if (overlay != null) overlay!
-        ],
-      ),
+            for (Visibility widget in trailingWidgets) widget,
+          ],
+        ),
+        if (overlay != null) overlay!
+      ],
     );
   }
 }

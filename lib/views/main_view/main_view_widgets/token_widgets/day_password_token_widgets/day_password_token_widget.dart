@@ -14,8 +14,8 @@ class DayPasswordTokenWidget extends TokenWidget {
   TokenWidgetBase build(BuildContext context) {
     return TokenWidgetBase(
       token: token,
-      tile: DayPasswordTokenWidgetTile(token), //TOTPTokenWidgetTile(token),
-      dragIcon: Icons.alarm,
+      tile: DayPasswordTokenWidgetTile(token),
+      dragIcon: Icons.calendar_month,
     );
   }
 }

@@ -7,8 +7,7 @@ class CustomTrailing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(right: 20.0),
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.20,
       height: MediaQuery.of(context).size.width * 0.20,
       child: child,

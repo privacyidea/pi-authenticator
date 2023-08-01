@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ApplicationCustomizer {
-
   // Edit in android/app/src/main/AndroidManifest.xml file
   // <application android:label="app name">
 
@@ -41,13 +40,17 @@ class ApplicationCustomizer {
 
   // Slide action
   static const Color deleteColorDark = Color(0xffCD3C14);
-  static const Color deleteColorLight = deleteColorDark;
+  static const Color deleteColorLight = Color(0xffE04D2D);
   static const Color renameColorDark = Color(0xff527EDB);
-  static const Color renameColorLight = renameColorDark;
+  static const Color renameColorLight = Color(0xff6A8FE5);
   static const Color lockColorDark = Color(0xffFFCC00);
-  static const Color lockColorLight = lockColorDark;
+  static const Color lockColorLight = Color(0xffFFD633);
 
   static const Color buttonColor = primaryColor;
   static const Color textColor = primaryColor;
   static const Color timerColor = primaryColor;
+
+  // List tile
+  static const Color tileIconColorLight = Color(0xff9E9E9E);
+  static const Color tileIconColorDark = Color(0xffF5F5F5);
 }

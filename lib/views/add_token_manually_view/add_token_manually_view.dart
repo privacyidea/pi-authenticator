@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../model/tokens/day_password_token.dart';
 import '../../model/tokens/hotp_token.dart';
 import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/totp_token.dart';

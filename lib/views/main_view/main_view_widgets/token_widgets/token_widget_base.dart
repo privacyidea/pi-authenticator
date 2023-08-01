@@ -3,13 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/default_delete_action.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/default_edit_action.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/default_lock_action.dart';
 
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../utils/text_size.dart';
-import 'token_widget_actions/default_token_delete_action.dart';
-import 'token_widget_actions/default_token_edit_action.dart';
-import 'token_widget_actions/default_token_lock_action.dart';
 import 'token_widget_actions/token_action.dart';
 
 class TokenWidgetBase extends ConsumerWidget {
@@ -36,7 +36,7 @@ class TokenWidgetBase extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final Token? draggingToken = ref.watch(draggingSortableProvider) is Token ? ref.watch(draggingSortableProvider) as Token : null;
     final List<TokenAction> actions = [
-      deleteAction ?? DefaultTokenDeleteAction(token: token),
+      deleteAction ?? DefaultDeleteAction(token: token),
       editAction ?? DefaultEditAction(token: token),
     ];
     if ((token.pin == null || token.pin == false)) {

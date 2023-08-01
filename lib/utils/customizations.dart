@@ -22,9 +22,6 @@
 
 import 'package:flutter/material.dart';
 
-// Was unused... remove?
-//const MaterialColor PRIMARY_COLOR = Colors.blue; // Default: Color(0xff03a8f4)
-
 const String applicationName = 'privacyIDEA Authenticator'; // Default: privacyIDEA Authenticator
 
 final GlobalKey<ScaffoldMessengerState> snackbarKey = GlobalKey<ScaffoldMessengerState>();

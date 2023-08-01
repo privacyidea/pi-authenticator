@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../model/mixins/sortable_mixin.dart';
 import '../model/platform_info/platform_info.dart';
 import '../model/platform_info/platform_info_imp/dummy_platform_info.dart';
@@ -31,7 +30,6 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
       switch (next) {
         case AppState.resume:
           //startPolling();
-          Logger.warning('resume');
           tokenNotifier.refreshTokens();
           ref.read(appStateProvider.notifier).setAppState(AppState.running);
           break;
@@ -53,12 +51,14 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
     ref.container,
     (previous, next) {
       if (next == null) return;
+      Logger.warning('next: $next');
       if (next.accepted == null) {
         tokenNotifier.addPushRequestToToken(next);
         return;
       }
       if (next.accepted != null) {
         tokenNotifier.removePushRequest(next);
+        FlutterLocalNotificationsPlugin().cancelAll();
         return;
       }
     },
@@ -76,8 +76,6 @@ final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
       initialState: SettingsState(),
     ));
 
-final sharedPreferencesProvider = StateProvider<SharedPreferences?>((ref) => null);
-
 final platformInfoProvider = StateProvider<PlatformInfo>(
   (ref) => DummyPlatformInfo(),
 );
@@ -94,3 +92,5 @@ final tokenCategoryProvider =
     StateNotifierProvider<TokenCategoryNotifier, TokenCategoryState>((ref) => TokenCategoryNotifier(repositoy: PreferenceTokenCategoryRepotisory()));
 
 final draggingSortableProvider = StateProvider<SortableMixin?>((ref) => null);
+
+final disableCopyProvider = StateProvider<bool>((ref) => false);

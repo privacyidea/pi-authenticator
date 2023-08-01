@@ -32,8 +32,8 @@ import 'package:privacyidea_authenticator/utils/themes.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 import 'package:privacyidea_authenticator/views/onboarding_view/onboarding_view.dart';
+import 'package:privacyidea_authenticator/views/qr_scanner_view/scanner_view.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   Logger.init(appRunner: () async {
@@ -68,6 +68,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
         OnboardingView.routeName: (context) => const OnboardingView(),
         SettingsView.routeName: (context) => const SettingsView(),
         AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
+        QRScannerView.routeName: (context) => QRScannerView(),
       },
     );
   }
@@ -116,7 +117,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> _init() async {
     ref.read(platformInfoProvider.notifier).state = await PackageInfoPlusPlatformInfo.loadInfos();
-    ref.read(sharedPreferencesProvider.notifier).state = await SharedPreferences.getInstance();
     await Future.delayed(_splashScreenDuration + _splashScreenDelay * 2);
     final isFirstRun = ref.read(settingsProvider).isFirstRun;
     final ConsumerStatefulWidget nextView;
@@ -144,13 +144,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       body: Center(
         child: AnimatedOpacity(
           opacity: _appIconIsVisible ? 1.0 : 0.0,
-          curve: Curves.easeInOut,
           duration: _splashScreenDuration,
-          child: Image.asset(
-            ApplicationCustomizer.appIcon,
-            width: 200,
-            height: 200,
-          ),
+          child: Image.asset('res/logo/app_logo_light.png'),
         ),
       ),
     );

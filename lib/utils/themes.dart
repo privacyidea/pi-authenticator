@@ -32,6 +32,9 @@ var lightThemeData = ThemeData(
   primaryColorLight: primarySwatch,
   primaryColorDark: primarySwatch,
   appBarTheme: const AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
+  listTileTheme: const ListTileThemeData(
+    iconColor: ApplicationCustomizer.tileIconColorLight,
+  ),
   colorScheme: ColorScheme.light(
     primary: primarySwatch,
     secondary: primarySwatch,
@@ -89,6 +92,9 @@ var darkThemeData = ThemeData(
   primaryColorLight: primarySwatch,
   primaryColorDark: primarySwatch,
   appBarTheme: const AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
+  listTileTheme: const ListTileThemeData(
+    iconColor: ApplicationCustomizer.tileIconColorDark,
+  ),
   colorScheme: ColorScheme.dark(
     primary: primarySwatch,
     secondary: primarySwatch,

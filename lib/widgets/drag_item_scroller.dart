@@ -11,9 +11,13 @@ final dragItemScrollerStateProvider = StateProvider<bool>((ref) => false);
 class DragItemScroller extends StatefulWidget {
   static const maxScrollingSpeed = 800.0; // px per second
   static const minScrollingSpeed = 100.0; // px per second
-  static const detectedRangeTop = 40.0; // px of child top
-  static const detectedRangeBottom = 140.0; // px of child bottom
-  static const refreshRate = 50; // fps
+  static const minScrollingSpeedDetectDistanceTop = 40.0; // px distance to top it starts to scroll up
+  // When the dragitem reached the end of this zone, it has max speed.if this is smaller than minScrollingSpeedDetectDistanceTop, its possible it will never scroll up with max speed
+  static const maxSpeedZoneHeightTop = 40.0;
+  static const minScrollingSpeedDetectDistanceBottom = 120.0; // px distance to bottom it starts to scroll down
+  // When the dragitem reached the end of this zone, it has max speed. if this is smaller than minScrollingSpeedDetectDistanceBottom, its possible it will never scroll down with max speed
+  static const maxSpeedZoneHeightBottom = 40;
+  static const refreshRate = 30; // fps
 
   final Widget child;
   final GlobalKey listViewKey;
@@ -75,6 +79,17 @@ class _DragItemScrollerState extends State<DragItemScroller> {
     }
   }
 
+  //stop scrolling if the widget is not dragged anymore
+  @override
+  void didUpdateWidget(covariant DragItemScroller oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.itemIsDragged == true && widget.itemIsDragged == false) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (widget.itemIsDragged == false) _stopScrolling();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Listener(
@@ -85,22 +100,22 @@ class _DragItemScrollerState extends State<DragItemScroller> {
           final position = render.localToGlobal(Offset.zero);
           final topY = position.dy; // top position of the widget
           final bottomY = topY + render.size.height; // bottom position of the widget
-          if (event.position.dy < topY + DragItemScroller.detectedRangeTop && widget.scrollController.offset > 0) {
+          if (event.position.dy < topY + DragItemScroller.minScrollingSpeedDetectDistanceTop && widget.scrollController.offset > 0) {
             // scroll up if the pointer is in the top range and the scrollController is not at the top
             final distanceToTop = event.position.dy - topY;
-            final distanceToTopPercent = distanceToTop / DragItemScroller.detectedRangeTop;
-            final moveSpeedPercent = clampDouble(1 - distanceToTopPercent, 0.0, 1.0);
-            _startScrolling(moveSpeedPercent, moveUp: true);
+            final distanceToMaxSpeed = distanceToTop - (DragItemScroller.minScrollingSpeedDetectDistanceTop - DragItemScroller.maxSpeedZoneHeightTop);
+            final moveSpeedPercent = 1 - distanceToMaxSpeed / DragItemScroller.minScrollingSpeedDetectDistanceTop;
+            _startScrolling(clampDouble(moveSpeedPercent, 0.0, 1.0), moveUp: true);
 
             return;
           }
-          if (event.position.dy > bottomY - DragItemScroller.detectedRangeBottom &&
+          if (event.position.dy > bottomY - DragItemScroller.minScrollingSpeedDetectDistanceBottom &&
               widget.scrollController.offset < widget.scrollController.position.maxScrollExtent) {
             // scroll down if the pointer is in the bottom range and the scrollController is not at the bottom
             final distanceToBottom = bottomY - event.position.dy; // distance to bottom of the widget in px
-            final distanceToBottomPercent = distanceToBottom / DragItemScroller.detectedRangeBottom;
-            final moveSpeedPercent = clampDouble(1 - distanceToBottomPercent, 0.0, 1.0);
-            _startScrolling(moveSpeedPercent, moveUp: false);
+            final distanceToMaxSpeed = distanceToBottom - (DragItemScroller.minScrollingSpeedDetectDistanceBottom - DragItemScroller.maxSpeedZoneHeightBottom);
+            final moveSpeedPercent = 1 - distanceToMaxSpeed / DragItemScroller.maxSpeedZoneHeightBottom;
+            _startScrolling(clampDouble(moveSpeedPercent, 0.0, 1.0), moveUp: false);
             return;
           }
           _stopScrolling();
