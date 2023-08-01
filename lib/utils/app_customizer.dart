@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ApplicationCustomizer {
-
   // Edit in android/app/src/main/AndroidManifest.xml file
   // <application android:label="app name">
 
@@ -31,23 +30,27 @@ class ApplicationCustomizer {
   // - /android/app/src/release
   // 2. iOS: in /ios/ add the GoogleService-Info.plist
 
-  static final String appName = "privacyIDEA Authenticator";
-  static final String websiteLink = 'https://netknights.it/';
-  static final String appIcon = 'res/logo/app_logo_light.png';
+  static const String appName = "privacyIDEA Authenticator";
+  static const String websiteLink = 'https://netknights.it/';
+  static const String appIcon = 'res/logo/app_logo_light.png';
 
-  static final Color primaryColor = Colors.lightBlue;
-  static final Color themeColorDark = Colors.black;
-  static final Color themeColorLight = Colors.white;
+  static const Color primaryColor = Colors.lightBlue;
+  static const Color themeColorDark = Colors.black;
+  static const Color themeColorLight = Colors.white;
 
   // Slide action
-  static final Color deleteColorDark = Color(0xffCD3C14);
-  static final Color deleteColorLight = deleteColorDark;
-  static final Color renameColorDark = Color(0xff527EDB);
-  static final Color renameColorLight = renameColorDark;
-  static final Color lockColorDark = Color(0xffFFCC00);
-  static final Color lockColorLight = lockColorDark;
+  static const Color deleteColorDark = Color(0xffCD3C14);
+  static const Color deleteColorLight = Color(0xffE04D2D);
+  static const Color renameColorDark = Color(0xff527EDB);
+  static const Color renameColorLight = Color(0xff6A8FE5);
+  static const Color lockColorDark = Color(0xffFFCC00);
+  static const Color lockColorLight = Color(0xffFFD633);
 
-  static final Color buttonColor = primaryColor;
-  static final Color textColor = primaryColor;
-  static final Color timerColor = primaryColor;
+  static const Color buttonColor = primaryColor;
+  static const Color textColor = primaryColor;
+  static const Color timerColor = primaryColor;
+
+  // List tile
+  static const Color tileIconColorLight = Color(0xff9E9E9E);
+  static const Color tileIconColorDark = Color(0xffF5F5F5);
 }

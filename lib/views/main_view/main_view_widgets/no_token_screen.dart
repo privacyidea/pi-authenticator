@@ -7,7 +7,7 @@ class NoTokenScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
+      child: SizedBox(
           height: 150,
           width: 300,
           child: Center(
@@ -18,7 +18,7 @@ class NoTokenScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 Text(AppLocalizations.of(context)!.noResultText1, style: Theme.of(context).textTheme.titleMedium),
-                Icon(Icons.qr_code_scanner_outlined),
+                const Icon(Icons.qr_code_scanner_outlined),
                 Text(AppLocalizations.of(context)!.noResultText2, style: Theme.of(context).textTheme.titleMedium)
               ],
             ),

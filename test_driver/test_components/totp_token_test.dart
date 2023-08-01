@@ -23,8 +23,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_driver/flutter_driver.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_tokens/totp_token/totp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:test/test.dart';
 
@@ -73,7 +74,7 @@ void totpTokenUpdateTest() {
 
     test('Assert otp value gets updated', () async {
       // The opt value of this token is the same as the one of the added token.
-      TOTPToken token = new TOTPToken(
+      TOTPToken token = TOTPToken(
         label: '',
         issuer: '',
         id: '',
@@ -88,27 +89,27 @@ void totpTokenUpdateTest() {
       await driver!.runUnsynchronized(() async {
         String rawValue = token.otpValue.padLeft(6, '0');
         String value = insertCharAt(rawValue, ' ', rawValue.length ~/ 2);
-        print('1. Value: $value');
+        Logger.info('1. Value: $value');
 
         await driver!.tap(find.text(value));
       });
 
       await driver!.runUnsynchronized(() async {
         // Wait until update is due.
-        await Future.delayed(Duration(seconds: 32));
+        await Future.delayed(const Duration(seconds: 32));
 
         String rawValue = token.otpValue.padLeft(6, '0');
         String value = insertCharAt(rawValue, ' ', rawValue.length ~/ 2);
 
-        print('2. Value: $value');
+        Logger.info('2. Value: $value');
 
-        await driver!.waitFor(find.text(value), timeout: Duration(seconds: 40));
+        await driver!.waitFor(find.text(value), timeout: const Duration(seconds: 40));
       });
-    }, timeout: Timeout(Duration(seconds: 60)));
+    }, timeout: const Timeout(Duration(seconds: 60)));
 
     test('Clean up', () async {
       await driver!.runUnsynchronized(() async {
-        await driver!.scroll(find.text('TOTPTestName'), -500, 0, Duration(milliseconds: 100));
+        await driver!.scroll(find.text('TOTPTestName'), -500, 0, const Duration(milliseconds: 100));
 
         // Delete the token.
         await driver!.tap(find.text('Delete'));

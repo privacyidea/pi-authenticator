@@ -75,7 +75,7 @@ void addTokenTest() {
     });
 
     test('Clean up', () async {
-      await driver!.scroll(find.text('TestName'), -500, 0, Duration(milliseconds: 100));
+      await driver!.scroll(find.text('TestName'), -500, 0, const Duration(milliseconds: 100));
 
       // Delete the token.
       await driver!.tap(find.text('Delete'));

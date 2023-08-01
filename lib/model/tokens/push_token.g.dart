@@ -33,6 +33,8 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
           ? null
           : CustomIntBuffer.fromJson(
               json['knownPushRequests'] as Map<String, dynamic>),
+      categoryId: json['categoryId'] as int?,
+      isInEditMode: json['isInEditMode'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
@@ -40,7 +42,11 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'issuer': instance.issuer,
       'id': instance.id,
       'isLocked': instance.isLocked,
+      'pin': instance.pin,
       'imageURL': instance.imageURL,
+      'categoryId': instance.categoryId,
+      'isInEditMode': instance.isInEditMode,
+      'sortIndex': instance.sortIndex,
       'type': instance.type,
       'expirationDate': instance.expirationDate.toIso8601String(),
       'serial': instance.serial,
@@ -48,8 +54,6 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
       'isRolledOut': instance.isRolledOut,
-      'sortIndex': instance.sortIndex,
-      'pin': instance.pin,
       'publicServerKey': instance.publicServerKey,
       'privateTokenKey': instance.privateTokenKey,
       'publicTokenKey': instance.publicTokenKey,

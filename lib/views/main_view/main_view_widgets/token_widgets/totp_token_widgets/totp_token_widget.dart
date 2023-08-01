@@ -1,19 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_tokens/totp_token/totp_token.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_base.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/totp_token_widgets/totp_token_widget_tile.dart';
+
+import '../../../../../model/mixins/sortable_mixin.dart';
+import '../../../../../model/tokens/totp_token.dart';
+import '../token_widget.dart';
+import '../token_widget_base.dart';
+import 'totp_token_widget_tile.dart';
 
 class TOTPTokenWidget extends TokenWidget {
   final TOTPToken token;
+  final SortableMixin? previousSortable;
+  final bool withDivider;
 
-  TOTPTokenWidget(this.token, {super.key});
+  const TOTPTokenWidget(
+    this.token, {
+    this.withDivider = true,
+    super.key,
+    this.previousSortable,
+  });
 
   @override
   TokenWidgetBase build(BuildContext context) {
     return TokenWidgetBase(
       token: token,
       tile: TOTPTokenWidgetTile(token),
+      dragIcon: Icons.alarm,
     );
   }
 }

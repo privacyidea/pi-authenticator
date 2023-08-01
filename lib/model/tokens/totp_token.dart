@@ -1,9 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
-
+// ignore: library_prefixes
 import 'package:otp/otp.dart' as OTPLibrary;
+
+import '../../utils/identifiers.dart';
+import '../../utils/utils.dart';
+import 'otp_token.dart';
 
 part 'totp_token.g.dart';
 
@@ -38,6 +39,8 @@ class TOTPToken extends OTPToken {
     int? sortIndex,
     bool isLocked = false,
     bool canToggleLock = true,
+    int? categoryId,
+    bool isInEditMode = false,
   }) : super(
           label: label,
           issuer: issuer,
@@ -51,8 +54,11 @@ class TOTPToken extends OTPToken {
           sortIndex: sortIndex,
           isLocked: isLocked,
           canToggleLock: canToggleLock,
+          categoryId: categoryId,
+          isInEditMode: isInEditMode,
         );
 
+  @override
   TOTPToken copyWith({
     String? label,
     String? issuer,
@@ -61,11 +67,12 @@ class TOTPToken extends OTPToken {
     int? digits,
     String? secret,
     bool? pin,
-    int? periodInSeconds,
+    int? period,
     String? imageURL,
     int? sortIndex,
     bool? isLocked,
-    bool? canToggleLock,
+    int? Function()? categoryId,
+    bool? isInEditMode,
   }) {
     return TOTPToken(
       label: label ?? this.label,
@@ -75,16 +82,18 @@ class TOTPToken extends OTPToken {
       digits: digits ?? this.digits,
       secret: secret ?? this.secret,
       pin: pin ?? this.pin,
-      period: periodInSeconds ?? this.period,
+      period: period ?? this.period,
       imageURL: imageURL ?? this.imageURL,
       sortIndex: sortIndex ?? this.sortIndex,
       isLocked: isLocked ?? this.isLocked,
+      categoryId: categoryId != null ? categoryId() : this.categoryId,
+      isInEditMode: isInEditMode ?? this.isInEditMode,
     );
   }
 
   @override
   String toString() {
-    return 'T' + super.toString() + 'period: $period';
+    return 'T${super.toString()}period: $period';
   }
 
   factory TOTPToken.fromJson(Map<String, dynamic> json) => _$TOTPTokenFromJson(json);

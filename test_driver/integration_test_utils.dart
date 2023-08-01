@@ -68,6 +68,6 @@ void addTokenRoutine(String name, String secret) {
 
 Future<bool> doLongPress(FlutterDriver driver, SerializableFinder target) async {
   // Pressing 2 seconds is needed to start the 'paste' dialog on a text field.
-  await driver.scroll(target, 0, 0, Duration(seconds: 2));
+  await driver.scroll(target, 0, 0, const Duration(seconds: 2));
   return true;
 }

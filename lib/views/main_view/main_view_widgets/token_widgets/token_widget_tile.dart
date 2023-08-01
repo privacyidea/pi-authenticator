@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../widgets/custom_trailing.dart';
+
 class TokenWidgetTile extends ConsumerWidget {
   final Widget? title;
   final List<String> subtitles;
@@ -9,6 +11,7 @@ class TokenWidgetTile extends ConsumerWidget {
   final Visibility? overlay;
   final List<Visibility> trailingWidgets;
   final Function()? onTap;
+  final bool tokenIsLocked;
 
   const TokenWidgetTile({
     this.leading,
@@ -19,40 +22,37 @@ class TokenWidgetTile extends ConsumerWidget {
     this.trailingWidgets = const [],
     this.onTap,
     super.key,
+    this.tokenIsLocked = false,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ClipRect(
-      child: Stack(
-        children: [
-          Column(
-            children: [
-              ListTile(
-                horizontalTitleGap: 8.0,
-                leading: leading,
-                onTap: () => onTap?.call(),
-                title: title,
-                subtitle: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (String subtitle in subtitles) Text(subtitle),
-                  ],
-                ),
-                trailing: Container(
-                  margin: EdgeInsets.only(right: 20.0),
-                  width: MediaQuery.of(context).size.width * 0.15,
-                  height: MediaQuery.of(context).size.width * 0.15,
-                  child: trailing,
-                ),
+    return Stack(
+      children: [
+        Column(
+          children: [
+            ListTile(
+              horizontalTitleGap: 8.0,
+              leading: leading,
+              onTap: () => onTap?.call(),
+              title: title,
+              style: ListTileStyle.list,
+              subtitle: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (String subtitle in subtitles) Text(subtitle),
+                ],
               ),
-              for (Visibility widget in trailingWidgets) widget,
-            ],
-          ),
-          if (overlay != null) overlay!
-        ],
-      ),
+              trailing: CustomTrailing(
+                child: trailing ?? Container(),
+              ),
+            ),
+            for (Visibility widget in trailingWidgets) widget,
+          ],
+        ),
+        if (overlay != null) overlay!
+      ],
     );
   }
 }

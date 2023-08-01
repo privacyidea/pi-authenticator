@@ -1,13 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
+// ignore_for_file: depend_on_referenced_packages
 
 import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_ios/local_auth_ios.dart';
-import 'package:local_auth/local_auth.dart';
+
+import 'logger.dart';
 
 Future<bool> lockAuth({required BuildContext context, required String localizedReason}) async {
   bool didAuthenticate = false;
@@ -25,8 +27,8 @@ Future<bool> lockAuth({required BuildContext context, required String localizedR
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
-              leading: Icon(Icons.lock),
-              trailing: Icon(Icons.lock),
+              leading: const Icon(Icons.lock),
+              trailing: const Icon(Icons.lock),
             ),
             content: Text(AppLocalizations.of(context)!.authNotSupportedBody),
           );

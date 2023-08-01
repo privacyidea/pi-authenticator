@@ -25,7 +25,7 @@ class CustomIntBuffer {
       throw ArgumentError('The list $l is to long for a buffer of size $maxSize');
     }
 
-    this._list = l;
+    _list = l;
   }
 
   void put(int value) {

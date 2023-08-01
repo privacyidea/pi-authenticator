@@ -64,7 +64,7 @@ class HideableText extends StatelessWidget {
       textScaleFactor: textScaleFactor,
       style: textStyle != null
           ? textStyle!.copyWith(fontFamily: 'monospace', fontWeight: FontWeight.bold)
-          : TextStyle(
+          : const TextStyle(
               fontFamily: 'monospace',
               fontWeight: FontWeight.bold,
             ),

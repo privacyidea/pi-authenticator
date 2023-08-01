@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/lock_auth.dart';
+import '../model/tokens/token.dart';
+import '../utils/lock_auth.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HideableWidgetTrailing extends StatelessWidget {
@@ -23,7 +23,7 @@ class HideableWidgetTrailing extends StatelessWidget {
                 isHiddenNotifier.value = false;
               }
             },
-            icon: Icon(Icons.remove_red_eye_outlined),
+            icon: const Icon(Icons.remove_red_eye_outlined),
           )
         : child;
   }

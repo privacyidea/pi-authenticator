@@ -4,7 +4,7 @@ class PressButton extends StatefulWidget {
   final void Function() onPressed;
   final Widget child;
 
-  const PressButton({required this.onPressed, required this.child});
+  const PressButton({super.key, required this.onPressed, required this.child});
 
   @override
   State<StatefulWidget> createState() => _PressButtonState();
@@ -19,7 +19,7 @@ class _PressButtonState extends State<PressButton> {
         isPressable = false;
       });
       widget.onPressed();
-      Future.delayed(Duration(milliseconds: 1000), () {
+      Future.delayed(const Duration(milliseconds: 1000), () {
         if (mounted) {
           setState(() {
             isPressable = true;

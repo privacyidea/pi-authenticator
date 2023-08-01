@@ -1,3 +1,5 @@
+// ignore_for_file: library_prefixes
+
 /*
   privacyIDEA Authenticator
 

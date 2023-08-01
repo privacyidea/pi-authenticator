@@ -46,7 +46,7 @@ void renameAndDeleteTest() {
     addTokenRoutine(tokenName, secret);
 
     test('Assert renaming works', () async {
-      await driver!.scroll(find.text(tokenName), -500, 0, Duration(milliseconds: 100));
+      await driver!.scroll(find.text(tokenName), -500, 0, const Duration(milliseconds: 100));
 
       await driver!.tap(find.text('Rename'));
 
@@ -61,7 +61,7 @@ void renameAndDeleteTest() {
     });
 
     test('Assert renaming works again', () async {
-      await driver!.scroll(find.text('NewTestName'), -500, 0, Duration(milliseconds: 100));
+      await driver!.scroll(find.text('NewTestName'), -500, 0, const Duration(milliseconds: 100));
 
       await driver!.tap(find.text('Rename'));
 
@@ -76,7 +76,7 @@ void renameAndDeleteTest() {
     });
 
     test('Assert delete works', () async {
-      await driver!.scroll(find.text('OldTestName'), -500, 0, Duration(milliseconds: 100));
+      await driver!.scroll(find.text('OldTestName'), -500, 0, const Duration(milliseconds: 100));
 
       // Delete the token.
       await driver!.tap(find.text('Delete'));

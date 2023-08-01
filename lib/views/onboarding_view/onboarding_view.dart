@@ -1,17 +1,17 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
-import 'package:privacyidea_authenticator/widgets/dot_indicator.dart';
-import 'package:privacyidea_authenticator/views/onboarding_view/onboading_view_widgets/onboarding_button_page.dart';
-import 'package:privacyidea_authenticator/views/onboarding_view/onboading_view_widgets/onboarding_page.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
+import '../../utils/app_customizer.dart';
+import '../../utils/riverpod_providers.dart';
+import '../../widgets/dot_indicator.dart';
+import '../main_view/main_view.dart';
+import 'onboading_view_widgets/onboarding_button_page.dart';
+import 'onboading_view_widgets/onboarding_page.dart';
 
 class LottieFiles {
   final String lottieFile;
@@ -60,7 +60,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
             top: 120,
             right: 5,
             left: 5,
-            child: Container(
+            child: SizedBox(
               width: screenSize.width * 0.4,
               height: screenSize.height * 0.4,
               child: Lottie.asset(
@@ -148,6 +148,8 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
               );
           }
         },
+        backgroundColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF303030) : Colors.grey[50],
+        elevation: 0,
         child: _currentIndex == 2
             ? FlareActor(
                 'res/rive/success_check.flr',
@@ -157,8 +159,6 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                 CupertinoIcons.right_chevron,
                 color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
               ),
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? Color(0xFF303030) : Colors.grey[50],
-        elevation: 0,
       ),
     );
   }

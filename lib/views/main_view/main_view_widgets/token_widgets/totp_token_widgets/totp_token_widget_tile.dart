@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_tokens/totp_token/totp_token.dart';
-import 'package:privacyidea_authenticator/utils/lock_auth.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_tile.dart';
-import 'package:privacyidea_authenticator/widgets/custom_texts.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/widgets/hideable_widget_trailing.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../../model/tokens/totp_token.dart';
+import '../../../../../utils/lock_auth.dart';
+import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/utils.dart';
+import '../../../../../widgets/custom_texts.dart';
+import '../../../../../widgets/hideable_widget_.dart';
+import '../token_widget_tile.dart';
 
 class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   final TOTPToken token;
 
-  TOTPTokenWidgetTile(this.token);
+  const TOTPTokenWidgetTile(this.token, {super.key});
 
   @override
   ConsumerState<TOTPTokenWidgetTile> createState() => _TOTPTokenWidgetTileState();
@@ -35,6 +36,19 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
 
   double calculateRemainingTotpDurationPercent() {
     return (DateTime.now().toUtc().millisecondsSinceEpoch / 1000) % widget.token.period / widget.token.period;
+  }
+
+  void _copyOtpValue() {
+    if (globalRef?.read(disableCopyProvider) ?? false) return;
+
+    globalRef?.read(disableCopyProvider.notifier).state = true;
+    Clipboard.setData(ClipboardData(text: widget.token.otpValue));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue))),
+    );
+    Future.delayed(const Duration(seconds: 5), () {
+      globalRef?.read(disableCopyProvider.notifier).state = false;
+    });
   }
 
   @override
@@ -60,19 +74,22 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
       ..forward(from: widget.token.currentProgress); // Start the animation.
 
     isHidden.addListener(() {
-      setState(() {
-        if (isHidden.value == false) {
-          Future.delayed(Duration(seconds: 30), () {
-            isHidden.value = true;
-          });
-        }
-      });
+      if (mounted) {
+        setState(() {
+          if (isHidden.value == false) {
+            Future.delayed(const Duration(seconds: 30), () {
+              isHidden.value = true;
+            });
+          }
+        });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return TokenWidgetTile(
+      tokenIsLocked: widget.token.isLocked,
       title: HideableText(
         key: Key(widget.token.hashCode.toString()),
         text: insertCharAt(otpValue, ' ', widget.token.digits ~/ 2),
@@ -82,7 +99,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
         textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
       ),
       subtitles: [widget.token.label, widget.token.issuer],
-      trailing: HideableWidgetTrailing(
+      trailing: HideableWidget(
         token: widget.token,
         isHiddenNotifier: isHidden,
         child: AnimatedBuilder(
@@ -107,12 +124,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
                 isHidden.value = false;
               }
             }
-          : () {
-              Clipboard.setData(ClipboardData(text: otpValue));
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(otpValue)),
-              ));
-            },
+          : _copyOtpValue,
     );
   }
 }

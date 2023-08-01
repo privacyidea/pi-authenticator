@@ -25,9 +25,10 @@ import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
+
+import '../model/tokens/push_token.dart';
 import 'identifiers.dart';
 
 Future<Uint8List> pbkdf2({required Uint8List salt, required int iterations, required int keyLength, required Uint8List password}) async {
@@ -36,7 +37,7 @@ Future<Uint8List> pbkdf2({required Uint8List salt, required int iterations, requ
   ArgumentError.checkNotNull(keyLength);
   ArgumentError.checkNotNull(password);
 
-  Map<String, dynamic> map = new Map();
+  Map<String, dynamic> map = {};
   map['salt'] = salt;
   map['iterations'] = iterations;
   map['keyLength'] = keyLength;

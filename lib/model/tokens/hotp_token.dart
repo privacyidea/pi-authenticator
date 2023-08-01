@@ -1,9 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
-
+// ignore: library_prefixes
 import 'package:otp/otp.dart' as OTPLibrary;
+
+import '../../utils/identifiers.dart';
+import '../../utils/utils.dart';
+import 'otp_token.dart';
 
 part 'hotp_token.g.dart';
 
@@ -25,6 +26,8 @@ class HOTPToken extends OTPToken {
     int? sortIndex,
     bool isLocked = false,
     bool canToggleLock = true,
+    int? categoryId,
+    bool isInEditMode = false,
   }) : super(
           label: label,
           issuer: issuer,
@@ -38,6 +41,8 @@ class HOTPToken extends OTPToken {
           sortIndex: sortIndex,
           isLocked: isLocked,
           canToggleLock: canToggleLock,
+          categoryId: categoryId,
+          isInEditMode: isInEditMode,
         );
 
   @override
@@ -49,8 +54,9 @@ class HOTPToken extends OTPToken {
         isGoogle: true,
       );
 
-  HOTPToken withNextCounter() => this.copyWith(counter: this.counter + 1);
+  HOTPToken withNextCounter() => copyWith(counter: counter + 1);
 
+  @override
   HOTPToken copyWith({
     int? counter,
     String? label,
@@ -63,6 +69,8 @@ class HOTPToken extends OTPToken {
     String? imageURL,
     int? sortIndex,
     bool? isLocked,
+    int? Function()? categoryId,
+    bool? isInEditMode,
   }) =>
       HOTPToken(
         counter: counter ?? this.counter,
@@ -76,11 +84,13 @@ class HOTPToken extends OTPToken {
         imageURL: imageURL ?? this.imageURL,
         sortIndex: sortIndex ?? this.sortIndex,
         isLocked: isLocked ?? this.isLocked,
+        categoryId: categoryId != null ? categoryId() : this.categoryId,
+        isInEditMode: isInEditMode ?? this.isInEditMode,
       );
 
   @override
   String toString() {
-    return 'H' + super.toString() + 'counter: $counter}';
+    return 'H${super.toString()}counter: $counter}';
   }
 
   factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json);

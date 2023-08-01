@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/token_action.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+
+import '../../../../../model/tokens/token.dart';
+import '../../../../../utils/app_customizer.dart';
+import '../../../../../utils/logger.dart';
+import '../../../../../utils/riverpod_providers.dart';
+import 'token_action.dart';
 
 class DefaultEditAction extends TokenAction {
   final Token token;
-  DefaultEditAction({required this.token, Key? key}) : super(key: key);
+  const DefaultEditAction({required this.token, Key? key}) : super(key: key);
 
   @override
   SlidableAction build(BuildContext context) {

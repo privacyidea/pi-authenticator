@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/appCustomizer.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
+import '../../../../../model/tokens/token.dart';
+import '../../../../../utils/riverpod_providers.dart';
 
+import '../../../../../utils/app_customizer.dart';
 import 'token_action.dart';
 
 class DefaultDeleteAction extends TokenAction {
   final Token token;
 
-  DefaultDeleteAction({required this.token});
+  const DefaultDeleteAction({super.key, required this.token});
   @override
   SlidableAction build(BuildContext context) {
     return SlidableAction(

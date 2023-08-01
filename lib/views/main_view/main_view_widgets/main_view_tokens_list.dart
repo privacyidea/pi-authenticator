@@ -1,65 +1,93 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 
-class MainViewTokensList extends ConsumerWidget {
+import '../../../model/mixins/sortable_mixin.dart';
+import '../../../model/tokens/push_token.dart';
+import '../../../model/tokens/token.dart';
+import '../../../utils/push_provider.dart';
+import '../../../utils/riverpod_providers.dart';
+import '../../../utils/view_utils.dart';
+import '../../../widgets/drag_item_scroller.dart';
+import '../deactivateable_refresh_indicator.dart';
+import 'drag_target_divider.dart';
+import 'no_token_screen.dart';
+import 'sortable_widget_builder.dart';
+
+class MainViewTokensList extends ConsumerStatefulWidget {
   final List<Token> tokens;
+
   const MainViewTokensList(this.tokens, {Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    bool tokenGotSortIndex = false;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (tokenGotSortIndex) {
-        updateTokens(ref, tokens: tokens);
-      }
-    });
-    return SlidableAutoCloseBehavior(
-      child: ReorderableListView.builder(
-        itemBuilder: (context, index) {
-          if (tokens[index].sortIndex == null) {
-            tokens[index] = tokens[index].copyWith(sortIndex: index);
-            tokenGotSortIndex = true;
-          }
-          Token token = tokens[index];
-          return TokenWidgetBuilder.fromToken(token, key: ValueKey(token.id));
-        },
-        // add padding for floating action button
-        padding: EdgeInsets.only(bottom: 80),
-        itemCount: tokens.length,
-        onReorder: (int oldIndex, int newIndex) {
-          if (oldIndex == newIndex) return;
-          // If the selected token moved down all other tokens between old and new index must decrease their sort index by 1 to move up
-          // If the selected token moved up all other tokens between old and new index must increase their sort index by 1 to move down
-          final selectedTokenMovedDown = newIndex > oldIndex;
-          if (selectedTokenMovedDown) newIndex--;
-          final reorderedTokens = <Token>[];
-          for (int i = min(oldIndex, newIndex); i <= max(oldIndex, newIndex); i++) {
-            final token = tokens[i];
-            if (i == oldIndex) {
-              Logger.info('Token ${token.label}: ${token.sortIndex} -> $newIndex');
-              reorderedTokens.add(token.copyWith(sortIndex: newIndex));
-              continue;
-            }
+  ConsumerState<MainViewTokensList> createState() => _MainViewTokensListState();
+}
 
-            final newIndexThisToken = selectedTokenMovedDown ? i - 1 : i + 1;
-            Logger.info('Token ${token.label}: ${token.sortIndex} -> $newIndexThisToken');
-            reorderedTokens.add(token.copyWith(sortIndex: newIndexThisToken));
-          }
+class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
+  final listViewKey = GlobalKey();
 
-          ref.read(tokenProvider.notifier).updateTokens(reorderedTokens);
-        },
+  final ScrollController scrollController = ScrollController();
+
+  Duration? lastTimeStamp;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokenCategorys = ref.watch(tokenCategoryProvider).categorys;
+    final tokenState = ref.watch(tokenProvider);
+    final allowToRefresh = tokenState.tokens.any((token) => token is PushToken);
+    final draggingSortable = ref.watch(draggingSortableProvider);
+    final tokenStateWithNoCategory = tokenState.tokensWithoutCategory();
+
+    List<SortableMixin> sortables = [...tokenCategorys, ...tokenStateWithNoCategory];
+    sortables.sort((a, b) => a.compareTo(b));
+
+    return DeactivateableRefreshIndicator(
+      allowToRefresh: allowToRefresh,
+      onRefresh: () async {
+        showMessage(
+          message: AppLocalizations.of(context)!.pollingChallenges,
+          duration: const Duration(seconds: 1),
+          context: context,
+        );
+        bool success = await PushProvider.pollForChallenges();
+        if (!success) {
+          showMessage(
+            message: AppLocalizations.of(context)!.pollingFailNoNetworkConnection,
+            duration: const Duration(seconds: 3),
+            context: context,
+          );
+        }
+      },
+      child: SlidableAutoCloseBehavior(
+        child: DragItemScroller(
+          listViewKey: listViewKey,
+          scrollController: scrollController,
+          itemIsDragged: draggingSortable != null,
+          child: CustomScrollView(
+            key: listViewKey,
+            controller: scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    for (var i = 0; i < sortables.length; i++) ...[
+                      if (draggingSortable != sortables[i] && (i != 0 || draggingSortable != null))
+                        DragTargetDivider(dependingCategory: null, nextSortable: sortables[i]),
+                      SortableWidgetBuilder.fromSortable(sortables[i]),
+                    ],
+                    if (sortables.isNotEmpty && draggingSortable != null)
+                      const DragTargetDivider(dependingCategory: null, nextSortable: null, isLastDivider: true),
+                    if (sortables.isEmpty) const NoTokenScreen(),
+                    const SizedBox(height: 100),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
-  }
-
-  void updateTokens(WidgetRef ref, {required List<Token> tokens}) {
-    ref.read(tokenProvider.notifier).updateTokens(tokens);
   }
 }

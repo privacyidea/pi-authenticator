@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'totp_token.dart';
+part of 'hotp_token.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
-      period: json['period'] as int,
+HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
+      counter: json['counter'] as int? ?? 0,
       label: json['label'] as String,
       issuer: json['issuer'] as String,
       id: json['id'] as String,
@@ -19,21 +19,25 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
       imageURL: json['imageURL'] as String?,
       sortIndex: json['sortIndex'] as int?,
       isLocked: json['isLocked'] as bool? ?? false,
+      categoryId: json['categoryId'] as int?,
+      isInEditMode: json['isInEditMode'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
+Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
       'label': instance.label,
       'issuer': instance.issuer,
       'id': instance.id,
       'isLocked': instance.isLocked,
+      'pin': instance.pin,
       'imageURL': instance.imageURL,
+      'categoryId': instance.categoryId,
+      'isInEditMode': instance.isInEditMode,
       'sortIndex': instance.sortIndex,
       'type': instance.type,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm]!,
       'digits': instance.digits,
       'secret': instance.secret,
-      'pin': instance.pin,
-      'period': instance.period,
+      'counter': instance.counter,
     };
 
 const _$AlgorithmsEnumMap = {

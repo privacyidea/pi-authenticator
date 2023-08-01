@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_tokens/hotp_token/hotp_token.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_tokens/totp_token/totp_token.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view_widgets/labeled_dropdown_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../model/tokens/hotp_token.dart';
+import '../../model/tokens/otp_token.dart';
+import '../../model/tokens/totp_token.dart';
+import '../../utils/identifiers.dart';
+import '../../utils/logger.dart';
+import '../../utils/riverpod_providers.dart';
+import '../../utils/utils.dart';
+import 'add_token_manually_view_widgets/labeled_dropdown_button.dart';
 
 class AddTokenManuallyView extends ConsumerStatefulWidget {
   static const routeName = '/addTokenManually';
   static final List<int> allowedDigits = [6, 8];
   static final List<int> allowedPeriods = [30, 60];
+
+  const AddTokenManuallyView({super.key});
 
   @override
   ConsumerState<AddTokenManuallyView> createState() => _AddTokenManuallyViewState();
@@ -60,7 +62,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Form(
           child: Column(
             children: [
@@ -162,7 +164,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
     return HOTPToken(
       label: _labelController.text,
       issuer: '',
-      id: Uuid().v4(),
+      id: const Uuid().v4(),
       algorithm: _algorithmNotifier.value,
       digits: _digitsNotifier.value,
       secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),
@@ -172,7 +174,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
   TOTPToken _buildTOTPToken() => TOTPToken(
         label: _labelController.text,
         issuer: '',
-        id: Uuid().v4(),
+        id: const Uuid().v4(),
         algorithm: _algorithmNotifier.value,
         digits: _digitsNotifier.value,
         secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),

@@ -249,7 +249,7 @@ void _testPbkdf2() {
                 salt: salt,
               ),
               Uint8List.fromList([25, 39, 153, 115, 182, 177, 160, 241, 96, 198, 31, 79, 145, 109, 102, 47, 205, 167, 246, 253])));
-    }, timeout: Timeout(Duration(seconds: 60)));
+    }, timeout: const Timeout(Duration(seconds: 60)));
 
     group('Different output lengths', () {
       test(
@@ -422,7 +422,7 @@ void _testRSASigning() {
       var signature = createRSASignature(privateKey, utf8.encode(message) as Uint8List);
 
       expect(true, verifyRSASignature(publicKey, utf8.encode(message) as Uint8List, signature));
-    }, timeout: Timeout(Duration(minutes: 5)));
+    }, timeout: const Timeout(Duration(minutes: 5)));
 
     test('Signature is invalid', () async {
       var asymmetricKeyPair = await generateRSAKeyPair();
@@ -434,6 +434,6 @@ void _testRSASigning() {
       var signature = createRSASignature(privateKey, utf8.encode(message) as Uint8List);
 
       expect(false, verifyRSASignature(publicKey, utf8.encode('I am not the signature you are looking for.') as Uint8List, signature));
-    }, timeout: Timeout(Duration(minutes: 5)));
-  }, timeout: Timeout(Duration(minutes: 16)));
+    }, timeout: const Timeout(Duration(minutes: 5)));
+  }, timeout: const Timeout(Duration(minutes: 16)));
 }

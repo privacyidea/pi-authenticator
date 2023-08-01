@@ -19,12 +19,13 @@
 */
 
 import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
@@ -45,7 +46,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
     // Start polling if enabled and not already polling
     if (pollingEnabled && _pollTimer == null) {
       Logger.info('Polling is enabled.', name: 'main_screen.dart#_startPollingIfEnabled');
-      _pollTimer = Timer.periodic(Duration(seconds: 3), (_) => PushProvider.pollForChallenges());
+      _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) => PushProvider.pollForChallenges());
       PushProvider.pollForChallenges();
       return;
     }
@@ -68,8 +69,10 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
       handleIncomingMessage: (RemoteMessage message) => _handleIncomingAuthRequest(message),
       backgroundMessageHandler: _firebaseMessagingBackgroundHandler,
     );
-    PushProvider.pollForChallenges();
-    _startPollingIfEnabled();
+    if (pollingEnabled) {
+      PushProvider.pollForChallenges();
+      _startPollingIfEnabled();
+    }
   }
 
   // FOREGROUND HANDLING
@@ -89,24 +92,32 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
   /// to the token. This should be guarded by a lock.
   static Future<void> _handleIncomingRequest(RemoteMessage message, {bool inBackground = false}) async {
     Logger.warning('inBackground: $inBackground', name: 'main_screen.dart#_handleIncomingRequest');
+    // Android and iOS use different keys for the tag.
+    var tag = message.notification?.android;
+    Logger.warning('tag: ${tag?.toMap().toString()}', name: 'main_screen.dart#_handleIncomingRequest');
+    // tag ??= message.notification?.apple?.badge; //FIXME: Is this the tag for iOS?
+
     var data = message.data;
     Logger.info('Incoming push challenge.', name: 'main_screen.dart#_handleIncomingChallenge', error: data);
     Uri requestUri = Uri.parse(data['url']);
 
+    Logger.warning('message: $data', name: 'main_screen.dart#_handleIncomingRequest');
+
     bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
     PushRequest pushRequest = PushRequest(
-        title: data['title'],
-        question: data['question'],
-        uri: requestUri,
-        nonce: data['nonce'],
-        sslVerify: sslVerify,
-        id: data['nonce'].hashCode,
-        // FIXME This is not guaranteed to not lead to collisions, but they might be unlikely in this case.
-        expirationDate: DateTime.now().add(
-          Duration(seconds: 120), // Push requests expire after 2 minutes.
-        ),
-        serial: data['serial'],
-        signature: data['signature']);
+      title: data['title'],
+      question: data['question'],
+      uri: requestUri,
+      nonce: data['nonce'],
+      sslVerify: sslVerify,
+      id: data['nonce'].hashCode,
+      // FIXME This is not guaranteed to not lead to collisions, but they might be unlikely in this case.
+      expirationDate: DateTime.now().add(
+        const Duration(seconds: 120), // Push requests expire after 2 minutes.
+      ),
+      serial: data['serial'],
+      signature: data['signature'],
+    );
 
     Logger.info('Incoming push challenge for token with serial.', name: 'main_screen.dart#_handleIncomingChallenge', error: pushRequest.serial);
     if (inBackground) {
@@ -152,7 +163,8 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
 
   Future<bool> handleReaction(PushRequest pushRequest) async {
     if (pushRequest.accepted == null) return false;
-    final token = globalRef?.read(tokenProvider).firstWhereOrNull((token) => token is PushToken && token.serial == pushRequest.serial) as PushToken?;
+
+    final token = globalRef?.read(tokenProvider).tokens.firstWhereOrNull((token) => token is PushToken && token.serial == pushRequest.serial) as PushToken?;
 
     if (token == null) {
       Logger.warning('Token not found.', name: 'token_widgets.dart#handleReaction', error: 'Serial: ${pushRequest.serial}');

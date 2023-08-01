@@ -37,8 +37,8 @@ import 'identifiers.dart';
 /// }
 RSAPublicKey deserializeRSAPublicKeyPKCS1(String keyStr) {
   ASN1Sequence asn1sequence = ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
-  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger!;
-  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
+  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
+  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
 
   return RSAPublicKey(modulus, exponent);
 }
@@ -75,7 +75,7 @@ RSAPublicKey deserializeRSAPublicKeyPKCS8(String keyStr) {
 
   var encodedAlgorithm = baseSequence.elements[0];
 
-  var algorithm = ASN1Parser(encodedAlgorithm.contentBytes()!).nextObject() as ASN1ObjectIdentifier;
+  var algorithm = ASN1Parser(encodedAlgorithm.contentBytes()).nextObject() as ASN1ObjectIdentifier;
 
   if (algorithm.identifier != '1.2.840.113549.1.1.1') {
     throw ArgumentError.value(
@@ -87,10 +87,10 @@ RSAPublicKey deserializeRSAPublicKeyPKCS8(String keyStr) {
 
   var encodedKey = baseSequence.elements[1];
 
-  var asn1sequence = ASN1Parser(encodedKey.contentBytes()!).nextObject() as ASN1Sequence;
+  var asn1sequence = ASN1Parser(encodedKey.contentBytes()).nextObject() as ASN1Sequence;
 
-  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger!;
-  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
+  BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
+  BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
 
   return RSAPublicKey(modulus, exponent);
 }
@@ -178,10 +178,10 @@ String serializeRSAPrivateKeyPKCS1(RSAPrivateKey key) {
 /// (CONSTRAINED BY {-- version must be multi if otherPrimeInfos present --})
 RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String keyStr) {
   ASN1Sequence asn1sequence = ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
-  BigInt modulus = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger!;
-  BigInt exponent = (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger!;
-  BigInt p = (asn1sequence.elements[4] as ASN1Integer).valueAsBigInteger!;
-  BigInt q = (asn1sequence.elements[5] as ASN1Integer).valueAsBigInteger!;
+  BigInt modulus = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
+  BigInt exponent = (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger;
+  BigInt p = (asn1sequence.elements[4] as ASN1Integer).valueAsBigInteger;
+  BigInt q = (asn1sequence.elements[5] as ASN1Integer).valueAsBigInteger;
 
   return RSAPrivateKey(modulus, exponent, p, q);
 }
@@ -232,7 +232,7 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
   // &apikeyios=AIzaSyBeFSjwJ8aEcHQaj4-isT-sLAX6lmSrvbb
   // &appidios=1:0123456789012:ios:0123456789abcdef
 
-  Map<String, dynamic> uriMap = Map();
+  Map<String, dynamic> uriMap = {};
 
   uriMap[URI_TYPE] = uri.host;
 
@@ -303,7 +303,7 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
 Map<String, dynamic> parseOtpAuth(Uri uri) {
   // otpauth://TYPE/LABEL?PARAMETERS
 
-  Map<String, dynamic> uriMap = Map();
+  Map<String, dynamic> uriMap = {};
 
   // parse.host -> Type totp or hotp
   uriMap[URI_TYPE] = uri.host;

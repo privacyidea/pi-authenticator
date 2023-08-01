@@ -16,26 +16,18 @@ class PushRequest {
   final bool? accepted;
 
   PushRequest({
-    required String title,
-    required String question,
-    required Uri uri,
-    required String nonce,
-    required bool sslVerify,
-    required int id,
-    required DateTime expirationDate,
+    required this.title,
+    required this.question,
+    required this.uri,
+    required this.nonce,
+    required this.sslVerify,
+    required this.id,
+    required this.expirationDate,
     String? serial,
     String? signature,
-    bool? accepted,
-  })  : this.title = title,
-        this.question = question,
-        this.uri = uri,
-        this.nonce = nonce,
-        this.sslVerify = sslVerify,
-        this.id = id,
-        this.expirationDate = expirationDate,
-        this.serial = serial ?? '',
-        this.signature = signature ?? '',
-        this.accepted = accepted;
+    this.accepted,
+  })  : serial = serial ?? '',
+        signature = signature ?? '';
 
   PushRequest copyWith({
     String? title,

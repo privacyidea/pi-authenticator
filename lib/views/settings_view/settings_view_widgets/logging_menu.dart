@@ -3,11 +3,14 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/send_error_dialog.dart';
+
+import '../../../utils/logger.dart';
+import '../../../utils/riverpod_providers.dart';
+import 'send_error_dialog.dart';
 
 class LoggingMenu extends ConsumerWidget {
+  const LoggingMenu({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
@@ -15,8 +18,8 @@ class LoggingMenu extends ConsumerWidget {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
-        titlePadding: EdgeInsets.all(12),
-        contentPadding: EdgeInsets.all(0),
+        titlePadding: const EdgeInsets.all(12),
+        contentPadding: const EdgeInsets.all(0),
         title: Text(AppLocalizations.of(context)!.logMenu),
         content: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -28,7 +31,7 @@ class LoggingMenu extends ConsumerWidget {
               style: ListTileStyle.drawer,
               onTap: () => ref.read(settingsProvider.notifier).toggleVerboseLogging(),
             ),
-            Divider(),
+            const Divider(),
             ListTile(
               title: Text(AppLocalizations.of(context)!.sendErrorHint),
               trailing: ElevatedButton(
@@ -38,7 +41,7 @@ class LoggingMenu extends ConsumerWidget {
               style: ListTileStyle.drawer,
               onTap: () => _pressSendErrorLog(context),
             ),
-            Divider(),
+            const Divider(),
             ListTile(
               title: Text(AppLocalizations.of(context)!.clearErrorLogHint),
               trailing: ElevatedButton(
@@ -62,9 +65,9 @@ class LoggingMenu extends ConsumerWidget {
 
   void _pressSendErrorLog(BuildContext context) {
     if (Logger.instance.logfileHasContent) {
-      showDialog(context: context, builder: (context) => SendErrorDialog());
+      showDialog(context: context, builder: (context) => const SendErrorDialog());
     } else {
-      showDialog(context: context, builder: (context) => NoLogDialog());
+      showDialog(context: context, builder: (context) => const NoLogDialog());
     }
   }
 

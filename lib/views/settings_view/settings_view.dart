@@ -1,14 +1,14 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/logging_menu.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/migrate_legacy_tokens_dialog.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/settings_groups.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/update_firebase_token_dialog.dart';
+import '../../model/tokens/push_token.dart';
+import '../../utils/riverpod_providers.dart';
+import 'settings_view_widgets/logging_menu.dart';
+import 'settings_view_widgets/migrate_legacy_tokens_dialog.dart';
+import 'settings_view_widgets/settings_groups.dart';
+import 'settings_view_widgets/update_firebase_token_dialog.dart';
 
 class SettingsView extends ConsumerWidget {
   static const String routeName = '/settings';
@@ -18,10 +18,10 @@ class SettingsView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
-    final tokens = ref.watch(tokenProvider);
+    final tokens = ref.watch(tokenProvider).tokens;
     final locale = settings.localePreference;
     final useSystemLocale = settings.useSystemLocale;
-    final enablePolling = settings.pollingEnabled;
+    final enablePolling = settings.enablePolling;
     final enrolledPushTokenList = tokens.whereType<PushToken>().where((e) => e.isRolledOut).toList();
     final unsupported = enrolledPushTokenList.where((e) => e.url == null).toList();
     final showPushSettingsGroup = enrolledPushTokenList.isNotEmpty;
@@ -35,7 +35,7 @@ class SettingsView extends ConsumerWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -65,7 +65,7 @@ class SettingsView extends ConsumerWidget {
                 ),
               ],
             ),
-            Divider(),
+            const Divider(),
             SettingsGroup(
               title: AppLocalizations.of(context)!.language,
               children: [
@@ -75,7 +75,7 @@ class SettingsView extends ConsumerWidget {
                     value: useSystemLocale,
                     onChanged: (value) => ref.read(settingsProvider.notifier).setUseSystemLocale(value)),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: DropdownButton<Locale>(
                     disabledHint: Text(
                       '$locale',
@@ -113,7 +113,7 @@ class SettingsView extends ConsumerWidget {
                       onPressed: () => showDialog(
                         context: context,
                         barrierDismissible: false,
-                        builder: (context) => UpdateFirebaseTokenDialog(),
+                        builder: (context) => const UpdateFirebaseTokenDialog(),
                       ),
                     ),
                   ),
@@ -128,11 +128,11 @@ class SettingsView extends ConsumerWidget {
                           // Add clickable icon to inform user of unsupported push tokens (for polling)
                           WidgetSpan(
                             child: Padding(
-                              padding: EdgeInsets.only(left: 10),
+                              padding: const EdgeInsets.only(left: 10),
                               child: unsupported.isNotEmpty && enrolledPushTokenList.isNotEmpty
                                   ? GestureDetector(
                                       onTap: () {}, // () => _showPollingInfo(unsupported),
-                                      child: Icon(
+                                      child: const Icon(
                                         Icons.info_outline,
                                         color: Colors.red,
                                       ),
@@ -152,7 +152,7 @@ class SettingsView extends ConsumerWidget {
                 ],
               ),
             ),
-            Divider(),
+            const Divider(),
             SettingsGroup(
               title: AppLocalizations.of(context)!.migration,
               children: [
@@ -160,12 +160,12 @@ class SettingsView extends ConsumerWidget {
                   title: Text(AppLocalizations.of(context)!.migrateTokens),
                   trailing: ElevatedButton(
                     child: Text(AppLocalizations.of(context)!.migrate),
-                    onPressed: () => showDialog(context: context, barrierDismissible: false, builder: (context) => MigrateLegacyTokensDialog()),
+                    onPressed: () => showDialog(context: context, barrierDismissible: false, builder: (context) => const MigrateLegacyTokensDialog()),
                   ),
                 ),
               ],
             ),
-            Divider(),
+            const Divider(),
             SettingsGroup(title: AppLocalizations.of(context)!.errorLogTitle, children: [
               ListTile(
                 title: Text(AppLocalizations.of(context)!.logMenu),
@@ -175,7 +175,7 @@ class SettingsView extends ConsumerWidget {
                   onPressed: () => showDialog(
                     context: context,
                     barrierDismissible: false,
-                    builder: (context) => LoggingMenu(),
+                    builder: (context) => const LoggingMenu(),
                   ),
                 ),
               ),

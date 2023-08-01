@@ -19,14 +19,18 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
 
+import '../../utils/logger.dart';
 import 'qr_scanner_view_widgets/qr_code_scanner_overlay.dart';
 
 class QRScannerView extends StatelessWidget {
   static const routeName = '/qr_scanner';
 
   final _key = GlobalKey<QrCameraState>();
+
+  QRScannerView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +40,7 @@ class QRScannerView extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
               size: 32,
@@ -48,34 +52,43 @@ class QRScannerView extends StatelessWidget {
       extendBodyBehindAppBar: true,
       body: SizedBox.expand(
         child: Stack(
+          alignment: Alignment.center,
           children: [
             QrCamera(
               fit: BoxFit.cover,
               key: _key,
-              formats: [BarcodeFormats.QR_CODE],
+              formats: const [BarcodeFormats.QR_CODE],
               // Ignore other codes than qr codes
-              onError: (context, _) {
-                Navigator.pop(context, null);
-                _key.currentState!.stop();
+              onError: (context, e) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (e is PlatformException && e.message == 'noPermission') {
+                    Logger.warning('QRScannerView: Camera permission not granted.', error: e, name: 'QRScannerView#build#onError');
+                    const SnackBar snackBar = SnackBar(
+                      content: Text('Please grant camera permission to use the QR scanner.'),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                  Navigator.pop(context, null);
+                  _key.currentState!.stop();
 
-                // Method must return a widget, so return one that does not display anything.
-                return Text('');
+                  // Method must return a widget, so return one that does not display anything.
+                });
+                return const SizedBox();
               },
               // We have nothing to display in these cases, overwrite default
               // behaviour with 'non-visible' content.
-              child: Text(''),
-              notStartedBuilder: (_) => Text(''),
-              offscreenBuilder: (_) => Text(''),
+              child: const SizedBox(),
+              notStartedBuilder: (_) => const SizedBox(),
+              offscreenBuilder: (_) => const SizedBox(),
               qrCodeCallback: (code) {
                 Navigator.pop(context, code);
                 _key.currentState!.stop();
               },
             ),
             Container(
-              decoration: ShapeDecoration(shape: ScannerOverlayShape()),
+              decoration: const ShapeDecoration(shape: ScannerOverlayShape()),
             )
           ],
-          alignment: Alignment.center,
         ),
       ),
     );

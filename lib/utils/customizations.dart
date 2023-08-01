@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 /*
   privacyIDEA Authenticator
 
@@ -19,8 +21,6 @@
 */
 
 import 'package:flutter/material.dart';
-
-const MaterialColor PRIMARY_COLOR = Colors.blue; // Default: Color(0xff03a8f4)
 
 const String applicationName = 'privacyIDEA Authenticator'; // Default: privacyIDEA Authenticator
 

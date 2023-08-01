@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
+
+import '../../../utils/logger.dart';
+import '../../../utils/utils.dart';
 
 class LabeledDropdownButton<T> extends StatefulWidget {
   final String label;
@@ -27,7 +28,7 @@ class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Text(widget.label, style: Theme.of(context).textTheme.bodyMedium),
-        Container(
+        SizedBox(
           width: 100,
           child: DropdownButton<T>(
             value: widget.valueNotifier.value,

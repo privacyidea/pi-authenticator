@@ -1,23 +1,36 @@
-import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token/push_token.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/push_token_widgets/push_token_widget_tile.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_base.dart';
 import 'dart:ui';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/widgets/press_button.dart';
+
+import '../../../../../model/mixins/sortable_mixin.dart';
+import '../../../../../model/tokens/push_token.dart';
+import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../widgets/press_button.dart';
+import '../token_widget.dart';
+import '../token_widget_actions/edit_push_token_action.dart';
+import '../token_widget_base.dart';
+import 'push_token_widget_tile.dart';
 
 class PushTokenWidget extends TokenWidget {
   final PushToken token;
+  final SortableMixin? previousSortable;
+  final bool withDivider;
 
-  PushTokenWidget(this.token, {super.key});
+  const PushTokenWidget(
+    this.token, {
+    this.withDivider = true,
+    super.key,
+    this.previousSortable,
+  });
 
   @override
   TokenWidgetBase build(BuildContext context) {
     return TokenWidgetBase(
       token: token,
       tile: PushTokenWidgetTile(token),
+      dragIcon: Icons.notifications,
+      editAction: EditPushTokenAction(token: token),
       stack: [
         Visibility(
           visible: !token.isRolledOut,
@@ -27,7 +40,7 @@ class PushTokenWidget extends TokenWidget {
               child: ListTile(
                 title: Column(
                   children: <Widget>[
-                    CircularProgressIndicator(),
+                    const CircularProgressIndicator(),
                     Text(AppLocalizations.of(context)!.rollingOut),
                   ],
                 ),
@@ -50,22 +63,51 @@ class PushTokenWidget extends TokenWidget {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        PressButton(
+                        const Flexible(
+                          child: SizedBox(),
+                        ),
+                        Flexible(
+                          flex: 4,
+                          child: PressButton(
                             onPressed: () {
-                              globalRef?.read(pushRequestProvider.notifier).decline(token.pushRequests.pop());
+                              globalRef?.read(pushRequestProvider.notifier).accept(token.pushRequests.pop());
                             },
-                            child: SizedBox(
-                              width: 75,
-                              child: Center(child: Text('Deny')),
-                            )),
-                        PressButton(
-                          onPressed: () {
-                            globalRef?.read(pushRequestProvider.notifier).accept(token.pushRequests.pop());
-                          },
-                          child: SizedBox(
-                            width: 75,
-                            child: Center(child: Text('Approve')),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.accept,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                                const Icon(Icons.check, size: 15),
+                              ],
+                            ),
                           ),
+                        ),
+                        const Flexible(
+                          child: SizedBox(),
+                        ),
+                        Flexible(
+                          flex: 4,
+                          child: PressButton(
+                              onPressed: () {
+                                globalRef?.read(pushRequestProvider.notifier).decline(
+                                      token.pushRequests.pop(),
+                                    );
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.decline,
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                  const Icon(Icons.close, size: 15),
+                                ],
+                              )),
+                        ),
+                        const Flexible(
+                          child: SizedBox(),
                         ),
                       ],
                     )
