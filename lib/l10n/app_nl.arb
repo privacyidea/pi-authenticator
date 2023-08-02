@@ -765,5 +765,15 @@
   "@save": {
     "description": "save",
     "type": "text"
+  },
+  "validFor": "Geldig voor",
+  "@validFor": {
+    "description": "validFor",
+    "type": "text"
+  },
+  "validUntil": "Geldig tot",
+  "@validUntil": {
+    "description": "validUntil",
+    "type": "text"
   }
 }

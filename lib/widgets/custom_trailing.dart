@@ -8,7 +8,7 @@ class CustomTrailing extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.20,
+      width: MediaQuery.of(context).size.width * 0.25,
       height: MediaQuery.of(context).size.width * 0.20,
       child: child,
     );

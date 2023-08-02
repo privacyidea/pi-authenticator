@@ -11,13 +11,16 @@ DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) =>
       period: json['period'] == null
           ? const Duration(hours: 24)
           : Duration(microseconds: json['period'] as int),
+      viewMode: $enumDecodeNullable(
+              _$DayPasswordTokenViewModeEnumMap, json['viewMode']) ??
+          DayPasswordTokenViewMode.VALIDFOR,
       label: json['label'] as String,
       issuer: json['issuer'] as String,
       id: json['id'] as String,
-      type: json['type'] as String,
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,
       secret: json['secret'] as String,
+      type: json['type'] as String?,
       pin: json['pin'] as bool?,
       imageURL: json['imageURL'] as String?,
       sortIndex: json['sortIndex'] as int?,
@@ -41,8 +44,14 @@ Map<String, dynamic> _$DayPasswordTokenToJson(DayPasswordToken instance) =>
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm]!,
       'digits': instance.digits,
       'secret': instance.secret,
+      'viewMode': _$DayPasswordTokenViewModeEnumMap[instance.viewMode]!,
       'period': instance.period.inMicroseconds,
     };
+
+const _$DayPasswordTokenViewModeEnumMap = {
+  DayPasswordTokenViewMode.VALIDFOR: 'VALIDFOR',
+  DayPasswordTokenViewMode.VALIDUNTIL: 'VALIDUNTIL',
+};
 
 const _$AlgorithmsEnumMap = {
   Algorithms.SHA1: 'SHA1',

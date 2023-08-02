@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/app_customizer.dart';
+import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import 'token_action.dart';
@@ -19,8 +20,9 @@ class DefaultEditAction extends TokenAction {
         backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
         icon: Icons.edit,
-        onPressed: (context) {
-          TextEditingController _nameInputController = TextEditingController(text: token.label);
+        onPressed: (context) async {
+          if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) return;
+          TextEditingController nameInputController = TextEditingController(text: token.label);
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -28,7 +30,7 @@ class DefaultEditAction extends TokenAction {
                   title: Text(AppLocalizations.of(context)!.renameToken),
                   content: TextFormField(
                     autofocus: true,
-                    controller: _nameInputController,
+                    controller: nameInputController,
                     onChanged: (value) {},
                     decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
                     validator: (value) {
@@ -50,7 +52,7 @@ class DefaultEditAction extends TokenAction {
                         AppLocalizations.of(context)!.rename,
                       ),
                       onPressed: () {
-                        final newLabel = _nameInputController.text.trim();
+                        final newLabel = nameInputController.text.trim();
                         if (newLabel.isEmpty) return;
                         globalRef?.read(tokenProvider.notifier).updateToken(token.copyWith(label: newLabel));
 

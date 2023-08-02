@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../../../model/tokens/day_password_token.dart';
+import '../../../../../utils/identifiers.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../token_widget_tile.dart';
@@ -69,15 +70,14 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
 
   @override
   Widget build(BuildContext context) {
-    final hoursLeft = (totalSecondsLeft ~/ 3600).toString().padLeft(2, '0');
-    final minutesLeft = ((totalSecondsLeft % 3600) ~/ 60).toString().padLeft(2, '0');
-    final secondsLeft = (totalSecondsLeft % 60).toString().padLeft(2, '0');
-
-    final dateTimeTokenEnd = widget.token.nextOTPTimeStart;
     final currentLocale = ref.watch(settingsProvider).currentLocale;
-    final day = DateFormat.EEEE(currentLocale.languageCode).dateSymbols.SHORTWEEKDAYS[dateTimeTokenEnd.day];
-    final hour = dateTimeTokenEnd.hour.toString().padLeft(2, '0');
-    final minute = dateTimeTokenEnd.minute.toString().padLeft(2, '0');
+    final dateTimeTokenEnd = widget.token.nextOTPTimeStart;
+
+    var yMd = DateFormat.yMMMd(currentLocale.languageCode).add_E().add_jm();
+    var dateString = yMd.format(dateTimeTokenEnd);
+
+    final duration = Duration(seconds: totalSecondsLeft);
+    final durationString = duration.toString().split('.').first;
     return TokenWidgetTile(
       tokenIsLocked: widget.token.isLocked,
       title: Align(
@@ -104,12 +104,12 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
       trailing: GestureDetector(
         behavior: HitTestBehavior.deferToChild,
         onTap: () {
-          if (widget.token.viewMode == DayPasswordTokenViewMode.timeLeft) {
-            globalRef?.read(tokenProvider.notifier).updateToken(widget.token.copyWith(viewMode: DayPasswordTokenViewMode.timePeriod));
+          if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDFOR) {
+            globalRef?.read(tokenProvider.notifier).updateToken(widget.token.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
             return;
           }
-          if (widget.token.viewMode == DayPasswordTokenViewMode.timePeriod) {
-            globalRef?.read(tokenProvider.notifier).updateToken(widget.token.copyWith(viewMode: DayPasswordTokenViewMode.timeLeft));
+          if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDUNTIL) {
+            globalRef?.read(tokenProvider.notifier).updateToken(widget.token.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
             return;
           }
         },
@@ -119,18 +119,45 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
           height: double.infinity,
           child: Center(
             child: switch (widget.token.viewMode) {
-              DayPasswordTokenViewMode.timeLeft => Text(
-                  'Expires in:\n'
-                  '${hoursLeft != '00' ? '$hoursLeft:' : ''}$minutesLeft:$secondsLeft',
-                  style: const TextStyle(fontSize: 15),
-                  textAlign: TextAlign.center,
+              DayPasswordTokenViewMode.VALIDFOR => Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      '${AppLocalizations.of(context)!.validFor}:',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.left,
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          durationString,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-              DayPasswordTokenViewMode.timePeriod => Text(
-                  'Expires at:\n'
-                  '$day $hour:$minute',
-                  style: const TextStyle(fontSize: 15),
-                  textAlign: TextAlign.center,
-                ),
+              DayPasswordTokenViewMode.VALIDUNTIL => Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      '${AppLocalizations.of(context)!.validUntil}:',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.left,
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          dateString,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
             },
           ),
         ),

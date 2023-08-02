@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../../../model/tokens/push_token.dart';
+import '../../../../../utils/lock_auth.dart';
 import 'token_action.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -25,7 +26,10 @@ class EditPushTokenAction extends TokenAction {
         backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
         icon: Icons.edit,
-        onPressed: (context) => _showEditDialog(context, token));
+        onPressed: (context) async {
+          if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) return;
+          _showEditDialog(context, token);
+        });
   }
 }
 
