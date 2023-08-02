@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/default_delete_action.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/default_edit_action.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/default_lock_action.dart';
+import 'token_widget_actions/default_delete_action.dart';
+import 'token_widget_actions/default_edit_action.dart';
+import 'token_widget_actions/default_lock_action.dart';
 
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/riverpod_providers.dart';

@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/token_action.dart';
+import '../../../../../model/tokens/push_token.dart';
+import 'token_action.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../../utils/app_customizer.dart';

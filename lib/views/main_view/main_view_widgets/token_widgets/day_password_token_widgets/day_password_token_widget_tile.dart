@@ -1,13 +1,14 @@
 import 'dart:async';
-import 'dart:io';
 
+import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_tile.dart';
+import '../../../../../model/tokens/day_password_token.dart';
+import '../../../../../utils/lock_auth.dart';
+import '../../../../../utils/riverpod_providers.dart';
+import '../token_widget_tile.dart';
 
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
@@ -53,6 +54,19 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
     }
   }
 
+  void _copyOtpValue() {
+    if (globalRef?.read(disableCopyOtpProvider) ?? false) return;
+
+    globalRef?.read(disableCopyOtpProvider.notifier).state = true;
+    Clipboard.setData(ClipboardData(text: widget.token.otpValue));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue))),
+    );
+    Future.delayed(const Duration(seconds: 5), () {
+      globalRef?.read(disableCopyOtpProvider.notifier).state = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final hoursLeft = (totalSecondsLeft ~/ 3600).toString().padLeft(2, '0');
@@ -66,16 +80,29 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
     final minute = dateTimeTokenEnd.minute.toString().padLeft(2, '0');
     return TokenWidgetTile(
       tokenIsLocked: widget.token.isLocked,
-      title: HideableText(
-        key: Key(widget.token.hashCode.toString()),
-        text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
-        textScaleFactor: 1.9,
-        enabled: widget.token.isLocked,
-        isHiddenNotifier: isHidden,
-        textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
+      title: Align(
+        alignment: Alignment.centerLeft,
+        child: InkWell(
+          onTap: widget.token.isLocked && isHidden.value
+              ? () async {
+                  if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
+                    isHidden.value = false;
+                  }
+                }
+              : _copyOtpValue,
+          child: HideableText(
+            key: Key(widget.token.hashCode.toString()),
+            text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
+            textScaleFactor: 1.9,
+            enabled: widget.token.isLocked,
+            isHiddenNotifier: isHidden,
+            textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
+          ),
+        ),
       ),
       subtitles: [widget.token.label],
       trailing: GestureDetector(
+        behavior: HitTestBehavior.deferToChild,
         onTap: () {
           if (widget.token.viewMode == DayPasswordTokenViewMode.timeLeft) {
             globalRef?.read(tokenProvider.notifier).updateToken(widget.token.copyWith(viewMode: DayPasswordTokenViewMode.timePeriod));
@@ -86,16 +113,20 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
             return;
           }
         },
-        child: SizedBox(
+        child: Container(
+          color: Theme.of(context).scaffoldBackgroundColor,
           width: double.infinity,
           height: double.infinity,
           child: Center(
             child: switch (widget.token.viewMode) {
               DayPasswordTokenViewMode.timeLeft => Text(
+                  'Expires in:\n'
                   '${hoursLeft != '00' ? '$hoursLeft:' : ''}$minutesLeft:$secondsLeft',
                   style: const TextStyle(fontSize: 15),
+                  textAlign: TextAlign.center,
                 ),
               DayPasswordTokenViewMode.timePeriod => Text(
+                  'Expires at:\n'
                   '$day $hour:$minute',
                   style: const TextStyle(fontSize: 15),
                   textAlign: TextAlign.center,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
+import '../../../../../model/tokens/day_password_token.dart';
 
 import '../token_widget.dart';
 import '../token_widget_base.dart';

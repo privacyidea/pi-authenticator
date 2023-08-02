@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 // ignore: library_prefixes
 import 'package:otp/otp.dart' as OTPLibrary;
+import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
 import '../../utils/utils.dart';
@@ -92,6 +93,17 @@ class HOTPToken extends OTPToken {
   String toString() {
     return 'H${super.toString()}counter: $counter}';
   }
+
+  factory HOTPToken.fromUriMap(Map<String, dynamic> uriMap) => HOTPToken(
+        label: uriMap[URI_LABEL],
+        issuer: uriMap[URI_ISSUER],
+        id: const Uuid().v4(),
+        algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+        digits: uriMap[URI_DIGITS],
+        secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
+        counter: uriMap[URI_COUNTER],
+        type: uriMap[URI_TYPE],
+      );
 
   factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json);
 

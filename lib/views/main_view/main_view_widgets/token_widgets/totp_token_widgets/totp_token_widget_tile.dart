@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/day_password_token_widgets/day_password_token_widget_tile.dart';
+import '../day_password_token_widgets/day_password_token_widget_tile.dart';
 
 import '../../../../../model/tokens/totp_token.dart';
 import '../../../../../utils/lock_auth.dart';
@@ -27,15 +27,15 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
 
   void _copyOtpValue() {
-    if (globalRef?.read(disableCopyProvider) ?? false) return;
+    if (globalRef?.read(disableCopyOtpProvider) ?? false) return;
 
-    globalRef?.read(disableCopyProvider.notifier).state = true;
+    globalRef?.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue))),
     );
     Future.delayed(const Duration(seconds: 5), () {
-      globalRef?.read(disableCopyProvider.notifier).state = false;
+      globalRef?.read(disableCopyOtpProvider.notifier).state = false;
     });
   }
 
@@ -74,13 +74,25 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   Widget build(BuildContext context) {
     return TokenWidgetTile(
       tokenIsLocked: widget.token.isLocked,
-      title: HideableText(
-        key: Key(widget.token.hashCode.toString()),
-        text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
-        textScaleFactor: 1.9,
-        enabled: widget.token.isLocked,
-        isHiddenNotifier: isHidden,
-        textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
+      title: Align(
+        alignment: Alignment.centerLeft,
+        child: InkWell(
+          onTap: widget.token.isLocked && isHidden.value
+              ? () async {
+                  if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
+                    isHidden.value = false;
+                  }
+                }
+              : _copyOtpValue,
+          child: HideableText(
+            key: Key(widget.token.hashCode.toString()),
+            text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
+            textScaleFactor: 1.9,
+            enabled: widget.token.isLocked,
+            isHiddenNotifier: isHidden,
+            textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
+          ),
+        ),
       ),
       subtitles: [widget.token.label, widget.token.issuer],
       trailing: HideableWidget(
@@ -102,18 +114,6 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
           },
         ),
       ),
-      onTap: widget.token.isLocked && isHidden.value
-          ? () async {
-              if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
-                isHidden.value = false;
-              }
-            }
-          : () {
-              Clipboard.setData(ClipboardData(text: widget.token.otpValue));
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue)),
-              ));
-            },
     );
   }
 }

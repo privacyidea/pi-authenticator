@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
 
+import '../../../../model/tokens/day_password_token.dart';
 import '../../../../model/tokens/hotp_token.dart';
 import '../../../../model/tokens/push_token.dart';
 import '../../../../model/tokens/token.dart';

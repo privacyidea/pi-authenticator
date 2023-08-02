@@ -82,19 +82,13 @@ class SettingsView extends ConsumerWidget {
                     ),
                     isExpanded: true,
                     value: locale,
-                    // Initial value and current value
-                    items: AppLocalizations.supportedLocales.map<DropdownMenuItem<Locale>>((Locale value) {
+                    items: AppLocalizations.supportedLocales.map<DropdownMenuItem<Locale>>((Locale itemLocale) {
                       return DropdownMenuItem<Locale>(
-                        value: value,
-                        child: Text(
-                          '$value',
-                          style: useSystemLocale
-                              ? Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).disabledColor)
-                              : Theme.of(context).textTheme.titleMedium,
-                        ),
+                        value: itemLocale,
+                        child: Text('$itemLocale'),
                       );
                     }).toList(),
-                    onChanged: (value) => ref.read(settingsProvider.notifier).setLocale(value!),
+                    onChanged: useSystemLocale ? null : (value) => ref.read(settingsProvider.notifier).setLocale(value!),
                   ),
                 ),
               ],

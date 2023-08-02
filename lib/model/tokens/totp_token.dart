@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 // ignore: library_prefixes
 import 'package:otp/otp.dart' as OTPLibrary;
+import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
 import '../../utils/utils.dart';
@@ -94,6 +95,20 @@ class TOTPToken extends OTPToken {
   @override
   String toString() {
     return 'T${super.toString()}period: $period';
+  }
+
+  factory TOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
+    return TOTPToken(
+      label: uriMap[URI_LABEL],
+      issuer: uriMap[URI_ISSUER],
+      id: const Uuid().v4(),
+      algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+      digits: uriMap[URI_DIGITS] ?? 6,
+      imageURL: uriMap[URI_IMAGE],
+      secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
+      period: uriMap[URI_PERIOD],
+      pin: uriMap[URI_PIN],
+    );
   }
 
   factory TOTPToken.fromJson(Map<String, dynamic> json) => _$TOTPTokenFromJson(json);

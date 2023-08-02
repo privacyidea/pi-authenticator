@@ -1,5 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../model/mixins/sortable_mixin.dart';
 import '../model/platform_info/platform_info.dart';
 import '../model/platform_info/platform_info_imp/dummy_platform_info.dart';
@@ -92,5 +93,3 @@ final tokenCategoryProvider =
     StateNotifierProvider<TokenCategoryNotifier, TokenCategoryState>((ref) => TokenCategoryNotifier(repositoy: PreferenceTokenCategoryRepotisory()));
 
 final draggingSortableProvider = StateProvider<SortableMixin?>((ref) => null);
-
-final disableCopyProvider = StateProvider<bool>((ref) => false);

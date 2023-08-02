@@ -35,7 +35,7 @@ class _TokenCategoryWidgetState extends ConsumerState<TokenCategoryWidget> with 
     super.initState();
     animationController = AnimationController(
       duration: const Duration(milliseconds: 250),
-      value: 1.0,
+      value: widget.category.isExpanded ? 0 : 1.0,
       vsync: this,
     );
     expandableController = ExpandableController(initialExpanded: widget.category.isExpanded);
