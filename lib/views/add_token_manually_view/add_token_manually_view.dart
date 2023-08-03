@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../model/tokens/day_password_token.dart';
 import '../../model/tokens/hotp_token.dart';
 import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/totp_token.dart';
@@ -15,7 +16,8 @@ import 'add_token_manually_view_widgets/labeled_dropdown_button.dart';
 class AddTokenManuallyView extends ConsumerStatefulWidget {
   static const routeName = '/addTokenManually';
   static final List<int> allowedDigits = [6, 8];
-  static final List<int> allowedPeriods = [30, 60];
+  static final List<int> allowedPeriodsTOTP = [30, 60];
+  static final List<int> allowedPeriodsDayPassword = [24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
   const AddTokenManuallyView({super.key});
 
@@ -28,7 +30,8 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
   final ValueNotifier<Encodings> _encodingNotifier = ValueNotifier(Encodings.none);
   final ValueNotifier<TokenTypes> _typeNotifier = ValueNotifier(TokenTypes.HOTP);
   final ValueNotifier<int> _digitsNotifier = ValueNotifier(AddTokenManuallyView.allowedDigits[0]);
-  final ValueNotifier<int> _periodNotifier = ValueNotifier(AddTokenManuallyView.allowedPeriods[0]);
+  final ValueNotifier<int> _periodNotifier = ValueNotifier(AddTokenManuallyView.allowedPeriodsTOTP[0]);
+  final ValueNotifier<int> _periodDayPasswordNotifier = ValueNotifier(AddTokenManuallyView.allowedPeriodsDayPassword[0]);
   final TextEditingController _labelController = TextEditingController();
   final TextEditingController _secretController = TextEditingController();
 
@@ -121,9 +124,19 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
                 visible: _typeNotifier.value == TokenTypes.TOTP,
                 child: LabeledDropdownButton(
                   label: AppLocalizations.of(context)!.period,
-                  values: AddTokenManuallyView.allowedPeriods,
+                  values: AddTokenManuallyView.allowedPeriodsTOTP,
                   valueNotifier: _periodNotifier,
                   postFix: 's' /*seconds*/,
+                ),
+              ),
+              Visibility(
+                // the period is only used by DayPassword tokens
+                visible: _typeNotifier.value == TokenTypes.DAYPASSWORD,
+                child: LabeledDropdownButton(
+                  label: AppLocalizations.of(context)!.period,
+                  values: AddTokenManuallyView.allowedPeriodsDayPassword,
+                  valueNotifier: _periodDayPasswordNotifier,
+                  postFix: 'h' /*hours*/,
                 ),
               ),
               SizedBox(
@@ -155,7 +168,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
     return switch (_typeNotifier.value) {
       TokenTypes.HOTP => _buildHOTPToken(),
       TokenTypes.TOTP => _buildTOTPToken(),
-      // TokenTypes.dayPassword => _buildDayPasswordToken(), // TODO: Uncomment when dayPassword is implemented
+      TokenTypes.DAYPASSWORD => _buildDayPasswordToken(),
       _ => null,
     };
   }
@@ -179,6 +192,16 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
         digits: _digitsNotifier.value,
         secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),
         period: _periodNotifier.value,
+      );
+
+  DayPasswordToken _buildDayPasswordToken() => DayPasswordToken(
+        label: _labelController.text,
+        issuer: '',
+        id: const Uuid().v4(),
+        algorithm: _algorithmNotifier.value,
+        digits: _digitsNotifier.value,
+        secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),
+        period: Duration(hours: _periodDayPasswordNotifier.value),
       );
 
   /// Validates the inputs of the label and secret.

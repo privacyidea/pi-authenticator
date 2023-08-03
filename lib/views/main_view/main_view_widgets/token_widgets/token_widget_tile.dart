@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../widgets/custom_trailing.dart';
 
+final disableCopyOtpProvider = StateProvider<bool>((ref) => false);
+
 class TokenWidgetTile extends ConsumerWidget {
   final Widget? title;
   final List<String> subtitles;
@@ -34,7 +36,7 @@ class TokenWidgetTile extends ConsumerWidget {
             ListTile(
               horizontalTitleGap: 8.0,
               leading: leading,
-              onTap: () => onTap?.call(),
+              onTap: onTap,
               title: title,
               style: ListTileStyle.list,
               subtitle: Column(

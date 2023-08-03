@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../utils/custom_int_buffer.dart';
 import '../../utils/identifiers.dart';
@@ -175,6 +176,19 @@ class PushToken extends Token {
         'tokenImage: $tokenImage, '
         'knownPushRequests: $knownPushRequests}';
   }
+
+  factory PushToken.fromUriMap(Map<String, dynamic> uriMap) => PushToken(
+        serial: uriMap[URI_SERIAL],
+        label: uriMap[URI_LABEL],
+        issuer: uriMap[URI_ISSUER],
+        id: const Uuid().v4(),
+        sslVerify: uriMap[URI_SSL_VERIFY],
+        expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
+        enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
+        url: uriMap[URI_ROLLOUT_URL],
+        pin: uriMap[URI_PIN],
+        tokenImage: uriMap[URI_IMAGE],
+      );
 
   factory PushToken.fromJson(Map<String, dynamic> json) => _$PushTokenFromJson(json);
 

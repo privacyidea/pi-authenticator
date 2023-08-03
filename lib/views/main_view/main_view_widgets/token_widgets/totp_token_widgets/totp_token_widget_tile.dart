@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../day_password_token_widgets/day_password_token_widget_tile.dart';
 
 import '../../../../../model/tokens/totp_token.dart';
 import '../../../../../utils/lock_auth.dart';
@@ -21,82 +22,77 @@ class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
 }
 
 class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with SingleTickerProviderStateMixin {
-  String otpValue = '';
+  int secondsLeft = 0;
   late AnimationController _animation;
   final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
-  @override
-  dispose() {
-    _animation.dispose(); // you need this
-    super.dispose();
-  }
-
-  int? calculateRemainingTotpDuration() {
-    return widget.token.period - (DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000) % widget.token.period;
-  }
-
-  double calculateRemainingTotpDurationPercent() {
-    return (DateTime.now().toUtc().millisecondsSinceEpoch / 1000) % widget.token.period / widget.token.period;
-  }
 
   void _copyOtpValue() {
-    if (globalRef?.read(disableCopyProvider) ?? false) return;
+    if (globalRef?.read(disableCopyOtpProvider) ?? false) return;
 
-    globalRef?.read(disableCopyProvider.notifier).state = true;
+    globalRef?.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue))),
     );
     Future.delayed(const Duration(seconds: 5), () {
-      globalRef?.read(disableCopyProvider.notifier).state = false;
+      globalRef?.read(disableCopyOtpProvider.notifier).state = false;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    otpValue = widget.token.otpValue;
-
     _animation = AnimationController(
-      duration: Duration(seconds: widget.token.period),
-      value: widget.token.currentProgress,
-      // Animate the progress for the duration of the tokens period.
       vsync: this,
-    )
-      ..addStatusListener((status) {
-        // Add listener to restart the animation after the period, also updates the otp value.
-        if (status == AnimationStatus.completed) {
-          setState(() {
-            otpValue = widget.token.otpValue;
-          });
-          _animation.forward(from: widget.token.currentProgress);
-        }
-      })
-      ..forward(from: widget.token.currentProgress); // Start the animation.
+      duration: Duration(seconds: widget.token.period),
+    );
+    _countDown();
+    GlobalCountdownTimer.addListener(_countDown);
+  }
 
-    isHidden.addListener(() {
-      if (mounted) {
-        setState(() {
-          if (isHidden.value == false) {
-            Future.delayed(const Duration(seconds: 30), () {
-              isHidden.value = true;
-            });
-          }
-        });
-      }
-    });
+  @override
+  dispose() {
+    _animation.dispose();
+    GlobalCountdownTimer.removeListener(_countDown);
+    super.dispose();
+  }
+
+  void _countDown() {
+    if (mounted == false) {
+      GlobalCountdownTimer.removeListener(_countDown);
+      return;
+    }
+    if (secondsLeft > 1) {
+      setState(() => secondsLeft--);
+      return;
+    }
+    setState(() => secondsLeft = widget.token.secondsUntilNextOTP + 1);
+    _animation.forward(from: 1 - secondsLeft / widget.token.period);
   }
 
   @override
   Widget build(BuildContext context) {
     return TokenWidgetTile(
       tokenIsLocked: widget.token.isLocked,
-      title: HideableText(
-        key: Key(widget.token.hashCode.toString()),
-        text: insertCharAt(otpValue, ' ', widget.token.digits ~/ 2),
-        textScaleFactor: 1.9,
-        enabled: widget.token.isLocked,
-        isHiddenNotifier: isHidden,
-        textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
+      title: Align(
+        alignment: Alignment.centerLeft,
+        child: InkWell(
+          onTap: widget.token.isLocked && isHidden.value
+              ? () async {
+                  if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
+                    isHidden.value = false;
+                  }
+                }
+              : _copyOtpValue,
+          child: HideableText(
+            key: Key(widget.token.hashCode.toString()),
+            text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
+            textScaleFactor: 1.9,
+            enabled: widget.token.isLocked,
+            isHiddenNotifier: isHidden,
+            textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
+          ),
+        ),
       ),
       subtitles: [widget.token.label, widget.token.issuer],
       trailing: HideableWidget(
@@ -107,7 +103,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
           builder: (context, child) {
             return Stack(
               children: [
-                Center(child: Text('${calculateRemainingTotpDuration()}')),
+                Center(child: Text('$secondsLeft')),
                 Center(
                   child: CircularProgressIndicator(
                     value: _animation.value,
@@ -118,13 +114,6 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
           },
         ),
       ),
-      onTap: widget.token.isLocked && isHidden.value
-          ? () async {
-              if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
-                isHidden.value = false;
-              }
-            }
-          : _copyOtpValue,
     );
   }
 }

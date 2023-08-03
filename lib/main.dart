@@ -49,7 +49,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     globalRef = ref;
     final state = ref.watch(settingsProvider);
-    final locale = state.localePreference;
+    final locale = state.currentLocale;
     return MaterialApp(
       debugShowCheckedModeBanner: true,
       navigatorKey: Logger.navigatorKey,
@@ -96,17 +96,28 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  var _appIconIsVisible = false;
+  final _splashScreenDuration = const Duration(milliseconds: 400);
+  final _splashScreenDelay = const Duration(milliseconds: 250);
+
   @override
   void initState() {
     super.initState();
 
+    Future.delayed(_splashScreenDelay, () {
+      if (mounted) {
+        setState(() {
+          _appIconIsVisible = true;
+        });
+      }
+    });
     _init();
   }
 
   Future<void> _init() async {
     ref.read(platformInfoProvider.notifier).state = await PackageInfoPlusPlatformInfo.loadInfos();
-    await Future.delayed(const Duration(microseconds: 0));
+    await Future.delayed(_splashScreenDuration + _splashScreenDelay * 2);
     final isFirstRun = ref.read(settingsProvider).isFirstRun;
     final ConsumerStatefulWidget nextView;
     if (isFirstRun) {
@@ -121,7 +132,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
       context,
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => nextView,
-        transitionDuration: const Duration(seconds: 0),
+        transitionDuration: _splashScreenDuration * 2,
         transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
       ),
     );
@@ -129,6 +140,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: SizedBox());
+    return Scaffold(
+      body: Center(
+        child: AnimatedOpacity(
+          opacity: _appIconIsVisible ? 1.0 : 0.0,
+          duration: _splashScreenDuration,
+          child: Image.asset('res/logo/app_logo_light.png'),
+        ),
+      ),
+    );
   }
 }

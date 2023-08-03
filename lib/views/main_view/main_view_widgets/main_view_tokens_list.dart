@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
+import '../../../model/token_category.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/push_provider.dart';
@@ -40,7 +41,6 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     final tokenStateWithNoCategory = tokenState.tokensWithoutCategory();
 
     List<SortableMixin> sortables = [...tokenCategorys, ...tokenStateWithNoCategory];
-    sortables.sort((a, b) => a.compareTo(b));
 
     return DeactivateableRefreshIndicator(
       allowToRefresh: allowToRefresh,
@@ -71,17 +71,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
             slivers: [
               SliverList(
                 delegate: SliverChildListDelegate(
-                  [
-                    for (var i = 0; i < sortables.length; i++) ...[
-                      if (draggingSortable != sortables[i] && (i != 0 || draggingSortable != null))
-                        DragTargetDivider(dependingCategory: null, nextSortable: sortables[i]),
-                      SortableWidgetBuilder.fromSortable(sortables[i]),
-                    ],
-                    if (sortables.isNotEmpty && draggingSortable != null)
-                      const DragTargetDivider(dependingCategory: null, nextSortable: null, isLastDivider: true),
-                    if (sortables.isEmpty) const NoTokenScreen(),
-                    const SizedBox(height: 100),
-                  ],
+                  [..._buildSortableWidgets(sortables, draggingSortable)],
                 ),
               ),
             ],
@@ -89,5 +79,33 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
         ),
       ),
     );
+  }
+
+  List<Widget> _buildSortableWidgets(List<SortableMixin> sortables, SortableMixin? draggingSortable) {
+    List<Widget> widgets = [];
+    if (sortables.isEmpty) {
+      widgets.add(const NoTokenScreen());
+      return widgets;
+    }
+    sortables.sort((a, b) => a.compareTo(b));
+    for (var i = 0; i < sortables.length; i++) {
+      final isFirst = i == 0;
+      final isDraggingTheCurrent = draggingSortable == sortables[i];
+      final previousWasExpandedCategory = i > 0 && sortables[i - 1] is TokenCategory && (sortables[i - 1] as TokenCategory).isExpanded;
+      // 1. Add a divider if the current sortable is not the one which is dragged
+      // 2. Dont add a divider if the current sortable is the first
+      // 3. Dont add a divider if the previous sortable was an expanded category
+      // 4. Ignore 2. and 3. if there is a sortable that is dragged
+      //           1                     2                     3                         4
+      if (!isDraggingTheCurrent && ((!isFirst && !previousWasExpandedCategory) || draggingSortable != null)) {
+        widgets.add(DragTargetDivider(dependingCategory: null, nextSortable: sortables[i]));
+      }
+      widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
+    }
+    if (draggingSortable != null) {
+      widgets.add(const DragTargetDivider(dependingCategory: null, nextSortable: null, isLastDivider: true));
+    }
+    widgets.add(const SizedBox(height: 100));
+    return widgets;
   }
 }

@@ -191,7 +191,7 @@ Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
   Uri uri = Uri.parse(uriAsString);
   Logger.info(
     'Barcode is valid Uri:',
-    name: 'utils.dart#parseQRCodeToMap',
+    name: 'parsing_utils.dart#parseQRCodeToMap',
     error: uri,
   );
 
@@ -200,13 +200,15 @@ Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
   if (uri.scheme != 'otpauth') {
     throw ArgumentError.value(
       uri,
-      'uri',
+      'parsing_utils.dart#parseQRCodeToMap',
       'The uri is not a valid otpauth uri but a(n) [${uri.scheme}] uri instead.',
     );
   }
 
   String type = uri.host;
-  if (equalsIgnoreCase(type, enumAsString(TokenTypes.HOTP)) || equalsIgnoreCase(type, enumAsString(TokenTypes.TOTP))) {
+  if (equalsIgnoreCase(type, enumAsString(TokenTypes.HOTP)) ||
+      equalsIgnoreCase(type, enumAsString(TokenTypes.TOTP)) ||
+      equalsIgnoreCase(type, enumAsString(TokenTypes.DAYPASSWORD))) {
     return parseOtpAuth(uri);
   } else if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
     return parsePiAuth(uri);
@@ -214,7 +216,7 @@ Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
 
   throw ArgumentError.value(
     uri,
-    'uri',
+    'parsing_utils.dart#parseQRCodeToMap',
     'The token type [$type] is not supported.',
   );
 }
@@ -263,9 +265,9 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
     uriMap[URI_IMAGE] = uri.queryParameters['image'];
   }
 
-  List labelIssuerList = _parseLabelAndIssuer(uri);
-  uriMap[URI_LABEL] = labelIssuerList[0];
-  uriMap[URI_ISSUER] ??= labelIssuerList[1];
+  final (label, issuer) = _parseLabelAndIssuer(uri);
+  uriMap[URI_LABEL] = label;
+  uriMap[URI_ISSUER] = issuer;
 
   uriMap[URI_SERIAL] = uri.queryParameters['serial'];
   ArgumentError.checkNotNull(uriMap[URI_SERIAL], 'serial');
@@ -314,9 +316,9 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
     Logger.info('  $key | $value', name: 'parsing_utils.dart#parseOtpAuth');
   });
 
-  List labelIssuerList = _parseLabelAndIssuer(uri);
-  uriMap[URI_LABEL] = labelIssuerList[0];
-  uriMap[URI_ISSUER] ??= labelIssuerList[1];
+  final (label, issuer) = _parseLabelAndIssuer(uri);
+  uriMap[URI_LABEL] = label;
+  uriMap[URI_ISSUER] = issuer;
 
   // parse pin from response 'True'
   if (uri.queryParameters['pin'] == 'True') {
@@ -401,7 +403,7 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
     }
   }
 
-  if (uriMap[URI_TYPE] == 'totp') {
+  if (uriMap[URI_TYPE] == 'totp' || uriMap[URI_TYPE] == 'daypassword') {
     // Parse period.
     String periodAsString = uri.queryParameters['period'] ?? '30';
 
@@ -452,7 +454,7 @@ Map<String, dynamic> parseOtpAuth(Uri uri) {
 }
 
 /// Parse the label and the issuer (if it exists) from the url.
-List _parseLabelAndIssuer(Uri uri) {
+(String, String) _parseLabelAndIssuer(Uri uri) {
   String label = '';
   String issuer = '';
   String param = uri.path.substring(1);
@@ -471,7 +473,7 @@ List _parseLabelAndIssuer(Uri uri) {
     label = param;
   }
 
-  return [label, issuer];
+  return (label, issuer);
 }
 
 String _parseIssuer(Uri uri) {

@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 // ignore: library_prefixes
 import 'package:otp/otp.dart' as OTPLibrary;
+import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
 import '../../utils/utils.dart';
@@ -45,10 +46,10 @@ class TOTPToken extends OTPToken {
           label: label,
           issuer: issuer,
           id: id,
-          type: type ?? enumAsString(TokenTypes.TOTP),
           algorithm: algorithm,
           digits: digits,
           secret: secret,
+          type: type ?? enumAsString(TokenTypes.TOTP),
           pin: pin,
           imageURL: imageURL,
           sortIndex: sortIndex,
@@ -96,11 +97,30 @@ class TOTPToken extends OTPToken {
     return 'T${super.toString()}period: $period';
   }
 
+  factory TOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
+    return TOTPToken(
+      label: uriMap[URI_LABEL],
+      issuer: uriMap[URI_ISSUER],
+      id: const Uuid().v4(),
+      algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+      digits: uriMap[URI_DIGITS] ?? 6,
+      imageURL: uriMap[URI_IMAGE],
+      secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
+      period: uriMap[URI_PERIOD],
+      pin: uriMap[URI_PIN],
+    );
+  }
+
   factory TOTPToken.fromJson(Map<String, dynamic> json) => _$TOTPTokenFromJson(json);
 
   double get currentProgress {
-    int unixTime = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
-    return (unixTime % (period)) * (1 / period);
+    final secondsSinceEpoch = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
+    return (secondsSinceEpoch % (period)) * (1 / period);
+  }
+
+  int get secondsUntilNextOTP {
+    final secondsSinceEpoch = (DateTime.now().toUtc().millisecondsSinceEpoch / 1000).round();
+    return period - (secondsSinceEpoch % (period));
   }
 
   Map<String, dynamic> toJson() => _$TOTPTokenToJson(this);

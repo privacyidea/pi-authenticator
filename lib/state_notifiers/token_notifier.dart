@@ -11,14 +11,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:uuid/uuid.dart';
 
 import '../model/push_request.dart';
 import '../model/states/token_state.dart';
 import '../model/tokens/hotp_token.dart';
 import '../model/tokens/push_token.dart';
 import '../model/tokens/token.dart';
-import '../model/tokens/totp_token.dart';
 import '../utils/crypto_utils.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
@@ -116,18 +114,23 @@ class TokenNotifier extends StateNotifier<TokenState> {
     );
 
     try {
-      Map<String, dynamic> qrParameterMap = parseQRCodeToMap(otpAuth);
+      Map<String, dynamic> uriMap = parseQRCodeToMap(otpAuth);
 
-      Token? newToken = await _buildTokenFromMap(uriMap: qrParameterMap, uri: Uri.parse(otpAuth), context: context);
-
-      if (newToken == null) {
-        Logger.warning(
-          'Could not build token from qrParameterMap',
-          name: 'token_notifier.dart#addTokenFromQRCode',
-          error: qrParameterMap,
-        );
-        return;
+      if (is2StepURI(Uri.parse(otpAuth))) {
+        // Calculate the whole secret.
+        uriMap[URI_SECRET] = (await showDialog<Uint8List>(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => TwoStepDialog(
+            iterations: uriMap[URI_ITERATIONS],
+            keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
+            saltLength: uriMap[URI_SALT_LENGTH],
+            password: uriMap[URI_SECRET],
+          ),
+        ))!;
       }
+
+      var newToken = Token.fromUriMap(uriMap);
 
       if (newToken.pin != null && newToken.pin != false) {
         Logger.info(
@@ -215,7 +218,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   void removePushRequest(PushRequest pushRequest) {
-    Logger.warning('Removing push request ${pushRequest.id}');
+    Logger.info('Removing push request ${pushRequest.id}');
     PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pushRequest.serial);
 
     if (token == null) {
@@ -225,85 +228,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
     token = token.withoutPushRequest(pushRequest);
     updateToken(token);
     Logger.info('Removed push request ${pushRequest.id} to token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
-  }
-
-  /// Builds and returns a token from a given map, that contains all necessary fields.
-  Future<Token?> _buildTokenFromMap({required Map<String, dynamic> uriMap, required Uri uri, required BuildContext context}) async {
-    String uuid = const Uuid().v4();
-    String type = uriMap[URI_TYPE];
-
-    // Push token do not need any of the other parameters.
-    if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
-      Uri? rolloutURL = uriMap[URI_ROLLOUT_URL];
-      if (rolloutURL == null) {
-        showMessage(message: "QR code did not contain rollout URL!", duration: const Duration(seconds: 3), context: context);
-        return null;
-      }
-
-      return PushToken(
-          serial: uriMap[URI_SERIAL],
-          label: uriMap[URI_LABEL],
-          issuer: uriMap[URI_ISSUER],
-          id: uuid,
-          sslVerify: uriMap[URI_SSL_VERIFY],
-          expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
-          enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-          url: rolloutURL,
-          pin: uriMap[URI_PIN],
-          tokenImage: uriMap[URI_IMAGE]);
-    }
-
-    String label = uriMap[URI_LABEL];
-    String algorithm = uriMap[URI_ALGORITHM];
-    int digits = uriMap[URI_DIGITS];
-    Uint8List secret = uriMap[URI_SECRET];
-    String issuer = uriMap[URI_ISSUER];
-    bool? pin = uriMap[URI_PIN];
-    String? imageURL = uriMap[URI_IMAGE];
-
-    if (is2StepURI(uri)) {
-      // Calculate the whole secret.
-      secret = (await showDialog<Uint8List>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => TwoStepDialog(
-          iterations: uriMap[URI_ITERATIONS],
-          keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
-          saltLength: uriMap[URI_SALT_LENGTH],
-          password: secret,
-        ),
-      ))!;
-    }
-
-    // uri.host -> totp or hotp
-    if (type == 'hotp') {
-      return HOTPToken(
-          label: label,
-          issuer: issuer,
-          id: uuid,
-          algorithm: mapStringToAlgorithm(algorithm),
-          digits: digits,
-          secret: encodeSecretAs(secret, Encodings.base32),
-          counter: uriMap[URI_COUNTER],
-          pin: pin);
-    } else if (type == 'totp') {
-      return TOTPToken(
-          label: label,
-          issuer: issuer,
-          id: uuid,
-          algorithm: mapStringToAlgorithm(algorithm),
-          digits: digits,
-          imageURL: imageURL,
-          secret: encodeSecretAs(secret, Encodings.base32),
-          period: uriMap[URI_PERIOD],
-          pin: pin);
-    } else {
-      throw ArgumentError.value(
-          uri,
-          'uri',
-          'Building the token type '
-              '[$type] is not a supported right now.');
-    }
   }
 
   void _rollOutToken(PushToken token, BuildContext context) async {
@@ -319,13 +243,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
         name: 'token_widgets.dart#_rollOutToken',
         error: 'Token: $token, key: ${keyPair.privateKey}',
       );
-      Logger.warning('Setting private key for token.$token', name: 'token_widgets.dart#_rollOutToken', error: keyPair.privateKey);
       token = token.withPrivateTokenKey(keyPair.privateKey);
-      Logger.warning('Setting public key for token.$token', name: 'token_widgets.dart#_rollOutToken', error: keyPair.publicKey);
       token = token.withPublicTokenKey(keyPair.publicKey);
-      Logger.warning('Set public and private key for token.$token', name: 'token_widgets.dart#_rollOutToken');
+      Logger.info('Set public and private key for token.$token', name: 'token_widgets.dart#_rollOutToken');
       updateToken(token);
-      Logger.warning('Updated token.$token', name: 'token_widgets.dart#_rollOutToken', error: keyPair.publicKey);
+      Logger.info('Updated token.$token', name: 'token_widgets.dart#_rollOutToken', error: keyPair.publicKey);
 
       checkNotificationPermission();
     }

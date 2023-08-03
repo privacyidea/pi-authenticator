@@ -54,7 +54,6 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
   @override
   void initState() {
     super.initState();
-
     _do2Step();
   }
 
@@ -103,7 +102,6 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     // 3. Show phone part.
     String phoneChecksum = await generatePhoneChecksum(phonePart: salt);
     String show = splitPeriodically(phoneChecksum, 4);
-
     // Update UI.
     setState(() {
       _title = AppLocalizations.of(context)!.phonePart;

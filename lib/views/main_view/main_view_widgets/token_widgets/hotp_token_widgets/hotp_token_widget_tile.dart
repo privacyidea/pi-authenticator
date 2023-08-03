@@ -21,40 +21,40 @@ class HOTPTokenWidgetTile extends ConsumerStatefulWidget {
 }
 
 class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
-  bool buttonsAreDisabled = false;
+  bool disableTrailingButton = false;
   final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
 
   void _updateOtpValue() {
     setState(() {
       globalRef?.read(tokenProvider.notifier).incrementCounter(widget.token);
-      buttonsAreDisabled = true;
+      disableTrailingButton = true;
     });
     _disableButtons();
   }
 
   void _disableButtons() {
     setState(() {
-      buttonsAreDisabled = true;
+      disableTrailingButton = true;
     });
     Future.delayed(const Duration(seconds: 1), () {
       if (mounted) {
         setState(() {
-          buttonsAreDisabled = false;
+          disableTrailingButton = false;
         });
       }
     });
   }
 
   void _copyOtpValue() {
-    if (globalRef?.read(disableCopyProvider) ?? false) return;
+    if (globalRef?.read(disableCopyOtpProvider) ?? false) return;
 
-    globalRef?.read(disableCopyProvider.notifier).state = true;
+    globalRef?.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue))),
     );
     Future.delayed(const Duration(seconds: 5), () {
-      globalRef?.read(disableCopyProvider.notifier).state = false;
+      globalRef?.read(disableCopyOtpProvider.notifier).state = false;
     });
   }
 
@@ -78,12 +78,24 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
   Widget build(BuildContext context) {
     return TokenWidgetTile(
       tokenIsLocked: widget.token.isLocked,
-      title: HideableText(
-        textScaleFactor: 1.9,
-        isHiddenNotifier: isHidden,
-        text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
-        enabled: widget.token.isLocked,
-        textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
+      title: Align(
+        alignment: Alignment.centerLeft,
+        child: InkWell(
+          onTap: widget.token.isLocked && isHidden.value
+              ? () async {
+                  if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
+                    isHidden.value = false;
+                  }
+                }
+              : _copyOtpValue,
+          child: HideableText(
+            textScaleFactor: 1.9,
+            isHiddenNotifier: isHidden,
+            text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
+            enabled: widget.token.isLocked,
+            textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
+          ),
+        ),
       ),
       subtitles: [widget.token.label],
       trailing: HideableWidget(
@@ -91,21 +103,12 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
         isHiddenNotifier: isHidden,
         child: IconButton(
           iconSize: 32,
-          onPressed: buttonsAreDisabled ? null : () => _updateOtpValue(),
+          onPressed: disableTrailingButton ? null : () => _updateOtpValue(),
           icon: const Icon(
             Icons.replay,
           ),
         ),
       ),
-      onTap: widget.token.isLocked && isHidden.value
-          ? () async {
-              if (buttonsAreDisabled) return;
-              _disableButtons();
-              if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
-                isHidden.value = false;
-              }
-            }
-          : _copyOtpValue,
     );
   }
 }

@@ -765,5 +765,15 @@
   "@save": {
     "description": "save",
     "type": "text"
+  },
+  "validFor": "Platné pro",
+  "@validFor": {
+    "description": "validFor",
+    "type": "text"
+  },
+  "validUntil": "Platné do",
+  "@validUntil": {
+    "description": "validUntil",
+    "type": "text"
   }
 }

@@ -24,6 +24,9 @@ class SettingsState {
   final bool enablePolling;
   final Set<String> crashReportRecipients;
   final Locale localePreference;
+  Locale get currentLocale => useSystemLocale
+      ? AppLocalizations.supportedLocales.firstWhere((locale) => locale.languageCode == Platform.localeName.substring(0, 2), orElse: () => const Locale('en'))
+      : localePreference;
   final bool useSystemLocale;
   final bool verboseLogging;
 

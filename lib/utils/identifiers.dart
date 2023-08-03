@@ -39,6 +39,12 @@ enum TokenTypes {
   HOTP,
   TOTP,
   PIPUSH,
+  DAYPASSWORD,
+}
+
+enum DayPasswordTokenViewMode {
+  VALIDFOR,
+  VALIDUNTIL,
 }
 
 // qr codes:

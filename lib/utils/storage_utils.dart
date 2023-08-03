@@ -25,13 +25,8 @@ import 'dart:convert';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
-import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:uuid/uuid.dart';
 
 import '../model/tokens/push_token.dart';
 
@@ -141,80 +136,6 @@ class StorageUtil {
   static Future<void> setNewFirebaseToken(String str) async => _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
 
   static Future<String?> getNewFirebaseToken() async => _storage.read(key: _NEW_APP_TOKEN_KEY);
-
-  // ###########################################################################
-  // LEGACY
-  // ###########################################################################
-
-  static Future<List<Token>> loadAllTokensLegacy() async {
-    List<Token> tokenList = [];
-
-    String json = await Legacy.loadAllTokens();
-
-    if (json == '') {
-      return tokenList;
-    }
-
-    for (var tokenMap in jsonDecode(json)) {
-      Token token;
-      String id = const Uuid().v4();
-
-      String type = tokenMap['type'];
-      if (type == 'hotp') {
-        token = HOTPToken(
-          issuer: tokenMap['label'],
-          id: id,
-          label: tokenMap['label'],
-          counter: tokenMap['counter'],
-          digits: tokenMap['digits'],
-          secret: tokenMap['secret'],
-          algorithm: mapStringToAlgorithm(tokenMap['algorithm']),
-        );
-      } else if (type == 'totp') {
-        token = TOTPToken(
-          issuer: tokenMap['label'],
-          id: id,
-          label: tokenMap['label'],
-          period: tokenMap['period'],
-          digits: tokenMap['digits'],
-          secret: tokenMap['secret'],
-          algorithm: mapStringToAlgorithm(tokenMap['algorithm']),
-        );
-      } else if (type == 'pipush') {
-        token = PushToken(
-          isRolledOut: tokenMap['isRolledOut'] ?? false,
-          issuer: tokenMap['label'],
-          label: tokenMap['label'],
-          id: id,
-          serial: tokenMap['serial'],
-          expirationDate: DateTime.now().subtract(const Duration(minutes: 60)),
-          enrollmentCredentials: null,
-          sslVerify: null,
-          url: null,
-        );
-        token = (token as PushToken).copyWith(isRolledOut: true);
-
-        if (tokenMap['sslVerify'] != null) {
-          token = token.copyWith(sslVerify: tokenMap['sslVerify']);
-        }
-
-        if (tokenMap['enrollment_url'] != null) {
-          token = token.copyWith(url: Uri.parse((tokenMap['enrollment_url'] as String)));
-        }
-      } else {
-        Logger.error(
-          'Unknown token type encountered',
-          name: 'storage_utils.dart#loadAllTokensLegacy',
-          error: tokenMap,
-        );
-        continue;
-      }
-
-      tokenList.add(token);
-    }
-
-    return tokenList;
-  }
 
 // ###########################################################################
 // Update information

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../model/tokens/push_token.dart';
 import '../../utils/riverpod_providers.dart';
 import 'settings_view_widgets/logging_menu.dart';
-import 'settings_view_widgets/migrate_legacy_tokens_dialog.dart';
 import 'settings_view_widgets/settings_groups.dart';
 import 'settings_view_widgets/update_firebase_token_dialog.dart';
 
@@ -19,7 +18,7 @@ class SettingsView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final tokens = ref.watch(tokenProvider).tokens;
-    final locale = settings.localePreference;
+    final locale = settings.currentLocale;
     final useSystemLocale = settings.useSystemLocale;
     final enablePolling = settings.enablePolling;
     final enrolledPushTokenList = tokens.whereType<PushToken>().where((e) => e.isRolledOut).toList();
@@ -83,19 +82,13 @@ class SettingsView extends ConsumerWidget {
                     ),
                     isExpanded: true,
                     value: locale,
-                    // Initial value and current value
-                    items: AppLocalizations.supportedLocales.map<DropdownMenuItem<Locale>>((Locale value) {
+                    items: AppLocalizations.supportedLocales.map<DropdownMenuItem<Locale>>((Locale itemLocale) {
                       return DropdownMenuItem<Locale>(
-                        value: value,
-                        child: Text(
-                          '$value',
-                          style: useSystemLocale
-                              ? Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).disabledColor)
-                              : Theme.of(context).textTheme.titleMedium,
-                        ),
+                        value: itemLocale,
+                        child: Text('$itemLocale'),
                       );
                     }).toList(),
-                    onChanged: (value) => ref.read(settingsProvider.notifier).setLocale(value!),
+                    onChanged: useSystemLocale ? null : (value) => ref.read(settingsProvider.notifier).setLocale(value!),
                   ),
                 ),
               ],
@@ -151,19 +144,6 @@ class SettingsView extends ConsumerWidget {
                   ),
                 ],
               ),
-            ),
-            const Divider(),
-            SettingsGroup(
-              title: AppLocalizations.of(context)!.migration,
-              children: [
-                ListTile(
-                  title: Text(AppLocalizations.of(context)!.migrateTokens),
-                  trailing: ElevatedButton(
-                    child: Text(AppLocalizations.of(context)!.migrate),
-                    onPressed: () => showDialog(context: context, barrierDismissible: false, builder: (context) => const MigrateLegacyTokensDialog()),
-                  ),
-                ),
-              ],
             ),
             const Divider(),
             SettingsGroup(title: AppLocalizations.of(context)!.errorLogTitle, children: [
