@@ -27,10 +27,11 @@ class PushTokenWidget extends TokenWidget {
   @override
   TokenWidgetBase build(BuildContext context) {
     return TokenWidgetBase(
+      key: Key(token.id),
       token: token,
       tile: PushTokenWidgetTile(token),
       dragIcon: Icons.notifications,
-      editAction: EditPushTokenAction(token: token),
+      editAction: EditPushTokenAction(token: token, key: Key('${token.id}editAction')),
       stack: [
         Visibility(
           visible: !token.isRolledOut,

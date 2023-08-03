@@ -14,6 +14,11 @@ class DefaultEditAction extends TokenAction {
   const DefaultEditAction({required this.token, Key? key}) : super(key: key);
 
   @override
+  State<DefaultEditAction> createState() => _DefaultEditActionState();
+}
+
+class _DefaultEditActionState extends State<DefaultEditAction> {
+  @override
   SlidableAction build(BuildContext context) {
     return SlidableAction(
         label: AppLocalizations.of(context)!.rename,
@@ -21,53 +26,59 @@ class DefaultEditAction extends TokenAction {
         foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
         icon: Icons.edit,
         onPressed: (context) async {
-          if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) return;
-          TextEditingController nameInputController = TextEditingController(text: token.label);
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text(AppLocalizations.of(context)!.renameToken),
-                  content: TextFormField(
-                    autofocus: true,
-                    controller: nameInputController,
-                    onChanged: (value) {},
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return AppLocalizations.of(context)!.name;
-                      }
-                      return null;
-                    },
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: Text(
-                        AppLocalizations.of(context)!.cancel,
-                      ),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    TextButton(
-                      child: Text(
-                        AppLocalizations.of(context)!.rename,
-                      ),
-                      onPressed: () {
-                        final newLabel = nameInputController.text.trim();
-                        if (newLabel.isEmpty) return;
-                        globalRef?.read(tokenProvider.notifier).updateToken(token.copyWith(label: newLabel));
+          if (widget.token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) {
+            return;
+          }
+          _showDialog();
+        });
+  }
 
-                        Logger.info(
-                          'Renamed token:',
-                          name: 'token_widget_base.dart#TextButton#renameClicked',
-                          error: '\'${token.label}\' changed to \'$newLabel\'',
-                        );
+  void _showDialog() {
+    TextEditingController nameInputController = TextEditingController(text: widget.token.label);
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.renameToken),
+            content: TextFormField(
+              autofocus: true,
+              controller: nameInputController,
+              onChanged: (value) {},
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return AppLocalizations.of(context)!.name;
+                }
+                return null;
+              },
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  AppLocalizations.of(context)!.cancel,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              TextButton(
+                child: Text(
+                  AppLocalizations.of(context)!.rename,
+                ),
+                onPressed: () {
+                  final newLabel = nameInputController.text.trim();
+                  if (newLabel.isEmpty) return;
+                  globalRef?.read(tokenProvider.notifier).updateToken(widget.token.copyWith(label: newLabel));
 
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              });
+                  Logger.info(
+                    'Renamed token:',
+                    name: 'token_widget_base.dart#TextButton#renameClicked',
+                    error: '\'${widget.token.label}\' changed to \'$newLabel\'',
+                  );
+
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
         });
   }
 }

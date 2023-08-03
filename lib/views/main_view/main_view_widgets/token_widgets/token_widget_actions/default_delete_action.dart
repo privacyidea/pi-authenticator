@@ -12,6 +12,12 @@ class DefaultDeleteAction extends TokenAction {
   final Token token;
 
   const DefaultDeleteAction({super.key, required this.token});
+
+  @override
+  State<DefaultDeleteAction> createState() => _DefaultDeleteActionState();
+}
+
+class _DefaultDeleteActionState extends State<DefaultDeleteAction> {
   @override
   SlidableAction build(BuildContext context) {
     return SlidableAction(
@@ -20,35 +26,39 @@ class DefaultDeleteAction extends TokenAction {
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       icon: Icons.delete,
       onPressed: (_) async {
-        if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) return;
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(AppLocalizations.of(context)!.confirmDeletion),
-                content: Text(
-                  AppLocalizations.of(context)!.confirmDeletionOf(token.label),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(
-                      AppLocalizations.of(context)!.cancel,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      globalRef?.read(tokenProvider.notifier).removeToken(token);
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      AppLocalizations.of(context)!.delete,
-                    ),
-                  ),
-                ],
-              );
-            });
+        if (widget.token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) {
+          return;
+        }
+        _showDialog();
       },
     );
   }
+
+  void _showDialog() => showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context)!.confirmDeletion),
+          content: Text(
+            AppLocalizations.of(context)!.confirmDeletionOf(widget.token.label),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                AppLocalizations.of(context)!.cancel,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                globalRef?.read(tokenProvider.notifier).removeToken(widget.token);
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                AppLocalizations.of(context)!.delete,
+              ),
+            ),
+          ],
+        );
+      });
 }

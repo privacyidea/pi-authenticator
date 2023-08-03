@@ -16,7 +16,7 @@ abstract class Token with SortableMixin {
   final String id; // this is the identifier of the token
   final bool isLocked;
   final bool? pin;
-  final String? imageURL;
+  final String? tokenImage;
   final int? categoryId;
   final bool isInEditMode;
   @override
@@ -48,7 +48,7 @@ abstract class Token with SortableMixin {
     required this.id,
     required this.type,
     this.pin,
-    this.imageURL,
+    this.tokenImage,
     this.sortIndex,
     this.isLocked = false,
     this.categoryId,
@@ -62,7 +62,7 @@ abstract class Token with SortableMixin {
     String? id,
     bool? isLocked,
     bool? pin,
-    String? imageURL,
+    String? tokenImage,
     int? sortIndex,
     int? Function()? categoryId,
     bool? isInEditMode,
@@ -70,6 +70,6 @@ abstract class Token with SortableMixin {
 
   @override
   String toString() {
-    return 'Token{label: $label, issuer: $issuer, id: $id, _sLocked: $isLocked, pin: $pin, imageURL: $imageURL, sortIndex: $sortIndex, type: $type, categoryId: $categoryId, isInEditMode: $isInEditMode';
+    return 'Token{label: $label, issuer: $issuer, id: $id, _sLocked: $isLocked, pin: $pin, tokenImage: $tokenImage, sortIndex: $sortIndex, type: $type, categoryId: $categoryId, isInEditMode: $isInEditMode';
   }
 }

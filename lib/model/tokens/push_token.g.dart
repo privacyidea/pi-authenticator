@@ -12,27 +12,20 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       issuer: json['issuer'] as String,
       id: json['id'] as String,
       type: json['type'] as String?,
-      imageURL: json['imageURL'] as String?,
-      pushRequests: json['pushRequests'] == null
-          ? null
-          : PushRequestQueue.fromJson(
-              json['pushRequests'] as Map<String, dynamic>),
+      tokenImage: json['tokenImage'] as String?,
+      pushRequests: json['pushRequests'] == null ? null : PushRequestQueue.fromJson(json['pushRequests'] as Map<String, dynamic>),
       isLocked: json['isLocked'] as bool? ?? false,
       pin: json['pin'] as bool? ?? false,
       sslVerify: json['sslVerify'] as bool?,
       enrollmentCredentials: json['enrollmentCredentials'] as String?,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
       sortIndex: json['sortIndex'] as int?,
-      tokenImage: json['tokenImage'] as String?,
       publicServerKey: json['publicServerKey'] as String?,
       publicTokenKey: json['publicTokenKey'] as String?,
       privateTokenKey: json['privateTokenKey'] as String?,
       expirationDate: DateTime.parse(json['expirationDate'] as String),
       isRolledOut: json['isRolledOut'] as bool? ?? false,
-      knownPushRequests: json['knownPushRequests'] == null
-          ? null
-          : CustomIntBuffer.fromJson(
-              json['knownPushRequests'] as Map<String, dynamic>),
+      knownPushRequests: json['knownPushRequests'] == null ? null : CustomIntBuffer.fromJson(json['knownPushRequests'] as Map<String, dynamic>),
       categoryId: json['categoryId'] as int?,
       isInEditMode: json['isInEditMode'] as bool? ?? false,
     );
@@ -43,7 +36,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'id': instance.id,
       'isLocked': instance.isLocked,
       'pin': instance.pin,
-      'imageURL': instance.imageURL,
+      'tokenImage': instance.tokenImage,
       'categoryId': instance.categoryId,
       'isInEditMode': instance.isInEditMode,
       'sortIndex': instance.sortIndex,
@@ -58,6 +51,5 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'privateTokenKey': instance.privateTokenKey,
       'publicTokenKey': instance.publicTokenKey,
       'pushRequests': instance.pushRequests,
-      'tokenImage': instance.tokenImage,
       'knownPushRequests': instance.knownPushRequests,
     };
