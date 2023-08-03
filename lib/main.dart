@@ -45,8 +45,6 @@ void main() async {
 }
 
 class PrivacyIDEAAuthenticator extends ConsumerWidget {
-  static WidgetRef? globalRef;
-
   const PrivacyIDEAAuthenticator({super.key});
 
   @override

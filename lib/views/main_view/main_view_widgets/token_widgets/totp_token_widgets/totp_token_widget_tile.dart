@@ -66,7 +66,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
       setState(() => secondsLeft--);
       return;
     }
-    setState(() => secondsLeft = widget.token.secondsUntilNextOTP + 1);
+    setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
     _animation.forward(from: 1 - secondsLeft / widget.token.period);
   }
 

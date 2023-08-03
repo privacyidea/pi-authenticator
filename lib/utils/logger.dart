@@ -23,8 +23,8 @@ final provider = Provider<int>((ref) => 0);
 class Logger {
   /*----------- STATIC FIELDS & GETTER -----------*/
   static Logger? _instance;
-  static BuildContext get _context => navigatorKey.currentContext!;
-  static String get _mailBody => AppLocalizations.of(_context)!.errorLogFileAttached;
+  static BuildContext? get _context => navigatorKey.currentContext;
+  static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorLogFileAttached : 'Error Log File Attached';
   static int get _lineLength => 160;
   static printer.Logger print = printer.Logger(
     printer: printer.PrettyPrinter(
@@ -192,7 +192,7 @@ class Logger {
     await file.writeAsString('', mode: FileMode.write);
     globalSnackbarKey.currentState?.showSnackBar(
       SnackBar(
-        content: Text(AppLocalizations.of(_context)!.errorLogCleared),
+        content: Text(_context != null ? AppLocalizations.of(_context!)!.errorLogCleared : 'Error Log Cleared'),
       ),
     );
   }
@@ -293,13 +293,15 @@ class Logger {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       globalSnackbarKey.currentState?.showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(_context)!.errorOccurred),
-          action: SnackBarAction(
-            label: AppLocalizations.of(_context)!.showDetails,
-            onPressed: () {
-              _showDialog();
-            },
-          ),
+          content: Text(_context != null ? AppLocalizations.of(_context!)!.errorOccurred : 'Error Occurred'),
+          action: _context != null
+              ? SnackBarAction(
+                  label: AppLocalizations.of(_context!)!.showDetails,
+                  onPressed: () {
+                    _showDialog();
+                  },
+                )
+              : null,
         ),
       );
     });
@@ -307,8 +309,9 @@ class Logger {
 
   void _showDialog() {
     if (_flutterIsRunning == false) return;
+    if (_context == null) return;
     showDialog(
-      context: navigatorKey.currentContext!,
+      context: _context!,
       builder: (context) => const SendErrorDialog(),
     );
   }
