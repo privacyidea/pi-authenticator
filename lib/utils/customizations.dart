@@ -24,4 +24,6 @@ import 'package:flutter/material.dart';
 
 const String applicationName = 'privacyIDEA Authenticator'; // Default: privacyIDEA Authenticator
 
-final GlobalKey<ScaffoldMessengerState> snackbarKey = GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<ScaffoldMessengerState> globalSnackbarKey = GlobalKey<ScaffoldMessengerState>();
+
+final GlobalKey<NavigatorState> globalNavigatorKey = GlobalKey<NavigatorState>();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/lock_auth.dart';
 
 import '../../../../../model/tokens/token.dart';
@@ -14,11 +15,6 @@ class DefaultDeleteAction extends TokenAction {
   const DefaultDeleteAction({super.key, required this.token});
 
   @override
-  State<DefaultDeleteAction> createState() => _DefaultDeleteActionState();
-}
-
-class _DefaultDeleteActionState extends State<DefaultDeleteAction> {
-  @override
   SlidableAction build(BuildContext context) {
     return SlidableAction(
       label: AppLocalizations.of(context)!.delete,
@@ -26,7 +22,7 @@ class _DefaultDeleteActionState extends State<DefaultDeleteAction> {
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       icon: Icons.delete,
       onPressed: (_) async {
-        if (widget.token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) {
+        if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) {
           return;
         }
         _showDialog();
@@ -35,12 +31,12 @@ class _DefaultDeleteActionState extends State<DefaultDeleteAction> {
   }
 
   void _showDialog() => showDialog(
-      context: context,
+      context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(AppLocalizations.of(context)!.confirmDeletion),
           content: Text(
-            AppLocalizations.of(context)!.confirmDeletionOf(widget.token.label),
+            AppLocalizations.of(context)!.confirmDeletionOf(token.label),
           ),
           actions: <Widget>[
             TextButton(
@@ -51,7 +47,7 @@ class _DefaultDeleteActionState extends State<DefaultDeleteAction> {
             ),
             TextButton(
               onPressed: () {
-                globalRef?.read(tokenProvider.notifier).removeToken(widget.token);
+                globalRef?.read(tokenProvider.notifier).removeToken(token);
                 Navigator.of(context).pop();
               },
               child: Text(

@@ -20,8 +20,8 @@ class PushTokenWidget extends TokenWidget {
   const PushTokenWidget(
     this.token, {
     this.withDivider = true,
-    super.key,
     this.previousSortable,
+    super.key,
   });
 
   @override
@@ -31,7 +31,7 @@ class PushTokenWidget extends TokenWidget {
       token: token,
       tile: PushTokenWidgetTile(token),
       dragIcon: Icons.notifications,
-      editAction: EditPushTokenAction(token: token, key: Key('${token.id}editAction')),
+      editAction: EditPushTokenAction(token: token, key: Key('${token.id}editAction'), creatorContext: context),
       stack: [
         Visibility(
           visible: !token.isRolledOut,

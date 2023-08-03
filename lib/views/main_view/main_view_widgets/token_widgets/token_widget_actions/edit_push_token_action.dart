@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import '../../../../../model/tokens/push_token.dart';
+import '../../../../../utils/customizations.dart';
 import '../../../../../utils/lock_auth.dart';
 import 'token_action.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -13,26 +15,25 @@ import '../../../../../utils/storage_utils.dart';
 
 class EditPushTokenAction extends TokenAction {
   final PushToken token;
+  final BuildContext creatorContext;
 
   const EditPushTokenAction({
     Key? key,
     required this.token,
+    required this.creatorContext,
   }) : super(key: key);
 
   @override
-  State<EditPushTokenAction> createState() => _EditPushTokenActionState();
-}
-
-class _EditPushTokenActionState extends State<EditPushTokenAction> {
-  @override
   SlidableAction build(BuildContext context) {
+    Logger.info('build');
+
     return SlidableAction(
         label: AppLocalizations.of(context)!.edit,
         backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
         icon: Icons.edit,
         onPressed: (context) async {
-          if (widget.token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) {
+          if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) {
             return;
           }
           _showDialog();
@@ -40,13 +41,13 @@ class _EditPushTokenActionState extends State<EditPushTokenAction> {
   }
 
   void _showDialog() {
-    final tokenLabel = TextEditingController(text: widget.token.label);
-    final tokenURL = TextEditingController(text: widget.token.url.toString());
-    final tokenSersial = widget.token.serial;
-    final publicTokenKey = widget.token.publicTokenKey;
+    final tokenLabel = TextEditingController(text: token.label);
+    final tokenURL = TextEditingController(text: token.url.toString());
+    final tokenSersial = token.serial;
+    final publicTokenKey = token.publicTokenKey;
 
     showDialog(
-      context: context,
+      context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: AlertDialog(
@@ -63,7 +64,7 @@ class _EditPushTokenActionState extends State<EditPushTokenAction> {
             TextButton(
                 child: Text(AppLocalizations.of(context)!.save),
                 onPressed: () async {
-                  final newToken = widget.token.copyWith(label: tokenLabel.text, url: Uri.parse(tokenURL.text));
+                  final newToken = token.copyWith(label: tokenLabel.text, url: Uri.parse(tokenURL.text));
                   globalRef?.read(tokenProvider.notifier).updateToken(newToken);
                   Navigator.of(context).pop();
                 }),

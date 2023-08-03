@@ -85,9 +85,10 @@ class Logger {
 
   /*----------- CONSTRUCTORS/FACTORIES -----------*/
 
-  Logger._({Function? appRunner, Widget? app})
+  Logger._({Function? appRunner, Widget? app, GlobalKey<NavigatorState>? navigatorKey})
       : _appRunner = appRunner,
-        _app = app {
+        _app = app,
+        _navigatorKey = navigatorKey {
     if (_instance != null) {
       _printWarning('Logger already initialized. Using existing instance');
       return;
@@ -102,11 +103,11 @@ class Logger {
   }
 
   // To enable logging to file, the app needs to be initialized with an appRunner or an app widget
-  factory Logger.init({Function? appRunner, Widget? app}) {
+  factory Logger.init({Function? appRunner, Widget? app, GlobalKey<NavigatorState>? navigatorKey}) {
     if (appRunner == null && app == null) {
       throw Exception('Logger.init() must be called with either a callback or an app Widget');
     }
-    return Logger._(appRunner: appRunner, app: app);
+    return Logger._(appRunner: appRunner, app: app, navigatorKey: navigatorKey);
   }
 
   /*----------- LOGGING METHODS -----------*/
@@ -189,7 +190,7 @@ class Logger {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/$_filename');
     await file.writeAsString('', mode: FileMode.write);
-    snackbarKey.currentState?.showSnackBar(
+    globalSnackbarKey.currentState?.showSnackBar(
       SnackBar(
         content: Text(AppLocalizations.of(_context)!.errorLogCleared),
       ),
@@ -290,7 +291,7 @@ class Logger {
   void _showSnackbar() {
     if (_flutterIsRunning == false) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      snackbarKey.currentState?.showSnackBar(
+      globalSnackbarKey.currentState?.showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(_context)!.errorOccurred),
           action: SnackBarAction(

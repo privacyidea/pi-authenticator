@@ -13,7 +13,10 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       id: json['id'] as String,
       type: json['type'] as String?,
       tokenImage: json['tokenImage'] as String?,
-      pushRequests: json['pushRequests'] == null ? null : PushRequestQueue.fromJson(json['pushRequests'] as Map<String, dynamic>),
+      pushRequests: json['pushRequests'] == null
+          ? null
+          : PushRequestQueue.fromJson(
+              json['pushRequests'] as Map<String, dynamic>),
       isLocked: json['isLocked'] as bool? ?? false,
       pin: json['pin'] as bool? ?? false,
       sslVerify: json['sslVerify'] as bool?,
@@ -25,7 +28,10 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       privateTokenKey: json['privateTokenKey'] as String?,
       expirationDate: DateTime.parse(json['expirationDate'] as String),
       isRolledOut: json['isRolledOut'] as bool? ?? false,
-      knownPushRequests: json['knownPushRequests'] == null ? null : CustomIntBuffer.fromJson(json['knownPushRequests'] as Map<String, dynamic>),
+      knownPushRequests: json['knownPushRequests'] == null
+          ? null
+          : CustomIntBuffer.fromJson(
+              json['knownPushRequests'] as Map<String, dynamic>),
       categoryId: json['categoryId'] as int?,
       isInEditMode: json['isInEditMode'] as bool? ?? false,
     );

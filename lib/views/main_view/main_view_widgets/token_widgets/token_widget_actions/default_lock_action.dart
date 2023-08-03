@@ -15,22 +15,17 @@ class DefaultLockAction extends TokenAction {
   const DefaultLockAction({required this.token, Key? key}) : super(key: key);
 
   @override
-  State<DefaultLockAction> createState() => _DefaultLockActionState();
-}
-
-class _DefaultLockActionState extends State<DefaultLockAction> {
-  @override
   SlidableAction build(BuildContext context) {
     return SlidableAction(
-      label: widget.token.isLocked ? AppLocalizations.of(context)!.unlock : AppLocalizations.of(context)!.lock,
+      label: token.isLocked ? AppLocalizations.of(context)!.unlock : AppLocalizations.of(context)!.lock,
       backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.lockColorLight : ApplicationCustomizer.lockColorDark,
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-      icon: widget.token.isLocked ? Icons.lock_open : Icons.lock_outline,
+      icon: token.isLocked ? Icons.lock_open : Icons.lock_outline,
       onPressed: (context) async {
-        Logger.info('Changing lock status of token ${widget.token.label}.', name: 'token_widgets.dart#_changeLockStatus');
+        Logger.info('Changing lock status of token ${token.label}.', name: 'token_widgets.dart#_changeLockStatus');
         if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) return;
 
-        globalRef?.read(tokenProvider.notifier).updateToken(widget.token.copyWith(isLocked: !widget.token.isLocked));
+        globalRef?.read(tokenProvider.notifier).updateToken(token.copyWith(isLocked: !token.isLocked));
       },
     );
   }

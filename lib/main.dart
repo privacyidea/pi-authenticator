@@ -36,13 +36,17 @@ import 'package:privacyidea_authenticator/views/qr_scanner_view/scanner_view.dar
 import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
 
 void main() async {
-  Logger.init(appRunner: () async {
-    WidgetsFlutterBinding.ensureInitialized();
-    runApp(const AppWrapper(child: PrivacyIDEAAuthenticator()));
-  });
+  Logger.init(
+      navigatorKey: globalNavigatorKey,
+      appRunner: () async {
+        WidgetsFlutterBinding.ensureInitialized();
+        runApp(const AppWrapper(child: PrivacyIDEAAuthenticator()));
+      });
 }
 
 class PrivacyIDEAAuthenticator extends ConsumerWidget {
+  static WidgetRef? globalRef;
+
   const PrivacyIDEAAuthenticator({super.key});
 
   @override
@@ -52,14 +56,14 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
     final locale = state.currentLocale;
     return MaterialApp(
       debugShowCheckedModeBanner: true,
-      navigatorKey: Logger.navigatorKey,
+      navigatorKey: globalNavigatorKey,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: locale,
       title: ApplicationCustomizer.appName,
       theme: lightThemeData,
       darkTheme: darkThemeData,
-      scaffoldMessengerKey: snackbarKey, // <= this
+      scaffoldMessengerKey: globalSnackbarKey, // <= this
       themeMode: EasyDynamicTheme.of(context).themeMode,
       initialRoute: SplashScreen.routeName,
       routes: {
