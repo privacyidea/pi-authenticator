@@ -28,11 +28,15 @@ Color primarySwatch = ApplicationCustomizer.primaryColor;
 Color onPrimary = isColorBright(primarySwatch) ? ApplicationCustomizer.themeColorDark : ApplicationCustomizer.themeColorLight;
 
 var lightThemeData = ThemeData(
+  scaffoldBackgroundColor: ApplicationCustomizer.backgroundColorLight,
   brightness: Brightness.light,
   primaryColorLight: primarySwatch,
   primaryColorDark: primarySwatch,
   appBarTheme: const AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
-  listTileTheme: const ListTileThemeData(
+  listTileTheme: ListTileThemeData(
+    tileColor: ApplicationCustomizer.backgroundColorLight,
+    titleTextStyle: TextStyle(color: primarySwatch),
+    subtitleTextStyle: const TextStyle(color: ApplicationCustomizer.tileSubtitleColorLight),
     iconColor: ApplicationCustomizer.tileIconColorLight,
   ),
   colorScheme: ColorScheme.light(
@@ -87,12 +91,15 @@ var lightThemeData = ThemeData(
 );
 
 var darkThemeData = ThemeData(
-  scaffoldBackgroundColor: const Color(0xFF303030),
+  scaffoldBackgroundColor: ApplicationCustomizer.backgroundColorDark,
   brightness: Brightness.dark,
   primaryColorLight: primarySwatch,
   primaryColorDark: primarySwatch,
   appBarTheme: const AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
-  listTileTheme: const ListTileThemeData(
+  listTileTheme: ListTileThemeData(
+    tileColor: ApplicationCustomizer.backgroundColorDark,
+    titleTextStyle: TextStyle(color: primarySwatch),
+    subtitleTextStyle: const TextStyle(color: ApplicationCustomizer.tileSubtitleColorDark),
     iconColor: ApplicationCustomizer.tileIconColorDark,
   ),
   colorScheme: ColorScheme.dark(

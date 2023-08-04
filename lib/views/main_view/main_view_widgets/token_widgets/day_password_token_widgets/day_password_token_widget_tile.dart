@@ -97,11 +97,13 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
             textScaleFactor: 1.9,
             enabled: widget.token.isLocked,
             isHiddenNotifier: isHidden,
-            textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
           ),
         ),
       ),
-      subtitles: [widget.token.label],
+      subtitles: [
+        if (widget.token.label.isNotEmpty) widget.token.label,
+        if (widget.token.issuer.isNotEmpty) widget.token.issuer,
+      ],
       trailing: GestureDetector(
         behavior: HitTestBehavior.deferToChild,
         onTap: () {
@@ -126,8 +128,8 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                   children: [
                     Text(
                       '${AppLocalizations.of(context)!.validFor}:',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      textAlign: TextAlign.left,
+                      style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                      textAlign: TextAlign.center,
                     ),
                     Expanded(
                       child: Center(
@@ -145,8 +147,8 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                   children: [
                     Text(
                       '${AppLocalizations.of(context)!.validUntil}:',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      textAlign: TextAlign.left,
+                      style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                      textAlign: TextAlign.center,
                     ),
                     Expanded(
                       child: Center(

@@ -41,7 +41,7 @@ class _TokenWidgetTileState extends State<TokenWidgetTile> {
   Image? _loadImage() => widget.tokenImage != null
       ? Image.network(
           widget.tokenImage!,
-          fit: BoxFit.cover,
+          fit: BoxFit.fitHeight,
           errorBuilder: (context, error, stackTrace) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               setState(() {
@@ -61,28 +61,17 @@ class _TokenWidgetTileState extends State<TokenWidgetTile> {
       leading: (widget.leading != null) ? widget.leading! : null,
       onTap: widget.onTap,
       title: widget.title,
-      style: ListTileStyle.list,
       subtitle: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (hasImage)
             Padding(
               padding: const EdgeInsets.only(left: 4, top: 2, right: 4),
-              child: SizedBox(
-                height: 50,
-                width: 50,
-                child: image,
-              ),
+              child: SizedBox(height: 32, child: image),
             ),
           Padding(
             padding: const EdgeInsets.only(left: 4.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (String subtitle in widget.subtitles) Text(subtitle),
-              ],
-            ),
+            child: Text(widget.subtitles.join('\n'), style: Theme.of(context).listTileTheme.subtitleTextStyle),
           ),
         ],
       ),

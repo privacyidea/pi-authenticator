@@ -16,7 +16,6 @@ class PushTokenWidgetTile extends ConsumerWidget {
       title: Text(
         token.label,
         textScaleFactor: 1.9,
-        style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
       ),
       subtitles: [
         if (token.issuer.isNotEmpty) token.issuer,
