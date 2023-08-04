@@ -10,7 +10,6 @@ class TokenWidgetTile extends StatefulWidget {
   final List<String> subtitles;
   final Widget? leading;
   final Widget? trailing;
-  final Visibility? overlay;
   final Function()? onTap;
   final bool tokenIsLocked;
   final String? tokenImage;
@@ -20,7 +19,6 @@ class TokenWidgetTile extends StatefulWidget {
     this.title,
     this.subtitles = const [],
     this.trailing,
-    this.overlay,
     this.onTap,
     super.key,
     this.tokenIsLocked = false,
@@ -58,44 +56,39 @@ class _TokenWidgetTileState extends State<TokenWidgetTile> {
   @override
   Widget build(BuildContext context) {
     var image = _loadImage();
-    return Stack(
-      children: [
-        Column(
-          children: [
-            ListTile(
-              horizontalTitleGap: 8.0,
-              leading: (widget.leading != null || hasImage)
-                  ? Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (hasImage)
-                          SizedBox(
-                            height: 50,
-                            width: 50,
-                            child: image,
-                          ),
-                        if (widget.leading != null) widget.leading!,
-                      ],
-                    )
-                  : null,
-              onTap: widget.onTap,
-              title: widget.title,
-              style: ListTileStyle.list,
-              subtitle: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (String subtitle in widget.subtitles) Text(subtitle),
-                ],
-              ),
-              trailing: CustomTrailing(
-                child: widget.trailing ?? Container(),
+    return ListTile(
+      horizontalTitleGap: 8.0,
+      leading: (widget.leading != null) ? widget.leading! : null,
+      onTap: widget.onTap,
+      title: widget.title,
+      style: ListTileStyle.list,
+      subtitle: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (hasImage)
+            Padding(
+              padding: const EdgeInsets.only(left: 4, top: 2, right: 4),
+              child: SizedBox(
+                height: 50,
+                width: 50,
+                child: image,
               ),
             ),
-          ],
-        ),
-        if (widget.overlay != null) widget.overlay!
-      ],
+          Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (String subtitle in widget.subtitles) Text(subtitle),
+              ],
+            ),
+          ),
+        ],
+      ),
+      trailing: CustomTrailing(
+        child: widget.trailing ?? const SizedBox(),
+      ),
     );
   }
 }

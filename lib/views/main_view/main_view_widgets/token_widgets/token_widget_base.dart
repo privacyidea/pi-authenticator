@@ -84,7 +84,7 @@ class TokenWidgetBase extends ConsumerWidget {
               child: Stack(
                 children: [
                   tile,
-                  ...stack,
+                  for (var item in stack) Positioned.fill(child: item),
                 ],
               ),
             ),
