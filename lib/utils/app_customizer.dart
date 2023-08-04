@@ -38,6 +38,9 @@ class ApplicationCustomizer {
   static const Color themeColorDark = Colors.black;
   static const Color themeColorLight = Colors.white;
 
+  static const Color backgroundColorDark = Color(0xFF303030);
+  static const Color backgroundColorLight = Color(0xFFEFEFEF);
+
   // Slide action
   static const Color deleteColorDark = Color(0xffCD3C14);
   static const Color deleteColorLight = Color(0xffE04D2D);
@@ -52,5 +55,7 @@ class ApplicationCustomizer {
 
   // List tile
   static const Color tileIconColorLight = Color(0xff9E9E9E);
+  static const Color tileSubtitleColorLight = Color(0xff757575);
   static const Color tileIconColorDark = Color(0xffF5F5F5);
+  static const Color tileSubtitleColorDark = Color(0xff9E9E9E);
 }

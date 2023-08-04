@@ -93,11 +93,13 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
             isHiddenNotifier: isHidden,
             text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
             enabled: widget.token.isLocked,
-            textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
           ),
         ),
       ),
-      subtitles: [widget.token.label],
+      subtitles: [
+        if (widget.token.label.isNotEmpty) widget.token.label,
+        if (widget.token.issuer.isNotEmpty) widget.token.issuer,
+      ],
       trailing: HideableWidget(
         token: widget.token,
         isHiddenNotifier: isHidden,

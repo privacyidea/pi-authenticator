@@ -11,6 +11,7 @@ TokenCategory _$TokenCategoryFromJson(Map<String, dynamic> json) =>
       label: json['label'] as String,
       categoryId: json['categoryId'] as int,
       isExpanded: json['isExpanded'] as bool? ?? true,
+      isLocked: json['isLocked'] as bool? ?? false,
       sortIndex: json['sortIndex'] as int?,
     );
 
@@ -19,5 +20,6 @@ Map<String, dynamic> _$TokenCategoryToJson(TokenCategory instance) =>
       'label': instance.label,
       'categoryId': instance.categoryId,
       'isExpanded': instance.isExpanded,
+      'isLocked': instance.isLocked,
       'sortIndex': instance.sortIndex,
     };

@@ -90,11 +90,13 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
             textScaleFactor: 1.9,
             enabled: widget.token.isLocked,
             isHiddenNotifier: isHidden,
-            textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
           ),
         ),
       ),
-      subtitles: [widget.token.label, widget.token.issuer],
+      subtitles: [
+        if (widget.token.label.isNotEmpty) widget.token.label,
+        if (widget.token.issuer.isNotEmpty) widget.token.issuer,
+      ],
       trailing: HideableWidget(
         token: widget.token,
         isHiddenNotifier: isHidden,
