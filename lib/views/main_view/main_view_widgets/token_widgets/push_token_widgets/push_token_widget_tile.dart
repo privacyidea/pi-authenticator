@@ -12,20 +12,7 @@ class PushTokenWidgetTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return TokenWidgetTile(
       tokenIsLocked: token.isLocked,
-      leading: token.tokenImage != null
-          ? SizedBox(
-              width: MediaQuery.of(context).size.width * 0.3,
-              height: double.infinity,
-              child: Align(
-                alignment: Alignment.center,
-                child: Image.network(
-                  token.tokenImage!,
-                  fit: BoxFit.contain,
-                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) => const SizedBox(),
-                ),
-              ),
-            )
-          : null,
+      tokenImage: token.tokenImage,
       title: Text(
         token.label,
         textScaleFactor: 1.9,

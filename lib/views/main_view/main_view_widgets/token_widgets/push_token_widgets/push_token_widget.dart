@@ -20,103 +20,84 @@ class PushTokenWidget extends TokenWidget {
   const PushTokenWidget(
     this.token, {
     this.withDivider = true,
-    super.key,
     this.previousSortable,
+    super.key,
   });
 
   @override
   TokenWidgetBase build(BuildContext context) {
     return TokenWidgetBase(
+      key: Key(token.id),
       token: token,
       tile: PushTokenWidgetTile(token),
       dragIcon: Icons.notifications,
-      editAction: EditPushTokenAction(token: token),
+      editAction: EditPushTokenAction(token: token, key: Key('${token.id}editAction'), creatorContext: context),
       stack: [
-        Visibility(
-          visible: !token.isRolledOut,
-          child: ClipRect(
+        if (!token.isRolledOut)
+          ClipRect(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: ListTile(
-                title: Column(
-                  children: <Widget>[
-                    const CircularProgressIndicator(),
-                    Text(AppLocalizations.of(context)!.rollingOut),
-                  ],
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const CircularProgressIndicator(),
+                  Text(AppLocalizations.of(context)!.rollingOut),
+                ],
               ),
             ),
           ),
-        ),
-        Visibility(
-          visible: token.pushRequests.peek() != null,
-          child: ClipRect(
+        if (token.pushRequests.peek() != null)
+          ClipRect(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: ListTile(
-                title: Column(
-                  children: <Widget>[
-                    Text(
-                      token.pushRequests.peek()?.question ?? 'No request',
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const Flexible(
-                          child: SizedBox(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(token.pushRequests.peek()?.question ?? 'No request'),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const Flexible(child: SizedBox()),
+                      Flexible(
+                        flex: 4,
+                        child: PressButton(
+                          onPressed: () => globalRef?.read(pushRequestProvider.notifier).accept(token.pushRequests.pop()),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.accept,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              const Icon(Icons.check, size: 15),
+                            ],
+                          ),
                         ),
-                        Flexible(
-                          flex: 4,
-                          child: PressButton(
-                            onPressed: () {
-                              globalRef?.read(pushRequestProvider.notifier).accept(token.pushRequests.pop());
-                            },
+                      ),
+                      const Flexible(child: SizedBox()),
+                      Flexible(
+                        flex: 4,
+                        child: PressButton(
+                            onPressed: () => globalRef?.read(pushRequestProvider.notifier).decline(token.pushRequests.pop()),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.accept,
+                                  AppLocalizations.of(context)!.decline,
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
-                                const Icon(Icons.check, size: 15),
+                                const Icon(Icons.close, size: 15),
                               ],
-                            ),
-                          ),
-                        ),
-                        const Flexible(
-                          child: SizedBox(),
-                        ),
-                        Flexible(
-                          flex: 4,
-                          child: PressButton(
-                              onPressed: () {
-                                globalRef?.read(pushRequestProvider.notifier).decline(
-                                      token.pushRequests.pop(),
-                                    );
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.decline,
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  const Icon(Icons.close, size: 15),
-                                ],
-                              )),
-                        ),
-                        const Flexible(
-                          child: SizedBox(),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
+                            )),
+                      ),
+                      const Flexible(child: SizedBox()),
+                    ],
+                  )
+                ],
               ),
             ),
           ),
-        ),
       ],
     );
   }

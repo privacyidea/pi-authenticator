@@ -23,7 +23,7 @@ class HOTPToken extends OTPToken {
     required String secret,
     String? type,
     bool? pin,
-    String? imageURL,
+    String? tokenImage,
     int? sortIndex,
     bool isLocked = false,
     bool canToggleLock = true,
@@ -38,7 +38,7 @@ class HOTPToken extends OTPToken {
           digits: digits,
           secret: secret,
           pin: pin,
-          imageURL: imageURL,
+          tokenImage: tokenImage,
           sortIndex: sortIndex,
           isLocked: isLocked,
           canToggleLock: canToggleLock,
@@ -67,7 +67,7 @@ class HOTPToken extends OTPToken {
     int? digits,
     String? secret,
     bool? pin,
-    String? imageURL,
+    String? tokenImage,
     int? sortIndex,
     bool? isLocked,
     int? Function()? categoryId,
@@ -82,7 +82,7 @@ class HOTPToken extends OTPToken {
         digits: digits ?? this.digits,
         secret: secret ?? this.secret,
         pin: pin ?? this.pin,
-        imageURL: imageURL ?? this.imageURL,
+        tokenImage: tokenImage ?? this.tokenImage,
         sortIndex: sortIndex ?? this.sortIndex,
         isLocked: isLocked ?? this.isLocked,
         categoryId: categoryId != null ? categoryId() : this.categoryId,
@@ -103,6 +103,7 @@ class HOTPToken extends OTPToken {
         secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
         counter: uriMap[URI_COUNTER],
         type: uriMap[URI_TYPE],
+        tokenImage: uriMap[URI_IMAGE],
       );
 
   factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json);

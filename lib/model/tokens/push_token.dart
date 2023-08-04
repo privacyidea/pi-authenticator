@@ -51,7 +51,6 @@ class PushToken extends Token {
   }
 
   late final PushRequestQueue pushRequests;
-  final String? tokenImage;
   final CustomIntBuffer knownPushRequests;
 
   // The get and set methods are needed for serialization.
@@ -68,7 +67,7 @@ class PushToken extends Token {
     required String issuer,
     required String id,
     String? type,
-    String? imageURL,
+    String? tokenImage,
     PushRequestQueue? pushRequests,
     bool isLocked = false,
     super.pin = false,
@@ -77,7 +76,6 @@ class PushToken extends Token {
     this.enrollmentCredentials,
     this.url,
     super.sortIndex,
-    this.tokenImage,
     this.publicServerKey,
     this.publicTokenKey,
     this.privateTokenKey,
@@ -92,7 +90,7 @@ class PushToken extends Token {
           issuer: issuer,
           id: id,
           isLocked: isLocked,
-          imageURL: imageURL,
+          tokenImage: tokenImage,
           type: type ?? enumAsString(TokenTypes.PIPUSH),
           categoryId: categoryId,
           isInEditMode: isInEditMode,
@@ -108,7 +106,7 @@ class PushToken extends Token {
     String? serial,
     String? issuer,
     String? id,
-    String? imageURL,
+    String? tokenImage,
     PushRequestQueue? pushRequests,
     bool? isLocked,
     bool? canToggleLock,
@@ -119,7 +117,6 @@ class PushToken extends Token {
     String? enrollmentCredentials,
     Uri? url,
     int? sortIndex,
-    String? tokenImage,
     String? publicServerKey,
     String? publicTokenKey,
     String? privateTokenKey,
@@ -133,7 +130,7 @@ class PushToken extends Token {
       label: label ?? this.label,
       serial: serial ?? this.serial,
       issuer: issuer ?? this.issuer,
-      imageURL: imageURL ?? this.imageURL,
+      tokenImage: tokenImage ?? this.tokenImage,
       id: id ?? this.id,
       pushRequests: pushRequests ?? this.pushRequests,
       isLocked: isLocked ?? this.isLocked,
@@ -142,7 +139,6 @@ class PushToken extends Token {
       enrollmentCredentials: enrollmentCredentials ?? this.enrollmentCredentials,
       url: url ?? this.url,
       sortIndex: sortIndex ?? this.sortIndex,
-      tokenImage: tokenImage ?? this.tokenImage,
       publicServerKey: publicServerKey ?? this.publicServerKey,
       publicTokenKey: publicTokenKey ?? this.publicTokenKey,
       privateTokenKey: privateTokenKey ?? this.privateTokenKey,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import '../../utils/logger.dart';
 import 'otp_token.dart';
 import '../../utils/identifiers.dart';
 import 'package:uuid/uuid.dart';
@@ -27,7 +28,7 @@ class DayPasswordToken extends OTPToken {
     required super.secret,
     String? type,
     super.pin,
-    super.imageURL,
+    super.tokenImage,
     super.sortIndex,
     super.isLocked,
     super.categoryId,
@@ -45,7 +46,7 @@ class DayPasswordToken extends OTPToken {
     int? digits,
     String? secret,
     bool? pin,
-    String? imageURL,
+    String? tokenImage,
     int? sortIndex,
     bool? isLocked,
     int? Function()? categoryId,
@@ -62,14 +63,14 @@ class DayPasswordToken extends OTPToken {
         digits: digits ?? this.digits,
         secret: secret ?? this.secret,
         pin: pin ?? this.pin,
-        imageURL: imageURL ?? this.imageURL,
+        tokenImage: tokenImage ?? this.tokenImage,
         sortIndex: sortIndex ?? this.sortIndex,
         isLocked: isLocked ?? this.isLocked,
         categoryId: categoryId != null ? categoryId.call() : this.categoryId,
         isInEditMode: isInEditMode ?? this.isInEditMode,
       );
 
-  //TODO: Server software uses an offset of 30 seconds in my tests (remove this when server is in sync)
+  // Server software has an offset of 30 seconds (remove this when server is in sync)
   static const Duration serverOffset = Duration(seconds: 30);
 
   @override
@@ -94,16 +95,20 @@ class DayPasswordToken extends OTPToken {
     return DateTime.now().add(durationUntilNextOTP + const Duration(milliseconds: 1) + serverOffset);
   }
 
-  factory DayPasswordToken.fromUriMap(Map<String, dynamic> uriMap) => DayPasswordToken(
-        label: uriMap[URI_LABEL],
-        issuer: uriMap[URI_ISSUER],
-        id: const Uuid().v4(),
-        algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
-        digits: uriMap[URI_DIGITS],
-        secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
-        type: uriMap[URI_TYPE],
-        period: Duration(seconds: uriMap[URI_PERIOD]),
-      );
+  factory DayPasswordToken.fromUriMap(Map<String, dynamic> uriMap) {
+    Logger.warning('PushToken.fromUriMap: ${uriMap[URI_IMAGE]}');
+    return DayPasswordToken(
+      label: uriMap[URI_LABEL],
+      issuer: uriMap[URI_ISSUER],
+      id: const Uuid().v4(),
+      algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+      digits: uriMap[URI_DIGITS],
+      secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
+      type: uriMap[URI_TYPE],
+      period: Duration(seconds: uriMap[URI_PERIOD]),
+      tokenImage: uriMap[URI_IMAGE],
+    );
+  }
 
   factory DayPasswordToken.fromJson(Map<String, dynamic> json) => _$DayPasswordTokenFromJson(json);
   Map<String, dynamic> toJson() => _$DayPasswordTokenToJson(this);

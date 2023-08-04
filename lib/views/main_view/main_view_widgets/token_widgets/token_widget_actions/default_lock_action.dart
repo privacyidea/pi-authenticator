@@ -13,6 +13,7 @@ class DefaultLockAction extends TokenAction {
   final Token token;
 
   const DefaultLockAction({required this.token, Key? key}) : super(key: key);
+
   @override
   SlidableAction build(BuildContext context) {
     return SlidableAction(

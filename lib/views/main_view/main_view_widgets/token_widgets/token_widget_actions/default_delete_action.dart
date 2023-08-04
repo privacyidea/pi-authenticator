@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/lock_auth.dart';
 
 import '../../../../../model/tokens/token.dart';
@@ -12,6 +13,7 @@ class DefaultDeleteAction extends TokenAction {
   final Token token;
 
   const DefaultDeleteAction({super.key, required this.token});
+
   @override
   SlidableAction build(BuildContext context) {
     return SlidableAction(
@@ -20,35 +22,39 @@ class DefaultDeleteAction extends TokenAction {
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       icon: Icons.delete,
       onPressed: (_) async {
-        if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) return;
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(AppLocalizations.of(context)!.confirmDeletion),
-                content: Text(
-                  AppLocalizations.of(context)!.confirmDeletionOf(token.label),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(
-                      AppLocalizations.of(context)!.cancel,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      globalRef?.read(tokenProvider.notifier).removeToken(token);
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      AppLocalizations.of(context)!.delete,
-                    ),
-                  ),
-                ],
-              );
-            });
+        if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) {
+          return;
+        }
+        _showDialog();
       },
     );
   }
+
+  void _showDialog() => showDialog(
+      context: globalNavigatorKey.currentContext!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context)!.confirmDeletion),
+          content: Text(
+            AppLocalizations.of(context)!.confirmDeletionOf(token.label),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                AppLocalizations.of(context)!.cancel,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                globalRef?.read(tokenProvider.notifier).removeToken(token);
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                AppLocalizations.of(context)!.delete,
+              ),
+            ),
+          ],
+        );
+      });
 }

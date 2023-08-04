@@ -63,7 +63,7 @@ class PushProvider {
     } on FirebaseException catch (ex) {
       String errorMessage = ex.message ?? 'no error message';
       final SnackBar snackBar = SnackBar(content: Text("Firebase notification permission error! ($errorMessage: ${ex.code}"));
-      snackbarKey.currentState?.showSnackBar(snackBar);
+      globalSnackbarKey.currentState?.showSnackBar(snackBar);
     }
 
     FirebaseMessaging.onMessage.listen(_incomingHandler);
@@ -84,14 +84,14 @@ class PushProvider {
             content: Text(
           'Push cant be initialized, restart the app and try again. ${error.code}: $errorMessage',
         ));
-        snackbarKey.currentState?.showSnackBar(snackBar);
+        globalSnackbarKey.currentState?.showSnackBar(snackBar);
       }
     } on FirebaseException catch (error) {
       final SnackBar snackBar = SnackBar(content: Text("Push cant be initialized, restart the app and try again$error"));
-      snackbarKey.currentState?.showSnackBar(snackBar);
+      globalSnackbarKey.currentState?.showSnackBar(snackBar);
     } catch (error) {
       final SnackBar snackBar = SnackBar(content: Text("Unknown error: $error"));
-      snackbarKey.currentState?.showSnackBar(snackBar);
+      globalSnackbarKey.currentState?.showSnackBar(snackBar);
     }
 
     FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
@@ -102,7 +102,7 @@ class PushProvider {
           _updateFirebaseToken(newToken);
         } catch (error) {
           final SnackBar snackBar = SnackBar(content: Text("Unknown error: $error"));
-          snackbarKey.currentState?.showSnackBar(snackBar);
+          globalSnackbarKey.currentState?.showSnackBar(snackBar);
         }
       }
     });
@@ -119,7 +119,7 @@ class PushProvider {
       String errorMessage = ex.message ?? 'no error message';
       final SnackBar snackBar = SnackBar(content: Text("Unable to retrieve Firebase token! ($errorMessage: ${ex.code})"));
       Logger.warning('Unable to retrieve Firebase token! ($errorMessage: ${ex.code})', name: 'push_provider.dart#getFBToken', error: ex);
-      snackbarKey.currentState?.showSnackBar(snackBar);
+      globalSnackbarKey.currentState?.showSnackBar(snackBar);
     }
 
     // Fall back to the last known firebase token
@@ -188,7 +188,7 @@ class PushProvider {
         }
       } catch (error) {
         final SnackBar snackBar = SnackBar(content: Text("An error occured when polling for challenges \n ${error.toString()}"));
-        snackbarKey.currentState?.showSnackBar(snackBar);
+        globalSnackbarKey.currentState?.showSnackBar(snackBar);
 
         Logger.warning(
           'Polling push tokens not working, server can not be reached.',
@@ -210,7 +210,7 @@ class PushProvider {
         _updateFirebaseToken(firebaseToken);
       } catch (error) {
         final SnackBar snackBar = SnackBar(content: Text("Unknown error: $error"));
-        snackbarKey.currentState?.showSnackBar(snackBar);
+        globalSnackbarKey.currentState?.showSnackBar(snackBar);
       }
     }
   }

@@ -79,6 +79,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
     final duration = Duration(seconds: totalSecondsLeft);
     final durationString = duration.toString().split('.').first;
     return TokenWidgetTile(
+      tokenImage: widget.token.tokenImage,
       tokenIsLocked: widget.token.isLocked,
       title: Align(
         alignment: Alignment.centerLeft,

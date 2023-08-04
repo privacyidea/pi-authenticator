@@ -36,12 +36,12 @@ class TokenWidgetBase extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final Token? draggingToken = ref.watch(draggingSortableProvider) is Token ? ref.watch(draggingSortableProvider) as Token : null;
     final List<TokenAction> actions = [
-      deleteAction ?? DefaultDeleteAction(token: token),
-      editAction ?? DefaultEditAction(token: token),
+      deleteAction ?? DefaultDeleteAction(token: token, key: Key('${token.id}deleteAction')),
+      editAction ?? DefaultEditAction(token: token, key: Key('${token.id}editAction')),
     ];
     if ((token.pin == null || token.pin == false)) {
       actions.add(
-        lockAction ?? DefaultLockAction(token: token),
+        lockAction ?? DefaultLockAction(token: token, key: Key('${token.id}lockAction')),
       );
     }
     return LongPressDraggable(
@@ -84,7 +84,7 @@ class TokenWidgetBase extends ConsumerWidget {
               child: Stack(
                 children: [
                   tile,
-                  ...stack,
+                  for (var item in stack) Positioned.fill(child: item),
                 ],
               ),
             ),
