@@ -1,18 +1,18 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+
 import '../../../../../model/tokens/day_password_token.dart';
 import '../../../../../utils/identifiers.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
-import '../token_widget_tile.dart';
-
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
+import '../token_widget_tile.dart';
 
 class DayPasswordTokenWidgetTile extends ConsumerStatefulWidget {
   final DayPasswordToken token;
@@ -23,36 +23,29 @@ class DayPasswordTokenWidgetTile extends ConsumerStatefulWidget {
 }
 
 class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWidgetTile> {
-  int totalSecondsLeft = 0;
+  double secondsLeft = 0;
   final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
 
   @override
   void initState() {
     super.initState();
-    totalSecondsLeft = widget.token.durationUntilNextOTP.inSeconds;
-    GlobalCountdownTimer.addListener(_setNewTimer);
+    secondsLeft = widget.token.durationUntilNextOTP.inMilliseconds / 1000;
+    _countDown(0);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    GlobalCountdownTimer.removeListener(_setNewTimer);
-  }
-
-  void _setNewTimer() {
-    if (mounted) {
-      if (totalSecondsLeft > 0) {
-        setState(() {
-          totalSecondsLeft--;
-        });
-      } else {
-        setState(() {
-          totalSecondsLeft = widget.token.durationUntilNextOTP.inSeconds;
-        });
-      }
+  void _countDown(int msSinceLastCount) {
+    if (!mounted) return;
+    if (secondsLeft - (msSinceLastCount / 1000) > 0) {
+      setState(() => secondsLeft -= msSinceLastCount / 1000);
     } else {
-      GlobalCountdownTimer.removeListener(_setNewTimer);
+      setState(() => secondsLeft = widget.token.durationUntilNextOTP.inMilliseconds / 1000);
     }
+    final msUntilNextSecond = (secondsLeft * 1000).toInt() % 1000 + 1; // +1 to avoid 0
+    Future.delayed(
+        Duration(
+          milliseconds: msUntilNextSecond,
+        ),
+        () => _countDown(msUntilNextSecond));
   }
 
   void _copyOtpValue() {
@@ -76,9 +69,10 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
     var yMd = DateFormat.yMMMd(currentLocale.languageCode).add_E().add_jm();
     var dateString = yMd.format(dateTimeTokenEnd);
 
-    final duration = Duration(seconds: totalSecondsLeft);
+    final duration = Duration(seconds: secondsLeft.ceil());
     final durationString = duration.toString().split('.').first;
     return TokenWidgetTile(
+      key: Key('${widget.token.hashCode}TokenWidgetTile'),
       tokenImage: widget.token.tokenImage,
       tokenIsLocked: widget.token.isLocked,
       title: Align(
@@ -92,7 +86,6 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                 }
               : _copyOtpValue,
           child: HideableText(
-            key: Key(widget.token.hashCode.toString()),
             text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
             textScaleFactor: 1.9,
             enabled: widget.token.isLocked,
@@ -166,31 +159,5 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
         ),
       ),
     );
-  }
-}
-
-/// Calls all listeners every second
-class GlobalCountdownTimer {
-  static Timer? timer;
-  static List<Function> listeners = [];
-
-  static void addListener(Function() fun) {
-    listeners.add(fun);
-    if (listeners.length > 1) return;
-    timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (timer) {
-        for (var element in listeners) {
-          element();
-        }
-      },
-    );
-  }
-
-  static void removeListener(Function() fun) {
-    listeners.remove(fun);
-    if (listeners.isEmpty) {
-      timer?.cancel();
-    }
   }
 }

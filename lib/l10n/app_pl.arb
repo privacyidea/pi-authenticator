@@ -775,5 +775,15 @@
   "@validUntil": {
     "description": "validUntil",
     "type": "text"
+  },
+  "deleteLockedToken": "Uwierzytelnij, aby usunąć zablokowany token.",
+  "@deleteLockedToken": {
+    "description": "deleteLockedToken",
+    "type": "text"
+  },
+  "editLockedToken": "Aby edytować zablokowany token, należy się uwierzytelnić.",
+  "@editLockedToken": {
+    "description": "editLockedToken",
+    "type": "text"
   }
 }

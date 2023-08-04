@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import '../../../../../model/tokens/hotp_token.dart';
+import '../../../../../model/tokens/day_password_token.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../utils/customizations.dart';
 import '../../../../../utils/lock_auth.dart';
@@ -12,10 +12,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/riverpod_providers.dart';
 
-class EditHOTPTokenAction extends TokenAction {
-  final HOTPToken token;
+class EditDayPassowrdTokenAction extends TokenAction {
+  final DayPasswordToken token;
 
-  const EditHOTPTokenAction({
+  const EditDayPassowrdTokenAction({
     Key? key,
     required this.token,
   }) : super(key: key);
@@ -36,6 +36,7 @@ class EditHOTPTokenAction extends TokenAction {
   void _showDialog() {
     final tokenLabel = TextEditingController(text: token.label);
     final imageUrl = TextEditingController(text: token.tokenImage);
+    final period = token.period;
     final algorithm = token.algorithm;
 
     showDialog(
@@ -56,7 +57,7 @@ class EditHOTPTokenAction extends TokenAction {
             TextButton(
                 child: Text(AppLocalizations.of(context)!.save),
                 onPressed: () async {
-                  final newToken = token.copyWith(label: tokenLabel.text, tokenImage: imageUrl.text, algorithm: algorithm);
+                  final newToken = token.copyWith(label: tokenLabel.text, tokenImage: imageUrl.text, period: period, algorithm: algorithm);
                   globalRef?.read(tokenProvider.notifier).updateToken(newToken);
                   Navigator.of(context).pop();
                 }),
@@ -92,6 +93,11 @@ class EditHOTPTokenAction extends TokenAction {
                   TextFormField(
                     initialValue: enumAsString(algorithm),
                     decoration: const InputDecoration(labelText: 'Algorithm'),
+                    enabled: false,
+                  ),
+                  TextFormField(
+                    initialValue: period.toString().split('.').first,
+                    decoration: const InputDecoration(labelText: 'Period'),
                     enabled: false,
                   ),
                 ],

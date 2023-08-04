@@ -42,21 +42,30 @@ class SettingsView extends ConsumerWidget {
               title: AppLocalizations.of(context)!.theme,
               children: <Widget>[
                 RadioListTile(
-                  title: Text(AppLocalizations.of(context)!.lightTheme),
+                  title: Text(
+                    AppLocalizations.of(context)!.lightTheme,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                   value: ThemeMode.light,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
                   onChanged: (dynamic value) => EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: false),
                 ),
                 RadioListTile(
-                  title: Text(AppLocalizations.of(context)!.darkTheme),
+                  title: Text(
+                    AppLocalizations.of(context)!.darkTheme,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                   value: ThemeMode.dark,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
                   onChanged: (dynamic value) => EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: true),
                 ),
                 RadioListTile(
-                  title: Text(AppLocalizations.of(context)!.systemTheme),
+                  title: Text(
+                    AppLocalizations.of(context)!.systemTheme,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                   value: ThemeMode.system,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
@@ -69,7 +78,10 @@ class SettingsView extends ConsumerWidget {
               title: AppLocalizations.of(context)!.language,
               children: [
                 SwitchListTile(
-                    title: Text(AppLocalizations.of(context)!.useDeviceLocaleTitle),
+                    title: Text(
+                      AppLocalizations.of(context)!.useDeviceLocaleTitle,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                     subtitle: Text(AppLocalizations.of(context)!.useDeviceLocaleDescription),
                     value: useSystemLocale,
                     onChanged: (value) => ref.read(settingsProvider.notifier).setUseSystemLocale(value)),
@@ -99,7 +111,10 @@ class SettingsView extends ConsumerWidget {
                 title: AppLocalizations.of(context)!.pushToken,
                 children: <Widget>[
                   ListTile(
-                    title: Text(AppLocalizations.of(context)!.synchronizePushTokens),
+                    title: Text(
+                      AppLocalizations.of(context)!.synchronizePushTokens,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                     subtitle: Text(AppLocalizations.of(context)!.synchronizesTokensWithServer),
                     trailing: ElevatedButton(
                       child: Text(AppLocalizations.of(context)!.sync),
@@ -148,7 +163,10 @@ class SettingsView extends ConsumerWidget {
             const Divider(),
             SettingsGroup(title: AppLocalizations.of(context)!.errorLogTitle, children: [
               ListTile(
-                title: Text(AppLocalizations.of(context)!.logMenu),
+                title: Text(
+                  AppLocalizations.of(context)!.logMenu,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 style: ListTileStyle.list,
                 trailing: ElevatedButton(
                   child: Text(AppLocalizations.of(context)!.open),

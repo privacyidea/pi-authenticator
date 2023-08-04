@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../day_password_token_widgets/day_password_token_widget_tile.dart';
 
 import '../../../../../model/tokens/totp_token.dart';
 import '../../../../../utils/lock_auth.dart';
@@ -22,7 +21,7 @@ class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
 }
 
 class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with SingleTickerProviderStateMixin {
-  int secondsLeft = 0;
+  double secondsLeft = 0;
   late AnimationController _animation;
   final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
 
@@ -46,33 +45,37 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
       vsync: this,
       duration: Duration(seconds: widget.token.period),
     );
-    _countDown();
-    GlobalCountdownTimer.addListener(_countDown);
+    _animation.forward(from: 1 - secondsLeft / widget.token.period);
+    _countDown(0);
   }
 
   @override
   dispose() {
     _animation.dispose();
-    GlobalCountdownTimer.removeListener(_countDown);
     super.dispose();
   }
 
-  void _countDown() {
-    if (mounted == false) {
-      GlobalCountdownTimer.removeListener(_countDown);
-      return;
+  void _countDown(int msSinceLastCount) {
+    if (!mounted) return;
+    if (secondsLeft - (msSinceLastCount / 1000) > 0) {
+      setState(() => secondsLeft -= msSinceLastCount / 1000);
+    } else {
+      setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
+      _animation.forward(from: 1 - secondsLeft / widget.token.period);
     }
-    if (secondsLeft > 1) {
-      setState(() => secondsLeft--);
-      return;
-    }
-    setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
-    _animation.forward(from: 1 - secondsLeft / widget.token.period);
+    final msUntilNextSecond = (secondsLeft * 1000).toInt() % 1000 + 1; // +1 to avoid 0
+    Future.delayed(
+        Duration(
+          milliseconds: msUntilNextSecond,
+        ),
+        () => _countDown(msUntilNextSecond));
   }
 
   @override
   Widget build(BuildContext context) {
     return TokenWidgetTile(
+      key: Key('${widget.token.hashCode}TokenWidgetTile'),
+      tokenImage: widget.token.tokenImage,
       tokenIsLocked: widget.token.isLocked,
       title: Align(
         alignment: Alignment.centerLeft,
@@ -105,7 +108,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
           builder: (context, child) {
             return Stack(
               children: [
-                Center(child: Text('$secondsLeft')),
+                Center(child: Text('${secondsLeft.ceil()}')), // ceil to show 30 -> 1 instead of 29 -> 0
                 Center(
                   child: CircularProgressIndicator(
                     value: _animation.value,

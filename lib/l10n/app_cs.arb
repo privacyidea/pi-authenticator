@@ -775,5 +775,15 @@
   "@validUntil": {
     "description": "validUntil",
     "type": "text"
+  },
+  "deleteLockedToken": "Prosím, autentifikujte se pro smazání uzamčeného tokenu.",
+  "@deleteLockedToken": {
+    "description": "deleteLockedToken",
+    "type": "text"
+  },
+  "editLockedToken": "Prosím, autentifikujte se pro úpravu uzamčeného tokenu.",
+  "@editLockedToken": {
+    "description": "editLockedToken",
+    "type": "text"
   }
 }
