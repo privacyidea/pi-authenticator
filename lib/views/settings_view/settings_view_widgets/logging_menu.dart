@@ -24,8 +24,6 @@ class LoggingMenu extends ConsumerWidget {
         title: Text(
           AppLocalizations.of(context)!.logMenu,
           style: Theme.of(context).listTileTheme.titleTextStyle,
-          overflow: TextOverflow.fade,
-          softWrap: false,
         ),
         content: Column(
           mainAxisAlignment: MainAxisAlignment.start,

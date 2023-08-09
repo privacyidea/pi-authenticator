@@ -3,8 +3,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-
 import '../utils/riverpod_providers.dart';
 
 final dragItemScrollerStateProvider = StateProvider<bool>((ref) => false);
@@ -127,7 +125,7 @@ class _DragItemScrollerState extends State<DragItemScroller> {
             return;
           }
           if (event.position.dy > bottomY - DragItemScroller.minScrollingSpeedDetectDistanceBottom &&
-              innerController!.offset < (innerController!.position.maxScrollExtent)) {
+              innerController!.offset < (innerController.position.maxScrollExtent)) {
             // scroll down if the pointer is in the bottom range and the scrollController is not at the bottom
             final distanceToBottom = bottomY - event.position.dy; // distance to bottom of the widget in px
             final distanceToMaxSpeed = distanceToBottom - (DragItemScroller.minScrollingSpeedDetectDistanceBottom - DragItemScroller.maxSpeedZoneHeightBottom);
