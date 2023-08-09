@@ -16,20 +16,31 @@ class SendErrorDialog extends StatelessWidget {
         future: Logger.instance.errorLog,
         builder: (context, errorLog) {
           return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.sendErrorDialogHeader),
+            title: Text(
+              AppLocalizations.of(context)!.sendErrorDialogHeader,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(AppLocalizations.of(context)!.sendErrorDialogBody),
+                  child: Text(
+                    AppLocalizations.of(context)!.sendErrorDialogBody,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
                 ),
                 Expanded(
                   child: Card(
                     child: SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(errorLog.data?.toString() ?? ''),
+                        child: Text(
+                          errorLog.data?.toString() ?? '',
+                          overflow: TextOverflow.fade,
+                        ),
                       ),
                     ),
                   ),
@@ -38,7 +49,11 @@ class SendErrorDialog extends StatelessWidget {
             ),
             actions: <Widget>[
               TextButton(
-                child: Text(AppLocalizations.of(context)!.dismiss),
+                child: Text(
+                  AppLocalizations.of(context)!.dismiss,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
                 onPressed: () => Navigator.pop(context),
               ),
               TextButton(
@@ -63,10 +78,16 @@ class NoLogDialog extends StatelessWidget {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
-        title: Text(AppLocalizations.of(context)!.noLogToSend),
+        title: Text(
+          AppLocalizations.of(context)!.noLogToSend,
+        ),
         actions: <Widget>[
           TextButton(
-            child: Text(AppLocalizations.of(context)!.ok),
+            child: Text(
+              AppLocalizations.of(context)!.ok,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
         ],

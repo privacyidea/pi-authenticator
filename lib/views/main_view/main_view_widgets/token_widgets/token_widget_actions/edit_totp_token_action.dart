@@ -46,16 +46,28 @@ class EditTOTPTokenAction extends TokenAction {
         child: AlertDialog(
           titlePadding: const EdgeInsets.all(12),
           contentPadding: const EdgeInsets.all(0),
-          title: Text(AppLocalizations.of(context)!.editToken),
+          title: Text(
+            AppLocalizations.of(context)!.editToken,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
           actions: [
             TextButton(
-              child: Text(AppLocalizations.of(context)!.cancel),
+              child: Text(
+                AppLocalizations.of(context)!.cancel,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-                child: Text(AppLocalizations.of(context)!.save),
+                child: Text(
+                  AppLocalizations.of(context)!.save,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
                 onPressed: () async {
                   final newToken = token.copyWith(label: tokenLabel.text, tokenImage: imageUrl.text, period: period, algorithm: algorithm);
                   globalRef?.read(tokenProvider.notifier).updateToken(newToken);

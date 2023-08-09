@@ -27,7 +27,12 @@ class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text(widget.label, style: Theme.of(context).textTheme.bodyMedium),
+        Text(
+          widget.label,
+          style: Theme.of(context).textTheme.bodyMedium,
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
         SizedBox(
           width: 100,
           child: DropdownButton<T>(
@@ -40,6 +45,8 @@ class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
                   '${value is String || value is int || value is double ? value : enumAsString(value!)}'
                   '${widget.postFix}',
                   style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
                 ),
               );
             }).toList(),

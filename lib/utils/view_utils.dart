@@ -7,5 +7,10 @@ void showMessage({
   Duration duration = const Duration(seconds: 3),
 }) =>
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), duration: duration),
+      SnackBar(
+          content: Text(
+            message,
+            overflow: TextOverflow.ellipsis,
+          ),
+          duration: duration),
     );

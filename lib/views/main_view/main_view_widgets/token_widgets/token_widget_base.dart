@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/model/mixins/sortable_mixin.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_slideable.dart';
 
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/riverpod_providers.dart';
@@ -34,7 +36,7 @@ class TokenWidgetBase extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final Token? draggingToken = ref.watch(draggingSortableProvider) is Token ? ref.watch(draggingSortableProvider) as Token : null;
+    final SortableMixin? draggingSortable = ref.watch(draggingSortableProvider);
     final List<TokenAction> actions = [
       deleteAction ?? DefaultDeleteAction(token: token, key: Key('${token.id}deleteAction')),
       editAction ?? DefaultEditAction(token: token, key: Key('${token.id}editAction')),
@@ -44,50 +46,51 @@ class TokenWidgetBase extends ConsumerWidget {
         lockAction ?? DefaultLockAction(token: token, key: Key('${token.id}lockAction')),
       );
     }
-    return LongPressDraggable(
-      onDragStarted: () {
-        ref.read(draggingSortableProvider.notifier).state = token;
-      },
-      onDragCompleted: () {
-        globalRef?.read(draggingSortableProvider.notifier).state = null;
-      },
-      onDraggableCanceled: (velocity, offset) {
-        globalRef?.read(draggingSortableProvider.notifier).state = null;
-      },
-      dragAnchorStrategy: (Draggable<Object> d, BuildContext context, Offset point) {
-        final textSize = textSizeOf(token.label, Theme.of(context).textTheme.titleLarge!);
-        return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
-      },
-      feedback: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(dragIcon, size: 60),
-          Material(
-              color: Colors.transparent,
-              child: Text(
-                token.label,
-                style: Theme.of(context).textTheme.titleLarge,
-              )),
-        ],
-      ),
-      data: token,
-      child: draggingToken == token
-          ? const SizedBox()
-          : Slidable(
-              key: ValueKey(token.id),
-              groupTag: 'myTag', // This is used to only let one be open at a time.
-              endActionPane: ActionPane(
-                motion: const DrawerMotion(),
-                extentRatio: 1,
-                children: actions,
-              ),
-              child: Stack(
-                children: [
-                  tile,
-                  for (var item in stack) Positioned.fill(child: item),
-                ],
-              ),
+    return draggingSortable == null
+        ? LongPressDraggable(
+            maxSimultaneousDrags: 1,
+            onDragStarted: () {
+              ref.read(draggingSortableProvider.notifier).state = token;
+            },
+            onDragCompleted: () {
+              globalRef?.read(draggingSortableProvider.notifier).state = null;
+            },
+            onDraggableCanceled: (velocity, offset) {
+              globalRef?.read(draggingSortableProvider.notifier).state = null;
+            },
+            dragAnchorStrategy: (Draggable<Object> d, BuildContext context, Offset point) {
+              final textSize = textSizeOf(token.label, Theme.of(context).textTheme.titleLarge!);
+              return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
+            },
+            feedback: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(dragIcon, size: 60),
+                Material(
+                    color: Colors.transparent,
+                    child: Text(
+                      token.label,
+                      style: Theme.of(context).textTheme.titleLarge,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                    )),
+              ],
             ),
-    );
+            data: token,
+            child: TokenWidgetSlideable(
+              token: token,
+              actions: actions,
+              stack: stack,
+              tile: tile,
+            ),
+          )
+        : draggingSortable == token
+            ? const SizedBox()
+            : TokenWidgetSlideable(
+                token: token,
+                actions: actions,
+                stack: stack,
+                tile: tile,
+              );
   }
 }

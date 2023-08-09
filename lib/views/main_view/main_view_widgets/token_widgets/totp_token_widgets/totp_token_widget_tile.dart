@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../model/states/app_state.dart';
 import '../../../../../model/tokens/totp_token.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
@@ -22,7 +23,7 @@ class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
 
 class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with SingleTickerProviderStateMixin {
   double secondsLeft = 0;
-  late AnimationController _animation;
+  late AnimationController animation;
   final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
 
   void _copyOtpValue() {
@@ -31,7 +32,13 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
     globalRef?.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue))),
+      SnackBar(
+        content: Text(
+          AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue),
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
+      ),
     );
     Future.delayed(const Duration(seconds: 5), () {
       globalRef?.read(disableCopyOtpProvider.notifier).state = false;
@@ -41,17 +48,30 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   @override
   void initState() {
     super.initState();
-    _animation = AnimationController(
+    animation = AnimationController(
       vsync: this,
       duration: Duration(seconds: widget.token.period),
     );
-    _animation.forward(from: 1 - secondsLeft / widget.token.period);
+    animation.forward(from: 1 - widget.token.secondsUntilNextOTP / widget.token.period);
     _countDown(0);
+    ref.read(appStateProvider.notifier).addListener(_onAppStateChange);
+  }
+
+  void _onAppStateChange(AppState state) {
+    if (!mounted) return;
+    if (state == AppState.resume) {
+      animation.forward(from: 1 - secondsLeft / widget.token.period);
+      return;
+    }
+    if (state == AppState.pause) {
+      animation.stop();
+      return;
+    }
   }
 
   @override
   dispose() {
-    _animation.dispose();
+    animation.dispose();
     super.dispose();
   }
 
@@ -61,7 +81,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
       setState(() => secondsLeft -= msSinceLastCount / 1000);
     } else {
       setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
-      _animation.forward(from: 1 - secondsLeft / widget.token.period);
+      animation.forward(from: 1 - secondsLeft / widget.token.period);
     }
     final msUntilNextSecond = (secondsLeft * 1000).toInt() % 1000 + 1; // +1 to avoid 0
     Future.delayed(
@@ -104,14 +124,20 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
         token: widget.token,
         isHiddenNotifier: isHidden,
         child: AnimatedBuilder(
-          animation: _animation,
+          animation: animation,
           builder: (context, child) {
             return Stack(
               children: [
-                Center(child: Text('${secondsLeft.ceil()}')), // ceil to show 30 -> 1 instead of 29 -> 0
+                Center(
+                  child: Text(
+                    '${secondsLeft.ceil()}',
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+                ), // ceil to show 30 -> 1 instead of 29 -> 0
                 Center(
                   child: CircularProgressIndicator(
-                    value: _animation.value,
+                    value: animation.value,
                   ),
                 ),
               ],

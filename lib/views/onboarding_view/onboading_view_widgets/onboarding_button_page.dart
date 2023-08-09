@@ -16,6 +16,8 @@ class OnboardingButtonPage extends StatelessWidget {
         Text(
           title,
           style: TextStyle(fontSize: 27.0, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.titleMedium?.color),
+          overflow: TextOverflow.fade,
+          softWrap: false,
         ),
         const SizedBox(height: 40),
         Row(
@@ -28,12 +30,18 @@ class OnboardingButtonPage extends StatelessWidget {
                 color: Theme.of(context).textTheme.titleMedium?.color,
               ),
               textAlign: TextAlign.center,
+              overflow: TextOverflow.fade,
+              softWrap: false,
             ),
             OutlinedButton(
                 onPressed: onPressed,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(buttonTitle),
+                  child: Text(
+                    buttonTitle,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
                 ))
           ],
         ),

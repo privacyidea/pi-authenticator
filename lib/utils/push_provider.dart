@@ -62,7 +62,12 @@ class PushProvider {
       );
     } on FirebaseException catch (ex) {
       String errorMessage = ex.message ?? 'no error message';
-      final SnackBar snackBar = SnackBar(content: Text("Firebase notification permission error! ($errorMessage: ${ex.code}"));
+      final SnackBar snackBar = SnackBar(
+          content: Text(
+        "Firebase notification permission error! ($errorMessage: ${ex.code}",
+        overflow: TextOverflow.fade,
+        softWrap: false,
+      ));
       globalSnackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -83,14 +88,26 @@ class PushProvider {
         final SnackBar snackBar = SnackBar(
             content: Text(
           'Push cant be initialized, restart the app and try again. ${error.code}: $errorMessage',
+          overflow: TextOverflow.fade,
+          softWrap: false,
         ));
         globalSnackbarKey.currentState?.showSnackBar(snackBar);
       }
     } on FirebaseException catch (error) {
-      final SnackBar snackBar = SnackBar(content: Text("Push cant be initialized, restart the app and try again$error"));
+      final SnackBar snackBar = SnackBar(
+          content: Text(
+        "Push cant be initialized, restart the app and try again$error",
+        overflow: TextOverflow.fade,
+        softWrap: false,
+      ));
       globalSnackbarKey.currentState?.showSnackBar(snackBar);
     } catch (error) {
-      final SnackBar snackBar = SnackBar(content: Text("Unknown error: $error"));
+      final SnackBar snackBar = SnackBar(
+          content: Text(
+        "Unknown error: $error",
+        overflow: TextOverflow.fade,
+        softWrap: false,
+      ));
       globalSnackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -101,7 +118,12 @@ class PushProvider {
         try {
           _updateFirebaseToken(newToken);
         } catch (error) {
-          final SnackBar snackBar = SnackBar(content: Text("Unknown error: $error"));
+          final SnackBar snackBar = SnackBar(
+              content: Text(
+            "Unknown error: $error",
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ));
           globalSnackbarKey.currentState?.showSnackBar(snackBar);
         }
       }
@@ -117,7 +139,13 @@ class PushProvider {
       firebaseToken = await FirebaseMessaging.instance.getToken();
     } on FirebaseException catch (ex) {
       String errorMessage = ex.message ?? 'no error message';
-      final SnackBar snackBar = SnackBar(content: Text("Unable to retrieve Firebase token! ($errorMessage: ${ex.code})"));
+      final SnackBar snackBar = SnackBar(
+        content: Text(
+          "Unable to retrieve Firebase token! ($errorMessage: ${ex.code})",
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
+      );
       Logger.warning('Unable to retrieve Firebase token! ($errorMessage: ${ex.code})', name: 'push_provider.dart#getFBToken', error: ex);
       globalSnackbarKey.currentState?.showSnackBar(snackBar);
     }
@@ -187,7 +215,13 @@ class PushProvider {
           // not by their error code. This would make error handling complex.
         }
       } catch (error) {
-        final SnackBar snackBar = SnackBar(content: Text("An error occured when polling for challenges \n ${error.toString()}"));
+        final SnackBar snackBar = SnackBar(
+          content: Text(
+            "An error occured when polling for challenges \n ${error.toString()}",
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
+        );
         globalSnackbarKey.currentState?.showSnackBar(snackBar);
 
         Logger.warning(
@@ -209,7 +243,13 @@ class PushProvider {
       try {
         _updateFirebaseToken(firebaseToken);
       } catch (error) {
-        final SnackBar snackBar = SnackBar(content: Text("Unknown error: $error"));
+        final SnackBar snackBar = SnackBar(
+          content: Text(
+            "Unknown error: $error",
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
+        );
         globalSnackbarKey.currentState?.showSnackBar(snackBar);
       }
     }

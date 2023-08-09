@@ -68,6 +68,8 @@ class HideableText extends StatelessWidget {
               fontFamily: 'monospace',
               fontWeight: FontWeight.bold,
             ),
+      overflow: TextOverflow.fade,
+      softWrap: false,
     );
   }
 }

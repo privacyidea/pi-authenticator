@@ -1,29 +1,5 @@
 {
-  "@@last_modified": "2021-02-25T12:30:00.793083",
-  "guide": "Guide",
-  "@guide": {
-    "description": "Button to open the guide screen.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "next": "Next",
-  "@next": {
-    "description": "The text of the button to calculate the next otp value.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "about": "About",
-  "@about": {
-    "description": "Button to open the about page.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "retry": "Retry",
-  "@retry": {
-    "description": "Label for e.g. a button. Something is tried to be done again.",
-    "type": "text",
-    "placeholders": {}
-  },
+  "@@last_modified": "2023-08-07",
   "accept": "Accept",
   "@accept": {
     "description": "Label for e.g. a button. Something gets accepted by the user.",
@@ -102,18 +78,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "showThisScreenOnStart": "Show this screen on start",
-  "@showThisScreenOnStart": {
-    "description": "Description for checkbox, if the checkbox is ticked, the guide screen is shown on every app start.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "somethingWentWrong": "Something went wrong.",
-  "@somethingWentWrong": {
-    "description": "Tells the user that something went wrong.",
-    "type": "text",
-    "placeholders": {}
-  },
   "addToken": "Add token",
   "@addToken": {
     "description": "The button to open the screen to add tokens by hand.",
@@ -153,6 +117,12 @@
   "renameToken": "Rename token",
   "@renameToken": {
     "description": "Title of the dialog where a new name for a token can be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "renameTokenCategory": "Rename token category",
+  "@renameTokenCategory": {
+    "description": "Title of the dialog where a new name for a token category can be entered.",
     "type": "text",
     "placeholders": {}
   },
@@ -230,21 +200,9 @@
     "type": "text",
     "placeholders": {}
   },
-  "someTokensDoNotSupportPolling": "Some of the tokens are outdated and do not support polling",
-  "@someTokensDoNotSupportPolling": {
-    "description": "Tells the user, that the following tokens do not support polling.",
-    "type": "text",
-    "placeholders": {}
-  },
   "enablePolling": "Enable polling",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "miscellaneous": "Miscellaneous",
-  "@miscellaneous": {
-    "description": "Title for misc settings.",
     "type": "text",
     "placeholders": {}
   },
@@ -296,26 +254,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorOnlyOneFirebaseProjectIsSupported": "The firebase configuration of {name} differs from the one currently used by the app. Currently only one is supported.",
-  "@errorOnlyOneFirebaseProjectIsSupported": {
-    "description": "Tells the user that the token can not be used because it has a different firebase configuration than the current used configuration of the application.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "errorTokenExpired": "Token {name} is expired, roll-out not possible.",
-  "@errorTokenExpired": {
-    "description": "Tells the user that the token can not be rolled out, because it expired.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
   "errorRollOutFailed": "Rolling out token {name} failed. Error code: {errorCode}",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
@@ -351,69 +289,9 @@
       }
     }
   },
-  "acceptPushAuthRequestFor": "Accepted authentication request for {name}.",
-  "@acceptPushAuthRequestFor": {
-    "description": "Tells the user that a push request for a specific token was accepted.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "decliningPushAuthRequestFor": "Declined authentication request for {name}.",
-  "@decliningPushAuthRequestFor": {
-    "description": "Tells the user that a push request for a specific token was declined.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "errorPushAuthRequestFailedFor": "Accepting authentication request for {name} failed. Error code: {errorCode}",
-  "@errorPushAuthRequestFailedFor": {
-    "description": "Tells the user that a push auth request could not be accepted for a token.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      },
-      "errorCode": {
-        "example": "500"
-      }
-    }
-  },
   "rollingOut": "Rolling out",
   "@rollingOut": {
     "description": "Label that tells the user that the token is being rolled out.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "retryRollOut": "Roll-out failed, please try again.",
-  "@retryRollOut": {
-    "description": "Label for e.g. a button. Tells the user that rolling out the token failed. Roll out can be retried by clicking this button.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "errorAuthenticationNotPossibleWithoutNetworkAccess": "No network connection. Authentication not possible.",
-  "@errorAuthenticationNotPossibleWithoutNetworkAccess": {
-    "description": "Error message tell the user that accepting a push request failed.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "errorAuthenticationFailedUnknownError": "An unknown error occurred. Authentication failed: {e}",
-  "@errorAuthenticationFailedUnknownError": {
-    "description": "Tells the user that the authentication could not be accepted because of an unknown error.",
-    "type": "text",
-    "placeholders": {
-      "e": {
-        "example": "IllegalArgumentException on line 5, ..."
-      }
-    }
-  },
-  "firebaseConfigCorrupted": "The firebase configuration is corrupted and cannot be used.",
-  "@firebaseConfigCorrupted": {
     "type": "text",
     "placeholders": {}
   },
@@ -422,60 +300,11 @@
     "type": "text",
     "placeholders": {}
   },
-  "migrateTokens": "Migrate tokens from previous app version.",
-  "@migrateTokens": {
-    "description": "Description of migration.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migrate": "Migrate",
-  "@migrate": {
-    "description": "Text of button to start migration.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migration": "Migration",
-  "@migration": {
-    "description": "Title of settings group for migrating tokens.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migrationSuccess": "All tokens migrated successfully.",
-  "@migrationSuccess": {
-    "description": "Tells the user that all tokens are migrated successfully.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "noTokensForMigration": "No tokens exist that could be migrated.",
-  "@noTokensForMigration": {
-    "description": "Tells the user that no tokens exist that could be migrated.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migratingToken": "Migrating Token",
-  "@migratingToken": {
-    "description": "Title of migration dialog.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "unexpectedError": "Unexpected Error",
+  "unexpectedError": "An unexpected error occurred.",
   "@unexpectedError": {
     "description": "Title of page report mode.",
     "type": "text",
     "placeholders": {}
-  },
-  "pageReportModeBody": "An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future. Press {accept} to send the information or {cancel} to not send any information.",
-  "@pageReportModeBody": {
-    "description": "Description shown to the user about what info the error report contains.",
-    "type": "text",
-    "placeholders": {
-      "accept": {
-        "example": "accept"
-      },
-      "cancel": {
-        "example": "cancel"
-      }
-    }
   },
   "pollingFailNoNetworkConnection": "Polling failed. Server cannot be reached.",
   "@pollingFailNoNetworkConnection": {
@@ -498,18 +327,6 @@
   "language": "Language",
   "@language": {
     "description": "Title of language setting group.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "handlingOtpAuthLinkFailed": "Handling the provided link failed. Error in communication with the underlying platform.",
-  "@handlingOtpAuthLinkFailed": {
-    "description": "Message that tells the user that handling a link failed. This link was provided through the 'open link with app' on android or iOS.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "authenticateToAcceptPush": "Please authenticate to use this push token!",
-  "@authenticateToAcceptPush": {
-    "description": "Reason to authenticate when clicking the 'accept' button of a push token.",
     "type": "text",
     "placeholders": {}
   },
@@ -646,11 +463,6 @@
     "description": "onBoardingText3",
     "type": "text"
   },
-  "unlockToCopy": "Use biometrics to unlock the token",
-  "@unlockToCopy": {
-    "description": "unlockToCopy",
-    "type": "text"
-  },
   "errorLogTitle": "Error logs",
   "@errorLogTitle": {
     "description": "errorLogTitle",
@@ -674,11 +486,6 @@
   "logMenu": "Log menu",
   "@logMenu": {
     "description": "logMenu",
-    "type": "text"
-  },
-  "send": "Send",
-  "@send": {
-    "description": "send",
     "type": "text"
   },
   "sendErrorDialogHeader": "Send via e-mail",
@@ -706,11 +513,6 @@
     "description": "errorLogCleared",
     "type": "text"
   },
-  "errorOccurred": "An error has occurred.",
-  "@errorOccurred": {
-    "description": "errorOccurred",
-    "type": "text"
-  },
   "showDetails": "Show details",
   "@showDetails": {
     "description": "showDetails",
@@ -734,11 +536,6 @@
   "firebaseToken": "Firebase Token",
   "@firebaseToken": {
     "description": "firebaseToken",
-    "type": "text"
-  },
-  "serial": "Serial",
-  "@serial": {
-    "description": "serial",
     "type": "text"
   },
   "noPublicKey": "No public key available",
@@ -784,6 +581,21 @@
   "editLockedToken": "Please authenticate to edit the locked token.",
   "@editLockedToken": {
     "description": "editLockedToken",
+    "type": "text"
+  },
+  "uncollapseLockedCategory": "Please authenticate to uncollapse the locked category.",
+  "@uncollapseLockedCategory": {
+    "description": "uncollapseLockedCategory",
+    "type": "text"
+  },
+  "addANewCategory": "Add a new category",
+  "@addANewCategory": {
+    "description": "addANewCategory",
+    "type": "text"
+  },
+  "categoryName": "Category name",
+  "@categoryName": {
+    "description": "categoryName",
     "type": "text"
   }
 }

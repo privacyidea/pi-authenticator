@@ -35,7 +35,11 @@ class DefaultEditAction extends TokenAction {
         context: globalNavigatorKey.currentContext!,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.renameToken),
+            title: Text(
+              AppLocalizations.of(context)!.renameToken,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
             content: TextFormField(
               autofocus: true,
               controller: nameInputController,
@@ -52,12 +56,16 @@ class DefaultEditAction extends TokenAction {
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.cancel,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.rename,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
                 ),
                 onPressed: () {
                   final newLabel = nameInputController.text.trim();

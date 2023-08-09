@@ -35,7 +35,7 @@ class ApplicationCustomizer {
   static const String appIcon = 'res/logo/app_logo_light.png';
 
   static const Color primaryColor = Colors.lightBlue;
-  static const Color themeColorDark = Colors.black;
+  static const Color themeColorDark = Color(0xFF282828);
   static const Color themeColorLight = Colors.white;
 
   static const Color backgroundColorDark = Color(0xFF303030);

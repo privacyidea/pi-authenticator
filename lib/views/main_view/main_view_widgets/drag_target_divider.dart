@@ -65,6 +65,7 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
         final allSortables = [...ref.read(tokenProvider).tokens, ...ref.read(tokenCategoryProvider).categorys];
         allSortables.sort((a, b) => a.compareTo(b));
         final oldIndex = allSortables.indexOf(dragedSortable);
+        if (oldIndex == -1) return; // If the draged item is not in the list we dont need to do anything
         int newIndex;
         if (widget.nextSortable == null) {
           // If the draged item is moved to the end of the list the nextSortable is null. The newIndex will be set to the last index

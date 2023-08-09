@@ -17,6 +17,8 @@ class PushTokenWidgetTile extends ConsumerWidget {
       title: Text(
         token.label,
         textScaleFactor: 1.9,
+        overflow: TextOverflow.fade,
+        softWrap: false,
       ),
       subtitles: [
         if (token.issuer.isNotEmpty) token.issuer,

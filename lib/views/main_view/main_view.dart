@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
-
 import '../../model/states/app_state.dart';
 import '../../utils/app_customizer.dart';
 import '../../utils/riverpod_providers.dart';
@@ -11,7 +10,6 @@ import 'main_view_widgets/no_token_screen.dart';
 
 class MainView extends ConsumerStatefulWidget {
   static const routeName = '/';
-
   final String _title;
 
   const MainView({Key? key, required String title})
@@ -23,6 +21,7 @@ class MainView extends ConsumerStatefulWidget {
 }
 
 class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
+  final globalKey = GlobalKey<NestedScrollViewState>();
   @override
   void onResume() {
     globalRef?.read(appStateProvider.notifier).setAppState(AppState.resume);
@@ -36,10 +35,8 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
   @override
   Widget build(BuildContext context) {
     final tokenList = ref.watch(tokenProvider).tokens;
-
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
         title: Text(
           widget._title,
           overflow: TextOverflow.ellipsis,
@@ -48,11 +45,10 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
         ),
         leading: Image.asset(ApplicationCustomizer.appIcon),
       ),
-      extendBodyBehindAppBar: false,
       body: Stack(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         children: [
-          tokenList.isEmpty ? const NoTokenScreen() : MainViewTokensList(tokenList),
+          tokenList.isEmpty ? const NoTokenScreen() : MainViewTokensList(tokenList, nestedScrollViewKey: globalKey),
           const MainViewNavigationButtions(),
         ],
       ),

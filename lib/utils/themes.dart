@@ -32,7 +32,16 @@ var lightThemeData = ThemeData(
   brightness: Brightness.light,
   primaryColorLight: primarySwatch,
   primaryColorDark: primarySwatch,
-  appBarTheme: const AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
+  appBarTheme: const AppBarTheme().copyWith(
+    backgroundColor: ApplicationCustomizer.backgroundColorLight,
+    shadowColor: ApplicationCustomizer.themeColorDark,
+    elevation: 6,
+  ),
+  navigationBarTheme: const NavigationBarThemeData().copyWith(
+    backgroundColor: ApplicationCustomizer.themeColorLight,
+    shadowColor: ApplicationCustomizer.themeColorDark,
+    elevation: 0,
+  ),
   listTileTheme: ListTileThemeData(
     tileColor: ApplicationCustomizer.backgroundColorLight,
     titleTextStyle: TextStyle(color: primarySwatch),
@@ -95,7 +104,16 @@ var darkThemeData = ThemeData(
   brightness: Brightness.dark,
   primaryColorLight: primarySwatch,
   primaryColorDark: primarySwatch,
-  appBarTheme: const AppBarTheme().copyWith(backgroundColor: Colors.transparent, elevation: 0),
+  appBarTheme: const AppBarTheme().copyWith(
+    backgroundColor: ApplicationCustomizer.backgroundColorDark,
+    shadowColor: ApplicationCustomizer.themeColorLight,
+    elevation: 0,
+  ),
+  navigationBarTheme: const NavigationBarThemeData().copyWith(
+    backgroundColor: ApplicationCustomizer.themeColorDark,
+    shadowColor: ApplicationCustomizer.themeColorLight,
+    elevation: 6,
+  ),
   listTileTheme: ListTileThemeData(
     tileColor: ApplicationCustomizer.backgroundColorDark,
     titleTextStyle: TextStyle(color: primarySwatch),

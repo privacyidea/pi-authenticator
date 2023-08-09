@@ -192,7 +192,11 @@ class Logger {
     await file.writeAsString('', mode: FileMode.write);
     globalSnackbarKey.currentState?.showSnackBar(
       SnackBar(
-        content: Text(_context != null ? AppLocalizations.of(_context!)!.errorLogCleared : 'Error Log Cleared'),
+        content: Text(
+          _context != null ? AppLocalizations.of(_context!)!.errorLogCleared : 'Error Log Cleared',
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
       ),
     );
   }
@@ -293,7 +297,11 @@ class Logger {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       globalSnackbarKey.currentState?.showSnackBar(
         SnackBar(
-          content: Text(_context != null ? AppLocalizations.of(_context!)!.errorOccurred : 'Error Occurred'),
+          content: Text(
+            _context != null ? AppLocalizations.of(_context!)!.unexpectedError : 'Unexpected Error',
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
           action: _context != null
               ? SnackBarAction(
                   label: AppLocalizations.of(_context!)!.showDetails,

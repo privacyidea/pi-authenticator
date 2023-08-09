@@ -24,6 +24,8 @@ class LoggingMenu extends ConsumerWidget {
         title: Text(
           AppLocalizations.of(context)!.logMenu,
           style: Theme.of(context).listTileTheme.titleTextStyle,
+          overflow: TextOverflow.fade,
+          softWrap: false,
         ),
         content: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -33,6 +35,7 @@ class LoggingMenu extends ConsumerWidget {
               title: Text(
                 AppLocalizations.of(context)!.enableVerboseLogging,
                 style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.fade,
               ),
               trailing: Switch(value: verboseLogging, onChanged: (value) => ref.read(settingsProvider.notifier).setVerboseLogging(value)),
               style: ListTileStyle.list,
@@ -43,10 +46,15 @@ class LoggingMenu extends ConsumerWidget {
               title: Text(
                 AppLocalizations.of(context)!.sendErrorHint,
                 style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.fade,
               ),
               trailing: ElevatedButton(
                 onPressed: () => _pressSendErrorLog(context),
-                child: Text(AppLocalizations.of(context)!.open),
+                child: Text(
+                  AppLocalizations.of(context)!.open,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
               ),
               style: ListTileStyle.drawer,
               onTap: () => _pressSendErrorLog(context),
@@ -56,10 +64,15 @@ class LoggingMenu extends ConsumerWidget {
               title: Text(
                 AppLocalizations.of(context)!.clearErrorLogHint,
                 style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.fade,
               ),
               trailing: ElevatedButton(
                 onPressed: () => _pressClearErrorLog(context),
-                child: Text(AppLocalizations.of(context)!.delete),
+                child: Text(
+                  AppLocalizations.of(context)!.delete,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
               ),
               style: ListTileStyle.drawer,
               onTap: () => _pressClearErrorLog(context),
@@ -68,7 +81,11 @@ class LoggingMenu extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            child: Text(AppLocalizations.of(context)!.dismiss),
+            child: Text(
+              AppLocalizations.of(context)!.dismiss,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
         ],

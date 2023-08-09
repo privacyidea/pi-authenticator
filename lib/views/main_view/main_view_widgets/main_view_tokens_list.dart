@@ -18,8 +18,9 @@ import 'sortable_widget_builder.dart';
 
 class MainViewTokensList extends ConsumerStatefulWidget {
   final List<Token> tokens;
+  final GlobalKey<NestedScrollViewState> nestedScrollViewKey;
 
-  const MainViewTokensList(this.tokens, {Key? key}) : super(key: key);
+  const MainViewTokensList(this.tokens, {Key? key, required this.nestedScrollViewKey}) : super(key: key);
 
   @override
   ConsumerState<MainViewTokensList> createState() => _MainViewTokensListState();
@@ -27,8 +28,7 @@ class MainViewTokensList extends ConsumerStatefulWidget {
 
 class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
   final listViewKey = GlobalKey();
-
-  final ScrollController scrollController = ScrollController();
+  final scrollController = ScrollController();
 
   Duration? lastTimeStamp;
 
@@ -62,12 +62,12 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
       child: SlidableAutoCloseBehavior(
         child: DragItemScroller(
           listViewKey: listViewKey,
-          scrollController: scrollController,
           itemIsDragged: draggingSortable != null,
+          scrollController: scrollController,
           child: CustomScrollView(
             key: listViewKey,
+            physics: allowToRefresh ? const AlwaysScrollableScrollPhysics() : null,
             controller: scrollController,
-            physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
               SliverList(
                 delegate: SliverChildListDelegate(
@@ -105,7 +105,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     if (draggingSortable != null) {
       widgets.add(const DragTargetDivider(dependingCategory: null, nextSortable: null, isLastDivider: true));
     }
-    widgets.add(const SizedBox(height: 100));
+    widgets.add(const SizedBox(height: 80));
     return widgets;
   }
 }

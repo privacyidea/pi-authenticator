@@ -30,15 +30,17 @@ class DeleteTokenCategoryAction extends StatelessWidget {
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.confirmDeletion),
-          content: Text(
-            AppLocalizations.of(context)!.confirmDeletionOf(category.label),
+          title: Text(
+            AppLocalizations.of(context)!.confirmDeletion,
           ),
+          content: Text(AppLocalizations.of(context)!.confirmDeletionOf(category.label)),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 AppLocalizations.of(context)!.cancel,
+                overflow: TextOverflow.fade,
+                softWrap: false,
               ),
             ),
             TextButton(
@@ -54,6 +56,8 @@ class DeleteTokenCategoryAction extends StatelessWidget {
               },
               child: Text(
                 AppLocalizations.of(context)!.delete,
+                overflow: TextOverflow.fade,
+                softWrap: false,
               ),
             ),
           ],

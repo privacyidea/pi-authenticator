@@ -48,13 +48,21 @@ class EditHOTPTokenAction extends TokenAction {
           title: Text(AppLocalizations.of(context)!.editToken),
           actions: [
             TextButton(
-              child: Text(AppLocalizations.of(context)!.cancel),
+              child: Text(
+                AppLocalizations.of(context)!.cancel,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-                child: Text(AppLocalizations.of(context)!.save),
+                child: Text(
+                  AppLocalizations.of(context)!.save,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
                 onPressed: () async {
                   final newToken = token.copyWith(label: tokenLabel.text, tokenImage: imageUrl.text, algorithm: algorithm);
                   globalRef?.read(tokenProvider.notifier).updateToken(newToken);

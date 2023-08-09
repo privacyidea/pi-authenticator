@@ -1,26 +1,8 @@
 {
-  "@@last_modified": "2021-02-25T12:30:00.793083",
+  "@@last_modified": "2023-08-07",
   "guide": "Handleiding",
   "@guide": {
     "description": "Button to open the guide screen.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "next": "Volgende",
-  "@next": {
-    "description": "The text of the button to calculate the next otp value.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "about": "Over",
-  "@about": {
-    "description": "Button to open the about page.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "retry": "Opnieuw",
-  "@retry": {
-    "description": "Label for e.g. a button. Something is tried to be done again.",
     "type": "text",
     "placeholders": {}
   },
@@ -99,18 +81,6 @@
   "dismiss": "Sluiten",
   "@dismiss": {
     "description": "Text of a button that closes a dialog.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "showThisScreenOnStart": "Toon bij het opstarten",
-  "@showThisScreenOnStart": {
-    "description": "Description for checkbox, if the checkbox is ticked, the guide screen is shown on every app start.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "somethingWentWrong": "Er ging iets ging verkeerd.",
-  "@somethingWentWrong": {
-    "description": "Tells the user that something went wrong.",
     "type": "text",
     "placeholders": {}
   },
@@ -230,21 +200,9 @@
     "type": "text",
     "placeholders": {}
   },
-  "someTokensDoNotSupportPolling": "Sommige tokens zijn verouderd en ondersteunen geen actief zoeken",
-  "@someTokensDoNotSupportPolling": {
-    "description": "Tells the user, that the following tokens do not support polling.",
-    "type": "text",
-    "placeholders": {}
-  },
   "enablePolling": "Zoeken aanzetten",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "miscellaneous": "Overige",
-  "@miscellaneous": {
-    "description": "Title for misc settings.",
     "type": "text",
     "placeholders": {}
   },
@@ -296,26 +254,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorOnlyOneFirebaseProjectIsSupported": "De firebase configuratie van {name} verschilt van de huidige die in de app wordt gebruikt. Op dit moment is slechts een ondersteund.",
-  "@errorOnlyOneFirebaseProjectIsSupported": {
-    "description": "Tells the user that the token can not be used because it has a different firebase configuration than the current used configuration of the application.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "errorTokenExpired": "Token {name} is verlopen, uitrollen is niet mogelijk.",
-  "@errorTokenExpired": {
-    "description": "Tells the user that the token can not be rolled out, because it expired.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
   "errorRollOutFailed": "Uitrollen van token {name} mislukt. Fout code: {errorCode}",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
@@ -351,69 +289,9 @@
       }
     }
   },
-  "acceptPushAuthRequestFor": "Accepteer authenticatie aanvraag voor {name}.",
-  "@acceptPushAuthRequestFor": {
-    "description": "Tells the user that a push request for a specific token was accepted.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "decliningPushAuthRequestFor": "Authentication aanvraag voor {name} afgewezen.",
-  "@decliningPushAuthRequestFor": {
-    "description": "Tells the user that a push request for a specific token was declined.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "errorPushAuthRequestFailedFor": "Accepteren van authenticatie aanvraag voor {name} mislukt. Fout code: {errorCode}",
-  "@errorPushAuthRequestFailedFor": {
-    "description": "Tells the user that a push auth request could not be accepted for a token.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      },
-      "errorCode": {
-        "example": "500"
-      }
-    }
-  },
   "rollingOut": "Uitrollen",
   "@rollingOut": {
     "description": "Label that tells the user that the token is being rolled out.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "retryRollOut": "Uitrollen mislukt, probeer het opnieuw.",
-  "@retryRollOut": {
-    "description": "Label for e.g. a button. Tells the user that rolling out the token failed. Roll out can be retried by clicking this button.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "errorAuthenticationNotPossibleWithoutNetworkAccess": "Geen internet verbinding. Authenticatie niet mogelijk.",
-  "@errorAuthenticationNotPossibleWithoutNetworkAccess": {
-    "description": "Error message tell the user that accepting a push request failed.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "errorAuthenticationFailedUnknownError": "Een onbekend fout heeft plaats gevonden. Authenticatie mislukt: {e}",
-  "@errorAuthenticationFailedUnknownError": {
-    "description": "Tells the user that the authentication could not be accepted because of an unknown error.",
-    "type": "text",
-    "placeholders": {
-      "e": {
-        "example": "IllegalArgumentException on line 5, ..."
-      }
-    }
-  },
-  "firebaseConfigCorrupted": "De firebase configuratie is corrupt en kan niet worden gebruikt.",
-  "@firebaseConfigCorrupted": {
     "type": "text",
     "placeholders": {}
   },
@@ -422,60 +300,11 @@
     "type": "text",
     "placeholders": {}
   },
-  "migrateTokens": "Migreren van tokens uit vorige app versie.",
-  "@migrateTokens": {
-    "description": "Description of migration.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migrate": "Migreren",
-  "@migrate": {
-    "description": "Text of button to start migration.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migration": "Migratie",
-  "@migration": {
-    "description": "Title of settings group for migrating tokens.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migrationSuccess": "Alle tokens zijn succesvol gemigreerd.",
-  "@migrationSuccess": {
-    "description": "Tells the user that all tokens are migrated successfully.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "noTokensForMigration": "Geen van de bestaande tokens konden worden gemigreerd.",
-  "@noTokensForMigration": {
-    "description": "Tells the user that no tokens exist that could be migrated.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migratingToken": "Token migreren",
-  "@migratingToken": {
-    "description": "Title of migration dialog.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "unexpectedError": "Onverwachte Fout",
+  "unexpectedError": "Er is een onverwachte fout opgetreden.",
   "@unexpectedError": {
     "description": "Title of page report mode.",
     "type": "text",
     "placeholders": {}
-  },
-  "pageReportModeBody": "Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen. Kies {accept} om het bericht te verzenden of {cancel} om geen informatie door te sturen.",
-  "@pageReportModeBody": {
-    "description": "Description shown to the user about what info the error report contains.",
-    "type": "text",
-    "placeholders": {
-      "accept": {
-        "example": "accept"
-      },
-      "cancel": {
-        "example": "cancel"
-      }
-    }
   },
   "pollingFailNoNetworkConnection": "Zoeken naar berichten mislukt. Server kan niet worden bereikt.",
   "@pollingFailNoNetworkConnection": {
@@ -498,18 +327,6 @@
   "language": "Taal",
   "@language": {
     "description": "Title of language setting group.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "handlingOtpAuthLinkFailed": "Verwerken van de aangeboden link mislukt. Fout in de communicatie met het onderliggende systeem.",
-  "@handlingOtpAuthLinkFailed": {
-    "description": "Message that tells the user that handling a link failed. This link was provided through the 'open link with app' on android or iOS.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "authenticateToAcceptPush": "Authenticeer u om dit push-token te gebruiken.",
-  "@authenticateToAcceptPush": {
-    "description": "Reason to authenticate when clicking the 'accept' button of a push token.",
     "type": "text",
     "placeholders": {}
   },
@@ -646,11 +463,6 @@
     "description": "onBoardingText3",
     "type": "text"
   },
-  "unlockToCopy": "Gebruik biometrie om het token te ontgrendelen",
-  "@unlockToCopy": {
-    "description": "unlockToCopy",
-    "type": "text"
-  },
   "errorLogTitle": "Foutlogs",
   "@errorLogTitle": {
     "description": "errorLogTitle",
@@ -674,11 +486,6 @@
   "logMenu": "Logmenu",
   "@logMenu": {
     "description": "logMenu",
-    "type": "text"
-  },
-  "send": "verzenden",
-  "@send": {
-    "description": "send",
     "type": "text"
   },
   "sendErrorDialogHeader": "Verzenden via e-mail",
@@ -706,11 +513,6 @@
     "description": "errorLogCleared",
     "type": "text"
   },
-  "errorOccurred": "Er is een fout opgetreden.",
-  "@errorOccurred": {
-    "description": "errorOccurred",
-    "type": "text"
-  },
   "showDetails": "Details tonen",
   "@showDetails": {
     "description": "showDetails",
@@ -734,11 +536,6 @@
   "firebaseToken": "Firebase Token",
   "@firebaseToken": {
     "description": "firebaseToken",
-    "type": "text"
-  },
-  "serial": "Serienummer",
-  "@serial": {
-    "description": "serial",
     "type": "text"
   },
   "noPublicKey": "Geen openbare sleutel beschikbaar",
@@ -784,6 +581,26 @@
   "editLockedToken": "Verifieer om het vergrendelde token te bewerken.",
   "@editLockedToken": {
     "description": "editLockedToken",
+    "type": "text"
+  },
+  "uncollapseLockedCategory": "Verifieer om de vergrendelde categorie uit te vouwen.",
+  "@uncollapseLockedCategory": {
+    "description": "uncollapseLockedCategory",
+    "type": "text"
+  },
+  "renameTokenCategory": "Hernoem categorie",
+  "@renameTokenCategory": {
+    "description": "renameTokenCategory",
+    "type": "text"
+  },
+  "addANewCategory": "Een nieuwe categorie toevoegen",
+  "@addANewCategory": {
+    "description": "addANewCategory",
+    "type": "text"
+  },
+  "renameCategory": "Hernoem categorie",
+  "@renameCategory": {
+    "description": "renameCategory",
     "type": "text"
   }
 }

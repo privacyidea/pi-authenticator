@@ -38,9 +38,9 @@ class SettingsGroup extends StatelessWidget {
           dense: true,
           leading: Text(
             _title,
-            style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
+            overflow: TextOverflow.fade,
+            softWrap: false,
           ),
         ),
         ..._children,

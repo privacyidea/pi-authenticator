@@ -56,11 +56,19 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
-        title: Text(AppLocalizations.of(context)!.synchronizingTokens),
+        title: Text(
+          AppLocalizations.of(context)!.synchronizingTokens,
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
         content: _content,
         actions: <Widget>[
           TextButton(
-            child: Text(AppLocalizations.of(context)!.dismiss),
+            child: Text(
+              AppLocalizations.of(context)!.dismiss,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -113,7 +121,11 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
       } on SocketException catch (e) {
         Logger.warning('Socket exception occurred: $e', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context)!.errorSynchronizationNoNetworkConnection),
+          content: Text(
+            AppLocalizations.of(context)!.errorSynchronizationNoNetworkConnection,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
           duration: const Duration(seconds: 3),
         ));
         Navigator.pop(context);
@@ -123,13 +135,23 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
     if (tokenWithFailedUpdate.isEmpty && tokenWithOutUrl.isEmpty) {
       setState(() {
-        _content = Text(AppLocalizations.of(context)!.allTokensSynchronized);
+        _content = Text(
+          AppLocalizations.of(context)!.allTokensSynchronized,
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        );
       });
     } else {
       List<Widget> children = [];
 
       if (tokenWithFailedUpdate.isNotEmpty) {
-        children.add(Text(AppLocalizations.of(context)!.synchronizationFailed));
+        children.add(
+          Text(
+            AppLocalizations.of(context)!.synchronizationFailed,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
+        );
         for (PushToken p in tokenWithFailedUpdate) {
           children.add(Text('• ${p.label}'));
         }

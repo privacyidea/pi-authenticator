@@ -41,7 +41,11 @@ class PushTokenWidget extends TokenWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const CircularProgressIndicator(),
-                  Text(AppLocalizations.of(context)!.rollingOut),
+                  Text(
+                    AppLocalizations.of(context)!.rollingOut,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
                 ],
               ),
             ),
@@ -53,7 +57,11 @@ class PushTokenWidget extends TokenWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(token.pushRequests.peek()?.question ?? 'No request'),
+                  Text(
+                    token.pushRequests.peek()?.question ?? 'No request',
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -69,6 +77,8 @@ class PushTokenWidget extends TokenWidget {
                               Text(
                                 AppLocalizations.of(context)!.accept,
                                 style: Theme.of(context).textTheme.bodySmall,
+                                overflow: TextOverflow.fade,
+                                softWrap: false,
                               ),
                               const Icon(Icons.check, size: 15),
                             ],
@@ -86,6 +96,8 @@ class PushTokenWidget extends TokenWidget {
                                 Text(
                                   AppLocalizations.of(context)!.decline,
                                   style: Theme.of(context).textTheme.bodySmall,
+                                  overflow: TextOverflow.fade,
+                                  softWrap: false,
                                 ),
                                 const Icon(Icons.close, size: 15),
                               ],

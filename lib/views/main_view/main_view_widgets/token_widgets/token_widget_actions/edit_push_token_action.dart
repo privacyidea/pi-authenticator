@@ -47,16 +47,28 @@ class EditPushTokenAction extends TokenAction {
         child: AlertDialog(
           titlePadding: const EdgeInsets.all(12),
           contentPadding: const EdgeInsets.all(0),
-          title: Text(AppLocalizations.of(context)!.editToken),
+          title: Text(
+            AppLocalizations.of(context)!.editToken,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
           actions: [
             TextButton(
-              child: Text(AppLocalizations.of(context)!.cancel),
+              child: Text(
+                AppLocalizations.of(context)!.cancel,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-                child: Text(AppLocalizations.of(context)!.save),
+                child: Text(
+                  AppLocalizations.of(context)!.save,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
                 onPressed: () async {
                   final newToken = token.copyWith(
                     label: tokenLabel.text,
@@ -113,21 +125,41 @@ class EditPushTokenAction extends TokenAction {
                     title: Text(
                       AppLocalizations.of(context)!.publicKey,
                       style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
                     ),
                     children: [
-                      Text(publicTokenKey ?? AppLocalizations.of(context)!.noPublicKey, style: Theme.of(context).textTheme.bodyMedium),
+                      Text(
+                        publicTokenKey ?? AppLocalizations.of(context)!.noPublicKey,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                      ),
                     ],
                   ),
                   const Divider(),
                   ExpansionTile(
-                    title: Text(AppLocalizations.of(context)!.firebaseToken, style: Theme.of(context).textTheme.titleMedium),
+                    title: Text(
+                      AppLocalizations.of(context)!.firebaseToken,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                    ),
                     children: [
                       FutureBuilder(
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            return Text(snapshot.data != null ? snapshot.data.toString() : AppLocalizations.of(context)!.noFbToken);
+                            return Text(
+                              snapshot.data != null ? snapshot.data.toString() : AppLocalizations.of(context)!.noFbToken,
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                            );
                           } else {
-                            return const Text('');
+                            return const Text(
+                              '',
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                            );
                           }
                         },
                         future: StorageUtil.getCurrentFirebaseToken(),

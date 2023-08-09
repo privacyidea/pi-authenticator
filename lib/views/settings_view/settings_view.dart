@@ -27,8 +27,10 @@ class SettingsView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         title: Text(
           AppLocalizations.of(context)!.settings,
+
           overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
@@ -45,6 +47,8 @@ class SettingsView extends ConsumerWidget {
                   title: Text(
                     AppLocalizations.of(context)!.lightTheme,
                     style: Theme.of(context).textTheme.titleMedium,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
                   ),
                   value: ThemeMode.light,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
@@ -55,6 +59,8 @@ class SettingsView extends ConsumerWidget {
                   title: Text(
                     AppLocalizations.of(context)!.darkTheme,
                     style: Theme.of(context).textTheme.titleMedium,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
                   ),
                   value: ThemeMode.dark,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
@@ -65,6 +71,8 @@ class SettingsView extends ConsumerWidget {
                   title: Text(
                     AppLocalizations.of(context)!.systemTheme,
                     style: Theme.of(context).textTheme.titleMedium,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
                   ),
                   value: ThemeMode.system,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
@@ -81,8 +89,13 @@ class SettingsView extends ConsumerWidget {
                     title: Text(
                       AppLocalizations.of(context)!.useDeviceLocaleTitle,
                       style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
                     ),
-                    subtitle: Text(AppLocalizations.of(context)!.useDeviceLocaleDescription),
+                    subtitle: Text(
+                      AppLocalizations.of(context)!.useDeviceLocaleDescription,
+                      overflow: TextOverflow.fade,
+                    ),
                     value: useSystemLocale,
                     onChanged: (value) => ref.read(settingsProvider.notifier).setUseSystemLocale(value)),
                 Padding(
@@ -91,13 +104,19 @@ class SettingsView extends ConsumerWidget {
                     disabledHint: Text(
                       '$locale',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.grey),
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
                     ),
                     isExpanded: true,
                     value: locale,
                     items: AppLocalizations.supportedLocales.map<DropdownMenuItem<Locale>>((Locale itemLocale) {
                       return DropdownMenuItem<Locale>(
                         value: itemLocale,
-                        child: Text('$itemLocale'),
+                        child: Text(
+                          '$itemLocale',
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                        ),
                       );
                     }).toList(),
                     onChanged: useSystemLocale ? null : (value) => ref.read(settingsProvider.notifier).setLocale(value!),
@@ -114,10 +133,19 @@ class SettingsView extends ConsumerWidget {
                     title: Text(
                       AppLocalizations.of(context)!.synchronizePushTokens,
                       style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
                     ),
-                    subtitle: Text(AppLocalizations.of(context)!.synchronizesTokensWithServer),
+                    subtitle: Text(
+                      AppLocalizations.of(context)!.synchronizesTokensWithServer,
+                      overflow: TextOverflow.fade,
+                    ),
                     trailing: ElevatedButton(
-                      child: Text(AppLocalizations.of(context)!.sync),
+                      child: Text(
+                        AppLocalizations.of(context)!.sync,
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                      ),
                       onPressed: () => showDialog(
                         context: context,
                         barrierDismissible: false,
@@ -151,7 +179,10 @@ class SettingsView extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    subtitle: Text(AppLocalizations.of(context)!.requestPushChallengesPeriodically),
+                    subtitle: Text(
+                      AppLocalizations.of(context)!.requestPushChallengesPeriodically,
+                      overflow: TextOverflow.fade,
+                    ),
                     trailing: Switch(
                       value: enablePolling,
                       onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
@@ -166,10 +197,16 @@ class SettingsView extends ConsumerWidget {
                 title: Text(
                   AppLocalizations.of(context)!.logMenu,
                   style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
                 ),
                 style: ListTileStyle.list,
                 trailing: ElevatedButton(
-                  child: Text(AppLocalizations.of(context)!.open),
+                  child: Text(
+                    AppLocalizations.of(context)!.open,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
                   onPressed: () => showDialog(
                     context: context,
                     barrierDismissible: false,
