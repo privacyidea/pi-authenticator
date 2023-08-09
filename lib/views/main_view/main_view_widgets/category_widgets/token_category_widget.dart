@@ -5,8 +5,8 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/utils/lock_auth.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/category_widgets/token_category_actions.dart/lock_token_category_action.dart';
+import '../../../../utils/lock_auth.dart';
+import 'token_category_actions.dart/lock_token_category_action.dart';
 
 import '../../../../model/token_category.dart';
 import '../../../../model/tokens/token.dart';

@@ -18,22 +18,32 @@ class LoggingMenu extends ConsumerWidget {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         titlePadding: const EdgeInsets.all(12),
         contentPadding: const EdgeInsets.all(0),
-        title: Text(AppLocalizations.of(context)!.logMenu),
+        title: Text(
+          AppLocalizations.of(context)!.logMenu,
+          style: Theme.of(context).listTileTheme.titleTextStyle,
+        ),
         content: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: Text(AppLocalizations.of(context)!.enableVerboseLogging),
+              title: Text(
+                AppLocalizations.of(context)!.enableVerboseLogging,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               trailing: Switch(value: verboseLogging, onChanged: (value) => ref.read(settingsProvider.notifier).setVerboseLogging(value)),
-              style: ListTileStyle.drawer,
+              style: ListTileStyle.list,
               onTap: () => ref.read(settingsProvider.notifier).toggleVerboseLogging(),
             ),
             const Divider(),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.sendErrorHint),
+              title: Text(
+                AppLocalizations.of(context)!.sendErrorHint,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               trailing: ElevatedButton(
                 onPressed: () => _pressSendErrorLog(context),
                 child: Text(AppLocalizations.of(context)!.open),
@@ -43,7 +53,10 @@ class LoggingMenu extends ConsumerWidget {
             ),
             const Divider(),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.clearErrorLogHint),
+              title: Text(
+                AppLocalizations.of(context)!.clearErrorLogHint,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               trailing: ElevatedButton(
                 onPressed: () => _pressClearErrorLog(context),
                 child: Text(AppLocalizations.of(context)!.delete),

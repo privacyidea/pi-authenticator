@@ -11,6 +11,7 @@ class PushTokenWidgetTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return TokenWidgetTile(
+      key: Key('${token.hashCode}TokenWidgetTile'),
       tokenIsLocked: token.isLocked,
       tokenImage: token.tokenImage,
       title: Text(

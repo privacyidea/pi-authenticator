@@ -3,13 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'token_widget_actions/default_delete_action.dart';
-import 'token_widget_actions/default_edit_action.dart';
-import 'token_widget_actions/default_lock_action.dart';
 
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../utils/text_size.dart';
+import 'token_widget_actions/default_delete_action.dart';
+import 'token_widget_actions/default_edit_action.dart';
+import 'token_widget_actions/default_lock_action.dart';
 import 'token_widget_actions/token_action.dart';
 
 class TokenWidgetBase extends ConsumerWidget {

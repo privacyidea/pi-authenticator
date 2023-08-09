@@ -77,6 +77,8 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
   @override
   Widget build(BuildContext context) {
     return TokenWidgetTile(
+      key: Key('${widget.token.hashCode}TokenWidgetTile'),
+      tokenImage: widget.token.tokenImage,
       tokenIsLocked: widget.token.isLocked,
       title: Align(
         alignment: Alignment.centerLeft,

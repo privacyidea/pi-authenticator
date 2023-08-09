@@ -20,9 +20,9 @@ class TokenWidgetTile extends StatefulWidget {
     this.subtitles = const [],
     this.trailing,
     this.onTap,
-    super.key,
     this.tokenIsLocked = false,
     this.tokenImage,
+    super.key,
   });
 
   @override
@@ -44,6 +44,7 @@ class _TokenWidgetTileState extends State<TokenWidgetTile> {
           fit: BoxFit.fitHeight,
           errorBuilder: (context, error, stackTrace) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
               setState(() {
                 hasImage = false;
               });

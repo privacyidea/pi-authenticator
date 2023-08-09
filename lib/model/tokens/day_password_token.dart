@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import '../../utils/logger.dart';
-import 'otp_token.dart';
-import '../../utils/identifiers.dart';
-import 'package:uuid/uuid.dart';
-
-import '../../utils/utils.dart';
 // ignore: library_prefixes
 import 'package:otp/otp.dart' as OTPLibrary;
+import 'package:uuid/uuid.dart';
+
+import '../../utils/identifiers.dart';
+import '../../utils/logger.dart';
+import '../../utils/utils.dart';
+import 'otp_token.dart';
 
 part 'day_password_token.g.dart';
 

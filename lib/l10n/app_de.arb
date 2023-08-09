@@ -775,5 +775,15 @@
   "@validUntil": {
     "description": "validUntil",
     "type": "text"
+  },
+  "deleteLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu löschen.",
+  "@deleteLockedToken": {
+    "description": "deleteLockedToken",
+    "type": "text"
+  },
+  "editLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu bearbeiten.",
+  "@editLockedToken": {
+    "description": "editLockedToken",
+    "type": "text"
   }
 }

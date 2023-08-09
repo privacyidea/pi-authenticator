@@ -31,7 +31,7 @@ class PushTokenWidget extends TokenWidget {
       token: token,
       tile: PushTokenWidgetTile(token),
       dragIcon: Icons.notifications,
-      editAction: EditPushTokenAction(token: token, key: Key('${token.id}editAction'), creatorContext: context),
+      editAction: EditPushTokenAction(token: token, key: Key('${token.id}editAction')),
       stack: [
         if (!token.isRolledOut)
           ClipRect(
