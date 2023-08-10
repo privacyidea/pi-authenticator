@@ -37,7 +37,6 @@ class QRScannerView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        elevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
             icon: const Icon(
@@ -64,11 +63,7 @@ class QRScannerView extends StatelessWidget {
                   if (e is PlatformException && e.message == 'noPermission') {
                     Logger.warning('QRScannerView: Camera permission not granted.', error: e, name: 'QRScannerView#build#onError');
                     const SnackBar snackBar = SnackBar(
-                      content: Text(
-                        'Please grant camera permission to use the QR scanner.',
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                      ),
+                      content: Text('Please grant camera permission to use the QR scanner.'),
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }

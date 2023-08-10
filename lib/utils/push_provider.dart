@@ -61,12 +61,14 @@ class PushProvider {
         sound: false,
       );
     } on FirebaseException catch (ex) {
+      Logger.warning(
+          'ex.code: ${ex.code}, ex.message: ${ex.message}, ex.stackTrace: ${ex.stackTrace}, ex.toString: ${ex.toString()}, ex.plugin: ${ex.plugin}, ex.code: ${ex.code}, ex.message: ${ex.message}, ex.stackTrace: ${ex.stackTrace}, ex.toString: ${ex.toString()}, ex.plugin: ${ex.plugin},',
+          name: 'push_provider.dart#_initFirebase',
+          error: ex);
       String errorMessage = ex.message ?? 'no error message';
       final SnackBar snackBar = SnackBar(
           content: Text(
         "Firebase notification permission error! ($errorMessage: ${ex.code}",
-        overflow: TextOverflow.fade,
-        softWrap: false,
       ));
       globalSnackbarKey.currentState?.showSnackBar(snackBar);
     }

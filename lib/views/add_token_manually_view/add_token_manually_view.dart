@@ -58,7 +58,6 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
         title: Text(
           AppLocalizations.of(context)!.enterDetailsForToken,
           overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.

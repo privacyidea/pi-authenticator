@@ -149,7 +149,6 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
           }
         },
         backgroundColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF303030) : Colors.grey[50],
-        elevation: 0,
         child: _currentIndex == 2
             ? FlareActor(
                 'res/rive/success_check.flr',

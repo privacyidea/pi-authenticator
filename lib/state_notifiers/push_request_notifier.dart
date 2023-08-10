@@ -35,8 +35,9 @@ import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 class PushRequestNotifier extends StateNotifier<PushRequest?> {
   // Used for periodically polling for push challenges
-  bool pollingEnabled;
+  static bool pushProviderInitialized = false;
   static Timer? _pollTimer;
+  final bool pollingEnabled;
 
   PushRequestNotifier(super.state, {required this.pollingEnabled}) {
     _initStateAsync();
@@ -65,10 +66,14 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
 
   /// Handles asynchronous calls that should be triggered by `initState`.
   void _initStateAsync() async {
-    await PushProvider.initialize(
-      handleIncomingMessage: (RemoteMessage message) => _handleIncomingAuthRequest(message),
-      backgroundMessageHandler: _firebaseMessagingBackgroundHandler,
-    );
+    if (!pushProviderInitialized) {
+      pushProviderInitialized = true;
+      await PushProvider.initialize(
+        handleIncomingMessage: (RemoteMessage message) => _handleIncomingAuthRequest(message),
+        backgroundMessageHandler: _firebaseMessagingBackgroundHandler,
+      );
+    }
+
     if (pollingEnabled) {
       PushProvider.pollForChallenges();
       _startPollingIfEnabled();

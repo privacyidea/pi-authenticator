@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import '../utils/riverpod_providers.dart';
 
 final dragItemScrollerStateProvider = StateProvider<bool>((ref) => false);
@@ -50,20 +51,20 @@ class _DragItemScrollerState extends State<DragItemScroller> {
     });
   }
 
-  bool _canScroll(ScrollController? controller) =>
+  bool canScroll(ScrollController? controller) =>
       controller != null && ((controller.offset > 0 && currentSpeed < 0) || (controller.offset < controller.position.maxScrollExtent && currentSpeed > 0));
 
   _scrollJump() {
     if (currentSpeed == 0) return; // no speed, no jump
     final innerController = widget.nestedScrollViewKey?.currentState?.innerController ?? widget.scrollController;
     final outerController = widget.nestedScrollViewKey?.currentState?.outerController;
-    if (_canScroll(outerController)) {
+    if (canScroll(outerController)) {
       final distanceOneFrame = currentSpeed / DragItemScroller.refreshRate; // px this frame
       final nextPosition = clampDouble(outerController!.offset + distanceOneFrame, 0, outerController.position.maxScrollExtent);
       outerController.position.setPixels(nextPosition); // jump to next position
       return;
     }
-    if (_canScroll(innerController)) {
+    if (canScroll(innerController)) {
       final distanceOneFrame = currentSpeed / DragItemScroller.refreshRate; // px this frame
       final nextPosition = clampDouble(innerController!.offset + distanceOneFrame, 0, innerController.position.maxScrollExtent);
       innerController.position.jumpTo(nextPosition); // jump to next position
@@ -104,36 +105,45 @@ class _DragItemScrollerState extends State<DragItemScroller> {
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-        child: widget.child,
-        onPointerMove: (PointerMoveEvent event) {
-          if (widget.itemIsDragged == false) return;
-          final innerController = widget.nestedScrollViewKey?.currentState?.innerController ?? widget.scrollController;
-          final outerController = widget.nestedScrollViewKey?.currentState?.outerController;
-          final render = widget.listViewKey.currentContext?.findRenderObject() as RenderBox;
-          final position = render.localToGlobal(Offset.zero);
-          final topY = position.dy; // top position of the widget
-          final bottomY = topY + render.size.height; // bottom position of the widget
-          final minScrollingSpeedDetectDistanceTopWithOuterOffset = DragItemScroller.minScrollingSpeedDetectDistanceTop + (outerController?.offset ?? 0.0);
-          if (event.position.dy < topY + minScrollingSpeedDetectDistanceTopWithOuterOffset || (outerController?.offset ?? 0.0) > 0) {
-            // scroll up if the pointer is in the top range and the scrollController is not at the top
-            final distanceToTop = event.position.dy - topY;
-            final distanceToMaxSpeed = distanceToTop - (minScrollingSpeedDetectDistanceTopWithOuterOffset - DragItemScroller.maxSpeedZoneHeightTop);
-            final moveSpeedPercent = 1 - distanceToMaxSpeed / DragItemScroller.maxSpeedZoneHeightTop;
-            _startScrolling(clampDouble(moveSpeedPercent, 0.0, 1.0), moveUp: true);
+    return widget.itemIsDragged == false
+        ? widget.child
+        : Listener(
+            child: widget.child,
+            onPointerMove: (PointerMoveEvent event) {
+              if (widget.itemIsDragged == false) return;
+              final innerController = widget.nestedScrollViewKey?.currentState?.innerController ?? widget.scrollController;
+              final innerControllerOffset = innerController?.offset ?? widget.scrollController?.offset ?? 0.0;
+              final innerControllerMaxScrollExtent = innerController?.position.maxScrollExtent ?? widget.scrollController?.position.maxScrollExtent ?? 0.0;
+              final outerControllerOffset = widget.nestedScrollViewKey?.currentState?.outerController.offset ?? 0.0;
+              final outerControllerMaxScrollExtent = widget.nestedScrollViewKey?.currentState?.outerController.position.maxScrollExtent ?? 0.0;
+              final render = widget.listViewKey.currentContext?.findRenderObject() as RenderBox;
+              final position = render.localToGlobal(Offset.zero);
+              final topY = position.dy; // top position of the widget
+              final bottomY = topY + render.size.height; // bottom position of the widget
+              final minScrollingSpeedDetectDistanceTopWithOuterOffset = DragItemScroller.minScrollingSpeedDetectDistanceTop + outerControllerOffset;
+              if (event.position.dy < topY + minScrollingSpeedDetectDistanceTopWithOuterOffset && (innerControllerOffset > 0.0 || outerControllerOffset > 0)) {
+                // scroll up if the pointer is in the top range and the scrollController is not at the top
+                final distanceToTop = event.position.dy - topY;
+                final distanceToMaxSpeed = distanceToTop - (minScrollingSpeedDetectDistanceTopWithOuterOffset - DragItemScroller.maxSpeedZoneHeightTop);
+                final moveSpeedPercent = 1 - distanceToMaxSpeed / DragItemScroller.maxSpeedZoneHeightTop;
+                Logger.warning('moveSpeedPercent: $moveSpeedPercent');
+                _startScrolling(clampDouble(moveSpeedPercent, 0.0, 1.0), moveUp: true);
 
-            return;
-          }
-          if (event.position.dy > bottomY - DragItemScroller.minScrollingSpeedDetectDistanceBottom &&
-              innerController!.offset < (innerController.position.maxScrollExtent)) {
-            // scroll down if the pointer is in the bottom range and the scrollController is not at the bottom
-            final distanceToBottom = bottomY - event.position.dy; // distance to bottom of the widget in px
-            final distanceToMaxSpeed = distanceToBottom - (DragItemScroller.minScrollingSpeedDetectDistanceBottom - DragItemScroller.maxSpeedZoneHeightBottom);
-            final moveSpeedPercent = 1 - distanceToMaxSpeed / DragItemScroller.maxSpeedZoneHeightBottom;
-            _startScrolling(clampDouble(moveSpeedPercent, 0.0, 1.0), moveUp: false);
-            return;
-          }
-          _stopScrolling();
-        });
+                return;
+              }
+              if (event.position.dy > bottomY - DragItemScroller.minScrollingSpeedDetectDistanceBottom &&
+                  (innerControllerOffset < (innerControllerMaxScrollExtent) || outerControllerOffset < outerControllerMaxScrollExtent)) {
+                // scroll down if the pointer is in the bottom range and the scrollController is not at the bottom
+                final distanceToBottom = bottomY - event.position.dy; // distance to bottom of the widget in px
+                final distanceToMaxSpeed =
+                    distanceToBottom - (DragItemScroller.minScrollingSpeedDetectDistanceBottom - DragItemScroller.maxSpeedZoneHeightBottom);
+                final moveSpeedPercent = 1 - distanceToMaxSpeed / DragItemScroller.maxSpeedZoneHeightBottom;
+                Logger.warning('moveSpeedPercent: $moveSpeedPercent');
+                _startScrolling(clampDouble(moveSpeedPercent, 0.0, 1.0), moveUp: false);
+                return;
+              }
+              _stopScrolling();
+            },
+          );
   }
 }

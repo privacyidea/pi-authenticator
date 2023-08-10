@@ -26,37 +26,43 @@ class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(
-          widget.label,
-          style: Theme.of(context).textTheme.bodyMedium,
-          overflow: TextOverflow.fade,
-          softWrap: false,
+      children: [
+        Flexible(
+          flex: 5,
+          child: Text(
+            widget.label,
+            style: Theme.of(context).textTheme.bodyMedium,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
         ),
-        SizedBox(
-          width: 100,
-          child: DropdownButton<T>(
-            value: widget.valueNotifier.value,
-            isExpanded: true,
-            items: widget.values.map<DropdownMenuItem<T>>((T value) {
-              return DropdownMenuItem<T>(
-                value: value,
-                child: Text(
-                  '${value is String || value is int || value is double ? value : enumAsString(value!)}'
-                  '${widget.postFix}',
-                  style: Theme.of(context).textTheme.titleMedium,
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                ),
-              );
-            }).toList(),
-            onChanged: (T? newValue) {
-              if (newValue == null) return;
-              setState(() {
-                Logger.info('DropdownButton onChanged: $newValue');
-                widget.valueNotifier.value = newValue;
-              });
-            },
+        Flexible(
+          flex: 3,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 100),
+            child: DropdownButton<T>(
+              value: widget.valueNotifier.value,
+              isExpanded: true,
+              items: widget.values.map<DropdownMenuItem<T>>((T value) {
+                return DropdownMenuItem<T>(
+                  value: value,
+                  child: Text(
+                    '${value is String || value is int || value is double ? value : enumAsString(value!)}'
+                    '${widget.postFix}',
+                    style: Theme.of(context).textTheme.titleMedium,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+                );
+              }).toList(),
+              onChanged: (T? newValue) {
+                if (newValue == null) return;
+                setState(() {
+                  Logger.info('DropdownButton onChanged: $newValue');
+                  widget.valueNotifier.value = newValue;
+                });
+              },
+            ),
           ),
         ),
       ],

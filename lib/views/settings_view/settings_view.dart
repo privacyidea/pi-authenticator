@@ -27,7 +27,6 @@ class SettingsView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
         title: Text(
           AppLocalizations.of(context)!.settings,
 

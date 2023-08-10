@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../../../../model/tokens/day_password_token.dart';
 import '../../../../../utils/identifiers.dart';
@@ -71,13 +72,10 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
   Widget build(BuildContext context) {
     final currentLocale = ref.watch(settingsProvider).currentLocale;
     final dateTimeTokenEnd = widget.token.nextOTPTimeStart;
-
-    var yMd = DateFormat.yMMMd(currentLocale.languageCode); //.add_E().add_jm();
-    var dateString = yMd.format(dateTimeTokenEnd);
-
-    var asd = DateFormat.E().add_jm();
-    var dateString2 = asd.format(dateTimeTokenEnd);
-
+    final yMdFormat = DateFormat.yMMMd(currentLocale.languageCode);
+    final yMdString = yMdFormat.format(dateTimeTokenEnd);
+    final ejmFormat = DateFormat.E(currentLocale.languageCode).add_jm();
+    final ejmString = ejmFormat.format(dateTimeTokenEnd);
     final duration = Duration(seconds: secondsLeft.ceil());
     final durationString = duration.toString().split('.').first;
     return TokenWidgetTile(
@@ -161,7 +159,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                     Expanded(
                       child: Center(
                         child: Text(
-                          dateString,
+                          yMdString,
                           style: Theme.of(context).textTheme.bodyLarge,
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.fade,
@@ -172,7 +170,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                     Expanded(
                       child: Center(
                         child: Text(
-                          dateString2,
+                          ejmString,
                           style: Theme.of(context).textTheme.bodyLarge,
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.fade,
