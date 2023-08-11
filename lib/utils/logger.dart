@@ -232,8 +232,9 @@ class Logger {
     WidgetsFlutterBinding.ensureInitialized();
   }
 
+  // Has no effect if _navigatorKey is already set
   void _setupNavigatorKey([GlobalKey<NavigatorState>? navigatorKey]) {
-    _navigatorKey = navigatorKey ?? GlobalKey<NavigatorState>();
+    _navigatorKey ??= navigatorKey ?? GlobalKey<NavigatorState>();
   }
 
   Future<void> _setupPlatformInfos() async {

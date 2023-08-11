@@ -70,8 +70,9 @@ Future<Response> postRequest({required Uri url, required Map<String, String?> bo
 
   Response response;
   try {
-    response = await ioClient.post(url, body: body);
+    response = await ioClient.post(url, body: body); // FIXME: If user-100 rollout pushToken, this will fail (app error or server configuration?)
   } on SocketException catch (e, s) {
+    Logger.warning('Received response', name: 'utils.dart#doPost', error: '${e.runtimeType} : $s');
     response = Response('${e.runtimeType} : $s', 404);
   }
 

@@ -28,8 +28,6 @@ import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
-import '../model/tokens/push_token.dart';
-
 // TODO How to test the behavior of this class?
 class StorageUtil {
   // Use this to lock critical sections of code.
@@ -50,10 +48,6 @@ class StorageUtil {
   /// Saves [token] securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
   static Future<void> saveOrReplaceToken(Token token) async {
-    if (token is PushToken && token.isRolledOut == false) {
-      Logger.info('Token not rolled out, not saving to secure storage');
-      return;
-    }
     await _storage.write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
     Logger.info('Token saved: ${token.id} to secure storage');
   }

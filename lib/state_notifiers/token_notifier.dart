@@ -144,12 +144,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
         showMessage(message: 'A token with the serial ${newToken.serial} already exists!', duration: const Duration(seconds: 2), context: context);
         return;
       }
-
-      if (newToken is PushToken) {
-        _rollOutToken(newToken, context);
-      }
-
       addToken(newToken);
+      if (newToken is PushToken) {
+        final success = await _rollOutToken(newToken, context);
+        if (!success) {
+          Logger.warning('Roll out failed. Remove PushToken', name: 'token_notifier.dart#token_notifier', error: newToken);
+          removeToken(newToken);
+        }
+      }
     } on ArgumentError catch (e) {
       // Error while parsing qr code.
       Logger.warning(
@@ -230,12 +232,13 @@ class TokenNotifier extends StateNotifier<TokenState> {
     Logger.info('Removed push request ${pushRequest.id} to token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
   }
 
-  void _rollOutToken(PushToken token, BuildContext context) async {
+  Future<bool> _rollOutToken(PushToken token, BuildContext context) async {
     if (Platform.isIOS) {
       await dummyRequest(url: token.url!, sslVerify: token.sslVerify!);
     }
 
     if (token.privateTokenKey == null) {
+      //TODO: update token enrollment state
       final keyPair = await generateRSAKeyPair();
 
       Logger.info(
@@ -245,15 +248,17 @@ class TokenNotifier extends StateNotifier<TokenState> {
       );
       token = token.withPrivateTokenKey(keyPair.privateKey);
       token = token.withPublicTokenKey(keyPair.publicKey);
-      Logger.info('Set public and private key for token.$token', name: 'token_widgets.dart#_rollOutToken');
+      Logger.info('Set public and private key for token.${token.id}', name: 'token_widgets.dart#_rollOutToken');
       updateToken(token);
-      Logger.info('Updated token.$token', name: 'token_widgets.dart#_rollOutToken', error: keyPair.publicKey);
+      Logger.info('Updated token.${token.id}', name: 'token_widgets.dart#_rollOutToken', error: keyPair.publicKey);
 
       checkNotificationPermission();
     }
 
     try {
       // TODO What to do with poll only tokens if google-services is used?
+
+      //TODO: update token enrollment state
       Response response = await postRequest(sslVerify: token.sslVerify!, url: token.url!, body: {
         'enrollment_credential': token.enrollmentCredentials,
         'serial': token.serial,
@@ -262,6 +267,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       });
 
       if (response.statusCode == 200) {
+        //TODO: update token enrollment state
         RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
         token = token.withPublicServerKey(publicServerKey);
 
@@ -278,6 +284,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
           message: AppLocalizations.of(context)!.errorRollOutFailed(token.label, response.statusCode),
           duration: const Duration(seconds: 3),
         );
+        return false;
       }
     } catch (e) {
       if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException) {
@@ -287,6 +294,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
           message: AppLocalizations.of(context)?.errorRollOutNoNetworkConnection ?? "No network connection!",
           duration: const Duration(seconds: 3),
         );
+        return false;
       } else {
         Logger.warning('Unknown error: Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
         showMessage(
@@ -294,8 +302,12 @@ class TokenNotifier extends StateNotifier<TokenState> {
           message: AppLocalizations.of(context)!.errorRollOutUnknownError(e),
           duration: const Duration(seconds: 3),
         );
+        return false;
       }
     }
+
+    //TODO: update token enrollment state
+    return true;
   }
 }
 
