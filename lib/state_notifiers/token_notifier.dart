@@ -248,6 +248,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<bool> rolloutPushToken(PushToken token) async {
     if (token.isRolledOut) return true;
+    if (token.rolloutState != PushRollOutState.rolloutNotStarted &&
+        token.rolloutState != PushRollOutState.generateingRSAKeyPairFailed &&
+        token.rolloutState != PushRollOutState.sendRSAPublicKeyFailed &&
+        token.rolloutState != PushRollOutState.parsingResponseFailed) {
+      Logger.info('Ignoring rollout request: Rollout of token ${token.serial} already started. Tokenstate: ${token.rolloutState} ',
+          name: 'token_widgets.dart#_rolloutToken');
+      return false;
+    }
     Future.delayed(token.expirationDate.difference(DateTime.now()), () => removeTokenIfExpired(token));
     if (Platform.isIOS) {
       await dummyRequest(url: token.url!, sslVerify: token.sslVerify!);
