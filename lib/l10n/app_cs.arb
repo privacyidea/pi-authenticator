@@ -603,5 +603,45 @@
   "@categoryName": {
     "description": "categoryName",
     "type": "text"
+  },
+  "retryRollout": "Zkusit znovu",
+  "@retryRollout": {
+    "description": "retryRollout",
+    "type": "text"
+  },
+  "generatingRSAKeyPair": "Generování párů klíčů RSA",
+  "@generatingRSAKeyPair": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "generatingRSAKeyPairFailed": "Generování páru klíčů RSA se nezdařilo",
+  "@generatingRSAKeyPairFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingPublicRSAKey": "Odeslání veřejného klíče RSA",
+  "@sendingRSAPublicKey": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingPublicRSAKeyFailed": "Nepodařilo se odeslat veřejný klíč RSA",
+  "@sendingRSAPublicKeyFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponse": "Rozbor odpovědi",
+  "@parsingResponse": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponseFailed": "Parsování odpovědi se nezdařilo",
+  "@parsingResponseFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "rolloutCompleted": "Zavedení dokončeno",
+  "@rolloutCompleted": {
+    "description": "Message for the rollout process",
+    "type": "text"
   }
 }

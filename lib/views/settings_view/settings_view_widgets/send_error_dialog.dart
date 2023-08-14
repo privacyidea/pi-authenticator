@@ -28,8 +28,6 @@ class SendErrorDialog extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     AppLocalizations.of(context)!.sendErrorDialogBody,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
                   ),
                 ),
                 Expanded(
@@ -39,7 +37,7 @@ class SendErrorDialog extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           errorLog.data?.toString() ?? '',
-                          overflow: TextOverflow.fade,
+                          style: const TextStyle(fontFamily: 'monospace', fontSize: 10),
                         ),
                       ),
                     ),

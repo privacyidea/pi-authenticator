@@ -20,6 +20,7 @@
 */
 
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,6 +41,7 @@ void main() async {
       navigatorKey: globalNavigatorKey,
       appRunner: () async {
         WidgetsFlutterBinding.ensureInitialized();
+        await Firebase.initializeApp();
         runApp(const AppWrapper(child: PrivacyIDEAAuthenticator()));
       });
 }
@@ -65,9 +67,9 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
       themeMode: EasyDynamicTheme.of(context).themeMode,
       initialRoute: SplashScreen.routeName,
       routes: {
-        MainView.routeName: (context) => const MainView(title: ApplicationCustomizer.appName),
         SplashScreen.routeName: (context) => const SplashScreen(),
         OnboardingView.routeName: (context) => const OnboardingView(),
+        MainView.routeName: (context) => const MainView(title: ApplicationCustomizer.appName),
         SettingsView.routeName: (context) => const SettingsView(),
         AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
         QRScannerView.routeName: (context) => QRScannerView(),
@@ -90,7 +92,7 @@ class AppWrapper extends StatelessWidget {
 }
 
 class SplashScreen extends ConsumerStatefulWidget {
-  static const routeName = '/splash';
+  static const routeName = '/';
 
   const SplashScreen({super.key});
 

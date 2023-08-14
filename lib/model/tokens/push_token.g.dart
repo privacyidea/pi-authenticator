@@ -28,6 +28,9 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       privateTokenKey: json['privateTokenKey'] as String?,
       expirationDate: DateTime.parse(json['expirationDate'] as String),
       isRolledOut: json['isRolledOut'] as bool? ?? false,
+      rolloutState: $enumDecodeNullable(
+              _$PushRollOutStateEnumMap, json['rolloutState']) ??
+          PushRollOutState.rolloutNotStarted,
       knownPushRequests: json['knownPushRequests'] == null
           ? null
           : CustomIntBuffer.fromJson(
@@ -53,9 +56,21 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
       'isRolledOut': instance.isRolledOut,
+      'rolloutState': _$PushRollOutStateEnumMap[instance.rolloutState]!,
       'publicServerKey': instance.publicServerKey,
       'privateTokenKey': instance.privateTokenKey,
       'publicTokenKey': instance.publicTokenKey,
       'pushRequests': instance.pushRequests,
       'knownPushRequests': instance.knownPushRequests,
     };
+
+const _$PushRollOutStateEnumMap = {
+  PushRollOutState.rolloutNotStarted: 'rolloutNotStarted',
+  PushRollOutState.generateingRSAKeyPair: 'generateingRSAKeyPair',
+  PushRollOutState.generateingRSAKeyPairFailed: 'generateingRSAKeyPairFailed',
+  PushRollOutState.sendRSAPublicKey: 'sendRSAPublicKey',
+  PushRollOutState.sendRSAPublicKeyFailed: 'sendRSAPublicKeyFailed',
+  PushRollOutState.parsingResponse: 'parsingResponse',
+  PushRollOutState.parsingResponseFailed: 'parsingResponseFailed',
+  PushRollOutState.rolloutComplete: 'rolloutComplete',
+};

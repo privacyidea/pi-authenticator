@@ -70,8 +70,8 @@ class DayPasswordToken extends OTPToken {
         isInEditMode: isInEditMode ?? this.isInEditMode,
       );
 
-  // Server software has an offset of 30 seconds (remove this when server is in sync)
-  static const Duration serverOffset = Duration(seconds: 30);
+  // Server software has an offset of 50% of the topken period (remove this when server is in sync)
+  Duration get serverOffset => Duration(seconds: period.inSeconds ~/ 2);
 
   @override
   String get otpValue => OTPLibrary.OTP.generateTOTPCodeString(
@@ -92,7 +92,7 @@ class DayPasswordToken extends OTPToken {
   DateTime get thisOTPTimeStart => DateTime.now().subtract(durationSinceLastOTP);
   DateTime get nextOTPTimeStart {
     // Sometimes there is an rounding error. For example it showes sometomes 23:59:59 instead of 00:00:00 so we add 1ms to be sure
-    return DateTime.now().add(durationUntilNextOTP + const Duration(milliseconds: 1) + serverOffset);
+    return DateTime.now().add(durationUntilNextOTP + const Duration(milliseconds: 1));
   }
 
   factory DayPasswordToken.fromUriMap(Map<String, dynamic> uriMap) {

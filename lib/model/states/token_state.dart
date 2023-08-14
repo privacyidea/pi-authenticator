@@ -39,7 +39,9 @@ class TokenState {
 
   TokenState updateToken(Token token) {
     final newTokens = List<Token>.from(tokens);
-    newTokens[newTokens.indexWhere((element) => element.id == token.id)] = token;
+    final index = newTokens.indexWhere((element) => element.id == token.id);
+    if (index == -1) return this;
+    newTokens[index] = token;
     _sort(newTokens);
     return TokenState(tokens: newTokens);
   }

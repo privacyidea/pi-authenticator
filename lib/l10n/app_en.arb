@@ -254,7 +254,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorRollOutFailed": "Rolling out token {name} failed. Error code: {errorCode}",
+  "errorRollOutFailed": "Rolling out token {name} failed.\nError code: {errorCode}",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "type": "text",
@@ -596,6 +596,46 @@
   "categoryName": "Category name",
   "@categoryName": {
     "description": "categoryName",
+    "type": "text"
+  },
+  "retryRollout": "Retry rollout",
+  "@retryRollout": {
+    "description": "retryRollout",
+    "type": "text"
+  },
+  "generatingRSAKeyPair": "Generating RSA key pair",
+  "@generatingRSAKeyPair": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "generatingRSAKeyPairFailed": "Generating RSA key pair failed",
+  "@generatingRSAKeyPairFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingRSAPublicKey": "Sending public RSA key",
+  "@sendingRSAPublicKey": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingRSAPublicKeyFailed": "Sending public RSA key failed",
+  "@sendingRSAPublicKeyFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponse": "Parsing response",
+  "@parsingResponse": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponseFailed": "Parsing response failed",
+  "@parsingResponseFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "rolloutCompleted": "Rollout completed",
+  "@rolloutCompleted": {
+    "description": "Message for the rollout process",
     "type": "text"
   }
 }

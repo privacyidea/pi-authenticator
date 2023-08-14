@@ -3,13 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import '../../model/states/app_state.dart';
 import '../../utils/app_customizer.dart';
+import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import 'main_view_widgets/main_view_navigation_buttons.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
 import 'main_view_widgets/no_token_screen.dart';
 
 class MainView extends ConsumerStatefulWidget {
-  static const routeName = '/';
+  static const routeName = '/mainView';
   final String _title;
 
   const MainView({Key? key, required String title})
@@ -24,11 +25,14 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
   final globalKey = GlobalKey<NestedScrollViewState>();
   @override
   void onResume() {
+    Logger.warning('onResume');
     globalRef?.read(appStateProvider.notifier).setAppState(AppState.resume);
   }
 
   @override
   void onPause() {
+    Logger.warning('onPause, ${hashCode.toString()}}');
+    Logger.warning('isMounted: $mounted');
     globalRef?.read(appStateProvider.notifier).setAppState(AppState.pause);
   }
 

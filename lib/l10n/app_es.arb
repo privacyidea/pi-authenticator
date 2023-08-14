@@ -603,5 +603,45 @@
   "@categoryName": {
     "description": "categoryName",
     "type": "text"
+  },
+  "retryRollout": "Reintentar despliegue",
+  "@retryRollout": {
+    "description": "retryRollout",
+    "type": "text"
+  },
+  "generatingRSAKeyPair": "Generando par de claves RSA",
+  "@generatingRSAKeyPair": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "generatingRSAKeyPairFailed": "Error al generar el par de claves RSA",
+  "@generatingRSAKeyPairFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingPublicRSAKey": "Enviando clave pública RSA",
+  "@sendingRSAPublicKey": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingPublicRSAKeyFailed": "Error al enviar la clave pública RSA",
+  "@sendingRSAPublicKeyFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponse": "Analizando la respuesta",
+  "@parsingResponse": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponseFailed": "Error al analizar la respuesta",
+  "@parsingResponseFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "rolloutCompleted": "Despliegue completado",
+  "@rolloutCompleted": {
+    "description": "Message for the rollout process",
+    "type": "text"
   }
 }

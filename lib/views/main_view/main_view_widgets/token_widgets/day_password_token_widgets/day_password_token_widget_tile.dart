@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../../../../model/tokens/day_password_token.dart';
 import '../../../../../utils/identifiers.dart';

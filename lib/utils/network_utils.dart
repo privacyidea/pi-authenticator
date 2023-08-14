@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
@@ -70,9 +71,8 @@ Future<Response> postRequest({required Uri url, required Map<String, String?> bo
 
   Response response;
   try {
-    response = await ioClient.post(url, body: body); // FIXME: If user-100 rollout pushToken, this will fail (app error or server configuration?)
+    response = await ioClient.post(url, body: body);
   } on SocketException catch (e, s) {
-    Logger.warning('Received response', name: 'utils.dart#doPost', error: '${e.runtimeType} : $s');
     response = Response('${e.runtimeType} : $s', 404);
   }
 
@@ -91,7 +91,7 @@ Future<Response> getRequest({required Uri url, required Map<String, String?> par
     for (MapEntry entry in entries) {
       nullEntries.add(entry.key);
     }
-    throw ArgumentError("Can not send request because the argument [parameters] contains a "
+    throw ArgumentError("Can not send request because the argument [parameters] contains "
         "null values at entries $nullEntries, this is not permitted.");
   }
 

@@ -25,12 +25,14 @@ WidgetRef? globalRef;
 final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
   final tokenNotifier = TokenNotifier();
 
+  Logger.info("appStateProvider.addListener ${tokenNotifier.hashCode.toString()}");
   appStateProvider.addListener(
     ref.container,
     (previous, next) {
       switch (next) {
         case AppState.resume:
           //startPolling();
+          Logger.info('refreshing tokens on resume ${tokenNotifier.hashCode.toString()}');
           tokenNotifier.refreshTokens();
           ref.read(appStateProvider.notifier).setAppState(AppState.running);
           break;

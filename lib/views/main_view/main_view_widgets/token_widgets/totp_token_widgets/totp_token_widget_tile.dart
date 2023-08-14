@@ -60,6 +60,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   void _onAppStateChange(AppState state) {
     if (!mounted) return;
     if (state == AppState.resume) {
+      setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
       animation.forward(from: 1 - secondsLeft / widget.token.period);
       return;
     }
@@ -77,18 +78,10 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
 
   void _countDown(int msSinceLastCount) {
     if (!mounted) return;
-    if (secondsLeft - (msSinceLastCount / 1000) > 0) {
-      setState(() => secondsLeft -= msSinceLastCount / 1000);
-    } else {
-      setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
-      animation.forward(from: 1 - secondsLeft / widget.token.period);
-    }
+    setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
+    animation.forward(from: 1 - secondsLeft / widget.token.period);
     final msUntilNextSecond = (secondsLeft * 1000).toInt() % 1000 + 1; // +1 to avoid 0
-    Future.delayed(
-        Duration(
-          milliseconds: msUntilNextSecond,
-        ),
-        () => _countDown(msUntilNextSecond));
+    Future.delayed(Duration(milliseconds: msUntilNextSecond), () => _countDown(msUntilNextSecond));
   }
 
   @override

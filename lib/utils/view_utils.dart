@@ -4,13 +4,8 @@ import 'package:flutter/material.dart';
 void showMessage({
   required BuildContext context,
   required String message,
-  Duration duration = const Duration(seconds: 3),
+  Duration duration = const Duration(seconds: 5),
 }) =>
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-          content: Text(
-            message,
-            overflow: TextOverflow.ellipsis,
-          ),
-          duration: duration),
+      SnackBar(content: Text(message), duration: duration),
     );

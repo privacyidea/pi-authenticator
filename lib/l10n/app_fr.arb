@@ -608,5 +608,45 @@
   "@categoryName": {
     "description": "categoryName",
     "type": "text"
+  },
+  "retryRollout": "Réessayer le déploiement",
+  "@retryRollout": {
+    "description": "retryRollout",
+    "type": "text"
+  },
+  "generatingRSAKeyPair": "Génération de la paire de clés RSA",
+  "@generatingRSAKeyPair": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "generatingRSAKeyPairFailed": "La génération de la paire de clés RSA a échoué",
+  "@generatingRSAKeyPairFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingPublicRSAKey": "Envoi de la clé publique RSA",
+  "@sendingRSAPublicKey": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingPublicRSAKeyFailed": "L'envoi de la clé publique RSA a échoué",
+  "@sendingRSAPublicKeyFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponse": "Analyse de la réponse",
+  "@parsingResponse": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponseFailed": "L'analyse de la réponse a échoué",
+  "@parsingResponseFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "rolloutCompleted": "Déploiement terminé",
+  "@rolloutCompleted": {
+    "description": "Message for the rollout process",
+    "type": "text"
   }
 }

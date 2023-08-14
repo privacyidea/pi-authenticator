@@ -54,6 +54,7 @@ var lightThemeData = ThemeData(
     secondary: primarySwatch,
     onPrimary: onPrimary,
     onSecondary: onPrimary,
+    errorContainer: ApplicationCustomizer.deleteColorLight,
   ),
   iconTheme: const IconThemeData(color: Colors.black),
   checkboxTheme: CheckboxThemeData(
@@ -127,6 +128,7 @@ var darkThemeData = ThemeData(
     secondary: primarySwatch,
     onPrimary: onPrimary,
     onSecondary: onPrimary,
+    errorContainer: ApplicationCustomizer.deleteColorDark,
   ),
   iconTheme: const IconThemeData(color: Colors.white),
   checkboxTheme: CheckboxThemeData(

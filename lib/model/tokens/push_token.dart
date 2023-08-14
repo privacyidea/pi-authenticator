@@ -23,6 +23,7 @@ class PushToken extends Token {
   final String? enrollmentCredentials;
   final Uri? url; // Full access to allow adding to legacy android tokens
   final bool isRolledOut;
+  final PushRollOutState rolloutState;
 
   // RSA keys - String values for backward compatibility with serialization
   final String? publicServerKey;
@@ -81,6 +82,7 @@ class PushToken extends Token {
     this.privateTokenKey,
     required this.expirationDate,
     this.isRolledOut = false,
+    this.rolloutState = PushRollOutState.rolloutNotStarted,
     CustomIntBuffer? knownPushRequests,
     int? categoryId,
     bool isInEditMode = false,
@@ -122,6 +124,7 @@ class PushToken extends Token {
     String? privateTokenKey,
     DateTime? expirationDate,
     bool? isRolledOut,
+    PushRollOutState? rolloutState,
     CustomIntBuffer? knownPushRequests,
     int? Function()? categoryId,
     bool? isInEditMode,
@@ -144,6 +147,7 @@ class PushToken extends Token {
       privateTokenKey: privateTokenKey ?? this.privateTokenKey,
       expirationDate: expirationDate ?? this.expirationDate,
       isRolledOut: isRolledOut ?? this.isRolledOut,
+      rolloutState: rolloutState ?? this.rolloutState,
       knownPushRequests: knownPushRequests ?? this.knownPushRequests,
       categoryId: categoryId != null ? categoryId() : this.categoryId,
       isInEditMode: isInEditMode ?? this.isInEditMode,
@@ -163,6 +167,7 @@ class PushToken extends Token {
         'serial: $serial, sslVerify: $sslVerify, '
         'enrollmentCredentials: $enrollmentCredentials, '
         'url: $url, isRolledOut: $isRolledOut, '
+        'rolloutState: $rolloutState, '
         'sortIndex: $sortIndex, '
         'pin: $pin, '
         'publicServerKey: $publicServerKey, '

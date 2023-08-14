@@ -37,7 +37,7 @@ import 'network_utils.dart';
 
 /// This class bundles all logic that is needed to handle PushTokens, e.g.,
 /// firebase, polling, notifications.
-class PushProvider {
+abstract class PushProvider {
   static late BackgroundMessageHandler _backgroundHandler;
   static late BackgroundMessageHandler _incomingHandler;
 

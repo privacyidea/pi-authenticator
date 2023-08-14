@@ -116,8 +116,8 @@ class _TokenCategoryExpandableState extends ConsumerState<TokenCategoryExpandabl
               },
               builder: (context, willAccept, willReject) => Center(
                 child: Container(
-                  margin: widget.category.isExpanded ? null : const EdgeInsets.only(right: 16),
-                  padding: widget.category.isExpanded ? const EdgeInsets.only(right: 16) : null,
+                  margin: widget.category.isExpanded ? null : const EdgeInsets.only(right: 8),
+                  padding: widget.category.isExpanded ? const EdgeInsets.only(right: 8) : null,
                   height: 50,
                   decoration: BoxDecoration(
                     color: willAccept.isNotEmpty ? Theme.of(context).dividerColor : null,

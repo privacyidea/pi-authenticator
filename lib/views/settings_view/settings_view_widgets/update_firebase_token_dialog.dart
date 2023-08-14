@@ -58,8 +58,6 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
       child: AlertDialog(
         title: Text(
           AppLocalizations.of(context)!.synchronizingTokens,
-          overflow: TextOverflow.fade,
-          softWrap: false,
         ),
         content: _content,
         actions: <Widget>[
@@ -146,11 +144,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
       if (tokenWithFailedUpdate.isNotEmpty) {
         children.add(
-          Text(
-            AppLocalizations.of(context)!.synchronizationFailed,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
+          Text(AppLocalizations.of(context)!.synchronizationFailed + '\n'),
         );
         for (PushToken p in tokenWithFailedUpdate) {
           children.add(Text('• ${p.label}'));

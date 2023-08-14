@@ -300,8 +300,6 @@ class Logger {
         SnackBar(
           content: Text(
             _context != null ? AppLocalizations.of(_context!)!.unexpectedError : 'Unexpected Error',
-            overflow: TextOverflow.fade,
-            softWrap: false,
           ),
           action: _context != null
               ? SnackBarAction(

@@ -80,6 +80,7 @@ class _TokenWidgetTileState extends State<TokenWidgetTile> {
 
   @override
   Widget build(BuildContext context) => ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
         horizontalTitleGap: 8.0,
         leading: (widget.leading != null) ? widget.leading! : null,
         onTap: widget.onTap,
