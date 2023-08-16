@@ -120,12 +120,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "renameTokenCategory": "Rename token category",
-  "@renameTokenCategory": {
-    "description": "Title of the dialog where a new name for a token category can be entered.",
-    "type": "text",
-    "placeholders": {}
-  },
   "confirmDeletion": "Confirm deletion",
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted.",
@@ -588,12 +582,18 @@
     "description": "uncollapseLockedCategory",
     "type": "text"
   },
-  "addANewCategory": "Add a new category",
+  "renameTokenCategory": "Rename folder",
+  "@renameTokenCategory": {
+    "description": "Title of the dialog where a new name for a token category can be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addANewCategory": "Create new folder",
   "@addANewCategory": {
     "description": "addANewCategory",
     "type": "text"
   },
-  "categoryName": "Category name",
+  "categoryName": "Foldername",
   "@categoryName": {
     "description": "categoryName",
     "type": "text"
@@ -636,6 +636,16 @@
   "rolloutCompleted": "Rollout completed",
   "@rolloutCompleted": {
     "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "authToAcceptPushRequest": "Please authenticate to accept the push request.",
+  "@authToAcceptPushRequest": {
+    "description": "authToAcceptPushRequest",
+    "type": "text"
+  },
+  "authToDeclinePushRequest": "Please authenticate to decline the push request.",
+  "@authToDeclinePushRequest": {
+    "description": "authToDeclinePushRequest",
     "type": "text"
   }
 }

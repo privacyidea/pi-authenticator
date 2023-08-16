@@ -32,9 +32,11 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
       switch (next) {
         case AppState.resume:
           //startPolling();
-          Logger.info('refreshing tokens on resume ${tokenNotifier.hashCode.toString()}');
-          tokenNotifier.refreshTokens();
-          ref.read(appStateProvider.notifier).setAppState(AppState.running);
+          if (previous == AppState.pause) {
+            Logger.info('refreshing tokens on resume');
+            tokenNotifier.refreshTokens();
+            ref.read(appStateProvider.notifier).setAppState(AppState.running);
+          }
           break;
         case AppState.pause:
           //stopPolling();

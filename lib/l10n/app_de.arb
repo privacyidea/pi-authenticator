@@ -589,17 +589,22 @@
     "description": "editLockedToken",
     "type": "text"
   },
-  "renameTokenCategory": "Kategorie umbenennen",
+  "uncollapseLockedCategory": "Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.",
+  "@uncollapseLockedCategory": {
+    "description": "uncollapseLockedCategory",
+    "type": "text"
+  },
+  "renameTokenCategory": "Ordner umbenennen",
   "@renameTokenCategory": {
     "description": "renameTokenCategory",
     "type": "text"
   },
-  "addANewCategory": "Neue Kategorie hinzufügen",
+  "addANewCategory": "Neuen Ordner anlegen",
   "@addANewCategory": {
     "description": "addANewCategory",
     "type": "text"
   },
-  "categoryName": "Kategoriename",
+  "categoryName": "Ordnername",
   "@categoryName": {
     "description": "categoryName",
     "type": "text"

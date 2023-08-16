@@ -29,8 +29,8 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       expirationDate: DateTime.parse(json['expirationDate'] as String),
       isRolledOut: json['isRolledOut'] as bool? ?? false,
       rolloutState: $enumDecodeNullable(
-              _$PushRollOutStateEnumMap, json['rolloutState']) ??
-          PushRollOutState.rolloutNotStarted,
+              _$PushTokenRollOutStateEnumMap, json['rolloutState']) ??
+          PushTokenRollOutState.rolloutNotStarted,
       knownPushRequests: json['knownPushRequests'] == null
           ? null
           : CustomIntBuffer.fromJson(
@@ -56,7 +56,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
       'isRolledOut': instance.isRolledOut,
-      'rolloutState': _$PushRollOutStateEnumMap[instance.rolloutState]!,
+      'rolloutState': _$PushTokenRollOutStateEnumMap[instance.rolloutState]!,
       'publicServerKey': instance.publicServerKey,
       'privateTokenKey': instance.privateTokenKey,
       'publicTokenKey': instance.publicTokenKey,
@@ -64,13 +64,14 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'knownPushRequests': instance.knownPushRequests,
     };
 
-const _$PushRollOutStateEnumMap = {
-  PushRollOutState.rolloutNotStarted: 'rolloutNotStarted',
-  PushRollOutState.generateingRSAKeyPair: 'generateingRSAKeyPair',
-  PushRollOutState.generateingRSAKeyPairFailed: 'generateingRSAKeyPairFailed',
-  PushRollOutState.sendRSAPublicKey: 'sendRSAPublicKey',
-  PushRollOutState.sendRSAPublicKeyFailed: 'sendRSAPublicKeyFailed',
-  PushRollOutState.parsingResponse: 'parsingResponse',
-  PushRollOutState.parsingResponseFailed: 'parsingResponseFailed',
-  PushRollOutState.rolloutComplete: 'rolloutComplete',
+const _$PushTokenRollOutStateEnumMap = {
+  PushTokenRollOutState.rolloutNotStarted: 'rolloutNotStarted',
+  PushTokenRollOutState.generateingRSAKeyPair: 'generateingRSAKeyPair',
+  PushTokenRollOutState.generateingRSAKeyPairFailed:
+      'generateingRSAKeyPairFailed',
+  PushTokenRollOutState.sendRSAPublicKey: 'sendRSAPublicKey',
+  PushTokenRollOutState.sendRSAPublicKeyFailed: 'sendRSAPublicKeyFailed',
+  PushTokenRollOutState.parsingResponse: 'parsingResponse',
+  PushTokenRollOutState.parsingResponseFailed: 'parsingResponseFailed',
+  PushTokenRollOutState.rolloutComplete: 'rolloutComplete',
 };

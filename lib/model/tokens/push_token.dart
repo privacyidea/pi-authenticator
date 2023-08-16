@@ -23,7 +23,7 @@ class PushToken extends Token {
   final String? enrollmentCredentials;
   final Uri? url; // Full access to allow adding to legacy android tokens
   final bool isRolledOut;
-  final PushRollOutState rolloutState;
+  final PushTokenRollOutState rolloutState;
 
   // RSA keys - String values for backward compatibility with serialization
   final String? publicServerKey;
@@ -82,7 +82,7 @@ class PushToken extends Token {
     this.privateTokenKey,
     required this.expirationDate,
     this.isRolledOut = false,
-    this.rolloutState = PushRollOutState.rolloutNotStarted,
+    this.rolloutState = PushTokenRollOutState.rolloutNotStarted,
     CustomIntBuffer? knownPushRequests,
     int? categoryId,
     bool isInEditMode = false,
@@ -124,7 +124,7 @@ class PushToken extends Token {
     String? privateTokenKey,
     DateTime? expirationDate,
     bool? isRolledOut,
-    PushRollOutState? rolloutState,
+    PushTokenRollOutState? rolloutState,
     CustomIntBuffer? knownPushRequests,
     int? Function()? categoryId,
     bool? isInEditMode,
@@ -191,7 +191,18 @@ class PushToken extends Token {
         tokenImage: uriMap[URI_IMAGE],
       );
 
-  factory PushToken.fromJson(Map<String, dynamic> json) => _$PushTokenFromJson(json);
+  factory PushToken.fromJson(Map<String, dynamic> json) {
+    final newToken = _$PushTokenFromJson(json);
+    newToken.pushRequests.removeWhere((request) => request.expirationDate.isBefore(DateTime.now()));
+    final currentRolloutState = switch (newToken.rolloutState) {
+      PushTokenRollOutState.rolloutNotStarted => PushTokenRollOutState.rolloutNotStarted,
+      PushTokenRollOutState.generateingRSAKeyPair || PushTokenRollOutState.generateingRSAKeyPairFailed => PushTokenRollOutState.generateingRSAKeyPairFailed,
+      PushTokenRollOutState.sendRSAPublicKey || PushTokenRollOutState.sendRSAPublicKeyFailed => PushTokenRollOutState.sendRSAPublicKeyFailed,
+      PushTokenRollOutState.parsingResponse || PushTokenRollOutState.parsingResponseFailed => PushTokenRollOutState.parsingResponseFailed,
+      PushTokenRollOutState.rolloutComplete => PushTokenRollOutState.rolloutComplete,
+    };
+    return newToken.copyWith(rolloutState: currentRolloutState);
+  }
 
   Map<String, dynamic> toJson() => _$PushTokenToJson(this);
 }

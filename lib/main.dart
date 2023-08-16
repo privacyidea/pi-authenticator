@@ -145,6 +145,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Center(
         child: AnimatedOpacity(
           opacity: _appIconIsVisible ? 1.0 : 0.0,

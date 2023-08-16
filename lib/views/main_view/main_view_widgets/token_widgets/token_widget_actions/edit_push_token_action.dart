@@ -1,16 +1,16 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+
 import '../../../../../model/tokens/push_token.dart';
+import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/customizations.dart';
 import '../../../../../utils/lock_auth.dart';
-import 'token_action.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/storage_utils.dart';
+import 'token_action.dart';
 
 class EditPushTokenAction extends TokenAction {
   final PushToken token;
@@ -132,8 +132,6 @@ class EditPushTokenAction extends TokenAction {
                       Text(
                         publicTokenKey ?? AppLocalizations.of(context)!.noPublicKey,
                         style: Theme.of(context).textTheme.bodyMedium,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
                       ),
                     ],
                   ),
@@ -151,8 +149,7 @@ class EditPushTokenAction extends TokenAction {
                           if (snapshot.hasData) {
                             return Text(
                               snapshot.data != null ? snapshot.data.toString() : AppLocalizations.of(context)!.noFbToken,
-                              overflow: TextOverflow.fade,
-                              softWrap: false,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             );
                           } else {
                             return const Text(

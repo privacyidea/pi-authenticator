@@ -88,7 +88,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     List<PushToken> tokenWithUrl = tokenList.where((e) => e.url != null).toList();
     List<PushToken> tokenWithFailedUpdate = [];
 
-    for (PushToken p in tokenWithUrl) {
+    for (PushToken pushToken in tokenWithUrl) {
       // POST /ttype/push HTTP/1.1
       // Host: example.com
       //
@@ -99,8 +99,8 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
       String timestamp = DateTime.now().toUtc().toIso8601String();
 
-      String message = '$token|${p.serial}|$timestamp';
-      String? signature = await trySignWithToken(p, message);
+      String message = '$token|${pushToken.serial}|$timestamp';
+      String? signature = await trySignWithToken(pushToken, message);
       if (signature == null) {
         return;
       }
@@ -108,13 +108,15 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
       Response response;
       try {
         response = await postRequest(
-            sslVerify: p.sslVerify!, url: p.url!, body: {'new_fb_token': token, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
+            sslVerify: pushToken.sslVerify!,
+            url: pushToken.url!,
+            body: {'new_fb_token': token, 'serial': pushToken.serial, 'timestamp': timestamp, 'signature': signature});
 
         if (response.statusCode == 200) {
-          Logger.info('Updating firebase token for push token: ${p.serial} succeeded!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
+          Logger.info('Updating firebase token for push token: ${pushToken.serial} succeeded!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
         } else {
-          Logger.warning('Updating firebase token for push token: ${p.serial} failed!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
-          tokenWithFailedUpdate.add(p);
+          Logger.warning('Updating firebase token for push token: ${pushToken.serial} failed!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
+          tokenWithFailedUpdate.add(pushToken);
         }
       } on SocketException catch (e) {
         Logger.warning('Socket exception occurred: $e', name: 'update_firebase_token_dialog.dart#_updateFbTokens');

@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/mixins/sortable_mixin.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_slideable.dart';
+import '../../../../model/mixins/sortable_mixin.dart';
+import 'token_widget_slideable.dart';
 
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/riverpod_providers.dart';

@@ -57,6 +57,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.enterDetailsForToken,

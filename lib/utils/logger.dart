@@ -146,7 +146,7 @@ class Logger {
 
     try {
       fileMessage = _textFilter(fileMessage);
-      await file.writeAsString(fileMessage, mode: FileMode.append);
+      await file.writeAsString('\n$fileMessage', mode: FileMode.append);
     } catch (e) {
       _printError(e.toString());
     } finally {

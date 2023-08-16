@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/category_widgets/token_category_expandable.dart';
+import 'token_category_expandable.dart';
 
 import '../../../../model/token_category.dart';
 import '../../../../utils/riverpod_providers.dart';

@@ -25,6 +25,8 @@ import 'dart:core';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart' as Base32Converter;
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hex/hex.dart' as HexConverter;
 import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:permission_handler/permission_handler.dart';
@@ -153,3 +155,14 @@ OTPLibrary.Algorithm mapAlgorithms(Algorithms algorithm) {
       throw ArgumentError.value(algorithm, 'algorithmName', 'This algorithm is unknown and not supported!');
   }
 }
+
+String rolloutMsg(PushTokenRollOutState rolloutState, BuildContext context) => switch (rolloutState) {
+      PushTokenRollOutState.rolloutNotStarted => AppLocalizations.of(context)!.rollingOut,
+      PushTokenRollOutState.generateingRSAKeyPair => AppLocalizations.of(context)!.generatingRSAKeyPair,
+      PushTokenRollOutState.generateingRSAKeyPairFailed => AppLocalizations.of(context)!.generatingRSAKeyPairFailed,
+      PushTokenRollOutState.sendRSAPublicKey => AppLocalizations.of(context)!.sendingRSAPublicKey,
+      PushTokenRollOutState.sendRSAPublicKeyFailed => AppLocalizations.of(context)!.sendingRSAPublicKeyFailed,
+      PushTokenRollOutState.parsingResponse => AppLocalizations.of(context)!.parsingResponse,
+      PushTokenRollOutState.parsingResponseFailed => AppLocalizations.of(context)!.parsingResponseFailed,
+      PushTokenRollOutState.rolloutComplete => AppLocalizations.of(context)!.rolloutCompleted,
+    };

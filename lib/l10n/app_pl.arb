@@ -583,22 +583,22 @@
     "description": "editLockedToken",
     "type": "text"
   },
-  "uncollapseLockedCategory": "Aby otworzyć zablokowaną kategorię, należy się uwierzytelnić.",
+  "uncollapseLockedCategory": "Uwierzytelnij, aby otworzyć zablokowany folder.",
   "@uncollapseLockedCategory": {
     "description": "uncollapseLockedCategory",
     "type": "text"
   },
-  "renameTokenCategory": "Zmień nazwę kategorii",
+  "renameTokenCategory": "Zmiana nazwy folderu",
   "@renameTokenCategory": {
     "description": "renameTokenCategory",
     "type": "text"
   },
-  "addANewCategory": "Dodaj nową kategorię",
+  "addANewCategory": "Utwórz nowy folder",
   "@addANewCategory": {
     "description": "addANewCategory",
     "type": "text"
   },
-  "categoryName": "Nazwa kategorii",
+  "categoryName": "Nazwa folderu",
   "@categoryName": {
     "description": "categoryName",
     "type": "text"

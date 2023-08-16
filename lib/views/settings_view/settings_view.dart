@@ -26,6 +26,7 @@ class SettingsView extends ConsumerWidget {
     final showPushSettingsGroup = enrolledPushTokenList.isNotEmpty;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.settings,

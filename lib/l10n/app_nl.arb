@@ -583,24 +583,24 @@
     "description": "editLockedToken",
     "type": "text"
   },
-  "uncollapseLockedCategory": "Verifieer om de vergrendelde categorie uit te vouwen.",
+  "uncollapseLockedCategory": "Verifieer om de vergrendelde map te openen.",
   "@uncollapseLockedCategory": {
     "description": "uncollapseLockedCategory",
     "type": "text"
   },
-  "renameTokenCategory": "Hernoem categorie",
+  "renameTokenCategory": "Map hernoemen",
   "@renameTokenCategory": {
     "description": "renameTokenCategory",
     "type": "text"
   },
-  "addANewCategory": "Een nieuwe categorie toevoegen",
+  "addANewCategory": "Nieuwe map maken",
   "@addANewCategory": {
     "description": "addANewCategory",
     "type": "text"
   },
-  "renameCategory": "Hernoem categorie",
-  "@renameCategory": {
-    "description": "renameCategory",
+  "categoryName": "Mapnaam",
+  "@categoryName": {
+    "description": "categoryName",
     "type": "text"
   },
   "retryRollout": "Opnieuw uitrollen",

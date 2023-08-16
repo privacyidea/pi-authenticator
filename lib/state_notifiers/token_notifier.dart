@@ -11,7 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
 
 import '../model/push_request.dart';
 import '../model/states/token_state.dart';
@@ -19,6 +18,7 @@ import '../model/tokens/hotp_token.dart';
 import '../model/tokens/push_token.dart';
 import '../model/tokens/token.dart';
 import '../utils/crypto_utils.dart';
+import '../utils/customizations.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
 import '../utils/network_utils.dart';
@@ -248,10 +248,10 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<bool> rolloutPushToken(PushToken token) async {
     if (token.isRolledOut) return true;
-    if (token.rolloutState != PushRollOutState.rolloutNotStarted &&
-        token.rolloutState != PushRollOutState.generateingRSAKeyPairFailed &&
-        token.rolloutState != PushRollOutState.sendRSAPublicKeyFailed &&
-        token.rolloutState != PushRollOutState.parsingResponseFailed) {
+    if (token.rolloutState != PushTokenRollOutState.rolloutNotStarted &&
+        token.rolloutState != PushTokenRollOutState.generateingRSAKeyPairFailed &&
+        token.rolloutState != PushTokenRollOutState.sendRSAPublicKeyFailed &&
+        token.rolloutState != PushTokenRollOutState.parsingResponseFailed) {
       Logger.info('Ignoring rollout request: Rollout of token ${token.serial} already started. Tokenstate: ${token.rolloutState} ',
           name: 'token_widgets.dart#_rolloutToken');
       return false;
@@ -262,7 +262,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
 
     if (token.privateTokenKey == null) {
-      updateToken(token.copyWith(rolloutState: PushRollOutState.generateingRSAKeyPair));
+      updateToken(token.copyWith(rolloutState: PushTokenRollOutState.generateingRSAKeyPair));
       try {
         final keyPair = await generateRSAKeyPair();
         token = token.withPrivateTokenKey(keyPair.privateKey);
@@ -272,12 +272,12 @@ class TokenNotifier extends StateNotifier<TokenState> {
         checkNotificationPermission();
       } catch (e) {
         Logger.warning('Error while generating RSA key pair.', name: 'token_widgets.dart#_rolloutToken', error: e);
-        updateToken(token.copyWith(rolloutState: PushRollOutState.generateingRSAKeyPairFailed));
+        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.generateingRSAKeyPairFailed));
         return false;
       }
     }
 
-    updateToken(token.copyWith(rolloutState: PushRollOutState.sendRSAPublicKey));
+    updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKey));
     try {
       // TODO What to do with poll only tokens if google-services is used?
       Response response = await postRequest(sslVerify: token.sslVerify!, url: token.url!, body: {
@@ -288,17 +288,17 @@ class TokenNotifier extends StateNotifier<TokenState> {
       });
 
       if (response.statusCode == 200) {
-        updateToken(token.copyWith(rolloutState: PushRollOutState.parsingResponse));
+        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.parsingResponse));
         try {
           RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
           token = token.withPublicServerKey(publicServerKey);
         } catch (e) {
           Logger.warning('Error while parsing RSA public key.', name: 'token_widgets.dart#_rolloutToken', error: e);
-          updateToken(token.copyWith(rolloutState: PushRollOutState.parsingResponseFailed));
+          updateToken(token.copyWith(rolloutState: PushTokenRollOutState.parsingResponseFailed));
           return false;
         } finally {
           Logger.info('Roll out successful', name: 'token_widgets.dart#_rolloutToken', error: token);
-          token = token.copyWith(isRolledOut: true, rolloutState: PushRollOutState.rolloutComplete);
+          token = token.copyWith(isRolledOut: true, rolloutState: PushTokenRollOutState.rolloutComplete);
           updateToken(token);
         }
         return true;
@@ -319,7 +319,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
           message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label, response.statusCode) + message,
           duration: const Duration(seconds: 3),
         );
-        updateToken(token.copyWith(rolloutState: PushRollOutState.sendRSAPublicKeyFailed));
+        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
         return false;
       }
     } catch (e) {
@@ -330,7 +330,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
           message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoNetworkConnection,
           duration: const Duration(seconds: 3),
         );
-        updateToken(token.copyWith(rolloutState: PushRollOutState.sendRSAPublicKeyFailed));
+        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
         return false;
       } else {
         Logger.error('Unknown error: Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#_rolloutToken', error: e);
@@ -339,7 +339,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
           message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutUnknownError(e),
           duration: const Duration(seconds: 3),
         );
-        updateToken(token.copyWith(rolloutState: PushRollOutState.sendRSAPublicKeyFailed));
+        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
         return false;
       }
     }

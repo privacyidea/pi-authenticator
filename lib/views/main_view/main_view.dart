@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
+
 import '../../model/states/app_state.dart';
 import '../../utils/app_customizer.dart';
 import '../../utils/logger.dart';
@@ -25,14 +26,13 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
   final globalKey = GlobalKey<NestedScrollViewState>();
   @override
   void onResume() {
-    Logger.warning('onResume');
+    Logger.info('onResume');
     globalRef?.read(appStateProvider.notifier).setAppState(AppState.resume);
   }
 
   @override
   void onPause() {
-    Logger.warning('onPause, ${hashCode.toString()}}');
-    Logger.warning('isMounted: $mounted');
+    Logger.info('onPause');
     globalRef?.read(appStateProvider.notifier).setAppState(AppState.pause);
   }
 
@@ -41,6 +41,7 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
     final tokenList = ref.watch(tokenProvider).tokens;
     final categoryList = ref.watch(tokenCategoryProvider).categorys;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
           widget._title,

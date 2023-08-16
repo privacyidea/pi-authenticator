@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_actions/token_action.dart';
+import 'token_widget_actions/token_action.dart';
 
 import '../../../../model/tokens/token.dart';
 
@@ -30,7 +30,7 @@ class TokenWidgetSlideable extends StatelessWidget {
         child: Stack(
           children: [
             tile,
-            for (var item in stack) Positioned.fill(child: item),
+            for (var item in stack) item,
           ],
         ),
       );

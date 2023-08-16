@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/category_widgets/token_category_actions.dart/delete_token_category_action.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/category_widgets/token_category_actions.dart/lock_token_category_action.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/category_widgets/token_category_actions.dart/rename_token_category_action.dart';
+import 'token_category_actions.dart/delete_token_category_action.dart';
+import 'token_category_actions.dart/lock_token_category_action.dart';
+import 'token_category_actions.dart/rename_token_category_action.dart';
 import '../../../../model/token_category.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/lock_auth.dart';
@@ -135,7 +135,8 @@ class _TokenCategoryExpandableState extends ConsumerState<TokenCategoryExpandabl
                           turns: Tween(begin: 0.25, end: 0.0).animate(animationController),
                           child: SizedBox.square(
                             dimension: 25,
-                            child: (tokens.isNotEmpty && tokens.first != draggingSortable) ? const Icon(Icons.arrow_forward_ios_sharp) : null,
+                            child:
+                                (tokens.isEmpty || (tokens.length == 1 && tokens.first == draggingSortable)) ? null : const Icon(Icons.arrow_forward_ios_sharp),
                           )),
                       const SizedBox(width: 8),
                       Expanded(
@@ -148,19 +149,15 @@ class _TokenCategoryExpandableState extends ConsumerState<TokenCategoryExpandabl
                       ),
                       CustomTrailing(
                         child: Center(
-                          child: Stack(
-                            children: [
-                              Icon(
-                                Icons.folder_open,
-                                color: Theme.of(context).listTileTheme.iconColor,
-                              ),
-                              if (tokens.isNotEmpty && tokens.first != draggingSortable)
-                                Icon(
+                          child: (tokens.isEmpty || (tokens.length == 1 && tokens.first == draggingSortable))
+                              ? Icon(
+                                  Icons.folder_open,
+                                  color: Theme.of(context).listTileTheme.iconColor,
+                                )
+                              : Icon(
                                   Icons.folder,
                                   color: Theme.of(context).listTileTheme.iconColor,
                                 ),
-                            ],
-                          ),
                         ),
                       ),
                     ],

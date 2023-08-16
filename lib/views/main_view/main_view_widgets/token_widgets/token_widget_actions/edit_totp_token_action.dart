@@ -1,16 +1,16 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+
 import '../../../../../model/tokens/totp_token.dart';
-import '../../../../../utils/utils.dart';
+import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/customizations.dart';
 import '../../../../../utils/lock_auth.dart';
-import 'token_action.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/utils.dart';
+import 'token_action.dart';
 
 class EditTOTPTokenAction extends TokenAction {
   final TOTPToken token;

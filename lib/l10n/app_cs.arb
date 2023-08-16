@@ -589,17 +589,22 @@
     "description": "editLockedToken",
     "type": "text"
   },
-  "renameTokenCategory": "Přejmenovat kategorii tokenu",
+  "uncollapseLockedCategory": "Chcete-li otevřít uzamčenou složku, ověřte se.",
+  "@uncollapseLockedCategory": {
+    "description": "uncollapseLockedCategory",
+    "type": "text"
+  },
+  "renameTokenCategory": "Přejmenování složky",
   "@renameTokenCategory": {
     "description": "renameTokenCategory",
     "type": "text"
   },
-  "addANewCategory": "Přidat novou kategorii",
+  "addANewCategory": "Vytvoření nové složky",
   "@addANewCategory": {
     "description": "addANewCategory",
     "type": "text"
   },
-  "categoryName": "Název kategorie",
+  "categoryName": "Název složky",
   "@categoryName": {
     "description": "categoryName",
     "type": "text"

@@ -589,17 +589,22 @@
     "description": "editLockedToken",
     "type": "text"
   },
-  "renameTokenCategory": "Por favor, autentíquese para renombrar la categoría del token.",
+  "uncollapseLockedCategory": "Por favor, autentifíquese para abrir la carpeta bloqueada.",
+  "@uncollapseLockedCategory": {
+    "description": "uncollapseLockedCategory",
+    "type": "text"
+  },
+  "renameTokenCategory": "Cambiar nombre de carpeta",
   "@renameTokenCategory": {
     "description": "renameTokenCategory",
     "type": "text"
   },
-  "addANewCategory": "Añadir una nueva categoría",
+  "addANewCategory": "Crear nueva carpeta",
   "@addANewCategory": {
     "description": "addANewCategory",
     "type": "text"
   },
-  "categoryName": "Nombre de la categoría",
+  "categoryName": "Nombre de la carpeta",
   "@categoryName": {
     "description": "categoryName",
     "type": "text"

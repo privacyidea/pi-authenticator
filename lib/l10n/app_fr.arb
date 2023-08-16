@@ -589,22 +589,22 @@
     "description": "editLockedToken",
     "type": "text"
   },
-  "uncollapseLockedCategory": "Veuillez vous authentifier pour déverrouiller la catégorie verrouillée.",
+  "uncollapseLockedCategory": "Veuillez vous authentifier pour ouvrir le dossier verrouillé.",
   "@uncollapseLockedCategory": {
     "description": "uncollapseLockedCategory",
     "type": "text"
   },
-  "renameTokenCategory": "Renommer la catégorie de jetons",
+  "renameTokenCategory": "Renommer le dossier",
   "@renameTokenCategory": {
     "description": "renameTokenCategory",
     "type": "text"
   },
-  "addANewCategory": "Ajouter une nouvelle catégorie",
+  "addANewCategory": "Créer un nouveau dossier",
   "@addANewCategory": {
     "description": "addANewCategory",
     "type": "text"
   },
-  "categoryName": "Nom de la catégorie",
+  "categoryName": "Nom du dossier",
   "@categoryName": {
     "description": "categoryName",
     "type": "text"

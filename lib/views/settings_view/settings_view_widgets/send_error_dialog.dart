@@ -5,9 +5,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../utils/logger.dart';
 
-class SendErrorDialog extends StatelessWidget {
+class SendErrorDialog extends StatefulWidget {
   const SendErrorDialog({super.key});
 
+  @override
+  State<SendErrorDialog> createState() => _SendErrorDialogState();
+}
+
+class _SendErrorDialogState extends State<SendErrorDialog> {
   @override
   Widget build(BuildContext context) {
     return BackdropFilter(
@@ -32,12 +37,22 @@ class SendErrorDialog extends StatelessWidget {
                 ),
                 Expanded(
                   child: Card(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          errorLog.data?.toString() ?? '',
-                          style: const TextStyle(fontFamily: 'monospace', fontSize: 10),
+                    child: Scrollbar(
+                      scrollbarOrientation: ScrollbarOrientation.right,
+                      thumbVisibility: true,
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              errorLog.data?.toString() ?? '',
+                              style: const TextStyle(fontFamily: 'monospace', fontSize: 8),
+                            ),
+                          ),
                         ),
                       ),
                     ),
