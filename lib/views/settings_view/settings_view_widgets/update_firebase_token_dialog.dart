@@ -31,6 +31,7 @@ import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 import '../../../model/tokens/push_token.dart';
+import '../../../utils/customizations.dart';
 
 class UpdateFirebaseTokenDialog extends StatefulWidget {
   const UpdateFirebaseTokenDialog({super.key});
@@ -42,7 +43,7 @@ class UpdateFirebaseTokenDialog extends StatefulWidget {
 class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
   Widget _content = const Row(
     mainAxisAlignment: MainAxisAlignment.center,
-    children: <Widget>[CircularProgressIndicator()],
+    children: [CircularProgressIndicator()],
   );
 
   @override
@@ -56,17 +57,11 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
-        title: Text(
-          AppLocalizations.of(context)!.synchronizingTokens,
-        ),
+        title: Text(AppLocalizations.of(context)!.synchronizingTokens),
         content: _content,
-        actions: <Widget>[
+        actions: [
           TextButton(
-            child: Text(
-              AppLocalizations.of(context)!.dismiss,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
+            child: Text(AppLocalizations.of(context)!.dismiss),
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -120,33 +115,30 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
         }
       } on SocketException catch (e) {
         Logger.warning('Socket exception occurred: $e', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(globalNavigatorKey.currentContext!).showSnackBar(SnackBar(
           content: Text(
-            AppLocalizations.of(context)!.errorSynchronizationNoNetworkConnection,
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
             overflow: TextOverflow.fade,
             softWrap: false,
           ),
           duration: const Duration(seconds: 3),
         ));
-        Navigator.pop(context);
+        Navigator.pop(globalNavigatorKey.currentContext!);
         return;
       }
     }
 
     if (tokenWithFailedUpdate.isEmpty && tokenWithOutUrl.isEmpty) {
+      if (!mounted) return;
       setState(() {
-        _content = Text(
-          AppLocalizations.of(context)!.allTokensSynchronized,
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        );
+        _content = Text(AppLocalizations.of(context)!.allTokensSynchronized);
       });
     } else {
       List<Widget> children = [];
 
       if (tokenWithFailedUpdate.isNotEmpty) {
         children.add(
-          Text(AppLocalizations.of(context)!.synchronizationFailed + '\n'),
+          Text('${AppLocalizations.of(globalNavigatorKey.currentContext!)!.synchronizationFailed}\n'),
         );
         for (PushToken p in tokenWithFailedUpdate) {
           children.add(Text('• ${p.label}'));
@@ -158,7 +150,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
           children.add(const Divider());
         }
 
-        children.add(Text(AppLocalizations.of(context)!.tokensDoNotSupportSynchronization));
+        children.add(Text(AppLocalizations.of(globalNavigatorKey.currentContext!)!.tokensDoNotSupportSynchronization));
         for (PushToken p in tokenWithOutUrl) {
           children.add(Text('• ${p.label}'));
         }

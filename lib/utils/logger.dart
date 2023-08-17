@@ -3,7 +3,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,10 +24,8 @@ class Logger {
   static Logger? _instance;
   static BuildContext? get _context => navigatorKey.currentContext;
   static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorLogFileAttached : 'Error Log File Attached';
-  static int get _lineLength => 160;
   static printer.Logger print = printer.Logger(
     printer: printer.PrettyPrinter(
-      lineLength: _lineLength + 5,
       methodCount: 0,
       colors: true,
       printEmojis: true,
@@ -273,22 +270,17 @@ class Logger {
 
   static void _print(String message) {
     if (!kDebugMode) return;
-
-    final messageWithShorterLines = _maxLineLengh(message);
-
-    print.i(messageWithShorterLines);
+    print.i(message);
   }
 
   static void _printWarning(String message) {
     if (!kDebugMode) return;
-    final messageWithShorterLines = _maxLineLengh(message);
-    print.w(messageWithShorterLines);
+    print.w(message);
   }
 
   static void _printError(String? message, {dynamic error, StackTrace? stackTrace, String? name}) {
     if (!kDebugMode) return;
-    final messageWithShorterLines = message != null ? _maxLineLengh(message) : null;
-    print.e(messageWithShorterLines, error: error, stackTrace: stackTrace);
+    print.e(message, error: error, stackTrace: stackTrace);
   }
 
   /*----------- DISPLAY OUTPUTS -----------*/
@@ -324,28 +316,6 @@ class Logger {
   }
 
   /*----------- HELPER -----------*/
-
-  static String _maxLineLengh(String text, {int? length}) {
-    length ??= _lineLength;
-    final lineSplittedText = StringBuffer();
-
-    List<String> lines = text.split('\n');
-
-    for (var i = 0; i < lines.length; i++) {
-      final line = lines[i];
-      // Every [length] characters in [text], add an \n for a new line
-      for (var j = 0; j < line.length; j += length) {
-        lineSplittedText.write(line.substring(j, min<int>(j + length, line.length)));
-        if (j + length < line.length) {
-          lineSplittedText.write('\n');
-        }
-      }
-      if (i < lines.length - 1) {
-        lineSplittedText.write('\n');
-      }
-    }
-    return lineSplittedText.toString();
-  }
 
   String _textFilter(String text) {
     for (var key in filterParameterKeys) {

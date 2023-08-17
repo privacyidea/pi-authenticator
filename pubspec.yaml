@@ -14,7 +14,7 @@ publish_to: none
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 4.2.0+402002 # TODO Set the right version number
+version: 4.2.0+402004 # TODO Set the right version number
 # version: major.minor.build          + 2x major|2x minor|3x build
 # version: version number             + build number (optional)
 # android: build-name                 + versionCode
@@ -71,6 +71,8 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_local_notifications: ^15.1.0+1
   extended_nested_scroll_view: ^6.1.2
+  local_auth_ios: ^1.1.3
+  local_auth_android: ^1.0.32
 
 dev_dependencies:
   flutter_driver:

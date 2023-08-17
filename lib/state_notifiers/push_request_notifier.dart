@@ -42,7 +42,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
     _initStateAsync();
   }
 
-  void _startPollingIfEnabled() {
+  void _startOrStopPolling() {
     // Start polling if enabled and not already polling
     if (pollingEnabled && _pollTimer == null) {
       Logger.info('Polling is enabled.', name: 'main_screen.dart#_startPollingIfEnabled');
@@ -72,8 +72,8 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
 
     if (pollingEnabled) {
       PushProvider.pollForChallenges();
-      _startPollingIfEnabled();
     }
+    _startOrStopPolling();
   }
 
   // FOREGROUND HANDLING

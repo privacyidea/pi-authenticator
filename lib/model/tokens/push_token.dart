@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/custom_int_buffer.dart';
@@ -63,43 +64,36 @@ class PushToken extends Token {
   }
 
   PushToken({
-    required String label,
     required this.serial,
-    required String issuer,
-    required String id,
-    String? type,
-    String? tokenImage,
-    PushRequestQueue? pushRequests,
-    bool isLocked = false,
-    super.pin = false,
-    // 2. step
+    required this.expirationDate,
+    required super.label,
+    required super.issuer,
+    required super.id,
     this.sslVerify,
     this.enrollmentCredentials,
     this.url,
-    super.sortIndex,
     this.publicServerKey,
     this.publicTokenKey,
     this.privateTokenKey,
-    required this.expirationDate,
     this.isRolledOut = false,
     this.rolloutState = PushTokenRollOutState.rolloutNotStarted,
+    PushRequestQueue? pushRequests,
     CustomIntBuffer? knownPushRequests,
-    int? categoryId,
-    bool isInEditMode = false,
+    String? type,
+    super.sortIndex,
+    super.tokenImage,
+    super.categoryId,
+    super.isInEditMode,
+    super.isLocked,
+    super.pin = false,
   })  : knownPushRequests = knownPushRequests ?? CustomIntBuffer(),
-        super(
-          label: label,
-          issuer: issuer,
-          id: id,
-          isLocked: isLocked,
-          tokenImage: tokenImage,
-          type: type ?? enumAsString(TokenTypes.PIPUSH),
-          categoryId: categoryId,
-          isInEditMode: isInEditMode,
-        ) {
-    final now = DateTime.now();
-    pushRequests?.removeWhere((request) => request.expirationDate.isBefore(now));
-    this.pushRequests = pushRequests ?? PushRequestQueue();
+        pushRequests = pushRequests ?? PushRequestQueue(),
+        super(type: type ?? enumAsString(TokenTypes.PIPUSH)) {
+    if (!isRolledOut) {
+      Future.delayed(Duration(milliseconds: expirationDate.difference(DateTime.now()).inMilliseconds), () {
+        if (!isRolledOut) globalRef?.read(tokenProvider.notifier).removeToken(this);
+      });
+    }
   }
 
   @override
@@ -114,7 +108,6 @@ class PushToken extends Token {
     bool? canToggleLock,
     bool? relock,
     bool? pin,
-    // 2. step
     bool? sslVerify,
     String? enrollmentCredentials,
     Uri? url,

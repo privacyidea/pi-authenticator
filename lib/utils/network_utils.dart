@@ -76,7 +76,11 @@ Future<Response> postRequest({required Uri url, required Map<String, String?> bo
   }
 
   if (response.statusCode != 200) {
-    Logger.warning('Received response', name: 'utils.dart#doGet', error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
+    Logger.warning(
+      'Received unexpected response',
+      name: 'utils.dart#postRequest',
+      error: 'Status code: ${response.statusCode}\n' 'ResponseBody: ${response.body}\n' 'Posted body: $body',
+    );
   }
   ioClient.close();
 
@@ -110,14 +114,18 @@ Future<Response> getRequest({required Uri url, required Map<String, String?> par
   }
 
   Response response;
+  Uri uri = Uri.parse(buffer.toString());
   try {
-    Uri uri = Uri.parse(buffer.toString());
     response = await ioClient.get(uri);
   } on SocketException catch (e, s) {
     response = Response('${e.runtimeType} : $s', 404);
   }
   if (response.statusCode != 200) {
-    Logger.warning('Received response', name: 'utils.dart#doGet', error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
+    Logger.warning(
+      'Received unexpected response',
+      name: 'utils.dart#getRequest',
+      error: 'Status code: ${response.statusCode}\n' 'ResponseBody: ${response.body}\n' 'uri: $uri',
+    );
   }
 
   ioClient.close();

@@ -26,8 +26,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
+import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import 'crypto_utils.dart';
 import 'customizations.dart';
@@ -212,21 +214,14 @@ abstract class PushProvider {
             _incomingHandler(RemoteMessage(data: challenge));
           }
         } else {
-          // Error messages can only be distinguished by their text content,
-          // not by their error code. This would make error handling complex.
+          var error = getErrorMessageFromResponse(response);
+          showMessage(message: "An error occured when polling for challenges!\n$error");
+          Logger.warning('Polling push tokens failed with status code ${response.statusCode}', name: 'push_provider.dart#pollForChallenges');
         }
       } catch (error) {
-        final SnackBar snackBar = SnackBar(
-          content: Text(
-            "An error occured when polling for challenges \n ${error.toString()}",
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        );
-        globalSnackbarKey.currentState?.showSnackBar(snackBar);
-
+        showMessage(message: "An error occured when polling for challenges\n${error.toString()}");
         Logger.warning(
-          'Polling push tokens not working, server can not be reached.',
+          'An error occured when polling for challenges',
           name: 'push_provider.dart#pollForChallenges',
           error: error,
         );
