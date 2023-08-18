@@ -125,7 +125,7 @@ class Logger {
     _printWarning(warningString);
   }
 
-  static void error(String? message, {dynamic error, dynamic stackTrace, String? name}) {
+  static void error(String? message, {required dynamic error, required dynamic stackTrace, String? name}) {
     final errorString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
     instance._lastError = message ?? '';
     if (instance._lastError.isEmpty) {
@@ -247,7 +247,7 @@ class Logger {
 
   Future<void> _setupErrorHooks() async {
     FlutterError.onError = (FlutterErrorDetails details) async {
-      error('Uncaught Error', error: details.exception, stackTrace: details.stack);
+      error('Uncaught Error', error: details.exception, stackTrace: details.stack ?? StackTrace.current);
     };
 
     /// Web doesn't support Isolate.current.addErrorListener

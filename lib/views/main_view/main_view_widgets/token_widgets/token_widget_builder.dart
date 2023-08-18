@@ -22,6 +22,6 @@ abstract class TokenWidgetBuilder {
         HOTPToken => HOTPTokenWidget(token as HOTPToken, key: key),
         PushToken => PushTokenWidget(token as PushToken, key: key),
         DayPasswordToken => DayPasswordTokenWidget(token as DayPasswordToken, key: key),
-        _ => throw UnimplementedError('Token type (${token.runtimeType}) not supported')
+        _ => throw UnimplementedError('Token type (${token.runtimeType}) not supported in this Version of the App')
       };
 }

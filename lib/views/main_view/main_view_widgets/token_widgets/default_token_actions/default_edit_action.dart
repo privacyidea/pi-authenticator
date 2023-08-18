@@ -8,7 +8,7 @@ import '../../../../../utils/customizations.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod_providers.dart';
-import 'token_action.dart';
+import '../token_action.dart';
 
 class DefaultEditAction extends TokenAction {
   final Token token;

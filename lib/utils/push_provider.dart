@@ -62,15 +62,19 @@ abstract class PushProvider {
         badge: false,
         sound: false,
       );
-    } on FirebaseException catch (ex) {
+    } on FirebaseException catch (e, s) {
       Logger.warning(
-          'ex.code: ${ex.code}, ex.message: ${ex.message}, ex.stackTrace: ${ex.stackTrace}, ex.toString: ${ex.toString()}, ex.plugin: ${ex.plugin}, ex.code: ${ex.code}, ex.message: ${ex.message}, ex.stackTrace: ${ex.stackTrace}, ex.toString: ${ex.toString()}, ex.plugin: ${ex.plugin},',
-          name: 'push_provider.dart#_initFirebase',
-          error: ex);
-      String errorMessage = ex.message ?? 'no error message';
+        'e.code: ${e.code}, '
+        'e.message: ${e.message}, '
+        'e.plugin: ${e.plugin},',
+        name: 'push_provider.dart#_initFirebase',
+        error: e,
+        stackTrace: s,
+      );
+      String errorMessage = e.message ?? 'no error message';
       final SnackBar snackBar = SnackBar(
           content: Text(
-        "Firebase notification permission error! ($errorMessage: ${ex.code}",
+        "Firebase notification permission error! ($errorMessage: ${e.code}",
       ));
       globalSnackbarKey.currentState?.showSnackBar(snackBar);
     }
@@ -141,16 +145,16 @@ abstract class PushProvider {
     String? firebaseToken;
     try {
       firebaseToken = await FirebaseMessaging.instance.getToken();
-    } on FirebaseException catch (ex) {
-      String errorMessage = ex.message ?? 'no error message';
+    } on FirebaseException catch (e, s) {
+      String errorMessage = e.message ?? 'no error message';
       final SnackBar snackBar = SnackBar(
         content: Text(
-          "Unable to retrieve Firebase token! ($errorMessage: ${ex.code})",
+          "Unable to retrieve Firebase token! ($errorMessage: ${e.code})",
           overflow: TextOverflow.fade,
           softWrap: false,
         ),
       );
-      Logger.warning('Unable to retrieve Firebase token! ($errorMessage: ${ex.code})', name: 'push_provider.dart#getFBToken', error: ex);
+      Logger.warning('Unable to retrieve Firebase token! ($errorMessage: ${e.code})', name: 'push_provider.dart#getFBToken', error: e, stackTrace: s);
       globalSnackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -218,12 +222,13 @@ abstract class PushProvider {
           showMessage(message: "An error occured when polling for challenges!\n$error");
           Logger.warning('Polling push tokens failed with status code ${response.statusCode}', name: 'push_provider.dart#pollForChallenges');
         }
-      } catch (error) {
-        showMessage(message: "An error occured when polling for challenges\n${error.toString()}");
+      } catch (e, s) {
+        showMessage(message: "An error occured when polling for challenges\n${e.toString()}");
         Logger.warning(
           'An error occured when polling for challenges',
           name: 'push_provider.dart#pollForChallenges',
-          error: error,
+          error: e,
+          stackTrace: s,
         );
         return false;
       }

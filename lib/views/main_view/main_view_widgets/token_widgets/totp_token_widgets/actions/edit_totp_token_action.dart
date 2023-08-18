@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../../../model/tokens/day_password_token.dart';
-import '../../../../../utils/app_customizer.dart';
-import '../../../../../utils/customizations.dart';
-import '../../../../../utils/lock_auth.dart';
-import '../../../../../utils/riverpod_providers.dart';
-import '../../../../../utils/utils.dart';
-import 'token_action.dart';
+import '../../../../../../model/tokens/totp_token.dart';
+import '../../../../../../utils/app_customizer.dart';
+import '../../../../../../utils/customizations.dart';
+import '../../../../../../utils/lock_auth.dart';
+import '../../../../../../utils/riverpod_providers.dart';
+import '../../../../../../utils/utils.dart';
+import '../../token_action.dart';
 
-class EditDayPassowrdTokenAction extends TokenAction {
-  final DayPasswordToken token;
+class EditTOTPTokenAction extends TokenAction {
+  final TOTPToken token;
 
-  const EditDayPassowrdTokenAction({
+  const EditTOTPTokenAction({
     Key? key,
     required this.token,
   }) : super(key: key);
@@ -94,22 +94,22 @@ class EditDayPassowrdTokenAction extends TokenAction {
                   ),
                   TextFormField(
                     controller: imageUrl,
-                    decoration: const InputDecoration(labelText: 'Image URL'),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.imageUrl),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Image URL';
+                        return AppLocalizations.of(context)!.imageUrl;
                       }
                       return null;
                     },
                   ),
                   TextFormField(
                     initialValue: enumAsString(algorithm),
-                    decoration: const InputDecoration(labelText: 'Algorithm'),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.algorithm),
                     enabled: false,
                   ),
                   TextFormField(
                     initialValue: period.toString().split('.').first,
-                    decoration: const InputDecoration(labelText: 'Period'),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.period),
                     enabled: false,
                   ),
                 ],

@@ -1,21 +1,21 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import '../../../../../../model/tokens/hotp_token.dart';
+import '../../../../../../utils/utils.dart';
+import '../../../../../../utils/customizations.dart';
+import '../../../../../../utils/lock_auth.dart';
+import '../../token_action.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../../../model/tokens/totp_token.dart';
-import '../../../../../utils/app_customizer.dart';
-import '../../../../../utils/customizations.dart';
-import '../../../../../utils/lock_auth.dart';
-import '../../../../../utils/riverpod_providers.dart';
-import '../../../../../utils/utils.dart';
-import 'token_action.dart';
+import '../../../../../../utils/app_customizer.dart';
+import '../../../../../../utils/riverpod_providers.dart';
 
-class EditTOTPTokenAction extends TokenAction {
-  final TOTPToken token;
+class EditHOTPTokenAction extends TokenAction {
+  final HOTPToken token;
 
-  const EditTOTPTokenAction({
+  const EditHOTPTokenAction({
     Key? key,
     required this.token,
   }) : super(key: key);
@@ -36,7 +36,6 @@ class EditTOTPTokenAction extends TokenAction {
   void _showDialog() {
     final tokenLabel = TextEditingController(text: token.label);
     final imageUrl = TextEditingController(text: token.tokenImage);
-    final period = token.period;
     final algorithm = token.algorithm;
 
     showDialog(
@@ -46,11 +45,7 @@ class EditTOTPTokenAction extends TokenAction {
         child: AlertDialog(
           titlePadding: const EdgeInsets.all(12),
           contentPadding: const EdgeInsets.all(0),
-          title: Text(
-            AppLocalizations.of(context)!.editToken,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
+          title: Text(AppLocalizations.of(context)!.editToken),
           actions: [
             TextButton(
               child: Text(
@@ -69,7 +64,7 @@ class EditTOTPTokenAction extends TokenAction {
                   softWrap: false,
                 ),
                 onPressed: () async {
-                  final newToken = token.copyWith(label: tokenLabel.text, tokenImage: imageUrl.text, period: period, algorithm: algorithm);
+                  final newToken = token.copyWith(label: tokenLabel.text, tokenImage: imageUrl.text, algorithm: algorithm);
                   globalRef?.read(tokenProvider.notifier).updateToken(newToken);
                   Navigator.of(context).pop();
                 }),
@@ -94,22 +89,17 @@ class EditTOTPTokenAction extends TokenAction {
                   ),
                   TextFormField(
                     controller: imageUrl,
-                    decoration: const InputDecoration(labelText: 'Image URL'),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.imageUrl),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Image URL';
+                        return AppLocalizations.of(context)!.imageUrl;
                       }
                       return null;
                     },
                   ),
                   TextFormField(
                     initialValue: enumAsString(algorithm),
-                    decoration: const InputDecoration(labelText: 'Algorithm'),
-                    enabled: false,
-                  ),
-                  TextFormField(
-                    initialValue: period.toString().split('.').first,
-                    decoration: const InputDecoration(labelText: 'Period'),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.algorithm),
                     enabled: false,
                   ),
                 ],

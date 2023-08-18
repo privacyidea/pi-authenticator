@@ -71,14 +71,15 @@ class StorageUtil {
 
       try {
         serializedToken = jsonDecode(value);
-      } on FormatException {
+      } on FormatException catch (e, s) {
         if (key == _CURRENT_APP_TOKEN_KEY || key == _NEW_APP_TOKEN_KEY) {
           continue;
         }
         Logger.warning(
           'Could not deserialize token from secure storage. Value: $value, key: $key',
           name: 'storage_utils.dart#loadAllTokens',
-          error: FormatException('Could not deserialize token from secure storage. Value: $value, key: $key'),
+          error: e,
+          stackTrace: s,
         );
         // Skip everything that does not fit a serialized token
         continue;

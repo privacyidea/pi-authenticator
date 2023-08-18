@@ -114,8 +114,8 @@ bool verifyRSASignature(RSAPublicKey publicKey, Uint8List signedMessage, Uint8Li
   bool isVerified = false;
   try {
     isVerified = signer.verifySignature(signedMessage, RSASignature(signature));
-  } on ArgumentError catch (e) {
-    Logger.warning('Verifying signature failed due to ${e.name}', name: 'crypto_utils.dart#verifyRSASignature', error: e);
+  } on ArgumentError catch (e, s) {
+    Logger.warning('Verifying signature failed due to ${e.name}', name: 'crypto_utils.dart#verifyRSASignature', error: e, stackTrace: s);
   }
 
   return isVerified;

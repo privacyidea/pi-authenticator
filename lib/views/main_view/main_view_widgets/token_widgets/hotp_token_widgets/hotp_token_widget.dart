@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../token_widget_actions/edit_hotp_token_action.dart';
+import 'actions/edit_hotp_token_action.dart';
 
 import '../../../../../model/tokens/hotp_token.dart';
 import '../token_widget.dart';

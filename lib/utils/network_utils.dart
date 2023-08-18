@@ -79,7 +79,7 @@ Future<Response> postRequest({required Uri url, required Map<String, String?> bo
     Logger.warning(
       'Received unexpected response',
       name: 'utils.dart#postRequest',
-      error: 'Status code: ${response.statusCode}\n' 'ResponseBody: ${response.body}\n' 'Posted body: $body',
+      error: 'Status code: ${response.statusCode}' '\nPosted body: $body' '\nResponse: ${response.body}\n',
     );
   }
   ioClient.close();
@@ -124,7 +124,7 @@ Future<Response> getRequest({required Uri url, required Map<String, String?> par
     Logger.warning(
       'Received unexpected response',
       name: 'utils.dart#getRequest',
-      error: 'Status code: ${response.statusCode}\n' 'ResponseBody: ${response.body}\n' 'uri: $uri',
+      error: 'Status code: ${response.statusCode}' '\nuri: $uri' '\nResponse: ${response.body}',
     );
   }
 

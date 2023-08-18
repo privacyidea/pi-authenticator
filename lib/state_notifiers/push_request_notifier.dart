@@ -85,9 +85,9 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
     await StorageUtil.protect(() async {
       try {
         return _handleIncomingRequest(remoteMessage);
-      } catch (e) {
+      } catch (e, s) {
         final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
-        Logger.error(errorMessage, name: 'main_screen.dart#_handleIncomingAuthRequest', error: remoteMessage.data);
+        Logger.error(errorMessage, name: 'main_screen.dart#_handleIncomingAuthRequest', error: remoteMessage.data, stackTrace: s);
       }
     });
   }
@@ -98,9 +98,9 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
     await StorageUtil.protect(() async {
       try {
         return _handleIncomingRequest(remoteMessage, inBackground: true);
-      } catch (e) {
+      } catch (e, s) {
         Logger.warning("The message didn't provided the needed data or the data was malformed.",
-            name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: 'Error: $e');
+            name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: e, stackTrace: s);
       }
     });
   }
@@ -109,17 +109,11 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
   /// Handles incoming push requests by verifying the challenge and adding it
   /// to the token. This should be guarded by a lock.
   static Future<void> _handleIncomingRequest(RemoteMessage message, {bool inBackground = false}) async {
-    Logger.warning('inBackground: $inBackground', name: 'main_screen.dart#_handleIncomingRequest');
-    // Android and iOS use different keys for the tag.
-    var tag = message.notification?.android;
-    Logger.warning('tag: ${tag?.toMap().toString()}', name: 'main_screen.dart#_handleIncomingRequest');
-    // tag ??= message.notification?.apple?.badge; //FIXME: Is this the tag for iOS?
-
     var data = message.data;
     Logger.info('Incoming push challenge.', name: 'main_screen.dart#_handleIncomingChallenge', error: data);
     Uri requestUri = Uri.parse(data['url']);
 
-    Logger.warning('message: $data', name: 'main_screen.dart#_handleIncomingRequest');
+    Logger.info('message: $data', name: 'main_screen.dart#_handleIncomingRequest');
 
     bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
     PushRequest pushRequest = PushRequest(

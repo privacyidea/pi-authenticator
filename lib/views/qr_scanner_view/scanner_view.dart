@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
 
 import '../../utils/logger.dart';
@@ -62,11 +63,13 @@ class QRScannerView extends StatelessWidget {
               onError: (context, e) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (e is PlatformException && e.message == 'noPermission') {
-                    Logger.warning('QRScannerView: Camera permission not granted.', error: e, name: 'QRScannerView#build#onError');
-                    const SnackBar snackBar = SnackBar(
-                      content: Text('Please grant camera permission to use the QR scanner.'),
+                    Logger.warning(
+                      'QRScannerView: Camera permission not granted.',
+                      name: 'QRScannerView#build#onError',
+                      error: e,
+                      stackTrace: StackTrace.current,
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    showMessage(message: 'Please grant camera permission to use the QR scanner.');
                   }
                   Navigator.pop(context, null);
                   _key.currentState!.stop();

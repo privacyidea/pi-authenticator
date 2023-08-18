@@ -43,39 +43,35 @@ class _TokenWidgetTileState extends State<TokenWidgetTile> {
 
   void _loadImage() {
     if (!hasImage) return;
-    try {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        setState(() {
-          tokenImage = Image.network(
-            widget.tokenImage!,
-            fit: BoxFit.fitHeight,
-            errorBuilder: (context, error, stackTrace) {
-              if (!mounted) return const SizedBox();
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (!mounted) return;
-                setState(() {
-                  hasImage = false;
-                });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() {
+        tokenImage = Image.network(
+          widget.tokenImage!,
+          fit: BoxFit.fitHeight,
+          errorBuilder: (context, error, stackTrace) {
+            if (!mounted) return const SizedBox();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+              setState(() {
+                hasImage = false;
               });
-              return const SizedBox();
-            },
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              //circle progress bar
-              return Center(
-                child: CircularProgressIndicator(
-                  value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
-                ),
-              );
-            },
-          );
-        });
+            });
+            return const SizedBox();
+          },
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            //circle progress bar
+            return Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
+              ),
+            );
+          },
+        );
       });
-    } catch (e) {
-      Logger.warning('', error: e);
-      Logger.warning(e.runtimeType.toString());
-    }
+    });
   }
 
   @override

@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../../../model/tokens/push_token.dart';
-import '../../../../../utils/app_customizer.dart';
-import '../../../../../utils/customizations.dart';
-import '../../../../../utils/lock_auth.dart';
-import '../../../../../utils/riverpod_providers.dart';
-import '../../../../../utils/storage_utils.dart';
-import 'token_action.dart';
+import '../../../../../../model/tokens/push_token.dart';
+import '../../../../../../utils/app_customizer.dart';
+import '../../../../../../utils/customizations.dart';
+import '../../../../../../utils/lock_auth.dart';
+import '../../../../../../utils/riverpod_providers.dart';
+import '../../../../../../utils/storage_utils.dart';
+import '../../token_action.dart';
 
 class EditPushTokenAction extends TokenAction {
   final PushToken token;
@@ -93,16 +93,7 @@ class EditPushTokenAction extends TokenAction {
                     enabled: false,
                   ),
                   TextFormField(
-                    controller: tokenLabel,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return AppLocalizations.of(context)!.name;
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
+                    enabled: false,
                     controller: pushUrl,
                     decoration: const InputDecoration(labelText: 'URL'),
                     validator: (value) {
@@ -113,10 +104,20 @@ class EditPushTokenAction extends TokenAction {
                     },
                   ),
                   TextFormField(
-                    controller: imageUrl,
-                    decoration: const InputDecoration(labelText: 'Image URL'),
+                    controller: tokenLabel,
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
                     validator: (value) {
-                      if (value!.isEmpty) return 'Image URL';
+                      if (value!.isEmpty) {
+                        return AppLocalizations.of(context)!.name;
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: imageUrl,
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.imageUrl),
+                    validator: (value) {
+                      if (value!.isEmpty) return AppLocalizations.of(context)!.imageUrl;
                       return null;
                     },
                   ),

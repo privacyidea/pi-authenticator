@@ -153,13 +153,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
       if (newToken is PushToken) {
         rolloutPushToken(newToken);
       }
-    } on ArgumentError catch (e) {
+    } on ArgumentError catch (e, s) {
       // Error while parsing qr code.
-      Logger.warning(
-        'Malformed QR code:',
-        name: 'main_screen.dart#_handleOtpAuth',
-        error: e.stackTrace,
-      );
+      Logger.warning('Malformed QR code:', name: 'main_screen.dart#_handleOtpAuth', error: e, stackTrace: s);
 
       showMessage(message: '${e.message}\n Please inform the creator of this qr code about the problem.', duration: const Duration(seconds: 8));
     }
@@ -249,8 +245,8 @@ class TokenNotifier extends StateNotifier<TokenState> {
         updateToken(token);
         Logger.info('Updated token.${token.id}', name: 'token_widgets.dart#rolloutPushToken', error: keyPair.publicKey);
         checkNotificationPermission();
-      } catch (e) {
-        Logger.warning('Error while generating RSA key pair.', name: 'token_widgets.dart#rolloutPushToken', error: e);
+      } catch (e, s) {
+        Logger.warning('Error while generating RSA key pair.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
         updateToken(token.copyWith(rolloutState: PushTokenRollOutState.generateingRSAKeyPairFailed));
         return false;
       }
@@ -271,8 +267,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
         try {
           RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
           token = token.withPublicServerKey(publicServerKey);
-        } catch (e) {
-          Logger.warning('Error while parsing RSA public key.', name: 'token_widgets.dart#rolloutPushToken', error: e);
+        } on FormatException catch (e, s) {
+          showMessage(message: "Couldn't parsing RSA public key: ${e.message}", duration: const Duration(seconds: 3));
+          Logger.warning('Error while parsing RSA public key.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
           updateToken(token.copyWith(rolloutState: PushTokenRollOutState.parsingResponseFailed));
           return false;
         } finally {
@@ -300,24 +297,26 @@ class TokenNotifier extends StateNotifier<TokenState> {
         updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
         return false;
       }
-    } catch (e) {
+    } catch (e, s) {
       if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException) {
-        Logger.warning('Connection error: Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#rolloutPushToken', error: e);
+        Logger.warning('Connection error: Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
         showMessage(
           message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoNetworkConnection,
           duration: const Duration(seconds: 3),
         );
         updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
-        return false;
-      } else {
-        Logger.error('Unknown error: Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#rolloutPushToken', error: e);
+      } else if (e is HandshakeException) {
+        Logger.warning('SSL error: Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
         showMessage(
-          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutUnknownError(e),
+          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutSSLHandshakeFailed,
           duration: const Duration(seconds: 3),
         );
         updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
-        return false;
+      } else {
+        Logger.error('Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
+        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
       }
+      return false;
     }
   }
 }

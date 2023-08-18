@@ -8,10 +8,10 @@ import 'token_widget_slideable.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../utils/text_size.dart';
-import 'token_widget_actions/default_delete_action.dart';
-import 'token_widget_actions/default_edit_action.dart';
-import 'token_widget_actions/default_lock_action.dart';
-import 'token_widget_actions/token_action.dart';
+import 'default_token_actions/default_delete_action.dart';
+import 'default_token_actions/default_edit_action.dart';
+import 'default_token_actions/default_lock_action.dart';
+import 'token_action.dart';
 
 class TokenWidgetBase extends ConsumerWidget {
   final Widget tile;

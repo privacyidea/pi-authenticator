@@ -648,5 +648,10 @@
   "@rolloutCompleted": {
     "description": "Message for the rollout process",
     "type": "text"
+  },
+  "imageUrl": "Bild URL",
+  "@imageUrl": {
+    "description": "imageUrl",
+    "type": "text"
   }
 }

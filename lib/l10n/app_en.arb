@@ -652,5 +652,16 @@
   "@incomingAuthRequestError": {
     "description": "incomingAuthRequestError",
     "type": "text"
+  },
+  "imageUrl": "Image URL",
+  "@imageUrl": {
+    "description": "imageUrl",
+    "type": "text"
+  },
+  "errorRollOutSSLHandshakeFailed": "SSL handshake failed. Roll-out not possible.",
+  "@errorRollOutSSLHandshakeFailed": {
+    "description": "Tells the user that the roll-out failed because the SSL handshake failed.",
+    "type": "text",
+    "placeholders": {}
   }
 }

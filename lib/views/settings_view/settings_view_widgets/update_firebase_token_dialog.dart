@@ -113,8 +113,12 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
           Logger.warning('Updating firebase token for push token: ${pushToken.serial} failed!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
           tokenWithFailedUpdate.add(pushToken);
         }
-      } on SocketException catch (e) {
-        Logger.warning('Socket exception occurred: $e', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
+      } on SocketException catch (e, s) {
+        Logger.warning(
+          'Socket exception occurred: $e',
+          name: 'update_firebase_token_dialog.dart#_updateFbTokens',
+          stackTrace: s,
+        );
         ScaffoldMessenger.of(globalNavigatorKey.currentContext!).showSnackBar(SnackBar(
           content: Text(
             AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,

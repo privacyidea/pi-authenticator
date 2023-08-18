@@ -125,9 +125,9 @@ class _DragItemScrollerState extends State<DragItemScroller> {
                 // scroll up if the pointer is in the top range and the scrollController is not at the top
                 final distanceToTop = event.position.dy - topY;
                 final distanceToMaxSpeed = distanceToTop - (minScrollingSpeedDetectDistanceTopWithOuterOffset - DragItemScroller.maxSpeedZoneHeightTop);
-                final moveSpeedPercent = 1 - distanceToMaxSpeed / DragItemScroller.maxSpeedZoneHeightTop;
-                Logger.warning('moveSpeedPercent: $moveSpeedPercent');
-                _startScrolling(clampDouble(moveSpeedPercent, 0.0, 1.0), moveUp: true);
+                final scrollSpeedPercent = 1 - distanceToMaxSpeed / DragItemScroller.maxSpeedZoneHeightTop;
+                Logger.info('scrollSpeedPercent: $scrollSpeedPercent');
+                _startScrolling(clampDouble(scrollSpeedPercent, 0.0, 1.0), moveUp: true);
 
                 return;
               }
@@ -137,9 +137,9 @@ class _DragItemScrollerState extends State<DragItemScroller> {
                 final distanceToBottom = bottomY - event.position.dy; // distance to bottom of the widget in px
                 final distanceToMaxSpeed =
                     distanceToBottom - (DragItemScroller.minScrollingSpeedDetectDistanceBottom - DragItemScroller.maxSpeedZoneHeightBottom);
-                final moveSpeedPercent = 1 - distanceToMaxSpeed / DragItemScroller.maxSpeedZoneHeightBottom;
-                Logger.warning('moveSpeedPercent: $moveSpeedPercent');
-                _startScrolling(clampDouble(moveSpeedPercent, 0.0, 1.0), moveUp: false);
+                final scrollSpeedPercent = 1 - distanceToMaxSpeed / DragItemScroller.maxSpeedZoneHeightBottom;
+                Logger.info('scrollSpeedPercent: $scrollSpeedPercent');
+                _startScrolling(clampDouble(scrollSpeedPercent, 0.0, 1.0), moveUp: false);
                 return;
               }
               _stopScrolling();

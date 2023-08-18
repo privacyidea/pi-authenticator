@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'token_widget_actions/token_action.dart';
+import 'token_action.dart';
 
 import '../../../../model/tokens/token.dart';
 

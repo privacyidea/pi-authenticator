@@ -13,24 +13,28 @@ class PreferenceTokenCategoryRepotisory extends TokenCategoryRepositoy {
 
   @override
   Future<List<TokenCategory>> loadCategories() async {
-    final categorysStrig = await _prefs.then((prefs) => prefs.getString(_tokenCategorysKey));
-    if (categorysStrig == null) return [];
-    final jsons = jsonDecode(categorysStrig) as List<dynamic>;
-    final categories = jsons.map((e) => TokenCategory.fromJson(e)).toList();
-    return categories;
+    try {
+      final categorysStrig = await _prefs.then((prefs) => prefs.getString(_tokenCategorysKey));
+      if (categorysStrig == null) return [];
+      final jsons = jsonDecode(categorysStrig) as List<dynamic>;
+      final categories = jsons.map((e) => TokenCategory.fromJson(e)).toList();
+      return categories;
+    } catch (e, s) {
+      Logger.error('Failed to load categories', name: 'PreferenceTokenCategoryRepotisory#loadCategories', error: e, stackTrace: s);
+      return [];
+    }
   }
 
   @override
   Future<bool> saveCategorys(List<TokenCategory> categories) async {
-    final jsons = categories.map((e) => e.toJson()).toList();
-    final json = jsonEncode(jsons);
     try {
+      final jsons = categories.map((e) => e.toJson()).toList();
+      final json = jsonEncode(jsons);
       await _prefs.then((prefs) => prefs.setString(_tokenCategorysKey, json));
-    } catch (e) {
-      Logger.error('Failed to save categories: $e');
+      return true;
+    } catch (e, s) {
+      Logger.error('Failed to save categories', name: 'PreferenceTokenCategoryRepotisory#saveCategorys', error: e, stackTrace: s);
       return false;
     }
-
-    return true;
   }
 }

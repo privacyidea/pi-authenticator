@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../model/tokens/day_password_token.dart';
 import '../token_widget.dart';
-import '../token_widget_actions/edit_day_password_token_action.dart';
+import 'actions/edit_day_password_token_action.dart';
 import '../token_widget_base.dart';
 import 'day_password_token_widget_tile.dart';
 

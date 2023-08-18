@@ -13,7 +13,7 @@ import '../../../../../utils/identifiers.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../widgets/press_button.dart';
 import '../token_widget.dart';
-import '../token_widget_actions/edit_push_token_action.dart';
+import 'action_widgets/edit_push_token_action.dart';
 import '../token_widget_base.dart';
 import 'push_token_widget_tile.dart';
 
