@@ -647,5 +647,10 @@
   "@authToDeclinePushRequest": {
     "description": "authToDeclinePushRequest",
     "type": "text"
+  },
+  "incomingAuthRequestError": "The message didn't provided the needed data or the data was malformed.",
+  "@incomingAuthRequestError": {
+    "description": "incomingAuthRequestError",
+    "type": "text"
   }
 }

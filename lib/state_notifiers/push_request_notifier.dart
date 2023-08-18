@@ -32,6 +32,9 @@ import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../utils/customizations.dart';
 
 class PushRequestNotifier extends StateNotifier<PushRequest?> {
   // Used for periodically polling for push challenges
@@ -77,15 +80,29 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
   }
 
   // FOREGROUND HANDLING
-  Future<void> _handleIncomingAuthRequest(RemoteMessage message) async {
-    Logger.info('Foreground message received.', name: 'main_screen.dart#_handleIncomingAuthRequest', error: message);
-    await StorageUtil.protect(() async => _handleIncomingRequest(message));
+  Future<void> _handleIncomingAuthRequest(RemoteMessage remoteMessage) async {
+    Logger.info('Foreground message received.', name: 'main_screen.dart#_handleIncomingAuthRequest', error: remoteMessage.data);
+    await StorageUtil.protect(() async {
+      try {
+        return _handleIncomingRequest(remoteMessage);
+      } catch (e) {
+        final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
+        Logger.error(errorMessage, name: 'main_screen.dart#_handleIncomingAuthRequest', error: remoteMessage.data);
+      }
+    });
   }
 
   // BACKGROUND HANDLING
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    Logger.info('Background message received.', name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: message);
-    await StorageUtil.protect(() async => _handleIncomingRequest(message, inBackground: true));
+  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage remoteMessage) async {
+    Logger.info('Background message received.', name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data);
+    await StorageUtil.protect(() async {
+      try {
+        return _handleIncomingRequest(remoteMessage, inBackground: true);
+      } catch (e) {
+        Logger.warning("The message didn't provided the needed data or the data was malformed.",
+            name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: 'Error: $e');
+      }
+    });
   }
 
   // HANDLING
