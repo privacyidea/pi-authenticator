@@ -70,13 +70,10 @@ class DayPasswordToken extends OTPToken {
         isInEditMode: isInEditMode ?? this.isInEditMode,
       );
 
-  // Server software has an offset of 50% of the topken period (remove this when server is in sync)
-  Duration get serverOffset => Duration(seconds: period.inSeconds ~/ 2);
-
   @override
   String get otpValue => OTPLibrary.OTP.generateTOTPCodeString(
         secret,
-        DateTime.now().millisecondsSinceEpoch + serverOffset.inMilliseconds,
+        DateTime.now().millisecondsSinceEpoch,
         length: digits,
         algorithm: mapAlgorithms(algorithm),
         interval: period.inSeconds,
@@ -84,7 +81,7 @@ class DayPasswordToken extends OTPToken {
       );
 
   Duration get durationSinceLastOTP {
-    final msPassedThisPeriod = (DateTime.now().millisecondsSinceEpoch + serverOffset.inMilliseconds) % period.inMilliseconds;
+    final msPassedThisPeriod = (DateTime.now().millisecondsSinceEpoch) % period.inMilliseconds;
     return Duration(milliseconds: msPassedThisPeriod);
   }
 

@@ -226,11 +226,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     token = token.withoutPushRequest(pushRequest);
     updateToken(token);
-    Logger.info('Removed push request ${pushRequest.id} to token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
+    Logger.info('Removed push request ${pushRequest.id} from token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
   }
 
   Future<bool> rolloutPushToken(PushToken token) async {
-    token = (globalRef?.read(tokenProvider.notifier).getTokenFromId(token.id) as PushToken?) ?? token;
+    token = getTokenFromId(token.id) as PushToken? ?? token;
     if (token.isRolledOut) return true;
     if (token.rolloutState != PushTokenRollOutState.rolloutNotStarted &&
         token.rolloutState != PushTokenRollOutState.generateingRSAKeyPairFailed &&

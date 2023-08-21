@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -162,9 +163,19 @@ class Logger {
       return false;
     }
 
+    String deviceInfo = '';
+    //android or ios
+    if (Platform.isAndroid) {
+      final AndroidDeviceInfo build = await DeviceInfoPlugin().androidInfo;
+      deviceInfo = _readAndroidBuildData(build);
+    } else if (Platform.isIOS) {
+      final IosDeviceInfo data = await DeviceInfoPlugin().iosInfo;
+      deviceInfo = _readIosDeviceInfo(data);
+    }
+
     try {
       final MailOptions mailOptions = MailOptions(
-        body: _mailBody,
+        body: '$_mailBody\n\n\nDevice Parameters:$deviceInfo\n\nStacktrace:\n${file.readAsStringSync()}',
         subject: _mailSubject,
         recipients: [_mailRecipient],
         attachments: [
@@ -223,7 +234,7 @@ class Logger {
         }
       },
       (e, stack) {
-        error('Uncaught Error', error: e, stackTrace: stack);
+        error('Uncaught Error: $e', error: e, stackTrace: stack);
       },
     );
     WidgetsFlutterBinding.ensureInitialized();
@@ -247,7 +258,7 @@ class Logger {
 
   Future<void> _setupErrorHooks() async {
     FlutterError.onError = (FlutterErrorDetails details) async {
-      error('Uncaught Error', error: details.exception, stackTrace: details.stack ?? StackTrace.current);
+      error('Uncaught Error: ${details.exception}', error: details.exception, stackTrace: details.stack ?? StackTrace.current);
     };
 
     /// Web doesn't support Isolate.current.addErrorListener
@@ -256,7 +267,7 @@ class Logger {
         RawReceivePort((dynamic pair) async {
           final isolateError = pair as List<dynamic>;
           error(
-            'Uncaught Error',
+            'Uncaught Error: ${isolateError.first.toString()}',
             error: isolateError.first.toString(),
             stackTrace: isolateError.last.toString(),
           );
@@ -341,7 +352,55 @@ class Logger {
     }
     return fileMessage;
   }
+
+  String _readAndroidBuildData(AndroidDeviceInfo build) => 'version.securityPatch: ${build.version.securityPatch}\n'
+      'version.sdkInt: ${build.version.sdkInt}\n'
+      'version.release: ${build.version.release}\n'
+      'version.previewSdkInt: ${build.version.previewSdkInt}\n'
+      'version.incremental: ${build.version.incremental}\n'
+      'version.codename: ${build.version.codename}\n'
+      'version.baseOS: ${build.version.baseOS}\n'
+      'board: ${build.board}\n'
+      'bootloader: ${build.bootloader}\n'
+      'brand: ${build.brand}\n'
+      'device: ${build.device}\n'
+      'display: ${build.display}\n'
+      'fingerprint: ${build.fingerprint}\n'
+      'hardware: ${build.hardware}\n'
+      'host: ${build.host}\n'
+      'id: ${build.id}\n'
+      'manufacturer: ${build.manufacturer}\n'
+      'model: ${build.model}\n'
+      'product: ${build.product}\n'
+      'supported32BitAbis: ${build.supported32BitAbis}\n'
+      'supported64BitAbis: ${build.supported64BitAbis}\n'
+      'supportedAbis: ${build.supportedAbis}\n'
+      'tags: ${build.tags}\n'
+      'type: ${build.type}\n'
+      'isPhysicalDevice: ${build.isPhysicalDevice}\n'
+      'systemFeatures: ${build.systemFeatures}\n'
+      'displaySizeInches: ${((build.displayMetrics.sizeInches * 10).roundToDouble() / 10)}\n'
+      'displayWidthPixels: ${build.displayMetrics.widthPx}\n'
+      'displayWidthInches: ${build.displayMetrics.widthInches}\n'
+      'displayHeightPixels: ${build.displayMetrics.heightPx}\n'
+      'displayHeightInches: ${build.displayMetrics.heightInches}\n'
+      'displayXDpi: ${build.displayMetrics.xDpi}\n'
+      'displayYDpi: ${build.displayMetrics.yDpi}\n'
+      'serialNumber: ${build.serialNumber}\n';
 }
+
+String _readIosDeviceInfo(IosDeviceInfo data) => 'name: ${data.name}\n'
+    'systemName: ${data.systemName}\n'
+    'systemVersion: ${data.systemVersion}\n'
+    'model: ${data.model}\n'
+    'localizedModel: ${data.localizedModel}\n'
+    'identifierForVendor: ${data.identifierForVendor}\n'
+    'isPhysicalDevice: ${data.isPhysicalDevice}\n'
+    'utsname.sysname: ${data.utsname.sysname}\n'
+    'utsname.nodename: ${data.utsname.nodename}\n'
+    'utsname.release: ${data.utsname.release}\n'
+    'utsname.version: ${data.utsname.version}\n'
+    'utsname.machine: ${data.utsname.machine}\n';
 
 final filterParameterKeys = <String>['fbtoken', 'new_fb_token'];
 

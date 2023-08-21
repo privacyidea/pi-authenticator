@@ -99,8 +99,8 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
       try {
         return _handleIncomingRequest(remoteMessage, inBackground: true);
       } catch (e, s) {
-        Logger.warning("The message didn't provided the needed data or the data was malformed.",
-            name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: e, stackTrace: s);
+        final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
+        Logger.error(errorMessage, name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data, stackTrace: s);
       }
     });
   }

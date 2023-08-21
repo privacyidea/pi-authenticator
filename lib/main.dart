@@ -150,7 +150,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         child: AnimatedOpacity(
           opacity: _appIconIsVisible ? 1.0 : 0.0,
           duration: _splashScreenDuration,
-          child: Image.asset('res/logo/app_logo_light.png'),
+          child: Image.asset(ApplicationCustomizer.appIcon),
         ),
       ),
     );
