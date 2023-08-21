@@ -210,7 +210,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
       body["decline"] = "1";
     }
 
-    Response response = await postRequest(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
+    Response response = await doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
     if (response.statusCode != 200) {
       Logger.warning(
         'Sending push request response failed.',

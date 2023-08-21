@@ -102,7 +102,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
       Response response;
       try {
-        response = await postRequest(
+        response = await doPost(
             sslVerify: pushToken.sslVerify!,
             url: pushToken.url!,
             body: {'new_fb_token': token, 'serial': pushToken.serial, 'timestamp': timestamp, 'signature': signature});

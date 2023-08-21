@@ -255,7 +255,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKey));
     try {
       // TODO What to do with poll only tokens if google-services is used?
-      Response response = await postRequest(sslVerify: token.sslVerify!, url: token.url!, body: {
+      Response response = await doPost(sslVerify: token.sslVerify!, url: token.url!, body: {
         'enrollment_credential': token.enrollmentCredentials,
         'serial': token.serial,
         'fbtoken': await PushProvider.getFBToken(),

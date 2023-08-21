@@ -205,7 +205,7 @@ abstract class PushProvider {
       };
 
       try {
-        Response response = await getRequest(url: p.url!, parameters: parameters, sslVerify: p.sslVerify);
+        Response response = await doGet(url: p.url!, parameters: parameters, sslVerify: p.sslVerify);
 
         if (response.statusCode == 200) {
           // The signature of this message must not be verified as each push
@@ -292,7 +292,7 @@ abstract class PushProvider {
       if (signature == null) {
         return;
       }
-      Response response = await postRequest(
+      Response response = await doPost(
           sslVerify: p.sslVerify!, url: p.url!, body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
 
       if (response.statusCode == 200) {
