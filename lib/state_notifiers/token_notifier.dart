@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 
 import '../model/push_request.dart';
 import '../model/states/token_state.dart';
@@ -37,10 +38,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
     _loadTokenList();
   }
 
-  void refreshTokens() {
-    _loadTokenList();
-  }
-
   Future<void> _loadTokenList() async {
     List<Token> tokens = await StorageUtil.loadAllTokens();
     final pushTokens = tokens.whereType<PushToken>().where((element) => !element.isRolledOut).toList();
@@ -48,6 +45,16 @@ class TokenNotifier extends StateNotifier<TokenState> {
     for (final pushToken in pushTokens) {
       rolloutPushToken(pushToken);
     }
+  }
+
+  void refreshTokens() async {
+    List<Token> tokens = await StorageUtil.loadAllTokens();
+    final rolledOutPushToken = tokens.whereType<PushToken>().where((element) => element.isRolledOut).toList();
+    state = state.updateTokens(rolledOutPushToken);
+  }
+
+  Token? getTokenFromId(String id) {
+    return state.tokens.firstWhereOrNull((element) => element.id == id);
   }
 
   void incrementCounter(HOTPToken token) {
@@ -223,6 +230,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<bool> rolloutPushToken(PushToken token) async {
+    token = (globalRef?.read(tokenProvider.notifier).getTokenFromId(token.id) as PushToken?) ?? token;
     if (token.isRolledOut) return true;
     if (token.rolloutState != PushTokenRollOutState.rolloutNotStarted &&
         token.rolloutState != PushTokenRollOutState.generateingRSAKeyPairFailed &&
@@ -230,6 +238,13 @@ class TokenNotifier extends StateNotifier<TokenState> {
         token.rolloutState != PushTokenRollOutState.parsingResponseFailed) {
       Logger.info('Ignoring rollout request: Rollout of token ${token.serial} already started. Tokenstate: ${token.rolloutState} ',
           name: 'token_widgets.dart#rolloutPushToken');
+      return false;
+    }
+    if (token.expirationDate.isBefore(DateTime.now())) {
+      Logger.info('Ignoring rollout request: Token ${token.serial} is expired. ', name: 'token_widgets.dart#rolloutPushToken');
+      showMessage(
+          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutTokenExpired(token.label), duration: const Duration(seconds: 3));
+      globalRef!.read(tokenProvider.notifier).removeToken(token);
       return false;
     }
     if (Platform.isIOS) {

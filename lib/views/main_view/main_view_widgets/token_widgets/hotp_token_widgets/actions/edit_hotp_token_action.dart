@@ -1,16 +1,16 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+
 import '../../../../../../model/tokens/hotp_token.dart';
-import '../../../../../../utils/utils.dart';
+import '../../../../../../utils/app_customizer.dart';
 import '../../../../../../utils/customizations.dart';
 import '../../../../../../utils/lock_auth.dart';
-import '../../token_action.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../../../../../utils/app_customizer.dart';
 import '../../../../../../utils/riverpod_providers.dart';
+import '../../../../../../utils/utils.dart';
+import '../../token_action.dart';
 
 class EditHOTPTokenAction extends TokenAction {
   final HOTPToken token;
@@ -43,6 +43,7 @@ class EditHOTPTokenAction extends TokenAction {
       builder: (BuildContext context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: AlertDialog(
+          scrollable: true,
           titlePadding: const EdgeInsets.all(12),
           contentPadding: const EdgeInsets.all(0),
           title: Text(AppLocalizations.of(context)!.editToken),

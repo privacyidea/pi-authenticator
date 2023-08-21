@@ -16,6 +16,7 @@ class AddTokenCategoryDialog extends ConsumerWidget {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
+        scrollable: true,
         title: Text(AppLocalizations.of(context)!.addANewCategory),
         content: TextFormField(
           controller: textController,

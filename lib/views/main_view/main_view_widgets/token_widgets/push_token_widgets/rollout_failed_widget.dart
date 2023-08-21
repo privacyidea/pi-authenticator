@@ -66,6 +66,7 @@ class RolloutFailedWidget extends StatelessWidget {
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) {
         return AlertDialog(
+          scrollable: true,
           title: Text(
             AppLocalizations.of(context)!.confirmDeletion,
           ),

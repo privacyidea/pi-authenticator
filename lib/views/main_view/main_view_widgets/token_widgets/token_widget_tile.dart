@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../utils/logger.dart';
 import '../../../../widgets/custom_trailing.dart';
 
 final disableCopyOtpProvider = StateProvider<bool>((ref) => false);

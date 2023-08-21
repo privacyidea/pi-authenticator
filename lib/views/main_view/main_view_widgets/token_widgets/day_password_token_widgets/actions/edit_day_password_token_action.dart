@@ -44,6 +44,7 @@ class EditDayPassowrdTokenAction extends TokenAction {
       builder: (BuildContext context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: AlertDialog(
+          scrollable: true,
           titlePadding: const EdgeInsets.all(12),
           contentPadding: const EdgeInsets.all(0),
           title: Text(

@@ -653,5 +653,10 @@
   "@imageUrl": {
     "description": "imageUrl",
     "type": "text"
+  },
+  "errorWhenPullingChallenges": "Fehler beim Abrufen der Authentifizierungsanfragen.",
+  "@errorWhenPullingChallenges": {
+    "description": "errorWhenPullingChallenges",
+    "type": "text"
   }
 }

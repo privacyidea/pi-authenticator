@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/custom_int_buffer.dart';
@@ -88,13 +87,7 @@ class PushToken extends Token {
     super.pin = false,
   })  : knownPushRequests = knownPushRequests ?? CustomIntBuffer(),
         pushRequests = pushRequests ?? PushRequestQueue(),
-        super(type: type ?? enumAsString(TokenTypes.PIPUSH)) {
-    if (!isRolledOut) {
-      Future.delayed(Duration(milliseconds: expirationDate.difference(DateTime.now()).inMilliseconds), () {
-        if (!isRolledOut) globalRef?.read(tokenProvider.notifier).removeToken(this);
-      });
-    }
-  }
+        super(type: type ?? enumAsString(TokenTypes.PIPUSH));
 
   @override
   PushToken copyWith({

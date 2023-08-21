@@ -6,8 +6,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_ios/local_auth_ios.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
+import 'customizations.dart';
+import 'view_utils.dart';
 
 import 'logger.dart';
 
@@ -21,6 +21,7 @@ Future<bool> lockAuth({required BuildContext context, required String localizedR
     await showAsyncDialog(
       builder: (context) {
         return AlertDialog(
+          scrollable: true,
           title: ListTile(
             title: Center(
               child: Text(

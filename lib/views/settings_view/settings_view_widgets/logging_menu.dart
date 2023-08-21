@@ -18,6 +18,7 @@ class LoggingMenu extends ConsumerWidget {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
+        scrollable: true,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         titlePadding: const EdgeInsets.all(12),
         contentPadding: const EdgeInsets.all(0),

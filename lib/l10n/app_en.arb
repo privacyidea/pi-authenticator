@@ -661,7 +661,21 @@
   "errorRollOutSSLHandshakeFailed": "SSL handshake failed. Roll-out not possible.",
   "@errorRollOutSSLHandshakeFailed": {
     "description": "Tells the user that the roll-out failed because the SSL handshake failed.",
+    "type": "text"
+  },
+  "errorWhenPullingChallenges": "An error occured when polling for challenges",
+  "@errorWhenPullingChallenges": {
+    "description": "errorWhenPullingChallenges",
+    "type": "text"
+  },
+  "errorRollOutTokenExpired": "The token {name} has expired. Roll-out not possible. Token removed.",
+  "@errorRollOutTokenExpired": {
+    "description": "Tells the user that the roll-out failed because the token has expired.",
     "type": "text",
-    "placeholders": {}
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
   }
 }

@@ -35,6 +35,7 @@ class DefaultEditAction extends TokenAction {
         context: globalNavigatorKey.currentContext!,
         builder: (BuildContext context) {
           return AlertDialog(
+            scrollable: true,
             title: Text(
               AppLocalizations.of(context)!.renameToken,
               overflow: TextOverflow.fade,

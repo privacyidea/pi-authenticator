@@ -32,6 +32,7 @@ class RenameTokenCategoryAction extends StatelessWidget {
         context: globalNavigatorKey.currentContext!,
         builder: (BuildContext context) {
           return AlertDialog(
+            scrollable: true,
             title: Text(
               AppLocalizations.of(context)!.renameTokenCategory,
             ),

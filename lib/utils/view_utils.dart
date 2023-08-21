@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'customizations.dart';
+import 'logger.dart';
 
 /// Shows a message to the user for a given `Duration`.
 void showMessage({

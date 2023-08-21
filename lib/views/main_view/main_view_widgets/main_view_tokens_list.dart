@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_category.dart';
@@ -50,13 +49,8 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
           message: AppLocalizations.of(context)!.pollingChallenges,
           duration: const Duration(seconds: 1),
         );
-        bool success = await PushProvider.pollForChallenges();
-        if (!success) {
-          showMessage(
-            message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailNoNetworkConnection,
-            duration: const Duration(seconds: 3),
-          );
-        }
+        final errorMessage = await PushProvider.pollForChallenges(showMessageForEachToken: true);
+        if (errorMessage != null) showMessage(message: errorMessage);
       },
       child: SlidableAutoCloseBehavior(
         child: DragItemScroller(

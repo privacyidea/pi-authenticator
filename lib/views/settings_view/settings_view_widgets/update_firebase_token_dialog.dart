@@ -57,6 +57,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
+        scrollable: true,
         title: Text(AppLocalizations.of(context)!.synchronizingTokens),
         content: _content,
         actions: [

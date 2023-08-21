@@ -72,6 +72,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
         onWillPop: () async => false,
         // Prevents closing the dialog without returning a secret.
         child: AlertDialog(
+          scrollable: true,
           title: Text(
             _title,
             overflow: TextOverflow.fade,

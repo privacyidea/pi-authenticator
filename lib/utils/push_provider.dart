@@ -20,19 +20,21 @@
 
 import 'dart:convert';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
+import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import 'crypto_utils.dart';
-import 'customizations.dart';
 import 'identifiers.dart';
 import 'logger.dart';
 import 'network_utils.dart';
@@ -177,7 +179,13 @@ abstract class PushProvider {
     return firebaseToken;
   }
 
-  static Future<bool> pollForChallenges() async {
+  static Future<String?> pollForChallenges({bool showMessageForEachToken = false}) async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      Logger.info('Tryed to poll without any internet connection available.', name: 'push_provider.dart#pollForChallenges');
+      return AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailNoNetworkConnection;
+    }
+
     // Get all push tokens
     List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
 
@@ -185,55 +193,64 @@ abstract class PushProvider {
     if (pushTokens.isEmpty) {
       Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
       globalRef?.read(settingsProvider.notifier).disablePolling();
-      return false;
+      return null;
     }
 
     // Start request for each token
     for (PushToken p in pushTokens) {
-      String timestamp = DateTime.now().toUtc().toIso8601String();
-
-      String message = '${p.serial}|$timestamp';
-
-      String? signature = await trySignWithToken(p, message);
-      if (signature == null) {
-        return false;
-      }
-      Map<String, String> parameters = {
-        'serial': p.serial,
-        'timestamp': timestamp,
-        'signature': signature,
-      };
-
-      try {
-        Response response = await doGet(url: p.url!, parameters: parameters, sslVerify: p.sslVerify);
-
-        if (response.statusCode == 200) {
-          // The signature of this message must not be verified as each push
-          // request gets verified independently.
-          Map<String, dynamic> result = jsonDecode(response.body)['result'];
-          List challengeList = result['value'].cast<Map<String, dynamic>>();
-
-          for (Map<String, dynamic> challenge in challengeList) {
-            Logger.info('Received challenge ${challenge['nonce']}', name: 'push_provider.dart#pollForChallenges');
-            _incomingHandler(RemoteMessage(data: challenge));
-          }
-        } else {
-          var error = getErrorMessageFromResponse(response);
-          showMessage(message: "An error occured when polling for challenges!\n$error");
-          Logger.warning('Polling push tokens failed with status code ${response.statusCode}', name: 'push_provider.dart#pollForChallenges');
+      pollForChallenge(p).then((errorMessage) {
+        if (errorMessage != null && showMessageForEachToken) {
+          showMessage(message: errorMessage);
         }
-      } catch (e, s) {
-        showMessage(message: "An error occured when polling for challenges\n${e.toString()}");
-        Logger.warning(
-          'An error occured when polling for challenges',
-          name: 'push_provider.dart#pollForChallenges',
-          error: e,
-          stackTrace: s,
-        );
-        return false;
-      }
+      });
     }
-    return true;
+    return null;
+  }
+
+  static Future<String?> pollForChallenge(PushToken token) async {
+    String timestamp = DateTime.now().toUtc().toIso8601String();
+
+    String message = '${token.serial}|$timestamp';
+
+    String? signature = await trySignWithToken(token, message);
+    if (signature == null) {
+      Logger.warning('Polling push tokens failed because signing the message failed.', name: 'push_provider.dart#pollForChallenges');
+      return null;
+    }
+    Map<String, String> parameters = {
+      'serial': token.serial,
+      'timestamp': timestamp,
+      'signature': signature,
+    };
+
+    try {
+      Response response = await doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify!);
+
+      if (response.statusCode == 200) {
+        // The signature of this message must not be verified as each push
+        // request gets verified independently.
+        Map<String, dynamic> result = jsonDecode(response.body)['result'];
+        List challengeList = result['value'].cast<Map<String, dynamic>>();
+
+        for (Map<String, dynamic> challenge in challengeList) {
+          Logger.info('Received challenge ${challenge['nonce']}', name: 'push_provider.dart#pollForChallenges');
+          _incomingHandler(RemoteMessage(data: challenge));
+        }
+      } else {
+        var error = getErrorMessageFromResponse(response);
+        Logger.warning('Polling push tokens failed with status code ${response.statusCode}', name: 'push_provider.dart#pollForChallenges');
+        return "${AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges}\n$error";
+      }
+    } catch (e, s) {
+      Logger.warning(
+        'An error occured when polling for challenges',
+        name: 'push_provider.dart#pollForChallenges',
+        error: e,
+        stackTrace: s,
+      );
+      return "${AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges}\n${e.toString()}";
+    }
+    return null;
   }
 
   /// Checks if the firebase token was changed and updates it if necessary.

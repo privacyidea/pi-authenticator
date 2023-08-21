@@ -21,6 +21,7 @@ class _SendErrorDialogState extends State<SendErrorDialog> {
         future: Logger.instance.errorLog,
         builder: (context, errorLog) {
           return AlertDialog(
+            scrollable: true,
             title: Text(
               AppLocalizations.of(context)!.sendErrorDialogHeader,
               overflow: TextOverflow.fade,
@@ -91,6 +92,7 @@ class NoLogDialog extends StatelessWidget {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: AlertDialog(
+        scrollable: true,
         title: Text(
           AppLocalizations.of(context)!.noLogToSend,
         ),

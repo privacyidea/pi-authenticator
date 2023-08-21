@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
-import 'package:privacyidea_authenticator/utils/lock_auth.dart';
+import '../../../../../utils/customizations.dart';
+import '../../../../../utils/lock_auth.dart';
 import 'rollout_failed_widget.dart';
 import 'rollout_widget.dart';
 
@@ -13,7 +13,7 @@ import '../../../../../utils/identifiers.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../widgets/press_button.dart';
 import '../token_widget.dart';
-import 'action_widgets/edit_push_token_action.dart';
+import 'actions/edit_push_token_action.dart';
 import '../token_widget_base.dart';
 import 'push_token_widget_tile.dart';
 
@@ -77,39 +77,6 @@ class PushTokenWidget extends TokenWidget {
                         Flexible(
                           flex: 5,
                           child: PressButton(
-                              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
-                              onPressed: () async {
-                                if (token.isLocked &&
-                                    await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) return;
-                                _showDialog();
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    flex: 4,
-                                    child: Text(
-                                      AppLocalizations.of(context)!.decline,
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context).textTheme.bodyMedium,
-                                      overflow: TextOverflow.fade,
-                                      softWrap: false,
-                                    ),
-                                  ),
-                                  const Flexible(
-                                    flex: 1,
-                                    child: Icon(Icons.close_outlined),
-                                  ),
-                                ],
-                              )),
-                        ),
-                        const Flexible(
-                          flex: 2,
-                          child: SizedBox(),
-                        ),
-                        Flexible(
-                          flex: 5,
-                          child: PressButton(
                             onPressed: () async {
                               if (token.isLocked &&
                                   await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) return;
@@ -138,6 +105,39 @@ class PushTokenWidget extends TokenWidget {
                               ],
                             ),
                           ),
+                        ),
+                        const Flexible(
+                          flex: 2,
+                          child: SizedBox(),
+                        ),
+                        Flexible(
+                          flex: 5,
+                          child: PressButton(
+                              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
+                              onPressed: () async {
+                                if (token.isLocked &&
+                                    await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) return;
+                                _showDialog();
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 4,
+                                    child: Text(
+                                      AppLocalizations.of(context)!.decline,
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context).textTheme.bodyMedium,
+                                      overflow: TextOverflow.fade,
+                                      softWrap: false,
+                                    ),
+                                  ),
+                                  const Flexible(
+                                    flex: 1,
+                                    child: Icon(Icons.close_outlined),
+                                  ),
+                                ],
+                              )),
                         ),
                         const Flexible(child: SizedBox()),
                       ],
@@ -205,6 +205,34 @@ class PushTokenWidget extends TokenWidget {
                             Expanded(
                               flex: 3,
                               child: PressButton(
+                                onPressed: () {
+                                  final pr = token.pushRequests.peek();
+                                  if (pr != null) {
+                                    globalRef?.read(pushRequestProvider.notifier).decline(pr);
+                                  }
+                                  Navigator.of(context).pop();
+                                },
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      'Yes',
+                                      style: Theme.of(context).textTheme.bodyLarge,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Text(
+                                      'But discard it',
+                                      style: Theme.of(context).textTheme.bodySmall,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const Expanded(child: SizedBox()),
+                            Expanded(
+                              flex: 3,
+                              child: PressButton(
                                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
                                 onPressed: () {
                                   //TODO: Notify issuer
@@ -223,34 +251,6 @@ class PushTokenWidget extends TokenWidget {
                                     ),
                                     Text(
                                       'Decline it',
-                                      style: Theme.of(context).textTheme.bodySmall,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Expanded(child: SizedBox()),
-                            Expanded(
-                              flex: 3,
-                              child: PressButton(
-                                onPressed: () {
-                                  final pr = token.pushRequests.peek();
-                                  if (pr != null) {
-                                    globalRef?.read(pushRequestProvider.notifier).decline(pr);
-                                  }
-                                  Navigator.of(context).pop();
-                                },
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'Yes',
-                                      style: Theme.of(context).textTheme.bodyLarge,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    Text(
-                                      'But discard it',
                                       style: Theme.of(context).textTheme.bodySmall,
                                       textAlign: TextAlign.center,
                                     ),

@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
+import '../utils/riverpod_providers.dart';
 
 part 'push_request.g.dart';
 
@@ -29,8 +29,8 @@ class PushRequest {
     this.accepted,
   })  : serial = serial ?? '',
         signature = signature ?? '' {
-    Future.delayed(Duration(milliseconds: expirationDate.difference(DateTime.now()).inMilliseconds),
-        () => globalRef?.read(tokenProvider.notifier).removePushRequest(this));
+    int time = expirationDate.difference(DateTime.now()).inMilliseconds;
+    Future.delayed(Duration(milliseconds: time < 1 ? 1 : time), () => globalRef?.read(tokenProvider.notifier).removePushRequest(this));
   }
 
   PushRequest copyWith({
