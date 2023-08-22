@@ -32,6 +32,7 @@ import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/customizations.dart';
+import '../../../widgets/default_dialog.dart';
 
 class UpdateFirebaseTokenDialog extends StatefulWidget {
   const UpdateFirebaseTokenDialog({super.key});
@@ -56,7 +57,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
   Widget build(BuildContext context) {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: AlertDialog(
+      child: DefaultDialog(
         scrollable: true,
         title: Text(AppLocalizations.of(context)!.synchronizingTokens),
         content: _content,

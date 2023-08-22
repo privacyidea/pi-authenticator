@@ -273,12 +273,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorRollOutNoNetworkConnection": "Geen netwerk verbinding. Uitrollen is niet mogelijk.",
-  "@errorRollOutNoNetworkConnection": {
-    "description": "Tells the user that the roll-out failed because no network connection is available.",
-    "type": "text",
-    "placeholders": {}
-  },
   "errorRollOutUnknownError": "Een onbekende fout heeft plaats gevonden. Uitrollen is niet mogelijk: {e}",
   "@errorRollOutUnknownError": {
     "description": "Tells the user that the roll-out failed because of an unknown error.",

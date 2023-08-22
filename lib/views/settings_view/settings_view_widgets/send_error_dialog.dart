@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../utils/logger.dart';
+import '../../../widgets/default_dialog.dart';
 
 class SendErrorDialog extends StatefulWidget {
   const SendErrorDialog({super.key});
@@ -20,7 +21,7 @@ class _SendErrorDialogState extends State<SendErrorDialog> {
       child: FutureBuilder<String>(
         future: Logger.instance.errorLog,
         builder: (context, errorLog) {
-          return AlertDialog(
+          return DefaultDialog(
             title: Text(
               AppLocalizations.of(context)!.sendErrorDialogHeader,
               overflow: TextOverflow.fade,
@@ -90,7 +91,7 @@ class NoLogDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: AlertDialog(
+      child: DefaultDialog(
         scrollable: true,
         title: Text(
           AppLocalizations.of(context)!.noLogToSend,

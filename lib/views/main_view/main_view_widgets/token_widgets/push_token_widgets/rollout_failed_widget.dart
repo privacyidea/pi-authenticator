@@ -5,6 +5,7 @@ import '../../../../../model/tokens/push_token.dart';
 import '../../../../../utils/customizations.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/utils.dart';
+import '../../../../../widgets/default_dialog.dart';
 import '../../../../../widgets/press_button.dart';
 
 class RolloutFailedWidget extends StatelessWidget {
@@ -65,7 +66,7 @@ class RolloutFailedWidget extends StatelessWidget {
   void _showDialog() => showDialog(
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return DefaultDialog(
           scrollable: true,
           title: Text(
             AppLocalizations.of(context)!.confirmDeletion,

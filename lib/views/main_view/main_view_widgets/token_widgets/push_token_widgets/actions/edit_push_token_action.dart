@@ -10,6 +10,7 @@ import '../../../../../../utils/customizations.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
 import '../../../../../../utils/storage_utils.dart';
+import '../../../../../../widgets/default_dialog.dart';
 import '../../../../../../widgets/enable_text_form_field_after_many_taps.dart';
 import '../../token_action.dart';
 
@@ -45,10 +46,8 @@ class EditPushTokenAction extends TokenAction {
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: AlertDialog(
+        child: DefaultDialog(
           scrollable: true,
-          titlePadding: const EdgeInsets.all(12),
-          contentPadding: const EdgeInsets.all(0),
           title: Text(
             AppLocalizations.of(context)!.editToken,
             overflow: TextOverflow.fade,

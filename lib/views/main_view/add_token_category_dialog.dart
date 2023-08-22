@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../utils/riverpod_providers.dart';
+import '../../widgets/default_dialog.dart';
 
 class AddTokenCategoryDialog extends ConsumerWidget {
   final textController = TextEditingController();
@@ -15,7 +16,7 @@ class AddTokenCategoryDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: AlertDialog(
+      child: DefaultDialog(
         scrollable: true,
         title: Text(AppLocalizations.of(context)!.addANewCategory),
         content: TextFormField(

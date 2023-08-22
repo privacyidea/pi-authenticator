@@ -7,6 +7,7 @@ import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/customizations.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../widgets/default_dialog.dart';
 
 class DeleteTokenCategoryAction extends StatelessWidget {
   final TokenCategory category;
@@ -29,7 +30,7 @@ class DeleteTokenCategoryAction extends StatelessWidget {
   void _showDialog() => showDialog(
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return DefaultDialog(
           scrollable: true,
           title: Text(
             AppLocalizations.of(context)!.confirmDeletion,

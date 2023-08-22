@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:base32/base32.dart';
 import 'package:collection/collection.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -302,7 +303,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
         try {
           message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : null;
         } on FormatException catch (_) {
-          message = AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoNetworkConnection;
+          message = AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(token.label);
         }
         message = message != null ? '\n$message' : '';
         showMessage(
@@ -313,10 +314,10 @@ class TokenNotifier extends StateNotifier<TokenState> {
         return false;
       }
     } catch (e, s) {
-      if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException) {
+      if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException || e is TimeoutException || e is FirebaseException) {
         Logger.warning('Connection error: Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
         showMessage(
-          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoNetworkConnection,
+          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(token.label),
           duration: const Duration(seconds: 3),
         );
         updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
@@ -328,6 +329,10 @@ class TokenNotifier extends StateNotifier<TokenState> {
         );
         updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
       } else {
+        showMessage(
+          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutUnknownError(e),
+          duration: const Duration(seconds: 3),
+        );
         Logger.error('Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
         updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
       }

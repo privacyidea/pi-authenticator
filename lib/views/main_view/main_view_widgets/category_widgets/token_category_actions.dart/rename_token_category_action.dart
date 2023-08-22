@@ -8,6 +8,7 @@ import '../../../../../utils/customizations.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../widgets/default_dialog.dart';
 
 class RenameTokenCategoryAction extends StatelessWidget {
   final TokenCategory category;
@@ -31,7 +32,7 @@ class RenameTokenCategoryAction extends StatelessWidget {
     showDialog(
         context: globalNavigatorKey.currentContext!,
         builder: (BuildContext context) {
-          return AlertDialog(
+          return DefaultDialog(
             scrollable: true,
             title: Text(
               AppLocalizations.of(context)!.renameTokenCategory,

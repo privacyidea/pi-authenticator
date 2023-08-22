@@ -302,7 +302,7 @@ class Logger {
       globalSnackbarKey.currentState?.showSnackBar(
         SnackBar(
           content: Text(
-            _context != null ? AppLocalizations.of(_context!)!.unexpectedError : 'Unexpected Error',
+            _context != null ? AppLocalizations.of(_context!)!.unexpectedError : 'An unexpected error occurred.',
           ),
           action: _context != null
               ? SnackBarAction(

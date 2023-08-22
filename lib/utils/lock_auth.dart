@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_ios/local_auth_ios.dart';
+import '../widgets/default_dialog.dart';
 import 'customizations.dart';
 import 'view_utils.dart';
 
@@ -20,7 +21,7 @@ Future<bool> lockAuth({required BuildContext context, required String localizedR
   if (!(await localAuth.isDeviceSupported())) {
     await showAsyncDialog(
       builder: (context) {
-        return AlertDialog(
+        return DefaultDialog(
           scrollable: true,
           title: ListTile(
             title: Center(

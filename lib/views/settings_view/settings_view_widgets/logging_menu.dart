@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../utils/logger.dart';
 import '../../../utils/riverpod_providers.dart';
+import '../../../widgets/default_dialog.dart';
 import 'send_error_dialog.dart';
 
 class LoggingMenu extends ConsumerWidget {
@@ -17,11 +18,8 @@ class LoggingMenu extends ConsumerWidget {
     final verboseLogging = settings.verboseLogging;
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: AlertDialog(
+      child: DefaultDialog(
         scrollable: true,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        titlePadding: const EdgeInsets.all(12),
-        contentPadding: const EdgeInsets.all(0),
         title: Text(
           AppLocalizations.of(context)!.logMenu,
           style: Theme.of(context).listTileTheme.titleTextStyle,

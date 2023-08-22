@@ -8,6 +8,7 @@ import '../../../../../utils/customizations.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../widgets/default_dialog.dart';
 import '../token_action.dart';
 
 class DefaultEditAction extends TokenAction {
@@ -34,7 +35,7 @@ class DefaultEditAction extends TokenAction {
     showDialog(
         context: globalNavigatorKey.currentContext!,
         builder: (BuildContext context) {
-          return AlertDialog(
+          return DefaultDialog(
             scrollable: true,
             title: Text(
               AppLocalizations.of(context)!.renameToken,
