@@ -182,7 +182,7 @@ abstract class PushProvider {
   static Future<String?> pollForChallenges({bool showMessageForEachToken = false}) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
-      Logger.info('Tryed to poll without any internet connection available.', name: 'push_provider.dart#pollForChallenges');
+      Logger.info('Tried to poll without any internet connection available.', name: 'push_provider.dart#pollForChallenges');
       return AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailNoNetworkConnection;
     }
 

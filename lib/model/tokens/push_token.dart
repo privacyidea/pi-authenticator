@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
@@ -54,8 +56,6 @@ class PushToken extends Token {
   late final PushRequestQueue pushRequests;
   final CustomIntBuffer knownPushRequests;
 
-  // The get and set methods are needed for serialization.
-
   bool knowsRequestWithId(int id) {
     bool exists = pushRequests.any((element) => element.id == id);
 
@@ -81,7 +81,7 @@ class PushToken extends Token {
     String? type,
     super.sortIndex,
     super.tokenImage,
-    super.categoryId,
+    super.folderId,
     super.isInEditMode,
     super.isLocked,
     super.pin = false,
@@ -112,7 +112,7 @@ class PushToken extends Token {
     bool? isRolledOut,
     PushTokenRollOutState? rolloutState,
     CustomIntBuffer? knownPushRequests,
-    int? Function()? categoryId,
+    int? Function()? folderId,
     bool? isInEditMode,
   }) {
     return PushToken(
@@ -135,7 +135,7 @@ class PushToken extends Token {
       isRolledOut: isRolledOut ?? this.isRolledOut,
       rolloutState: rolloutState ?? this.rolloutState,
       knownPushRequests: knownPushRequests ?? this.knownPushRequests,
-      categoryId: categoryId != null ? categoryId() : this.categoryId,
+      folderId: folderId != null ? folderId() : this.folderId,
       isInEditMode: isInEditMode ?? this.isInEditMode,
     );
   }
@@ -164,18 +164,21 @@ class PushToken extends Token {
         'knownPushRequests: $knownPushRequests}';
   }
 
-  factory PushToken.fromUriMap(Map<String, dynamic> uriMap) => PushToken(
-        serial: uriMap[URI_SERIAL],
-        label: uriMap[URI_LABEL],
-        issuer: uriMap[URI_ISSUER],
-        id: const Uuid().v4(),
-        sslVerify: uriMap[URI_SSL_VERIFY],
-        expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
-        enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-        url: uriMap[URI_ROLLOUT_URL],
-        pin: uriMap[URI_PIN],
-        tokenImage: uriMap[URI_IMAGE],
-      );
+  factory PushToken.fromUriMap(Map<String, dynamic> uriMap) {
+    log(uriMap.toString());
+    return PushToken(
+      serial: uriMap[URI_SERIAL] ?? '',
+      label: uriMap[URI_LABEL] ?? '',
+      issuer: uriMap[URI_ISSUER] ?? '',
+      id: const Uuid().v4(),
+      sslVerify: uriMap[URI_SSL_VERIFY],
+      expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL] ?? 10)),
+      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
+      url: uriMap[URI_ROLLOUT_URL] != null ? Uri.parse(uriMap[URI_ROLLOUT_URL]) : null,
+      pin: uriMap[URI_PIN],
+      tokenImage: uriMap[URI_IMAGE],
+    );
+  }
 
   factory PushToken.fromJson(Map<String, dynamic> json) {
     final newToken = _$PushTokenFromJson(json);

@@ -583,24 +583,24 @@
     "description": "editLockedToken",
     "type": "text"
   },
-  "uncollapseLockedCategory": "Chcete-li otevřít uzamčenou složku, ověřte se.",
-  "@uncollapseLockedCategory": {
-    "description": "uncollapseLockedCategory",
+  "uncollapseLockedFolder": "Chcete-li otevřít uzamčenou složku, ověřte se.",
+  "@uncollapseLockedFolder": {
+    "description": "uncollapseLockedFolder",
     "type": "text"
   },
-  "renameTokenCategory": "Přejmenování složky",
-  "@renameTokenCategory": {
-    "description": "renameTokenCategory",
+  "renameTokenFolder": "Přejmenování složky",
+  "@renameTokenFolder": {
+    "description": "renameTokenFolder",
     "type": "text"
   },
-  "addANewCategory": "Vytvoření nové složky",
-  "@addANewCategory": {
-    "description": "addANewCategory",
+  "addANewFolder": "Vytvoření nové složky",
+  "@addANewFolder": {
+    "description": "addANewFolder",
     "type": "text"
   },
-  "categoryName": "Název složky",
-  "@categoryName": {
-    "description": "categoryName",
+  "folderName": "Název složky",
+  "@folderName": {
+    "description": "folderName",
     "type": "text"
   },
   "retryRollout": "Zkusit znovu",

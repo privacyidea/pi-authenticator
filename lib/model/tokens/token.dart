@@ -17,7 +17,7 @@ abstract class Token with SortableMixin {
   final bool isLocked;
   final bool? pin;
   final String? tokenImage;
-  final int? categoryId;
+  final int? folderId;
   final bool isInEditMode;
   @override
   final int? sortIndex;
@@ -51,7 +51,7 @@ abstract class Token with SortableMixin {
     this.tokenImage,
     this.sortIndex,
     this.isLocked = false,
-    this.categoryId,
+    this.folderId,
     this.isInEditMode = false,
   });
 
@@ -64,12 +64,12 @@ abstract class Token with SortableMixin {
     bool? pin,
     String? tokenImage,
     int? sortIndex,
-    int? Function()? categoryId,
+    int? Function()? folderId,
     bool? isInEditMode,
   });
 
   @override
   String toString() {
-    return 'Token{label: $label, issuer: $issuer, id: $id, _sLocked: $isLocked, pin: $pin, tokenImage: $tokenImage, sortIndex: $sortIndex, type: $type, categoryId: $categoryId, isInEditMode: $isInEditMode';
+    return 'Token{label: $label, issuer: $issuer, id: $id, _sLocked: $isLocked, pin: $pin, tokenImage: $tokenImage, sortIndex: $sortIndex, type: $type, folderId: $folderId, isInEditMode: $isInEditMode';
   }
 }

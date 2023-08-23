@@ -45,25 +45,6 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
     _initStateAsync();
   }
 
-  void _startOrStopPolling() {
-    // Start polling if enabled and not already polling
-    if (pollingEnabled && _pollTimer == null) {
-      Logger.info('Polling is enabled.', name: 'main_screen.dart#_startPollingIfEnabled');
-      _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) => PushProvider.pollForChallenges());
-      PushProvider.pollForChallenges();
-      return;
-    }
-    // Stop polling if disabled and currently polling
-    if (!pollingEnabled && _pollTimer != null) {
-      Logger.info('Polling is disabled.', name: 'main_screen.dart#_startPollingIfEnabled');
-      _pollTimer?.cancel();
-      _pollTimer = null;
-      return;
-    }
-    // Do nothing if polling is enabled and already polling or disabled and not polling
-    return;
-  }
-
   // INITIALIZATIONS
 
   /// Handles asynchronous calls that should be triggered by `initState`.
@@ -137,7 +118,6 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
       return;
     }
     globalRef?.read(pushRequestProvider.notifier).state = pushRequest;
-    // Logger.info('Incoming push challenge for token with serial.', name: 'main_screen.dart#_handleIncomingChallenge', error: requestedSerial);
   }
 
   static void _addPushRequestToTokenInSecureStoreage(PushRequest pushRequest) async {
@@ -152,6 +132,25 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
     prList.add(pushRequest);
     token = token.copyWith(pushRequests: prList);
     await StorageUtil.saveOrReplaceToken(token);
+  }
+
+  void _startOrStopPolling() {
+    // Start polling if enabled and not already polling
+    if (pollingEnabled && _pollTimer == null) {
+      Logger.info('Polling is enabled.', name: 'main_screen.dart#_startPollingIfEnabled');
+      _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) => PushProvider.pollForChallenges());
+      PushProvider.pollForChallenges();
+      return;
+    }
+    // Stop polling if it's disabled and currently polling
+    if (!pollingEnabled && _pollTimer != null) {
+      Logger.info('Polling is disabled.', name: 'main_screen.dart#_startPollingIfEnabled');
+      _pollTimer?.cancel();
+      _pollTimer = null;
+      return;
+    }
+    // Do nothing if polling is enabled and already polling or disabled and not polling
+    return;
   }
 
   // ACTIONS

@@ -577,25 +577,25 @@
     "description": "editLockedToken",
     "type": "text"
   },
-  "uncollapseLockedCategory": "Please authenticate to uncollapse the locked category.",
-  "@uncollapseLockedCategory": {
-    "description": "uncollapseLockedCategory",
+  "uncollapseLockedFolder": "Please authenticate to uncollapse the locked folder.",
+  "@uncollapseLockedFolder": {
+    "description": "uncollapseLockedFolder",
     "type": "text"
   },
-  "renameTokenCategory": "Rename folder",
-  "@renameTokenCategory": {
-    "description": "Title of the dialog where a new name for a token category can be entered.",
+  "renameTokenFolder": "Rename folder",
+  "@renameTokenFolder": {
+    "description": "Title of the dialog where a new name for a token folder can be entered.",
     "type": "text",
     "placeholders": {}
   },
-  "addANewCategory": "Create new folder",
-  "@addANewCategory": {
-    "description": "addANewCategory",
+  "addANewFolder": "Create new folder",
+  "@addANewFolder": {
+    "description": "addANewFolder",
     "type": "text"
   },
-  "categoryName": "Foldername",
-  "@categoryName": {
-    "description": "categoryName",
+  "folderName": "Foldername",
+  "@folderName": {
+    "description": "folderName",
     "type": "text"
   },
   "retryRollout": "Retry rollout",

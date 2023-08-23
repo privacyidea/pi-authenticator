@@ -6,7 +6,7 @@ import '../../../utils/riverpod_providers.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../qr_scanner_view/scanner_view.dart';
 import '../../settings_view/settings_view.dart';
-import '../add_token_category_dialog.dart';
+import '../add_token_folder_dialog.dart';
 import 'app_bar_item.dart';
 import 'custom_paint_navigation_bar.dart';
 
@@ -83,7 +83,7 @@ class MainViewNavigationButtions extends StatelessWidget {
                     height: navHeight * 0.9,
                     child: AppBarItem(
                       onPressed: () {
-                        showDialog(context: context, builder: (context) => AddTokenCategoryDialog());
+                        showDialog(context: context, builder: (context) => AddTokenFolderDialog());
                       },
                       icon: Icons.create_new_folder,
                     ),

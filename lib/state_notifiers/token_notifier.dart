@@ -142,8 +142,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
           ),
         ))!;
       }
-
-      var newToken = Token.fromUriMap(uriMap);
+      Token newToken;
+      try {
+        newToken = Token.fromUriMap(uriMap);
+      } on FormatException catch (e) {
+        Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
+        showMessage(message: e.message, duration: const Duration(seconds: 3));
+        return;
+      }
 
       if (newToken.pin != null && newToken.pin != false) {
         Logger.info(

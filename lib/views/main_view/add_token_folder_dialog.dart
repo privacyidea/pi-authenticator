@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/default_dialog.dart';
 
-class AddTokenCategoryDialog extends ConsumerWidget {
+class AddTokenFolderDialog extends ConsumerWidget {
   final textController = TextEditingController();
 
-  AddTokenCategoryDialog({super.key});
+  AddTokenFolderDialog({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,15 +18,15 @@ class AddTokenCategoryDialog extends ConsumerWidget {
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: DefaultDialog(
         scrollable: true,
-        title: Text(AppLocalizations.of(context)!.addANewCategory),
+        title: Text(AppLocalizations.of(context)!.addANewFolder),
         content: TextFormField(
           controller: textController,
           autofocus: true,
           onChanged: (value) {},
-          decoration: InputDecoration(labelText: AppLocalizations.of(context)!.categoryName),
+          decoration: InputDecoration(labelText: AppLocalizations.of(context)!.folderName),
           validator: (value) {
             if (value!.isEmpty) {
-              return AppLocalizations.of(context)!.categoryName;
+              return AppLocalizations.of(context)!.folderName;
             }
             return null;
           },
@@ -47,7 +47,7 @@ class AddTokenCategoryDialog extends ConsumerWidget {
                 softWrap: false,
               ),
               onPressed: () {
-                ref.read(tokenCategoryProvider.notifier).addCategory(textController.text);
+                ref.read(tokenFolderProvider.notifier).addFolder(textController.text);
                 Navigator.pop(context);
               }),
         ],

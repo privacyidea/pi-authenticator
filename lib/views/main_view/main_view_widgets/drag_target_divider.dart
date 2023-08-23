@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
-import '../../../model/token_category.dart';
+import '../../../model/token_folder.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../widgets/drag_item_scroller.dart';
@@ -10,13 +10,13 @@ import '../../../widgets/drag_item_scroller.dart';
 /// DragTargetDivider is used to create a divider that can be used to move a sortable up or down in the list
 /// It will accept a Sortable from the type T
 class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget {
-  final TokenCategory? dependingCategory;
+  final TokenFolder? dependingFolder;
   final SortableMixin? nextSortable;
   final bool isLastDivider;
 
   const DragTargetDivider({
     super.key,
-    required this.dependingCategory,
+    required this.dependingFolder,
     required this.nextSortable,
     this.isLastDivider = false,
   });
@@ -62,7 +62,7 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
         expansionController.reset();
         // Higher index = lower in the list
         dragedSortable as SortableMixin;
-        final allSortables = [...ref.read(tokenProvider).tokens, ...ref.read(tokenCategoryProvider).categorys];
+        final allSortables = [...ref.read(tokenProvider).tokens, ...ref.read(tokenFolderProvider).folders];
         allSortables.sort((a, b) => a.compareTo(b));
         final oldIndex = allSortables.indexOf(dragedSortable);
         if (oldIndex == -1) return; // If the draged item is not in the list we dont need to do anything
@@ -80,10 +80,10 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
           }
         }
         final dragedItemMovedUp = newIndex < oldIndex;
-        // When the draged item is a Token we need to update the categoryId so its in the correct category
+        // When the draged item is a Token we need to update the folderId so its in the correct folder
         if (dragedSortable is Token) {
-          late int? previousCategoryId = widget.dependingCategory?.categoryId;
-          allSortables[oldIndex] = dragedSortable.copyWith(categoryId: () => previousCategoryId);
+          late int? previousFolderId = widget.dependingFolder?.folderId;
+          allSortables[oldIndex] = dragedSortable.copyWith(folderId: () => previousFolderId);
         }
 
         final modifiedSortables = [];
@@ -106,7 +106,7 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
         }
 
         globalRef?.read(tokenProvider.notifier).updateTokens(modifiedSortables.whereType<Token>().toList());
-        globalRef?.read(tokenCategoryProvider.notifier).updateCategorys(modifiedSortables.whereType<TokenCategory>().toList());
+        globalRef?.read(tokenFolderProvider.notifier).updateFolders(modifiedSortables.whereType<TokenFolder>().toList());
       },
       builder: (context, accepted, rejected) {
         final dividerHeight = expansionController.value * 40 + 1.5;

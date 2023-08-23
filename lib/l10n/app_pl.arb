@@ -577,24 +577,24 @@
     "description": "editLockedToken",
     "type": "text"
   },
-  "uncollapseLockedCategory": "Uwierzytelnij, aby otworzyć zablokowany folder.",
-  "@uncollapseLockedCategory": {
-    "description": "uncollapseLockedCategory",
+  "uncollapseLockedFolder": "Uwierzytelnij, aby otworzyć zablokowany folder.",
+  "@uncollapseLockedFolder": {
+    "description": "uncollapseLockedFolder",
     "type": "text"
   },
-  "renameTokenCategory": "Zmiana nazwy folderu",
-  "@renameTokenCategory": {
-    "description": "renameTokenCategory",
+  "renameTokenFolder": "Zmiana nazwy folderu",
+  "@renameTokenFolder": {
+    "description": "renameTokenFolder",
     "type": "text"
   },
-  "addANewCategory": "Utwórz nowy folder",
-  "@addANewCategory": {
-    "description": "addANewCategory",
+  "addANewFolder": "Utwórz nowy folder",
+  "@addANewFolder": {
+    "description": "addANewFolder",
     "type": "text"
   },
-  "categoryName": "Nazwa folderu",
-  "@categoryName": {
-    "description": "categoryName",
+  "folderName": "Nazwa folderu",
+  "@folderName": {
+    "description": "folderName",
     "type": "text"
   },
   "retryRollout": "Ponowne uruchomienie",

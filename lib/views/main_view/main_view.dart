@@ -39,7 +39,7 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
   @override
   Widget build(BuildContext context) {
     final tokenList = ref.watch(tokenProvider).tokens;
-    final categoryList = ref.watch(tokenCategoryProvider).categorys;
+    final folderList = ref.watch(tokenFolderProvider).folders;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -54,7 +54,7 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
       body: Stack(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         children: [
-          tokenList.isEmpty && categoryList.isEmpty ? const NoTokenScreen() : MainViewTokensList(tokenList, nestedScrollViewKey: globalKey),
+          tokenList.isEmpty && folderList.isEmpty ? const NoTokenScreen() : MainViewTokensList(tokenList, nestedScrollViewKey: globalKey),
           const MainViewNavigationButtions(),
         ],
       ),

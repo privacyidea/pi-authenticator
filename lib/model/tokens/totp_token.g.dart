@@ -19,7 +19,7 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
       tokenImage: json['tokenImage'] as String?,
       sortIndex: json['sortIndex'] as int?,
       isLocked: json['isLocked'] as bool? ?? false,
-      categoryId: json['categoryId'] as int?,
+      folderId: json['folderId'] as int?,
       isInEditMode: json['isInEditMode'] as bool? ?? false,
     );
 
@@ -30,7 +30,7 @@ Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
       'isLocked': instance.isLocked,
       'pin': instance.pin,
       'tokenImage': instance.tokenImage,
-      'categoryId': instance.categoryId,
+      'folderId': instance.folderId,
       'isInEditMode': instance.isInEditMode,
       'sortIndex': instance.sortIndex,
       'type': instance.type,

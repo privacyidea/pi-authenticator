@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../../../model/token_category.dart';
+import '../../../../../model/token_folder.dart';
 import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/customizations.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../widgets/default_dialog.dart';
 
-class DeleteTokenCategoryAction extends StatelessWidget {
-  final TokenCategory category;
+class DeleteTokenFolderAction extends StatelessWidget {
+  final TokenFolder folder;
 
-  const DeleteTokenCategoryAction({super.key, required this.category});
+  const DeleteTokenFolderAction({super.key, required this.folder});
   @override
   Widget build(BuildContext context) {
     return SlidableAction(
@@ -21,7 +21,7 @@ class DeleteTokenCategoryAction extends StatelessWidget {
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       icon: Icons.delete,
       onPressed: (context) async {
-        if (category.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
+        if (folder.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
         _showDialog();
       },
     );
@@ -35,7 +35,7 @@ class DeleteTokenCategoryAction extends StatelessWidget {
           title: Text(
             AppLocalizations.of(context)!.confirmDeletion,
           ),
-          content: Text(AppLocalizations.of(context)!.confirmDeletionOf(category.label)),
+          content: Text(AppLocalizations.of(context)!.confirmDeletionOf(folder.label)),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -47,13 +47,13 @@ class DeleteTokenCategoryAction extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                final tokens = globalRef?.read(tokenProvider).tokensInCategory(category);
+                final tokens = globalRef?.read(tokenProvider).tokensInFolder(folder);
                 if (tokens == null) return;
                 for (var i = 0; i < tokens.length; i++) {
-                  tokens[i] = tokens[i].copyWith(categoryId: () => null);
+                  tokens[i] = tokens[i].copyWith(folderId: () => null);
                 }
                 globalRef?.read(tokenProvider.notifier).updateTokens(tokens);
-                globalRef?.read(tokenCategoryProvider.notifier).removeCategory(category);
+                globalRef?.read(tokenFolderProvider.notifier).removeFolder(folder);
                 Navigator.of(context).pop();
               },
               child: Text(

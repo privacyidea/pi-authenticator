@@ -583,24 +583,24 @@
     "description": "editLockedToken",
     "type": "text"
   },
-  "uncollapseLockedCategory": "Por favor, autentifíquese para abrir la carpeta bloqueada.",
-  "@uncollapseLockedCategory": {
-    "description": "uncollapseLockedCategory",
+  "uncollapseLockedFolder": "Por favor, autentifíquese para abrir la carpeta bloqueada.",
+  "@uncollapseLockedFolder": {
+    "description": "uncollapseLockedFolder",
     "type": "text"
   },
-  "renameTokenCategory": "Cambiar nombre de carpeta",
-  "@renameTokenCategory": {
-    "description": "renameTokenCategory",
+  "renameTokenFolder": "Cambiar nombre de carpeta",
+  "@renameTokenFolder": {
+    "description": "renameTokenFolder",
     "type": "text"
   },
-  "addANewCategory": "Crear nueva carpeta",
-  "@addANewCategory": {
-    "description": "addANewCategory",
+  "addANewFolder": "Crear nueva carpeta",
+  "@addANewFolder": {
+    "description": "addANewFolder",
     "type": "text"
   },
-  "categoryName": "Nombre de la carpeta",
-  "@categoryName": {
-    "description": "categoryName",
+  "folderName": "Nombre de la carpeta",
+  "@folderName": {
+    "description": "folderName",
     "type": "text"
   },
   "retryRollout": "Reintentar despliegue",

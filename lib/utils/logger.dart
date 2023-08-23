@@ -164,7 +164,7 @@ class Logger {
     }
 
     String deviceInfo = '';
-    //android or ios
+    // android or ios
     if (Platform.isAndroid) {
       final AndroidDeviceInfo build = await DeviceInfoPlugin().androidInfo;
       deviceInfo = _readAndroidBuildData(build);

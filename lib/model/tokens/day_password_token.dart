@@ -31,7 +31,7 @@ class DayPasswordToken extends OTPToken {
     super.tokenImage,
     super.sortIndex,
     super.isLocked,
-    super.categoryId,
+    super.folderId,
     super.isInEditMode,
   }) : super(type: type ?? enumAsString(TokenTypes.DAYPASSWORD));
 
@@ -49,7 +49,7 @@ class DayPasswordToken extends OTPToken {
     String? tokenImage,
     int? sortIndex,
     bool? isLocked,
-    int? Function()? categoryId,
+    int? Function()? folderId,
     bool? isInEditMode,
   }) =>
       DayPasswordToken(
@@ -66,7 +66,7 @@ class DayPasswordToken extends OTPToken {
         tokenImage: tokenImage ?? this.tokenImage,
         sortIndex: sortIndex ?? this.sortIndex,
         isLocked: isLocked ?? this.isLocked,
-        categoryId: categoryId != null ? categoryId.call() : this.categoryId,
+        folderId: folderId != null ? folderId.call() : this.folderId,
         isInEditMode: isInEditMode ?? this.isInEditMode,
       );
 

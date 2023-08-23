@@ -583,24 +583,24 @@
     "description": "editLockedToken",
     "type": "text"
   },
-  "uncollapseLockedCategory": "Veuillez vous authentifier pour ouvrir le dossier verrouillé.",
-  "@uncollapseLockedCategory": {
-    "description": "uncollapseLockedCategory",
+  "uncollapseLockedFolder": "Veuillez vous authentifier pour ouvrir le dossier verrouillé.",
+  "@uncollapseLockedFolder": {
+    "description": "uncollapseLockedFolder",
     "type": "text"
   },
-  "renameTokenCategory": "Renommer le dossier",
-  "@renameTokenCategory": {
-    "description": "renameTokenCategory",
+  "renameTokenFolder": "Renommer le dossier",
+  "@renameTokenFolder": {
+    "description": "renameTokenFolder",
     "type": "text"
   },
-  "addANewCategory": "Créer un nouveau dossier",
-  "@addANewCategory": {
-    "description": "addANewCategory",
+  "addANewFolder": "Créer un nouveau dossier",
+  "@addANewFolder": {
+    "description": "addANewFolder",
     "type": "text"
   },
-  "categoryName": "Nom du dossier",
-  "@categoryName": {
-    "description": "categoryName",
+  "folderName": "Nom du dossier",
+  "@folderName": {
+    "description": "folderName",
     "type": "text"
   },
   "retryRollout": "Réessayer le déploiement",

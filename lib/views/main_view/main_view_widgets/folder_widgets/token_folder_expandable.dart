@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'token_category_actions.dart/delete_token_category_action.dart';
-import 'token_category_actions.dart/lock_token_category_action.dart';
-import 'token_category_actions.dart/rename_token_category_action.dart';
-import '../../../../model/token_category.dart';
+import 'token_folder_actions.dart/delete_token_folder_action.dart';
+import 'token_folder_actions.dart/lock_token_folder_action.dart';
+import 'token_folder_actions.dart/rename_token_folder_action.dart';
+import '../../../../model/token_folder.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/lock_auth.dart';
 import '../../../../utils/riverpod_providers.dart';
@@ -17,16 +17,16 @@ import '../../../../widgets/custom_trailing.dart';
 import '../drag_target_divider.dart';
 import '../token_widgets/token_widget_builder.dart';
 
-class TokenCategoryExpandable extends ConsumerStatefulWidget {
-  final TokenCategory category;
+class TokenFolderExpandable extends ConsumerStatefulWidget {
+  final TokenFolder folder;
 
-  const TokenCategoryExpandable({super.key, required this.category});
+  const TokenFolderExpandable({super.key, required this.folder});
 
   @override
-  ConsumerState<TokenCategoryExpandable> createState() => _TokenCategoryExpandableState();
+  ConsumerState<TokenFolderExpandable> createState() => _TokenFolderExpandableState();
 }
 
-class _TokenCategoryExpandableState extends ConsumerState<TokenCategoryExpandable> with SingleTickerProviderStateMixin {
+class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> with SingleTickerProviderStateMixin {
   Timer? _expandTimer;
   late final AnimationController animationController;
   late final ExpandableController expandableController;
@@ -36,12 +36,12 @@ class _TokenCategoryExpandableState extends ConsumerState<TokenCategoryExpandabl
     super.initState();
     animationController = AnimationController(
       duration: const Duration(milliseconds: 250),
-      value: widget.category.isExpanded ? 0 : 1.0,
+      value: widget.folder.isExpanded ? 0 : 1.0,
       vsync: this,
     );
-    expandableController = ExpandableController(initialExpanded: widget.category.isExpanded);
+    expandableController = ExpandableController(initialExpanded: widget.folder.isExpanded);
     expandableController.addListener(() {
-      globalRef?.read(tokenCategoryProvider.notifier).updateCategory(widget.category.copyWith(isExpanded: expandableController.expanded));
+      globalRef?.read(tokenFolderProvider.notifier).updateFolder(widget.folder.copyWith(isExpanded: expandableController.expanded));
       if (expandableController.expanded) {
         animationController.reverse();
       } else {
@@ -60,7 +60,7 @@ class _TokenCategoryExpandableState extends ConsumerState<TokenCategoryExpandabl
 
   @override
   ExpandablePanel build(BuildContext context) {
-    final tokens = ref.watch(tokenProvider).tokensInCategory(widget.category);
+    final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder);
     final draggingSortable = ref.watch(draggingSortableProvider);
     if (tokens.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -72,35 +72,35 @@ class _TokenCategoryExpandableState extends ConsumerState<TokenCategoryExpandabl
       controller: expandableController,
       header: GestureDetector(
         onTap: () async {
-          if (widget.category.isExpanded) {
+          if (widget.folder.isExpanded) {
             expandableController.expanded = false;
             return;
           }
           if (tokens.isEmpty || (tokens.length == 1 && tokens.first == draggingSortable)) return;
-          if (widget.category.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.uncollapseLockedCategory) == false) {
+          if (widget.folder.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.uncollapseLockedFolder) == false) {
             return;
           }
           if (!mounted) return;
           expandableController.toggle();
         },
         child: Slidable(
-          key: ValueKey('tokenCategory-${widget.category.categoryId}'),
+          key: ValueKey('tokenFolder-${widget.folder.folderId}'),
           groupTag: 'myTag',
           endActionPane: ActionPane(
             motion: const DrawerMotion(),
             extentRatio: 1,
             children: [
-              DeleteTokenCategoryAction(category: widget.category),
-              RenameTokenCategoryAction(category: widget.category),
-              LockTokenCategoryAction(category: widget.category),
+              DeleteTokenFolderAction(folder: widget.folder),
+              RenameTokenFolderAction(folder: widget.folder),
+              LockTokenFolderAction(folder: widget.folder),
             ],
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: 15, right: 0),
             child: DragTarget(
               onWillAccept: (data) {
-                if (data is Token && data.categoryId != widget.category.categoryId) {
-                  if (widget.category.isLocked) return true;
+                if (data is Token && data.folderId != widget.folder.folderId) {
+                  if (widget.folder.isLocked) return true;
                   _expandTimer?.cancel();
                   _expandTimer = Timer(const Duration(milliseconds: 500), () {
                     if (!expandableController.expanded && tokens.isNotEmpty) expandableController.expanded = true;
@@ -111,21 +111,21 @@ class _TokenCategoryExpandableState extends ConsumerState<TokenCategoryExpandabl
               },
               onLeave: (data) => _expandTimer?.cancel(),
               onAccept: (data) {
-                final updatedToken = (data as Token).copyWith(categoryId: () => widget.category.categoryId);
+                final updatedToken = (data as Token).copyWith(folderId: () => widget.folder.folderId);
                 ref.read(tokenProvider.notifier).updateToken(updatedToken);
               },
               builder: (context, willAccept, willReject) => Center(
                 child: Container(
-                  margin: widget.category.isExpanded ? null : const EdgeInsets.only(right: 8),
-                  padding: widget.category.isExpanded ? const EdgeInsets.only(right: 8) : null,
+                  margin: widget.folder.isExpanded ? null : const EdgeInsets.only(right: 8),
+                  padding: widget.folder.isExpanded ? const EdgeInsets.only(right: 8) : null,
                   height: 50,
                   decoration: BoxDecoration(
                     color: willAccept.isNotEmpty ? Theme.of(context).dividerColor : null,
                     borderRadius: BorderRadius.only(
-                      topRight: widget.category.isExpanded ? const Radius.circular(0) : const Radius.circular(8),
+                      topRight: widget.folder.isExpanded ? const Radius.circular(0) : const Radius.circular(8),
                       topLeft: const Radius.circular(8),
-                      bottomRight: widget.category.isExpanded ? const Radius.circular(0) : const Radius.circular(8),
-                      bottomLeft: widget.category.isExpanded ? const Radius.circular(0) : const Radius.circular(8),
+                      bottomRight: widget.folder.isExpanded ? const Radius.circular(0) : const Radius.circular(8),
+                      bottomLeft: widget.folder.isExpanded ? const Radius.circular(0) : const Radius.circular(8),
                     ),
                   ),
                   child: Row(
@@ -141,7 +141,7 @@ class _TokenCategoryExpandableState extends ConsumerState<TokenCategoryExpandabl
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          widget.category.label,
+                          widget.folder.label,
                           style: Theme.of(context).textTheme.titleLarge,
                           overflow: TextOverflow.fade,
                           softWrap: false,
@@ -197,13 +197,13 @@ class _TokenCategoryExpandableState extends ConsumerState<TokenCategoryExpandabl
                   children: [
                     for (var i = 0; i < tokens.length; i++) ...[
                       if (draggingSortable != tokens[i] && (i != 0 || draggingSortable != null))
-                        DragTargetDivider<Token>(dependingCategory: widget.category, nextSortable: tokens[i]),
+                        DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: tokens[i]),
                       TokenWidgetBuilder.fromToken(
                         tokens[i],
                         withDivider: i < tokens.length - 1,
                       ),
                     ],
-                    if (tokens.isNotEmpty && draggingSortable is Token) DragTargetDivider<Token>(dependingCategory: widget.category, nextSortable: null),
+                    if (tokens.isNotEmpty && draggingSortable is Token) DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: null),
                     if (tokens.isNotEmpty && draggingSortable is! Token) const SizedBox(height: 8),
                   ],
                 ),

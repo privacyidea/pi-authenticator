@@ -577,24 +577,24 @@
     "description": "editLockedToken",
     "type": "text"
   },
-  "uncollapseLockedCategory": "Verifieer om de vergrendelde map te openen.",
-  "@uncollapseLockedCategory": {
-    "description": "uncollapseLockedCategory",
+  "uncollapseLockedFolder": "Verifieer om de vergrendelde map te openen.",
+  "@uncollapseLockedFolder": {
+    "description": "uncollapseLockedFolder",
     "type": "text"
   },
-  "renameTokenCategory": "Map hernoemen",
-  "@renameTokenCategory": {
-    "description": "renameTokenCategory",
+  "renameTokenFolder": "Map hernoemen",
+  "@renameTokenFolder": {
+    "description": "renameTokenFolder",
     "type": "text"
   },
-  "addANewCategory": "Nieuwe map maken",
-  "@addANewCategory": {
-    "description": "addANewCategory",
+  "addANewFolder": "Nieuwe map maken",
+  "@addANewFolder": {
+    "description": "addANewFolder",
     "type": "text"
   },
-  "categoryName": "Mapnaam",
-  "@categoryName": {
-    "description": "categoryName",
+  "folderName": "Mapnaam",
+  "@folderName": {
+    "description": "folderName",
     "type": "text"
   },
   "retryRollout": "Opnieuw uitrollen",

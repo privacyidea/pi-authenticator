@@ -49,15 +49,3 @@ class CustomPaintNavigationBar extends CustomPainter {
     return false;
   }
 }
-
-/* old appbar path
-1     ..moveTo(0, size.height * 0.3)
-2     ..quadraticBezierTo(size.width * 0.20, 0, size.width * 0.5 - 55, 0)
-3      ..quadraticBezierTo(size.width * 0.40, 0, size.width * 0.40, size.height * 0.3)
-4      ..arcToPoint(Offset(size.width * 0.60, size.height * 0.3), radius: Radius.circular(size.width * 0.10), clockwise: false)
-5      ..quadraticBezierTo(size.width * 0.60, 0, size.width * 0.65, 0)
-6      ..quadraticBezierTo(size.width * 0.80, 0, size.width, size.height * 0.3)
-7      ..lineTo(size.width, size.height)
-8      ..lineTo(0, size.height)
-      ..close();
- */

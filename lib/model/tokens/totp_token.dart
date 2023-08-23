@@ -27,7 +27,7 @@ class TOTPToken extends OTPToken {
       );
 
   TOTPToken({
-    required this.period,
+    required int period,
     required String label,
     required String issuer,
     required String id,
@@ -40,9 +40,10 @@ class TOTPToken extends OTPToken {
     int? sortIndex,
     bool isLocked = false,
     bool canToggleLock = true,
-    int? categoryId,
+    int? folderId,
     bool isInEditMode = false,
-  }) : super(
+  })  : period = period < 1 ? 30 : period, // period must be greater than 0 otherwise IntegerDivisionByZeroException is thrown in OTP.generateTOTPCodeString
+        super(
           label: label,
           issuer: issuer,
           id: id,
@@ -55,7 +56,7 @@ class TOTPToken extends OTPToken {
           sortIndex: sortIndex,
           isLocked: isLocked,
           canToggleLock: canToggleLock,
-          categoryId: categoryId,
+          folderId: folderId,
           isInEditMode: isInEditMode,
         );
 
@@ -72,7 +73,7 @@ class TOTPToken extends OTPToken {
     String? tokenImage,
     int? sortIndex,
     bool? isLocked,
-    int? Function()? categoryId,
+    int? Function()? folderId,
     bool? isInEditMode,
   }) {
     return TOTPToken(
@@ -87,7 +88,7 @@ class TOTPToken extends OTPToken {
       tokenImage: tokenImage ?? this.tokenImage,
       sortIndex: sortIndex ?? this.sortIndex,
       isLocked: isLocked ?? this.isLocked,
-      categoryId: categoryId != null ? categoryId() : this.categoryId,
+      folderId: folderId != null ? folderId() : this.folderId,
       isInEditMode: isInEditMode ?? this.isInEditMode,
     );
   }
@@ -98,15 +99,17 @@ class TOTPToken extends OTPToken {
   }
 
   factory TOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
+    if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
+    if (uriMap[URI_PERIOD] < 1) throw ArgumentError('Period must be greater than 0');
     return TOTPToken(
-      label: uriMap[URI_LABEL],
-      issuer: uriMap[URI_ISSUER],
+      label: uriMap[URI_LABEL] ?? '',
+      issuer: uriMap[URI_ISSUER] ?? '',
       id: const Uuid().v4(),
       algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
       digits: uriMap[URI_DIGITS] ?? 6,
       tokenImage: uriMap[URI_IMAGE],
       secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
-      period: uriMap[URI_PERIOD],
+      period: uriMap[URI_PERIOD] ?? 30,
       pin: uriMap[URI_PIN],
     );
   }

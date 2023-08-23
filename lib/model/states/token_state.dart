@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../token_category.dart';
+import '../token_folder.dart';
 import '../tokens/token.dart';
 
 @immutable
@@ -56,6 +56,6 @@ class TokenState {
     return TokenState(tokens: newTokens);
   }
 
-  List<Token> tokensInCategory(TokenCategory category) => tokens.where((token) => token.categoryId == category.categoryId).toList();
-  List<Token> tokensWithoutCategory() => tokens.where((token) => token.categoryId == null).toList();
+  List<Token> tokensInFolder(TokenFolder folder) => tokens.where((token) => token.folderId == folder.folderId).toList();
+  List<Token> tokensWithoutFolder() => tokens.where((token) => token.folderId == null).toList();
 }

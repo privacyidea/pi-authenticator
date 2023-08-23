@@ -583,24 +583,24 @@
     "description": "editLockedToken",
     "type": "text"
   },
-  "uncollapseLockedCategory": "Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.",
-  "@uncollapseLockedCategory": {
-    "description": "uncollapseLockedCategory",
+  "uncollapseLockedFolder": "Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.",
+  "@uncollapseLockedFolder": {
+    "description": "uncollapseLockedFolder",
     "type": "text"
   },
-  "renameTokenCategory": "Ordner umbenennen",
-  "@renameTokenCategory": {
-    "description": "renameTokenCategory",
+  "renameTokenFolder": "Ordner umbenennen",
+  "@renameTokenFolder": {
+    "description": "renameTokenFolder",
     "type": "text"
   },
-  "addANewCategory": "Neuen Ordner anlegen",
-  "@addANewCategory": {
-    "description": "addANewCategory",
+  "addANewFolder": "Neuen Ordner anlegen",
+  "@addANewFolder": {
+    "description": "addANewFolder",
     "type": "text"
   },
-  "categoryName": "Ordnername",
-  "@categoryName": {
-    "description": "categoryName",
+  "folderName": "Ordnername",
+  "@folderName": {
+    "description": "folderName",
     "type": "text"
   },
   "retryRollout": "Erneut ausrollen",

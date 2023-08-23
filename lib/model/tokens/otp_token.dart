@@ -20,7 +20,7 @@ abstract class OTPToken extends Token {
     int? sortIndex,
     bool isLocked = false,
     bool canToggleLock = true,
-    int? categoryId,
+    int? folderId,
     bool isInEditMode = false,
   }) : super(
           label: label,
@@ -30,7 +30,7 @@ abstract class OTPToken extends Token {
           tokenImage: tokenImage,
           sortIndex: sortIndex,
           isLocked: isLocked,
-          categoryId: categoryId,
+          folderId: folderId,
           isInEditMode: isInEditMode,
         );
 
@@ -46,7 +46,7 @@ abstract class OTPToken extends Token {
     String? tokenImage,
     int? sortIndex,
     bool? isLocked,
-    int? Function()? categoryId,
+    int? Function()? folderId,
     bool? isInEditMode,
   });
 
