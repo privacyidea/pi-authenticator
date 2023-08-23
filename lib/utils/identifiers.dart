@@ -47,6 +47,17 @@ enum DayPasswordTokenViewMode {
   VALIDUNTIL,
 }
 
+enum PushTokenRollOutState {
+  rolloutNotStarted,
+  generateingRSAKeyPair,
+  generateingRSAKeyPairFailed,
+  sendRSAPublicKey,
+  sendRSAPublicKeyFailed,
+  parsingResponse,
+  parsingResponseFailed,
+  rolloutComplete,
+}
+
 // qr codes:
 const String URI_TYPE = 'URI_TYPE';
 const String URI_LABEL = 'URI_LABEL';

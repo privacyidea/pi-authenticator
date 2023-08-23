@@ -1,20 +1,8 @@
 {
-  "@@last_modified": "2022-01-18T12:30:00.793083",
+  "@@last_modified": "2023-08-07",
   "guide": "Průvodce",
   "@guide": {
     "description": "Button to open the guide screen.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "next": "Další",
-  "@next": {
-    "description": "The text of the button to calculate the next otp value.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "about": "O aplikaci",
-  "@about": {
-    "description": "Button to open the about page.",
     "type": "text",
     "placeholders": {}
   },
@@ -99,18 +87,6 @@
   "dismiss": "Zavřít",
   "@dismiss": {
     "description": "Text of a button that closes a dialog.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "showThisScreenOnStart": "Zobrazit po spuštění",
-  "@showThisScreenOnStart": {
-    "description": "Description for checkbox, if the checkbox is ticked, the guide screen is shown on every app start.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "somethingWentWrong": "Něco se pokazilo.",
-  "@somethingWentWrong": {
-    "description": "Tells the user that something went wrong.",
     "type": "text",
     "placeholders": {}
   },
@@ -230,21 +206,9 @@
     "type": "text",
     "placeholders": {}
   },
-  "someTokensDoNotSupportPolling": "Některé tokeny jsou zastaralé a nepodporují polling",
-  "@someTokensDoNotSupportPolling": {
-    "description": "Tells the user, that the following tokens do not support polling.",
-    "type": "text",
-    "placeholders": {}
-  },
   "enablePolling": "Povolit polling",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "miscellaneous": "Různé",
-  "@miscellaneous": {
-    "description": "Title for misc settings.",
     "type": "text",
     "placeholders": {}
   },
@@ -296,26 +260,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorOnlyOneFirebaseProjectIsSupported": "Nastavení firebase pro token {name} se liší od současného nastavení aplikace. Různá nastavení nejsou podporována.",
-  "@errorOnlyOneFirebaseProjectIsSupported": {
-    "description": "Tells the user that the token can not be used because it has a different firebase configuration than the current used configuration of the application.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "errorTokenExpired": "Token {name} expiroval, registrace není možná.",
-  "@errorTokenExpired": {
-    "description": "Tells the user that the token can not be rolled out, because it expired.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
   "errorRollOutFailed": "Registrace tokenu {name} selhala. Kód chyby: {errorCode}",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
@@ -335,12 +279,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorRollOutNoNetworkConnection": "Není dostupné připojení k internetu. Registrace není možná.",
-  "@errorRollOutNoNetworkConnection": {
-    "description": "Tells the user that the roll-out failed because no network connection is available.",
-    "type": "text",
-    "placeholders": {}
-  },
   "errorRollOutUnknownError": "Vyskytla se neznámá chyba. Registrace není možná: {e}",
   "@errorRollOutUnknownError": {
     "description": "Tells the user that the roll-out failed because of an unknown error.",
@@ -351,69 +289,9 @@
       }
     }
   },
-  "acceptPushAuthRequestFor": "Přijat požadavek na autentizaci pro {name}.",
-  "@acceptPushAuthRequestFor": {
-    "description": "Tells the user that a push request for a specific token was accepted.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "decliningPushAuthRequestFor": "Požadavek na autentizaci pro {name} byl zamítnut.",
-  "@decliningPushAuthRequestFor": {
-    "description": "Tells the user that a push request for a specific token was declined.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "errorPushAuthRequestFailedFor": "Příjem požadavku na autentizaci pro {name} selhal. Kód chyby: {errorCode}",
-  "@errorPushAuthRequestFailedFor": {
-    "description": "Tells the user that a push auth request could not be accepted for a token.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      },
-      "errorCode": {
-        "example": "500"
-      }
-    }
-  },
   "rollingOut": "Registrace",
   "@rollingOut": {
     "description": "Label that tells the user that the token is being rolled out.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "retryRollOut": "Registrace selhala, zkuste to znovu.",
-  "@retryRollOut": {
-    "description": "Label for e.g. a button. Tells the user that rolling out the token failed. Roll out can be retried by clicking this button.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "errorAuthenticationNotPossibleWithoutNetworkAccess": "Není dostupné připojení k internetu. Přihlášení není možné.",
-  "@errorAuthenticationNotPossibleWithoutNetworkAccess": {
-    "description": "Error message tell the user that accepting a push request failed.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "errorAuthenticationFailedUnknownError": "Vyskytla se neznámá chyba. Přihlášení selhalo: {e}",
-  "@errorAuthenticationFailedUnknownError": {
-    "description": "Tells the user that the authentication could not be accepted because of an unknown error.",
-    "type": "text",
-    "placeholders": {
-      "e": {
-        "example": "IllegalArgumentException on line 5, ..."
-      }
-    }
-  },
-  "firebaseConfigCorrupted": "Konfigurace firebase je poškozená a nemůže být použita.",
-  "@firebaseConfigCorrupted": {
     "type": "text",
     "placeholders": {}
   },
@@ -422,60 +300,11 @@
     "type": "text",
     "placeholders": {}
   },
-  "migrateTokens": "Migrace tokenů z předchozí verze aplikace.",
-  "@migrateTokens": {
-    "description": "Description of migration.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migrate": "Migrovat",
-  "@migrate": {
-    "description": "Text of button to start migration.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migration": "Migrace",
-  "@migration": {
-    "description": "Title of settings group for migrating tokens.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migrationSuccess": "Všechny tokeny byly úspěšně zmigrovány.",
-  "@migrationSuccess": {
-    "description": "Tells the user that all tokens are migrated successfully.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "noTokensForMigration": "Nebyly nalezeny žádné tokeny k migraci.",
-  "@noTokensForMigration": {
-    "description": "Tells the user that no tokens exist that could be migrated.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migratingToken": "Migrování tokenu",
-  "@migratingToken": {
-    "description": "Title of migration dialog.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "unexpectedError": "Neznámá chyba",
+  "unexpectedError": "Nastala neočekávaná chyba.",
   "@unexpectedError": {
     "description": "Title of page report mode.",
     "type": "text",
     "placeholders": {}
-  },
-  "pageReportModeBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu. Zvolte {accept} pro odeslání informací nebo {cancel} pro zrušení odeslání.",
-  "@pageReportModeBody": {
-    "description": "Description shown to the user about what info the error report contains.",
-    "type": "text",
-    "placeholders": {
-      "accept": {
-        "example": "accept"
-      },
-      "cancel": {
-        "example": "cancel"
-      }
-    }
   },
   "pollingFailNoNetworkConnection": "Stahování selhalo. Server není dostupný.",
   "@pollingFailNoNetworkConnection": {
@@ -498,18 +327,6 @@
   "language": "Jazyk",
   "@language": {
     "description": "Title of language setting group.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "handlingOtpAuthLinkFailed": "Zpracování odkazu se nezdařilo kvůli chybě v komunikaci s operačním systémem.",
-  "@handlingOtpAuthLinkFailed": {
-    "description": "Message that tells the user that handling a link failed. This link was provided through the 'open link with app' on android or iOS.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "authenticateToAcceptPush": "Pro použití tohoto push tokenu se prosím ověřte.",
-  "@authenticateToAcceptPush": {
-    "description": "Reason to authenticate when clicking the 'accept' button of a push token.",
     "type": "text",
     "placeholders": {}
   },
@@ -646,11 +463,6 @@
     "description": "onBoardingTitle3",
     "type": "text"
   },
-  "unlockToCopy": "K odemknutí tokenu použijte biometrii",
-  "@unlockToCopy": {
-    "description": "unlockToCopy",
-    "type": "text"
-  },
   "errorLogTitle": "Protokoly o chybách",
   "@errorLogTitle": {
     "description": "errorLogTitle",
@@ -674,11 +486,6 @@
   "logMenu": "Nabídka protokolu",
   "@logMenu": {
     "description": "logMenu",
-    "type": "text"
-  },
-  "send": "Odeslat",
-  "@send": {
-    "description": "send",
     "type": "text"
   },
   "sendErrorDialogHeader": "Odeslat e-mailem",
@@ -706,11 +513,6 @@
     "description": "errorLogCleared",
     "type": "text"
   },
-  "errorOccurred": "Došlo k chybě.",
-  "@errorOccurred": {
-    "description": "errorOccurred",
-    "type": "text"
-  },
   "showDetails": "Zobrazit podrobnosti",
   "@showDetails": {
     "description": "showDetails",
@@ -734,11 +536,6 @@
   "firebaseToken": "Token Firebase",
   "@firebaseToken": {
     "description": "firebaseToken",
-    "type": "text"
-  },
-  "serial": "Sériové číslo",
-  "@serial": {
-    "description": "serial",
     "type": "text"
   },
   "noPublicKey": "Není k dispozici žádný veřejný klíč.",
@@ -784,6 +581,66 @@
   "editLockedToken": "Prosím, autentifikujte se pro úpravu uzamčeného tokenu.",
   "@editLockedToken": {
     "description": "editLockedToken",
+    "type": "text"
+  },
+  "uncollapseLockedFolder": "Chcete-li otevřít uzamčenou složku, ověřte se.",
+  "@uncollapseLockedFolder": {
+    "description": "uncollapseLockedFolder",
+    "type": "text"
+  },
+  "renameTokenFolder": "Přejmenování složky",
+  "@renameTokenFolder": {
+    "description": "renameTokenFolder",
+    "type": "text"
+  },
+  "addANewFolder": "Vytvoření nové složky",
+  "@addANewFolder": {
+    "description": "addANewFolder",
+    "type": "text"
+  },
+  "folderName": "Název složky",
+  "@folderName": {
+    "description": "folderName",
+    "type": "text"
+  },
+  "retryRollout": "Zkusit znovu",
+  "@retryRollout": {
+    "description": "retryRollout",
+    "type": "text"
+  },
+  "generatingRSAKeyPair": "Generování párů klíčů RSA",
+  "@generatingRSAKeyPair": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "generatingRSAKeyPairFailed": "Generování páru klíčů RSA se nezdařilo",
+  "@generatingRSAKeyPairFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingPublicRSAKey": "Odeslání veřejného klíče RSA",
+  "@sendingRSAPublicKey": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingPublicRSAKeyFailed": "Nepodařilo se odeslat veřejný klíč RSA",
+  "@sendingRSAPublicKeyFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponse": "Rozbor odpovědi",
+  "@parsingResponse": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponseFailed": "Parsování odpovědi se nezdařilo",
+  "@parsingResponseFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "rolloutCompleted": "Zavedení dokončeno",
+  "@rolloutCompleted": {
+    "description": "Message for the rollout process",
     "type": "text"
   }
 }

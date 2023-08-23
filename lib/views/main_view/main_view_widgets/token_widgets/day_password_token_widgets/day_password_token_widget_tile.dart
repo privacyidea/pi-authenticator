@@ -54,7 +54,13 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
     globalRef?.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue))),
+      SnackBar(
+        content: Text(
+          AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue),
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
+      ),
     );
     Future.delayed(const Duration(seconds: 5), () {
       globalRef?.read(disableCopyOtpProvider.notifier).state = false;
@@ -65,10 +71,10 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
   Widget build(BuildContext context) {
     final currentLocale = ref.watch(settingsProvider).currentLocale;
     final dateTimeTokenEnd = widget.token.nextOTPTimeStart;
-
-    var yMd = DateFormat.yMMMd(currentLocale.languageCode).add_E().add_jm();
-    var dateString = yMd.format(dateTimeTokenEnd);
-
+    final yMdFormat = DateFormat.yMMMd(currentLocale.languageCode);
+    final yMdString = yMdFormat.format(dateTimeTokenEnd);
+    final ejmFormat = DateFormat.E(currentLocale.languageCode).add_jm();
+    final ejmString = ejmFormat.format(dateTimeTokenEnd);
     final duration = Duration(seconds: secondsLeft.ceil());
     final durationString = duration.toString().split('.').first;
     return TokenWidgetTile(
@@ -123,6 +129,8 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                       '${AppLocalizations.of(context)!.validFor}:',
                       style: Theme.of(context).listTileTheme.subtitleTextStyle,
                       textAlign: TextAlign.center,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
                     ),
                     Expanded(
                       child: Center(
@@ -130,6 +138,8 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                           durationString,
                           style: Theme.of(context).textTheme.bodyLarge,
                           textAlign: TextAlign.center,
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
                         ),
                       ),
                     )
@@ -142,13 +152,28 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                       '${AppLocalizations.of(context)!.validUntil}:',
                       style: Theme.of(context).listTileTheme.subtitleTextStyle,
                       textAlign: TextAlign.center,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
                     ),
                     Expanded(
                       child: Center(
                         child: Text(
-                          dateString,
+                          yMdString,
                           style: Theme.of(context).textTheme.bodyLarge,
                           textAlign: TextAlign.center,
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          ejmString,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
                         ),
                       ),
                     ),

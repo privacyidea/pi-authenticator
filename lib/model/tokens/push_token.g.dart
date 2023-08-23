@@ -13,10 +13,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       id: json['id'] as String,
       type: json['type'] as String?,
       tokenImage: json['tokenImage'] as String?,
-      pushRequests: json['pushRequests'] == null
-          ? null
-          : PushRequestQueue.fromJson(
-              json['pushRequests'] as Map<String, dynamic>),
+      pushRequests: json['pushRequests'] == null ? null : PushRequestQueue.fromJson(json['pushRequests'] as Map<String, dynamic>),
       isLocked: json['isLocked'] as bool? ?? false,
       pin: json['pin'] as bool? ?? false,
       sslVerify: json['sslVerify'] as bool?,
@@ -28,11 +25,9 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       privateTokenKey: json['privateTokenKey'] as String?,
       expirationDate: DateTime.parse(json['expirationDate'] as String),
       isRolledOut: json['isRolledOut'] as bool? ?? false,
-      knownPushRequests: json['knownPushRequests'] == null
-          ? null
-          : CustomIntBuffer.fromJson(
-              json['knownPushRequests'] as Map<String, dynamic>),
-      categoryId: json['categoryId'] as int?,
+      rolloutState: $enumDecodeNullable(_$PushTokenRollOutStateEnumMap, json['rolloutState']) ?? PushTokenRollOutState.rolloutNotStarted,
+      knownPushRequests: json['knownPushRequests'] == null ? null : CustomIntBuffer.fromJson(json['knownPushRequests'] as Map<String, dynamic>),
+      folderId: json['folderId'] as int?,
       isInEditMode: json['isInEditMode'] as bool? ?? false,
     );
 
@@ -43,7 +38,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'isLocked': instance.isLocked,
       'pin': instance.pin,
       'tokenImage': instance.tokenImage,
-      'categoryId': instance.categoryId,
+      'folderId': instance.folderId,
       'isInEditMode': instance.isInEditMode,
       'sortIndex': instance.sortIndex,
       'type': instance.type,
@@ -53,9 +48,21 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
       'isRolledOut': instance.isRolledOut,
+      'rolloutState': _$PushTokenRollOutStateEnumMap[instance.rolloutState]!,
       'publicServerKey': instance.publicServerKey,
       'privateTokenKey': instance.privateTokenKey,
       'publicTokenKey': instance.publicTokenKey,
       'pushRequests': instance.pushRequests,
       'knownPushRequests': instance.knownPushRequests,
     };
+
+const _$PushTokenRollOutStateEnumMap = {
+  PushTokenRollOutState.rolloutNotStarted: 'rolloutNotStarted',
+  PushTokenRollOutState.generateingRSAKeyPair: 'generateingRSAKeyPair',
+  PushTokenRollOutState.generateingRSAKeyPairFailed: 'generateingRSAKeyPairFailed',
+  PushTokenRollOutState.sendRSAPublicKey: 'sendRSAPublicKey',
+  PushTokenRollOutState.sendRSAPublicKeyFailed: 'sendRSAPublicKeyFailed',
+  PushTokenRollOutState.parsingResponse: 'parsingResponse',
+  PushTokenRollOutState.parsingResponseFailed: 'parsingResponseFailed',
+  PushTokenRollOutState.rolloutComplete: 'rolloutComplete',
+};

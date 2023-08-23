@@ -24,6 +24,7 @@ import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 /// Dummy network request can be used to trigger the network access permission
 /// on iOS devices. Doing this at an appropriate place in the code can prevent
@@ -47,7 +48,7 @@ Future<void> dummyRequest({required Uri url, bool sslVerify = true}) async {
 }
 
 /// Custom POST request allows to not verify certificates.
-Future<Response> postRequest({required Uri url, required Map<String, String?> body, bool sslVerify = true}) async {
+Future<Response> doPost({required Uri url, required Map<String, String?> body, bool sslVerify = true}) async {
   Logger.info('Sending post request', name: 'utils.dart#doPost', error: 'URI: $url, SSLVerify: $sslVerify, Body: $body');
 
   List<MapEntry> entries = body.entries.where((element) => element.value == null).toList();
@@ -76,26 +77,30 @@ Future<Response> postRequest({required Uri url, required Map<String, String?> bo
   }
 
   if (response.statusCode != 200) {
-    Logger.warning('Received response', name: 'utils.dart#doGet', error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
+    Logger.warning(
+      'Received unexpected response',
+      name: 'utils.dart#doPost',
+      error: 'Status code: ${response.statusCode}' '\nPosted body: $body' '\nResponse: ${response.body}\n',
+    );
   }
   ioClient.close();
 
   return response;
 }
 
-Future<Response> getRequest({required Uri url, required Map<String, String?> parameters, bool? sslVerify = true}) async {
+Future<Response> doGet({required Uri url, required Map<String, String?> parameters, bool sslVerify = true}) async {
   List<MapEntry> entries = parameters.entries.where((element) => element.value == null).toList();
   if (entries.isNotEmpty) {
     List<String> nullEntries = [];
     for (MapEntry entry in entries) {
       nullEntries.add(entry.key);
     }
-    throw ArgumentError("Can not send request because the argument [parameters] contains a "
+    throw ArgumentError("Can not send request because the argument [parameters] contains "
         "null values at entries $nullEntries, this is not permitted.");
   }
 
   HttpClient httpClient = HttpClient();
-  httpClient.badCertificateCallback = ((X509Certificate cert, String host, int port) => !sslVerify!);
+  httpClient.badCertificateCallback = ((X509Certificate cert, String host, int port) => !sslVerify);
   httpClient.userAgent = 'privacyIDEA-App /'
       ' ${Platform.operatingSystem}'
       ' ${(await PackageInfo.fromPlatform()).version}';
@@ -110,14 +115,23 @@ Future<Response> getRequest({required Uri url, required Map<String, String?> par
   }
 
   Response response;
+  Uri uri = Uri.parse(buffer.toString());
   try {
-    Uri uri = Uri.parse(buffer.toString());
     response = await ioClient.get(uri);
   } on SocketException catch (e, s) {
     response = Response('${e.runtimeType} : $s', 404);
+  } on HandshakeException catch (e, s) {
+    Logger.warning('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doGet', error: '$e\n$s');
+    showMessage(message: 'Handshake failed, please check the server certificate and try again.');
+    rethrow;
   }
+
   if (response.statusCode != 200) {
-    Logger.warning('Received response', name: 'utils.dart#doGet', error: 'Status code: ${response.statusCode}\n Body: ${response.body}');
+    Logger.warning(
+      'Received unexpected response',
+      name: 'utils.dart#doGet',
+      error: 'Status code: ${response.statusCode}' '\nuri: $uri' '\nResponse: ${response.body}',
+    );
   }
 
   ioClient.close();

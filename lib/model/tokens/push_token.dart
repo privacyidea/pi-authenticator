@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
@@ -23,6 +25,7 @@ class PushToken extends Token {
   final String? enrollmentCredentials;
   final Uri? url; // Full access to allow adding to legacy android tokens
   final bool isRolledOut;
+  final PushTokenRollOutState rolloutState;
 
   // RSA keys - String values for backward compatibility with serialization
   final String? publicServerKey;
@@ -53,8 +56,6 @@ class PushToken extends Token {
   late final PushRequestQueue pushRequests;
   final CustomIntBuffer knownPushRequests;
 
-  // The get and set methods are needed for serialization.
-
   bool knowsRequestWithId(int id) {
     bool exists = pushRequests.any((element) => element.id == id);
 
@@ -62,43 +63,31 @@ class PushToken extends Token {
   }
 
   PushToken({
-    required String label,
     required this.serial,
-    required String issuer,
-    required String id,
-    String? type,
-    String? tokenImage,
-    PushRequestQueue? pushRequests,
-    bool isLocked = false,
-    super.pin = false,
-    // 2. step
+    required this.expirationDate,
+    required super.label,
+    required super.issuer,
+    required super.id,
     this.sslVerify,
     this.enrollmentCredentials,
     this.url,
-    super.sortIndex,
     this.publicServerKey,
     this.publicTokenKey,
     this.privateTokenKey,
-    required this.expirationDate,
     this.isRolledOut = false,
+    this.rolloutState = PushTokenRollOutState.rolloutNotStarted,
+    PushRequestQueue? pushRequests,
     CustomIntBuffer? knownPushRequests,
-    int? categoryId,
-    bool isInEditMode = false,
+    String? type,
+    super.sortIndex,
+    super.tokenImage,
+    super.folderId,
+    super.isInEditMode,
+    super.isLocked,
+    super.pin = false,
   })  : knownPushRequests = knownPushRequests ?? CustomIntBuffer(),
-        super(
-          label: label,
-          issuer: issuer,
-          id: id,
-          isLocked: isLocked,
-          tokenImage: tokenImage,
-          type: type ?? enumAsString(TokenTypes.PIPUSH),
-          categoryId: categoryId,
-          isInEditMode: isInEditMode,
-        ) {
-    final now = DateTime.now();
-    pushRequests?.removeWhere((request) => request.expirationDate.isBefore(now));
-    this.pushRequests = pushRequests ?? PushRequestQueue();
-  }
+        pushRequests = pushRequests ?? PushRequestQueue(),
+        super(type: type ?? enumAsString(TokenTypes.PIPUSH));
 
   @override
   PushToken copyWith({
@@ -112,7 +101,6 @@ class PushToken extends Token {
     bool? canToggleLock,
     bool? relock,
     bool? pin,
-    // 2. step
     bool? sslVerify,
     String? enrollmentCredentials,
     Uri? url,
@@ -122,8 +110,9 @@ class PushToken extends Token {
     String? privateTokenKey,
     DateTime? expirationDate,
     bool? isRolledOut,
+    PushTokenRollOutState? rolloutState,
     CustomIntBuffer? knownPushRequests,
-    int? Function()? categoryId,
+    int? Function()? folderId,
     bool? isInEditMode,
   }) {
     return PushToken(
@@ -144,8 +133,9 @@ class PushToken extends Token {
       privateTokenKey: privateTokenKey ?? this.privateTokenKey,
       expirationDate: expirationDate ?? this.expirationDate,
       isRolledOut: isRolledOut ?? this.isRolledOut,
+      rolloutState: rolloutState ?? this.rolloutState,
       knownPushRequests: knownPushRequests ?? this.knownPushRequests,
-      categoryId: categoryId != null ? categoryId() : this.categoryId,
+      folderId: folderId != null ? folderId() : this.folderId,
       isInEditMode: isInEditMode ?? this.isInEditMode,
     );
   }
@@ -163,6 +153,7 @@ class PushToken extends Token {
         'serial: $serial, sslVerify: $sslVerify, '
         'enrollmentCredentials: $enrollmentCredentials, '
         'url: $url, isRolledOut: $isRolledOut, '
+        'rolloutState: $rolloutState, '
         'sortIndex: $sortIndex, '
         'pin: $pin, '
         'publicServerKey: $publicServerKey, '
@@ -173,20 +164,34 @@ class PushToken extends Token {
         'knownPushRequests: $knownPushRequests}';
   }
 
-  factory PushToken.fromUriMap(Map<String, dynamic> uriMap) => PushToken(
-        serial: uriMap[URI_SERIAL],
-        label: uriMap[URI_LABEL],
-        issuer: uriMap[URI_ISSUER],
-        id: const Uuid().v4(),
-        sslVerify: uriMap[URI_SSL_VERIFY],
-        expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL])),
-        enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-        url: uriMap[URI_ROLLOUT_URL],
-        pin: uriMap[URI_PIN],
-        tokenImage: uriMap[URI_IMAGE],
-      );
+  factory PushToken.fromUriMap(Map<String, dynamic> uriMap) {
+    log(uriMap.toString());
+    return PushToken(
+      serial: uriMap[URI_SERIAL] ?? '',
+      label: uriMap[URI_LABEL] ?? '',
+      issuer: uriMap[URI_ISSUER] ?? '',
+      id: const Uuid().v4(),
+      sslVerify: uriMap[URI_SSL_VERIFY],
+      expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL] ?? 10)),
+      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
+      url: uriMap[URI_ROLLOUT_URL] != null ? Uri.parse(uriMap[URI_ROLLOUT_URL]) : null,
+      pin: uriMap[URI_PIN],
+      tokenImage: uriMap[URI_IMAGE],
+    );
+  }
 
-  factory PushToken.fromJson(Map<String, dynamic> json) => _$PushTokenFromJson(json);
+  factory PushToken.fromJson(Map<String, dynamic> json) {
+    final newToken = _$PushTokenFromJson(json);
+    newToken.pushRequests.removeWhere((request) => request.expirationDate.isBefore(DateTime.now()));
+    final currentRolloutState = switch (newToken.rolloutState) {
+      PushTokenRollOutState.rolloutNotStarted => PushTokenRollOutState.rolloutNotStarted,
+      PushTokenRollOutState.generateingRSAKeyPair || PushTokenRollOutState.generateingRSAKeyPairFailed => PushTokenRollOutState.generateingRSAKeyPairFailed,
+      PushTokenRollOutState.sendRSAPublicKey || PushTokenRollOutState.sendRSAPublicKeyFailed => PushTokenRollOutState.sendRSAPublicKeyFailed,
+      PushTokenRollOutState.parsingResponse || PushTokenRollOutState.parsingResponseFailed => PushTokenRollOutState.parsingResponseFailed,
+      PushTokenRollOutState.rolloutComplete => PushTokenRollOutState.rolloutComplete,
+    };
+    return newToken.copyWith(rolloutState: currentRolloutState);
+  }
 
   Map<String, dynamic> toJson() => _$PushTokenToJson(this);
 }

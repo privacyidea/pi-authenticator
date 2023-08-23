@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class PressButton extends StatefulWidget {
   final void Function() onPressed;
   final Widget child;
+  final int delayInMilliseconds;
+  final ButtonStyle? style;
 
-  const PressButton({super.key, required this.onPressed, required this.child});
+  const PressButton({super.key, required this.onPressed, required this.child, this.delayInMilliseconds = 1000, this.style});
 
   @override
   State<StatefulWidget> createState() => _PressButtonState();
@@ -19,7 +21,7 @@ class _PressButtonState extends State<PressButton> {
         isPressable = false;
       });
       widget.onPressed();
-      Future.delayed(const Duration(milliseconds: 1000), () {
+      Future.delayed(Duration(milliseconds: widget.delayInMilliseconds), () {
         if (mounted) {
           setState(() {
             isPressable = true;
@@ -31,6 +33,10 @@ class _PressButtonState extends State<PressButton> {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(onPressed: isPressable ? press : null, child: widget.child);
+    return ElevatedButton(
+      onPressed: isPressable ? press : null,
+      style: widget.style,
+      child: widget.child,
+    );
   }
 }

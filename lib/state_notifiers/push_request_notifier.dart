@@ -22,6 +22,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
@@ -33,32 +34,15 @@ import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
+import '../utils/customizations.dart';
+
 class PushRequestNotifier extends StateNotifier<PushRequest?> {
   // Used for periodically polling for push challenges
-  bool pollingEnabled;
   static Timer? _pollTimer;
+  final bool pollingEnabled;
 
   PushRequestNotifier(super.state, {required this.pollingEnabled}) {
     _initStateAsync();
-  }
-
-  void _startPollingIfEnabled() {
-    // Start polling if enabled and not already polling
-    if (pollingEnabled && _pollTimer == null) {
-      Logger.info('Polling is enabled.', name: 'main_screen.dart#_startPollingIfEnabled');
-      _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) => PushProvider.pollForChallenges());
-      PushProvider.pollForChallenges();
-      return;
-    }
-    // Stop polling if disabled and currently polling
-    if (!pollingEnabled && _pollTimer != null) {
-      Logger.info('Polling is disabled.', name: 'main_screen.dart#_startPollingIfEnabled');
-      _pollTimer?.cancel();
-      _pollTimer = null;
-      return;
-    }
-    // Do nothing if polling is enabled and already polling or disabled and not polling
-    return;
   }
 
   // INITIALIZATIONS
@@ -69,39 +53,48 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
       handleIncomingMessage: (RemoteMessage message) => _handleIncomingAuthRequest(message),
       backgroundMessageHandler: _firebaseMessagingBackgroundHandler,
     );
+
     if (pollingEnabled) {
       PushProvider.pollForChallenges();
-      _startPollingIfEnabled();
     }
+    _startOrStopPolling();
   }
 
   // FOREGROUND HANDLING
-  Future<void> _handleIncomingAuthRequest(RemoteMessage message) async {
-    Logger.info('Foreground message received.', name: 'main_screen.dart#_handleIncomingAuthRequest', error: message);
-    await StorageUtil.protect(() async => _handleIncomingRequest(message));
+  Future<void> _handleIncomingAuthRequest(RemoteMessage remoteMessage) async {
+    Logger.info('Foreground message received.', name: 'main_screen.dart#_handleIncomingAuthRequest', error: remoteMessage.data);
+    await StorageUtil.protect(() async {
+      try {
+        return _handleIncomingRequest(remoteMessage);
+      } catch (e, s) {
+        final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
+        Logger.error(errorMessage, name: 'main_screen.dart#_handleIncomingAuthRequest', error: remoteMessage.data, stackTrace: s);
+      }
+    });
   }
 
   // BACKGROUND HANDLING
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    Logger.info('Background message received.', name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: message);
-    await StorageUtil.protect(() async => _handleIncomingRequest(message, inBackground: true));
+  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage remoteMessage) async {
+    Logger.info('Background message received.', name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data);
+    await StorageUtil.protect(() async {
+      try {
+        return _handleIncomingRequest(remoteMessage, inBackground: true);
+      } catch (e, s) {
+        final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
+        Logger.error(errorMessage, name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data, stackTrace: s);
+      }
+    });
   }
 
   // HANDLING
   /// Handles incoming push requests by verifying the challenge and adding it
   /// to the token. This should be guarded by a lock.
   static Future<void> _handleIncomingRequest(RemoteMessage message, {bool inBackground = false}) async {
-    Logger.warning('inBackground: $inBackground', name: 'main_screen.dart#_handleIncomingRequest');
-    // Android and iOS use different keys for the tag.
-    var tag = message.notification?.android;
-    Logger.warning('tag: ${tag?.toMap().toString()}', name: 'main_screen.dart#_handleIncomingRequest');
-    // tag ??= message.notification?.apple?.badge; //FIXME: Is this the tag for iOS?
-
     var data = message.data;
     Logger.info('Incoming push challenge.', name: 'main_screen.dart#_handleIncomingChallenge', error: data);
     Uri requestUri = Uri.parse(data['url']);
 
-    Logger.warning('message: $data', name: 'main_screen.dart#_handleIncomingRequest');
+    Logger.info('message: $data', name: 'main_screen.dart#_handleIncomingRequest');
 
     bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
     PushRequest pushRequest = PushRequest(
@@ -125,7 +118,6 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
       return;
     }
     globalRef?.read(pushRequestProvider.notifier).state = pushRequest;
-    // Logger.info('Incoming push challenge for token with serial.', name: 'main_screen.dart#_handleIncomingChallenge', error: requestedSerial);
   }
 
   static void _addPushRequestToTokenInSecureStoreage(PushRequest pushRequest) async {
@@ -140,6 +132,25 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
     prList.add(pushRequest);
     token = token.copyWith(pushRequests: prList);
     await StorageUtil.saveOrReplaceToken(token);
+  }
+
+  void _startOrStopPolling() {
+    // Start polling if enabled and not already polling
+    if (pollingEnabled && _pollTimer == null) {
+      Logger.info('Polling is enabled.', name: 'main_screen.dart#_startPollingIfEnabled');
+      _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) => PushProvider.pollForChallenges());
+      PushProvider.pollForChallenges();
+      return;
+    }
+    // Stop polling if it's disabled and currently polling
+    if (!pollingEnabled && _pollTimer != null) {
+      Logger.info('Polling is disabled.', name: 'main_screen.dart#_startPollingIfEnabled');
+      _pollTimer?.cancel();
+      _pollTimer = null;
+      return;
+    }
+    // Do nothing if polling is enabled and already polling or disabled and not polling
+    return;
   }
 
   // ACTIONS
@@ -198,7 +209,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
       body["decline"] = "1";
     }
 
-    Response response = await postRequest(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
+    Response response = await doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
     if (response.statusCode != 200) {
       Logger.warning(
         'Sending push request response failed.',

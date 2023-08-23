@@ -31,7 +31,7 @@ class DayPasswordToken extends OTPToken {
     super.tokenImage,
     super.sortIndex,
     super.isLocked,
-    super.categoryId,
+    super.folderId,
     super.isInEditMode,
   }) : super(type: type ?? enumAsString(TokenTypes.DAYPASSWORD));
 
@@ -49,7 +49,7 @@ class DayPasswordToken extends OTPToken {
     String? tokenImage,
     int? sortIndex,
     bool? isLocked,
-    int? Function()? categoryId,
+    int? Function()? folderId,
     bool? isInEditMode,
   }) =>
       DayPasswordToken(
@@ -66,17 +66,14 @@ class DayPasswordToken extends OTPToken {
         tokenImage: tokenImage ?? this.tokenImage,
         sortIndex: sortIndex ?? this.sortIndex,
         isLocked: isLocked ?? this.isLocked,
-        categoryId: categoryId != null ? categoryId.call() : this.categoryId,
+        folderId: folderId != null ? folderId.call() : this.folderId,
         isInEditMode: isInEditMode ?? this.isInEditMode,
       );
-
-  // Server software has an offset of 30 seconds (remove this when server is in sync)
-  static const Duration serverOffset = Duration(seconds: 30);
 
   @override
   String get otpValue => OTPLibrary.OTP.generateTOTPCodeString(
         secret,
-        DateTime.now().millisecondsSinceEpoch + serverOffset.inMilliseconds,
+        DateTime.now().millisecondsSinceEpoch,
         length: digits,
         algorithm: mapAlgorithms(algorithm),
         interval: period.inSeconds,
@@ -84,7 +81,7 @@ class DayPasswordToken extends OTPToken {
       );
 
   Duration get durationSinceLastOTP {
-    final msPassedThisPeriod = (DateTime.now().millisecondsSinceEpoch + serverOffset.inMilliseconds) % period.inMilliseconds;
+    final msPassedThisPeriod = (DateTime.now().millisecondsSinceEpoch) % period.inMilliseconds;
     return Duration(milliseconds: msPassedThisPeriod);
   }
 
@@ -92,7 +89,7 @@ class DayPasswordToken extends OTPToken {
   DateTime get thisOTPTimeStart => DateTime.now().subtract(durationSinceLastOTP);
   DateTime get nextOTPTimeStart {
     // Sometimes there is an rounding error. For example it showes sometomes 23:59:59 instead of 00:00:00 so we add 1ms to be sure
-    return DateTime.now().add(durationUntilNextOTP + const Duration(milliseconds: 1) + serverOffset);
+    return DateTime.now().add(durationUntilNextOTP + const Duration(milliseconds: 1));
   }
 
   factory DayPasswordToken.fromUriMap(Map<String, dynamic> uriMap) {

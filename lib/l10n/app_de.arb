@@ -1,20 +1,8 @@
 {
-  "@@last_modified": "2021-02-25T12:30:00.793083",
+  "@@last_modified": "2023-08-07",
   "guide": "Anleitung",
   "@guide": {
     "description": "Button to open the guide screen.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "next": "Weiter",
-  "@next": {
-    "description": "The text of the button to calculate the next otp value.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "about": "Über",
-  "@about": {
-    "description": "Button to open the about page.",
     "type": "text",
     "placeholders": {}
   },
@@ -99,18 +87,6 @@
   "dismiss": "Schließen",
   "@dismiss": {
     "description": "Text of a button that closes a dialog.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "showThisScreenOnStart": "Bei App-Start anzeigen",
-  "@showThisScreenOnStart": {
-    "description": "Description for checkbox, if the checkbox is ticked, the guide screen is shown on every app start.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "somethingWentWrong": "Etwas ist schiefgelaufen",
-  "@somethingWentWrong": {
-    "description": "Tells the user that something went wrong.",
     "type": "text",
     "placeholders": {}
   },
@@ -230,21 +206,9 @@
     "type": "text",
     "placeholders": {}
   },
-  "someTokensDoNotSupportPolling": "Einige der Token sind veraltet und unterstützen keine aktiven Anfragen",
-  "@someTokensDoNotSupportPolling": {
-    "description": "Tells the user, that the following tokens do not support polling.",
-    "type": "text",
-    "placeholders": {}
-  },
   "enablePolling": "Aktives Stellen von Push-Anfragen",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "miscellaneous": "Verschiedenes",
-  "@miscellaneous": {
-    "description": "Title for misc settings.",
     "type": "text",
     "placeholders": {}
   },
@@ -296,26 +260,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorOnlyOneFirebaseProjectIsSupported": "Die Firebase-Konfiguration des Tokens {name} unterscheidet sich von der zur Zeit von der App verwendeten. Zwei verschiedene Konfigurationen werden nicht unterstützt.",
-  "@errorOnlyOneFirebaseProjectIsSupported": {
-    "description": "Tells the user that the token can not be used because it has a different firebase configuration than the current used configuration of the application.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "errorTokenExpired": "Der Token {name} ist nicht mehr gültig, ausrollen ist daher nicht möglich.",
-  "@errorTokenExpired": {
-    "description": "Tells the user that the token can not be rolled out, because it expired.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
   "errorRollOutFailed": "Ausrollen von {name} ist fehlgeschlagen. Fehlercode: {errorCode}",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
@@ -335,12 +279,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorRollOutNoNetworkConnection": "Fehlende Netzwerkverbindung. Ausrollen nicht möglich.",
-  "@errorRollOutNoNetworkConnection": {
-    "description": "Tells the user that the roll-out failed because no network connection is available.",
-    "type": "text",
-    "placeholders": {}
-  },
   "errorRollOutUnknownError": "Ein unbekannter Fehler ist aufgetreten. Aurollen nicht möglich: {e}",
   "@errorRollOutUnknownError": {
     "description": "Tells the user that the roll-out failed because of an unknown error.",
@@ -351,69 +289,9 @@
       }
     }
   },
-  "acceptPushAuthRequestFor": "Akzeptiere Authentifizierungsanfrage für {name}.",
-  "@acceptPushAuthRequestFor": {
-    "description": "Tells the user that a push request for a specific token was accepted.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "decliningPushAuthRequestFor": "Lehne Authentifizierungsanfrage für {name} ab.",
-  "@decliningPushAuthRequestFor": {
-    "description": "Tells the user that a push request for a specific token was declined.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "errorPushAuthRequestFailedFor": "Akzeptieren der Authentifizierungsanfrage für {name} fehlgeschlagen. Fehlercode: {errorCode}",
-  "@errorPushAuthRequestFailedFor": {
-    "description": "Tells the user that a push auth request could not be accepted for a token.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      },
-      "errorCode": {
-        "example": "500"
-      }
-    }
-  },
   "rollingOut": "Ausrollen",
   "@rollingOut": {
     "description": "Label that tells the user that the token is being rolled out.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "retryRollOut": "Erneut ausrollen.",
-  "@retryRollOut": {
-    "description": "Label for e.g. a button. Tells the user that rolling out the token failed. Roll out can be retried by clicking this button.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "errorAuthenticationNotPossibleWithoutNetworkAccess": "Fehlende Netzwerkverbindung. Authentifizierung nicht möglich.",
-  "@errorAuthenticationNotPossibleWithoutNetworkAccess": {
-    "description": "Error message tell the user that accepting a push request failed.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "errorAuthenticationFailedUnknownError": "Ein unbekannter Fehler ist aufgetreten. Authentifizierung fehlgeschlagen: {e}",
-  "@errorAuthenticationFailedUnknownError": {
-    "description": "Tells the user that the authentication could not be accepted because of an unknown error.",
-    "type": "text",
-    "placeholders": {
-      "e": {
-        "example": "IllegalArgumentException on line 5, ..."
-      }
-    }
-  },
-  "firebaseConfigCorrupted": "Die Firebase-Konfiguration ist beschädigt und kann nicht genutzt werden.",
-  "@firebaseConfigCorrupted": {
     "type": "text",
     "placeholders": {}
   },
@@ -422,60 +300,11 @@
     "type": "text",
     "placeholders": {}
   },
-  "migrateTokens": "Migriere Token aus der vorherigen App Version.",
-  "@migrateTokens": {
-    "description": "Description of migration.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migrate": "Migriere",
-  "@migrate": {
-    "description": "Text of button to start migration.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migration": "Migration",
-  "@migration": {
-    "description": "Title of settings group for migrating tokens.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migrationSuccess": "Alle Token wurden erfolgreich migriert.",
-  "@migrationSuccess": {
-    "description": "Tells the user that all tokens are migrated successfully.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "noTokensForMigration": "Es existieren keine Token, die migriert werden könnten.",
-  "@noTokensForMigration": {
-    "description": "Tells the user that no tokens exist that could be migrated.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migratingToken": "Migriere Token",
-  "@migratingToken": {
-    "description": "Title of migration dialog.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "unexpectedError": "Unbekannter Fehler",
+  "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten.",
   "@unexpectedError": {
     "description": "Title of page report mode.",
     "type": "text",
     "placeholders": {}
-  },
-  "pageReportModeBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden. Drücken Sie {accept} um die Informationen zu senden oder {cancel} um nichts zu senden.",
-  "@pageReportModeBody": {
-    "description": "Description shown to the user about what info the error report contains.",
-    "type": "text",
-    "placeholders": {
-      "accept": {
-        "example": "accept"
-      },
-      "cancel": {
-        "example": "cancel"
-      }
-    }
   },
   "pollingFailNoNetworkConnection": "Abfrage fehlgeschlagen, der Server ist nicht erreichbar.",
   "@pollingFailNoNetworkConnection": {
@@ -498,18 +327,6 @@
   "language": "Sprache",
   "@language": {
     "description": "Title of language setting group.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "handlingOtpAuthLinkFailed": "Der übergebene Link konnte nicht verarbeitet werden. Grund dafür ist eine fehlerhafte Kommunikation mit der unterliegenden Platform.",
-  "@handlingOtpAuthLinkFailed": {
-    "description": "Message that tells the user that handling a link failed. This link was provided through the 'open link with app' on android or iOS.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "authenticateToAcceptPush": "Bitte authentifizieren Sie sich, um diesen Push-Token zu verwenden!.",
-  "@authenticateToAcceptPush": {
-    "description": "Reason to authenticate when clicking the 'accept' button of a push token.",
     "type": "text",
     "placeholders": {}
   },
@@ -646,11 +463,6 @@
     "description": "onBoardingTitle3",
     "type": "text"
   },
-  "unlockToCopy": "Entsperre den Token mittels biometrischer Daten",
-  "@unlockToCopy": {
-    "description": "unlockToCopy",
-    "type": "text"
-  },
   "errorLogTitle": "Fehlerprotokolle",
   "@errorLogTitle": {
     "description": "errorLogTitle",
@@ -674,11 +486,6 @@
   "logMenu": "Protokollmenu",
   "@logMenu": {
     "description": "logMenu",
-    "type": "text"
-  },
-  "send": "Senden",
-  "@send": {
-    "description": "Senden",
     "type": "text"
   },
   "sendErrorDialogHeader": "Per E-Mail senden",
@@ -706,11 +513,6 @@
     "description": "errorLogCleared",
     "type": "text"
   },
-  "errorOccurred": "Ein Fehler ist aufgetreten.",
-  "@errorOccurred": {
-    "description": "errorOccurred",
-    "type": "text"
-  },
   "showDetails": "Details anzeigen",
   "@showDetails": {
     "description": "showDetails",
@@ -734,11 +536,6 @@
   "firebaseToken": "Firebase Token",
   "@firebaseToken": {
     "description": "firebaseToken",
-    "type": "text"
-  },
-  "serial": "Seriennummer",
-  "@serial": {
-    "description": "serial",
     "type": "text"
   },
   "noPublicKey": "Kein öffentlicher Schlüssel vorhanden",
@@ -784,6 +581,76 @@
   "editLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu bearbeiten.",
   "@editLockedToken": {
     "description": "editLockedToken",
+    "type": "text"
+  },
+  "uncollapseLockedFolder": "Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.",
+  "@uncollapseLockedFolder": {
+    "description": "uncollapseLockedFolder",
+    "type": "text"
+  },
+  "renameTokenFolder": "Ordner umbenennen",
+  "@renameTokenFolder": {
+    "description": "renameTokenFolder",
+    "type": "text"
+  },
+  "addANewFolder": "Neuen Ordner anlegen",
+  "@addANewFolder": {
+    "description": "addANewFolder",
+    "type": "text"
+  },
+  "folderName": "Ordnername",
+  "@folderName": {
+    "description": "folderName",
+    "type": "text"
+  },
+  "retryRollout": "Erneut ausrollen",
+  "@retryRollout": {
+    "description": "retryRollout",
+    "type": "text"
+  },
+  "generatingRSAKeyPair": "Generiere RSA Schlüsselpaar",
+  "@generatingRSAKeyPair": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "generatingRSAKeyPairFailed": "Generieren des RSA Schlüsselpaars fehlgeschlagen",
+  "@generatingRSAKeyPairFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingPublicRSAKey": "Sende öffentlichen RSA Schlüssel",
+  "@sendingRSAPublicKey": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingPublicRSAKeyFailed": "Senden des öffentlichen RSA Schlüssels fehlgeschlagen",
+  "@sendingRSAPublicKeyFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponse": "Analysiere Antwort",
+  "@parsingResponse": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponseFailed": "Analysieren der Antwort fehlgeschlagen",
+  "@parsingResponseFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "rolloutCompleted": "Ausrollen abgeschlossen",
+  "@rolloutCompleted": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "imageUrl": "Bild URL",
+  "@imageUrl": {
+    "description": "imageUrl",
+    "type": "text"
+  },
+  "errorWhenPullingChallenges": "Fehler beim Abrufen der Authentifizierungsanfragen.",
+  "@errorWhenPullingChallenges": {
+    "description": "errorWhenPullingChallenges",
     "type": "text"
   }
 }

@@ -2,10 +2,10 @@
 
 ## [4.2.0] - TBD
  - Supports now daypasswordtokens
- - Added the possibility to add Categories wich can be used to group tokens
+ - Added the possibility to add Folders wich can be used to group tokens
  - Added an errorlog menu entry to the settings
- - Changed the way to sort tokens. Now it is per drag and drop to support the new categories
- - Replaced the button to view the onboarding with a button to create a new category
+ - Changed the way to sort tokens. Now it is per drag and drop to support the new folders
+ - Replaced the button to view the onboarding with a button to create a new folder
  - Replaced the splashscreen with a new one
  - Removed migration option from settings
  - Fixed a problem when the Image of a token could not be loaded (no internet connection or wrong url)

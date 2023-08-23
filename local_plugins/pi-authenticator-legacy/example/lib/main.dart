@@ -21,11 +21,20 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text(
+            'Plugin example app',
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Text(
+            'Running on: $_platformVersion\n',
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
         ),
       ),
     );

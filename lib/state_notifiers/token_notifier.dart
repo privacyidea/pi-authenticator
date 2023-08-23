@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:base32/base32.dart';
 import 'package:collection/collection.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 
 import '../model/push_request.dart';
 import '../model/states/token_state.dart';
@@ -18,6 +20,7 @@ import '../model/tokens/hotp_token.dart';
 import '../model/tokens/push_token.dart';
 import '../model/tokens/token.dart';
 import '../utils/crypto_utils.dart';
+import '../utils/customizations.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
 import '../utils/network_utils.dart';
@@ -36,13 +39,23 @@ class TokenNotifier extends StateNotifier<TokenState> {
     _loadTokenList();
   }
 
-  void refreshTokens() {
-    _loadTokenList();
-  }
-
   Future<void> _loadTokenList() async {
     List<Token> tokens = await StorageUtil.loadAllTokens();
+    final pushTokens = tokens.whereType<PushToken>().where((element) => !element.isRolledOut).toList();
     state = TokenState(tokens: tokens);
+    for (final pushToken in pushTokens) {
+      rolloutPushToken(pushToken);
+    }
+  }
+
+  void refreshTokens() async {
+    List<Token> tokens = await StorageUtil.loadAllTokens();
+    final rolledOutPushToken = tokens.whereType<PushToken>().where((element) => element.isRolledOut).toList();
+    state = state.updateTokens(rolledOutPushToken);
+  }
+
+  Token? getTokenFromId(String id) {
+    return state.tokens.firstWhereOrNull((element) => element.id == id);
   }
 
   void incrementCounter(HOTPToken token) {
@@ -129,8 +142,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
           ),
         ))!;
       }
-
-      var newToken = Token.fromUriMap(uriMap);
+      Token newToken;
+      try {
+        newToken = Token.fromUriMap(uriMap);
+      } on FormatException catch (e) {
+        Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
+        showMessage(message: e.message, duration: const Duration(seconds: 3));
+        return;
+      }
 
       if (newToken.pin != null && newToken.pin != false) {
         Logger.info(
@@ -141,25 +160,18 @@ class TokenNotifier extends StateNotifier<TokenState> {
       }
 
       if (newToken is PushToken && state.tokens.contains(newToken)) {
-        showMessage(message: 'A token with the serial ${newToken.serial} already exists!', duration: const Duration(seconds: 2), context: context);
+        showMessage(message: 'A token with the serial ${newToken.serial} already exists!', duration: const Duration(seconds: 2));
         return;
       }
-
-      if (newToken is PushToken) {
-        _rollOutToken(newToken, context);
-      }
-
       addToken(newToken);
-    } on ArgumentError catch (e) {
+      if (newToken is PushToken) {
+        rolloutPushToken(newToken);
+      }
+    } on ArgumentError catch (e, s) {
       // Error while parsing qr code.
-      Logger.warning(
-        'Malformed QR code:',
-        name: 'main_screen.dart#_handleOtpAuth',
-        error: e.stackTrace,
-      );
+      Logger.warning('Malformed QR code:', name: 'main_screen.dart#_handleOtpAuth', error: e, stackTrace: s);
 
-      showMessage(
-          message: '${e.message}\n Please inform the creator of this qr code about the problem.', duration: const Duration(seconds: 8), context: context);
+      showMessage(message: '${e.message}\n Please inform the creator of this qr code about the problem.', duration: const Duration(seconds: 8));
     }
   }
 
@@ -208,12 +220,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
       token = token.withPushRequest(pr);
       updateToken(token);
       Logger.info('Added push request ${pr.id} to token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
-      final timeUntilExpiration = pr.expirationDate.difference(DateTime.now());
-      Logger.warning('timeUntilExpiration: ${timeUntilExpiration.inMilliseconds} Milliseconds');
-      Future.delayed(
-        Duration(milliseconds: timeUntilExpiration.inMilliseconds),
-        () => removePushRequest(pr),
-      );
     }
   }
 
@@ -227,34 +233,51 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     token = token.withoutPushRequest(pushRequest);
     updateToken(token);
-    Logger.info('Removed push request ${pushRequest.id} to token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
+    Logger.info('Removed push request ${pushRequest.id} from token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
   }
 
-  void _rollOutToken(PushToken token, BuildContext context) async {
+  Future<bool> rolloutPushToken(PushToken token) async {
+    token = getTokenFromId(token.id) as PushToken? ?? token;
+    if (token.isRolledOut) return true;
+    if (token.rolloutState != PushTokenRollOutState.rolloutNotStarted &&
+        token.rolloutState != PushTokenRollOutState.generateingRSAKeyPairFailed &&
+        token.rolloutState != PushTokenRollOutState.sendRSAPublicKeyFailed &&
+        token.rolloutState != PushTokenRollOutState.parsingResponseFailed) {
+      Logger.info('Ignoring rollout request: Rollout of token ${token.serial} already started. Tokenstate: ${token.rolloutState} ',
+          name: 'token_widgets.dart#rolloutPushToken');
+      return false;
+    }
+    if (token.expirationDate.isBefore(DateTime.now())) {
+      Logger.info('Ignoring rollout request: Token ${token.serial} is expired. ', name: 'token_widgets.dart#rolloutPushToken');
+      showMessage(
+          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutTokenExpired(token.label), duration: const Duration(seconds: 3));
+      globalRef!.read(tokenProvider.notifier).removeToken(token);
+      return false;
+    }
     if (Platform.isIOS) {
       await dummyRequest(url: token.url!, sslVerify: token.sslVerify!);
     }
 
     if (token.privateTokenKey == null) {
-      final keyPair = await generateRSAKeyPair();
-
-      Logger.info(
-        'Setting private key for token',
-        name: 'token_widgets.dart#_rollOutToken',
-        error: 'Token: $token, key: ${keyPair.privateKey}',
-      );
-      token = token.withPrivateTokenKey(keyPair.privateKey);
-      token = token.withPublicTokenKey(keyPair.publicKey);
-      Logger.info('Set public and private key for token.$token', name: 'token_widgets.dart#_rollOutToken');
-      updateToken(token);
-      Logger.info('Updated token.$token', name: 'token_widgets.dart#_rollOutToken', error: keyPair.publicKey);
-
-      checkNotificationPermission();
+      updateToken(token.copyWith(rolloutState: PushTokenRollOutState.generateingRSAKeyPair));
+      try {
+        final keyPair = await generateRSAKeyPair();
+        token = token.withPrivateTokenKey(keyPair.privateKey);
+        token = token.withPublicTokenKey(keyPair.publicKey);
+        updateToken(token);
+        Logger.info('Updated token.${token.id}', name: 'token_widgets.dart#rolloutPushToken', error: keyPair.publicKey);
+        checkNotificationPermission();
+      } catch (e, s) {
+        Logger.warning('Error while generating RSA key pair.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
+        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.generateingRSAKeyPairFailed));
+        return false;
+      }
     }
 
+    updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKey));
     try {
       // TODO What to do with poll only tokens if google-services is used?
-      Response response = await postRequest(sslVerify: token.sslVerify!, url: token.url!, body: {
+      Response response = await doPost(sslVerify: token.sslVerify!, url: token.url!, body: {
         'enrollment_credential': token.enrollmentCredentials,
         'serial': token.serial,
         'fbtoken': await PushProvider.getFBToken(),
@@ -262,39 +285,64 @@ class TokenNotifier extends StateNotifier<TokenState> {
       });
 
       if (response.statusCode == 200) {
-        RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
-        token = token.withPublicServerKey(publicServerKey);
-
-        Logger.info('Roll out successful', name: 'token_widgets.dart#_rollOutToken', error: token);
-
-        token = token.copyWith(isRolledOut: true);
-        updateToken(token);
+        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.parsingResponse));
+        try {
+          RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
+          token = token.withPublicServerKey(publicServerKey);
+        } on FormatException catch (e, s) {
+          showMessage(message: "Couldn't parsing RSA public key: ${e.message}", duration: const Duration(seconds: 3));
+          Logger.warning('Error while parsing RSA public key.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
+          updateToken(token.copyWith(rolloutState: PushTokenRollOutState.parsingResponseFailed));
+          return false;
+        } finally {
+          Logger.info('Roll out successful', name: 'token_widgets.dart#rolloutPushToken', error: token);
+          token = token.copyWith(isRolledOut: true, rolloutState: PushTokenRollOutState.rolloutComplete);
+          updateToken(token);
+        }
+        return true;
       } else {
         Logger.warning('Post request on roll out failed.',
-            name: 'token_widgets.dart#_rollOutToken',
+            name: 'token_widgets.dart#rolloutPushToken',
             error: 'Token: ${token.serial}\nStatus code: ${response.statusCode},\nURL:${response.request?.url}\nBody: ${response.body}');
+
+        String? message;
+        try {
+          message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : null;
+        } on FormatException catch (_) {
+          message = AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(token.label);
+        }
+        message = message != null ? '\n$message' : '';
         showMessage(
-          context: context,
-          message: AppLocalizations.of(context)!.errorRollOutFailed(token.label, response.statusCode),
+          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label, response.statusCode) + message,
           duration: const Duration(seconds: 3),
         );
+        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
+        return false;
       }
-    } catch (e) {
-      if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException) {
-        Logger.warning('Connection error: Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
+    } catch (e, s) {
+      if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException || e is TimeoutException || e is FirebaseException) {
+        Logger.warning('Connection error: Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
         showMessage(
-          context: context,
-          message: AppLocalizations.of(context)?.errorRollOutNoNetworkConnection ?? "No network connection!",
+          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(token.label),
           duration: const Duration(seconds: 3),
         );
+        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
+      } else if (e is HandshakeException) {
+        Logger.warning('SSL error: Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
+        showMessage(
+          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutSSLHandshakeFailed,
+          duration: const Duration(seconds: 3),
+        );
+        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
       } else {
-        Logger.warning('Unknown error: Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#_rollOutToken', error: e);
         showMessage(
-          context: context,
-          message: AppLocalizations.of(context)!.errorRollOutUnknownError(e),
+          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutUnknownError(e),
           duration: const Duration(seconds: 3),
         );
+        Logger.error('Roll out push token [${token.serial}] failed.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
+        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
       }
+      return false;
     }
   }
 }

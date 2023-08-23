@@ -51,7 +51,13 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
     globalRef?.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue))),
+      SnackBar(
+        content: Text(
+          AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue),
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
+      ),
     );
     Future.delayed(const Duration(seconds: 5), () {
       globalRef?.read(disableCopyOtpProvider.notifier).state = false;

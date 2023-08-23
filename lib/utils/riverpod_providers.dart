@@ -7,14 +7,14 @@ import '../model/platform_info/platform_info_imp/dummy_platform_info.dart';
 import '../model/push_request.dart';
 import '../model/states/app_state.dart';
 import '../model/states/settings_state.dart';
-import '../model/states/token_category_state.dart';
+import '../model/states/token_folder_state.dart';
 import '../model/states/token_state.dart';
 import '../repo/preference_settings_repository.dart';
-import '../repo/preference_token_category_repository.dart';
+import '../repo/preference_token_folder_repository.dart';
 import '../state_notifiers/app_state_notifier.dart';
 import '../state_notifiers/push_request_notifier.dart';
 import '../state_notifiers/settings_notifier.dart';
-import '../state_notifiers/token_category_notifier.dart';
+import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
 import 'logger.dart';
 
@@ -25,14 +25,18 @@ WidgetRef? globalRef;
 final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
   final tokenNotifier = TokenNotifier();
 
+  Logger.info("appStateProvider.addListener ${tokenNotifier.hashCode.toString()}");
   appStateProvider.addListener(
     ref.container,
     (previous, next) {
       switch (next) {
         case AppState.resume:
           //startPolling();
-          tokenNotifier.refreshTokens();
-          ref.read(appStateProvider.notifier).setAppState(AppState.running);
+          if (previous == AppState.pause) {
+            Logger.info('refreshing tokens on resume');
+            tokenNotifier.refreshTokens();
+            ref.read(appStateProvider.notifier).setAppState(AppState.running);
+          }
           break;
         case AppState.pause:
           //stopPolling();
@@ -89,7 +93,7 @@ final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>(
   (ref) => AppStateNotifier(),
 );
 
-final tokenCategoryProvider =
-    StateNotifierProvider<TokenCategoryNotifier, TokenCategoryState>((ref) => TokenCategoryNotifier(repositoy: PreferenceTokenCategoryRepotisory()));
+final tokenFolderProvider =
+    StateNotifierProvider<TokenFolderNotifier, TokenFolderState>((ref) => TokenFolderNotifier(repositoy: PreferenceTokenFolderRepotisory()));
 
 final draggingSortableProvider = StateProvider<SortableMixin?>((ref) => null);

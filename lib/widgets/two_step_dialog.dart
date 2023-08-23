@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
+import 'package:privacyidea_authenticator/widgets/default_dialog.dart';
 
 class TwoStepDialog extends StatefulWidget {
   final int _saltLength;
@@ -71,14 +72,21 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
       child: WillPopScope(
         onWillPop: () async => false,
         // Prevents closing the dialog without returning a secret.
-        child: AlertDialog(
-          title: Text(_title),
+        child: DefaultDialog(
+          scrollable: true,
+          title: Text(
+            _title,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
           content: _content,
           actions: [
             TextButton(
               onPressed: _onPressed,
               child: Text(
                 AppLocalizations.of(context)!.dismiss,
+                overflow: TextOverflow.fade,
+                softWrap: false,
               ),
             )
           ],
@@ -105,7 +113,11 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
     // Update UI.
     setState(() {
       _title = AppLocalizations.of(context)!.phonePart;
-      _content = Text(show);
+      _content = Text(
+        show,
+        overflow: TextOverflow.fade,
+        softWrap: false,
+      );
       _onPressed = () => Navigator.of(context).pop(_generatedSecret);
     });
   }

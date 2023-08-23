@@ -16,10 +16,22 @@ class NoTokenScreen extends StatelessWidget {
                 Text(
                   AppLocalizations.of(context)!.noResultTitle,
                   style: Theme.of(context).textTheme.headlineSmall,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
                 ),
-                Text(AppLocalizations.of(context)!.noResultText1, style: Theme.of(context).textTheme.titleMedium),
+                Text(
+                  AppLocalizations.of(context)!.noResultText1,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
                 const Icon(Icons.qr_code_scanner_outlined),
-                Text(AppLocalizations.of(context)!.noResultText2, style: Theme.of(context).textTheme.titleMedium)
+                Text(
+                  AppLocalizations.of(context)!.noResultText2,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                )
               ],
             ),
           )),

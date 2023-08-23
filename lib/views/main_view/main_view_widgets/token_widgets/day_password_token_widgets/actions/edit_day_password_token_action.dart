@@ -1,16 +1,17 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import '../../../../../model/tokens/day_password_token.dart';
-import '../../../../../utils/utils.dart';
-import '../../../../../utils/customizations.dart';
-import '../../../../../utils/lock_auth.dart';
-import 'token_action.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../../../utils/app_customizer.dart';
-import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../../model/tokens/day_password_token.dart';
+import '../../../../../../utils/app_customizer.dart';
+import '../../../../../../utils/customizations.dart';
+import '../../../../../../utils/lock_auth.dart';
+import '../../../../../../utils/riverpod_providers.dart';
+import '../../../../../../utils/utils.dart';
+import '../../../../../../widgets/default_dialog.dart';
+import '../../token_action.dart';
 
 class EditDayPassowrdTokenAction extends TokenAction {
   final DayPasswordToken token;
@@ -43,19 +44,30 @@ class EditDayPassowrdTokenAction extends TokenAction {
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: AlertDialog(
-          titlePadding: const EdgeInsets.all(12),
-          contentPadding: const EdgeInsets.all(0),
-          title: Text(AppLocalizations.of(context)!.editToken),
+        child: DefaultDialog(
+          scrollable: true,
+          title: Text(
+            AppLocalizations.of(context)!.editToken,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
           actions: [
             TextButton(
-              child: Text(AppLocalizations.of(context)!.cancel),
+              child: Text(
+                AppLocalizations.of(context)!.cancel,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-                child: Text(AppLocalizations.of(context)!.save),
+                child: Text(
+                  AppLocalizations.of(context)!.save,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
                 onPressed: () async {
                   final newToken = token.copyWith(label: tokenLabel.text, tokenImage: imageUrl.text, period: period, algorithm: algorithm);
                   globalRef?.read(tokenProvider.notifier).updateToken(newToken);
@@ -82,22 +94,22 @@ class EditDayPassowrdTokenAction extends TokenAction {
                   ),
                   TextFormField(
                     controller: imageUrl,
-                    decoration: const InputDecoration(labelText: 'Image URL'),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.imageUrl),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Image URL';
+                        return AppLocalizations.of(context)!.imageUrl;
                       }
                       return null;
                     },
                   ),
                   TextFormField(
                     initialValue: enumAsString(algorithm),
-                    decoration: const InputDecoration(labelText: 'Algorithm'),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.algorithm),
                     enabled: false,
                   ),
                   TextFormField(
                     initialValue: period.toString().split('.').first,
-                    decoration: const InputDecoration(labelText: 'Period'),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.period),
                     enabled: false,
                   ),
                 ],

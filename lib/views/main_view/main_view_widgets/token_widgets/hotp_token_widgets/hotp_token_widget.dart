@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../token_widget_actions/edit_hotp_token_action.dart';
 
 import '../../../../../model/tokens/hotp_token.dart';
 import '../token_widget.dart';
 import '../token_widget_base.dart';
+import 'actions/edit_hotp_token_action.dart';
 import 'hotp_token_widget_tile.dart';
 
 class HOTPTokenWidget extends TokenWidget {

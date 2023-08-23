@@ -7,7 +7,7 @@ import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod_providers.dart';
-import 'token_action.dart';
+import '../token_action.dart';
 
 class DefaultLockAction extends TokenAction {
   final Token token;

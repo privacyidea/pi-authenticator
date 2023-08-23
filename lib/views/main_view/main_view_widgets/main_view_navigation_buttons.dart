@@ -1,34 +1,37 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../utils/app_customizer.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../qr_scanner_view/scanner_view.dart';
 import '../../settings_view/settings_view.dart';
+import '../add_token_folder_dialog.dart';
 import 'app_bar_item.dart';
-import 'custom_paint_app_bar.dart';
+import 'custom_paint_navigation_bar.dart';
 
 class MainViewNavigationButtions extends StatelessWidget {
   const MainViewNavigationButtions({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final sizee = MediaQuery.of(context).size;
+    final navWidth = sizee.width;
+    final navHeight = sizee.height * 0.10;
     return Positioned(
       bottom: 0,
       left: 0,
       child: SizedBox(
-        width: size.width,
-        height: 80,
+        width: navWidth,
+        height: navHeight,
         child: Stack(
           children: [
             CustomPaint(
-              size: Size(size.width, 80),
-              painter: CustomPaintAppBar(buildContext: context),
+              size: Size(
+                navWidth,
+                navHeight,
+              ),
+              painter: CustomPaintNavigationBar(buildContext: context),
             ),
             Center(
               heightFactor: 0.6,
@@ -44,9 +47,10 @@ class MainViewNavigationButtions extends StatelessWidget {
               ),
             ),
             SizedBox(
-              width: size.width,
-              height: 80,
+              width: navWidth,
+              height: navHeight * 0.9,
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   AppBarItem(
@@ -65,71 +69,35 @@ class MainViewNavigationButtions extends StatelessWidget {
                     },
                     icon: Icons.info_outline,
                   ),
-                  AppBarItem(
-                    onPressed: () {
-                      Navigator.pushNamed(context, AddTokenManuallyView.routeName);
-                    },
-                    icon: Icons.add_moderator,
+                  SizedBox(
+                    height: navHeight * 0.9,
+                    child: AppBarItem(
+                      onPressed: () {
+                        Navigator.pushNamed(context, AddTokenManuallyView.routeName);
+                      },
+                      icon: Icons.add_moderator,
+                    ),
                   ),
-                  Container(
-                    width: size.width * 0.20,
+                  SizedBox(width: navWidth * 0.2),
+                  SizedBox(
+                    height: navHeight * 0.9,
+                    child: AppBarItem(
+                      onPressed: () {
+                        showDialog(context: context, builder: (context) => AddTokenFolderDialog());
+                      },
+                      icon: Icons.create_new_folder,
+                    ),
                   ),
                   AppBarItem(
                       onPressed: () {
                         Navigator.pushNamed(context, SettingsView.routeName);
                       },
                       icon: Icons.settings),
-                  AppBarItem(
-                    onPressed: () {
-                      showDialog(context: context, builder: (context) => AddTokenCategoryDialog());
-                    },
-                    icon: Icons.create_new_folder,
-                  )
                 ],
               ),
             )
           ],
         ),
-      ),
-    );
-  }
-}
-
-class AddTokenCategoryDialog extends ConsumerWidget {
-  final textController = TextEditingController();
-
-  AddTokenCategoryDialog({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: AlertDialog(
-        title: const Text('Add a new category'),
-        content: TextFormField(
-          controller: textController,
-          autofocus: true,
-          onChanged: (value) {},
-          decoration: const InputDecoration(labelText: 'Category name'),
-          validator: (value) {
-            if (value!.isEmpty) {
-              return 'Category name';
-            }
-            return null;
-          },
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(AppLocalizations.of(context)!.cancel),
-            onPressed: () => Navigator.pop(context),
-          ),
-          TextButton(
-              child: Text(AppLocalizations.of(context)!.save),
-              onPressed: () {
-                ref.read(tokenCategoryProvider.notifier).addCategory(textController.text);
-                Navigator.pop(context);
-              }),
-        ],
       ),
     );
   }

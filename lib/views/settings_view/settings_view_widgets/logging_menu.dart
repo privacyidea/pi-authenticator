@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../utils/logger.dart';
 import '../../../utils/riverpod_providers.dart';
+import '../../../widgets/default_dialog.dart';
 import 'send_error_dialog.dart';
 
 class LoggingMenu extends ConsumerWidget {
@@ -17,10 +18,8 @@ class LoggingMenu extends ConsumerWidget {
     final verboseLogging = settings.verboseLogging;
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: AlertDialog(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        titlePadding: const EdgeInsets.all(12),
-        contentPadding: const EdgeInsets.all(0),
+      child: DefaultDialog(
+        scrollable: true,
         title: Text(
           AppLocalizations.of(context)!.logMenu,
           style: Theme.of(context).listTileTheme.titleTextStyle,
@@ -33,6 +32,7 @@ class LoggingMenu extends ConsumerWidget {
               title: Text(
                 AppLocalizations.of(context)!.enableVerboseLogging,
                 style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.fade,
               ),
               trailing: Switch(value: verboseLogging, onChanged: (value) => ref.read(settingsProvider.notifier).setVerboseLogging(value)),
               style: ListTileStyle.list,
@@ -43,10 +43,15 @@ class LoggingMenu extends ConsumerWidget {
               title: Text(
                 AppLocalizations.of(context)!.sendErrorHint,
                 style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.fade,
               ),
               trailing: ElevatedButton(
                 onPressed: () => _pressSendErrorLog(context),
-                child: Text(AppLocalizations.of(context)!.open),
+                child: Text(
+                  AppLocalizations.of(context)!.open,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
               ),
               style: ListTileStyle.drawer,
               onTap: () => _pressSendErrorLog(context),
@@ -56,10 +61,15 @@ class LoggingMenu extends ConsumerWidget {
               title: Text(
                 AppLocalizations.of(context)!.clearErrorLogHint,
                 style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.fade,
               ),
               trailing: ElevatedButton(
                 onPressed: () => _pressClearErrorLog(context),
-                child: Text(AppLocalizations.of(context)!.delete),
+                child: Text(
+                  AppLocalizations.of(context)!.delete,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
               ),
               style: ListTileStyle.drawer,
               onTap: () => _pressClearErrorLog(context),
@@ -68,7 +78,11 @@ class LoggingMenu extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            child: Text(AppLocalizations.of(context)!.dismiss),
+            child: Text(
+              AppLocalizations.of(context)!.dismiss,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
         ],

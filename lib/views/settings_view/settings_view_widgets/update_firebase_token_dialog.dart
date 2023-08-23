@@ -31,6 +31,8 @@ import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 import '../../../model/tokens/push_token.dart';
+import '../../../utils/customizations.dart';
+import '../../../widgets/default_dialog.dart';
 
 class UpdateFirebaseTokenDialog extends StatefulWidget {
   const UpdateFirebaseTokenDialog({super.key});
@@ -42,7 +44,7 @@ class UpdateFirebaseTokenDialog extends StatefulWidget {
 class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
   Widget _content = const Row(
     mainAxisAlignment: MainAxisAlignment.center,
-    children: <Widget>[CircularProgressIndicator()],
+    children: [CircularProgressIndicator()],
   );
 
   @override
@@ -55,10 +57,11 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
   Widget build(BuildContext context) {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: AlertDialog(
+      child: DefaultDialog(
+        scrollable: true,
         title: Text(AppLocalizations.of(context)!.synchronizingTokens),
         content: _content,
-        actions: <Widget>[
+        actions: [
           TextButton(
             child: Text(AppLocalizations.of(context)!.dismiss),
             onPressed: () => Navigator.pop(context),
@@ -82,7 +85,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
     List<PushToken> tokenWithUrl = tokenList.where((e) => e.url != null).toList();
     List<PushToken> tokenWithFailedUpdate = [];
 
-    for (PushToken p in tokenWithUrl) {
+    for (PushToken pushToken in tokenWithUrl) {
       // POST /ttype/push HTTP/1.1
       // Host: example.com
       //
@@ -93,35 +96,46 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
       String timestamp = DateTime.now().toUtc().toIso8601String();
 
-      String message = '$token|${p.serial}|$timestamp';
-      String? signature = await trySignWithToken(p, message);
+      String message = '$token|${pushToken.serial}|$timestamp';
+      String? signature = await trySignWithToken(pushToken, message);
       if (signature == null) {
         return;
       }
 
       Response response;
       try {
-        response = await postRequest(
-            sslVerify: p.sslVerify!, url: p.url!, body: {'new_fb_token': token, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
+        response = await doPost(
+            sslVerify: pushToken.sslVerify!,
+            url: pushToken.url!,
+            body: {'new_fb_token': token, 'serial': pushToken.serial, 'timestamp': timestamp, 'signature': signature});
 
         if (response.statusCode == 200) {
-          Logger.info('Updating firebase token for push token: ${p.serial} succeeded!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
+          Logger.info('Updating firebase token for push token: ${pushToken.serial} succeeded!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
         } else {
-          Logger.warning('Updating firebase token for push token: ${p.serial} failed!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
-          tokenWithFailedUpdate.add(p);
+          Logger.warning('Updating firebase token for push token: ${pushToken.serial} failed!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
+          tokenWithFailedUpdate.add(pushToken);
         }
-      } on SocketException catch (e) {
-        Logger.warning('Socket exception occurred: $e', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context)!.errorSynchronizationNoNetworkConnection),
+      } on SocketException catch (e, s) {
+        Logger.warning(
+          'Socket exception occurred: $e',
+          name: 'update_firebase_token_dialog.dart#_updateFbTokens',
+          stackTrace: s,
+        );
+        ScaffoldMessenger.of(globalNavigatorKey.currentContext!).showSnackBar(SnackBar(
+          content: Text(
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
           duration: const Duration(seconds: 3),
         ));
-        Navigator.pop(context);
+        Navigator.pop(globalNavigatorKey.currentContext!);
         return;
       }
     }
 
     if (tokenWithFailedUpdate.isEmpty && tokenWithOutUrl.isEmpty) {
+      if (!mounted) return;
       setState(() {
         _content = Text(AppLocalizations.of(context)!.allTokensSynchronized);
       });
@@ -129,7 +143,9 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
       List<Widget> children = [];
 
       if (tokenWithFailedUpdate.isNotEmpty) {
-        children.add(Text(AppLocalizations.of(context)!.synchronizationFailed));
+        children.add(
+          Text('${AppLocalizations.of(globalNavigatorKey.currentContext!)!.synchronizationFailed}\n'),
+        );
         for (PushToken p in tokenWithFailedUpdate) {
           children.add(Text('• ${p.label}'));
         }
@@ -140,7 +156,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
           children.add(const Divider());
         }
 
-        children.add(Text(AppLocalizations.of(context)!.tokensDoNotSupportSynchronization));
+        children.add(Text(AppLocalizations.of(globalNavigatorKey.currentContext!)!.tokensDoNotSupportSynchronization));
         for (PushToken p in tokenWithOutUrl) {
           children.add(Text('• ${p.label}'));
         }

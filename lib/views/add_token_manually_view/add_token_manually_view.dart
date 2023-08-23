@@ -57,6 +57,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.enterDetailsForToken,
@@ -145,6 +146,8 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
                   child: Text(
                     AppLocalizations.of(context)!.addToken,
                     style: Theme.of(context).textTheme.titleLarge,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
                   ),
                   onPressed: () {
                     final token = _buildTokenIfValid(context: context);

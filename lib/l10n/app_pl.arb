@@ -1,26 +1,8 @@
 {
-  "@@last_modified": "2021-02-25T12:30:00.793083",
+  "@@last_modified": "2023-08-07",
   "guide": "Przewodnik",
   "@guide": {
     "description": "Button to open the guide screen.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "next": "Następny",
-  "@next": {
-    "description": "The text of the button to calculate the next otp value.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "about": "O nas",
-  "@about": {
-    "description": "Button to open the about page.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "retry": "Powtórz",
-  "@retry": {
-    "description": "Label for e.g. a button. Something is tried to be done again.",
     "type": "text",
     "placeholders": {}
   },
@@ -99,18 +81,6 @@
   "dismiss": "Odrzuć",
   "@dismiss": {
     "description": "Text of a button that closes a dialog.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "showThisScreenOnStart": "Pokaż przy starcie",
-  "@showThisScreenOnStart": {
-    "description": "Description for checkbox, if the checkbox is ticked, the guide screen is shown on every app start.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "somethingWentWrong": "Coś poszło nie tak",
-  "@somethingWentWrong": {
-    "description": "Tells the user that something went wrong.",
     "type": "text",
     "placeholders": {}
   },
@@ -230,21 +200,9 @@
     "type": "text",
     "placeholders": {}
   },
-  "someTokensDoNotSupportPolling": "Część tokenów jest przestarzała i nie wspiera aktywnego zapytania dla autentykacji przez wiadomość push.",
-  "@someTokensDoNotSupportPolling": {
-    "description": "Tells the user, that the following tokens do not support polling.",
-    "type": "text",
-    "placeholders": {}
-  },
   "enablePolling": "Włącz autentykację przez wiadomość push.",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "miscellaneous": "Miscellaneous",
-  "@miscellaneous": {
-    "description": "Title for misc settings.",
     "type": "text",
     "placeholders": {}
   },
@@ -296,26 +254,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorOnlyOneFirebaseProjectIsSupported": "Konfiguracja firebase dla tokenu {name} różni się od tej, której używa aplikacja.",
-  "@errorOnlyOneFirebaseProjectIsSupported": {
-    "description": "Tells the user that the token can not be used because it has a different firebase configuration than the current used configuration of the application.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "errorTokenExpired": "Token {name} wygasł, wdrożenie go nie jest możliwe.",
-  "@errorTokenExpired": {
-    "description": "Tells the user that the token can not be rolled out, because it expired.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
   "errorRollOutFailed": "Wdrażanie tokenu {name} nieudane. Kod błędu: {errorCode}",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
@@ -335,12 +273,6 @@
     "type": "text",
     "placeholders": {}
   },
-  "errorRollOutNoNetworkConnection": "Brak połączenia z siecią. Wdrożenie tokenu jest niemożliwe.",
-  "@errorRollOutNoNetworkConnection": {
-    "description": "Tells the user that the roll-out failed because no network connection is available.",
-    "type": "text",
-    "placeholders": {}
-  },
   "errorRollOutUnknownError": "Napotkano nieznany błąd. Wdrożenie tokenu niemożliwe: {e}",
   "@errorRollOutUnknownError": {
     "description": "Tells the user that the roll-out failed because of an unknown error.",
@@ -351,69 +283,9 @@
       }
     }
   },
-  "acceptPushAuthRequestFor": "Prośba o uwierzytelnienie {name} zaakceptowana.",
-  "@acceptPushAuthRequestFor": {
-    "description": "Tells the user that a push request for a specific token was accepted.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "decliningPushAuthRequestFor": "Prośba o uwierzytelnienie {name} odrzucona.",
-  "@decliningPushAuthRequestFor": {
-    "description": "Tells the user that a push request for a specific token was declined.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "errorPushAuthRequestFailedFor": "Zaakceptowanie prośby o uwierzytelnienie {name} nieudane. Kod błędu: {errorCode}",
-  "@errorPushAuthRequestFailedFor": {
-    "description": "Tells the user that a push auth request could not be accepted for a token.",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      },
-      "errorCode": {
-        "example": "500"
-      }
-    }
-  },
   "rollingOut": "Wdrażanie",
   "@rollingOut": {
     "description": "Label that tells the user that the token is being rolled out.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "retryRollOut": "Wdrażanie nieudane, spróbuj ponownie.",
-  "@retryRollOut": {
-    "description": "Label for e.g. a button. Tells the user that rolling out the token failed. Roll out can be retried by clicking this button.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "errorAuthenticationNotPossibleWithoutNetworkAccess": "Brak połączenia z siecią. Autentykacja niemożliwa.",
-  "@errorAuthenticationNotPossibleWithoutNetworkAccess": {
-    "description": "Error message tell the user that accepting a push request failed.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "errorAuthenticationFailedUnknownError": "Napotkano nieznany błąd. Autentykacja nieudana: {e}",
-  "@errorAuthenticationFailedUnknownError": {
-    "description": "Tells the user that the authentication could not be accepted because of an unknown error.",
-    "type": "text",
-    "placeholders": {
-      "e": {
-        "example": "IllegalArgumentException on line 5, ..."
-      }
-    }
-  },
-  "firebaseConfigCorrupted": "The firebase configuration is corrupted and cannot be used.",
-  "@firebaseConfigCorrupted": {
     "type": "text",
     "placeholders": {}
   },
@@ -422,60 +294,11 @@
     "type": "text",
     "placeholders": {}
   },
-  "migrateTokens": "Przenieś tokeny z poprzedniej wersji aplikacji.",
-  "@migrateTokens": {
-    "description": "Description of migration.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migrate": "Przenieś",
-  "@migrate": {
-    "description": "Text of button to start migration.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migration": "Migracja",
-  "@migration": {
-    "description": "Title of settings group for migrating tokens.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migrationSuccess": "Migracja wszystkich tokenów udana.",
-  "@migrationSuccess": {
-    "description": "Tells the user that all tokens are migrated successfully.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "noTokensForMigration": "Nie ma żadnych tokenów do przeniesienia.",
-  "@noTokensForMigration": {
-    "description": "Tells the user that no tokens exist that could be migrated.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "migratingToken": "Migracja tokenów...",
-  "@migratingToken": {
-    "description": "Title of migration dialog.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "unexpectedError": "Nieoczekiwany błąd.",
+  "unexpectedError": "Wystąpił nieoczekiwany błąd.",
   "@unexpectedError": {
     "description": "Title of page report mode.",
     "type": "text",
     "placeholders": {}
-  },
-  "pageReportModeBody": "Napotkano nieoczekiwany błąd w aplikacji. Poniższa wiadomość może zostać wysłana do deweloperów poprzez email, żeby pomóc uniknąć tego problemu w przyszłości. Wciśnij {accept} żeby wysłać informację, albo {cancel}, żeby nie wysyłać informacji.",
-  "@pageReportModeBody": {
-    "description": "Description shown to the user about what info the error report contains.",
-    "type": "text",
-    "placeholders": {
-      "accept": {
-        "example": "accept"
-      },
-      "cancel": {
-        "example": "cancel"
-      }
-    }
   },
   "pollingFailNoNetworkConnection": "Serwer jest nieosiągalny.",
   "@pollingFailNoNetworkConnection": {
@@ -498,18 +321,6 @@
   "language": "Język",
   "@language": {
     "description": "Title of language setting group.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "handlingOtpAuthLinkFailed": "Obsługa podanego linku nie powiodła się. Błąd w komunikacji z platformą bazową.",
-  "@handlingOtpAuthLinkFailed": {
-    "description": "Message that tells the user that handling a link failed. This link was provided through the 'open link with app' on android or iOS.",
-    "type": "text",
-    "placeholders": {}
-  },
-  "authenticateToAcceptPush": "Uwierzytelnij się, aby użyć tego tokena wypychania.",
-  "@authenticateToAcceptPush": {
-    "description": "Reason to authenticate when clicking the 'accept' button of a push token.",
     "type": "text",
     "placeholders": {}
   },
@@ -646,11 +457,6 @@
     "description": "onBoardingTitle3",
     "type": "text"
   },
-  "unlockToCopy": "Użyj uwierzytelniania biometrycznego, żeby odblokować token",
-  "@unlockToCopy": {
-    "description": "unlockToCopy",
-    "type": "text"
-  },
   "errorLogTitle": "Error logs",
   "@errorLogTitle": {
     "description": "errorLogTitle",
@@ -674,11 +480,6 @@
   "logMenu": "LogMenu",
   "@logMenu": {
     "description": "logMenu",
-    "type": "text"
-  },
-  "send": "send",
-  "@send": {
-    "description": "send",
     "type": "text"
   },
   "sendErrorDialogHeader": "Wyślij przez e-mail",
@@ -706,11 +507,6 @@
     "description": "errorLogCleared",
     "type": "text"
   },
-  "errorOccurred": "Wystąpił błąd",
-  "@errorOccurred": {
-    "description": "errorOccurred",
-    "type": "text"
-  },
   "showDetails": "Pokaż szczegóły",
   "@showDetails": {
     "description": "showDetails",
@@ -734,11 +530,6 @@
   "firebaseToken": "Token Firebase",
   "@firebaseToken": {
     "description": "firebaseToken",
-    "type": "text"
-  },
-  "serial": "Serial",
-  "@serial": {
-    "description": "serial",
     "type": "text"
   },
   "noPublicKey": "Brak dostępnego klucza publicznego",
@@ -784,6 +575,66 @@
   "editLockedToken": "Aby edytować zablokowany token, należy się uwierzytelnić.",
   "@editLockedToken": {
     "description": "editLockedToken",
+    "type": "text"
+  },
+  "uncollapseLockedFolder": "Uwierzytelnij, aby otworzyć zablokowany folder.",
+  "@uncollapseLockedFolder": {
+    "description": "uncollapseLockedFolder",
+    "type": "text"
+  },
+  "renameTokenFolder": "Zmiana nazwy folderu",
+  "@renameTokenFolder": {
+    "description": "renameTokenFolder",
+    "type": "text"
+  },
+  "addANewFolder": "Utwórz nowy folder",
+  "@addANewFolder": {
+    "description": "addANewFolder",
+    "type": "text"
+  },
+  "folderName": "Nazwa folderu",
+  "@folderName": {
+    "description": "folderName",
+    "type": "text"
+  },
+  "retryRollout": "Ponowne uruchomienie",
+  "@retryRollout": {
+    "description": "retryRollout",
+    "type": "text"
+  },
+  "generatingRSAKeyPair": "Generowanie pary kluczy RSA",
+  "@generatingRSAKeyPair": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "generatingRSAKeyPairFailed": "Generowanie pary kluczy RSA nieudane",
+  "@generatingRSAKeyPairFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingPublicRSAKey": "Wysyłanie publicznego klucza RSA",
+  "@sendingRSAPublicKey": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingPublicRSAKeyFailed": "Wysyłanie publicznego klucza RSA nieudane",
+  "@sendingRSAPublicKeyFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponse": "Analizowanie odpowiedzi",
+  "@parsingResponse": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponseFailed": "Analizowanie odpowiedzi nieudane",
+  "@parsingResponseFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "rolloutCompleted": "Wdrożenie zakończone",
+  "@rolloutCompleted": {
+    "description": "Message for the rollout process",
     "type": "text"
   }
 }

@@ -3,47 +3,47 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'mixins/sortable_mixin.dart';
 
-part 'token_category.g.dart';
+part 'token_folder.g.dart';
 
 @immutable
 @JsonSerializable()
-class TokenCategory with SortableMixin {
+class TokenFolder with SortableMixin {
   final String label;
-  final int categoryId;
+  final int folderId;
   final bool isExpanded;
   final bool isLocked;
   @override
   final int? sortIndex;
 
-  const TokenCategory({
+  const TokenFolder({
     required this.label,
-    required this.categoryId,
+    required this.folderId,
     this.isExpanded = true,
     this.isLocked = false,
     this.sortIndex,
   });
 
   @override
-  TokenCategory copyWith({
+  TokenFolder copyWith({
     String? label,
-    int? categoryId,
+    int? folderId,
     bool? isExpanded,
     bool? isLocked,
     int? sortIndex,
   }) {
-    return TokenCategory(
+    return TokenFolder(
       label: label ?? this.label,
-      categoryId: categoryId ?? this.categoryId,
+      folderId: folderId ?? this.folderId,
       sortIndex: sortIndex ?? this.sortIndex,
       isLocked: isLocked ?? this.isLocked,
       isExpanded: isExpanded ?? this.isExpanded,
     );
   }
 
-  factory TokenCategory.fromJson(Map<String, dynamic> json) {
-    var tokenCategory = _$TokenCategoryFromJson(json);
-    if (tokenCategory.isLocked) tokenCategory = tokenCategory.copyWith(isExpanded: false);
-    return tokenCategory;
+  factory TokenFolder.fromJson(Map<String, dynamic> json) {
+    var tokenFolder = _$TokenFolderFromJson(json);
+    if (tokenFolder.isLocked) tokenFolder = tokenFolder.copyWith(isExpanded: false);
+    return tokenFolder;
   }
-  Map<String, dynamic> toJson() => _$TokenCategoryToJson(this);
+  Map<String, dynamic> toJson() => _$TokenFolderToJson(this);
 }
