@@ -171,7 +171,7 @@ class PushToken extends Token {
         id: const Uuid().v4(),
         sslVerify: uriMap[URI_SSL_VERIFY],
         expirationDate: uriMap[URI_TTL] != null ? DateTime.now().add(Duration(minutes: uriMap[URI_TTL])) : null,
-        enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIALS],
+        enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
         url: uriMap[URI_ROLLOUT_URL],
         tokenImage: uriMap[URI_IMAGE],
         pin: uriMap[URI_PIN],
