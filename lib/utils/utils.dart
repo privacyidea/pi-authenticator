@@ -20,15 +20,8 @@
   limitations under the License.
 */
 
-import 'dart:convert';
-import 'dart:core';
-import 'dart:typed_data';
-
-import 'package:base32/base32.dart' as Base32Converter;
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:hex/hex.dart' as HexConverter;
-import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:permission_handler/permission_handler.dart';
 
 import 'identifiers.dart';
@@ -46,10 +39,13 @@ String insertCharAt(String str, String char, int pos) {
 ///
 /// Example: 'ABCD', 1 --> 'A B C D'
 /// Example: 'ABCD', 2 --> 'AB CD'
+///
+/// If [period] is less than 1, the original String is returned.
 String splitPeriodically(String str, int period) {
+  if (period < 1) return str;
   String result = '';
   for (int i = 0; i < str.length; i++) {
-    i % 4 == 0 ? result += ' ${str[i]}' : result += str[i];
+    i % period == 0 ? result += ' ${str[i]}' : result += str[i];
   }
 
   return result.trim();
@@ -70,7 +66,7 @@ Algorithms mapStringToAlgorithm(String algoAsString) {
 /// That library sadly depends on [dart.ui] and thus cannot be used in tests.
 /// Therefore, only using this code enables us to use this library ([utils.dart])
 /// in tests.
-String enumAsString(Object enumEntry) {
+String enumAsString(Enum enumEntry) {
   final String description = enumEntry.toString();
   final int indexOfDot = description.indexOf('.');
   assert(indexOfDot != -1 && indexOfDot < description.length - 1);
@@ -90,69 +86,6 @@ void checkNotificationPermission() async {
     if (status.isDenied) {
       await Permission.notification.request();
     }
-  }
-}
-
-// TODO Everything after this line should be in 'crypto_utils.dart,
-//   but that depends on foundations.dart and that depends on dart.ui,
-//   which ultimately makes it impossible to run driver tests.
-Uint8List decodeSecretToUint8(String secret, Encodings encoding) {
-  ArgumentError.checkNotNull(secret, 'secret');
-  ArgumentError.checkNotNull(encoding, 'encoding');
-
-  switch (encoding) {
-    case Encodings.none:
-      return Uint8List.fromList(utf8.encode(secret));
-    case Encodings.hex:
-      return Uint8List.fromList(HexConverter.HEX.decode(secret));
-    case Encodings.base32:
-      return Uint8List.fromList(Base32Converter.base32.decode(secret));
-    default:
-      throw ArgumentError.value(encoding, 'encoding', 'The encoding is unknown and not supported!');
-  }
-}
-
-String encodeSecretAs(Uint8List secret, Encodings encoding) {
-  ArgumentError.checkNotNull(secret, 'secret');
-  ArgumentError.checkNotNull(encoding, 'encoding');
-
-  switch (encoding) {
-    case Encodings.none:
-      return utf8.decode(secret);
-    case Encodings.hex:
-      return HexConverter.HEX.encode(secret);
-    case Encodings.base32:
-      return Base32Converter.base32.encode(secret);
-    default:
-      throw ArgumentError.value(encoding, 'encoding', 'The encoding is unknown and not supported!');
-  }
-}
-
-String encodeAsHex(Uint8List secret) {
-  return encodeSecretAs(secret, Encodings.hex);
-}
-
-bool isValidEncoding(String secret, Encodings encoding) {
-  try {
-    decodeSecretToUint8(secret, encoding);
-  } on Exception catch (_) {
-    return false;
-  }
-  return true;
-}
-
-OTPLibrary.Algorithm mapAlgorithms(Algorithms algorithm) {
-  ArgumentError.checkNotNull(algorithm, 'algorithmName');
-
-  switch (algorithm) {
-    case Algorithms.SHA1:
-      return OTPLibrary.Algorithm.SHA1;
-    case Algorithms.SHA256:
-      return OTPLibrary.Algorithm.SHA256;
-    case Algorithms.SHA512:
-      return OTPLibrary.Algorithm.SHA512;
-    default:
-      throw ArgumentError.value(algorithm, 'algorithmName', 'This algorithm is unknown and not supported!');
   }
 }
 

@@ -47,7 +47,7 @@ class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
                 return DropdownMenuItem<T>(
                   value: value,
                   child: Text(
-                    '${value is String || value is int || value is double ? value : enumAsString(value!)}'
+                    '${value is Enum ? enumAsString(value) : value}'
                     '${widget.postFix}',
                     style: Theme.of(context).textTheme.titleMedium,
                     overflow: TextOverflow.fade,

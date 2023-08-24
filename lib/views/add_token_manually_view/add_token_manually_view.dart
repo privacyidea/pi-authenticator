@@ -7,10 +7,10 @@ import '../../model/tokens/day_password_token.dart';
 import '../../model/tokens/hotp_token.dart';
 import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/totp_token.dart';
+import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
-import '../../utils/utils.dart';
 import 'add_token_manually_view_widgets/labeled_dropdown_button.dart';
 
 class AddTokenManuallyView extends ConsumerStatefulWidget {

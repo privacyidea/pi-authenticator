@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 // ignore: library_prefixes
 import 'package:otp/otp.dart' as OTPLibrary;
+import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';

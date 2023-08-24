@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-// ignore: library_prefixes
-import 'package:otp/otp.dart' as OTPLibrary;
+import 'package:otp/otp.dart' as otp_library;
+import '../../utils/crypto_utils.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
@@ -47,7 +47,7 @@ class HOTPToken extends OTPToken {
         );
 
   @override
-  String get otpValue => OTPLibrary.OTP.generateHOTPCodeString(
+  String get otpValue => otp_library.OTP.generateHOTPCodeString(
         secret,
         counter,
         length: digits,

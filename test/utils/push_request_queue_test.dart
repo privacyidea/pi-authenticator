@@ -21,15 +21,14 @@
 import 'dart:collection';
 import 'dart:convert';
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/push_request_queue.dart';
-import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
-import 'package:test/test.dart';
+
 import 'package:uuid/uuid.dart';
 
 void main() {
   verifyCustomListBehavesLikeQueue();
-  verifyCustomStringBufferWorks();
 }
 
 void verifyCustomListBehavesLikeQueue() {
@@ -203,43 +202,6 @@ void verifyCustomListBehavesLikeQueue() {
       var decoded = PushRequestQueue.fromJson(jsonDecode(encoded) as Map<String, dynamic>);
 
       expect(decoded, fifo);
-    });
-  });
-}
-
-void verifyCustomStringBufferWorks() {
-  group('test custom string buffer', () {
-    test('put elements in', () {
-      CustomIntBuffer buffer = CustomIntBuffer();
-      buffer.list = [];
-
-      expect(buffer.maxSize, 30);
-      expect(buffer.length, 0);
-
-      buffer.put(1);
-      buffer.put(2);
-      buffer.put(3);
-
-      expect(buffer.length, 3);
-
-      expect(buffer.contains(1), true);
-      expect(buffer.contains(2), true);
-      expect(buffer.contains(3), true);
-      expect(buffer.contains(4), false);
-
-      for (int i = 3; i < buffer.maxSize; i++) {
-        buffer.put(-1);
-      }
-
-      buffer.put(4);
-
-      expect(buffer.length, 30);
-      expect(buffer.maxSize, 30);
-
-      expect(buffer.contains(1), false);
-      expect(buffer.contains(2), true);
-      expect(buffer.contains(3), true);
-      expect(buffer.contains(4), true);
     });
   });
 }

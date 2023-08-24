@@ -1,9 +1,8 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/parsing_utils.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:test/test.dart';
 
 void main() {
   _testSerializingRSAKeys();
@@ -13,42 +12,41 @@ void main() {
 
 void _testParsingLabelAndIssuer() {
   group('Parsing Label and Issuer', () {
-    String uriWithIssuerParam = 'otpauth://totp/alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
-        '&issuer=ACME%20Co&algorithm=SHA512&digits=8&period=60';
-    String uriWithIssuer = 'otpauth://totp/Example:alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
-        '&algorithm=SHA512&digits=8&period=60';
-    String uriWithIssuerAndUriEncoding = 'otpauth://totp/Example%3Aalice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
-        '&algorithm=SHA512&digits=8&period=60';
-    String uriWithIssuerParamAndIssuer = 'otpauth://totp/Example:alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
-        '&issuer=ACME%20Co&algorithm=SHA512&digits=8&period=60';
-    String uriWithoutIssuerAndLabel = 'otpauth://totp/?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
-        '&algorithm=SHA512&digits=8&period=60';
-
     test('Test parse issuer from param', () {
+      String uriWithoutIssuerAndLabel = 'otpauth://totp/?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+          '&algorithm=SHA512&digits=8&period=60';
       Map<String, dynamic> map = parseQRCodeToMap(uriWithoutIssuerAndLabel);
       expect(map[URI_LABEL], '');
       expect(map[URI_ISSUER], '');
     });
 
     test('Test parse issuer from param', () {
+      String uriWithIssuerParam = 'otpauth://totp/alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+          '&issuer=ACME%20Co&algorithm=SHA512&digits=8&period=60';
       Map<String, dynamic> map = parseQRCodeToMap(uriWithIssuerParam);
       expect(map[URI_LABEL], 'alice@google.com');
       expect(map[URI_ISSUER], 'ACME Co');
     });
 
     test('Test parse issuer from label', () {
+      String uriWithIssuer = 'otpauth://totp/Example:alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+          '&algorithm=SHA512&digits=8&period=60';
       Map<String, dynamic> map = parseQRCodeToMap(uriWithIssuer);
       expect(map[URI_LABEL], 'alice@google.com');
       expect(map[URI_ISSUER], 'Example');
     });
 
     test('Test parse issuer from label with uri encoding', () {
+      String uriWithIssuerAndUriEncoding = 'otpauth://totp/Example%3Aalice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+          '&algorithm=SHA512&digits=8&period=60';
       Map<String, dynamic> map = parseQRCodeToMap(uriWithIssuerAndUriEncoding);
       expect(map[URI_LABEL], 'alice@google.com');
       expect(map[URI_ISSUER], 'Example');
     });
 
     test('Test parse issuer from param and label', () {
+      String uriWithIssuerParamAndIssuer = 'otpauth://totp/Example:alice@google.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ'
+          '&issuer=ACME%20Co&algorithm=SHA512&digits=8&period=60';
       Map<String, dynamic> map = parseQRCodeToMap(uriWithIssuerParamAndIssuer);
       expect(map[URI_LABEL], 'alice@google.com');
       expect(map[URI_ISSUER], 'Example');
@@ -95,7 +93,7 @@ void _testSerializingRSAKeys() {
 
       expect(serializeRSAPublicKeyPKCS1(deserializeRSAPublicKeyPKCS1(serializedPublicKey)), serializedPublicKey);
     }, timeout: const Timeout(Duration(seconds: 60)));
-  }, timeout: const Timeout(Duration(seconds: 300)));
+  });
 
   group('PKCS#8 format', () {
     test('Converting key', () async {
@@ -135,7 +133,7 @@ void _testSerializingRSAKeys() {
 
       expect(serializeRSAPublicKeyPKCS8(deserializeRSAPublicKeyPKCS8(serializedPublicKey)), serializedPublicKey);
     }, timeout: const Timeout(Duration(seconds: 60)));
-  }, timeout: const Timeout(Duration(seconds: 300)));
+  });
 
   group('Serialize RSA private keys', () {
     test('Converting key', () async {
@@ -149,11 +147,11 @@ void _testSerializingRSAKeys() {
       expect(privateKey.p, convertedKey.p);
       expect(privateKey.q, convertedKey.q);
     }, timeout: const Timeout(Duration(seconds: 60)));
-  }, timeout: const Timeout(Duration(seconds: 300)));
+  });
 }
 
 void _testParseOtpAuth() {
-  group('Parse HOTP and TOTP uri', () {
+  group('Parse TOTP uri', () {
     test('Test with wrong uri schema', () {
       expect(
           () => parseQRCodeToMap('http://totp/ACME%20Co:john@example.com?'
@@ -265,7 +263,8 @@ void _testParseOtpAuth() {
       expect(map[URI_SECRET], decodeSecretToUint8('HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ', Encodings.base32));
       expect(map[URI_PERIOD], 60);
     });
-
+  });
+  group('Parse HOTP uri', () {
     // HOTP specific
     test('Test with missing counter', () {
       expect(
@@ -291,7 +290,6 @@ void _testParseOtpAuth() {
       expect(map[URI_COUNTER], 5);
     });
   });
-
   group('2 Step Rollout', () {
     test('is2StepURI', () {
       expect(
@@ -340,8 +338,7 @@ void _testParseOtpAuth() {
           10000);
     });
   });
-
-  group('Push Token', () {
+  group('Parse Push Token uri', () {
     test('parse complete uri', () {
       Map<String, dynamic> uriMap = parsePiAuth(Uri.parse('otpauth://pipush/PIPU0001353C?url=https%3A//192.168.178.32/ttype/'
           'push'

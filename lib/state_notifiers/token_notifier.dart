@@ -12,7 +12,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 
 import '../model/push_request.dart';
 import '../model/states/token_state.dart';
@@ -26,6 +25,7 @@ import '../utils/logger.dart';
 import '../utils/network_utils.dart';
 import '../utils/parsing_utils.dart';
 import '../utils/push_provider.dart';
+import '../utils/riverpod_providers.dart';
 import '../utils/storage_utils.dart';
 import '../utils/utils.dart';
 import '../utils/view_utils.dart';

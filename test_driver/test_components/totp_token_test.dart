@@ -24,6 +24,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
+import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';

@@ -23,6 +23,7 @@ class TokenFolderState {
   }
 
   // replace all folders where the folderid is the same
+  // if the folderid is none, add it to the list
   TokenFolderState withUpdated({List<TokenFolder>? folders}) {
     final newFolders = List<TokenFolder>.from(this.folders);
     folders?.forEach((newFolder) {

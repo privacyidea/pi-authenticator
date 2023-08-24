@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+
 import '../utils/riverpod_providers.dart';
 
 part 'push_request.g.dart';
