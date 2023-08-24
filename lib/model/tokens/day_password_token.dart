@@ -5,7 +5,6 @@ import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
-import '../../utils/logger.dart';
 import '../../utils/utils.dart';
 import 'otp_token.dart';
 
@@ -18,22 +17,22 @@ class DayPasswordToken extends OTPToken {
   final Duration period;
 
   DayPasswordToken({
-    this.period = const Duration(hours: 24),
-    this.viewMode = DayPasswordTokenViewMode.VALIDFOR,
+    required Duration period,
     required super.label,
     required super.issuer,
     required super.id,
     required super.algorithm,
     required super.digits,
     required super.secret,
-    String? type,
+    this.viewMode = DayPasswordTokenViewMode.VALIDFOR,
+    String? type, // just for @JsonSerializable(): type of DayPasswordToken is always TokenTypes.DAYPASSWORD
     super.pin,
     super.tokenImage,
     super.sortIndex,
     super.isLocked,
     super.folderId,
-    super.isInEditMode,
-  }) : super(type: type ?? enumAsString(TokenTypes.DAYPASSWORD));
+  })  : period = period.inSeconds > 0 ? period : const Duration(hours: 24),
+        super(type: enumAsString(TokenTypes.DAYPASSWORD));
 
   @override
   DayPasswordToken copyWith({
@@ -50,7 +49,6 @@ class DayPasswordToken extends OTPToken {
     int? sortIndex,
     bool? isLocked,
     int? Function()? folderId,
-    bool? isInEditMode,
   }) =>
       DayPasswordToken(
         period: period ?? this.period,
@@ -67,7 +65,6 @@ class DayPasswordToken extends OTPToken {
         sortIndex: sortIndex ?? this.sortIndex,
         isLocked: isLocked ?? this.isLocked,
         folderId: folderId != null ? folderId.call() : this.folderId,
-        isInEditMode: isInEditMode ?? this.isInEditMode,
       );
 
   @override
@@ -93,18 +90,27 @@ class DayPasswordToken extends OTPToken {
   }
 
   factory DayPasswordToken.fromUriMap(Map<String, dynamic> uriMap) {
-    Logger.warning('PushToken.fromUriMap: ${uriMap[URI_IMAGE]}');
-    return DayPasswordToken(
-      label: uriMap[URI_LABEL],
-      issuer: uriMap[URI_ISSUER],
-      id: const Uuid().v4(),
-      algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
-      digits: uriMap[URI_DIGITS],
-      secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
-      type: uriMap[URI_TYPE],
-      period: Duration(seconds: uriMap[URI_PERIOD]),
-      tokenImage: uriMap[URI_IMAGE],
-    );
+    if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
+    if (uriMap[URI_PERIOD] < 1) throw ArgumentError('Period must be greater than 0');
+    if (uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
+    DayPasswordToken dayPasswordToken;
+    try {
+      dayPasswordToken = DayPasswordToken(
+        label: uriMap[URI_LABEL] ?? '',
+        issuer: uriMap[URI_ISSUER] ?? '',
+        id: const Uuid().v4(),
+        algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+        digits: uriMap[URI_DIGITS] ?? 6,
+        secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
+        period: Duration(seconds: uriMap[URI_PERIOD]),
+        tokenImage: uriMap[URI_IMAGE],
+        pin: uriMap[URI_PIN],
+        isLocked: uriMap[URI_PIN],
+      );
+    } catch (e) {
+      throw ArgumentError('Invalid URI: $e');
+    }
+    return dayPasswordToken;
   }
 
   factory DayPasswordToken.fromJson(Map<String, dynamic> json) => _$DayPasswordTokenFromJson(json);

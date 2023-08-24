@@ -49,8 +49,8 @@ enum DayPasswordTokenViewMode {
 
 enum PushTokenRollOutState {
   rolloutNotStarted,
-  generateingRSAKeyPair,
-  generateingRSAKeyPairFailed,
+  generatingRSAKeyPair,
+  generatingRSAKeyPairFailed,
   sendRSAPublicKey,
   sendRSAPublicKeyFailed,
   parsingResponse,
@@ -79,7 +79,7 @@ const String URI_ITERATIONS = 'URI_ITERATIONS';
 const String URI_SERIAL = 'URI_SERIAL';
 const String URI_ROLLOUT_URL = 'URI_ROLLOUT_URL';
 const String URI_TTL = 'URI_TTL';
-const String URI_ENROLLMENT_CREDENTIAL = 'URI_ENROLLMENT_CREDENTIALS';
+const String URI_ENROLLMENT_CREDENTIALS = 'URI_ENROLLMENT_CREDENTIALS';
 const String URI_SSL_VERIFY = 'URI_SSL_VERIFY';
 
 // Crypto stuff:

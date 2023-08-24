@@ -20,7 +20,6 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
       sortIndex: json['sortIndex'] as int?,
       isLocked: json['isLocked'] as bool? ?? false,
       folderId: json['folderId'] as int?,
-      isInEditMode: json['isInEditMode'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
@@ -31,7 +30,6 @@ Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
       'pin': instance.pin,
       'tokenImage': instance.tokenImage,
       'folderId': instance.folderId,
-      'isInEditMode': instance.isInEditMode,
       'sortIndex': instance.sortIndex,
       'type': instance.type,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm]!,

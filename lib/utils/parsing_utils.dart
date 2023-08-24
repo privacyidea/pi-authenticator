@@ -288,8 +288,8 @@ Map<String, dynamic> parsePiAuth(Uri uri) {
     throw ArgumentError.value(uri, 'uri', '[$ttlAsString] is not a valid value for parameter [ttl].');
   }
 
-  uriMap[URI_ENROLLMENT_CREDENTIAL] = uri.queryParameters['enrollment_credential'];
-  ArgumentError.checkNotNull(uriMap[URI_ENROLLMENT_CREDENTIAL], 'enrollment_credential');
+  uriMap[URI_ENROLLMENT_CREDENTIALS] = uri.queryParameters['enrollment_credential'];
+  ArgumentError.checkNotNull(uriMap[URI_ENROLLMENT_CREDENTIALS], 'enrollment_credential');
 
   uriMap[URI_SSL_VERIFY] = (uri.queryParameters['sslverify'] ?? '1') == '1';
 

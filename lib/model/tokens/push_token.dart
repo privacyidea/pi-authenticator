@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
@@ -17,13 +15,13 @@ part 'push_token.g.dart';
 
 @JsonSerializable()
 class PushToken extends Token {
-  final DateTime expirationDate;
+  final DateTime? expirationDate;
   final String serial;
 
   // Roll out
-  final bool? sslVerify;
+  final bool sslVerify;
   final String? enrollmentCredentials;
-  final Uri? url; // Full access to allow adding to legacy android tokens
+  final Uri? url;
   final bool isRolledOut;
   final PushTokenRollOutState rolloutState;
 
@@ -58,8 +56,7 @@ class PushToken extends Token {
 
   bool knowsRequestWithId(int id) {
     bool exists = pushRequests.any((element) => element.id == id);
-
-    return knownPushRequests.contains(id) || exists;
+    return exists || knownPushRequests.contains(id);
   }
 
   PushToken({
@@ -68,26 +65,28 @@ class PushToken extends Token {
     required super.label,
     required super.issuer,
     required super.id,
-    this.sslVerify,
     this.enrollmentCredentials,
     this.url,
     this.publicServerKey,
     this.publicTokenKey,
     this.privateTokenKey,
-    this.isRolledOut = false,
-    this.rolloutState = PushTokenRollOutState.rolloutNotStarted,
+    bool? isRolledOut,
+    bool? sslVerify,
+    PushTokenRollOutState? rolloutState,
     PushRequestQueue? pushRequests,
     CustomIntBuffer? knownPushRequests,
-    String? type,
+    String? type, // just for @JsonSerializable(): type of PushToken is always TokenTypes.PIPUSH
     super.sortIndex,
     super.tokenImage,
     super.folderId,
-    super.isInEditMode,
     super.isLocked,
-    super.pin = false,
-  })  : knownPushRequests = knownPushRequests ?? CustomIntBuffer(),
+    super.pin,
+  })  : isRolledOut = isRolledOut ?? false,
+        sslVerify = sslVerify ?? false,
+        rolloutState = rolloutState ?? PushTokenRollOutState.rolloutNotStarted,
+        knownPushRequests = knownPushRequests ?? CustomIntBuffer(),
         pushRequests = pushRequests ?? PushRequestQueue(),
-        super(type: type ?? enumAsString(TokenTypes.PIPUSH));
+        super(type: enumAsString(TokenTypes.PIPUSH));
 
   @override
   PushToken copyWith({
@@ -113,7 +112,6 @@ class PushToken extends Token {
     PushTokenRollOutState? rolloutState,
     CustomIntBuffer? knownPushRequests,
     int? Function()? folderId,
-    bool? isInEditMode,
   }) {
     return PushToken(
       label: label ?? this.label,
@@ -136,7 +134,6 @@ class PushToken extends Token {
       rolloutState: rolloutState ?? this.rolloutState,
       knownPushRequests: knownPushRequests ?? this.knownPushRequests,
       folderId: folderId != null ? folderId() : this.folderId,
-      isInEditMode: isInEditMode ?? this.isInEditMode,
     );
   }
 
@@ -165,19 +162,25 @@ class PushToken extends Token {
   }
 
   factory PushToken.fromUriMap(Map<String, dynamic> uriMap) {
-    log(uriMap.toString());
-    return PushToken(
-      serial: uriMap[URI_SERIAL] ?? '',
-      label: uriMap[URI_LABEL] ?? '',
-      issuer: uriMap[URI_ISSUER] ?? '',
-      id: const Uuid().v4(),
-      sslVerify: uriMap[URI_SSL_VERIFY],
-      expirationDate: DateTime.now().add(Duration(minutes: uriMap[URI_TTL] ?? 10)),
-      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-      url: uriMap[URI_ROLLOUT_URL] != null ? Uri.parse(uriMap[URI_ROLLOUT_URL]) : null,
-      pin: uriMap[URI_PIN],
-      tokenImage: uriMap[URI_IMAGE],
-    );
+    PushToken pushToken;
+    try {
+      pushToken = PushToken(
+        serial: uriMap[URI_SERIAL] ?? '',
+        label: uriMap[URI_LABEL] ?? '',
+        issuer: uriMap[URI_ISSUER] ?? '',
+        id: const Uuid().v4(),
+        sslVerify: uriMap[URI_SSL_VERIFY],
+        expirationDate: uriMap[URI_TTL] != null ? DateTime.now().add(Duration(minutes: uriMap[URI_TTL])) : null,
+        enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIALS],
+        url: uriMap[URI_ROLLOUT_URL],
+        tokenImage: uriMap[URI_IMAGE],
+        pin: uriMap[URI_PIN],
+        isLocked: uriMap[URI_PIN],
+      );
+    } catch (e) {
+      throw ArgumentError('Invalid URI: $e');
+    }
+    return pushToken;
   }
 
   factory PushToken.fromJson(Map<String, dynamic> json) {
@@ -185,7 +188,7 @@ class PushToken extends Token {
     newToken.pushRequests.removeWhere((request) => request.expirationDate.isBefore(DateTime.now()));
     final currentRolloutState = switch (newToken.rolloutState) {
       PushTokenRollOutState.rolloutNotStarted => PushTokenRollOutState.rolloutNotStarted,
-      PushTokenRollOutState.generateingRSAKeyPair || PushTokenRollOutState.generateingRSAKeyPairFailed => PushTokenRollOutState.generateingRSAKeyPairFailed,
+      PushTokenRollOutState.generatingRSAKeyPair || PushTokenRollOutState.generatingRSAKeyPairFailed => PushTokenRollOutState.generatingRSAKeyPairFailed,
       PushTokenRollOutState.sendRSAPublicKey || PushTokenRollOutState.sendRSAPublicKeyFailed => PushTokenRollOutState.sendRSAPublicKeyFailed,
       PushTokenRollOutState.parsingResponse || PushTokenRollOutState.parsingResponseFailed => PushTokenRollOutState.parsingResponseFailed,
       PushTokenRollOutState.rolloutComplete => PushTokenRollOutState.rolloutComplete,

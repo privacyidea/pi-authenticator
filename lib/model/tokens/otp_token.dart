@@ -8,31 +8,19 @@ abstract class OTPToken extends Token {
   String get otpValue; // the current otp value
 
   const OTPToken({
-    required String label,
-    required String issuer,
-    required String id,
-    required String type,
     required this.algorithm,
     required this.digits,
     required this.secret,
-    required super.pin,
-    String? tokenImage,
-    int? sortIndex,
-    bool isLocked = false,
-    bool canToggleLock = true,
-    int? folderId,
-    bool isInEditMode = false,
-  }) : super(
-          label: label,
-          issuer: issuer,
-          id: id,
-          type: type,
-          tokenImage: tokenImage,
-          sortIndex: sortIndex,
-          isLocked: isLocked,
-          folderId: folderId,
-          isInEditMode: isInEditMode,
-        );
+    required super.label,
+    required super.issuer,
+    required super.id,
+    required super.type,
+    super.pin,
+    super.tokenImage,
+    super.sortIndex,
+    super.isLocked,
+    super.folderId,
+  });
 
   @override
   OTPToken copyWith({
@@ -47,7 +35,6 @@ abstract class OTPToken extends Token {
     int? sortIndex,
     bool? isLocked,
     int? Function()? folderId,
-    bool? isInEditMode,
   });
 
   @override

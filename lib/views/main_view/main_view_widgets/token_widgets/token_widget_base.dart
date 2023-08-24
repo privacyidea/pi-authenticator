@@ -40,7 +40,7 @@ class TokenWidgetBase extends ConsumerWidget {
       deleteAction ?? DefaultDeleteAction(token: token, key: Key('${token.id}deleteAction')),
       editAction ?? DefaultEditAction(token: token, key: Key('${token.id}editAction')),
     ];
-    if ((token.pin == null || token.pin == false)) {
+    if ((token.pin == false)) {
       actions.add(
         lockAction ?? DefaultLockAction(token: token, key: Key('${token.id}lockAction')),
       );

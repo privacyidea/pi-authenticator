@@ -224,7 +224,7 @@ abstract class PushProvider {
     };
 
     try {
-      Response response = await doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify!);
+      Response response = await doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify);
 
       if (response.statusCode == 200) {
         // The signature of this message must not be verified as each push
@@ -310,7 +310,7 @@ abstract class PushProvider {
         return;
       }
       Response response = await doPost(
-          sslVerify: p.sslVerify!, url: p.url!, body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
+          sslVerify: p.sslVerify, url: p.url!, body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
 
       if (response.statusCode == 200) {
         Logger.info('Updating firebase token for push token: ${p.serial} succeeded!', name: 'push_provider.dart#_updateFirebaseToken');

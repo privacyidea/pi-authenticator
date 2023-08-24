@@ -15,36 +15,19 @@ class HOTPToken extends OTPToken {
 
   HOTPToken({
     this.counter = 0,
-    required String label,
-    required String issuer,
-    required String id,
-    required Algorithms algorithm,
-    required int digits,
-    required String secret,
-    String? type,
-    bool? pin,
-    String? tokenImage,
-    int? sortIndex,
-    bool isLocked = false,
-    bool canToggleLock = true,
-    int? folderId,
-    bool isInEditMode = false,
-  }) : super(
-          label: label,
-          issuer: issuer,
-          id: id,
-          type: type ?? enumAsString(TokenTypes.HOTP),
-          algorithm: algorithm,
-          digits: digits,
-          secret: secret,
-          pin: pin,
-          tokenImage: tokenImage,
-          sortIndex: sortIndex,
-          isLocked: isLocked,
-          canToggleLock: canToggleLock,
-          folderId: folderId,
-          isInEditMode: isInEditMode,
-        );
+    required super.label,
+    required super.issuer,
+    required super.id,
+    required super.algorithm,
+    required super.digits,
+    required super.secret,
+    String? type, // just for @JsonSerializable(): type of HOTPToken is always TokenTypes.HOTP
+    super.pin,
+    super.tokenImage,
+    super.sortIndex,
+    super.isLocked,
+    super.folderId,
+  }) : super(type: enumAsString(TokenTypes.HOTP));
 
   @override
   String get otpValue => OTPLibrary.OTP.generateHOTPCodeString(
@@ -71,7 +54,6 @@ class HOTPToken extends OTPToken {
     int? sortIndex,
     bool? isLocked,
     int? Function()? folderId,
-    bool? isInEditMode,
   }) =>
       HOTPToken(
         counter: counter ?? this.counter,
@@ -86,7 +68,6 @@ class HOTPToken extends OTPToken {
         sortIndex: sortIndex ?? this.sortIndex,
         isLocked: isLocked ?? this.isLocked,
         folderId: folderId != null ? folderId() : this.folderId,
-        isInEditMode: isInEditMode ?? this.isInEditMode,
       );
 
   @override
@@ -94,17 +75,28 @@ class HOTPToken extends OTPToken {
     return 'H${super.toString()}counter: $counter}';
   }
 
-  factory HOTPToken.fromUriMap(Map<String, dynamic> uriMap) => HOTPToken(
-        label: uriMap[URI_LABEL],
-        issuer: uriMap[URI_ISSUER],
+  factory HOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
+    if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
+    if (uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
+    HOTPToken hotpToken;
+    try {
+      hotpToken = HOTPToken(
+        label: uriMap[URI_LABEL] ?? '',
+        issuer: uriMap[URI_ISSUER] ?? '',
         id: const Uuid().v4(),
         algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
-        digits: uriMap[URI_DIGITS],
+        digits: uriMap[URI_DIGITS] ?? 6,
         secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
         counter: uriMap[URI_COUNTER],
-        type: uriMap[URI_TYPE],
         tokenImage: uriMap[URI_IMAGE],
+        pin: uriMap[URI_PIN],
+        isLocked: uriMap[URI_PIN],
       );
+    } catch (e) {
+      throw ArgumentError('Invalid URI: $e');
+    }
+    return hotpToken;
+  }
 
   factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json);
 
