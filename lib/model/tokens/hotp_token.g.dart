@@ -18,7 +18,7 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
       pin: json['pin'] as bool?,
       tokenImage: json['tokenImage'] as String?,
       sortIndex: json['sortIndex'] as int?,
-      isLocked: json['isLocked'] as bool? ?? false,
+      isLocked: json['isLocked'] as bool?,
       folderId: json['folderId'] as int?,
     );
 
