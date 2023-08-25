@@ -151,14 +151,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
         return;
       }
 
-      if (newToken.pin != null && newToken.pin != false) {
-        Logger.info(
-          'New token has a pin. Locking token.',
-          name: 'token_notifier.dart#token_notifier',
-        );
-        newToken = newToken.copyWith(isLocked: true);
-      }
-
       if (newToken is PushToken && state.tokens.contains(newToken)) {
         showMessage(message: 'A token with the serial ${newToken.serial} already exists!', duration: const Duration(seconds: 2));
         return;
@@ -190,7 +182,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
           '${pr.sslVerify ? '1' : '0'}';
 
       // Re-add url and sslverify to android legacy tokens:
-      if (token.url == null || token.sslVerify == null) {
+      if (token.url == null) {
         token = token.copyWith(url: pr.uri, sslVerify: pr.sslVerify);
       }
 
@@ -240,14 +232,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
     token = getTokenFromId(token.id) as PushToken? ?? token;
     if (token.isRolledOut) return true;
     if (token.rolloutState != PushTokenRollOutState.rolloutNotStarted &&
-        token.rolloutState != PushTokenRollOutState.generateingRSAKeyPairFailed &&
+        token.rolloutState != PushTokenRollOutState.generatingRSAKeyPairFailed &&
         token.rolloutState != PushTokenRollOutState.sendRSAPublicKeyFailed &&
         token.rolloutState != PushTokenRollOutState.parsingResponseFailed) {
       Logger.info('Ignoring rollout request: Rollout of token ${token.serial} already started. Tokenstate: ${token.rolloutState} ',
           name: 'token_widgets.dart#rolloutPushToken');
       return false;
     }
-    if (token.expirationDate.isBefore(DateTime.now())) {
+    if (token.expirationDate?.isBefore(DateTime.now()) == true) {
       Logger.info('Ignoring rollout request: Token ${token.serial} is expired. ', name: 'token_widgets.dart#rolloutPushToken');
       showMessage(
           message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutTokenExpired(token.label), duration: const Duration(seconds: 3));
@@ -255,11 +247,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
       return false;
     }
     if (Platform.isIOS) {
-      await dummyRequest(url: token.url!, sslVerify: token.sslVerify!);
+      await dummyRequest(url: token.url!, sslVerify: token.sslVerify);
     }
 
     if (token.privateTokenKey == null) {
-      updateToken(token.copyWith(rolloutState: PushTokenRollOutState.generateingRSAKeyPair));
+      updateToken(token.copyWith(rolloutState: PushTokenRollOutState.generatingRSAKeyPair));
       try {
         final keyPair = await generateRSAKeyPair();
         token = token.withPrivateTokenKey(keyPair.privateKey);
@@ -269,7 +261,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
         checkNotificationPermission();
       } catch (e, s) {
         Logger.warning('Error while generating RSA key pair.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
-        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.generateingRSAKeyPairFailed));
+        updateToken(token.copyWith(rolloutState: PushTokenRollOutState.generatingRSAKeyPairFailed));
         return false;
       }
     }
@@ -277,7 +269,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     updateToken(token.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKey));
     try {
       // TODO What to do with poll only tokens if google-services is used?
-      Response response = await doPost(sslVerify: token.sslVerify!, url: token.url!, body: {
+      Response response = await doPost(sslVerify: token.sslVerify, url: token.url!, body: {
         'enrollment_credential': token.enrollmentCredentials,
         'serial': token.serial,
         'fbtoken': await PushProvider.getFBToken(),

@@ -15,10 +15,9 @@ abstract class Token with SortableMixin {
   final String issuer; // The issuer of this token, currently unused.
   final String id; // this is the identifier of the token
   final bool isLocked;
-  final bool? pin;
+  final bool pin;
   final String? tokenImage;
   final int? folderId;
-  final bool isInEditMode;
   @override
   final int? sortIndex;
 
@@ -47,13 +46,14 @@ abstract class Token with SortableMixin {
     required this.issuer,
     required this.id,
     required this.type,
-    this.pin,
     this.tokenImage,
     this.sortIndex,
-    this.isLocked = false,
     this.folderId,
-    this.isInEditMode = false,
-  });
+    bool? pin,
+    bool? isLocked,
+  })  : // when pin is true isLocked is also true otherwise it's the value of isLocked if it is null it's false
+        isLocked = pin != null && pin ? true : isLocked ?? false,
+        pin = pin ?? false;
 
   @override
   Token copyWith({
@@ -65,11 +65,10 @@ abstract class Token with SortableMixin {
     String? tokenImage,
     int? sortIndex,
     int? Function()? folderId,
-    bool? isInEditMode,
   });
 
   @override
   String toString() {
-    return 'Token{label: $label, issuer: $issuer, id: $id, _sLocked: $isLocked, pin: $pin, tokenImage: $tokenImage, sortIndex: $sortIndex, type: $type, folderId: $folderId, isInEditMode: $isInEditMode';
+    return 'Token{label: $label, issuer: $issuer, id: $id, _sLocked: $isLocked, pin: $pin, tokenImage: $tokenImage, sortIndex: $sortIndex, type: $type, folderId: $folderId';
   }
 }

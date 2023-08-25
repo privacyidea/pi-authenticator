@@ -49,10 +49,12 @@ class _SendErrorDialogState extends State<SendErrorDialog> {
                           scrollDirection: Axis.vertical,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              errorLog.data?.toString() ?? '',
-                              style: const TextStyle(fontFamily: 'monospace', fontSize: 8),
-                            ),
+                            child: errorLog.data != null
+                                ? Text(
+                                    errorLog.data.toString(),
+                                    style: const TextStyle(fontFamily: 'monospace', fontSize: 8),
+                                  )
+                                : const CircularProgressIndicator(),
                           ),
                         ),
                       ),
