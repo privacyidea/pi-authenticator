@@ -34,7 +34,7 @@ import '../widgets/two_step_dialog.dart';
 class TokenNotifier extends StateNotifier<TokenState> {
   TokenNotifier({TokenState? initialState})
       : super(
-          initialState ?? const TokenState(),
+          initialState ?? TokenState(),
         ) {
     _loadTokenList();
   }
