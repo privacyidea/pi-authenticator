@@ -6,22 +6,24 @@ import '../tokens/token.dart';
 @immutable
 class TokenState {
   final List<Token> tokens;
-  const TokenState({this.tokens = const <Token>[]});
+  TokenState({List<Token> tokens = const []}) : tokens = List<Token>.from(tokens) {
+    _sort(this.tokens);
+  }
   TokenState repaceList({List<Token>? tokens}) => TokenState(tokens: tokens ?? this.tokens);
 
-  static _sort(List<Token> tokens) => tokens.sort((a, b) => (a.sortIndex ?? double.infinity).compareTo(b.sortIndex ?? double.infinity));
+  static void _sort(List<Token> tokens) {
+    tokens.sort((a, b) => (a.sortIndex ?? double.infinity).compareTo(b.sortIndex ?? double.infinity));
+  }
 
   TokenState withToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     newTokens.add(token);
-    _sort(newTokens);
     return TokenState(tokens: newTokens);
   }
 
   TokenState withTokens(List<Token> tokens) {
     final newTokens = List<Token>.from(this.tokens);
     newTokens.addAll(tokens);
-    _sort(newTokens);
     return TokenState(tokens: newTokens);
   }
 
@@ -42,7 +44,6 @@ class TokenState {
     final index = newTokens.indexWhere((element) => element.id == token.id);
     if (index == -1) return this;
     newTokens[index] = token;
-    _sort(newTokens);
     return TokenState(tokens: newTokens);
   }
 
@@ -52,7 +53,6 @@ class TokenState {
       final index = newTokens.indexWhere((element) => element.id == token.id);
       newTokens[index] = token;
     }
-    _sort(newTokens);
     return TokenState(tokens: newTokens);
   }
 

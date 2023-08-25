@@ -52,11 +52,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue),
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        ),
+        content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue)),
       ),
     );
     Future.delayed(const Duration(seconds: 5), () {
