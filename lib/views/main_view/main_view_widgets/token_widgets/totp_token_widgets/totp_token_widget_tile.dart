@@ -33,11 +33,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue),
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        ),
+        content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue)),
       ),
     );
     Future.delayed(const Duration(seconds: 5), () {
@@ -55,6 +51,17 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
     animation.forward(from: 1 - widget.token.secondsUntilNextOTP / widget.token.period);
     _countDown(0);
     ref.read(appStateProvider.notifier).addListener(_onAppStateChange);
+    isHidden.addListener(() {
+      if (mounted) {
+        setState(() {
+          if (isHidden.value == false) {
+            Future.delayed(Duration(milliseconds: (widget.token.period * 1000 + (widget.token.secondsUntilNextOTP * 1000).toInt())), () {
+              isHidden.value = true;
+            });
+          }
+        });
+      }
+    });
   }
 
   void _onAppStateChange(AppState state) {

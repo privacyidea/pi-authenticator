@@ -29,37 +29,20 @@ class TOTPToken extends OTPToken {
 
   TOTPToken({
     required int period,
-    required String label,
-    required String issuer,
-    required String id,
-    required Algorithms algorithm,
-    required int digits,
-    required String secret,
-    String? type,
-    bool? pin,
-    String? tokenImage,
-    int? sortIndex,
-    bool isLocked = false,
-    bool canToggleLock = true,
-    int? folderId,
-    bool isInEditMode = false,
+    required super.label,
+    required super.issuer,
+    required super.id,
+    required super.algorithm,
+    required super.digits,
+    required super.secret,
+    String? type, // just for @JsonSerializable(): type of TOTPToken is always TokenTypes.TOTP
+    super.pin,
+    super.tokenImage,
+    super.sortIndex,
+    super.isLocked,
+    super.folderId,
   })  : period = period < 1 ? 30 : period, // period must be greater than 0 otherwise IntegerDivisionByZeroException is thrown in OTP.generateTOTPCodeString
-        super(
-          label: label,
-          issuer: issuer,
-          id: id,
-          algorithm: algorithm,
-          digits: digits,
-          secret: secret,
-          type: type ?? enumAsString(TokenTypes.TOTP),
-          pin: pin,
-          tokenImage: tokenImage,
-          sortIndex: sortIndex,
-          isLocked: isLocked,
-          canToggleLock: canToggleLock,
-          folderId: folderId,
-          isInEditMode: isInEditMode,
-        );
+        super(type: enumAsString(TokenTypes.TOTP));
 
   @override
   TOTPToken copyWith({
@@ -75,7 +58,6 @@ class TOTPToken extends OTPToken {
     int? sortIndex,
     bool? isLocked,
     int? Function()? folderId,
-    bool? isInEditMode,
   }) {
     return TOTPToken(
       label: label ?? this.label,
@@ -90,7 +72,6 @@ class TOTPToken extends OTPToken {
       sortIndex: sortIndex ?? this.sortIndex,
       isLocked: isLocked ?? this.isLocked,
       folderId: folderId != null ? folderId() : this.folderId,
-      isInEditMode: isInEditMode ?? this.isInEditMode,
     );
   }
 
@@ -102,17 +83,25 @@ class TOTPToken extends OTPToken {
   factory TOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
     if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
     if (uriMap[URI_PERIOD] < 1) throw ArgumentError('Period must be greater than 0');
-    return TOTPToken(
-      label: uriMap[URI_LABEL] ?? '',
-      issuer: uriMap[URI_ISSUER] ?? '',
-      id: const Uuid().v4(),
-      algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
-      digits: uriMap[URI_DIGITS] ?? 6,
-      tokenImage: uriMap[URI_IMAGE],
-      secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
-      period: uriMap[URI_PERIOD] ?? 30,
-      pin: uriMap[URI_PIN],
-    );
+    if (uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
+    TOTPToken totpToken;
+    try {
+      totpToken = TOTPToken(
+        label: uriMap[URI_LABEL] ?? '',
+        issuer: uriMap[URI_ISSUER] ?? '',
+        id: const Uuid().v4(),
+        algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+        digits: uriMap[URI_DIGITS] ?? 6,
+        tokenImage: uriMap[URI_IMAGE],
+        secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
+        period: uriMap[URI_PERIOD] ?? 30,
+        pin: uriMap[URI_PIN],
+        isLocked: uriMap[URI_PIN],
+      );
+    } catch (e) {
+      throw ArgumentError('Invalid URI: $e');
+    }
+    return totpToken;
   }
 
   factory TOTPToken.fromJson(Map<String, dynamic> json) => _$TOTPTokenFromJson(json);

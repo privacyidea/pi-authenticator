@@ -22,7 +22,7 @@ class PushTokenWidget extends TokenWidget {
   final SortableMixin? previousSortable;
   final bool withDivider;
   bool get rolloutFailed => switch (token.rolloutState) {
-        PushTokenRollOutState.generateingRSAKeyPairFailed => true,
+        PushTokenRollOutState.generatingRSAKeyPairFailed => true,
         PushTokenRollOutState.sendRSAPublicKeyFailed => true,
         PushTokenRollOutState.parsingResponseFailed => true,
         _ => false,

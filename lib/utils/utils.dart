@@ -91,8 +91,8 @@ void checkNotificationPermission() async {
 
 String rolloutMsg(PushTokenRollOutState rolloutState, BuildContext context) => switch (rolloutState) {
       PushTokenRollOutState.rolloutNotStarted => AppLocalizations.of(context)!.rollingOut,
-      PushTokenRollOutState.generateingRSAKeyPair => AppLocalizations.of(context)!.generatingRSAKeyPair,
-      PushTokenRollOutState.generateingRSAKeyPairFailed => AppLocalizations.of(context)!.generatingRSAKeyPairFailed,
+      PushTokenRollOutState.generatingRSAKeyPair => AppLocalizations.of(context)!.generatingRSAKeyPair,
+      PushTokenRollOutState.generatingRSAKeyPairFailed => AppLocalizations.of(context)!.generatingRSAKeyPairFailed,
       PushTokenRollOutState.sendRSAPublicKey => AppLocalizations.of(context)!.sendingRSAPublicKey,
       PushTokenRollOutState.sendRSAPublicKeyFailed => AppLocalizations.of(context)!.sendingRSAPublicKeyFailed,
       PushTokenRollOutState.parsingResponse => AppLocalizations.of(context)!.parsingResponse,

@@ -49,8 +49,8 @@ enum DayPasswordTokenViewMode {
 
 enum PushTokenRollOutState {
   rolloutNotStarted,
-  generateingRSAKeyPair,
-  generateingRSAKeyPairFailed,
+  generatingRSAKeyPair,
+  generatingRSAKeyPairFailed,
   sendRSAPublicKey,
   sendRSAPublicKeyFailed,
   parsingResponse,
