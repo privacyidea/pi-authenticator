@@ -2,7 +2,7 @@
 
 ## [4.2.0] - TBD
  - Support for daypasswordtokens
- - Added Folders to group tokens
+ - Added folders to group tokens
  - Added an errorlog menu to settings
  - Token can be sorted per drag and drop now to work with folders
  - Replaced the button to view the onboarding with a button to create a new folder
