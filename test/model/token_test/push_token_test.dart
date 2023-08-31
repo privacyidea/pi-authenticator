@@ -95,7 +95,7 @@ void _testPushToken() {
       expect(copy.expirationDate, DateTime(2016, 8, 6, 16, 29));
       expect(copy.label, 'labelCopy');
       expect(copy.issuer, 'issuerCopy');
-      expect(copy.label, 'idCopy');
+      expect(copy.id, 'idCopy');
       expect(copy.sslVerify, false);
       expect(copy.enrollmentCredentials, 'enrollmentCredentialsCopy');
       expect(copy.url, Uri.parse('http://www.example.com/copy'));
@@ -234,7 +234,7 @@ void _testPushToken() {
       expect(token.url, Uri.parse('http://www.example.com'));
       expect(token.isRolledOut, true);
       expect(token.rolloutState,
-          PushTokenRollOutState.generateingRSAKeyPairFailed); // When loading from json, an processing state should be converted to a failed state.
+          PushTokenRollOutState.generatingRSAKeyPairFailed); // When loading from json, an processing state should be converted to a failed state.
       expect(token.publicServerKey, 'publicServerKey');
       expect(token.privateTokenKey, 'privateTokenKey');
       expect(token.publicTokenKey, 'publicTokenKey');
@@ -276,7 +276,7 @@ void _testPushToken() {
           'URI_ISSUER': 'issuer',
           'URI_SERIAL': 'serial',
           'URI_SSL_VERIFY': false,
-          'URI_ENROLLMENT_CREDENTIALS': 'enrollmentCredentials',
+          'URI_ENROLLMENT_CREDENTIAL': 'enrollmentCredentials',
           'URI_ROLLOUT_URL': Uri.parse('http://www.example.com'),
           'URI_TTL': 10,
         };

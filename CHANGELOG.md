@@ -1,10 +1,10 @@
 # Changelog
 
 ## [4.2.0] - TBD
- - Supports now daypasswordtokens
- - Added the possibility to add Folders wich can be used to group tokens
+ - Supports now daypassword token
+ - Added the possibility to add Folders wich can be used to group token
  - Added an errorlog menu entry to the settings
- - Changed the way to sort tokens. Now it is per drag and drop to support the new folders
+ - Changed the way to sort token. Now it is per drag and drop to support the new folders
  - Replaced the button to view the onboarding with a button to create a new folder
  - Replaced the splashscreen with a new one
  - Removed migration option from settings

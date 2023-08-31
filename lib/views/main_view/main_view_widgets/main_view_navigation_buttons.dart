@@ -39,7 +39,7 @@ class MainViewNavigationButtions extends StatelessWidget {
                 onPressed: () {
                   /// Open the QR-code scanner and call `_handleOtpAuth`, with the scanned code as the argument.
                   Navigator.pushNamed(context, QRScannerView.routeName).then((qrCode) {
-                    if (qrCode != null) globalRef?.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: qrCode as String, context: context);
+                    if (qrCode != null) globalRef?.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: qrCode as String);
                   });
                 },
                 tooltip: AppLocalizations.of(context)!.scanQrCode,

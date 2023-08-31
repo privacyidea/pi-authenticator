@@ -52,7 +52,7 @@ class DeleteTokenFolderAction extends StatelessWidget {
                 for (var i = 0; i < tokens.length; i++) {
                   tokens[i] = tokens[i].copyWith(folderId: () => null);
                 }
-                globalRef?.read(tokenProvider.notifier).updateTokens(tokens);
+                globalRef?.read(tokenProvider.notifier).addOrReplaceTokens(tokens);
                 globalRef?.read(tokenFolderProvider.notifier).removeFolder(folder);
                 Navigator.of(context).pop();
               },

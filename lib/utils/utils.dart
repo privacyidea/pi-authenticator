@@ -1,5 +1,3 @@
-// ignore_for_file: library_prefixes
-
 /*
   privacyIDEA Authenticator
 
@@ -20,8 +18,12 @@
   limitations under the License.
 */
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'identifiers.dart';
@@ -79,13 +81,13 @@ bool equalsIgnoreCase(String s1, String s2) {
 
 /// If permission is already given, this function does nothing
 void checkNotificationPermission() async {
+  if (!Platform.isAndroid && !Platform.isIOS) return;
   var status = await Permission.notification.status;
   // TODO what to do if permanently denied?
   // Add a dialog before requesting?
-  if (!status.isPermanentlyDenied) {
-    if (status.isDenied) {
-      await Permission.notification.request();
-    }
+  if (status.isPermanentlyDenied) return;
+  if (status.isDenied) {
+    await Permission.notification.request();
   }
 }
 
@@ -99,3 +101,81 @@ String rolloutMsg(PushTokenRollOutState rolloutState, BuildContext context) => s
       PushTokenRollOutState.parsingResponseFailed => AppLocalizations.of(context)!.parsingResponseFailed,
       PushTokenRollOutState.rolloutComplete => AppLocalizations.of(context)!.rolloutCompleted,
     };
+
+String? getErrorMessageFromResponse(Response response) {
+  String body = response.body;
+  String? errorMessage;
+  try {
+    final json = jsonDecode(body) as Map<String, dynamic>;
+    errorMessage = json['result']?['error']?['message'] as String?;
+  } catch (e) {
+    errorMessage = null;
+  }
+  if (errorMessage == null) {
+    final statusMessage = _statusMessageFromCode[response.statusCode];
+    if (statusMessage != null) {
+      errorMessage = '${response.statusCode}: $statusMessage';
+    } else {
+      errorMessage = 'Status Code: ${response.statusCode}';
+    }
+  }
+  return errorMessage;
+}
+
+Map<int, String> _statusMessageFromCode = {
+  100: "Continue",
+  101: "Switching Protocols",
+  102: "Processing",
+  200: "OK",
+  201: "Created",
+  202: "Accepted",
+  203: "Non Authoritative Information",
+  204: "No Content",
+  205: "Reset Content",
+  206: "Partial Content",
+  207: "Multi-Status",
+  300: "Multiple Choices",
+  301: "Moved Permanently",
+  302: "Moved Temporarily",
+  303: "See Other",
+  304: "Not Modified",
+  305: "Use Proxy",
+  307: "Temporary Redirect",
+  308: "Permanent Redirect",
+  400: "Bad Request",
+  401: "Unauthorized",
+  402: "Payment Required",
+  403: "Forbidden",
+  404: "Not Found",
+  405: "Method Not Allowed",
+  406: "Not Acceptable",
+  407: "Proxy Authentication Required",
+  408: "Request Timeout",
+  409: "Conflict",
+  410: "Gone",
+  411: "Length Required",
+  412: "Precondition Failed",
+  413: "Request Entity Too Large",
+  414: "Request-URI Too Long",
+  415: "Unsupported Media Type",
+  416: "Requested Range Not Satisfiable",
+  417: "Expectation Failed",
+  418: "I'm a teapot",
+  419: "Insufficient Space on Resource",
+  420: "Method Failure",
+  422: "Unprocessable Entity",
+  423: "Locked",
+  424: "Failed Dependency",
+  428: "Precondition Required",
+  429: "Too Many Requests",
+  431: "Request Header Fields Too Large",
+  451: "Unavailable For Legal Reasons",
+  500: "Internal Server Error",
+  501: "Not Implemented",
+  502: "Bad Gateway",
+  503: "Service Unavailable",
+  504: "Gateway Timeout",
+  505: "HTTP Version Not Supported",
+  507: "Insufficient Storage",
+  511: "Network Authentication Required"
+};

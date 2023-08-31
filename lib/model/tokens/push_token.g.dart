@@ -8,14 +8,14 @@ part of 'push_token.dart';
 
 PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       serial: json['serial'] as String,
-      expirationDate: json['expirationDate'] == null
-          ? null
-          : DateTime.parse(json['expirationDate'] as String),
       label: json['label'] as String,
       issuer: json['issuer'] as String,
       id: json['id'] as String,
-      enrollmentCredentials: json['enrollmentCredentials'] as String?,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
+      expirationDate: json['expirationDate'] == null
+          ? null
+          : DateTime.parse(json['expirationDate'] as String),
+      enrollmentCredentials: json['enrollmentCredentials'] as String?,
       publicServerKey: json['publicServerKey'] as String?,
       publicTokenKey: json['publicTokenKey'] as String?,
       privateTokenKey: json['privateTokenKey'] as String?,

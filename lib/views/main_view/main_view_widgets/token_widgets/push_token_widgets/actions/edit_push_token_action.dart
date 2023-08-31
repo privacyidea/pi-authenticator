@@ -76,7 +76,7 @@ class EditPushTokenAction extends TokenAction {
                     url: Uri.parse(pushUrl.text),
                     tokenImage: imageUrl.text,
                   );
-                  globalRef?.read(tokenProvider.notifier).updateToken(newToken);
+                  globalRef?.read(tokenProvider.notifier).addOrReplaceToken(newToken);
                   Navigator.of(context).pop();
                 }),
           ],
@@ -156,7 +156,7 @@ class EditPushTokenAction extends TokenAction {
                           );
                         }
                       },
-                      future: StorageUtil.getCurrentFirebaseToken(),
+                      future: TokenRepository.getCurrentFirebaseToken(),
                     ),
                   ],
                 ),

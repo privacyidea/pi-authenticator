@@ -29,7 +29,9 @@ import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
 // TODO How to test the behavior of this class?
-class StorageUtil {
+class TokenRepository {
+  const TokenRepository();
+
   // Use this to lock critical sections of code.
   static final Mutex _m = Mutex();
 
@@ -45,19 +47,51 @@ class StorageUtil {
   // TOKENS
   // ###########################################################################
 
-  /// Saves [token] securely on the device, if [token] already exists
-  /// in the storage the existing value is overwritten.
-  static Future<void> saveOrReplaceToken(Token token) async {
-    await _storage.write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
-    Logger.info('Token saved: ${token.id} to secure storage');
+  Future<bool> _saveOrReplaceToken(Token token) async {
+    try {
+      await _storage.write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
+    } catch (_) {
+      return false;
+    }
+    return true;
   }
 
-  static Future<Token?> loadToken(String id) async => (await loadAllTokens()).firstWhereOrNull((t) => t.id == id);
+  /// Saves [token] securely on the device, if [token] already exists
+  /// in the storage the existing value is overwritten.
+  Future<bool> saveOrReplaceToken(Token token) async {
+    if (await _saveOrReplaceToken(token)) {
+      Logger.info('Token saved: ${token.id} to secure storage');
+      return true;
+    } else {
+      Logger.warning('Could not save token to secure storage',
+          name: 'storage_utils.dart#saveOrReplaceToken', error: 'Failed Token: $token', stackTrace: StackTrace.current);
+      return false;
+    }
+  }
+
+  /// Saves [token]s securely on the device, if [token] already exists
+  /// in the storage the existing value is overwritten.
+  /// Returns all tokens that could not be saved.
+  Future<List<Token>> saveOrReplaceTokens(List<Token> tokens) async {
+    final failedTokens = <Token>[];
+    for (var element in tokens) {
+      if (!await _saveOrReplaceToken(element)) {
+        failedTokens.add(element);
+      }
+    }
+    if (failedTokens.isNotEmpty) {
+      Logger.warning('Could not save all tokens to secure storage',
+          name: 'storage_utils.dart#saveOrReplaceTokens', error: 'Failed tokens: $failedTokens', stackTrace: StackTrace.current);
+    }
+    return failedTokens;
+  }
+
+  Future<Token?> loadToken(String id) async => (await loadAllTokens()).firstWhereOrNull((t) => t.id == id);
 
   /// Returns a list of all tokens that are saved in the secure storage of
   /// this device.
   /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
-  static Future<List<Token>> loadAllTokens() async {
+  Future<List<Token>> loadAllTokens() async {
     Map<String, String> keyValueMap = await _storage.readAll();
 
     List<Token> tokenList = [];
@@ -110,9 +144,15 @@ class StorageUtil {
   }
 
   /// Deletes the saved json of [token] from the secure storage.
-  static Future<void> deleteToken(Token token) async {
-    _storage.delete(key: _GLOBAL_PREFIX + token.id);
+  Future<bool> deleteToken(Token token) async {
+    try {
+      _storage.delete(key: _GLOBAL_PREFIX + token.id);
+    } catch (e, s) {
+      Logger.warning('Could not delete token from secure storage', name: 'storage_utils.dart#deleteToken', error: e, stackTrace: s);
+      return false;
+    }
     Logger.info('Token deleted: ${token.id} from secure storage');
+    return true;
   }
 
   // ###########################################################################

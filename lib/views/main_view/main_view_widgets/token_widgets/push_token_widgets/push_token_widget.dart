@@ -80,10 +80,8 @@ class PushTokenWidget extends TokenWidget {
                             onPressed: () async {
                               if (token.isLocked &&
                                   await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) return;
-                              final pr = token.pushRequests.peek();
-                              if (pr != null) {
-                                globalRef?.read(pushRequestProvider.notifier).accept(pr);
-                              }
+
+                              globalRef?.read(pushRequestProvider.notifier).acceptPop(token);
                             },
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
@@ -206,10 +204,7 @@ class PushTokenWidget extends TokenWidget {
                               flex: 3,
                               child: PressButton(
                                 onPressed: () {
-                                  final pr = token.pushRequests.peek();
-                                  if (pr != null) {
-                                    globalRef?.read(pushRequestProvider.notifier).decline(pr);
-                                  }
+                                  globalRef?.read(pushRequestProvider.notifier).declinePop(token);
                                   Navigator.of(context).pop();
                                 },
                                 child: Column(
@@ -236,10 +231,7 @@ class PushTokenWidget extends TokenWidget {
                                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
                                 onPressed: () {
                                   //TODO: Notify issuer
-                                  final pr = token.pushRequests.peek();
-                                  if (pr != null) {
-                                    globalRef?.read(pushRequestProvider.notifier).decline(pr);
-                                  }
+                                  globalRef?.read(pushRequestProvider.notifier).declinePop(token);
                                   Navigator.of(context).pop();
                                 },
                                 child: Column(

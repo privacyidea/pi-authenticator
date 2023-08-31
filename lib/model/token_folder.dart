@@ -40,6 +40,12 @@ class TokenFolder with SortableMixin {
     );
   }
 
+  @override
+  operator ==(Object other) => other is TokenFolder && other.folderId == folderId;
+
+  @override
+  int get hashCode => (folderId.toString() + runtimeType.toString()).hashCode;
+
   factory TokenFolder.fromJson(Map<String, dynamic> json) {
     var tokenFolder = _$TokenFolderFromJson(json);
     if (tokenFolder.isLocked) tokenFolder = tokenFolder.copyWith(isExpanded: false);

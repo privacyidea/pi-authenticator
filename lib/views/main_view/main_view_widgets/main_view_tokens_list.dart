@@ -49,7 +49,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
           message: AppLocalizations.of(context)!.pollingChallenges,
           duration: const Duration(seconds: 1),
         );
-        final errorMessage = await PushProvider.pollForChallenges(showMessageForEachToken: true);
+        final errorMessage = await PushProvider().pollForChallenges(showMessageForEachToken: true);
         if (errorMessage != null) showMessage(message: errorMessage);
       },
       child: SlidableAutoCloseBehavior(

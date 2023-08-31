@@ -25,7 +25,7 @@ class DefaultLockAction extends TokenAction {
         Logger.info('Changing lock status of token ${token.label}.', name: 'token_widgets.dart#_changeLockStatus');
         if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) return;
 
-        globalRef?.read(tokenProvider.notifier).updateToken(token.copyWith(isLocked: !token.isLocked));
+        globalRef?.read(tokenProvider.notifier).addOrReplaceToken(token.copyWith(isLocked: !token.isLocked));
       },
     );
   }

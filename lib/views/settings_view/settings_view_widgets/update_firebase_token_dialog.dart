@@ -24,10 +24,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart';
-import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
+import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
-import 'package:privacyidea_authenticator/utils/push_provider.dart';
+import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 
 import '../../../model/tokens/push_token.dart';
@@ -74,11 +74,11 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
   void _updateFbTokens() async {
     Logger.info('Starting update of firebase token.', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
 
-    List<PushToken> tokenList = (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
+    List<PushToken> tokenList = (await TokenRepository().loadAllTokens()).whereType<PushToken>().toList();
 
     // TODO What to do with poll only tokens if google-services is used?
 
-    String? token = await PushProvider.getFBToken();
+    String? token = await FirebaseUtils().getFBToken();
 
     // TODO Is there a good way to handle these tokens?
     List<PushToken> tokenWithOutUrl = tokenList.where((e) => e.url == null).toList();
@@ -97,14 +97,14 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
       String timestamp = DateTime.now().toUtc().toIso8601String();
 
       String message = '$token|${pushToken.serial}|$timestamp';
-      String? signature = await trySignWithToken(pushToken, message);
+      String? signature = await const RsaUtils().trySignWithToken(pushToken, message);
       if (signature == null) {
         return;
       }
 
       Response response;
       try {
-        response = await doPost(
+        response = await CustomIOClient().doPost(
             sslVerify: pushToken.sslVerify,
             url: pushToken.url!,
             body: {'new_fb_token': token, 'serial': pushToken.serial, 'timestamp': timestamp, 'signature': signature});

@@ -103,11 +103,11 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
         behavior: HitTestBehavior.deferToChild,
         onTap: () {
           if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDFOR) {
-            globalRef?.read(tokenProvider.notifier).updateToken(widget.token.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
+            globalRef?.read(tokenProvider.notifier).addOrReplaceToken(widget.token.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
             return;
           }
           if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDUNTIL) {
-            globalRef?.read(tokenProvider.notifier).updateToken(widget.token.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
+            globalRef?.read(tokenProvider.notifier).addOrReplaceToken(widget.token.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
             return;
           }
         },

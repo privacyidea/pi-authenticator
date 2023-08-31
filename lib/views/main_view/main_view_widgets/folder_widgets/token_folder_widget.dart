@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'token_folder_expandable.dart';
 
 import '../../../../model/token_folder.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../utils/text_size.dart';
+import 'token_folder_expandable.dart';
 
 class TokenFolderWidget extends ConsumerWidget {
   final TokenFolder folder;

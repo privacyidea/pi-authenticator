@@ -105,7 +105,7 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
           continue;
         }
 
-        globalRef?.read(tokenProvider.notifier).updateTokens(modifiedSortables.whereType<Token>().toList());
+        globalRef?.read(tokenProvider.notifier).addOrReplaceTokens(modifiedSortables.whereType<Token>().toList());
         globalRef?.read(tokenFolderProvider.notifier).updateFolders(modifiedSortables.whereType<TokenFolder>().toList());
       },
       builder: (context, accepted, rejected) {

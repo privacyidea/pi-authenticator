@@ -40,17 +40,20 @@ class TokenState {
   }
 
   // replace the token where the id is the same
-  TokenState updateToken(Token token) {
+  TokenState addOrReplaceToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     final index = newTokens.indexWhere((element) => element.id == token.id);
-    if (index == -1) return this;
-    newTokens[index] = token;
+    if (index == -1) {
+      newTokens.add(token);
+    } else {
+      newTokens[index] = token;
+    }
     return TokenState(tokens: newTokens);
   }
 
   // replace all tokens where the id is the same
   // if the id is none, add it to the list
-  TokenState updateTokens(List<Token> tokens) {
+  TokenState addOrReplaceTokens(List<Token> tokens) {
     final newTokens = List<Token>.from(this.tokens);
     for (var token in tokens) {
       final index = newTokens.indexWhere((element) => element.id == token.id);

@@ -64,7 +64,7 @@ void _testHotpToken() {
       expect(hotpCopy.counter, 5);
       expect(hotpCopy.label, 'labelCopy');
       expect(hotpCopy.issuer, 'issuerCopy');
-      expect(hotpCopy.label, 'idCopy');
+      expect(hotpCopy.id, 'idCopy');
       expect(hotpCopy.algorithm, Algorithms.SHA256);
       expect(hotpCopy.digits, 8);
       expect(hotpCopy.secret, 'secretCopy');

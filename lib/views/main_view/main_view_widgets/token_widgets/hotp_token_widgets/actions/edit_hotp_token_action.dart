@@ -65,7 +65,7 @@ class EditHOTPTokenAction extends TokenAction {
                 ),
                 onPressed: () async {
                   final newToken = token.copyWith(label: tokenLabel.text, tokenImage: imageUrl.text, algorithm: algorithm);
-                  globalRef?.read(tokenProvider.notifier).updateToken(newToken);
+                  globalRef?.read(tokenProvider.notifier).addOrReplaceToken(newToken);
                   Navigator.of(context).pop();
                 }),
           ],

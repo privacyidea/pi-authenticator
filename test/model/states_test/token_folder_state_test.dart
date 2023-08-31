@@ -13,13 +13,6 @@ void _testTokenFolderState() {
       expect(state.folders.first.label, 'label');
       expect(state.folders.first.folderId, 1);
     });
-    test('copyWith', () {
-      final newState = state.copyWith(folders: [const TokenFolder(label: 'labelCopy', folderId: 2)]);
-      expect(state.folders.first.label, 'label');
-      expect(state.folders.first.folderId, 1);
-      expect(newState.folders.first.label, 'labelCopy');
-      expect(newState.folders.first.folderId, 2);
-    });
     test('withFolder', () {
       final newState = state.withFolder('newFolder');
       expect(state.folders.first.label, 'label');
@@ -31,7 +24,7 @@ void _testTokenFolderState() {
       expect(newState.folders.last.folderId, 2);
     });
     test('withUpdated', () {
-      final newState = state.withUpdated(folders: [const TokenFolder(label: 'labelUpdated', folderId: 1)]);
+      final newState = state.withUpdated([const TokenFolder(label: 'labelUpdated', folderId: 1)]);
       expect(state.folders.first.label, 'label');
       expect(state.folders.first.folderId, 1);
       expect(newState.folders.length, 1);

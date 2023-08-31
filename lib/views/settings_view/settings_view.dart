@@ -119,7 +119,7 @@ class SettingsView extends ConsumerWidget {
                         ),
                       );
                     }).toList(),
-                    onChanged: useSystemLocale ? null : (value) => ref.read(settingsProvider.notifier).setLocale(value!),
+                    onChanged: useSystemLocale ? null : (value) => ref.read(settingsProvider.notifier).setLocalePreference(value!),
                   ),
                 ),
               ],

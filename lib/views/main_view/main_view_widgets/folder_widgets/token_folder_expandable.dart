@@ -2,13 +2,10 @@ import 'dart:async';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'token_folder_actions.dart/delete_token_folder_action.dart';
-import 'token_folder_actions.dart/lock_token_folder_action.dart';
-import 'token_folder_actions.dart/rename_token_folder_action.dart';
+
 import '../../../../model/token_folder.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/lock_auth.dart';
@@ -16,6 +13,9 @@ import '../../../../utils/riverpod_providers.dart';
 import '../../../../widgets/custom_trailing.dart';
 import '../drag_target_divider.dart';
 import '../token_widgets/token_widget_builder.dart';
+import 'token_folder_actions.dart/delete_token_folder_action.dart';
+import 'token_folder_actions.dart/lock_token_folder_action.dart';
+import 'token_folder_actions.dart/rename_token_folder_action.dart';
 
 class TokenFolderExpandable extends ConsumerStatefulWidget {
   final TokenFolder folder;
@@ -112,7 +112,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
               onLeave: (data) => _expandTimer?.cancel(),
               onAccept: (data) {
                 final updatedToken = (data as Token).copyWith(folderId: () => widget.folder.folderId);
-                ref.read(tokenProvider.notifier).updateToken(updatedToken);
+                ref.read(tokenProvider.notifier).addOrReplaceToken(updatedToken);
               },
               builder: (context, willAccept, willReject) => Center(
                 child: Container(

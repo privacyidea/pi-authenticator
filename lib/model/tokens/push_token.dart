@@ -5,7 +5,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../utils/custom_int_buffer.dart';
 import '../../utils/identifiers.dart';
-import '../../utils/parsing_utils.dart';
+import '../../utils/rsa_utils.dart';
 import '../../utils/utils.dart';
 import '../push_request.dart';
 import '../push_request_queue.dart';
@@ -15,6 +15,7 @@ part 'push_token.g.dart';
 
 @JsonSerializable()
 class PushToken extends Token {
+  static const rsaParser = RsaUtils();
   final DateTime? expirationDate;
   final String serial;
 
@@ -31,12 +32,12 @@ class PushToken extends Token {
   final String? publicTokenKey;
 
   // Custom getter and setter for RSA keys
-  RSAPublicKey? get rsaPublicServerKey => publicServerKey == null ? null : deserializeRSAPublicKeyPKCS1(publicServerKey!);
-  PushToken withPublicServerKey(RSAPublicKey key) => copyWith(publicServerKey: serializeRSAPublicKeyPKCS1(key));
-  RSAPublicKey? get rsaPublicTokenKey => publicTokenKey == null ? null : deserializeRSAPublicKeyPKCS1(publicTokenKey!);
-  PushToken withPublicTokenKey(RSAPublicKey key) => copyWith(publicTokenKey: serializeRSAPublicKeyPKCS1(key));
-  RSAPrivateKey? get rsaPrivateTokenKey => privateTokenKey == null ? null : deserializeRSAPrivateKeyPKCS1(privateTokenKey!);
-  PushToken withPrivateTokenKey(RSAPrivateKey key) => copyWith(privateTokenKey: serializeRSAPrivateKeyPKCS1(key));
+  RSAPublicKey? get rsaPublicServerKey => publicServerKey == null ? null : rsaParser.deserializeRSAPublicKeyPKCS1(publicServerKey!);
+  PushToken withPublicServerKey(RSAPublicKey key) => copyWith(publicServerKey: rsaParser.serializeRSAPublicKeyPKCS1(key));
+  RSAPublicKey? get rsaPublicTokenKey => publicTokenKey == null ? null : rsaParser.deserializeRSAPublicKeyPKCS1(publicTokenKey!);
+  PushToken withPublicTokenKey(RSAPublicKey key) => copyWith(publicTokenKey: rsaParser.serializeRSAPublicKeyPKCS1(key));
+  RSAPrivateKey? get rsaPrivateTokenKey => privateTokenKey == null ? null : rsaParser.deserializeRSAPrivateKeyPKCS1(privateTokenKey!);
+  PushToken withPrivateTokenKey(RSAPrivateKey key) => copyWith(privateTokenKey: rsaParser.serializeRSAPrivateKeyPKCS1(key));
 
   PushToken withPushRequest(PushRequest pr) {
     pushRequests.add(pr);
@@ -61,12 +62,12 @@ class PushToken extends Token {
 
   PushToken({
     required this.serial,
-    required this.expirationDate,
     required super.label,
     required super.issuer,
     required super.id,
-    this.enrollmentCredentials,
     this.url,
+    this.expirationDate,
+    this.enrollmentCredentials,
     this.publicServerKey,
     this.publicTokenKey,
     this.privateTokenKey,

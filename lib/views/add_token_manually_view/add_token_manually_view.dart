@@ -152,7 +152,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
                   onPressed: () {
                     final token = _buildTokenIfValid(context: context);
                     if (token != null) {
-                      ref.read(tokenProvider.notifier).addToken(token);
+                      ref.read(tokenProvider.notifier).addOrReplaceToken(token);
                       Navigator.pop(context);
                     }
                   },

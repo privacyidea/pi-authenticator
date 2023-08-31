@@ -22,9 +22,9 @@ void _testTokenState() {
       final state = TokenState(tokens: [_TokenMock(id: 'id')]);
       expect(state.tokens.first, isA<_TokenMock>());
     });
-    test('copyWith', () {
+    test('repaceList', () {
       final state = TokenState(tokens: [_TokenMock(id: 'id')]);
-      final newState = state.copyWith(tokens: [_TokenMock(id: 'idCopy')]);
+      final newState = state.repaceList(tokens: [_TokenMock(id: 'idCopy')]);
       expect((state.tokens.first as _TokenMock).id, 'id');
       expect((newState.tokens.first as _TokenMock).id, 'idCopy');
     });
@@ -69,7 +69,7 @@ void _testTokenState() {
     group('updateToken', () {
       test('existing id', () {
         final state = TokenState(tokens: [_TokenMock(id: 'id'), _TokenMock(id: 'id2')]);
-        final newState = state.updateToken(_TokenMock(id: 'id', label: 'labelUpdated'));
+        final newState = state.addOrReplaceToken(_TokenMock(id: 'id', label: 'labelUpdated'));
         expect(state.tokens.length, 2);
         expect((state.tokens.first as _TokenMock).id, 'id');
         expect((state.tokens.last as _TokenMock).id, 'id2');
@@ -79,7 +79,7 @@ void _testTokenState() {
       });
       test('new id', () {
         final state = TokenState(tokens: [_TokenMock(id: 'id'), _TokenMock(id: 'id2')]);
-        final newState = state.updateToken(_TokenMock(id: 'newId', label: 'labelUpdated'));
+        final newState = state.addOrReplaceToken(_TokenMock(id: 'newId', label: 'labelUpdated'));
         expect(state.tokens.length, 2);
         expect((state.tokens.first as _TokenMock).id, 'id');
         expect((state.tokens.last as _TokenMock).id, 'id2');
@@ -91,7 +91,7 @@ void _testTokenState() {
 
     test('updateTokens', () {
       final state = TokenState(tokens: [_TokenMock(id: 'id'), _TokenMock(id: 'id2')]);
-      final newState = state.updateTokens([_TokenMock(id: 'id', label: 'labelUpdated'), _TokenMock(id: 'id3')]);
+      final newState = state.addOrReplaceTokens([_TokenMock(id: 'id', label: 'labelUpdated'), _TokenMock(id: 'id3')]);
       expect(state.tokens.length, 2);
       expect((state.tokens.first as _TokenMock).id, 'id');
       expect((state.tokens.last as _TokenMock).id, 'id2');

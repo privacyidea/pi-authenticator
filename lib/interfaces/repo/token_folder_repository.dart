@@ -1,6 +1,6 @@
-import '../model/token_folder.dart';
+import '../../model/token_folder.dart';
 
-abstract class TokenFolderRepositoy {
+abstract class TokenFolderRepository {
   Future<bool> saveFolders(List<TokenFolder> folders);
   Future<List<TokenFolder>> loadFolders();
 }

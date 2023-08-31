@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../interfaces/repo/token_folder_repository.dart';
 import '../model/token_folder.dart';
 import '../utils/logger.dart';
-import 'token_folder_repository.dart';
 
-class PreferenceTokenFolderRepotisory extends TokenFolderRepositoy {
+class PreferenceTokenFolderRepotisory extends TokenFolderRepository {
   static const String _tokenFoldersKey = 'TOKEN_CATEGORIES';
   final Future<SharedPreferences> _prefs;
   PreferenceTokenFolderRepotisory() : _prefs = SharedPreferences.getInstance();

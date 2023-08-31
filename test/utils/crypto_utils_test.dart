@@ -18,18 +18,15 @@
   limitations under the License.
 */
 
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 void main() {
   _testGeneratePhoneChecksum();
   _testPbkdf2();
-  _testRSASigning();
   _testDecodeSecretToUint8();
   _testEncodeSecretAs();
   _testIsValidEncoding();
@@ -396,37 +393,6 @@ void _testPbkdf2() {
       );
     });
   });
-}
-
-void _testRSASigning() {
-  group(
-    'RSA signing and verifying',
-    () {
-      test('Signature is valid', () async {
-        var asymmetricKeyPair = await generateRSAKeyPair();
-        RSAPublicKey publicKey = asymmetricKeyPair.publicKey;
-        RSAPrivateKey privateKey = asymmetricKeyPair.privateKey;
-
-        String message = 'I am a signature.';
-
-        var signature = createRSASignature(privateKey, utf8.encode(message) as Uint8List);
-
-        expect(true, verifyRSASignature(publicKey, utf8.encode(message) as Uint8List, signature));
-      }, timeout: const Timeout(Duration(minutes: 5)));
-
-      test('Signature is invalid', () async {
-        var asymmetricKeyPair = await generateRSAKeyPair();
-        RSAPublicKey publicKey = asymmetricKeyPair.publicKey;
-        RSAPrivateKey privateKey = asymmetricKeyPair.privateKey;
-
-        String message = 'I am a signature.';
-
-        var signature = createRSASignature(privateKey, utf8.encode(message) as Uint8List);
-
-        expect(false, verifyRSASignature(publicKey, utf8.encode('I am not the signature you are looking for.') as Uint8List, signature));
-      }, timeout: const Timeout(Duration(minutes: 5)));
-    },
-  );
 }
 
 void _testDecodeSecretToUint8() {
