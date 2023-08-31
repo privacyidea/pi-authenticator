@@ -22,15 +22,15 @@
 
 import 'dart:convert';
 
-import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/interfaces/repo/roken_repository.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
 // TODO How to test the behavior of this class?
-class TokenRepository {
-  const TokenRepository();
+class SecureTokenRepository implements TokenRepository {
+  const SecureTokenRepository();
 
   // Use this to lock critical sections of code.
   static final Mutex _m = Mutex();
@@ -47,31 +47,10 @@ class TokenRepository {
   // TOKENS
   // ###########################################################################
 
-  Future<bool> _saveOrReplaceToken(Token token) async {
-    try {
-      await _storage.write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
-    } catch (_) {
-      return false;
-    }
-    return true;
-  }
-
-  /// Saves [token] securely on the device, if [token] already exists
-  /// in the storage the existing value is overwritten.
-  Future<bool> saveOrReplaceToken(Token token) async {
-    if (await _saveOrReplaceToken(token)) {
-      Logger.info('Token saved: ${token.id} to secure storage');
-      return true;
-    } else {
-      Logger.warning('Could not save token to secure storage',
-          name: 'storage_utils.dart#saveOrReplaceToken', error: 'Failed Token: $token', stackTrace: StackTrace.current);
-      return false;
-    }
-  }
-
   /// Saves [token]s securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
   /// Returns all tokens that could not be saved.
+  @override
   Future<List<Token>> saveOrReplaceTokens(List<Token> tokens) async {
     final failedTokens = <Token>[];
     for (var element in tokens) {
@@ -82,16 +61,26 @@ class TokenRepository {
     if (failedTokens.isNotEmpty) {
       Logger.warning('Could not save all tokens to secure storage',
           name: 'storage_utils.dart#saveOrReplaceTokens', error: 'Failed tokens: $failedTokens', stackTrace: StackTrace.current);
+    } else {
+      Logger.info('Saved all (${tokens.length}) tokens to secure storage');
     }
     return failedTokens;
   }
 
-  Future<Token?> loadToken(String id) async => (await loadAllTokens()).firstWhereOrNull((t) => t.id == id);
+  Future<bool> _saveOrReplaceToken(Token token) async {
+    try {
+      await _storage.write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
+    } catch (_) {
+      return false;
+    }
+    return true;
+  }
 
   /// Returns a list of all tokens that are saved in the secure storage of
   /// this device.
   /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
-  Future<List<Token>> loadAllTokens() async {
+  @override
+  Future<List<Token>> loadTokens() async {
     Map<String, String> keyValueMap = await _storage.readAll();
 
     List<Token> tokenList = [];
@@ -143,8 +132,23 @@ class TokenRepository {
     return tokenList;
   }
 
+  @override
+  Future<List<Token>> deleteTokens(List<Token> tokens) async {
+    final failedTokens = <Token>[];
+    for (var element in tokens) {
+      if (!await _deleteToken(element)) {
+        failedTokens.add(element);
+      }
+    }
+    if (failedTokens.isNotEmpty) {
+      Logger.warning('Could not delete all tokens from secure storage',
+          name: 'storage_utils.dart#deleteTokens', error: 'Failed tokens: $failedTokens', stackTrace: StackTrace.current);
+    }
+    return failedTokens;
+  }
+
   /// Deletes the saved json of [token] from the secure storage.
-  Future<bool> deleteToken(Token token) async {
+  Future<bool> _deleteToken(Token token) async {
     try {
       _storage.delete(key: _GLOBAL_PREFIX + token.id);
     } catch (e, s) {
@@ -171,24 +175,4 @@ class TokenRepository {
   static Future<void> setNewFirebaseToken(String str) async => _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
 
   static Future<String?> getNewFirebaseToken() async => _storage.read(key: _NEW_APP_TOKEN_KEY);
-
-// ###########################################################################
-// Update information
-// ###########################################################################
-
-  static const _KEY_VERSION = '${_GLOBAL_PREFIX}_app_version';
-
-  static Future<String?> getCurrentVersion() async {
-    return await _storage.read(key: _KEY_VERSION);
-  }
-
-  static Future<void> setCurrentVersion(String version) async {
-    await _storage.write(key: _KEY_VERSION, value: version);
-  }
-
-  // #########################################################################
-  // Misc
-  // #########################################################################
-
-  static Future<void> deleteEverything() async => _storage.deleteAll();
 }

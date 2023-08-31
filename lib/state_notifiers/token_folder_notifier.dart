@@ -5,56 +5,47 @@ import '../model/token_folder.dart';
 import '../interfaces/repo/token_folder_repository.dart';
 
 class TokenFolderNotifier extends StateNotifier<TokenFolderState> {
-  late Future<void> _isInitialized;
+  late Future<void> _loading;
   final TokenFolderRepository _repo;
 
   TokenFolderNotifier({required TokenFolderRepository repository, TokenFolderState? initialState})
       : _repo = repository,
         super(initialState ?? const TokenFolderState(folders: [])) {
-    _isInitialized = Future(() => _loadFromRepo());
+    _loadFromRepo();
   }
 
-  void _loadFromRepo() async => _repo.loadFolders().then((value) => state = TokenFolderState(folders: value));
+  void _loadFromRepo() => _loading = Future(() async => state = TokenFolderState(folders: await _repo.loadFolders()));
 
-  Future<bool> _saveToRepo(TokenFolderState newState) => _repo.saveFolders(newState.folders);
+  Future<bool> _saveFolders(TokenFolderState newState) async {
+    final failedFolders = await _repo.saveOrReplaceFolders(newState.folders);
+    if (failedFolders.isEmpty) {
+      state = newState;
+      return true;
+    }
+    return false;
+  }
 
   Future<bool> addFolder(String name) async {
-    await _isInitialized;
+    await _loading;
     final newState = state.withFolder(name);
-    final success = await _saveToRepo(newState);
-    if (success) {
-      state = newState;
-    }
-    return success;
+    return _saveFolders(newState);
   }
 
   Future<bool> removeFolder(TokenFolder folder) async {
-    await _isInitialized;
+    await _loading;
     final newState = state.withoutFolder(folder);
-    final success = await _saveToRepo(newState);
-    if (success) {
-      state = newState;
-    }
-    return success;
+    return _saveFolders(newState);
   }
 
   Future<bool> updateFolder(TokenFolder folder) async {
-    await _isInitialized;
+    await _loading;
     final newState = state.withUpdated([folder]);
-    final success = await _saveToRepo(newState);
-    if (success) {
-      state = newState;
-    }
-    return success;
+    return _saveFolders(newState);
   }
 
   Future<bool> updateFolders(List<TokenFolder> folders) async {
-    await _isInitialized;
+    await _loading;
     final newState = state.withUpdated(folders);
-    final success = await _saveToRepo(newState);
-    if (success) {
-      state = newState;
-    }
-    return success;
+    return _saveFolders(newState);
   }
 }

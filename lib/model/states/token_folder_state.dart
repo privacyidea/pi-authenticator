@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../token_folder.dart';
@@ -34,6 +35,16 @@ class TokenFolderState {
     newFolders.removeWhere((element) => element.folderId == folder.folderId);
     return TokenFolderState(folders: newFolders);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is TokenFolderState && runtimeType == other.runtimeType && listEquals(folders, other.folders);
+
+  @override
+  int get hashCode => (folders.hashCode + runtimeType.hashCode).hashCode;
+
+  @override
+  String toString() => 'TokenFolderState{folders: $folders}';
 
   get newFolderId => folders.fold(0, (previousValue, element) => max(previousValue, element.folderId)) + 1;
 }

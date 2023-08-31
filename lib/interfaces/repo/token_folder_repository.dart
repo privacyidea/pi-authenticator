@@ -1,6 +1,7 @@
-import '../../model/token_folder.dart';
+import 'package:privacyidea_authenticator/model/token_folder.dart';
 
 abstract class TokenFolderRepository {
-  Future<bool> saveFolders(List<TokenFolder> folders);
+  Future<List<TokenFolder>> saveOrReplaceFolders(List<TokenFolder> folders);
   Future<List<TokenFolder>> loadFolders();
+  Future<List<TokenFolder>> deleteFolders(List<TokenFolder> folders);
 }

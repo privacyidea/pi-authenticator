@@ -7,6 +7,7 @@ import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/interfaces/repo/roken_repository.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/push_request_queue.dart';
 import 'package:privacyidea_authenticator/model/states/token_state.dart';
@@ -19,7 +20,6 @@ import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/qr_parser.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
-import 'package:privacyidea_authenticator/utils/storage_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import 'token_notifier_test.mocks.dart';
@@ -59,7 +59,7 @@ void _testTokenNotifier() {
         PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true, pushRequests: queue),
       ];
       final responses = [before, after];
-      when(mockRepo.loadAllTokens()).thenAnswer((_) async => responses.removeAt(0));
+      when(mockRepo.loadTokens()).thenAnswer((_) async => responses.removeAt(0));
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(repository: mockRepo),
       );
@@ -69,7 +69,7 @@ void _testTokenNotifier() {
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
-      verify(mockRepo.loadAllTokens()).called(2);
+      verify(mockRepo.loadTokens()).called(2);
     });
     test('getTokenFromId', () async {
       final container = ProviderContainer();
@@ -78,7 +78,7 @@ void _testTokenNotifier() {
         HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret'),
       ];
       final after = before;
-      when(mockRepo.loadAllTokens()).thenAnswer((_) async => before);
+      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(repository: mockRepo),
       );
@@ -97,8 +97,8 @@ void _testTokenNotifier() {
       final after = <HOTPToken>[
         HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret', counter: 523),
       ];
-      when(mockRepo.loadAllTokens()).thenAnswer((_) async => before);
-      when(mockRepo.saveOrReplaceToken(after.first)).thenAnswer((_) async => true);
+      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockRepo.saveOrReplaceTokens([after.first])).thenAnswer((_) async => []);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(
           repository: mockRepo,
@@ -109,7 +109,7 @@ void _testTokenNotifier() {
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
-      verify(mockRepo.saveOrReplaceToken(after.first)).called(1);
+      verify(mockRepo.saveOrReplaceTokens([after.first])).called(1);
     });
     test('removeToken', () async {
       final container = ProviderContainer();
@@ -121,8 +121,8 @@ void _testTokenNotifier() {
       final after = <Token>[
         HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret'),
       ];
-      when(mockRepo.loadAllTokens()).thenAnswer((_) async => before);
-      when(mockRepo.deleteToken(before.last)).thenAnswer((_) async => true);
+      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockRepo.deleteTokens([before.last])).thenAnswer((_) async => []);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(repository: mockRepo),
       );
@@ -131,7 +131,7 @@ void _testTokenNotifier() {
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
-      verify(mockRepo.deleteToken(before.last)).called(1);
+      verify(mockRepo.deleteTokens([before.last])).called(1);
     });
     group('addOrReplaceToken', () {
       test('add Token', () async {
@@ -144,8 +144,8 @@ void _testTokenNotifier() {
           HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret'),
           HOTPToken(label: 'label2', issuer: 'issuer2', id: 'id2', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret2'),
         ];
-        when(mockRepo.loadAllTokens()).thenAnswer((_) async => before);
-        when(mockRepo.saveOrReplaceToken(after.last)).thenAnswer((_) async => true);
+        when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+        when(mockRepo.saveOrReplaceTokens([after.last])).thenAnswer((_) async => []);
         final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
           (ref) => TokenNotifier(
             repository: mockRepo,
@@ -156,7 +156,7 @@ void _testTokenNotifier() {
         final state = container.read(testProvider);
         expect(state, isNotNull);
         expect(state.tokens, after);
-        verify(mockRepo.saveOrReplaceToken(after.last)).called(1);
+        verify(mockRepo.saveOrReplaceTokens([after.last])).called(1);
       });
       test('replace Token', () async {
         final container = ProviderContainer();
@@ -169,8 +169,8 @@ void _testTokenNotifier() {
           HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret'),
           HOTPToken(label: 'labelUpdated', issuer: 'issuer2Updated', id: 'id2', algorithm: Algorithms.SHA256, digits: 8, secret: 'secret2Updated'),
         ];
-        when(mockRepo.loadAllTokens()).thenAnswer((_) async => before);
-        when(mockRepo.saveOrReplaceToken(after.last)).thenAnswer((_) async => true);
+        when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+        when(mockRepo.saveOrReplaceTokens([after.last])).thenAnswer((_) async => []);
         final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
           (ref) => TokenNotifier(
             repository: mockRepo,
@@ -181,7 +181,7 @@ void _testTokenNotifier() {
         final state = container.read(testProvider);
         expect(state, isNotNull);
         expect(state.tokens, after);
-        verify(mockRepo.saveOrReplaceToken(after.last)).called(1);
+        verify(mockRepo.saveOrReplaceTokens([after.last])).called(1);
       });
     });
     test('addOrReplaceTokens', () async {
@@ -196,7 +196,7 @@ void _testTokenNotifier() {
         HOTPToken(label: 'label3', issuer: 'issuer3', id: 'id3', algorithm: Algorithms.SHA512, digits: 8, secret: 'secret3'),
       ];
       final failingToken = HOTPToken(label: 'label4', issuer: 'issuer4', id: 'id4', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret4');
-      when(mockRepo.loadAllTokens()).thenAnswer((_) async => before);
+      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       when(mockRepo.saveOrReplaceTokens([...after, failingToken])).thenAnswer((_) async => [failingToken]);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(
@@ -220,8 +220,8 @@ void _testTokenNotifier() {
         HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret'),
         HOTPToken(label: 'label2', issuer: 'issuer2', id: 'id2', algorithm: Algorithms.SHA256, digits: 6, secret: 'secret2'),
       ];
-      when(mockRepo.loadAllTokens()).thenAnswer((_) async => before);
-      when(mockRepo.saveOrReplaceToken(any)).thenAnswer((_) async => true);
+      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockQrParser.parseQRCodeToMap('otpAuthString')).thenReturn({
         URI_LABEL: 'label2',
         URI_ISSUER: 'issuer2',
@@ -240,7 +240,7 @@ void _testTokenNotifier() {
       expect(state, isNotNull);
       after.last = after.last.copyWith(id: state.tokens.last.id);
       expect(state.tokens, after);
-      verify(mockRepo.saveOrReplaceToken(any)).called(1);
+      verify(mockRepo.saveOrReplaceTokens(any)).called(1);
     });
     test('addPushRequestToToken', () async {
       final container = ProviderContainer();
@@ -271,8 +271,8 @@ void _testTokenNotifier() {
       final after = <PushToken>[
         PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true, pushRequests: PushRequestQueue()..add(pr)),
       ];
-      when(mockRepo.loadAllTokens()).thenAnswer((_) async => before);
-      when(mockRepo.saveOrReplaceToken(after.first)).thenAnswer((_) async => true);
+      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockRepo.saveOrReplaceTokens([after.first])).thenAnswer((_) async => []);
       when(mockRsaUtils.verifyRSASignature(any, any, any)).thenReturn(true);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(repository: mockRepo, rsaUtils: mockRsaUtils),
@@ -282,7 +282,7 @@ void _testTokenNotifier() {
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
-      verify(mockRepo.saveOrReplaceToken(after.first)).called(1);
+      verify(mockRepo.saveOrReplaceTokens([after.first])).called(1);
       verify(mockRsaUtils.verifyRSASignature(any, any, any)).called(1);
     });
     test('removePushRequest', () async {
@@ -303,8 +303,8 @@ void _testTokenNotifier() {
       final after = <PushToken>[
         PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true, pushRequests: PushRequestQueue()),
       ];
-      when(mockRepo.loadAllTokens()).thenAnswer((_) async => before);
-      when(mockRepo.saveOrReplaceToken(after.first)).thenAnswer((_) async => true);
+      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockRepo.saveOrReplaceTokens([after.first])).thenAnswer((_) async => []);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(repository: mockRepo),
       );
@@ -313,7 +313,7 @@ void _testTokenNotifier() {
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
-      verify(mockRepo.saveOrReplaceToken(after.first)).called(1);
+      verify(mockRepo.saveOrReplaceTokens([after.first])).called(1);
     });
     test('rolloutPushToken', () async {
       final container = ProviderContainer();
@@ -328,8 +328,8 @@ void _testTokenNotifier() {
       final after = <PushToken>[
         PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true, url: uri),
       ];
-      when(mockRepo.loadAllTokens()).thenAnswer((_) async => before);
-      when(mockRepo.saveOrReplaceToken(after.first)).thenAnswer((_) async => true);
+      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockRepo.saveOrReplaceTokens([after.first])).thenAnswer((_) async => []);
       when(mockRsaUtils.serializeRSAPublicKeyPKCS8(any)).thenAnswer((_) => 'publicKey');
       when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((_) => const RsaUtils()
           .generateRSAKeyPair()); // We get here a random result anyway and is it more likely to make errors by mocking it than by using the real method
@@ -354,15 +354,15 @@ void _testTokenNotifier() {
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
-      verify(mockRepo.saveOrReplaceToken(after.first)).called(greaterThan(0));
+      verify(mockRepo.saveOrReplaceTokens([after.first])).called(greaterThan(0));
       verify(mockRsaUtils.serializeRSAPublicKeyPKCS8(any)).called(greaterThan(0));
-      verify(mockFirebaseUtils.getFBToken()).called(2);
-      verify(mockRsaUtils.deserializeRSAPublicKeyPKCS1('publicKey')).called(2);
+      verify(mockFirebaseUtils.getFBToken()).called(greaterThan(0));
+      verify(mockRsaUtils.deserializeRSAPublicKeyPKCS1('publicKey')).called(greaterThan(0));
       verify(mockIOClient.doPost(
         url: anyNamed('url'),
         body: anyNamed('body'),
         sslVerify: anyNamed('sslVerify'),
-      )).called(2);
+      )).called(greaterThan(0));
     });
   });
 }

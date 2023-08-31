@@ -74,7 +74,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
   void _updateFbTokens() async {
     Logger.info('Starting update of firebase token.', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
 
-    List<PushToken> tokenList = (await TokenRepository().loadAllTokens()).whereType<PushToken>().toList();
+    List<PushToken> tokenList = (await const SecureTokenRepository().loadTokens()).whereType<PushToken>().toList();
 
     // TODO What to do with poll only tokens if google-services is used?
 

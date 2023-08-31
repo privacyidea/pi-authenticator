@@ -84,7 +84,7 @@ class PushProvider {
   // FOREGROUND HANDLING
   Future<void> _foregroundHandler(RemoteMessage remoteMessage) async {
     Logger.info('Foreground message received.', name: 'main_screen.dart#_handleIncomingAuthRequest', error: remoteMessage.data);
-    await TokenRepository.protect(() async {
+    await SecureTokenRepository.protect(() async {
       try {
         return _handleIncomingRequestForeground(remoteMessage);
       } catch (e, s) {
@@ -97,7 +97,7 @@ class PushProvider {
   // BACKGROUND HANDLING
   static Future<void> _backgroundHandler(RemoteMessage remoteMessage) async {
     Logger.info('Background message received.', name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data);
-    await TokenRepository.protect(() async {
+    await SecureTokenRepository.protect(() async {
       try {
         return _handleIncomingRequestBackground(remoteMessage);
       } catch (e, s) {
@@ -170,7 +170,7 @@ class PushProvider {
 
   static void _addPushRequestToTokenInSecureStoreage(PushRequest pushRequest) async {
     Logger.info('Adding push request to token in secure storage.', name: 'main_screen.dart#_addPushRequestToTokenInSecureStoreage', error: pushRequest);
-    var tokens = await const TokenRepository().loadAllTokens();
+    var tokens = await const SecureTokenRepository().loadTokens();
     PushToken? token = tokens.firstWhereOrNull((token) => token is PushToken && token.serial == pushRequest.serial) as PushToken?;
     if (token == null) {
       Logger.warning('Token not found.', name: 'main_screen.dart#_addPushRequestToTokenInSecureStoreage', error: 'Serial: ${pushRequest.serial}');
@@ -179,7 +179,7 @@ class PushProvider {
     final prList = token.pushRequests;
     prList.add(pushRequest);
     token = token.copyWith(pushRequests: prList);
-    await const TokenRepository().saveOrReplaceToken(token);
+    await const SecureTokenRepository().saveOrReplaceTokens([token]);
   }
 
   void _startOrStopPolling(bool pollingEnabled) {
@@ -279,7 +279,7 @@ class PushProvider {
   static Future<void> updateFbTokenIfChanged() async {
     String? firebaseToken = await PushProvider().firebaseUtils?.getFBToken();
 
-    if (firebaseToken != null && (await TokenRepository.getCurrentFirebaseToken()) != firebaseToken) {
+    if (firebaseToken != null && (await SecureTokenRepository.getCurrentFirebaseToken()) != firebaseToken) {
       try {
         _updateFirebaseToken(firebaseToken);
       } catch (error) {
@@ -309,7 +309,7 @@ class PushProvider {
       return;
     }
 
-    List<PushToken> tokenList = (await const TokenRepository().loadAllTokens()).whereType<PushToken>().where((t) => t.url != null).toList();
+    List<PushToken> tokenList = (await const SecureTokenRepository().loadTokens()).whereType<PushToken>().where((t) => t.url != null).toList();
 
     bool allUpdated = true;
 
@@ -343,7 +343,7 @@ class PushProvider {
     }
 
     if (allUpdated) {
-      TokenRepository.setCurrentFirebaseToken(firebaseToken);
+      SecureTokenRepository.setCurrentFirebaseToken(firebaseToken);
     }
   }
 }

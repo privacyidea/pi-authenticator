@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interfaces/repo/token_folder_repository.dart';
@@ -26,15 +25,21 @@ class PreferenceTokenFolderRepotisory extends TokenFolderRepository {
   }
 
   @override
-  Future<bool> saveFolders(List<TokenFolder> folders) async {
+  Future<List<TokenFolder>> saveOrReplaceFolders(List<TokenFolder> folders) async {
     try {
       final jsons = folders.map((e) => e.toJson()).toList();
       final json = jsonEncode(jsons);
       await _prefs.then((prefs) => prefs.setString(_tokenFoldersKey, json));
-      return true;
+      return [];
     } catch (e, s) {
       Logger.error('Failed to save folders', name: 'PreferenceTokenFolderRepotisory#saveFolders', error: e, stackTrace: s);
-      return false;
+      return folders;
     }
+  }
+
+  @override
+  Future<List<TokenFolder>> deleteFolders(List<TokenFolder> folders) {
+    // TODO: implement deleteFolders
+    throw UnimplementedError();
   }
 }

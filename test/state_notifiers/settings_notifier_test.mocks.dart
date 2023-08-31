@@ -42,6 +42,15 @@ class MockSettingsRepository extends _i1.Mock
   }
 
   @override
+  _i4.Future<bool> saveSettings(_i2.SettingsState? settings) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #saveSettings,
+          [settings],
+        ),
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
+  @override
   _i4.Future<_i2.SettingsState> loadSettings() => (super.noSuchMethod(
         Invocation.method(
           #loadSettings,
@@ -55,13 +64,4 @@ class MockSettingsRepository extends _i1.Mock
           ),
         )),
       ) as _i4.Future<_i2.SettingsState>);
-  @override
-  _i4.Future<bool> saveSettings(_i2.SettingsState? settings) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #saveSettings,
-          [settings],
-        ),
-        returnValue: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
 }

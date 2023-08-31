@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/interfaces/repo/roken_repository.dart';
 import '../utils/firebase_utils.dart';
 import '../utils/network_utils.dart';
 import '../utils/qr_parser.dart';
@@ -51,7 +52,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     FirebaseUtils? firebaseUtils,
   })  : _rsaUtils = rsaUtils ?? const RsaUtils(),
         _qrParser = qrParser ?? const QrParser(),
-        _repo = repository ?? const TokenRepository(),
+        _repo = repository ?? const SecureTokenRepository(),
         _legacy = legacy ?? const LegacyUtils(),
         _ioClient = ioClient ?? const CustomIOClient(),
         _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
@@ -64,7 +65,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<bool> _loadTokenList() async {
     List<Token> tokens;
     try {
-      tokens = await _repo.loadAllTokens();
+      tokens = await _repo.loadTokens();
     } catch (_) {
       return false;
     }
@@ -80,7 +81,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     await isInitialized;
     List<Token> tokens;
     try {
-      tokens = await _repo.loadAllTokens();
+      tokens = await _repo.loadTokens();
     } catch (_) {
       return false;
     }
@@ -96,7 +97,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<bool> incrementCounter(HOTPToken token) async {
     token = token.copyWith(counter: token.counter + 1);
-    if (await _repo.saveOrReplaceToken(token)) {
+    if ((await _repo.saveOrReplaceTokens([token])).isEmpty) {
       state = state.addOrReplaceToken(token);
       return true;
     } else {
@@ -106,7 +107,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<bool> removeToken(Token token) async {
     await isInitialized;
-    if (await _repo.deleteToken(token)) {
+    if ((await _repo.deleteTokens([token])).isEmpty) {
       state = state.withoutToken(token);
       return true;
     } else {
@@ -116,7 +117,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<bool> addOrReplaceToken(Token token) async {
     await isInitialized;
-    if (await _repo.saveOrReplaceToken(token)) {
+    if ((await _repo.saveOrReplaceTokens([token])).isEmpty) {
       state = state.addOrReplaceToken(token);
       return true;
     } else {

@@ -11,13 +11,14 @@ import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart' as _i14;
 import 'package:pointycastle/export.dart' as _i2;
+import 'package:privacyidea_authenticator/interfaces/repo/roken_repository.dart'
+    as _i4;
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i10;
 import 'package:privacyidea_authenticator/model/tokens/token.dart' as _i6;
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i12;
 import 'package:privacyidea_authenticator/utils/network_utils.dart' as _i11;
 import 'package:privacyidea_authenticator/utils/qr_parser.dart' as _i7;
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i8;
-import 'package:privacyidea_authenticator/utils/storage_utils.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -81,14 +82,6 @@ class MockTokenRepository extends _i1.Mock implements _i4.TokenRepository {
   }
 
   @override
-  _i5.Future<bool> saveOrReplaceToken(_i6.Token? token) => (super.noSuchMethod(
-        Invocation.method(
-          #saveOrReplaceToken,
-          [token],
-        ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
-  @override
   _i5.Future<List<_i6.Token>> saveOrReplaceTokens(List<_i6.Token>? tokens) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -98,29 +91,22 @@ class MockTokenRepository extends _i1.Mock implements _i4.TokenRepository {
         returnValue: _i5.Future<List<_i6.Token>>.value(<_i6.Token>[]),
       ) as _i5.Future<List<_i6.Token>>);
   @override
-  _i5.Future<_i6.Token?> loadToken(String? id) => (super.noSuchMethod(
+  _i5.Future<List<_i6.Token>> loadTokens() => (super.noSuchMethod(
         Invocation.method(
-          #loadToken,
-          [id],
-        ),
-        returnValue: _i5.Future<_i6.Token?>.value(),
-      ) as _i5.Future<_i6.Token?>);
-  @override
-  _i5.Future<List<_i6.Token>> loadAllTokens() => (super.noSuchMethod(
-        Invocation.method(
-          #loadAllTokens,
+          #loadTokens,
           [],
         ),
         returnValue: _i5.Future<List<_i6.Token>>.value(<_i6.Token>[]),
       ) as _i5.Future<List<_i6.Token>>);
   @override
-  _i5.Future<bool> deleteToken(_i6.Token? token) => (super.noSuchMethod(
+  _i5.Future<List<_i6.Token>> deleteTokens(List<_i6.Token>? tokens) =>
+      (super.noSuchMethod(
         Invocation.method(
-          #deleteToken,
-          [token],
+          #deleteTokens,
+          [tokens],
         ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
+        returnValue: _i5.Future<List<_i6.Token>>.value(<_i6.Token>[]),
+      ) as _i5.Future<List<_i6.Token>>);
 }
 
 /// A class which mocks [QrParser].

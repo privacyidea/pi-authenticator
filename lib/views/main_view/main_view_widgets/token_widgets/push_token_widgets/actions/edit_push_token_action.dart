@@ -156,7 +156,7 @@ class EditPushTokenAction extends TokenAction {
                           );
                         }
                       },
-                      future: TokenRepository.getCurrentFirebaseToken(),
+                      future: SecureTokenRepository.getCurrentFirebaseToken(),
                     ),
                   ],
                 ),

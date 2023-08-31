@@ -59,7 +59,7 @@ class FirebaseUtils {
     try {
       String? firebaseToken = await getFBToken();
 
-      if (firebaseToken != await TokenRepository.getCurrentFirebaseToken()) {
+      if (firebaseToken != await SecureTokenRepository.getCurrentFirebaseToken()) {
         updateFirebaseToken(firebaseToken);
       }
     } on PlatformException catch (error) {
@@ -94,8 +94,8 @@ class FirebaseUtils {
     }
 
     FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
-      if ((await TokenRepository.getCurrentFirebaseToken()) != newToken) {
-        await TokenRepository.setNewFirebaseToken(newToken);
+      if ((await SecureTokenRepository.getCurrentFirebaseToken()) != newToken) {
+        await SecureTokenRepository.setNewFirebaseToken(newToken);
         // TODO what if this fails, when should a retry be attempted?
         try {
           updateFirebaseToken(newToken);
@@ -134,9 +134,9 @@ class FirebaseUtils {
 
     // Fall back to the last known firebase token
     if (firebaseToken == null) {
-      firebaseToken = await TokenRepository.getCurrentFirebaseToken();
+      firebaseToken = await SecureTokenRepository.getCurrentFirebaseToken();
     } else {
-      await TokenRepository.setNewFirebaseToken(firebaseToken);
+      await SecureTokenRepository.setNewFirebaseToken(firebaseToken);
     }
 
     if (firebaseToken == null) {

@@ -31,7 +31,7 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
   final tokenNotifier = TokenNotifier(
     qrParser: const QrParser(),
     rsaUtils: const RsaUtils(),
-    repository: const TokenRepository(),
+    repository: const SecureTokenRepository(),
   );
 
   Logger.info("appStateProvider.addListener ${tokenNotifier.hashCode.toString()}");
