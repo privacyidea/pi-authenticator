@@ -34,7 +34,7 @@ import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
-import 'package:privacyidea_authenticator/utils/storage_utils.dart';
+import 'package:privacyidea_authenticator/repo/secure_token_repository.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 

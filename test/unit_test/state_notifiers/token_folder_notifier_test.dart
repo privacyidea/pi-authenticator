@@ -27,7 +27,9 @@ void _testTokenFolderNotifier() {
             repository: mockRepo,
           ));
       final notifier = container.read(testProvider.notifier);
-      expect(await notifier.addFolder('test'), true);
+      await notifier.isLoading;
+      notifier.addFolder('test');
+      await notifier.isLoading;
       final state = container.read(testProvider);
       expect(state.folders, after);
       verify(mockRepo.saveOrReplaceFolders(after)).called(1);
@@ -44,7 +46,9 @@ void _testTokenFolderNotifier() {
             repository: mockRepo,
           ));
       final notifier = container.read(testProvider.notifier);
-      expect(await notifier.removeFolder(const TokenFolder(label: 'test', folderId: 1)), true);
+      await notifier.isLoading;
+      notifier.removeFolder(const TokenFolder(label: 'test', folderId: 1));
+      await notifier.isLoading;
       final state = container.read(testProvider);
       expect(state.folders, after);
       verify(mockRepo.saveOrReplaceFolders(after)).called(1);
@@ -60,7 +64,9 @@ void _testTokenFolderNotifier() {
             repository: mockRepo,
           ));
       final notifier = container.read(testProvider.notifier);
-      expect(await notifier.updateFolder(after.first), true);
+      await notifier.isLoading;
+      notifier.updateFolder(after.first);
+      await notifier.isLoading;
       final state = container.read(testProvider);
       expect(state.folders, after);
       verify(mockRepo.saveOrReplaceFolders(after)).called(1);
@@ -82,7 +88,9 @@ void _testTokenFolderNotifier() {
             repository: mockRepo,
           ));
       final notifier = container.read(testProvider.notifier);
-      expect(await notifier.updateFolders(after), true);
+      await notifier.isLoading;
+      notifier.updateFolders(after);
+      await notifier.isLoading;
       final state = container.read(testProvider);
       expect(state.folders, after);
       verify(mockRepo.saveOrReplaceFolders(after)).called(1);

@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 import '../token_folder.dart';
 
@@ -33,6 +32,12 @@ class TokenFolderState {
   TokenFolderState withoutFolder(TokenFolder folder) {
     final newFolders = List<TokenFolder>.from(folders);
     newFolders.removeWhere((element) => element.folderId == folder.folderId);
+    return TokenFolderState(folders: newFolders);
+  }
+
+  TokenFolderState withoutFolders(List<TokenFolder> folders) {
+    final newFolders = List<TokenFolder>.from(this.folders);
+    newFolders.removeWhere((element) => folders.any((folder) => folder.folderId == element.folderId));
     return TokenFolderState(folders: newFolders);
   }
 

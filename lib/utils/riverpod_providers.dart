@@ -21,13 +21,13 @@ import 'network_utils.dart';
 import 'push_provider.dart';
 import 'qr_parser.dart';
 import 'rsa_utils.dart';
-import 'storage_utils.dart';
+import '../repo/secure_token_repository.dart';
 
 // Never use globalRef to .watch() a provider. only use it to .read() a provider
 // Otherwise the whole app will rebuild on every state change of the provider
 WidgetRef? globalRef;
 
-final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
+final tokenProvider = StateNotifierProvider.autoDispose<TokenNotifier, TokenState>((ref) {
   final tokenNotifier = TokenNotifier(
     qrParser: const QrParser(),
     rsaUtils: const RsaUtils(),
@@ -85,16 +85,18 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
   return tokenNotifier;
 });
 
-final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) => SettingsNotifier(
-      repository: PreferenceSettingsRepository(),
-      initialState: SettingsState(),
-    ));
+final settingsProvider = StateNotifierProvider.autoDispose<SettingsNotifier, SettingsState>(
+  (ref) => SettingsNotifier(
+    repository: PreferenceSettingsRepository(),
+    initialState: SettingsState(),
+  ),
+);
 
 final platformInfoProvider = StateProvider<PlatformInfo>(
   (ref) => DummyPlatformInfo(),
 );
 
-final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>(
+final pushRequestProvider = StateNotifierProvider.autoDispose<PushRequestNotifier, PushRequest?>(
   (ref) => PushRequestNotifier(
     pushProvider: PushProvider(pollingEnabled: ref.watch(settingsProvider).enablePolling),
     ioClient: const CustomIOClient(),
@@ -102,11 +104,14 @@ final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushReque
   ),
 );
 
-final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>(
+final appStateProvider = StateNotifierProvider.autoDispose<AppStateNotifier, AppState>(
   (ref) => AppStateNotifier(),
 );
 
-final tokenFolderProvider =
-    StateNotifierProvider<TokenFolderNotifier, TokenFolderState>((ref) => TokenFolderNotifier(repository: PreferenceTokenFolderRepotisory()));
+final tokenFolderProvider = StateNotifierProvider.autoDispose<TokenFolderNotifier, TokenFolderState>(
+  (ref) => TokenFolderNotifier(
+    repository: PreferenceTokenFolderRepository(),
+  ),
+);
 
 final draggingSortableProvider = StateProvider<SortableMixin?>((ref) => null);

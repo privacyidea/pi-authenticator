@@ -123,7 +123,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
               Visibility(
                 // the period is only used by TOTP tokens
                 visible: _typeNotifier.value == TokenTypes.TOTP,
-                child: LabeledDropdownButton(
+                child: LabeledDropdownButton<int>(
                   label: AppLocalizations.of(context)!.period,
                   values: AddTokenManuallyView.allowedPeriodsTOTP,
                   valueNotifier: _periodNotifier,
@@ -133,7 +133,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
               Visibility(
                 // the period is only used by DayPassword tokens
                 visible: _typeNotifier.value == TokenTypes.DAYPASSWORD,
-                child: LabeledDropdownButton(
+                child: LabeledDropdownButton<int>(
                   label: AppLocalizations.of(context)!.period,
                   values: AddTokenManuallyView.allowedPeriodsDayPassword,
                   valueNotifier: _periodDayPasswordNotifier,

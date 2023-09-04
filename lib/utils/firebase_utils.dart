@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'customizations.dart';
 import 'identifiers.dart';
 import 'logger.dart';
-import 'storage_utils.dart';
+import '../repo/secure_token_repository.dart';
 
 class FirebaseUtils {
   static FirebaseUtils? _instance;

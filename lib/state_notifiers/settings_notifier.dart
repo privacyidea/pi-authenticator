@@ -14,9 +14,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
   SettingsNotifier({
     required SettingsRepository repository,
-    required SettingsState initialState,
+    SettingsState? initialState,
   })  : _repo = repository,
-        super(initialState) {
+        super(initialState ?? SettingsState()) {
     _loadFromRepo();
   }
   void _loadFromRepo() async {

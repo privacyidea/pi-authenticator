@@ -28,7 +28,7 @@ import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
-import 'package:privacyidea_authenticator/utils/storage_utils.dart';
+import 'package:privacyidea_authenticator/repo/secure_token_repository.dart';
 
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/customizations.dart';
@@ -104,7 +104,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
       Response response;
       try {
-        response = await CustomIOClient().doPost(
+        response = await const CustomIOClient().doPost(
             sslVerify: pushToken.sslVerify,
             url: pushToken.url!,
             body: {'new_fb_token': token, 'serial': pushToken.serial, 'timestamp': timestamp, 'signature': signature});

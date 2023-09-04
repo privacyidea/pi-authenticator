@@ -9,7 +9,7 @@ import '../../../../../../utils/app_customizer.dart';
 import '../../../../../../utils/customizations.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
-import '../../../../../../utils/storage_utils.dart';
+import '../../../../../../repo/secure_token_repository.dart';
 import '../../../../../../widgets/default_dialog.dart';
 import '../../../../../../widgets/enable_text_form_field_after_many_taps.dart';
 import '../../token_action.dart';

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:base32/base32.dart';
@@ -13,7 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/interfaces/repo/roken_repository.dart';
+import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import '../utils/firebase_utils.dart';
 import '../utils/network_utils.dart';
 import '../utils/qr_parser.dart';
@@ -28,13 +27,13 @@ import '../utils/customizations.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod_providers.dart';
-import '../utils/storage_utils.dart';
+import '../repo/secure_token_repository.dart';
 import '../utils/utils.dart';
 import '../utils/view_utils.dart';
 import '../widgets/two_step_dialog.dart';
 
 class TokenNotifier extends StateNotifier<TokenState> {
-  late final Future<void> isInitialized;
+  Future<void>? isLoading;
   final TokenRepository _repo;
   final QrParser _qrParser;
   final RsaUtils _rsaUtils;
@@ -59,26 +58,47 @@ class TokenNotifier extends StateNotifier<TokenState> {
         super(
           initialState ?? TokenState(),
         ) {
-    isInitialized = Future(() => _loadTokenList());
+    _loadTokenList();
+  }
+
+  void _saveOrReplaceTokens(List<Token> tokens) async {
+    isLoading = Future(() async {
+      final failedTokens = await _repo.saveOrReplaceTokens(tokens);
+      if (failedTokens.isNotEmpty) {
+        state = state.addOrReplaceTokens(failedTokens);
+      }
+      for (var newToken in tokens) {
+        if (newToken is PushToken && !newToken.isRolledOut && !failedTokens.contains(newToken)) rolloutPushToken(newToken);
+      }
+    });
+  }
+
+  void _deleteTokens(List<Token> tokens) async {
+    isLoading = Future(() async {
+      final failedTokens = await _repo.deleteTokens(tokens);
+      state = state.addOrReplaceTokens(failedTokens);
+    });
   }
 
   Future<bool> _loadTokenList() async {
     List<Token> tokens;
     try {
-      tokens = await _repo.loadTokens();
+      isLoading = Future(() async {
+        tokens = await _repo.loadTokens();
+        final pushTokens = tokens.whereType<PushToken>().where((element) => !element.isRolledOut).toList();
+        state = TokenState(tokens: tokens);
+        for (final pushToken in pushTokens) {
+          rolloutPushToken(pushToken);
+        }
+      });
     } catch (_) {
       return false;
-    }
-    final pushTokens = tokens.whereType<PushToken>().where((element) => !element.isRolledOut).toList();
-    state = TokenState(tokens: tokens);
-    for (final pushToken in pushTokens) {
-      rolloutPushToken(pushToken);
     }
     return true;
   }
 
   Future<bool> refreshRolledOutPushTokens() async {
-    await isInitialized;
+    await isLoading;
     List<Token> tokens;
     try {
       tokens = await _repo.loadTokens();
@@ -90,57 +110,33 @@ class TokenNotifier extends StateNotifier<TokenState> {
     return true;
   }
 
-  Future<Token?> getTokenFromId(String id) async {
-    await isInitialized;
+  Token? getTokenFromId(String id) {
     return state.tokens.firstWhereOrNull((element) => element.id == id);
   }
 
-  Future<bool> incrementCounter(HOTPToken token) async {
+  void incrementCounter(HOTPToken token) {
     token = token.copyWith(counter: token.counter + 1);
-    if ((await _repo.saveOrReplaceTokens([token])).isEmpty) {
-      state = state.addOrReplaceToken(token);
-      return true;
-    } else {
-      return false;
-    }
+    state = state.addOrReplaceToken(token);
+    _saveOrReplaceTokens([token]);
   }
 
-  Future<bool> removeToken(Token token) async {
-    await isInitialized;
-    if ((await _repo.deleteTokens([token])).isEmpty) {
-      state = state.withoutToken(token);
-      return true;
-    } else {
-      return false;
-    }
+  void removeToken(Token token) {
+    state = state.withoutToken(token);
+    _deleteTokens([token]);
   }
 
-  Future<bool> addOrReplaceToken(Token token) async {
-    await isInitialized;
-    if ((await _repo.saveOrReplaceTokens([token])).isEmpty) {
-      state = state.addOrReplaceToken(token);
-      return true;
-    } else {
-      return false;
-    }
+  void addOrReplaceToken(Token token) {
+    state = state.addOrReplaceToken(token);
+    _saveOrReplaceTokens([token]);
   }
 
   /// Returns all tokens that could not be saved.
-  Future<List<Token>> addOrReplaceTokens(List<Token> updatedTokens) async {
-    await isInitialized;
-    final failedTokens = await _repo.saveOrReplaceTokens(updatedTokens);
-    log('Updated tokens: $updatedTokens');
-    log('Failed tokens: $failedTokens');
-    for (var element in failedTokens) {
-      updatedTokens.remove(element);
-    }
-    log('Updated tokens: $updatedTokens');
+  void addOrReplaceTokens(List<Token> updatedTokens) {
     state = state.addOrReplaceTokens(updatedTokens);
-    return failedTokens;
+    _saveOrReplaceTokens(updatedTokens);
   }
 
   Future<bool> addTokenFromOtpAuth({required String otpAuth}) async {
-    await isInitialized;
     Logger.info(
       'Try to handle otpAuth:',
       name: 'token_notifier.dart#addTokenFromOtpAuth',
@@ -176,11 +172,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
         showMessage(message: 'A token with the serial ${newToken.serial} already exists!', duration: const Duration(seconds: 2));
         return false;
       }
-      final success = await addOrReplaceToken(newToken);
-      if (success && newToken is PushToken) {
-        rolloutPushToken(newToken);
-      }
-      return success;
+      addOrReplaceToken(newToken);
+
+      return true;
     } on ArgumentError catch (e, s) {
       // Error while parsing qr code.
       Logger.warning('Malformed QR code:', name: 'main_screen.dart#_handleOtpAuth', error: e, stackTrace: s);
@@ -190,7 +184,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<bool> addPushRequestToToken(PushRequest pr) async {
-    await isInitialized;
+    await isLoading;
     PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pr.serial && t.isRolledOut);
 
     if (token == null) {
@@ -234,16 +228,13 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     // Save the pending request.
     token = token.withPushRequest(pr);
-    if (!await addOrReplaceToken(token)) {
-      Logger.warning('Could not add push request ${pr.id} to token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
-      return false;
-    }
+    addOrReplaceToken(token);
+
     Logger.info('Added push request ${pr.id} to token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
     return true;
   }
 
-  Future<bool> removePushRequest(PushRequest pushRequest) async {
-    await isInitialized;
+  bool removePushRequest(PushRequest pushRequest) {
     Logger.info('Removing push request ${pushRequest.id}');
     PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pushRequest.serial);
 
@@ -252,17 +243,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
       return false;
     }
     token = token.withoutPushRequest(pushRequest);
-    if (!await addOrReplaceToken(token)) {
-      Logger.warning('Could not remove push request ${pushRequest.id} from token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
-      return false;
-    }
+    addOrReplaceToken(token);
+
     Logger.info('Removed push request ${pushRequest.id} from token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
     return true;
   }
 
   Future<bool> rolloutPushToken(PushToken token) async {
-    await isInitialized;
-    token = (await getTokenFromId(token.id)) as PushToken? ?? token;
+    token = (getTokenFromId(token.id)) as PushToken? ?? token;
     assert(token.url != null, 'Token url is null. Cannot rollout token without url.');
     if (token.isRolledOut) return true;
     if (token.rolloutState != PushTokenRollOutState.rolloutNotStarted &&
@@ -383,7 +371,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
-    await isInitialized;
     Logger.info('Parsing rollout response, try to extract public_key.', name: 'token_widgets.dart#_parseRollOutResponse', error: response.body);
     try {
       String key = json.decode(response.body)['detail']['public_key'];

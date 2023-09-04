@@ -31,7 +31,7 @@ class PushRequest {
   })  : serial = serial ?? '',
         signature = signature ?? '' {
     int time = expirationDate.difference(DateTime.now()).inMilliseconds;
-    Future.delayed(Duration(milliseconds: time < 1 ? 1 : time), () async => await globalRef?.read(tokenProvider.notifier).removePushRequest(this));
+    Future.delayed(Duration(milliseconds: time < 1 ? 1 : time), () async => globalRef?.read(tokenProvider.notifier).removePushRequest(this));
   }
 
   PushRequest copyWith({
