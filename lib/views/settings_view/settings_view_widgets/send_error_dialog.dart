@@ -30,13 +30,20 @@ class _SendErrorDialogState extends State<SendErrorDialog> {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    AppLocalizations.of(context)!.sendErrorDialogBody,
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SingleChildScrollView(
+                      controller: ScrollController(),
+                      child: Text(
+                        AppLocalizations.of(context)!.sendErrorDialogBody,
+                      ),
+                    ),
                   ),
                 ),
                 Expanded(
+                  flex: 4,
                   child: Card(
                     child: Scrollbar(
                       scrollbarOrientation: ScrollbarOrientation.right,
@@ -91,24 +98,21 @@ class NoLogDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: DefaultDialog(
-        scrollable: true,
-        title: Text(
-          AppLocalizations.of(context)!.noLogToSend,
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              AppLocalizations.of(context)!.ok,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
+    return DefaultDialog(
+      scrollable: true,
+      title: Text(
+        AppLocalizations.of(context)!.noLogToSend,
       ),
+      actions: [
+        TextButton(
+          child: Text(
+            AppLocalizations.of(context)!.ok,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ],
     );
   }
 }

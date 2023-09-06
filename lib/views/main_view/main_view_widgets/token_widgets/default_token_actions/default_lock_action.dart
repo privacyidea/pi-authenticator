@@ -15,18 +15,28 @@ class DefaultLockAction extends TokenAction {
   const DefaultLockAction({required this.token, Key? key}) : super(key: key);
 
   @override
-  SlidableAction build(BuildContext context) {
-    return SlidableAction(
-      label: token.isLocked ? AppLocalizations.of(context)!.unlock : AppLocalizations.of(context)!.lock,
+  CustomSlidableAction build(BuildContext context) {
+    return CustomSlidableAction(
       backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.lockColorLight : ApplicationCustomizer.lockColorDark,
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-      icon: token.isLocked ? Icons.lock_open : Icons.lock_outline,
       onPressed: (context) async {
         Logger.info('Changing lock status of token ${token.label}.', name: 'token_widgets.dart#_changeLockStatus');
         if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) return;
 
         globalRef?.read(tokenProvider.notifier).updateToken(token.copyWith(isLocked: !token.isLocked));
       },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(Icons.lock),
+          Text(
+            token.isLocked ? AppLocalizations.of(context)!.unlock : AppLocalizations.of(context)!.lock,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
+        ],
+      ),
     );
   }
 }

@@ -13,15 +13,25 @@ class LockTokenFolderAction extends StatelessWidget {
   const LockTokenFolderAction({super.key, required this.folder});
   @override
   Widget build(BuildContext context) {
-    return SlidableAction(
-      label: folder.isLocked ? AppLocalizations.of(context)!.unlock : AppLocalizations.of(context)!.lock,
+    return CustomSlidableAction(
       backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.lockColorLight : ApplicationCustomizer.lockColorDark,
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-      icon: Icons.lock,
       onPressed: (context) async {
         if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
         globalRef?.read(tokenFolderProvider.notifier).updateFolder(folder.copyWith(isLocked: !folder.isLocked));
       },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(Icons.lock),
+          Text(
+            folder.isLocked ? AppLocalizations.of(context)!.unlock : AppLocalizations.of(context)!.lock,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
+        ],
+      ),
     );
   }
 }

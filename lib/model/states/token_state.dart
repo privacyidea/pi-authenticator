@@ -1,4 +1,6 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 
 import '../token_folder.dart';
 import '../tokens/token.dart';
@@ -58,4 +60,5 @@ class TokenState {
 
   List<Token> tokensInFolder(TokenFolder folder) => tokens.where((token) => token.folderId == folder.folderId).toList();
   List<Token> tokensWithoutFolder() => tokens.where((token) => token.folderId == null).toList();
+  PushToken? tokenWithPushRequest() => tokens.whereType<PushToken>().firstWhereOrNull((token) => token.pushRequests.isNotEmpty);
 }

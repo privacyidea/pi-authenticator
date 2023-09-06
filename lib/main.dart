@@ -22,6 +22,7 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/model/platform_info/platform_info_imp/package_info_plus_platform_info.dart';
@@ -41,6 +42,7 @@ void main() async {
       navigatorKey: globalNavigatorKey,
       appRunner: () async {
         WidgetsFlutterBinding.ensureInitialized();
+        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
         await Firebase.initializeApp();
         runApp(const AppWrapper(child: PrivacyIDEAAuthenticator()));
       });
@@ -48,7 +50,6 @@ void main() async {
 
 class PrivacyIDEAAuthenticator extends ConsumerWidget {
   const PrivacyIDEAAuthenticator({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     globalRef = ref;
@@ -143,16 +144,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Center(
-        child: AnimatedOpacity(
-          opacity: _appIconIsVisible ? 1.0 : 0.0,
-          duration: _splashScreenDuration,
-          child: Image.asset(ApplicationCustomizer.appIcon),
+  Widget build(BuildContext context) => Scaffold(
+        body: Center(
+          child: AnimatedOpacity(
+            opacity: _appIconIsVisible ? 1.0 : 0.0,
+            duration: _splashScreenDuration,
+            child: Image.asset(ApplicationCustomizer.appIcon),
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
