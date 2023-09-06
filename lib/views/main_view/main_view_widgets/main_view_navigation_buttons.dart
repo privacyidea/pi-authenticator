@@ -15,9 +15,9 @@ class MainViewNavigationButtions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sizee = MediaQuery.of(context).size;
-    final navWidth = sizee.width;
-    final navHeight = sizee.height * 0.10;
+    final size = MediaQuery.of(context).size;
+    final navWidth = size.width;
+    final navHeight = size.height * 0.10;
     return Positioned(
       bottom: 0,
       left: 0,
@@ -60,7 +60,10 @@ class MainViewNavigationButtions extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => LicensePage(
                             applicationName: ApplicationCustomizer.appName,
-                            applicationIcon: Image.asset(ApplicationCustomizer.appIcon),
+                            applicationIcon: Image.asset(
+                              ApplicationCustomizer.appIcon,
+                              height: size.height * 0.3,
+                            ),
                             applicationLegalese: ApplicationCustomizer.websiteLink,
                             applicationVersion: globalRef?.read(platformInfoProvider).appVersion,
                           ),

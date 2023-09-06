@@ -618,12 +618,12 @@
     "description": "Message for the rollout process",
     "type": "text"
   },
-  "sendingPublicRSAKey": "Sende öffentlichen RSA Schlüssel",
+  "sendingRSAPublicKey": "Sende öffentlichen RSA Schlüssel",
   "@sendingRSAPublicKey": {
     "description": "Message for the rollout process",
     "type": "text"
   },
-  "sendingPublicRSAKeyFailed": "Senden des öffentlichen RSA Schlüssels fehlgeschlagen",
+  "sendingRSAPublicKeyFailed": "Senden des öffentlichen RSA Schlüssels fehlgeschlagen",
   "@sendingRSAPublicKeyFailed": {
     "description": "Message for the rollout process",
     "type": "text"
@@ -651,6 +651,66 @@
   "errorWhenPullingChallenges": "Fehler beim Abrufen der Authentifizierungsanfragen.",
   "@errorWhenPullingChallenges": {
     "description": "errorWhenPullingChallenges",
+    "type": "text"
+  },
+  "errorRollOutNoConnectionToServer": "Der Rollout von Token {name} ist fehlgeschlagen, der Server konnte nicht erreicht werden.",
+  "@errorRollOutNoConnectionToServer": {
+    "description": "errorRollOutNoConnectionToServer",
+    "type": "text"
+  },
+  "authToAcceptPushRequest": "Bitte authentifizieren Sie sich, um die Anfrage anzunehmen.",
+  "@authToAcceptPushRequest": {
+    "description": "authToAcceptPushRequest",
+    "type": "text"
+  },
+  "authToDeclinePushRequest": "Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.",
+  "@authToDeclinePushRequest": {
+    "description": "authToDeclinePushRequest",
+    "type": "text"
+  },
+  "incomingAuthRequestError": "Die Nachricht enthielt nicht die erforderlichen Daten oder die Daten waren falsch formatiert.",
+  "@incomingAuthRequestError": {
+    "description": "incomingAuthRequestError",
+    "type": "text"
+  },
+  "errorRollOutSSLHandshakeFailed": "SSL-Handshake fehlgeschlagen. Roll-out nicht möglich.",
+  "@errorRollOutSSLHandshakeFailed": {
+    "description": "errorRollOutSSLHandshakeFailed",
+    "type": "text"
+  },
+  "errorRollOutTokenExpired": "Das Ausrollen dieses Tokens ist nicht mehr möglich.\nDer Token {name} ist abgelaufen.",
+  "@errorRollOutTokenExpired": {
+    "description": "errorRollOutTokenExpired",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "yes": "Ja",
+  "@yes": {
+    "description": "yes",
+    "type": "text"
+  },
+  "no": "Nein",
+  "@no": {
+    "description": "no",
+    "type": "text"
+  },
+  "butDiscardIt": "aber verwerfen",
+  "@butDiscardIt": {
+    "description": "butDiscardIt",
+    "type": "text"
+  },
+  "declineIt": "ablehnen",
+  "@declineIt": {
+    "description": "declineIt",
+    "type": "text"
+  },
+  "requestTriggerdByUserQuestion": "Wurde diese Anfrage von Ihnen ausgelöst?",
+  "@requestTriggerdByUserQuestion": {
+    "description": "requestTriggerdByUserQuestion",
     "type": "text"
   }
 }

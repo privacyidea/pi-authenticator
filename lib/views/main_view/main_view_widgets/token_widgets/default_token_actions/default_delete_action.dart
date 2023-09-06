@@ -16,18 +16,28 @@ class DefaultDeleteAction extends TokenAction {
   const DefaultDeleteAction({super.key, required this.token});
 
   @override
-  SlidableAction build(BuildContext context) {
-    return SlidableAction(
-      label: AppLocalizations.of(context)!.delete,
+  CustomSlidableAction build(BuildContext context) {
+    return CustomSlidableAction(
       backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.deleteColorLight : ApplicationCustomizer.deleteColorDark,
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-      icon: Icons.delete,
       onPressed: (_) async {
         if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.deleteLockedToken) == false) {
           return;
         }
         _showDialog();
       },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(Icons.delete),
+          Text(
+            AppLocalizations.of(context)!.delete,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
+        ],
+      ),
     );
   }
 

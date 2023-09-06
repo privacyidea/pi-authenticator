@@ -15,15 +15,25 @@ class DeleteTokenFolderAction extends StatelessWidget {
   const DeleteTokenFolderAction({super.key, required this.folder});
   @override
   Widget build(BuildContext context) {
-    return SlidableAction(
-      label: AppLocalizations.of(context)!.delete,
+    return CustomSlidableAction(
       backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.deleteColorLight : ApplicationCustomizer.deleteColorDark,
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-      icon: Icons.delete,
       onPressed: (context) async {
         if (folder.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
         _showDialog();
       },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(Icons.delete),
+          Text(
+            AppLocalizations.of(context)!.delete,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
+        ],
+      ),
     );
   }
 

@@ -16,18 +16,28 @@ class DefaultEditAction extends TokenAction {
   const DefaultEditAction({required this.token, Key? key}) : super(key: key);
 
   @override
-  SlidableAction build(BuildContext context) {
-    return SlidableAction(
-        label: AppLocalizations.of(context)!.rename,
+  CustomSlidableAction build(BuildContext context) {
+    return CustomSlidableAction(
         backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-        icon: Icons.edit,
         onPressed: (context) async {
           if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
             return;
           }
           _showDialog();
-        });
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(Icons.edit),
+            Text(
+              AppLocalizations.of(context)!.rename,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+          ],
+        ));
   }
 
   void _showDialog() {

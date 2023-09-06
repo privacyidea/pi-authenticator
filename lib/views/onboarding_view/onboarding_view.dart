@@ -10,7 +10,6 @@ import '../../utils/app_customizer.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/dot_indicator.dart';
 import '../main_view/main_view.dart';
-import 'onboading_view_widgets/onboarding_button_page.dart';
 import 'onboading_view_widgets/onboarding_page.dart';
 
 class LottieFiles {
@@ -91,7 +90,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                           return OnboardingPage(title: AppLocalizations.of(context)!.onBoardingTitle2, subtitle: AppLocalizations.of(context)!.onBoardingText2);
                         }
                         if (_currentIndex == 2) {
-                          return OnboardingButtonPage(
+                          return OnboardingPage(
                             title: AppLocalizations.of(context)!.onBoardingTitle3,
                             subtitle: AppLocalizations.of(context)!.onBoardingText3,
                             buttonTitle: 'Github',

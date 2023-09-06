@@ -612,12 +612,12 @@
     "description": "Message for the rollout process",
     "type": "text"
   },
-  "sendingPublicRSAKey": "Wysyłanie publicznego klucza RSA",
+  "sendingRSAPublicKey": "Wysyłanie publicznego klucza RSA",
   "@sendingRSAPublicKey": {
     "description": "Message for the rollout process",
     "type": "text"
   },
-  "sendingPublicRSAKeyFailed": "Wysyłanie publicznego klucza RSA nieudane",
+  "sendingRSAPublicKeyFailed": "Wysyłanie publicznego klucza RSA nieudane",
   "@sendingRSAPublicKeyFailed": {
     "description": "Message for the rollout process",
     "type": "text"
@@ -635,6 +635,76 @@
   "rolloutCompleted": "Wdrożenie zakończone",
   "@rolloutCompleted": {
     "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "errorRollOutNoConnectionToServer": "Brak połączenia z serwerem",
+  "@errorRollOutNoConnectionToServer": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "authToAcceptPushRequest": "Uwierzytelnij, aby zaakceptować żądanie push.",
+  "@authToAcceptPushRequest": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "authToDeclinePushRequest": "Uwierzytelnij, aby odrzucić żądanie push.",
+  "@authToDeclinePushRequest": {
+    "description": "authToDeclinePushRequest",
+    "type": "text"
+  },
+  "incomingAuthRequestError": "Wiadomość nie zawierała wymaganych danych lub dane były zniekształcone.",
+  "@incomingAuthRequestError": {
+    "description": "incomingAuthRequestError",
+    "type": "text"
+  },
+  "imageUrl": "Adres URL obrazu",
+  "@imageUrl": {
+    "description": "imageUrl",
+    "type": "text"
+  },
+  "errorRollOutSSLHandshakeFailed": "Uścisk dłoni SSL nie powiódł się. Rozwijanie nie jest możliwe.",
+  "@errorRollOutSSLHandshakeFailed": {
+    "description": "errorRollOutSSLHandshakeFailed",
+    "type": "text"
+  },
+  "errorWhenPullingChallenges": "An error occured when polling for challenges",
+  "@errorWhenPullingChallenges": {
+    "description": "errorWhenPullingChallenges",
+    "type": "text"
+  },
+  "errorRollOutTokenExpired": "Wstać z łóżka tego tokena nie jest już możliwe.\nToken {name} wygasł.",
+  "@errorRollOutTokenExpired": {
+    "description": "errorRollOutTokenExpired",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234"
+      }
+    }
+  },
+  "yes": "Tak",
+  "@yes": {
+    "description": "yes",
+    "type": "text"
+  },
+  "no": "Nie",
+  "@no": {
+    "description": "no",
+    "type": "text"
+  },
+  "butDiscardIt": "ale odrzucić go",
+  "@butDiscardIt": {
+    "description": "butDiscardIt",
+    "type": "text"
+  },
+  "declineIt": "odrzuć go",
+  "@declineIt": {
+    "description": "declineIt",
+    "type": "text"
+  },
+  "requestTriggerdByUserQuestion": "Czy ta prośba została wywołana przez Ciebie?",
+  "@requestTriggerdByUserQuestion": {
+    "description": "requestTriggerdByUserQuestion",
     "type": "text"
   }
 }

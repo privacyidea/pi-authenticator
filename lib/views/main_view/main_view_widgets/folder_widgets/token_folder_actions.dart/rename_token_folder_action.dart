@@ -16,15 +16,25 @@ class RenameTokenFolderAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SlidableAction(
-        label: AppLocalizations.of(context)!.rename,
+    return CustomSlidableAction(
         backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-        icon: Icons.edit,
         onPressed: (context) async {
           if (folder.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
           _showDialog();
-        });
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(Icons.edit),
+            Text(
+              AppLocalizations.of(context)!.rename,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+          ],
+        ));
   }
 
   void _showDialog() {

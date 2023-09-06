@@ -618,12 +618,12 @@
     "description": "Message for the rollout process",
     "type": "text"
   },
-  "sendingPublicRSAKey": "Enviando clave pública RSA",
+  "sendingRSAPublicKey": "Enviando clave pública RSA",
   "@sendingRSAPublicKey": {
     "description": "Message for the rollout process",
     "type": "text"
   },
-  "sendingPublicRSAKeyFailed": "Error al enviar la clave pública RSA",
+  "sendingRSAPublicKeyFailed": "Error al enviar la clave pública RSA",
   "@sendingRSAPublicKeyFailed": {
     "description": "Message for the rollout process",
     "type": "text"
@@ -641,6 +641,81 @@
   "rolloutCompleted": "Despliegue completado",
   "@rolloutCompleted": {
     "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "errorRollOutNoConnectionToServer": "El despliegue del token {name} ha fallado, no se ha podido acceder al servidor.",
+  "@errorRollOutNoConnectionToServer": {
+    "description": "Message for the rollout process",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "authToAcceptPushRequest": "Por favor, autentifíquese para aceptar la solicitud push.",
+  "@authToAcceptPushRequest": {
+    "description": "authToAcceptPushRequest",
+    "type": "text"
+  },
+  "authToDeclinePushRequest": "Por favor, autentifíquese para rechazar la solicitud push.",
+  "@authToDeclinePushRequest": {
+    "description": "authToDeclinePushRequest",
+    "type": "text"
+  },
+  "incomingAuthRequestError": "El mensaje no proporcionaba los datos necesarios o los datos estaban malformados.",
+  "@incomingAuthRequestError": {
+    "description": "incomingAuthRequestError",
+    "type": "text"
+  },
+  "imageUrl": "URL de la imagen",
+  "@imageUrl": {
+    "description": "imageUrl",
+    "type": "text"
+  },
+  "errorRollOutSSLHandshakeFailed": "Ha fallado el protocolo SSL. No es posible el despliegue.",
+  "@errorRollOutSSLHandshakeFailed": {
+    "description": "errorRollOutSSLHandshakeFailed",
+    "type": "text"
+  },
+  "errorWhenPullingChallenges": "Se ha producido un error al buscar retos.",
+  "@errorWhenPullingChallenges": {
+    "description": "errorWhenPullingChallenges",
+    "type": "text"
+  },
+  "errorRollOutTokenExpired": "El despliegue de este token ya no es posible.\nEl token {name} ha caducado.",
+  "@errorRollOutTokenExpired": {
+    "description": "errorRollOutTokenExpired",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "yes": "Sí",
+  "@yes": {
+    "description": "yes",
+    "type": "text"
+  },
+  "no": "No",
+  "@no": {
+    "description": "no",
+    "type": "text"
+  },
+  "butDiscardIt": "pero descártelo",
+  "@butDiscardIt": {
+    "description": "butDiscardIt",
+    "type": "text"
+  },
+  "declineIt": "rechazar",
+  "@declineIt": {
+    "description": "declineIt",
+    "type": "text"
+  },
+  "requestTriggerdByUserQuestion": "¿Fue usted quien provocó esta petición?",
+  "@requestTriggerdByUserQuestion": {
+    "description": "requestTriggerdByUserQuestion",
     "type": "text"
   }
 }
