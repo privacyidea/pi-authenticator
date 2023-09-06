@@ -144,16 +144,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: Center(
-        child: AnimatedOpacity(
-          opacity: _appIconIsVisible ? 1.0 : 0.0,
-          duration: _splashScreenDuration,
-          child: Image.asset(ApplicationCustomizer.appIcon),
+  Widget build(BuildContext context) => Scaffold(
+        body: Center(
+          child: AnimatedOpacity(
+            opacity: _appIconIsVisible ? 1.0 : 0.0,
+            duration: _splashScreenDuration,
+            child: Image.asset(ApplicationCustomizer.appIcon),
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
