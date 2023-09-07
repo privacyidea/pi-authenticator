@@ -128,19 +128,11 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final isFirstRun = ref.read(settingsProvider).isFirstRun;
-
           switch (_currentIndex) {
             case 2:
-              if (isFirstRun) {
-                ref.read(settingsProvider.notifier).setFirstRun(false);
-                Navigator.pushReplacementNamed(
-                  context,
-                  MainView.routeName,
-                );
-              } else {
-                Navigator.of(context).pop();
-              }
+              ref.read(settingsProvider.notifier).setFirstRun(false);
+              Navigator.of(context).pushReplacementNamed(MainView.routeName);
+
               break;
             default:
               _pageController.nextPage(

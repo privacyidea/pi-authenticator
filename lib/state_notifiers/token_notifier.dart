@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:base32/base32.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
@@ -272,7 +273,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       globalRef?.read(tokenProvider.notifier).removeToken(token);
       return false;
     }
-    if (Platform.isIOS) {
+    if (!kIsWeb && Platform.isIOS) {
       await _ioClient.triggerNetworkAccessPermission(url: token.url!, sslVerify: token.sslVerify);
     }
 

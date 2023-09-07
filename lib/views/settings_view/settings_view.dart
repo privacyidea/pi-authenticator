@@ -39,10 +39,10 @@ class SettingsView extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
+          children: [
             SettingsGroup(
               title: AppLocalizations.of(context)!.theme,
-              children: <Widget>[
+              children: [
                 RadioListTile(
                   title: Text(
                     AppLocalizations.of(context)!.lightTheme,
@@ -103,7 +103,7 @@ class SettingsView extends ConsumerWidget {
                   child: DropdownButton<Locale>(
                     disabledHint: Text(
                       '$locale',
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.grey),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey),
                       overflow: TextOverflow.fade,
                       softWrap: false,
                     ),
@@ -128,7 +128,7 @@ class SettingsView extends ConsumerWidget {
               visible: showPushSettingsGroup,
               child: SettingsGroup(
                 title: AppLocalizations.of(context)!.pushToken,
-                children: <Widget>[
+                children: [
                   ListTile(
                     title: Text(
                       AppLocalizations.of(context)!.synchronizePushTokens,

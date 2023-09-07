@@ -84,7 +84,7 @@ final tokenProvider = StateNotifierProvider.autoDispose<TokenNotifier, TokenStat
   return tokenNotifier;
 });
 
-final settingsProvider = StateNotifierProvider.autoDispose<SettingsNotifier, SettingsState>(
+final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
   (ref) => SettingsNotifier(
     repository: PreferenceSettingsRepository(),
     initialState: SettingsState(),
