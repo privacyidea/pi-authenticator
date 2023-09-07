@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../model/tokens/token.dart';
@@ -18,7 +18,7 @@ class DefaultLockAction extends TokenAction {
   SlidableAction build(BuildContext context) {
     return SlidableAction(
       label: token.isLocked ? AppLocalizations.of(context)!.unlock : AppLocalizations.of(context)!.lock,
-      backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.lockColorLight : ApplicationCustomizer.lockColorDark,
+      backgroundColor: Theme.of(context).brightness == Brightness.light ? applicationCustomizer.lockColorLight : applicationCustomizer.lockColorDark,
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       icon: token.isLocked ? Icons.lock_open : Icons.lock_outline,
       onPressed: (context) async {

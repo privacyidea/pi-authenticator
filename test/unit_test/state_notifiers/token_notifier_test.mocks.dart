@@ -11,7 +11,8 @@ import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart' as _i14;
 import 'package:pointycastle/export.dart' as _i2;
-import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart' as _i4;
+import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart'
+    as _i4;
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i10;
 import 'package:privacyidea_authenticator/model/tokens/token.dart' as _i6;
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i12;
@@ -50,7 +51,9 @@ class _FakeRSAPrivateKey_1 extends _i1.SmartFake implements _i2.RSAPrivateKey {
         );
 }
 
-class _FakeAsymmetricKeyPair_2<B extends _i2.PublicKey, V extends _i2.PrivateKey> extends _i1.SmartFake implements _i2.AsymmetricKeyPair<B, V> {
+class _FakeAsymmetricKeyPair_2<B extends _i2.PublicKey,
+        V extends _i2.PrivateKey> extends _i1.SmartFake
+    implements _i2.AsymmetricKeyPair<B, V> {
   _FakeAsymmetricKeyPair_2(
     Object parent,
     Invocation parentInvocation,
@@ -79,7 +82,8 @@ class MockTokenRepository extends _i1.Mock implements _i4.TokenRepository {
   }
 
   @override
-  _i5.Future<List<_i6.Token>> saveOrReplaceTokens(List<_i6.Token>? tokens) => (super.noSuchMethod(
+  _i5.Future<List<_i6.Token>> saveOrReplaceTokens(List<_i6.Token>? tokens) =>
+      (super.noSuchMethod(
         Invocation.method(
           #saveOrReplaceTokens,
           [tokens],
@@ -95,7 +99,8 @@ class MockTokenRepository extends _i1.Mock implements _i4.TokenRepository {
         returnValue: _i5.Future<List<_i6.Token>>.value(<_i6.Token>[]),
       ) as _i5.Future<List<_i6.Token>>);
   @override
-  _i5.Future<List<_i6.Token>> deleteTokens(List<_i6.Token>? tokens) => (super.noSuchMethod(
+  _i5.Future<List<_i6.Token>> deleteTokens(List<_i6.Token>? tokens) =>
+      (super.noSuchMethod(
         Invocation.method(
           #deleteTokens,
           [tokens],
@@ -113,7 +118,8 @@ class MockQrParser extends _i1.Mock implements _i7.QrParser {
   }
 
   @override
-  Map<String, dynamic> parseQRCodeToMap(String? uriAsString) => (super.noSuchMethod(
+  Map<String, dynamic> parseQRCodeToMap(String? uriAsString) =>
+      (super.noSuchMethod(
         Invocation.method(
           #parseQRCodeToMap,
           [uriAsString],
@@ -139,7 +145,8 @@ class MockRsaUtils extends _i1.Mock implements _i8.RsaUtils {
   }
 
   @override
-  _i2.RSAPublicKey deserializeRSAPublicKeyPKCS1(String? keyStr) => (super.noSuchMethod(
+  _i2.RSAPublicKey deserializeRSAPublicKeyPKCS1(String? keyStr) =>
+      (super.noSuchMethod(
         Invocation.method(
           #deserializeRSAPublicKeyPKCS1,
           [keyStr],
@@ -153,7 +160,8 @@ class MockRsaUtils extends _i1.Mock implements _i8.RsaUtils {
         ),
       ) as _i2.RSAPublicKey);
   @override
-  String serializeRSAPublicKeyPKCS1(_i2.RSAPublicKey? publicKey) => (super.noSuchMethod(
+  String serializeRSAPublicKeyPKCS1(_i2.RSAPublicKey? publicKey) =>
+      (super.noSuchMethod(
         Invocation.method(
           #serializeRSAPublicKeyPKCS1,
           [publicKey],
@@ -161,7 +169,8 @@ class MockRsaUtils extends _i1.Mock implements _i8.RsaUtils {
         returnValue: '',
       ) as String);
   @override
-  _i2.RSAPublicKey deserializeRSAPublicKeyPKCS8(String? keyStr) => (super.noSuchMethod(
+  _i2.RSAPublicKey deserializeRSAPublicKeyPKCS8(String? keyStr) =>
+      (super.noSuchMethod(
         Invocation.method(
           #deserializeRSAPublicKeyPKCS8,
           [keyStr],
@@ -175,7 +184,8 @@ class MockRsaUtils extends _i1.Mock implements _i8.RsaUtils {
         ),
       ) as _i2.RSAPublicKey);
   @override
-  String serializeRSAPublicKeyPKCS8(_i2.RSAPublicKey? key) => (super.noSuchMethod(
+  String serializeRSAPublicKeyPKCS8(_i2.RSAPublicKey? key) =>
+      (super.noSuchMethod(
         Invocation.method(
           #serializeRSAPublicKeyPKCS8,
           [key],
@@ -183,7 +193,8 @@ class MockRsaUtils extends _i1.Mock implements _i8.RsaUtils {
         returnValue: '',
       ) as String);
   @override
-  String serializeRSAPrivateKeyPKCS1(_i2.RSAPrivateKey? key) => (super.noSuchMethod(
+  String serializeRSAPrivateKeyPKCS1(_i2.RSAPrivateKey? key) =>
+      (super.noSuchMethod(
         Invocation.method(
           #serializeRSAPrivateKeyPKCS1,
           [key],
@@ -191,7 +202,8 @@ class MockRsaUtils extends _i1.Mock implements _i8.RsaUtils {
         returnValue: '',
       ) as String);
   @override
-  _i2.RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String? keyStr) => (super.noSuchMethod(
+  _i2.RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String? keyStr) =>
+      (super.noSuchMethod(
         Invocation.method(
           #deserializeRSAPrivateKeyPKCS1,
           [keyStr],
@@ -237,19 +249,24 @@ class MockRsaUtils extends _i1.Mock implements _i8.RsaUtils {
         returnValue: _i5.Future<String?>.value(),
       ) as _i5.Future<String?>);
   @override
-  _i5.Future<_i2.AsymmetricKeyPair<_i2.RSAPublicKey, _i2.RSAPrivateKey>> generateRSAKeyPair() => (super.noSuchMethod(
-        Invocation.method(
-          #generateRSAKeyPair,
-          [],
-        ),
-        returnValue: _i5.Future<_i2.AsymmetricKeyPair<_i2.RSAPublicKey, _i2.RSAPrivateKey>>.value(_FakeAsymmetricKeyPair_2<_i2.RSAPublicKey, _i2.RSAPrivateKey>(
-          this,
-          Invocation.method(
-            #generateRSAKeyPair,
-            [],
-          ),
-        )),
-      ) as _i5.Future<_i2.AsymmetricKeyPair<_i2.RSAPublicKey, _i2.RSAPrivateKey>>);
+  _i5.Future<_i2.AsymmetricKeyPair<_i2.RSAPublicKey, _i2.RSAPrivateKey>>
+      generateRSAKeyPair() => (super.noSuchMethod(
+            Invocation.method(
+              #generateRSAKeyPair,
+              [],
+            ),
+            returnValue: _i5.Future<
+                    _i2.AsymmetricKeyPair<_i2.RSAPublicKey,
+                        _i2.RSAPrivateKey>>.value(
+                _FakeAsymmetricKeyPair_2<_i2.RSAPublicKey, _i2.RSAPrivateKey>(
+              this,
+              Invocation.method(
+                #generateRSAKeyPair,
+                [],
+              ),
+            )),
+          ) as _i5.Future<
+              _i2.AsymmetricKeyPair<_i2.RSAPublicKey, _i2.RSAPrivateKey>>);
   @override
   String createBase32Signature(
     _i2.RSAPrivateKey? privateKey,

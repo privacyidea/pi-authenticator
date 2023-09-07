@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/model/platform_info/platform_info_imp/package_info_plus_platform_info.dart';
@@ -35,15 +38,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _init() async {
-    ref.read(platformInfoProvider.notifier).state = await PackageInfoPlusPlatformInfo.loadInfos();
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+      ref.read(platformInfoProvider.notifier).state = await PackageInfoPlusPlatformInfo.loadInfos();
+    }
     await Future.delayed(_splashScreenDuration + _splashScreenDelay * 2);
     final isFirstRun = ref.read(settingsProvider).isFirstRun;
     final ConsumerStatefulWidget nextView;
     if (isFirstRun) {
       nextView = const OnboardingView();
     } else {
-      nextView = const MainView(
-        title: ApplicationCustomizer.appName,
+      nextView = MainView(
+        title: applicationCustomizer.appName,
+        appLogo: Image.asset(applicationCustomizer.appIcon),
       );
     }
     // ignore: use_build_context_synchronously
@@ -65,7 +71,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         child: AnimatedOpacity(
           opacity: _appIconIsVisible ? 1.0 : 0.0,
           duration: _splashScreenDuration,
-          child: Image.asset(ApplicationCustomizer.appIcon),
+          child: Image.asset(applicationCustomizer.appIcon),
         ),
       ),
     );

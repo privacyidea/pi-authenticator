@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../model/tokens/token.dart';
@@ -19,7 +19,7 @@ class DefaultEditAction extends TokenAction {
   SlidableAction build(BuildContext context) {
     return SlidableAction(
         label: AppLocalizations.of(context)!.rename,
-        backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
+        backgroundColor: Theme.of(context).brightness == Brightness.light ? applicationCustomizer.renameColorLight : applicationCustomizer.renameColorDark,
         foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
         icon: Icons.edit,
         onPressed: (context) async {

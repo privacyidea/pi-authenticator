@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
@@ -6,12 +7,11 @@ import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
+import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 
-import '../../test/unit_test/state_notifiers/settings_notifier_test.mocks.dart';
-import '../../test/unit_test/state_notifiers/token_folder_notifier_test.mocks.dart';
-import '../../test/unit_test/state_notifiers/token_notifier_test.mocks.dart';
-import '../mocks/tests_app_wrapper.dart';
+import '../test/tests_app_wrapper.dart';
+import '../test/tests_app_wrapper.mocks.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +20,8 @@ void main() {
   late final MockTokenFolderRepository mockTokenFolderRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
-    when(mockSettingsRepository.loadSettings()).thenAnswer((_) async => SettingsState(isFirstRun: false));
+    when(mockSettingsRepository.loadSettings())
+        .thenAnswer((_) async => SettingsState(isFirstRun: false, localePreference: const Locale('en', 'US'), useSystemLocale: false));
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async => []);
@@ -31,7 +32,7 @@ void main() {
     when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.deleteFolders(any)).thenAnswer((_) async => []);
   });
-  testWidgets('AppTest', (tester) async {
+  testWidgets('Licenses View', (tester) async {
     await tester.pumpWidget(TestsAppWrapper(
       overrides: [
         settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
@@ -40,5 +41,15 @@ void main() {
       ],
       child: const PrivacyIDEAAuthenticator(),
     ));
+
+    await waitFor(const Duration(seconds: 3), tester);
+    await tester.tap(find.byIcon(Icons.info_outline));
+    await tester.pumpAndSettle();
+    expect(find.text(applicationCustomizer.appName), findsOneWidget);
+    expect(find.text(applicationCustomizer.websiteLink), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.text('Licenses'), findsOneWidget);
+    expect(find.byType(Icon), findsOneWidget);
+    expect(find.byType(LicensePage), findsOneWidget);
   });
 }

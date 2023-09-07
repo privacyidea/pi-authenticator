@@ -3,19 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 
 import '../../model/states/app_state.dart';
-import '../../utils/app_customizer.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import 'main_view_widgets/main_view_navigation_buttons.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
 import 'main_view_widgets/no_token_screen.dart';
 
+export 'package:privacyidea_authenticator/views/main_view/main_view.dart';
+
 class MainView extends ConsumerStatefulWidget {
   static const routeName = '/mainView';
+  final Image _appLogo;
   final String _title;
 
-  const MainView({Key? key, required String title})
+  const MainView({Key? key, required String title, required Image appLogo})
       : _title = title,
+        _appLogo = appLogo,
         super(key: key);
 
   @override
@@ -49,7 +52,7 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
           // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
-        leading: Image.asset(ApplicationCustomizer.appIcon),
+        leading: widget._appLogo,
       ),
       body: Stack(
         clipBehavior: Clip.antiAliasWithSaveLayer,

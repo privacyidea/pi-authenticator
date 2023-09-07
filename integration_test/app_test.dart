@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -11,7 +9,6 @@ import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view_widgets/labeled_dropdown_button.dart';
@@ -22,10 +19,9 @@ import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/toke
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/hotp_token_widgets/hotp_token_widget.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_base.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/totp_token_widgets/totp_token_widget.dart';
-import '../../test/unit_test/state_notifiers/settings_notifier_test.mocks.dart';
-import '../../test/unit_test/state_notifiers/token_folder_notifier_test.mocks.dart';
-import '../../test/unit_test/state_notifiers/token_notifier_test.mocks.dart';
-import '../mocks/tests_app_wrapper.dart';
+
+import '../test/tests_app_wrapper.dart';
+import '../test/tests_app_wrapper.mocks.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -74,7 +70,7 @@ void main() {
     expect(find.byType(TOTPTokenWidget).hitTestable(), findsOneWidget);
     expect(find.byType(TokenWidgetBase).hitTestable(), findsOneWidget);
     await _openFolder(tester);
-    await _waitFor(const Duration(milliseconds: 500), tester);
+    await waitFor(const Duration(milliseconds: 500), tester);
     expect(find.byType(TokenWidgetBase).hitTestable(), findsNWidgets(3));
   });
 }
@@ -84,7 +80,7 @@ void expectMainViewIsEmptyAndCorrect() {
   expect(find.byType(AppBarItem), findsNWidgets(4));
   expect(find.byType(TokenWidgetBase), findsNothing);
   expect(find.byType(TokenFolderWidget), findsNothing);
-  expect(find.text(ApplicationCustomizer.appName), findsOneWidget);
+  expect(find.text(applicationCustomizer.appName), findsOneWidget);
   expect(find.byType(Image), findsOneWidget);
 }
 
@@ -203,7 +199,7 @@ Future<void> _addHotpToken(WidgetTester tester) async {
 }
 
 Future<void> _introToMainView(WidgetTester tester) async {
-  await _waitFor(const Duration(seconds: 5), tester);
+  await waitFor(const Duration(seconds: 5), tester);
   expect(find.byType(FloatingActionButton), findsNWidgets(1));
   await tester.tap(find.byType(FloatingActionButton));
   await tester.pump(const Duration(milliseconds: 500));
@@ -211,15 +207,4 @@ Future<void> _introToMainView(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 500));
   await tester.tap(find.byType(FloatingActionButton));
   await tester.pump(const Duration(milliseconds: 500));
-}
-
-Future<void> _waitFor(Duration duration, WidgetTester tester) async {
-  var lastFrameTime = DateTime.now();
-  Logger.info('Waiting for ${duration.inMilliseconds} milliseconds');
-  while (duration.inMilliseconds > 0) {
-    final millisecondsSinceLastFrame = DateTime.now().difference(lastFrameTime).inMilliseconds;
-    await tester.pump(Duration(milliseconds: max(1, 33 - millisecondsSinceLastFrame)));
-    duration -= DateTime.now().difference(lastFrameTime);
-    lastFrameTime = DateTime.now();
-  }
 }

@@ -25,7 +25,7 @@ import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
@@ -48,15 +48,15 @@ class PushProvider {
   bool _initialized = false;
   Timer? _pollTimer;
   PushRequestNotifier? pushSubscriber; // must be set before receiving push messages
-  PushProvider._();
   FirebaseUtils? firebaseUtils;
+  PushProvider._();
 
-  Future<void> initialize({required PushRequestNotifier pushSubscriber}) async {
+  Future<void> initialize({required PushRequestNotifier pushSubscriber, required FirebaseUtils firebaseUtils}) async {
     if (_initialized) return;
     _initialized = true;
+    this.firebaseUtils = firebaseUtils;
     this.pushSubscriber = pushSubscriber;
-    firebaseUtils = FirebaseUtils();
-    await firebaseUtils!.initFirebase(
+    await firebaseUtils.initFirebase(
       foregroundHandler: _foregroundHandler,
       backgroundHandler: _backgroundHandler,
       updateFirebaseToken: _updateFirebaseToken,
@@ -87,9 +87,13 @@ class PushProvider {
     await SecureTokenRepository.protect(() async {
       try {
         return _handleIncomingRequestForeground(remoteMessage);
-      } catch (e, s) {
+      } on TypeError catch (e, s) {
         final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
-        Logger.error(errorMessage, name: 'main_screen.dart#_handleIncomingAuthRequest', error: remoteMessage.data, stackTrace: s);
+        showMessage(message: errorMessage);
+        Logger.warning(errorMessage, name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data, stackTrace: s);
+      } catch (e, s) {
+        final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError;
+        Logger.error(errorMessage, name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data, stackTrace: s);
       }
     });
   }
@@ -100,8 +104,11 @@ class PushProvider {
     await SecureTokenRepository.protect(() async {
       try {
         return _handleIncomingRequestBackground(remoteMessage);
-      } catch (e, s) {
+      } on TypeError catch (e, s) {
         final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
+        Logger.warning(errorMessage, name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data, stackTrace: s);
+      } catch (e, s) {
+        final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError;
         Logger.error(errorMessage, name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data, stackTrace: s);
       }
     });
@@ -277,7 +284,7 @@ class PushProvider {
 
   /// Checks if the firebase token was changed and updates it if necessary.
   static Future<void> updateFbTokenIfChanged() async {
-    String? firebaseToken = await PushProvider().firebaseUtils?.getFBToken();
+    String? firebaseToken = await _instance?.firebaseUtils?.getFBToken();
 
     if (firebaseToken != null && (await SecureTokenRepository.getCurrentFirebaseToken()) != firebaseToken) {
       try {

@@ -6,10 +6,12 @@
 import 'dart:async' as _i6;
 import 'dart:typed_data' as _i5;
 
+import 'package:firebase_messaging/firebase_messaging.dart' as _i10;
 import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:pointycastle/export.dart' as _i2;
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i7;
+import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i9;
 import 'package:privacyidea_authenticator/utils/network_utils.dart' as _i8;
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i4;
 
@@ -312,4 +314,41 @@ class MockCustomIOClient extends _i1.Mock implements _i8.CustomIOClient {
           ),
         )),
       ) as _i6.Future<_i3.Response>);
+}
+
+/// A class which mocks [FirebaseUtils].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockFirebaseUtils extends _i1.Mock implements _i9.FirebaseUtils {
+  MockFirebaseUtils() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i6.Future<void> initFirebase({
+    required _i6.Future<void> Function(_i10.RemoteMessage)? foregroundHandler,
+    required _i6.Future<void> Function(_i10.RemoteMessage)? backgroundHandler,
+    required void Function(String?)? updateFirebaseToken,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #initFirebase,
+          [],
+          {
+            #foregroundHandler: foregroundHandler,
+            #backgroundHandler: backgroundHandler,
+            #updateFirebaseToken: updateFirebaseToken,
+          },
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+  @override
+  _i6.Future<String?> getFBToken() => (super.noSuchMethod(
+        Invocation.method(
+          #getFBToken,
+          [],
+        ),
+        returnValue: _i6.Future<String?>.value(),
+      ) as _i6.Future<String?>);
 }

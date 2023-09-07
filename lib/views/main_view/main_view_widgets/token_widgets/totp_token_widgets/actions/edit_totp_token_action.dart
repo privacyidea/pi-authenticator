@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../../model/tokens/totp_token.dart';
@@ -24,7 +24,7 @@ class EditTOTPTokenAction extends TokenAction {
   @override
   SlidableAction build(BuildContext context) => SlidableAction(
       label: AppLocalizations.of(context)!.edit,
-      backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
+      backgroundColor: Theme.of(context).brightness == Brightness.light ? applicationCustomizer.renameColorLight : applicationCustomizer.renameColorDark,
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       icon: Icons.edit,
       onPressed: (context) async {

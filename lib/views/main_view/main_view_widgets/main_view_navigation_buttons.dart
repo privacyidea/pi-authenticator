@@ -1,12 +1,15 @@
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
 import '../../../utils/app_customizer.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../qr_scanner_view/scanner_view.dart';
 import '../../settings_view/settings_view.dart';
-import '../add_token_folder_dialog.dart';
+import 'add_token_folder_dialog.dart';
 import 'app_bar_item.dart';
 import 'custom_paint_navigation_bar.dart';
 
@@ -15,89 +18,119 @@ class MainViewNavigationButtions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sizee = MediaQuery.of(context).size;
-    final navWidth = sizee.width;
-    final navHeight = sizee.height * 0.10;
-    return Positioned(
-      bottom: 0,
-      left: 0,
-      child: SizedBox(
-        width: navWidth,
-        height: navHeight,
-        child: Stack(
-          children: [
-            CustomPaint(
-              size: Size(
-                navWidth,
-                navHeight,
-              ),
-              painter: CustomPaintNavigationBar(buildContext: context),
-            ),
-            Center(
-              heightFactor: 0.6,
-              child: FloatingActionButton(
-                onPressed: () {
-                  /// Open the QR-code scanner and call `_handleOtpAuth`, with the scanned code as the argument.
-                  Navigator.pushNamed(context, QRScannerView.routeName).then((qrCode) {
-                    if (qrCode != null) globalRef?.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: qrCode as String);
-                  });
-                },
-                tooltip: AppLocalizations.of(context)!.scanQrCode,
-                child: const Icon(Icons.qr_code_scanner_outlined),
-              ),
-            ),
-            SizedBox(
-              width: navWidth,
-              height: navHeight * 0.9,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  AppBarItem(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LicensePage(
-                            applicationName: ApplicationCustomizer.appName,
-                            applicationIcon: Image.asset(ApplicationCustomizer.appIcon),
-                            applicationLegalese: ApplicationCustomizer.websiteLink,
-                            applicationVersion: globalRef?.read(platformInfoProvider).appVersion,
+    return Positioned.fill(
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          final navWidth = constraints.maxWidth;
+          final navHeight = constraints.maxHeight * 0.10;
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(
+                width: navWidth,
+                height: navHeight,
+                child: Stack(
+                  children: [
+                    CustomPaint(
+                      size: Size(
+                        navWidth,
+                        navHeight,
+                      ),
+                      painter: CustomPaintNavigationBar(buildContext: context),
+                    ),
+                    Center(
+                      heightFactor: 0.6,
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          /// Open the QR-code scanner and call `_handleOtpAuth`, with the scanned code as the argument.
+                          Navigator.pushNamed(context, QRScannerView.routeName).then((qrCode) {
+                            if (qrCode != null) globalRef?.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: qrCode as String);
+                          });
+                        },
+                        tooltip: AppLocalizations.of(context)?.scanQrCode ?? '',
+                        child: const Icon(Icons.qr_code_scanner_outlined),
+                      ),
+                    ),
+                    Center(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
+                                child: AppBarItem(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LicensePage(
+                                          applicationName: applicationCustomizer.appName,
+                                          applicationIcon: Image.asset(applicationCustomizer.appIcon),
+                                          applicationLegalese: applicationCustomizer.websiteLink,
+                                          applicationVersion: (!kIsWeb) ? globalRef?.read(platformInfoProvider).appVersion ?? '' : '',
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  icon: Icons.info_outline,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    icon: Icons.info_outline,
-                  ),
-                  SizedBox(
-                    height: navHeight * 0.9,
-                    child: AppBarItem(
-                      onPressed: () {
-                        Navigator.pushNamed(context, AddTokenManuallyView.routeName);
-                      },
-                      icon: Icons.add_moderator,
+                          Expanded(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
+                                child: AppBarItem(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, AddTokenManuallyView.routeName);
+                                  },
+                                  icon: Icons.add_moderator,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: min(110, navHeight * 0.8 + 30)),
+                          Expanded(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
+                                child: AppBarItem(
+                                  onPressed: () {
+                                    showDialog(context: context, builder: (context) => AddTokenFolderDialog());
+                                  },
+                                  icon: Icons.create_new_folder,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
+                                child: AppBarItem(
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, SettingsView.routeName);
+                                    },
+                                    icon: Icons.settings),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(width: navWidth * 0.2),
-                  SizedBox(
-                    height: navHeight * 0.9,
-                    child: AppBarItem(
-                      onPressed: () {
-                        showDialog(context: context, builder: (context) => AddTokenFolderDialog());
-                      },
-                      icon: Icons.create_new_folder,
-                    ),
-                  ),
-                  AppBarItem(
-                      onPressed: () {
-                        Navigator.pushNamed(context, SettingsView.routeName);
-                      },
-                      icon: Icons.settings),
-                ],
+                  ],
+                ),
               ),
-            )
-          ],
-        ),
+            ],
+          );
+        },
       ),
     );
   }

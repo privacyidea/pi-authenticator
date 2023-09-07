@@ -20,6 +20,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -33,6 +34,7 @@ class CustomIOClient {
   /// on iOS devices. Doing this at an appropriate place in the code can prevent
   /// SocketExceptions.
   Future<void> triggerNetworkAccessPermission({required Uri url, bool sslVerify = true}) async {
+    if (kIsWeb) return;
     HttpClient httpClient = HttpClient();
     httpClient.badCertificateCallback = ((X509Certificate cert, String host, int port) => !sslVerify);
     httpClient.userAgent = 'privacyIDEA-App /'
@@ -52,6 +54,7 @@ class CustomIOClient {
 
   /// Custom POST request allows to not verify certificates.
   Future<Response> doPost({required Uri url, required Map<String, String?> body, bool sslVerify = true}) async {
+    if (kIsWeb) return Response('', 405);
     Logger.info('Sending post request', name: 'utils.dart#doPost', error: 'URI: $url, SSLVerify: $sslVerify, Body: $body');
 
     List<MapEntry> entries = body.entries.where((element) => element.value == null).toList();
@@ -92,6 +95,7 @@ class CustomIOClient {
   }
 
   Future<Response> doGet({required Uri url, required Map<String, String?> parameters, bool sslVerify = true}) async {
+    if (kIsWeb) return Response('', 405);
     List<MapEntry> entries = parameters.entries.where((element) => element.value == null).toList();
     if (entries.isNotEmpty) {
       List<String> nullEntries = [];

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../model/token_folder.dart';
@@ -17,7 +17,7 @@ class DeleteTokenFolderAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return SlidableAction(
       label: AppLocalizations.of(context)!.delete,
-      backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.deleteColorLight : ApplicationCustomizer.deleteColorDark,
+      backgroundColor: Theme.of(context).brightness == Brightness.light ? applicationCustomizer.deleteColorLight : applicationCustomizer.deleteColorDark,
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       icon: Icons.delete,
       onPressed: (context) async {

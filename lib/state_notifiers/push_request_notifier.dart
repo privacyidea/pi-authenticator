@@ -24,6 +24,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
+import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
@@ -39,14 +40,15 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
 
   PushRequestNotifier({
     PushRequest? initState,
-    required PushProvider pushProvider,
-    required CustomIOClient ioClient,
-    required RsaUtils rsaUtils,
-  })  : _ioClient = ioClient,
-        _pushProvider = pushProvider,
-        _rsaUtils = rsaUtils,
+    PushProvider? pushProvider,
+    CustomIOClient? ioClient,
+    RsaUtils? rsaUtils,
+    FirebaseUtils? firebaseUtils,
+  })  : _ioClient = ioClient ?? const CustomIOClient(),
+        _pushProvider = pushProvider ?? PushProvider(),
+        _rsaUtils = rsaUtils ?? const RsaUtils(),
         super(initState) {
-    _pushProvider.initialize(pushSubscriber: this);
+    _pushProvider.initialize(pushSubscriber: this, firebaseUtils: firebaseUtils ?? FirebaseUtils());
   }
 
   // ACTIONS

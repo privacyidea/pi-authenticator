@@ -7,7 +7,7 @@ import 'dart:isolate';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart' as printer;
@@ -157,7 +157,7 @@ class Logger {
   }
 
   Future<bool> _sendErrorLog() async {
-    if (_fullPath == null) return false;
+    if (_fullPath == null || kIsWeb) return false;
     final File file = File(_fullPath!);
     if (!file.existsSync() || file.lengthSync() == 0) {
       return false;

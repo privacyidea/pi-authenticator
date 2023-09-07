@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'customizations.dart';
 import 'logger.dart';
 
-/// Shows a message to the user for a given `Duration`.
+/// Shows a snackbar message to the user for a given `Duration`.
 void showMessage({
   required String message,
   Duration duration = const Duration(seconds: 5),

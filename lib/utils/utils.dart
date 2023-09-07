@@ -21,8 +21,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -81,7 +82,7 @@ bool equalsIgnoreCase(String s1, String s2) {
 
 /// If permission is already given, this function does nothing
 void checkNotificationPermission() async {
-  if (!Platform.isAndroid && !Platform.isIOS) return;
+  if (kIsWeb || !Platform.isAndroid && !Platform.isIOS) return;
   var status = await Permission.notification.status;
   // TODO what to do if permanently denied?
   // Add a dialog before requesting?

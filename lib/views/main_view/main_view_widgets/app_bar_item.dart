@@ -9,12 +9,13 @@ class AppBarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        padding: const EdgeInsets.all(0),
-        splashRadius: 0.1,
-        onPressed: onPressed,
-        icon: Icon(
-          icon,
-          size: 24,
-        ));
+      padding: const EdgeInsets.all(0),
+      splashRadius: 0.1,
+      onPressed: onPressed,
+      icon: Icon(
+        icon,
+        size: 24,
+      ),
+    );
   }
 }

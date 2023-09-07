@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -11,7 +11,7 @@ import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/drag_item_scroller.dart';
-import '../deactivateable_refresh_indicator.dart';
+import 'deactivateable_refresh_indicator.dart';
 import 'drag_target_divider.dart';
 import 'no_token_screen.dart';
 import 'sortable_widget_builder.dart';

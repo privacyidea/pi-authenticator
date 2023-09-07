@@ -22,7 +22,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/widgets/default_dialog.dart';

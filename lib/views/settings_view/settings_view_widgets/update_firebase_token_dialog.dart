@@ -18,11 +18,10 @@
   limitations under the License.
 */
 
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
@@ -115,7 +114,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
           Logger.warning('Updating firebase token for push token: ${pushToken.serial} failed!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
           tokenWithFailedUpdate.add(pushToken);
         }
-      } on SocketException catch (e, s) {
+      } catch (e, s) {
         Logger.warning(
           'Socket exception occurred: $e',
           name: 'update_firebase_token_dialog.dart#_updateFbTokens',

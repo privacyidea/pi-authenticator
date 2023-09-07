@@ -17,7 +17,6 @@ import '../state_notifiers/settings_notifier.dart';
 import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
 import 'logger.dart';
-import 'network_utils.dart';
 import 'push_provider.dart';
 import 'qr_parser.dart';
 import 'rsa_utils.dart';
@@ -97,11 +96,7 @@ final platformInfoProvider = StateProvider<PlatformInfo>(
 );
 
 final pushRequestProvider = StateNotifierProvider.autoDispose<PushRequestNotifier, PushRequest?>(
-  (ref) => PushRequestNotifier(
-    pushProvider: PushProvider(pollingEnabled: ref.watch(settingsProvider).enablePolling),
-    ioClient: const CustomIOClient(),
-    rsaUtils: const RsaUtils(),
-  ),
+  (ref) => PushRequestNotifier(pushProvider: PushProvider(pollingEnabled: ref.watch(settingsProvider).enablePolling)),
 );
 
 final appStateProvider = StateNotifierProvider.autoDispose<AppStateNotifier, AppState>(

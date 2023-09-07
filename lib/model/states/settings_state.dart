@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter/foundation.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
 import '../../utils/identifiers.dart';
 
@@ -12,8 +13,8 @@ class SettingsState {
   static bool get _hideOtpsDefault => false;
   static bool get _enablePollDefault => false;
   static Set<String> get _crashReportRecipientsDefault => {defaultCrashReportRecipient};
-  static Locale get _localePreferenceDefault =>
-      AppLocalizations.supportedLocales.firstWhere((locale) => locale.languageCode == Platform.localeName.substring(0, 2), orElse: () => const Locale('en'));
+  static Locale get _localePreferenceDefault => AppLocalizations.supportedLocales
+      .firstWhere((locale) => locale.languageCode == (!kIsWeb ? Platform.localeName.substring(0, 2) : 'en'), orElse: () => const Locale('en'));
 
   static bool get _useSystemLocaleDefault => true;
   static bool get _enableLoggingDefault => false;
@@ -25,7 +26,8 @@ class SettingsState {
   final Set<String> crashReportRecipients;
   final Locale localePreference;
   Locale get currentLocale => useSystemLocale
-      ? AppLocalizations.supportedLocales.firstWhere((locale) => locale.languageCode == Platform.localeName.substring(0, 2), orElse: () => const Locale('en'))
+      ? AppLocalizations.supportedLocales
+          .firstWhere((locale) => locale.languageCode == (!kIsWeb ? Platform.localeName.substring(0, 2) : 'en'), orElse: () => const Locale('en'))
       : localePreference;
   final bool useSystemLocale;
   final bool verboseLogging;
