@@ -26,7 +26,6 @@ class SettingsView extends ConsumerWidget {
     final showPushSettingsGroup = enrolledPushTokenList.isNotEmpty;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.settings,
@@ -71,8 +70,6 @@ class SettingsView extends ConsumerWidget {
                   title: Text(
                     AppLocalizations.of(context)!.systemTheme,
                     style: Theme.of(context).textTheme.titleMedium,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
                   ),
                   value: ThemeMode.system,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
@@ -89,8 +86,6 @@ class SettingsView extends ConsumerWidget {
                     title: Text(
                       AppLocalizations.of(context)!.useDeviceLocaleTitle,
                       style: Theme.of(context).textTheme.titleMedium,
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
                     ),
                     subtitle: Text(
                       AppLocalizations.of(context)!.useDeviceLocaleDescription,
@@ -133,8 +128,6 @@ class SettingsView extends ConsumerWidget {
                     title: Text(
                       AppLocalizations.of(context)!.synchronizePushTokens,
                       style: Theme.of(context).textTheme.titleMedium,
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
                     ),
                     subtitle: Text(
                       AppLocalizations.of(context)!.synchronizesTokensWithServer,
@@ -146,11 +139,13 @@ class SettingsView extends ConsumerWidget {
                         overflow: TextOverflow.fade,
                         softWrap: false,
                       ),
-                      onPressed: () => showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (context) => const UpdateFirebaseTokenDialog(),
-                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => const UpdateFirebaseTokenDialog(),
+                        );
+                      },
                     ),
                   ),
                   ListTile(
@@ -209,7 +204,6 @@ class SettingsView extends ConsumerWidget {
                   ),
                   onPressed: () => showDialog(
                     context: context,
-                    barrierDismissible: false,
                     builder: (context) => const LoggingMenu(),
                   ),
                 ),

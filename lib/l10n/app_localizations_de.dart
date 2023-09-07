@@ -138,7 +138,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String errorRollOutNoConnectionToServer(Object name) {
-    return 'Rolling out token $name failed, the server could not be reached.';
+    return 'Der Rollout von Token $name ist fehlgeschlagen, der Server konnte nicht erreicht werden.';
   }
 
   @override
@@ -338,10 +338,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get generatingRSAKeyPairFailed => 'Generieren des RSA Schlüsselpaars fehlgeschlagen';
 
   @override
-  String get sendingRSAPublicKey => 'Sending public RSA key';
+  String get sendingRSAPublicKey => 'Sende öffentlichen RSA Schlüssel';
 
   @override
-  String get sendingRSAPublicKeyFailed => 'Sending public RSA key failed';
+  String get sendingRSAPublicKeyFailed => 'Senden des öffentlichen RSA Schlüssels fehlgeschlagen';
 
   @override
   String get parsingResponse => 'Analysiere Antwort';
@@ -353,25 +353,40 @@ class AppLocalizationsDe extends AppLocalizations {
   String get rolloutCompleted => 'Ausrollen abgeschlossen';
 
   @override
-  String get authToAcceptPushRequest => 'Please authenticate to accept the push request.';
+  String get authToAcceptPushRequest => 'Bitte authentifizieren Sie sich, um die Anfrage anzunehmen.';
 
   @override
-  String get authToDeclinePushRequest => 'Please authenticate to decline the push request.';
+  String get authToDeclinePushRequest => 'Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.';
 
   @override
-  String get incomingAuthRequestError => 'The message didn\'t provided the needed data or the data was malformed.';
+  String get incomingAuthRequestError => 'Die Nachricht enthielt nicht die erforderlichen Daten oder die Daten waren falsch formatiert.';
 
   @override
   String get imageUrl => 'Bild URL';
 
   @override
-  String get errorRollOutSSLHandshakeFailed => 'SSL handshake failed. Roll-out not possible.';
+  String get errorRollOutSSLHandshakeFailed => 'SSL-Handshake fehlgeschlagen. Roll-out nicht möglich.';
 
   @override
   String get errorWhenPullingChallenges => 'Fehler beim Abrufen der Authentifizierungsanfragen.';
 
   @override
   String errorRollOutTokenExpired(Object name) {
-    return 'The token $name has expired. Roll-out not possible. Token removed.';
+    return 'Das Ausrollen dieses Tokens ist nicht mehr möglich.\nDer Token $name ist abgelaufen.';
   }
+
+  @override
+  String get yes => 'Ja';
+
+  @override
+  String get no => 'Nein';
+
+  @override
+  String get butDiscardIt => 'aber verwerfen';
+
+  @override
+  String get declineIt => 'ablehnen';
+
+  @override
+  String get requestTriggerdByUserQuestion => 'Wurde diese Anfrage von Ihnen ausgelöst?';
 }

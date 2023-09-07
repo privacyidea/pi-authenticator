@@ -618,12 +618,12 @@
     "description": "Message for the rollout process",
     "type": "text"
   },
-  "sendingPublicRSAKey": "Odeslání veřejného klíče RSA",
+  "sendingRSAPublicKey": "Odeslání veřejného klíče RSA",
   "@sendingRSAPublicKey": {
     "description": "Message for the rollout process",
     "type": "text"
   },
-  "sendingPublicRSAKeyFailed": "Nepodařilo se odeslat veřejný klíč RSA",
+  "sendingRSAPublicKeyFailed": "Nepodařilo se odeslat veřejný klíč RSA",
   "@sendingRSAPublicKeyFailed": {
     "description": "Message for the rollout process",
     "type": "text"
@@ -641,6 +641,81 @@
   "rolloutCompleted": "Zavedení dokončeno",
   "@rolloutCompleted": {
     "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "errorRollOutNoConnectionToServer": "Registrace tokenu {name} selhala. Server není dostupný.",
+  "@errorRollOutNoConnectionToServer": {
+    "description": "Message for the rollout process",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "authToAcceptPushRequest": "Pro přijetí požadavku na push notifikaci se přihlaste.",
+  "@authToAcceptPushRequest": {
+    "description": "authToAcceptPushRequest",
+    "type": "text"
+  },
+  "authToDeclinePushRequest": "Pro odmítnutí požadavku na push notifikaci se přihlaste.",
+  "@authToDeclinePushRequest": {
+    "description": "authToDeclinePushRequest",
+    "type": "text"
+  },
+  "incomingAuthRequestError": "Zpráva neposkytla potřebná data nebo byla data chybně formulována.",
+  "@incomingAuthRequestError": {
+    "description": "incomingAuthRequestError",
+    "type": "text"
+  },
+  "imageUrl": "URL obrázku",
+  "@imageUrl": {
+    "description": "imageUrl",
+    "type": "text"
+  },
+  "errorRollOutSSLHandshakeFailed": "SSL handshake se nezdařil. Roll-out není možný.",
+  "@errorRollOutSSLHandshakeFailed": {
+    "description": "errorRollOutSSLHandshakeFailed",
+    "type": "text"
+  },
+  "errorWhenPullingChallenges": "Při dotazování na výzvy došlo k chybě.",
+  "@errorWhenPullingChallenges": {
+    "description": "errorWhenPullingChallenges",
+    "type": "text"
+  },
+  "errorRollOutTokenExpired": "Roll-out tohoto tokenu již není možný.\nPlatnost tokenu {name} vypršela.",
+  "@errorRollOutTokenExpired": {
+    "description": "errorRollOutTokenExpired",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "yes": "Ano",
+  "@yes": {
+    "description": "yes",
+    "type": "text"
+  },
+  "no": "Ne",
+  "@no": {
+    "description": "no",
+    "type": "text"
+  },
+  "butDiscardIt": "ale zahodit jej",
+  "@butDiscardIt": {
+    "description": "butDiscardIt",
+    "type": "text"
+  },
+  "declineIt": "odmítnout jej ",
+  "@declineIt": {
+    "description": "declineIt",
+    "type": "text"
+  },
+  "requestTriggerdByUserQuestion": "Byl tento požadavek vyvolán vámi?",
+  "@requestTriggerdByUserQuestion": {
+    "description": "requestTriggerdByUserQuestion",
     "type": "text"
   }
 }

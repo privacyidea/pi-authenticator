@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/push_request_overlay.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
@@ -39,38 +40,44 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     final allowToRefresh = tokenState.tokens.any((token) => token is PushToken);
     final draggingSortable = ref.watch(draggingSortableProvider);
     final tokenStateWithNoFolder = tokenState.tokensWithoutFolder();
+    final tokenWithPushRequest = tokenState.tokenWithPushRequest();
 
     List<SortableMixin> sortables = [...tokenFolders, ...tokenStateWithNoFolder];
 
-    return DeactivateableRefreshIndicator(
-      allowToRefresh: allowToRefresh,
-      onRefresh: () async {
-        showMessage(
-          message: AppLocalizations.of(context)!.pollingChallenges,
-          duration: const Duration(seconds: 1),
-        );
-        final errorMessage = await PushProvider().pollForChallenges(showMessageForEachToken: true);
-        if (errorMessage != null) showMessage(message: errorMessage);
-      },
-      child: SlidableAutoCloseBehavior(
-        child: DragItemScroller(
-          listViewKey: listViewKey,
-          itemIsDragged: draggingSortable != null,
-          scrollController: scrollController,
-          child: CustomScrollView(
-            key: listViewKey,
-            physics: allowToRefresh ? const AlwaysScrollableScrollPhysics() : null,
-            controller: scrollController,
-            slivers: [
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [..._buildSortableWidgets(sortables, draggingSortable)],
-                ),
+    return Stack(
+      children: [
+        DeactivateableRefreshIndicator(
+          allowToRefresh: allowToRefresh,
+          onRefresh: () async {
+            showMessage(
+              message: AppLocalizations.of(context)!.pollingChallenges,
+              duration: const Duration(seconds: 1),
+            );
+            final errorMessage = await PushProvider().pollForChallenges(showMessageForEachToken: true);
+            if (errorMessage != null) showMessage(message: errorMessage);
+          },
+          child: SlidableAutoCloseBehavior(
+            child: DragItemScroller(
+              listViewKey: listViewKey,
+              itemIsDragged: draggingSortable != null,
+              scrollController: scrollController,
+              child: CustomScrollView(
+                key: listViewKey,
+                physics: allowToRefresh ? const AlwaysScrollableScrollPhysics() : null,
+                controller: scrollController,
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildListDelegate(
+                      [..._buildSortableWidgets(sortables, draggingSortable)],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        if (tokenWithPushRequest != null) PushRequestOverlay(tokenWithPushRequest),
+      ],
     );
   }
 

@@ -138,7 +138,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String errorRollOutNoConnectionToServer(Object name) {
-    return 'Rolling out token $name failed, the server could not be reached.';
+    return 'Registrace tokenu $name selhala. Server není dostupný.';
   }
 
   @override
@@ -338,10 +338,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get generatingRSAKeyPairFailed => 'Generování páru klíčů RSA se nezdařilo';
 
   @override
-  String get sendingRSAPublicKey => 'Sending public RSA key';
+  String get sendingRSAPublicKey => 'Odeslání veřejného klíče RSA';
 
   @override
-  String get sendingRSAPublicKeyFailed => 'Sending public RSA key failed';
+  String get sendingRSAPublicKeyFailed => 'Nepodařilo se odeslat veřejný klíč RSA';
 
   @override
   String get parsingResponse => 'Rozbor odpovědi';
@@ -353,25 +353,40 @@ class AppLocalizationsCs extends AppLocalizations {
   String get rolloutCompleted => 'Zavedení dokončeno';
 
   @override
-  String get authToAcceptPushRequest => 'Please authenticate to accept the push request.';
+  String get authToAcceptPushRequest => 'Pro přijetí požadavku na push notifikaci se přihlaste.';
 
   @override
-  String get authToDeclinePushRequest => 'Please authenticate to decline the push request.';
+  String get authToDeclinePushRequest => 'Pro odmítnutí požadavku na push notifikaci se přihlaste.';
 
   @override
-  String get incomingAuthRequestError => 'The message didn\'t provided the needed data or the data was malformed.';
+  String get incomingAuthRequestError => 'Zpráva neposkytla potřebná data nebo byla data chybně formulována.';
 
   @override
-  String get imageUrl => 'Image URL';
+  String get imageUrl => 'URL obrázku';
 
   @override
-  String get errorRollOutSSLHandshakeFailed => 'SSL handshake failed. Roll-out not possible.';
+  String get errorRollOutSSLHandshakeFailed => 'SSL handshake se nezdařil. Roll-out není možný.';
 
   @override
-  String get errorWhenPullingChallenges => 'An error occured when polling for challenges';
+  String get errorWhenPullingChallenges => 'Při dotazování na výzvy došlo k chybě.';
 
   @override
   String errorRollOutTokenExpired(Object name) {
-    return 'The token $name has expired. Roll-out not possible. Token removed.';
+    return 'Roll-out tohoto tokenu již není možný.\nPlatnost tokenu $name vypršela.';
   }
+
+  @override
+  String get yes => 'Ano';
+
+  @override
+  String get no => 'Ne';
+
+  @override
+  String get butDiscardIt => 'ale zahodit jej';
+
+  @override
+  String get declineIt => 'odmítnout jej ';
+
+  @override
+  String get requestTriggerdByUserQuestion => 'Byl tento požadavek vyvolán vámi?';
 }

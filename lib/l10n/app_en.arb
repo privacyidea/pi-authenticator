@@ -645,7 +645,7 @@
   },
   "authToDeclinePushRequest": "Please authenticate to decline the push request.",
   "@authToDeclinePushRequest": {
-    "description": "authToDeclinePushRequest",
+    "description": "",
     "type": "text"
   },
   "incomingAuthRequestError": "The message didn't provided the needed data or the data was malformed.",
@@ -668,7 +668,7 @@
     "description": "errorWhenPullingChallenges",
     "type": "text"
   },
-  "errorRollOutTokenExpired": "The token {name} has expired. Roll-out not possible. Token removed.",
+  "errorRollOutTokenExpired": "Rolling out this Token is not possible anymore.\nThe token {name} has expired.",
   "@errorRollOutTokenExpired": {
     "description": "Tells the user that the roll-out failed because the token has expired.",
     "type": "text",
@@ -677,5 +677,30 @@
         "example": "PUSH1234A"
       }
     }
+  },
+  "yes": "Yes",
+  "@yes": {
+    "description": "yes",
+    "type": "text"
+  },
+  "no": "No",
+  "@no": {
+    "description": "no",
+    "type": "text"
+  },
+  "butDiscardIt": "but discard it",
+  "@butDiscardIt": {
+    "description": "butDiscardIt",
+    "type": "text"
+  },
+  "declineIt": "decline it",
+  "@declineIt": {
+    "description": "declineIt",
+    "type": "text"
+  },
+  "requestTriggerdByUserQuestion": "Was this request triggered by you?",
+  "@requestTriggerdByUserQuestion": {
+    "description": "requestTriggerdByUserQuestion",
+    "type": "text"
   }
 }

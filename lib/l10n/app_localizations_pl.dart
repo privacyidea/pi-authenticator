@@ -138,7 +138,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String errorRollOutNoConnectionToServer(Object name) {
-    return 'Rolling out token $name failed, the server could not be reached.';
+    return 'Brak połączenia z serwerem';
   }
 
   @override
@@ -338,10 +338,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get generatingRSAKeyPairFailed => 'Generowanie pary kluczy RSA nieudane';
 
   @override
-  String get sendingRSAPublicKey => 'Sending public RSA key';
+  String get sendingRSAPublicKey => 'Wysyłanie publicznego klucza RSA';
 
   @override
-  String get sendingRSAPublicKeyFailed => 'Sending public RSA key failed';
+  String get sendingRSAPublicKeyFailed => 'Wysyłanie publicznego klucza RSA nieudane';
 
   @override
   String get parsingResponse => 'Analizowanie odpowiedzi';
@@ -353,25 +353,40 @@ class AppLocalizationsPl extends AppLocalizations {
   String get rolloutCompleted => 'Wdrożenie zakończone';
 
   @override
-  String get authToAcceptPushRequest => 'Please authenticate to accept the push request.';
+  String get authToAcceptPushRequest => 'Uwierzytelnij, aby zaakceptować żądanie push.';
 
   @override
-  String get authToDeclinePushRequest => 'Please authenticate to decline the push request.';
+  String get authToDeclinePushRequest => 'Uwierzytelnij, aby odrzucić żądanie push.';
 
   @override
-  String get incomingAuthRequestError => 'The message didn\'t provided the needed data or the data was malformed.';
+  String get incomingAuthRequestError => 'Wiadomość nie zawierała wymaganych danych lub dane były zniekształcone.';
 
   @override
-  String get imageUrl => 'Image URL';
+  String get imageUrl => 'Adres URL obrazu';
 
   @override
-  String get errorRollOutSSLHandshakeFailed => 'SSL handshake failed. Roll-out not possible.';
+  String get errorRollOutSSLHandshakeFailed => 'Uścisk dłoni SSL nie powiódł się. Rozwijanie nie jest możliwe.';
 
   @override
   String get errorWhenPullingChallenges => 'An error occured when polling for challenges';
 
   @override
   String errorRollOutTokenExpired(Object name) {
-    return 'The token $name has expired. Roll-out not possible. Token removed.';
+    return 'Wstać z łóżka tego tokena nie jest już możliwe.\nToken $name wygasł.';
   }
+
+  @override
+  String get yes => 'Tak';
+
+  @override
+  String get no => 'Nie';
+
+  @override
+  String get butDiscardIt => 'ale odrzucić go';
+
+  @override
+  String get declineIt => 'odrzuć go';
+
+  @override
+  String get requestTriggerdByUserQuestion => 'Czy ta prośba została wywołana przez Ciebie?';
 }

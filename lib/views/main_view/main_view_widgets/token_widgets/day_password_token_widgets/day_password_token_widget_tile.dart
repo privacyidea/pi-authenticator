@@ -115,68 +115,62 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
           color: Theme.of(context).scaffoldBackgroundColor,
           width: double.infinity,
           height: double.infinity,
-          child: Center(
-            child: switch (widget.token.viewMode) {
-              DayPasswordTokenViewMode.VALIDFOR => Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
+          child: switch (widget.token.viewMode) {
+            DayPasswordTokenViewMode.VALIDFOR => Column(
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
                       '${AppLocalizations.of(context)!.validFor}:',
                       style: Theme.of(context).listTileTheme.subtitleTextStyle,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.fade,
                       softWrap: false,
                     ),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          durationString,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                        ),
+                  ),
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        durationString,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
                       ),
-                    )
-                  ],
-                ),
-              DayPasswordTokenViewMode.VALIDUNTIL => Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
+                    ),
+                  ),
+                ],
+              ),
+            DayPasswordTokenViewMode.VALIDUNTIL => Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
                       '${AppLocalizations.of(context)!.validUntil}:',
                       style: Theme.of(context).listTileTheme.subtitleTextStyle,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.fade,
                       softWrap: false,
                     ),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          yMdString,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                        ),
+                  ),
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        '$yMdString\n$ejmString',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                        maxLines: 2,
                       ),
                     ),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          ejmString,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-            },
-          ),
+                  ),
+                ],
+              ),
+          },
         ),
       ),
     );

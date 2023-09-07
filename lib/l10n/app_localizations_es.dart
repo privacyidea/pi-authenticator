@@ -138,7 +138,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String errorRollOutNoConnectionToServer(Object name) {
-    return 'Rolling out token $name failed, the server could not be reached.';
+    return 'El despliegue del token $name ha fallado, no se ha podido acceder al servidor.';
   }
 
   @override
@@ -338,10 +338,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get generatingRSAKeyPairFailed => 'Error al generar el par de claves RSA';
 
   @override
-  String get sendingRSAPublicKey => 'Sending public RSA key';
+  String get sendingRSAPublicKey => 'Enviando clave pública RSA';
 
   @override
-  String get sendingRSAPublicKeyFailed => 'Sending public RSA key failed';
+  String get sendingRSAPublicKeyFailed => 'Error al enviar la clave pública RSA';
 
   @override
   String get parsingResponse => 'Analizando la respuesta';
@@ -353,25 +353,40 @@ class AppLocalizationsEs extends AppLocalizations {
   String get rolloutCompleted => 'Despliegue completado';
 
   @override
-  String get authToAcceptPushRequest => 'Please authenticate to accept the push request.';
+  String get authToAcceptPushRequest => 'Por favor, autentifíquese para aceptar la solicitud push.';
 
   @override
-  String get authToDeclinePushRequest => 'Please authenticate to decline the push request.';
+  String get authToDeclinePushRequest => 'Por favor, autentifíquese para rechazar la solicitud push.';
 
   @override
-  String get incomingAuthRequestError => 'The message didn\'t provided the needed data or the data was malformed.';
+  String get incomingAuthRequestError => 'El mensaje no proporcionaba los datos necesarios o los datos estaban malformados.';
 
   @override
-  String get imageUrl => 'Image URL';
+  String get imageUrl => 'URL de la imagen';
 
   @override
-  String get errorRollOutSSLHandshakeFailed => 'SSL handshake failed. Roll-out not possible.';
+  String get errorRollOutSSLHandshakeFailed => 'Ha fallado el protocolo SSL. No es posible el despliegue.';
 
   @override
-  String get errorWhenPullingChallenges => 'An error occured when polling for challenges';
+  String get errorWhenPullingChallenges => 'Se ha producido un error al buscar retos.';
 
   @override
   String errorRollOutTokenExpired(Object name) {
-    return 'The token $name has expired. Roll-out not possible. Token removed.';
+    return 'El despliegue de este token ya no es posible.\nEl token $name ha caducado.';
   }
+
+  @override
+  String get yes => 'Sí';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get butDiscardIt => 'pero descártelo';
+
+  @override
+  String get declineIt => 'rechazar';
+
+  @override
+  String get requestTriggerdByUserQuestion => '¿Fue usted quien provocó esta petición?';
 }

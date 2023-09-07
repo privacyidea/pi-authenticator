@@ -28,8 +28,6 @@ Future<bool> lockAuth({required BuildContext context, required String localizedR
               child: Text(
                 AppLocalizations.of(context)!.authNotSupportedTitle,
                 style: Theme.of(context).textTheme.titleLarge,
-                overflow: TextOverflow.fade,
-                softWrap: false,
               ),
             ),
             leading: const Icon(Icons.lock),
@@ -37,8 +35,6 @@ Future<bool> lockAuth({required BuildContext context, required String localizedR
           ),
           content: Text(
             AppLocalizations.of(context)!.authNotSupportedBody,
-            overflow: TextOverflow.fade,
-            softWrap: false,
           ),
         );
       },

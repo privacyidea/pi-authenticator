@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class DefaultDialog extends StatelessWidget {
@@ -15,16 +17,19 @@ class DefaultDialog extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
-        scrollable: scrollable ?? false,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
-        buttonPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-        insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
-        titlePadding: const EdgeInsets.all(12),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-        title: title,
-        actions: actions,
-        content: content,
+  Widget build(BuildContext context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: AlertDialog(
+          scrollable: scrollable ?? false,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
+          buttonPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          titlePadding: const EdgeInsets.all(12),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+          title: title,
+          actions: actions,
+          content: content,
+        ),
       );
 }

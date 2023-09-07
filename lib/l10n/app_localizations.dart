@@ -781,7 +781,7 @@ abstract class AppLocalizations {
   /// **'Please authenticate to accept the push request.'**
   String get authToAcceptPushRequest;
 
-  /// authToDeclinePushRequest
+  ///
   ///
   /// In en, this message translates to:
   /// **'Please authenticate to decline the push request.'**
@@ -814,8 +814,38 @@ abstract class AppLocalizations {
   /// Tells the user that the roll-out failed because the token has expired.
   ///
   /// In en, this message translates to:
-  /// **'The token {name} has expired. Roll-out not possible. Token removed.'**
+  /// **'Rolling out this Token is not possible anymore.\nThe token {name} has expired.'**
   String errorRollOutTokenExpired(Object name);
+
+  /// yes
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// no
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// butDiscardIt
+  ///
+  /// In en, this message translates to:
+  /// **'but discard it'**
+  String get butDiscardIt;
+
+  /// declineIt
+  ///
+  /// In en, this message translates to:
+  /// **'decline it'**
+  String get declineIt;
+
+  /// requestTriggerdByUserQuestion
+  ///
+  /// In en, this message translates to:
+  /// **'Was this request triggered by you?'**
+  String get requestTriggerdByUserQuestion;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

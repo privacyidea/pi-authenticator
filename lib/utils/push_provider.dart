@@ -243,7 +243,7 @@ class PushProvider {
 
     String? signature = await const RsaUtils().trySignWithToken(token, message);
     if (signature == null) {
-      Logger.warning('Polling push tokens failed because signing the message failed.', name: 'push_provider.dart#pollForChallenges');
+      Logger.warning('Polling push tokens failed because signing the message failed.', name: 'push_provider.dart#pollForChallenge');
       return null;
     }
     Map<String, String> parameters = {
@@ -255,25 +255,33 @@ class PushProvider {
     try {
       Response response = await const CustomIOClient().doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify);
 
-      if (response.statusCode == 200) {
-        // The signature of this message must not be verified as each push
-        // request gets verified independently.
-        Map<String, dynamic> result = jsonDecode(response.body)['result'];
-        List challengeList = result['value'].cast<Map<String, dynamic>>();
+      switch (response.statusCode) {
+        case 200:
+          // The signature of this message must not be verified as each push
+          // request gets verified independently.
+          Map<String, dynamic> result = jsonDecode(response.body)['result'];
+          List challengeList = result['value'].cast<Map<String, dynamic>>();
 
-        for (Map<String, dynamic> challenge in challengeList) {
-          Logger.info('Received challenge ${challenge['nonce']}', name: 'push_provider.dart#pollForChallenges');
-          _foregroundHandler(RemoteMessage(data: challenge));
-        }
-      } else {
-        var error = getErrorMessageFromResponse(response);
-        Logger.warning('Polling push tokens failed with status code ${response.statusCode}', name: 'push_provider.dart#pollForChallenges');
-        return "${AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges}\n$error";
+          for (Map<String, dynamic> challenge in challengeList) {
+            Logger.info('Received challenge ${challenge['nonce']}', name: 'push_provider.dart#pollForChallenge');
+            _foregroundHandler(RemoteMessage(data: challenge));
+          }
+          break;
+
+        case 403:
+          Logger.warning('Polling push tokens failed with status code ${response.statusCode}',
+              name: 'push_provider.dart#pollForChallenge', error: getErrorMessageFromResponse(response));
+          return null;
+
+        default:
+          var error = getErrorMessageFromResponse(response);
+          Logger.warning('Polling push tokens failed with status code ${response.statusCode}', name: 'push_provider.dart#pollForChallenge', error: error);
+          return "${AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges}\n$error";
       }
     } catch (e, s) {
       Logger.warning(
         'An error occured when polling for challenges',
-        name: 'push_provider.dart#pollForChallenges',
+        name: 'push_provider.dart#pollForChallenge',
         error: e,
         stackTrace: s,
       );

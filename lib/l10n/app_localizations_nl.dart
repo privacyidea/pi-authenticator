@@ -138,7 +138,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String errorRollOutNoConnectionToServer(Object name) {
-    return 'Rolling out token $name failed, the server could not be reached.';
+    return 'Uitrollen mislukt. Geen verbinding met de server.';
   }
 
   @override
@@ -338,10 +338,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get generatingRSAKeyPairFailed => 'Genereren RSA sleutelpaar mislukt';
 
   @override
-  String get sendingRSAPublicKey => 'Sending public RSA key';
+  String get sendingRSAPublicKey => 'Versturen van de openbare RSA sleutel';
 
   @override
-  String get sendingRSAPublicKeyFailed => 'Sending public RSA key failed';
+  String get sendingRSAPublicKeyFailed => 'Versturen van de openbare RSA sleutel mislukt';
 
   @override
   String get parsingResponse => 'Antwoord analyseren';
@@ -353,25 +353,40 @@ class AppLocalizationsNl extends AppLocalizations {
   String get rolloutCompleted => 'Uitrollen voltooid';
 
   @override
-  String get authToAcceptPushRequest => 'Please authenticate to accept the push request.';
+  String get authToAcceptPushRequest => 'Authenticeer om de push aanvraag te accepteren.';
 
   @override
-  String get authToDeclinePushRequest => 'Please authenticate to decline the push request.';
+  String get authToDeclinePushRequest => 'Authenticeer om de push aanvraag te weigeren.';
 
   @override
-  String get incomingAuthRequestError => 'The message didn\'t provided the needed data or the data was malformed.';
+  String get incomingAuthRequestError => 'Het bericht bevatte niet de benodigde gegevens of de gegevens waren misvormd.';
 
   @override
-  String get imageUrl => 'Image URL';
+  String get imageUrl => 'Afbeeldings-URL';
 
   @override
-  String get errorRollOutSSLHandshakeFailed => 'SSL handshake failed. Roll-out not possible.';
+  String get errorRollOutSSLHandshakeFailed => 'SSL-handdruk mislukt. Uitrollen niet mogelijk.';
 
   @override
-  String get errorWhenPullingChallenges => 'An error occured when polling for challenges';
+  String get errorWhenPullingChallenges => 'Er is een fout opgetreden bij het peilen naar uitdagingen';
 
   @override
   String errorRollOutTokenExpired(Object name) {
-    return 'The token $name has expired. Roll-out not possible. Token removed.';
+    return 'Het uitrollen van dit token is niet meer mogelijk.\nHet token $name is verlopen.';
   }
+
+  @override
+  String get yes => 'Ja';
+
+  @override
+  String get no => 'Nee';
+
+  @override
+  String get butDiscardIt => 'maar verwijder';
+
+  @override
+  String get declineIt => 'weigeren';
+
+  @override
+  String get requestTriggerdByUserQuestion => 'Is dit verzoek door jou gedaan?';
 }

@@ -48,7 +48,6 @@ void main() async {
 
 class PrivacyIDEAAuthenticator extends ConsumerWidget {
   const PrivacyIDEAAuthenticator({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsFlutterBinding.ensureInitialized();

@@ -18,8 +18,6 @@
   limitations under the License.
 */
 
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:http/http.dart';
@@ -54,19 +52,16 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: DefaultDialog(
-        scrollable: true,
-        title: Text(AppLocalizations.of(context)!.synchronizingTokens),
-        content: _content,
-        actions: [
-          TextButton(
-            child: Text(AppLocalizations.of(context)!.dismiss),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
-      ),
+    return DefaultDialog(
+      scrollable: true,
+      title: Text(AppLocalizations.of(context)!.synchronizingTokens),
+      content: _content,
+      actions: [
+        TextButton(
+          child: Text(AppLocalizations.of(context)!.dismiss),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ],
     );
   }
 
