@@ -41,9 +41,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<void> _loadTokenList() async {
     List<Token> tokens = await StorageUtil.loadAllTokens();
-    final pushTokens = tokens.whereType<PushToken>().where((element) => !element.isRolledOut).toList();
+    final pushTokens = tokens.whereType<PushToken>();
+    if (pushTokens.isNotEmpty) {
+      checkNotificationPermission();
+    }
+    ;
+    final pushTokensNotRolledOut = pushTokens.where((element) => !element.isRolledOut).toList();
     state = TokenState(tokens: tokens);
-    for (final pushToken in pushTokens) {
+    for (final pushToken in pushTokensNotRolledOut) {
       rolloutPushToken(pushToken);
     }
   }
