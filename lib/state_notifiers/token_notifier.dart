@@ -45,7 +45,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     if (pushTokens.isNotEmpty) {
       checkNotificationPermission();
     }
-    ;
+
     final pushTokensNotRolledOut = pushTokens.where((element) => !element.isRolledOut).toList();
     state = TokenState(tokens: tokens);
     for (final pushToken in pushTokensNotRolledOut) {

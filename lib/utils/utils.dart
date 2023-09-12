@@ -85,6 +85,7 @@ bool equalsIgnoreCase(String s1, String s2) {
 /// If permission is already given, this function does nothing
 void checkNotificationPermission() async {
   var status = await Permission.notification.status;
+  Logger.info('Notification permission status: $status');
   // TODO what to do if permanently denied?
   // Add a dialog before requesting?
   if (!status.isPermanentlyDenied) {
