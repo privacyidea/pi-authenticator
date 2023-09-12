@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../utils/riverpod_providers.dart';
-import '../../../widgets/default_dialog.dart';
+import '../../../../utils/riverpod_providers.dart';
+import '../../../../widgets/default_dialog.dart';
 
 class AddTokenFolderDialog extends ConsumerWidget {
   final textController = TextEditingController();

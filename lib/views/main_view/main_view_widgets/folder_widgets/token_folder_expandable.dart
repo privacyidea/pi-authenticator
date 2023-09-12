@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -140,6 +140,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                           )),
                       const SizedBox(width: 8),
                       Expanded(
+                        flex: 2,
                         child: Text(
                           widget.folder.label,
                           style: Theme.of(context).textTheme.titleLarge,

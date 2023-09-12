@@ -8,12 +8,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
+import '../interfaces/repo/token_repository.dart';
 import '../utils/firebase_utils.dart';
 import '../utils/network_utils.dart';
 import '../utils/qr_parser.dart';
@@ -59,7 +59,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
         super(
           initialState ?? TokenState(),
         ) {
-    _loadTokenList();
+    loadFromRepo();
   }
 
   void _saveOrReplaceTokens(List<Token> tokens) async {
@@ -81,7 +81,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     });
   }
 
-  Future<bool> _loadTokenList() async {
+  Future<bool> loadFromRepo() async {
     List<Token> tokens;
     try {
       isLoading = Future(() async {

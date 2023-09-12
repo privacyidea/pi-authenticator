@@ -2,14 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import '../../../l10n/app_localizations.dart';
 
 import '../../../utils/app_customizer.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../qr_scanner_view/scanner_view.dart';
 import '../../settings_view/settings_view.dart';
-import 'add_token_folder_dialog.dart';
+import 'folder_widgets/add_token_folder_dialog.dart';
 import 'app_bar_item.dart';
 import 'custom_paint_navigation_bar.dart';
 
@@ -68,7 +68,7 @@ class MainViewNavigationButtions extends StatelessWidget {
                                       MaterialPageRoute(
                                         builder: (context) => LicensePage(
                                           applicationName: applicationCustomizer.appName,
-                                          applicationIcon: Image.asset(applicationCustomizer.appIcon),
+                                          applicationIcon: applicationCustomizer.appIcon,
                                           applicationLegalese: applicationCustomizer.websiteLink,
                                           applicationVersion: (!kIsWeb) ? globalRef?.read(platformInfoProvider).appVersion ?? '' : '',
                                         ),
@@ -102,7 +102,11 @@ class MainViewNavigationButtions extends StatelessWidget {
                                 padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
                                 child: AppBarItem(
                                   onPressed: () {
-                                    showDialog(context: context, builder: (context) => AddTokenFolderDialog());
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AddTokenFolderDialog(),
+                                      useRootNavigator: false,
+                                    );
                                   },
                                   icon: Icons.create_new_folder,
                                 ),

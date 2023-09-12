@@ -323,6 +323,7 @@ class Logger {
     showDialog(
       context: _context!,
       builder: (context) => const SendErrorDialog(),
+      useRootNavigator: false,
     );
   }
 

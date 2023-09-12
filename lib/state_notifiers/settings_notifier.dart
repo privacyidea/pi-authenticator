@@ -9,18 +9,18 @@ import '../model/states/settings_state.dart';
 /// It also ensures that the settings are saved to the device.
 /// To Update a state use: ref.read(settingsProvider.notifier).anyMethod(value)
 class SettingsNotifier extends StateNotifier<SettingsState> {
+  late Future<void> isLoading;
   final SettingsRepository _repo;
-  late final Future<void> _loading;
 
   SettingsNotifier({
     required SettingsRepository repository,
     SettingsState? initialState,
   })  : _repo = repository,
         super(initialState ?? SettingsState()) {
-    _loadFromRepo();
+    loadFromRepo();
   }
-  void _loadFromRepo() async {
-    _loading = Future<void>(() async {
+  void loadFromRepo() async {
+    isLoading = Future<void>(() async {
       state = await _repo.loadSettings();
     });
   }
@@ -28,43 +28,43 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   Future<bool> _saveToRepo() => _repo.saveSettings(state);
 
   void addCrashReportRecipient(String email) async {
-    await _loading;
+    await isLoading;
     var updatedSet = state.crashReportRecipients..add(email);
     state = state.copyWith(crashReportRecipients: updatedSet);
   }
 
   void setLocalePreference(Locale locale) async {
-    await _loading;
+    await isLoading;
     state = state.copyWith(localePreference: locale);
     _saveToRepo();
   }
 
   void setUseSystemLocale(bool value) async {
-    await _loading;
+    await isLoading;
     state = state.copyWith(useSystemLocale: value);
     _saveToRepo();
   }
 
   void setPolling(bool value) async {
-    await _loading;
+    await isLoading;
     state = state.copyWith(enablePolling: value);
     _saveToRepo();
   }
 
   void setVerboseLogging(bool value) async {
-    await _loading;
+    await isLoading;
     state = state.copyWith(verboseLogging: value);
     _saveToRepo();
   }
 
   void toggleVerboseLogging() async {
-    await _loading;
+    await isLoading;
     state = state.copyWith(verboseLogging: !state.verboseLogging);
     _saveToRepo();
   }
 
   void setFirstRun(bool value) async {
-    await _loading;
+    await isLoading;
     state = state.copyWith(isFirstRun: value);
     _saveToRepo();
   }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class CustomTrailing extends StatelessWidget {
@@ -7,12 +9,10 @@ class CustomTrailing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => SizedBox(
-        width: constraints.maxWidth * 0.275,
-        height: constraints.maxWidth * 0.20,
-        child: child,
-      ),
+    final size = MediaQuery.of(context).size;
+    return SizedBox(
+      width: min(85, size.width * 0.275),
+      child: child,
     );
   }
 }

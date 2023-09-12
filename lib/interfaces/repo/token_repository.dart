@@ -1,4 +1,4 @@
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import '../../model/tokens/token.dart';
 
 abstract class TokenRepository {
   Future<List<Token>> saveOrReplaceTokens(List<Token> tokens);

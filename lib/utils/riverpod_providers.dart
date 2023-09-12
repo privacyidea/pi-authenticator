@@ -18,20 +18,13 @@ import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
 import 'logger.dart';
 import 'push_provider.dart';
-import 'qr_parser.dart';
-import 'rsa_utils.dart';
-import '../repo/secure_token_repository.dart';
 
 // Never use globalRef to .watch() a provider. only use it to .read() a provider
 // Otherwise the whole app will rebuild on every state change of the provider
 WidgetRef? globalRef;
 
 final tokenProvider = StateNotifierProvider.autoDispose<TokenNotifier, TokenState>((ref) {
-  final tokenNotifier = TokenNotifier(
-    qrParser: const QrParser(),
-    rsaUtils: const RsaUtils(),
-    repository: const SecureTokenRepository(),
-  );
+  final tokenNotifier = TokenNotifier();
 
   Logger.info("appStateProvider.addListener ${tokenNotifier.hashCode.toString()}");
   appStateProvider.addListener(

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 
 import '../../utils/identifiers.dart';
 

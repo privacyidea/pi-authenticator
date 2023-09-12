@@ -1,9 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/tokens/totp_token.dart';
 import '../../../../../../utils/app_customizer.dart';
 import '../../../../../../utils/customizations.dart';
@@ -23,7 +21,8 @@ class EditTOTPTokenAction extends TokenAction {
 
   @override
   CustomSlidableAction build(BuildContext context) => CustomSlidableAction(
-      backgroundColor: Theme.of(context).brightness == Brightness.light ? applicationCustomizer.renameColorLight : applicationCustomizer.renameColorDark,
+      backgroundColor:
+          Theme.of(context).brightness == Brightness.light ? applicationCustomizer.lightTheme.renameColor : applicationCustomizer.darkTheme.renameColor,
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       onPressed: (context) async {
         if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
@@ -51,6 +50,7 @@ class EditTOTPTokenAction extends TokenAction {
     final algorithm = token.algorithm;
 
     showDialog(
+      useRootNavigator: false,
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) => DefaultDialog(
         scrollable: true,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import '../../../../../l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../model/token_folder.dart';
@@ -17,8 +17,8 @@ class RenameTokenFolderAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomSlidableAction(
-        backgroundColor: Theme.of(context).brightness == Brightness.light ? applicationCustomizer.renameColorLight : applicationCustomizer.renameColorDark,
-        foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+        backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
+        foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
         onPressed: (context) async {
           if (folder.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
           _showDialog();
@@ -40,6 +40,7 @@ class RenameTokenFolderAction extends StatelessWidget {
   void _showDialog() {
     TextEditingController nameInputController = TextEditingController(text: folder.label);
     showDialog(
+        useRootNavigator: false,
         context: globalNavigatorKey.currentContext!,
         builder: (BuildContext context) {
           return DefaultDialog(

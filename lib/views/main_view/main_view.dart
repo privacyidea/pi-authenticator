@@ -30,6 +30,7 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
   @override
   void onResume() {
     Logger.info('onResume');
+    setState(() {});
     globalRef?.read(appStateProvider.notifier).setAppState(AppState.resume);
   }
 

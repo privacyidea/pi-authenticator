@@ -12,6 +12,7 @@ class AppBarItem extends StatelessWidget {
       padding: const EdgeInsets.all(0),
       splashRadius: 0.1,
       onPressed: onPressed,
+      color: Theme.of(context).navigationBarTheme.iconTheme?.resolve({})?.color,
       icon: Icon(
         icon,
         size: 24,

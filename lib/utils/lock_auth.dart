@@ -1,8 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_ios/local_auth_ios.dart';
@@ -18,7 +19,7 @@ Future<bool> lockAuth({required BuildContext context, required String localizedR
   bool didAuthenticate = false;
   LocalAuthentication localAuth = LocalAuthentication();
 
-  if (!(await localAuth.isDeviceSupported())) {
+  if (kIsWeb || !(await localAuth.isDeviceSupported())) {
     await showAsyncDialog(
       builder: (context) {
         return DefaultDialog(

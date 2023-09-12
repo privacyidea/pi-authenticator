@@ -2,7 +2,108 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-final applicationCustomizer = ApplicationCustomizer();
+var applicationCustomizer = ApplicationCustomizer();
+
+class ThemeCustomizer {
+  const ThemeCustomizer({
+    required this.onPrimary,
+    required this.themeColor,
+    required this.backgroundColor,
+    required this.foregroundColor,
+    required this.deleteColor,
+    required this.renameColor,
+    required this.lockColor,
+    required this.tileIconColor,
+    required this.tileSubtitleColor,
+    required this.shadowColor,
+  });
+
+  const ThemeCustomizer.defaultLightWith({
+    Color? onPrimary,
+    Color? themeColor,
+    Color? backgroundColor,
+    Color? foregroundColor,
+    Color? deleteColor,
+    Color? renameColor,
+    Color? lockColor,
+    Color? tileIconColor,
+    Color? tileSubtitleColor,
+    Color? shadowColor,
+  })  : onPrimary = onPrimary ?? const Color(0xFF282828),
+        themeColor = themeColor ?? Colors.white,
+        backgroundColor = backgroundColor ?? const Color(0xFFEFEFEF),
+        foregroundColor = foregroundColor ?? const Color(0xff282828),
+        deleteColor = deleteColor ?? const Color(0xffE04D2D),
+        renameColor = renameColor ?? const Color(0xff6A8FE5),
+        lockColor = lockColor ?? const Color(0xffFFD633),
+        tileIconColor = tileIconColor ?? const Color(0xff9E9E9E),
+        tileSubtitleColor = tileSubtitleColor ?? const Color(0xff757575),
+        shadowColor = shadowColor ?? const Color(0xFF303030);
+
+  const ThemeCustomizer.defaultDarkWith({
+    Color? onPrimary,
+    Color? themeColor,
+    Color? backgroundColor,
+    Color? foregroundColor,
+    Color? deleteColor,
+    Color? renameColor,
+    Color? lockColor,
+    Color? tileIconColor,
+    Color? tileSubtitleColor,
+    Color? shadowColor,
+  })  : onPrimary = onPrimary ?? const Color(0xFF282828),
+        themeColor = themeColor ?? const Color(0xFF282828),
+        backgroundColor = backgroundColor ?? const Color(0xFF303030),
+        foregroundColor = foregroundColor ?? const Color(0xffF5F5F5),
+        deleteColor = deleteColor ?? const Color(0xffCD3C14),
+        renameColor = renameColor ?? const Color(0xff527EDB),
+        lockColor = lockColor ?? const Color(0xffFFCC00),
+        tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
+        tileSubtitleColor = tileSubtitleColor ?? const Color(0xff9E9E9E),
+        shadowColor = shadowColor ?? const Color(0xFFEFEFEF);
+
+  final Color onPrimary;
+  final Color themeColor;
+
+  final Color backgroundColor;
+  final Color foregroundColor;
+
+  // Slide action
+  final Color deleteColor;
+  final Color renameColor;
+  final Color lockColor;
+
+  // List tile
+  final Color tileIconColor;
+  final Color tileSubtitleColor;
+
+  final Color shadowColor;
+
+  ThemeCustomizer copyWith({
+    Color? onPrimary,
+    Color? themeColor,
+    Color? backgroundColor,
+    Color? foregroundColor,
+    Color? deleteColor,
+    Color? renameColor,
+    Color? lockColor,
+    Color? tileIconColor,
+    Color? tileSubtitleColor,
+    Color? shadowColor,
+  }) =>
+      ThemeCustomizer(
+        onPrimary: onPrimary ?? this.onPrimary,
+        themeColor: themeColor ?? this.themeColor,
+        backgroundColor: backgroundColor ?? this.backgroundColor,
+        foregroundColor: foregroundColor ?? this.foregroundColor,
+        deleteColor: deleteColor ?? this.deleteColor,
+        renameColor: renameColor ?? this.renameColor,
+        lockColor: lockColor ?? this.lockColor,
+        tileIconColor: tileIconColor ?? this.tileIconColor,
+        tileSubtitleColor: tileSubtitleColor ?? this.tileSubtitleColor,
+        shadowColor: shadowColor ?? this.shadowColor,
+      );
+}
 
 class ApplicationCustomizer {
   // Edit in android/app/src/main/AndroidManifest.xml file
@@ -34,188 +135,267 @@ class ApplicationCustomizer {
   // - /android/app/src/release
   // 2. iOS: in /ios/ add the GoogleService-Info.plist
 
-  final String appName = "privacyIDEA Authenticator";
-  final String websiteLink = 'https://netknights.it/';
-  final String appIcon = 'res/logo/app_logo_light.png';
+  final String appName;
+  final String websiteLink;
+  final Image appIcon;
+  final ThemeCustomizer lightTheme;
+  final ThemeCustomizer darkTheme;
+  final Color primaryColor;
 
-  final Color primaryColor = Colors.lightBlue;
-  final Color themeColorDark = const Color(0xFF282828);
-  final Color themeColorLight = Colors.white;
+  ApplicationCustomizer({
+    this.appName = "privacyIDEA Authenticator",
+    this.websiteLink = 'https://netknights.it/',
+    this.primaryColor = Colors.lightBlue,
+    Image? appIcon,
+    this.lightTheme = const ThemeCustomizer.defaultLightWith(),
+    this.darkTheme = const ThemeCustomizer.defaultDarkWith(),
+  }) : appIcon = appIcon ?? Image.asset('res/logo/app_logo_light.png');
 
-  final Color backgroundColorDark = const Color(0xFF303030);
-  final Color backgroundColorLight = const Color(0xFFEFEFEF);
-
-  // Slide action
-  final Color deleteColorDark = const Color(0xffCD3C14);
-  final Color deleteColorLight = const Color(0xffE04D2D);
-  final Color renameColorDark = const Color(0xff527EDB);
-  final Color renameColorLight = const Color(0xff6A8FE5);
-  final Color lockColorDark = const Color(0xffFFCC00);
-  final Color lockColorLight = const Color(0xffFFD633);
-
-  Color get buttonColor => primaryColor;
-  Color get textColor => primaryColor;
-  Color get timerColor => primaryColor;
-
-  // List tile
-  final Color tileIconColorLight = const Color(0xff9E9E9E);
-  final Color tileSubtitleColorLight = const Color(0xff757575);
-  final Color tileIconColorDark = const Color(0xffF5F5F5);
-  final Color tileSubtitleColorDark = const Color(0xff9E9E9E);
+  ApplicationCustomizer copyWith({
+    String? appName,
+    String? websiteLink,
+    Image? appIcon,
+    ThemeCustomizer? lightTheme,
+    ThemeCustomizer? darkTheme,
+    Color? primaryColor,
+  }) =>
+      ApplicationCustomizer(
+        appName: appName ?? this.appName,
+        websiteLink: websiteLink ?? this.websiteLink,
+        appIcon: appIcon ?? this.appIcon,
+        lightTheme: lightTheme ?? this.lightTheme,
+        darkTheme: darkTheme ?? this.darkTheme,
+        primaryColor: primaryColor ?? this.primaryColor,
+      );
 
   ThemeData generateLightTheme() {
-    Color onPrimary = _isColorBright(primaryColor) ? themeColorDark : themeColorLight;
     return ThemeData(
-      scaffoldBackgroundColor: backgroundColorLight,
-      brightness: Brightness.light,
-      primaryColorLight: primaryColor,
-      primaryColorDark: primaryColor,
-      cardColor: backgroundColorLight,
-      appBarTheme: const AppBarTheme().copyWith(
-        backgroundColor: backgroundColorLight,
-        shadowColor: themeColorDark,
-        elevation: 0,
-      ),
-      navigationBarTheme: const NavigationBarThemeData().copyWith(
-        backgroundColor: themeColorLight,
-        shadowColor: themeColorDark,
-        elevation: 6,
-      ),
-      listTileTheme: ListTileThemeData(
-        tileColor: backgroundColorLight,
-        titleTextStyle: TextStyle(color: primaryColor),
-        subtitleTextStyle: TextStyle(color: tileSubtitleColorLight),
-        iconColor: tileIconColorLight,
-      ),
-      colorScheme: ColorScheme.light(
-        primary: primaryColor,
-        secondary: primaryColor,
-        onPrimary: onPrimary,
-        onSecondary: onPrimary,
-        errorContainer: deleteColorLight,
-      ),
-      iconTheme: const IconThemeData(color: Colors.black),
-      checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
+        textTheme: const TextTheme().copyWith(
+          bodyLarge: TextStyle(color: lightTheme.foregroundColor),
+          bodyMedium: TextStyle(color: lightTheme.foregroundColor),
+          titleMedium: TextStyle(color: lightTheme.foregroundColor),
+          titleSmall: TextStyle(color: lightTheme.foregroundColor),
+          displayLarge: TextStyle(color: lightTheme.foregroundColor),
+          displayMedium: TextStyle(color: lightTheme.foregroundColor),
+          displaySmall: TextStyle(color: lightTheme.foregroundColor),
+          headlineMedium: TextStyle(color: lightTheme.foregroundColor),
+          headlineSmall: TextStyle(color: lightTheme.foregroundColor),
+          titleLarge: TextStyle(color: lightTheme.foregroundColor),
+          bodySmall: TextStyle(color: lightTheme.tileSubtitleColor),
+          labelLarge: TextStyle(color: lightTheme.foregroundColor),
+          labelSmall: TextStyle(color: lightTheme.foregroundColor),
+        ),
+        scaffoldBackgroundColor: lightTheme.backgroundColor,
+        brightness: Brightness.light,
+        primaryColorLight: primaryColor,
+        primaryColorDark: primaryColor,
+        cardColor: lightTheme.backgroundColor,
+        appBarTheme: const AppBarTheme().copyWith(
+          backgroundColor: lightTheme.backgroundColor,
+          shadowColor: lightTheme.shadowColor,
+          foregroundColor: lightTheme.foregroundColor,
+          elevation: 0,
+        ),
+        navigationBarTheme: const NavigationBarThemeData().copyWith(
+          backgroundColor: lightTheme.themeColor,
+          shadowColor: lightTheme.shadowColor,
+          iconTheme: MaterialStatePropertyAll(IconThemeData(color: lightTheme.foregroundColor)),
+          elevation: 3,
+        ),
+        listTileTheme: ListTileThemeData(
+          tileColor: lightTheme.backgroundColor,
+          titleTextStyle: TextStyle(color: primaryColor),
+          subtitleTextStyle: TextStyle(color: lightTheme.tileSubtitleColor),
+          iconColor: lightTheme.tileIconColor,
+        ),
+        colorScheme: ColorScheme.light(
+          primary: primaryColor,
+          secondary: primaryColor,
+          onPrimary: lightTheme.onPrimary,
+          onSecondary: lightTheme.onPrimary,
+          errorContainer: lightTheme.deleteColor,
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        checkboxTheme: CheckboxThemeData(
+          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primaryColor;
+            }
             return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return primaryColor;
-          }
-          return null;
-        }),
-      ),
-      radioTheme: RadioThemeData(
-        fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
+          }),
+        ),
+        radioTheme: RadioThemeData(
+          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primaryColor;
+            }
             return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return primaryColor;
-          }
-          return null;
-        }),
-      ),
-      switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
+          }),
+        ),
+        switchTheme: SwitchThemeData(
+          thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primaryColor;
+            }
             return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return primaryColor;
-          }
-          return null;
-        }),
-        trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
+          }),
+          trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primaryColor;
+            }
             return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return primaryColor;
-          }
-          return null;
-        }),
-      ),
-    );
+          }),
+        ),
+        extensions: [
+          ActionTheme(
+            deleteColor: lightTheme.deleteColor,
+            editColor: lightTheme.renameColor,
+            lockColor: lightTheme.lockColor,
+            foregroundColor: lightTheme.foregroundColor,
+          ),
+        ]);
   }
 
   ThemeData generateDarkTheme() {
-    Color onPrimary = _isColorBright(primaryColor) ? themeColorDark : themeColorLight;
     return ThemeData(
-      scaffoldBackgroundColor: backgroundColorDark,
-      brightness: Brightness.dark,
-      primaryColorLight: primaryColor,
-      primaryColorDark: primaryColor,
-      cardColor: backgroundColorDark,
-      appBarTheme: const AppBarTheme().copyWith(
-        backgroundColor: backgroundColorDark,
-        shadowColor: themeColorLight,
-        elevation: 0,
-      ),
-      navigationBarTheme: const NavigationBarThemeData().copyWith(
-        backgroundColor: themeColorDark,
-        shadowColor: themeColorLight,
-        elevation: 6,
-      ),
-      listTileTheme: ListTileThemeData(
-        tileColor: backgroundColorDark,
-        titleTextStyle: TextStyle(color: primaryColor),
-        subtitleTextStyle: TextStyle(color: tileSubtitleColorDark),
-        iconColor: tileIconColorDark,
-      ),
-      colorScheme: ColorScheme.dark(
-        primary: primaryColor,
-        secondary: primaryColor,
-        onPrimary: onPrimary,
-        onSecondary: onPrimary,
-        errorContainer: deleteColorDark,
-      ),
-      iconTheme: const IconThemeData(color: Colors.white),
-      checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
+        textTheme: const TextTheme().copyWith(
+          bodyLarge: TextStyle(color: darkTheme.foregroundColor),
+          bodyMedium: TextStyle(color: darkTheme.foregroundColor),
+          titleMedium: TextStyle(color: darkTheme.foregroundColor),
+          titleSmall: TextStyle(color: darkTheme.foregroundColor),
+          displayLarge: TextStyle(color: darkTheme.foregroundColor),
+          displayMedium: TextStyle(color: darkTheme.foregroundColor),
+          displaySmall: TextStyle(color: darkTheme.foregroundColor),
+          headlineMedium: TextStyle(color: darkTheme.foregroundColor),
+          headlineSmall: TextStyle(color: darkTheme.foregroundColor),
+          titleLarge: TextStyle(color: darkTheme.foregroundColor),
+          bodySmall: TextStyle(color: darkTheme.tileSubtitleColor),
+          labelLarge: TextStyle(color: darkTheme.foregroundColor),
+          labelSmall: TextStyle(color: darkTheme.foregroundColor),
+        ),
+        scaffoldBackgroundColor: darkTheme.backgroundColor,
+        brightness: Brightness.dark,
+        primaryColorLight: primaryColor,
+        primaryColorDark: primaryColor,
+        cardColor: darkTheme.backgroundColor,
+        appBarTheme: const AppBarTheme().copyWith(
+          backgroundColor: darkTheme.backgroundColor,
+          shadowColor: darkTheme.shadowColor,
+          foregroundColor: darkTheme.foregroundColor,
+          elevation: 0,
+        ),
+        navigationBarTheme: const NavigationBarThemeData().copyWith(
+          backgroundColor: darkTheme.themeColor,
+          shadowColor: darkTheme.shadowColor,
+          iconTheme: MaterialStatePropertyAll(IconThemeData(color: darkTheme.foregroundColor)),
+          elevation: 3,
+        ),
+        listTileTheme: ListTileThemeData(
+          tileColor: darkTheme.backgroundColor,
+          titleTextStyle: TextStyle(color: primaryColor),
+          subtitleTextStyle: TextStyle(color: darkTheme.tileSubtitleColor),
+          iconColor: darkTheme.tileIconColor,
+        ),
+        colorScheme: ColorScheme.dark(
+          primary: primaryColor,
+          secondary: primaryColor,
+          onPrimary: darkTheme.onPrimary,
+          onSecondary: darkTheme.onPrimary,
+          errorContainer: darkTheme.deleteColor,
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        checkboxTheme: CheckboxThemeData(
+          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primaryColor;
+            }
             return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return primaryColor;
-          }
-          return null;
-        }),
-      ),
-      radioTheme: RadioThemeData(
-        fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
+          }),
+        ),
+        radioTheme: RadioThemeData(
+          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primaryColor;
+            }
             return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return primaryColor;
-          }
-          return null;
-        }),
-      ),
-      switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
+          }),
+        ),
+        switchTheme: SwitchThemeData(
+          thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primaryColor;
+            }
             return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return primaryColor;
-          }
-          return null;
-        }),
-        trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
+          }),
+          trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primaryColor;
+            }
             return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return primaryColor;
-          }
-          return null;
-        }),
-      ),
-    );
+          }),
+        ),
+        extensions: [
+          ActionTheme(
+            deleteColor: darkTheme.deleteColor,
+            editColor: darkTheme.renameColor,
+            lockColor: darkTheme.lockColor,
+            foregroundColor: darkTheme.foregroundColor,
+          ),
+        ]);
   }
+}
+
+class ActionTheme extends ThemeExtension<ActionTheme> {
+  final Color deleteColor;
+  final Color editColor;
+  final Color lockColor;
+  final Color foregroundColor;
+  const ActionTheme({
+    required this.deleteColor,
+    required this.editColor,
+    required this.lockColor,
+    required this.foregroundColor,
+  });
+
+  @override
+  ThemeExtension<ActionTheme> lerp(covariant ActionTheme? other, double t) => ActionTheme(
+        deleteColor: Color.lerp(deleteColor, other?.deleteColor, t) ?? deleteColor,
+        editColor: Color.lerp(editColor, other?.editColor, t) ?? editColor,
+        lockColor: Color.lerp(lockColor, other?.lockColor, t) ?? lockColor,
+        foregroundColor: Color.lerp(foregroundColor, other?.foregroundColor, t) ?? foregroundColor,
+      );
+
+  @override
+  ThemeExtension<ActionTheme> copyWith({Color? deleteColor, Color? renameColor, Color? lockColor, Color? foregroundColor}) => ActionTheme(
+        deleteColor: deleteColor ?? this.deleteColor,
+        editColor: renameColor ?? this.editColor,
+        lockColor: lockColor ?? this.lockColor,
+        foregroundColor: foregroundColor ?? this.foregroundColor,
+      );
 }
 
 /// Calculate HSP and check if the primary color is bright or dark

@@ -3,10 +3,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../repo/secure_token_repository.dart';
 import 'customizations.dart';
 import 'identifiers.dart';
 import 'logger.dart';
-import '../repo/secure_token_repository.dart';
 
 class FirebaseUtils {
   static FirebaseUtils? _instance;

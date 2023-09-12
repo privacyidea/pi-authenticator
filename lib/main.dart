@@ -69,7 +69,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
       routes: {
         SplashScreen.routeName: (context) => const SplashScreen(),
         OnboardingView.routeName: (context) => const OnboardingView(),
-        MainView.routeName: (context) => MainView(title: applicationCustomizer.appName, appLogo: Image.asset(applicationCustomizer.appIcon)),
+        MainView.routeName: (context) => MainView(title: applicationCustomizer.appName, appLogo: applicationCustomizer.appIcon),
         SettingsView.routeName: (context) => const SettingsView(),
         AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
         QRScannerView.routeName: (context) => QRScannerView(),

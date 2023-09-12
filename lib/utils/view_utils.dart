@@ -27,5 +27,6 @@ Future<T?> showAsyncDialog<T>({
   return showDialog(
     context: globalNavigatorKey.currentContext!,
     builder: builder,
+    useRootNavigator: false,
   );
 }

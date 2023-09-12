@@ -75,6 +75,7 @@ dependencies:
   connectivity_plus: ^4.0.2
   device_info_plus: ^9.0.3
   json_annotation: ^4.8.1
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_driver:

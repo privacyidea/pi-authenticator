@@ -1,11 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
-import 'package:privacyidea_authenticator/utils/lock_auth.dart';
-import 'package:privacyidea_authenticator/widgets/default_dialog.dart';
-import 'package:privacyidea_authenticator/widgets/press_button.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../utils/customizations.dart';
+import '../../../utils/lock_auth.dart';
+import '../../../widgets/default_dialog.dart';
+import '../../../widgets/press_button.dart';
 
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/riverpod_providers.dart';
@@ -100,6 +100,7 @@ class PushRequestOverlay extends StatelessWidget {
 }
 
 void _showDialog(PushToken token) => showDialog(
+    useRootNavigator: false,
     context: globalNavigatorKey.currentContext!,
     builder: (BuildContext context) {
       return BackdropFilter(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 import '../model/tokens/token.dart';
 import '../utils/lock_auth.dart';

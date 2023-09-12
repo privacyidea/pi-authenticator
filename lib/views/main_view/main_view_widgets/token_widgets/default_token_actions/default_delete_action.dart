@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import '../../../../../l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../model/tokens/token.dart';
@@ -18,8 +18,8 @@ class DefaultDeleteAction extends TokenAction {
   @override
   CustomSlidableAction build(BuildContext context) {
     return CustomSlidableAction(
-      backgroundColor: Theme.of(context).brightness == Brightness.light ? applicationCustomizer.deleteColorLight : applicationCustomizer.deleteColorDark,
-      foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+      backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
+      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (_) async {
         if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)?.deleteLockedToken ?? '') == false) {
           return;
@@ -44,6 +44,7 @@ class DefaultDeleteAction extends TokenAction {
   void _showDialog() => globalNavigatorKey.currentContext == null
       ? null
       : showDialog(
+          useRootNavigator: false,
           context: globalNavigatorKey.currentContext!,
           builder: (BuildContext context) {
             return DefaultDialog(

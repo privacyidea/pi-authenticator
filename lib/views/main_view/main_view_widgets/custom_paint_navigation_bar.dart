@@ -26,6 +26,7 @@ class CustomPaintNavigationBar extends CustomPainter {
         Theme.of(buildContext).navigationBarTheme.backgroundColor ?? Theme.of(buildContext).appBarTheme.backgroundColor ?? Theme.of(buildContext).primaryColor;
     final Color shadowColor =
         Theme.of(buildContext).navigationBarTheme.shadowColor ?? Theme.of(buildContext).appBarTheme.shadowColor ?? Theme.of(buildContext).shadowColor;
+    final elevation = Theme.of(buildContext).navigationBarTheme.elevation ?? 3;
     final double radiusPx = min(40, size.height * 0.8);
     Paint paint = Paint()
       ..color = appBarColor
@@ -40,7 +41,9 @@ class CustomPaintNavigationBar extends CustomPainter {
       ..lineTo(size.width * 1.0, size.height * 1.0) // point 7
       ..lineTo(size.width * 0.0, size.height * 1.0) // point 8
       ..close(); // point 1
-    canvas.drawShadow(path, shadowColor, 10, false);
+    canvas.translate(0, -elevation);
+    canvas.drawShadow(path, shadowColor, elevation, false);
+    canvas.translate(0, elevation);
     canvas.drawPath(path, paint);
   }
 
