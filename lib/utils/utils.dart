@@ -30,6 +30,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hex/hex.dart' as HexConverter;
 import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import 'identifiers.dart';
 
@@ -90,6 +91,8 @@ void checkNotificationPermission() async {
     if (status.isDenied) {
       await Permission.notification.request();
     }
+  } else {
+    Logger.info('Notification permission is permanently denied!');
   }
 }
 
