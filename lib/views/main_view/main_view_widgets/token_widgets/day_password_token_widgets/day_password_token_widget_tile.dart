@@ -45,7 +45,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
     } else {
       setState(() => secondsLeft = widget.token.durationUntilNextOTP.inMilliseconds / 1000);
     }
-    final msUntilNextSecond = (secondsLeft * 1000).toInt() % 1000 + 20; // +1 to avoid 0
+    final msUntilNextSecond = (secondsLeft * 1000).toInt() % 1000 + 1; // +1 to avoid 0
     Future.delayed(Duration(milliseconds: msUntilNextSecond), () => _startCountDown());
   }
 
