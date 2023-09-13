@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/push_provider.dart';
 
 import '../model/mixins/sortable_mixin.dart';
 import '../model/platform_info/platform_info.dart';
@@ -86,7 +87,21 @@ final platformInfoProvider = StateProvider<PlatformInfo>(
 );
 
 final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>(
-  (ref) => PushRequestNotifier(null, pollingEnabled: ref.watch(settingsProvider).enablePolling),
+  (ref) {
+    final pushRequestNotifier = PushRequestNotifier(null, pollingEnabled: ref.watch(settingsProvider).enablePolling);
+    appStateProvider.addListener(
+      ref.container,
+      (previous, next) {
+        if (previous == AppState.pause && next == AppState.resume) {
+          PushProvider.pollForChallenges();
+        }
+      },
+      onError: (_, __) {},
+      onDependencyMayHaveChanged: () {},
+      fireImmediately: false,
+    );
+    return pushRequestNotifier;
+  },
 );
 
 final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>(
