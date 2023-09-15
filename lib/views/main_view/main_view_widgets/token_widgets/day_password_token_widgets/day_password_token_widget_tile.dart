@@ -23,7 +23,7 @@ class DayPasswordTokenWidgetTile extends ConsumerStatefulWidget {
 }
 
 class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWidgetTile> {
-  late double secondsLeft;
+  double secondsLeft = 0;
   late DateTime lastCount;
   final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
 
@@ -32,10 +32,10 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
     super.initState();
     secondsLeft = widget.token.durationUntilNextOTP.inMilliseconds / 1000;
     lastCount = DateTime.now();
-    _countDown();
+    _startCountDown();
   }
 
-  void _countDown() {
+  void _startCountDown() {
     final now = DateTime.now();
     final msSinceLastCount = now.difference(lastCount).inMilliseconds;
     lastCount = now;
@@ -46,7 +46,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
       setState(() => secondsLeft = widget.token.durationUntilNextOTP.inMilliseconds / 1000);
     }
     final msUntilNextSecond = (secondsLeft * 1000).toInt() % 1000 + 1; // +1 to avoid 0
-    Future.delayed(Duration(milliseconds: msUntilNextSecond), () => _countDown());
+    Future.delayed(Duration(milliseconds: msUntilNextSecond), () => _startCountDown());
   }
 
   void _copyOtpValue() {

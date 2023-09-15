@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/push_provider.dart';
 
 import '../model/mixins/sortable_mixin.dart';
 import '../model/platform_info/platform_info.dart';
@@ -17,7 +18,6 @@ import '../state_notifiers/settings_notifier.dart';
 import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
 import 'logger.dart';
-import 'push_provider.dart';
 
 // Never use globalRef to .watch() a provider. only use it to .read() a provider
 // Otherwise the whole app will rebuild on every state change of the provider
@@ -88,8 +88,25 @@ final platformInfoProvider = StateProvider<PlatformInfo>(
   (ref) => DummyPlatformInfo(),
 );
 
-final pushRequestProvider = StateNotifierProvider.autoDispose<PushRequestNotifier, PushRequest?>(
-  (ref) => PushRequestNotifier(pushProvider: PushProvider(pollingEnabled: ref.watch(settingsProvider).enablePolling)),
+final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>(
+  (ref) {
+    final pushProvider = PushProvider(pollingEnabled: ref.watch(settingsProvider).enablePolling);
+    final pushRequestNotifier = PushRequestNotifier(
+      pushProvider: pushProvider,
+    );
+    appStateProvider.addListener(
+      ref.container,
+      (previous, next) {
+        if (previous == AppState.pause && next == AppState.resume) {
+          pushProvider.pollForChallenges();
+        }
+      },
+      onError: (_, __) {},
+      onDependencyMayHaveChanged: () {},
+      fireImmediately: false,
+    );
+    return pushRequestNotifier;
+  },
 );
 
 final appStateProvider = StateNotifierProvider.autoDispose<AppStateNotifier, AppState>(

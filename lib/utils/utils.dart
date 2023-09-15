@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import 'identifiers.dart';
 
@@ -84,11 +85,16 @@ bool equalsIgnoreCase(String s1, String s2) {
 void checkNotificationPermission() async {
   if (kIsWeb || !Platform.isAndroid && !Platform.isIOS) return;
   var status = await Permission.notification.status;
+  Logger.info('Notification permission status: $status');
   // TODO what to do if permanently denied?
   // Add a dialog before requesting?
-  if (status.isPermanentlyDenied) return;
-  if (status.isDenied) {
-    await Permission.notification.request();
+
+  if (!status.isPermanentlyDenied) {
+    if (status.isDenied) {
+      await Permission.notification.request();
+    }
+  } else {
+    Logger.info('Notification permission is permanently denied!');
   }
 }
 

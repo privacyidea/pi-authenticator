@@ -24,6 +24,7 @@ class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
 class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with SingleTickerProviderStateMixin {
   double secondsLeft = 0;
   late AnimationController animation;
+  late DateTime lastCount;
   final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
 
   void _copyOtpValue() {
@@ -49,13 +50,14 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
       duration: Duration(seconds: widget.token.period),
     );
     animation.forward(from: 1 - widget.token.secondsUntilNextOTP / widget.token.period);
-    _countDown(0);
-    ref.read(appStateProvider.notifier).addListener(_onAppStateChange);
+    secondsLeft = widget.token.secondsUntilNextOTP;
+    lastCount = DateTime.now();
+    _startCountDown();
     isHidden.addListener(() {
       if (mounted) {
         setState(() {
           if (isHidden.value == false) {
-            Future.delayed(Duration(milliseconds: (widget.token.period * 1000 + (widget.token.secondsUntilNextOTP * 1000).toInt())), () {
+            Future.delayed(Duration(milliseconds: (widget.token.period * 1000 + (secondsLeft * 1000).toInt())), () {
               isHidden.value = true;
             });
           }
@@ -83,16 +85,26 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
     super.dispose();
   }
 
-  void _countDown(int msSinceLastCount) {
+  void _startCountDown() {
+    final now = DateTime.now();
+    final msSinceLastCount = now.difference(lastCount).inMilliseconds;
+    lastCount = now;
     if (!mounted) return;
-    setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
-    animation.forward(from: 1 - secondsLeft / widget.token.period);
+    if (secondsLeft - (msSinceLastCount / 1000) > 0) {
+      setState(() => secondsLeft -= msSinceLastCount / 1000);
+    } else {
+      setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
+      animation.forward(from: 1 - secondsLeft / widget.token.period);
+    }
+
     final msUntilNextSecond = (secondsLeft * 1000).toInt() % 1000 + 1; // +1 to avoid 0
-    Future.delayed(Duration(milliseconds: msUntilNextSecond), () => _countDown(msUntilNextSecond));
+    Future.delayed(Duration(milliseconds: msUntilNextSecond), () => _startCountDown());
   }
 
   @override
   Widget build(BuildContext context) {
+    final appstate = ref.watch(appStateProvider);
+    _onAppStateChange(appstate);
     return TokenWidgetTile(
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
       tokenImage: widget.token.tokenImage,
@@ -130,11 +142,11 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
               children: [
                 Center(
                   child: Text(
-                    '${secondsLeft.ceil()}',
+                    '${secondsLeft.round()}',
                     overflow: TextOverflow.fade,
                     softWrap: false,
                   ),
-                ), // ceil to show 30 -> 1 instead of 29 -> 0
+                ),
                 Center(
                   child: CircularProgressIndicator(
                     value: animation.value,
