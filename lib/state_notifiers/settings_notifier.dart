@@ -20,8 +20,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     });
   }
   void _loadFromRepo() async {
-    Logger.info('Loading settings from repo: $state', name: 'settings_notifier.dart#_loadFromRepo');
     state = await _repo.loadSettings();
+    Logger.info('Loading settings from repo: $state', name: 'settings_notifier.dart#_loadFromRepo');
   }
 
   void _saveToRepo() async {
