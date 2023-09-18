@@ -80,7 +80,7 @@ void expectMainViewIsEmptyAndCorrect() {
   expect(find.byType(AppBarItem), findsNWidgets(4));
   expect(find.byType(TokenWidgetBase), findsNothing);
   expect(find.byType(TokenFolderWidget), findsNothing);
-  expect(find.text(applicationCustomizer.appName), findsOneWidget);
+  expect(find.text(ApplicationCustomizer().appName), findsOneWidget);
   expect(find.byType(Image), findsOneWidget);
 }
 

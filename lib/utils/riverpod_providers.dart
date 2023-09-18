@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 
 import '../model/mixins/sortable_mixin.dart';
@@ -120,3 +121,5 @@ final tokenFolderProvider = StateNotifierProvider.autoDispose<TokenFolderNotifie
 );
 
 final draggingSortableProvider = StateProvider<SortableMixin?>((ref) => null);
+
+final applicationCustomizerProvider = StateProvider<ApplicationCustomizer>((ref) => ApplicationCustomizer());

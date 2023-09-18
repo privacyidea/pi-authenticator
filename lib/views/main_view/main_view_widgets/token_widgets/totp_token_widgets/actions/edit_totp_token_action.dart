@@ -21,9 +21,8 @@ class EditTOTPTokenAction extends TokenAction {
 
   @override
   CustomSlidableAction build(BuildContext context) => CustomSlidableAction(
-      backgroundColor:
-          Theme.of(context).brightness == Brightness.light ? applicationCustomizer.lightTheme.renameColor : applicationCustomizer.darkTheme.renameColor,
-      foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+      backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
+      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
         if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
           return;

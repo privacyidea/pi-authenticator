@@ -111,18 +111,12 @@ flutter:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
   assets:
-    - res/logo/app_logo_light.png
+    - res/logo/
     - CHANGELOG.md
     - res/guide/
-    - res/gif/help_delete_rename.gif
-    - res/gif/help_manual_poll.gif
-    - res/lottie/onboarding_secure_animation.json
-    - res/rive/success_check.flr
-    - res/lottie/security-cloud.json
-    - res/lottie/941-submit-smile.json
-    - res/lottie/lock_shield.json
-    - res/logo/github.png
-    - res/lottie/github-logo.json
+    - res/gif/
+    - res/lottie/
+    - res/rive/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

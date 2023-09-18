@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../utils/app_customizer.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/dot_indicator.dart';
 import '../main_view/main_view.dart';
@@ -47,6 +46,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
+    final applicationCustomizer = ref.read(applicationCustomizerProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

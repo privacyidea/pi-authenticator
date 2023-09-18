@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../model/platform_info/platform_info_imp/package_info_plus_platform_info.dart';
-import '../../utils/app_customizer.dart';
 import '../../utils/riverpod_providers.dart';
 import '../main_view/main_view.dart';
 import '../onboarding_view/onboarding_view.dart';
@@ -47,10 +46,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (isFirstRun) {
       nextView = const OnboardingView();
     } else {
-      nextView = MainView(
-        title: applicationCustomizer.appName,
-        appLogo: applicationCustomizer.appIcon,
-      );
+      nextView = const MainView();
     }
     // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
@@ -65,6 +61,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final applicationCustomizer = ref.read(applicationCustomizerProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Center(
@@ -73,7 +70,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           duration: _splashScreenDuration,
           child: Padding(
             padding: const EdgeInsets.all(32.0),
-            child: applicationCustomizer.appIcon,
+            child: applicationCustomizer.appImage,
           ),
         ),
       ),

@@ -1,11 +1,11 @@
-import 'dart:math';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
-var applicationCustomizer = ApplicationCustomizer();
-
 class ThemeCustomizer {
   const ThemeCustomizer({
+    required this.primaryColor,
     required this.onPrimary,
     required this.themeColor,
     required this.backgroundColor,
@@ -14,11 +14,12 @@ class ThemeCustomizer {
     required this.renameColor,
     required this.lockColor,
     required this.tileIconColor,
-    required this.tileSubtitleColor,
+    required this.subtitleColor,
     required this.shadowColor,
   });
 
   const ThemeCustomizer.defaultLightWith({
+    Color? primaryColor,
     Color? onPrimary,
     Color? themeColor,
     Color? backgroundColor,
@@ -29,7 +30,8 @@ class ThemeCustomizer {
     Color? tileIconColor,
     Color? tileSubtitleColor,
     Color? shadowColor,
-  })  : onPrimary = onPrimary ?? const Color(0xFF282828),
+  })  : primaryColor = primaryColor ?? Colors.lightBlue,
+        onPrimary = onPrimary ?? const Color(0xFF282828),
         themeColor = themeColor ?? Colors.white,
         backgroundColor = backgroundColor ?? const Color(0xFFEFEFEF),
         foregroundColor = foregroundColor ?? const Color(0xff282828),
@@ -37,10 +39,11 @@ class ThemeCustomizer {
         renameColor = renameColor ?? const Color(0xff6A8FE5),
         lockColor = lockColor ?? const Color(0xffFFD633),
         tileIconColor = tileIconColor ?? const Color(0xff9E9E9E),
-        tileSubtitleColor = tileSubtitleColor ?? const Color(0xff757575),
+        subtitleColor = tileSubtitleColor ?? const Color(0xff757575),
         shadowColor = shadowColor ?? const Color(0xFF303030);
 
   const ThemeCustomizer.defaultDarkWith({
+    Color? primaryColor,
     Color? onPrimary,
     Color? themeColor,
     Color? backgroundColor,
@@ -51,7 +54,8 @@ class ThemeCustomizer {
     Color? tileIconColor,
     Color? tileSubtitleColor,
     Color? shadowColor,
-  })  : onPrimary = onPrimary ?? const Color(0xFF282828),
+  })  : primaryColor = primaryColor ?? Colors.lightBlue,
+        onPrimary = onPrimary ?? const Color(0xFF282828),
         themeColor = themeColor ?? const Color(0xFF282828),
         backgroundColor = backgroundColor ?? const Color(0xFF303030),
         foregroundColor = foregroundColor ?? const Color(0xffF5F5F5),
@@ -59,9 +63,10 @@ class ThemeCustomizer {
         renameColor = renameColor ?? const Color(0xff527EDB),
         lockColor = lockColor ?? const Color(0xffFFCC00),
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
-        tileSubtitleColor = tileSubtitleColor ?? const Color(0xff9E9E9E),
+        subtitleColor = tileSubtitleColor ?? const Color(0xff9E9E9E),
         shadowColor = shadowColor ?? const Color(0xFFEFEFEF);
 
+  final Color primaryColor;
   final Color onPrimary;
   final Color themeColor;
 
@@ -75,11 +80,12 @@ class ThemeCustomizer {
 
   // List tile
   final Color tileIconColor;
-  final Color tileSubtitleColor;
+  final Color subtitleColor;
 
   final Color shadowColor;
 
   ThemeCustomizer copyWith({
+    Color? primaryColor,
     Color? onPrimary,
     Color? themeColor,
     Color? backgroundColor,
@@ -88,10 +94,11 @@ class ThemeCustomizer {
     Color? renameColor,
     Color? lockColor,
     Color? tileIconColor,
-    Color? tileSubtitleColor,
+    Color? subtitleColor,
     Color? shadowColor,
   }) =>
       ThemeCustomizer(
+        primaryColor: primaryColor ?? this.primaryColor,
         onPrimary: onPrimary ?? this.onPrimary,
         themeColor: themeColor ?? this.themeColor,
         backgroundColor: backgroundColor ?? this.backgroundColor,
@@ -100,9 +107,37 @@ class ThemeCustomizer {
         renameColor: renameColor ?? this.renameColor,
         lockColor: lockColor ?? this.lockColor,
         tileIconColor: tileIconColor ?? this.tileIconColor,
-        tileSubtitleColor: tileSubtitleColor ?? this.tileSubtitleColor,
+        subtitleColor: subtitleColor ?? this.subtitleColor,
         shadowColor: shadowColor ?? this.shadowColor,
       );
+
+  factory ThemeCustomizer.fromJson(Map<String, dynamic> json) => ThemeCustomizer(
+        primaryColor: Color(json['primaryColor'] as int),
+        onPrimary: Color(json['onPrimary'] as int),
+        themeColor: Color(json['themeColor'] as int),
+        backgroundColor: Color(json['backgroundColor'] as int),
+        foregroundColor: Color(json['foregroundColor'] as int),
+        deleteColor: Color(json['deleteColor'] as int),
+        renameColor: Color(json['renameColor'] as int),
+        lockColor: Color(json['lockColor'] as int),
+        tileIconColor: Color(json['tileIconColor'] as int),
+        subtitleColor: Color(json['subtitleColor'] as int),
+        shadowColor: Color(json['shadowColor'] as int),
+      );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'primaryColor': primaryColor.value,
+        'onPrimary': onPrimary.value,
+        'themeColor': themeColor.value,
+        'backgroundColor': backgroundColor.value,
+        'foregroundColor': foregroundColor.value,
+        'deleteColor': deleteColor.value,
+        'renameColor': renameColor.value,
+        'lockColor': lockColor.value,
+        'tileIconColor': tileIconColor.value,
+        'subtitleColor': subtitleColor.value,
+        'shadowColor': shadowColor.value,
+      };
 }
 
 class ApplicationCustomizer {
@@ -137,24 +172,28 @@ class ApplicationCustomizer {
 
   final String appName;
   final String websiteLink;
+  final Uint8List? appIconBytes;
+  final Uint8List? appImageBytes;
   final Image appIcon;
+  final Image appImage;
   final ThemeCustomizer lightTheme;
   final ThemeCustomizer darkTheme;
-  final Color primaryColor;
 
   ApplicationCustomizer({
     this.appName = "privacyIDEA Authenticator",
     this.websiteLink = 'https://netknights.it/',
-    this.primaryColor = Colors.lightBlue,
-    Image? appIcon,
+    this.appIconBytes,
+    this.appImageBytes,
     this.lightTheme = const ThemeCustomizer.defaultLightWith(),
     this.darkTheme = const ThemeCustomizer.defaultDarkWith(),
-  }) : appIcon = appIcon ?? Image.asset('res/logo/app_logo_light.png');
+  })  : appIcon = appIconBytes != null ? Image.memory(appIconBytes) : Image.asset('res/logo/app_logo_light_small.png'),
+        appImage = appImageBytes != null ? Image.memory(appImageBytes) : Image.asset('res/logo/app_logo_light.png');
 
   ApplicationCustomizer copyWith({
     String? appName,
     String? websiteLink,
-    Image? appIcon,
+    Uint8List? appIconBytes,
+    Uint8List? appImageBytes,
     ThemeCustomizer? lightTheme,
     ThemeCustomizer? darkTheme,
     Color? primaryColor,
@@ -162,211 +201,132 @@ class ApplicationCustomizer {
       ApplicationCustomizer(
         appName: appName ?? this.appName,
         websiteLink: websiteLink ?? this.websiteLink,
-        appIcon: appIcon ?? this.appIcon,
+        appIconBytes: appIconBytes ?? this.appIconBytes,
+        appImageBytes: appImageBytes ?? this.appImageBytes,
         lightTheme: lightTheme ?? this.lightTheme,
         darkTheme: darkTheme ?? this.darkTheme,
-        primaryColor: primaryColor ?? this.primaryColor,
       );
 
-  ThemeData generateLightTheme() {
-    return ThemeData(
-        textTheme: const TextTheme().copyWith(
-          bodyLarge: TextStyle(color: lightTheme.foregroundColor),
-          bodyMedium: TextStyle(color: lightTheme.foregroundColor),
-          titleMedium: TextStyle(color: lightTheme.foregroundColor),
-          titleSmall: TextStyle(color: lightTheme.foregroundColor),
-          displayLarge: TextStyle(color: lightTheme.foregroundColor),
-          displayMedium: TextStyle(color: lightTheme.foregroundColor),
-          displaySmall: TextStyle(color: lightTheme.foregroundColor),
-          headlineMedium: TextStyle(color: lightTheme.foregroundColor),
-          headlineSmall: TextStyle(color: lightTheme.foregroundColor),
-          titleLarge: TextStyle(color: lightTheme.foregroundColor),
-          bodySmall: TextStyle(color: lightTheme.tileSubtitleColor),
-          labelLarge: TextStyle(color: lightTheme.foregroundColor),
-          labelSmall: TextStyle(color: lightTheme.foregroundColor),
-        ),
-        scaffoldBackgroundColor: lightTheme.backgroundColor,
-        brightness: Brightness.light,
-        primaryColorLight: primaryColor,
-        primaryColorDark: primaryColor,
-        cardColor: lightTheme.backgroundColor,
-        appBarTheme: const AppBarTheme().copyWith(
-          backgroundColor: lightTheme.backgroundColor,
-          shadowColor: lightTheme.shadowColor,
-          foregroundColor: lightTheme.foregroundColor,
-          elevation: 0,
-        ),
-        navigationBarTheme: const NavigationBarThemeData().copyWith(
-          backgroundColor: lightTheme.themeColor,
-          shadowColor: lightTheme.shadowColor,
-          iconTheme: MaterialStatePropertyAll(IconThemeData(color: lightTheme.foregroundColor)),
-          elevation: 3,
-        ),
-        listTileTheme: ListTileThemeData(
-          tileColor: lightTheme.backgroundColor,
-          titleTextStyle: TextStyle(color: primaryColor),
-          subtitleTextStyle: TextStyle(color: lightTheme.tileSubtitleColor),
-          iconColor: lightTheme.tileIconColor,
-        ),
-        colorScheme: ColorScheme.light(
-          primary: primaryColor,
-          secondary: primaryColor,
-          onPrimary: lightTheme.onPrimary,
-          onSecondary: lightTheme.onPrimary,
-          errorContainer: lightTheme.deleteColor,
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        checkboxTheme: CheckboxThemeData(
-          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return null;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return primaryColor;
-            }
-            return null;
-          }),
-        ),
-        radioTheme: RadioThemeData(
-          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return null;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return primaryColor;
-            }
-            return null;
-          }),
-        ),
-        switchTheme: SwitchThemeData(
-          thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return null;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return primaryColor;
-            }
-            return null;
-          }),
-          trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return null;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return primaryColor;
-            }
-            return null;
-          }),
-        ),
-        extensions: [
-          ActionTheme(
-            deleteColor: lightTheme.deleteColor,
-            editColor: lightTheme.renameColor,
-            lockColor: lightTheme.lockColor,
-            foregroundColor: lightTheme.foregroundColor,
-          ),
-        ]);
-  }
+  ThemeData generateLightTheme() => _generateTheme(lightTheme);
 
-  ThemeData generateDarkTheme() {
-    return ThemeData(
-        textTheme: const TextTheme().copyWith(
-          bodyLarge: TextStyle(color: darkTheme.foregroundColor),
-          bodyMedium: TextStyle(color: darkTheme.foregroundColor),
-          titleMedium: TextStyle(color: darkTheme.foregroundColor),
-          titleSmall: TextStyle(color: darkTheme.foregroundColor),
-          displayLarge: TextStyle(color: darkTheme.foregroundColor),
-          displayMedium: TextStyle(color: darkTheme.foregroundColor),
-          displaySmall: TextStyle(color: darkTheme.foregroundColor),
-          headlineMedium: TextStyle(color: darkTheme.foregroundColor),
-          headlineSmall: TextStyle(color: darkTheme.foregroundColor),
-          titleLarge: TextStyle(color: darkTheme.foregroundColor),
-          bodySmall: TextStyle(color: darkTheme.tileSubtitleColor),
-          labelLarge: TextStyle(color: darkTheme.foregroundColor),
-          labelSmall: TextStyle(color: darkTheme.foregroundColor),
-        ),
-        scaffoldBackgroundColor: darkTheme.backgroundColor,
-        brightness: Brightness.dark,
-        primaryColorLight: primaryColor,
-        primaryColorDark: primaryColor,
-        cardColor: darkTheme.backgroundColor,
-        appBarTheme: const AppBarTheme().copyWith(
-          backgroundColor: darkTheme.backgroundColor,
-          shadowColor: darkTheme.shadowColor,
-          foregroundColor: darkTheme.foregroundColor,
-          elevation: 0,
-        ),
-        navigationBarTheme: const NavigationBarThemeData().copyWith(
-          backgroundColor: darkTheme.themeColor,
-          shadowColor: darkTheme.shadowColor,
-          iconTheme: MaterialStatePropertyAll(IconThemeData(color: darkTheme.foregroundColor)),
-          elevation: 3,
-        ),
-        listTileTheme: ListTileThemeData(
-          tileColor: darkTheme.backgroundColor,
-          titleTextStyle: TextStyle(color: primaryColor),
-          subtitleTextStyle: TextStyle(color: darkTheme.tileSubtitleColor),
-          iconColor: darkTheme.tileIconColor,
-        ),
-        colorScheme: ColorScheme.dark(
-          primary: primaryColor,
-          secondary: primaryColor,
-          onPrimary: darkTheme.onPrimary,
-          onSecondary: darkTheme.onPrimary,
-          errorContainer: darkTheme.deleteColor,
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        checkboxTheme: CheckboxThemeData(
-          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return null;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return primaryColor;
-            }
-            return null;
-          }),
-        ),
-        radioTheme: RadioThemeData(
-          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return null;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return primaryColor;
-            }
-            return null;
-          }),
-        ),
-        switchTheme: SwitchThemeData(
-          thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return null;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return primaryColor;
-            }
-            return null;
-          }),
-          trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return null;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return primaryColor;
-            }
-            return null;
-          }),
-        ),
-        extensions: [
-          ActionTheme(
-            deleteColor: darkTheme.deleteColor,
-            editColor: darkTheme.renameColor,
-            lockColor: darkTheme.lockColor,
-            foregroundColor: darkTheme.foregroundColor,
-          ),
-        ]);
+  ThemeData generateDarkTheme() => _generateTheme(darkTheme);
+
+  factory ApplicationCustomizer.fromJson(Map<String, dynamic> json) => ApplicationCustomizer(
+        appName: json['appName'] as String,
+        websiteLink: json['websiteLink'] as String,
+        appIconBytes: json['appIconBytes'] != null ? base64Decode(json['appIconBytes'] as String) : null,
+        appImageBytes: json['appImageBytes'] != null ? base64Decode(json['appImageBytes'] as String) : null,
+        lightTheme: ThemeCustomizer.fromJson(json['lightTheme'] as Map<String, dynamic>),
+        darkTheme: ThemeCustomizer.fromJson(json['darkTheme'] as Map<String, dynamic>),
+      );
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'appName': appName,
+      'websiteLink': websiteLink,
+      'appIconBytes': appIconBytes != null ? base64Encode(appIconBytes!) : null,
+      'appImageBytes': appImageBytes != null ? base64Encode(appImageBytes!) : null,
+      'lightTheme': lightTheme.toJson(),
+      'darkTheme': darkTheme.toJson(),
+    };
   }
+}
+
+ThemeData _generateTheme(ThemeCustomizer theme) {
+  return ThemeData(
+      textTheme: const TextTheme().copyWith(
+        bodyLarge: TextStyle(color: theme.foregroundColor),
+        bodyMedium: TextStyle(color: theme.foregroundColor),
+        titleMedium: TextStyle(color: theme.foregroundColor),
+        titleSmall: TextStyle(color: theme.foregroundColor),
+        displayLarge: TextStyle(color: theme.foregroundColor),
+        displayMedium: TextStyle(color: theme.foregroundColor),
+        displaySmall: TextStyle(color: theme.foregroundColor),
+        headlineMedium: TextStyle(color: theme.foregroundColor),
+        headlineSmall: TextStyle(color: theme.foregroundColor),
+        titleLarge: TextStyle(color: theme.foregroundColor),
+        bodySmall: TextStyle(color: theme.subtitleColor),
+        labelLarge: TextStyle(color: theme.foregroundColor),
+        labelSmall: TextStyle(color: theme.foregroundColor),
+      ),
+      scaffoldBackgroundColor: theme.backgroundColor,
+      cardColor: theme.backgroundColor,
+      appBarTheme: const AppBarTheme().copyWith(
+        backgroundColor: theme.backgroundColor,
+        shadowColor: theme.shadowColor,
+        foregroundColor: theme.foregroundColor,
+        elevation: 0,
+      ),
+      navigationBarTheme: const NavigationBarThemeData().copyWith(
+        backgroundColor: theme.themeColor,
+        shadowColor: theme.shadowColor,
+        iconTheme: MaterialStatePropertyAll(IconThemeData(color: theme.foregroundColor)),
+        elevation: 3,
+      ),
+      listTileTheme: ListTileThemeData(
+        tileColor: theme.backgroundColor,
+        titleTextStyle: TextStyle(color: theme.primaryColor),
+        subtitleTextStyle: TextStyle(color: theme.subtitleColor),
+        iconColor: theme.tileIconColor,
+      ),
+      colorScheme: ColorScheme.dark(
+        primary: theme.primaryColor,
+        secondary: theme.primaryColor,
+        onPrimary: theme.onPrimary,
+        onSecondary: theme.onPrimary,
+        errorContainer: theme.deleteColor,
+      ),
+      iconTheme: const IconThemeData(color: Colors.white),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return null;
+          }
+          if (states.contains(MaterialState.selected)) {
+            return theme.primaryColor;
+          }
+          return null;
+        }),
+      ),
+      radioTheme: RadioThemeData(
+        fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return null;
+          }
+          if (states.contains(MaterialState.selected)) {
+            return theme.primaryColor;
+          }
+          return null;
+        }),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return null;
+          }
+          if (states.contains(MaterialState.selected)) {
+            return theme.primaryColor;
+          }
+          return null;
+        }),
+        trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return null;
+          }
+          if (states.contains(MaterialState.selected)) {
+            return theme.primaryColor;
+          }
+          return null;
+        }),
+      ),
+      extensions: [
+        ActionTheme(
+          deleteColor: theme.deleteColor,
+          editColor: theme.renameColor,
+          lockColor: theme.lockColor,
+          foregroundColor: theme.foregroundColor,
+        ),
+      ]);
 }
 
 class ActionTheme extends ThemeExtension<ActionTheme> {
@@ -390,17 +350,17 @@ class ActionTheme extends ThemeExtension<ActionTheme> {
       );
 
   @override
-  ThemeExtension<ActionTheme> copyWith({Color? deleteColor, Color? renameColor, Color? lockColor, Color? foregroundColor}) => ActionTheme(
+  ThemeExtension<ActionTheme> copyWith({Color? deleteColor, Color? editColor, Color? lockColor, Color? foregroundColor}) => ActionTheme(
         deleteColor: deleteColor ?? this.deleteColor,
-        editColor: renameColor ?? this.editColor,
+        editColor: editColor ?? this.editColor,
         lockColor: lockColor ?? this.lockColor,
         foregroundColor: foregroundColor ?? this.foregroundColor,
       );
 }
 
-/// Calculate HSP and check if the primary color is bright or dark
-/// brightness  =  sqrt( .299 R^2 + .587 G^2 + .114 B^2 )
-/// c.f., http://alienryderflex.com/hsp.html
-bool _isColorBright(Color color) {
-  return sqrt(0.299 * pow(color.red, 2) + 0.587 * pow(color.green, 2) + 0.114 * pow(color.blue, 2)) > 150;
-}
+// /// Calculate HSP and check if the primary color is bright or dark
+// /// brightness  =  sqrt( .299 R^2 + .587 G^2 + .114 B^2 )
+// /// c.f., http://alienryderflex.com/hsp.html
+// bool _isColorBright(Color color) {
+//   return sqrt(0.299 * pow(color.red, 2) + 0.587 * pow(color.green, 2) + 0.114 * pow(color.blue, 2)) > 150;
+// }

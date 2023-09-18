@@ -45,8 +45,8 @@ void main() {
     await waitFor(const Duration(seconds: 3), tester);
     await tester.tap(find.byIcon(Icons.info_outline));
     await tester.pumpAndSettle();
-    expect(find.text(applicationCustomizer.appName), findsOneWidget);
-    expect(find.text(applicationCustomizer.websiteLink), findsOneWidget);
+    expect(find.text(ApplicationCustomizer().appName), findsOneWidget);
+    expect(find.text(ApplicationCustomizer().websiteLink), findsOneWidget);
     await tester.pumpAndSettle();
     expect(find.text('Licenses'), findsOneWidget);
     expect(find.byType(Icon), findsOneWidget);

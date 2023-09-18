@@ -24,7 +24,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
@@ -54,6 +53,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
     globalRef = ref;
     final state = ref.watch(settingsProvider);
     final locale = state.currentLocale;
+    final applicationCustomizer = ref.read(applicationCustomizerProvider);
     return MaterialApp(
       debugShowCheckedModeBanner: true,
       navigatorKey: globalNavigatorKey,
@@ -69,7 +69,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
       routes: {
         SplashScreen.routeName: (context) => const SplashScreen(),
         OnboardingView.routeName: (context) => const OnboardingView(),
-        MainView.routeName: (context) => MainView(title: applicationCustomizer.appName, appLogo: applicationCustomizer.appIcon),
+        MainView.routeName: (context) => MainView(),
         SettingsView.routeName: (context) => const SettingsView(),
         AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
         QRScannerView.routeName: (context) => QRScannerView(),
