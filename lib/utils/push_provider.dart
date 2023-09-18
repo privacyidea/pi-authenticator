@@ -197,6 +197,7 @@ abstract class PushProvider {
     }
 
     // Start request for each token
+    Logger.info('Polling for challenges: ${pushTokens.length} Tokens', name: 'push_provider.dart#pollForChallenges');
     for (PushToken p in pushTokens) {
       pollForChallenge(p).then((errorMessage) {
         if (errorMessage != null && showMessageForEachToken) {

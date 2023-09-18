@@ -32,15 +32,14 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
     (previous, next) {
       switch (next) {
         case AppState.resume:
-          //startPolling();
           if (previous == AppState.pause) {
-            Logger.info('refreshing tokens on resume');
+            Logger.info('Refreshing tokens on resume');
             tokenNotifier.refreshTokens();
             ref.read(appStateProvider.notifier).setAppState(AppState.running);
           }
           break;
         case AppState.pause:
-          //stopPolling();
+          //stopPolling()
           break;
         default:
           break;
@@ -57,12 +56,13 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
     ref.container,
     (previous, next) {
       if (next == null) return;
-      Logger.warning('next: $next');
       if (next.accepted == null) {
+        Logger.info("tokenProvider received new pushRequest");
         tokenNotifier.addPushRequestToToken(next);
         return;
       }
       if (next.accepted != null) {
+        Logger.info("tokenProvider received pushRequest with accepted=${next.accepted}... removing from state.");
         tokenNotifier.removePushRequest(next);
         FlutterLocalNotificationsPlugin().cancelAll();
         return;
@@ -93,6 +93,7 @@ final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushReque
       ref.container,
       (previous, next) {
         if (previous == AppState.pause && next == AppState.resume) {
+          Logger.info('Polling for challenges on resume');
           PushProvider.pollForChallenges();
         }
       },
