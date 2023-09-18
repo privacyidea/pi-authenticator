@@ -65,7 +65,7 @@ class MainViewNavigationButtions extends StatelessWidget {
                               height: size.height * 0.3,
                             ),
                             applicationLegalese: ApplicationCustomizer.websiteLink,
-                            applicationVersion: globalRef?.read(platformInfoProvider).appVersion,
+                            applicationVersion: '${globalRef?.read(platformInfoProvider).appVersion}+${globalRef?.read(platformInfoProvider).buildNumber}',
                           ),
                         ),
                       );
