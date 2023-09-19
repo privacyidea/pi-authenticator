@@ -1,6 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/utils/app_customizer.dart';
+import 'package:privacyidea_authenticator/state_notifiers/deeplink_notifier.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 
 import '../model/mixins/sortable_mixin.dart';
@@ -27,7 +28,18 @@ WidgetRef? globalRef;
 final tokenProvider = StateNotifierProvider.autoDispose<TokenNotifier, TokenState>((ref) {
   final tokenNotifier = TokenNotifier();
 
-  Logger.info("appStateProvider.addListener ${tokenNotifier.hashCode.toString()}");
+  deeplinkProvider.addListener(
+    ref.container,
+    (previous, next) {
+      if (next == null) return;
+      Logger.info("tokenProvider received new deeplink");
+      tokenNotifier.handleLink(next);
+    },
+    onError: (err, _) => throw err,
+    onDependencyMayHaveChanged: () {},
+    fireImmediately: false,
+  );
+
   appStateProvider.addListener(
     ref.container,
     (previous, next) {
@@ -63,7 +75,7 @@ final tokenProvider = StateNotifierProvider.autoDispose<TokenNotifier, TokenStat
         return;
       }
       if (next.accepted != null) {
-        Logger.info("tokenProvider received pushRequest with accepted=${next.accepted}... removing from state.");
+        Logger.info("tokenProvider received pushRequest with accepted=${next.accepted}... removing it from state.");
         tokenNotifier.removePushRequest(next);
         FlutterLocalNotificationsPlugin().cancelAll();
         return;
@@ -111,7 +123,9 @@ final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushReque
   },
 );
 
-final appStateProvider = StateNotifierProvider.autoDispose<AppStateNotifier, AppState>(
+final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, Uri?>((ref) => DeeplinkNotifier());
+
+final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>(
   (ref) => AppStateNotifier(),
 );
 

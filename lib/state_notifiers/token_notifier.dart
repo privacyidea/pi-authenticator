@@ -18,6 +18,7 @@ import '../utils/firebase_utils.dart';
 import '../utils/network_utils.dart';
 import '../utils/qr_parser.dart';
 import '../utils/rsa_utils.dart';
+import 'package:privacyidea_authenticator/model/enums/schemes.dart';
 
 import '../model/push_request.dart';
 import '../model/states/token_state.dart';
@@ -146,7 +147,26 @@ class TokenNotifier extends StateNotifier<TokenState> {
     _saveOrReplaceTokens(updatedTokens);
   }
 
-  Future<bool> addTokenFromOtpAuth({required String otpAuth}) async {
+  void handleLink(Uri uri) {
+    if (uri.scheme == enumAsString(UriSchemes.otpauth)) {
+      addTokenFromOtpAuth(otpAuth: uri.toString());
+      return;
+    }
+    if (uri.scheme == enumAsString(UriSchemes.pia)) {
+      addTokenFromPia(pia: uri.toString());
+      return;
+    }
+    showMessage(message: 'Scheme "${uri.scheme}" is not supported', duration: const Duration(seconds: 3));
+  }
+
+  void addTokenFromPia({required String pia}) async {
+    // TODO: Implement pia:// scheme
+    showMessage(message: 'Scheme "pia" is not implemented yet', duration: const Duration(seconds: 3));
+  }
+
+  void addTokenFromOtpAuth({
+    required String otpAuth,
+  }) async {
     Logger.info(
       'Try to handle otpAuth:',
       name: 'token_notifier.dart#addTokenFromOtpAuth',
@@ -175,21 +195,21 @@ class TokenNotifier extends StateNotifier<TokenState> {
       } on FormatException catch (e) {
         Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
         showMessage(message: e.message, duration: const Duration(seconds: 3));
-        return false;
+        return;
       }
 
       if (newToken is PushToken && state.tokens.contains(newToken)) {
         showMessage(message: 'A token with the serial ${newToken.serial} already exists!', duration: const Duration(seconds: 2));
-        return false;
+        return;
       }
       addOrReplaceToken(newToken);
 
-      return true;
+      return;
     } on ArgumentError catch (e, s) {
       // Error while parsing qr code.
       Logger.warning('Malformed QR code:', name: 'main_screen.dart#_handleOtpAuth', error: e, stackTrace: s);
       showMessage(message: '${e.message}\n Please inform the creator of this qr code about the problem.', duration: const Duration(seconds: 8));
-      return false;
+      return;
     }
   }
 
