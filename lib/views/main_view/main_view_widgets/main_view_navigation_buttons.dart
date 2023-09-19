@@ -74,7 +74,8 @@ class MainViewNavigationButtions extends ConsumerWidget {
                                             child: applicationCustomizer.appImage,
                                           ),
                                           applicationLegalese: applicationCustomizer.websiteLink,
-                                          applicationVersion: (!kIsWeb) ? globalRef?.read(platformInfoProvider).appVersion ?? '' : '',
+                                          applicationVersion:
+                                              '${globalRef?.read(platformInfoProvider).appVersion}+${globalRef?.read(platformInfoProvider).buildNumber}',
                                         ),
                                       ),
                                     );

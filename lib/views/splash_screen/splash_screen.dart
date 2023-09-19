@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import '../../model/platform_info/platform_info_imp/package_info_plus_platform_info.dart';
 import '../../utils/riverpod_providers.dart';
 import '../main_view/main_view.dart';
@@ -26,6 +27,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     super.initState();
 
+    Logger.info('Starting app.', name: 'main.dart#initState');
     Future.delayed(_splashScreenDelay, () {
       if (mounted) {
         setState(() {

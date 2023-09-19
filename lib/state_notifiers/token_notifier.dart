@@ -27,7 +27,6 @@ import '../model/tokens/token.dart';
 import '../utils/customizations.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod_providers.dart';
 import '../repo/secure_token_repository.dart';
 import '../utils/utils.dart';
 import '../utils/view_utils.dart';
@@ -66,6 +65,10 @@ class TokenNotifier extends StateNotifier<TokenState> {
     isLoading = Future(() async {
       final failedTokens = await _repo.saveOrReplaceTokens(tokens);
       if (failedTokens.isNotEmpty) {
+        Logger.warning(
+          'Saving tokens failed. Failed Tokens: $failedTokens',
+          name: 'token_notifier.dart#_saveOrReplaceTokens',
+        );
         state = state.addOrReplaceTokens(failedTokens);
       }
       for (var newToken in tokens) {
@@ -112,6 +115,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       return false;
     }
     final rolledOutPushToken = tokens.whereType<PushToken>().where((element) => element.isRolledOut).toList();
+    Logger.info('Refreshed Pushtokens from storage: $tokens', name: 'token_notifier.dart#refreshTokens');
     state = state.addOrReplaceTokens(rolledOutPushToken);
     return true;
   }
@@ -192,7 +196,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<bool> addPushRequestToToken(PushRequest pr) async {
     await isLoading;
     PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pr.serial && t.isRolledOut);
-
+    Logger.info('Adding push request ${pr.id} to token ${token?.id}', name: 'main_screen.dart#_handleIncomingChallenge', error: pr.serial);
     if (token == null) {
       Logger.warning('The requested token does not exist or is not rolled out.', name: 'main_screen.dart#_handleIncomingChallenge', error: pr.serial);
       return false;
@@ -258,6 +262,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<bool> rolloutPushToken(PushToken token) async {
     token = (getTokenFromId(token.id)) as PushToken? ?? token;
     assert(token.url != null, 'Token url is null. Cannot rollout token without url.');
+    Logger.info('Rolling out token ${token.serial}', name: 'token_widgets.dart#rolloutPushToken');
     if (token.isRolledOut) return true;
     if (token.rolloutState != PushTokenRollOutState.rolloutNotStarted &&
         token.rolloutState != PushTokenRollOutState.generatingRSAKeyPairFailed &&
@@ -275,7 +280,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
           duration: const Duration(seconds: 3),
         );
       }
-      globalRef?.read(tokenProvider.notifier).removeToken(token);
+      removeToken(token);
       return false;
     }
     if (!kIsWeb && Platform.isIOS) {
