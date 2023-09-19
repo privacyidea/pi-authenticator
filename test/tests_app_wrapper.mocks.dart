@@ -195,19 +195,6 @@ class MockTokenFolderRepository extends _i1.Mock
         returnValueForMissingStub:
             _i6.Future<List<_i10.TokenFolder>>.value(<_i10.TokenFolder>[]),
       ) as _i6.Future<List<_i10.TokenFolder>>);
-  @override
-  _i6.Future<List<_i10.TokenFolder>> deleteFolders(
-          List<_i10.TokenFolder>? folders) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #deleteFolders,
-          [folders],
-        ),
-        returnValue:
-            _i6.Future<List<_i10.TokenFolder>>.value(<_i10.TokenFolder>[]),
-        returnValueForMissingStub:
-            _i6.Future<List<_i10.TokenFolder>>.value(<_i10.TokenFolder>[]),
-      ) as _i6.Future<List<_i10.TokenFolder>>);
 }
 
 /// A class which mocks [CustomIOClient].

@@ -50,15 +50,4 @@ class MockTokenFolderRepository extends _i1.Mock
         returnValue:
             _i3.Future<List<_i4.TokenFolder>>.value(<_i4.TokenFolder>[]),
       ) as _i3.Future<List<_i4.TokenFolder>>);
-  @override
-  _i3.Future<List<_i4.TokenFolder>> deleteFolders(
-          List<_i4.TokenFolder>? folders) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #deleteFolders,
-          [folders],
-        ),
-        returnValue:
-            _i3.Future<List<_i4.TokenFolder>>.value(<_i4.TokenFolder>[]),
-      ) as _i3.Future<List<_i4.TokenFolder>>);
 }

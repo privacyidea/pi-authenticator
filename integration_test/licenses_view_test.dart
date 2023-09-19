@@ -30,7 +30,6 @@ void main() {
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
-    when(mockTokenFolderRepository.deleteFolders(any)).thenAnswer((_) async => []);
   });
   testWidgets('Licenses View', (tester) async {
     await tester.pumpWidget(TestsAppWrapper(

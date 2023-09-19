@@ -40,7 +40,6 @@ void main() {
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
-    when(mockTokenFolderRepository.deleteFolders(any)).thenAnswer((_) async => []);
     mockQrParser = MockQrParser();
     when(mockQrParser.parseQRCodeToMap(any)).thenReturn(<String, dynamic>{
       'URI_TYPE': 'PIPUSH',

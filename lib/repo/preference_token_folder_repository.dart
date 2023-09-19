@@ -37,10 +37,4 @@ class PreferenceTokenFolderRepository extends TokenFolderRepository {
       return folders;
     }
   }
-
-  @override
-  Future<List<TokenFolder>> deleteFolders(List<TokenFolder> folders) {
-    // TODO: implement deleteFolders
-    throw UnimplementedError();
-  }
 }
