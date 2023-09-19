@@ -667,10 +667,16 @@
     "description": "Message for the rollout process",
     "type": "text"
   },
-  "errorWhenPullingChallenges": "Er is een fout opgetreden bij het peilen naar uitdagingen",
+  "errorWhenPullingChallenges": "Er is een fout opgetreden bij het zoeken naar uitdagingen van {name}",
   "@errorWhenPullingChallenges": {
     "description": "errorWhenPullingChallenges",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "PUSH1234A"
+      }
+    }
   },
   "errorRollOutTokenExpired": "Het uitrollen van dit token is niet meer mogelijk.\nHet token {name} is verlopen.",
   "@errorRollOutTokenExpired": {
