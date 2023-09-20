@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
+
+const String customization = '';
 
 class ThemeCustomizer {
   const ThemeCustomizer({
@@ -188,6 +191,19 @@ class ApplicationCustomizer {
     this.darkTheme = const ThemeCustomizer.defaultDarkWith(),
   })  : appIcon = appIconBytes != null ? Image.memory(appIconBytes) : Image.asset('res/logo/app_logo_light_small.png'),
         appImage = appImageBytes != null ? Image.memory(appImageBytes) : Image.asset('res/logo/app_logo_light.png');
+
+  factory ApplicationCustomizer.fromCustomization() {
+    if (customization.isNotEmpty) {
+      try {
+        return ApplicationCustomizer.fromJson(jsonDecode(customization) as Map<String, dynamic>);
+      } catch (e) {
+        Logger.error('Error while parsing customization', error: e, stackTrace: e is Error ? e.stackTrace : StackTrace.current);
+        return ApplicationCustomizer();
+      }
+    } else {
+      return ApplicationCustomizer();
+    }
+  }
 
   ApplicationCustomizer copyWith({
     String? appName,

@@ -1,10 +1,7 @@
 import 'dart:math';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/views/license_view/license_view.dart';
 import '../../../l10n/app_localizations.dart';
-
 import '../../../utils/riverpod_providers.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../qr_scanner_view/scanner_view.dart';
@@ -13,12 +10,11 @@ import 'folder_widgets/add_token_folder_dialog.dart';
 import 'app_bar_item.dart';
 import 'custom_paint_navigation_bar.dart';
 
-class MainViewNavigationButtions extends ConsumerWidget {
+class MainViewNavigationButtions extends StatelessWidget {
   const MainViewNavigationButtions({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final applicationCustomizer = ref.watch(applicationCustomizerProvider);
+  Widget build(BuildContext context) {
     return Positioned.fill(
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
@@ -64,21 +60,7 @@ class MainViewNavigationButtions extends ConsumerWidget {
                                 padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
                                 child: AppBarItem(
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => LicensePage(
-                                          applicationName: applicationCustomizer.appName,
-                                          applicationIcon: Padding(
-                                            padding: const EdgeInsets.all(32),
-                                            child: applicationCustomizer.appImage,
-                                          ),
-                                          applicationLegalese: applicationCustomizer.websiteLink,
-                                          applicationVersion:
-                                              '${globalRef?.read(platformInfoProvider).appVersion}+${globalRef?.read(platformInfoProvider).buildNumber}',
-                                        ),
-                                      ),
-                                    );
+                                    Navigator.pushNamed(context, LicenseView.routeName);
                                   },
                                   icon: Icons.info_outline,
                                 ),

@@ -76,6 +76,8 @@ dependencies:
   device_info_plus: ^9.0.3
   json_annotation: ^4.8.1
   equatable: ^2.0.5
+  application_customizer_command:
+    path: C:\Users\Frank Merkel\projects\application_customizer_command
 
 dev_dependencies:
   flutter_driver:
