@@ -190,7 +190,7 @@ abstract class PushProvider {
     List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
 
     // Disable polling if no push tokens exist
-    if (pushTokens.isEmpty) {
+    if (pushTokens.isEmpty && globalRef?.read(settingsProvider).enablePolling == true) {
       Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
       globalRef?.read(settingsProvider.notifier).disablePolling();
       return null;
