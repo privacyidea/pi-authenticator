@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/enums/schemes.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 
 import '../model/push_request.dart';
@@ -124,6 +125,23 @@ class TokenNotifier extends StateNotifier<TokenState> {
     for (Token token in updatedTokens) {
       StorageUtil.saveOrReplaceToken(token);
     }
+  }
+
+  void handleLink(Uri uri) {
+    if (uri.scheme == enumAsString(UriSchemes.otpauth)) {
+      addTokenFromOtpAuth(otpAuth: uri.toString(), context: globalNavigatorKey.currentContext!);
+      return;
+    }
+    if (uri.scheme == enumAsString(UriSchemes.pia)) {
+      addTokenFromPia(pia: uri.toString(), context: globalNavigatorKey.currentContext!);
+      return;
+    }
+    showMessage(message: 'Scheme "${uri.scheme}" is not supported', duration: const Duration(seconds: 3));
+  }
+
+  void addTokenFromPia({required String pia, required BuildContext context}) async {
+    // TODO: Implement pia:// scheme
+    showMessage(message: 'Scheme "pia" is not implemented yet', duration: const Duration(seconds: 3));
   }
 
   void addTokenFromOtpAuth({required String otpAuth, required BuildContext context}) async {

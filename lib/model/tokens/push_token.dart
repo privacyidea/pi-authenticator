@@ -154,7 +154,6 @@ class PushToken extends Token {
         'sortIndex: $sortIndex, '
         'pin: $pin, '
         'publicServerKey: $publicServerKey, '
-        'privateTokenKey: $privateTokenKey, '
         'publicTokenKey: $publicTokenKey, '
         'pushRequests: $pushRequests, '
         'tokenImage: $tokenImage, '
