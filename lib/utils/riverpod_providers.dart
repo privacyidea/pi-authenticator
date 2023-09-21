@@ -42,19 +42,9 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
   appStateProvider.addListener(
     ref.container,
     (previous, next) {
-      switch (next) {
-        case AppState.resume:
-          if (previous == AppState.pause) {
-            Logger.info('Refreshing tokens on resume');
-            tokenNotifier.refreshTokens();
-            ref.read(appStateProvider.notifier).setAppState(AppState.running);
-          }
-          break;
-        case AppState.pause:
-          //stopPolling()
-          break;
-        default:
-          break;
+      if (previous == AppState.pause && next == AppState.resume) {
+        Logger.info('Refreshing tokens on resume');
+        tokenNotifier.refreshTokens();
       }
     },
     onError: (err, stack) {
