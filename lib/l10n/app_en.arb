@@ -1,0 +1,712 @@
+{
+  "@@last_modified": "2023-08-07",
+  "accept": "Accept",
+  "@accept": {
+    "description": "Label for e.g. a button. Something gets accepted by the user.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "decline": "Decline",
+  "@decline": {
+    "description": "Label for e.g. a button. Something gets declined by the user.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "name": "Name",
+  "@name": {
+    "description": "Describes the field where the tokens name should be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "secret": "Secret",
+  "@secret": {
+    "description": "Describes the field where the tokens secret should be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "encoding": "Encoding",
+  "@encoding": {
+    "description": "Title of the dropdown button where the encoding is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "algorithm": "Algorithm",
+  "@algorithm": {
+    "description": "Title of the dropdown button where the encoding is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "digits": "Digits",
+  "@digits": {
+    "description": "Title of the dropdown button where the number of digits for the opt value is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "type": "Type",
+  "@type": {
+    "description": "Title of the dropdown button where the type of the token is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "period": "Period",
+  "@period": {
+    "description": "Title of the dropdown button where the period of the totp token is selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "rename": "Rename",
+  "@rename": {
+    "description": "Label that describes renaming the token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Button to cancel an action.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Label that describes deleting the token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "dismiss": "Dismiss",
+  "@dismiss": {
+    "description": "Text of a button that closes a dialog.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addToken": "Add token",
+  "@addToken": {
+    "description": "The button to open the screen to add tokens by hand.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "scanQrCode": "Scan QR-Code",
+  "@scanQrCode": {
+    "description": "The button to scan otpauth qr-codes.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterDetailsForToken": "Enter details for token",
+  "@enterDetailsForToken": {
+    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseEnterANameForThisToken": "Please enter a name for this token.",
+  "@pleaseEnterANameForThisToken": {
+    "description": "Hint telling the user to enter a name for a token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseEnterASecretForThisToken": "Please enter a secret for this token.",
+  "@pleaseEnterASecretForThisToken": {
+    "description": "Hint telling the user to enter a secret for a token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "theSecretDoesNotFitTheCurrentEncoding": "The secret does not fit the current encoding",
+  "@theSecretDoesNotFitTheCurrentEncoding": {
+    "description": "Hint telling the user that the secret does not fit the selected encoding.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "renameToken": "Rename token",
+  "@renameToken": {
+    "description": "Title of the dialog where a new name for a token can be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "confirmDeletion": "Confirm deletion",
+  "@confirmDeletion": {
+    "description": "Title of the dialog where a token can be deleted.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "confirmDeletionOf": "Are you sure you want to delete {name}?",
+  "@confirmDeletionOf": {
+    "description": "Asks for confirmation on deleting a token.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234"
+      }
+    }
+  },
+  "generatingPhonePart": "Generating phone part",
+  "@generatingPhonePart": {
+    "description": "Title of a dialog telling the user that the phone part gets generated right now.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "phonePart": "Phone part:",
+  "@phonePart": {
+    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "otpValueCopiedMessage": "Password \"{otpValue}\" copied to clipboard.",
+  "@otpValueCopiedMessage": {
+    "description": "Tells the user that the otp value was copied to the clipboard.",
+    "type": "text",
+    "placeholders": {
+      "otpValue": {
+        "example": "055374"
+      }
+    }
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Button to open the settings page.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pushToken": "Push Token",
+  "@pushToken": {
+    "description": "Title for the settings block concerning the push tokens.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "theme": "Theme",
+  "@theme": {
+    "description": "Title of the setting group where the theme can be selected.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "lightTheme": "Light",
+  "@lightTheme": {
+    "description": "The light theme.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "darkTheme": "Dark",
+  "@darkTheme": {
+    "description": "The dark theme.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "systemTheme": "Use device's theme",
+  "@systemTheme": {
+    "description": "The systems theme.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "enablePolling": "Enable polling",
+  "@enablePolling": {
+    "description": "Name of the setting switch that enables polling.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "requestPushChallengesPeriodically": "Request push challenges from the server periodically. Enable this if push challenges are not received normally.",
+  "@requestPushChallengesPeriodically": {
+    "description": "The description of the polling feature.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "synchronizePushTokens": "Synchronize push tokens",
+  "@synchronizePushTokens": {
+    "description": "Title of synchronizing push tokens in settings.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "synchronizesTokensWithServer": "Synchronizes tokens with the privacyIDEA server.",
+  "@synchronizesTokensWithServer": {
+    "description": "Description of synchronizing push tokens in settings.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "sync": "Sync",
+  "@sync": {
+    "description": "Text of button that is used to synchronize push tokens.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "synchronizingTokens": "Synchronizing tokens.",
+  "@synchronizingTokens": {
+    "description": "Title of the push synchronization dialog.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "allTokensSynchronized": "All tokens are synchronized.",
+  "@allTokensSynchronized": {
+    "description": "Content of the push synchronization dialog. Signaling the user that everything worked.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "synchronizationFailed": "Synchronization failed for the following tokens, please try again:",
+  "@synchronizationFailed": {
+    "description": "Headline for the list of tokens where the synchronization failed.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "tokensDoNotSupportSynchronization": "The following tokens do not support synchronization and must be rolled out again:",
+  "@tokensDoNotSupportSynchronization": {
+    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorRollOutFailed": "Rolling out token {name} failed.\nError code: {errorCode}",
+  "@errorRollOutFailed": {
+    "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      },
+      "errorCode": {
+        "example": "500"
+      }
+    }
+  },
+  "errorSynchronizationNoNetworkConnection": "Synchronizing tokens failed, privacyIDEA server could not be reached.",
+  "@errorSynchronizationNoNetworkConnection": {
+    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorRollOutNoConnectionToServer": "Rolling out token {name} failed, the server could not be reached.",
+  "@errorRollOutNoConnectionToServer": {
+    "description": "Tells the user that the roll-out failed because the server could not be reached.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorRollOutUnknownError": "An unknown error occurred. Roll-out not possible: {e}",
+  "@errorRollOutUnknownError": {
+    "description": "Tells the user that the roll-out failed because of an unknown error.",
+    "type": "text",
+    "placeholders": {
+      "e": {
+        "example": "IllegalArgumentException on Line 5 ..."
+      }
+    }
+  },
+  "rollingOut": "Rolling out",
+  "@rollingOut": {
+    "description": "Label that tells the user that the token is being rolled out.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pollingChallenges": "Polling for new challenges",
+  "@pollingChallenges": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "unexpectedError": "An unexpected error occurred.",
+  "@unexpectedError": {
+    "description": "Title of page report mode.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pollingFailNoNetworkConnection": "Polling failed. Server cannot be reached.",
+  "@pollingFailNoNetworkConnection": {
+    "description": "Tells the user that the roll-out failed because no network connection is available.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "useDeviceLocaleTitle": "Use device language",
+  "@useDeviceLocaleTitle": {
+    "description": "Title of the switch tile where using the devices language can be enabled.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "useDeviceLocaleDescription": "Use device language if it is supported, otherwise default to english.",
+  "@useDeviceLocaleDescription": {
+    "description": "Description of the switch tile where using the devices language can be enabled.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Title of language setting group.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "authenticateToShowOtp": "Please authenticate to show one time password.",
+  "@authenticateToShowOtp": {
+    "description": "Reason to authenticate when trying to view a one time password.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "authenticateToUnLockToken": "Please authenticate to change the lock status of the token.",
+  "@authenticateToUnLockToken": {
+    "description": "Reason to authenticate when trying to lock or unlock a token.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "biometricRequiredTitle": "Biometrics not setup",
+  "@biometricRequiredTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "biometricHint": "Authentication required",
+  "@biometricHint": {
+    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "biometricNotRecognized": "Not recognized. Try again.",
+  "@biometricNotRecognized": {
+    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "biometricSuccess": "Authentication successful",
+  "@biometricSuccess": {
+    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "deviceCredentialsRequiredTitle": "Device credentials not set up",
+  "@deviceCredentialsRequiredTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "deviceCredentialsSetupDescription": "Setup device credentials in the device's settings",
+  "@deviceCredentialsSetupDescription": {
+    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side.",
+    "type": "text"
+  },
+  "signInTitle": "Authentication required",
+  "@signInTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters.",
+    "type": "text"
+  },
+  "goToSettingsButton": "Go to settings",
+  "@goToSettingsButton": {
+    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters.",
+    "type": "text"
+  },
+  "goToSettingsDescription": "Authentication by credentials or biometrics is not set up on your device. Please set it up in the device's settings.",
+  "@goToSettingsDescription": {
+    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device.",
+    "type": "text"
+  },
+  "lockOut": "Biometric authentication is disabled. Please lock and unlock your screen to enable it.",
+  "@lockOut": {
+    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side.",
+    "type": "text"
+  },
+  "authNotSupportedTitle": "Device credentials or biometrics required",
+  "@authNotSupportedTitle": {
+    "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action.",
+    "type": "text"
+  },
+  "authNotSupportedBody": "This action requires the device to be secured by credentials or biometrics.",
+  "@authNotSupportedBody": {
+    "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action.",
+    "type": "text"
+  },
+  "lock": "Lock",
+  "@lock": {
+    "description": "Description of button that locks a token.",
+    "type": "text"
+  },
+  "unlock": "Unlock",
+  "@unlock": {
+    "description": "Description of button that unlocks a token.",
+    "type": "text"
+  },
+  "noResultTitle": "No tokens stored yet.",
+  "@noResultTitle": {
+    "description": "No tokens stored yet.",
+    "type": "text"
+  },
+  "noResultText1": "Tap the ",
+  "@noResultText1": {
+    "description": "first no result text",
+    "type": "text"
+  },
+  "noResultText2": " button to get started!",
+  "@noResultText2": {
+    "description": "second no result text",
+    "type": "text"
+  },
+  "onBoardingTitle1": "{appName}",
+  "@onBoardingTitle1": {
+    "description": "onboardingTitle1",
+    "type": "text",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "onBoardingText1": "Two-factor authentication\nmade easy",
+  "@onBoardingText1": {
+    "description": "onboardingText1",
+    "type": "text"
+  },
+  "onBoardingTitle2": "Maximum Security",
+  "@onBoardingTitle2": {
+    "description": "onBoardingTitle2",
+    "type": "text"
+  },
+  "onBoardingText2": "Store tokens on your device securely\nProtected by your biometrics",
+  "@onBoardingText2": {
+    "description": "onboardingText2",
+    "type": "text"
+  },
+  "onBoardingTitle3": "Visit us at Github",
+  "@onBoardingTitle3": {
+    "description": "onBoardingTitle3",
+    "type": "text"
+  },
+  "onBoardingText3": "This app is open source",
+  "@onBoardingText3": {
+    "description": "onBoardingText3",
+    "type": "text"
+  },
+  "errorLogTitle": "Error logs",
+  "@errorLogTitle": {
+    "description": "errorLogTitle",
+    "type": "text"
+  },
+  "sendErrorHint": "Send us the error log via e-mail",
+  "@sendErrorHint": {
+    "description": "Hint for the user about what he will send.",
+    "type": "text"
+  },
+  "enableVerboseLogging": "Enable verbose logging",
+  "@enableVerboseLogging": {
+    "description": "enableVerboseLogging",
+    "type": "text"
+  },
+  "clearErrorLogHint": "Clears the local error log file",
+  "@clearErrorLogHint": {
+    "description": "clearErrorLogHint",
+    "type": "text"
+  },
+  "logMenu": "Log menu",
+  "@logMenu": {
+    "description": "logMenu",
+    "type": "text"
+  },
+  "sendErrorDialogHeader": "Send via e-mail",
+  "@sendErrorDialogHeader": {
+    "description": "sendErrorDialogHeader",
+    "type": "text"
+  },
+  "ok": "Ok",
+  "@ok": {
+    "description": "ok",
+    "type": "text"
+  },
+  "noLogToSend": "There is log to send.",
+  "@noLogToSend": {
+    "description": "noLogToSend",
+    "type": "text"
+  },
+  "errorLogFileAttached": "The error log file is attached.",
+  "@errorLogFileAttached": {
+    "description": "Message for email body",
+    "type": "text"
+  },
+  "errorLogCleared": "Error logs cleared.",
+  "@errorLogCleared": {
+    "description": "errorLogCleared",
+    "type": "text"
+  },
+  "showDetails": "Show details",
+  "@showDetails": {
+    "description": "showDetails",
+    "type": "text"
+  },
+  "open": "Open",
+  "@open": {
+    "description": "open",
+    "type": "text"
+  },
+  "sendErrorDialogBody": "An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.",
+  "@sendErrorDialogBody": {
+    "description": "Description shown to the user about what info the error report contains.",
+    "type": "text"
+  },
+  "noFbToken": "No Firebase token available",
+  "@noFbToken": {
+    "description": "noFbToken",
+    "type": "text"
+  },
+  "firebaseToken": "Firebase Token",
+  "@firebaseToken": {
+    "description": "firebaseToken",
+    "type": "text"
+  },
+  "noPublicKey": "No public key available",
+  "@noPublicKey": {
+    "description": "noPublicKey",
+    "type": "text"
+  },
+  "publicKey": "Public Key",
+  "@publicKey": {
+    "description": "publicKey",
+    "type": "text"
+  },
+  "editToken": "Edit Token",
+  "@editToken": {
+    "description": "editToken",
+    "type": "text"
+  },
+  "edit": "Edit",
+  "@edit": {
+    "description": "edit",
+    "type": "text"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "save",
+    "type": "text"
+  },
+  "validFor": "Valid for",
+  "@validFor": {
+    "description": "validFor",
+    "type": "text"
+  },
+  "validUntil": "Valid until",
+  "@validUntil": {
+    "description": "validUntil",
+    "type": "text"
+  },
+  "deleteLockedToken": "Please authenticate to delete the locked token.",
+  "@deleteLockedToken": {
+    "description": "deleteLockedToken",
+    "type": "text"
+  },
+  "editLockedToken": "Please authenticate to edit the locked token.",
+  "@editLockedToken": {
+    "description": "editLockedToken",
+    "type": "text"
+  },
+  "uncollapseLockedFolder": "Please authenticate to uncollapse the locked folder.",
+  "@uncollapseLockedFolder": {
+    "description": "uncollapseLockedFolder",
+    "type": "text"
+  },
+  "renameTokenFolder": "Rename folder",
+  "@renameTokenFolder": {
+    "description": "Title of the dialog where a new name for a token folder can be entered.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addANewFolder": "Create new folder",
+  "@addANewFolder": {
+    "description": "addANewFolder",
+    "type": "text"
+  },
+  "folderName": "Foldername",
+  "@folderName": {
+    "description": "folderName",
+    "type": "text"
+  },
+  "retryRollout": "Retry rollout",
+  "@retryRollout": {
+    "description": "retryRollout",
+    "type": "text"
+  },
+  "generatingRSAKeyPair": "Generating RSA key pair",
+  "@generatingRSAKeyPair": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "generatingRSAKeyPairFailed": "Generating RSA key pair failed",
+  "@generatingRSAKeyPairFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingRSAPublicKey": "Sending public RSA key",
+  "@sendingRSAPublicKey": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "sendingRSAPublicKeyFailed": "Sending public RSA key failed",
+  "@sendingRSAPublicKeyFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponse": "Parsing response",
+  "@parsingResponse": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "parsingResponseFailed": "Parsing response failed",
+  "@parsingResponseFailed": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "rolloutCompleted": "Rollout completed",
+  "@rolloutCompleted": {
+    "description": "Message for the rollout process",
+    "type": "text"
+  },
+  "authToAcceptPushRequest": "Please authenticate to accept the push request.",
+  "@authToAcceptPushRequest": {
+    "description": "authToAcceptPushRequest",
+    "type": "text"
+  },
+  "authToDeclinePushRequest": "Please authenticate to decline the push request.",
+  "@authToDeclinePushRequest": {
+    "description": "",
+    "type": "text"
+  },
+  "incomingAuthRequestError": "The message didn't provided the needed data or the data was malformed.",
+  "@incomingAuthRequestError": {
+    "description": "incomingAuthRequestError",
+    "type": "text"
+  },
+  "imageUrl": "Image URL",
+  "@imageUrl": {
+    "description": "imageUrl",
+    "type": "text"
+  },
+  "errorRollOutSSLHandshakeFailed": "SSL handshake failed. Roll-out not possible.",
+  "@errorRollOutSSLHandshakeFailed": {
+    "description": "Tells the user that the roll-out failed because the SSL handshake failed.",
+    "type": "text"
+  },
+  "errorWhenPullingChallenges": "An error occured when polling for challenges of {name}",
+  "@errorWhenPullingChallenges": {
+    "description": "errorWhenPullingChallenges",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "errorRollOutTokenExpired": "Rolling out this Token is not possible anymore.\nThe token {name} has expired.",
+  "@errorRollOutTokenExpired": {
+    "description": "Tells the user that the roll-out failed because the token has expired.",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "yes": "Yes",
+  "@yes": {
+    "description": "yes",
+    "type": "text"
+  },
+  "no": "No",
+  "@no": {
+    "description": "no",
+    "type": "text"
+  },
+  "butDiscardIt": "but discard it",
+  "@butDiscardIt": {
+    "description": "butDiscardIt",
+    "type": "text"
+  },
+  "declineIt": "decline it",
+  "@declineIt": {
+    "description": "declineIt",
+    "type": "text"
+  },
+  "requestTriggerdByUserQuestion": "Was this request triggered by you?",
+  "@requestTriggerdByUserQuestion": {
+    "description": "requestTriggerdByUserQuestion",
+    "type": "text"
+  }
+}
