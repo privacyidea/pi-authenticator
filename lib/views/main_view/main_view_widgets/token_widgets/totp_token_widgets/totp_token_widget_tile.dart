@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../../../../model/states/app_state.dart';
 import '../../../../../model/tokens/totp_token.dart';
@@ -68,10 +67,8 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   }
 
   void _onAppStateChange(AppState state) {
-    Logger.warning('State changed to $state', name: 'TOTPTokenWidgetTile#_onAppStateChange');
     if (!mounted) return;
     if (state == AppState.resume) {
-      Logger.warning('Resuming', name: 'TOTPTokenWidgetTile#_onAppStateChange');
       setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
       animation.forward(from: 1 - secondsLeft / widget.token.period);
       return;

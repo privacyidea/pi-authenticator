@@ -61,7 +61,7 @@ class MainViewNavigationButtions extends StatelessWidget {
                           builder: (context) => LicensePage(
                             applicationName: ApplicationCustomizer.appName,
                             applicationIcon: Image.asset(
-                              ApplicationCustomizer.appLogo,
+                              ApplicationCustomizer.appIcon,
                               height: size.height * 0.3,
                             ),
                             applicationLegalese: ApplicationCustomizer.websiteLink,

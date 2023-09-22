@@ -24,24 +24,17 @@ import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 
 //TODO Use this when customizing
-Color primarySwatchDark = ApplicationCustomizer.primaryColorDark;
-Color onPrimaryDark = isColorBright(primarySwatchDark) ? ApplicationCustomizer.themeColorDark : ApplicationCustomizer.themeColorLight;
-Color primarySwatchLight = ApplicationCustomizer.primaryColorLight;
-Color onPrimaryLight = isColorBright(primarySwatchLight) ? ApplicationCustomizer.themeColorDark : ApplicationCustomizer.themeColorLight;
+Color primarySwatch = ApplicationCustomizer.primaryColor;
+Color onPrimary = isColorBright(primarySwatch) ? ApplicationCustomizer.themeColorDark : ApplicationCustomizer.themeColorLight;
 
 var lightThemeData = ThemeData(
   scaffoldBackgroundColor: ApplicationCustomizer.backgroundColorLight,
   brightness: Brightness.light,
-  primaryColorLight: primarySwatchLight,
-  primaryColorDark: primarySwatchLight,
+  primaryColorLight: primarySwatch,
+  primaryColorDark: primarySwatch,
   cardColor: ApplicationCustomizer.backgroundColorLight,
-  floatingActionButtonTheme: const FloatingActionButtonThemeData(
-    backgroundColor: ApplicationCustomizer.floatingActionButtonColorLight,
-    foregroundColor: ApplicationCustomizer.floatingActionButtonForegroundColorLight,
-  ),
   appBarTheme: const AppBarTheme().copyWith(
     backgroundColor: ApplicationCustomizer.backgroundColorLight,
-    foregroundColor: ApplicationCustomizer.themeColorDark,
     shadowColor: ApplicationCustomizer.themeColorDark,
     elevation: 0,
   ),
@@ -50,26 +43,17 @@ var lightThemeData = ThemeData(
     shadowColor: ApplicationCustomizer.themeColorDark,
     elevation: 6,
   ),
-  elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(iconColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) {
-      return null;
-    }
-    if (states.contains(MaterialState.selected)) {
-      return ApplicationCustomizer.themeColorDark;
-    }
-    return null;
-  }))),
   listTileTheme: ListTileThemeData(
     tileColor: ApplicationCustomizer.backgroundColorLight,
-    titleTextStyle: TextStyle(color: primarySwatchLight),
+    titleTextStyle: TextStyle(color: primarySwatch),
     subtitleTextStyle: const TextStyle(color: ApplicationCustomizer.tileSubtitleColorLight),
     iconColor: ApplicationCustomizer.tileIconColorLight,
   ),
   colorScheme: ColorScheme.light(
-    primary: primarySwatchLight,
-    secondary: primarySwatchLight,
-    onPrimary: onPrimaryLight,
-    onSecondary: onPrimaryLight,
+    primary: primarySwatch,
+    secondary: primarySwatch,
+    onPrimary: onPrimary,
+    onSecondary: onPrimary,
     errorContainer: ApplicationCustomizer.deleteColorLight,
   ),
   iconTheme: const IconThemeData(color: Colors.black),
@@ -79,7 +63,7 @@ var lightThemeData = ThemeData(
         return null;
       }
       if (states.contains(MaterialState.selected)) {
-        return primarySwatchLight;
+        return primarySwatch;
       }
       return null;
     }),
@@ -90,7 +74,7 @@ var lightThemeData = ThemeData(
         return null;
       }
       if (states.contains(MaterialState.selected)) {
-        return primarySwatchLight;
+        return primarySwatch;
       }
       return null;
     }),
@@ -101,7 +85,7 @@ var lightThemeData = ThemeData(
         return null;
       }
       if (states.contains(MaterialState.selected)) {
-        return primarySwatchLight;
+        return primarySwatch;
       }
       return null;
     }),
@@ -110,7 +94,7 @@ var lightThemeData = ThemeData(
         return null;
       }
       if (states.contains(MaterialState.selected)) {
-        return primarySwatchLight;
+        return primarySwatch;
       }
       return null;
     }),
@@ -120,16 +104,11 @@ var lightThemeData = ThemeData(
 var darkThemeData = ThemeData(
   scaffoldBackgroundColor: ApplicationCustomizer.backgroundColorDark,
   brightness: Brightness.dark,
-  primaryColorLight: primarySwatchDark,
-  primaryColorDark: primarySwatchDark,
+  primaryColorLight: primarySwatch,
+  primaryColorDark: primarySwatch,
   cardColor: ApplicationCustomizer.backgroundColorDark,
-  floatingActionButtonTheme: const FloatingActionButtonThemeData(
-    backgroundColor: ApplicationCustomizer.floatingActionButtonColorDark,
-    foregroundColor: ApplicationCustomizer.floatingActionButtonForegroundColorDark,
-  ),
   appBarTheme: const AppBarTheme().copyWith(
     backgroundColor: ApplicationCustomizer.backgroundColorDark,
-    foregroundColor: ApplicationCustomizer.themeColorLight,
     shadowColor: ApplicationCustomizer.themeColorLight,
     elevation: 0,
   ),
@@ -140,15 +119,15 @@ var darkThemeData = ThemeData(
   ),
   listTileTheme: ListTileThemeData(
     tileColor: ApplicationCustomizer.backgroundColorDark,
-    titleTextStyle: TextStyle(color: primarySwatchDark),
+    titleTextStyle: TextStyle(color: primarySwatch),
     subtitleTextStyle: const TextStyle(color: ApplicationCustomizer.tileSubtitleColorDark),
     iconColor: ApplicationCustomizer.tileIconColorDark,
   ),
   colorScheme: ColorScheme.dark(
-    primary: primarySwatchDark,
-    secondary: primarySwatchDark,
-    onPrimary: onPrimaryDark,
-    onSecondary: onPrimaryDark,
+    primary: primarySwatch,
+    secondary: primarySwatch,
+    onPrimary: onPrimary,
+    onSecondary: onPrimary,
     errorContainer: ApplicationCustomizer.deleteColorDark,
   ),
   iconTheme: const IconThemeData(color: Colors.white),
@@ -158,7 +137,7 @@ var darkThemeData = ThemeData(
         return null;
       }
       if (states.contains(MaterialState.selected)) {
-        return primarySwatchDark;
+        return primarySwatch;
       }
       return null;
     }),
@@ -169,7 +148,7 @@ var darkThemeData = ThemeData(
         return null;
       }
       if (states.contains(MaterialState.selected)) {
-        return primarySwatchDark;
+        return primarySwatch;
       }
       return null;
     }),
@@ -180,7 +159,7 @@ var darkThemeData = ThemeData(
         return null;
       }
       if (states.contains(MaterialState.selected)) {
-        return primarySwatchDark;
+        return primarySwatch;
       }
       return null;
     }),
@@ -189,7 +168,7 @@ var darkThemeData = ThemeData(
         return null;
       }
       if (states.contains(MaterialState.selected)) {
-        return primarySwatchDark;
+        return primarySwatch;
       }
       return null;
     }),

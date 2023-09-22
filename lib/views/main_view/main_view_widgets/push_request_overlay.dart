@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/lock_auth.dart';
 import 'package:privacyidea_authenticator/widgets/default_dialog.dart';
@@ -39,11 +38,6 @@ class PushRequestOverlay extends StatelessWidget {
               Expanded(
                 flex: 6,
                 child: PressButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                      Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.acceptColorLight : ApplicationCustomizer.acceptColorDark,
-                    ),
-                  ),
                   onPressed: () async {
                     if (tokenWithPushRequest.isLocked &&
                         await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) return;
@@ -62,13 +56,8 @@ class PushRequestOverlay extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
-                        Flexible(
-                          child: Icon(
-                            Icons.check_outlined,
-                            color: Theme.of(context).brightness == Brightness.light
-                                ? ApplicationCustomizer.onAcceptColorLight
-                                : ApplicationCustomizer.onAcceptColorDark,
-                          ),
+                        const Flexible(
+                          child: Icon(Icons.check_outlined),
                         ),
                       ],
                     ),
@@ -79,11 +68,7 @@ class PushRequestOverlay extends StatelessWidget {
               Expanded(
                 flex: 6,
                 child: PressButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                        Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.declineColorDark : ApplicationCustomizer.declineColorDark,
-                      ),
-                    ),
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
                     onPressed: () async {
                       if (tokenWithPushRequest.isLocked &&
                           await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
@@ -101,12 +86,9 @@ class PushRequestOverlay extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                          Flexible(
+                          const Flexible(
                             flex: 1,
-                            child: Icon(Icons.close_outlined,
-                                color: Theme.of(context).brightness == Brightness.light
-                                    ? ApplicationCustomizer.onDeclineColorLight
-                                    : ApplicationCustomizer.onDeclineColorDark),
+                            child: Icon(Icons.close_outlined),
                           ),
                         ],
                       ),
@@ -174,13 +156,6 @@ void _showDialog(PushToken token) => showDialog(
                           Expanded(
                             flex: 3,
                             child: PressButton(
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                  Theme.of(context).brightness == Brightness.light
-                                      ? ApplicationCustomizer.acceptColorLight
-                                      : ApplicationCustomizer.acceptColorDark,
-                                ),
-                              ),
                               onPressed: () {
                                 final pr = token.pushRequests.peek();
                                 if (pr != null) {
@@ -213,13 +188,7 @@ void _showDialog(PushToken token) => showDialog(
                           Expanded(
                             flex: 3,
                             child: PressButton(
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                  Theme.of(context).brightness == Brightness.light
-                                      ? ApplicationCustomizer.declineColorDark
-                                      : ApplicationCustomizer.declineColorDark,
-                                ),
-                              ),
+                              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
                               onPressed: () {
                                 //TODO: Notify issuer
                                 final pr = token.pushRequests.peek();

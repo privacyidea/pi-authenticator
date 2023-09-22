@@ -30,41 +30,11 @@ class ApplicationCustomizer {
   // - /android/app/src/release
   // 2. iOS: in /ios/ add the GoogleService-Info.plist
 
-// Light Mode
-// Logo hellblau: 		R94/G197/B237
-// Zahlen blau: 		R94/G197/B237
-// Kreis blau: 		R94/G197/B237
+  static const String appName = "privacyIDEA Authenticator";
+  static const String websiteLink = 'https://netknights.it/';
+  static const String appIcon = 'res/logo/app_logo_light.png';
 
-// Delete button Lila: 	R104/G96/B128
-// Edit button türkis: 	R0/G128/B128
-// Lock button blau: 	R94/G197/B237
-
-// Decline button Lila: 	R104/G96/B128
-// Accept button blau: 	R94/G197/B237
-// Button sub hellblau: R94/G197/B237
-
-// ————————————————————
-
-// Dark Mode
-// Logo hellblau: 		R94/G197/B237
-// Zahlen hellblau: 	R94/G197/B237
-// Kreis hellblau: 		R94/G197/B237
-
-// Delete button Lila: 	R104/G96/B128
-// Edit button türkis: 	R0/G128/B128
-// Lock button blau: 	R94/G197/B237
-
-// Decline button Lila: 	R104/G96/B128
-// Accept button blau: 	R94/G197/B237
-// Button sub hellblau: R94/G197/B237
-
-  static const String appName = "GEOMAR Authenticator";
-  static const String websiteLink = 'https://www.geomar.de/';
-  static const String appLogo = 'res/logo/app_logo.jpg';
-  static const String appIcon = 'res/logo/app_icon.png';
-
-  static const Color primaryColorDark = Color.fromARGB(255, 94, 197, 237);
-  static const Color primaryColorLight = Color(0xff01589D);
+  static const Color primaryColor = Colors.lightBlue;
   static const Color themeColorDark = Color(0xFF282828);
   static const Color themeColorLight = Colors.white;
 
@@ -72,36 +42,16 @@ class ApplicationCustomizer {
   static const Color backgroundColorLight = Color(0xFFEFEFEF);
 
   // Slide action
-  static const Color deleteColorDark = Color(0xff695F81);
-  static const Color deleteColorLight = deleteColorDark;
-  static const Color renameColorDark = Color(0xff017F7E);
-  static const Color renameColorLight = renameColorDark;
-  static const Color lockColorDark = Color(0xff01589D);
-  static const Color lockColorLight = lockColorDark;
+  static const Color deleteColorDark = Color(0xffCD3C14);
+  static const Color deleteColorLight = Color(0xffE04D2D);
+  static const Color renameColorDark = Color(0xff527EDB);
+  static const Color renameColorLight = Color(0xff6A8FE5);
+  static const Color lockColorDark = Color(0xffFFCC00);
+  static const Color lockColorLight = Color(0xffFFD633);
 
-  static const Color acceptColorDark = Color(0xff01589D);
-  static const Color onAcceptColorDark = backgroundColorDark;
-  static const Color acceptColorLight = acceptColorDark;
-  static const Color onAcceptColorLight = onAcceptColorDark;
-  static const Color declineColorDark = Color(0xff695F81);
-  static const Color onDeclineColorDark = backgroundColorDark;
-  static const Color declineColorLight = declineColorDark;
-  static const Color onDeclineColorLight = onDeclineColorDark;
-
-  static const Color actionButtonForegroundDark = Colors.white;
-  static const Color actionButtonForegroundLight = Colors.white;
-
-  static const Color floatingActionButtonColorDark = primaryColorDark;
-  static const Color floatingActionButtonForegroundColorDark = themeColorDark;
-  static const Color floatingActionButtonColorLight = primaryColorDark;
-  static const Color floatingActionButtonForegroundColorLight = themeColorDark;
-
-  static const Color buttonColorDark = primaryColorDark;
-  static const Color buttonColorLight = Color(0xff01589D);
-  static const Color textColorDark = primaryColorDark;
-  static const Color textColorLight = Color(0xff01589D);
-  static const Color timerColorDark = primaryColorDark;
-  static const Color timerColorLight = Color(0xff01589D);
+  static const Color buttonColor = primaryColor;
+  static const Color textColor = primaryColor;
+  static const Color timerColor = primaryColor;
 
   // List tile
   static const Color tileIconColorLight = Color(0xff9E9E9E);

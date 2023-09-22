@@ -41,7 +41,7 @@ android {
 
 
     defaultConfig {
-        applicationId "de.geomar.authenticator"
+        applicationId "it.netknights.piauthenticator"
         minSdkVersion 21
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()

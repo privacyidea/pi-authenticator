@@ -18,9 +18,7 @@ class DefaultLockAction extends TokenAction {
   CustomSlidableAction build(BuildContext context) {
     return CustomSlidableAction(
       backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.lockColorLight : ApplicationCustomizer.lockColorDark,
-      foregroundColor: Theme.of(context).brightness == Brightness.light
-          ? ApplicationCustomizer.actionButtonForegroundLight
-          : ApplicationCustomizer.actionButtonForegroundDark,
+      foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       onPressed: (context) async {
         Logger.info('Changing lock status of token ${token.label}.', name: 'token_widgets.dart#_changeLockStatus');
         if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) return;

@@ -19,9 +19,7 @@ class DefaultDeleteAction extends TokenAction {
   CustomSlidableAction build(BuildContext context) {
     return CustomSlidableAction(
       backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.deleteColorLight : ApplicationCustomizer.deleteColorDark,
-      foregroundColor: Theme.of(context).brightness == Brightness.light
-          ? ApplicationCustomizer.actionButtonForegroundLight
-          : ApplicationCustomizer.actionButtonForegroundDark,
+      foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       onPressed: (_) async {
         if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.deleteLockedToken) == false) {
           return;

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.geomar.authenticator">
+    package="it.netknights.piauthenticator">
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -14,7 +14,7 @@
         android:name="${applicationName}"
         android:allowBackup="false"
         android:fullBackupContent="false"
-        android:label="GEOMAR Authenticator"
+        android:label="privacyIDEA Authenticator"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

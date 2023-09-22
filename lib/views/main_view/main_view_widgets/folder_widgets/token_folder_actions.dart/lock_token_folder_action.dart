@@ -15,9 +15,7 @@ class LockTokenFolderAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomSlidableAction(
       backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.lockColorLight : ApplicationCustomizer.lockColorDark,
-      foregroundColor: Theme.of(context).brightness == Brightness.light
-          ? ApplicationCustomizer.actionButtonForegroundLight
-          : ApplicationCustomizer.actionButtonForegroundDark,
+      foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       onPressed: (context) async {
         if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
         globalRef?.read(tokenFolderProvider.notifier).updateFolder(folder.copyWith(isLocked: !folder.isLocked));

@@ -2,18 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>838329625695-2atauche4u5p406p0pklghk2fu25jago.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.838329625695-2atauche4u5p406p0pklghk2fu25jago</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDzFDFNM4OH_ezUFkiNdkKQLSH1w902aek</string>
+	<string>AIzaSyAwOd_C2jPeHTCgw74VBTqm8zMr2BOWCeg</string>
 	<key>GCM_SENDER_ID</key>
-	<string>950146333531</string>
+	<string>838329625695</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>de.geomar.authenticator</string>
+	<string>privacyidea.authenticator</string>
 	<key>PROJECT_ID</key>
-	<string>geomar-3242b</string>
+	<string>privacyidea-4c8c1</string>
 	<key>STORAGE_BUCKET</key>
-	<string>geomar-3242b.appspot.com</string>
+	<string>privacyidea-4c8c1.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:950146333531:ios:df60c985c8e8a82772b87e</string>
+	<string>1:838329625695:ios:9926651df24088af243fea</string>
 </dict>
 </plist>

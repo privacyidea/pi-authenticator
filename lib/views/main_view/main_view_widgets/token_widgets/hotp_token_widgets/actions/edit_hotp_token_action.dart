@@ -24,9 +24,7 @@ class EditHOTPTokenAction extends TokenAction {
   @override
   CustomSlidableAction build(BuildContext context) => CustomSlidableAction(
       backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
-      foregroundColor: Theme.of(context).brightness == Brightness.light
-          ? ApplicationCustomizer.actionButtonForegroundLight
-          : ApplicationCustomizer.actionButtonForegroundDark,
+      foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       onPressed: (context) async {
         if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
           return;
