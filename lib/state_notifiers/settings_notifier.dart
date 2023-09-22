@@ -70,13 +70,13 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   void enablePolling() {
-    Logger.info('Polling set to true', name: 'settings_notifier.dart#setPolling');
+    Logger.info('Polling set to true', name: 'settings_notifier.dart#enablePolling');
     state = state.copyWith(enablePolling: true);
     _saveToRepo();
   }
 
   void disablePolling() {
-    Logger.info('Polling set to false', name: 'settings_notifier.dart#setPolling');
+    Logger.info('Polling set to false', name: 'settings_notifier.dart#disablePolling');
     state = state.copyWith(enablePolling: false);
     _saveToRepo();
   }

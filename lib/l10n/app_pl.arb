@@ -667,10 +667,16 @@
     "description": "errorRollOutSSLHandshakeFailed",
     "type": "text"
   },
-  "errorWhenPullingChallenges": "An error occured when polling for challenges",
+  "errorWhenPullingChallenges": "Wystąpił błąd podczas odpytywania o wyzwania {name}",
   "@errorWhenPullingChallenges": {
     "description": "errorWhenPullingChallenges",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "PUSH1234A"
+      }
+    }
   },
   "errorRollOutTokenExpired": "Wstać z łóżka tego tokena nie jest już możliwe.\nToken {name} wygasł.",
   "@errorRollOutTokenExpired": {

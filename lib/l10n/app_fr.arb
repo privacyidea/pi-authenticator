@@ -673,10 +673,16 @@
     "description": "errorRollOutSSLHandshakeFailed",
     "type": "text"
   },
-  "errorWhenPullingChallenges": "Une erreur s'est produite lors de l'interrogation des défis",
+  "errorWhenPullingChallenges": "Une erreur s'est produite lors de l'interrogation des défis de {name}",
   "@errorWhenPullingChallenges": {
     "description": "errorWhenPullingChallenges",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "PUSH1234A"
+      }
+    }
   },
   "errorRollOutTokenExpired": "Le déploiement de ce jeton n'est plus possible. Le jeton {name} a expiré.",
   "@errorRollOutTokenExpired": {

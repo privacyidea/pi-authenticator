@@ -26,14 +26,15 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
   final globalKey = GlobalKey<NestedScrollViewState>();
 
   @override
-  void onResume() {
-    Logger.info('MainView Resume', name: 'main_view.dart#onResume');
+  void onAppResume() {
+    Logger.info('MainView Resume', name: 'main_view.dart#onAppResume');
     globalRef?.read(appStateProvider.notifier).setAppState(AppState.resume);
+    WidgetsBinding.instance.addPostFrameCallback((_) => globalRef?.read(appStateProvider.notifier).setAppState(AppState.running));
   }
 
   @override
-  void onPause() {
-    Logger.info('MainView Pause', name: 'main_view.dart#onPause');
+  void onAppPause() {
+    Logger.info('MainView Pause', name: 'main_view.dart#onAppPause');
     globalRef?.read(appStateProvider.notifier).setAppState(AppState.pause);
   }
 

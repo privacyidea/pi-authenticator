@@ -648,10 +648,16 @@
     "description": "imageUrl",
     "type": "text"
   },
-  "errorWhenPullingChallenges": "Fehler beim Abrufen der Authentifizierungsanfragen.",
+  "errorWhenPullingChallenges": "Fehler beim Abrufen der Authentifizierungsanfragen von {name}",
   "@errorWhenPullingChallenges": {
     "description": "errorWhenPullingChallenges",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "PUSH1234A"
+      }
+    }
   },
   "errorRollOutNoConnectionToServer": "Der Rollout von Token {name} ist fehlgeschlagen, der Server konnte nicht erreicht werden.",
   "@errorRollOutNoConnectionToServer": {

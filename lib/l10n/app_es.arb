@@ -678,10 +678,16 @@
     "description": "errorRollOutSSLHandshakeFailed",
     "type": "text"
   },
-  "errorWhenPullingChallenges": "Se ha producido un error al buscar retos.",
+  "errorWhenPullingChallenges": "Se ha producido un error al buscar retos de {name}",
   "@errorWhenPullingChallenges": {
     "description": "errorWhenPullingChallenges",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "PUSH1234A"
+      }
+    }
   },
   "errorRollOutTokenExpired": "El despliegue de este token ya no es posible.\nEl token {name} ha caducado.",
   "@errorRollOutTokenExpired": {
