@@ -368,7 +368,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get errorRollOutSSLHandshakeFailed => 'SSL-handdruk mislukt. Uitrollen niet mogelijk.';
 
   @override
-  String get errorWhenPullingChallenges => 'Er is een fout opgetreden bij het peilen naar uitdagingen';
+  String errorWhenPullingChallenges(String name) {
+    return 'Er is een fout opgetreden bij het zoeken naar uitdagingen van $name';
+  }
 
   @override
   String errorRollOutTokenExpired(Object name) {

@@ -223,9 +223,9 @@ class ApplicationCustomizer {
         darkTheme: darkTheme ?? this.darkTheme,
       );
 
-  ThemeData generateLightTheme() => _generateTheme(lightTheme);
+  ThemeData generateLightTheme() => _generateTheme(lightTheme, Brightness.light);
 
-  ThemeData generateDarkTheme() => _generateTheme(darkTheme);
+  ThemeData generateDarkTheme() => _generateTheme(darkTheme, Brightness.dark);
 
   factory ApplicationCustomizer.fromJson(Map<String, dynamic> json) => ApplicationCustomizer(
         appName: json['appName'] as String,
@@ -248,8 +248,9 @@ class ApplicationCustomizer {
   }
 }
 
-ThemeData _generateTheme(ThemeCustomizer theme) {
+ThemeData _generateTheme(ThemeCustomizer theme, Brightness brightness) {
   return ThemeData(
+      brightness: brightness,
       textTheme: const TextTheme().copyWith(
         bodyLarge: TextStyle(color: theme.foregroundColor),
         bodyMedium: TextStyle(color: theme.foregroundColor),
@@ -273,6 +274,7 @@ ThemeData _generateTheme(ThemeCustomizer theme) {
         foregroundColor: theme.foregroundColor,
         elevation: 0,
       ),
+      primaryIconTheme: IconThemeData(color: theme.foregroundColor),
       navigationBarTheme: const NavigationBarThemeData().copyWith(
         backgroundColor: theme.themeColor,
         shadowColor: theme.shadowColor,
@@ -285,14 +287,21 @@ ThemeData _generateTheme(ThemeCustomizer theme) {
         subtitleTextStyle: TextStyle(color: theme.subtitleColor),
         iconColor: theme.tileIconColor,
       ),
-      colorScheme: ColorScheme.dark(
-        primary: theme.primaryColor,
-        secondary: theme.primaryColor,
-        onPrimary: theme.onPrimary,
-        onSecondary: theme.onPrimary,
-        errorContainer: theme.deleteColor,
-      ),
-      iconTheme: const IconThemeData(color: Colors.white),
+      colorScheme: brightness == Brightness.light
+          ? ColorScheme.light(
+              primary: theme.primaryColor,
+              secondary: theme.primaryColor,
+              onPrimary: theme.onPrimary,
+              onSecondary: theme.onPrimary,
+              errorContainer: theme.deleteColor,
+            )
+          : ColorScheme.dark(
+              primary: theme.primaryColor,
+              secondary: theme.primaryColor,
+              onPrimary: theme.onPrimary,
+              onSecondary: theme.onPrimary,
+              errorContainer: theme.deleteColor,
+            ),
       checkboxTheme: CheckboxThemeData(
         fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
           if (states.contains(MaterialState.disabled)) {

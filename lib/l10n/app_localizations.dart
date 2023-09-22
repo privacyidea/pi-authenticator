@@ -808,8 +808,8 @@ abstract class AppLocalizations {
   /// errorWhenPullingChallenges
   ///
   /// In en, this message translates to:
-  /// **'An error occured when polling for challenges'**
-  String get errorWhenPullingChallenges;
+  /// **'An error occured when polling for challenges of {name}'**
+  String errorWhenPullingChallenges(String name);
 
   /// Tells the user that the roll-out failed because the token has expired.
   ///

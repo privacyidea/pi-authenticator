@@ -368,7 +368,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorRollOutSSLHandshakeFailed => 'SSL handshake failed. Roll-out not possible.';
 
   @override
-  String get errorWhenPullingChallenges => 'An error occured when polling for challenges';
+  String errorWhenPullingChallenges(String name) {
+    return 'An error occured when polling for challenges of $name';
+  }
 
   @override
   String errorRollOutTokenExpired(Object name) {

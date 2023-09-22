@@ -368,7 +368,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get errorRollOutSSLHandshakeFailed => 'Ha fallado el protocolo SSL. No es posible el despliegue.';
 
   @override
-  String get errorWhenPullingChallenges => 'Se ha producido un error al buscar retos.';
+  String errorWhenPullingChallenges(String name) {
+    return 'Se ha producido un error al buscar retos de $name';
+  }
 
   @override
   String errorRollOutTokenExpired(Object name) {

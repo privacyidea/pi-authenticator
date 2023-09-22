@@ -368,7 +368,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get errorRollOutSSLHandshakeFailed => 'Uścisk dłoni SSL nie powiódł się. Rozwijanie nie jest możliwe.';
 
   @override
-  String get errorWhenPullingChallenges => 'An error occured when polling for challenges';
+  String errorWhenPullingChallenges(String name) {
+    return 'Wystąpił błąd podczas odpytywania o wyzwania $name';
+  }
 
   @override
   String errorRollOutTokenExpired(Object name) {

@@ -368,7 +368,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get errorRollOutSSLHandshakeFailed => 'Échec de la prise de contact SSL. Le déploiement n\'est pas possible.';
 
   @override
-  String get errorWhenPullingChallenges => 'Une erreur s\'est produite lors de l\'interrogation des défis';
+  String errorWhenPullingChallenges(String name) {
+    return 'Une erreur s\'est produite lors de l\'interrogation des défis de $name';
+  }
 
   @override
   String errorRollOutTokenExpired(Object name) {

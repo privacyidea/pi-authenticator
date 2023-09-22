@@ -368,7 +368,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get errorRollOutSSLHandshakeFailed => 'SSL handshake se nezdařil. Roll-out není možný.';
 
   @override
-  String get errorWhenPullingChallenges => 'Při dotazování na výzvy došlo k chybě.';
+  String errorWhenPullingChallenges(String name) {
+    return 'Při dotazování na výzvy $name došlo k chybě.';
+  }
 
   @override
   String errorRollOutTokenExpired(Object name) {
