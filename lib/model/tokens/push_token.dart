@@ -15,7 +15,7 @@ part 'push_token.g.dart';
 
 @JsonSerializable()
 class PushToken extends Token {
-  static const rsaParser = RsaUtils();
+  static RsaUtils rsaParser = const RsaUtils();
   final DateTime? expirationDate;
   final String serial;
 

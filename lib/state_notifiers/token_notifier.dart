@@ -39,7 +39,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   final QrParser _qrParser;
   final RsaUtils _rsaUtils;
   final LegacyUtils _legacy;
-  final CustomIOClient _ioClient;
+  final PrivacyIdeaIOClient _ioClient;
   final FirebaseUtils _firebaseUtils;
 
   TokenNotifier({
@@ -48,13 +48,13 @@ class TokenNotifier extends StateNotifier<TokenState> {
     QrParser? qrParser,
     RsaUtils? rsaUtils,
     LegacyUtils? legacy,
-    CustomIOClient? ioClient,
+    PrivacyIdeaIOClient? ioClient,
     FirebaseUtils? firebaseUtils,
   })  : _rsaUtils = rsaUtils ?? const RsaUtils(),
         _qrParser = qrParser ?? const QrParser(),
         _repo = repository ?? const SecureTokenRepository(),
         _legacy = legacy ?? const LegacyUtils(),
-        _ioClient = ioClient ?? const CustomIOClient(),
+        _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
         _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
         super(
           initialState ?? TokenState(),
@@ -233,7 +233,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
     if (token.url == null) {
       token = token.copyWith(url: pr.uri, sslVerify: pr.sslVerify);
     }
-
     bool isVerified = token.privateTokenKey == null
         ? await _legacy.verify(token.serial, signedData, signature)
         : _rsaUtils.verifyRSASignature(token.rsaPublicServerKey!, utf8.encode(signedData) as Uint8List, base32.decode(signature));

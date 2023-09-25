@@ -29,6 +29,7 @@ import 'package:privacyidea_authenticator/repo/secure_token_repository.dart';
 
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/customizations.dart';
+import '../../../utils/push_provider.dart';
 import '../../../widgets/default_dialog.dart';
 
 class UpdateFirebaseTokenDialog extends StatefulWidget {
@@ -72,7 +73,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
     // TODO What to do with poll only tokens if google-services is used?
 
-    String? token = await FirebaseUtils().getFBToken();
+    String? token = await PushProvider.instance?.firebaseUtils?.getFBToken();
 
     // TODO Is there a good way to handle these tokens?
     List<PushToken> tokenWithOutUrl = tokenList.where((e) => e.url == null).toList();
@@ -98,7 +99,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
       Response response;
       try {
-        response = await const CustomIOClient().doPost(
+        response = await const PrivacyIdeaIOClient().doPost(
             sslVerify: pushToken.sslVerify,
             url: pushToken.url!,
             body: {'new_fb_token': token, 'serial': pushToken.serial, 'timestamp': timestamp, 'signature': signature});

@@ -18,7 +18,7 @@ import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
   MockSpec<TokenRepository>(),
   MockSpec<SettingsRepository>(),
   MockSpec<TokenFolderRepository>(),
-  MockSpec<CustomIOClient>(),
+  MockSpec<PrivacyIdeaIOClient>(),
   MockSpec<QrParser>(),
   MockSpec<RsaUtils>(),
   MockSpec<FirebaseUtils>(),

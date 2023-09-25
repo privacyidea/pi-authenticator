@@ -27,8 +27,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
-class CustomIOClient {
-  const CustomIOClient();
+class PrivacyIdeaIOClient {
+  const PrivacyIdeaIOClient();
 
   /// Dummy network request can be used to trigger the network access permission
   /// on iOS devices. Doing this at an appropriate place in the code can prevent

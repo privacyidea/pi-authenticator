@@ -206,6 +206,7 @@ class SettingsView extends ConsumerWidget {
                   onPressed: () => showDialog(
                     context: context,
                     builder: (context) => const LoggingMenu(),
+                    useRootNavigator: false,
                   ),
                 ),
               ),

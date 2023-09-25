@@ -7,6 +7,9 @@ import 'package:privacyidea_authenticator/utils/logger.dart';
 const String customization = '';
 
 class ThemeCustomizer {
+  static const ThemeCustomizer defaultLightTheme = ThemeCustomizer.defaultLightWith();
+  static const ThemeCustomizer defaultDarkTheme = ThemeCustomizer.defaultDarkWith();
+
   const ThemeCustomizer({
     required this.primaryColor,
     required this.onPrimary,
@@ -16,8 +19,9 @@ class ThemeCustomizer {
     required this.deleteColor,
     required this.renameColor,
     required this.lockColor,
+    required this.actionButtonsForegroundColor,
     required this.tileIconColor,
-    required this.subtitleColor,
+    required this.tileSubtitleColor,
     required this.shadowColor,
   });
 
@@ -30,6 +34,7 @@ class ThemeCustomizer {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
+    Color? actionButtonsForegroundColor,
     Color? tileIconColor,
     Color? tileSubtitleColor,
     Color? shadowColor,
@@ -41,8 +46,9 @@ class ThemeCustomizer {
         deleteColor = deleteColor ?? const Color(0xffE04D2D),
         renameColor = renameColor ?? const Color(0xff6A8FE5),
         lockColor = lockColor ?? const Color(0xffFFD633),
+        actionButtonsForegroundColor = actionButtonsForegroundColor ?? const Color(0xff282828),
         tileIconColor = tileIconColor ?? const Color(0xff9E9E9E),
-        subtitleColor = tileSubtitleColor ?? const Color(0xff757575),
+        tileSubtitleColor = tileSubtitleColor ?? const Color(0xff757575),
         shadowColor = shadowColor ?? const Color(0xFF303030);
 
   const ThemeCustomizer.defaultDarkWith({
@@ -54,6 +60,7 @@ class ThemeCustomizer {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
+    Color? actionButtonsForegroundColor,
     Color? tileIconColor,
     Color? tileSubtitleColor,
     Color? shadowColor,
@@ -65,8 +72,9 @@ class ThemeCustomizer {
         deleteColor = deleteColor ?? const Color(0xffCD3C14),
         renameColor = renameColor ?? const Color(0xff527EDB),
         lockColor = lockColor ?? const Color(0xffFFCC00),
+        actionButtonsForegroundColor = actionButtonsForegroundColor ?? const Color(0xffF5F5F5),
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
-        subtitleColor = tileSubtitleColor ?? const Color(0xff9E9E9E),
+        tileSubtitleColor = tileSubtitleColor ?? const Color(0xff9E9E9E),
         shadowColor = shadowColor ?? const Color(0xFFEFEFEF);
 
   final Color primaryColor;
@@ -80,10 +88,11 @@ class ThemeCustomizer {
   final Color deleteColor;
   final Color renameColor;
   final Color lockColor;
+  final Color actionButtonsForegroundColor;
 
   // List tile
   final Color tileIconColor;
-  final Color subtitleColor;
+  final Color tileSubtitleColor;
 
   final Color shadowColor;
 
@@ -96,8 +105,9 @@ class ThemeCustomizer {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
+    Color? actionButtonsForegroundColor,
     Color? tileIconColor,
-    Color? subtitleColor,
+    Color? tileSubtitleColor,
     Color? shadowColor,
   }) =>
       ThemeCustomizer(
@@ -109,23 +119,40 @@ class ThemeCustomizer {
         deleteColor: deleteColor ?? this.deleteColor,
         renameColor: renameColor ?? this.renameColor,
         lockColor: lockColor ?? this.lockColor,
+        actionButtonsForegroundColor: actionButtonsForegroundColor ?? this.actionButtonsForegroundColor,
         tileIconColor: tileIconColor ?? this.tileIconColor,
-        subtitleColor: subtitleColor ?? this.subtitleColor,
+        tileSubtitleColor: tileSubtitleColor ?? this.tileSubtitleColor,
         shadowColor: shadowColor ?? this.shadowColor,
       );
 
-  factory ThemeCustomizer.fromJson(Map<String, dynamic> json) => ThemeCustomizer(
-        primaryColor: Color(json['primaryColor'] as int),
-        onPrimary: Color(json['onPrimary'] as int),
-        themeColor: Color(json['themeColor'] as int),
-        backgroundColor: Color(json['backgroundColor'] as int),
-        foregroundColor: Color(json['foregroundColor'] as int),
-        deleteColor: Color(json['deleteColor'] as int),
-        renameColor: Color(json['renameColor'] as int),
-        lockColor: Color(json['lockColor'] as int),
-        tileIconColor: Color(json['tileIconColor'] as int),
-        subtitleColor: Color(json['subtitleColor'] as int),
-        shadowColor: Color(json['shadowColor'] as int),
+  factory ThemeCustomizer.fromJsonDark(Map<String, dynamic> json) => ThemeCustomizer.defaultLightWith(
+        primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
+        onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
+        themeColor: json['themeColor'] != null ? Color(json['themeColor'] as int) : null,
+        backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor'] as int) : null,
+        foregroundColor: json['foregroundColor'] != null ? Color(json['foregroundColor'] as int) : null,
+        deleteColor: json['deleteColor'] != null ? Color(json['deleteColor'] as int) : null,
+        renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
+        lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
+        actionButtonsForegroundColor: json['actionButtonsForegroundColor'] != null ? Color(json['actionButtonsForegroundColor'] as int) : null,
+        tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
+        tileSubtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
+        shadowColor: json['shadowColor'] != null ? Color(json['shadowColor'] as int) : null,
+      );
+
+  factory ThemeCustomizer.fromJsonLight(Map<String, dynamic> json) => ThemeCustomizer.defaultDarkWith(
+        primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
+        onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
+        themeColor: json['themeColor'] != null ? Color(json['themeColor'] as int) : null,
+        backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor'] as int) : null,
+        foregroundColor: json['foregroundColor'] != null ? Color(json['foregroundColor'] as int) : null,
+        deleteColor: json['deleteColor'] != null ? Color(json['deleteColor'] as int) : null,
+        renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
+        lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
+        actionButtonsForegroundColor: json['actionButtonsForegroundColor'] != null ? Color(json['actionButtonsForegroundColor'] as int) : null,
+        tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
+        tileSubtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
+        shadowColor: json['shadowColor'] != null ? Color(json['shadowColor'] as int) : null,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -137,8 +164,9 @@ class ThemeCustomizer {
         'deleteColor': deleteColor.value,
         'renameColor': renameColor.value,
         'lockColor': lockColor.value,
+        'actionButtonsForegroundColor': actionButtonsForegroundColor.value,
         'tileIconColor': tileIconColor.value,
-        'subtitleColor': subtitleColor.value,
+        'subtitleColor': tileSubtitleColor.value,
         'shadowColor': shadowColor.value,
       };
 }
@@ -227,13 +255,13 @@ class ApplicationCustomizer {
 
   ThemeData generateDarkTheme() => _generateTheme(darkTheme, Brightness.dark);
 
-  factory ApplicationCustomizer.fromJson(Map<String, dynamic> json) => ApplicationCustomizer(
+  factory ApplicationCustomizer.fromJson(Map<String, dynamic> json) => ApplicationCustomizer().copyWith(
         appName: json['appName'] as String,
         websiteLink: json['websiteLink'] as String,
         appIconBytes: json['appIconBytes'] != null ? base64Decode(json['appIconBytes'] as String) : null,
         appImageBytes: json['appImageBytes'] != null ? base64Decode(json['appImageBytes'] as String) : null,
-        lightTheme: ThemeCustomizer.fromJson(json['lightTheme'] as Map<String, dynamic>),
-        darkTheme: ThemeCustomizer.fromJson(json['darkTheme'] as Map<String, dynamic>),
+        lightTheme: ThemeCustomizer.fromJsonLight(json['lightTheme'] as Map<String, dynamic>),
+        darkTheme: ThemeCustomizer.fromJsonDark(json['darkTheme'] as Map<String, dynamic>),
       );
 
   Map<String, dynamic> toJson() {
@@ -262,7 +290,7 @@ ThemeData _generateTheme(ThemeCustomizer theme, Brightness brightness) {
         headlineMedium: TextStyle(color: theme.foregroundColor),
         headlineSmall: TextStyle(color: theme.foregroundColor),
         titleLarge: TextStyle(color: theme.foregroundColor),
-        bodySmall: TextStyle(color: theme.subtitleColor),
+        bodySmall: TextStyle(color: theme.tileSubtitleColor),
         labelLarge: TextStyle(color: theme.foregroundColor),
         labelSmall: TextStyle(color: theme.foregroundColor),
       ),
@@ -284,7 +312,7 @@ ThemeData _generateTheme(ThemeCustomizer theme, Brightness brightness) {
       listTileTheme: ListTileThemeData(
         tileColor: theme.backgroundColor,
         titleTextStyle: TextStyle(color: theme.primaryColor),
-        subtitleTextStyle: TextStyle(color: theme.subtitleColor),
+        subtitleTextStyle: TextStyle(color: theme.tileSubtitleColor),
         iconColor: theme.tileIconColor,
       ),
       colorScheme: brightness == Brightness.light
@@ -349,7 +377,7 @@ ThemeData _generateTheme(ThemeCustomizer theme, Brightness brightness) {
           deleteColor: theme.deleteColor,
           editColor: theme.renameColor,
           lockColor: theme.lockColor,
-          foregroundColor: theme.foregroundColor,
+          foregroundColor: theme.actionButtonsForegroundColor,
         ),
       ]);
 }

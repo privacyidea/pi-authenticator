@@ -29,7 +29,7 @@ import 'token_notifier_test.mocks.dart';
     TokenRepository,
     QrParser,
     RsaUtils,
-    CustomIOClient,
+    PrivacyIdeaIOClient,
     FirebaseUtils,
     LegacyUtils,
   ],

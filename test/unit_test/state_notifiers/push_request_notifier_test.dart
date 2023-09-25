@@ -27,7 +27,7 @@ class _MockPushProvider extends Mock implements PushProvider {
   }
 }
 
-@GenerateMocks([RsaUtils, CustomIOClient, FirebaseUtils])
+@GenerateMocks([RsaUtils, PrivacyIdeaIOClient, FirebaseUtils])
 void main() {
   _testPushRequestNotifier();
 }

@@ -44,12 +44,16 @@ import 'network_utils.dart';
 /// This class bundles all logic that is needed to handle incomig PushRequests, e.g.,
 /// firebase, polling, notifications.
 class PushProvider {
-  static PushProvider? _instance;
+  static PushProvider? instance;
   bool _initialized = false;
   Timer? _pollTimer;
   PushRequestNotifier? pushSubscriber; // must be set before receiving push messages
   FirebaseUtils? firebaseUtils;
-  PushProvider._();
+  PrivacyIdeaIOClient _ioClient;
+  RsaUtils _rsaUtils;
+  PushProvider._({PrivacyIdeaIOClient? ioClient, RsaUtils? rsaUtils})
+      : _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
+        _rsaUtils = rsaUtils ?? const RsaUtils();
 
   Future<void> initialize({required PushRequestNotifier pushSubscriber, required FirebaseUtils firebaseUtils}) async {
     if (_initialized) return;
@@ -63,12 +67,26 @@ class PushProvider {
     );
   }
 
-  factory PushProvider({bool? pollingEnabled}) {
-    _instance ??= PushProvider._();
-    if (pollingEnabled != null) {
-      _instance!._initStateAsync(pollingEnabled);
+  factory PushProvider({
+    bool? pollingEnabled,
+    PrivacyIdeaIOClient? ioClient,
+    RsaUtils? rsaUtils,
+  }) {
+    if (instance == null) {
+      instance = PushProvider._(ioClient: ioClient, rsaUtils: rsaUtils);
+    } else {
+      if (ioClient != null) {
+        instance!._ioClient = ioClient;
+      }
+      if (rsaUtils != null) {
+        instance!._rsaUtils = rsaUtils;
+      }
     }
-    return _instance!;
+
+    if (pollingEnabled != null) {
+      instance!._initStateAsync(pollingEnabled);
+    }
+    return instance!;
   }
 
   // INITIALIZATIONS
@@ -119,10 +137,8 @@ class PushProvider {
   /// to the token. This should be guarded by a lock.
   Future<void> _handleIncomingRequestForeground(RemoteMessage message) async {
     var data = message.data;
-    Logger.info('Incoming push challenge.', name: 'main_screen.dart#_handleIncomingChallenge', error: data);
+    Logger.info('Incoming push challenge: $data', name: 'main_screen.dart#_handleIncomingChallenge');
     Uri requestUri = Uri.parse(data['url']);
-
-    Logger.info('message: $data', name: 'main_screen.dart#_handleIncomingRequest');
 
     bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
     PushRequest pushRequest = PushRequest(
@@ -150,10 +166,8 @@ class PushProvider {
   /// to the token. This should be guarded by a lock.
   static Future<void> _handleIncomingRequestBackground(RemoteMessage message) async {
     var data = message.data;
-    Logger.info('Incoming push challenge.', name: 'main_screen.dart#_handleIncomingChallenge', error: data);
+    Logger.info('Incoming push challenge: $data', name: 'main_screen.dart#_handleIncomingChallenge');
     Uri requestUri = Uri.parse(data['url']);
-
-    Logger.info('message: $data', name: 'main_screen.dart#_handleIncomingRequest');
 
     bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
     PushRequest pushRequest = PushRequest(
@@ -243,7 +257,9 @@ class PushProvider {
 
     String message = '${token.serial}|$timestamp';
 
-    String? signature = await const RsaUtils().trySignWithToken(token, message);
+    RsaUtils rsaUtils = instance == null ? PushProvider()._rsaUtils : instance!._rsaUtils;
+    Logger.info(rsaUtils.runtimeType.toString(), name: 'push_provider.dart#pollForChallenge');
+    String? signature = await rsaUtils.trySignWithToken(token, message);
     if (signature == null) {
       Logger.warning('Polling push tokens failed because signing the message failed.', name: 'push_provider.dart#pollForChallenge');
       return null;
@@ -255,7 +271,9 @@ class PushProvider {
     };
 
     try {
-      Response response = await const CustomIOClient().doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify);
+      Response response = instance != null
+          ? await instance!._ioClient.doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify)
+          : await const PrivacyIdeaIOClient().doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify);
 
       switch (response.statusCode) {
         case 200:
@@ -287,7 +305,7 @@ class PushProvider {
 
   /// Checks if the firebase token was changed and updates it if necessary.
   static Future<void> updateFbTokenIfChanged() async {
-    String? firebaseToken = await _instance?.firebaseUtils?.getFBToken();
+    String? firebaseToken = await instance?.firebaseUtils?.getFBToken();
 
     if (firebaseToken != null && (await SecureTokenRepository.getCurrentFirebaseToken()) != firebaseToken) {
       try {
@@ -341,8 +359,11 @@ class PushProvider {
       if (signature == null) {
         return;
       }
-      Response response = await const CustomIOClient().doPost(
-          sslVerify: p.sslVerify, url: p.url!, body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
+      Response response = instance != null
+          ? await instance!._ioClient.doPost(
+              sslVerify: p.sslVerify, url: p.url!, body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature})
+          : await const PrivacyIdeaIOClient().doPost(
+              sslVerify: p.sslVerify, url: p.url!, body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
 
       if (response.statusCode == 200) {
         Logger.info('Updating firebase token for push token: ${p.serial} succeeded!', name: 'push_provider.dart#_updateFirebaseToken');
