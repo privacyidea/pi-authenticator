@@ -144,12 +144,13 @@ class ThemeCustomizer {
         navigationForegroundColor: navigationForegroundColor != null ? navigationForegroundColor() : this.navigationForegroundColor,
       );
 
-  factory ThemeCustomizer.fromJsonDark(Map<String, dynamic> json) => ThemeCustomizer.defaultLightWith(
+  factory ThemeCustomizer.fromJsonDark(Map<String, dynamic> json) => ThemeCustomizer.defaultDarkWith(
         primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
         onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
-        navigationBarColor: json['themeColor'] != null ? Color(json['navigationBarColor'] as int) : null,
+        subtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
         backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor'] as int) : null,
         foregroundColor: json['foregroundColor'] != null ? Color(json['foregroundColor'] as int) : null,
+        shadowColor: json['shadowColor'] != null ? Color(json['shadowColor'] as int) : null,
         deleteColor: json['deleteColor'] != null ? Color(json['deleteColor'] as int) : null,
         renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
         lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
@@ -157,10 +158,11 @@ class ThemeCustomizer {
         tilePrimaryColor: json['tilePrimaryColor'] != null ? Color(json['tilePrimaryColor'] as int) : null,
         tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
         tileSubtitleColor: json['tileSubtitleColor'] != null ? Color(json['tileSubtitleColor'] as int) : null,
-        shadowColor: json['shadowColor'] != null ? Color(json['shadowColor'] as int) : null,
+        navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
+        navigationForegroundColor: json['navigationForegroundColor'] != null ? Color(json['navigationForegroundColor'] as int) : null,
       );
 
-  factory ThemeCustomizer.fromJsonLight(Map<String, dynamic> json) => ThemeCustomizer.defaultDarkWith(
+  factory ThemeCustomizer.fromJsonLight(Map<String, dynamic> json) => ThemeCustomizer.defaultLightWith(
         primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
         onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
         subtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
