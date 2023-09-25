@@ -38,6 +38,7 @@ var lightThemeData = ThemeData(
     shadowColor: ApplicationCustomizer.themeColorDark,
     elevation: 0,
   ),
+  floatingActionButtonTheme: const FloatingActionButtonThemeData(elevation: 0),
   navigationBarTheme: const NavigationBarThemeData().copyWith(
     backgroundColor: ApplicationCustomizer.themeColorLight,
     shadowColor: ApplicationCustomizer.themeColorDark,
@@ -112,6 +113,7 @@ var darkThemeData = ThemeData(
     shadowColor: ApplicationCustomizer.themeColorLight,
     elevation: 0,
   ),
+  floatingActionButtonTheme: const FloatingActionButtonThemeData(elevation: 0),
   navigationBarTheme: const NavigationBarThemeData().copyWith(
     backgroundColor: ApplicationCustomizer.themeColorDark,
     shadowColor: ApplicationCustomizer.themeColorLight,

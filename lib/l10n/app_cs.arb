@@ -678,10 +678,16 @@
     "description": "errorRollOutSSLHandshakeFailed",
     "type": "text"
   },
-  "errorWhenPullingChallenges": "Při dotazování na výzvy došlo k chybě.",
+  "errorWhenPullingChallenges": "Při dotazování na výzvy {name} došlo k chybě.",
   "@errorWhenPullingChallenges": {
     "description": "errorWhenPullingChallenges",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "PUSH1234A"
+      }
+    }
   },
   "errorRollOutTokenExpired": "Roll-out tohoto tokenu již není možný.\nPlatnost tokenu {name} vypršela.",
   "@errorRollOutTokenExpired": {

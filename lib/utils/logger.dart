@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart' as printer;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import 'customizations.dart';
@@ -67,8 +68,9 @@ class Logger {
   bool _flutterIsRunning = false;
 
   String get _mailRecipient => 'app-crash@netknights.it';
-  String get _mailSubject =>
-      _platformInfos != null ? '(${_platformInfos!.version}) ${_platformInfos!.appName} >>> $_lastError' : 'PrivacyIDEA Authenticator >>> $_lastError';
+  String get _mailSubject => _platformInfos != null
+      ? '(${_platformInfos!.version}+${_platformInfos!.buildNumber}) ${_platformInfos!.appName} >>> $_lastError'
+      : '${ApplicationCustomizer.appName} >>> $_lastError';
   String get _filename => 'logfile.txt';
   String? get _fullPath => _logPath != null ? '$_logPath/$_filename' : null;
   bool get _verbose {

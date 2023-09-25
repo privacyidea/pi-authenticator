@@ -30,6 +30,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hex/hex.dart' as HexConverter;
 import 'package:otp/otp.dart' as OTPLibrary;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import 'identifiers.dart';
 
@@ -84,12 +85,15 @@ bool equalsIgnoreCase(String s1, String s2) {
 /// If permission is already given, this function does nothing
 void checkNotificationPermission() async {
   var status = await Permission.notification.status;
+  Logger.info('Notification permission status: $status');
   // TODO what to do if permanently denied?
   // Add a dialog before requesting?
   if (!status.isPermanentlyDenied) {
     if (status.isDenied) {
       await Permission.notification.request();
     }
+  } else {
+    Logger.info('Notification permission is permanently denied!');
   }
 }
 

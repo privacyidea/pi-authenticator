@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/enums/schemes.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 
 import '../model/push_request.dart';
@@ -41,9 +42,15 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<void> _loadTokenList() async {
     List<Token> tokens = await StorageUtil.loadAllTokens();
-    final pushTokens = tokens.whereType<PushToken>().where((element) => !element.isRolledOut).toList();
+    Logger.info('Loaded tokens from storage: $tokens', name: 'token_notifier.dart#_loadTokenList');
+    final pushTokens = tokens.whereType<PushToken>();
+    if (pushTokens.isNotEmpty) {
+      checkNotificationPermission();
+    }
+
+    final pushTokensNotRolledOut = pushTokens.where((element) => !element.isRolledOut).toList();
     state = TokenState(tokens: tokens);
-    for (final pushToken in pushTokens) {
+    for (final pushToken in pushTokensNotRolledOut) {
       rolloutPushToken(pushToken);
     }
   }
@@ -51,6 +58,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   void refreshTokens() async {
     List<Token> tokens = await StorageUtil.loadAllTokens();
     final rolledOutPushToken = tokens.whereType<PushToken>().where((element) => element.isRolledOut).toList();
+    Logger.info('Refreshed Pushtokens from storage: $tokens', name: 'token_notifier.dart#refreshTokens');
     state = state.updateTokens(rolledOutPushToken);
   }
 
@@ -119,6 +127,23 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
   }
 
+  void handleLink(Uri uri) {
+    if (uri.scheme == enumAsString(UriSchemes.otpauth)) {
+      addTokenFromOtpAuth(otpAuth: uri.toString(), context: globalNavigatorKey.currentContext!);
+      return;
+    }
+    if (uri.scheme == enumAsString(UriSchemes.pia)) {
+      addTokenFromPia(pia: uri.toString(), context: globalNavigatorKey.currentContext!);
+      return;
+    }
+    showMessage(message: 'Scheme "${uri.scheme}" is not supported', duration: const Duration(seconds: 3));
+  }
+
+  void addTokenFromPia({required String pia, required BuildContext context}) async {
+    // TODO: Implement pia:// scheme
+    showMessage(message: 'Scheme "pia" is not implemented yet', duration: const Duration(seconds: 3));
+  }
+
   void addTokenFromOtpAuth({required String otpAuth, required BuildContext context}) async {
     Logger.info(
       'Try to handle otpAuth:',
@@ -169,7 +194,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<void> addPushRequestToToken(PushRequest pr) async {
     PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pr.serial && t.isRolledOut);
-
+    Logger.info('Adding push request ${pr.id} to token ${token?.id}', name: 'main_screen.dart#_handleIncomingChallenge', error: pr.serial);
     if (token == null) {
       Logger.warning('The requested token does not exist or is not rolled out.', name: 'main_screen.dart#_handleIncomingChallenge', error: pr.serial);
     } else {
@@ -230,6 +255,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<bool> rolloutPushToken(PushToken token) async {
     token = getTokenFromId(token.id) as PushToken? ?? token;
+    Logger.info('Rolling out token ${token.serial}', name: 'token_widgets.dart#rolloutPushToken');
     if (token.isRolledOut) return true;
     if (token.rolloutState != PushTokenRollOutState.rolloutNotStarted &&
         token.rolloutState != PushTokenRollOutState.generatingRSAKeyPairFailed &&

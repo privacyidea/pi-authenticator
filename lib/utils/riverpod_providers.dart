@@ -1,5 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/state_notifiers/deeplink_notifier.dart';
+import 'package:privacyidea_authenticator/utils/push_provider.dart';
 
 import '../model/mixins/sortable_mixin.dart';
 import '../model/platform_info/platform_info.dart';
@@ -25,24 +27,24 @@ WidgetRef? globalRef;
 final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
   final tokenNotifier = TokenNotifier();
 
-  Logger.info("appStateProvider.addListener ${tokenNotifier.hashCode.toString()}");
+  deeplinkProvider.addListener(
+    ref.container,
+    (previous, next) {
+      if (next == null) return;
+      Logger.info("tokenProvider received new deeplink");
+      tokenNotifier.handleLink(next);
+    },
+    onError: (err, _) => throw err,
+    onDependencyMayHaveChanged: () {},
+    fireImmediately: false,
+  );
+
   appStateProvider.addListener(
     ref.container,
     (previous, next) {
-      switch (next) {
-        case AppState.resume:
-          //startPolling();
-          if (previous == AppState.pause) {
-            Logger.info('refreshing tokens on resume');
-            tokenNotifier.refreshTokens();
-            ref.read(appStateProvider.notifier).setAppState(AppState.running);
-          }
-          break;
-        case AppState.pause:
-          //stopPolling();
-          break;
-        default:
-          break;
+      if (previous == AppState.pause && next == AppState.resume) {
+        Logger.info('Refreshing tokens on resume');
+        tokenNotifier.refreshTokens();
       }
     },
     onError: (err, stack) {
@@ -56,12 +58,13 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
     ref.container,
     (previous, next) {
       if (next == null) return;
-      Logger.warning('next: $next');
       if (next.accepted == null) {
+        Logger.info("tokenProvider received new pushRequest");
         tokenNotifier.addPushRequestToToken(next);
         return;
       }
       if (next.accepted != null) {
+        Logger.info("tokenProvider received pushRequest with accepted=${next.accepted}... removing it from state.");
         tokenNotifier.removePushRequest(next);
         FlutterLocalNotificationsPlugin().cancelAll();
         return;
@@ -86,8 +89,25 @@ final platformInfoProvider = StateProvider<PlatformInfo>(
 );
 
 final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>(
-  (ref) => PushRequestNotifier(null, pollingEnabled: ref.watch(settingsProvider).enablePolling),
+  (ref) {
+    final pushRequestNotifier = PushRequestNotifier(null, pollingEnabled: ref.watch(settingsProvider).enablePolling);
+    appStateProvider.addListener(
+      ref.container,
+      (previous, next) {
+        if (previous == AppState.pause && next == AppState.resume) {
+          Logger.info('Polling for challenges on resume');
+          PushProvider.pollForChallenges();
+        }
+      },
+      onError: (_, __) {},
+      onDependencyMayHaveChanged: () {},
+      fireImmediately: false,
+    );
+    return pushRequestNotifier;
+  },
 );
+
+final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, Uri?>((ref) => DeeplinkNotifier());
 
 final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>(
   (ref) => AppStateNotifier(),

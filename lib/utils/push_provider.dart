@@ -190,16 +190,18 @@ abstract class PushProvider {
     List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
 
     // Disable polling if no push tokens exist
-    if (pushTokens.isEmpty) {
+    if (pushTokens.isEmpty && globalRef?.read(settingsProvider).enablePolling == true) {
       Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
       globalRef?.read(settingsProvider.notifier).disablePolling();
       return null;
     }
 
     // Start request for each token
+    Logger.info('Polling for challenges: ${pushTokens.length} Tokens', name: 'push_provider.dart#pollForChallenges');
     for (PushToken p in pushTokens) {
       pollForChallenge(p).then((errorMessage) {
         if (errorMessage != null && showMessageForEachToken) {
+          Logger.warning(errorMessage, name: 'push_provider.dart#pollForChallenges');
           showMessage(message: errorMessage);
         }
       });
@@ -240,23 +242,16 @@ abstract class PushProvider {
           break;
 
         case 403:
-          Logger.warning('Polling push tokens failed with status code ${response.statusCode}',
+          Logger.warning('Polling push token ${token.serial} failed with status code ${response.statusCode}',
               name: 'push_provider.dart#pollForChallenge', error: getErrorMessageFromResponse(response));
           return null;
 
         default:
           var error = getErrorMessageFromResponse(response);
-          Logger.warning('Polling push tokens failed with status code ${response.statusCode}', name: 'push_provider.dart#pollForChallenge', error: error);
-          return "${AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges}\n$error";
+          return "${AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial)}\n$error";
       }
-    } catch (e, s) {
-      Logger.warning(
-        'An error occured when polling for challenges',
-        name: 'push_provider.dart#pollForChallenge',
-        error: e,
-        stackTrace: s,
-      );
-      return "${AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges}\n${e.toString()}";
+    } catch (e) {
+      return "${AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial)}\n${e.toString()}";
     }
     return null;
   }

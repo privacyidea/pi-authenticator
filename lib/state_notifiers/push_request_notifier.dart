@@ -53,10 +53,8 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
       handleIncomingMessage: (RemoteMessage message) => _handleIncomingAuthRequest(message),
       backgroundMessageHandler: _firebaseMessagingBackgroundHandler,
     );
-
-    if (pollingEnabled) {
-      PushProvider.pollForChallenges();
-    }
+    Logger.info('PushProvider initialized. Polling for Challenges', name: 'main_screen.dart#_initStateAsync');
+    PushProvider.pollForChallenges();
     _startOrStopPolling();
   }
 

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../model/states/settings_state.dart';
 import '../repo/settings_repository.dart';
@@ -20,38 +21,78 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
   void _loadFromRepo() async {
     state = await _repo.loadSettings();
+    Logger.info('Loading settings from repo: $state', name: 'settings_notifier.dart#_loadFromRepo');
   }
 
   void _saveToRepo() async {
+    Logger.info('Saving settings to repo: $state', name: 'settings_notifier.dart#_saveToRepo');
     await _repo.saveSettings(state);
   }
 
   void addCrashReportRecipient(String email) {
+    Logger.info('Crash report recipient added: $email', name: 'settings_notifier.dart#addCrashReportRecipient');
     var updatedSet = state.crashReportRecipients..add(email);
     state = state.copyWith(crashReportRecipients: updatedSet);
   }
 
-  set isFirstRun(bool value) => state = state.copyWith(isFirstRun: value);
+  set isFirstRun(bool value) {
+    Logger.info('First run set to $value', name: 'settings_notifier.dart#setFirstRun');
+    state = state.copyWith(isFirstRun: value);
+  }
 
-  set hideOTPs(bool value) => state = state.copyWith(hideOpts: value);
+  set hideOTPs(bool value) {
+    Logger.info('Hide OTPs set to $value', name: 'settings_notifier.dart#setHideOTPs');
+    state = state.copyWith(hideOpts: value);
+  }
 
-  set showGuideOnStart(bool value) => state = state.copyWith(showGuideOnStart: value);
+  set showGuideOnStart(bool value) {
+    Logger.info('Show guide on start set to $value', name: 'settings_notifier.dart#setShowGuideOnStart');
+    state = state.copyWith(showGuideOnStart: value);
+  }
 
-  void setLocalePreference(Locale locale) => state = state.copyWith(localePreference: locale);
+  void setLocalePreference(Locale locale) {
+    Logger.info('Locale set to $locale', name: 'settings_notifier.dart#setLocalePreference');
+    state = state.copyWith(localePreference: locale);
+  }
 
-  void setUseSystemLocale(bool value) => state = state.copyWith(useSystemLocale: value);
+  void setUseSystemLocale(bool value) {
+    Logger.info('Use system locale set to $value', name: 'settings_notifier.dart#setUseSystemLocale');
+    state = state.copyWith(useSystemLocale: value);
+  }
 
-  void enablePolling() => state = state.copyWith(enablePolling: true);
+  void enablePolling() {
+    Logger.info('Polling set to true', name: 'settings_notifier.dart#enablePolling');
+    state = state.copyWith(enablePolling: true);
+  }
 
-  void disablePolling() => state = state.copyWith(enablePolling: false);
+  void disablePolling() {
+    Logger.info('Polling set to false', name: 'settings_notifier.dart#disablePolling');
+    state = state.copyWith(enablePolling: false);
+  }
 
-  void setPolling(bool value) => state = state.copyWith(enablePolling: value);
+  void setPolling(bool value) {
+    Logger.info('Polling set to $value', name: 'settings_notifier.dart#setPolling');
+    state = state.copyWith(enablePolling: value);
+  }
 
-  void setLocale(Locale locale) => state = state.copyWith(localePreference: locale);
+  void setLocale(Locale locale) {
+    Logger.info('Locale set to $locale', name: 'settings_notifier.dart#setLocale');
+    state = state.copyWith(localePreference: locale);
+  }
 
-  void setVerboseLogging(bool value) => state = state.copyWith(verboseLogging: value);
+  void setVerboseLogging(bool value) {
+    Logger.info('Verbose logging set to $value', name: 'settings_notifier.dart#setVerboseLogging');
+    state = state.copyWith(verboseLogging: value);
+  }
 
-  void toggleVerboseLogging() => state = state.copyWith(verboseLogging: !state.verboseLogging);
+  void toggleVerboseLogging() {
+    final value = !state.verboseLogging;
+    Logger.info('Verbose logging set to $value', name: 'settings_notifier.dart#setVerboseLogging');
+    state = state.copyWith(verboseLogging: value);
+  }
 
-  void setFirstRun(bool value) => state = state.copyWith(isFirstRun: value);
+  void setFirstRun(bool value) {
+    Logger.info('First run set to $value', name: 'settings_notifier.dart#setFirstRun');
+    state = state.copyWith(isFirstRun: value);
+  }
 }
