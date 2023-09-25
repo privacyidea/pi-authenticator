@@ -13,76 +13,86 @@ class ThemeCustomizer {
   const ThemeCustomizer({
     required this.primaryColor,
     required this.onPrimary,
-    required this.themeColor,
+    required this.subtitleColor,
     required this.backgroundColor,
     required this.foregroundColor,
+    required this.shadowColor,
     required this.deleteColor,
     required this.renameColor,
     required this.lockColor,
     required this.actionButtonsForegroundColor,
+    required this.tilePrimaryColor,
     required this.tileIconColor,
     required this.tileSubtitleColor,
-    required this.shadowColor,
+    required this.navigationBarColor,
+    required this.navigationForegroundColor,
   });
 
   const ThemeCustomizer.defaultLightWith({
     Color? primaryColor,
     Color? onPrimary,
-    Color? themeColor,
+    Color? subtitleColor,
     Color? backgroundColor,
     Color? foregroundColor,
+    Color? shadowColor,
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
     Color? actionButtonsForegroundColor,
+    this.tilePrimaryColor,
     Color? tileIconColor,
-    Color? tileSubtitleColor,
-    Color? shadowColor,
+    this.tileSubtitleColor,
+    Color? navigationBarColor,
+    this.navigationForegroundColor,
   })  : primaryColor = primaryColor ?? Colors.lightBlue,
         onPrimary = onPrimary ?? const Color(0xFF282828),
-        themeColor = themeColor ?? Colors.white,
+        subtitleColor = subtitleColor ?? const Color(0xFF9E9E9E),
+        navigationBarColor = navigationBarColor ?? Colors.white,
         backgroundColor = backgroundColor ?? const Color(0xFFEFEFEF),
         foregroundColor = foregroundColor ?? const Color(0xff282828),
+        shadowColor = shadowColor ?? const Color(0xFF303030),
         deleteColor = deleteColor ?? const Color(0xffE04D2D),
         renameColor = renameColor ?? const Color(0xff6A8FE5),
         lockColor = lockColor ?? const Color(0xffFFD633),
         actionButtonsForegroundColor = actionButtonsForegroundColor ?? const Color(0xff282828),
-        tileIconColor = tileIconColor ?? const Color(0xff9E9E9E),
-        tileSubtitleColor = tileSubtitleColor ?? const Color(0xff757575),
-        shadowColor = shadowColor ?? const Color(0xFF303030);
+        tileIconColor = tileIconColor ?? const Color(0xff9E9E9E);
 
   const ThemeCustomizer.defaultDarkWith({
     Color? primaryColor,
     Color? onPrimary,
-    Color? themeColor,
+    Color? subtitleColor,
     Color? backgroundColor,
     Color? foregroundColor,
+    Color? shadowColor,
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
     Color? actionButtonsForegroundColor,
+    this.tilePrimaryColor,
     Color? tileIconColor,
-    Color? tileSubtitleColor,
-    Color? shadowColor,
+    this.tileSubtitleColor,
+    Color? navigationBarColor,
+    this.navigationForegroundColor,
   })  : primaryColor = primaryColor ?? Colors.lightBlue,
         onPrimary = onPrimary ?? const Color(0xFF282828),
-        themeColor = themeColor ?? const Color(0xFF282828),
+        subtitleColor = subtitleColor ?? const Color(0xFF9E9E9E),
         backgroundColor = backgroundColor ?? const Color(0xFF303030),
         foregroundColor = foregroundColor ?? const Color(0xffF5F5F5),
+        shadowColor = shadowColor ?? const Color(0xFFEFEFEF),
         deleteColor = deleteColor ?? const Color(0xffCD3C14),
         renameColor = renameColor ?? const Color(0xff527EDB),
         lockColor = lockColor ?? const Color(0xffFFCC00),
         actionButtonsForegroundColor = actionButtonsForegroundColor ?? const Color(0xffF5F5F5),
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
-        tileSubtitleColor = tileSubtitleColor ?? const Color(0xff9E9E9E),
-        shadowColor = shadowColor ?? const Color(0xFFEFEFEF);
+        navigationBarColor = navigationBarColor ?? const Color(0xFF282828);
 
+  // Basic colors
   final Color primaryColor;
   final Color onPrimary;
-  final Color themeColor;
-
+  final Color subtitleColor;
   final Color backgroundColor;
   final Color foregroundColor;
+  final Color shadowColor;
 
   // Slide action
   final Color deleteColor;
@@ -91,83 +101,99 @@ class ThemeCustomizer {
   final Color actionButtonsForegroundColor;
 
   // List tile
+  final Color? tilePrimaryColor; // Default: primaryColor
   final Color tileIconColor;
-  final Color tileSubtitleColor;
+  final Color? tileSubtitleColor; // Default: subtitleColor
 
-  final Color shadowColor;
+  // Navigation bar
+  final Color navigationBarColor;
+  final Color? navigationForegroundColor; // Default: foregroundColor
 
   ThemeCustomizer copyWith({
     Color? primaryColor,
     Color? onPrimary,
-    Color? themeColor,
+    Color? subtitleColor,
     Color? backgroundColor,
     Color? foregroundColor,
+    Color? shadowColor,
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
     Color? actionButtonsForegroundColor,
+    Color? Function()? tilePrimaryColor,
     Color? tileIconColor,
-    Color? tileSubtitleColor,
-    Color? shadowColor,
+    Color? Function()? tileSubtitleColor,
+    Color? navigationBarColor,
+    Color? Function()? navigationForegroundColor,
   }) =>
       ThemeCustomizer(
         primaryColor: primaryColor ?? this.primaryColor,
         onPrimary: onPrimary ?? this.onPrimary,
-        themeColor: themeColor ?? this.themeColor,
+        subtitleColor: subtitleColor ?? this.subtitleColor,
         backgroundColor: backgroundColor ?? this.backgroundColor,
         foregroundColor: foregroundColor ?? this.foregroundColor,
+        shadowColor: shadowColor ?? this.shadowColor,
         deleteColor: deleteColor ?? this.deleteColor,
         renameColor: renameColor ?? this.renameColor,
         lockColor: lockColor ?? this.lockColor,
         actionButtonsForegroundColor: actionButtonsForegroundColor ?? this.actionButtonsForegroundColor,
+        tilePrimaryColor: tilePrimaryColor != null ? tilePrimaryColor() : this.tilePrimaryColor,
         tileIconColor: tileIconColor ?? this.tileIconColor,
-        tileSubtitleColor: tileSubtitleColor ?? this.tileSubtitleColor,
-        shadowColor: shadowColor ?? this.shadowColor,
+        tileSubtitleColor: tileSubtitleColor != null ? tileSubtitleColor() : this.tileSubtitleColor,
+        navigationBarColor: navigationBarColor ?? this.navigationBarColor,
+        navigationForegroundColor: navigationForegroundColor != null ? navigationForegroundColor() : this.navigationForegroundColor,
       );
 
   factory ThemeCustomizer.fromJsonDark(Map<String, dynamic> json) => ThemeCustomizer.defaultLightWith(
         primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
         onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
-        themeColor: json['themeColor'] != null ? Color(json['themeColor'] as int) : null,
+        navigationBarColor: json['themeColor'] != null ? Color(json['navigationBarColor'] as int) : null,
         backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor'] as int) : null,
         foregroundColor: json['foregroundColor'] != null ? Color(json['foregroundColor'] as int) : null,
         deleteColor: json['deleteColor'] != null ? Color(json['deleteColor'] as int) : null,
         renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
         lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
         actionButtonsForegroundColor: json['actionButtonsForegroundColor'] != null ? Color(json['actionButtonsForegroundColor'] as int) : null,
+        tilePrimaryColor: json['tilePrimaryColor'] != null ? Color(json['tilePrimaryColor'] as int) : null,
         tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
-        tileSubtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
+        tileSubtitleColor: json['tileSubtitleColor'] != null ? Color(json['tileSubtitleColor'] as int) : null,
         shadowColor: json['shadowColor'] != null ? Color(json['shadowColor'] as int) : null,
       );
 
   factory ThemeCustomizer.fromJsonLight(Map<String, dynamic> json) => ThemeCustomizer.defaultDarkWith(
         primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
         onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
-        themeColor: json['themeColor'] != null ? Color(json['themeColor'] as int) : null,
+        subtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
         backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor'] as int) : null,
         foregroundColor: json['foregroundColor'] != null ? Color(json['foregroundColor'] as int) : null,
+        shadowColor: json['shadowColor'] != null ? Color(json['shadowColor'] as int) : null,
         deleteColor: json['deleteColor'] != null ? Color(json['deleteColor'] as int) : null,
         renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
         lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
         actionButtonsForegroundColor: json['actionButtonsForegroundColor'] != null ? Color(json['actionButtonsForegroundColor'] as int) : null,
+        tilePrimaryColor: json['tilePrimaryColor'] != null ? Color(json['tilePrimaryColor'] as int) : null,
         tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
-        tileSubtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
-        shadowColor: json['shadowColor'] != null ? Color(json['shadowColor'] as int) : null,
+        tileSubtitleColor: json['tileSubtitleColor'] != null ? Color(json['tileSubtitleColor'] as int) : null,
+        navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
+        navigationForegroundColor: json['navigationForegroundColor'] != null ? Color(json['navigationForegroundColor'] as int) : null,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'primaryColor': primaryColor.value,
         'onPrimary': onPrimary.value,
-        'themeColor': themeColor.value,
+        'subtitleColor': subtitleColor.value,
         'backgroundColor': backgroundColor.value,
         'foregroundColor': foregroundColor.value,
+        'shadowColor': shadowColor.value,
         'deleteColor': deleteColor.value,
         'renameColor': renameColor.value,
         'lockColor': lockColor.value,
         'actionButtonsForegroundColor': actionButtonsForegroundColor.value,
+        'tilePrimaryColor': tilePrimaryColor?.value,
         'tileIconColor': tileIconColor.value,
-        'subtitleColor': tileSubtitleColor.value,
-        'shadowColor': shadowColor.value,
+        'tileSubtitleColor': tileSubtitleColor?.value,
+        'navigationBarColor': navigationBarColor.value,
+        'navigationForegroundColor': navigationForegroundColor?.value,
       };
 }
 
@@ -304,14 +330,14 @@ ThemeData _generateTheme(ThemeCustomizer theme, Brightness brightness) {
       ),
       primaryIconTheme: IconThemeData(color: theme.foregroundColor),
       navigationBarTheme: const NavigationBarThemeData().copyWith(
-        backgroundColor: theme.themeColor,
+        backgroundColor: theme.navigationBarColor,
         shadowColor: theme.shadowColor,
-        iconTheme: MaterialStatePropertyAll(IconThemeData(color: theme.foregroundColor)),
+        iconTheme: MaterialStatePropertyAll(IconThemeData(color: theme.navigationForegroundColor ?? theme.foregroundColor)),
         elevation: 3,
       ),
       listTileTheme: ListTileThemeData(
         tileColor: theme.backgroundColor,
-        titleTextStyle: TextStyle(color: theme.primaryColor),
+        titleTextStyle: TextStyle(color: theme.tilePrimaryColor ?? theme.primaryColor),
         subtitleTextStyle: TextStyle(color: theme.tileSubtitleColor),
         iconColor: theme.tileIconColor,
       ),
