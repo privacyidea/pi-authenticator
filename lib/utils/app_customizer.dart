@@ -25,7 +25,9 @@ class ThemeCustomizer {
     required this.tileIconColor,
     required this.tileSubtitleColor,
     required this.navigationBarColor,
-    required this.navigationForegroundColor,
+    required this.navigationBarIconColor,
+    required this.qrButtonBackgroundColor,
+    required this.qrButtonIconColor,
   });
 
   const ThemeCustomizer.defaultLightWith({
@@ -43,7 +45,9 @@ class ThemeCustomizer {
     Color? tileIconColor,
     this.tileSubtitleColor,
     Color? navigationBarColor,
-    this.navigationForegroundColor,
+    this.navigationBarIconColor,
+    this.qrButtonBackgroundColor,
+    this.qrButtonIconColor,
   })  : primaryColor = primaryColor ?? Colors.lightBlue,
         onPrimary = onPrimary ?? const Color(0xFF282828),
         subtitleColor = subtitleColor ?? const Color(0xFF9E9E9E),
@@ -72,7 +76,9 @@ class ThemeCustomizer {
     Color? tileIconColor,
     this.tileSubtitleColor,
     Color? navigationBarColor,
-    this.navigationForegroundColor,
+    this.navigationBarIconColor,
+    this.qrButtonBackgroundColor,
+    this.qrButtonIconColor,
   })  : primaryColor = primaryColor ?? Colors.lightBlue,
         onPrimary = onPrimary ?? const Color(0xFF282828),
         subtitleColor = subtitleColor ?? const Color(0xFF9E9E9E),
@@ -107,7 +113,9 @@ class ThemeCustomizer {
 
   // Navigation bar
   final Color navigationBarColor;
-  final Color? navigationForegroundColor; // Default: foregroundColor
+  final Color? navigationBarIconColor; // Default: foregroundColor
+  final Color? qrButtonBackgroundColor; // Default: primaryColor
+  final Color? qrButtonIconColor; // Default: onPrimary
 
   ThemeCustomizer copyWith({
     Color? primaryColor,
@@ -124,7 +132,9 @@ class ThemeCustomizer {
     Color? tileIconColor,
     Color? Function()? tileSubtitleColor,
     Color? navigationBarColor,
-    Color? Function()? navigationForegroundColor,
+    Color? Function()? navigationBarIconColor,
+    Color? Function()? qrButtonBackgroundColor,
+    Color? Function()? qrButtonIconColor,
   }) =>
       ThemeCustomizer(
         primaryColor: primaryColor ?? this.primaryColor,
@@ -141,7 +151,9 @@ class ThemeCustomizer {
         tileIconColor: tileIconColor ?? this.tileIconColor,
         tileSubtitleColor: tileSubtitleColor != null ? tileSubtitleColor() : this.tileSubtitleColor,
         navigationBarColor: navigationBarColor ?? this.navigationBarColor,
-        navigationForegroundColor: navigationForegroundColor != null ? navigationForegroundColor() : this.navigationForegroundColor,
+        navigationBarIconColor: navigationBarIconColor != null ? navigationBarIconColor() : this.navigationBarIconColor,
+        qrButtonBackgroundColor: qrButtonBackgroundColor != null ? qrButtonBackgroundColor() : this.qrButtonBackgroundColor,
+        qrButtonIconColor: qrButtonIconColor != null ? qrButtonIconColor() : this.qrButtonIconColor,
       );
 
   factory ThemeCustomizer.fromJsonDark(Map<String, dynamic> json) => ThemeCustomizer.defaultDarkWith(
@@ -159,7 +171,9 @@ class ThemeCustomizer {
         tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
         tileSubtitleColor: json['tileSubtitleColor'] != null ? Color(json['tileSubtitleColor'] as int) : null,
         navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
-        navigationForegroundColor: json['navigationForegroundColor'] != null ? Color(json['navigationForegroundColor'] as int) : null,
+        navigationBarIconColor: json['navigationBarIconColor'] != null ? Color(json['navigationBarIconColor'] as int) : null,
+        qrButtonBackgroundColor: json['qrButtonBackgroundColor'] != null ? Color(json['qrButtonBackgroundColor'] as int) : null,
+        qrButtonIconColor: json['qrButtonIconColor'] != null ? Color(json['qrButtonIconColor'] as int) : null,
       );
 
   factory ThemeCustomizer.fromJsonLight(Map<String, dynamic> json) => ThemeCustomizer.defaultLightWith(
@@ -177,7 +191,9 @@ class ThemeCustomizer {
         tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
         tileSubtitleColor: json['tileSubtitleColor'] != null ? Color(json['tileSubtitleColor'] as int) : null,
         navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
-        navigationForegroundColor: json['navigationForegroundColor'] != null ? Color(json['navigationForegroundColor'] as int) : null,
+        navigationBarIconColor: json['navigationBarIconColor'] != null ? Color(json['navigationBarIconColor'] as int) : null,
+        qrButtonBackgroundColor: json['qrButtonBackgroundColor'] != null ? Color(json['qrButtonBackgroundColor'] as int) : null,
+        qrButtonIconColor: json['qrButtonIconColor'] != null ? Color(json['qrButtonIconColor'] as int) : null,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -195,7 +211,8 @@ class ThemeCustomizer {
         'tileIconColor': tileIconColor.value,
         'tileSubtitleColor': tileSubtitleColor?.value,
         'navigationBarColor': navigationBarColor.value,
-        'navigationForegroundColor': navigationForegroundColor?.value,
+        'navigationBarIconColor': navigationBarIconColor?.value,
+        'qrButtonBackgroundColor': qrButtonBackgroundColor?.value,
       };
 }
 
@@ -334,8 +351,12 @@ ThemeData _generateTheme(ThemeCustomizer theme, Brightness brightness) {
       navigationBarTheme: const NavigationBarThemeData().copyWith(
         backgroundColor: theme.navigationBarColor,
         shadowColor: theme.shadowColor,
-        iconTheme: MaterialStatePropertyAll(IconThemeData(color: theme.navigationForegroundColor ?? theme.foregroundColor)),
+        iconTheme: MaterialStatePropertyAll(IconThemeData(color: theme.navigationBarIconColor ?? theme.foregroundColor)),
         elevation: 3,
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: theme.qrButtonBackgroundColor ?? theme.primaryColor,
+        foregroundColor: theme.qrButtonIconColor ?? theme.onPrimary,
       ),
       listTileTheme: ListTileThemeData(
         tileColor: theme.backgroundColor,
