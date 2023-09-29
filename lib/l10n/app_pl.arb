@@ -6,13 +6,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "accept": "Zatwierdź",
+  "accept": "Potwierdzam",
   "@accept": {
     "description": "Label for e.g. a button. Something gets accepted by the user.",
     "type": "text",
     "placeholders": {}
   },
-  "decline": "Odrzuć",
+  "decline": "Odrzucam",
   "@decline": {
     "description": "Label for e.g. a button. Something gets declined by the user.",
     "type": "text",

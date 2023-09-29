@@ -5,10 +5,10 @@ class AppLocalizationsPl extends AppLocalizations {
   AppLocalizationsPl([String locale = 'pl']) : super(locale);
 
   @override
-  String get accept => 'Zatwierdź';
+  String get accept => 'Potwierdzam';
 
   @override
-  String get decline => 'Odrzuć';
+  String get decline => 'Odrzucam';
 
   @override
   String get name => 'Nazwa';
