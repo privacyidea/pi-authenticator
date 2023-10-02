@@ -40,7 +40,7 @@ class ThemeCustomizer {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
-    Color? actionButtonsForegroundColor,
+    this.actionButtonsForegroundColor,
     this.tilePrimaryColor,
     Color? tileIconColor,
     this.tileSubtitleColor,
@@ -58,7 +58,6 @@ class ThemeCustomizer {
         deleteColor = deleteColor ?? const Color(0xffE04D2D),
         renameColor = renameColor ?? const Color(0xff6A8FE5),
         lockColor = lockColor ?? const Color(0xffFFD633),
-        actionButtonsForegroundColor = actionButtonsForegroundColor ?? const Color(0xff282828),
         tileIconColor = tileIconColor ?? const Color(0xff9E9E9E);
 
   const ThemeCustomizer.defaultDarkWith({
@@ -71,7 +70,7 @@ class ThemeCustomizer {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
-    Color? actionButtonsForegroundColor,
+    this.actionButtonsForegroundColor,
     this.tilePrimaryColor,
     Color? tileIconColor,
     this.tileSubtitleColor,
@@ -88,7 +87,6 @@ class ThemeCustomizer {
         deleteColor = deleteColor ?? const Color(0xffCD3C14),
         renameColor = renameColor ?? const Color(0xff527EDB),
         lockColor = lockColor ?? const Color(0xffFFCC00),
-        actionButtonsForegroundColor = actionButtonsForegroundColor ?? const Color(0xffF5F5F5),
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
         navigationBarColor = navigationBarColor ?? const Color(0xFF282828);
 
@@ -104,7 +102,7 @@ class ThemeCustomizer {
   final Color deleteColor;
   final Color renameColor;
   final Color lockColor;
-  final Color actionButtonsForegroundColor;
+  final Color? actionButtonsForegroundColor; // Default: foregroundColor
 
   // List tile
   final Color? tilePrimaryColor; // Default: primaryColor
@@ -127,7 +125,7 @@ class ThemeCustomizer {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
-    Color? actionButtonsForegroundColor,
+    Color? Function()? actionButtonsForegroundColor,
     Color? Function()? tilePrimaryColor,
     Color? tileIconColor,
     Color? Function()? tileSubtitleColor,
@@ -146,7 +144,7 @@ class ThemeCustomizer {
         deleteColor: deleteColor ?? this.deleteColor,
         renameColor: renameColor ?? this.renameColor,
         lockColor: lockColor ?? this.lockColor,
-        actionButtonsForegroundColor: actionButtonsForegroundColor ?? this.actionButtonsForegroundColor,
+        actionButtonsForegroundColor: actionButtonsForegroundColor != null ? actionButtonsForegroundColor() : this.actionButtonsForegroundColor,
         tilePrimaryColor: tilePrimaryColor != null ? tilePrimaryColor() : this.tilePrimaryColor,
         tileIconColor: tileIconColor ?? this.tileIconColor,
         tileSubtitleColor: tileSubtitleColor != null ? tileSubtitleColor() : this.tileSubtitleColor,
@@ -206,7 +204,7 @@ class ThemeCustomizer {
         'deleteColor': deleteColor.value,
         'renameColor': renameColor.value,
         'lockColor': lockColor.value,
-        'actionButtonsForegroundColor': actionButtonsForegroundColor.value,
+        'actionButtonsForegroundColor': actionButtonsForegroundColor?.value,
         'tilePrimaryColor': tilePrimaryColor?.value,
         'tileIconColor': tileIconColor.value,
         'tileSubtitleColor': tileSubtitleColor?.value,
@@ -426,7 +424,7 @@ ThemeData _generateTheme(ThemeCustomizer theme, Brightness brightness) {
           deleteColor: theme.deleteColor,
           editColor: theme.renameColor,
           lockColor: theme.lockColor,
-          foregroundColor: theme.actionButtonsForegroundColor,
+          foregroundColor: theme.actionButtonsForegroundColor ?? theme.foregroundColor,
         ),
       ]);
 }

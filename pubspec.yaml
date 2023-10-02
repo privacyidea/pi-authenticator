@@ -76,8 +76,6 @@ dependencies:
   device_info_plus: ^9.0.3
   json_annotation: ^4.8.1
   equatable: ^2.0.5
-  application_customizer_command:
-    path: C:\Users\Frank Merkel\projects\application_customizer_command
 
 dev_dependencies:
   flutter_driver:
@@ -148,9 +146,10 @@ flutter:
 
 flutter_launcher_icons:
   android: true
-  ios: true
   image_path: "customization/temp/app_icon.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
-  remove_alpha_ios: true
   adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: "customization/temp/app_icon_adaptive.png"
+  ios: true
+  image_path_ios: "customization/temp/app_icon_ios.png"
+  remove_alpha_ios: false # default false
