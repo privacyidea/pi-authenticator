@@ -49,7 +49,7 @@ class StorageUtil {
   /// in the storage the existing value is overwritten.
   static Future<void> saveOrReplaceToken(Token token) async {
     await _storage.write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
-    Logger.info('Token saved: ${token.id} to secure storage');
+    Logger.info('Token saved to secure storage');
   }
 
   static Future<Token?> loadToken(String id) async => (await loadAllTokens()).firstWhereOrNull((t) => t.id == id);
@@ -112,7 +112,7 @@ class StorageUtil {
   /// Deletes the saved json of [token] from the secure storage.
   static Future<void> deleteToken(Token token) async {
     _storage.delete(key: _GLOBAL_PREFIX + token.id);
-    Logger.info('Token deleted: ${token.id} from secure storage');
+    Logger.info('Token deleted from secure storage');
   }
 
   // ###########################################################################

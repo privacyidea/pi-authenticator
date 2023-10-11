@@ -185,8 +185,8 @@ class Logger {
         ],
       );
       await FlutterMailer.send(mailOptions);
-    } catch (exc, stackTrace) {
-      Logger.error('Was not able to send the Email', error: exc, stackTrace: stackTrace, name: 'Logger#_sendErrorLog()');
+    } catch (e, stackTrace) {
+      Logger.error('Was not able to send the Email', error: e, stackTrace: stackTrace, name: 'Logger#_sendErrorLog()');
       return false;
     }
     return true;

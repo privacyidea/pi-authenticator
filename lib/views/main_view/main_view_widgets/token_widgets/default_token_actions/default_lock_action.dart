@@ -20,7 +20,7 @@ class DefaultLockAction extends TokenAction {
       backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.lockColorLight : ApplicationCustomizer.lockColorDark,
       foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
       onPressed: (context) async {
-        Logger.info('Changing lock status of token ${token.label}.', name: 'token_widgets.dart#_changeLockStatus');
+        Logger.info('Changing lock status of token.', name: 'token_widgets.dart#_changeLockStatus');
         if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) return;
 
         globalRef?.read(tokenProvider.notifier).updateToken(token.copyWith(isLocked: !token.isLocked));

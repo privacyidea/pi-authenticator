@@ -60,26 +60,26 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
 
   // FOREGROUND HANDLING
   Future<void> _handleIncomingAuthRequest(RemoteMessage remoteMessage) async {
-    Logger.info('Foreground message received.', name: 'main_screen.dart#_handleIncomingAuthRequest', error: remoteMessage.data);
+    Logger.info('Foreground message received.', name: 'main_screen.dart#_handleIncomingAuthRequest');
     await StorageUtil.protect(() async {
       try {
         return _handleIncomingRequest(remoteMessage);
       } catch (e, s) {
         final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
-        Logger.error(errorMessage, name: 'main_screen.dart#_handleIncomingAuthRequest', error: remoteMessage.data, stackTrace: s);
+        Logger.error(errorMessage, name: 'main_screen.dart#_handleIncomingAuthRequest', error: e, stackTrace: s);
       }
     });
   }
 
   // BACKGROUND HANDLING
   static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage remoteMessage) async {
-    Logger.info('Background message received.', name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data);
+    Logger.info('Background message received.', name: 'main_screen.dart#_firebaseMessagingBackgroundHandler');
     await StorageUtil.protect(() async {
       try {
         return _handleIncomingRequest(remoteMessage, inBackground: true);
       } catch (e, s) {
         final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
-        Logger.error(errorMessage, name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data, stackTrace: s);
+        Logger.error(errorMessage, name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: e, stackTrace: s);
       }
     });
   }
@@ -89,7 +89,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
   /// to the token. This should be guarded by a lock.
   static Future<void> _handleIncomingRequest(RemoteMessage message, {bool inBackground = false}) async {
     var data = message.data;
-    Logger.info('Incoming push challenge.', name: 'main_screen.dart#_handleIncomingChallenge', error: data);
+    Logger.info('Incoming push challenge.', name: 'main_screen.dart#_handleIncomingChallenge');
     Uri requestUri = Uri.parse(data['url']);
 
     Logger.info('message: $data', name: 'main_screen.dart#_handleIncomingRequest');
@@ -110,7 +110,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
       signature: data['signature'],
     );
 
-    Logger.info('Incoming push challenge for token with serial.', name: 'main_screen.dart#_handleIncomingChallenge', error: pushRequest.serial);
+    Logger.info('Incoming push challenge for token with serial.', name: 'main_screen.dart#_handleIncomingChallenge');
     if (inBackground) {
       _addPushRequestToTokenInSecureStoreage(pushRequest);
       return;
@@ -119,11 +119,11 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
   }
 
   static void _addPushRequestToTokenInSecureStoreage(PushRequest pushRequest) async {
-    Logger.info('Adding push request to token in secure storage.', name: 'main_screen.dart#_addPushRequestToTokenInSecureStoreage', error: pushRequest);
+    Logger.info('Adding push request to token in secure storage.', name: 'main_screen.dart#_addPushRequestToTokenInSecureStoreage');
     var tokens = await StorageUtil.loadAllTokens();
     PushToken? token = tokens.firstWhereOrNull((token) => token is PushToken && token.serial == pushRequest.serial) as PushToken?;
     if (token == null) {
-      Logger.warning('Token not found.', name: 'main_screen.dart#_addPushRequestToTokenInSecureStoreage', error: 'Serial: ${pushRequest.serial}');
+      Logger.warning('Token not found.', name: 'main_screen.dart#_addPushRequestToTokenInSecureStoreage');
       return;
     }
     final prList = token.pushRequests;
@@ -153,7 +153,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
 
   // ACTIONS
   void accept(PushRequest pushRequest) async {
-    Logger.info('Approving push request.', name: 'main_screen.dart#approve', error: pushRequest);
+    Logger.info('Approving push request.', name: 'main_screen.dart#approve');
     pushRequest = pushRequest.copyWith(accepted: true);
     final successfullyApproved = await handleReaction(pushRequest);
     if (successfullyApproved) {
@@ -162,7 +162,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
   }
 
   void decline(PushRequest pushRequest) async {
-    Logger.info('Denying push request.', name: 'main_screen.dart#deny', error: pushRequest);
+    Logger.info('Denying push request.', name: 'main_screen.dart#deny');
     pushRequest = pushRequest.copyWith(accepted: false);
     final successfullyDenied = await handleReaction(pushRequest);
     if (successfullyDenied) {
@@ -176,12 +176,11 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
     final token = globalRef?.read(tokenProvider).tokens.firstWhereOrNull((token) => token is PushToken && token.serial == pushRequest.serial) as PushToken?;
 
     if (token == null) {
-      Logger.warning('Token not found.', name: 'token_widgets.dart#handleReaction', error: 'Serial: ${pushRequest.serial}');
+      Logger.warning('Token not found.', name: 'token_widgets.dart#handleReaction');
       return false;
     }
 
-    Logger.info('Push auth request accepted=${pushRequest.accepted}, sending response to privacyidea',
-        name: 'token_widgets.dart#handleReaction', error: 'Url: ${pushRequest.uri}');
+    Logger.info('Push auth request accepted=${pushRequest.accepted}, sending response to privacyidea', name: 'token_widgets.dart#handleReaction');
 
     // signature ::=  {nonce}|{serial}[|decline]
     String msg = '${pushRequest.nonce}|${token.serial}';

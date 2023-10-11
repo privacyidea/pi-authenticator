@@ -49,7 +49,7 @@ Future<void> dummyRequest({required Uri url, bool sslVerify = true}) async {
 
 /// Custom POST request allows to not verify certificates.
 Future<Response> doPost({required Uri url, required Map<String, String?> body, bool sslVerify = true}) async {
-  Logger.info('Sending post request', name: 'utils.dart#doPost', error: 'URI: $url, SSLVerify: $sslVerify, Body: $body');
+  Logger.info('Sending post request (SSLVerify: $sslVerify)', name: 'utils.dart#doPost');
 
   List<MapEntry> entries = body.entries.where((element) => element.value == null).toList();
   if (entries.isNotEmpty) {
