@@ -55,7 +55,7 @@ class PrivacyIdeaIOClient {
   /// Custom POST request allows to not verify certificates.
   Future<Response> doPost({required Uri url, required Map<String, String?> body, bool sslVerify = true}) async {
     if (kIsWeb) return Response('', 405);
-    Logger.info('Sending post request', name: 'utils.dart#doPost', error: 'URI: $url, SSLVerify: $sslVerify, Body: $body');
+    Logger.info('Sending post request (SSLVerify: $sslVerify)', name: 'utils.dart#doPost');
 
     List<MapEntry> entries = body.entries.where((element) => element.value == null).toList();
     if (entries.isNotEmpty) {
@@ -96,6 +96,7 @@ class PrivacyIdeaIOClient {
 
   Future<Response> doGet({required Uri url, required Map<String, String?> parameters, bool sslVerify = true}) async {
     if (kIsWeb) return Response('', 405);
+    Logger.info('Sending get request (SSLVerify: $sslVerify)', name: 'utils.dart#doGet');
     List<MapEntry> entries = parameters.entries.where((element) => element.value == null).toList();
     if (entries.isNotEmpty) {
       List<String> nullEntries = [];
@@ -128,17 +129,13 @@ class PrivacyIdeaIOClient {
     } on SocketException catch (e, s) {
       response = Response('${e.runtimeType} : $s', 404);
     } on HandshakeException catch (e, s) {
-      Logger.warning('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doGet', error: '$e\n$s');
+      Logger.warning('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doGet', error: e, stackTrace: s);
       showMessage(message: 'Handshake failed, please check the server certificate and try again.');
       rethrow;
     }
 
     if (response.statusCode != 200) {
-      Logger.warning(
-        'Received unexpected response',
-        name: 'utils.dart#doGet',
-        error: 'Status code: ${response.statusCode}' '\nuri: $uri' '\nResponse: ${response.body}',
-      );
+      Logger.warning('Received unexpected response', name: 'utils.dart#doGet');
     }
 
     ioClient.close();

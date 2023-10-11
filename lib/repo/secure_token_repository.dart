@@ -59,8 +59,7 @@ class SecureTokenRepository implements TokenRepository {
       }
     }
     if (failedTokens.isNotEmpty) {
-      Logger.warning('Could not save all tokens to secure storage',
-          name: 'storage_utils.dart#saveOrReplaceTokens', error: 'Failed tokens: $failedTokens', stackTrace: StackTrace.current);
+      Logger.warning('Could not save all tokens to secure storage', name: 'storage_utils.dart#saveOrReplaceTokens', stackTrace: StackTrace.current);
     } else {
       Logger.info('Saved all (${tokens.length}) tokens to secure storage');
     }
@@ -155,7 +154,7 @@ class SecureTokenRepository implements TokenRepository {
       Logger.warning('Could not delete token from secure storage', name: 'storage_utils.dart#deleteToken', error: e, stackTrace: s);
       return false;
     }
-    Logger.info('Token deleted: ${token.id} from secure storage');
+    Logger.info('Token deleted from secure storage');
     return true;
   }
 

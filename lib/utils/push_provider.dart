@@ -283,13 +283,13 @@ class PushProvider {
           List challengeList = result['value'].cast<Map<String, dynamic>>();
 
           for (Map<String, dynamic> challenge in challengeList) {
-            Logger.info('Received challenge ${challenge['nonce']}', name: 'push_provider.dart#pollForChallenge');
+            Logger.info('Received challenge', name: 'push_provider.dart#pollForChallenge');
             _foregroundHandler(RemoteMessage(data: challenge));
           }
           break;
 
         case 403:
-          Logger.warning('Polling push token ${token.serial} failed with status code ${response.statusCode}',
+          Logger.warning('Polling push token failed with status code ${response.statusCode}',
               name: 'push_provider.dart#pollForChallenge', error: getErrorMessageFromResponse(response));
           return null;
 
@@ -366,9 +366,9 @@ class PushProvider {
               sslVerify: p.sslVerify, url: p.url!, body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
 
       if (response.statusCode == 200) {
-        Logger.info('Updating firebase token for push token: ${p.serial} succeeded!', name: 'push_provider.dart#_updateFirebaseToken');
+        Logger.info('Updating firebase token for push token succeeded!', name: 'push_provider.dart#_updateFirebaseToken');
       } else {
-        Logger.warning('Updating firebase token for push token: ${p.serial} failed!', name: 'push_provider.dart#_updateFirebaseToken');
+        Logger.warning('Updating firebase token for push token failed!', name: 'push_provider.dart#_updateFirebaseToken');
         allUpdated = false;
       }
     }

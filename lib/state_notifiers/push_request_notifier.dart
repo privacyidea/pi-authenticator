@@ -54,7 +54,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
   // ACTIONS
   Future<bool> acceptPop(PushToken pushToken) async {
     final pushRequest = pushToken.pushRequests.pop();
-    Logger.info('Approving push request.', name: 'main_screen.dart#approve', error: pushRequest);
+    Logger.info('Approving push request.', name: 'main_screen.dart#approve');
     final updatedPushRequest = pushRequest.copyWith(accepted: true);
     final successfullyApproved = await _handleReaction(pushRequest: updatedPushRequest, token: pushToken);
     if (!successfullyApproved) {
@@ -67,7 +67,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
 
   Future<bool> declinePop(PushToken pushToken) async {
     final pushRequest = pushToken.pushRequests.pop();
-    Logger.info('Decline push request.', name: 'main_screen.dart#decline', error: pushRequest);
+    Logger.info('Decline push request.', name: 'main_screen.dart#decline');
     final updatedPushRequest = pushRequest.copyWith(accepted: false);
     final successfullyDeclined = await _handleReaction(pushRequest: updatedPushRequest, token: pushToken);
     if (!successfullyDeclined) {
@@ -83,15 +83,13 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
   Future<bool> _handleReaction({required PushRequest pushRequest, required PushToken token}) async {
     if (pushRequest.accepted == null) return false;
 
-    Logger.info('Push auth request accepted=${pushRequest.accepted}, sending response to privacyidea',
-        name: 'token_widgets.dart#handleReaction', error: 'Url: ${pushRequest.uri}');
+    Logger.info('Push auth request accepted=${pushRequest.accepted}, sending response to privacyidea', name: 'token_widgets.dart#handleReaction');
 
     // signature ::=  {nonce}|{serial}[|decline]
     String msg = '${pushRequest.nonce}|${token.serial}';
     if (pushRequest.accepted! == false) {
       msg += '|decline';
     }
-    Logger.warning('_rsaUtils: $_rsaUtils', name: 'token_widgets.dart#handleReaction');
     String? signature = await _rsaUtils.trySignWithToken(token, msg);
     if (signature == null) {
       return false;
@@ -113,11 +111,7 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
 
     Response response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
     if (response.statusCode != 200) {
-      Logger.warning(
-        'Sending push request response failed.',
-        name: 'token_widgets.dart#handleReaction',
-        error: 'Token: $token, Status code: ${response.statusCode}, Body: ${response.body}',
-      );
+      Logger.warning('Sending push request response failed.', name: 'token_widgets.dart#handleReaction');
       return false;
     }
 

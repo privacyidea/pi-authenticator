@@ -104,9 +104,9 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
             body: {'new_fb_token': token, 'serial': pushToken.serial, 'timestamp': timestamp, 'signature': signature});
 
         if (response.statusCode == 200) {
-          Logger.info('Updating firebase token for push token: ${pushToken.serial} succeeded!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
+          Logger.info('Updating firebase token for push token succeeded!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
         } else {
-          Logger.warning('Updating firebase token for push token: ${pushToken.serial} failed!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
+          Logger.warning('Updating firebase token for push token failed!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
           tokenWithFailedUpdate.add(pushToken);
         }
       } catch (e, s) {
