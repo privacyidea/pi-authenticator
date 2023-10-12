@@ -21,6 +21,7 @@
 import 'dart:convert';
 
 import 'package:asn1lib/asn1lib.dart';
+import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
@@ -28,7 +29,6 @@ import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:base32/base32.dart';
 
 class RsaUtils {
   const RsaUtils();

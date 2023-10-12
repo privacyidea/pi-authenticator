@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../../l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_folder.dart';
 import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/lock_auth.dart';

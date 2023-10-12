@@ -19,7 +19,7 @@
 */
 
 import 'package:flutter_driver/driver_extension.dart';
-import 'package:privacyidea_authenticator/main.dart' as app;
+import 'package:privacyidea_authenticator/main_netknights.dart' as app;
 
 void main() {
   // Override the supported locales of the application to prevent buttons having

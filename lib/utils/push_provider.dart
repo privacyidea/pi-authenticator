@@ -136,9 +136,13 @@ class PushProvider {
   /// Handles incoming push requests by verifying the challenge and adding it
   /// to the token. This should be guarded by a lock.
   Future<void> _handleIncomingRequestForeground(RemoteMessage message) async {
-    var data = message.data;
+    final data = message.data;
     Logger.info('Incoming push challenge: $data', name: 'main_screen.dart#_handleIncomingChallenge');
-    Uri requestUri = Uri.parse(data['url']);
+    Uri? requestUri = Uri.tryParse(data['url']);
+    if (requestUri == null) {
+      Logger.warning('Could not parse url.', name: 'main_screen.dart#_handleIncomingChallenge');
+      return;
+    }
 
     bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
     PushRequest pushRequest = PushRequest(
@@ -156,7 +160,7 @@ class PushProvider {
       signature: data['signature'],
     );
 
-    Logger.info('Incoming push challenge for token with serial.', name: 'main_screen.dart#_handleIncomingChallenge', error: pushRequest.serial);
+    Logger.info('Incoming push challenge for token with serial.', name: 'main_screen.dart#_handleIncomingChallenge');
 
     pushSubscriber?.newRequest(pushRequest);
   }
@@ -165,7 +169,7 @@ class PushProvider {
   /// Handles incoming push requests by verifying the challenge and adding it
   /// to the token. This should be guarded by a lock.
   static Future<void> _handleIncomingRequestBackground(RemoteMessage message) async {
-    var data = message.data;
+    final data = message.data;
     Logger.info('Incoming push challenge: $data', name: 'main_screen.dart#_handleIncomingChallenge');
     Uri requestUri = Uri.parse(data['url']);
 
@@ -185,16 +189,16 @@ class PushProvider {
       signature: data['signature'],
     );
 
-    Logger.info('Incoming push challenge for token with serial.', name: 'main_screen.dart#_handleIncomingChallenge', error: pushRequest.serial);
+    Logger.info('Incoming push challenge for token with serial.', name: 'main_screen.dart#_handleIncomingChallenge');
     _addPushRequestToTokenInSecureStoreage(pushRequest);
   }
 
   static void _addPushRequestToTokenInSecureStoreage(PushRequest pushRequest) async {
-    Logger.info('Adding push request to token in secure storage.', name: 'main_screen.dart#_addPushRequestToTokenInSecureStoreage', error: pushRequest);
+    Logger.info('Adding push request to token in secure storage.', name: 'main_screen.dart#_addPushRequestToTokenInSecureStoreage');
     var tokens = await const SecureTokenRepository().loadTokens();
     PushToken? token = tokens.firstWhereOrNull((token) => token is PushToken && token.serial == pushRequest.serial) as PushToken?;
     if (token == null) {
-      Logger.warning('Token not found.', name: 'main_screen.dart#_addPushRequestToTokenInSecureStoreage', error: 'Serial: ${pushRequest.serial}');
+      Logger.warning('Token not found.', name: 'main_screen.dart#_addPushRequestToTokenInSecureStoreage');
       return;
     }
     final prList = token.pushRequests;

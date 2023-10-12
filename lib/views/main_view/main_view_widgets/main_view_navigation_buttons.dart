@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/views/license_view/license_view.dart';
+import '../../license_view/license_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';

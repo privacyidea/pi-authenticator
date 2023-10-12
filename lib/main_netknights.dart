@@ -22,8 +22,9 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
@@ -42,39 +43,51 @@ void main() async {
       appRunner: () async {
         WidgetsFlutterBinding.ensureInitialized();
         if (!kIsWeb) await Firebase.initializeApp();
-        runApp(const AppWrapper(child: PrivacyIDEAAuthenticator()));
+        runApp(AppWrapper(child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization)));
       });
 }
 
 class PrivacyIDEAAuthenticator extends ConsumerWidget {
-  const PrivacyIDEAAuthenticator({super.key});
+  final ApplicationCustomization customization;
+  const PrivacyIDEAAuthenticator({required this.customization, super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsFlutterBinding.ensureInitialized();
     globalRef = ref;
-    final state = ref.watch(settingsProvider);
-    final locale = state.currentLocale;
-    final applicationCustomizer = ref.read(applicationCustomizerProvider);
+    final locale = ref.watch(settingsProvider).currentLocale;
     return MaterialApp(
       debugShowCheckedModeBanner: true,
       navigatorKey: globalNavigatorKey,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: locale,
-      title: applicationCustomizer.appName,
-      theme: applicationCustomizer.generateLightTheme(),
-      darkTheme: applicationCustomizer.generateDarkTheme(),
+      title: customization.appName,
+      theme: customization.generateLightTheme(),
+      darkTheme: customization.generateDarkTheme(),
       scaffoldMessengerKey: globalSnackbarKey, // <= this
       themeMode: EasyDynamicTheme.of(context).themeMode,
       initialRoute: SplashScreen.routeName,
       routes: {
-        SplashScreen.routeName: (context) => const SplashScreen(),
-        OnboardingView.routeName: (context) => const OnboardingView(),
-        MainView.routeName: (context) => const MainView(),
+        SplashScreen.routeName: (context) => SplashScreen(
+              appImage: customization.appImage,
+              appIcon: customization.appIcon,
+              appName: customization.appName,
+            ),
+        OnboardingView.routeName: (context) => OnboardingView(
+              appName: customization.appName,
+            ),
+        MainView.routeName: (context) => MainView(
+              appIcon: customization.appIcon,
+              appName: customization.appName,
+            ),
         SettingsView.routeName: (context) => const SettingsView(),
         AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
         QRScannerView.routeName: (context) => QRScannerView(),
-        LicenseView.routeName: (context) => const LicenseView(),
+        LicenseView.routeName: (context) => LicenseView(
+              appImage: customization.appImage,
+              appName: customization.appName,
+              websiteLink: customization.websiteLink,
+            ),
       },
     );
   }

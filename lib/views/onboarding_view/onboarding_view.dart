@@ -31,8 +31,9 @@ List<LottieFiles> lottieFiles = [
 
 class OnboardingView extends ConsumerStatefulWidget {
   static const String routeName = '/onboarding';
+  final String appName;
 
-  const OnboardingView({Key? key}) : super(key: key);
+  const OnboardingView({required this.appName, Key? key}) : super(key: key);
 
   @override
   ConsumerState<OnboardingView> createState() => _OnboardingViewState();
@@ -46,7 +47,6 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
-    final applicationCustomizer = ref.read(applicationCustomizerProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -82,8 +82,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                       itemBuilder: (BuildContext context, int index) {
                         if (_currentIndex == 0) {
                           return OnboardingPage(
-                              title: AppLocalizations.of(context)!.onBoardingTitle1(applicationCustomizer.appName),
-                              subtitle: AppLocalizations.of(context)!.onBoardingText1);
+                              title: AppLocalizations.of(context)!.onBoardingTitle1(widget.appName), subtitle: AppLocalizations.of(context)!.onBoardingText1);
                         }
                         if (_currentIndex == 1) {
                           // TODO guide removed from here, put the new one here again?

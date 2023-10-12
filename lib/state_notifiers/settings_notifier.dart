@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../interfaces/repo/settings_repository.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
+import '../utils/logger.dart';
 
 import '../model/states/settings_state.dart';
 

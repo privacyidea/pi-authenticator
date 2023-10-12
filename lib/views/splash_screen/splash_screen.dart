@@ -3,16 +3,20 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import '../../model/platform_info/platform_info_imp/package_info_plus_platform_info.dart';
+import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
+import '../../model/platform_info/platform_info_imp/package_info_plus_platform_info.dart';
 import '../main_view/main_view.dart';
 import '../onboarding_view/onboarding_view.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   static const routeName = '/';
 
-  const SplashScreen({super.key});
+  final Widget appImage;
+  final Widget appIcon;
+  final String appName;
+
+  const SplashScreen({required this.appImage, required this.appIcon, required this.appName, super.key});
 
   @override
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
@@ -45,10 +49,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     await Future.delayed(_splashScreenDuration + _splashScreenDelay * 2);
     final isFirstRun = ref.read(settingsProvider).isFirstRun;
     final ConsumerStatefulWidget nextView;
+    print(isFirstRun);
     if (isFirstRun) {
-      nextView = const OnboardingView();
+      nextView = OnboardingView(appName: widget.appName);
     } else {
-      nextView = const MainView();
+      nextView = MainView(appName: widget.appName, appIcon: widget.appIcon);
     }
     // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
@@ -63,7 +68,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final applicationCustomizer = ref.read(applicationCustomizerProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Center(
@@ -72,7 +76,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           duration: _splashScreenDuration,
           child: Padding(
             padding: const EdgeInsets.all(32.0),
-            child: applicationCustomizer.appImage,
+            child: widget.appImage,
           ),
         ),
       ),

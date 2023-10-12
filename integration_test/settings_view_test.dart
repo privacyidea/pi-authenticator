@@ -4,11 +4,12 @@ import 'package:http/http.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/main.dart';
+import 'package:privacyidea_authenticator/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
+import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/settings_groups.dart';
@@ -73,7 +74,7 @@ void main() {
             repository: mockTokenRepository, qrParser: mockQrParser, firebaseUtils: mockFirebaseUtils, rsaUtils: mockRsaUtils, ioClient: mockIOClient)),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
       ],
-      child: const PrivacyIDEAAuthenticator(),
+      child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
     ));
 
     await waitFor(const Duration(seconds: 3), tester);

@@ -18,7 +18,7 @@ import '../utils/firebase_utils.dart';
 import '../utils/network_utils.dart';
 import '../utils/qr_parser.dart';
 import '../utils/rsa_utils.dart';
-import 'package:privacyidea_authenticator/model/enums/schemes.dart';
+import '../model/enums/schemes.dart';
 
 import '../model/push_request.dart';
 import '../model/states/token_state.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:privacyidea_authenticator/main.dart';
+import 'package:privacyidea_authenticator/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
@@ -38,14 +38,14 @@ void main() {
         tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
       ],
-      child: const PrivacyIDEAAuthenticator(),
+      child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
     ));
 
     await waitFor(const Duration(seconds: 3), tester);
     await tester.tap(find.byIcon(Icons.info_outline));
     await tester.pumpAndSettle();
-    expect(find.text(ApplicationCustomizer().appName), findsOneWidget);
-    expect(find.text(ApplicationCustomizer().websiteLink), findsOneWidget);
+    expect(find.text(ApplicationCustomization.defaultCustomization.appName), findsOneWidget);
+    expect(find.text(ApplicationCustomization.defaultCustomization.websiteLink), findsOneWidget);
     await tester.pumpAndSettle();
     expect(find.text('Licenses'), findsOneWidget);
     expect(find.byType(Icon), findsOneWidget);

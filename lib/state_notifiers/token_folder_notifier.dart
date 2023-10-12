@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../interfaces/repo/token_folder_repository.dart';
 import '../model/states/token_folder_state.dart';
 import '../model/token_folder.dart';
-import '../interfaces/repo/token_folder_repository.dart';
 
 class TokenFolderNotifier extends StateNotifier<TokenFolderState> {
   Future<void>? isLoading;

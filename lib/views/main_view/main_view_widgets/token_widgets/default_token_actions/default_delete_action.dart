@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../../l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/customizations.dart';

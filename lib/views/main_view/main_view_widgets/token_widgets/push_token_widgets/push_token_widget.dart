@@ -1,8 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'rollout_failed_widget.dart';
-import 'rollout_widget.dart';
 
 import '../../../../../model/mixins/sortable_mixin.dart';
 import '../../../../../model/tokens/push_token.dart';
@@ -11,6 +9,8 @@ import '../token_widget.dart';
 import '../token_widget_base.dart';
 import 'actions/edit_push_token_action.dart';
 import 'push_token_widget_tile.dart';
+import 'rollout_failed_widget.dart';
+import 'rollout_widget.dart';
 
 class PushTokenWidget extends TokenWidget {
   final PushToken token;

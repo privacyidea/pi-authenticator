@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'push_request_overlay.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/push_token.dart';
@@ -15,6 +14,7 @@ import '../../../widgets/drag_item_scroller.dart';
 import 'deactivateable_refresh_indicator.dart';
 import 'drag_target_divider.dart';
 import 'no_token_screen.dart';
+import 'push_request_overlay.dart';
 import 'sortable_widget_builder.dart';
 
 class MainViewTokensList extends ConsumerStatefulWidget {

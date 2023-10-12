@@ -2,15 +2,12 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
-const String customization = '';
+class ThemeCustomization {
+  static const ThemeCustomization defaultLightTheme = ThemeCustomization.defaultLightWith();
+  static const ThemeCustomization defaultDarkTheme = ThemeCustomization.defaultDarkWith();
 
-class ThemeCustomizer {
-  static const ThemeCustomizer defaultLightTheme = ThemeCustomizer.defaultLightWith();
-  static const ThemeCustomizer defaultDarkTheme = ThemeCustomizer.defaultDarkWith();
-
-  const ThemeCustomizer({
+  const ThemeCustomization({
     required this.primaryColor,
     required this.onPrimary,
     required this.subtitleColor,
@@ -30,7 +27,7 @@ class ThemeCustomizer {
     required this.qrButtonIconColor,
   });
 
-  const ThemeCustomizer.defaultLightWith({
+  const ThemeCustomization.defaultLightWith({
     Color? primaryColor,
     Color? onPrimary,
     Color? subtitleColor,
@@ -60,7 +57,7 @@ class ThemeCustomizer {
         lockColor = lockColor ?? const Color(0xffFFD633),
         tileIconColor = tileIconColor ?? const Color(0xff9E9E9E);
 
-  const ThemeCustomizer.defaultDarkWith({
+  const ThemeCustomization.defaultDarkWith({
     Color? primaryColor,
     Color? onPrimary,
     Color? subtitleColor,
@@ -115,7 +112,7 @@ class ThemeCustomizer {
   final Color? qrButtonBackgroundColor; // Default: primaryColor
   final Color? qrButtonIconColor; // Default: onPrimary
 
-  ThemeCustomizer copyWith({
+  ThemeCustomization copyWith({
     Color? primaryColor,
     Color? onPrimary,
     Color? subtitleColor,
@@ -134,7 +131,7 @@ class ThemeCustomizer {
     Color? Function()? qrButtonBackgroundColor,
     Color? Function()? qrButtonIconColor,
   }) =>
-      ThemeCustomizer(
+      ThemeCustomization(
         primaryColor: primaryColor ?? this.primaryColor,
         onPrimary: onPrimary ?? this.onPrimary,
         subtitleColor: subtitleColor ?? this.subtitleColor,
@@ -154,7 +151,7 @@ class ThemeCustomizer {
         qrButtonIconColor: qrButtonIconColor != null ? qrButtonIconColor() : this.qrButtonIconColor,
       );
 
-  factory ThemeCustomizer.fromJsonDark(Map<String, dynamic> json) => ThemeCustomizer.defaultDarkWith(
+  factory ThemeCustomization.fromJsonDark(Map<String, dynamic> json) => ThemeCustomization.defaultDarkWith(
         primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
         onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
         subtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
@@ -174,7 +171,7 @@ class ThemeCustomizer {
         qrButtonIconColor: json['qrButtonIconColor'] != null ? Color(json['qrButtonIconColor'] as int) : null,
       );
 
-  factory ThemeCustomizer.fromJsonLight(Map<String, dynamic> json) => ThemeCustomizer.defaultLightWith(
+  factory ThemeCustomization.fromJsonLight(Map<String, dynamic> json) => ThemeCustomization.defaultLightWith(
         primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
         onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
         subtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
@@ -214,7 +211,7 @@ class ThemeCustomizer {
       };
 }
 
-class ApplicationCustomizer {
+class ApplicationCustomization {
   // Edit in android/app/src/main/AndroidManifest.xml file
   // <application android:label="app name">
 
@@ -246,50 +243,46 @@ class ApplicationCustomizer {
 
   final String appName;
   final String websiteLink;
-  final Uint8List? appIconBytes;
-  final Uint8List? appImageBytes;
+  final Uint8List? appIconBASE64;
+  final Uint8List? appImageBASE64;
   final Image appIcon;
   final Image appImage;
-  final ThemeCustomizer lightTheme;
-  final ThemeCustomizer darkTheme;
+  final ThemeCustomization lightTheme;
+  final ThemeCustomization darkTheme;
 
-  ApplicationCustomizer({
-    this.appName = "privacyIDEA Authenticator",
-    this.websiteLink = 'https://netknights.it/',
-    this.appIconBytes,
-    this.appImageBytes,
-    this.lightTheme = const ThemeCustomizer.defaultLightWith(),
-    this.darkTheme = const ThemeCustomizer.defaultDarkWith(),
-  })  : appIcon = appIconBytes != null ? Image.memory(appIconBytes) : Image.asset('res/logo/app_logo_light_small.png'),
-        appImage = appImageBytes != null ? Image.memory(appImageBytes) : Image.asset('res/logo/app_logo_light.png');
+  static final defaultCustomization = ApplicationCustomization(
+    appName: 'privacyIDEA Authenticator',
+    websiteLink: 'https://netknights.it/',
+    appIconBASE64: null,
+    appImageBASE64: null,
+    lightTheme: ThemeCustomization.defaultLightTheme,
+    darkTheme: ThemeCustomization.defaultDarkTheme,
+  );
 
-  factory ApplicationCustomizer.fromCustomization() {
-    if (customization.isNotEmpty) {
-      try {
-        return ApplicationCustomizer.fromJson(jsonDecode(customization) as Map<String, dynamic>);
-      } catch (e) {
-        Logger.error('Error while parsing customization', error: e, stackTrace: e is Error ? e.stackTrace : StackTrace.current);
-        return ApplicationCustomizer();
-      }
-    } else {
-      return ApplicationCustomizer();
-    }
-  }
+  ApplicationCustomization({
+    required this.appName,
+    required this.websiteLink,
+    this.appIconBASE64,
+    this.appImageBASE64,
+    required this.lightTheme,
+    required this.darkTheme,
+  })  : appIcon = appIconBASE64 != null ? Image.memory(appIconBASE64) : Image.asset('res/logo/app_logo_light_small.png'),
+        appImage = appImageBASE64 != null ? Image.memory(appImageBASE64) : Image.asset('res/logo/app_logo_light.png');
 
-  ApplicationCustomizer copyWith({
+  ApplicationCustomization copyWith({
     String? appName,
     String? websiteLink,
-    Uint8List? appIconBytes,
-    Uint8List? appImageBytes,
-    ThemeCustomizer? lightTheme,
-    ThemeCustomizer? darkTheme,
+    Uint8List? appIconBASE64,
+    Uint8List? appImageBASE64,
+    ThemeCustomization? lightTheme,
+    ThemeCustomization? darkTheme,
     Color? primaryColor,
   }) =>
-      ApplicationCustomizer(
+      ApplicationCustomization(
         appName: appName ?? this.appName,
         websiteLink: websiteLink ?? this.websiteLink,
-        appIconBytes: appIconBytes ?? this.appIconBytes,
-        appImageBytes: appImageBytes ?? this.appImageBytes,
+        appIconBASE64: appIconBASE64 ?? this.appIconBASE64,
+        appImageBASE64: appImageBASE64 ?? this.appImageBASE64,
         lightTheme: lightTheme ?? this.lightTheme,
         darkTheme: darkTheme ?? this.darkTheme,
       );
@@ -298,28 +291,28 @@ class ApplicationCustomizer {
 
   ThemeData generateDarkTheme() => _generateTheme(darkTheme, Brightness.dark);
 
-  factory ApplicationCustomizer.fromJson(Map<String, dynamic> json) => ApplicationCustomizer().copyWith(
+  factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => defaultCustomization.copyWith(
         appName: json['appName'] as String,
         websiteLink: json['websiteLink'] as String,
-        appIconBytes: json['appIconBytes'] != null ? base64Decode(json['appIconBytes'] as String) : null,
-        appImageBytes: json['appImageBytes'] != null ? base64Decode(json['appImageBytes'] as String) : null,
-        lightTheme: ThemeCustomizer.fromJsonLight(json['lightTheme'] as Map<String, dynamic>),
-        darkTheme: ThemeCustomizer.fromJsonDark(json['darkTheme'] as Map<String, dynamic>),
+        appIconBASE64: json['appIconBASE64'] != null ? base64Decode(json['appIconBASE64'] as String) : null,
+        appImageBASE64: json['appImageBASE64'] != null ? base64Decode(json['appImageBASE64'] as String) : null,
+        lightTheme: ThemeCustomization.fromJsonLight(json['lightTheme'] as Map<String, dynamic>),
+        darkTheme: ThemeCustomization.fromJsonDark(json['darkTheme'] as Map<String, dynamic>),
       );
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'appName': appName,
       'websiteLink': websiteLink,
-      'appIconBytes': appIconBytes != null ? base64Encode(appIconBytes!) : null,
-      'appImageBytes': appImageBytes != null ? base64Encode(appImageBytes!) : null,
+      'appIconBASE64': appIconBASE64 != null ? base64Encode(appIconBASE64!) : null,
+      'appImageBASE64': appImageBASE64 != null ? base64Encode(appImageBASE64!) : null,
       'lightTheme': lightTheme.toJson(),
       'darkTheme': darkTheme.toJson(),
     };
   }
 }
 
-ThemeData _generateTheme(ThemeCustomizer theme, Brightness brightness) {
+ThemeData _generateTheme(ThemeCustomization theme, Brightness brightness) {
   return ThemeData(
       brightness: brightness,
       textTheme: const TextTheme().copyWith(

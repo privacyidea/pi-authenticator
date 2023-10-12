@@ -70,7 +70,7 @@ class Logger {
   String get _mailRecipient => 'app-crash@netknights.it';
   String get _mailSubject => _platformInfos != null
       ? '(${_platformInfos!.version}+${_platformInfos!.buildNumber}) ${_platformInfos!.appName} >>> $_lastError'
-      : '${ApplicationCustomizer().appName} >>> $_lastError';
+      : '${ApplicationCustomization.defaultCustomization.appName} >>> $_lastError';
   String get _filename => 'logfile.txt';
   String? get _fullPath => _logPath != null ? '$_logPath/$_filename' : null;
   bool get _verbose {

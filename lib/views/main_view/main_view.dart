@@ -13,7 +13,10 @@ export 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 class MainView extends ConsumerStatefulWidget {
   static const routeName = '/mainView';
 
-  const MainView({Key? key}) : super(key: key);
+  final Widget appIcon;
+  final String appName;
+
+  const MainView({required this.appIcon, required this.appName, Key? key}) : super(key: key);
 
   @override
   ConsumerState<MainView> createState() => _MainViewState();
@@ -39,19 +42,18 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
   Widget build(BuildContext context) {
     final tokenList = ref.watch(tokenProvider).tokens;
     final folderList = ref.watch(tokenFolderProvider).folders;
-    final applicationCustomizer = ref.watch(applicationCustomizerProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
-          applicationCustomizer.appName,
+          widget.appName,
           overflow: TextOverflow.ellipsis,
           // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
         leading: Padding(
           padding: const EdgeInsets.all(4),
-          child: applicationCustomizer.appIcon,
+          child: widget.appIcon,
         ),
       ),
       body: Stack(

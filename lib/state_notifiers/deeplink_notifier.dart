@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
+import '../utils/logger.dart';
 import 'package:uni_links/uni_links.dart';
 
 bool _initialUriIsHandled = false;
