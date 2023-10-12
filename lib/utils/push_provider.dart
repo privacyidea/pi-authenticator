@@ -139,8 +139,13 @@ class PushProvider {
     final data = message.data;
     Logger.info('Incoming push challenge: $data', name: 'main_screen.dart#_handleIncomingChallenge');
     Uri? requestUri = Uri.tryParse(data['url']);
-    if (requestUri == null) {
-      Logger.warning('Could not parse url.', name: 'main_screen.dart#_handleIncomingChallenge');
+    if (requestUri == null ||
+        data['nonce'] == null ||
+        data['serial'] == null ||
+        data['signature'] == null ||
+        data['title'] == null ||
+        data['question'] == null) {
+      Logger.warning('Could not parse url. Some required parameters are missing.', name: 'main_screen.dart#_handleIncomingChallenge');
       return;
     }
 
@@ -171,7 +176,16 @@ class PushProvider {
   static Future<void> _handleIncomingRequestBackground(RemoteMessage message) async {
     final data = message.data;
     Logger.info('Incoming push challenge: $data', name: 'main_screen.dart#_handleIncomingChallenge');
-    Uri requestUri = Uri.parse(data['url']);
+    Uri? requestUri = Uri.tryParse(data['url']);
+    if (requestUri == null ||
+        data['nonce'] == null ||
+        data['serial'] == null ||
+        data['signature'] == null ||
+        data['title'] == null ||
+        data['question'] == null) {
+      Logger.warning('Could not parse url. Some required parameters are missing.', name: 'main_screen.dart#_handleIncomingChallenge');
+      return;
+    }
 
     bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
     PushRequest pushRequest = PushRequest(
