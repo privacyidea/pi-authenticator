@@ -305,8 +305,6 @@ class ApplicationCustomization {
       'websiteLink': websiteLink,
       'appIconBASE64': base64Encode(appIconUint8List),
       'appImageBASE64': base64Encode(appImageUint8List),
-      'appIconUint8List': appIconUint8List,
-      'appImageUint8List': appImageUint8List,
       'lightTheme': lightTheme.toJson(),
       'darkTheme': darkTheme.toJson(),
     };
