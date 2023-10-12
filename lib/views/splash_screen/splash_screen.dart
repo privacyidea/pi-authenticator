@@ -1,11 +1,7 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import '../../model/platform_info/platform_info_imp/package_info_plus_platform_info.dart';
 import '../main_view/main_view.dart';
 import '../onboarding_view/onboarding_view.dart';
 
@@ -43,13 +39,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _init() async {
-    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-      ref.read(platformInfoProvider.notifier).state = await PackageInfoPlusPlatformInfo.loadInfos();
-    }
     await Future.delayed(_splashScreenDuration + _splashScreenDelay * 2);
     final isFirstRun = ref.read(settingsProvider).isFirstRun;
     final ConsumerStatefulWidget nextView;
-    print(isFirstRun);
     if (isFirstRun) {
       nextView = OnboardingView(appName: widget.appName);
     } else {

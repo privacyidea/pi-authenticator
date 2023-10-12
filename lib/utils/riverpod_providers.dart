@@ -5,8 +5,6 @@ import '../state_notifiers/deeplink_notifier.dart';
 import 'push_provider.dart';
 
 import '../model/mixins/sortable_mixin.dart';
-import '../model/platform_info/platform_info.dart';
-import '../model/platform_info/platform_info_imp/dummy_platform_info.dart';
 import '../model/push_request.dart';
 import '../model/states/app_state.dart';
 import '../model/states/settings_state.dart';
@@ -85,10 +83,6 @@ final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
     repository: PreferenceSettingsRepository(),
     initialState: SettingsState(),
   ),
-);
-
-final platformInfoProvider = StateProvider<PlatformInfo>(
-  (ref) => DummyPlatformInfo(),
 );
 
 final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>(
