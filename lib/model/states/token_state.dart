@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import '../tokens/push_token.dart';
 
 import '../token_folder.dart';
@@ -41,7 +42,8 @@ class TokenState {
     return TokenState(tokens: newTokens);
   }
 
-  // replace the token where the id is the same
+  // Add a token if it does not exist yet
+  // Replace the token if it does exist
   TokenState addOrReplaceToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     final index = newTokens.indexWhere((element) => element.id == token.id);
@@ -50,6 +52,18 @@ class TokenState {
     } else {
       newTokens[index] = token;
     }
+    return TokenState(tokens: newTokens);
+  }
+
+  // Replace the token if it does exist
+  // Do nothing if it does not exist
+  TokenState replaceToken(Token token) {
+    final newTokens = List<Token>.from(tokens);
+    final index = newTokens.indexWhere((element) => element.id == token.id);
+    if (index == -1) {
+      Logger.warning('Tried to replace a token that does not exist.', name: 'token_state.dart#replaceToken');
+    }
+    newTokens[index] = token;
     return TokenState(tokens: newTokens);
   }
 

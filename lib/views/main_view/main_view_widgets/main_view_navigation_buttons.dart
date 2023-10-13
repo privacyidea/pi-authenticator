@@ -1,10 +1,13 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
+import '../../../widgets/default_dialog.dart';
 import '../../license_view/license_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
-import '../../qr_scanner_view/scanner_view.dart';
+import '../../qr_scanner_view/qr_scanner_view.dart';
 import '../../settings_view/settings_view.dart';
 import 'folder_widgets/add_token_folder_dialog.dart';
 import 'app_bar_item.dart';
@@ -38,8 +41,19 @@ class MainViewNavigationButtions extends StatelessWidget {
                     Center(
                       heightFactor: 0.6,
                       child: FloatingActionButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          if (await Permission.camera.isPermanentlyDenied) {
+                            showAsyncDialog(
+                              builder: (_) => DefaultDialog(
+                                title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
+                                content: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogPermanentlyDenied),
+                              ),
+                            );
+                            return;
+                          }
+
                           /// Open the QR-code scanner and call `_handleOtpAuth`, with the scanned code as the argument.
+                          // ignore: use_build_context_synchronously
                           Navigator.pushNamed(context, QRScannerView.routeName).then((qrCode) {
                             if (qrCode != null) globalRef?.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: qrCode as String);
                           });

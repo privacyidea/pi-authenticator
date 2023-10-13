@@ -31,11 +31,7 @@ class FirebaseUtils {
     await Firebase.initializeApp();
 
     try {
-      await FirebaseMessaging.instance.requestPermission(
-        alert: false,
-        badge: false,
-        sound: false,
-      );
+      await FirebaseMessaging.instance.requestPermission();
     } on FirebaseException catch (e, s) {
       Logger.warning(
         'e.code: ${e.code}, '

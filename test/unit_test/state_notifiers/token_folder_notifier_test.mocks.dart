@@ -41,6 +41,7 @@ class MockTokenFolderRepository extends _i1.Mock
         returnValue:
             _i3.Future<List<_i4.TokenFolder>>.value(<_i4.TokenFolder>[]),
       ) as _i3.Future<List<_i4.TokenFolder>>);
+
   @override
   _i3.Future<List<_i4.TokenFolder>> loadFolders() => (super.noSuchMethod(
         Invocation.method(

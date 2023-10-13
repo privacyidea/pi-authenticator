@@ -846,6 +846,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Was this request triggered by you?'**
   String get requestTriggerdByUserQuestion;
+
+  /// grantCameraPermissionDialogTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission is not granted'**
+  String get grantCameraPermissionDialogTitle;
+
+  /// grantCameraPermissionDialogContent
+  ///
+  /// In en, this message translates to:
+  /// **'Please grant camera permission to scan QR codes.'**
+  String get grantCameraPermissionDialogContent;
+
+  /// grantCameraPermissionDialogPermanentlyDenied
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.'**
+  String get grantCameraPermissionDialogPermanentlyDenied;
+
+  /// grantCameraPermissionDialogButton
+  ///
+  /// In en, this message translates to:
+  /// **'Grant permission'**
+  String get grantCameraPermissionDialogButton;
+
+  /// decryptErrorTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Decryption error'**
+  String get decryptErrorTitle;
+
+  /// decryptErrorContent
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while decrypting the tokens. Please try again.\nIf the error persists, you have to delete the corupted data'**
+  String get decryptErrorContent;
+
+  /// decryptErrorButton
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all Tokens'**
+  String get decryptErrorButton;
+
+  /// decryptErrorDeleteConfirmationContent
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete all tokens?'**
+  String get decryptErrorDeleteConfirmationContent;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

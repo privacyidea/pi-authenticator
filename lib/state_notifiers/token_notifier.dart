@@ -17,6 +17,7 @@ import '../interfaces/repo/token_repository.dart';
 import '../utils/firebase_utils.dart';
 import '../utils/network_utils.dart';
 import '../utils/qr_parser.dart';
+import '../utils/riverpod_providers.dart';
 import '../utils/rsa_utils.dart';
 import '../model/enums/schemes.dart';
 
@@ -141,6 +142,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
     _saveOrReplaceTokens([token]);
   }
 
+  void replaceToken(Token token) {
+    state = state.replaceToken(token);
+    _saveOrReplaceTokens([token]);
+  }
+
   /// Returns all tokens that could not be saved.
   void addOrReplaceTokens(List<Token> updatedTokens) {
     state = state.addOrReplaceTokens(updatedTokens);
@@ -207,7 +213,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       return;
     } on ArgumentError catch (e, s) {
       // Error while parsing qr code.
-      Logger.warning('Malformed QR code:', name: 'main_screen.dart#_handleOtpAuth', error: e, stackTrace: s);
+      Logger.warning('Malformed QR code:', name: 'token_notifier.dart#_handleOtpAuth', error: e, stackTrace: s);
       showMessage(message: '${e.message}\n Please inform the creator of this qr code about the problem.', duration: const Duration(seconds: 8));
       return;
     }
@@ -216,9 +222,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<bool> addPushRequestToToken(PushRequest pr) async {
     await isLoading;
     PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pr.serial && t.isRolledOut);
-    Logger.info('Adding push request to token', name: 'main_screen.dart#_handleIncomingChallenge');
+    Logger.info('Adding push request to token', name: 'token_notifier.dart#_handleIncomingChallenge');
     if (token == null) {
-      Logger.warning('The requested token does not exist or is not rolled out.', name: 'main_screen.dart#_handleIncomingChallenge');
+      Logger.warning('The requested token does not exist or is not rolled out.', name: 'token_notifier.dart#_handleIncomingChallenge');
       return false;
     }
     String signature = pr.signature;
@@ -241,23 +247,26 @@ class TokenNotifier extends StateNotifier<TokenState> {
       Logger.warning(
         'Validating incoming message failed.',
         name: 'main_screen.dart#_handleIncomingChallenge',
-        error: 'Signature $signature does not match signed data: $signedData',
+        error: 'Signature does not match signed data.',
       );
       return false;
     }
-    Logger.info('Validating incoming message was successful.', name: 'main_screen.dart#_handleIncomingChallenge');
+    Logger.info('Validating incoming message was successful.', name: 'token_notifier.dart#_handleIncomingChallenge');
 
     if (token.knowsRequestWithId(pr.id)) {
       Logger.info(
-        'The push request ${pr.id} already exists '
-        'for the token with serial ${token.serial}',
-        name: 'main_screen.dart#_handleIncomingChallenge',
+        'The push request already exists.',
+        name: 'token_notifier.dart#_handleIncomingChallenge',
       );
       return false;
     }
     // Save the pending request.
     token = token.withPushRequest(pr);
     addOrReplaceToken(token);
+
+    // Remove the request after it expires.
+    int time = pr.expirationDate.difference(DateTime.now()).inMilliseconds;
+    Future.delayed(Duration(milliseconds: time < 1 ? 1 : time), () async => globalRef?.read(tokenProvider.notifier).removePushRequest(pr));
 
     Logger.info('Added push request ${pr.id} to token ${token.id}', name: 'main_screen.dart#_handleIncomingChallenge');
     return true;
@@ -268,7 +277,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pushRequest.serial);
 
     if (token == null) {
-      Logger.warning('The requested token does not exist.', name: 'main_screen.dart#_handleIncomingChallenge');
+      Logger.warning('The requested token with serial "${pushRequest.serial}" does not exist.', name: 'main_screen.dart#_handleIncomingChallenge');
       return false;
     }
     token = token.withoutPushRequest(pushRequest);
@@ -281,18 +290,18 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<bool> rolloutPushToken(PushToken token) async {
     token = (getTokenFromId(token.id)) as PushToken? ?? token;
     assert(token.url != null, 'Token url is null. Cannot rollout token without url.');
-    Logger.info('Rolling out token', name: 'token_widgets.dart#rolloutPushToken');
+    Logger.info('Rolling out token "${token.id}"', name: 'token_widgets.dart#rolloutPushToken');
     if (token.isRolledOut) return true;
     if (token.rolloutState != PushTokenRollOutState.rolloutNotStarted &&
         token.rolloutState != PushTokenRollOutState.generatingRSAKeyPairFailed &&
         token.rolloutState != PushTokenRollOutState.sendRSAPublicKeyFailed &&
         token.rolloutState != PushTokenRollOutState.parsingResponseFailed) {
-      Logger.info('Ignoring rollout request: Rollout of token already started. Tokenstate: ${token.rolloutState} ',
+      Logger.info('Ignoring rollout request: Rollout of token "${token.id}" already started. Tokenstate: ${token.rolloutState} ',
           name: 'token_widgets.dart#rolloutPushToken');
       return false;
     }
     if (token.expirationDate?.isBefore(DateTime.now()) == true) {
-      Logger.info('Ignoring rollout request: Token is expired. ', name: 'token_widgets.dart#rolloutPushToken');
+      Logger.info('Ignoring rollout request: Token "${token.id}" is expired. ', name: 'token_widgets.dart#rolloutPushToken');
       if (globalNavigatorKey.currentContext != null) {
         showMessage(
           message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutTokenExpired(token.label),
@@ -313,10 +322,10 @@ class TokenNotifier extends StateNotifier<TokenState> {
         token = token.withPrivateTokenKey(keyPair.privateKey);
         token = token.withPublicTokenKey(keyPair.publicKey);
         addOrReplaceToken(token);
-        Logger.info('Updated token.${token.id}', name: 'token_widgets.dart#rolloutPushToken');
+        Logger.info('Updated token "${token.id}"', name: 'token_widgets.dart#rolloutPushToken');
         checkNotificationPermission();
       } catch (e, s) {
-        Logger.warning('Error while generating RSA key pair.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
+        Logger.error('Error while generating RSA key pair.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
         addOrReplaceToken(token.copyWith(rolloutState: PushTokenRollOutState.generatingRSAKeyPairFailed));
         return false;
       }

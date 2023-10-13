@@ -391,4 +391,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get requestTriggerdByUserQuestion => 'Was this request triggered by you?';
+
+  @override
+  String get grantCameraPermissionDialogTitle => 'Camera permission is not granted';
+
+  @override
+  String get grantCameraPermissionDialogContent => 'Please grant camera permission to scan QR codes.';
+
+  @override
+  String get grantCameraPermissionDialogPermanentlyDenied => 'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.';
+
+  @override
+  String get grantCameraPermissionDialogButton => 'Grant permission';
+
+  @override
+  String get decryptErrorTitle => 'Decryption error';
+
+  @override
+  String get decryptErrorContent => 'An error occurred while decrypting the tokens. Please try again.\nIf the error persists, you have to delete the corupted data';
+
+  @override
+  String get decryptErrorButton => 'Delete all Tokens';
+
+  @override
+  String get decryptErrorDeleteConfirmationContent => 'Are you sure you want to delete all tokens?';
 }

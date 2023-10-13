@@ -708,5 +708,45 @@
   "@requestTriggerdByUserQuestion": {
     "description": "requestTriggerdByUserQuestion",
     "type": "text"
+  },
+  "grantCameraPermissionDialogTitle": "Camera permission is not granted",
+  "@grantCameraPermissionDialogTitle": {
+    "description": "grantCameraPermissionDialogTitle",
+    "type": "text"
+  },
+  "grantCameraPermissionDialogContent": "Please grant camera permission to scan QR codes.",
+  "@grantCameraPermissionDialogContent": {
+    "description": "grantCameraPermissionDialogContent",
+    "type": "text"
+  },
+  "grantCameraPermissionDialogPermanentlyDenied": "Camera permission is permanently denied. Please grant camera permission in your Phone's settings.",
+  "@grantCameraPermissionDialogPermanentlyDenied": {
+    "description": "grantCameraPermissionDialogPermanentlyDenied",
+    "type": "text"
+  },
+  "grantCameraPermissionDialogButton": "Grant permission",
+  "@grantCameraPermissionDialogButton": {
+    "description": "grantCameraPermissionDialogButton",
+    "type": "text"
+  },
+  "decryptErrorTitle": "Decryption error",
+  "@decryptErrorTitle": {
+    "description": "decryptErrorTitle",
+    "type": "text"
+  },
+  "decryptErrorContent": "An error occurred while decrypting the tokens. Please try again.\nIf the error persists, you have to delete the corupted data",
+  "@decryptErrorContent": {
+    "description": "decryptErrorContent",
+    "type": "text"
+  },
+  "decryptErrorButton": "Delete all Tokens",
+  "@decryptErrorButton": {
+    "description": "decryptErrorButton",
+    "type": "text"
+  },
+  "decryptErrorDeleteConfirmationContent": "Are you sure you want to delete all tokens?",
+  "@decryptErrorDeleteConfirmationContent": {
+    "description": "decryptErrorDeleteConfirmationContent",
+    "type": "text"
   }
 }

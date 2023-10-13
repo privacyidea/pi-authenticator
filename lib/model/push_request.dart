@@ -1,7 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-
-import '../utils/riverpod_providers.dart';
-
 part 'push_request.g.dart';
 
 @JsonSerializable()
@@ -17,7 +14,7 @@ class PushRequest {
   final String signature;
   final bool? accepted;
 
-  PushRequest({
+  const PushRequest({
     required this.title,
     required this.question,
     required this.uri,
@@ -29,10 +26,7 @@ class PushRequest {
     String? signature,
     this.accepted,
   })  : serial = serial ?? '',
-        signature = signature ?? '' {
-    int time = expirationDate.difference(DateTime.now()).inMilliseconds;
-    Future.delayed(Duration(milliseconds: time < 1 ? 1 : time), () async => globalRef?.read(tokenProvider.notifier).removePushRequest(this));
-  }
+        signature = signature ?? '';
 
   PushRequest copyWith({
     String? title,

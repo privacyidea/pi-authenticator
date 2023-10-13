@@ -112,17 +112,17 @@ class Logger {
 
   /*----------- LOGGING METHODS -----------*/
 
-  static void info(String message, {dynamic error, dynamic stackTrace, String? name}) {
+  static void info(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
     final infoString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.INFO);
-    if (instance._verbose) {
+    if (instance._verbose || verbose) {
       instance._logToFile(infoString);
     }
     _print(infoString);
   }
 
-  static void warning(String message, {dynamic error, dynamic stackTrace, String? name}) {
+  static void warning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
     final warningString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.WARNING);
-    if (instance._verbose) {
+    if (instance._verbose || verbose) {
       instance._logToFile(warningString);
     }
     _printWarning(warningString);

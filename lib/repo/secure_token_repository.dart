@@ -22,11 +22,18 @@
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
+
+import '../widgets/default_dialog.dart';
+import '../widgets/default_dialog_button.dart';
 
 // TODO How to test the behavior of this class?
 class SecureTokenRepository implements TokenRepository {
@@ -80,7 +87,13 @@ class SecureTokenRepository implements TokenRepository {
   /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
   @override
   Future<List<Token>> loadTokens() async {
-    Map<String, String> keyValueMap = await _storage.readAll();
+    late Map<String, String> keyValueMap;
+    try {
+      keyValueMap = await _storage.readAll();
+    } on PlatformException catch (e, s) {
+      _decryptErrorDialog();
+      Logger.warning("Token found, but could not be decrypted.", name: 'storage_utils.dart#loadTokens', error: e, stackTrace: s);
+    }
 
     List<Token> tokenList = [];
 
@@ -175,3 +188,48 @@ class SecureTokenRepository implements TokenRepository {
 
   static Future<String?> getNewFirebaseToken() async => _storage.read(key: _NEW_APP_TOKEN_KEY);
 }
+
+void _decryptErrorDialog() => showAsyncDialog(
+      builder: (context) => DefaultDialog(
+        title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
+        content: Text(AppLocalizations.of(context)!.decryptErrorContent),
+        actions: [
+          DefaultDialogButton(
+            onPressed: () {
+              _decryptErrorDeleteTokenConfirmationDialog();
+            },
+            child: Text(
+              AppLocalizations.of(context)!.decryptErrorButton,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
+          DefaultDialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(AppLocalizations.of(context)!.ok),
+          ),
+        ],
+      ),
+    );
+
+void _decryptErrorDeleteTokenConfirmationDialog() => showAsyncDialog(
+      builder: (context) => DefaultDialog(
+        title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
+        content: Text(AppLocalizations.of(context)!.decryptErrorDeleteConfirmationContent),
+        actions: [
+          DefaultDialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(AppLocalizations.of(context)!.cancel),
+          ),
+          DefaultDialogButton(
+            onPressed: () {
+              Logger.info('Deleting all tokens from secure storage', verbose: true, name: 'storage_utils.dart#_decryptErrorDeleteTokenConfirmationDialog');
+              return SecureTokenRepository._storage.deleteAll();
+            },
+            child: Text(
+              AppLocalizations.of(context)!.decryptErrorButton,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
+        ],
+      ),
+    );
