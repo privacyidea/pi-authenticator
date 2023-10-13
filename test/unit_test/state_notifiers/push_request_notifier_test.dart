@@ -42,7 +42,7 @@ void _testPushRequestNotifier() {
         final notifier = PushRequestNotifier(
           pushProvider: mockPushProvider,
           firebaseUtils: mockFirebaseUtils,
-          ioClient: MockCustomIOClient(),
+          ioClient: MockPrivacyIdeaIOClient(),
           rsaUtils: MockRsaUtils(),
         );
         mockPushProvider.initialize(pushSubscriber: notifier, firebaseUtils: mockFirebaseUtils);
@@ -63,7 +63,7 @@ void _testPushRequestNotifier() {
     test('accept', () async {
       final container = ProviderContainer();
       final mockPushProvider = _MockPushProvider();
-      final mockIoClient = MockCustomIOClient();
+      final mockIoClient = MockPrivacyIdeaIOClient();
       final mockRsaUtils = MockRsaUtils();
       final mockFirebaseUtils = MockFirebaseUtils();
       final pr = PushRequest(
@@ -100,7 +100,7 @@ void _testPushRequestNotifier() {
     test('decline', () async {
       final container = ProviderContainer();
       final mockPushProvider = _MockPushProvider();
-      final mockIoClient = MockCustomIOClient();
+      final mockIoClient = MockPrivacyIdeaIOClient();
       final mockRsaUtils = MockRsaUtils();
       final mockFirebaseUtils = MockFirebaseUtils();
       final pr = PushRequest(

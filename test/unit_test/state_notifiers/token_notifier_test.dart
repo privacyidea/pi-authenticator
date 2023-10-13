@@ -331,7 +331,7 @@ void _testTokenNotifier() {
     test('rolloutPushToken', () async {
       final container = ProviderContainer();
       final mockRepo = MockTokenRepository();
-      final mockIOClient = MockCustomIOClient();
+      final mockIOClient = MockPrivacyIdeaIOClient();
       final mockFirebaseUtils = MockFirebaseUtils();
       final mockRsaUtils = MockRsaUtils();
       final uri = Uri.parse('https://example.com');
