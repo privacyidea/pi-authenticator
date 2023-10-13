@@ -26,7 +26,7 @@ void main() {
   late final MockQrParser mockQrParser;
   late final MockRsaUtils mockRsaUtils;
   late final MockFirebaseUtils mockFirebaseUtils;
-  late final MockCustomIOClient mockIOClient;
+  late final MockPrivacyIdeaIOClient mockIOClient;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
     when(mockSettingsRepository.loadSettings()).thenAnswer((_) async => SettingsState(
@@ -59,7 +59,7 @@ void main() {
     mockFirebaseUtils = MockFirebaseUtils();
     when(mockFirebaseUtils.getFBToken()).thenAnswer((_) => Future.value('fbToken'));
     when(mockRsaUtils.deserializeRSAPublicKeyPKCS1('publicKey')).thenAnswer((_) => RSAPublicKey(BigInt.one, BigInt.one));
-    mockIOClient = MockCustomIOClient();
+    mockIOClient = MockPrivacyIdeaIOClient();
     when(mockIOClient.doPost(
       url: anyNamed('url'),
       body: anyNamed('body'),
