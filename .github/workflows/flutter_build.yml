@@ -30,7 +30,7 @@ jobs:
     - run: "flutter upgrade"
     - run: "flutter --version"
     - run: "flutter pub get"
-    - run: "flutter build ios --no-codesign"
+    - run: "flutter build ios -t 'lib/main_netknights.dart' --no-codesign"
 
   build_appbundle:
     name: (Android)
@@ -41,7 +41,7 @@ jobs:
       # matrix job fails.
       fail-fast: false
       matrix:
-        api-level: [ 21,31 ] # [minSdk, most used, newest (30 is not working :(] 19 would be minSDK but does not support x86_64
+        api-level: [ 21, 30, 34 ] # [minSdk, most used, newest]
         target: [ default ] # [default, google_apis]
     steps:
       - uses: actions/checkout@v2
@@ -56,5 +56,5 @@ jobs:
       - run: "flutter --version"
       - run: "flutter pub get"
       - run: 'flutter clean'
-      - run: "flutter build apk --debug"
+      - run: "flutter build apk -t 'lib/main_netknights.dart' --debug"
 
