@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import 'package:privacyidea_authenticator/views/push_token_view/push_tokens_view.dart';
@@ -13,11 +14,11 @@ import 'folder_widgets/add_token_folder_dialog.dart';
 import 'app_bar_item.dart';
 import 'custom_paint_navigation_bar.dart';
 
-class MainViewNavigationButtions extends StatelessWidget {
+class MainViewNavigationButtions extends ConsumerWidget {
   const MainViewNavigationButtions({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Positioned.fill(
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
@@ -72,12 +73,14 @@ class MainViewNavigationButtions extends StatelessWidget {
                               fit: BoxFit.scaleDown,
                               child: Padding(
                                 padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
-                                child: AppBarItem(
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, PushTokensView.routeName);
-                                  },
-                                  icon: Icons.notifications,
-                                ),
+                                child: ref.watch(settingsProvider).hidePushTokens && ref.watch(tokenProvider).hasPushTokens
+                                    ? AppBarItem(
+                                        onPressed: () {
+                                          Navigator.pushNamed(context, PushTokensView.routeName);
+                                        },
+                                        icon: Icons.notifications,
+                                      )
+                                    : const SizedBox(),
                               ),
                             ),
                           ),

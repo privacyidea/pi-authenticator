@@ -26,17 +26,24 @@ WidgetRef? globalRef;
 final tokenProvider = StateNotifierProvider.autoDispose<TokenNotifier, TokenState>((ref) {
   final tokenNotifier = TokenNotifier();
 
-  deeplinkProvider.addListener(
-    ref.container,
-    (previous, next) {
-      if (next == null) return;
-      Logger.info("tokenProvider received new deeplink");
-      tokenNotifier.handleLink(next);
-    },
-    onError: (err, _) => throw err,
-    onDependencyMayHaveChanged: () {},
-    fireImmediately: false,
-  );
+  final newLink = ref.watch(deeplinkProvider);
+  if (newLink != null) {
+    Logger.info("tokenProvider received new deeplink");
+    tokenNotifier.handleLink(newLink);
+  }
+
+  final newPushRequest = ref.watch(pushRequestProvider);
+  if (newPushRequest != null) {
+    if (newPushRequest.accepted == null) {
+      Logger.info("tokenProvider received new pushRequest");
+      tokenNotifier.addPushRequestToToken(newPushRequest);
+    }
+    if (newPushRequest.accepted != null) {
+      Logger.info("tokenProvider received pushRequest with accepted=${newPushRequest.accepted}... removing it from state.");
+      tokenNotifier.removePushRequest(newPushRequest);
+      FlutterLocalNotificationsPlugin().cancelAll();
+    }
+  }
 
   appStateProvider.addListener(
     ref.container,
@@ -52,37 +59,16 @@ final tokenProvider = StateNotifierProvider.autoDispose<TokenNotifier, TokenStat
     onDependencyMayHaveChanged: () {},
     fireImmediately: true,
   );
-
-  pushRequestProvider.addListener(
-    ref.container,
-    (previous, next) {
-      if (next == null) return;
-      if (next.accepted == null) {
-        Logger.info("tokenProvider received new pushRequest");
-        tokenNotifier.addPushRequestToToken(next);
-        return;
-      }
-      if (next.accepted != null) {
-        Logger.info("tokenProvider received pushRequest with accepted=${next.accepted}... removing it from state.");
-        tokenNotifier.removePushRequest(next);
-        FlutterLocalNotificationsPlugin().cancelAll();
-        return;
-      }
-    },
-    onError: (err, stack) {
-      throw err;
-    },
-    onDependencyMayHaveChanged: () {},
-    fireImmediately: true,
-  );
   return tokenNotifier;
 });
 
 final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
-  (ref) => SettingsNotifier(
-    repository: PreferenceSettingsRepository(),
-    initialState: SettingsState(),
-  ),
+  (ref) {
+    return SettingsNotifier(
+      repository: PreferenceSettingsRepository(),
+      initialState: SettingsState(),
+    );
+  },
 );
 
 final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>(
