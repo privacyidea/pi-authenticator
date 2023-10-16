@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
+import 'package:privacyidea_authenticator/views/license_view/license_view.dart';
 import 'package:privacyidea_authenticator/views/push_token_view/push_tokens_view.dart';
 import '../../../widgets/default_dialog.dart';
 import '../../../l10n/app_localizations.dart';
@@ -78,9 +79,9 @@ class MainViewNavigationButtions extends ConsumerWidget {
                                         onPressed: () {
                                           Navigator.pushNamed(context, PushTokensView.routeName);
                                         },
-                                        icon: Icons.notifications,
+                                        icon: const Icon(Icons.notifications),
                                       )
-                                    : const SizedBox(),
+                                    : AppBarItem(onPressed: () => Navigator.of(context).pushNamed(LicenseView.routeName), icon: const Icon(Icons.info_outline)),
                               ),
                             ),
                           ),
@@ -93,7 +94,7 @@ class MainViewNavigationButtions extends ConsumerWidget {
                                   onPressed: () {
                                     Navigator.pushNamed(context, AddTokenManuallyView.routeName);
                                   },
-                                  icon: Icons.add_moderator,
+                                  icon: const Icon(Icons.add_moderator),
                                 ),
                               ),
                             ),
@@ -112,7 +113,7 @@ class MainViewNavigationButtions extends ConsumerWidget {
                                       useRootNavigator: false,
                                     );
                                   },
-                                  icon: Icons.create_new_folder,
+                                  icon: const Icon(Icons.create_new_folder),
                                 ),
                               ),
                             ),
@@ -123,10 +124,11 @@ class MainViewNavigationButtions extends ConsumerWidget {
                               child: Padding(
                                 padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
                                 child: AppBarItem(
-                                    onPressed: () {
-                                      Navigator.pushNamed(context, SettingsView.routeName);
-                                    },
-                                    icon: Icons.settings),
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, SettingsView.routeName);
+                                  },
+                                  icon: const Icon(Icons.settings),
+                                ),
                               ),
                             ),
                           ),

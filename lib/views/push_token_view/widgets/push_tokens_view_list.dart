@@ -12,7 +12,6 @@ import '../../../widgets/deactivateable_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
 import '../../../widgets/push_request_overlay.dart';
 import '../../main_view/main_view_widgets/drag_target_divider.dart';
-import '../../main_view/main_view_widgets/no_token_screen.dart';
 import '../../main_view/main_view_widgets/sortable_widget_builder.dart';
 
 class PushTokensViwList extends ConsumerStatefulWidget {
@@ -77,10 +76,7 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
 
 List<Widget> _buildSortableWidgets(List<SortableMixin> sortables, SortableMixin? draggingSortable) {
   List<Widget> widgets = [];
-  if (sortables.isEmpty) {
-    widgets.add(const NoTokenScreen());
-    return widgets;
-  }
+  if (sortables.isEmpty) return widgets;
   sortables.sort((a, b) => a.compareTo(b));
   for (var i = 0; i < sortables.length; i++) {
     final isFirst = i == 0;

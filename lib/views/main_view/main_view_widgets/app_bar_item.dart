@@ -4,7 +4,7 @@ class AppBarItem extends StatelessWidget {
   const AppBarItem({Key? key, required this.onPressed, required this.icon}) : super(key: key);
 
   final VoidCallback onPressed;
-  final IconData icon;
+  final Icon icon;
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +13,10 @@ class AppBarItem extends StatelessWidget {
       splashRadius: 0.1,
       onPressed: onPressed,
       color: Theme.of(context).navigationBarTheme.iconTheme?.resolve({})?.color,
-      icon: Icon(
-        icon,
-        size: 24,
+      icon: SizedBox(
+        height: 24,
+        width: 24,
+        child: icon,
       ),
     );
   }
