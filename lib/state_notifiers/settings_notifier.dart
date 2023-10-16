@@ -111,4 +111,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(isFirstRun: value);
     _saveToRepo();
   }
+
+  void setHidePushTokens(bool value) {
+    Logger.info('Hide push tokens set to $value', name: 'settings_notifier.dart#setHidePushTokens');
+    state = state.copyWith(hidePushTokens: value);
+    _saveToRepo();
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import '../tokens/push_token.dart';
 
@@ -9,6 +10,13 @@ import '../tokens/token.dart';
 @immutable
 class TokenState {
   final List<Token> tokens;
+
+  List<HOTPToken> get hotpTokens => tokens.whereType<HOTPToken>().toList();
+  bool get hasHOTPTokens => hotpTokens.isNotEmpty;
+
+  List<PushToken> get pushTokens => tokens.whereType<PushToken>().toList();
+  bool get hasPushTokens => pushTokens.isNotEmpty;
+
   TokenState({List<Token> tokens = const []}) : tokens = List<Token>.from(tokens) {
     _sort(this.tokens);
   }
@@ -82,7 +90,23 @@ class TokenState {
     return TokenState(tokens: newTokens);
   }
 
-  List<Token> tokensInFolder(TokenFolder folder) => tokens.where((token) => token.folderId == folder.folderId).toList();
-  List<Token> tokensWithoutFolder() => tokens.where((token) => token.folderId == null).toList();
+  List<Token> tokensInFolder(TokenFolder folder, {List<Type>? only, List<Type>? exclude}) => tokens.where((token) {
+        if (token.folderId != folder.folderId) {
+          return false;
+        }
+        if (exclude != null && exclude.contains(token.runtimeType)) return false;
+        if (only != null && !only.contains(token.runtimeType)) return false;
+        return true;
+      }).toList();
+
+  List<Token> tokensWithoutFolder({List<Type>? only, List<Type>? exclude}) => tokens.where((token) {
+        if (token.folderId != null) {
+          return false;
+        }
+        if (exclude != null && exclude.contains(token.runtimeType)) return false;
+        if (only != null && !only.contains(token.runtimeType)) return false;
+        return true;
+      }).toList();
+
   PushToken? tokenWithPushRequest() => tokens.whereType<PushToken>().firstWhereOrNull((token) => token.pushRequests.isNotEmpty);
 }

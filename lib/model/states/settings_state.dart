@@ -18,6 +18,7 @@ class SettingsState {
 
   static bool get _useSystemLocaleDefault => true;
   static bool get _enableLoggingDefault => false;
+  static bool get _hidePushTokensDefault => false;
 
   final bool isFirstRun;
   final bool showGuideOnStart;
@@ -31,6 +32,7 @@ class SettingsState {
       : localePreference;
   final bool useSystemLocale;
   final bool verboseLogging;
+  final bool hidePushTokens;
 
   SettingsState({
     bool? isFirstRun,
@@ -41,6 +43,7 @@ class SettingsState {
     Locale? localePreference,
     bool? useSystemLocale,
     bool? verboseLogging,
+    bool? hidePushTokens,
   })  : isFirstRun = isFirstRun ?? _isFirstRunDefault,
         showGuideOnStart = showGuideOnStart ?? _showGuideOnStartDefault,
         hideOpts = hideOpts ?? _hideOtpsDefault,
@@ -48,7 +51,8 @@ class SettingsState {
         crashReportRecipients = crashReportRecipients ?? _crashReportRecipientsDefault,
         localePreference = localePreference ?? _localePreferenceDefault,
         useSystemLocale = useSystemLocale ?? _useSystemLocaleDefault,
-        verboseLogging = verboseLogging ?? _enableLoggingDefault;
+        verboseLogging = verboseLogging ?? _enableLoggingDefault,
+        hidePushTokens = hidePushTokens ?? _hidePushTokensDefault;
 
   SettingsState copyWith({
     bool? isFirstRun,
@@ -59,6 +63,7 @@ class SettingsState {
     Locale? localePreference,
     bool? useSystemLocale,
     bool? verboseLogging,
+    bool? hidePushTokens,
   }) {
     return SettingsState(
       isFirstRun: isFirstRun ?? this.isFirstRun,
@@ -69,12 +74,14 @@ class SettingsState {
       localePreference: localePreference ?? this.localePreference,
       useSystemLocale: useSystemLocale ?? this.useSystemLocale,
       verboseLogging: verboseLogging ?? this.verboseLogging,
+      hidePushTokens: hidePushTokens ?? this.hidePushTokens,
     );
   }
 
   @override
-  String toString() =>
-      'SettingsState(isFirstRun: $isFirstRun, showGuideOnStart: $showGuideOnStart, hideOpts: $hideOpts, enablePolling: $enablePolling, crashReportRecipients: $crashReportRecipients, localePreference: $localePreference, useSystemLocale: $useSystemLocale, verboseLogging: $verboseLogging)';
+  String toString() => 'SettingsState(isFirstRun: $isFirstRun, showGuideOnStart: $showGuideOnStart, hideOpts: $hideOpts, enablePolling: $enablePolling, '
+      'crashReportRecipients: $crashReportRecipients, localePreference: $localePreference, useSystemLocale: $useSystemLocale, verboseLogging: $verboseLogging, '
+      'hidePushTokens: $hidePushTokens)';
 
   static String encodeLocale(Locale locale) {
     return '${locale.languageCode}#${locale.countryCode}';

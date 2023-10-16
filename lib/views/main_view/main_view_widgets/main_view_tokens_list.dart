@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
-import '../../../model/tokens/push_token.dart';
-import '../../../model/tokens/token.dart';
 import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/drag_item_scroller.dart';
-import 'deactivateable_refresh_indicator.dart';
+import '../../../widgets/deactivateable_refresh_indicator.dart';
 import 'drag_target_divider.dart';
 import 'no_token_screen.dart';
-import 'push_request_overlay.dart';
+import '../../../widgets/push_request_overlay.dart';
 import 'sortable_widget_builder.dart';
 
 class MainViewTokensList extends ConsumerStatefulWidget {
-  final List<Token> tokens;
   final GlobalKey<NestedScrollViewState> nestedScrollViewKey;
 
-  const MainViewTokensList(this.tokens, {Key? key, required this.nestedScrollViewKey}) : super(key: key);
+  const MainViewTokensList({Key? key, required this.nestedScrollViewKey}) : super(key: key);
 
   @override
   ConsumerState<MainViewTokensList> createState() => _MainViewTokensListState();
@@ -37,15 +35,18 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
   Widget build(BuildContext context) {
     final tokenFolders = ref.watch(tokenFolderProvider).folders;
     final tokenState = ref.watch(tokenProvider);
-    final allowToRefresh = tokenState.tokens.any((token) => token is PushToken);
+    final allowToRefresh = tokenState.hasPushTokens;
     final draggingSortable = ref.watch(draggingSortableProvider);
-    final tokenStateWithNoFolder = tokenState.tokensWithoutFolder();
+    bool filterPushTokens = ref.watch(settingsProvider).hidePushTokens && tokenState.hasHOTPTokens;
+
+    final tokenStateWithNoFolder = tokenState.tokensWithoutFolder(exclude: filterPushTokens ? [PushToken] : []);
     final tokenWithPushRequest = tokenState.tokenWithPushRequest();
 
     List<SortableMixin> sortables = [...tokenFolders, ...tokenStateWithNoFolder];
 
     return Stack(
       children: [
+        if (sortables.isEmpty) const NoTokenScreen(),
         DeactivateableRefreshIndicator(
           allowToRefresh: allowToRefresh,
           onRefresh: () async {
@@ -83,10 +84,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
 
   List<Widget> _buildSortableWidgets(List<SortableMixin> sortables, SortableMixin? draggingSortable) {
     List<Widget> widgets = [];
-    if (sortables.isEmpty) {
-      widgets.add(const NoTokenScreen());
-      return widgets;
-    }
+    if (sortables.isEmpty) return [];
     sortables.sort((a, b) => a.compareTo(b));
     for (var i = 0; i < sortables.length; i++) {
       final isFirst = i == 0;

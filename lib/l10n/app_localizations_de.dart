@@ -415,4 +415,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get decryptErrorDeleteConfirmationContent => 'Are you sure you want to delete all tokens?';
+
+  @override
+  String get hidePushTokens => 'Hide push tokens';
+
+  @override
+  String get hidePushTokensDescription => 'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
 }

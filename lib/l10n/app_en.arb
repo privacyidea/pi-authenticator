@@ -748,5 +748,15 @@
   "@decryptErrorDeleteConfirmationContent": {
     "description": "decryptErrorDeleteConfirmationContent",
     "type": "text"
+  },
+  "hidePushTokens": "Hide push tokens",
+  "@hidePushTokens": {
+    "description": "hidePushTokens",
+    "type": "text"
+  },
+  "hidePushTokensDescription": "Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.",
+  "@hidePushTokensDescription": {
+    "description": "hidePushTokensDescription",
+    "type": "text"
   }
 }
