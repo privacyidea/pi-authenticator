@@ -1,5 +1,3 @@
-import 'package:flare_flutter/flare_actor.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,37 +40,29 @@ class OnboardingView extends ConsumerStatefulWidget {
 class _OnboardingViewState extends ConsumerState<OnboardingView> {
   int _currentIndex = 0;
   final PageController _pageController = PageController();
-  String animation = 'Untitled';
 
   @override
-  Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Stack(
-        children: [
-          SizedBox(
-            height: screenSize.height / 1.4,
-            width: screenSize.width,
-          ),
-          Positioned(
-            top: 120,
-            right: 5,
-            left: 5,
-            child: SizedBox(
-              width: screenSize.width * 0.4,
-              height: screenSize.height * 0.4,
-              child: Lottie.asset(
-                lottieFiles[_currentIndex].lottieFile,
-                alignment: Alignment.topCenter,
+  Widget build(BuildContext context) => Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Expanded(child: SizedBox()),
+            Expanded(
+              flex: 3,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Lottie.asset(
+                    lottieFiles[_currentIndex].lottieFile,
+                    alignment: Alignment.topCenter,
+                  ),
+                ),
               ),
             ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 270,
+            Expanded(
+              flex: 2,
               child: Column(
                 children: [
                   Flexible(
@@ -82,11 +72,15 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                       itemBuilder: (BuildContext context, int index) {
                         if (_currentIndex == 0) {
                           return OnboardingPage(
-                              title: AppLocalizations.of(context)!.onBoardingTitle1(widget.appName), subtitle: AppLocalizations.of(context)!.onBoardingText1);
+                            title: AppLocalizations.of(context)!.onBoardingTitle1(widget.appName),
+                            subtitle: AppLocalizations.of(context)!.onBoardingText1,
+                          );
                         }
                         if (_currentIndex == 1) {
-                          // TODO guide removed from here, put the new one here again?
-                          return OnboardingPage(title: AppLocalizations.of(context)!.onBoardingTitle2, subtitle: AppLocalizations.of(context)!.onBoardingText2);
+                          return OnboardingPage(
+                            title: AppLocalizations.of(context)!.onBoardingTitle2,
+                            subtitle: AppLocalizations.of(context)!.onBoardingText2,
+                          );
                         }
                         if (_currentIndex == 2) {
                           return OnboardingPage(
@@ -106,50 +100,43 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                         return Container();
                       },
                       onPageChanged: (value) {
-                        _currentIndex = value;
-                        setState(() {});
+                        setState(() {
+                          _currentIndex = value;
+                        });
                       },
                     ),
                   ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      for (int index = 0; index < lottieFiles.length; index++) DotIndicator(isSelected: index == _currentIndex),
-                    ],
-                  ),
-                  const SizedBox(height: 75)
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          switch (_currentIndex) {
-            case 2:
+            Expanded(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (int index = 0; index < lottieFiles.length; index++) DotIndicator(isSelected: index == _currentIndex),
+                ],
+              ),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            if (_currentIndex == lottieFiles.length - 1) {
               ref.read(settingsProvider.notifier).setFirstRun(false);
               Navigator.of(context).pushReplacementNamed(MainView.routeName);
-
-              break;
-            default:
-              _pageController.nextPage(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.ease,
-              );
-          }
-        },
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF303030) : Colors.grey[50],
-        child: _currentIndex == 2
-            ? FlareActor(
-                'res/rive/success_check.flr',
-                animation: animation,
-              )
-            : Icon(
-                CupertinoIcons.right_chevron,
-                color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-              ),
-      ),
-    );
-  }
+              return;
+            }
+            _pageController.nextPage(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.ease,
+            );
+          },
+          backgroundColor: Theme.of(context).colorScheme.background,
+          child: Icon(
+            Icons.arrow_forward_ios_outlined,
+            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+          ),
+        ),
+      );
 }
