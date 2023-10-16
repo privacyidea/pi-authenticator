@@ -73,7 +73,7 @@ Future<bool> lockAuth({required BuildContext context, required String localizedR
       authenticationInProgress = false;
     }
   } on PlatformException catch (e, s) {
-    Logger.error('Error: ${e.code}', name: 'token_widgets.dart#lockAuth', error: e, stackTrace: s);
+    Logger.info("Authentication failed", error: e, stackTrace: s);
   }
   return didAuthenticate;
 }
