@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -23,6 +25,7 @@ class _MockPushProvider extends Mock implements PushProvider {
   }
 
   void simulatePush(PushRequest pushRequest) {
+    log(pushSubscriber.toString());
     pushSubscriber?.newRequest(pushRequest);
   }
 }
@@ -38,16 +41,14 @@ void _testPushRequestNotifier() {
       final container = ProviderContainer();
       final mockPushProvider = _MockPushProvider();
       final mockFirebaseUtils = MockFirebaseUtils();
-      final testProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>((ref) {
-        final notifier = PushRequestNotifier(
-          pushProvider: mockPushProvider,
-          firebaseUtils: mockFirebaseUtils,
-          ioClient: MockPrivacyIdeaIOClient(),
-          rsaUtils: MockRsaUtils(),
-        );
-        mockPushProvider.initialize(pushSubscriber: notifier, firebaseUtils: mockFirebaseUtils);
-        return notifier;
-      });
+      final notifier = PushRequestNotifier(
+        pushProvider: mockPushProvider,
+        firebaseUtils: mockFirebaseUtils,
+        ioClient: MockPrivacyIdeaIOClient(),
+        rsaUtils: MockRsaUtils(),
+      );
+      final testProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>((ref) => notifier);
+      await mockPushProvider.initialize(pushSubscriber: notifier, firebaseUtils: mockFirebaseUtils);
       final pr = PushRequest(
         title: 'title',
         question: 'question',
@@ -57,6 +58,7 @@ void _testPushRequestNotifier() {
         id: 1,
         expirationDate: DateTime.now().add(const Duration(minutes: 10)),
       );
+      log('1');
       mockPushProvider.simulatePush(pr);
       expect(container.read(testProvider), pr);
     });
