@@ -130,8 +130,9 @@ class Logger {
 
   static void error(String? message, {required dynamic error, required dynamic stackTrace, String? name}) {
     final errorString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
-    instance._lastError = message ?? '';
-    if (instance._lastError.isEmpty) {
+    if (message != null) {
+      instance._lastError = message.substring(0, 100);
+    } else if (error != null) {
       instance._lastError = error.toString().substring(0, 100);
     }
     instance._logToFile(errorString);
