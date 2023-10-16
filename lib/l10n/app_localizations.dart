@@ -906,6 +906,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.'**
   String get hidePushTokensDescription;
+
+  /// licenses
+  ///
+  /// In en, this message translates to:
+  /// **'Licenses'**
+  String get licenses;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

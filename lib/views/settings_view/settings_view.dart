@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/app_localizations.dart';
 import '../../model/tokens/push_token.dart';
 import '../../utils/riverpod_providers.dart';
+import '../license_view/license_view.dart';
 import 'settings_view_widgets/logging_menu.dart';
 import 'settings_view_widgets/settings_groups.dart';
 import 'settings_view_widgets/update_firebase_token_dialog.dart';
@@ -226,6 +227,20 @@ class SettingsView extends ConsumerWidget {
                   ),
                 ),
               ),
+              const Divider(),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, LicenseView.routeName);
+                },
+                child: ListTile(
+                  title: Text(
+                    AppLocalizations.of(context)!.licenses,
+                    style: Theme.of(context).textTheme.titleMedium,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+                ),
+              )
             ]),
           ],
         ),

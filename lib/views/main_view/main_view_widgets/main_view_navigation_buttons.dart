@@ -2,8 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
+import 'package:privacyidea_authenticator/views/push_token_view/push_tokens_view.dart';
 import '../../../widgets/default_dialog.dart';
-import '../../license_view/license_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
@@ -74,9 +74,9 @@ class MainViewNavigationButtions extends StatelessWidget {
                                 padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
                                 child: AppBarItem(
                                   onPressed: () {
-                                    Navigator.pushNamed(context, LicenseView.routeName);
+                                    Navigator.pushNamed(context, PushTokensView.routeName);
                                   },
-                                  icon: Icons.info_outline,
+                                  icon: Icons.notifications,
                                 ),
                               ),
                             ),

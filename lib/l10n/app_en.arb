@@ -758,5 +758,10 @@
   "@hidePushTokensDescription": {
     "description": "hidePushTokensDescription",
     "type": "text"
+  },
+  "licenses": "Licenses",
+  "@licenses": {
+    "description": "licenses",
+    "type": "text"
   }
 }

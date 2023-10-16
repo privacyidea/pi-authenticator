@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
-import 'package:privacyidea_authenticator/views/push_token_view/push_tokens_view.dart';
 
 import '../../model/states/app_state.dart';
 import '../../utils/logger.dart';
@@ -52,13 +51,6 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
             padding: const EdgeInsets.all(4),
             child: widget.appIcon,
           ),
-          actions: [
-            if (ref.watch(tokenProvider).hasPushTokens && ref.watch(settingsProvider).hidePushTokens)
-              IconButton(
-                icon: const Icon(Icons.notifications_none),
-                onPressed: () => Navigator.pushNamed(context, PushTokensView.routeName),
-              )
-          ],
         ),
         body: Stack(
           clipBehavior: Clip.antiAliasWithSaveLayer,

@@ -421,4 +421,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get hidePushTokensDescription => 'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
+
+  @override
+  String get licenses => 'Licenses';
 }
