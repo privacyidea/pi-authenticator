@@ -101,33 +101,33 @@ class PushProvider {
 
   // FOREGROUND HANDLING
   Future<void> _foregroundHandler(RemoteMessage remoteMessage) async {
-    Logger.info('Foreground message received.', name: 'main_screen.dart#_handleIncomingAuthRequest', error: remoteMessage.data);
+    Logger.info('Foreground message received.', name: 'push_provider.dart#_foregroundHandler');
     await SecureTokenRepository.protect(() async {
       try {
         return _handleIncomingRequestForeground(remoteMessage);
       } on TypeError catch (e, s) {
         final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
         showMessage(message: errorMessage);
-        Logger.warning(errorMessage, name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data, stackTrace: s);
+        Logger.warning(errorMessage, name: 'push_provider.dart#_foregroundHandler', error: e, stackTrace: s);
       } catch (e, s) {
         final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError;
-        Logger.error(errorMessage, name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data, stackTrace: s);
+        Logger.error(errorMessage, name: 'push_provider.dart#_foregroundHandler', error: e, stackTrace: s);
       }
     });
   }
 
   // BACKGROUND HANDLING
   static Future<void> _backgroundHandler(RemoteMessage remoteMessage) async {
-    Logger.info('Background message received.', name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data);
+    Logger.info('Background message received.', name: 'push_provider.dart#_backgroundHandler');
     await SecureTokenRepository.protect(() async {
       try {
         return _handleIncomingRequestBackground(remoteMessage);
       } on TypeError catch (e, s) {
         final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
-        Logger.warning(errorMessage, name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data, stackTrace: s);
+        Logger.warning(errorMessage, name: 'push_provider.dart#_backgroundHandler', error: e, stackTrace: s);
       } catch (e, s) {
         final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError;
-        Logger.error(errorMessage, name: 'main_screen.dart#_firebaseMessagingBackgroundHandler', error: remoteMessage.data, stackTrace: s);
+        Logger.error(errorMessage, name: 'push_provider.dart#_backgroundHandler', error: e, stackTrace: s);
       }
     });
   }
@@ -137,7 +137,7 @@ class PushProvider {
   /// to the token. This should be guarded by a lock.
   Future<void> _handleIncomingRequestForeground(RemoteMessage message) async {
     final data = message.data;
-    Logger.info('Incoming push challenge: $data', name: 'main_screen.dart#_handleIncomingChallenge');
+    Logger.info('Incoming push challenge.', name: 'push_provider.dart#_handleIncomingRequestForeground');
     Uri? requestUri = Uri.tryParse(data['url']);
     if (requestUri == null ||
         data['nonce'] == null ||
@@ -145,7 +145,7 @@ class PushProvider {
         data['signature'] == null ||
         data['title'] == null ||
         data['question'] == null) {
-      Logger.warning('Could not parse url. Some required parameters are missing.', name: 'main_screen.dart#_handleIncomingChallenge');
+      Logger.warning('Could not parse url. Some required parameters are missing.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;
     }
 
@@ -165,7 +165,7 @@ class PushProvider {
       signature: data['signature'],
     );
 
-    Logger.info('Incoming push challenge for token with serial.', name: 'main_screen.dart#_handleIncomingChallenge');
+    Logger.info('Incoming push challenge for token with serial.', name: 'push_provider.dart#_handleIncomingChallenge');
 
     pushSubscriber?.newRequest(pushRequest);
   }
@@ -175,7 +175,7 @@ class PushProvider {
   /// to the token. This should be guarded by a lock.
   static Future<void> _handleIncomingRequestBackground(RemoteMessage message) async {
     final data = message.data;
-    Logger.info('Incoming push challenge: $data', name: 'main_screen.dart#_handleIncomingChallenge');
+    Logger.info('Incoming push challenge.', name: 'push_provider.dart#_handleIncomingRequestBackground');
     Uri? requestUri = Uri.tryParse(data['url']);
     if (requestUri == null ||
         data['nonce'] == null ||
@@ -183,7 +183,7 @@ class PushProvider {
         data['signature'] == null ||
         data['title'] == null ||
         data['question'] == null) {
-      Logger.warning('Could not parse url. Some required parameters are missing.', name: 'main_screen.dart#_handleIncomingChallenge');
+      Logger.warning('Could not parse url. Some required parameters are missing.', name: 'push_provider.dart#_handleIncomingRequestBackground');
       return;
     }
 
@@ -203,16 +203,16 @@ class PushProvider {
       signature: data['signature'],
     );
 
-    Logger.info('Incoming push challenge for token with serial.', name: 'main_screen.dart#_handleIncomingChallenge');
+    Logger.info('Incoming push challenge for token with serial.', name: 'push_provider.dart#_handleIncomingRequestBackground');
     _addPushRequestToTokenInSecureStoreage(pushRequest);
   }
 
   static void _addPushRequestToTokenInSecureStoreage(PushRequest pushRequest) async {
-    Logger.info('Adding push request to token in secure storage.', name: 'main_screen.dart#_addPushRequestToTokenInSecureStoreage');
+    Logger.info('Adding push request to token in secure storage.', name: 'push_provider.dart#_addPushRequestToTokenInSecureStoreage');
     var tokens = await const SecureTokenRepository().loadTokens();
     PushToken? token = tokens.firstWhereOrNull((token) => token is PushToken && token.serial == pushRequest.serial) as PushToken?;
     if (token == null) {
-      Logger.warning('Token not found.', name: 'main_screen.dart#_addPushRequestToTokenInSecureStoreage');
+      Logger.warning('Token not found.', name: 'push_provider.dart#_addPushRequestToTokenInSecureStoreage');
       return;
     }
     final prList = token.pushRequests;
@@ -224,14 +224,14 @@ class PushProvider {
   void _startOrStopPolling(bool pollingEnabled) {
     // Start polling if enabled and not already polling
     if (pollingEnabled && _pollTimer == null) {
-      Logger.info('Polling is enabled.', name: 'main_screen.dart#_startPollingIfEnabled');
+      Logger.info('Polling is enabled.', name: 'push_provider.dart#_startPollingIfEnabled');
       _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) => pollForChallenges());
       pollForChallenges();
       return;
     }
     // Stop polling if it's disabled and currently polling
     if (!pollingEnabled && _pollTimer != null) {
-      Logger.info('Polling is disabled.', name: 'main_screen.dart#_startPollingIfEnabled');
+      Logger.info('Polling is disabled.', name: 'push_provider.dart#_startPollingIfEnabled');
       _pollTimer?.cancel();
       _pollTimer = null;
       return;

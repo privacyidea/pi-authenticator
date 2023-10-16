@@ -57,7 +57,7 @@ class TokenState {
 
   // Replace the token if it does exist
   // Do nothing if it does not exist
-  TokenState replaceToken(Token token) {
+  TokenState updateToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     final index = newTokens.indexWhere((element) => element.id == token.id);
     if (index == -1) {
