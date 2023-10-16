@@ -222,9 +222,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<bool> addPushRequestToToken(PushRequest pr) async {
     await isLoading;
     PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pr.serial && t.isRolledOut);
-    Logger.info('Adding push request to token', name: 'token_notifier.dart#_handleIncomingChallenge');
+    Logger.info('Adding push request to token', name: 'token_notifier.dart#addPushRequestToToken');
     if (token == null) {
-      Logger.warning('The requested token does not exist or is not rolled out.', name: 'token_notifier.dart#_handleIncomingChallenge');
+      Logger.warning('The requested token does not exist or is not rolled out.', name: 'token_notifier.dart#addPushRequestToToken');
       return false;
     }
     String signature = pr.signature;
@@ -256,7 +256,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     if (token.knowsRequestWithId(pr.id)) {
       Logger.info(
         'The push request already exists.',
-        name: 'token_notifier.dart#_handleIncomingChallenge',
+        name: 'token_notifier.dart#addPushRequestToToken',
       );
       return false;
     }
