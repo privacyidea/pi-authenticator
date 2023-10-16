@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
+import 'dart:math';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
@@ -131,9 +132,9 @@ class Logger {
   static void error(String? message, {required dynamic error, required dynamic stackTrace, String? name}) {
     final errorString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
     if (message != null) {
-      instance._lastError = message.substring(0, 100);
+      instance._lastError = message.substring(0, min(message.length, 100));
     } else if (error != null) {
-      instance._lastError = error.toString().substring(0, 100);
+      instance._lastError = error.toString().substring(0, min(error.toString().length, 100));
     }
     instance._logToFile(errorString);
     instance._showSnackbar();

@@ -73,6 +73,7 @@ Future<bool> lockAuth({required BuildContext context, required String localizedR
       authenticationInProgress = false;
     }
   } on PlatformException catch (e, s) {
+    authenticationInProgress = false;
     Logger.info("Authentication failed", error: e, stackTrace: s);
   }
   return didAuthenticate;
