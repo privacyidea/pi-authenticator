@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -64,7 +65,9 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
         expansionController.reset();
         // Higher index = lower in the list
         dragedSortable as SortableMixin;
-        final allSortables = [...ref.read(tokenProvider).tokens, ...ref.read(tokenFolderProvider).folders];
+        final allTokens = ref.read(tokenProvider).tokens;
+        final allFolders = ref.read(tokenFolderProvider).folders;
+        final allSortables = [...allTokens, ...allFolders];
         allSortables.sort((a, b) => a.compareTo(b));
         final oldIndex = allSortables.indexOf(dragedSortable);
         if (oldIndex == -1) return; // If the draged item is not in the list we dont need to do anything
@@ -107,7 +110,8 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
           continue;
         }
 
-        globalRef?.read(tokenProvider.notifier).addOrReplaceTokens(modifiedSortables.whereType<Token>().toList());
+        globalRef?.read(tokenProvider.notifier).updateTokens(
+            allTokens, (p0) => p0.copyWith(sortIndex: modifiedSortables.whereType<Token>().firstWhereOrNull((updated) => updated.id == p0.id)?.sortIndex));
         globalRef?.read(tokenFolderProvider.notifier).updateFolders(modifiedSortables.whereType<TokenFolder>().toList());
       },
       builder: (context, accepted, rejected) {

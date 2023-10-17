@@ -78,12 +78,14 @@ class EditPushTokenAction extends TokenAction {
                 softWrap: false,
               ),
               onPressed: () async {
-                final newToken = token.copyWith(
-                  label: tokenLabel.text,
-                  url: Uri.parse(pushUrl.text),
-                  tokenImage: imageUrl.text,
-                );
-                globalRef?.read(tokenProvider.notifier).addOrReplaceToken(newToken);
+                globalRef?.read(tokenProvider.notifier).updateToken(
+                      token,
+                      (p0) => p0.copyWith(
+                        label: tokenLabel.text,
+                        url: Uri.parse(pushUrl.text),
+                        tokenImage: imageUrl.text,
+                      ),
+                    );
                 Navigator.of(context).pop();
               }),
         ],

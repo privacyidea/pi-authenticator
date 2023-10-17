@@ -112,8 +112,11 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
               },
               onLeave: (data) => _expandTimer?.cancel(),
               onAccept: (data) {
-                final updatedToken = (data as Token).copyWith(folderId: () => widget.folder.folderId);
-                ref.read(tokenProvider.notifier).addOrReplaceToken(updatedToken);
+                if (data is! Token) return;
+                ref.read(tokenProvider.notifier).updateToken(
+                      data,
+                      (p0) => p0.copyWith(folderId: () => widget.folder.folderId),
+                    );
               },
               builder: (context, willAccept, willReject) => Center(
                 child: Container(

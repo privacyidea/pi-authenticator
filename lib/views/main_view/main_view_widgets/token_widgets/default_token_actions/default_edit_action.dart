@@ -83,7 +83,7 @@ class DefaultEditAction extends TokenAction {
                 onPressed: () {
                   final newLabel = nameInputController.text.trim();
                   if (newLabel.isEmpty) return;
-                  globalRef?.read(tokenProvider.notifier).addOrReplaceToken(token.copyWith(label: newLabel));
+                  globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(label: newLabel));
 
                   Logger.info(
                     'Renamed token:',
