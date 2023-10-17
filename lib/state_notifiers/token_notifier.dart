@@ -63,7 +63,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     loadFromRepo();
   }
 
-  void _saveOrReplaceTokens(List<Token> tokens) async {
+  void _saveOrReplaceTokensRepo(List<Token> tokens) async {
     isLoading = Future(() async {
       final failedTokens = await _repo.saveOrReplaceTokens(tokens);
       if (failedTokens.isNotEmpty) {
@@ -79,7 +79,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     });
   }
 
-  void _deleteTokens(List<Token> tokens) async {
+  void _deleteTokensRepo(List<Token> tokens) async {
     isLoading = Future(() async {
       final failedTokens = await _repo.deleteTokens(tokens);
       state = state.addOrReplaceTokens(failedTokens);
@@ -132,28 +132,29 @@ class TokenNotifier extends StateNotifier<TokenState> {
   void incrementCounter(HOTPToken token) {
     token = state.currentOf(token).copyWith(counter: token.counter + 1);
     state = state.replaceToken(token);
-    _saveOrReplaceTokens([token]);
+    _saveOrReplaceTokensRepo([token]);
   }
 
   void removeToken(Token token) {
     state = state.withoutToken(token);
-    _deleteTokens([token]);
+    _deleteTokensRepo([token]);
   }
 
   void addOrReplaceToken(Token token) {
     state = state.addOrReplaceToken(token);
-    _saveOrReplaceTokens([token]);
+    _saveOrReplaceTokensRepo([token]);
   }
 
   void addOrReplaceTokens(List<Token> updatedTokens) {
     state = state.addOrReplaceTokens(updatedTokens);
-    _saveOrReplaceTokens(updatedTokens);
+    _saveOrReplaceTokensRepo(updatedTokens);
   }
 
   void updateToken<T extends Token>(T token, T Function(T) updater) {
     final current = state.currentOf<T>(token);
-    state = state.replaceToken(updater(current));
-    _saveOrReplaceTokens([token]);
+    final updated = updater(current);
+    state = state.replaceToken(updated);
+    _saveOrReplaceTokensRepo([updated]);
   }
 
   void updateTokens<T extends Token>(List<T> token, T Function(T) updater) {
@@ -163,7 +164,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       updatedTokens.add(updater(current));
     }
     state = state.replaceTokens(updatedTokens);
-    _saveOrReplaceTokens(updatedTokens);
+    _saveOrReplaceTokensRepo(updatedTokens);
   }
 
   void handleLink(Uri uri) {
