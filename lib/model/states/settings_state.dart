@@ -18,7 +18,7 @@ class SettingsState {
 
   static bool get _useSystemLocaleDefault => true;
   static bool get _enableLoggingDefault => false;
-  static bool get _hidePushTokensDefault => false;
+  static HidePushTokens get _hidePushTokensStateDefault => HidePushTokens.notHidden;
 
   final bool isFirstRun;
   final bool showGuideOnStart;
@@ -32,7 +32,8 @@ class SettingsState {
       : localePreference;
   final bool useSystemLocale;
   final bool verboseLogging;
-  final bool hidePushTokens;
+  final HidePushTokens hidePushTokensState;
+  bool get hidePushTokens => hidePushTokensState != HidePushTokens.notHidden;
 
   SettingsState({
     bool? isFirstRun,
@@ -43,7 +44,7 @@ class SettingsState {
     Locale? localePreference,
     bool? useSystemLocale,
     bool? verboseLogging,
-    bool? hidePushTokens,
+    HidePushTokens? hidePushTokensState,
   })  : isFirstRun = isFirstRun ?? _isFirstRunDefault,
         showGuideOnStart = showGuideOnStart ?? _showGuideOnStartDefault,
         hideOpts = hideOpts ?? _hideOtpsDefault,
@@ -52,7 +53,7 @@ class SettingsState {
         localePreference = localePreference ?? _localePreferenceDefault,
         useSystemLocale = useSystemLocale ?? _useSystemLocaleDefault,
         verboseLogging = verboseLogging ?? _enableLoggingDefault,
-        hidePushTokens = hidePushTokens ?? _hidePushTokensDefault;
+        hidePushTokensState = hidePushTokensState ?? _hidePushTokensStateDefault;
 
   SettingsState copyWith({
     bool? isFirstRun,
@@ -63,7 +64,7 @@ class SettingsState {
     Locale? localePreference,
     bool? useSystemLocale,
     bool? verboseLogging,
-    bool? hidePushTokens,
+    HidePushTokens? hidePushTokensState,
   }) {
     return SettingsState(
       isFirstRun: isFirstRun ?? this.isFirstRun,
@@ -74,14 +75,14 @@ class SettingsState {
       localePreference: localePreference ?? this.localePreference,
       useSystemLocale: useSystemLocale ?? this.useSystemLocale,
       verboseLogging: verboseLogging ?? this.verboseLogging,
-      hidePushTokens: hidePushTokens ?? this.hidePushTokens,
+      hidePushTokensState: hidePushTokensState ?? this.hidePushTokensState,
     );
   }
 
   @override
   String toString() => 'SettingsState(isFirstRun: $isFirstRun, showGuideOnStart: $showGuideOnStart, hideOpts: $hideOpts, enablePolling: $enablePolling, '
       'crashReportRecipients: $crashReportRecipients, localePreference: $localePreference, useSystemLocale: $useSystemLocale, verboseLogging: $verboseLogging, '
-      'hidePushTokens: $hidePushTokens)';
+      'hidePushTokensState: $hidePushTokensState)';
 
   static String encodeLocale(Locale locale) {
     return '${locale.languageCode}#${locale.countryCode}';
@@ -100,11 +101,18 @@ class SettingsState {
         other.crashReportRecipients.toString() == crashReportRecipients.toString() &&
         other.localePreference.toString() == localePreference.toString() &&
         other.useSystemLocale == useSystemLocale &&
-        other.verboseLogging == verboseLogging;
+        other.verboseLogging == verboseLogging &&
+        other.hidePushTokensState == hidePushTokensState;
   }
 
   static Locale decodeLocale(String str) {
     var split = str.split('#');
     return split[1] == 'null' ? Locale(split[0]) : Locale(split[0], split[1]);
   }
+}
+
+enum HidePushTokens {
+  notHidden,
+  isHiddenNotNoticed,
+  isHiddenAndNoticed,
 }

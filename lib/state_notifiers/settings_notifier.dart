@@ -112,9 +112,20 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     _saveToRepo();
   }
 
-  void setHidePushTokens(bool value) {
-    Logger.info('Hide push tokens set to $value', name: 'settings_notifier.dart#setHidePushTokens');
-    state = state.copyWith(hidePushTokens: value);
+  void setHidePushTokens({bool? isHidden, HidePushTokens? hidePushTokensState}) {
+    assert(isHidden != null || hidePushTokensState != null);
+    assert(isHidden == null || hidePushTokensState == null);
+    Logger.info('Hide push tokens set to $isHidden', name: 'settings_notifier.dart#setHidePushTokens');
+    if (isHidden != null) {
+      if (isHidden) {
+        state = state.copyWith(hidePushTokensState: HidePushTokens.isHiddenNotNoticed);
+      } else {
+        state = state.copyWith(hidePushTokensState: HidePushTokens.notHidden);
+      }
+    }
+    if (hidePushTokensState != null) {
+      state = state.copyWith(hidePushTokensState: hidePushTokensState);
+    }
     _saveToRepo();
   }
 }

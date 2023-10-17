@@ -1,6 +1,7 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/tokens/push_token.dart';
@@ -181,26 +182,27 @@ class SettingsView extends ConsumerWidget {
                       onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
                     ),
                   ),
-                  ListTile(
-                    title: RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: AppLocalizations.of(context)!.hidePushTokens,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        ],
+                  if (ref.watch(tokenProvider).hasHOTPTokens)
+                    ListTile(
+                      title: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: AppLocalizations.of(context)!.hidePushTokens,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    subtitle: Text(
-                      AppLocalizations.of(context)!.hidePushTokensDescription,
-                      overflow: TextOverflow.fade,
-                    ),
-                    trailing: Switch(
-                      value: ref.watch(settingsProvider).hidePushTokens,
-                      onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value),
-                    ),
-                  )
+                      subtitle: Text(
+                        AppLocalizations.of(context)!.hidePushTokensDescription,
+                        overflow: TextOverflow.fade,
+                      ),
+                      trailing: Switch(
+                        value: ref.watch(settingsProvider).hidePushTokensState != HidePushTokens.notHidden,
+                        onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(isHidden: value),
+                      ),
+                    )
                 ],
               ),
             ),

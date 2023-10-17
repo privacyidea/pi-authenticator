@@ -83,6 +83,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
     isLoading = Future(() async {
       final failedTokens = await _repo.deleteTokens(tokens);
       state = state.addOrReplaceTokens(failedTokens);
+      if (state.hasPushTokens == false) {
+        globalRef?.read(settingsProvider.notifier).setHidePushTokens(isHidden: false);
+      }
     });
   }
 

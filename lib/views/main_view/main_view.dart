@@ -5,7 +5,7 @@ import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import '../../model/states/app_state.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
-import 'main_view_widgets/main_view_navigation_buttons.dart';
+import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
 export 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 
@@ -56,7 +56,7 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
           clipBehavior: Clip.antiAliasWithSaveLayer,
           children: [
             MainViewTokensList(nestedScrollViewKey: globalKey),
-            const MainViewNavigationButtions(),
+            const MainViewNavigationBar(),
           ],
         ),
       );
