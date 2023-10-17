@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../utils/logger.dart';
 import 'package:uni_links/uni_links.dart';
+
+import '../utils/logger.dart';
 
 bool _initialUriIsHandled = false;
 

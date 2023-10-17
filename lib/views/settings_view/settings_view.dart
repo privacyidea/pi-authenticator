@@ -1,9 +1,9 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../model/states/settings_state.dart';
 import '../../model/tokens/push_token.dart';
 import '../../utils/riverpod_providers.dart';
 import '../license_view/license_view.dart';
@@ -236,7 +236,7 @@ class SettingsView extends ConsumerWidget {
                 },
                 child: ListTile(
                   title: Text(
-                    AppLocalizations.of(context)!.licenses,
+                    AppLocalizations.of(context)!.licensesAndVersion,
                     style: Theme.of(context).textTheme.titleMedium,
                     overflow: TextOverflow.fade,
                     softWrap: false,

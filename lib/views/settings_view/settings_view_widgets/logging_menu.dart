@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../widgets/default_dialog.dart';

@@ -225,7 +225,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noResultText2 => ' para empezar.';
 
   @override
-  String onBoardingTitle1(String appName) {
+  String onBoardingTitle1(Object appName) {
     return '$appName';
   }
 
@@ -368,7 +368,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get errorRollOutSSLHandshakeFailed => 'Ha fallado el protocolo SSL. No es posible el despliegue.';
 
   @override
-  String errorWhenPullingChallenges(String name) {
+  String errorWhenPullingChallenges(Object name) {
     return 'Se ha producido un error al buscar retos de $name';
   }
 
@@ -393,35 +393,35 @@ class AppLocalizationsEs extends AppLocalizations {
   String get requestTriggerdByUserQuestion => '¿Fue usted quien provocó esta petición?';
 
   @override
-  String get grantCameraPermissionDialogTitle => 'Camera permission is not granted';
+  String get grantCameraPermissionDialogTitle => 'El permiso de cámara no está concedido';
 
   @override
-  String get grantCameraPermissionDialogContent => 'Please grant camera permission to scan QR codes.';
+  String get grantCameraPermissionDialogContent => 'Por favor, concede permiso a la cámara para escanear códigos QR';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied => 'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.';
+  String get grantCameraPermissionDialogPermanentlyDenied => 'El permiso de cámara está denegado permanentemente. Concede el permiso de cámara en la configuración del teléfono';
 
   @override
-  String get grantCameraPermissionDialogButton => 'Grant permission';
+  String get grantCameraPermissionDialogButton => 'Conceder permiso';
 
   @override
-  String get decryptErrorTitle => 'Decryption error';
+  String get decryptErrorTitle => 'Error de descifrado';
 
   @override
-  String get decryptErrorContent => 'An error occurred while decrypting the tokens. Please try again.\nIf the error persists, you have to delete the corupted data';
+  String get decryptErrorContent => 'Se ha producido un error al descifrar los tokens. Por favor, inténtalo de nuevo.\nSi el error persiste, tienes que borrar los datos corruptos';
 
   @override
-  String get decryptErrorButton => 'Delete all Tokens';
+  String get decryptErrorButton => 'Borrar todos los Tokens';
 
   @override
-  String get decryptErrorDeleteConfirmationContent => 'Are you sure you want to delete all tokens?';
+  String get decryptErrorDeleteConfirmationContent => '¿Estás seguro de que quieres borrar todos los tokens?';
 
   @override
-  String get hidePushTokens => 'Hide push tokens';
+  String get hidePushTokens => 'Ocultar tokens push';
 
   @override
-  String get hidePushTokensDescription => 'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
+  String get hidePushTokensDescription => 'Ocultar tokens push de la lista de tokens. Esto no borrará los tokens y seguirán siendo visibles en una pantalla aparte';
 
   @override
-  String get licenses => 'Licenses';
+  String get licensesAndVersion => 'Licencias y versión';
 }

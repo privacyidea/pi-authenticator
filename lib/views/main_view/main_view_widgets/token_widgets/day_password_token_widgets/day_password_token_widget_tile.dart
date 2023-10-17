@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/day_password_token.dart';
 import '../../../../../utils/identifiers.dart';
 import '../../../../../utils/lock_auth.dart';

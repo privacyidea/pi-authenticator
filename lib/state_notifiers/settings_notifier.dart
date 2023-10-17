@@ -1,10 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../interfaces/repo/settings_repository.dart';
-import '../utils/logger.dart';
 
+import '../interfaces/repo/settings_repository.dart';
 import '../model/states/settings_state.dart';
+import '../utils/logger.dart';
 
 /// This class provies access to the device specific settings.
 /// It also ensures that the settings are saved to the device.

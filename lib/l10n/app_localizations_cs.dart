@@ -225,7 +225,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get noResultText2 => ' a začněte s používáním.';
 
   @override
-  String onBoardingTitle1(String appName) {
+  String onBoardingTitle1(Object appName) {
     return '$appName';
   }
 
@@ -368,7 +368,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get errorRollOutSSLHandshakeFailed => 'SSL handshake se nezdařil. Roll-out není možný.';
 
   @override
-  String errorWhenPullingChallenges(String name) {
+  String errorWhenPullingChallenges(Object name) {
     return 'Při dotazování na výzvy $name došlo k chybě.';
   }
 
@@ -399,29 +399,29 @@ class AppLocalizationsCs extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Please grant camera permission to scan QR codes.';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied => 'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.';
+  String get grantCameraPermissionDialogPermanentlyDenied => 'Oprávnění kamery je trvale odepřeno. Udělte prosím oprávnění fotoaparátu v nastavení telefonu.';
 
   @override
-  String get grantCameraPermissionDialogButton => 'Grant permission';
+  String get grantCameraPermissionDialogButton => 'Udělit oprávnění';
 
   @override
-  String get decryptErrorTitle => 'Decryption error';
+  String get decryptErrorTitle => 'Chyba dešifrování';
 
   @override
-  String get decryptErrorContent => 'An error occurred while decrypting the tokens. Please try again.\nIf the error persists, you have to delete the corupted data';
+  String get decryptErrorContent => 'Při dešifrování tokenů došlo k chybě. Zkuste to prosím znovu.\nPokud chyba přetrvává, musíte poškozená data odstranit.';
 
   @override
-  String get decryptErrorButton => 'Delete all Tokens';
+  String get decryptErrorButton => 'Odstranit všechny tokeny';
 
   @override
-  String get decryptErrorDeleteConfirmationContent => 'Are you sure you want to delete all tokens?';
+  String get decryptErrorDeleteConfirmationContent => 'Určitě chcete odstranit všechny tokeny?';
 
   @override
-  String get hidePushTokens => 'Hide push tokens';
+  String get hidePushTokens => 'Skrýt push tokeny';
 
   @override
-  String get hidePushTokensDescription => 'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
+  String get hidePushTokensDescription => 'Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.';
 
   @override
-  String get licenses => 'Licenses';
+  String get licensesAndVersion => 'Licence a verze';
 }

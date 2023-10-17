@@ -225,7 +225,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noResultText2 => 'bouton pour commencer!';
 
   @override
-  String onBoardingTitle1(String appName) {
+  String onBoardingTitle1(Object appName) {
     return '$appName';
   }
 
@@ -368,7 +368,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get errorRollOutSSLHandshakeFailed => 'Échec de la prise de contact SSL. Le déploiement n\'est pas possible.';
 
   @override
-  String errorWhenPullingChallenges(String name) {
+  String errorWhenPullingChallenges(Object name) {
     return 'Une erreur s\'est produite lors de l\'interrogation des défis de $name';
   }
 
@@ -393,35 +393,35 @@ class AppLocalizationsFr extends AppLocalizations {
   String get requestTriggerdByUserQuestion => 'Cette demande a-t-elle été déclenchée par vous ?';
 
   @override
-  String get grantCameraPermissionDialogTitle => 'Camera permission is not granted';
+  String get grantCameraPermissionDialogTitle => 'L\'autorisation de la caméra n\'est pas accordée';
 
   @override
-  String get grantCameraPermissionDialogContent => 'Please grant camera permission to scan QR codes.';
+  String get grantCameraPermissionDialogContent => 'Veuillez accorder à la caméra l\'autorisation de scanner les codes QR';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied => 'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.';
+  String get grantCameraPermissionDialogPermanentlyDenied => 'L\'autorisation de l\'appareil photo est refusée de manière permanente. Veuillez accorder l\'autorisation à l\'appareil photo dans les paramètres de votre téléphone.';
 
   @override
-  String get grantCameraPermissionDialogButton => 'Grant permission';
+  String get grantCameraPermissionDialogButton => 'Accorder l\'autorisation';
 
   @override
-  String get decryptErrorTitle => 'Decryption error';
+  String get decryptErrorTitle => 'Erreur de décryptage';
 
   @override
-  String get decryptErrorContent => 'An error occurred while decrypting the tokens. Please try again.\nIf the error persists, you have to delete the corupted data';
+  String get decryptErrorContent => 'Une erreur s\'est produite lors du décryptage des jetons. Veuillez réessayer. Si l\'erreur persiste, vous devez supprimer les données corrompues';
 
   @override
-  String get decryptErrorButton => 'Delete all Tokens';
+  String get decryptErrorButton => 'Supprimer tous les jetons';
 
   @override
-  String get decryptErrorDeleteConfirmationContent => 'Are you sure you want to delete all tokens?';
+  String get decryptErrorDeleteConfirmationContent => 'Are you sure you want to delete all tokens ?';
 
   @override
   String get hidePushTokens => 'Hide push tokens';
 
   @override
-  String get hidePushTokensDescription => 'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
+  String get hidePushTokensDescription => 'Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé';
 
   @override
-  String get licenses => 'Licenses';
+  String get licensesAndVersion => 'Licences et version';
 }

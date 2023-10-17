@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
+import '../../utils/riverpod_providers.dart';
 import '../main_view/main_view.dart';
 import '../onboarding_view/onboarding_view.dart';
 

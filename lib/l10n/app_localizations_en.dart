@@ -225,7 +225,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noResultText2 => ' button to get started!';
 
   @override
-  String onBoardingTitle1(String appName) {
+  String onBoardingTitle1(Object appName) {
     return '$appName';
   }
 
@@ -368,7 +368,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorRollOutSSLHandshakeFailed => 'SSL handshake failed. Roll-out not possible.';
 
   @override
-  String errorWhenPullingChallenges(String name) {
+  String errorWhenPullingChallenges(Object name) {
     return 'An error occured when polling for challenges of $name';
   }
 
@@ -423,5 +423,5 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hidePushTokensDescription => 'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
 
   @override
-  String get licenses => 'Licenses';
+  String get licensesAndVersion => 'Licenses and version';
 }

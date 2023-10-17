@@ -1,12 +1,14 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/main_view_navigation_buttons/license_push_view_button.dart';
+
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../settings_view/settings_view.dart';
-import 'folder_widgets/add_token_folder_dialog.dart';
 import 'app_bar_item.dart';
 import 'custom_paint_navigation_bar.dart';
+import 'folder_widgets/add_token_folder_dialog.dart';
+import 'main_view_navigation_buttons/license_push_view_button.dart';
 import 'main_view_navigation_buttons/qr_scanner_button.dart';
 
 class MainViewNavigationBar extends ConsumerWidget {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../model/tokens/day_password_token.dart';
 import '../../model/tokens/hotp_token.dart';
 import '../../model/tokens/otp_token.dart';

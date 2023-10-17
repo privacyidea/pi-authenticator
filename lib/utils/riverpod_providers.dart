@@ -1,8 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'app_customizer.dart';
-import '../state_notifiers/deeplink_notifier.dart';
-import 'push_provider.dart';
 
 import '../model/mixins/sortable_mixin.dart';
 import '../model/push_request.dart';
@@ -13,11 +10,14 @@ import '../model/states/token_state.dart';
 import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_folder_repository.dart';
 import '../state_notifiers/app_state_notifier.dart';
+import '../state_notifiers/deeplink_notifier.dart';
 import '../state_notifiers/push_request_notifier.dart';
 import '../state_notifiers/settings_notifier.dart';
 import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
+import 'app_customizer.dart';
 import 'logger.dart';
+import 'push_provider.dart';
 
 // Never use globalRef to .watch() a provider. only use it to .read() a provider
 // Otherwise the whole app will rebuild on every state change of the provider

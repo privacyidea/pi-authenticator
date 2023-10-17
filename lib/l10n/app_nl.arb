@@ -2,140 +2,95 @@
   "@@last_modified": "2023-08-07",
   "guide": "Handleiding",
   "@guide": {
-    "description": "Button to open the guide screen.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Button to open the guide screen."
   },
   "accept": "Accepteren",
   "@accept": {
-    "description": "Label for e.g. a button. Something gets accepted by the user.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label for e.g. a button. Something gets accepted by the user."
   },
   "decline": "Weigeren",
   "@decline": {
-    "description": "Label for e.g. a button. Something gets declined by the user.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label for e.g. a button. Something gets declined by the user."
   },
   "name": "Naam",
   "@name": {
-    "description": "Describes the field where the tokens name should be entered.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Describes the field where the tokens name should be entered."
   },
   "secret": "Geheim",
   "@secret": {
-    "description": "Describes the field where the tokens secret should be entered.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Describes the field where the tokens secret should be entered."
   },
   "encoding": "Codering",
   "@encoding": {
-    "description": "Title of the dropdown button where the encoding is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the encoding is selected."
   },
   "algorithm": "Algoritme",
   "@algorithm": {
-    "description": "Title of the dropdown button where the encoding is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the encoding is selected."
   },
   "digits": "Cijfers",
   "@digits": {
-    "description": "Title of the dropdown button where the number of digits for the opt value is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the number of digits for the opt value is selected."
   },
   "type": "Type",
   "@type": {
-    "description": "Title of the dropdown button where the type of the token is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the type of the token is selected."
   },
   "period": "Duur",
   "@period": {
-    "description": "Title of the dropdown button where the period of the totp token is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the period of the totp token is selected."
   },
   "rename": "Wijzigen",
   "@rename": {
-    "description": "Label that describes renaming the token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label that describes renaming the token."
   },
   "cancel": "Annuleren",
   "@cancel": {
-    "description": "Button to cancel an action.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Button to cancel an action."
   },
   "delete": "Verwijderen",
   "@delete": {
-    "description": "Label that describes deleting the token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label that describes deleting the token."
   },
   "dismiss": "Sluiten",
   "@dismiss": {
-    "description": "Text of a button that closes a dialog.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Text of a button that closes a dialog."
   },
   "addToken": "Token toevoegen",
   "@addToken": {
-    "description": "The button to open the screen to add tokens by hand.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The button to open the screen to add tokens by hand."
   },
   "scanQrCode": "Scan QR-Code",
   "@scanQrCode": {
-    "description": "The button to scan otpauth qr-codes.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The button to scan otpauth qr-codes."
   },
   "enterDetailsForToken": "Voer informatie over token in",
   "@enterDetailsForToken": {
-    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values."
   },
   "pleaseEnterANameForThisToken": "Voer de naam in voor deze token.",
   "@pleaseEnterANameForThisToken": {
-    "description": "Hint telling the user to enter a name for a token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Hint telling the user to enter a name for a token."
   },
   "pleaseEnterASecretForThisToken": "Voer de geheime sleutel in voor deze token.",
   "@pleaseEnterASecretForThisToken": {
-    "description": "Hint telling the user to enter a secret for a token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Hint telling the user to enter a secret for a token."
   },
   "theSecretDoesNotFitTheCurrentEncoding": "De geheime sleutel past niet bij de huidige codering",
   "@theSecretDoesNotFitTheCurrentEncoding": {
-    "description": "Hint telling the user that the secret does not fit the selected encoding.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Hint telling the user that the secret does not fit the selected encoding."
   },
   "renameToken": "Hernoem token",
   "@renameToken": {
-    "description": "Title of the dialog where a new name for a token can be entered.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dialog where a new name for a token can be entered."
   },
   "confirmDeletion": "Bevestig verwijderen",
   "@confirmDeletion": {
-    "description": "Title of the dialog where a token can be deleted.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dialog where a token can be deleted."
   },
   "confirmDeletionOf": "Weet u zeker dat u {name} wilt verwijderen?",
   "@confirmDeletionOf": {
     "description": "Asks for confirmation on deleting a token.",
-    "type": "text",
     "placeholders": {
       "name": {
         "example": "PUSH1234"
@@ -144,20 +99,15 @@
   },
   "generatingPhonePart": "Genereren telefoon gedeelte",
   "@generatingPhonePart": {
-    "description": "Title of a dialog telling the user that the phone part gets generated right now.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of a dialog telling the user that the phone part gets generated right now."
   },
   "phonePart": "Telefoon gedeelte:",
   "@phonePart": {
-    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user."
   },
   "otpValueCopiedMessage": "Wachtwoord \"{otpValue}\" gekopieerd naar het klembord.",
   "@otpValueCopiedMessage": {
     "description": "Tells the user that the otp value was copied to the clipboard.",
-    "type": "text",
     "placeholders": {
       "otpValue": {
         "example": "055374"
@@ -166,98 +116,67 @@
   },
   "settings": "Instellingen",
   "@settings": {
-    "description": "Button to open the settings page.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Button to open the settings page."
   },
   "pushToken": "Push Token",
   "@pushToken": {
-    "description": "Title for the settings block concerning the push tokens.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title for the settings block concerning the push tokens."
   },
   "theme": "Thema",
   "@theme": {
-    "description": "Title of the setting group where the theme can be selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the setting group where the theme can be selected."
   },
   "lightTheme": "Licht",
   "@lightTheme": {
-    "description": "The light theme.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The light theme."
   },
   "darkTheme": "Donker",
   "@darkTheme": {
-    "description": "The dark theme.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The dark theme."
   },
   "systemTheme": "Gebruik thema van het apparaat",
   "@systemTheme": {
-    "description": "The systems theme.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The systems theme."
   },
   "enablePolling": "Zoeken aanzetten",
   "@enablePolling": {
-    "description": "Name of the setting switch that enables polling.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Name of the setting switch that enables polling."
   },
   "requestPushChallengesPeriodically": "Activeer het zoeken naar berichten. Gebruik deze optie wanneer de push berichten niet worden ontvangen.",
   "@requestPushChallengesPeriodically": {
-    "description": "The description of the polling feature.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The description of the polling feature."
   },
   "synchronizePushTokens": "Synchroniseer push tokens",
   "@synchronizePushTokens": {
-    "description": "Title of synchronizing push tokens in settings.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of synchronizing push tokens in settings."
   },
   "synchronizesTokensWithServer": "Synchroniseert tokens met de privacyIDEA server.",
   "@synchronizesTokensWithServer": {
-    "description": "Description of synchronizing push tokens in settings.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Description of synchronizing push tokens in settings."
   },
   "sync": "Synchroniseer",
   "@sync": {
-    "description": "Text of button that is used to synchronize push tokens.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Text of button that is used to synchronize push tokens."
   },
   "synchronizingTokens": "Tokens synchroniseren.",
   "@synchronizingTokens": {
-    "description": "Title of the push synchronization dialog.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the push synchronization dialog."
   },
   "allTokensSynchronized": "Alle tokens zijn gesynchroniseerd.",
   "@allTokensSynchronized": {
-    "description": "Content of the push synchronization dialog. Signaling the user that everything worked.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
   "synchronizationFailed": "Synchroniseren mislukt voor de volgende tokens, probeer het opnieuw:",
   "@synchronizationFailed": {
-    "description": "Headline for the list of tokens where the synchronization failed.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Headline for the list of tokens where the synchronization failed."
   },
   "tokensDoNotSupportSynchronization": "Voor de volgende tokens wordt synchroniseren niet ondersteunt, ze moeten opnieuw worden aangeleverd:",
   "@tokensDoNotSupportSynchronization": {
-    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
   },
   "errorRollOutFailed": "Uitrollen van token {name} mislukt. Fout code: {errorCode}",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
-    "type": "text",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
@@ -269,9 +188,7 @@
   },
   "errorSynchronizationNoNetworkConnection": "Token synchroniseren mislukt, privacyIDEA server kan niet worden bereikt.",
   "@errorSynchronizationNoNetworkConnection": {
-    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached."
   },
   "errorRollOutUnknownError": "Een onbekende fout heeft plaats gevonden. Uitrollen is niet mogelijk: {e}",
   "@errorRollOutUnknownError": {
@@ -285,427 +202,231 @@
   },
   "rollingOut": "Uitrollen",
   "@rollingOut": {
-    "description": "Label that tells the user that the token is being rolled out.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label that tells the user that the token is being rolled out."
   },
   "pollingChallenges": "Zoeken naar nieuwe aanvragen",
   "@pollingChallenges": {
-    "type": "text",
-    "placeholders": {}
+    "type": "text"
   },
   "unexpectedError": "Er is een onverwachte fout opgetreden.",
   "@unexpectedError": {
-    "description": "Title of page report mode.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of page report mode."
   },
   "pollingFailNoNetworkConnection": "Zoeken naar berichten mislukt. Server kan niet worden bereikt.",
   "@pollingFailNoNetworkConnection": {
-    "description": "Tells the user that the roll-out failed because no network connection is available.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Tells the user that the roll-out failed because no network connection is available."
   },
   "useDeviceLocaleTitle": "Gebruik de taal van het apparaat",
   "@useDeviceLocaleTitle": {
-    "description": "Title of the switch tile where using the devices language can be enabled.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the switch tile where using the devices language can be enabled."
   },
   "useDeviceLocaleDescription": "Gebruik de taal van het apparaat wanneer het wordt ondersteund, val anders terug op Engels.",
   "@useDeviceLocaleDescription": {
-    "description": "Description of the switch tile where using the devices language can be enabled.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Description of the switch tile where using the devices language can be enabled."
   },
   "language": "Taal",
   "@language": {
-    "description": "Title of language setting group.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of language setting group."
   },
   "authenticateToShowOtp": "Authenticeer om het eenmalige wachtwoord te tonen.",
   "@authenticateToShowOtp": {
-    "description": "Reason to authenticate when trying to view a one time password.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Reason to authenticate when trying to view a one time password."
   },
   "authenticateToUnLockToken": "Authenticeer om de vergrendeling van de token te wijzigen.",
   "@authenticateToUnLockToken": {
-    "description": "Reason to authenticate when trying to lock or unlock a token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Reason to authenticate when trying to lock or unlock a token."
   },
   "biometricRequiredTitle": "Biometrie is niet ingesteld",
   "@biometricRequiredTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters."
   },
   "biometricHint": "Authenticatie vereist",
   "@biometricHint": {
-    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
   },
   "biometricNotRecognized": "Niet herkend. Probeer opnieuw.",
   "@biometricNotRecognized": {
-    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters."
   },
   "biometricSuccess": "Authenticatie geslaagd",
   "@biometricSuccess": {
-    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters."
   },
   "deviceCredentialsRequiredTitle": "Inloggevens van het apparaat zijn niet ingesteld",
   "@deviceCredentialsRequiredTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
   },
   "deviceCredentialsSetupDescription": "Stel de inloggegevens in, bij de instellingen van het apparaat",
   "@deviceCredentialsSetupDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side.",
-    "type": "text"
+    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side."
   },
   "signInTitle": "Authenticatie vereist",
   "@signInTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters."
   },
   "goToSettingsButton": "Ga naar instellingen",
   "@goToSettingsButton": {
-    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters.",
-    "type": "text"
+    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
   },
   "goToSettingsDescription": "Authenticatie via inloggegevens of biometrie is niet ingesteld. Stel het in bij de instellingen van het apparaat.",
   "@goToSettingsDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device.",
-    "type": "text"
+    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device."
   },
   "lockOut": "Biometrische authenticatie staat uit. Vergrendel en ontgrendel het scherm om het aan te zetten.",
   "@lockOut": {
-    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side.",
-    "type": "text"
+    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side."
   },
   "authNotSupportedTitle": "Apparaat inloggevens of biometrie is vereist",
   "@authNotSupportedTitle": {
-    "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action.",
-    "type": "text"
+    "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action."
   },
   "authNotSupportedBody": "Deze actie vereist dat het apparaat is beveiligd met inlogggevens of biometrie.",
   "@authNotSupportedBody": {
-    "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action.",
-    "type": "text"
+    "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action."
   },
   "lock": "Vergrendel",
   "@lock": {
-    "description": "Description of button that locks a token.",
-    "type": "text"
+    "description": "Description of button that locks a token."
   },
   "unlock": "Ontgrendel",
   "@unlock": {
-    "description": "Description of button that unlocks a token.",
-    "type": "text"
+    "description": "Description of button that unlocks a token."
   },
   "noResultTitle": "Nog geen token opgeslagen.",
   "@noResultTitle": {
-    "description": "No tokens installed yet.",
-    "type": "text"
+    "description": "No tokens installed yet."
   },
   "noResultText1": "Tik op ",
   "@noResultText1": {
-    "description": "first noresult text",
-    "type": "text"
+    "description": "first noresult text"
   },
   "noResultText2": " de knop om te beginnen!",
   "@noResultText2": {
-    "description": "second noresult text",
-    "type": "text"
+    "description": "second noresult text"
   },
   "onBoardingTitle1": "{appName}",
   "@onBoardingTitle1": {
-    "description": "onboardingTitle1",
-    "type": "text",
     "placeholders": {
       "appName": {
-        "type": "String",
         "example": "privacyIDEA Authenticator"
       }
     }
   },
   "onBoardingText1": "Twee-factoren authenticatie\nmakkelijk gemaakt",
-  "@onBoardingText1": {
-    "description": "onboardingText1",
-    "type": "text"
-  },
   "onBoardingTitle2": "Maximale Beveiliging",
-  "@onBoardingTitle2": {
-    "description": "onBoardingTitle2",
-    "type": "text"
-  },
   "onBoardingText2": "Bewaar tokens op uw apparaat\nbeveiligd door uw biometrische gegevens",
-  "@onBoardingText2": {
-    "description": "onboardingText2",
-    "type": "text"
-  },
   "onBoardingTitle3": "Bezoek ons op Github",
-  "@onBoardingTitle3": {
-    "description": "onBoardingTitle3",
-    "type": "text"
-  },
   "onBoardingText3": "Deze app is open source",
-  "@onBoardingText3": {
-    "description": "onBoardingText3",
-    "type": "text"
-  },
   "errorLogTitle": "Foutlogs",
-  "@errorLogTitle": {
-    "description": "errorLogTitle",
-    "type": "text"
-  },
   "sendErrorHint": "Stuur ons de error log via e-mail",
   "@sendErrorHint": {
-    "description": "Hint for the user about what he will send.",
-    "type": "text"
+    "description": "Hint for the user about what he will send."
   },
   "enableVerboseLogging": "Uitgebreide logboekregistratie inschakelen",
-  "@enableVerboseLogging": {
-    "description": "enableVerboseLogging",
-    "type": "text"
-  },
   "clearErrorLogHint": "Wist het lokale foutenlogbestand",
-  "@clearErrorLogHint": {
-    "description": "clearErrorLogHint",
-    "type": "text"
-  },
   "logMenu": "Logmenu",
-  "@logMenu": {
-    "description": "logMenu",
-    "type": "text"
-  },
   "sendErrorDialogHeader": "Verzenden via e-mail",
-  "@sendErrorDialogHeader": {
-    "description": "sendErrorDialogHeader",
-    "type": "text"
-  },
   "ok": "Ok",
-  "@ok": {
-    "description": "ok",
-    "type": "text"
-  },
   "noLogToSend": "Er is een log om te verzenden.",
-  "@noLogToSend": {
-    "description": "noLogToSend",
-    "type": "text"
-  },
   "errorLogFileAttached": "Het foutlogbestand is bijgevoegd.",
   "@errorLogFileAttached": {
-    "description": "Message for email body",
-    "type": "text"
+    "description": "Message for email body"
   },
   "errorLogCleared": "Foutlogs gewist",
-  "@errorLogCleared": {
-    "description": "errorLogCleared",
-    "type": "text"
-  },
   "showDetails": "Details tonen",
-  "@showDetails": {
-    "description": "showDetails",
-    "type": "text"
-  },
   "open": "Openen",
-  "@open": {
-    "description": "open",
-    "type": "text"
-  },
   "sendErrorDialogBody": "Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.",
   "@sendErrorDialogBody": {
-    "description": "Description shown to the user about what info the error report contains.",
-    "type": "text"
+    "description": "Description shown to the user about what info the error report contains."
   },
   "noFbToken": "Geen Firebase Token beschikbaar",
-  "@noFbToken": {
-    "description": "noFbToken",
-    "type": "text"
-  },
   "firebaseToken": "Firebase Token",
-  "@firebaseToken": {
-    "description": "firebaseToken",
-    "type": "text"
-  },
   "noPublicKey": "Geen openbare sleutel beschikbaar",
-  "@noPublicKey": {
-    "description": "noPublicKey",
-    "type": "text"
-  },
   "publicKey": "Openbare sleutel",
-  "@publicKey": {
-    "description": "publicKey",
-    "type": "text"
-  },
   "editToken": "Token bewerken",
-  "@editToken": {
-    "description": "editToken",
-    "type": "text"
-  },
   "edit": "Bewerken",
-  "@edit": {
-    "description": "edit",
-    "type": "text"
-  },
   "save": "Opslaan",
-  "@save": {
-    "description": "save",
-    "type": "text"
-  },
   "validFor": "Geldig voor",
-  "@validFor": {
-    "description": "validFor",
-    "type": "text"
-  },
   "validUntil": "Geldig tot",
-  "@validUntil": {
-    "description": "validUntil",
-    "type": "text"
-  },
   "deleteLockedToken": "Verifieer om het vergrendelde token te verwijderen.",
-  "@deleteLockedToken": {
-    "description": "deleteLockedToken",
-    "type": "text"
-  },
   "editLockedToken": "Verifieer om het vergrendelde token te bewerken.",
-  "@editLockedToken": {
-    "description": "editLockedToken",
-    "type": "text"
-  },
   "uncollapseLockedFolder": "Verifieer om de vergrendelde map te openen.",
-  "@uncollapseLockedFolder": {
-    "description": "uncollapseLockedFolder",
-    "type": "text"
-  },
   "renameTokenFolder": "Map hernoemen",
-  "@renameTokenFolder": {
-    "description": "renameTokenFolder",
-    "type": "text"
-  },
   "addANewFolder": "Nieuwe map maken",
-  "@addANewFolder": {
-    "description": "addANewFolder",
-    "type": "text"
-  },
   "folderName": "Mapnaam",
-  "@folderName": {
-    "description": "folderName",
-    "type": "text"
-  },
   "retryRollout": "Opnieuw uitrollen",
-  "@retryRollout": {
-    "description": "retryRollout",
-    "type": "text"
-  },
   "generatingRSAKeyPair": "Genereren RSA sleutelpaar",
   "@generatingRSAKeyPair": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "generatingRSAKeyPairFailed": "Genereren RSA sleutelpaar mislukt",
   "@generatingRSAKeyPairFailed": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "sendingRSAPublicKey": "Versturen van de openbare RSA sleutel",
   "@sendingRSAPublicKey": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "sendingRSAPublicKeyFailed": "Versturen van de openbare RSA sleutel mislukt",
   "@sendingRSAPublicKeyFailed": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "parsingResponse": "Antwoord analyseren",
   "@parsingResponse": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "parsingResponseFailed": "Antwoord analyseren mislukt",
   "@parsingResponseFailed": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "rolloutCompleted": "Uitrollen voltooid",
   "@rolloutCompleted": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "errorRollOutNoConnectionToServer": "Uitrollen mislukt. Geen verbinding met de server.",
   "@errorRollOutNoConnectionToServer": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "authToAcceptPushRequest": "Authenticeer om de push aanvraag te accepteren.",
   "@authToAcceptPushRequest": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "authToDeclinePushRequest": "Authenticeer om de push aanvraag te weigeren.",
   "@authToDeclinePushRequest": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "incomingAuthRequestError": "Het bericht bevatte niet de benodigde gegevens of de gegevens waren misvormd.",
   "@incomingAuthRequestError": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "imageUrl": "Afbeeldings-URL",
-  "@imageUrl": {
-    "description": "imageUrl",
-    "type": "text"
-  },
   "errorRollOutSSLHandshakeFailed": "SSL-handdruk mislukt. Uitrollen niet mogelijk.",
   "@errorRollOutSSLHandshakeFailed": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "errorWhenPullingChallenges": "Er is een fout opgetreden bij het zoeken naar uitdagingen van {name}",
   "@errorWhenPullingChallenges": {
-    "description": "errorWhenPullingChallenges",
-    "type": "text",
     "placeholders": {
       "name": {
-        "type": "String",
         "example": "PUSH1234A"
       }
     }
   },
   "errorRollOutTokenExpired": "Het uitrollen van dit token is niet meer mogelijk.\nHet token {name} is verlopen.",
-  "@errorRollOutTokenExpired": {
-    "description": "errorRollOutTokenExpired",
-    "type": "text"
-  },
   "yes": "Ja",
-  "@yes": {
-    "description": "yes",
-    "type": "text"
-  },
   "no": "Nee",
-  "@no": {
-    "description": "no",
-    "type": "text"
-  },
   "butDiscardIt": "maar verwijder",
-  "@butDiscardIt": {
-    "description": "butDiscardIt",
-    "type": "text"
-  },
   "declineIt": "weigeren",
-  "@declineIt": {
-    "description": "declineIt",
-    "type": "text"
-  },
   "requestTriggerdByUserQuestion": "Is dit verzoek door jou gedaan?",
-  "@requestTriggerdByUserQuestion": {
-    "description": "requestTriggerdByUserQuestion",
-    "type": "text"
-  }
+  "grantCameraPermissionDialogTitle": "Cameratoestemming is niet verleend",
+  "grantCameraPermissionDialogContent": "Geef de camera toestemming om QR-codes te scannen.",
+  "grantCameraPermissionDialogPermanentlyDenied": "Cameratoestemming is permanent geweigerd. Geef de camera toestemming in de instellingen van uw telefoon.",
+  "grantCameraPermissionDialogButton": "Toestemming verlenen",
+  "decryptErrorTitle": "Fout bij decoderen",
+  "decryptErrorContent": "Er is een fout opgetreden tijdens het decoderen van de tokens. Als de fout zich blijft voordoen, moet je de gecorrumpeerde data verwijderen.",
+  "decryptErrorButton": "Verwijder alle tokens",
+  "decryptErrorDeleteConfirmationContent": "Weet je zeker dat je alle tokens wilt verwijderen?",
+  "hidePushTokens": "Verberg push tokens",
+  "hidePushTokensDescription": "Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.",
+  "licensesAndVersion": "Licenties en versie"
 }

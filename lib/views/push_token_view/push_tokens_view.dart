@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/views/push_token_view/widgets/push_tokens_view_list.dart';
+
+import 'widgets/push_tokens_view_list.dart';
 
 class PushTokensView extends StatelessWidget {
   static const routeName = '/pushTokensView';

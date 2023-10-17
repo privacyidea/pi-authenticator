@@ -523,43 +523,43 @@ abstract class AppLocalizations {
   /// **' button to get started!'**
   String get noResultText2;
 
-  /// onboardingTitle1
+  /// No description provided for @onBoardingTitle1.
   ///
   /// In en, this message translates to:
   /// **'{appName}'**
-  String onBoardingTitle1(String appName);
+  String onBoardingTitle1(Object appName);
 
-  /// onboardingText1
+  /// No description provided for @onBoardingText1.
   ///
   /// In en, this message translates to:
   /// **'Two-factor authentication\nmade easy'**
   String get onBoardingText1;
 
-  /// onBoardingTitle2
+  /// No description provided for @onBoardingTitle2.
   ///
   /// In en, this message translates to:
   /// **'Maximum Security'**
   String get onBoardingTitle2;
 
-  /// onboardingText2
+  /// No description provided for @onBoardingText2.
   ///
   /// In en, this message translates to:
   /// **'Store tokens on your device securely\nProtected by your biometrics'**
   String get onBoardingText2;
 
-  /// onBoardingTitle3
+  /// No description provided for @onBoardingTitle3.
   ///
   /// In en, this message translates to:
   /// **'Visit us at Github'**
   String get onBoardingTitle3;
 
-  /// onBoardingText3
+  /// No description provided for @onBoardingText3.
   ///
   /// In en, this message translates to:
   /// **'This app is open source'**
   String get onBoardingText3;
 
-  /// errorLogTitle
+  /// No description provided for @errorLogTitle.
   ///
   /// In en, this message translates to:
   /// **'Error logs'**
@@ -571,37 +571,37 @@ abstract class AppLocalizations {
   /// **'Send us the error log via e-mail'**
   String get sendErrorHint;
 
-  /// enableVerboseLogging
+  /// No description provided for @enableVerboseLogging.
   ///
   /// In en, this message translates to:
   /// **'Enable verbose logging'**
   String get enableVerboseLogging;
 
-  /// clearErrorLogHint
+  /// No description provided for @clearErrorLogHint.
   ///
   /// In en, this message translates to:
   /// **'Clears the local error log file'**
   String get clearErrorLogHint;
 
-  /// logMenu
+  /// No description provided for @logMenu.
   ///
   /// In en, this message translates to:
   /// **'Log menu'**
   String get logMenu;
 
-  /// sendErrorDialogHeader
+  /// No description provided for @sendErrorDialogHeader.
   ///
   /// In en, this message translates to:
   /// **'Send via e-mail'**
   String get sendErrorDialogHeader;
 
-  /// ok
+  /// No description provided for @ok.
   ///
   /// In en, this message translates to:
   /// **'Ok'**
   String get ok;
 
-  /// noLogToSend
+  /// No description provided for @noLogToSend.
   ///
   /// In en, this message translates to:
   /// **'There is log to send.'**
@@ -613,19 +613,19 @@ abstract class AppLocalizations {
   /// **'The error log file is attached.'**
   String get errorLogFileAttached;
 
-  /// errorLogCleared
+  /// No description provided for @errorLogCleared.
   ///
   /// In en, this message translates to:
   /// **'Error logs cleared.'**
   String get errorLogCleared;
 
-  /// showDetails
+  /// No description provided for @showDetails.
   ///
   /// In en, this message translates to:
   /// **'Show details'**
   String get showDetails;
 
-  /// open
+  /// No description provided for @open.
   ///
   /// In en, this message translates to:
   /// **'Open'**
@@ -637,73 +637,73 @@ abstract class AppLocalizations {
   /// **'An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.'**
   String get sendErrorDialogBody;
 
-  /// noFbToken
+  /// No description provided for @noFbToken.
   ///
   /// In en, this message translates to:
   /// **'No Firebase token available'**
   String get noFbToken;
 
-  /// firebaseToken
+  /// No description provided for @firebaseToken.
   ///
   /// In en, this message translates to:
   /// **'Firebase Token'**
   String get firebaseToken;
 
-  /// noPublicKey
+  /// No description provided for @noPublicKey.
   ///
   /// In en, this message translates to:
   /// **'No public key available'**
   String get noPublicKey;
 
-  /// publicKey
+  /// No description provided for @publicKey.
   ///
   /// In en, this message translates to:
   /// **'Public Key'**
   String get publicKey;
 
-  /// editToken
+  /// No description provided for @editToken.
   ///
   /// In en, this message translates to:
   /// **'Edit Token'**
   String get editToken;
 
-  /// edit
+  /// No description provided for @edit.
   ///
   /// In en, this message translates to:
   /// **'Edit'**
   String get edit;
 
-  /// save
+  /// No description provided for @save.
   ///
   /// In en, this message translates to:
   /// **'Save'**
   String get save;
 
-  /// validFor
+  /// No description provided for @validFor.
   ///
   /// In en, this message translates to:
   /// **'Valid for'**
   String get validFor;
 
-  /// validUntil
+  /// No description provided for @validUntil.
   ///
   /// In en, this message translates to:
   /// **'Valid until'**
   String get validUntil;
 
-  /// deleteLockedToken
+  /// No description provided for @deleteLockedToken.
   ///
   /// In en, this message translates to:
   /// **'Please authenticate to delete the locked token.'**
   String get deleteLockedToken;
 
-  /// editLockedToken
+  /// No description provided for @editLockedToken.
   ///
   /// In en, this message translates to:
   /// **'Please authenticate to edit the locked token.'**
   String get editLockedToken;
 
-  /// uncollapseLockedFolder
+  /// No description provided for @uncollapseLockedFolder.
   ///
   /// In en, this message translates to:
   /// **'Please authenticate to uncollapse the locked folder.'**
@@ -715,19 +715,19 @@ abstract class AppLocalizations {
   /// **'Rename folder'**
   String get renameTokenFolder;
 
-  /// addANewFolder
+  /// No description provided for @addANewFolder.
   ///
   /// In en, this message translates to:
   /// **'Create new folder'**
   String get addANewFolder;
 
-  /// folderName
+  /// No description provided for @folderName.
   ///
   /// In en, this message translates to:
   /// **'Foldername'**
   String get folderName;
 
-  /// retryRollout
+  /// No description provided for @retryRollout.
   ///
   /// In en, this message translates to:
   /// **'Retry rollout'**
@@ -775,25 +775,25 @@ abstract class AppLocalizations {
   /// **'Rollout completed'**
   String get rolloutCompleted;
 
-  /// authToAcceptPushRequest
+  /// No description provided for @authToAcceptPushRequest.
   ///
   /// In en, this message translates to:
   /// **'Please authenticate to accept the push request.'**
   String get authToAcceptPushRequest;
 
-  ///
+  /// No description provided for @authToDeclinePushRequest.
   ///
   /// In en, this message translates to:
   /// **'Please authenticate to decline the push request.'**
   String get authToDeclinePushRequest;
 
-  /// incomingAuthRequestError
+  /// No description provided for @incomingAuthRequestError.
   ///
   /// In en, this message translates to:
   /// **'The message didn\'t provided the needed data or the data was malformed.'**
   String get incomingAuthRequestError;
 
-  /// imageUrl
+  /// No description provided for @imageUrl.
   ///
   /// In en, this message translates to:
   /// **'Image URL'**
@@ -809,7 +809,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'An error occured when polling for challenges of {name}'**
-  String errorWhenPullingChallenges(String name);
+  String errorWhenPullingChallenges(Object name);
 
   /// Tells the user that the roll-out failed because the token has expired.
   ///
@@ -817,101 +817,101 @@ abstract class AppLocalizations {
   /// **'Rolling out this Token is not possible anymore.\nThe token {name} has expired.'**
   String errorRollOutTokenExpired(Object name);
 
-  /// yes
+  /// No description provided for @yes.
   ///
   /// In en, this message translates to:
   /// **'Yes'**
   String get yes;
 
-  /// no
+  /// No description provided for @no.
   ///
   /// In en, this message translates to:
   /// **'No'**
   String get no;
 
-  /// butDiscardIt
+  /// No description provided for @butDiscardIt.
   ///
   /// In en, this message translates to:
   /// **'but discard it'**
   String get butDiscardIt;
 
-  /// declineIt
+  /// No description provided for @declineIt.
   ///
   /// In en, this message translates to:
   /// **'decline it'**
   String get declineIt;
 
-  /// requestTriggerdByUserQuestion
+  /// No description provided for @requestTriggerdByUserQuestion.
   ///
   /// In en, this message translates to:
   /// **'Was this request triggered by you?'**
   String get requestTriggerdByUserQuestion;
 
-  /// grantCameraPermissionDialogTitle
+  /// No description provided for @grantCameraPermissionDialogTitle.
   ///
   /// In en, this message translates to:
   /// **'Camera permission is not granted'**
   String get grantCameraPermissionDialogTitle;
 
-  /// grantCameraPermissionDialogContent
+  /// No description provided for @grantCameraPermissionDialogContent.
   ///
   /// In en, this message translates to:
   /// **'Please grant camera permission to scan QR codes.'**
   String get grantCameraPermissionDialogContent;
 
-  /// grantCameraPermissionDialogPermanentlyDenied
+  /// No description provided for @grantCameraPermissionDialogPermanentlyDenied.
   ///
   /// In en, this message translates to:
   /// **'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.'**
   String get grantCameraPermissionDialogPermanentlyDenied;
 
-  /// grantCameraPermissionDialogButton
+  /// No description provided for @grantCameraPermissionDialogButton.
   ///
   /// In en, this message translates to:
   /// **'Grant permission'**
   String get grantCameraPermissionDialogButton;
 
-  /// decryptErrorTitle
+  /// No description provided for @decryptErrorTitle.
   ///
   /// In en, this message translates to:
   /// **'Decryption error'**
   String get decryptErrorTitle;
 
-  /// decryptErrorContent
+  /// No description provided for @decryptErrorContent.
   ///
   /// In en, this message translates to:
   /// **'An error occurred while decrypting the tokens. Please try again.\nIf the error persists, you have to delete the corupted data'**
   String get decryptErrorContent;
 
-  /// decryptErrorButton
+  /// No description provided for @decryptErrorButton.
   ///
   /// In en, this message translates to:
   /// **'Delete all Tokens'**
   String get decryptErrorButton;
 
-  /// decryptErrorDeleteConfirmationContent
+  /// No description provided for @decryptErrorDeleteConfirmationContent.
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete all tokens?'**
   String get decryptErrorDeleteConfirmationContent;
 
-  /// hidePushTokens
+  /// No description provided for @hidePushTokens.
   ///
   /// In en, this message translates to:
   /// **'Hide push tokens'**
   String get hidePushTokens;
 
-  /// hidePushTokensDescription
+  /// No description provided for @hidePushTokensDescription.
   ///
   /// In en, this message translates to:
   /// **'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.'**
   String get hidePushTokensDescription;
 
-  /// licenses
+  /// No description provided for @licensesAndVersion.
   ///
   /// In en, this message translates to:
-  /// **'Licenses'**
-  String get licenses;
+  /// **'Licenses and version'**
+  String get licensesAndVersion;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

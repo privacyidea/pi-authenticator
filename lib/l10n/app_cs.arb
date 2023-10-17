@@ -2,141 +2,95 @@
   "@@last_modified": "2023-08-07",
   "guide": "Průvodce",
   "@guide": {
-    "description": "Button to open the guide screen.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Button to open the guide screen."
   },
   "retry": "Zkusit znovu",
   "@retry": {
-    "description": "Label for e.g. a button. Something is tried to be done again.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label for e.g. a button. Something is tried to be done again."
   },
   "accept": "Přijmout",
   "@accept": {
-    "description": "Label for e.g. a button. Something gets accepted by the user.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label for e.g. a button. Something gets accepted by the user."
   },
   "decline": "Odmítnout",
   "@decline": {
-    "description": "Label for e.g. a button. Something gets declined by the user.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label for e.g. a button. Something gets declined by the user."
   },
   "name": "Název",
   "@name": {
-    "description": "Describes the field where the tokens name should be entered.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Describes the field where the tokens name should be entered."
   },
   "secret": "Heslo",
   "@secret": {
-    "description": "Describes the field where the tokens secret should be entered.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Describes the field where the tokens secret should be entered."
   },
   "encoding": "Kódování",
   "@encoding": {
-    "description": "Title of the dropdown button where the encoding is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the encoding is selected."
   },
   "algorithm": "Algoritmus",
   "@algorithm": {
-    "description": "Title of the dropdown button where the encoding is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the encoding is selected."
   },
   "digits": "Počet číslic",
   "@digits": {
-    "description": "Title of the dropdown button where the number of digits for the opt value is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the number of digits for the opt value is selected."
   },
   "type": "Typ",
   "@type": {
-    "description": "Title of the dropdown button where the type of the token is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the type of the token is selected."
   },
   "period": "Časový interval",
   "@period": {
-    "description": "Title of the dropdown button where the period of the totp token is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the period of the totp token is selected."
   },
   "rename": "Přejmenovat",
   "@rename": {
-    "description": "Label that describes renaming the token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label that describes renaming the token."
   },
   "cancel": "Zrušit",
   "@cancel": {
-    "description": "Button to cancel an action.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Button to cancel an action."
   },
   "delete": "Smazat",
   "@delete": {
-    "description": "Label that describes deleting the token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label that describes deleting the token."
   },
   "dismiss": "Zavřít",
   "@dismiss": {
-    "description": "Text of a button that closes a dialog.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Text of a button that closes a dialog."
   },
   "addToken": "Přidat token",
   "@addToken": {
-    "description": "The button to open the screen to add tokens by hand.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The button to open the screen to add tokens by hand."
   },
   "scanQrCode": "Naskenovat QR kód",
   "@scanQrCode": {
-    "description": "The button to scan otpauth qr-codes.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The button to scan otpauth qr-codes."
   },
   "enterDetailsForToken": "Vložte podrobnosti tokenu",
   "@enterDetailsForToken": {
-    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values."
   },
   "pleaseEnterANameForThisToken": "Vložte název pro tento token.",
   "@pleaseEnterANameForThisToken": {
-    "description": "Hint telling the user to enter a name for a token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Hint telling the user to enter a name for a token."
   },
   "pleaseEnterASecretForThisToken": "Vložte tajný klíč pro tento token.",
   "@pleaseEnterASecretForThisToken": {
-    "description": "Hint telling the user to enter a secret for a token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Hint telling the user to enter a secret for a token."
   },
   "theSecretDoesNotFitTheCurrentEncoding": "Tajný klíč neodpovídá zvolenému kódování.",
   "@theSecretDoesNotFitTheCurrentEncoding": {
-    "description": "Hint telling the user that the secret does not fit the selected encoding.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Hint telling the user that the secret does not fit the selected encoding."
   },
   "renameToken": "Přejmenovat token",
   "@renameToken": {
-    "description": "Title of the dialog where a new name for a token can be entered.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dialog where a new name for a token can be entered."
   },
   "confirmDeletion": "Potvrdit smazání",
   "@confirmDeletion": {
-    "description": "Title of the dialog where a token can be deleted.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dialog where a token can be deleted."
   },
   "confirmDeletionOf": "Opravdu chcete smazat token {name}?",
   "@confirmDeletionOf": {
@@ -150,15 +104,11 @@
   },
   "generatingPhonePart": "Generování klientské části",
   "@generatingPhonePart": {
-    "description": "Title of a dialog telling the user that the phone part gets generated right now.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of a dialog telling the user that the phone part gets generated right now."
   },
   "phonePart": "Klientská část:",
   "@phonePart": {
-    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user."
   },
   "otpValueCopiedMessage": "Heslo \"{otpValue}\" bylo zkopírováno do schránky.",
   "@otpValueCopiedMessage": {
@@ -172,93 +122,63 @@
   },
   "settings": "Nastavení",
   "@settings": {
-    "description": "Button to open the settings page.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Button to open the settings page."
   },
   "pushToken": "Push notifikace",
   "@pushToken": {
-    "description": "Title for the settings block concerning the push tokens.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title for the settings block concerning the push tokens."
   },
   "theme": "Vzhled",
   "@theme": {
-    "description": "Title of the setting group where the theme can be selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the setting group where the theme can be selected."
   },
   "lightTheme": "Světlý",
   "@lightTheme": {
-    "description": "The light theme.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The light theme."
   },
   "darkTheme": "Tmavý",
   "@darkTheme": {
-    "description": "The dark theme.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The dark theme."
   },
   "systemTheme": "Použít nastavení systému",
   "@systemTheme": {
-    "description": "The systems theme.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The systems theme."
   },
   "enablePolling": "Povolit polling",
   "@enablePolling": {
-    "description": "Name of the setting switch that enables polling.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Name of the setting switch that enables polling."
   },
   "requestPushChallengesPeriodically": "Periodicky získávat výzvy ze serveru. Povolte pokud nefunguje příjem push notifikací.",
   "@requestPushChallengesPeriodically": {
-    "description": "The description of the polling feature.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The description of the polling feature."
   },
   "synchronizePushTokens": "Synchronizace push tokenů",
   "@synchronizePushTokens": {
-    "description": "Title of synchronizing push tokens in settings.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of synchronizing push tokens in settings."
   },
   "synchronizesTokensWithServer": "Synchronizovat tokeny se serverem privacyIDEA.",
   "@synchronizesTokensWithServer": {
-    "description": "Description of synchronizing push tokens in settings.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Description of synchronizing push tokens in settings."
   },
   "sync": "Synchronizovat",
   "@sync": {
-    "description": "Text of button that is used to synchronize push tokens.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Text of button that is used to synchronize push tokens."
   },
   "synchronizingTokens": "Tokeny se synchronizují.",
   "@synchronizingTokens": {
-    "description": "Title of the push synchronization dialog.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the push synchronization dialog."
   },
   "allTokensSynchronized": "Všechny tokeny jsou synchronizované.",
   "@allTokensSynchronized": {
-    "description": "Content of the push synchronization dialog. Signaling the user that everything worked.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
   "synchronizationFailed": "Synchronizace následujících tokenů selhala, zkuste to znovu:",
   "@synchronizationFailed": {
-    "description": "Headline for the list of tokens where the synchronization failed.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Headline for the list of tokens where the synchronization failed."
   },
   "tokensDoNotSupportSynchronization": "Následující tokeny nepodporují synchronizaci a musí být znovu zaregistrovány:",
   "@tokensDoNotSupportSynchronization": {
-    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
   },
   "errorRollOutFailed": "Registrace tokenu {name} selhala. Kód chyby: {errorCode}",
   "@errorRollOutFailed": {
@@ -275,9 +195,7 @@
   },
   "errorSynchronizationNoNetworkConnection": "Synchronizace tokenů selhala, připojení k serveru privacyIDEA se nezdařilo.",
   "@errorSynchronizationNoNetworkConnection": {
-    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached."
   },
   "errorRollOutUnknownError": "Vyskytla se neznámá chyba. Registrace není možná: {e}",
   "@errorRollOutUnknownError": {
@@ -291,362 +209,190 @@
   },
   "rollingOut": "Registrace",
   "@rollingOut": {
-    "description": "Label that tells the user that the token is being rolled out.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label that tells the user that the token is being rolled out."
   },
   "pollingChallenges": "Čekám na nové požadavky",
   "@pollingChallenges": {
-    "type": "text",
-    "placeholders": {}
+    "type": "text"
   },
   "unexpectedError": "Nastala neočekávaná chyba.",
   "@unexpectedError": {
-    "description": "Title of page report mode.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of page report mode."
   },
   "pollingFailNoNetworkConnection": "Stahování selhalo. Server není dostupný.",
   "@pollingFailNoNetworkConnection": {
-    "description": "Tells the user that the roll-out failed because no network connection is available.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Tells the user that the roll-out failed because no network connection is available."
   },
   "useDeviceLocaleTitle": "Použít jazyk zařízení",
   "@useDeviceLocaleTitle": {
-    "description": "Title of the switch tile where using the devices language can be enabled.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the switch tile where using the devices language can be enabled."
   },
   "useDeviceLocaleDescription": "Použít jazyk zařízení, pokud je podporován, případně angličtinu.",
   "@useDeviceLocaleDescription": {
-    "description": "Description of the switch tile where using the devices language can be enabled.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Description of the switch tile where using the devices language can be enabled."
   },
   "language": "Jazyk",
   "@language": {
-    "description": "Title of language setting group.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of language setting group."
   },
   "authenticateToShowOtp": "Pro zobrazení jednorázového kódu se přihlaste.",
   "@authenticateToShowOtp": {
-    "description": "Reason to authenticate when trying to view a one time password.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Reason to authenticate when trying to view a one time password."
   },
   "authenticateToUnLockToken": "Pro změnu uzamčení tokenu se přihlaste.",
   "@authenticateToUnLockToken": {
-    "description": "Reason to authenticate when trying to lock or unlock a token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Reason to authenticate when trying to lock or unlock a token."
   },
   "biometricRequiredTitle": "Biometrické ověření není nastaveno",
   "@biometricRequiredTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters."
   },
   "biometricHint": "Vyžadováno přihlášení",
   "@biometricHint": {
-    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
   },
   "biometricNotRecognized": "Ověření se nezdařilo. Zkuste to znovu.",
   "@biometricNotRecognized": {
-    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters."
   },
   "biometricSuccess": "Přihlášení bylo úspěšné",
   "@biometricSuccess": {
-    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters."
   },
   "deviceCredentialsRequiredTitle": "Není nastaven zámek zařízení",
   "@deviceCredentialsRequiredTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
   },
   "deviceCredentialsSetupDescription": "Nastave zámek zařízení v nastavení zařízení",
   "@deviceCredentialsSetupDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side.",
-    "type": "text"
+    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side."
   },
   "signInTitle": "Vyžadováno přihlášení",
   "@signInTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters."
   },
   "goToSettingsButton": "Otevřít nastavení",
   "@goToSettingsButton": {
-    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters.",
-    "type": "text"
+    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
   },
   "goToSettingsDescription": "Není nastaveno přihlášení zámkem zařízení ani biometrické ověření. Aktivujte je v nastavení zařízení.",
   "@goToSettingsDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device.",
-    "type": "text"
+    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device."
   },
   "lockOut": "Biometrické ověření je deaktivováno. Pro aktivaci zamkněte a znovu odemkněte obrazovku/zařízení.",
   "@lockOut": {
-    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side.",
-    "type": "text"
+    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side."
   },
   "authNotSupportedTitle": "Vyžadován zámek zařízení nebo biometrické ověření",
   "@authNotSupportedTitle": {
-    "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action.",
-    "type": "text"
+    "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action."
   },
   "authNotSupportedBody": "Tato akce vyžaduje, aby bylo zařízení chráněno zámkem zařízení nebo biometrickým ověřením.",
   "@authNotSupportedBody": {
-    "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action.",
-    "type": "text"
+    "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action."
   },
   "lock": "Zamknout",
   "@lock": {
-    "description": "Description of button that locks a token.",
-    "type": "text"
+    "description": "Description of button that locks a token."
   },
   "unlock": "Odemknout",
   "@unlock": {
-    "description": "Description of button that unlocks a token.",
-    "type": "text"
+    "description": "Description of button that unlocks a token."
   },
   "noResultTitle": "Nejsou nainstalovány žádné tokeny.",
   "@noResultTitle": {
-    "description": "No tokens installed yet.",
-    "type": "text"
+    "description": "No tokens installed yet."
   },
   "noResultText1": "stiskněte tlačítko ",
   "@noResultText1": {
-    "description": "first noresult text",
-    "type": "text"
+    "description": "first noresult text"
   },
   "noResultText2": " a začněte s používáním.",
   "@noResultText2": {
-    "description": "second noresult text",
-    "type": "text"
+    "description": "second noresult text"
   },
   "onBoardingTitle1": "{appName}",
   "@onBoardingTitle1": {
-    "description": "onboardingTitle1",
-    "type": "text",
     "placeholders": {
       "appName": {
-        "type": "String",
         "example": "privacyIDEA Authenticator"
       }
     }
   },
   "onBoardingText1": "vícefázové ověření\nusnadněno",
-  "@onBoardingText1": {
-    "description": "onboardingText1",
-    "type": "text"
-  },
   "onBoardingTitle2": "Maximální Bezpečnost",
-  "@onBoardingTitle2": {
-    "description": "onBoardingTitle2",
-    "type": "text"
-  },
   "onBoardingText2": "Uložte tokeny do svého zařízení\nchráněné biometrickým ověřením",
-  "@onBoardingText2": {
-    "description": "onboardingText2",
-    "type": "text"
-  },
   "onBoardingTitle3": "Navštivte náš profil Github",
-  "@onBoardingTitle3": {
-    "description": "onBoardingTitle3",
-    "type": "text"
-  },
   "onBoardingText3": "Tuto aplikaci má open source",
-  "@onBoardingText3": {
-    "description": "onBoardingTitle3",
-    "type": "text"
-  },
   "errorLogTitle": "Protokoly o chybách",
-  "@errorLogTitle": {
-    "description": "errorLogTitle",
-    "type": "text"
-  },
   "sendErrorHint": "Pošlete nám protokol o chybě e-mailem",
   "@sendErrorHint": {
-    "description": "Hint for the user about what he will send.",
-    "type": "text"
+    "description": "Hint for the user about what he will send."
   },
   "enableVerboseLogging": "Povolit slovní protokolování",
-  "@enableVerboseLogging": {
-    "description": "enableVerboseLogging",
-    "type": "text"
-  },
   "clearErrorLogHint": "Vymaže místní soubor protokolu chyb",
-  "@clearErrorLogHint": {
-    "description": "clearErrorLogHint",
-    "type": "text"
-  },
   "logMenu": "Nabídka protokolu",
-  "@logMenu": {
-    "description": "logMenu",
-    "type": "text"
-  },
   "sendErrorDialogHeader": "Odeslat e-mailem",
-  "@sendErrorDialogHeader": {
-    "description": "sendErrorDialogHeader",
-    "type": "text"
-  },
   "ok": "Ok",
-  "@ok": {
-    "description": "ok",
-    "type": "text"
-  },
   "noLogToSend": "Je třeba odeslat protokol.",
-  "@noLogToSend": {
-    "description": "noLogToSend",
-    "type": "text"
-  },
   "errorLogFileAttached": "Přiložen je soubor protokolu o chybách.",
   "@errorLogFileAttached": {
-    "description": "Message for email body",
-    "type": "text"
+    "description": "Message for email body"
   },
   "errorLogCleared": "Protokoly chyb byly vymazány.",
-  "@errorLogCleared": {
-    "description": "errorLogCleared",
-    "type": "text"
-  },
   "showDetails": "Zobrazit podrobnosti",
-  "@showDetails": {
-    "description": "showDetails",
-    "type": "text"
-  },
   "open": "Otevřít",
-  "@open": {
-    "description": "open",
-    "type": "text"
-  },
   "sendErrorDialogBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.",
   "@sendErrorDialogBody": {
-    "description": "Description shown to the user about what info the error report contains.",
-    "type": "text"
+    "description": "Description shown to the user about what info the error report contains."
   },
   "noFbToken": "Není k dispozici žádný token Firebase.",
-  "@noFbToken": {
-    "description": "noFbToken",
-    "type": "text"
-  },
   "firebaseToken": "Token Firebase",
-  "@firebaseToken": {
-    "description": "firebaseToken",
-    "type": "text"
-  },
   "noPublicKey": "Není k dispozici žádný veřejný klíč.",
-  "@noPublicKey": {
-    "description": "noPublicKey",
-    "type": "text"
-  },
   "publicKey": "Veřejný klíč",
-  "@publicKey": {
-    "description": "publicKey",
-    "type": "text"
-  },
   "editToken": "Upravit token",
-  "@editToken": {
-    "description": "editToken",
-    "type": "text"
-  },
   "edit": "Upravit",
-  "@edit": {
-    "description": "edit",
-    "type": "text"
-  },
   "save": "Uložit",
-  "@save": {
-    "description": "save",
-    "type": "text"
-  },
   "validFor": "Platné pro",
-  "@validFor": {
-    "description": "validFor",
-    "type": "text"
-  },
   "validUntil": "Platné do",
-  "@validUntil": {
-    "description": "validUntil",
-    "type": "text"
-  },
   "deleteLockedToken": "Prosím, autentifikujte se pro smazání uzamčeného tokenu.",
-  "@deleteLockedToken": {
-    "description": "deleteLockedToken",
-    "type": "text"
-  },
   "editLockedToken": "Prosím, autentifikujte se pro úpravu uzamčeného tokenu.",
-  "@editLockedToken": {
-    "description": "editLockedToken",
-    "type": "text"
-  },
   "uncollapseLockedFolder": "Chcete-li otevřít uzamčenou složku, ověřte se.",
-  "@uncollapseLockedFolder": {
-    "description": "uncollapseLockedFolder",
-    "type": "text"
-  },
   "renameTokenFolder": "Přejmenování složky",
-  "@renameTokenFolder": {
-    "description": "renameTokenFolder",
-    "type": "text"
-  },
   "addANewFolder": "Vytvoření nové složky",
-  "@addANewFolder": {
-    "description": "addANewFolder",
-    "type": "text"
-  },
   "folderName": "Název složky",
-  "@folderName": {
-    "description": "folderName",
-    "type": "text"
-  },
   "retryRollout": "Zkusit znovu",
-  "@retryRollout": {
-    "description": "retryRollout",
-    "type": "text"
-  },
   "generatingRSAKeyPair": "Generování párů klíčů RSA",
   "@generatingRSAKeyPair": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "generatingRSAKeyPairFailed": "Generování páru klíčů RSA se nezdařilo",
   "@generatingRSAKeyPairFailed": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "sendingRSAPublicKey": "Odeslání veřejného klíče RSA",
   "@sendingRSAPublicKey": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "sendingRSAPublicKeyFailed": "Nepodařilo se odeslat veřejný klíč RSA",
   "@sendingRSAPublicKeyFailed": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "parsingResponse": "Rozbor odpovědi",
   "@parsingResponse": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "parsingResponseFailed": "Parsování odpovědi se nezdařilo",
   "@parsingResponseFailed": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "rolloutCompleted": "Zavedení dokončeno",
   "@rolloutCompleted": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "errorRollOutNoConnectionToServer": "Registrace tokenu {name} selhala. Server není dostupný.",
   "@errorRollOutNoConnectionToServer": {
     "description": "Message for the rollout process",
-    "type": "text",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
@@ -654,45 +400,20 @@
     }
   },
   "authToAcceptPushRequest": "Pro přijetí požadavku na push notifikaci se přihlaste.",
-  "@authToAcceptPushRequest": {
-    "description": "authToAcceptPushRequest",
-    "type": "text"
-  },
   "authToDeclinePushRequest": "Pro odmítnutí požadavku na push notifikaci se přihlaste.",
-  "@authToDeclinePushRequest": {
-    "description": "authToDeclinePushRequest",
-    "type": "text"
-  },
   "incomingAuthRequestError": "Zpráva neposkytla potřebná data nebo byla data chybně formulována.",
-  "@incomingAuthRequestError": {
-    "description": "incomingAuthRequestError",
-    "type": "text"
-  },
   "imageUrl": "URL obrázku",
-  "@imageUrl": {
-    "description": "imageUrl",
-    "type": "text"
-  },
   "errorRollOutSSLHandshakeFailed": "SSL handshake se nezdařil. Roll-out není možný.",
-  "@errorRollOutSSLHandshakeFailed": {
-    "description": "errorRollOutSSLHandshakeFailed",
-    "type": "text"
-  },
   "errorWhenPullingChallenges": "Při dotazování na výzvy {name} došlo k chybě.",
   "@errorWhenPullingChallenges": {
-    "description": "errorWhenPullingChallenges",
-    "type": "text",
     "placeholders": {
       "name": {
-        "type": "String",
         "example": "PUSH1234A"
       }
     }
   },
   "errorRollOutTokenExpired": "Roll-out tohoto tokenu již není možný.\nPlatnost tokenu {name} vypršela.",
   "@errorRollOutTokenExpired": {
-    "description": "errorRollOutTokenExpired",
-    "type": "text",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
@@ -700,28 +421,19 @@
     }
   },
   "yes": "Ano",
-  "@yes": {
-    "description": "yes",
-    "type": "text"
-  },
   "no": "Ne",
-  "@no": {
-    "description": "no",
-    "type": "text"
-  },
   "butDiscardIt": "ale zahodit jej",
-  "@butDiscardIt": {
-    "description": "butDiscardIt",
-    "type": "text"
-  },
   "declineIt": "odmítnout jej ",
-  "@declineIt": {
-    "description": "declineIt",
-    "type": "text"
-  },
   "requestTriggerdByUserQuestion": "Byl tento požadavek vyvolán vámi?",
-  "@requestTriggerdByUserQuestion": {
-    "description": "requestTriggerdByUserQuestion",
-    "type": "text"
-  }
+  "grantCameraPermissionDialogTitle": "Camera permission is not granted",
+  "grantCameraPermissionDialogContent": "Please grant camera permission to scan QR codes.",
+  "grantCameraPermissionDialogPermanentlyDenied": "Oprávnění kamery je trvale odepřeno. Udělte prosím oprávnění fotoaparátu v nastavení telefonu.",
+  "grantCameraPermissionDialogButton": "Udělit oprávnění",
+  "decryptErrorTitle": "Chyba dešifrování",
+  "decryptErrorContent": "Při dešifrování tokenů došlo k chybě. Zkuste to prosím znovu.\nPokud chyba přetrvává, musíte poškozená data odstranit.",
+  "decryptErrorButton": "Odstranit všechny tokeny",
+  "decryptErrorDeleteConfirmationContent": "Určitě chcete odstranit všechny tokeny?",
+  "hidePushTokens": "Skrýt push tokeny",
+  "hidePushTokensDescription": "Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.",
+  "licensesAndVersion": "Licence a verze"
 }

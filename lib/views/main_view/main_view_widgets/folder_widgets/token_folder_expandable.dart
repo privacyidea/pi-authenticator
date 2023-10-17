@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
-import '../../../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_folder.dart';
+import '../../../../model/tokens/push_token.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/lock_auth.dart';
 import '../../../../utils/riverpod_providers.dart';

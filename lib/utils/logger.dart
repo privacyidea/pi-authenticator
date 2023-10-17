@@ -8,12 +8,12 @@ import 'dart:math';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart' as printer;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';

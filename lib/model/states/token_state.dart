@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import '../tokens/push_token.dart';
 
+import '../../utils/logger.dart';
 import '../token_folder.dart';
+import '../tokens/hotp_token.dart';
+import '../tokens/push_token.dart';
 import '../tokens/token.dart';
 
 @immutable
