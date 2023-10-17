@@ -12,12 +12,14 @@ import '../../../widgets/drag_item_scroller.dart';
 class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget {
   final TokenFolder? dependingFolder;
   final SortableMixin? nextSortable;
+  final bool ignoreFolderId;
   final bool isLastDivider;
 
   const DragTargetDivider({
     super.key,
     required this.dependingFolder,
     required this.nextSortable,
+    this.ignoreFolderId = false,
     this.isLastDivider = false,
   });
 
@@ -81,7 +83,7 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
         }
         final dragedItemMovedUp = newIndex < oldIndex;
         // When the draged item is a Token we need to update the folderId so its in the correct folder
-        if (dragedSortable is Token) {
+        if (dragedSortable is Token && !widget.ignoreFolderId) {
           late int? previousFolderId = widget.dependingFolder?.folderId;
           allSortables[oldIndex] = dragedSortable.copyWith(folderId: () => previousFolderId);
         }

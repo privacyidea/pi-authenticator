@@ -88,12 +88,14 @@ List<Widget> _buildSortableWidgets(List<SortableMixin> sortables, SortableMixin?
     // 4. Ignore 2. and 3. if there is a sortable that is dragged
     //           1                     2                     3                         4
     if (!isDraggingTheCurrent && ((!isFirst && !previousWasExpandedFolder) || draggingSortable != null)) {
-      widgets.add(DragTargetDivider(dependingFolder: null, nextSortable: sortables[i]));
+      widgets.add(
+        DragTargetDivider(dependingFolder: null, nextSortable: sortables[i], ignoreFolderId: true),
+      );
     }
     widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
   }
   if (draggingSortable != null) {
-    widgets.add(const DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true));
+    widgets.add(const DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true, ignoreFolderId: true));
   }
   widgets.add(const SizedBox(height: 80));
   return widgets;
