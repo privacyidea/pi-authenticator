@@ -5,6 +5,7 @@ import '../model/mixins/sortable_mixin.dart';
 import '../model/push_request.dart';
 import '../model/states/app_state.dart';
 import '../model/states/settings_state.dart';
+import '../model/states/token_filter.dart';
 import '../model/states/token_folder_state.dart';
 import '../model/states/token_state.dart';
 import '../repo/preference_settings_repository.dart';
@@ -108,3 +109,5 @@ final tokenFolderProvider = StateNotifierProvider.autoDispose<TokenFolderNotifie
 final draggingSortableProvider = StateProvider<SortableMixin?>((ref) => null);
 
 final applicationCustomizerProvider = StateProvider<ApplicationCustomization>((ref) => ApplicationCustomization.defaultCustomization);
+
+final tokenFilterProvider = StateProvider<TokenFilter?>((ref) => null);
