@@ -42,41 +42,36 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
 
   @override
   Widget build(BuildContext context) {
+    final hasFilter = ref.watch(tokenFilterProvider) != null;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Column(
-        children: [
-          ExpandableAppBar(
-            appBar: AppBar(
-              title: Text(
-                widget.appName,
-                overflow: TextOverflow.ellipsis,
-                // maxLines: 2 only works like this.
-                maxLines: 2, // Title can be shown on small screens too.
-              ),
-              leading: Padding(
-                padding: const EdgeInsets.all(4),
-                child: widget.appIcon,
-              ),
-            ),
+      body: ExpandableAppBar(
+        appBar: AppBar(
+          title: Text(
+            widget.appName,
+            overflow: TextOverflow.ellipsis,
+            // maxLines: 2 only works like this.
+            maxLines: 2, // Title can be shown on small screens too.
           ),
-          Expanded(
-            child: Stack(
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              children: [
-                Visibility(
-                  visible: ref.watch(tokenFilterProvider) == null,
-                  child: MainViewTokensList(nestedScrollViewKey: globalKey),
-                ),
-                const MainViewNavigationBar(),
-                Visibility(
-                  visible: ref.watch(tokenFilterProvider) != null,
-                  child: const MainViewTokensListFiltered(),
-                ),
-              ],
-            ),
+          leading: Padding(
+            padding: const EdgeInsets.all(4),
+            child: widget.appIcon,
           ),
-        ],
+        ),
+        body: Stack(
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          children: [
+            Visibility(
+              visible: !hasFilter,
+              child: MainViewTokensList(nestedScrollViewKey: globalKey),
+            ),
+            const MainViewNavigationBar(),
+            Visibility(
+              visible: hasFilter,
+              child: const MainViewTokensListFiltered(),
+            ),
+          ],
+        ),
       ),
     );
   }

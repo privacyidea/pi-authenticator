@@ -38,14 +38,14 @@ void main() {
         tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
       ],
-      child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
+      child: PrivacyIDEAAuthenticator(customization: AppCustomization.defaultCustomization),
     ));
 
     await waitFor(const Duration(seconds: 3), tester);
     await tester.tap(find.byIcon(Icons.info_outline));
     await tester.pumpAndSettle();
-    expect(find.text(ApplicationCustomization.defaultCustomization.appName), findsOneWidget);
-    expect(find.text(ApplicationCustomization.defaultCustomization.websiteLink), findsOneWidget);
+    expect(find.text(AppCustomization.defaultCustomization.appName), findsOneWidget);
+    expect(find.text(AppCustomization.defaultCustomization.websiteLink), findsOneWidget);
     await tester.pumpAndSettle();
     expect(find.text('Licenses'), findsOneWidget);
     expect(find.byType(Icon), findsOneWidget);

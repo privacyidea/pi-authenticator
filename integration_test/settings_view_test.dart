@@ -74,7 +74,7 @@ void main() {
             repository: mockTokenRepository, qrParser: mockQrParser, firebaseUtils: mockFirebaseUtils, rsaUtils: mockRsaUtils, ioClient: mockIOClient)),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
       ],
-      child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
+      child: PrivacyIDEAAuthenticator(customization: AppCustomization.defaultCustomization),
     ));
 
     await waitFor(const Duration(seconds: 3), tester);

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class CustomPaintNavigationBar extends CustomPainter {
@@ -44,7 +45,7 @@ class CustomPaintNavigationBar extends CustomPainter {
       ..close(); // point 1
 
     // TODO: remove this if statement when the shadow bug is fixed on iOS
-    if (Platform.isIOS == false) {
+    if (kIsWeb || Platform.isIOS == false) {
       canvas.translate(0, -elevation);
       canvas.drawShadow(path, shadowColor, elevation, false);
       canvas.translate(0, elevation);

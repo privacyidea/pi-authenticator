@@ -108,6 +108,6 @@ final tokenFolderProvider = StateNotifierProvider.autoDispose<TokenFolderNotifie
 
 final draggingSortableProvider = StateProvider<SortableMixin?>((ref) => null);
 
-final applicationCustomizerProvider = StateProvider<ApplicationCustomization>((ref) => ApplicationCustomization.defaultCustomization);
+final applicationCustomizerProvider = StateProvider<AppCustomization>((ref) => AppCustomization.defaultCustomization);
 
 final tokenFilterProvider = StateProvider<TokenFilter?>((ref) => null);

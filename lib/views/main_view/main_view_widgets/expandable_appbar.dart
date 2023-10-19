@@ -1,12 +1,17 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'filter_token_widget.dart';
 
 class ExpandableAppBar extends StatefulWidget {
   final Widget appBar;
+  final Widget body;
 
   const ExpandableAppBar({
     required this.appBar,
+    required this.body,
     super.key,
   });
 
@@ -16,7 +21,8 @@ class ExpandableAppBar extends StatefulWidget {
 
 class _ExpandableAppBarState extends State<ExpandableAppBar> {
   static const double maxExpansion = 50 + minExpansion;
-  static const double minExpansion = 14;
+  static const double minExpansion = 0;
+  static const double latchHeight = 14;
   double currentExpansion = minExpansion;
   double expandTarget = minExpansion;
 
@@ -65,37 +71,42 @@ class _ExpandableAppBarState extends State<ExpandableAppBar> {
                   children: [
                     Expanded(
                       child: SingleChildScrollView(
+                        physics: const NeverScrollableScrollPhysics(),
                         child: SearchTokenWidget(
                           searchActive: currentExpansion != minExpansion,
                         ),
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        /*
-                        Add a widget that is schaped like a trapezoid with 3 lines in it
-                        */
-                        CustomPaint(
-                          painter: TrapezoidPainter(buildContext: context),
-                          child: SizedBox(
-                            height: minExpansion,
-                            width: minExpansion * 2,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: minExpansion / 2, vertical: minExpansion / 4),
-                              child: CustomPaint(
-                                painter: HamburgerPainter(buildContext: context),
-                              ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: Stack(
+                children: [
+                  widget.body,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CustomPaint(
+                        painter: TrapezoidPainter(buildContext: context),
+                        child: SizedBox(
+                          height: latchHeight,
+                          width: latchHeight * 2,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: latchHeight / 2, vertical: latchHeight / 4),
+                            child: CustomPaint(
+                              painter: HamburgerPainter(buildContext: context),
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 12,
-                        )
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      )
+                    ],
+                  ),
+                ],
               ),
             ),
           ],
@@ -108,17 +119,27 @@ class TrapezoidPainter extends CustomPainter {
   TrapezoidPainter({required this.buildContext});
   @override
   void paint(Canvas canvas, Size size) {
-    //fill out the trapezoid
+    final Color color =
+        Theme.of(buildContext).navigationBarTheme.backgroundColor ?? Theme.of(buildContext).appBarTheme.backgroundColor ?? Theme.of(buildContext).primaryColor;
+    final Color shadowColor =
+        Theme.of(buildContext).navigationBarTheme.shadowColor ?? Theme.of(buildContext).appBarTheme.shadowColor ?? Theme.of(buildContext).shadowColor;
+    final elevation = Theme.of(buildContext).navigationBarTheme.elevation ?? 3;
+
     final paint = Paint()
-      ..color = Theme.of(buildContext).primaryColor
+      ..color = color
       ..style = PaintingStyle.fill;
+
     final path = Path()..fillType = PathFillType.evenOdd;
     path.moveTo(0, 0);
     path.lineTo(size.width, 0);
     path.lineTo(size.width / 4 * 3, size.height);
     path.lineTo(size.width / 4 * 1, size.height);
     path.lineTo(0, 0);
-
+    if (kIsWeb || Platform.isIOS == false) {
+      canvas.translate(0, -elevation / 4);
+      canvas.drawShadow(path, shadowColor, elevation / 2, false);
+      canvas.translate(0, elevation / 4);
+    }
     canvas.drawPath(path, paint);
   }
 

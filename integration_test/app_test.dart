@@ -47,7 +47,7 @@ void main() {
         tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
       ],
-      child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
+      child: PrivacyIDEAAuthenticator(customization: AppCustomization.defaultCustomization),
     ));
 
     await _introToMainView(tester);
@@ -79,7 +79,7 @@ void expectMainViewIsEmptyAndCorrect() {
   expect(find.byType(AppBarItem), findsNWidgets(4));
   expect(find.byType(TokenWidgetBase), findsNothing);
   expect(find.byType(TokenFolderWidget), findsNothing);
-  expect(find.text(ApplicationCustomization.defaultCustomization.appName), findsOneWidget);
+  expect(find.text(AppCustomization.defaultCustomization.appName), findsOneWidget);
   expect(find.byType(Image), findsOneWidget);
 }
 

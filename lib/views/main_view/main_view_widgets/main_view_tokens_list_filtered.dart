@@ -12,12 +12,12 @@ class MainViewTokensListFiltered extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = ref.watch(tokenFilterProvider)?.filterTokens(ref.watch(tokenProvider).tokens);
     return Container(
-      color: Theme.of(context).canvasColor,
-      height: double.maxFinite,
+      color: Theme.of(context).primaryColor,
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
           ..._mapTokensToWidgets(tokens ?? []),
+          const Expanded(child: SizedBox()),
         ],
       ),
     );
