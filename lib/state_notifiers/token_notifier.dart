@@ -73,9 +73,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
         );
         state = state.addOrReplaceTokens(failedTokens);
       }
-      for (var newToken in tokens) {
-        if (newToken is PushToken && !newToken.isRolledOut && !failedTokens.contains(newToken)) rolloutPushToken(newToken);
-      }
     });
   }
 
@@ -94,15 +91,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
     try {
       isLoading = Future(() async {
         tokens = await _repo.loadTokens();
-        final pushTokens = tokens.whereType<PushToken>();
-        if (pushTokens.isNotEmpty) {
-          checkNotificationPermission();
-        }
-
-        final pushTokensNotRolledOut = pushTokens.where((element) => !element.isRolledOut).toList();
         state = TokenState(tokens: tokens);
-        for (final pushToken in pushTokensNotRolledOut) {
-          rolloutPushToken(pushToken);
+        if (state.pushTokens.firstWhereOrNull((element) => element.isRolledOut == true) != null) {
+          checkNotificationPermission();
         }
       });
     } catch (_) {
@@ -191,11 +182,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   void addTokenFromOtpAuth({
     required String otpAuth,
   }) async {
-    Logger.info(
-      'Try to handle otpAuth:',
-      name: 'token_notifier.dart#addTokenFromOtpAuth',
-      error: otpAuth,
-    );
+    Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
 
     try {
       Map<String, dynamic> uriMap = _qrParser.parseQRCodeToMap(otpAuth);
@@ -227,6 +214,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
         return;
       }
       addOrReplaceToken(newToken);
+      if (newToken is PushToken) {
+        rolloutPushToken(newToken);
+      }
 
       return;
     } on ArgumentError catch (e, s) {
@@ -306,18 +296,18 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<bool> rolloutPushToken(PushToken token) async {
     token = (getTokenFromId(token.id)) as PushToken? ?? token;
     assert(token.url != null, 'Token url is null. Cannot rollout token without url.');
-    Logger.info('Rolling out token "${token.id}"', name: 'token_widgets.dart#rolloutPushToken');
+    Logger.info('Rolling out token "${token.id}"', name: 'token_notifier.dart#rolloutPushToken');
     if (token.isRolledOut) return true;
     if (token.rolloutState != PushTokenRollOutState.rolloutNotStarted &&
         token.rolloutState != PushTokenRollOutState.generatingRSAKeyPairFailed &&
         token.rolloutState != PushTokenRollOutState.sendRSAPublicKeyFailed &&
         token.rolloutState != PushTokenRollOutState.parsingResponseFailed) {
       Logger.info('Ignoring rollout request: Rollout of token "${token.id}" already started. Tokenstate: ${token.rolloutState} ',
-          name: 'token_widgets.dart#rolloutPushToken');
+          name: 'token_notifier.dart#rolloutPushToken');
       return false;
     }
     if (token.expirationDate?.isBefore(DateTime.now()) == true) {
-      Logger.info('Ignoring rollout request: Token "${token.id}" is expired. ', name: 'token_widgets.dart#rolloutPushToken');
+      Logger.info('Ignoring rollout request: Token "${token.id}" is expired. ', name: 'token_notifier.dart#rolloutPushToken');
       if (globalNavigatorKey.currentContext != null) {
         showMessage(
           message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutTokenExpired(token.label),
@@ -341,10 +331,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
           p0 = p0.withPrivateTokenKey(keyPair.privateKey);
           return p0.withPublicTokenKey(keyPair.publicKey);
         });
-        Logger.info('Updated token "${token.id}"', name: 'token_widgets.dart#rolloutPushToken');
-        checkNotificationPermission();
+        Logger.info('Updated token "${token.id}"', name: 'token_notifier.dart#rolloutPushToken');
       } catch (e, s) {
-        Logger.error('Error while generating RSA key pair.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
+        Logger.error('Error while generating RSA key pair.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
         updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.generatingRSAKeyPairFailed));
         return false;
       }
@@ -371,7 +360,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
           token = token.withPublicServerKey(publicServerKey);
         } on FormatException catch (e, s) {
           showMessage(message: "Couldn't parsing RSA public key: ${e.message}", duration: const Duration(seconds: 3));
-          Logger.warning('Error while parsing RSA public key.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
+          Logger.warning('Error while parsing RSA public key.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
           updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponseFailed));
           return false;
         }
@@ -381,33 +370,38 @@ class TokenNotifier extends StateNotifier<TokenState> {
         return true;
       } else {
         Logger.warning('Post request on roll out failed.',
-            name: 'token_widgets.dart#rolloutPushToken',
+            name: 'token_notifier.dart#rolloutPushToken',
             error: 'Token: ${token.serial}\nStatus code: ${response.statusCode},\nURL:${response.request?.url}\nBody: ${response.body}');
 
         String? message;
         try {
           message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : null;
+          message = message != null ? '\n$message' : '';
+          showMessage(
+            message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label, response.statusCode) + message,
+            duration: const Duration(seconds: 3),
+          );
         } on FormatException catch (_) {
-          message = AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(token.label);
+          // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.
+          showMessage(
+            message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(token.label),
+            duration: const Duration(seconds: 3),
+          );
         }
-        message = message != null ? '\n$message' : '';
-        showMessage(
-          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label, response.statusCode) + message,
-          duration: const Duration(seconds: 3),
-        );
+
         updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
         return false;
       }
     } catch (e, s) {
       if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException || e is TimeoutException || e is FirebaseException) {
-        Logger.warning('Connection error: Roll out push token failed.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
+        Logger.warning('Connection error: Roll out push token failed.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
         showMessage(
           message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(token.label),
           duration: const Duration(seconds: 3),
         );
         updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
       } else if (e is HandshakeException) {
-        Logger.warning('SSL error: Roll out push token failed.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
+        Logger.warning('SSL error: Roll out push token failed.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
         showMessage(
           message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutSSLHandshakeFailed,
           duration: const Duration(seconds: 3),
@@ -420,7 +414,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
             duration: const Duration(seconds: 3),
           );
         }
-        Logger.error('Roll out push token failed.', name: 'token_widgets.dart#rolloutPushToken', error: e, stackTrace: s);
+        Logger.error('Roll out push token failed.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
         updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
       }
       return false;
@@ -428,12 +422,12 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
-    Logger.info('Parsing rollout response, try to extract public_key.', name: 'token_widgets.dart#_parseRollOutResponse');
+    Logger.info('Parsing rollout response, try to extract public_key.', name: 'token_notifier.dart#_parseRollOutResponse');
     try {
       String key = json.decode(response.body)['detail']['public_key'];
       key = key.replaceAll('\n', '');
 
-      Logger.info('Extracting public key was successful.', name: 'token_widgets.dart#_parseRollOutResponse', error: key);
+      Logger.info('Extracting public key was successful.', name: 'token_notifier.dart#_parseRollOutResponse', error: key);
 
       return _rsaUtils.deserializeRSAPublicKeyPKCS1(key);
     } on FormatException catch (e) {

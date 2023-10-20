@@ -24,22 +24,21 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/model/push_request.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
-import 'package:privacyidea_authenticator/repo/secure_token_repository.dart';
-import 'package:privacyidea_authenticator/state_notifiers/push_request_notifier.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
+import '../l10n/app_localizations.dart';
+import '../model/push_request.dart';
+import '../model/tokens/push_token.dart';
+import '../repo/secure_token_repository.dart';
+import '../state_notifiers/push_request_notifier.dart';
+import 'customizations.dart';
+import 'firebase_utils.dart';
 import 'logger.dart';
 import 'network_utils.dart';
+import 'riverpod_providers.dart';
+import 'rsa_utils.dart';
+import 'utils.dart';
+import 'view_utils.dart';
 
 /// This class bundles all logic that is needed to handle incomig PushRequests, e.g.,
 /// firebase, polling, notifications.
@@ -63,7 +62,7 @@ class PushProvider {
     await firebaseUtils.initFirebase(
       foregroundHandler: _foregroundHandler,
       backgroundHandler: _backgroundHandler,
-      updateFirebaseToken: _updateFirebaseToken,
+      updateFirebaseToken: updateFirebaseToken,
     );
   }
 
@@ -263,6 +262,7 @@ class PushProvider {
       pollForChallenge(p).then((errorMessage) {
         if (errorMessage != null && showMessageForEachToken) {
           Logger.warning(errorMessage, name: 'push_provider.dart#pollForChallenges');
+          // TODO: Improve error message
           showMessage(message: errorMessage);
         }
       });
@@ -327,39 +327,44 @@ class PushProvider {
 
     if (firebaseToken != null && (await SecureTokenRepository.getCurrentFirebaseToken()) != firebaseToken) {
       try {
-        _updateFirebaseToken(firebaseToken);
-      } catch (error) {
-        final SnackBar snackBar = SnackBar(
-          content: Text(
-            "Unknown error: $error",
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        );
-        globalSnackbarKey.currentState?.showSnackBar(snackBar);
+        await updateFirebaseToken(firebaseToken);
+      } catch (error, stackTrace) {
+        Logger.error('Could not update firebase token.', name: 'push_provider.dart#updateFbTokenIfChanged', error: error, stackTrace: stackTrace);
       }
     }
   }
 
   /// This method attempts to update the fbToken for all PushTokens that can be
   /// updated. I.e. all tokens that know the url of their respective privacyIDEA
-  /// server. If the update fails for one or all tokens, this method does *not*
-  /// give any feedback!.
+  /// server.
+  /// If the fbToken is not provided, it will be fetched from the firebase instance.
+  /// If the fbToken is not available, this method will return null.
+  /// Returns a tuple of two lists. The first list contains all tokens that
+  /// could not be updated. The second list contains all tokens that do not
+  /// support updating the fbToken.
   ///
   /// This should only be used to attempt to update the fbToken automatically,
   /// as this can not be guaranteed to work. There is a manual option available
   /// through the settings also.
-  static void _updateFirebaseToken(String? firebaseToken) async {
+  static Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) async {
+    firebaseToken ??= await instance?.firebaseUtils?.getFBToken();
     if (firebaseToken == null) {
-      // Nothing to update here!
-      return;
+      Logger.warning('Could not update firebase token because no firebase token is available.', name: 'push_provider.dart#_updateFirebaseToken');
+      return null;
     }
 
     List<PushToken> tokenList = (await const SecureTokenRepository().loadTokens()).whereType<PushToken>().where((t) => t.url != null).toList();
 
     bool allUpdated = true;
 
+    final List<PushToken> failedTokens = [];
+    final List<PushToken> unsuportedTokens = [];
+
     for (PushToken p in tokenList) {
+      if (p.url == null) {
+        unsuportedTokens.add(p);
+        continue;
+      }
       // POST /ttype/push HTTP/1.1
       //Host: example.com
       //
@@ -369,13 +374,12 @@ class PushProvider {
       //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
 
       String timestamp = DateTime.now().toUtc().toIso8601String();
-
       String message = '$firebaseToken|${p.serial}|$timestamp';
-      // Because no context is available, trySignWithToken will fail without feedback for the user
-      // Just like this whole function // TODO improve that?
       String? signature = await const RsaUtils().trySignWithToken(p, message);
       if (signature == null) {
-        return;
+        failedTokens.add(p);
+        allUpdated = false;
+        continue;
       }
       Response response = instance != null
           ? await instance!._ioClient.doPost(
@@ -387,6 +391,7 @@ class PushProvider {
         Logger.info('Updating firebase token for push token succeeded!', name: 'push_provider.dart#_updateFirebaseToken');
       } else {
         Logger.warning('Updating firebase token for push token failed!', name: 'push_provider.dart#_updateFirebaseToken');
+        failedTokens.add(p);
         allUpdated = false;
       }
     }
@@ -394,5 +399,6 @@ class PushProvider {
     if (allUpdated) {
       SecureTokenRepository.setCurrentFirebaseToken(firebaseToken);
     }
+    return (failedTokens, unsuportedTokens);
   }
 }

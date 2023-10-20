@@ -91,7 +91,13 @@ void checkNotificationPermission() async {
 
   if (!status.isPermanentlyDenied) {
     if (status.isDenied) {
-      await Permission.notification.request();
+      try {
+        await Permission.notification.request();
+      } catch (e) {
+        await Future.delayed(const Duration(seconds: 5));
+        checkNotificationPermission();
+        Logger.warning('Error requesting notification permission: $e');
+      }
     }
   } else {
     Logger.info('Notification permission is permanently denied!');

@@ -29,17 +29,12 @@ class QrParser {
   /// The method returns a map that contains all the uri parameters.
   Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
     Uri uri = Uri.parse(uriAsString);
-    Logger.info(
-      'Barcode is valid Uri:',
-      name: 'parsing_utils.dart#parseQRCodeToMap',
-      error: uri,
-    );
+    Logger.info('Barcode is valid Uri:', name: 'parsing_utils.dart#parseQRCodeToMap');
 
     // TODO Parse crash report recipients
 
     if (uri.scheme != 'otpauth') {
       throw ArgumentError.value(
-        uri,
         'parsing_utils.dart#parseQRCodeToMap',
         'The uri is not a valid otpauth uri but a(n) [${uri.scheme}] uri instead.',
       );
@@ -55,7 +50,6 @@ class QrParser {
     }
 
     throw ArgumentError.value(
-      uri,
       'parsing_utils.dart#parseQRCodeToMap',
       'The token type [$type] is not supported.',
     );
@@ -153,6 +147,9 @@ class QrParser {
     // parse.path.substring(1) -> Label
     String infoLog = '\nKey: [..] | Value: [..]';
     uri.queryParameters.forEach((key, value) {
+      if (key == 'secret') {
+        value = '********';
+      }
       infoLog += '\n${key.padLeft(9)} | $value';
     });
     Logger.info(
