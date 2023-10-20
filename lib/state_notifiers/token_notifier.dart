@@ -363,11 +363,10 @@ class TokenNotifier extends StateNotifier<TokenState> {
           Logger.warning('Error while parsing RSA public key.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
           updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponseFailed));
           return false;
-        } finally {
-          Logger.info('Roll out successful', name: 'token_notifier.dart#rolloutPushToken');
-          updateToken(token, (p0) => p0.copyWith(isRolledOut: true, rolloutState: PushTokenRollOutState.rolloutComplete));
-          checkNotificationPermission();
         }
+        Logger.info('Roll out successful', name: 'token_notifier.dart#rolloutPushToken');
+        updateToken(token, (p0) => p0.copyWith(isRolledOut: true, rolloutState: PushTokenRollOutState.rolloutComplete));
+        checkNotificationPermission();
         return true;
       } else {
         Logger.warning('Post request on roll out failed.',
