@@ -91,12 +91,8 @@ class TokenNotifier extends StateNotifier<TokenState> {
     try {
       isLoading = Future(() async {
         tokens = await _repo.loadTokens();
-        final pushTokens = tokens.whereType<PushToken>();
-        if (pushTokens.isNotEmpty) {
-          checkNotificationPermission();
-        }
         state = TokenState(tokens: tokens);
-        if (state.pushTokens.isNotEmpty) {
+        if (state.pushTokens.firstWhereOrNull((element) => element.isRolledOut == true) != null) {
           checkNotificationPermission();
         }
       });
@@ -186,11 +182,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   void addTokenFromOtpAuth({
     required String otpAuth,
   }) async {
-    Logger.info(
-      'Try to handle otpAuth:',
-      name: 'token_notifier.dart#addTokenFromOtpAuth',
-      error: otpAuth,
-    );
+    Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
 
     try {
       Map<String, dynamic> uriMap = _qrParser.parseQRCodeToMap(otpAuth);
@@ -222,6 +214,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
         return;
       }
       addOrReplaceToken(newToken);
+      if (newToken is PushToken) {
+        rolloutPushToken(newToken);
+      }
 
       return;
     } on ArgumentError catch (e, s) {
@@ -337,7 +332,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
           return p0.withPublicTokenKey(keyPair.publicKey);
         });
         Logger.info('Updated token "${token.id}"', name: 'token_notifier.dart#rolloutPushToken');
-        checkNotificationPermission();
       } catch (e, s) {
         Logger.error('Error while generating RSA key pair.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
         updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.generatingRSAKeyPairFailed));
@@ -372,6 +366,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
         } finally {
           Logger.info('Roll out successful', name: 'token_notifier.dart#rolloutPushToken');
           updateToken(token, (p0) => p0.copyWith(isRolledOut: true, rolloutState: PushTokenRollOutState.rolloutComplete));
+          checkNotificationPermission();
         }
         return true;
       } else {

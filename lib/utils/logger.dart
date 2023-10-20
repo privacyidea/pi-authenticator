@@ -114,7 +114,8 @@ class Logger {
   /*----------- LOGGING METHODS -----------*/
 
   static void info(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
-    final infoString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.INFO);
+    String infoString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.INFO);
+    infoString = _textFilter(infoString);
     if (instance._verbose || verbose) {
       instance._logToFile(infoString);
     }
@@ -122,7 +123,8 @@ class Logger {
   }
 
   static void warning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
-    final warningString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.WARNING);
+    String warningString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.WARNING);
+    warningString = _textFilter(warningString);
     if (instance._verbose || verbose) {
       instance._logToFile(warningString);
     }
@@ -130,7 +132,8 @@ class Logger {
   }
 
   static void error(String? message, {required dynamic error, required dynamic stackTrace, String? name}) {
-    final errorString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
+    String errorString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
+    errorString = _textFilter(errorString);
     if (message != null) {
       instance._lastError = message.substring(0, min(message.length, 100));
     } else if (error != null) {
@@ -333,10 +336,10 @@ class Logger {
 
   /*----------- HELPER -----------*/
 
-  String _textFilter(String text) {
+  static String _textFilter(String text) {
     for (var key in filterParameterKeys) {
       final regex = RegExp(r'(?<=' + key + r':\s).+?(?=[},])');
-      text = text.replaceAll(regex, '***');
+      text = text.replaceAll(regex, '******');
     }
     return text;
   }
