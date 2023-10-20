@@ -59,7 +59,7 @@ void main() {
     await _addDaypasswordToken(tester);
     expect(find.byType(DayPasswordTokenWidget), findsOneWidget);
     await _createFolder(tester);
-    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 200));
     expect(find.byType(TokenFolderWidget), findsOneWidget);
     expect(find.text('Folder'), findsOneWidget);
     expect(find.byType(TokenWidgetBase).hitTestable(), findsNWidgets(3));
