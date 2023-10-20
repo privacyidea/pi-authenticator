@@ -77,7 +77,7 @@ void main() {
       child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
     ));
 
-    await waitFor(const Duration(seconds: 3), tester);
+    await pumpUntilFindNWidgets(tester, find.byIcon(Icons.settings), 1, const Duration(seconds: 10));
     await tester.tap(find.byIcon(Icons.settings));
     await tester.pumpAndSettle();
     expect(find.text('Settings'), findsOneWidget);
@@ -86,7 +86,7 @@ void main() {
     expect(find.text('Error logs'), findsOneWidget);
     expect(find.byType(SettingsGroup), findsNWidgets(3));
     globalRef!.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: 'otpauth://totp/issuer:label?secret=secret&issuer=issuer');
-    await waitFor(const Duration(seconds: 10), tester);
+    await pumpUntilFindNWidgets(tester, find.text('Push Token'), 1, const Duration(minutes: 5));
     expect(find.text('Push Token'), findsOneWidget);
     expect(find.byType(SettingsGroup), findsNWidgets(4));
   });

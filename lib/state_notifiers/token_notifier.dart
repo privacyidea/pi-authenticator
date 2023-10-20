@@ -130,7 +130,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   void incrementCounter(HOTPToken token) {
-    token = state.currentOf(token).copyWith(counter: token.counter + 1);
+    token = state.currentOf(token)?.copyWith(counter: token.counter + 1) ?? token.copyWith(counter: token.counter + 1);
     state = state.replaceToken(token);
     _saveOrReplaceTokensRepo([token]);
   }
@@ -152,6 +152,10 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   void updateToken<T extends Token>(T token, T Function(T) updater) {
     final current = state.currentOf<T>(token);
+    if (current == null) {
+      Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#updateToken');
+      return;
+    }
     final updated = updater(current);
     state = state.replaceToken(updated);
     _saveOrReplaceTokensRepo([updated]);
@@ -160,7 +164,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   void updateTokens<T extends Token>(List<T> token, T Function(T) updater) {
     List<T> updatedTokens = [];
     for (final t in token) {
-      final current = state.currentOf<T>(t);
+      final current = state.currentOf<T>(t) ?? t;
       updatedTokens.add(updater(current));
     }
     state = state.replaceTokens(updatedTokens);

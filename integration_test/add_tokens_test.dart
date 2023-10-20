@@ -40,7 +40,7 @@ void main() {
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
   });
-  testWidgets('AppTest', (tester) async {
+  testWidgets('Add Tokens Test', (tester) async {
     await tester.pumpWidget(TestsAppWrapper(
       overrides: [
         settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
@@ -69,115 +69,26 @@ void main() {
     expect(find.byType(TOTPTokenWidget).hitTestable(), findsOneWidget);
     expect(find.byType(TokenWidgetBase).hitTestable(), findsOneWidget);
     await _openFolder(tester);
-    await waitFor(const Duration(milliseconds: 500), tester);
+    await pumpUntilFindNWidgets(tester, find.byType(TokenWidgetBase).hitTestable(), 3, const Duration(seconds: 5));
     expect(find.byType(TokenWidgetBase).hitTestable(), findsNWidgets(3));
   });
 }
 
-void expectMainViewIsEmptyAndCorrect() {
-  expect(find.byType(FloatingActionButton), findsOneWidget);
-  expect(find.byType(AppBarItem), findsNWidgets(4));
-  expect(find.byType(TokenWidgetBase), findsNothing);
-  expect(find.byType(TokenFolderWidget), findsNothing);
-  expect(find.text(ApplicationCustomization.defaultCustomization.appName), findsOneWidget);
-  expect(find.byType(Image), findsOneWidget);
-}
-
-Future<void> _openFolder(WidgetTester tester) async {
-  await tester.pump();
-  await tester.tap(find.byType(TokenFolderWidget));
-  await tester.pump();
-}
-
-Future<void> _moveDayPasswordTokenWidgetIntoFolder(WidgetTester tester) async {
-  await tester.pump();
-  final tokenWidgetPosition = tester.getCenter(find.byType(DayPasswordTokenWidget).last);
-  final gestrue = await tester.startGesture(tokenWidgetPosition);
-  await tester.pump(const Duration(seconds: 1));
-  final tokenFolderPosition = tester.getCenter(find.byType(TokenFolderWidget));
-  await gestrue.moveTo(tokenFolderPosition);
-  await tester.pump();
-  await gestrue.up();
-  await tester.pump();
-}
-
-Future<void> _moveHotpTokenWidgetIntoFolder(WidgetTester tester) async {
-  await tester.pump();
-  final tokenWidgetPosition = tester.getCenter(find.byType(HOTPTokenWidget).first);
-  final gestrue = await tester.startGesture(tokenWidgetPosition);
-  await tester.pump(const Duration(seconds: 1));
-  final tokenFolderPosition = tester.getCenter(find.byType(TokenFolderWidget));
-  await gestrue.moveTo(tokenFolderPosition);
-  await tester.pump();
-  await gestrue.up();
-  await tester.pump();
-}
-
-Future<void> _moveFolderToTopPosition(WidgetTester tester) async {
-  await tester.pump();
-  final tokenFolderPosition = tester.getCenter(find.byType(TokenFolderWidget));
-  final gestrue = await tester.startGesture(tokenFolderPosition);
-  await tester.pump(const Duration(seconds: 1));
-  final dragTargetDividerPosition = tester.getCenter(find.byType(DragTargetDivider).first);
-  await gestrue.moveTo(dragTargetDividerPosition);
-  await tester.pump();
-  await gestrue.up();
-  await tester.pump();
-}
-
-Future<void> _createFolder(WidgetTester tester) async {
-  await tester.pump();
-  await tester.tap(find.byIcon(Icons.create_new_folder));
-  await tester.pump(const Duration(milliseconds: 500));
-  await tester.enterText(find.byType(TextField).first, 'Folder');
-  await tester.pump();
-  await tester.tap(find.text('Save'));
-  await tester.pump();
-}
-
-Future<void> _addDaypasswordToken(WidgetTester tester) async {
-  await tester.pump();
-  await tester.tap(find.byIcon(Icons.add_moderator));
-  await tester.pump(const Duration(milliseconds: 500));
-  await tester.enterText(find.byType(TextField).first, 'test');
-  await tester.pump();
-  await tester.tap(find.text('Secret'));
-  await tester.pump();
-  await tester.enterText(find.byType(TextField).last, 'test');
-  await tester.pump();
-  await tester.tap(find.byType(DropdownButton<TokenTypes>));
-  await tester.pump();
-  await tester.tap(find.text('DAYPASSWORD'));
-  await tester.pump();
-  await tester.tap(find.text('Add token'));
-  await tester.pump(const Duration(milliseconds: 500));
-}
-
-Future<void> _addTotpToken(WidgetTester tester) async {
-  await tester.pump();
-  await tester.tap(find.byIcon(Icons.add_moderator));
-  await tester.pump(const Duration(milliseconds: 500));
-  await tester.tap(find.text('Name'));
-  await tester.pump();
-  await tester.enterText(find.byType(TextField).first, 'test');
-  await tester.pump();
-  await tester.tap(find.text('Secret'));
-  await tester.pump();
-  await tester.enterText(find.byType(TextField).last, 'test');
-  await tester.pump();
-  await tester.tap(find.byType(DropdownButton<TokenTypes>));
-  await tester.pump();
-  await tester.tap(find.text('TOTP'));
-  await tester.pump();
-  expect(find.byType(DropdownButton<int>), findsNWidgets(2));
-  await tester.tap(find.text('Add token'));
-  await tester.pump(const Duration(milliseconds: 500));
+Future<void> _introToMainView(WidgetTester tester) async {
+  final Finder finder = find.byType(FloatingActionButton);
+  await pumpUntilFindNWidgets(tester, finder, 1, const Duration(seconds: 10));
+  await tester.tap(find.byType(FloatingActionButton));
+  await tester.pump(const Duration(milliseconds: 1000));
+  await tester.tap(find.byType(FloatingActionButton));
+  await tester.pump(const Duration(milliseconds: 1000));
+  await tester.tap(find.byType(FloatingActionButton));
+  await tester.pump(const Duration(milliseconds: 1000));
 }
 
 Future<void> _addHotpToken(WidgetTester tester) async {
   await tester.pump();
   await tester.tap(find.byIcon(Icons.add_moderator));
-  await tester.pump(const Duration(milliseconds: 500));
+  await tester.pump(const Duration(milliseconds: 1000));
   expect(find.byType(AddTokenManuallyView), findsOneWidget);
   expect(find.byType(TextField), findsNWidgets(2));
   expect(find.byType(LabeledDropdownButton<Encodings>), findsOneWidget);
@@ -194,16 +105,105 @@ Future<void> _addHotpToken(WidgetTester tester) async {
   await tester.enterText(find.byType(TextField).last, 'test');
   await tester.pump();
   await tester.tap(find.text('Add token'));
-  await tester.pump(const Duration(milliseconds: 500));
+  await tester.pump(const Duration(milliseconds: 1000));
 }
 
-Future<void> _introToMainView(WidgetTester tester) async {
-  await waitFor(const Duration(seconds: 5), tester);
-  expect(find.byType(FloatingActionButton), findsNWidgets(1));
-  await tester.tap(find.byType(FloatingActionButton));
-  await tester.pump(const Duration(milliseconds: 500));
-  await tester.tap(find.byType(FloatingActionButton));
-  await tester.pump(const Duration(milliseconds: 500));
-  await tester.tap(find.byType(FloatingActionButton));
-  await tester.pump(const Duration(milliseconds: 500));
+Future<void> _addTotpToken(WidgetTester tester) async {
+  await tester.pump();
+  await tester.tap(find.byIcon(Icons.add_moderator));
+  await tester.pump(const Duration(milliseconds: 1000));
+  await tester.tap(find.text('Name'));
+  await tester.pump();
+  await tester.enterText(find.byType(TextField).first, 'test');
+  await tester.pump();
+  await tester.tap(find.text('Secret'));
+  await tester.pump();
+  await tester.enterText(find.byType(TextField).last, 'test');
+  await tester.pump();
+  await tester.tap(find.byType(DropdownButton<TokenTypes>));
+  await tester.pump();
+  await tester.tap(find.text('TOTP'));
+  await tester.pump();
+  expect(find.byType(DropdownButton<int>), findsNWidgets(2));
+  await tester.tap(find.text('Add token'));
+  await tester.pump(const Duration(milliseconds: 1000));
+}
+
+Future<void> _addDaypasswordToken(WidgetTester tester) async {
+  await tester.pump();
+  await tester.tap(find.byIcon(Icons.add_moderator));
+  await tester.pump(const Duration(milliseconds: 1000));
+  await tester.enterText(find.byType(TextField).first, 'test');
+  await tester.pump();
+  await tester.tap(find.text('Secret'));
+  await tester.pump();
+  await tester.enterText(find.byType(TextField).last, 'test');
+  await tester.pump();
+  await tester.tap(find.byType(DropdownButton<TokenTypes>));
+  await tester.pump();
+  await tester.tap(find.text('DAYPASSWORD'));
+  await tester.pump();
+  await tester.tap(find.text('Add token'));
+  await tester.pump(const Duration(milliseconds: 1000));
+}
+
+Future<void> _createFolder(WidgetTester tester) async {
+  await tester.pump();
+  await tester.tap(find.byIcon(Icons.create_new_folder));
+  await tester.pump(const Duration(milliseconds: 1000));
+  await tester.enterText(find.byType(TextField).first, 'Folder');
+  await tester.pump();
+  await tester.tap(find.text('Save'));
+  await tester.pump();
+}
+
+Future<void> _moveFolderToTopPosition(WidgetTester tester) async {
+  await tester.pump();
+  final tokenFolderPosition = tester.getCenter(find.byType(TokenFolderWidget));
+  final gestrue = await tester.startGesture(tokenFolderPosition);
+  await tester.pump(const Duration(milliseconds: 1000));
+  final dragTargetDividerPosition = tester.getCenter(find.byType(DragTargetDivider).first);
+  await gestrue.moveTo(dragTargetDividerPosition);
+  await tester.pump();
+  await gestrue.up();
+  await tester.pump();
+}
+
+Future<void> _moveHotpTokenWidgetIntoFolder(WidgetTester tester) async {
+  await tester.pump();
+  final tokenWidgetPosition = tester.getCenter(find.byType(HOTPTokenWidget).first);
+  final gestrue = await tester.startGesture(tokenWidgetPosition);
+  await tester.pump(const Duration(milliseconds: 1000));
+  final tokenFolderPosition = tester.getCenter(find.byType(TokenFolderWidget));
+  await gestrue.moveTo(tokenFolderPosition);
+  await tester.pump();
+  await gestrue.up();
+  await tester.pump();
+}
+
+Future<void> _moveDayPasswordTokenWidgetIntoFolder(WidgetTester tester) async {
+  await tester.pump();
+  final tokenWidgetPosition = tester.getCenter(find.byType(DayPasswordTokenWidget).last);
+  final gestrue = await tester.startGesture(tokenWidgetPosition);
+  await tester.pump(const Duration(milliseconds: 1000));
+  final tokenFolderPosition = tester.getCenter(find.byType(TokenFolderWidget));
+  await gestrue.moveTo(tokenFolderPosition);
+  await tester.pump();
+  await gestrue.up();
+  await tester.pump();
+}
+
+Future<void> _openFolder(WidgetTester tester) async {
+  await pumpUntilFindNWidgets(tester, find.byType(TokenFolderWidget), 1, const Duration(seconds: 5));
+  await tester.tap(find.byType(TokenFolderWidget));
+  await tester.pump();
+}
+
+void expectMainViewIsEmptyAndCorrect() {
+  expect(find.byType(FloatingActionButton), findsOneWidget);
+  expect(find.byType(AppBarItem), findsNWidgets(4));
+  expect(find.byType(TokenWidgetBase), findsNothing);
+  expect(find.byType(TokenFolderWidget), findsNothing);
+  expect(find.text(ApplicationCustomization.defaultCustomization.appName), findsOneWidget);
+  expect(find.byType(Image), findsOneWidget);
 }
