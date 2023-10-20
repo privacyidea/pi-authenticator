@@ -364,6 +364,7 @@ void _testTokenNotifier() {
       );
       final notifier = container.read(testProvider.notifier);
       expect(await notifier.rolloutPushToken(before.first), true);
+      await notifier.isLoading;
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);

@@ -33,7 +33,7 @@ void main() {
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
   });
-  testWidgets('AppTest', (tester) async {
+  testWidgets('Copy to Clipboard Test', (tester) async {
     await tester.pumpWidget(TestsAppWrapper(
       overrides: [
         settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
