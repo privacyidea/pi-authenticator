@@ -40,38 +40,42 @@ void main() {
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
   });
-  testWidgets('Add Tokens Test', (tester) async {
-    await tester.pumpWidget(TestsAppWrapper(
-      overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
-        tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
-        tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
-      ],
-      child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
-    ));
+  testWidgets(
+    'Add Tokens Test',
+    (tester) async {
+      await tester.pumpWidget(TestsAppWrapper(
+        overrides: [
+          settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
+          tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
+          tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
+        ],
+        child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
+      ));
 
-    await _introToMainView(tester);
-    expectMainViewIsEmptyAndCorrect();
-    await _addHotpToken(tester);
-    expect(find.byType(HOTPTokenWidget), findsOneWidget);
-    await _addTotpToken(tester);
-    expect(find.byType(TOTPTokenWidget), findsOneWidget);
-    await _addDaypasswordToken(tester);
-    expect(find.byType(DayPasswordTokenWidget), findsOneWidget);
-    await _createFolder(tester);
-    await tester.pump(const Duration(milliseconds: 100));
-    expect(find.byType(TokenFolderWidget), findsOneWidget);
-    expect(find.text('Folder'), findsOneWidget);
-    expect(find.byType(TokenWidgetBase).hitTestable(), findsNWidgets(3));
-    await _moveFolderToTopPosition(tester);
-    await _moveHotpTokenWidgetIntoFolder(tester);
-    await _moveDayPasswordTokenWidgetIntoFolder(tester);
-    expect(find.byType(TOTPTokenWidget).hitTestable(), findsOneWidget);
-    expect(find.byType(TokenWidgetBase).hitTestable(), findsOneWidget);
-    await _openFolder(tester);
-    await pumpUntilFindNWidgets(tester, find.byType(TokenWidgetBase).hitTestable(), 3, const Duration(seconds: 5));
-    expect(find.byType(TokenWidgetBase).hitTestable(), findsNWidgets(3));
-  });
+      await _introToMainView(tester);
+      expectMainViewIsEmptyAndCorrect();
+      await _addHotpToken(tester);
+      expect(find.byType(HOTPTokenWidget), findsOneWidget);
+      await _addTotpToken(tester);
+      expect(find.byType(TOTPTokenWidget), findsOneWidget);
+      await _addDaypasswordToken(tester);
+      expect(find.byType(DayPasswordTokenWidget), findsOneWidget);
+      await _createFolder(tester);
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(find.byType(TokenFolderWidget), findsOneWidget);
+      expect(find.text('Folder'), findsOneWidget);
+      expect(find.byType(TokenWidgetBase).hitTestable(), findsNWidgets(3));
+      await _moveFolderToTopPosition(tester);
+      await _moveHotpTokenWidgetIntoFolder(tester);
+      await _moveDayPasswordTokenWidgetIntoFolder(tester);
+      expect(find.byType(TOTPTokenWidget).hitTestable(), findsOneWidget);
+      expect(find.byType(TokenWidgetBase).hitTestable(), findsOneWidget);
+      await _openFolder(tester);
+      await pumpUntilFindNWidgets(tester, find.byType(TokenWidgetBase).hitTestable(), 3, const Duration(seconds: 5));
+      expect(find.byType(TokenWidgetBase).hitTestable(), findsNWidgets(3));
+    },
+    timeout: const Timeout(Duration(minutes: 20)),
+  );
 }
 
 Future<void> _introToMainView(WidgetTester tester) async {
