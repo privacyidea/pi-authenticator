@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
@@ -14,7 +15,6 @@ import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/settings_groups.dart';
 
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import '../test/tests_app_wrapper.dart';
 import '../test/tests_app_wrapper.mocks.dart';
 
@@ -66,28 +66,55 @@ void main() {
       sslVerify: anyNamed('sslVerify'),
     )).thenAnswer((_) => Future.value(Response('{"detail": {"public_key": "publicKey"}}', 200)));
   });
-  testWidgets('Licenses View', (tester) async {
-    runApp(TestsAppWrapper(
+
+  testWidgets('Views Test', (tester) async {
+    await tester.pumpWidget(TestsAppWrapper(
       overrides: [
         settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
-        tokenProvider.overrideWith((ref) => TokenNotifier(
-            repository: mockTokenRepository, qrParser: mockQrParser, firebaseUtils: mockFirebaseUtils, rsaUtils: mockRsaUtils, ioClient: mockIOClient)),
+        tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
       ],
       child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
     ));
 
-    await pumpUntilFindNWidgets(tester, find.byIcon(Icons.settings), 1, const Duration(seconds: 10));
-    await tester.tap(find.byIcon(Icons.settings));
-    await tester.pumpAndSettle();
-    expect(find.text('Settings'), findsOneWidget);
-    expect(find.text('Theme'), findsOneWidget);
-    expect(find.text('Language'), findsOneWidget);
-    expect(find.text('Error logs'), findsOneWidget);
-    expect(find.byType(SettingsGroup), findsNWidgets(3));
-    globalRef!.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: 'otpauth://totp/issuer:label?secret=secret&issuer=issuer');
-    await pumpUntilFindNWidgets(tester, find.text('Push Token'), 1, const Duration(minutes: 5));
-    expect(find.text('Push Token'), findsOneWidget);
-    expect(find.byType(SettingsGroup), findsNWidgets(4));
+    await _licensesViewTest(tester);
+    await _popUntilMainView(tester);
+    await _settingsViewTest(tester);
   });
+}
+
+Future<void> _popUntilMainView(WidgetTester tester) async {
+  await pumpUntilFindNWidgets(tester, find.byIcon(Icons.arrow_back), 1, const Duration(seconds: 2));
+  while (find.byIcon(Icons.arrow_back).evaluate().isNotEmpty) {
+    await tester.tap(find.byIcon(Icons.arrow_back));
+    await pumpUntilFindNWidgets(tester, find.byIcon(Icons.arrow_back), 1, const Duration(seconds: 2));
+  }
+  return;
+}
+
+Future<void> _licensesViewTest(WidgetTester tester) async {
+  await pumpUntilFindNWidgets(tester, find.byIcon(Icons.info_outline), 1, const Duration(seconds: 10));
+  await tester.tap(find.byIcon(Icons.info_outline));
+  await tester.pumpAndSettle();
+  expect(find.text(ApplicationCustomization.defaultCustomization.appName), findsOneWidget);
+  expect(find.text(ApplicationCustomization.defaultCustomization.websiteLink), findsOneWidget);
+  await tester.pumpAndSettle();
+  expect(find.text('Licenses'), findsOneWidget);
+  expect(find.byType(Icon), findsOneWidget);
+  expect(find.byType(LicensePage), findsOneWidget);
+}
+
+Future<void> _settingsViewTest(WidgetTester tester) async {
+  await pumpUntilFindNWidgets(tester, find.byIcon(Icons.settings), 1, const Duration(seconds: 10));
+  await tester.tap(find.byIcon(Icons.settings));
+  await tester.pumpAndSettle();
+  expect(find.text('Settings'), findsOneWidget);
+  expect(find.text('Theme'), findsOneWidget);
+  expect(find.text('Language'), findsOneWidget);
+  expect(find.text('Error logs'), findsOneWidget);
+  expect(find.byType(SettingsGroup), findsNWidgets(3));
+  globalRef!.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: 'otpauth://totp/issuer:label?secret=secret&issuer=issuer');
+  await pumpUntilFindNWidgets(tester, find.text('Push Token'), 1, const Duration(minutes: 5));
+  expect(find.text('Push Token'), findsOneWidget);
+  expect(find.byType(SettingsGroup), findsNWidgets(4));
 }
