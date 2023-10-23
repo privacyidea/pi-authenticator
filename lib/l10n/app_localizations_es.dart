@@ -408,13 +408,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get decryptErrorTitle => 'Error de descifrado';
 
   @override
-  String get decryptErrorContent => 'Se ha producido un error al descifrar los tokens. Por favor, inténtalo de nuevo.\nSi el error persiste, tienes que borrar los datos corruptos';
+  String get decryptErrorContent => 'Lamentablemente, la aplicación no ha podido descifrar tus tokens. Esto indica que la clave de cifrado está rota. Puedes volver a intentarlo o borrar los datos de la app, lo que eliminaría los tokens de la app.';
 
   @override
-  String get decryptErrorButton => 'Borrar todos los Tokens';
+  String get decryptErrorButtonDelete => 'Borrar';
 
   @override
-  String get decryptErrorDeleteConfirmationContent => '¿Estás seguro de que quieres borrar todos los tokens?';
+  String get decryptErrorButtonSendError => 'Enviar error';
+
+  @override
+  String get decryptErrorButtonRetry => 'Reintentar';
+
+  @override
+  String get decryptErrorDeleteConfirmationContent => '¿Estás seguro de que quieres borrar los datos de la aplicación?';
 
   @override
   String get hidePushTokens => 'Ocultar tokens push';

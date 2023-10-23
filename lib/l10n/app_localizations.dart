@@ -880,19 +880,31 @@ abstract class AppLocalizations {
   /// No description provided for @decryptErrorContent.
   ///
   /// In en, this message translates to:
-  /// **'An error occurred while decrypting the tokens. Please try again.\nIf the error persists, you have to delete the corupted data'**
+  /// **'Unfortunately, the app was unable to decrypt your tokens. This indicates that the encryption key is broken. You can try again or delete the app data, which would delete the tokens in the app.'**
   String get decryptErrorContent;
 
-  /// No description provided for @decryptErrorButton.
+  /// No description provided for @decryptErrorButtonDelete.
   ///
   /// In en, this message translates to:
-  /// **'Delete all Tokens'**
-  String get decryptErrorButton;
+  /// **'Delete'**
+  String get decryptErrorButtonDelete;
+
+  /// No description provided for @decryptErrorButtonSendError.
+  ///
+  /// In en, this message translates to:
+  /// **'Send error'**
+  String get decryptErrorButtonSendError;
+
+  /// No description provided for @decryptErrorButtonRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get decryptErrorButtonRetry;
 
   /// No description provided for @decryptErrorDeleteConfirmationContent.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to delete all tokens?'**
+  /// **'Are you sure you want to delete the app data?'**
   String get decryptErrorDeleteConfirmationContent;
 
   /// No description provided for @hidePushTokens.
