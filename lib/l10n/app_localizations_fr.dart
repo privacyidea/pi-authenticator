@@ -408,13 +408,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get decryptErrorTitle => 'Erreur de décryptage';
 
   @override
-  String get decryptErrorContent => 'Une erreur s\'est produite lors du décryptage des jetons. Veuillez réessayer. Si l\'erreur persiste, vous devez supprimer les données corrompues';
+  String get decryptErrorContent => 'Malheureusement, l\'application n\'a pas pu décrypter vos jetons. Cela indique que la clé de cryptage est cassée. Vous pouvez réessayer ou supprimer les données de l\'application, ce qui supprimera les jetons dans l\'application.';
 
   @override
-  String get decryptErrorButton => 'Supprimer tous les jetons';
+  String get decryptErrorButtonDelete => 'Supprimer';
 
   @override
-  String get decryptErrorDeleteConfirmationContent => 'Are you sure you want to delete all tokens ?';
+  String get decryptErrorButtonSendError => 'Erreur d\'envoi';
+
+  @override
+  String get decryptErrorButtonRetry => 'Réessayer';
+
+  @override
+  String get decryptErrorDeleteConfirmationContent => 'Êtes-vous sûr de vouloir supprimer les données de l\'application ?';
 
   @override
   String get hidePushTokens => 'Hide push tokens';

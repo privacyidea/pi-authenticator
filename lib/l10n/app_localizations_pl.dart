@@ -408,13 +408,19 @@ class AppLocalizationsPl extends AppLocalizations {
   String get decryptErrorTitle => 'Decryption error';
 
   @override
-  String get decryptErrorContent => 'Wystąpił błąd podczas odszyfrowywania tokenów. Jeśli błąd będzie się powtarzał, musisz usunąć uszkodzone dane';
+  String get decryptErrorContent => 'Niestety, aplikacja nie była w stanie odszyfrować tokenów. Oznacza to, że klucz szyfrowania jest uszkodzony. Możesz spróbować ponownie lub usunąć dane aplikacji, co spowoduje usunięcie tokenów w aplikacji.';
 
   @override
-  String get decryptErrorButton => 'Usuń wszystkie tokeny';
+  String get decryptErrorButtonDelete => 'Usuń';
 
   @override
-  String get decryptErrorDeleteConfirmationContent => 'Czy na pewno chcesz usunąć wszystkie tokeny?';
+  String get decryptErrorButtonSendError => 'Wyślij błąd';
+
+  @override
+  String get decryptErrorButtonRetry => 'Ponów próbę';
+
+  @override
+  String get decryptErrorDeleteConfirmationContent => 'Czy na pewno chcesz usunąć dane aplikacji?';
 
   @override
   String get hidePushTokens => 'Ukryj tokeny push';

@@ -19,6 +19,7 @@ void showMessage({
 
 Future<T?> showAsyncDialog<T>({
   required WidgetBuilder builder,
+  bool barrierDismissible = true,
 }) {
   if (globalNavigatorKey.currentContext == null) {
     Logger.warning('globalNavigatorKey.currentContext is null');
@@ -28,5 +29,6 @@ Future<T?> showAsyncDialog<T>({
     context: globalNavigatorKey.currentContext!,
     builder: builder,
     useRootNavigator: false,
+    barrierDismissible: barrierDismissible,
   );
 }

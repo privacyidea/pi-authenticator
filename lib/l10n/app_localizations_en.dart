@@ -408,13 +408,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get decryptErrorTitle => 'Decryption error';
 
   @override
-  String get decryptErrorContent => 'An error occurred while decrypting the tokens. Please try again.\nIf the error persists, you have to delete the corupted data';
+  String get decryptErrorContent => 'Unfortunately, the app was unable to decrypt your tokens. This indicates that the encryption key is broken. You can try again or delete the app data, which would delete the tokens in the app.';
 
   @override
-  String get decryptErrorButton => 'Delete all Tokens';
+  String get decryptErrorButtonDelete => 'Delete';
 
   @override
-  String get decryptErrorDeleteConfirmationContent => 'Are you sure you want to delete all tokens?';
+  String get decryptErrorButtonSendError => 'Send error';
+
+  @override
+  String get decryptErrorButtonRetry => 'Retry';
+
+  @override
+  String get decryptErrorDeleteConfirmationContent => 'Are you sure you want to delete the app data?';
 
   @override
   String get hidePushTokens => 'Hide push tokens';

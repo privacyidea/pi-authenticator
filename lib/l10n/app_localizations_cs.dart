@@ -408,13 +408,19 @@ class AppLocalizationsCs extends AppLocalizations {
   String get decryptErrorTitle => 'Chyba dešifrování';
 
   @override
-  String get decryptErrorContent => 'Při dešifrování tokenů došlo k chybě. Zkuste to prosím znovu.\nPokud chyba přetrvává, musíte poškozená data odstranit.';
+  String get decryptErrorContent => 'Bohužel se aplikaci nepodařilo dešifrovat vaše tokeny. To znamená, že šifrovací klíč je poškozen. Můžete to zkusit znovu nebo odstranit data aplikace, čímž by došlo k odstranění tokenů v aplikaci.';
 
   @override
-  String get decryptErrorButton => 'Odstranit všechny tokeny';
+  String get decryptErrorButtonDelete => 'Odstranit';
 
   @override
-  String get decryptErrorDeleteConfirmationContent => 'Určitě chcete odstranit všechny tokeny?';
+  String get decryptErrorButtonSendError => 'Odeslat chybu';
+
+  @override
+  String get decryptErrorButtonRetry => 'Opakování';
+
+  @override
+  String get decryptErrorDeleteConfirmationContent => 'Jste si jisti, že chcete data aplikace odstranit?';
 
   @override
   String get hidePushTokens => 'Skrýt push tokeny';

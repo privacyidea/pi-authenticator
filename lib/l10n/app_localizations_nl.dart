@@ -408,13 +408,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get decryptErrorTitle => 'Fout bij decoderen';
 
   @override
-  String get decryptErrorContent => 'Er is een fout opgetreden tijdens het decoderen van de tokens. Als de fout zich blijft voordoen, moet je de gecorrumpeerde data verwijderen.';
+  String get decryptErrorContent => 'Helaas heeft de app je tokens niet kunnen decoderen. Dit geeft aan dat de coderingssleutel is verbroken. U kunt het opnieuw proberen of de app-gegevens verwijderen, waardoor de tokens in de app worden verwijderd.';
 
   @override
-  String get decryptErrorButton => 'Verwijder alle tokens';
+  String get decryptErrorButtonDelete => 'Verwijderen';
 
   @override
-  String get decryptErrorDeleteConfirmationContent => 'Weet je zeker dat je alle tokens wilt verwijderen?';
+  String get decryptErrorButtonSendError => 'Fout verzenden';
+
+  @override
+  String get decryptErrorButtonRetry => 'Opnieuw proberen';
+
+  @override
+  String get decryptErrorDeleteConfirmationContent => 'Weet je zeker dat je de app-gegevens wilt verwijderen?';
 
   @override
   String get hidePushTokens => 'Verberg push tokens';

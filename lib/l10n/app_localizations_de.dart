@@ -408,13 +408,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get decryptErrorTitle => 'Entschlüsselung fehlgeschlagen';
 
   @override
-  String get decryptErrorContent => 'Beim Entschlüsseln der Token ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.\nWenn der Fehler weiterhin besteht, müssen Sie die beschädigten Daten löschen';
+  String get decryptErrorContent => 'Leider konnten Ihre Token nicht entschlüsselt werden. Das deutet darauf hin, dass der Verschlüsselungsschlüssel nicht mehr verfügbar ist. Sie können es erneut versuchen oder die App Daten löschen. Dabei werden alle Token aus der App geschlöscht.';
 
   @override
-  String get decryptErrorButton => 'Alle Token löschen';
+  String get decryptErrorButtonDelete => 'Löschen.';
 
   @override
-  String get decryptErrorDeleteConfirmationContent => 'Sind Sie sicher, dass Sie alle Token löschen wollen?';
+  String get decryptErrorButtonSendError => 'Fehler senden';
+
+  @override
+  String get decryptErrorButtonRetry => 'Wiederholen';
+
+  @override
+  String get decryptErrorDeleteConfirmationContent => 'Sind Sie sicher, dass Sie die App Daten löschen möchten?';
 
   @override
   String get hidePushTokens => 'Push-Token ausblenden';
