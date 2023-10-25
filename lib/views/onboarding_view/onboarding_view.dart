@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../utils/riverpod_providers.dart';
@@ -88,15 +88,14 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                             subtitle: AppLocalizations.of(context)!.onBoardingText3,
                             buttonTitle: 'Github',
                             onPressed: () async {
-                              String url = "https://github.com/privacyidea/pi-authenticator";
-                              if (await canLaunchUrlString(url)) {
-                                await launchUrlString(url);
-                              } else {
-                                throw 'Could not launch $url';
+                              Uri uri = Uri.parse("https://github.com/privacyidea/pi-authenticator");
+                              if (!await launchUrl(uri)) {
+                                throw Exception('Could not launch $uri');
                               }
                             },
                           );
                         }
+
                         return Container();
                       },
                       onPageChanged: (value) {
