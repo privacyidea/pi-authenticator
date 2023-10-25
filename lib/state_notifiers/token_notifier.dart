@@ -186,19 +186,23 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
     try {
       Map<String, dynamic> uriMap = _qrParser.parseQRCodeToMap(otpAuth);
-
       if (_qrParser.is2StepURI(Uri.parse(otpAuth))) {
+        final secret = uriMap[URI_SECRET] as Uint8List;
         // Calculate the whole secret.
-        uriMap[URI_SECRET] = (await showDialog<Uint8List>(
-          context: globalNavigatorKey.currentContext!,
-          barrierDismissible: false,
-          builder: (BuildContext context) => TwoStepDialog(
-            iterations: uriMap[URI_ITERATIONS],
-            keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
-            saltLength: uriMap[URI_SALT_LENGTH],
-            password: uriMap[URI_SECRET],
-          ),
-        ))!;
+        Uint8List? twoStepSecret;
+        while (twoStepSecret == null) {
+          twoStepSecret = (await showAsyncDialog<Uint8List>(
+            barrierDismissible: false,
+            builder: (BuildContext context) => GenerateTwoStepDialog(
+              iterations: uriMap[URI_ITERATIONS],
+              keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
+              saltLength: uriMap[URI_SALT_LENGTH],
+              password: secret,
+            ),
+          ));
+          await Future.delayed(const Duration(milliseconds: 500));
+        }
+        uriMap[URI_SECRET] = twoStepSecret;
       }
       Token newToken;
       try {
