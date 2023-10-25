@@ -269,7 +269,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get noLogToSend => 'There is log to send.';
 
   @override
-  String get errorLogFileAttached => 'Plik dziennika błędów jest dołączony';
+  String get errorMailBody => 'The error log file is attached.\nYou can replace this text with additional information about the error.';
 
   @override
   String get errorLogCleared => 'Wyczyszczono dzienniki błędów';

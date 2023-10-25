@@ -327,8 +327,8 @@
   "sendErrorDialogHeader": "Send via e-mail",
   "ok": "Ok",
   "noLogToSend": "There is log to send.",
-  "errorLogFileAttached": "The error log file is attached.",
-  "@errorLogFileAttached": {
+  "errorMailBody": "The error log file is attached.\nYou can replace this text with additional information about the error.",
+  "@errorMailBody": {
     "description": "Message for email body"
   },
   "errorLogCleared": "Error logs cleared.",

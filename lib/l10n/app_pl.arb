@@ -328,7 +328,10 @@
   "sendErrorDialogHeader": "Wyślij przez e-mail",
   "ok": "Ok",
   "noLogToSend": "There is log to send.",
-  "errorLogFileAttached": "Plik dziennika błędów jest dołączony",
+  "errorLogFileAttached": "Plik dziennika błędów jest dołączony.\nTekst ten można zastąpić dodatkowymi informacjami o błędzie.",
+  "@errorMailBody": {
+    "description": "Message for email body"
+  },
   "errorLogCleared": "Wyczyszczono dzienniki błędów",
   "showDetails": "Pokaż szczegóły",
   "open": "Otwórz",

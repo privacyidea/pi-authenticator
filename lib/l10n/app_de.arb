@@ -328,8 +328,8 @@
   "sendErrorDialogHeader": "Per E-Mail senden",
   "ok": "Ok",
   "noLogToSend": "Es gibt kein Protokoll zu senden.",
-  "errorLogFileAttached": "Die Fehlerprotokolldatei ist angehängt.",
-  "@errorLogFileAttached": {
+  "errorMailBody": "Die Fehlerprotokolldatei ist angehängt.\nSie können diesen Text durch zusätzliche Informationen über den Fehler ersetzen.",
+  "@errorMailBody": {
     "description": "Message for email body"
   },
   "errorLogCleared": "Fehlerprotokolle gelöscht",

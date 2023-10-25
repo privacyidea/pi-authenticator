@@ -328,8 +328,8 @@
   "sendErrorDialogHeader": "Verzenden via e-mail",
   "ok": "Ok",
   "noLogToSend": "Er is een log om te verzenden.",
-  "errorLogFileAttached": "Het foutlogbestand is bijgevoegd.",
-  "@errorLogFileAttached": {
+  "errorMailBody": "Het foutlogbestand is bijgevoegd.\nU kunt deze tekst vervangen door aanvullende informatie over de fout.",
+  "@errorMailBody": {
     "description": "Message for email body"
   },
   "errorLogCleared": "Foutlogs gewist",

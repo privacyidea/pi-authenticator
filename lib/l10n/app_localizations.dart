@@ -610,8 +610,8 @@ abstract class AppLocalizations {
   /// Message for email body
   ///
   /// In en, this message translates to:
-  /// **'The error log file is attached.'**
-  String get errorLogFileAttached;
+  /// **'The error log file is attached.\nYou can replace this text with additional information about the error.'**
+  String get errorMailBody;
 
   /// No description provided for @errorLogCleared.
   ///

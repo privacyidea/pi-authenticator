@@ -331,7 +331,10 @@
   "sendErrorDialogHeader": "Enviar por correo electrónico",
   "ok": "Ok",
   "noLogToSend": "Hay log para enviar",
-  "errorLogFileAttached": "Se adjunta el archivo de registro de errores",
+  "errorMailBody": "Se adjunta el archivo de registro de errores.\nPuede sustituir este texto por información adicional sobre el error.",
+  "@errorMailBody": {
+    "description": "Message for email body"
+  },
   "errorLogCleared": "Registros de error borrados",
   "showDetails": "Mostrar detalles",
   "open": "Abrir",

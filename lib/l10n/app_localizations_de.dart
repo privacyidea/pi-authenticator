@@ -269,7 +269,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noLogToSend => 'Es gibt kein Protokoll zu senden.';
 
   @override
-  String get errorLogFileAttached => 'Die Fehlerprotokolldatei ist angehängt.';
+  String get errorMailBody => 'Die Fehlerprotokolldatei ist angehängt.\nSie können diesen Text durch zusätzliche Informationen über den Fehler ersetzen.';
 
   @override
   String get errorLogCleared => 'Fehlerprotokolle gelöscht';

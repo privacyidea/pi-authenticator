@@ -26,7 +26,7 @@ class Logger {
   /*----------- STATIC FIELDS & GETTER -----------*/
   static Logger? _instance;
   static BuildContext? get _context => navigatorKey.currentContext;
-  static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorLogFileAttached : 'Error Log File Attached';
+  static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorMailBody : 'Error Log File Attached';
   static printer.Logger print = printer.Logger(
     printer: printer.PrettyPrinter(
       methodCount: 0,
@@ -180,9 +180,15 @@ class Logger {
       deviceInfo = _readIosDeviceInfo(data);
     }
 
+    final completeMailBody = """$_mailBody
+---------------------------------------------------------
+
+Device Parameters:
+$deviceInfo""";
+
     try {
       final MailOptions mailOptions = MailOptions(
-        body: '$_mailBody\n\n\nDevice Parameters:$deviceInfo\n\nStacktrace:\n${file.readAsStringSync()}',
+        body: completeMailBody,
         subject: _mailSubject,
         recipients: [_mailRecipient],
         attachments: [

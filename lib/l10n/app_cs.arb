@@ -335,8 +335,8 @@
   "sendErrorDialogHeader": "Odeslat e-mailem",
   "ok": "Ok",
   "noLogToSend": "Je třeba odeslat protokol.",
-  "errorLogFileAttached": "Přiložen je soubor protokolu o chybách.",
-  "@errorLogFileAttached": {
+  "errorMailBody": "Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.",
+  "@errorMailBody": {
     "description": "Message for email body"
   },
   "errorLogCleared": "Protokoly chyb byly vymazány.",
