@@ -23,17 +23,18 @@ import 'push_provider.dart';
 // Otherwise the whole app will rebuild on every state change of the provider
 WidgetRef? globalRef;
 
-final tokenProvider = StateNotifierProvider.autoDispose<TokenNotifier, TokenState>((ref) {
+final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
+  Logger.info("tokenProvider initialized");
   final tokenNotifier = TokenNotifier();
 
-  final newLink = ref.watch(deeplinkProvider);
-  if (newLink != null) {
+  ref.listen(deeplinkProvider, (previous, newLink) {
+    if (newLink == null) return;
     Logger.info("tokenProvider received new deeplink");
     tokenNotifier.handleLink(newLink);
-  }
+  });
 
-  final newPushRequest = ref.watch(pushRequestProvider);
-  if (newPushRequest != null) {
+  ref.listen(pushRequestProvider, (previous, newPushRequest) {
+    if (newPushRequest == null) return;
     if (newPushRequest.accepted == null) {
       Logger.info("tokenProvider received new pushRequest");
       tokenNotifier.addPushRequestToToken(newPushRequest);
@@ -43,7 +44,7 @@ final tokenProvider = StateNotifierProvider.autoDispose<TokenNotifier, TokenStat
       tokenNotifier.removePushRequest(newPushRequest);
       FlutterLocalNotificationsPlugin().cancelAll();
     }
-  }
+  });
 
   appStateProvider.addListener(
     ref.container,

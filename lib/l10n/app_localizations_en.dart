@@ -2,7 +2,7 @@ import 'app_localizations.dart';
 
 /// The translations for English (`en`).
 class AppLocalizationsEn extends AppLocalizations {
-  AppLocalizationsEn([super.locale = 'en']);
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
   String get accept => 'Accept';
@@ -105,8 +105,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enablePolling => 'Enable polling';
 
   @override
-  String get requestPushChallengesPeriodically =>
-      'Request push challenges from the server periodically. Enable this if push challenges are not received normally.';
+  String get requestPushChallengesPeriodically => 'Request push challenges from the server periodically. Enable this if push challenges are not received normally.';
 
   @override
   String get synchronizePushTokens => 'Synchronize push tokens';
@@ -282,8 +281,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get open => 'Open';
 
   @override
-  String get sendErrorDialogBody =>
-      'An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.';
+  String get sendErrorDialogBody => 'An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.';
 
   @override
   String get noFbToken => 'No Firebase token available';
@@ -401,8 +399,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Please grant camera permission to scan QR codes.';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied =>
-      'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.';
+  String get grantCameraPermissionDialogPermanentlyDenied => 'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.';
 
   @override
   String get grantCameraPermissionDialogButton => 'Grant permission';
@@ -411,8 +408,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get decryptErrorTitle => 'Decryption error';
 
   @override
-  String get decryptErrorContent =>
-      'Unfortunately, the app was unable to decrypt your tokens. This indicates that the encryption key is broken. You can try again or delete the app data, which would delete the tokens in the app.';
+  String get decryptErrorContent => 'Unfortunately, the app was unable to decrypt your tokens. This indicates that the encryption key is broken. You can try again or delete the app data, which would delete the tokens in the app.';
 
   @override
   String get decryptErrorButtonDelete => 'Delete';
@@ -430,8 +426,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hidePushTokens => 'Hide push tokens';
 
   @override
-  String get hidePushTokensDescription =>
-      'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
+  String get hidePushTokensDescription => 'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
 
   @override
   String get licensesAndVersion => 'Licenses and version';

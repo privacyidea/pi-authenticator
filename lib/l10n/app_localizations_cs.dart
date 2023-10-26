@@ -2,7 +2,7 @@ import 'app_localizations.dart';
 
 /// The translations for Czech (`cs`).
 class AppLocalizationsCs extends AppLocalizations {
-  AppLocalizationsCs([super.locale = 'cs']);
+  AppLocalizationsCs([String locale = 'cs']) : super(locale);
 
   @override
   String get accept => 'Přijmout';
@@ -281,8 +281,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get open => 'Otevřít';
 
   @override
-  String get sendErrorDialogBody =>
-      'V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.';
+  String get sendErrorDialogBody => 'V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.';
 
   @override
   String get noFbToken => 'Není k dispozici žádný token Firebase.';
@@ -409,8 +408,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get decryptErrorTitle => 'Chyba dešifrování';
 
   @override
-  String get decryptErrorContent =>
-      'Bohužel se aplikaci nepodařilo dešifrovat vaše tokeny. To znamená, že šifrovací klíč je poškozen. Můžete to zkusit znovu nebo odstranit data aplikace, čímž by došlo k odstranění tokenů v aplikaci.';
+  String get decryptErrorContent => 'Bohužel se aplikaci nepodařilo dešifrovat vaše tokeny. To znamená, že šifrovací klíč je poškozen. Můžete to zkusit znovu nebo odstranit data aplikace, čímž by došlo k odstranění tokenů v aplikaci.';
 
   @override
   String get decryptErrorButtonDelete => 'Odstranit';

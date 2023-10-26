@@ -2,7 +2,7 @@ import 'app_localizations.dart';
 
 /// The translations for Polish (`pl`).
 class AppLocalizationsPl extends AppLocalizations {
-  AppLocalizationsPl([super.locale = 'pl']);
+  AppLocalizationsPl([String locale = 'pl']) : super(locale);
 
   @override
   String get accept => 'Potwierdzam';
@@ -198,8 +198,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get goToSettingsButton => 'Idź do ustawień';
 
   @override
-  String get goToSettingsDescription =>
-      'Ustawienia zabezpieczeń, bądź uwierzytelnianie biometryczne nie są skonfigurowane w twoim urządzeniu. Skonfiguruj je w ustawieniach urządzenia.';
+  String get goToSettingsDescription => 'Ustawienia zabezpieczeń, bądź uwierzytelnianie biometryczne nie są skonfigurowane w twoim urządzeniu. Skonfiguruj je w ustawieniach urządzenia.';
 
   @override
   String get lockOut => 'Uwierzytelnianie biometryczne jest wyłączone. Zablokuj i odblokuj ponownie ekran, żeby je włączyć.';
@@ -282,8 +281,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get open => 'Otwórz';
 
   @override
-  String get sendErrorDialogBody =>
-      'Napotkano nieoczekiwany błąd w aplikacji. Poniższa wiadomość może zostać wysłana do deweloperów poprzez email, żeby pomóc uniknąć tego problemu w przyszłości.';
+  String get sendErrorDialogBody => 'Napotkano nieoczekiwany błąd w aplikacji. Poniższa wiadomość może zostać wysłana do deweloperów poprzez email, żeby pomóc uniknąć tego problemu w przyszłości.';
 
   @override
   String get noFbToken => 'Brak dostępnego tokena Firebase';
@@ -401,8 +399,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Przyznaj uprawnienia kamery do skanowania kodów QR.';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied =>
-      'Uprawnienia do aparatu zostały trwale zablokowane. Przyznaj uprawnienia aparatu w ustawieniach telefonu.';
+  String get grantCameraPermissionDialogPermanentlyDenied => 'Uprawnienia do aparatu zostały trwale zablokowane. Przyznaj uprawnienia aparatu w ustawieniach telefonu.';
 
   @override
   String get grantCameraPermissionDialogButton => 'Grant permission';
@@ -411,8 +408,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get decryptErrorTitle => 'Decryption error';
 
   @override
-  String get decryptErrorContent =>
-      'Niestety, aplikacja nie była w stanie odszyfrować tokenów. Oznacza to, że klucz szyfrowania jest uszkodzony. Możesz spróbować ponownie lub usunąć dane aplikacji, co spowoduje usunięcie tokenów w aplikacji.';
+  String get decryptErrorContent => 'Niestety, aplikacja nie była w stanie odszyfrować tokenów. Oznacza to, że klucz szyfrowania jest uszkodzony. Możesz spróbować ponownie lub usunąć dane aplikacji, co spowoduje usunięcie tokenów w aplikacji.';
 
   @override
   String get decryptErrorButtonDelete => 'Usuń';

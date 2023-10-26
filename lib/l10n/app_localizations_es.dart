@@ -2,7 +2,7 @@ import 'app_localizations.dart';
 
 /// The translations for Spanish Castilian (`es`).
 class AppLocalizationsEs extends AppLocalizations {
-  AppLocalizationsEs([super.locale = 'es']);
+  AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
   String get accept => 'Aceptar';
@@ -105,8 +105,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get enablePolling => 'Activar polling';
 
   @override
-  String get requestPushChallengesPeriodically =>
-      'Solicita retos push al servidor periódicamente. Habilite esta opción si los retos push no se reciben normalmente.';
+  String get requestPushChallengesPeriodically => 'Solicita retos push al servidor periódicamente. Habilite esta opción si los retos push no se reciben normalmente.';
 
   @override
   String get synchronizePushTokens => 'Sinchronizar push tokens';
@@ -199,8 +198,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get goToSettingsButton => 'Ir a la configuración';
 
   @override
-  String get goToSettingsDescription =>
-      'La autenticación por credenciales o biométrica no está configurada en tu dispositivo. Por favor, configúrala en los ajustes del dispositivo.';
+  String get goToSettingsDescription => 'La autenticación por credenciales o biométrica no está configurada en tu dispositivo. Por favor, configúrala en los ajustes del dispositivo.';
 
   @override
   String get lockOut => 'La autenticación biométrica está desactivada. Bloquea y desbloquea la pantalla para activarla.';
@@ -283,8 +281,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get open => 'Abrir';
 
   @override
-  String get sendErrorDialogBody =>
-      'Se ha producido un error inesperado en la aplicación. La siguiente información puede ser enviada a los desarrolladores por correo electrónico para ayudar a prevenir este error en el futuro.';
+  String get sendErrorDialogBody => 'Se ha producido un error inesperado en la aplicación. La siguiente información puede ser enviada a los desarrolladores por correo electrónico para ayudar a prevenir este error en el futuro.';
 
   @override
   String get noFbToken => 'No hay token de Firebase.';
@@ -402,8 +399,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Por favor, concede permiso a la cámara para escanear códigos QR';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied =>
-      'El permiso de cámara está denegado permanentemente. Concede el permiso de cámara en la configuración del teléfono';
+  String get grantCameraPermissionDialogPermanentlyDenied => 'El permiso de cámara está denegado permanentemente. Concede el permiso de cámara en la configuración del teléfono';
 
   @override
   String get grantCameraPermissionDialogButton => 'Conceder permiso';
@@ -412,8 +408,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get decryptErrorTitle => 'Error de descifrado';
 
   @override
-  String get decryptErrorContent =>
-      'Lamentablemente, la aplicación no ha podido descifrar tus tokens. Esto indica que la clave de cifrado está rota. Puedes volver a intentarlo o borrar los datos de la app, lo que eliminaría los tokens de la app.';
+  String get decryptErrorContent => 'Lamentablemente, la aplicación no ha podido descifrar tus tokens. Esto indica que la clave de cifrado está rota. Puedes volver a intentarlo o borrar los datos de la app, lo que eliminaría los tokens de la app.';
 
   @override
   String get decryptErrorButtonDelete => 'Borrar';
@@ -431,8 +426,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get hidePushTokens => 'Ocultar tokens push';
 
   @override
-  String get hidePushTokensDescription =>
-      'Ocultar tokens push de la lista de tokens. Esto no borrará los tokens y seguirán siendo visibles en una pantalla aparte';
+  String get hidePushTokensDescription => 'Ocultar tokens push de la lista de tokens. Esto no borrará los tokens y seguirán siendo visibles en una pantalla aparte';
 
   @override
   String get licensesAndVersion => 'Licencias y versión';
