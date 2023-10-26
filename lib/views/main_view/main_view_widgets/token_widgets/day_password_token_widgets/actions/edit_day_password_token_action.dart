@@ -17,9 +17,9 @@ class EditDayPassowrdTokenAction extends TokenAction {
   final DayPasswordToken token;
 
   const EditDayPassowrdTokenAction({
-    Key? key,
+    super.key,
     required this.token,
-  }) : super(key: key);
+  });
 
   @override
   CustomSlidableAction build(BuildContext context) => CustomSlidableAction(

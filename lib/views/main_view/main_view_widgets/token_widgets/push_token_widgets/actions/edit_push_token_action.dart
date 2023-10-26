@@ -16,9 +16,9 @@ class EditPushTokenAction extends TokenAction {
   final PushToken token;
 
   const EditPushTokenAction({
-    Key? key,
+    super.key,
     required this.token,
-  }) : super(key: key);
+  });
 
   @override
   CustomSlidableAction build(BuildContext context) => CustomSlidableAction(

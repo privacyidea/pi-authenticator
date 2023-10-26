@@ -4,7 +4,7 @@ import 'widgets/push_tokens_view_list.dart';
 
 class PushTokensView extends StatelessWidget {
   static const routeName = '/pushTokensView';
-  const PushTokensView({Key? key}) : super(key: key);
+  const PushTokensView({super.key});
 
   @override
   Widget build(BuildContext context) {

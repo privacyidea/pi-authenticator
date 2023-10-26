@@ -24,7 +24,7 @@ class TestsAppWrapper extends StatelessWidget {
   final Widget child;
   final List<Override> overrides;
 
-  const TestsAppWrapper({Key? key, required this.child, this.overrides = const []}) : super(key: key);
+  const TestsAppWrapper({super.key, required this.child, this.overrides = const []});
 
   @override
   Widget build(BuildContext context) {

@@ -13,7 +13,7 @@ import '../token_action.dart';
 
 class DefaultEditAction extends TokenAction {
   final Token token;
-  const DefaultEditAction({required this.token, Key? key}) : super(key: key);
+  const DefaultEditAction({required this.token, super.key});
 
   @override
   CustomSlidableAction build(BuildContext context) {

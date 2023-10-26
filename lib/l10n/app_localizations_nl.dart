@@ -2,7 +2,7 @@ import 'app_localizations.dart';
 
 /// The translations for Dutch Flemish (`nl`).
 class AppLocalizationsNl extends AppLocalizations {
-  AppLocalizationsNl([String locale = 'nl']) : super(locale);
+  AppLocalizationsNl([super.locale = 'nl']);
 
   @override
   String get accept => 'Accepteren';
@@ -281,7 +281,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get open => 'Openen';
 
   @override
-  String get sendErrorDialogBody => 'Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.';
+  String get sendErrorDialogBody =>
+      'Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.';
 
   @override
   String get noFbToken => 'Geen Firebase Token beschikbaar';
@@ -399,7 +400,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Geef de camera toestemming om QR-codes te scannen.';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied => 'Cameratoestemming is permanent geweigerd. Geef de camera toestemming in de instellingen van uw telefoon.';
+  String get grantCameraPermissionDialogPermanentlyDenied =>
+      'Cameratoestemming is permanent geweigerd. Geef de camera toestemming in de instellingen van uw telefoon.';
 
   @override
   String get grantCameraPermissionDialogButton => 'Toestemming verlenen';
@@ -408,7 +410,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get decryptErrorTitle => 'Fout bij decoderen';
 
   @override
-  String get decryptErrorContent => 'Helaas heeft de app je tokens niet kunnen decoderen. Dit geeft aan dat de coderingssleutel is verbroken. U kunt het opnieuw proberen of de app-gegevens verwijderen, waardoor de tokens in de app worden verwijderd.';
+  String get decryptErrorContent =>
+      'Helaas heeft de app je tokens niet kunnen decoderen. Dit geeft aan dat de coderingssleutel is verbroken. U kunt het opnieuw proberen of de app-gegevens verwijderen, waardoor de tokens in de app worden verwijderd.';
 
   @override
   String get decryptErrorButtonDelete => 'Verwijderen';
@@ -426,7 +429,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get hidePushTokens => 'Verberg push tokens';
 
   @override
-  String get hidePushTokensDescription => 'Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.';
+  String get hidePushTokensDescription =>
+      'Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.';
 
   @override
   String get licensesAndVersion => 'Licenties en versie';

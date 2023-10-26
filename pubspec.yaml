@@ -45,7 +45,7 @@ dependencies:
   http: ^1.1.0
   pointycastle: ^3.4.0
   mutex: ^3.0.0
-  flutter_lints: ^2.0.2
+  flutter_lints: ^3.0.0
   expandable: ^5.0.1
   flutterlifecyclehooks: ^4.0.0
   streaming_shared_preferences: ^2.0.0

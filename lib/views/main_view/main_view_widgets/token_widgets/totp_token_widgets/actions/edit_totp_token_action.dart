@@ -15,9 +15,9 @@ class EditTOTPTokenAction extends TokenAction {
   final TOTPToken token;
 
   const EditTOTPTokenAction({
-    Key? key,
+    super.key,
     required this.token,
-  }) : super(key: key);
+  });
 
   @override
   CustomSlidableAction build(BuildContext context) => CustomSlidableAction(

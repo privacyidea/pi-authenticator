@@ -31,7 +31,7 @@ class OnboardingView extends ConsumerStatefulWidget {
   static const String routeName = '/onboarding';
   final String appName;
 
-  const OnboardingView({required this.appName, Key? key}) : super(key: key);
+  const OnboardingView({required this.appName, super.key});
 
   @override
   ConsumerState<OnboardingView> createState() => _OnboardingViewState();

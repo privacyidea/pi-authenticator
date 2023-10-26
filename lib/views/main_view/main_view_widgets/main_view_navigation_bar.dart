@@ -12,7 +12,7 @@ import 'main_view_navigation_buttons/license_push_view_button.dart';
 import 'main_view_navigation_buttons/qr_scanner_button.dart';
 
 class MainViewNavigationBar extends ConsumerWidget {
-  const MainViewNavigationBar({Key? key}) : super(key: key);
+  const MainViewNavigationBar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

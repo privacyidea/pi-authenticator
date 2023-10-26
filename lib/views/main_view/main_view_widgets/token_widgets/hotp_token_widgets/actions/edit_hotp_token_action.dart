@@ -17,9 +17,9 @@ class EditHOTPTokenAction extends TokenAction {
   final HOTPToken token;
 
   const EditHOTPTokenAction({
-    Key? key,
+    super.key,
     required this.token,
-  }) : super(key: key);
+  });
 
   @override
   CustomSlidableAction build(BuildContext context) => CustomSlidableAction(

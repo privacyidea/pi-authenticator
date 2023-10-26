@@ -80,7 +80,7 @@ class QRScannerView extends StatelessWidget {
               ],
             );
           }
-          return QRScannerWidget();
+          return const QRScannerWidget();
         },
       ),
     );

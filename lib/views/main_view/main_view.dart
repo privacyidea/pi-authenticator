@@ -16,7 +16,7 @@ class MainView extends ConsumerStatefulWidget {
   final Widget appIcon;
   final String appName;
 
-  const MainView({required this.appIcon, required this.appName, Key? key}) : super(key: key);
+  const MainView({required this.appIcon, required this.appName, super.key});
 
   @override
   ConsumerState<MainView> createState() => _MainViewState();

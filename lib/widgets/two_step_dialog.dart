@@ -93,7 +93,7 @@ class GenerateTwoStepDialog extends StatelessWidget {
 
 class TwoStepDialog extends StatefulWidget {
   final String phoneChecksum;
-  const TwoStepDialog({Key? key, required this.phoneChecksum}) : super(key: key);
+  const TwoStepDialog({super.key, required this.phoneChecksum});
   @override
   State<StatefulWidget> createState() => _TwoStepDialogState();
 }

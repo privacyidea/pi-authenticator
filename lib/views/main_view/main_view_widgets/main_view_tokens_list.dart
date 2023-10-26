@@ -19,7 +19,7 @@ import 'sortable_widget_builder.dart';
 class MainViewTokensList extends ConsumerStatefulWidget {
   final GlobalKey<NestedScrollViewState> nestedScrollViewKey;
 
-  const MainViewTokensList({Key? key, required this.nestedScrollViewKey}) : super(key: key);
+  const MainViewTokensList({super.key, required this.nestedScrollViewKey});
 
   @override
   ConsumerState<MainViewTokensList> createState() => _MainViewTokensListState();
