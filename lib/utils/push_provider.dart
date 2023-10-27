@@ -44,6 +44,7 @@ import 'view_utils.dart';
 /// firebase, polling, notifications.
 class PushProvider {
   static PushProvider? instance;
+  bool pollingIsEnabled = false;
   bool _initialized = false;
   Timer? _pollTimer;
   PushRequestNotifier? pushSubscriber; // must be set before receiving push messages
@@ -66,6 +67,12 @@ class PushProvider {
     );
   }
 
+  void setPollingEnabled(bool? enablePolling) {
+    if (enablePolling == null) return;
+    _startOrStopPolling(enablePolling);
+    pollingIsEnabled = enablePolling;
+  }
+
   factory PushProvider({
     bool? pollingEnabled,
     PrivacyIdeaIOClient? ioClient,
@@ -82,21 +89,12 @@ class PushProvider {
       }
     }
 
-    if (pollingEnabled != null) {
-      instance!._initStateAsync(pollingEnabled);
-    }
+    instance!.setPollingEnabled(pollingEnabled);
+
     return instance!;
   }
 
   // INITIALIZATIONS
-
-  /// Handles asynchronous calls that should be triggered by `initState`.
-  Future<void> _initStateAsync(bool pollingEnabled) async {
-    if (pollingEnabled) {
-      pollForChallenges();
-    }
-    _startOrStopPolling(pollingEnabled);
-  }
 
   // FOREGROUND HANDLING
   Future<void> _foregroundHandler(RemoteMessage remoteMessage) async {
