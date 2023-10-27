@@ -21,6 +21,7 @@ import 'package:flutter/foundation.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/supported_versions.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 class QrParser {
@@ -30,8 +31,6 @@ class QrParser {
   Map<String, dynamic> parseQRCodeToMap(String uriAsString) {
     Uri uri = Uri.parse(uriAsString);
     Logger.info('Barcode is valid Uri:', name: 'parsing_utils.dart#parseQRCodeToMap');
-
-    // TODO Parse crash report recipients
 
     if (uri.scheme != 'otpauth') {
       throw ArgumentError.value(
@@ -59,14 +58,11 @@ class QrParser {
     // otpauth://pipush/LABELTEXT?
     // url=https://privacyidea.org/enroll/this/token
     // &ttl=120
-    // &serial=PIPU0006EF87
-    // &projectid=test-d1231
-    // &appid=1:0123456789012:android:0123456789abcdef
-    // &apikey=AIzaSyBeFSjwJ8aEcHQaj4-isT-sLAX6lmSrvbb
-    // &projectnumber=850240559999
+    // &issuer=privacyIDEA
     // &enrollment_credential=9311ee50678983c0f29d3d843f86e39405e2b427
-    // &apikeyios=AIzaSyBeFSjwJ8aEcHQaj4-isT-sLAX6lmSrvbb
-    // &appidios=1:0123456789012:ios:0123456789abcdef
+    // &v=1
+    // &serial=PIPU0006EF87
+    // &sslverify=1
 
     Map<String, dynamic> uriMap = {};
 
@@ -84,7 +80,7 @@ class QrParser {
 
       Logger.info('Parsing push token with version: $pushVersion', name: 'parsing_utils.dart#parsePiAuth');
 
-      if (pushVersion > 1) {
+      if (pushVersion > maxPushTokenVersion) {
         throw ArgumentError.value(
             uri,
             'uri',

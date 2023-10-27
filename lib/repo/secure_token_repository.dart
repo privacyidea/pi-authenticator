@@ -103,8 +103,6 @@ class SecureTokenRepository implements TokenRepository {
     for (var i = 0; i < keyValueMap.length; i++) {
       final value = keyValueMap.values.elementAt(i);
       final key = keyValueMap.keys.elementAt(i);
-      // for (String value in keyValueMap.values) {
-
       Map<String, dynamic>? serializedToken;
 
       try {
