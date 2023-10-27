@@ -46,13 +46,13 @@ void main() {
       ],
       child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
     ));
-    await _renameToken(tester);
-    await _renameTokenAgain(tester);
+    await _renameToken(tester, 'Renamed Token');
+    await _renameToken(tester, 'Renamed Token Again');
     await _deleteToken(tester);
   }, timeout: const Timeout(Duration(minutes: 5)));
 }
 
-Future<void> _renameToken(WidgetTester tester) async {
+Future<void> _renameToken(WidgetTester tester, String newName) async {
   // Rename Token
   await tester.pumpAndSettle();
   await pumpUntilFindNWidgets(tester, find.byType(HOTPTokenWidget), 1, const Duration(seconds: 10));
@@ -64,27 +64,13 @@ Future<void> _renameToken(WidgetTester tester) async {
   await tester.pumpAndSettle();
   expect(find.text('Edit Token'), findsOneWidget);
   expect(find.byType(TextFormField), findsNWidgets(3));
-  await tester.enterText(find.byType(TextFormField).first, 'Renamed Token');
+  await tester.pumpAndSettle();
+  await tester.enterText(find.byType(TextFormField).first, '');
+  await tester.enterText(find.byType(TextFormField).first, newName);
+  await pumpUntilFindNWidgets(tester, find.widgetWithText(TextFormField, newName), 1, const Duration(seconds: 2));
   await tester.tap(find.text('Save'));
-  await tester.pumpAndSettle();
-  expect(find.text('Renamed Token'), findsOneWidget);
-}
-
-Future<void> _renameTokenAgain(WidgetTester tester) async {
-  await tester.pumpAndSettle();
-  await pumpUntilFindNWidgets(tester, find.byType(HOTPTokenWidget), 1, const Duration(seconds: 10));
-  expect(find.byType(HOTPTokenWidget), findsOneWidget);
-  await tester.drag(find.byType(HOTPTokenWidget), const Offset(-300, 0));
-  await tester.pumpAndSettle();
-  await pumpUntilFindNWidgets(tester, find.byType(EditHOTPTokenAction), 1, const Duration(seconds: 2));
-  await tester.tap(find.byType(EditHOTPTokenAction));
-  await tester.pumpAndSettle();
-  expect(find.text('Edit Token'), findsOneWidget);
-  expect(find.byType(TextFormField), findsNWidgets(3));
-  await tester.enterText(find.byType(TextFormField).first, 'Renamed Token');
-  await tester.tap(find.text('Save'));
-  await tester.pumpAndSettle();
-  expect(find.text('Renamed Token'), findsOneWidget);
+  await pumpUntilFindNWidgets(tester, find.text(newName), 1, const Duration(seconds: 2));
+  expect(find.text(newName), findsOneWidget);
 }
 
 Future<void> _deleteToken(WidgetTester tester) async {
