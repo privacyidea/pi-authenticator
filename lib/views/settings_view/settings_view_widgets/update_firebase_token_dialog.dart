@@ -18,19 +18,14 @@
   limitations under the License.
 */
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:http/http.dart';
-import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/network_utils.dart';
-import 'package:privacyidea_authenticator/utils/push_provider.dart';
-import 'package:privacyidea_authenticator/utils/storage_utils.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/customizations.dart';
+import '../../../utils/push_provider.dart';
 import '../../../widgets/default_dialog.dart';
 
 class UpdateFirebaseTokenDialog extends StatefulWidget {
@@ -70,65 +65,16 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
   void _updateFbTokens() async {
     Logger.info('Starting update of firebase token.', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
 
-    List<PushToken> tokenList = (await StorageUtil.loadAllTokens()).whereType<PushToken>().toList();
-
     // TODO What to do with poll only tokens if google-services is used?
 
-    String? token = await PushProvider.getFBToken();
-
-    // TODO Is there a good way to handle these tokens?
-    List<PushToken> tokenWithOutUrl = tokenList.where((e) => e.url == null).toList();
-    List<PushToken> tokenWithUrl = tokenList.where((e) => e.url != null).toList();
-    List<PushToken> tokenWithFailedUpdate = [];
-
-    for (PushToken pushToken in tokenWithUrl) {
-      // POST /ttype/push HTTP/1.1
-      // Host: example.com
-      //
-      // new_fb_token=<new firebase token>
-      // serial=<tokenserial>element
-      // timestamp=<timestamp>
-      // signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
-
-      String timestamp = DateTime.now().toUtc().toIso8601String();
-
-      String message = '$token|${pushToken.serial}|$timestamp';
-      String? signature = await trySignWithToken(pushToken, message);
-      if (signature == null) {
-        return;
-      }
-
-      Response response;
-      try {
-        response = await doPost(
-            sslVerify: pushToken.sslVerify,
-            url: pushToken.url!,
-            body: {'new_fb_token': token, 'serial': pushToken.serial, 'timestamp': timestamp, 'signature': signature});
-
-        if (response.statusCode == 200) {
-          Logger.info('Updating firebase token for push token: ${pushToken.serial} succeeded!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
-        } else {
-          Logger.warning('Updating firebase token for push token: ${pushToken.serial} failed!', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
-          tokenWithFailedUpdate.add(pushToken);
-        }
-      } on SocketException catch (e, s) {
-        Logger.warning(
-          'Socket exception occurred: $e',
-          name: 'update_firebase_token_dialog.dart#_updateFbTokens',
-          stackTrace: s,
-        );
-        ScaffoldMessenger.of(globalNavigatorKey.currentContext!).showSnackBar(SnackBar(
-          content: Text(
-            AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-          duration: const Duration(seconds: 3),
-        ));
-        Navigator.pop(globalNavigatorKey.currentContext!);
-        return;
-      }
+    final tuple = await PushProvider.updateFirebaseToken();
+    if (tuple == null) {
+      showMessage(message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection);
+      return;
     }
+    late List<PushToken> tokenWithFailedUpdate;
+    late List<PushToken> tokenWithOutUrl;
+    (tokenWithFailedUpdate, tokenWithOutUrl) = tuple;
 
     if (tokenWithFailedUpdate.isEmpty && tokenWithOutUrl.isEmpty) {
       if (!mounted) return;

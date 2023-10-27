@@ -1,12 +1,9 @@
-import 'package:flare_flutter/flare_actor.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../../utils/app_customizer.dart';
+import '../../l10n/app_localizations.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/dot_indicator.dart';
 import '../main_view/main_view.dart';
@@ -32,8 +29,9 @@ List<LottieFiles> lottieFiles = [
 
 class OnboardingView extends ConsumerStatefulWidget {
   static const String routeName = '/onboarding';
+  final String appName;
 
-  const OnboardingView({Key? key}) : super(key: key);
+  const OnboardingView({required this.appName, super.key});
 
   @override
   ConsumerState<OnboardingView> createState() => _OnboardingViewState();
@@ -42,37 +40,29 @@ class OnboardingView extends ConsumerStatefulWidget {
 class _OnboardingViewState extends ConsumerState<OnboardingView> {
   int _currentIndex = 0;
   final PageController _pageController = PageController();
-  String animation = 'Untitled';
 
   @override
-  Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Stack(
-        children: [
-          SizedBox(
-            height: screenSize.height / 1.4,
-            width: screenSize.width,
-          ),
-          Positioned(
-            top: 120,
-            right: 5,
-            left: 5,
-            child: SizedBox(
-              width: screenSize.width * 0.4,
-              height: screenSize.height * 0.4,
-              child: Lottie.asset(
-                lottieFiles[_currentIndex].lottieFile,
-                alignment: Alignment.topCenter,
+  Widget build(BuildContext context) => Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Expanded(child: SizedBox()),
+            Expanded(
+              flex: 3,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Lottie.asset(
+                    lottieFiles[_currentIndex].lottieFile,
+                    alignment: Alignment.topCenter,
+                  ),
+                ),
               ),
             ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 270,
+            Expanded(
+              flex: 2,
               child: Column(
                 children: [
                   Flexible(
@@ -82,12 +72,15 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                       itemBuilder: (BuildContext context, int index) {
                         if (_currentIndex == 0) {
                           return OnboardingPage(
-                              title: AppLocalizations.of(context)!.onBoardingTitle1(ApplicationCustomizer.appName),
-                              subtitle: AppLocalizations.of(context)!.onBoardingText1);
+                            title: AppLocalizations.of(context)!.onBoardingTitle1(widget.appName),
+                            subtitle: AppLocalizations.of(context)!.onBoardingText1,
+                          );
                         }
                         if (_currentIndex == 1) {
-                          // TODO guide removed from here, put the new one here again?
-                          return OnboardingPage(title: AppLocalizations.of(context)!.onBoardingTitle2, subtitle: AppLocalizations.of(context)!.onBoardingText2);
+                          return OnboardingPage(
+                            title: AppLocalizations.of(context)!.onBoardingTitle2,
+                            subtitle: AppLocalizations.of(context)!.onBoardingText2,
+                          );
                         }
                         if (_currentIndex == 2) {
                           return OnboardingPage(
@@ -95,70 +88,54 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
                             subtitle: AppLocalizations.of(context)!.onBoardingText3,
                             buttonTitle: 'Github',
                             onPressed: () async {
-                              String url = "https://github.com/privacyidea/pi-authenticator";
-                              if (await canLaunchUrlString(url)) {
-                                await launchUrlString(url);
-                              } else {
-                                throw 'Could not launch $url';
+                              Uri uri = Uri.parse("https://github.com/privacyidea/pi-authenticator");
+                              if (!await launchUrl(uri)) {
+                                throw Exception('Could not launch $uri');
                               }
                             },
                           );
                         }
+
                         return Container();
                       },
                       onPageChanged: (value) {
-                        _currentIndex = value;
-                        setState(() {});
+                        setState(() {
+                          _currentIndex = value;
+                        });
                       },
                     ),
                   ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      for (int index = 0; index < lottieFiles.length; index++) DotIndicator(isSelected: index == _currentIndex),
-                    ],
-                  ),
-                  const SizedBox(height: 75)
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          final isFirstRun = ref.read(settingsProvider).isFirstRun;
-
-          switch (_currentIndex) {
-            case 2:
-              if (isFirstRun) {
-                ref.read(settingsProvider.notifier).setFirstRun(false);
-                Navigator.pushReplacementNamed(
-                  context,
-                  MainView.routeName,
-                );
-              } else {
-                Navigator.of(context).pop();
-              }
-              break;
-            default:
-              _pageController.nextPage(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.ease,
-              );
-          }
-        },
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF303030) : Colors.grey[50],
-        child: _currentIndex == 2
-            ? FlareActor(
-                'res/rive/success_check.flr',
-                animation: animation,
-              )
-            : Icon(
-                CupertinoIcons.right_chevron,
-                color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+            Expanded(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (int index = 0; index < lottieFiles.length; index++) DotIndicator(isSelected: index == _currentIndex),
+                ],
               ),
-      ),
-    );
-  }
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            if (_currentIndex == lottieFiles.length - 1) {
+              ref.read(settingsProvider.notifier).setFirstRun(false);
+              Navigator.of(context).pushReplacementNamed(MainView.routeName);
+              return;
+            }
+            _pageController.nextPage(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.ease,
+            );
+          },
+          backgroundColor: Theme.of(context).colorScheme.background,
+          child: Icon(
+            Icons.arrow_forward_ios_outlined,
+            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+          ),
+        ),
+      );
 }

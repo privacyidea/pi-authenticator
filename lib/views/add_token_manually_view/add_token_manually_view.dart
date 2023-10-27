@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../model/tokens/day_password_token.dart';
 import '../../model/tokens/hotp_token.dart';
 import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/totp_token.dart';
+import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
-import '../../utils/utils.dart';
 import 'add_token_manually_view_widgets/labeled_dropdown_button.dart';
 
 class AddTokenManuallyView extends ConsumerStatefulWidget {
@@ -123,7 +123,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
               Visibility(
                 // the period is only used by TOTP tokens
                 visible: _typeNotifier.value == TokenTypes.TOTP,
-                child: LabeledDropdownButton(
+                child: LabeledDropdownButton<int>(
                   label: AppLocalizations.of(context)!.period,
                   values: AddTokenManuallyView.allowedPeriodsTOTP,
                   valueNotifier: _periodNotifier,
@@ -133,7 +133,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
               Visibility(
                 // the period is only used by DayPassword tokens
                 visible: _typeNotifier.value == TokenTypes.DAYPASSWORD,
-                child: LabeledDropdownButton(
+                child: LabeledDropdownButton<int>(
                   label: AppLocalizations.of(context)!.period,
                   values: AddTokenManuallyView.allowedPeriodsDayPassword,
                   valueNotifier: _periodDayPasswordNotifier,
@@ -152,7 +152,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
                   onPressed: () {
                     final token = _buildTokenIfValid(context: context);
                     if (token != null) {
-                      ref.read(tokenProvider.notifier).addToken(token);
+                      ref.read(tokenProvider.notifier).addOrReplaceToken(token);
                       Navigator.pop(context);
                     }
                   },

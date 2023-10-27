@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../widgets/default_dialog.dart';
@@ -90,9 +90,17 @@ class LoggingMenu extends ConsumerWidget {
 
   void _pressSendErrorLog(BuildContext context) {
     if (Logger.instance.logfileHasContent) {
-      showDialog(context: context, builder: (context) => const SendErrorDialog());
+      showDialog(
+        useRootNavigator: false,
+        context: context,
+        builder: (context) => const SendErrorDialog(),
+      );
     } else {
-      showDialog(context: context, builder: (context) => const NoLogDialog());
+      showDialog(
+        useRootNavigator: false,
+        context: context,
+        builder: (context) => const NoLogDialog(),
+      );
     }
   }
 

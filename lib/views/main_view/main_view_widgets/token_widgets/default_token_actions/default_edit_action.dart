@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/customizations.dart';
@@ -13,13 +13,13 @@ import '../token_action.dart';
 
 class DefaultEditAction extends TokenAction {
   final Token token;
-  const DefaultEditAction({required this.token, Key? key}) : super(key: key);
+  const DefaultEditAction({required this.token, super.key});
 
   @override
   CustomSlidableAction build(BuildContext context) {
     return CustomSlidableAction(
-        backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
-        foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+        backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
+        foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
         onPressed: (context) async {
           if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
             return;
@@ -43,6 +43,7 @@ class DefaultEditAction extends TokenAction {
   void _showDialog() {
     TextEditingController nameInputController = TextEditingController(text: token.label);
     showDialog(
+        useRootNavigator: false,
         context: globalNavigatorKey.currentContext!,
         builder: (BuildContext context) {
           return DefaultDialog(
@@ -82,7 +83,7 @@ class DefaultEditAction extends TokenAction {
                 onPressed: () {
                   final newLabel = nameInputController.text.trim();
                   if (newLabel.isEmpty) return;
-                  globalRef?.read(tokenProvider.notifier).updateToken(token.copyWith(label: newLabel));
+                  globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(label: newLabel));
 
                   Logger.info(
                     'Renamed token:',

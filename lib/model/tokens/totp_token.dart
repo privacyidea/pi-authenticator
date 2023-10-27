@@ -1,8 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
-// ignore: library_prefixes
-import 'package:otp/otp.dart' as OTPLibrary;
+import 'package:otp/otp.dart' as otp_library;
 import 'package:uuid/uuid.dart';
 
+import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/utils.dart';
 import 'otp_token.dart';
@@ -17,7 +17,7 @@ class TOTPToken extends OTPToken {
 
   final int period;
   @override
-  String get otpValue => OTPLibrary.OTP.generateTOTPCodeString(
+  String get otpValue => otp_library.OTP.generateTOTPCodeString(
         secret,
         DateTime.now().millisecondsSinceEpoch,
         length: digits,

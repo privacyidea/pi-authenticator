@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class OnboardingPage extends StatelessWidget {
-  const OnboardingPage({Key? key, required, required this.title, required this.subtitle, this.onPressed, this.buttonTitle}) : super(key: key);
+  const OnboardingPage({super.key, required, required this.title, required this.subtitle, this.onPressed, this.buttonTitle});
 
   final String title;
   final String subtitle;
@@ -11,21 +11,24 @@ class OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 27.0,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).textTheme.titleMedium?.color,
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 27.0,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.titleMedium?.color,
+                ),
               ),
             ),
           ),
-          const SizedBox(height: 40),
           Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             alignment: WrapAlignment.center,
@@ -42,14 +45,17 @@ class OnboardingPage extends StatelessWidget {
                 ),
               ),
               if (onPressed != null && buttonTitle != null)
-                OutlinedButton(
-                  onPressed: onPressed,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      buttonTitle!,
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: OutlinedButton(
+                    onPressed: onPressed,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        buttonTitle!,
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                      ),
                     ),
                   ),
                 ),

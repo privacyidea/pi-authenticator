@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/day_password_token.dart';
 import '../../../../../utils/identifiers.dart';
 import '../../../../../utils/lock_auth.dart';
@@ -104,11 +104,11 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
         behavior: HitTestBehavior.deferToChild,
         onTap: () {
           if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDFOR) {
-            globalRef?.read(tokenProvider.notifier).updateToken(widget.token.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
+            globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
             return;
           }
           if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDUNTIL) {
-            globalRef?.read(tokenProvider.notifier).updateToken(widget.token.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
+            globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
             return;
           }
         },

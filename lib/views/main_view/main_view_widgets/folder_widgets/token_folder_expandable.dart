@@ -3,19 +3,20 @@ import 'dart:async';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'token_folder_actions.dart/delete_token_folder_action.dart';
-import 'token_folder_actions.dart/lock_token_folder_action.dart';
-import 'token_folder_actions.dart/rename_token_folder_action.dart';
+
+import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_folder.dart';
+import '../../../../model/tokens/push_token.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/lock_auth.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../widgets/custom_trailing.dart';
 import '../drag_target_divider.dart';
 import '../token_widgets/token_widget_builder.dart';
+import 'token_folder_actions.dart/delete_token_folder_action.dart';
+import 'token_folder_actions.dart/lock_token_folder_action.dart';
+import 'token_folder_actions.dart/rename_token_folder_action.dart';
 
 class TokenFolderExpandable extends ConsumerStatefulWidget {
   final TokenFolder folder;
@@ -60,7 +61,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
 
   @override
   ExpandablePanel build(BuildContext context) {
-    final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder);
+    final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: ref.watch(settingsProvider).hidePushTokens ? [PushToken] : []);
     final draggingSortable = ref.watch(draggingSortableProvider);
     if (tokens.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -111,8 +112,11 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
               },
               onLeave: (data) => _expandTimer?.cancel(),
               onAccept: (data) {
-                final updatedToken = (data as Token).copyWith(folderId: () => widget.folder.folderId);
-                ref.read(tokenProvider.notifier).updateToken(updatedToken);
+                if (data is! Token) return;
+                ref.read(tokenProvider.notifier).updateToken(
+                      data,
+                      (p0) => p0.copyWith(folderId: () => widget.folder.folderId),
+                    );
               },
               builder: (context, willAccept, willReject) => Center(
                 child: Container(
@@ -140,6 +144,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                           )),
                       const SizedBox(width: 8),
                       Expanded(
+                        flex: 2,
                         child: Text(
                           widget.folder.label,
                           style: Theme.of(context).textTheme.titleLarge,

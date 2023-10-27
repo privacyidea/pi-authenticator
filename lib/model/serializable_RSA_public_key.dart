@@ -7,7 +7,7 @@ part 'serializable_RSA_public_key.g.dart';
 
 @JsonSerializable()
 class SerializableRSAPublicKey extends RSAPublicKey {
-  SerializableRSAPublicKey(BigInt modulus, BigInt exponent) : super(modulus, exponent);
+  SerializableRSAPublicKey(super.modulus, super.exponent);
 
   factory SerializableRSAPublicKey.fromJson(Map<String, dynamic> json) => _$SerializableRSAPublicKeyFromJson(json);
 

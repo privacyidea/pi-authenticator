@@ -1,9 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/tokens/totp_token.dart';
 import '../../../../../../utils/app_customizer.dart';
 import '../../../../../../utils/customizations.dart';
@@ -17,14 +15,14 @@ class EditTOTPTokenAction extends TokenAction {
   final TOTPToken token;
 
   const EditTOTPTokenAction({
-    Key? key,
+    super.key,
     required this.token,
-  }) : super(key: key);
+  });
 
   @override
   CustomSlidableAction build(BuildContext context) => CustomSlidableAction(
-      backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
-      foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+      backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
+      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
         if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
           return;
@@ -51,6 +49,7 @@ class EditTOTPTokenAction extends TokenAction {
     final algorithm = token.algorithm;
 
     showDialog(
+      useRootNavigator: false,
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) => DefaultDialog(
         scrollable: true,
@@ -77,8 +76,9 @@ class EditTOTPTokenAction extends TokenAction {
                 softWrap: false,
               ),
               onPressed: () async {
-                final newToken = token.copyWith(label: tokenLabel.text, tokenImage: imageUrl.text, period: period, algorithm: algorithm);
-                globalRef?.read(tokenProvider.notifier).updateToken(newToken);
+                globalRef
+                    ?.read(tokenProvider.notifier)
+                    .updateToken(token, (p0) => p0.copyWith(label: tokenLabel.text, tokenImage: imageUrl.text, period: period, algorithm: algorithm));
                 Navigator.of(context).pop();
               }),
         ],

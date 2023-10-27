@@ -3,16 +3,17 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
+import 'dart:math';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart' as printer;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
@@ -25,7 +26,7 @@ class Logger {
   /*----------- STATIC FIELDS & GETTER -----------*/
   static Logger? _instance;
   static BuildContext? get _context => navigatorKey.currentContext;
-  static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorLogFileAttached : 'Error Log File Attached';
+  static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorMailBody : 'Error Log File Attached';
   static printer.Logger print = printer.Logger(
     printer: printer.PrettyPrinter(
       methodCount: 0,
@@ -70,7 +71,7 @@ class Logger {
   String get _mailRecipient => 'app-crash@netknights.it';
   String get _mailSubject => _platformInfos != null
       ? '(${_platformInfos!.version}+${_platformInfos!.buildNumber}) ${_platformInfos!.appName} >>> $_lastError'
-      : '${ApplicationCustomizer.appName} >>> $_lastError';
+      : '${ApplicationCustomization.defaultCustomization.appName} >>> $_lastError';
   String get _filename => 'logfile.txt';
   String? get _fullPath => _logPath != null ? '$_logPath/$_filename' : null;
   bool get _verbose {
@@ -112,27 +113,31 @@ class Logger {
 
   /*----------- LOGGING METHODS -----------*/
 
-  static void info(String message, {dynamic error, dynamic stackTrace, String? name}) {
-    final infoString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.INFO);
-    if (instance._verbose) {
+  static void info(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
+    String infoString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.INFO);
+    infoString = _textFilter(infoString);
+    if (instance._verbose || verbose) {
       instance._logToFile(infoString);
     }
     _print(infoString);
   }
 
-  static void warning(String message, {dynamic error, dynamic stackTrace, String? name}) {
-    final warningString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.WARNING);
-    if (instance._verbose) {
+  static void warning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
+    String warningString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.WARNING);
+    warningString = _textFilter(warningString);
+    if (instance._verbose || verbose) {
       instance._logToFile(warningString);
     }
     _printWarning(warningString);
   }
 
   static void error(String? message, {required dynamic error, required dynamic stackTrace, String? name}) {
-    final errorString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
-    instance._lastError = message ?? '';
-    if (instance._lastError.isEmpty) {
-      instance._lastError = error.toString().substring(0, 100);
+    String errorString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
+    errorString = _textFilter(errorString);
+    if (message != null) {
+      instance._lastError = message.substring(0, min(message.length, 100));
+    } else if (error != null) {
+      instance._lastError = error.toString().substring(0, min(error.toString().length, 100));
     }
     instance._logToFile(errorString);
     instance._showSnackbar();
@@ -159,7 +164,7 @@ class Logger {
   }
 
   Future<bool> _sendErrorLog() async {
-    if (_fullPath == null) return false;
+    if (_fullPath == null || kIsWeb) return false;
     final File file = File(_fullPath!);
     if (!file.existsSync() || file.lengthSync() == 0) {
       return false;
@@ -175,9 +180,15 @@ class Logger {
       deviceInfo = _readIosDeviceInfo(data);
     }
 
+    final completeMailBody = """$_mailBody
+---------------------------------------------------------
+
+Device Parameters:
+$deviceInfo""";
+
     try {
       final MailOptions mailOptions = MailOptions(
-        body: '$_mailBody\n\n\nDevice Parameters:$deviceInfo\n\nStacktrace:\n${file.readAsStringSync()}',
+        body: completeMailBody,
         subject: _mailSubject,
         recipients: [_mailRecipient],
         attachments: [
@@ -185,8 +196,8 @@ class Logger {
         ],
       );
       await FlutterMailer.send(mailOptions);
-    } catch (exc, stackTrace) {
-      Logger.error('Was not able to send the Email', error: exc, stackTrace: stackTrace, name: 'Logger#_sendErrorLog()');
+    } catch (e, stackTrace) {
+      Logger.error('Was not able to send the Email', error: e, stackTrace: stackTrace, name: 'Logger#_sendErrorLog()');
       return false;
     }
     return true;
@@ -325,15 +336,16 @@ class Logger {
     showDialog(
       context: _context!,
       builder: (context) => const SendErrorDialog(),
+      useRootNavigator: false,
     );
   }
 
   /*----------- HELPER -----------*/
 
-  String _textFilter(String text) {
+  static String _textFilter(String text) {
     for (var key in filterParameterKeys) {
       final regex = RegExp(r'(?<=' + key + r':\s).+?(?=[},])');
-      text = text.replaceAll(regex, '***');
+      text = text.replaceAll(regex, '******');
     }
     return text;
   }

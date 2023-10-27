@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_folder.dart';
 import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/customizations.dart';
@@ -16,8 +16,8 @@ class DeleteTokenFolderAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomSlidableAction(
-      backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.deleteColorLight : ApplicationCustomizer.deleteColorDark,
-      foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+      backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
+      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
         if (folder.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
         _showDialog();
@@ -38,6 +38,7 @@ class DeleteTokenFolderAction extends StatelessWidget {
   }
 
   void _showDialog() => showDialog(
+      useRootNavigator: false,
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) {
         return DefaultDialog(
@@ -59,10 +60,7 @@ class DeleteTokenFolderAction extends StatelessWidget {
               onPressed: () {
                 final tokens = globalRef?.read(tokenProvider).tokensInFolder(folder);
                 if (tokens == null) return;
-                for (var i = 0; i < tokens.length; i++) {
-                  tokens[i] = tokens[i].copyWith(folderId: () => null);
-                }
-                globalRef?.read(tokenProvider.notifier).updateTokens(tokens);
+                globalRef?.read(tokenProvider.notifier).updateTokens(tokens, (p0) => p0.copyWith(folderId: () => null));
                 globalRef?.read(tokenFolderProvider.notifier).removeFolder(folder);
                 Navigator.of(context).pop();
               },

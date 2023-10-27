@@ -3,20 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 
 import '../../model/states/app_state.dart';
-import '../../utils/app_customizer.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
-import 'main_view_widgets/main_view_navigation_buttons.dart';
+import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
-import 'main_view_widgets/no_token_screen.dart';
+
+export 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 
 class MainView extends ConsumerStatefulWidget {
   static const routeName = '/mainView';
-  final String _title;
 
-  const MainView({Key? key, required String title})
-      : _title = title,
-        super(key: key);
+  final Widget appIcon;
+  final String appName;
+
+  const MainView({required this.appIcon, required this.appName, super.key});
 
   @override
   ConsumerState<MainView> createState() => _MainViewState();
@@ -39,27 +39,26 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final tokenList = ref.watch(tokenProvider).tokens;
-    final folderList = ref.watch(tokenFolderProvider).folders;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(
-          widget._title,
-          overflow: TextOverflow.ellipsis,
-          // maxLines: 2 only works like this.
-          maxLines: 2, // Title can be shown on small screens too.
+  Widget build(BuildContext context) => Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text(
+            widget.appName,
+            overflow: TextOverflow.ellipsis,
+            // maxLines: 2 only works like this.
+            maxLines: 2, // Title can be shown on small screens too.
+          ),
+          leading: Padding(
+            padding: const EdgeInsets.all(4),
+            child: widget.appIcon,
+          ),
         ),
-        leading: Image.asset(ApplicationCustomizer.appIcon),
-      ),
-      body: Stack(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        children: [
-          tokenList.isEmpty && folderList.isEmpty ? const NoTokenScreen() : MainViewTokensList(tokenList, nestedScrollViewKey: globalKey),
-          const MainViewNavigationButtions(),
-        ],
-      ),
-    );
-  }
+        body: Stack(
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          children: [
+            MainViewTokensList(nestedScrollViewKey: globalKey),
+            const MainViewNavigationBar(),
+          ],
+        ),
+      );
 }

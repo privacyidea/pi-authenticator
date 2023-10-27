@@ -33,10 +33,11 @@ const String PARAMETER_MESSAGE = "message";
 const String PARAMETER_SIGNED_DATA = "signedData";
 const String PARAMETER_SIGNATURE = "signature";
 
-class Legacy {
+class LegacyUtils {
+  const LegacyUtils();
   static const MethodChannel _channel = const MethodChannel(METHOD_CHANNEL_ID);
 
-  static Future<String> sign(String serial, String message) async => await (_channel.invokeMethod(METHOD_SIGN, {
+  Future<String> sign(String serial, String message) async => await (_channel.invokeMethod(METHOD_SIGN, {
         PARAMETER_SERIAL: serial,
         PARAMETER_MESSAGE: message,
       }).catchError((dynamic, stackTrace) {
@@ -48,7 +49,7 @@ class Legacy {
         throw PlatformException(message: "Signing failed.", code: LEGACY_SIGNING_ERROR);
       }));
 
-  static Future<bool> verify(String serial, String signedData, String signature) async => await (_channel.invokeMethod(METHOD_VERIFY, {
+  Future<bool> verify(String serial, String signedData, String signature) async => await (_channel.invokeMethod(METHOD_VERIFY, {
         PARAMETER_SERIAL: serial,
         PARAMETER_SIGNED_DATA: signedData,
         PARAMETER_SIGNATURE: signature,

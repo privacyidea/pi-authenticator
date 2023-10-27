@@ -1,16 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_ios/local_auth_ios.dart';
+
+import '../l10n/app_localizations.dart';
 import '../widgets/default_dialog.dart';
 import 'customizations.dart';
-import 'view_utils.dart';
-
 import 'logger.dart';
+import 'view_utils.dart';
 
 bool authenticationInProgress = false;
 
@@ -18,7 +19,7 @@ Future<bool> lockAuth({required BuildContext context, required String localizedR
   bool didAuthenticate = false;
   LocalAuthentication localAuth = LocalAuthentication();
 
-  if (!(await localAuth.isDeviceSupported())) {
+  if (kIsWeb || !(await localAuth.isDeviceSupported())) {
     await showAsyncDialog(
       builder: (context) {
         return DefaultDialog(
@@ -72,7 +73,8 @@ Future<bool> lockAuth({required BuildContext context, required String localizedR
       authenticationInProgress = false;
     }
   } on PlatformException catch (e, s) {
-    Logger.error('Error: ${e.code}', name: 'token_widgets.dart#lockAuth', error: e, stackTrace: s);
+    authenticationInProgress = false;
+    Logger.info("Authentication failed", error: e, stackTrace: s);
   }
   return didAuthenticate;
 }

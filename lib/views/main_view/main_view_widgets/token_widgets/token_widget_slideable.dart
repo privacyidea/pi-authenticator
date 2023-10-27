@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'token_action.dart';
 
 import '../../../../model/tokens/token.dart';
+import 'token_action.dart';
 
 class TokenWidgetSlideable extends StatelessWidget {
   final Token token;

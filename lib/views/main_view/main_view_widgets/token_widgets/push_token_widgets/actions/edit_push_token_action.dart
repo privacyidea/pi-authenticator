@@ -1,15 +1,13 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/tokens/push_token.dart';
+import '../../../../../../repo/secure_token_repository.dart';
 import '../../../../../../utils/app_customizer.dart';
 import '../../../../../../utils/customizations.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
-import '../../../../../../utils/storage_utils.dart';
 import '../../../../../../widgets/default_dialog.dart';
 import '../../../../../../widgets/enable_text_form_field_after_many_taps.dart';
 import '../../token_action.dart';
@@ -18,14 +16,14 @@ class EditPushTokenAction extends TokenAction {
   final PushToken token;
 
   const EditPushTokenAction({
-    Key? key,
+    super.key,
     required this.token,
-  }) : super(key: key);
+  });
 
   @override
   CustomSlidableAction build(BuildContext context) => CustomSlidableAction(
-      backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
-      foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+      backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
+      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
         if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
           return;
@@ -53,6 +51,7 @@ class EditPushTokenAction extends TokenAction {
     final publicTokenKey = token.publicTokenKey;
 
     showDialog(
+      useRootNavigator: false,
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) => DefaultDialog(
         scrollable: true,
@@ -79,12 +78,14 @@ class EditPushTokenAction extends TokenAction {
                 softWrap: false,
               ),
               onPressed: () async {
-                final newToken = token.copyWith(
-                  label: tokenLabel.text,
-                  url: Uri.parse(pushUrl.text),
-                  tokenImage: imageUrl.text,
-                );
-                globalRef?.read(tokenProvider.notifier).updateToken(newToken);
+                globalRef?.read(tokenProvider.notifier).updateToken(
+                      token,
+                      (p0) => p0.copyWith(
+                        label: tokenLabel.text,
+                        url: Uri.parse(pushUrl.text),
+                        tokenImage: imageUrl.text,
+                      ),
+                    );
                 Navigator.of(context).pop();
               }),
         ],
@@ -164,7 +165,7 @@ class EditPushTokenAction extends TokenAction {
                         );
                       }
                     },
-                    future: StorageUtil.getCurrentFirebaseToken(),
+                    future: SecureTokenRepository.getCurrentFirebaseToken(),
                   ),
                 ],
               ),

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import '../token_folder.dart';
 
@@ -10,35 +10,46 @@ class TokenFolderState {
 
   const TokenFolderState({required this.folders});
 
-  TokenFolderState copyWith({List<TokenFolder>? folders}) {
-    return TokenFolderState(
-      folders: folders ?? this.folders,
-    );
-  }
-
   TokenFolderState withFolder(String name) {
     final newFolders = List<TokenFolder>.from(folders);
     newFolders.add(TokenFolder(label: name, folderId: newFolderId));
-    return copyWith(folders: newFolders);
+    return TokenFolderState(folders: newFolders);
   }
 
   // replace all folders where the folderid is the same
-  TokenFolderState withUpdated({List<TokenFolder>? folders}) {
+  // if the folderid is none, add it to the list
+  TokenFolderState withUpdated(List<TokenFolder> folders) {
     final newFolders = List<TokenFolder>.from(this.folders);
-    folders?.forEach((newFolder) {
+    for (var newFolder in folders) {
       final index = newFolders.indexWhere((oldFolder) => oldFolder.folderId == newFolder.folderId);
       if (index != -1) {
         newFolders[index] = newFolder;
       }
-    });
-    return copyWith(folders: newFolders);
+    }
+    return TokenFolderState(folders: newFolders);
   }
 
   TokenFolderState withoutFolder(TokenFolder folder) {
     final newFolders = List<TokenFolder>.from(folders);
     newFolders.removeWhere((element) => element.folderId == folder.folderId);
-    return copyWith(folders: newFolders);
+    return TokenFolderState(folders: newFolders);
   }
+
+  TokenFolderState withoutFolders(List<TokenFolder> folders) {
+    final newFolders = List<TokenFolder>.from(this.folders);
+    newFolders.removeWhere((element) => folders.any((folder) => folder.folderId == element.folderId));
+    return TokenFolderState(folders: newFolders);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is TokenFolderState && runtimeType == other.runtimeType && listEquals(folders, other.folders);
+
+  @override
+  int get hashCode => (folders.hashCode + runtimeType.hashCode).hashCode;
+
+  @override
+  String toString() => 'TokenFolderState{folders: $folders}';
 
   get newFolderId => folders.fold(0, (previousValue, element) => max(previousValue, element.folderId)) + 1;
 }

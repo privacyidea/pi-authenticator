@@ -2,146 +2,99 @@
   "@@last_modified": "2023-08-07",
   "guide": "guía",
   "@guide": {
-    "description": "Button to open the guide screen.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Button to open the guide screen."
   },
   "retry": "Reintentar",
   "@retry": {
-    "description": "Label for e.g. a button. Something is tried to be done again.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label for e.g. a button. Something is tried to be done again."
   },
   "accept": "Aceptar",
   "@accept": {
-    "description": "Label for e.g. a button. Something gets accepted by the user.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label for e.g. a button. Something gets accepted by the user."
   },
   "decline": "Negar",
   "@decline": {
-    "description": "Label for e.g. a button. Something gets declined by the user.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label for e.g. a button. Something gets declined by the user."
   },
   "name": "Nombre",
   "@name": {
-    "description": "Describes the field where the tokens name should be entered.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Describes the field where the tokens name should be entered."
   },
   "secret": "Secreto",
   "@secret": {
-    "description": "Describes the field where the tokens secret should be entered.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Describes the field where the tokens secret should be entered."
   },
   "encoding": "Codificación",
   "@encoding": {
-    "description": "Title of the dropdown button where the encoding is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the encoding is selected."
   },
   "algorithm": "Algorithmo",
   "@algorithm": {
-    "description": "Title of the dropdown button where the encoding is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the encoding is selected."
   },
   "digits": "Dígitos",
   "@digits": {
-    "description": "Title of the dropdown button where the number of digits for the opt value is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the number of digits for the opt value is selected."
   },
   "type": "Tipo",
   "@type": {
-    "description": "Title of the dropdown button where the type of the token is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the type of the token is selected."
   },
   "period": "Periodo",
   "@period": {
-    "description": "Title of the dropdown button where the period of the totp token is selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dropdown button where the period of the totp token is selected."
   },
   "rename": "Renombrar",
   "@rename": {
-    "description": "Label that describes renaming the token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label that describes renaming the token."
   },
   "cancel": "Anular",
   "@cancel": {
-    "description": "Button to cancel an action.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Button to cancel an action."
   },
   "delete": "Borrar",
   "@delete": {
-    "description": "Label that describes deleting the token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label that describes deleting the token."
   },
   "dismiss": "Desestimar",
   "@dismiss": {
-    "description": "Text of a button that closes a dialog.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Text of a button that closes a dialog."
   },
   "addToken": "Añadir token",
   "@addToken": {
-    "description": "The button to open the screen to add tokens by hand.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The button to open the screen to add tokens by hand."
   },
   "scanQrCode": "Escanear código QR",
   "@scanQrCode": {
-    "description": "The button to scan otpauth qr-codes.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The button to scan otpauth qr-codes."
   },
   "enterDetailsForToken": "Introduzca los datos de el token",
   "@enterDetailsForToken": {
-    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values."
   },
   "pleaseEnterANameForThisToken": "Introduzca un nombre para este token.",
   "@pleaseEnterANameForThisToken": {
-    "description": "Hint telling the user to enter a name for a token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Hint telling the user to enter a name for a token."
   },
   "pleaseEnterASecretForThisToken": "Por favor, introduzca un secreto para este token.",
   "@pleaseEnterASecretForThisToken": {
-    "description": "Hint telling the user to enter a secret for a token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Hint telling the user to enter a secret for a token."
   },
   "theSecretDoesNotFitTheCurrentEncoding": "El secreto no se ajusta a la codificación actual",
   "@theSecretDoesNotFitTheCurrentEncoding": {
-    "description": "Hint telling the user that the secret does not fit the selected encoding.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Hint telling the user that the secret does not fit the selected encoding."
   },
   "renameToken": "Renombrar token",
   "@renameToken": {
-    "description": "Title of the dialog where a new name for a token can be entered.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dialog where a new name for a token can be entered."
   },
   "confirmDeletion": "Confiem supresión",
   "@confirmDeletion": {
-    "description": "Title of the dialog where a token can be deleted.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the dialog where a token can be deleted."
   },
   "confirmDeletionOf": "¿Está seguro de que desea eliminar {name}?",
   "@confirmDeletionOf": {
     "description": "Asks for confirmation on deleting a token.",
-    "type": "text",
     "placeholders": {
       "name": {
         "example": "PUSH1234"
@@ -150,20 +103,15 @@
   },
   "generatingPhonePart": "Generar parte telefónico",
   "@generatingPhonePart": {
-    "description": "Title of a dialog telling the user that the phone part gets generated right now.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of a dialog telling the user that the phone part gets generated right now."
   },
   "phonePart": "Pieza de teléfono:",
   "@phonePart": {
-    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user."
   },
   "otpValueCopiedMessage": "Contraseña \"{otpValue}\" copiada en el portapapeles.",
   "@otpValueCopiedMessage": {
     "description": "Tells the user that the otp value was copied to the clipboard.",
-    "type": "text",
     "placeholders": {
       "otpValue": {
         "example": "055374"
@@ -172,98 +120,67 @@
   },
   "settings": "Configuración",
   "@settings": {
-    "description": "Button to open the settings page.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Button to open the settings page."
   },
   "pushToken": "Push Token",
   "@pushToken": {
-    "description": "Title for the settings block concerning the push tokens.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title for the settings block concerning the push tokens."
   },
   "theme": "Tema",
   "@theme": {
-    "description": "Title of the setting group where the theme can be selected.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the setting group where the theme can be selected."
   },
   "lightTheme": "Luminoso",
   "@lightTheme": {
-    "description": "The light theme.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The light theme."
   },
   "darkTheme": "Negro",
   "@darkTheme": {
-    "description": "The dark theme.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The dark theme."
   },
   "systemTheme": "Utilizar el tema del teléfono",
   "@systemTheme": {
-    "description": "The systems theme.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The systems theme."
   },
   "enablePolling": "Activar polling",
   "@enablePolling": {
-    "description": "Name of the setting switch that enables polling.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Name of the setting switch that enables polling."
   },
   "requestPushChallengesPeriodically": "Solicita retos push al servidor periódicamente. Habilite esta opción si los retos push no se reciben normalmente.",
   "@requestPushChallengesPeriodically": {
-    "description": "The description of the polling feature.",
-    "type": "text",
-    "placeholders": {}
+    "description": "The description of the polling feature."
   },
   "synchronizePushTokens": "Sinchronizar push tokens",
   "@synchronizePushTokens": {
-    "description": "Title of synchronizing push tokens in settings.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of synchronizing push tokens in settings."
   },
   "synchronizesTokensWithServer": "Sinchronizar tokens con el privacyIDEA servidor.",
   "@synchronizesTokensWithServer": {
-    "description": "Description of synchronizing push tokens in settings.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Description of synchronizing push tokens in settings."
   },
   "sync": "Sinchronizar",
   "@sync": {
-    "description": "Text of button that is used to synchronize push tokens.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Text of button that is used to synchronize push tokens."
   },
   "synchronizingTokens": "Sincronización de los tokens.",
   "@synchronizingTokens": {
-    "description": "Title of the push synchronization dialog.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the push synchronization dialog."
   },
   "allTokensSynchronized": "Todas los tokens están sincronizadas.",
   "@allTokensSynchronized": {
-    "description": "Content of the push synchronization dialog. Signaling the user that everything worked.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
   "synchronizationFailed": "La sincronización ha fallado para los siguientes tokens, por favor inténtelo de nuevo:",
   "@synchronizationFailed": {
-    "description": "Headline for the list of tokens where the synchronization failed.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Headline for the list of tokens where the synchronization failed."
   },
   "tokensDoNotSupportSynchronization": "Las siguientes tokens no admiten la sincronización y deben volver a desplegarse:",
   "@tokensDoNotSupportSynchronization": {
-    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
   },
   "errorRollOutFailed": "Error en la extracción de el token {name}. Código de error: {errorCode}",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
-    "type": "text",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
@@ -275,14 +192,11 @@
   },
   "errorSynchronizationNoNetworkConnection": "Error al sincronizar los tokens. No se ha podido acceder al servidor de PrivacyIDEA.",
   "@errorSynchronizationNoNetworkConnection": {
-    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached."
   },
   "errorRollOutUnknownError": "An unknown error occurred. Roll-out not possible: {e}",
   "@errorRollOutUnknownError": {
     "description": "Tells the user that the roll-out failed because of an unknown error.",
-    "type": "text",
     "placeholders": {
       "e": {
         "example": "IllegalArgumentException on Line 5 ..."
@@ -291,362 +205,190 @@
   },
   "rollingOut": "Despliegue",
   "@rollingOut": {
-    "description": "Label that tells the user that the token is being rolled out.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Label that tells the user that the token is being rolled out."
   },
   "pollingChallenges": "Sondeo para nuevos challenges",
   "@pollingChallenges": {
-    "type": "text",
     "placeholders": {}
   },
   "unexpectedError": "Se ha producido un error inesperado.",
   "@unexpectedError": {
-    "description": "Title of page report mode.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of page report mode."
   },
   "pollingFailNoNetworkConnection": "Error de sondeo. No se puede acceder al servidor.",
   "@pollingFailNoNetworkConnection": {
-    "description": "Tells the user that the roll-out failed because no network connection is available.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Tells the user that the roll-out failed because no network connection is available."
   },
   "useDeviceLocaleTitle": "Utiliza el idioma del teléfono",
   "@useDeviceLocaleTitle": {
-    "description": "Title of the switch tile where using the devices language can be enabled.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Title of the switch tile where using the devices language can be enabled."
   },
   "useDeviceLocaleDescription": "Utilizar el idioma del dispositivo si está soportado, en caso contrario por defecto inglés.",
   "@useDeviceLocaleDescription": {
-    "description": "Description of the switch tile where using the devices language can be enabled.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Description of the switch tile where using the devices language can be enabled."
   },
   "language": "Language",
   "@language": {
-    "description": "Título del grupo de configuración lingüística.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Título del grupo de configuración lingüística."
   },
   "authenticateToShowOtp": "Por favor, autentifíquese para mostrar la contraseña de una sola vez.",
   "@authenticateToShowOtp": {
-    "description": "Reason to authenticate when trying to view a one time password.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Reason to authenticate when trying to view a one time password."
   },
   "authenticateToUnLockToken": "Por favor, autentifíquese para cambiar el estado de bloqueo del token.",
   "@authenticateToUnLockToken": {
-    "description": "Reason to authenticate when trying to lock or unlock a token.",
-    "type": "text",
-    "placeholders": {}
+    "description": "Reason to authenticate when trying to lock or unlock a token."
   },
   "biometricRequiredTitle": "Biometría no configurada",
   "@biometricRequiredTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters."
   },
   "biometricHint": "AAutenticación necesaria",
   "@biometricHint": {
-    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
   },
   "biometricNotRecognized": "No reconocido. Inténtelo de nuevo.",
   "@biometricNotRecognized": {
-    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters."
   },
   "biometricSuccess": "Autenticación correcta",
   "@biometricSuccess": {
-    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters."
   },
   "deviceCredentialsRequiredTitle": "No se han configurado las credenciales del dispositivo.",
   "@deviceCredentialsRequiredTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
   },
   "deviceCredentialsSetupDescription": "Configurar las credenciales del dispositivo en los ajustes del dispositivo",
   "@deviceCredentialsSetupDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side.",
-    "type": "text"
+    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side."
   },
   "signInTitle": "Autenticación necesaria",
   "@signInTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters.",
-    "type": "text"
+    "description": "Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters."
   },
   "goToSettingsButton": "Ir a la configuración",
   "@goToSettingsButton": {
-    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters.",
-    "type": "text"
+    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
   },
   "goToSettingsDescription": "La autenticación por credenciales o biométrica no está configurada en tu dispositivo. Por favor, configúrala en los ajustes del dispositivo.",
   "@goToSettingsDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device.",
-    "type": "text"
+    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device."
   },
   "lockOut": "La autenticación biométrica está desactivada. Bloquea y desbloquea la pantalla para activarla.",
   "@lockOut": {
-    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side.",
-    "type": "text"
+    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side."
   },
   "authNotSupportedTitle": "Se requieren credenciales de dispositivo o datos biométricos",
   "@authNotSupportedTitle": {
-    "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action.",
-    "type": "text"
+    "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action."
   },
   "authNotSupportedBody": "Esta acción requiere que el dispositivo esté protegido mediante credenciales o datos biométricos.",
   "@authNotSupportedBody": {
-    "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action.",
-    "type": "text"
+    "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action."
   },
   "lock": "Cierre",
   "@lock": {
-    "description": "Description of button that locks a token.",
-    "type": "text"
+    "description": "Description of button that locks a token."
   },
   "unlock": "Desbloquear",
   "@unlock": {
-    "description": "Description of button that unlocks a token.",
-    "type": "text"
+    "description": "Description of button that unlocks a token."
   },
   "noResultTitle": "Aún no hay tokens almacenadas.",
   "@noResultTitle": {
-    "description": "No tokens stored yet.",
-    "type": "text"
+    "description": "No tokens stored yet."
   },
   "noResultText1": "Indique el  ",
   "@noResultText1": {
-    "description": "first no result text",
-    "type": "text"
+    "description": "first no result text"
   },
   "noResultText2": " para empezar.",
   "@noResultText2": {
-    "description": "second no result text",
-    "type": "text"
+    "description": "second no result text"
   },
   "onBoardingTitle1": "{appName}",
   "@onBoardingTitle1": {
-    "description": "onboardingTitle1",
-    "type": "text",
     "placeholders": {
       "appName": {
-        "type": "String",
         "example": "privacyIDEA Authenticator"
       }
     }
   },
   "onBoardingText1": "Autenticación de dos factores\nmuy fácil",
-  "@onBoardingText1": {
-    "description": "onboardingText1",
-    "type": "text"
-  },
   "onBoardingTitle2": "Máxima seguridad",
-  "@onBoardingTitle2": {
-    "description": "onBoardingTitle2",
-    "type": "text"
-  },
   "onBoardingText2": "Almacena tokens en tu teléfono/n de forma segura. Protegido por tus datos biométricos.",
-  "@onBoardingText2": {
-    "description": "onboardingText2",
-    "type": "text"
-  },
   "onBoardingTitle3": "Visítenos en Github",
-  "@onBoardingTitle3": {
-    "description": "onBoardingTitle3",
-    "type": "text"
-  },
   "onBoardingText3": "Esta aplicación es de código abierto",
-  "@onBoardingText3": {
-    "description": "onBoardingText3",
-    "type": "text"
-  },
   "errorLogTitle": "Registros de errores",
-  "@errorLogTitle": {
-    "description": "errorLogTitle",
-    "type": "text"
-  },
   "sendErrorHint": "Envíanos el registro de errores por correo electrónico",
   "@sendErrorHint": {
-    "description": "Hint for the user about what he will send.",
-    "type": "text"
+    "description": "Hint for the user about what he will send."
   },
   "enableVerboseLogging": "Activar el registro detallado",
-  "@enableVerboseLogging": {
-    "description": "enableVerboseLogging",
-    "type": "text"
-  },
   "clearErrorLogHint": "Borra el archivo de registro de errores local",
-  "@clearErrorLogHint": {
-    "description": "clearErrorLogHint",
-    "type": "text"
-  },
   "logMenu": "Menú Registros",
-  "@logMenu": {
-    "description": "deleteErrorLogs",
-    "type": "text"
-  },
   "sendErrorDialogHeader": "Enviar por correo electrónico",
-  "@sendErrorDialogHeader": {
-    "description": "sendErrorDialogHeader",
-    "type": "text"
-  },
   "ok": "Ok",
-  "@ok": {
-    "description": "ok",
-    "type": "text"
-  },
   "noLogToSend": "Hay log para enviar",
-  "@noLogToSend": {
-    "description": "noLogToSend",
-    "type": "text"
-  },
-  "errorLogFileAttached": "Se adjunta el archivo de registro de errores",
-  "@errorLogFileAttached": {
-    "description": "Message for email body",
-    "type": "text"
+  "errorMailBody": "Se adjunta el archivo de registro de errores.\nPuede sustituir este texto por información adicional sobre el error.",
+  "@errorMailBody": {
+    "description": "Message for email body"
   },
   "errorLogCleared": "Registros de error borrados",
-  "@errorLogCleared": {
-    "description": "errorLogCleared",
-    "type": "text"
-  },
   "showDetails": "Mostrar detalles",
-  "@showDetails": {
-    "description": "showDetails",
-    "type": "text"
-  },
   "open": "Abrir",
-  "@open": {
-    "description": "open",
-    "type": "text"
-  },
   "sendErrorDialogBody": "Se ha producido un error inesperado en la aplicación. La siguiente información puede ser enviada a los desarrolladores por correo electrónico para ayudar a prevenir este error en el futuro.",
   "@sendErrorDialogBody": {
-    "description": "Description shown to the user about what info the error report contains.",
-    "type": "text"
+    "description": "Description shown to the user about what info the error report contains."
   },
   "noFbToken": "No hay token de Firebase.",
-  "@noFbToken": {
-    "description": "noFbToken",
-    "type": "text"
-  },
   "firebaseToken": "Token de Firebase",
-  "@firebaseToken": {
-    "description": "firebaseToken",
-    "type": "text"
-  },
   "noPublicKey": "No hay clave pública.",
-  "@noPublicKey": {
-    "description": "noPublicKey",
-    "type": "text"
-  },
   "publicKey": "Clave pública",
-  "@publicKey": {
-    "description": "publicKey",
-    "type": "text"
-  },
   "editToken": "Editar token",
-  "@editToken": {
-    "description": "editToken",
-    "type": "text"
-  },
   "edit": "Editar",
-  "@edit": {
-    "description": "edit",
-    "type": "text"
-  },
   "save": "Guardar",
-  "@save": {
-    "description": "save",
-    "type": "text"
-  },
   "validFor": "Válido para",
-  "@validFor": {
-    "description": "validFor",
-    "type": "text"
-  },
   "validUntil": "Válido hasta",
-  "@validUntil": {
-    "description": "validUntil",
-    "type": "text"
-  },
   "deleteLockedToken": "Por favor, autentíquese para eliminar el token bloqueado.",
-  "@deleteLockedToken": {
-    "description": "deleteLockedToken",
-    "type": "text"
-  },
   "editLockedToken": "Por favor, autentíquese para editar el token bloqueado.",
-  "@editLockedToken": {
-    "description": "editLockedToken",
-    "type": "text"
-  },
   "uncollapseLockedFolder": "Por favor, autentifíquese para abrir la carpeta bloqueada.",
-  "@uncollapseLockedFolder": {
-    "description": "uncollapseLockedFolder",
-    "type": "text"
-  },
   "renameTokenFolder": "Cambiar nombre de carpeta",
-  "@renameTokenFolder": {
-    "description": "renameTokenFolder",
-    "type": "text"
-  },
   "addANewFolder": "Crear nueva carpeta",
-  "@addANewFolder": {
-    "description": "addANewFolder",
-    "type": "text"
-  },
   "folderName": "Nombre de la carpeta",
-  "@folderName": {
-    "description": "folderName",
-    "type": "text"
-  },
   "retryRollout": "Reintentar despliegue",
-  "@retryRollout": {
-    "description": "retryRollout",
-    "type": "text"
-  },
   "generatingRSAKeyPair": "Generando par de claves RSA",
   "@generatingRSAKeyPair": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "generatingRSAKeyPairFailed": "Error al generar el par de claves RSA",
   "@generatingRSAKeyPairFailed": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "sendingRSAPublicKey": "Enviando clave pública RSA",
   "@sendingRSAPublicKey": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "sendingRSAPublicKeyFailed": "Error al enviar la clave pública RSA",
   "@sendingRSAPublicKeyFailed": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "parsingResponse": "Analizando la respuesta",
   "@parsingResponse": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "parsingResponseFailed": "Error al analizar la respuesta",
   "@parsingResponseFailed": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "rolloutCompleted": "Despliegue completado",
   "@rolloutCompleted": {
-    "description": "Message for the rollout process",
-    "type": "text"
+    "description": "Message for the rollout process"
   },
   "errorRollOutNoConnectionToServer": "El despliegue del token {name} ha fallado, no se ha podido acceder al servidor.",
   "@errorRollOutNoConnectionToServer": {
     "description": "Message for the rollout process",
-    "type": "text",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
@@ -654,45 +396,20 @@
     }
   },
   "authToAcceptPushRequest": "Por favor, autentifíquese para aceptar la solicitud push.",
-  "@authToAcceptPushRequest": {
-    "description": "authToAcceptPushRequest",
-    "type": "text"
-  },
   "authToDeclinePushRequest": "Por favor, autentifíquese para rechazar la solicitud push.",
-  "@authToDeclinePushRequest": {
-    "description": "authToDeclinePushRequest",
-    "type": "text"
-  },
   "incomingAuthRequestError": "El mensaje no proporcionaba los datos necesarios o los datos estaban malformados.",
-  "@incomingAuthRequestError": {
-    "description": "incomingAuthRequestError",
-    "type": "text"
-  },
   "imageUrl": "URL de la imagen",
-  "@imageUrl": {
-    "description": "imageUrl",
-    "type": "text"
-  },
   "errorRollOutSSLHandshakeFailed": "Ha fallado el protocolo SSL. No es posible el despliegue.",
-  "@errorRollOutSSLHandshakeFailed": {
-    "description": "errorRollOutSSLHandshakeFailed",
-    "type": "text"
-  },
   "errorWhenPullingChallenges": "Se ha producido un error al buscar retos de {name}",
   "@errorWhenPullingChallenges": {
-    "description": "errorWhenPullingChallenges",
-    "type": "text",
     "placeholders": {
       "name": {
-        "type": "String",
         "example": "PUSH1234A"
       }
     }
   },
   "errorRollOutTokenExpired": "El despliegue de este token ya no es posible.\nEl token {name} ha caducado.",
   "@errorRollOutTokenExpired": {
-    "description": "errorRollOutTokenExpired",
-    "type": "text",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
@@ -700,28 +417,21 @@
     }
   },
   "yes": "Sí",
-  "@yes": {
-    "description": "yes",
-    "type": "text"
-  },
   "no": "No",
-  "@no": {
-    "description": "no",
-    "type": "text"
-  },
   "butDiscardIt": "pero descártelo",
-  "@butDiscardIt": {
-    "description": "butDiscardIt",
-    "type": "text"
-  },
   "declineIt": "rechazar",
-  "@declineIt": {
-    "description": "declineIt",
-    "type": "text"
-  },
   "requestTriggerdByUserQuestion": "¿Fue usted quien provocó esta petición?",
-  "@requestTriggerdByUserQuestion": {
-    "description": "requestTriggerdByUserQuestion",
-    "type": "text"
-  }
+  "grantCameraPermissionDialogTitle": "El permiso de cámara no está concedido",
+  "grantCameraPermissionDialogContent": "Por favor, concede permiso a la cámara para escanear códigos QR",
+  "grantCameraPermissionDialogPermanentlyDenied": "El permiso de cámara está denegado permanentemente. Concede el permiso de cámara en la configuración del teléfono",
+  "grantCameraPermissionDialogButton": "Conceder permiso",
+  "decryptErrorTitle": "Error de descifrado",
+  "decryptErrorContent": "Lamentablemente, la aplicación no ha podido descifrar tus tokens. Esto indica que la clave de cifrado está rota. Puedes volver a intentarlo o borrar los datos de la app, lo que eliminaría los tokens de la app.",
+  "decryptErrorButtonDelete": "Borrar",
+  "decryptErrorButtonSendError": "Enviar error",
+  "decryptErrorButtonRetry": "Reintentar",
+  "decryptErrorDeleteConfirmationContent": "¿Estás seguro de que quieres borrar los datos de la aplicación?",
+  "hidePushTokens": "Ocultar tokens push",
+  "hidePushTokensDescription": "Ocultar tokens push de la lista de tokens. Esto no borrará los tokens y seguirán siendo visibles en una pantalla aparte",
+  "licensesAndVersion": "Licencias y versión"
 }

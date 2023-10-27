@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/logger.dart';
 import '../../../widgets/default_dialog.dart';
 

@@ -1,8 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
-// ignore: library_prefixes
-import 'package:otp/otp.dart' as OTPLibrary;
+import 'package:otp/otp.dart' as otp_library;
 import 'package:uuid/uuid.dart';
 
+import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/utils.dart';
 import 'otp_token.dart';
@@ -30,7 +30,7 @@ class HOTPToken extends OTPToken {
   }) : super(type: enumAsString(TokenTypes.HOTP));
 
   @override
-  String get otpValue => OTPLibrary.OTP.generateHOTPCodeString(
+  String get otpValue => otp_library.OTP.generateHOTPCodeString(
         secret,
         counter,
         length: digits,
@@ -87,7 +87,7 @@ class HOTPToken extends OTPToken {
         algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
         digits: uriMap[URI_DIGITS] ?? 6,
         secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
-        counter: uriMap[URI_COUNTER],
+        counter: uriMap[URI_COUNTER] ?? 0,
         tokenImage: uriMap[URI_IMAGE],
         pin: uriMap[URI_PIN],
         isLocked: uriMap[URI_PIN],

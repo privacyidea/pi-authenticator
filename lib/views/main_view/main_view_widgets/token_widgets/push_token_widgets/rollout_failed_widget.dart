@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/push_token.dart';
 import '../../../../../utils/customizations.dart';
 import '../../../../../utils/riverpod_providers.dart';
@@ -64,6 +64,7 @@ class RolloutFailedWidget extends StatelessWidget {
   }
 
   void _showDialog() => showDialog(
+      useRootNavigator: false,
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) {
         return DefaultDialog(

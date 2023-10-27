@@ -1,5 +1,3 @@
-// ignore_for_file: library_prefixes
-
 /*
   privacyIDEA Authenticator
 
@@ -21,15 +19,13 @@
 */
 
 import 'dart:convert';
-import 'dart:core';
-import 'dart:typed_data';
+import 'dart:io';
 
-import 'package:base32/base32.dart' as Base32Converter;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:hex/hex.dart' as HexConverter;
-import 'package:otp/otp.dart' as OTPLibrary;
+import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import 'identifiers.dart';
@@ -47,10 +43,13 @@ String insertCharAt(String str, String char, int pos) {
 ///
 /// Example: 'ABCD', 1 --> 'A B C D'
 /// Example: 'ABCD', 2 --> 'AB CD'
+///
+/// If [period] is less than 1, the original String is returned.
 String splitPeriodically(String str, int period) {
+  if (period < 1) return str;
   String result = '';
   for (int i = 0; i < str.length; i++) {
-    i % 4 == 0 ? result += ' ${str[i]}' : result += str[i];
+    i % period == 0 ? result += ' ${str[i]}' : result += str[i];
   }
 
   return result.trim();
@@ -71,7 +70,7 @@ Algorithms mapStringToAlgorithm(String algoAsString) {
 /// That library sadly depends on [dart.ui] and thus cannot be used in tests.
 /// Therefore, only using this code enables us to use this library ([utils.dart])
 /// in tests.
-String enumAsString(Object enumEntry) {
+String enumAsString(Enum enumEntry) {
   final String description = enumEntry.toString();
   final int indexOfDot = description.indexOf('.');
   assert(indexOfDot != -1 && indexOfDot < description.length - 1);
@@ -84,79 +83,24 @@ bool equalsIgnoreCase(String s1, String s2) {
 
 /// If permission is already given, this function does nothing
 void checkNotificationPermission() async {
+  if (kIsWeb || !Platform.isAndroid && !Platform.isIOS) return;
   var status = await Permission.notification.status;
   Logger.info('Notification permission status: $status');
   // TODO what to do if permanently denied?
   // Add a dialog before requesting?
+
   if (!status.isPermanentlyDenied) {
     if (status.isDenied) {
-      await Permission.notification.request();
+      try {
+        await Permission.notification.request();
+      } catch (e) {
+        await Future.delayed(const Duration(seconds: 5));
+        checkNotificationPermission();
+        Logger.warning('Error requesting notification permission: $e');
+      }
     }
   } else {
     Logger.info('Notification permission is permanently denied!');
-  }
-}
-
-// TODO Everything after this line should be in 'crypto_utils.dart,
-//   but that depends on foundations.dart and that depends on dart.ui,
-//   which ultimately makes it impossible to run driver tests.
-Uint8List decodeSecretToUint8(String secret, Encodings encoding) {
-  ArgumentError.checkNotNull(secret, 'secret');
-  ArgumentError.checkNotNull(encoding, 'encoding');
-
-  switch (encoding) {
-    case Encodings.none:
-      return Uint8List.fromList(utf8.encode(secret));
-    case Encodings.hex:
-      return Uint8List.fromList(HexConverter.HEX.decode(secret));
-    case Encodings.base32:
-      return Uint8List.fromList(Base32Converter.base32.decode(secret));
-    default:
-      throw ArgumentError.value(encoding, 'encoding', 'The encoding is unknown and not supported!');
-  }
-}
-
-String encodeSecretAs(Uint8List secret, Encodings encoding) {
-  ArgumentError.checkNotNull(secret, 'secret');
-  ArgumentError.checkNotNull(encoding, 'encoding');
-
-  switch (encoding) {
-    case Encodings.none:
-      return utf8.decode(secret);
-    case Encodings.hex:
-      return HexConverter.HEX.encode(secret);
-    case Encodings.base32:
-      return Base32Converter.base32.encode(secret);
-    default:
-      throw ArgumentError.value(encoding, 'encoding', 'The encoding is unknown and not supported!');
-  }
-}
-
-String encodeAsHex(Uint8List secret) {
-  return encodeSecretAs(secret, Encodings.hex);
-}
-
-bool isValidEncoding(String secret, Encodings encoding) {
-  try {
-    decodeSecretToUint8(secret, encoding);
-  } on Exception catch (_) {
-    return false;
-  }
-  return true;
-}
-
-OTPLibrary.Algorithm mapAlgorithms(Algorithms algorithm) {
-  ArgumentError.checkNotNull(algorithm, 'algorithmName');
-
-  switch (algorithm) {
-    case Algorithms.SHA1:
-      return OTPLibrary.Algorithm.SHA1;
-    case Algorithms.SHA256:
-      return OTPLibrary.Algorithm.SHA256;
-    case Algorithms.SHA512:
-      return OTPLibrary.Algorithm.SHA512;
-    default:
-      throw ArgumentError.value(algorithm, 'algorithmName', 'This algorithm is unknown and not supported!');
   }
 }
 
@@ -170,3 +114,81 @@ String rolloutMsg(PushTokenRollOutState rolloutState, BuildContext context) => s
       PushTokenRollOutState.parsingResponseFailed => AppLocalizations.of(context)!.parsingResponseFailed,
       PushTokenRollOutState.rolloutComplete => AppLocalizations.of(context)!.rolloutCompleted,
     };
+
+String? getErrorMessageFromResponse(Response response) {
+  String body = response.body;
+  String? errorMessage;
+  try {
+    final json = jsonDecode(body) as Map<String, dynamic>;
+    errorMessage = json['result']?['error']?['message'] as String?;
+  } catch (e) {
+    errorMessage = null;
+  }
+  if (errorMessage == null) {
+    final statusMessage = _statusMessageFromCode[response.statusCode];
+    if (statusMessage != null) {
+      errorMessage = '${response.statusCode}: $statusMessage';
+    } else {
+      errorMessage = 'Status Code: ${response.statusCode}';
+    }
+  }
+  return errorMessage;
+}
+
+Map<int, String> _statusMessageFromCode = {
+  100: "Continue",
+  101: "Switching Protocols",
+  102: "Processing",
+  200: "OK",
+  201: "Created",
+  202: "Accepted",
+  203: "Non Authoritative Information",
+  204: "No Content",
+  205: "Reset Content",
+  206: "Partial Content",
+  207: "Multi-Status",
+  300: "Multiple Choices",
+  301: "Moved Permanently",
+  302: "Moved Temporarily",
+  303: "See Other",
+  304: "Not Modified",
+  305: "Use Proxy",
+  307: "Temporary Redirect",
+  308: "Permanent Redirect",
+  400: "Bad Request",
+  401: "Unauthorized",
+  402: "Payment Required",
+  403: "Forbidden",
+  404: "Not Found",
+  405: "Method Not Allowed",
+  406: "Not Acceptable",
+  407: "Proxy Authentication Required",
+  408: "Request Timeout",
+  409: "Conflict",
+  410: "Gone",
+  411: "Length Required",
+  412: "Precondition Failed",
+  413: "Request Entity Too Large",
+  414: "Request-URI Too Long",
+  415: "Unsupported Media Type",
+  416: "Requested Range Not Satisfiable",
+  417: "Expectation Failed",
+  418: "I'm a teapot",
+  419: "Insufficient Space on Resource",
+  420: "Method Failure",
+  422: "Unprocessable Entity",
+  423: "Locked",
+  424: "Failed Dependency",
+  428: "Precondition Required",
+  429: "Too Many Requests",
+  431: "Request Header Fields Too Large",
+  451: "Unavailable For Legal Reasons",
+  500: "Internal Server Error",
+  501: "Not Implemented",
+  502: "Bad Gateway",
+  503: "Service Unavailable",
+  504: "Gateway Timeout",
+  505: "HTTP Version Not Supported",
+  507: "Insufficient Storage",
+  511: "Network Authentication Required"
+};

@@ -2,14 +2,14 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../interfaces/repo/token_folder_repository.dart';
 import '../model/token_folder.dart';
 import '../utils/logger.dart';
-import 'token_folder_repository.dart';
 
-class PreferenceTokenFolderRepotisory extends TokenFolderRepositoy {
+class PreferenceTokenFolderRepository extends TokenFolderRepository {
   static const String _tokenFoldersKey = 'TOKEN_CATEGORIES';
   final Future<SharedPreferences> _prefs;
-  PreferenceTokenFolderRepotisory() : _prefs = SharedPreferences.getInstance();
+  PreferenceTokenFolderRepository() : _prefs = SharedPreferences.getInstance();
 
   @override
   Future<List<TokenFolder>> loadFolders() async {
@@ -20,21 +20,21 @@ class PreferenceTokenFolderRepotisory extends TokenFolderRepositoy {
       final folders = jsons.map((e) => TokenFolder.fromJson(e)).toList();
       return folders;
     } catch (e, s) {
-      Logger.error('Failed to load folders', name: 'PreferenceTokenFolderRepotisory#loadFolders', error: e, stackTrace: s);
+      Logger.error('Failed to load folders', name: 'PreferenceTokenFolderRepository#loadFolders', error: e, stackTrace: s);
       return [];
     }
   }
 
   @override
-  Future<bool> saveFolders(List<TokenFolder> folders) async {
+  Future<List<TokenFolder>> saveOrReplaceFolders(List<TokenFolder> folders) async {
     try {
       final jsons = folders.map((e) => e.toJson()).toList();
       final json = jsonEncode(jsons);
       await _prefs.then((prefs) => prefs.setString(_tokenFoldersKey, json));
-      return true;
+      return [];
     } catch (e, s) {
-      Logger.error('Failed to save folders', name: 'PreferenceTokenFolderRepotisory#saveFolders', error: e, stackTrace: s);
-      return false;
+      Logger.error('Failed to save folders', name: 'PreferenceTokenFolderRepository#saveFolders', error: e, stackTrace: s);
+      return folders;
     }
   }
 }

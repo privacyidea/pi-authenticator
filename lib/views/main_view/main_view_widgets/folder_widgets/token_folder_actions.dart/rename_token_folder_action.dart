@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_folder.dart';
 import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/customizations.dart';
@@ -12,13 +12,13 @@ import '../../../../../widgets/default_dialog.dart';
 
 class RenameTokenFolderAction extends StatelessWidget {
   final TokenFolder folder;
-  const RenameTokenFolderAction({required this.folder, Key? key}) : super(key: key);
+  const RenameTokenFolderAction({required this.folder, super.key});
 
   @override
   Widget build(BuildContext context) {
     return CustomSlidableAction(
-        backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.renameColorLight : ApplicationCustomizer.renameColorDark,
-        foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+        backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
+        foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
         onPressed: (context) async {
           if (folder.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
           _showDialog();
@@ -40,6 +40,7 @@ class RenameTokenFolderAction extends StatelessWidget {
   void _showDialog() {
     TextEditingController nameInputController = TextEditingController(text: folder.label);
     showDialog(
+        useRootNavigator: false,
         context: globalNavigatorKey.currentContext!,
         builder: (BuildContext context) {
           return DefaultDialog(

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'customizations.dart';
 import 'logger.dart';
 
-/// Shows a message to the user for a given `Duration`.
+/// Shows a snackbar message to the user for a given `Duration`.
 void showMessage({
   required String message,
   Duration duration = const Duration(seconds: 5),
@@ -18,6 +19,7 @@ void showMessage({
 
 Future<T?> showAsyncDialog<T>({
   required WidgetBuilder builder,
+  bool barrierDismissible = true,
 }) {
   if (globalNavigatorKey.currentContext == null) {
     Logger.warning('globalNavigatorKey.currentContext is null');
@@ -26,5 +28,7 @@ Future<T?> showAsyncDialog<T>({
   return showDialog(
     context: globalNavigatorKey.currentContext!,
     builder: builder,
+    useRootNavigator: false,
+    barrierDismissible: barrierDismissible,
   );
 }

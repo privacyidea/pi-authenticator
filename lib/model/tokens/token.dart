@@ -68,6 +68,14 @@ abstract class Token with SortableMixin {
   });
 
   @override
+  bool operator ==(Object other) {
+    return other is Token && other.id == id;
+  }
+
+  @override
+  int get hashCode => (id + type).hashCode;
+
+  @override
   String toString() {
     return 'Token{label: $label, issuer: $issuer, id: $id, _sLocked: $isLocked, pin: $pin, tokenImage: $tokenImage, sortIndex: $sortIndex, type: $type, folderId: $folderId';
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/customizations.dart';
@@ -18,10 +18,10 @@ class DefaultDeleteAction extends TokenAction {
   @override
   CustomSlidableAction build(BuildContext context) {
     return CustomSlidableAction(
-      backgroundColor: Theme.of(context).brightness == Brightness.light ? ApplicationCustomizer.deleteColorLight : ApplicationCustomizer.deleteColorDark,
-      foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+      backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
+      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (_) async {
-        if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.deleteLockedToken) == false) {
+        if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)?.deleteLockedToken ?? '') == false) {
           return;
         }
         _showDialog();
@@ -41,38 +41,41 @@ class DefaultDeleteAction extends TokenAction {
     );
   }
 
-  void _showDialog() => showDialog(
-      context: globalNavigatorKey.currentContext!,
-      builder: (BuildContext context) {
-        return DefaultDialog(
-          scrollable: true,
-          title: Text(
-            AppLocalizations.of(context)!.confirmDeletion,
-          ),
-          content: Text(
-            AppLocalizations.of(context)!.confirmDeletionOf(token.label),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                AppLocalizations.of(context)!.cancel,
-                overflow: TextOverflow.fade,
-                softWrap: false,
+  void _showDialog() => globalNavigatorKey.currentContext == null
+      ? null
+      : showDialog(
+          useRootNavigator: false,
+          context: globalNavigatorKey.currentContext!,
+          builder: (BuildContext context) {
+            return DefaultDialog(
+              scrollable: true,
+              title: Text(
+                AppLocalizations.of(context)!.confirmDeletion,
               ),
-            ),
-            TextButton(
-              onPressed: () {
-                globalRef?.read(tokenProvider.notifier).removeToken(token);
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                AppLocalizations.of(context)!.delete,
-                overflow: TextOverflow.fade,
-                softWrap: false,
+              content: Text(
+                AppLocalizations.of(context)!.confirmDeletionOf(token.label),
               ),
-            ),
-          ],
-        );
-      });
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    AppLocalizations.of(context)!.cancel,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    globalRef?.read(tokenProvider.notifier).removeToken(token);
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.delete,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+                ),
+              ],
+            );
+          });
 }
