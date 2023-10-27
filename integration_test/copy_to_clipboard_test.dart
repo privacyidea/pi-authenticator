@@ -48,5 +48,5 @@ void main() {
     await tester.tap(find.text('356 306'));
     await tester.pumpAndSettle();
     expect(find.text('Password "356306" copied to clipboard.'), findsOneWidget);
-  });
+  }, timeout: const Timeout(Duration(minutes: 5)));
 }

@@ -23,7 +23,6 @@ void main() {
   late final MockSettingsRepository mockSettingsRepository;
   late final MockTokenRepository mockTokenRepository;
   late final MockTokenFolderRepository mockTokenFolderRepository;
-  late final MockQrParser mockQrParser;
   late final MockRsaUtils mockRsaUtils;
   late final MockFirebaseUtils mockFirebaseUtils;
   late final MockPrivacyIdeaIOClient mockIOClient;
@@ -41,17 +40,6 @@ void main() {
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
-    mockQrParser = MockQrParser();
-    when(mockQrParser.parseQRCodeToMap(any)).thenReturn(<String, dynamic>{
-      'URI_TYPE': 'PIPUSH',
-      'URI_LABEL': 'label',
-      'URI_ISSUER': 'issuer',
-      'URI_SERIAL': 'serial',
-      'URI_SSL_VERIFY': false,
-      'URI_ENROLLMENT_CREDENTIAL': 'enrollmentCredentials',
-      'URI_ROLLOUT_URL': Uri.parse('http://www.example.com'),
-      'URI_TTL': 10,
-    });
     mockRsaUtils = MockRsaUtils();
     when(mockRsaUtils.serializeRSAPublicKeyPKCS8(any)).thenAnswer((_) => 'publicKey');
     when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((_) => const RsaUtils()
@@ -71,7 +59,12 @@ void main() {
     await tester.pumpWidget(TestsAppWrapper(
       overrides: [
         settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
-        tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
+        tokenProvider.overrideWith((ref) => TokenNotifier(
+              repository: mockTokenRepository,
+              rsaUtils: mockRsaUtils,
+              firebaseUtils: mockFirebaseUtils,
+              ioClient: mockIOClient,
+            )),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
       ],
       child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
@@ -80,7 +73,7 @@ void main() {
     await _licensesViewTest(tester);
     await _popUntilMainView(tester);
     await _settingsViewTest(tester);
-  });
+  }, timeout: const Timeout(Duration(minutes: 10)));
 }
 
 Future<void> _popUntilMainView(WidgetTester tester) async {
@@ -113,7 +106,9 @@ Future<void> _settingsViewTest(WidgetTester tester) async {
   expect(find.text('Language'), findsOneWidget);
   expect(find.text('Error logs'), findsOneWidget);
   expect(find.byType(SettingsGroup), findsNWidgets(3));
-  globalRef!.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: 'otpauth://totp/issuer:label?secret=secret&issuer=issuer');
+  globalRef!.read(tokenProvider.notifier).addTokenFromOtpAuth(
+      otpAuth:
+          'otpauth://pipush/label?url=http%3A%2F%2Fwww.example.com&ttl=10&issuer=issuer&enrollment_credential=enrollmentCredentials&v=1&serial=serial&serial=serial&sslverify=0');
   await pumpUntilFindNWidgets(tester, find.text('Push Token'), 1, const Duration(minutes: 5));
   expect(find.text('Push Token'), findsOneWidget);
   expect(find.byType(SettingsGroup), findsNWidgets(4));

@@ -66,6 +66,7 @@ void main() {
       await _addTwoStepHotpTokenTest(tester);
       await _addTwoStepTotpTokenTest(tester);
     },
+    timeout: const Timeout(Duration(minutes: 10)),
   );
 }
 

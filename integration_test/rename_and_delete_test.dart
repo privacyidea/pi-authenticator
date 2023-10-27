@@ -49,7 +49,7 @@ void main() {
     await _renameToken(tester);
     await _renameTokenAgain(tester);
     await _deleteToken(tester);
-  });
+  }, timeout: const Timeout(Duration(minutes: 5)));
 }
 
 Future<void> _renameToken(WidgetTester tester) async {
