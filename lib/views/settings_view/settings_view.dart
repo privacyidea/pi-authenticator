@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../model/states/settings_state.dart';
 import '../../model/tokens/push_token.dart';
 import '../../utils/riverpod_providers.dart';
 import '../license_view/license_view.dart';
@@ -182,27 +181,27 @@ class SettingsView extends ConsumerWidget {
                       onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
                     ),
                   ),
-                  if (ref.watch(tokenProvider).hasHOTPTokens)
-                    ListTile(
-                      title: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: AppLocalizations.of(context)!.hidePushTokens,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                          ],
-                        ),
-                      ),
-                      subtitle: Text(
-                        AppLocalizations.of(context)!.hidePushTokensDescription,
-                        overflow: TextOverflow.fade,
-                      ),
-                      trailing: Switch(
-                        value: ref.watch(settingsProvider).hidePushTokensState != HidePushTokens.notHidden,
-                        onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(isHidden: value),
-                      ),
-                    )
+                  // if (ref.watch(tokenProvider).hasHOTPTokens)
+                  //   ListTile(
+                  //     title: RichText(
+                  //       text: TextSpan(
+                  //         children: [
+                  //           TextSpan(
+                  //             text: AppLocalizations.of(context)!.hidePushTokens,
+                  //             style: Theme.of(context).textTheme.titleMedium,
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //     subtitle: Text(
+                  //       AppLocalizations.of(context)!.hidePushTokensDescription,
+                  //       overflow: TextOverflow.fade,
+                  //     ),
+                  //     trailing: Switch(
+                  //       value: ref.watch(settingsProvider).hidePushTokensState != HidePushTokens.notHidden,
+                  //       onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(isHidden: value),
+                  //     ),
+                  //   )
                 ],
               ),
             ),
