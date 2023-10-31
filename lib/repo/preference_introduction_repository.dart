@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:privacyidea_authenticator/utils/logger.dart';
+import '../utils/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interfaces/repo/introduction_repository.dart';
-import '../model/states/introductions_state.dart';
+import '../model/states/Introductions_state.dart';
 
 class PreferenceIntroductionRepository implements IntroductionRepository {
   static const String _completedIntroductionsKey = 'COMPLETED_INTRODUCTIONS';

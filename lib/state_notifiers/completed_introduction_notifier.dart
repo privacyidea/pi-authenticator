@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/states/introductions_state.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
+import '../model/states/Introductions_state.dart';
+import '../utils/logger.dart';
 
 import '../interfaces/repo/introduction_repository.dart';
 import '../model/enums/introduction_enum.dart';

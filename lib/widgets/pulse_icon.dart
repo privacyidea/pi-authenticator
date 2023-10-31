@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
 class PulseIcon extends StatefulWidget {
-  const PulseIcon({required this.size, required this.child, this.isPulsing = true, super.key});
+  const PulseIcon({
+    required this.width,
+    required this.height,
+    required this.child,
+    this.isPulsing = true,
+    super.key,
+  });
 
-  final double size;
+  final double width;
+  final double height;
   final Widget child;
   final bool isPulsing;
 
@@ -22,11 +29,11 @@ class _PulseIconState extends State<PulseIcon> with SingleTickerProviderStateMix
     super.initState();
     if (widget.isPulsing) {
       _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500))..repeat();
-      _scaleAnimation = Tween<double>(begin: 0.5, end: 1.5).animate(CurvedAnimation(
+      _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
         parent: _animationController,
         curve: Curves.easeInOut,
       ));
-      _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(CurvedAnimation(
+      _opacityAnimation = Tween<double>(begin: 0.8, end: 0.05).animate(CurvedAnimation(
         parent: _animationController,
         curve: Curves.easeInOut,
       ));
@@ -50,11 +57,13 @@ class _PulseIconState extends State<PulseIcon> with SingleTickerProviderStateMix
                   scale: _scaleAnimation,
                   child: Container(
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(9999),
+                      ),
                     ),
-                    width: widget.size,
-                    height: widget.size,
+                    width: widget.width,
+                    height: widget.height,
                   ),
                 ),
               ),

@@ -69,9 +69,10 @@ class PrivacyIdeaIOClient {
 
     HttpClient httpClient = HttpClient();
     httpClient.badCertificateCallback = ((_, __, ___) => !sslVerify);
-    httpClient.userAgent = 'privacyIDEA-App /'
+    httpClient.userAgent = 'privacyIDEA-App'
+        '/${(await PackageInfo.fromPlatform()).version}'
         ' ${Platform.operatingSystem}'
-        ' ${(await PackageInfo.fromPlatform()).version}';
+        '/${Platform.operatingSystemVersion}';
 
     IOClient ioClient = IOClient(httpClient);
 

@@ -18,14 +18,15 @@ class LicensePushViewButton extends ConsumerWidget {
             icon: const Icon(Icons.info_outline),
           ),
         HidePushTokens.isHiddenNotNoticed => PulseIcon(
-            size: 24,
+            width: 24,
+            height: 24,
             isPulsing: ref.watch(settingsProvider).hidePushTokensState == HidePushTokens.isHiddenNotNoticed,
             child: AppBarItem(
               onPressed: () {
                 ref.read(settingsProvider.notifier).setHidePushTokens(hidePushTokensState: HidePushTokens.isHiddenAndNoticed);
                 Navigator.pushNamed(context, PushTokensView.routeName);
               },
-              icon: const Icon(Icons.notifications),
+              icon: const FittedBox(child: Icon(Icons.notifications)),
             ),
           ),
         HidePushTokens.isHiddenAndNoticed => AppBarItem(
@@ -33,7 +34,7 @@ class LicensePushViewButton extends ConsumerWidget {
               ref.read(settingsProvider.notifier).setHidePushTokens(hidePushTokensState: HidePushTokens.isHiddenAndNoticed);
               Navigator.pushNamed(context, PushTokensView.routeName);
             },
-            icon: const Icon(Icons.notifications),
+            icon: const FittedBox(child: Icon(Icons.notifications)),
           ),
       };
 }

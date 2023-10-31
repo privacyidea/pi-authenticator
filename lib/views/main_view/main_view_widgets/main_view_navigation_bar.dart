@@ -1,8 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../widgets/focused_item.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../settings_view/settings_view.dart';
 import 'app_bar_item.dart';
@@ -21,6 +20,7 @@ class MainViewNavigationBar extends ConsumerWidget {
         builder: (BuildContext context, BoxConstraints constraints) {
           final navWidth = constraints.maxWidth;
           final navHeight = constraints.maxHeight * 0.10;
+          const focusedItem = 2;
           return Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -38,7 +38,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                     ),
                     const Center(
                       heightFactor: 0.6,
-                      child: QrScannerButton(),
+                      child: FocusedItem(isFocused: true, tooltipWhenFocused: 'Scan a Token!', child: QrScannerButton()),
                     ),
                     Center(
                       child: Row(
@@ -61,12 +61,18 @@ class MainViewNavigationBar extends ConsumerWidget {
                                   onPressed: () {
                                     Navigator.pushNamed(context, AddTokenManuallyView.routeName);
                                   },
-                                  icon: const Icon(Icons.add_moderator),
+                                  icon: const FocusedItem(
+                                    isFocused: focusedItem == 1,
+                                    tooltipWhenFocused: 'Add token manually',
+                                    child: FittedBox(
+                                      child: Icon(Icons.add_moderator),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(width: min(110, navHeight * 0.8 + 30)),
+                          const Expanded(child: SizedBox()),
                           Expanded(
                             child: Center(
                               child: Padding(
@@ -79,7 +85,13 @@ class MainViewNavigationBar extends ConsumerWidget {
                                       useRootNavigator: false,
                                     );
                                   },
-                                  icon: const Icon(Icons.create_new_folder),
+                                  icon: const FocusedItem(
+                                    isFocused: focusedItem == 3,
+                                    tooltipWhenFocused: 'Add folder',
+                                    child: FittedBox(
+                                      child: Icon(Icons.create_new_folder),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -92,7 +104,13 @@ class MainViewNavigationBar extends ConsumerWidget {
                                   onPressed: () {
                                     Navigator.pushNamed(context, SettingsView.routeName);
                                   },
-                                  icon: const Icon(Icons.settings),
+                                  icon: const FocusedItem(
+                                    isFocused: focusedItem == 4,
+                                    tooltipWhenFocused: 'Nothing here!',
+                                    child: FittedBox(
+                                      child: Icon(Icons.settings),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),

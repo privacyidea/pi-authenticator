@@ -6,19 +6,12 @@ part of 'introductions_state.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-IntroductionsState _$IntroductionsStateFromJson(Map<String, dynamic> json) =>
-    IntroductionsState(
-      completedIntroductions: (json['completedIntroductions'] as List<dynamic>?)
-              ?.map((e) => $enumDecode(_$IntroductionEnumMap, e))
-              .toSet() ??
-          const {},
+IntroductionsState _$IntroductionsStateFromJson(Map<String, dynamic> json) => IntroductionsState(
+      completedIntroductions: (json['completedIntroductions'] as List<dynamic>?)?.map((e) => $enumDecode(_$IntroductionEnumMap, e)).toSet() ?? const {},
     );
 
-Map<String, dynamic> _$IntroductionsStateToJson(IntroductionsState instance) =>
-    <String, dynamic>{
-      'completedIntroductions': instance.completedIntroductions
-          .map((e) => _$IntroductionEnumMap[e]!)
-          .toList(),
+Map<String, dynamic> _$IntroductionsStateToJson(IntroductionsState instance) => <String, dynamic>{
+      'completedIntroductions': instance.completedIntroductions.map((e) => _$IntroductionEnumMap[e]!).toList(),
     };
 
 const _$IntroductionEnumMap = {

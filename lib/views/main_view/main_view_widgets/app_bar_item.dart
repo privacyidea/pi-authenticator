@@ -4,7 +4,7 @@ class AppBarItem extends StatelessWidget {
   const AppBarItem({super.key, required this.onPressed, required this.icon});
 
   final VoidCallback onPressed;
-  final Icon icon;
+  final Widget icon;
 
   @override
   Widget build(BuildContext context) {
