@@ -25,6 +25,7 @@ import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 class PrivacyIdeaIOClient {
@@ -46,7 +47,9 @@ class PrivacyIdeaIOClient {
     try {
       await ioClient.post(url, body: '');
     } on SocketException {
-      // ignore
+      globalRef?.read(statusMessageProvider.notifier).state = ('Connection failed', 'Please check your internet connection.');
+    } on ClientException {
+      globalRef?.read(statusMessageProvider.notifier).state = ('Connection failed', 'Please check your internet connection.');
     } finally {
       ioClient.close();
     }

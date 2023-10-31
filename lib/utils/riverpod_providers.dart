@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -121,6 +124,22 @@ final tokenFolderProvider = StateNotifierProvider.autoDispose<TokenFolderNotifie
 
 final draggingSortableProvider = StateProvider<SortableMixin?>((ref) {
   Logger.info("New draggingSortableProvider created");
+  return null;
+});
+
+final connectivityProvider = StreamProvider<ConnectivityResult>((ref) {
+  Logger.info("New connectivityProvider created");
+  return Connectivity().onConnectivityChanged;
+});
+
+final statusMessageProvider = StateProvider<(String, String?)?>((ref) {
+  Logger.info("New connectionStateProvider created");
+  final next = ref.watch(connectivityProvider).asData?.value;
+  if (next == null || next == ConnectivityResult.none) {
+    log("ConnectionState is $next");
+    return ('No Connection', null);
+  }
+  log("ConnectionState is $next");
   return null;
 });
 

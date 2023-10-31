@@ -385,12 +385,12 @@ class TokenNotifier extends StateNotifier<TokenState> {
             message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label, response.statusCode) + message,
             duration: const Duration(seconds: 3),
           );
-        } on FormatException catch (_) {
+        } on FormatException catch (e) {
           // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.
-          showMessage(
-            message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(token.label),
-            duration: const Duration(seconds: 3),
-          );
+          if (globalRef != null) {
+            globalRef!.read(statusMessageProvider.notifier).state =
+                (AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label, response.statusCode), null);
+          }
         }
 
         updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
