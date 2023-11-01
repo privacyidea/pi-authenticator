@@ -167,6 +167,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noNetworkConnection => 'No network connection.';
 
   @override
+  String get connectionFailed => 'Connection failed.';
+
+  @override
+  String get checkYourNetwork => 'Please check your network connection and try again.';
+
+  @override
   String get serverNotReachable => 'The server could not be reached.';
 
   @override

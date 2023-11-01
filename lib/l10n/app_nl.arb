@@ -226,6 +226,14 @@
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
   },
+  "connectionFailed": "Verbinding mislukt.",
+  "@connectionFailed": {
+    "description": "Tells the user that the connection failed."
+  },
+  "checkYourNetwork": "Controleer je netwerkverbinding en probeer het opnieuw.",
+  "@checkYourNetwork": {
+    "description": "Tells the user to check the network connection."
+  },
   "serverNotReachable": "De server kon niet worden bereikt.",
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."

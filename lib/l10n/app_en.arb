@@ -225,6 +225,14 @@
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
   },
+  "connectionFailed": "Connection failed.",
+  "@connectionFailed": {
+    "description": "Tells the user that the connection failed."
+  },
+  "checkYourNetwork": "Please check your network connection and try again.",
+  "@checkYourNetwork": {
+    "description": "Tells the user to check the network connection."
+  },
   "serverNotReachable": "The server could not be reached.",
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."

@@ -164,7 +164,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get pollingFailed => 'Zapytanie nie powiodło się.';
 
   @override
-  String get noNetworkConnection => 'No network connection.';
+  String get noNetworkConnection => 'Brak połączenia sieciowego.';
+
+  @override
+  String get connectionFailed => 'Połączenie nie powiodło się.';
+
+  @override
+  String get checkYourNetwork => 'Sprawdź połączenie sieciowe i spróbuj ponownie.';
 
   @override
   String get serverNotReachable => 'Nie można uzyskać połączenia z serwerem.';

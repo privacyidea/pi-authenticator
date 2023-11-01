@@ -403,6 +403,18 @@ abstract class AppLocalizations {
   /// **'No network connection.'**
   String get noNetworkConnection;
 
+  /// Tells the user that the connection failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed.'**
+  String get connectionFailed;
+
+  /// Tells the user to check the network connection.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your network connection and try again.'**
+  String get checkYourNetwork;
+
   /// Tells the user that the server could not be reached.
   ///
   /// In en, this message translates to:

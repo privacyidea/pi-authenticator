@@ -164,7 +164,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pollingFailed => 'Consulta fallida.';
 
   @override
-  String get noNetworkConnection => 'No network connection.';
+  String get noNetworkConnection => 'No hay conexión a la red.';
+
+  @override
+  String get connectionFailed => 'Conexión fallida.';
+
+  @override
+  String get checkYourNetwork => 'Compruebe su conexión de red e inténtelo de nuevo.';
 
   @override
   String get serverNotReachable => 'No se ha podido acceder al servidor.';

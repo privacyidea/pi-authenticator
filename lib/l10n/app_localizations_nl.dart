@@ -164,7 +164,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get pollingFailed => 'Vraag mislukt.';
 
   @override
-  String get noNetworkConnection => 'No network connection.';
+  String get noNetworkConnection => 'Geen netwerkverbinding.';
+
+  @override
+  String get connectionFailed => 'Verbinding mislukt.';
+
+  @override
+  String get checkYourNetwork => 'Controleer je netwerkverbinding en probeer het opnieuw.';
 
   @override
   String get serverNotReachable => 'De server kon niet worden bereikt.';

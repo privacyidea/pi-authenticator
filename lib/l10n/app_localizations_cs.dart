@@ -164,7 +164,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pollingFailed => 'Dotaz se nezdařil.';
 
   @override
-  String get noNetworkConnection => 'No network connection.';
+  String get noNetworkConnection => 'Žádné připojení k síti.';
+
+  @override
+  String get connectionFailed => 'Připojení se nezdařilo.';
+
+  @override
+  String get checkYourNetwork => 'Zkontrolujte prosím síťové připojení a zkuste to znovu.';
 
   @override
   String get serverNotReachable => 'Na server se nepodařilo dovolat.';
