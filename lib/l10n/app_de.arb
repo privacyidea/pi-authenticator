@@ -222,7 +222,7 @@
   "@pollingFailed": {
     "description": "Tells the user that the polling failed."
   },
-  "noNetworkConnection": "No network connection.",
+  "noNetworkConnection": "Keine Netzwerkverbindung.",
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
   },

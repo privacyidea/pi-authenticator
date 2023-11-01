@@ -229,7 +229,7 @@
   "@pollingFailed": {
     "description": "Tells the user that the polling failed."
   },
-  "noNetworkConnection": "No network connection.",
+  "noNetworkConnection": "Pas de connexion au réseau.",
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
   },

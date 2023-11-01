@@ -20,12 +20,15 @@ class RolloutFailedWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            rolloutMsg(token.rolloutState, context),
-            style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.fade,
-            softWrap: false,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+            child: FittedBox(
+              child: Text(
+                rolloutMsg(token.rolloutState, context),
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
