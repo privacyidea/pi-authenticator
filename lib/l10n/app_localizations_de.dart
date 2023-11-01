@@ -129,8 +129,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tokensDoNotSupportSynchronization => 'Die folgenden Token unterstützen keine Synchronisation und müssen erneut ausgerollt werden:';
 
   @override
-  String errorRollOutFailed(Object name, Object errorCode) {
-    return 'Ausrollen von $name ist fehlgeschlagen. Fehlercode: $errorCode';
+  String errorRollOutFailed(Object name) {
+    return 'Ausrollen von $name ist fehlgeschlagen.';
+  }
+
+  @override
+  String statusCode(Object statusCode) {
+    return 'Statuscode: $statusCode';
   }
 
   @override
@@ -156,7 +161,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get unexpectedError => 'Ein unerwarteter Fehler ist aufgetreten.';
 
   @override
-  String get pollingFailNoNetworkConnection => 'Abfrage fehlgeschlagen, der Server ist nicht erreichbar.';
+  String get pollingFailed => 'Abfrage fehlgeschlagen.';
+
+  @override
+  String get noNetworkConnection => 'No network connection.';
+
+  @override
+  String get serverNotReachable => 'Der Server konnte nicht erreicht werden.';
+
+  @override
+  String get couldNotSignMessage => 'Nachricht konnte nicht signiert werden.';
 
   @override
   String get useDeviceLocaleTitle => 'Nutze Systemsprache';

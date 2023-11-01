@@ -129,8 +129,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tokensDoNotSupportSynchronization => 'Las siguientes tokens no admiten la sincronización y deben volver a desplegarse:';
 
   @override
-  String errorRollOutFailed(Object name, Object errorCode) {
-    return 'Error en la extracción de el token $name. Código de error: $errorCode';
+  String errorRollOutFailed(Object name) {
+    return 'Error en la extracción de el token $name.';
+  }
+
+  @override
+  String statusCode(Object statusCode) {
+    return 'Código de estado: $statusCode';
   }
 
   @override
@@ -156,7 +161,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get unexpectedError => 'Se ha producido un error inesperado.';
 
   @override
-  String get pollingFailNoNetworkConnection => 'Error de sondeo. No se puede acceder al servidor.';
+  String get pollingFailed => 'Consulta fallida.';
+
+  @override
+  String get noNetworkConnection => 'No network connection.';
+
+  @override
+  String get serverNotReachable => 'No se ha podido acceder al servidor.';
+
+  @override
+  String get couldNotSignMessage => 'No se ha podido firmar el mensaje.';
 
   @override
   String get useDeviceLocaleTitle => 'Utiliza el idioma del teléfono';

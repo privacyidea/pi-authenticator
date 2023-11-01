@@ -129,8 +129,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tokensDoNotSupportSynchronization => 'Ces jetons ne supportent pas la synchronisation et doivent être de nouveau générés:';
 
   @override
-  String errorRollOutFailed(Object name, Object errorCode) {
-    return 'Le déploiement du jeton $name a échoué. Erreur réseau: $errorCode';
+  String errorRollOutFailed(Object name) {
+    return 'Le déploiement du jeton $name a échoué.';
+  }
+
+  @override
+  String statusCode(Object statusCode) {
+    return 'Code d\'état : $statusCode';
   }
 
   @override
@@ -156,7 +161,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get unexpectedError => 'Une erreur inattendue s\'est produite.';
 
   @override
-  String get pollingFailNoNetworkConnection => 'L\'interrogation a échoué. Le serveur est injoignable.';
+  String get pollingFailed => 'Échec de la requête.';
+
+  @override
+  String get noNetworkConnection => 'No network connection.';
+
+  @override
+  String get serverNotReachable => 'Le serveur n\'a pas pu être atteint.';
+
+  @override
+  String get couldNotSignMessage => 'Impossible de signer le message.';
 
   @override
   String get useDeviceLocaleTitle => 'Utiliser la langue de l\'appareil';

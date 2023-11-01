@@ -58,7 +58,6 @@ void _testPushRequestNotifier() {
         id: 1,
         expirationDate: DateTime.now().add(const Duration(minutes: 10)),
       );
-      log('1');
       mockPushProvider.simulatePush(pr);
       expect(container.read(testProvider), pr);
     });

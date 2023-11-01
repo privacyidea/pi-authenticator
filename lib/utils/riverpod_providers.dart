@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../model/mixins/sortable_mixin.dart';
 import '../model/push_request.dart';
 import '../model/states/app_state.dart';
@@ -133,13 +130,7 @@ final connectivityProvider = StreamProvider<ConnectivityResult>((ref) {
 });
 
 final statusMessageProvider = StateProvider<(String, String?)?>((ref) {
-  Logger.info("New connectionStateProvider created");
-  final next = ref.watch(connectivityProvider).asData?.value;
-  if (next == null || next == ConnectivityResult.none) {
-    log("ConnectionState is $next");
-    return ('No Connection', null);
-  }
-  log("ConnectionState is $next");
+  Logger.info("New statusMessageProvider created");
   return null;
 });
 

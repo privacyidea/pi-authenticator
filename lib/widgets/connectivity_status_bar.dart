@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +17,7 @@ class ConnectivityStatusBar extends ConsumerStatefulWidget {
 class _ConnectivityStatusBarState extends ConsumerState<ConnectivityStatusBar> {
   (String, String?)? previousStatusMessage;
   (String, String?)? currentStatusMessage;
+  Queue<(String, String?)> statusbarQueue = Queue();
 
   late Function(DismissDirection) onDismissed;
 
@@ -27,10 +27,10 @@ class _ConnectivityStatusBarState extends ConsumerState<ConnectivityStatusBar> {
   @override
   Widget build(BuildContext context) {
     final newStatusMessage = ref.watch(statusMessageProvider);
-    if (newStatusMessage != previousStatusMessage && newStatusMessage != currentStatusMessage) {
-      previousStatusMessage = newStatusMessage;
-      _addToQueueIfNotInQueue(newStatusMessage);
-    }
+    // if (newStatusMessage != previousStatusMessage && newStatusMessage != currentStatusMessage) {
+    // previousStatusMessage = newStatusMessage;
+    _addToQueueIfNotInQueue(newStatusMessage);
+    // }
     return widget.child;
   }
 
@@ -41,15 +41,13 @@ class _ConnectivityStatusBarState extends ConsumerState<ConnectivityStatusBar> {
         currentStatusMessage = null;
         statusbarOverlay!.remove();
         statusbarOverlay = null;
-        log("Removing statusbar overlay");
+        ref.read(statusMessageProvider.notifier).state = null;
         _tryPop();
       });
     };
 
     super.initState();
   }
-
-  Queue<(String, String?)> statusbarQueue = Queue();
 
   void _addToQueueIfNotInQueue((String, String?)? statusMessage) {
     if (statusMessage == null) return;
@@ -74,9 +72,13 @@ class _ConnectivityStatusBarState extends ConsumerState<ConnectivityStatusBar> {
       statusbarOverlay = null;
     }
 
-    statusbarOverlay =
-        OverlayEntry(builder: (context) => StatusBarOverlayEntry(onDismissed: onDismissed, statusText: statusText, statusSubText: statusSubText));
-    log("Showing statusbar overlay");
+    statusbarOverlay = OverlayEntry(
+      builder: (context) => StatusBarOverlayEntry(
+        onDismissed: onDismissed,
+        statusText: statusText,
+        statusSubText: statusSubText,
+      ),
+    );
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Overlay.of(context).insert(statusbarOverlay!);
     });
@@ -95,46 +97,139 @@ class StatusBarOverlayEntry extends StatefulWidget {
 }
 
 class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with SingleTickerProviderStateMixin {
-  bool isFirstFrame = false;
+  bool isFirstFrame = true;
+  static const double margin = 10;
+  static const double padding = 10;
+  static const Duration showDuration = Duration(seconds: 5);
+  late AnimationController autoDismissAnimationController;
+  late Animation autoDismissAnimation;
+  late Function(DismissDirection) onDismissed;
 
   @override
   void initState() {
+    autoDismissAnimationController = AnimationController(vsync: this, duration: showDuration);
+    final curvedAnimation = CurvedAnimation(parent: autoDismissAnimationController, curve: Curves.easeOut);
+    autoDismissAnimation = Tween<double>(begin: 1, end: 0).animate(curvedAnimation)
+      ..addListener(() {
+        setState(() {});
+      });
+    autoDismissAnimation.addListener(() {
+      if (mounted) {
+        setState(() {});
+        if (autoDismissAnimation.isCompleted) {
+          onDismissed(DismissDirection.endToStart);
+        }
+      }
+    });
+
+    onDismissed = (DismissDirection direction) {
+      autoDismissAnimationController.stop();
+      widget.onDismissed(direction);
+    };
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!isFirstFrame) {
+    if (isFirstFrame) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        setState(() {
-          isFirstFrame = true;
-        });
+        if (mounted) {
+          setState(() {
+            isFirstFrame = false;
+          });
+        }
       });
     }
+
+    final maxWidth = MediaQuery.of(context).size.width - margin * 2 - padding * 2;
+    final statusTextStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white) ?? const TextStyle();
+    final statusSubTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white) ?? const TextStyle();
+    final statusTextHeight = textSizeOf(widget.statusText, statusTextStyle, maxWidth: maxWidth).height;
+    final statusSubTextHeight = widget.statusSubText != null ? textSizeOf(widget.statusSubText!, statusSubTextStyle, maxWidth: maxWidth).height : 0;
     return AnimatedPositioned(
-      top: isFirstFrame ? 30 : -textSizeOf(widget.statusText, Theme.of(context).textTheme.bodyLarge!).height - 10,
-      left: 10,
-      right: 10,
+      onEnd: () {
+        if (mounted) {
+          setState(() {
+            autoDismissAnimationController.forward();
+          });
+        }
+      },
+      top: isFirstFrame ? -statusTextHeight - statusSubTextHeight - 10 : 30,
+      left: margin,
+      right: margin,
       curve: Curves.easeOut,
       duration: const Duration(milliseconds: 250),
       child: Material(
         color: Colors.transparent,
-        child: Dismissible(
-          onDismissed: (direction) {
-            widget.onDismissed(direction);
+        child: GestureDetector(
+          onTap: () {
+            if (mounted) {
+              if (autoDismissAnimationController.isAnimating) {
+                autoDismissAnimationController.stop();
+              } else {
+                autoDismissAnimationController.forward();
+              }
+            }
           },
-          key: const Key('statusbarOverlay'),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              color: Theme.of(context).colorScheme.error,
-            ),
-            padding: const EdgeInsets.all(10.0),
-            child: Center(
-              child: Text(
-                widget.statusText,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white),
-              ),
+          child: Dismissible(
+            onDismissed: (direction) {
+              if (mounted) {
+                onDismissed(direction);
+              }
+            },
+            key: const Key('statusbarOverlay'),
+            child: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(padding),
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  padding: const EdgeInsets.all(padding),
+                  child: Center(
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      return Column(
+                        children: [
+                          SizedBox(
+                            width: maxWidth,
+                            child: Center(
+                              child: Text(
+                                widget.statusText,
+                                style: statusTextStyle,
+                              ),
+                            ),
+                          ),
+                          if (widget.statusSubText != null)
+                            SizedBox(
+                              width: maxWidth,
+                              child: Center(
+                                child: Text(
+                                  widget.statusSubText!,
+                                  style: statusSubTextStyle,
+                                ),
+                              ),
+                            ),
+                        ],
+                      );
+                    }),
+                  ),
+                ),
+                Positioned.fill(
+                  child: Align(
+                    alignment: AlignmentDirectional.topStart,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: padding / 3 * 2),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(1.5),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      height: 3,
+                      width: autoDismissAnimation.value * (maxWidth + padding / 3 * 2),
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
         ),
