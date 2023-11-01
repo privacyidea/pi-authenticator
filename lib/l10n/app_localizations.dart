@@ -346,8 +346,14 @@ abstract class AppLocalizations {
   /// Tells the user that the token could not be rolled out, because a network error occurred.
   ///
   /// In en, this message translates to:
-  /// **'Rolling out token {name} failed.\nError code: {errorCode}'**
-  String errorRollOutFailed(Object name, Object errorCode);
+  /// **'Rolling out token {name} failed.'**
+  String errorRollOutFailed(Object name);
+
+  /// Tells the user the status code of the error.
+  ///
+  /// In en, this message translates to:
+  /// **'Status code: {statusCode}'**
+  String statusCode(Object statusCode);
 
   /// Tells the user that synchronizing the push tokens failed because the server could not be reached.
   ///
@@ -385,11 +391,41 @@ abstract class AppLocalizations {
   /// **'An unexpected error occurred.'**
   String get unexpectedError;
 
-  /// Tells the user that the roll-out failed because no network connection is available.
+  /// Tells the user that the polling failed.
   ///
   /// In en, this message translates to:
-  /// **'Polling failed. Server cannot be reached.'**
-  String get pollingFailNoNetworkConnection;
+  /// **'Polling failed.'**
+  String get pollingFailed;
+
+  /// Tells the user that there is no network connection.
+  ///
+  /// In en, this message translates to:
+  /// **'No network connection.'**
+  String get noNetworkConnection;
+
+  /// Tells the user that the connection failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed.'**
+  String get connectionFailed;
+
+  /// Tells the user to check the network connection.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your network connection and try again.'**
+  String get checkYourNetwork;
+
+  /// Tells the user that the server could not be reached.
+  ///
+  /// In en, this message translates to:
+  /// **'The server could not be reached.'**
+  String get serverNotReachable;
+
+  /// Tells the user that the message could not be signed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not sign message.'**
+  String get couldNotSignMessage;
 
   /// Title of the switch tile where using the devices language can be enabled.
   ///

@@ -24,7 +24,10 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 class PrivacyIdeaIOClient {
@@ -37,16 +40,27 @@ class PrivacyIdeaIOClient {
     if (kIsWeb) return;
     HttpClient httpClient = HttpClient();
     httpClient.badCertificateCallback = ((X509Certificate cert, String host, int port) => !sslVerify);
-    httpClient.userAgent = 'privacyIDEA-App /'
+    httpClient.userAgent = 'privacyIDEA-App'
+        '/${(await PackageInfo.fromPlatform()).version}'
         ' ${Platform.operatingSystem}'
-        ' ${(await PackageInfo.fromPlatform()).version}';
+        '/${Platform.operatingSystemVersion}';
 
     IOClient ioClient = IOClient(httpClient);
 
     try {
       await ioClient.post(url, body: '');
     } on SocketException {
-      // ignore
+      if (globalNavigatorKey.currentState?.context == null) return;
+      globalRef?.read(statusMessageProvider.notifier).state = (
+        AppLocalizations.of(globalNavigatorKey.currentState!.context)!.connectionFailed,
+        AppLocalizations.of(globalNavigatorKey.currentState!.context)!.checkYourNetwork,
+      );
+    } on ClientException {
+      if (globalNavigatorKey.currentState?.context == null) return;
+      globalRef?.read(statusMessageProvider.notifier).state = (
+        AppLocalizations.of(globalNavigatorKey.currentState!.context)!.connectionFailed,
+        AppLocalizations.of(globalNavigatorKey.currentState!.context)!.checkYourNetwork,
+      );
     } finally {
       ioClient.close();
     }

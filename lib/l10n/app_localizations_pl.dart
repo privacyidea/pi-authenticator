@@ -129,8 +129,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get tokensDoNotSupportSynchronization => 'Następujące tokeny nie wspierają synchronizacji i muszą zostać wdrożone od nowa:';
 
   @override
-  String errorRollOutFailed(Object name, Object errorCode) {
-    return 'Wdrażanie tokenu $name nieudane. Kod błędu: $errorCode';
+  String errorRollOutFailed(Object name) {
+    return 'Wdrażanie tokenu $name nieudane.';
+  }
+
+  @override
+  String statusCode(Object statusCode) {
+    return 'Kod statusu: $statusCode';
   }
 
   @override
@@ -156,7 +161,22 @@ class AppLocalizationsPl extends AppLocalizations {
   String get unexpectedError => 'Wystąpił nieoczekiwany błąd.';
 
   @override
-  String get pollingFailNoNetworkConnection => 'Serwer jest nieosiągalny.';
+  String get pollingFailed => 'Zapytanie nie powiodło się.';
+
+  @override
+  String get noNetworkConnection => 'Brak połączenia sieciowego.';
+
+  @override
+  String get connectionFailed => 'Połączenie nie powiodło się.';
+
+  @override
+  String get checkYourNetwork => 'Sprawdź połączenie sieciowe i spróbuj ponownie.';
+
+  @override
+  String get serverNotReachable => 'Nie można uzyskać połączenia z serwerem.';
+
+  @override
+  String get couldNotSignMessage => 'Nie można podpisać wiadomości.';
 
   @override
   String get useDeviceLocaleTitle => 'Użyj języka urządzenia.';
@@ -269,7 +289,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get noLogToSend => 'There is log to send.';
 
   @override
-  String get errorMailBody => 'The error log file is attached.\nYou can replace this text with additional information about the error.';
+  String get errorMailBody => 'Plik dziennika błędów jest dołączony.\nTekst ten można zastąpić dodatkowymi informacjami o błędzie.';
 
   @override
   String get errorLogCleared => 'Wyczyszczono dzienniki błędów';

@@ -1,6 +1,6 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../model/mixins/sortable_mixin.dart';
 import '../model/push_request.dart';
 import '../model/states/app_state.dart';
@@ -121,6 +121,16 @@ final tokenFolderProvider = StateNotifierProvider.autoDispose<TokenFolderNotifie
 
 final draggingSortableProvider = StateProvider<SortableMixin?>((ref) {
   Logger.info("New draggingSortableProvider created");
+  return null;
+});
+
+final connectivityProvider = StreamProvider<ConnectivityResult>((ref) {
+  Logger.info("New connectivityProvider created");
+  return Connectivity().onConnectivityChanged;
+});
+
+final statusMessageProvider = StateProvider<(String, String?)?>((ref) {
+  Logger.info("New statusMessageProvider created");
   return null;
 });
 

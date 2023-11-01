@@ -237,11 +237,15 @@ class PushProvider {
     return;
   }
 
-  Future<String?> pollForChallenges({bool showMessageForEachToken = false}) async {
+  Future<void> pollForChallenges() async {
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
       Logger.info('Tried to poll without any internet connection available.', name: 'push_provider.dart#pollForChallenges');
-      return AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailNoNetworkConnection;
+      globalRef?.read(statusMessageProvider.notifier).state = (
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.noNetworkConnection,
+      );
+      return;
     }
 
     // Get all push tokens
@@ -251,24 +255,18 @@ class PushProvider {
     if (pushTokens.isEmpty && globalRef?.read(settingsProvider).enablePolling == true) {
       Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
       globalRef?.read(settingsProvider.notifier).setPolling(false);
-      return null;
+      return;
     }
 
     // Start request for each token
     Logger.info('Polling for challenges: ${pushTokens.length} Tokens', name: 'push_provider.dart#pollForChallenges');
     for (PushToken p in pushTokens) {
-      pollForChallenge(p).then((errorMessage) {
-        if (errorMessage != null && showMessageForEachToken) {
-          Logger.warning(errorMessage, name: 'push_provider.dart#pollForChallenges');
-          // TODO: Improve error message
-          showMessage(message: errorMessage);
-        }
-      });
+      pollForChallenge(p);
     }
-    return null;
+    return;
   }
 
-  Future<String?> pollForChallenge(PushToken token) async {
+  Future<void> pollForChallenge(PushToken token) async {
     String timestamp = DateTime.now().toUtc().toIso8601String();
 
     String message = '${token.serial}|$timestamp';
@@ -277,8 +275,12 @@ class PushProvider {
     Logger.info(rsaUtils.runtimeType.toString(), name: 'push_provider.dart#pollForChallenge');
     String? signature = await rsaUtils.trySignWithToken(token, message);
     if (signature == null) {
+      globalRef?.read(statusMessageProvider.notifier).state = (
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.couldNotSignMessage,
+      );
       Logger.warning('Polling push tokens failed because signing the message failed.', name: 'push_provider.dart#pollForChallenge');
-      return null;
+      return;
     }
     Map<String, String> parameters = {
       'serial': token.serial,
@@ -305,18 +307,31 @@ class PushProvider {
           break;
 
         case 403:
+          final error = getErrorMessageFromResponse(response);
+          globalRef?.read(statusMessageProvider.notifier).state = (
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+            error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
+          );
           Logger.warning('Polling push token failed with status code ${response.statusCode}',
               name: 'push_provider.dart#pollForChallenge', error: getErrorMessageFromResponse(response));
-          return null;
+          return;
 
         default:
-          var error = getErrorMessageFromResponse(response);
-          return "${AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial)}\n$error";
+          final error = getErrorMessageFromResponse(response);
+          globalRef?.read(statusMessageProvider.notifier).state = (
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+            error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
+          );
+          return;
       }
     } catch (e) {
-      return "${AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial)}\n${e.toString()}";
+      globalRef?.read(statusMessageProvider.notifier).state = (
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial),
+        null,
+      );
+      return;
     }
-    return null;
+    return;
   }
 
   /// Checks if the firebase token was changed and updates it if necessary.

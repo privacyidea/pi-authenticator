@@ -57,7 +57,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
     globalRef = ref;
     final locale = ref.watch(settingsProvider).currentLocale;
     return MaterialApp(
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false,
       navigatorKey: globalNavigatorKey,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

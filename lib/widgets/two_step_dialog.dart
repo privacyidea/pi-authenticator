@@ -18,7 +18,6 @@
   limitations under the License.
 */
 
-import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -29,6 +28,7 @@ import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import 'package:privacyidea_authenticator/widgets/default_dialog.dart';
 
+import '../utils/logger.dart';
 import 'widget_keys.dart';
 
 class GenerateTwoStepDialog extends StatelessWidget {
@@ -57,7 +57,7 @@ class GenerateTwoStepDialog extends StatelessWidget {
 
     String phoneChecksum = await generatePhoneChecksum(phonePart: salt);
     if (!context.mounted) {
-      log('GenerateTwoStepDialog: context is not mounted anymore. Aborting.');
+      Logger.warning('GenerateTwoStepDialog: context is not mounted anymore. Aborting.');
       return;
     }
 

@@ -35,7 +35,8 @@ import '../utils/view_utils.dart';
 import '../widgets/two_step_dialog.dart';
 
 class TokenNotifier extends StateNotifier<TokenState> {
-  Future<void>? isLoading;
+  late Future<bool> isInitialized;
+  Future<void> isLoading = Future.value();
   final TokenRepository _repo;
   final QrParser _qrParser;
   final RsaUtils _rsaUtils;
@@ -60,7 +61,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
         super(
           initialState ?? TokenState(),
         ) {
-    loadFromRepo();
+    _init();
+  }
+
+  void _init() async {
+    isInitialized = Future(() async {
+      await loadFromRepo();
+      return true;
+    });
   }
 
   void _saveOrReplaceTokensRepo(List<Token> tokens) async {
@@ -96,6 +104,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
           checkNotificationPermission();
         }
       });
+      await isLoading;
     } catch (_) {
       return false;
     }
@@ -312,10 +321,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     if (token.expirationDate?.isBefore(DateTime.now()) == true) {
       Logger.info('Ignoring rollout request: Token "${token.id}" is expired. ', name: 'token_notifier.dart#rolloutPushToken');
+
       if (globalNavigatorKey.currentContext != null) {
-        showMessage(
-          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutTokenExpired(token.label),
-          duration: const Duration(seconds: 3),
+        globalRef?.read(statusMessageProvider.notifier).state = (
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutTokenExpired(token.label),
+          null,
         );
       }
       removeToken(token);
@@ -382,14 +392,15 @@ class TokenNotifier extends StateNotifier<TokenState> {
           message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : null;
           message = message != null ? '\n$message' : '';
           showMessage(
-            message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label, response.statusCode) + message,
+            message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label) + message,
             duration: const Duration(seconds: 3),
           );
-        } on FormatException catch (_) {
+        } on FormatException {
           // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.
-          showMessage(
-            message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(token.label),
-            duration: const Duration(seconds: 3),
+
+          globalRef?.read(statusMessageProvider.notifier).state = (
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label),
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode)
           );
         }
 
