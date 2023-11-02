@@ -75,7 +75,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
     await isLoading;
     isLoading = Future(() async {
       final failedTokens = await _repo.saveOrReplaceTokens(tokens);
-      Logger.warning('Saved Tokens to repo.!!');
       if (failedTokens.isNotEmpty) {
         Logger.warning(
           'Saving tokens failed. Failed Tokens: ${failedTokens.length}',
