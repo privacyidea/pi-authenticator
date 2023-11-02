@@ -27,7 +27,7 @@ class ConnectivityListener extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final connectivity = ref.watch(connectivityProvider).asData?.value;
     final hasConnection = connectivity != null && connectivity != ConnectivityResult.none;
-    ref.read(tokenProvider.notifier).isInitialized.then(
+    ref.read(tokenProvider.notifier).isLoading.then(
       (value) {
         final hasPushTokens = ref.read(tokenProvider).hasPushTokens;
         if (!hasConnection && hasPushTokens) {
