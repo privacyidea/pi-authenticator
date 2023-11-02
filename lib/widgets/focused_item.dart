@@ -113,30 +113,46 @@ class _FocusedItemState extends State<FocusedItem> {
     const circleThinkness = 2.0;
 
     _overlayEntryChild = OverlayEntry(
-      builder: (overlayContext) => Positioned(
-        left: renderBoxOffset.dx - (circlePadding + circleThinkness) / 2,
-        top: renderBoxOffset.dy - (circlePadding + circleThinkness) / 2,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Center(
-                child: PulseIcon(
+      builder: (overlayContext) => Stack(
+        children: [
+          Positioned(
+            left: renderBoxOffset.dx - (circlePadding + circleThinkness) / 2,
+            top: renderBoxOffset.dy - (circlePadding + circleThinkness) / 2,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Center(
+                    child: PulseIcon(
+                      width: boxsize.width + circlePadding,
+                      height: boxsize.height + circlePadding,
+                      child: widget.child,
+                    ),
+                  ),
+                ),
+                Container(
                   width: boxsize.width + circlePadding,
                   height: boxsize.height + circlePadding,
-                  child: widget.child,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(color: Theme.of(context).primaryColor, width: circleThinkness),
+                  ),
                 ),
+              ],
+            ),
+          ),
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                log('onTap');
+              },
+              child: Container(
+                height: 9999,
+                width: 9999,
+                color: Colors.transparent,
               ),
             ),
-            Container(
-              width: boxsize.width + circlePadding,
-              height: boxsize.height + circlePadding,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(999),
-                border: Border.all(color: Theme.of(context).primaryColor, width: circleThinkness),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
 
