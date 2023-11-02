@@ -82,7 +82,7 @@ void _testTokenNotifier() {
         (ref) => TokenNotifier(repository: mockRepo),
       );
       final notifier = container.read(testProvider.notifier);
-      await notifier.isLoading;
+      await notifier.loadingRepo;
       expect(notifier.getTokenFromId(before.first.id), before.first);
       final state = container.read(testProvider);
       expect(state, isNotNull);

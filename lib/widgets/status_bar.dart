@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/text_size.dart';
+import '../utils/text_size.dart';
 
 import '../utils/riverpod_providers.dart';
 

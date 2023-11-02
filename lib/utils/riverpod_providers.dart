@@ -1,12 +1,17 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../model/states/introduction_state.dart';
+import '../state_notifiers/completed_introduction_notifier.dart';
+import 'customizations.dart';
+import '../l10n/app_localizations.dart';
 import '../model/mixins/sortable_mixin.dart';
 import '../model/push_request.dart';
 import '../model/states/app_state.dart';
 import '../model/states/settings_state.dart';
 import '../model/states/token_folder_state.dart';
 import '../model/states/token_state.dart';
+import '../repo/preference_introduction_repository.dart';
 import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_folder_repository.dart';
 import '../state_notifiers/app_state_notifier.dart';
@@ -125,13 +130,29 @@ final draggingSortableProvider = StateProvider<SortableMixin?>((ref) {
 });
 
 final connectivityProvider = StreamProvider<ConnectivityResult>((ref) {
-  Logger.info("New connectivityProvider created");
+  ref.read(tokenProvider.notifier).loadingRepo.then(
+    (value) {
+      Connectivity().onConnectivityChanged.first.then((connectivity) {
+        final hasConnection = connectivity != ConnectivityResult.none;
+        ref.read(tokenProvider.notifier).loadingRepo.then((newState) {
+          if (!hasConnection && newState.hasPushTokens && globalNavigatorKey.currentContext != null) {
+            ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(globalNavigatorKey.currentContext!)!.noNetworkConnection, null);
+          }
+        });
+      });
+    },
+  );
   return Connectivity().onConnectivityChanged;
 });
 
 final statusMessageProvider = StateProvider<(String, String?)?>((ref) {
   Logger.info("New statusMessageProvider created");
   return null;
+});
+
+final introductionProvider = StateNotifierProvider<InrtroductionNotifier, IntroductionState>((ref) {
+  Logger.info("New introductionProvider created");
+  return InrtroductionNotifier(repository: PreferenceIntroductionRepository());
 });
 
 /// Only used for the app customizer

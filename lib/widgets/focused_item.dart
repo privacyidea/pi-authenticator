@@ -2,22 +2,45 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/widgets/pulse_icon.dart';
-import 'package:privacyidea_authenticator/widgets/tooltip_box.dart';
+import 'pulse_icon.dart';
+import 'tooltip_box.dart';
 
 import '../utils/text_size.dart';
 
-class FocusedItem extends StatefulWidget {
-  final Widget child;
+class FocusedItem extends StatelessWidget {
   final bool isFocused;
+  final Widget child;
   final String? tooltipWhenFocused;
-  const FocusedItem({required this.child, required this.isFocused, super.key, this.tooltipWhenFocused});
+  final void Function()? onTap;
 
+  const FocusedItem({
+    super.key,
+    required this.isFocused,
+    required this.child,
+    this.tooltipWhenFocused,
+    this.onTap,
+  });
   @override
-  State<FocusedItem> createState() => _FocusedItemState();
+  Widget build(BuildContext context) => isFocused
+      ? FocusedItemOverlay(
+          onTap: onTap,
+          tooltipWhenFocused: tooltipWhenFocused,
+          child: child,
+        )
+      : child;
 }
 
-class _FocusedItemState extends State<FocusedItem> {
+class FocusedItemOverlay extends StatefulWidget {
+  final Widget child;
+  final String? tooltipWhenFocused;
+  final void Function()? onTap;
+  const FocusedItemOverlay({required this.child, super.key, this.tooltipWhenFocused, this.onTap});
+
+  @override
+  State<FocusedItemOverlay> createState() => _FocusedItemOverlayState();
+}
+
+class _FocusedItemOverlayState extends State<FocusedItemOverlay> {
   static const tooltipPadding = EdgeInsets.all(8);
   static const tooltipMargin = EdgeInsets.all(4);
   static const tooltipBorder = 2.0;
@@ -26,19 +49,14 @@ class _FocusedItemState extends State<FocusedItem> {
   OverlayEntry? _overlayEntryChild;
 
   @override
-  Widget build(BuildContext context) => Visibility(
-        visible: !widget.isFocused,
-        replacement: widget.child,
-        child: widget.child,
-      );
+  Widget build(BuildContext context) => widget.child;
 
   @override
   void initState() {
-    if (widget.isFocused) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _showOverlay();
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _showOverlay();
+    });
+
     super.initState();
   }
 
@@ -49,17 +67,11 @@ class _FocusedItemState extends State<FocusedItem> {
   }
 
   @override
-  void didUpdateWidget(covariant FocusedItem oldWidget) {
+  void didUpdateWidget(covariant FocusedItemOverlay oldWidget) {
     log('didUpdateWidget');
-    if (widget.isFocused) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _updateOverlay();
-      });
-    } else if (oldWidget.isFocused) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _disposeOverlay();
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _updateOverlay();
+    });
     super.didUpdateWidget(oldWidget);
   }
 
@@ -143,7 +155,7 @@ class _FocusedItemState extends State<FocusedItem> {
           Positioned.fill(
             child: GestureDetector(
               onTap: () {
-                log('onTap');
+                widget.onTap?.call();
               },
               child: Container(
                 height: 9999,
@@ -184,7 +196,7 @@ Offset getClampedOffset({required Size overlaySize, required BuildContext contex
   final offset = renderBox.localToGlobal(Offset.zero);
   final preferredOffset = Offset(
     offset.dx + renderBox.size.width / 2 - overlaySize.width / 2,
-    offset.dy - renderBox.size.height - 12,
+    offset.dy - renderBox.size.height / 2 - overlaySize.height - 12,
   );
   const minOffset = Offset(0, 0);
   final maxOffset = Offset(

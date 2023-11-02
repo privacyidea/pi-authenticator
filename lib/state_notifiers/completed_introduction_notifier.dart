@@ -1,45 +1,53 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../model/states/Introductions_state.dart';
-import '../utils/logger.dart';
 
 import '../interfaces/repo/introduction_repository.dart';
 import '../model/enums/introduction_enum.dart';
+import '../model/states/introduction_state.dart';
+import '../utils/logger.dart';
 
-class CompletedInrtroductionNotifier extends StateNotifier<IntroductionsState> {
-  Future<void>? isLoading;
+class InrtroductionNotifier extends StateNotifier<IntroductionState> {
+  Future<IntroductionState>? loadingRepo;
 
   final IntroductionRepository _repo;
-  CompletedInrtroductionNotifier({required IntroductionRepository repository})
+  InrtroductionNotifier({required IntroductionRepository repository})
       : _repo = repository,
-        super(IntroductionsState()) {
+        super(const IntroductionState()) {
     _loadFromRepo();
   }
 
-  void _loadFromRepo() async {
-    isLoading = Future<void>(() async {
-      state = await _repo.loadCompletedIntroductions();
+  Future<void> _loadFromRepo() async {
+    loadingRepo = Future<IntroductionState>(() async {
+      final newState = await _repo.loadCompletedIntroductions();
+      state = newState;
       Logger.info('Loading completed introductions from repo: $state', name: 'settings_notifier.dart#_loadFromRepo');
+      return newState;
     });
+    await loadingRepo;
   }
 
-  void _saveToRepo() async {
-    isLoading = Future<void>(() async {
+  Future<void> _saveToRepo() async {
+    loadingRepo = Future<IntroductionState>(() async {
       final success = await _repo.saveCompletedIntroductions(state);
       if (success) {
         Logger.info('Saving completed introductions to repo: $state', name: 'settings_notifier.dart#_saveToRepo');
       } else {
         Logger.warning('Failed to save completed introductions to repo: $state', name: 'settings_notifier.dart#_saveToRepo');
       }
+      return state;
     });
+    await loadingRepo;
   }
 
-  void complete(Introduction introduction) {
+  Future<void> complete(Introduction introduction) async {
     state = state.withCompletedIntroduction(introduction);
-    _saveToRepo();
+    await _saveToRepo();
   }
 
-  void uncomplete(Introduction introduction) {
+  Future<void> uncomplete(Introduction introduction) async {
     state = state.withoutCompletedIntroduction(introduction);
-    _saveToRepo();
+    await _saveToRepo();
   }
+
+  bool isCompleted(Introduction introduction) => state.isCompleted(introduction);
+  bool isUncompleted(Introduction introduction) => state.isUncompleted(introduction);
 }

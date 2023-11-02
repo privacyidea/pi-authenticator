@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../model/enums/introduction_enum.dart';
+import '../../../utils/riverpod_providers.dart';
 
 import '../../../widgets/focused_item.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
@@ -20,7 +22,6 @@ class MainViewNavigationBar extends ConsumerWidget {
         builder: (BuildContext context, BoxConstraints constraints) {
           final navWidth = constraints.maxWidth;
           final navHeight = constraints.maxHeight * 0.10;
-          const focusedItem = 2;
           return Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -36,9 +37,15 @@ class MainViewNavigationBar extends ConsumerWidget {
                       ),
                       painter: CustomPaintNavigationBar(buildContext: context),
                     ),
-                    const Center(
+                    Center(
                       heightFactor: 0.6,
-                      child: FocusedItem(isFocused: true, tooltipWhenFocused: 'Scan a Token!', child: QrScannerButton()),
+                      child: FocusedItem(
+                          onTap: () {
+                            ref.read(introductionProvider.notifier).complete(Introduction.scanQrCode);
+                          },
+                          isFocused: ref.watch(introductionProvider).isScanQrCodeConditionFulfilled(),
+                          tooltipWhenFocused: 'Scan a Token!',
+                          child: const QrScannerButton()),
                     ),
                     Center(
                       child: Row(
@@ -61,10 +68,13 @@ class MainViewNavigationBar extends ConsumerWidget {
                                   onPressed: () {
                                     Navigator.pushNamed(context, AddTokenManuallyView.routeName);
                                   },
-                                  icon: const FocusedItem(
-                                    isFocused: focusedItem == 1,
+                                  icon: FocusedItem(
+                                    onTap: () {
+                                      ref.read(introductionProvider.notifier).complete(Introduction.addTokenManually);
+                                    },
+                                    isFocused: ref.watch(introductionProvider).isAddTokenManuallyConditionFulfilled(),
                                     tooltipWhenFocused: 'Add token manually',
-                                    child: FittedBox(
+                                    child: const FittedBox(
                                       child: Icon(Icons.add_moderator),
                                     ),
                                   ),
@@ -85,12 +95,8 @@ class MainViewNavigationBar extends ConsumerWidget {
                                       useRootNavigator: false,
                                     );
                                   },
-                                  icon: const FocusedItem(
-                                    isFocused: focusedItem == 3,
-                                    tooltipWhenFocused: 'Add folder',
-                                    child: FittedBox(
-                                      child: Icon(Icons.create_new_folder),
-                                    ),
+                                  icon: const FittedBox(
+                                    child: Icon(Icons.create_new_folder),
                                   ),
                                 ),
                               ),
@@ -104,12 +110,8 @@ class MainViewNavigationBar extends ConsumerWidget {
                                   onPressed: () {
                                     Navigator.pushNamed(context, SettingsView.routeName);
                                   },
-                                  icon: const FocusedItem(
-                                    isFocused: focusedItem == 4,
-                                    tooltipWhenFocused: 'Nothing here!',
-                                    child: FittedBox(
-                                      child: Icon(Icons.settings),
-                                    ),
+                                  icon: const FittedBox(
+                                    child: Icon(Icons.settings),
                                   ),
                                 ),
                               ),

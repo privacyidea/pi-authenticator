@@ -1,6 +1,6 @@
-import '../../model/states/Introductions_state.dart';
+import '../../model/states/introduction_state.dart';
 
 abstract class IntroductionRepository {
-  Future<bool> saveCompletedIntroductions(IntroductionsState introductions);
-  Future<IntroductionsState> loadCompletedIntroductions();
+  Future<bool> saveCompletedIntroductions(IntroductionState introductions);
+  Future<IntroductionState> loadCompletedIntroductions();
 }

@@ -35,7 +35,7 @@ import '../utils/view_utils.dart';
 import '../widgets/two_step_dialog.dart';
 
 class TokenNotifier extends StateNotifier<TokenState> {
-  late Future<void> isLoading;
+  late Future<TokenState> loadingRepo;
   final TokenRepository _repo;
   final QrParser _qrParser;
   final RsaUtils _rsaUtils;
@@ -64,59 +64,65 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<void> _init() async {
-    isLoading = Future(() async {
+    loadingRepo = Future(() async {
       await loadFromRepo();
-      return;
+      return state;
     });
-    await isLoading;
+    await loadingRepo;
   }
 
   Future<void> _saveOrReplaceTokensRepo(List<Token> tokens) async {
-    await isLoading;
-    isLoading = Future(() async {
+    await loadingRepo;
+    loadingRepo = Future(() async {
       final failedTokens = await _repo.saveOrReplaceTokens(tokens);
       if (failedTokens.isNotEmpty) {
         Logger.warning(
           'Saving tokens failed. Failed Tokens: ${failedTokens.length}',
           name: 'token_notifier.dart#_saveOrReplaceTokens',
         );
-        state = state.addOrReplaceTokens(failedTokens);
+        final newState = state.addOrReplaceTokens(failedTokens);
+        state = newState;
+        return newState;
       }
+      return state;
     });
-    await isLoading;
+    await loadingRepo;
   }
 
   Future<void> _deleteTokensRepo(List<Token> tokens) async {
-    await isLoading;
-    isLoading = Future(() async {
+    await loadingRepo;
+    loadingRepo = Future(() async {
       final failedTokens = await _repo.deleteTokens(tokens);
-      state = state.addOrReplaceTokens(failedTokens);
+      TokenState newState = state.addOrReplaceTokens(failedTokens);
+      state = newState;
       if (state.hasPushTokens == false) {
         globalRef?.read(settingsProvider.notifier).setHidePushTokens(isHidden: false);
       }
+      return newState;
     });
-    await isLoading;
+    await loadingRepo;
   }
 
-  Future<bool> loadFromRepo() async {
+  Future<TokenState?> loadFromRepo() async {
     List<Token> tokens;
     try {
-      isLoading = Future(() async {
+      loadingRepo = Future(() async {
         tokens = await _repo.loadTokens();
-        state = TokenState(tokens: tokens);
+        TokenState newState = TokenState(tokens: tokens);
+        state = newState;
         if (state.pushTokens.firstWhereOrNull((element) => element.isRolledOut == true) != null) {
           checkNotificationPermission();
         }
+        return newState;
       });
-      await isLoading;
+      return await loadingRepo;
     } catch (_) {
-      return false;
+      return null;
     }
-    return true;
   }
 
   Future<bool> refreshRolledOutPushTokens() async {
-    await isLoading;
+    await loadingRepo;
     List<Token> tokens;
     try {
       tokens = await _repo.loadTokens();
@@ -134,32 +140,32 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<void> incrementCounter(HOTPToken token) async {
-    await isLoading;
+    await loadingRepo;
     token = state.currentOf(token)?.copyWith(counter: token.counter + 1) ?? token.copyWith(counter: token.counter + 1);
     state = state.replaceToken(token);
     await _saveOrReplaceTokensRepo([token]);
   }
 
   Future<void> removeToken(Token token) async {
-    await isLoading;
+    await loadingRepo;
     state = state.withoutToken(token);
     await _deleteTokensRepo([token]);
   }
 
   Future<void> addOrReplaceToken(Token token) async {
-    await isLoading;
+    await loadingRepo;
     state = state.addOrReplaceToken(token);
     await _saveOrReplaceTokensRepo([token]);
   }
 
   Future<void> addOrReplaceTokens(List<Token> updatedTokens) async {
-    await isLoading;
+    await loadingRepo;
     state = state.addOrReplaceTokens(updatedTokens);
     await _saveOrReplaceTokensRepo(updatedTokens);
   }
 
   Future<void> updateToken<T extends Token>(T token, T Function(T) updater) async {
-    await isLoading;
+    await loadingRepo;
     final current = state.currentOf<T>(token);
     if (current == null) {
       Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#updateToken');
@@ -171,7 +177,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<void> updateTokens<T extends Token>(List<T> token, T Function(T) updater) async {
-    await isLoading;
+    await loadingRepo;
     List<T> updatedTokens = [];
     for (final t in token) {
       final current = state.currentOf<T>(t) ?? t;
@@ -182,7 +188,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<void> handleLink(Uri uri) async {
-    await isLoading;
+    await loadingRepo;
     if (uri.scheme == enumAsString(UriSchemes.otpauth)) {
       await addTokenFromOtpAuth(otpAuth: uri.toString());
       return;
@@ -195,7 +201,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<void> addTokenFromPia({required String pia}) async {
-    await isLoading;
+    await loadingRepo;
     // TODO: Implement pia:// scheme
     showMessage(message: 'Scheme "pia" is not implemented yet', duration: const Duration(seconds: 3));
   }
@@ -203,7 +209,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<void> addTokenFromOtpAuth({
     required String otpAuth,
   }) async {
-    await isLoading;
+    await loadingRepo;
     Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
 
     try {
@@ -232,13 +238,13 @@ class TokenNotifier extends StateNotifier<TokenState> {
       } on FormatException catch (e) {
         Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
         showMessage(message: e.message, duration: const Duration(seconds: 3));
-        await isLoading;
+        await loadingRepo;
         return;
       }
 
       if (newToken is PushToken && state.tokens.contains(newToken)) {
         showMessage(message: 'A token with the serial ${newToken.serial} already exists!', duration: const Duration(seconds: 2));
-        await isLoading;
+        await loadingRepo;
         return;
       }
       await addOrReplaceToken(newToken);
@@ -256,7 +262,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<bool> addPushRequestToToken(PushRequest pr) async {
-    await isLoading;
+    await loadingRepo;
     PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pr.serial && t.isRolledOut);
     Logger.info('Adding push request to token', name: 'token_notifier.dart#addPushRequestToToken');
     if (token == null) {
@@ -308,7 +314,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<bool> removePushRequest(PushRequest pushRequest) async {
-    await isLoading;
+    await loadingRepo;
     Logger.info('Removing push request ${pushRequest.id}');
     PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pushRequest.serial);
 

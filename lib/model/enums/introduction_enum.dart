@@ -1,16 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
 
 enum Introduction {
-  @JsonValue('easyAuthentication')
-  easyAuthentication, // 1st start
-  @JsonValue('maximaleSecurity')
-  maximaleSecurity, // 1st start
-  @JsonValue('visitOnGithub')
-  visitOnGithub, // 1st start
+  @JsonValue('introductionScreen')
+  introductionScreen, // 1st start
   @JsonValue('scanQrCode')
-  scanQrCode, // 1st start
+  scanQrCode, // 1st start && introductionScreen
   @JsonValue('addManually')
-  addManually, // 1st start
+  addTokenManually, // 1st start && scanQrCode
   @JsonValue('tokenSwipe')
   tokenSwipe, // 1st token
   @JsonValue('editToken')
