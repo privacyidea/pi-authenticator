@@ -129,8 +129,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tokensDoNotSupportSynchronization => 'The following tokens do not support synchronization and must be rolled out again:';
 
   @override
-  String errorRollOutFailed(Object name, Object errorCode) {
-    return 'Rolling out token $name failed.\nError code: $errorCode';
+  String errorRollOutFailed(Object name) {
+    return 'Rolling out token $name failed.';
+  }
+
+  @override
+  String statusCode(Object statusCode) {
+    return 'Status code: $statusCode';
   }
 
   @override
@@ -156,7 +161,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unexpectedError => 'An unexpected error occurred.';
 
   @override
-  String get pollingFailNoNetworkConnection => 'Polling failed. Server cannot be reached.';
+  String get pollingFailed => 'Polling failed.';
+
+  @override
+  String get noNetworkConnection => 'No network connection.';
+
+  @override
+  String get connectionFailed => 'Connection failed.';
+
+  @override
+  String get checkYourNetwork => 'Please check your network connection and try again.';
+
+  @override
+  String get serverNotReachable => 'The server could not be reached.';
+
+  @override
+  String get couldNotSignMessage => 'Could not sign message.';
 
   @override
   String get useDeviceLocaleTitle => 'Use device language';

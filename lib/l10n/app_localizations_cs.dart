@@ -129,8 +129,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get tokensDoNotSupportSynchronization => 'Následující tokeny nepodporují synchronizaci a musí být znovu zaregistrovány:';
 
   @override
-  String errorRollOutFailed(Object name, Object errorCode) {
-    return 'Registrace tokenu $name selhala. Kód chyby: $errorCode';
+  String errorRollOutFailed(Object name) {
+    return 'Registrace tokenu $name selhala.';
+  }
+
+  @override
+  String statusCode(Object statusCode) {
+    return 'Stavový kód: $statusCode';
   }
 
   @override
@@ -156,7 +161,22 @@ class AppLocalizationsCs extends AppLocalizations {
   String get unexpectedError => 'Nastala neočekávaná chyba.';
 
   @override
-  String get pollingFailNoNetworkConnection => 'Stahování selhalo. Server není dostupný.';
+  String get pollingFailed => 'Dotaz se nezdařil.';
+
+  @override
+  String get noNetworkConnection => 'Žádné připojení k síti.';
+
+  @override
+  String get connectionFailed => 'Připojení se nezdařilo.';
+
+  @override
+  String get checkYourNetwork => 'Zkontrolujte prosím síťové připojení a zkuste to znovu.';
+
+  @override
+  String get serverNotReachable => 'Na server se nepodařilo dovolat.';
+
+  @override
+  String get couldNotSignMessage => 'Zprávu se nepodařilo podepsat.';
 
   @override
   String get useDeviceLocaleTitle => 'Použít jazyk zařízení';

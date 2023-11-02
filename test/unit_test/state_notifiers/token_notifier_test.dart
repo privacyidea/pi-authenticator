@@ -105,9 +105,7 @@ void _testTokenNotifier() {
         ),
       );
       final notifier = container.read(testProvider.notifier);
-      await notifier.isLoading;
-      notifier.incrementCounter(before.first);
-      await notifier.isLoading;
+      await notifier.incrementCounter(before.first);
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
@@ -129,9 +127,7 @@ void _testTokenNotifier() {
         (ref) => TokenNotifier(repository: mockRepo),
       );
       final notifier = container.read(testProvider.notifier);
-      await notifier.isLoading;
-      notifier.removeToken(before.last);
-      await notifier.isLoading;
+      await notifier.removeToken(before.last);
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
@@ -156,9 +152,7 @@ void _testTokenNotifier() {
           ),
         );
         final notifier = container.read(testProvider.notifier);
-        await notifier.isLoading;
-        notifier.addOrReplaceToken(after.last);
-        await notifier.isLoading;
+        await notifier.addOrReplaceToken(after.last);
         final state = container.read(testProvider);
         expect(state, isNotNull);
         expect(state.tokens, after);
@@ -183,9 +177,7 @@ void _testTokenNotifier() {
           ),
         );
         final notifier = container.read(testProvider.notifier);
-        await notifier.isLoading;
-        notifier.addOrReplaceToken(after.last);
-        await notifier.isLoading;
+        await notifier.addOrReplaceToken(after.last);
         final state = container.read(testProvider);
         expect(state, isNotNull);
         expect(state.tokens, after);
@@ -211,8 +203,7 @@ void _testTokenNotifier() {
         ),
       );
       final notifier = container.read(testProvider.notifier);
-      await notifier.isLoading;
-      notifier.addOrReplaceTokens([...after]);
+      await notifier.addOrReplaceTokens([...after]);
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
@@ -243,9 +234,7 @@ void _testTokenNotifier() {
         (ref) => TokenNotifier(repository: mockRepo, qrParser: mockQrParser),
       );
       final notifier = container.read(testProvider.notifier);
-      await notifier.isLoading;
-      notifier.addTokenFromOtpAuth(otpAuth: 'otpAuthString');
-      await notifier.isLoading;
+      await notifier.addTokenFromOtpAuth(otpAuth: 'otpAuthString');
       final state = container.read(testProvider);
       expect(state, isNotNull);
       after.last = after.last.copyWith(id: state.tokens.last.id);
@@ -290,7 +279,6 @@ void _testTokenNotifier() {
       final notifier = container.read(testProvider.notifier);
       expect(await notifier.addPushRequestToToken(pr), true);
       final state = container.read(testProvider);
-      await notifier.isLoading;
       expect(state, isNotNull);
       expect(state.tokens, after);
       verify(mockRepo.saveOrReplaceTokens([after.first])).called(1);
@@ -320,9 +308,7 @@ void _testTokenNotifier() {
         (ref) => TokenNotifier(repository: mockRepo),
       );
       final notifier = container.read(testProvider.notifier);
-      await notifier.isLoading;
-      notifier.removePushRequest(pr);
-      await notifier.isLoading;
+      await notifier.removePushRequest(pr);
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
@@ -364,7 +350,6 @@ void _testTokenNotifier() {
       );
       final notifier = container.read(testProvider.notifier);
       expect(await notifier.rolloutPushToken(before.first), true);
-      await notifier.isLoading;
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);

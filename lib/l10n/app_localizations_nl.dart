@@ -129,8 +129,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get tokensDoNotSupportSynchronization => 'Voor de volgende tokens wordt synchroniseren niet ondersteunt, ze moeten opnieuw worden aangeleverd:';
 
   @override
-  String errorRollOutFailed(Object name, Object errorCode) {
-    return 'Uitrollen van token $name mislukt. Fout code: $errorCode';
+  String errorRollOutFailed(Object name) {
+    return 'Uitrollen van token $name mislukt.';
+  }
+
+  @override
+  String statusCode(Object statusCode) {
+    return 'Statuscode: $statusCode';
   }
 
   @override
@@ -156,7 +161,22 @@ class AppLocalizationsNl extends AppLocalizations {
   String get unexpectedError => 'Er is een onverwachte fout opgetreden.';
 
   @override
-  String get pollingFailNoNetworkConnection => 'Zoeken naar berichten mislukt. Server kan niet worden bereikt.';
+  String get pollingFailed => 'Vraag mislukt.';
+
+  @override
+  String get noNetworkConnection => 'Geen netwerkverbinding.';
+
+  @override
+  String get connectionFailed => 'Verbinding mislukt.';
+
+  @override
+  String get checkYourNetwork => 'Controleer je netwerkverbinding en probeer het opnieuw.';
+
+  @override
+  String get serverNotReachable => 'De server kon niet worden bereikt.';
+
+  @override
+  String get couldNotSignMessage => 'Bericht niet kunnen ondertekenen.';
 
   @override
   String get useDeviceLocaleTitle => 'Gebruik de taal van het apparaat';

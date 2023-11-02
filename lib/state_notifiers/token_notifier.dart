@@ -35,7 +35,7 @@ import '../utils/view_utils.dart';
 import '../widgets/two_step_dialog.dart';
 
 class TokenNotifier extends StateNotifier<TokenState> {
-  Future<void>? isLoading;
+  late Future<void> isLoading;
   final TokenRepository _repo;
   final QrParser _qrParser;
   final RsaUtils _rsaUtils;
@@ -60,10 +60,19 @@ class TokenNotifier extends StateNotifier<TokenState> {
         super(
           initialState ?? TokenState(),
         ) {
-    loadFromRepo();
+    _init();
   }
 
-  void _saveOrReplaceTokensRepo(List<Token> tokens) async {
+  Future<void> _init() async {
+    isLoading = Future(() async {
+      await loadFromRepo();
+      return;
+    });
+    await isLoading;
+  }
+
+  Future<void> _saveOrReplaceTokensRepo(List<Token> tokens) async {
+    await isLoading;
     isLoading = Future(() async {
       final failedTokens = await _repo.saveOrReplaceTokens(tokens);
       if (failedTokens.isNotEmpty) {
@@ -74,9 +83,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
         state = state.addOrReplaceTokens(failedTokens);
       }
     });
+    await isLoading;
   }
 
-  void _deleteTokensRepo(List<Token> tokens) async {
+  Future<void> _deleteTokensRepo(List<Token> tokens) async {
+    await isLoading;
     isLoading = Future(() async {
       final failedTokens = await _repo.deleteTokens(tokens);
       state = state.addOrReplaceTokens(failedTokens);
@@ -84,6 +95,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
         globalRef?.read(settingsProvider.notifier).setHidePushTokens(isHidden: false);
       }
     });
+    await isLoading;
   }
 
   Future<bool> loadFromRepo() async {
@@ -96,6 +108,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
           checkNotificationPermission();
         }
       });
+      await isLoading;
     } catch (_) {
       return false;
     }
@@ -120,28 +133,33 @@ class TokenNotifier extends StateNotifier<TokenState> {
     return state.tokens.firstWhereOrNull((element) => element.id == id);
   }
 
-  void incrementCounter(HOTPToken token) {
+  Future<void> incrementCounter(HOTPToken token) async {
+    await isLoading;
     token = state.currentOf(token)?.copyWith(counter: token.counter + 1) ?? token.copyWith(counter: token.counter + 1);
     state = state.replaceToken(token);
-    _saveOrReplaceTokensRepo([token]);
+    await _saveOrReplaceTokensRepo([token]);
   }
 
-  void removeToken(Token token) {
+  Future<void> removeToken(Token token) async {
+    await isLoading;
     state = state.withoutToken(token);
-    _deleteTokensRepo([token]);
+    await _deleteTokensRepo([token]);
   }
 
-  void addOrReplaceToken(Token token) {
+  Future<void> addOrReplaceToken(Token token) async {
+    await isLoading;
     state = state.addOrReplaceToken(token);
-    _saveOrReplaceTokensRepo([token]);
+    await _saveOrReplaceTokensRepo([token]);
   }
 
-  void addOrReplaceTokens(List<Token> updatedTokens) {
+  Future<void> addOrReplaceTokens(List<Token> updatedTokens) async {
+    await isLoading;
     state = state.addOrReplaceTokens(updatedTokens);
-    _saveOrReplaceTokensRepo(updatedTokens);
+    await _saveOrReplaceTokensRepo(updatedTokens);
   }
 
-  void updateToken<T extends Token>(T token, T Function(T) updater) {
+  Future<void> updateToken<T extends Token>(T token, T Function(T) updater) async {
+    await isLoading;
     final current = state.currentOf<T>(token);
     if (current == null) {
       Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#updateToken');
@@ -149,39 +167,43 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     final updated = updater(current);
     state = state.replaceToken(updated);
-    _saveOrReplaceTokensRepo([updated]);
+    await _saveOrReplaceTokensRepo([updated]);
   }
 
-  void updateTokens<T extends Token>(List<T> token, T Function(T) updater) {
+  Future<void> updateTokens<T extends Token>(List<T> token, T Function(T) updater) async {
+    await isLoading;
     List<T> updatedTokens = [];
     for (final t in token) {
       final current = state.currentOf<T>(t) ?? t;
       updatedTokens.add(updater(current));
     }
     state = state.replaceTokens(updatedTokens);
-    _saveOrReplaceTokensRepo(updatedTokens);
+    await _saveOrReplaceTokensRepo(updatedTokens);
   }
 
-  void handleLink(Uri uri) {
+  Future<void> handleLink(Uri uri) async {
+    await isLoading;
     if (uri.scheme == enumAsString(UriSchemes.otpauth)) {
-      addTokenFromOtpAuth(otpAuth: uri.toString());
+      await addTokenFromOtpAuth(otpAuth: uri.toString());
       return;
     }
     if (uri.scheme == enumAsString(UriSchemes.pia)) {
-      addTokenFromPia(pia: uri.toString());
+      await addTokenFromPia(pia: uri.toString());
       return;
     }
     showMessage(message: 'Scheme "${uri.scheme}" is not supported', duration: const Duration(seconds: 3));
   }
 
-  void addTokenFromPia({required String pia}) async {
+  Future<void> addTokenFromPia({required String pia}) async {
+    await isLoading;
     // TODO: Implement pia:// scheme
     showMessage(message: 'Scheme "pia" is not implemented yet', duration: const Duration(seconds: 3));
   }
 
-  void addTokenFromOtpAuth({
+  Future<void> addTokenFromOtpAuth({
     required String otpAuth,
   }) async {
+    await isLoading;
     Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
 
     try {
@@ -210,23 +232,25 @@ class TokenNotifier extends StateNotifier<TokenState> {
       } on FormatException catch (e) {
         Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
         showMessage(message: e.message, duration: const Duration(seconds: 3));
+        await isLoading;
         return;
       }
 
       if (newToken is PushToken && state.tokens.contains(newToken)) {
         showMessage(message: 'A token with the serial ${newToken.serial} already exists!', duration: const Duration(seconds: 2));
+        await isLoading;
         return;
       }
-      addOrReplaceToken(newToken);
+      await addOrReplaceToken(newToken);
       if (newToken is PushToken) {
-        rolloutPushToken(newToken);
+        await rolloutPushToken(newToken);
       }
-
       return;
     } on ArgumentError catch (e, s) {
       // Error while parsing qr code.
       Logger.warning('Malformed QR code:', name: 'token_notifier.dart#_handleOtpAuth', error: e, stackTrace: s);
       showMessage(message: '${e.message}\n Please inform the creator of this qr code about the problem.', duration: const Duration(seconds: 8));
+
       return;
     }
   }
@@ -273,17 +297,18 @@ class TokenNotifier extends StateNotifier<TokenState> {
       return false;
     }
     // Save the pending request.
-    updateToken(token, (p0) => p0.withPushRequest(pr));
+    await updateToken(token, (p0) => p0.withPushRequest(pr));
 
     // Remove the request after it expires.
     int time = pr.expirationDate.difference(DateTime.now()).inMilliseconds;
     Future.delayed(Duration(milliseconds: time < 1 ? 1 : time), () async => globalRef?.read(tokenProvider.notifier).removePushRequest(pr));
-
     Logger.info('Added push request ${pr.id} to token ${token.id}', name: 'token_notifier.dart#addPushRequestToToken');
+
     return true;
   }
 
-  bool removePushRequest(PushRequest pushRequest) {
+  Future<bool> removePushRequest(PushRequest pushRequest) async {
+    await isLoading;
     Logger.info('Removing push request ${pushRequest.id}');
     PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pushRequest.serial);
 
@@ -291,7 +316,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       Logger.warning('The requested token with serial "${pushRequest.serial}" does not exist.', name: 'token_notifier.dart#removePushRequest');
       return false;
     }
-    updateToken<PushToken>(token, (p0) => p0.withoutPushRequest(pushRequest));
+    await updateToken<PushToken>(token, (p0) => p0.withoutPushRequest(pushRequest));
 
     Logger.info('Removed push request from token ${token.id}', name: 'token_notifier.dart#removePushRequest');
     return true;
@@ -312,10 +337,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     if (token.expirationDate?.isBefore(DateTime.now()) == true) {
       Logger.info('Ignoring rollout request: Token "${token.id}" is expired. ', name: 'token_notifier.dart#rolloutPushToken');
+
       if (globalNavigatorKey.currentContext != null) {
-        showMessage(
-          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutTokenExpired(token.label),
-          duration: const Duration(seconds: 3),
+        globalRef?.read(statusMessageProvider.notifier).state = (
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutTokenExpired(token.label),
+          null,
         );
       }
       removeToken(token);
@@ -382,14 +408,15 @@ class TokenNotifier extends StateNotifier<TokenState> {
           message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : null;
           message = message != null ? '\n$message' : '';
           showMessage(
-            message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label, response.statusCode) + message,
+            message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label) + message,
             duration: const Duration(seconds: 3),
           );
-        } on FormatException catch (_) {
+        } on FormatException {
           // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.
-          showMessage(
-            message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(token.label),
-            duration: const Duration(seconds: 3),
+
+          globalRef?.read(statusMessageProvider.notifier).state = (
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label),
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode)
           );
         }
 
