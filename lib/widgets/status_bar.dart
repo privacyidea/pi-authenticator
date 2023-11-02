@@ -6,15 +6,15 @@ import 'package:privacyidea_authenticator/utils/text_size.dart';
 
 import '../utils/riverpod_providers.dart';
 
-class ConnectivityStatusBar extends ConsumerStatefulWidget {
+class StatusBar extends ConsumerStatefulWidget {
   final Widget child;
-  const ConnectivityStatusBar({super.key, required this.child});
+  const StatusBar({super.key, required this.child});
 
   @override
-  ConsumerState<ConnectivityStatusBar> createState() => _ConnectivityStatusBarState();
+  ConsumerState<StatusBar> createState() => _ConnectivityStatusBarState();
 }
 
-class _ConnectivityStatusBarState extends ConsumerState<ConnectivityStatusBar> {
+class _ConnectivityStatusBarState extends ConsumerState<StatusBar> {
   (String, String?)? previousStatusMessage;
   (String, String?)? currentStatusMessage;
   Queue<(String, String?)> statusbarQueue = Queue();
@@ -27,10 +27,7 @@ class _ConnectivityStatusBarState extends ConsumerState<ConnectivityStatusBar> {
   @override
   Widget build(BuildContext context) {
     final newStatusMessage = ref.watch(statusMessageProvider);
-    // if (newStatusMessage != previousStatusMessage && newStatusMessage != currentStatusMessage) {
-    // previousStatusMessage = newStatusMessage;
     _addToQueueIfNotInQueue(newStatusMessage);
-    // }
     return widget.child;
   }
 
