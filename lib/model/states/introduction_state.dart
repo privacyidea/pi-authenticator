@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'token_state.dart';
 
 import '../enums/introduction_enum.dart';
 
@@ -39,8 +38,8 @@ class IntroductionState {
   bool isLockTokenConditionFulfilled({required bool lockTokenVisible}) =>
       isCompleted(Introduction.editToken) && lockTokenVisible && isUncompleted(Introduction.lockToken);
   bool isAddFolderConditionFulfilled({required bool hasThreeTokens}) => hasThreeTokens && isUncompleted(Introduction.addFolder);
-  bool isPollForChangesConditionFulfilled(TokenState tokenState) =>
-      tokenState.hasPushTokens && isCompleted(Introduction.lockToken) && isUncompleted(Introduction.pollForChanges);
+  bool isPollForChangesConditionFulfilled({required bool hasPushToken}) =>
+      hasPushToken && isCompleted(Introduction.tokenSwipe) && isUncompleted(Introduction.pollForChanges);
   bool isHidePushTokenConditionFulfilled({required bool hidePushTokens}) =>
       hidePushTokens && isCompleted(Introduction.pollForChanges) && isUncompleted(Introduction.hidePushTokens);
 }

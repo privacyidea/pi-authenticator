@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'pulse_icon.dart';
 import 'tooltip_box.dart';
 
@@ -27,15 +28,17 @@ class FocusedItemAsOverlay extends StatelessWidget {
     this.overlayChild,
   });
   @override
-  Widget build(BuildContext context) => isFocused
-      ? _FocusedItemOverlay(
-          onTap: onTap,
-          tooltipWhenFocused: tooltipWhenFocused,
-          childIsMoving: childIsMoving,
-          overlayChild: overlayChild,
-          child: child,
-        )
-      : child;
+  Widget build(BuildContext context) {
+    return isFocused
+        ? _FocusedItemOverlay(
+            onTap: onTap,
+            tooltipWhenFocused: tooltipWhenFocused,
+            childIsMoving: childIsMoving,
+            overlayChild: overlayChild,
+            child: child,
+          )
+        : child;
+  }
 }
 
 class _FocusedItemOverlay extends StatefulWidget {
@@ -50,7 +53,7 @@ class _FocusedItemOverlay extends StatefulWidget {
   State<_FocusedItemOverlay> createState() => _FocusedItemOverlayState();
 }
 
-class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
+class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with LifecycleMixin {
   static const tooltipPadding = EdgeInsets.all(8);
   static const tooltipMargin = EdgeInsets.all(4);
   static const tooltipBorder = 2.0;
@@ -87,10 +90,14 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
     super.initState();
   }
 
+  // Is also called when the orientation changes. FIXME: Find a better way to handle this.
   @override
-  void didChangeDependencies() {
-    log('didChangeDependencies');
-    super.didChangeDependencies();
+  void onAppResume() {
+    log('onAppResume');
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _updateOverlay();
+    });
+    super.onAppResume();
   }
 
   @override
@@ -111,6 +118,13 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
   }
 
   void _showOverlay() {
+    if (mounted == false) return;
+    if (ModalRoute.of(context)?.isCurrent == false) {
+      Future.delayed(const Duration(milliseconds: 200), () {
+        _showOverlay();
+      });
+      return;
+    }
     if (widget.tooltipWhenFocused != null) {
       final textSize = textSizeOf(widget.tooltipWhenFocused!, Theme.of(context).textTheme.bodyLarge!);
 

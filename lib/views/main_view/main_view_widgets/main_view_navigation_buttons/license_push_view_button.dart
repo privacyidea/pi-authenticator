@@ -11,18 +11,21 @@ class LicensePushViewButton extends ConsumerWidget {
   const LicensePushViewButton({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => ref.watch(settingsProvider).hidePushTokens
-      ? FocusedItemAsOverlay(
-          isFocused: ref.watch(introductionProvider).isHidePushTokenConditionFulfilled(hidePushTokens: ref.watch(settingsProvider).hidePushTokens),
-          tooltipWhenFocused: 'Push Tokens',
-          onTap: () => ref.read(introductionProvider.notifier).complete(Introduction.hidePushTokens),
-          child: AppBarItem(
-            onPressed: () => Navigator.pushNamed(context, PushTokensView.routeName),
-            icon: const Icon(Icons.notifications),
-          ),
-        )
-      : AppBarItem(
-          onPressed: () => Navigator.of(context).pushNamed(LicenseView.routeName),
-          icon: const Icon(Icons.info_outline),
-        );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hidePushTokens = ref.watch(settingsProvider).hidePushTokens;
+    return hidePushTokens
+        ? FocusedItemAsOverlay(
+            isFocused: ref.watch(introductionProvider).isHidePushTokenConditionFulfilled(hidePushTokens: hidePushTokens),
+            tooltipWhenFocused: 'Push Tokens',
+            onTap: () => ref.read(introductionProvider.notifier).complete(Introduction.hidePushTokens),
+            child: AppBarItem(
+              onPressed: () => Navigator.pushNamed(context, PushTokensView.routeName),
+              icon: const Icon(Icons.notifications),
+            ),
+          )
+        : AppBarItem(
+            onPressed: () => Navigator.of(context).pushNamed(LicenseView.routeName),
+            icon: const Icon(Icons.info_outline),
+          );
+  }
 }
