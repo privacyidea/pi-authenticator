@@ -95,7 +95,7 @@ final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushReque
     ref.listen(appStateProvider, (previous, next) {
       if (previous == AppState.pause && next == AppState.resume) {
         Logger.info('Polling for challenges on resume');
-        pushProvider.pollForChallenges();
+        pushProvider.pollForChallenges(isManually: false);
       }
     });
 

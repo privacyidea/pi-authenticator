@@ -56,7 +56,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
               message: AppLocalizations.of(context)!.pollingChallenges,
               duration: const Duration(seconds: 1),
             );
-            await PushProvider().pollForChallenges();
+            await PushProvider().pollForChallenges(isManually: true);
           },
           child: SlidableAutoCloseBehavior(
             child: DragItemScroller(
