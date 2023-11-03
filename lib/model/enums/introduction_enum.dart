@@ -13,10 +13,10 @@ enum Introduction {
   editToken, // 1st token && tokenSwipe
   @JsonValue('lockToken')
   lockToken, // 1st token && editToken
-  @JsonValue('groupTokens')
-  groupTokens, // 3 tokens && 0 groups
+  @JsonValue('addFolder')
+  addFolder, // 3 tokens && 0 groups
   @JsonValue('pollForChanges')
   pollForChanges, // 1st push token && lockToken
-  @JsonValue('hidePushToken')
-  hidePushToken, // hiding is enabled
+  @JsonValue('hidePushTokens')
+  hidePushTokens, // hiding is enabled
 }

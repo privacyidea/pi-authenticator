@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../model/enums/introduction_enum.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../widgets/default_dialog.dart';
 
@@ -43,6 +44,9 @@ class AddTokenFolderDialog extends ConsumerWidget {
               softWrap: false,
             ),
             onPressed: () {
+              if (ref.read(introductionProvider).isCompleted(Introduction.addFolder) == false) {
+                ref.read(introductionProvider.notifier).complete(Introduction.addFolder);
+              }
               ref.read(tokenFolderProvider.notifier).addFolder(textController.text);
               Navigator.pop(context);
             }),

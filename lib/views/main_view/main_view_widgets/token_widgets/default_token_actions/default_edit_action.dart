@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../model/enums/introduction_enum.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/customizations.dart';
@@ -9,6 +11,7 @@ import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../widgets/default_dialog.dart';
+import '../../../../../widgets/focused_item_as_overlay.dart';
 import '../token_action.dart';
 
 class DefaultEditAction extends TokenAction {
@@ -16,7 +19,7 @@ class DefaultEditAction extends TokenAction {
   const DefaultEditAction({required this.token, super.key});
 
   @override
-  CustomSlidableAction build(BuildContext context) {
+  CustomSlidableAction build(BuildContext context, WidgetRef ref) {
     return CustomSlidableAction(
         backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
         foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
@@ -26,17 +29,22 @@ class DefaultEditAction extends TokenAction {
           }
           _showDialog();
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Icon(Icons.edit),
-            Text(
-              AppLocalizations.of(context)!.rename,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-          ],
+        child: FocusedItemAsOverlay(
+          childIsMoving: true,
+          isFocused: ref.watch(introductionProvider).isEditTokenConditionFulfilled(editTokenVisible: true),
+          onTap: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(Icons.edit),
+              Text(
+                AppLocalizations.of(context)!.rename,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
+            ],
+          ),
         ));
   }
 

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import '../../../../utils/riverpod_providers.dart';
-import '../../../../widgets/focused_item.dart';
 
 import '../../../../widgets/custom_trailing.dart';
 
@@ -30,42 +28,39 @@ class TokenWidgetTile extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => FocusedItem(
-        isFocused: ref.watch(introductionProvider).isTokenSwipeConditionFulfilled(stateHasToken: true),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-          horizontalTitleGap: 8.0,
-          leading: (leading != null) ? leading! : null,
-          onTap: onTap,
-          title: title,
-          subtitle: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TokenImage(tokenImage: tokenImage),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 4.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      for (var line in subtitles)
-                        Text(
-                          line,
-                          style: Theme.of(context).listTileTheme.subtitleTextStyle,
-                          textAlign: TextAlign.left,
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                        ),
-                    ],
-                  ),
+  Widget build(BuildContext context, WidgetRef ref) => ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+        horizontalTitleGap: 8.0,
+        leading: (leading != null) ? leading! : null,
+        onTap: onTap,
+        title: title,
+        subtitle: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TokenImage(tokenImage: tokenImage),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 4.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    for (var line in subtitles)
+                      Text(
+                        line,
+                        style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                      ),
+                  ],
                 ),
               ),
-            ],
-          ),
-          trailing: CustomTrailing(
-            child: trailing ?? const SizedBox(),
-          ),
+            ),
+          ],
+        ),
+        trailing: CustomTrailing(
+          child: trailing ?? const SizedBox(),
         ),
       );
 }

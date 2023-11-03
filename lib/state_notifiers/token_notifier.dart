@@ -96,7 +96,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       TokenState newState = state.addOrReplaceTokens(failedTokens);
       state = newState;
       if (state.hasPushTokens == false) {
-        globalRef?.read(settingsProvider.notifier).setHidePushTokens(isHidden: false);
+        globalRef?.read(settingsProvider.notifier).setHidePushTokens(false);
       }
       return newState;
     });

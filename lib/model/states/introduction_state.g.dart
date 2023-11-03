@@ -21,7 +21,7 @@ const _$IntroductionEnumMap = {
   Introduction.tokenSwipe: 'tokenSwipe',
   Introduction.editToken: 'editToken',
   Introduction.lockToken: 'lockToken',
-  Introduction.groupTokens: 'groupTokens',
+  Introduction.addFolder: 'addFolder',
   Introduction.pollForChanges: 'pollForChanges',
-  Introduction.hidePushToken: 'hidePushToken',
+  Introduction.hidePushTokens: 'hidePushToken',
 };

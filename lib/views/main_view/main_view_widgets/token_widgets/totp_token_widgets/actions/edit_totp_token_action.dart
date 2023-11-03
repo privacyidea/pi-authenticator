@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
+import '../../../../../../model/enums/introduction_enum.dart';
 import '../../../../../../model/tokens/totp_token.dart';
 import '../../../../../../utils/app_customizer.dart';
 import '../../../../../../utils/customizations.dart';
@@ -9,6 +10,7 @@ import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
 import '../../../../../../utils/utils.dart';
 import '../../../../../../widgets/default_dialog.dart';
+import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../token_action.dart';
 
 class EditTOTPTokenAction extends TokenAction {
@@ -20,7 +22,7 @@ class EditTOTPTokenAction extends TokenAction {
   });
 
   @override
-  CustomSlidableAction build(BuildContext context) => CustomSlidableAction(
+  CustomSlidableAction build(context, ref) => CustomSlidableAction(
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
@@ -29,17 +31,22 @@ class EditTOTPTokenAction extends TokenAction {
         }
         _showDialog();
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Icon(Icons.edit),
-          Text(
-            AppLocalizations.of(context)!.edit,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        ],
+      child: FocusedItemAsOverlay(
+        childIsMoving: true,
+        isFocused: ref.watch(introductionProvider).isEditTokenConditionFulfilled(editTokenVisible: true),
+        onTap: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(Icons.edit),
+            Text(
+              AppLocalizations.of(context)!.edit,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+          ],
+        ),
       ));
 
   void _showDialog() {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/widgets/focused_item_as_overlay.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../model/enums/introduction_enum.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/lock_auth.dart';
@@ -15,7 +17,7 @@ class DefaultLockAction extends TokenAction {
   const DefaultLockAction({required this.token, super.key});
 
   @override
-  CustomSlidableAction build(BuildContext context) {
+  CustomSlidableAction build(context, ref) {
     return CustomSlidableAction(
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.lockColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
@@ -25,17 +27,22 @@ class DefaultLockAction extends TokenAction {
 
         globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(isLocked: !token.isLocked));
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Icon(Icons.lock),
-          Text(
-            token.isLocked ? AppLocalizations.of(context)!.unlock : AppLocalizations.of(context)!.lock,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        ],
+      child: FocusedItemAsOverlay(
+        childIsMoving: true,
+        isFocused: ref.watch(introductionProvider).isLockTokenConditionFulfilled(lockTokenVisible: true),
+        onTap: () => ref.read(introductionProvider.notifier).complete(Introduction.lockToken),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(Icons.lock),
+            Text(
+              token.isLocked ? AppLocalizations.of(context)!.unlock : AppLocalizations.of(context)!.lock,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+          ],
+        ),
       ),
     );
   }

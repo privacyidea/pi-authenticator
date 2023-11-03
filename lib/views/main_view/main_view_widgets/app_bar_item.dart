@@ -16,7 +16,7 @@ class AppBarItem extends StatelessWidget {
       icon: SizedBox(
         height: 24,
         width: 24,
-        child: icon,
+        child: FittedBox(child: icon),
       ),
     );
   }

@@ -1,62 +1,87 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'pulse_icon.dart';
 import 'tooltip_box.dart';
 
 import '../utils/text_size.dart';
 
-class FocusedItem extends StatelessWidget {
+class FocusedItemAsOverlay extends StatelessWidget {
   final bool isFocused;
+  final bool childIsMoving;
   final Widget child;
+  final Widget? overlayChild;
   final String? tooltipWhenFocused;
 
   final void Function() onTap;
 
-  const FocusedItem({
+  const FocusedItemAsOverlay({
     super.key,
     required this.isFocused,
     required this.child,
     this.tooltipWhenFocused,
     required this.onTap,
+    this.childIsMoving = false,
+    this.overlayChild,
   });
   @override
   Widget build(BuildContext context) => isFocused
-      ? _FocusedItemBackdrop(
+      ? _FocusedItemOverlay(
           onTap: onTap,
           tooltipWhenFocused: tooltipWhenFocused,
+          childIsMoving: childIsMoving,
+          overlayChild: overlayChild,
           child: child,
         )
       : child;
 }
 
-class _FocusedItemBackdrop extends StatefulWidget {
+class _FocusedItemOverlay extends StatefulWidget {
+  final bool childIsMoving;
   final Widget child;
+  final Widget? overlayChild;
   final String? tooltipWhenFocused;
   final void Function()? onTap;
-  const _FocusedItemBackdrop({required this.child, super.key, this.tooltipWhenFocused, this.onTap});
+  const _FocusedItemOverlay({required this.child, this.tooltipWhenFocused, this.onTap, required this.childIsMoving, this.overlayChild});
 
   @override
-  State<_FocusedItemBackdrop> createState() => _FocusedItemBackdropState();
+  State<_FocusedItemOverlay> createState() => _FocusedItemOverlayState();
 }
 
-class _FocusedItemBackdropState extends State<_FocusedItemBackdrop> {
+class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
   static const tooltipPadding = EdgeInsets.all(8);
   static const tooltipMargin = EdgeInsets.all(4);
   static const tooltipBorder = 2.0;
 
+  Offset lastChildPosition = Offset.zero;
+
   OverlayEntry? _overlayEntry;
+  OverlayEntry? _overlayEntryChild;
 
   @override
-  Widget build(BuildContext context) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-        child: widget.child,
-      );
+  Widget build(BuildContext context) => widget.child;
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _showOverlay();
+      if (widget.childIsMoving) {
+        Timer.periodic(const Duration(milliseconds: 16), (timer) {
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            if (mounted == false) {
+              timer.cancel();
+              return;
+            }
+            final renderBoxOffset = (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+            if (lastChildPosition != renderBoxOffset) {
+              _updateOverlay();
+              lastChildPosition = renderBoxOffset;
+            }
+          });
+        });
+      }
     });
 
     super.initState();
@@ -69,7 +94,7 @@ class _FocusedItemBackdropState extends State<_FocusedItemBackdrop> {
   }
 
   @override
-  void didUpdateWidget(covariant _FocusedItemBackdrop oldWidget) {
+  void didUpdateWidget(covariant _FocusedItemOverlay oldWidget) {
     log('didUpdateWidget');
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _updateOverlay();
@@ -114,21 +139,83 @@ class _FocusedItemBackdropState extends State<_FocusedItemBackdrop> {
       );
     } else {
       _overlayEntry = OverlayEntry(
-        builder: (overlayContext) => const SizedBox(),
+        builder: (overlayContext) => BackdropFilter(filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2), child: const SizedBox()),
       );
     }
 
+    final renderBox = context.findRenderObject() as RenderBox;
+    final boxsize = renderBox.size;
+
+    final renderBoxOffset = renderBox.localToGlobal(Offset.zero);
+
+    const circlePadding = 25;
+    const circleThinkness = 2.0;
+
+    _overlayEntryChild = OverlayEntry(
+      builder: (overlayContext) => Stack(
+        children: [
+          Positioned(
+            left: renderBoxOffset.dx - circlePadding / 2,
+            top: renderBoxOffset.dy - circlePadding / 2,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: PulseIcon(
+                    width: boxsize.width + circlePadding,
+                    height: boxsize.height + circlePadding,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: SizedBox(
+                        width: renderBox.size.width,
+                        height: renderBox.size.height,
+                        child: widget.overlayChild ?? widget.child,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: boxsize.width + circlePadding,
+                  height: boxsize.height + circlePadding,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(color: Theme.of(context).primaryColor, width: circleThinkness),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                widget.onTap?.call();
+              },
+              child: Container(
+                height: double.maxFinite,
+                width: double.maxFinite,
+                color: Colors.transparent,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
     Overlay.of(context).insert(_overlayEntry!);
+    Overlay.of(context).insert(_overlayEntryChild!);
   }
 
   void _updateOverlay() {
+    log('_updateOverlay');
     _overlayEntry?.remove();
+    _overlayEntryChild?.remove();
     _showOverlay();
   }
 
   void _disposeOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
+    _overlayEntryChild?.remove();
+    _overlayEntryChild = null;
   }
 }
 

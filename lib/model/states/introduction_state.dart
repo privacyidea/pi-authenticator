@@ -1,6 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'settings_state.dart';
-import 'token_folder_state.dart';
 import 'token_state.dart';
 
 import '../enums/introduction_enum.dart';
@@ -36,14 +34,13 @@ class IntroductionState {
   bool isScanQrCodeConditionFulfilled() => isCompleted(Introduction.introductionScreen) && isUncompleted(Introduction.scanQrCode);
   bool isAddTokenManuallyConditionFulfilled() => isCompleted(Introduction.scanQrCode) && isUncompleted(Introduction.addTokenManually);
   bool isTokenSwipeConditionFulfilled({required bool stateHasToken}) => stateHasToken && isUncompleted(Introduction.tokenSwipe);
-  bool isEditTokenConditionFulfilled(TokenState tokenState) =>
-      isCompleted(Introduction.tokenSwipe) && tokenState.tokens.isNotEmpty && isUncompleted(Introduction.editToken);
-  bool isLockTokenConditionFulfilled(TokenState tokenState) =>
-      isCompleted(Introduction.editToken) && tokenState.tokens.isNotEmpty && isUncompleted(Introduction.lockToken);
-  bool isGroupTokensConditionFulfilled(TokenState tokenState, TokenFolderState tokenFolderState) =>
-      tokenState.tokens.length >= 3 && tokenFolderState.folders.isEmpty && isUncompleted(Introduction.groupTokens);
+  bool isEditTokenConditionFulfilled({required bool editTokenVisible}) =>
+      isCompleted(Introduction.tokenSwipe) && editTokenVisible && isUncompleted(Introduction.editToken);
+  bool isLockTokenConditionFulfilled({required bool lockTokenVisible}) =>
+      isCompleted(Introduction.editToken) && lockTokenVisible && isUncompleted(Introduction.lockToken);
+  bool isAddFolderConditionFulfilled({required bool hasThreeTokens}) => hasThreeTokens && isUncompleted(Introduction.addFolder);
   bool isPollForChangesConditionFulfilled(TokenState tokenState) =>
       tokenState.hasPushTokens && isCompleted(Introduction.lockToken) && isUncompleted(Introduction.pollForChanges);
-  bool isHidePushTokenConditionFulfilled(TokenState tokenState, SettingsState settingsState) =>
-      settingsState.hidePushTokens && isCompleted(Introduction.pollForChanges) && isUncompleted(Introduction.hidePushToken);
+  bool isHidePushTokenConditionFulfilled({required bool hidePushTokens}) =>
+      hidePushTokens && isCompleted(Introduction.pollForChanges) && isUncompleted(Introduction.hidePushTokens);
 }

@@ -6,11 +6,13 @@ import '../../../l10n/app_localizations.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/push_token.dart';
+import '../../../model/tokens/token.dart';
 import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/deactivateable_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
+import '../../../widgets/introduction_widgets/token_introduction.dart';
 import '../../../widgets/push_request_overlay.dart';
 import 'drag_target_divider.dart';
 import 'no_token_screen.dart';
@@ -83,6 +85,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
 
   List<Widget> _buildSortableWidgets(List<SortableMixin> sortables, SortableMixin? draggingSortable) {
     List<Widget> widgets = [];
+    bool addedAnToken = false;
     if (sortables.isEmpty) return [];
     sortables.sort((a, b) => a.compareTo(b));
     for (var i = 0; i < sortables.length; i++) {
@@ -97,7 +100,12 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
       if (!isDraggingTheCurrent && ((!isFirst && !previousWasExpandedFolder) || draggingSortable != null)) {
         widgets.add(DragTargetDivider(dependingFolder: null, nextSortable: sortables[i]));
       }
-      widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
+      if (!addedAnToken && sortables[i] is Token) {
+        addedAnToken = true;
+        widgets.add(TokenIntroduction(child: SortableWidgetBuilder.fromSortable(sortables[i])));
+      } else {
+        widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
+      }
     }
     if (draggingSortable != null) {
       widgets.add(const DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true));

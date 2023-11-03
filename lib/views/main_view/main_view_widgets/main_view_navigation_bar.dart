@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../model/enums/introduction_enum.dart';
 import '../../../utils/riverpod_providers.dart';
 
-import '../../../widgets/focused_item.dart';
+import '../../../widgets/focused_item_as_overlay.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../settings_view/settings_view.dart';
 import 'app_bar_item.dart';
@@ -39,7 +39,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                     ),
                     Center(
                       heightFactor: 0.6,
-                      child: FocusedItem(
+                      child: FocusedItemAsOverlay(
                           onTap: () {
                             ref.read(introductionProvider.notifier).complete(Introduction.scanQrCode);
                           },
@@ -68,7 +68,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                                   onPressed: () {
                                     Navigator.pushNamed(context, AddTokenManuallyView.routeName);
                                   },
-                                  icon: FocusedItem(
+                                  icon: FocusedItemAsOverlay(
                                     onTap: () {
                                       ref.read(introductionProvider.notifier).complete(Introduction.addTokenManually);
                                     },
@@ -87,16 +87,23 @@ class MainViewNavigationBar extends ConsumerWidget {
                             child: Center(
                               child: Padding(
                                 padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
-                                child: AppBarItem(
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AddTokenFolderDialog(),
-                                      useRootNavigator: false,
-                                    );
-                                  },
-                                  icon: const FittedBox(
-                                    child: Icon(Icons.create_new_folder),
+                                child: FocusedItemAsOverlay(
+                                  isFocused: ref
+                                      .watch(introductionProvider)
+                                      .isAddFolderConditionFulfilled(hasThreeTokens: ref.watch(tokenProvider).tokens.length >= 3),
+                                  tooltipWhenFocused: 'Add folder',
+                                  onTap: () => ref.read(introductionProvider.notifier).complete(Introduction.addFolder),
+                                  child: AppBarItem(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AddTokenFolderDialog(),
+                                        useRootNavigator: false,
+                                      );
+                                    },
+                                    icon: const FittedBox(
+                                      child: Icon(Icons.create_new_folder),
+                                    ),
                                   ),
                                 ),
                               ),
