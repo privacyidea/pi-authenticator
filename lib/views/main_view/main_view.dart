@@ -1,11 +1,12 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../model/states/app_state.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
-import '../../widgets/app_wrapper.dart';
 import '../../widgets/status_bar.dart';
 import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
@@ -67,4 +68,23 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
           ),
         ),
       );
+}
+
+class ConnectivityListener extends ConsumerWidget {
+  final Widget child;
+  const ConnectivityListener({required this.child, super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final connectivity = ref.watch(connectivityProvider).asData?.value;
+    if (connectivity != null || connectivity == ConnectivityResult.none) {
+      ref.read(tokenProvider.notifier).loadingRepo.then((value) {
+        if (value.hasPushTokens) {
+          Logger.info("Connectivity changed: $connectivity");
+          ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.noNetworkConnection, null);
+        }
+      });
+    }
+    return child;
+  }
 }

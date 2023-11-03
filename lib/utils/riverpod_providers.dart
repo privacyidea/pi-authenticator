@@ -130,15 +130,15 @@ final draggingSortableProvider = StateProvider<SortableMixin?>((ref) {
 });
 
 final connectivityProvider = StreamProvider<ConnectivityResult>((ref) {
+  Logger.info("New connectivityProvider created");
   ref.read(tokenProvider.notifier).loadingRepo.then(
-    (value) {
-      Connectivity().onConnectivityChanged.first.then((connectivity) {
-        final hasConnection = connectivity != ConnectivityResult.none;
-        ref.read(tokenProvider.notifier).loadingRepo.then((newState) {
-          if (!hasConnection && newState.hasPushTokens && globalNavigatorKey.currentContext != null) {
-            ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(globalNavigatorKey.currentContext!)!.noNetworkConnection, null);
-          }
-        });
+    (newState) {
+      Connectivity().checkConnectivity().then((connectivity) {
+        Logger.info("First connectivity check: $connectivity");
+        final hasNoConnection = connectivity == ConnectivityResult.none;
+        if (hasNoConnection && newState.hasPushTokens && globalNavigatorKey.currentContext != null) {
+          ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(globalNavigatorKey.currentContext!)!.noNetworkConnection, null);
+        }
       });
     },
   );

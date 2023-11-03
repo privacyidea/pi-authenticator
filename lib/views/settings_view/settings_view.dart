@@ -181,27 +181,27 @@ class SettingsView extends ConsumerWidget {
                       onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
                     ),
                   ),
-                  // if (ref.watch(tokenProvider).hasHOTPTokens)
-                  //   ListTile(
-                  //     title: RichText(
-                  //       text: TextSpan(
-                  //         children: [
-                  //           TextSpan(
-                  //             text: AppLocalizations.of(context)!.hidePushTokens,
-                  //             style: Theme.of(context).textTheme.titleMedium,
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //     subtitle: Text(
-                  //       AppLocalizations.of(context)!.hidePushTokensDescription,
-                  //       overflow: TextOverflow.fade,
-                  //     ),
-                  //     trailing: Switch(
-                  //       value: ref.watch(settingsProvider).hidePushTokensState != HidePushTokens.notHidden,
-                  //       onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(isHidden: value),
-                  //     ),
-                  //   )
+                  if (ref.watch(tokenProvider).hasHOTPTokens)
+                    ListTile(
+                      title: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: AppLocalizations.of(context)!.hidePushTokens,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                      subtitle: Text(
+                        AppLocalizations.of(context)!.hidePushTokensDescription,
+                        overflow: TextOverflow.fade,
+                      ),
+                      trailing: Switch(
+                        value: ref.watch(settingsProvider).hidePushTokens,
+                        onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value),
+                      ),
+                    )
                 ],
               ),
             ),
