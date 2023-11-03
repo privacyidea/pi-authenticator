@@ -1,6 +1,8 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/customizations.dart';
+import '../l10n/app_localizations.dart';
 import '../model/mixins/sortable_mixin.dart';
 import '../model/push_request.dart';
 import '../model/states/app_state.dart';
@@ -126,6 +128,18 @@ final draggingSortableProvider = StateProvider<SortableMixin?>((ref) {
 
 final connectivityProvider = StreamProvider<ConnectivityResult>((ref) {
   Logger.info("New connectivityProvider created");
+  ref.read(tokenProvider.notifier).isLoading.then(
+    (_) {
+      final newState = ref.read(tokenProvider);
+      Connectivity().checkConnectivity().then((connectivity) {
+        Logger.info("First connectivity check: $connectivity");
+        final hasNoConnection = connectivity == ConnectivityResult.none;
+        if (hasNoConnection && newState.hasPushTokens && globalNavigatorKey.currentContext != null) {
+          ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(globalNavigatorKey.currentContext!)!.noNetworkConnection, null);
+        }
+      });
+    },
+  );
   return Connectivity().onConnectivityChanged;
 });
 

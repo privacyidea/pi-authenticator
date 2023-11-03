@@ -5,8 +5,8 @@ import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import '../../model/states/app_state.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
-import '../../widgets/app_wrapper.dart';
 import '../../widgets/status_bar.dart';
+import 'main_view_widgets/connectivity_listener.dart';
 import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
 
