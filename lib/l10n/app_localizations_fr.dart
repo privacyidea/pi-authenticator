@@ -393,8 +393,11 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String errorRollOutTokenExpired(Object name) {
-    return 'Le déploiement de ce jeton n\'est plus possible. Le jeton $name a expiré.';
+  String get errorRollOutNotPossibleAnymore => 'Le déploiement de ce jeton n\'est plus possible.';
+
+  @override
+  String errorTokenExpired(Object name) {
+    return 'Le jeton $name a expiré.';
   }
 
   @override

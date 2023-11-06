@@ -429,11 +429,12 @@
       }
     }
   },
-  "errorRollOutTokenExpired": "Wstać z łóżka tego tokena nie jest już możliwe.\nToken {name} wygasł.",
-  "@errorRollOutTokenExpired": {
+  "errorRollOutNotPossibleAnymore": "Wstać z łóżka tego tokena nie jest już możliwe.",
+  "errorTokenExpired": "Token {name} wygasł.",
+  "@errorTokenExpired": {
     "placeholders": {
       "name": {
-        "example": "PUSH1234"
+        "example": "PUSH1234A"
       }
     }
   },

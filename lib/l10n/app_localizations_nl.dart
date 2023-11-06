@@ -393,8 +393,11 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String errorRollOutTokenExpired(Object name) {
-    return 'Het uitrollen van dit token is niet meer mogelijk.\nHet token $name is verlopen.';
+  String get errorRollOutNotPossibleAnymore => 'Het uitrollen van dit token is niet meer mogelijk.';
+
+  @override
+  String errorTokenExpired(Object name) {
+    return 'Het token $name is verlopen.';
   }
 
   @override

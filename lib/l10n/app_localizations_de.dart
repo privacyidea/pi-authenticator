@@ -393,8 +393,11 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String errorRollOutTokenExpired(Object name) {
-    return 'Das Ausrollen dieses Tokens ist nicht mehr möglich.\nDer Token $name ist abgelaufen.';
+  String get errorRollOutNotPossibleAnymore => 'Das Ausrollen dieses Tokens ist nicht mehr möglich.';
+
+  @override
+  String errorTokenExpired(Object name) {
+    return 'Der Token $name ist abgelaufen.';
   }
 
   @override

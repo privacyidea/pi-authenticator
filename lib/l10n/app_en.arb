@@ -428,9 +428,9 @@
       }
     }
   },
-  "errorRollOutTokenExpired": "Rolling out this Token is not possible anymore.\nThe token {name} has expired.",
-  "@errorRollOutTokenExpired": {
-    "description": "Tells the user that the roll-out failed because the token has expired.",
+  "errorRollOutNotPossibleAnymore": "Rolling out this Token is not possible anymore.",
+  "errorTokenExpired": "The token {name} has expired.",
+  "@errorTokenExpired": {
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
