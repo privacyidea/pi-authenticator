@@ -393,8 +393,11 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String errorRollOutTokenExpired(Object name) {
-    return 'Roll-out tohoto tokenu již není možný.\nPlatnost tokenu $name vypršela.';
+  String get errorRollOutNotPossibleAnymore => 'Roll-out tohoto tokenu již není možný.';
+
+  @override
+  String errorTokenExpired(Object name) {
+    return 'Platnost tokenu $name vypršela.';
   }
 
   @override

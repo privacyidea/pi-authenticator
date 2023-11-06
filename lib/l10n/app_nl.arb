@@ -438,7 +438,15 @@
       }
     }
   },
-  "errorRollOutTokenExpired": "Het uitrollen van dit token is niet meer mogelijk.\nHet token {name} is verlopen.",
+  "errorRollOutNotPossibleAnymore": "Het uitrollen van dit token is niet meer mogelijk.",
+  "errorTokenExpired": "Het token {name} is verlopen.",
+  "@errorTokenExpired": {
+    "placeholders": {
+      "name": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "yes": "Ja",
   "no": "Nee",
   "butDiscardIt": "maar verwijder",

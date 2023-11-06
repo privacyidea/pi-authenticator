@@ -184,32 +184,24 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with Sing
                     color: Theme.of(context).colorScheme.error,
                   ),
                   padding: const EdgeInsets.all(padding),
-                  child: Center(
-                    child: LayoutBuilder(builder: (context, constraints) {
-                      return Column(
-                        children: [
-                          SizedBox(
-                            width: maxWidth,
-                            child: Center(
-                              child: Text(
-                                widget.statusText,
-                                style: statusTextStyle,
-                              ),
-                            ),
+                  child: SizedBox(
+                    width: maxWidth,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.statusText,
+                          style: statusTextStyle,
+                          textAlign: TextAlign.center,
+                        ),
+                        if (widget.statusSubText != null)
+                          Text(
+                            widget.statusSubText!,
+                            style: statusSubTextStyle,
+                            textAlign: TextAlign.center,
                           ),
-                          if (widget.statusSubText != null)
-                            SizedBox(
-                              width: maxWidth,
-                              child: Center(
-                                child: Text(
-                                  widget.statusSubText!,
-                                  style: statusSubTextStyle,
-                                ),
-                              ),
-                            ),
-                        ],
-                      );
-                    }),
+                      ],
+                    ),
                   ),
                 ),
                 Positioned.fill(

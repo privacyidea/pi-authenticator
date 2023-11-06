@@ -417,8 +417,9 @@
   "authToDeclinePushRequest": "Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.",
   "incomingAuthRequestError": "Die Nachricht enthielt nicht die erforderlichen Daten oder die Daten waren falsch formatiert.",
   "errorRollOutSSLHandshakeFailed": "SSL-Handshake fehlgeschlagen. Roll-out nicht möglich.",
-  "errorRollOutTokenExpired": "Das Ausrollen dieses Tokens ist nicht mehr möglich.\nDer Token {name} ist abgelaufen.",
-  "@errorRollOutTokenExpired": {
+  "errorRollOutNotPossibleAnymore": "Das Ausrollen dieses Tokens ist nicht mehr möglich.",
+  "errorTokenExpired": "Der Token {name} ist abgelaufen.",
+  "@errorTokenExpired": {
     "placeholders": {
       "name": {
         "example": "PUSH1234A"

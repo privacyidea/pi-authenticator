@@ -438,8 +438,9 @@
       }
     }
   },
-  "errorRollOutTokenExpired": "Roll-out tohoto tokenu již není možný.\nPlatnost tokenu {name} vypršela.",
-  "@errorRollOutTokenExpired": {
+  "errorRollOutNotPossibleAnymore": "Roll-out tohoto tokenu již není možný.",
+  "errorTokenExpired": "Platnost tokenu {name} vypršela.",
+  "@errorTokenExpired": {
     "placeholders": {
       "name": {
         "example": "PUSH1234A"

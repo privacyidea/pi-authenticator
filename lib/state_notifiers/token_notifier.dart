@@ -346,8 +346,8 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
       if (globalNavigatorKey.currentContext != null) {
         globalRef?.read(statusMessageProvider.notifier).state = (
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutTokenExpired(token.label),
-          null,
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNotPossibleAnymore,
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorTokenExpired(token.label),
         );
       }
       removeToken(token);
@@ -409,13 +409,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
             name: 'token_notifier.dart#rolloutPushToken',
             error: 'Token: ${token.serial}\nStatus code: ${response.statusCode},\nURL:${response.request?.url}\nBody: ${response.body}');
 
-        String? message;
         try {
-          message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : null;
-          message = message != null ? '\n$message' : '';
-          showMessage(
-            message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label) + message,
-            duration: const Duration(seconds: 3),
+          final message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : '';
+          globalRef?.read(statusMessageProvider.notifier).state = (
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(token.label),
+            message,
           );
         } on FormatException {
           // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.

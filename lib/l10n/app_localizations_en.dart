@@ -393,8 +393,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String errorRollOutTokenExpired(Object name) {
-    return 'Rolling out this Token is not possible anymore.\nThe token $name has expired.';
+  String get errorRollOutNotPossibleAnymore => 'Rolling out this Token is not possible anymore.';
+
+  @override
+  String errorTokenExpired(Object name) {
+    return 'The token $name has expired.';
   }
 
   @override

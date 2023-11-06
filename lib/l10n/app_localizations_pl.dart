@@ -393,8 +393,11 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String errorRollOutTokenExpired(Object name) {
-    return 'Wstać z łóżka tego tokena nie jest już możliwe.\nToken $name wygasł.';
+  String get errorRollOutNotPossibleAnymore => 'Wstać z łóżka tego tokena nie jest już możliwe.';
+
+  @override
+  String errorTokenExpired(Object name) {
+    return 'Token $name wygasł.';
   }
 
   @override

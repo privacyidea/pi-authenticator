@@ -434,8 +434,9 @@
       }
     }
   },
-  "errorRollOutTokenExpired": "El despliegue de este token ya no es posible.\nEl token {name} ha caducado.",
-  "@errorRollOutTokenExpired": {
+  "errorRollOutNotPossibleAnymore": "El despliegue de este token ya no es posible.",
+  "errorTokenExpired": "El token {name} ha caducado.",
+  "@errorTokenExpired": {
     "placeholders": {
       "name": {
         "example": "PUSH1234A"

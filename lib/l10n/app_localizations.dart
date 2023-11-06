@@ -847,11 +847,17 @@ abstract class AppLocalizations {
   /// **'An error occured when polling for challenges of {name}'**
   String errorWhenPullingChallenges(Object name);
 
-  /// Tells the user that the roll-out failed because the token has expired.
+  /// No description provided for @errorRollOutNotPossibleAnymore.
   ///
   /// In en, this message translates to:
-  /// **'Rolling out this Token is not possible anymore.\nThe token {name} has expired.'**
-  String errorRollOutTokenExpired(Object name);
+  /// **'Rolling out this Token is not possible anymore.'**
+  String get errorRollOutNotPossibleAnymore;
+
+  /// No description provided for @errorTokenExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'The token {name} has expired.'**
+  String errorTokenExpired(Object name);
 
   /// No description provided for @yes.
   ///
