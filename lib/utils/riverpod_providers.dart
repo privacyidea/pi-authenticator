@@ -130,6 +130,7 @@ final draggingSortableProvider = StateProvider<SortableMixin?>((ref) {
   return null;
 });
 
+final tokenFilterProvider = StateProvider<TokenFilter?>((ref) => null);
 final connectivityProvider = StreamProvider<ConnectivityResult>((ref) {
   Logger.info("New connectivityProvider created");
   ref.read(tokenProvider.notifier).loadingRepo.then(

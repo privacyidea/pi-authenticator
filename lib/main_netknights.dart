@@ -44,12 +44,12 @@ void main() async {
       appRunner: () async {
         WidgetsFlutterBinding.ensureInitialized();
         if (!kIsWeb) await Firebase.initializeApp();
-        runApp(AppWrapper(child: PrivacyIDEAAuthenticator(customization: AppCustomization.defaultCustomization)));
+        runApp(AppWrapper(child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization)));
       });
 }
 
 class PrivacyIDEAAuthenticator extends ConsumerWidget {
-  final AppCustomization customization;
+  final ApplicationCustomization customization;
   const PrivacyIDEAAuthenticator({required this.customization, super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -211,7 +211,7 @@ class ThemeCustomization {
       };
 }
 
-class AppCustomization {
+class ApplicationCustomization {
   // Edit in android/app/src/main/AndroidManifest.xml file
   // <application android:label="app name">
 
@@ -250,7 +250,7 @@ class AppCustomization {
   final ThemeCustomization lightTheme;
   final ThemeCustomization darkTheme;
 
-  static final defaultCustomization = AppCustomization(
+  static final defaultCustomization = ApplicationCustomization(
     appName: 'privacyIDEA Authenticator',
     websiteLink: 'https://netknights.it/',
     appIconUint8List: defaultIconUint8List,
@@ -259,7 +259,7 @@ class AppCustomization {
     darkTheme: ThemeCustomization.defaultDarkTheme,
   );
 
-  const AppCustomization({
+  const ApplicationCustomization({
     required this.appName,
     required this.websiteLink,
     required this.appIconUint8List,
@@ -268,7 +268,7 @@ class AppCustomization {
     required this.darkTheme,
   });
 
-  AppCustomization copyWith({
+  ApplicationCustomization copyWith({
     String? appName,
     String? websiteLink,
     Uint8List? appIconUint8List,
@@ -277,7 +277,7 @@ class AppCustomization {
     ThemeCustomization? darkTheme,
     Color? primaryColor,
   }) =>
-      AppCustomization(
+      ApplicationCustomization(
         appName: appName ?? this.appName,
         websiteLink: websiteLink ?? this.websiteLink,
         appIconUint8List: appIconUint8List ?? this.appIconUint8List,
@@ -290,7 +290,7 @@ class AppCustomization {
 
   ThemeData generateDarkTheme() => _generateTheme(darkTheme, Brightness.dark);
 
-  factory AppCustomization.fromJson(Map<String, dynamic> json) => defaultCustomization.copyWith(
+  factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => defaultCustomization.copyWith(
         appName: json['appName'] as String,
         websiteLink: json['websiteLink'] as String,
         appIconUint8List: json['appIconBASE64'] != null ? base64Decode(json['appIconBASE64']! as String) : null,

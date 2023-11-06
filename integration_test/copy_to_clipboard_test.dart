@@ -40,7 +40,7 @@ void main() {
         tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
       ],
-      child: PrivacyIDEAAuthenticator(customization: AppCustomization.defaultCustomization),
+      child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
     ));
     await tester.pumpAndSettle();
     await pumpUntilFindNWidgets(tester, find.text('356 306'), 1, const Duration(seconds: 10));
