@@ -14,27 +14,30 @@ class FocusedItemAsOverlay extends StatelessWidget {
   final bool childIsMoving;
   final Widget child;
   final Widget? overlayChild;
-  final String? tooltipWhenFocused;
+  final String tooltipWhenFocused;
+  final Alignment alignment;
 
-  final void Function() onTap;
+  final void Function() onComplete;
 
   const FocusedItemAsOverlay({
     super.key,
     required this.isFocused,
     required this.child,
-    this.tooltipWhenFocused,
-    required this.onTap,
+    required this.tooltipWhenFocused,
+    required this.onComplete,
     this.childIsMoving = false,
     this.overlayChild,
+    this.alignment = Alignment.topCenter,
   });
   @override
   Widget build(BuildContext context) {
     return isFocused
         ? _FocusedItemOverlay(
-            onTap: onTap,
+            onTap: onComplete,
             tooltipWhenFocused: tooltipWhenFocused,
             childIsMoving: childIsMoving,
             overlayChild: overlayChild,
+            alignment: alignment,
             child: child,
           )
         : child;
@@ -46,8 +49,10 @@ class _FocusedItemOverlay extends StatefulWidget {
   final Widget child;
   final Widget? overlayChild;
   final String? tooltipWhenFocused;
+  final Alignment alignment;
   final void Function()? onTap;
-  const _FocusedItemOverlay({required this.child, this.tooltipWhenFocused, this.onTap, required this.childIsMoving, this.overlayChild});
+  const _FocusedItemOverlay(
+      {required this.child, this.tooltipWhenFocused, this.onTap, required this.childIsMoving, this.overlayChild, required this.alignment});
 
   @override
   State<_FocusedItemOverlay> createState() => _FocusedItemOverlayState();
@@ -56,12 +61,20 @@ class _FocusedItemOverlay extends StatefulWidget {
 class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with LifecycleMixin {
   static const tooltipPadding = EdgeInsets.all(8);
   static const tooltipMargin = EdgeInsets.all(4);
-  static const tooltipBorder = 2.0;
+  static const tooltipBorderWidth = 2.0;
 
   Offset lastChildPosition = Offset.zero;
 
-  OverlayEntry? _overlayEntry;
+  OverlayEntry? _overlayEntryText;
   OverlayEntry? _overlayEntryChild;
+  final OverlayEntry _overlayEntryBackdrop = OverlayEntry(
+    builder: (overlayContext) => BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+      child: const Center(
+        child: SizedBox(),
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) => widget.child;
@@ -70,6 +83,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _showOverlay();
+
       if (widget.childIsMoving) {
         Timer.periodic(const Duration(milliseconds: 16), (timer) {
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -126,34 +140,38 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
       return;
     }
     if (widget.tooltipWhenFocused != null) {
-      final textSize = textSizeOf(widget.tooltipWhenFocused!, Theme.of(context).textTheme.bodyLarge!);
+      final textSize = textSizeOf(
+        widget.tooltipWhenFocused!,
+        Theme.of(context).textTheme.bodyLarge!,
+        maxWidth: MediaQuery.of(context).size.width / 3 * 2 -
+            (tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2),
+        maxLines: null,
+      );
 
       final overlaySize = Size(
-        textSize.width + tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorder * 2,
-        textSize.height + tooltipPadding.bottom + tooltipPadding.top + tooltipMargin.bottom + tooltipMargin.top + tooltipBorder * 2,
+        textSize.width + tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2,
+        textSize.height + tooltipPadding.bottom + tooltipPadding.top + tooltipMargin.bottom + tooltipMargin.top + tooltipBorderWidth * 2,
       );
-      final clampedOffset = getClampedOffset(overlaySize: overlaySize, context: context);
-      _overlayEntry = OverlayEntry(
+      final clampedOffset = _getClampedOverlayOffset(
+        overlaySize: overlaySize,
+        alignment: widget.alignment,
+        anchor: context.findRenderObject() as RenderBox?,
+        screenSize: MediaQuery.of(context).size,
+      );
+      _overlayEntryText = OverlayEntry(
         builder: (overlayContext) => Positioned(
           left: clampedOffset.dx,
           top: clampedOffset.dy,
           width: overlaySize.width,
           height: overlaySize.height,
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-            child: TooltipBox(
-              widget.tooltipWhenFocused!,
-              padding: tooltipPadding,
-              margin: tooltipMargin,
-              border: tooltipBorder,
-              textStyle: Theme.of(context).textTheme.bodyLarge!,
-            ),
+          child: TooltipBox(
+            widget.tooltipWhenFocused!,
+            padding: tooltipPadding,
+            margin: tooltipMargin,
+            border: tooltipBorderWidth,
+            textStyle: Theme.of(context).textTheme.bodyLarge!,
           ),
         ),
-      );
-    } else {
-      _overlayEntry = OverlayEntry(
-        builder: (overlayContext) => BackdropFilter(filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2), child: const SizedBox()),
       );
     }
 
@@ -214,44 +232,61 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
       ),
     );
 
-    Overlay.of(context).insert(_overlayEntry!);
+    Overlay.of(context).insert(_overlayEntryBackdrop);
     Overlay.of(context).insert(_overlayEntryChild!);
+    if (_overlayEntryText != null) Overlay.of(context).insert(_overlayEntryText!);
   }
 
   void _updateOverlay() {
     log('_updateOverlay');
-    _overlayEntry?.remove();
+    _overlayEntryBackdrop.remove();
     _overlayEntryChild?.remove();
+    _overlayEntryText?.remove();
     _showOverlay();
   }
 
   void _disposeOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
+    _overlayEntryBackdrop.remove();
+    _overlayEntryBackdrop.markNeedsBuild();
     _overlayEntryChild?.remove();
     _overlayEntryChild = null;
+    _overlayEntryText?.remove();
+    _overlayEntryText = null;
   }
 }
 
-Size getTextSize(BuildContext context, {required String tooltip}) {
-  return textSizeOf(tooltip, Theme.of(context).textTheme.bodyLarge!);
-}
-
-Offset getClampedOffset({required Size overlaySize, required BuildContext context}) {
-  final screenSize = MediaQuery.of(context).size;
-  final renderBox = context.findRenderObject() as RenderBox;
-  final offset = renderBox.localToGlobal(Offset.zero);
+Offset _getClampedOverlayOffset({
+  required Size overlaySize,
+  required Alignment alignment,
+  double padding = 12.0,
+  required RenderBox? anchor,
+  required Size screenSize,
+}) {
+  final anchorSize = anchor?.size ?? Size.zero;
+  final anchorOffset = anchor?.localToGlobal(Offset.zero) ?? Offset.zero;
   final preferredOffset = Offset(
-    offset.dx + renderBox.size.width / 2 - overlaySize.width / 2,
-    offset.dy - renderBox.size.height / 2 - overlaySize.height - 12,
+    anchorOffset.dx + (anchorSize.width - overlaySize.width) / 2 + alignment.x * ((anchorSize.width + overlaySize.width) / 2 + padding),
+    anchorOffset.dy + (anchorSize.height - overlaySize.height) / 2 + alignment.y * ((anchorSize.height + overlaySize.height) / 2 + padding),
   );
+
   const minOffset = Offset(0, 0);
   final maxOffset = Offset(
     screenSize.width - overlaySize.width,
     screenSize.height - overlaySize.height,
   );
-  return Offset(
-    preferredOffset.dx.clamp(minOffset.dx, maxOffset.dx),
-    preferredOffset.dy.clamp(minOffset.dy, maxOffset.dy),
-  );
+
+  double clampedX;
+  double clampedY;
+  if (minOffset.dx > maxOffset.dx) {
+    clampedX = 0.0;
+  } else {
+    clampedX = preferredOffset.dx.clamp(minOffset.dx, maxOffset.dx);
+  }
+  if (minOffset.dy > maxOffset.dy) {
+    clampedY = 0.0;
+  } else {
+    clampedY = preferredOffset.dy.clamp(minOffset.dy, maxOffset.dy);
+  }
+
+  return Offset(clampedX, clampedY);
 }

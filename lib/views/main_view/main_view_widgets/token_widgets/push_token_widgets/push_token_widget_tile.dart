@@ -27,8 +27,9 @@ class PushTokenWidgetTile extends ConsumerWidget {
         if (token.issuer.isNotEmpty) token.issuer,
       ],
       trailing: FocusedItemAsOverlay(
-        isFocused: ref.watch(introductionProvider).isPollForChangesConditionFulfilled(hasPushToken: true),
-        onTap: () {
+        tooltipWhenFocused: 'Push Token',
+        isFocused: ref.watch(introductionProvider).isPollForChangesConditionFulfilled(hasPushToken: token.isRolledOut),
+        onComplete: () {
           ref.read(introductionProvider.notifier).complete(Introduction.pollForChanges);
         },
         child: const Icon(

@@ -450,4 +450,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get licensesAndVersion => 'Licenses and version';
+
+  @override
+  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+
+  @override
+  String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
+
+  @override
+  String get introTokenSwipe => 'Swipe tokens to the left to see available actions.';
+
+  @override
+  String get introEditToken => 'Here you can edit the token name and see some details about the token.';
+
+  @override
+  String get introLockToken => 'To improve security even more, you can lock tokens.\nThen the OTP value can only be used after authentication.';
+
+  @override
+  String get introAddFolder => 'You can create folders\nto organize your tokens.';
+
+  @override
+  String get introPollForChallenges => 'This is a push token. You can check for new challenges by dragging down the token list.';
+
+  @override
+  String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';
 }

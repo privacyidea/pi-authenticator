@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/widgets/focused_item_as_overlay.dart';
 
 import '../../model/enums/introduction_enum.dart';
@@ -12,7 +13,9 @@ class TokenIntroduction extends ConsumerWidget {
   @override
   Widget build(context, ref) {
     return FocusedItemAsOverlay(
-      onTap: () {
+      tooltipWhenFocused: AppLocalizations.of(context)!.introTokenSwipe,
+      alignment: Alignment.bottomCenter,
+      onComplete: () {
         ref.read(introductionProvider.notifier).complete(Introduction.tokenSwipe);
       },
       isFocused: ref.watch(introductionProvider).isTokenSwipeConditionFulfilled(stateHasToken: true),

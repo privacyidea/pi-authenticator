@@ -960,6 +960,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Licenses and version'**
   String get licensesAndVersion;
+
+  /// No description provided for @introScanQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.'**
+  String get introScanQrCode;
+
+  /// No description provided for @introAddTokenManually.
+  ///
+  /// In en, this message translates to:
+  /// **'If you don\'t want to scan a QR code, you can also add tokens manually.'**
+  String get introAddTokenManually;
+
+  /// No description provided for @introTokenSwipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe tokens to the left to see available actions.'**
+  String get introTokenSwipe;
+
+  /// No description provided for @introEditToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Here you can edit the token name and see some details about the token.'**
+  String get introEditToken;
+
+  /// No description provided for @introLockToken.
+  ///
+  /// In en, this message translates to:
+  /// **'To improve security even more, you can lock tokens.\nThen the OTP value can only be used after authentication.'**
+  String get introLockToken;
+
+  /// No description provided for @introAddFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'You can create folders\nto organize your tokens.'**
+  String get introAddFolder;
+
+  /// No description provided for @introPollForChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'This is a push token. You can check for new challenges by dragging down the token list.'**
+  String get introPollForChallenges;
+
+  /// No description provided for @introHidePushTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Your push tokens are hidden now.\nBut you can still see them on the push token screen.'**
+  String get introHidePushTokens;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

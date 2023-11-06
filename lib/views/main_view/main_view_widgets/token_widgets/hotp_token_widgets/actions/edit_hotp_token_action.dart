@@ -35,9 +35,11 @@ class EditHOTPTokenAction extends TokenAction {
         _showDialog();
       },
       child: FocusedItemAsOverlay(
+        tooltipWhenFocused: AppLocalizations.of(context)!.introEditToken,
         childIsMoving: true,
+        alignment: Alignment.bottomCenter,
         isFocused: ref.watch(introductionProvider).isEditTokenConditionFulfilled(editTokenVisible: true),
-        onTap: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
+        onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

@@ -31,10 +31,10 @@ class TooltipBox extends StatelessWidget {
             ),
           ],
         ),
-        width: MediaQuery.of(context).size.width * 0.5,
         child: Text(
           tooltip,
           style: textStyle,
+          textAlign: TextAlign.center,
         ),
       );
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import '../../../model/enums/introduction_enum.dart';
 import '../../../utils/riverpod_providers.dart';
 
@@ -40,11 +41,11 @@ class MainViewNavigationBar extends ConsumerWidget {
                     Center(
                       heightFactor: 0.6,
                       child: FocusedItemAsOverlay(
-                          onTap: () {
+                          onComplete: () {
                             ref.read(introductionProvider.notifier).complete(Introduction.scanQrCode);
                           },
                           isFocused: ref.watch(introductionProvider).isScanQrCodeConditionFulfilled(),
-                          tooltipWhenFocused: 'Scan a Token!',
+                          tooltipWhenFocused: AppLocalizations.of(context)!.introScanQrCode,
                           child: const QrScannerButton()),
                     ),
                     Center(
@@ -69,11 +70,11 @@ class MainViewNavigationBar extends ConsumerWidget {
                                     Navigator.pushNamed(context, AddTokenManuallyView.routeName);
                                   },
                                   icon: FocusedItemAsOverlay(
-                                    onTap: () {
+                                    onComplete: () {
                                       ref.read(introductionProvider.notifier).complete(Introduction.addTokenManually);
                                     },
                                     isFocused: ref.watch(introductionProvider).isAddTokenManuallyConditionFulfilled(),
-                                    tooltipWhenFocused: 'Add token manually',
+                                    tooltipWhenFocused: AppLocalizations.of(context)!.introAddTokenManually,
                                     child: const FittedBox(
                                       child: Icon(Icons.add_moderator),
                                     ),
@@ -91,8 +92,8 @@ class MainViewNavigationBar extends ConsumerWidget {
                                   isFocused: ref
                                       .watch(introductionProvider)
                                       .isAddFolderConditionFulfilled(hasThreeTokens: ref.watch(tokenProvider).tokens.length >= 3),
-                                  tooltipWhenFocused: 'Add folder',
-                                  onTap: () => ref.read(introductionProvider.notifier).complete(Introduction.addFolder),
+                                  tooltipWhenFocused: AppLocalizations.of(context)!.introAddFolder,
+                                  onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.addFolder),
                                   child: AppBarItem(
                                     onPressed: () {
                                       showDialog(

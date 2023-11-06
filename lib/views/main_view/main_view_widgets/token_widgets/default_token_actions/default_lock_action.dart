@@ -28,9 +28,11 @@ class DefaultLockAction extends TokenAction {
         globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(isLocked: !token.isLocked));
       },
       child: FocusedItemAsOverlay(
+        tooltipWhenFocused: AppLocalizations.of(context)!.introLockToken,
         childIsMoving: true,
+        alignment: Alignment.bottomCenter,
         isFocused: ref.watch(introductionProvider).isLockTokenConditionFulfilled(lockTokenVisible: true),
-        onTap: () => ref.read(introductionProvider.notifier).complete(Introduction.lockToken),
+        onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.lockToken),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
