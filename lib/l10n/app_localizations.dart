@@ -991,6 +991,12 @@ abstract class AppLocalizations {
   /// **'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.'**
   String get introLockToken;
 
+  /// No description provided for @introDragToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.'**
+  String get introDragToken;
+
   /// No description provided for @introAddFolder.
   ///
   /// In en, this message translates to:
@@ -1000,7 +1006,7 @@ abstract class AppLocalizations {
   /// No description provided for @introPollForChallenges.
   ///
   /// In en, this message translates to:
-  /// **'This is a push token. You can check for new challenges by dragging down the token list.'**
+  /// **'You can check for new challenges by dragging down the token list.'**
   String get introPollForChallenges;
 
   /// No description provided for @introHidePushTokens.

@@ -21,7 +21,13 @@ class PreferenceIntroductionRepository implements IntroductionRepository {
       final introductionsState = IntroductionState.fromJson(decodedIntroductions);
       return introductionsState;
     } catch (e, s) {
-      Logger.error('Failed to load completed introductions', name: 'PreferenceIntroductionRepository#loadCompletedIntroductions', error: e, stackTrace: s);
+      Logger.warning(
+        'Failed to load completed introductions',
+        name: 'PreferenceIntroductionRepository#loadCompletedIntroductions',
+        error: e,
+        stackTrace: s,
+        verbose: true,
+      );
       return const IntroductionState();
     }
   }
@@ -33,7 +39,13 @@ class PreferenceIntroductionRepository implements IntroductionRepository {
       final encodedIntroductions = jsonEncode(introductions);
       return prefs.setString(_completedIntroductionsKey, encodedIntroductions);
     } catch (e, s) {
-      Logger.error('Failed to save completed introductions', name: 'PreferenceIntroductionRepository#saveCompletedIntroductions', error: e, stackTrace: s);
+      Logger.warning(
+        'Failed to load completed introductions',
+        name: 'PreferenceIntroductionRepository#loadCompletedIntroductions',
+        error: e,
+        stackTrace: s,
+        verbose: true,
+      );
       return false;
     }
   }

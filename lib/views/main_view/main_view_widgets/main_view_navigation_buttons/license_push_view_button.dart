@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import '../../../../model/enums/introduction_enum.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../widgets/focused_item_as_overlay.dart';
@@ -15,8 +16,8 @@ class LicensePushViewButton extends ConsumerWidget {
     final hidePushTokens = ref.watch(settingsProvider).hidePushTokens;
     return hidePushTokens
         ? FocusedItemAsOverlay(
-            isFocused: ref.watch(introductionProvider).isHidePushTokenConditionFulfilled(ref),
-            tooltipWhenFocused: 'Push Tokens',
+            isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.hidePushTokens),
+            tooltipWhenFocused: AppLocalizations.of(context)!.introHidePushTokens,
             onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.hidePushTokens),
             child: AppBarItem(
               onPressed: () => Navigator.pushNamed(context, PushTokensView.routeName),

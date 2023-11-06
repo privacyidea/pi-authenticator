@@ -6,12 +6,19 @@ part of 'introduction_state.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-IntroductionState _$IntroductionStateFromJson(Map<String, dynamic> json) => IntroductionState(
-      completedIntroductions: (json['completedIntroductions'] as List<dynamic>?)?.map((e) => $enumDecode(_$IntroductionEnumMap, e)).toSet() ?? const {},
+IntroductionState _$IntroductionStateFromJson(Map<String, dynamic> json) =>
+    IntroductionState(
+      completedIntroductions: (json['completedIntroductions'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$IntroductionEnumMap, e))
+              .toSet() ??
+          const {},
     );
 
-Map<String, dynamic> _$IntroductionStateToJson(IntroductionState instance) => <String, dynamic>{
-      'completedIntroductions': instance.completedIntroductions.map((e) => _$IntroductionEnumMap[e]!).toList(),
+Map<String, dynamic> _$IntroductionStateToJson(IntroductionState instance) =>
+    <String, dynamic>{
+      'completedIntroductions': instance.completedIntroductions
+          .map((e) => _$IntroductionEnumMap[e]!)
+          .toList(),
     };
 
 const _$IntroductionEnumMap = {
@@ -21,7 +28,8 @@ const _$IntroductionEnumMap = {
   Introduction.tokenSwipe: 'tokenSwipe',
   Introduction.editToken: 'editToken',
   Introduction.lockToken: 'lockToken',
+  Introduction.dragToken: 'dragToken',
   Introduction.addFolder: 'addFolder',
-  Introduction.pollForChanges: 'pollForChanges',
-  Introduction.hidePushTokens: 'hidePushToken',
+  Introduction.pollForChallenges: 'pollForChallenges',
+  Introduction.hidePushTokens: 'hidePushTokens',
 };

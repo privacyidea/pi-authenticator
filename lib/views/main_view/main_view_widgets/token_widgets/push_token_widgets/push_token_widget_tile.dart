@@ -30,9 +30,9 @@ class PushTokenWidgetTile extends ConsumerWidget {
       trailing: FocusedItemAsOverlay(
         tooltipWhenFocused: AppLocalizations.of(context)!.introPollForChallenges,
         alignment: Alignment.centerLeft,
-        isFocused: ref.watch(introductionProvider).isPollForChangesConditionFulfilled(ref),
+        isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.pollForChallenges),
         onComplete: () {
-          ref.read(introductionProvider.notifier).complete(Introduction.pollForChanges);
+          ref.read(introductionProvider.notifier).complete(Introduction.pollForChallenges);
         },
         child: const Icon(
           Icons.notifications,

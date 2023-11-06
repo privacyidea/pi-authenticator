@@ -38,7 +38,7 @@ class EditHOTPTokenAction extends TokenAction {
         tooltipWhenFocused: AppLocalizations.of(context)!.introEditToken,
         childIsMoving: true,
         alignment: Alignment.bottomCenter,
-        isFocused: ref.watch(introductionProvider).isEditTokenConditionFulfilled(),
+        isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.editToken),
         onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

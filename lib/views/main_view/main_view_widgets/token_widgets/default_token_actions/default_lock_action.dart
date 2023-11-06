@@ -31,7 +31,7 @@ class DefaultLockAction extends TokenAction {
         tooltipWhenFocused: AppLocalizations.of(context)!.introLockToken,
         childIsMoving: true,
         alignment: Alignment.bottomCenter,
-        isFocused: ref.watch(introductionProvider).isLockTokenConditionFulfilled(),
+        isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.lockToken),
         onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.lockToken),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

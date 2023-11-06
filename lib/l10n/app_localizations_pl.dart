@@ -467,10 +467,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get introLockToken => 'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.';
 
   @override
+  String get introDragToken => 'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.';
+
+  @override
   String get introAddFolder => 'You can create folders\nto organize your tokens.';
 
   @override
-  String get introPollForChallenges => 'This is a push token. You can check for new challenges by dragging down the token list.';
+  String get introPollForChallenges => 'You can check for new challenges by dragging down the token list.';
 
   @override
   String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';

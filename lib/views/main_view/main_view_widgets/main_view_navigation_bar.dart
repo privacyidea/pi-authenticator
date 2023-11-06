@@ -44,7 +44,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                           onComplete: () {
                             ref.read(introductionProvider.notifier).complete(Introduction.scanQrCode);
                           },
-                          isFocused: ref.watch(introductionProvider).isScanQrCodeConditionFulfilled(),
+                          isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.scanQrCode),
                           tooltipWhenFocused: AppLocalizations.of(context)!.introScanQrCode,
                           child: const QrScannerButton()),
                     ),
@@ -73,7 +73,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                                     onComplete: () {
                                       ref.read(introductionProvider.notifier).complete(Introduction.addTokenManually);
                                     },
-                                    isFocused: ref.watch(introductionProvider).isAddTokenManuallyConditionFulfilled(),
+                                    isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.addTokenManually),
                                     tooltipWhenFocused: AppLocalizations.of(context)!.introAddTokenManually,
                                     child: const FittedBox(
                                       child: Icon(Icons.add_moderator),
@@ -89,7 +89,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                               child: Padding(
                                 padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
                                 child: FocusedItemAsOverlay(
-                                  isFocused: ref.watch(introductionProvider).isAddFolderConditionFulfilled(ref),
+                                  isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.addFolder),
                                   tooltipWhenFocused: AppLocalizations.of(context)!.introAddFolder,
                                   onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.addFolder),
                                   child: AppBarItem(
