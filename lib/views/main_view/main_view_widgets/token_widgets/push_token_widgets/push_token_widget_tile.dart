@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/widgets/focused_item_as_overlay.dart';
 
 import '../../../../../model/enums/introduction_enum.dart';
@@ -27,8 +28,9 @@ class PushTokenWidgetTile extends ConsumerWidget {
         if (token.issuer.isNotEmpty) token.issuer,
       ],
       trailing: FocusedItemAsOverlay(
-        tooltipWhenFocused: 'Push Token',
-        isFocused: ref.watch(introductionProvider).isPollForChangesConditionFulfilled(hasPushToken: token.isRolledOut),
+        tooltipWhenFocused: AppLocalizations.of(context)!.introPollForChallenges,
+        alignment: Alignment.centerLeft,
+        isFocused: ref.watch(introductionProvider).isPollForChangesConditionFulfilled(ref),
         onComplete: () {
           ref.read(introductionProvider.notifier).complete(Introduction.pollForChanges);
         },

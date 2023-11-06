@@ -461,10 +461,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get introTokenSwipe => 'Swipe tokens to the left to see available actions.';
 
   @override
-  String get introEditToken => 'Here you can edit the token name and see some details about the token.';
+  String get introEditToken => 'Here you can edit the token name and see some details.';
 
   @override
-  String get introLockToken => 'To improve security even more, you can lock tokens.\nThen the OTP value can only be used after authentication.';
+  String get introLockToken => 'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.';
 
   @override
   String get introAddFolder => 'You can create folders\nto organize your tokens.';

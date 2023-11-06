@@ -982,13 +982,13 @@ abstract class AppLocalizations {
   /// No description provided for @introEditToken.
   ///
   /// In en, this message translates to:
-  /// **'Here you can edit the token name and see some details about the token.'**
+  /// **'Here you can edit the token name and see some details.'**
   String get introEditToken;
 
   /// No description provided for @introLockToken.
   ///
   /// In en, this message translates to:
-  /// **'To improve security even more, you can lock tokens.\nThen the OTP value can only be used after authentication.'**
+  /// **'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.'**
   String get introLockToken;
 
   /// No description provided for @introAddFolder.

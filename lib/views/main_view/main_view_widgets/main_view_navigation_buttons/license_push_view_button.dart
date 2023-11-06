@@ -15,7 +15,7 @@ class LicensePushViewButton extends ConsumerWidget {
     final hidePushTokens = ref.watch(settingsProvider).hidePushTokens;
     return hidePushTokens
         ? FocusedItemAsOverlay(
-            isFocused: ref.watch(introductionProvider).isHidePushTokenConditionFulfilled(hidePushTokens: hidePushTokens),
+            isFocused: ref.watch(introductionProvider).isHidePushTokenConditionFulfilled(ref),
             tooltipWhenFocused: 'Push Tokens',
             onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.hidePushTokens),
             child: AppBarItem(

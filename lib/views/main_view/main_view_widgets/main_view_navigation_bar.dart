@@ -89,9 +89,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                               child: Padding(
                                 padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
                                 child: FocusedItemAsOverlay(
-                                  isFocused: ref
-                                      .watch(introductionProvider)
-                                      .isAddFolderConditionFulfilled(hasThreeTokens: ref.watch(tokenProvider).tokens.length >= 3),
+                                  isFocused: ref.watch(introductionProvider).isAddFolderConditionFulfilled(ref),
                                   tooltipWhenFocused: AppLocalizations.of(context)!.introAddFolder,
                                   onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.addFolder),
                                   child: AppBarItem(

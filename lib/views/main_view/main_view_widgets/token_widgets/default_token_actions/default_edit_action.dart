@@ -32,7 +32,7 @@ class DefaultEditAction extends TokenAction {
         child: FocusedItemAsOverlay(
           tooltipWhenFocused: AppLocalizations.of(context)!.renameToken,
           childIsMoving: true,
-          isFocused: ref.watch(introductionProvider).isEditTokenConditionFulfilled(editTokenVisible: true),
+          isFocused: ref.watch(introductionProvider).isEditTokenConditionFulfilled(),
           onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

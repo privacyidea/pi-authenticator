@@ -18,7 +18,7 @@ class TokenIntroduction extends ConsumerWidget {
       onComplete: () {
         ref.read(introductionProvider.notifier).complete(Introduction.tokenSwipe);
       },
-      isFocused: ref.watch(introductionProvider).isTokenSwipeConditionFulfilled(stateHasToken: true),
+      isFocused: ref.watch(introductionProvider).isTokenSwipeConditionFulfilled(ref),
       overlayChild: Column(
         children: [child],
       ),

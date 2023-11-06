@@ -458,8 +458,8 @@
   "introScanQrCode": "You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.",
   "introAddTokenManually": "If you don't want to scan a QR code, you can also add tokens manually.",
   "introTokenSwipe": "Swipe tokens to the left to see available actions.",
-  "introEditToken": "Here you can edit the token name and see some details about the token.",
-  "introLockToken": "To improve security even more, you can lock tokens.\nThen the OTP value can only be used after authentication.",
+  "introEditToken": "Here you can edit the token name and see some details.",
+  "introLockToken": "To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.",
   "introAddFolder": "You can create folders\nto organize your tokens.",
   "introPollForChallenges": "This is a push token. You can check for new challenges by dragging down the token list.",
   "introHidePushTokens": "Your push tokens are hidden now.\nBut you can still see them on the push token screen."

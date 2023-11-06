@@ -33,7 +33,7 @@ class FocusedItemAsOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return isFocused
         ? _FocusedItemOverlay(
-            onTap: onComplete,
+            onComplete: onComplete,
             tooltipWhenFocused: tooltipWhenFocused,
             childIsMoving: childIsMoving,
             overlayChild: overlayChild,
@@ -50,9 +50,15 @@ class _FocusedItemOverlay extends StatefulWidget {
   final Widget? overlayChild;
   final String? tooltipWhenFocused;
   final Alignment alignment;
-  final void Function()? onTap;
-  const _FocusedItemOverlay(
-      {required this.child, this.tooltipWhenFocused, this.onTap, required this.childIsMoving, this.overlayChild, required this.alignment});
+  final void Function()? onComplete;
+  const _FocusedItemOverlay({
+    required this.child,
+    this.tooltipWhenFocused,
+    this.onComplete,
+    required this.childIsMoving,
+    this.overlayChild,
+    required this.alignment,
+  });
 
   @override
   State<_FocusedItemOverlay> createState() => _FocusedItemOverlayState();
@@ -218,8 +224,8 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
           ),
           Positioned.fill(
             child: GestureDetector(
-              onTap: () {
-                widget.onTap?.call();
+              onTapDown: (details) {
+                widget.onComplete?.call();
               },
               child: Container(
                 height: double.maxFinite,
