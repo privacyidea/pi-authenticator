@@ -56,41 +56,46 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
     WidgetsFlutterBinding.ensureInitialized();
     globalRef = ref;
     final locale = ref.watch(settingsProvider).currentLocale;
-    return MaterialApp(
-      debugShowCheckedModeBanner: true,
-      navigatorKey: globalNavigatorKey,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      locale: locale,
-      title: customization.appName,
-      theme: customization.generateLightTheme(),
-      darkTheme: customization.generateDarkTheme(),
-      scaffoldMessengerKey: globalSnackbarKey, // <= this
-      themeMode: EasyDynamicTheme.of(context).themeMode,
-      initialRoute: SplashScreen.routeName,
-      routes: {
-        SplashScreen.routeName: (context) => SplashScreen(
-              appImage: customization.appImage,
-              appIcon: customization.appIcon,
-              appName: customization.appName,
-            ),
-        OnboardingView.routeName: (context) => OnboardingView(
-              appName: customization.appName,
-            ),
-        MainView.routeName: (context) => MainView(
-              appIcon: customization.appIcon,
-              appName: customization.appName,
-            ),
-        SettingsView.routeName: (context) => const SettingsView(),
-        AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
-        QRScannerView.routeName: (context) => const QRScannerView(),
-        LicenseView.routeName: (context) => LicenseView(
-              appImage: customization.appImage,
-              appName: customization.appName,
-              websiteLink: customization.websiteLink,
-            ),
-        PushTokensView.routeName: (context) => const PushTokensView(),
-      },
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(appConstraintsProvider.notifier).state = constraints;
+      });
+      return MaterialApp(
+        debugShowCheckedModeBanner: true,
+        navigatorKey: globalNavigatorKey,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: locale,
+        title: customization.appName,
+        theme: customization.generateLightTheme(),
+        darkTheme: customization.generateDarkTheme(),
+        scaffoldMessengerKey: globalSnackbarKey, // <= this
+        themeMode: EasyDynamicTheme.of(context).themeMode,
+        initialRoute: SplashScreen.routeName,
+        routes: {
+          SplashScreen.routeName: (context) => SplashScreen(
+                appImage: customization.appImage,
+                appIcon: customization.appIcon,
+                appName: customization.appName,
+              ),
+          OnboardingView.routeName: (context) => OnboardingView(
+                appName: customization.appName,
+              ),
+          MainView.routeName: (context) => MainView(
+                appIcon: customization.appIcon,
+                appName: customization.appName,
+              ),
+          SettingsView.routeName: (context) => const SettingsView(),
+          AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
+          QRScannerView.routeName: (context) => const QRScannerView(),
+          LicenseView.routeName: (context) => LicenseView(
+                appImage: customization.appImage,
+                appName: customization.appName,
+                websiteLink: customization.websiteLink,
+              ),
+          PushTokensView.routeName: (context) => const PushTokensView(),
+        },
+      );
+    });
   }
 }

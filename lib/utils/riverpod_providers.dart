@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../model/states/introduction_state.dart';
@@ -116,7 +117,7 @@ final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>(
   },
 );
 
-final tokenFolderProvider = StateNotifierProvider.autoDispose<TokenFolderNotifier, TokenFolderState>(
+final tokenFolderProvider = StateNotifierProvider<TokenFolderNotifier, TokenFolderState>(
   (ref) {
     Logger.info("New TokenFolderNotifier created");
     return TokenFolderNotifier(
@@ -131,6 +132,7 @@ final draggingSortableProvider = StateProvider<SortableMixin?>((ref) {
 });
 
 final tokenFilterProvider = StateProvider<TokenFilter?>((ref) => null);
+
 final connectivityProvider = StreamProvider<ConnectivityResult>((ref) {
   Logger.info("New connectivityProvider created");
   ref.read(tokenProvider.notifier).loadingRepo.then(
@@ -155,6 +157,11 @@ final statusMessageProvider = StateProvider<(String, String?)?>((ref) {
 final introductionProvider = StateNotifierProvider<InrtroductionNotifier, IntroductionState>((ref) {
   Logger.info("New introductionProvider created");
   return InrtroductionNotifier(repository: PreferenceIntroductionRepository());
+});
+
+final appConstraintsProvider = StateProvider<BoxConstraints?>((ref) {
+  Logger.info("New constraintsProvider created");
+  return null;
 });
 
 /// Only used for the app customizer

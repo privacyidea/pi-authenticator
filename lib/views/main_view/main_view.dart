@@ -63,17 +63,16 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
         body: ConnectivityListener(
           child: StatusBar(
             child: Stack(
-              clipBehavior: Clip.antiAliasWithSaveLayer,
               children: [
                 Visibility(
                   visible: !hasFilter,
                   child: MainViewTokensList(nestedScrollViewKey: globalKey),
                 ),
-                const MainViewNavigationBar(),
                 Visibility(
                   visible: hasFilter,
                   child: const MainViewTokensListFiltered(),
                 ),
+                const MainViewNavigationBar(),
               ],
             ),
           ),

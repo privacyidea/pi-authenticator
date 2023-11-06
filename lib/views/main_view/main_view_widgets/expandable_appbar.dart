@@ -55,7 +55,11 @@ class _ExpandableAppBarState extends State<ExpandableAppBar> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      currentExpansion = expandTarget;
+      if (currentExpansion != expandTarget && mounted) {
+        setState(() {
+          currentExpansion = expandTarget;
+        });
+      }
     });
     return GestureDetector(
         onVerticalDragUpdate: _onVertivalDragUpdate,
