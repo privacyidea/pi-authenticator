@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class OnboardingPage extends StatelessWidget {
-  const OnboardingPage({Key? key, required, required this.title, required this.subtitle, this.onPressed, this.buttonTitle}) : super(key: key);
+  const OnboardingPage({super.key, required, required this.title, required this.subtitle, this.onPressed, this.buttonTitle});
 
   final String title;
   final String subtitle;

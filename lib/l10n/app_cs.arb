@@ -180,16 +180,22 @@
   "@tokensDoNotSupportSynchronization": {
     "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
   },
-  "errorRollOutFailed": "Registrace tokenu {name} selhala. Kód chyby: {errorCode}",
+  "errorRollOutFailed": "Registrace tokenu {name} selhala.",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "type": "text",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
-      },
-      "errorCode": {
-        "example": "500"
+      }
+    }
+  },
+  "statusCode": "Stavový kód: {statusCode}",
+  "@statusCode": {
+    "description": "Tells the user the status code of the error.",
+    "placeholders": {
+      "statusCode": {
+        "example": "400"
       }
     }
   },
@@ -219,9 +225,29 @@
   "@unexpectedError": {
     "description": "Title of page report mode."
   },
-  "pollingFailNoNetworkConnection": "Stahování selhalo. Server není dostupný.",
-  "@pollingFailNoNetworkConnection": {
-    "description": "Tells the user that the roll-out failed because no network connection is available."
+  "pollingFailed": "Dotaz se nezdařil.",
+  "@pollingFailed": {
+    "description": "Tells the user that the polling failed."
+  },
+  "noNetworkConnection": "Žádné připojení k síti.",
+  "@noNetworkConnection": {
+    "description": "Tells the user that there is no network connection."
+  },
+  "connectionFailed": "Připojení se nezdařilo.",
+  "@connectionFailed": {
+    "description": "Tells the user that the connection failed."
+  },
+  "checkYourNetwork": "Zkontrolujte prosím síťové připojení a zkuste to znovu.",
+  "@checkYourNetwork": {
+    "description": "Tells the user to check the network connection."
+  },
+  "serverNotReachable": "Na server se nepodařilo dovolat.",
+  "@serverNotReachable": {
+    "description": "Tells the user that the server could not be reached."
+  },
+  "couldNotSignMessage": "Zprávu se nepodařilo podepsat.",
+  "@couldNotSignMessage": {
+    "description": "Tells the user that the message could not be signed."
   },
   "useDeviceLocaleTitle": "Použít jazyk zařízení",
   "@useDeviceLocaleTitle": {
@@ -335,8 +361,8 @@
   "sendErrorDialogHeader": "Odeslat e-mailem",
   "ok": "Ok",
   "noLogToSend": "Je třeba odeslat protokol.",
-  "errorLogFileAttached": "Přiložen je soubor protokolu o chybách.",
-  "@errorLogFileAttached": {
+  "errorMailBody": "Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.",
+  "@errorMailBody": {
     "description": "Message for email body"
   },
   "errorLogCleared": "Protokoly chyb byly vymazány.",
@@ -430,9 +456,11 @@
   "grantCameraPermissionDialogPermanentlyDenied": "Oprávnění kamery je trvale odepřeno. Udělte prosím oprávnění fotoaparátu v nastavení telefonu.",
   "grantCameraPermissionDialogButton": "Udělit oprávnění",
   "decryptErrorTitle": "Chyba dešifrování",
-  "decryptErrorContent": "Při dešifrování tokenů došlo k chybě. Zkuste to prosím znovu.\nPokud chyba přetrvává, musíte poškozená data odstranit.",
-  "decryptErrorButton": "Odstranit všechny tokeny",
-  "decryptErrorDeleteConfirmationContent": "Určitě chcete odstranit všechny tokeny?",
+  "decryptErrorContent": "Bohužel se aplikaci nepodařilo dešifrovat vaše tokeny. To znamená, že šifrovací klíč je poškozen. Můžete to zkusit znovu nebo odstranit data aplikace, čímž by došlo k odstranění tokenů v aplikaci.",
+  "decryptErrorButtonDelete": "Odstranit",
+  "decryptErrorButtonSendError": "Odeslat chybu",
+  "decryptErrorButtonRetry": "Opakování",
+  "decryptErrorDeleteConfirmationContent": "Jste si jisti, že chcete data aplikace odstranit?",
   "hidePushTokens": "Skrýt push tokeny",
   "hidePushTokensDescription": "Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.",
   "licensesAndVersion": "Licence a verze"

@@ -11,7 +11,7 @@ import 'token_folder_expandable.dart';
 class TokenFolderWidget extends ConsumerWidget {
   final TokenFolder folder;
 
-  const TokenFolderWidget(this.folder, {Key? key}) : super(key: key);
+  const TokenFolderWidget(this.folder, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -129,8 +129,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get tokensDoNotSupportSynchronization => 'Następujące tokeny nie wspierają synchronizacji i muszą zostać wdrożone od nowa:';
 
   @override
-  String errorRollOutFailed(Object name, Object errorCode) {
-    return 'Wdrażanie tokenu $name nieudane. Kod błędu: $errorCode';
+  String errorRollOutFailed(Object name) {
+    return 'Wdrażanie tokenu $name nieudane.';
+  }
+
+  @override
+  String statusCode(Object statusCode) {
+    return 'Kod statusu: $statusCode';
   }
 
   @override
@@ -156,7 +161,22 @@ class AppLocalizationsPl extends AppLocalizations {
   String get unexpectedError => 'Wystąpił nieoczekiwany błąd.';
 
   @override
-  String get pollingFailNoNetworkConnection => 'Serwer jest nieosiągalny.';
+  String get pollingFailed => 'Zapytanie nie powiodło się.';
+
+  @override
+  String get noNetworkConnection => 'Brak połączenia sieciowego.';
+
+  @override
+  String get connectionFailed => 'Połączenie nie powiodło się.';
+
+  @override
+  String get checkYourNetwork => 'Sprawdź połączenie sieciowe i spróbuj ponownie.';
+
+  @override
+  String get serverNotReachable => 'Nie można uzyskać połączenia z serwerem.';
+
+  @override
+  String get couldNotSignMessage => 'Nie można podpisać wiadomości.';
 
   @override
   String get useDeviceLocaleTitle => 'Użyj języka urządzenia.';
@@ -269,7 +289,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get noLogToSend => 'There is log to send.';
 
   @override
-  String get errorLogFileAttached => 'Plik dziennika błędów jest dołączony';
+  String get errorMailBody => 'Plik dziennika błędów jest dołączony.\nTekst ten można zastąpić dodatkowymi informacjami o błędzie.';
 
   @override
   String get errorLogCleared => 'Wyczyszczono dzienniki błędów';
@@ -408,13 +428,19 @@ class AppLocalizationsPl extends AppLocalizations {
   String get decryptErrorTitle => 'Decryption error';
 
   @override
-  String get decryptErrorContent => 'Wystąpił błąd podczas odszyfrowywania tokenów. Jeśli błąd będzie się powtarzał, musisz usunąć uszkodzone dane';
+  String get decryptErrorContent => 'Niestety, aplikacja nie była w stanie odszyfrować tokenów. Oznacza to, że klucz szyfrowania jest uszkodzony. Możesz spróbować ponownie lub usunąć dane aplikacji, co spowoduje usunięcie tokenów w aplikacji.';
 
   @override
-  String get decryptErrorButton => 'Usuń wszystkie tokeny';
+  String get decryptErrorButtonDelete => 'Usuń';
 
   @override
-  String get decryptErrorDeleteConfirmationContent => 'Czy na pewno chcesz usunąć wszystkie tokeny?';
+  String get decryptErrorButtonSendError => 'Wyślij błąd';
+
+  @override
+  String get decryptErrorButtonRetry => 'Ponów próbę';
+
+  @override
+  String get decryptErrorDeleteConfirmationContent => 'Czy na pewno chcesz usunąć dane aplikacji?';
 
   @override
   String get hidePushTokens => 'Ukryj tokeny push';
@@ -424,4 +450,31 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get licensesAndVersion => 'Licencje i wersja';
+
+  @override
+  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+
+  @override
+  String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
+
+  @override
+  String get introTokenSwipe => 'Swipe tokens to the left to see available actions.';
+
+  @override
+  String get introEditToken => 'Here you can edit the token name and see some details.';
+
+  @override
+  String get introLockToken => 'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.';
+
+  @override
+  String get introDragToken => 'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.';
+
+  @override
+  String get introAddFolder => 'You can create folders\nto organize your tokens.';
+
+  @override
+  String get introPollForChallenges => 'You can check for new challenges by dragging down the token list.';
+
+  @override
+  String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';
 }

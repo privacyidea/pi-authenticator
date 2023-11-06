@@ -22,7 +22,7 @@ class FirebaseUtils {
   Future<void> initFirebase({
     required Future<void> Function(RemoteMessage) foregroundHandler,
     required Future<void> Function(RemoteMessage) backgroundHandler,
-    required void Function(String?) updateFirebaseToken,
+    required dynamic Function(String?) updateFirebaseToken,
   }) async {
     if (_initialized) {
       return;
@@ -31,7 +31,7 @@ class FirebaseUtils {
     await Firebase.initializeApp();
 
     try {
-      await FirebaseMessaging.instance.requestPermission();
+      // await FirebaseMessaging.instance.requestPermission();
     } on FirebaseException catch (e, s) {
       Logger.warning(
         'e.code: ${e.code}, '
@@ -55,7 +55,7 @@ class FirebaseUtils {
     try {
       String? firebaseToken = await getFBToken();
 
-      if (firebaseToken != await SecureTokenRepository.getCurrentFirebaseToken()) {
+      if (firebaseToken != await SecureTokenRepository.getCurrentFirebaseToken() && firebaseToken != null) {
         updateFirebaseToken(firebaseToken);
       }
     } on PlatformException catch (error) {
@@ -117,15 +117,7 @@ class FirebaseUtils {
       firebaseToken = await FirebaseMessaging.instance.getToken();
     } on FirebaseException catch (e, s) {
       String errorMessage = e.message ?? 'no error message';
-      final SnackBar snackBar = SnackBar(
-        content: Text(
-          "Unable to retrieve Firebase token! ($errorMessage: ${e.code})",
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        ),
-      );
       Logger.warning('Unable to retrieve Firebase token! ($errorMessage: ${e.code})', name: 'push_provider.dart#getFBToken', error: e, stackTrace: s);
-      globalSnackbarKey.currentState?.showSnackBar(snackBar);
     }
 
     // Fall back to the last known firebase token

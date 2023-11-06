@@ -46,7 +46,7 @@ class HideableText extends StatelessWidget {
   final ValueNotifier<bool> isHiddenNotifier;
 
   const HideableText({
-    Key? key,
+    super.key,
     required this.text,
     required this.isHiddenNotifier,
     this.hideOnDefault = true,
@@ -55,7 +55,7 @@ class HideableText extends StatelessWidget {
     this.enabled = true,
     this.replaceCharacter = '\u2022',
     this.replaceWhitespaces = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

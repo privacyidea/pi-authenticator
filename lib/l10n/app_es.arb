@@ -178,15 +178,21 @@
   "@tokensDoNotSupportSynchronization": {
     "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
   },
-  "errorRollOutFailed": "Error en la extracción de el token {name}. Código de error: {errorCode}",
+  "errorRollOutFailed": "Error en la extracción de el token {name}.",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
-      },
-      "errorCode": {
-        "example": "500"
+      }
+    }
+  },
+  "statusCode": "Código de estado: {statusCode}",
+  "@statusCode": {
+    "description": "Tells the user the status code of the error.",
+    "placeholders": {
+      "statusCode": {
+        "example": "400"
       }
     }
   },
@@ -215,9 +221,29 @@
   "@unexpectedError": {
     "description": "Title of page report mode."
   },
-  "pollingFailNoNetworkConnection": "Error de sondeo. No se puede acceder al servidor.",
-  "@pollingFailNoNetworkConnection": {
-    "description": "Tells the user that the roll-out failed because no network connection is available."
+  "pollingFailed": "Consulta fallida.",
+  "@pollingFailed": {
+    "description": "Tells the user that the polling failed."
+  },
+  "noNetworkConnection": "No hay conexión a la red.",
+  "@noNetworkConnection": {
+    "description": "Tells the user that there is no network connection."
+  },
+  "connectionFailed": "Conexión fallida.",
+  "@connectionFailed": {
+    "description": "Tells the user that the connection failed."
+  },
+  "checkYourNetwork": "Compruebe su conexión de red e inténtelo de nuevo.",
+  "@checkYourNetwork": {
+    "description": "Tells the user to check the network connection."
+  },
+  "serverNotReachable": "No se ha podido acceder al servidor.",
+  "@serverNotReachable": {
+    "description": "Tells the user that the server could not be reached."
+  },
+  "couldNotSignMessage": "No se ha podido firmar el mensaje.",
+  "@couldNotSignMessage": {
+    "description": "Tells the user that the message could not be signed."
   },
   "useDeviceLocaleTitle": "Utiliza el idioma del teléfono",
   "@useDeviceLocaleTitle": {
@@ -331,7 +357,10 @@
   "sendErrorDialogHeader": "Enviar por correo electrónico",
   "ok": "Ok",
   "noLogToSend": "Hay log para enviar",
-  "errorLogFileAttached": "Se adjunta el archivo de registro de errores",
+  "errorMailBody": "Se adjunta el archivo de registro de errores.\nPuede sustituir este texto por información adicional sobre el error.",
+  "@errorMailBody": {
+    "description": "Message for email body"
+  },
   "errorLogCleared": "Registros de error borrados",
   "showDetails": "Mostrar detalles",
   "open": "Abrir",
@@ -423,9 +452,11 @@
   "grantCameraPermissionDialogPermanentlyDenied": "El permiso de cámara está denegado permanentemente. Concede el permiso de cámara en la configuración del teléfono",
   "grantCameraPermissionDialogButton": "Conceder permiso",
   "decryptErrorTitle": "Error de descifrado",
-  "decryptErrorContent": "Se ha producido un error al descifrar los tokens. Por favor, inténtalo de nuevo.\nSi el error persiste, tienes que borrar los datos corruptos",
-  "decryptErrorButton": "Borrar todos los Tokens",
-  "decryptErrorDeleteConfirmationContent": "¿Estás seguro de que quieres borrar todos los tokens?",
+  "decryptErrorContent": "Lamentablemente, la aplicación no ha podido descifrar tus tokens. Esto indica que la clave de cifrado está rota. Puedes volver a intentarlo o borrar los datos de la app, lo que eliminaría los tokens de la app.",
+  "decryptErrorButtonDelete": "Borrar",
+  "decryptErrorButtonSendError": "Enviar error",
+  "decryptErrorButtonRetry": "Reintentar",
+  "decryptErrorDeleteConfirmationContent": "¿Estás seguro de que quieres borrar los datos de la aplicación?",
   "hidePushTokens": "Ocultar tokens push",
   "hidePushTokensDescription": "Ocultar tokens push de la lista de tokens. Esto no borrará los tokens y seguirán siendo visibles en una pantalla aparte",
   "licensesAndVersion": "Licencias y versión"

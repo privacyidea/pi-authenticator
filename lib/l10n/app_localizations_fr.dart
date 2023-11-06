@@ -129,8 +129,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tokensDoNotSupportSynchronization => 'Ces jetons ne supportent pas la synchronisation et doivent être de nouveau générés:';
 
   @override
-  String errorRollOutFailed(Object name, Object errorCode) {
-    return 'Le déploiement du jeton $name a échoué. Erreur réseau: $errorCode';
+  String errorRollOutFailed(Object name) {
+    return 'Le déploiement du jeton $name a échoué.';
+  }
+
+  @override
+  String statusCode(Object statusCode) {
+    return 'Code d\'état : $statusCode';
   }
 
   @override
@@ -156,7 +161,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get unexpectedError => 'Une erreur inattendue s\'est produite.';
 
   @override
-  String get pollingFailNoNetworkConnection => 'L\'interrogation a échoué. Le serveur est injoignable.';
+  String get pollingFailed => 'Échec de la requête.';
+
+  @override
+  String get noNetworkConnection => 'Pas de connexion au réseau.';
+
+  @override
+  String get connectionFailed => 'La connexion a échoué.';
+
+  @override
+  String get checkYourNetwork => 'Veuillez vérifier votre connexion réseau et réessayer.';
+
+  @override
+  String get serverNotReachable => 'Le serveur n\'a pas pu être atteint.';
+
+  @override
+  String get couldNotSignMessage => 'Impossible de signer le message.';
 
   @override
   String get useDeviceLocaleTitle => 'Utiliser la langue de l\'appareil';
@@ -269,7 +289,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noLogToSend => 'Il y a un journal à envoyer';
 
   @override
-  String get errorLogFileAttached => 'Le fichier journal des erreurs est joint';
+  String get errorMailBody => 'Le fichier journal des erreurs est joint.\nVous pouvez remplacer ce texte par des informations supplémentaires sur l\'erreur.';
 
   @override
   String get errorLogCleared => 'Journaux d\'erreur effacés';
@@ -408,13 +428,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get decryptErrorTitle => 'Erreur de décryptage';
 
   @override
-  String get decryptErrorContent => 'Une erreur s\'est produite lors du décryptage des jetons. Veuillez réessayer. Si l\'erreur persiste, vous devez supprimer les données corrompues';
+  String get decryptErrorContent => 'Malheureusement, l\'application n\'a pas pu décrypter vos jetons. Cela indique que la clé de cryptage est cassée. Vous pouvez réessayer ou supprimer les données de l\'application, ce qui supprimera les jetons dans l\'application.';
 
   @override
-  String get decryptErrorButton => 'Supprimer tous les jetons';
+  String get decryptErrorButtonDelete => 'Supprimer';
 
   @override
-  String get decryptErrorDeleteConfirmationContent => 'Are you sure you want to delete all tokens ?';
+  String get decryptErrorButtonSendError => 'Erreur d\'envoi';
+
+  @override
+  String get decryptErrorButtonRetry => 'Réessayer';
+
+  @override
+  String get decryptErrorDeleteConfirmationContent => 'Êtes-vous sûr de vouloir supprimer les données de l\'application ?';
 
   @override
   String get hidePushTokens => 'Hide push tokens';
@@ -424,4 +450,31 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get licensesAndVersion => 'Licences et version';
+
+  @override
+  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+
+  @override
+  String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
+
+  @override
+  String get introTokenSwipe => 'Swipe tokens to the left to see available actions.';
+
+  @override
+  String get introEditToken => 'Here you can edit the token name and see some details.';
+
+  @override
+  String get introLockToken => 'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.';
+
+  @override
+  String get introDragToken => 'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.';
+
+  @override
+  String get introAddFolder => 'You can create folders\nto organize your tokens.';
+
+  @override
+  String get introPollForChallenges => 'You can check for new challenges by dragging down the token list.';
+
+  @override
+  String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';
 }

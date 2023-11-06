@@ -174,15 +174,21 @@
   "@tokensDoNotSupportSynchronization": {
     "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
   },
-  "errorRollOutFailed": "Uitrollen van token {name} mislukt. Fout code: {errorCode}",
+  "errorRollOutFailed": "Uitrollen van token {name} mislukt.",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
-      },
-      "errorCode": {
-        "example": "500"
+      }
+    }
+  },
+  "statusCode": "Statuscode: {statusCode}",
+  "@statusCode": {
+    "description": "Tells the user the status code of the error.",
+    "placeholders": {
+      "statusCode": {
+        "example": "400"
       }
     }
   },
@@ -212,9 +218,29 @@
   "@unexpectedError": {
     "description": "Title of page report mode."
   },
-  "pollingFailNoNetworkConnection": "Zoeken naar berichten mislukt. Server kan niet worden bereikt.",
-  "@pollingFailNoNetworkConnection": {
-    "description": "Tells the user that the roll-out failed because no network connection is available."
+  "pollingFailed": "Vraag mislukt.",
+  "@pollingFailed": {
+    "description": "Tells the user that the polling failed."
+  },
+  "noNetworkConnection": "Geen netwerkverbinding.",
+  "@noNetworkConnection": {
+    "description": "Tells the user that there is no network connection."
+  },
+  "connectionFailed": "Verbinding mislukt.",
+  "@connectionFailed": {
+    "description": "Tells the user that the connection failed."
+  },
+  "checkYourNetwork": "Controleer je netwerkverbinding en probeer het opnieuw.",
+  "@checkYourNetwork": {
+    "description": "Tells the user to check the network connection."
+  },
+  "serverNotReachable": "De server kon niet worden bereikt.",
+  "@serverNotReachable": {
+    "description": "Tells the user that the server could not be reached."
+  },
+  "couldNotSignMessage": "Bericht niet kunnen ondertekenen.",
+  "@couldNotSignMessage": {
+    "description": "Tells the user that the message could not be signed."
   },
   "useDeviceLocaleTitle": "Gebruik de taal van het apparaat",
   "@useDeviceLocaleTitle": {
@@ -328,8 +354,8 @@
   "sendErrorDialogHeader": "Verzenden via e-mail",
   "ok": "Ok",
   "noLogToSend": "Er is een log om te verzenden.",
-  "errorLogFileAttached": "Het foutlogbestand is bijgevoegd.",
-  "@errorLogFileAttached": {
+  "errorMailBody": "Het foutlogbestand is bijgevoegd.\nU kunt deze tekst vervangen door aanvullende informatie over de fout.",
+  "@errorMailBody": {
     "description": "Message for email body"
   },
   "errorLogCleared": "Foutlogs gewist",
@@ -423,9 +449,11 @@
   "grantCameraPermissionDialogPermanentlyDenied": "Cameratoestemming is permanent geweigerd. Geef de camera toestemming in de instellingen van uw telefoon.",
   "grantCameraPermissionDialogButton": "Toestemming verlenen",
   "decryptErrorTitle": "Fout bij decoderen",
-  "decryptErrorContent": "Er is een fout opgetreden tijdens het decoderen van de tokens. Als de fout zich blijft voordoen, moet je de gecorrumpeerde data verwijderen.",
-  "decryptErrorButton": "Verwijder alle tokens",
-  "decryptErrorDeleteConfirmationContent": "Weet je zeker dat je alle tokens wilt verwijderen?",
+  "decryptErrorContent": "Helaas heeft de app je tokens niet kunnen decoderen. Dit geeft aan dat de coderingssleutel is verbroken. U kunt het opnieuw proberen of de app-gegevens verwijderen, waardoor de tokens in de app worden verwijderd.",
+  "decryptErrorButtonDelete": "Verwijderen",
+  "decryptErrorButtonSendError": "Fout verzenden",
+  "decryptErrorButtonRetry": "Opnieuw proberen",
+  "decryptErrorDeleteConfirmationContent": "Weet je zeker dat je de app-gegevens wilt verwijderen?",
   "hidePushTokens": "Verberg push tokens",
   "hidePushTokensDescription": "Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.",
   "licensesAndVersion": "Licenties en versie"

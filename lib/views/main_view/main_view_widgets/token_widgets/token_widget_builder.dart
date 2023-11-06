@@ -18,10 +18,10 @@ abstract class TokenWidgetBuilder {
     Key? key,
   }) =>
       switch (token.runtimeType) {
-        TOTPToken => TOTPTokenWidget(token as TOTPToken, key: key),
-        HOTPToken => HOTPTokenWidget(token as HOTPToken, key: key),
-        PushToken => PushTokenWidget(token as PushToken, key: key),
-        DayPasswordToken => DayPasswordTokenWidget(token as DayPasswordToken, key: key),
+        const (TOTPToken) => TOTPTokenWidget(token as TOTPToken, key: key),
+        const (HOTPToken) => HOTPTokenWidget(token as HOTPToken, key: key),
+        const (PushToken) => PushTokenWidget(token as PushToken, key: key),
+        const (DayPasswordToken) => DayPasswordTokenWidget(token as DayPasswordToken, key: key),
         _ => throw UnimplementedError('Token type (${token.runtimeType}) not supported in this Version of the App')
       };
 }

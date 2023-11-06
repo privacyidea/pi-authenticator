@@ -7,7 +7,7 @@ import '../../../../widgets/custom_trailing.dart';
 
 final disableCopyOtpProvider = StateProvider<bool>((ref) => false);
 
-class TokenWidgetTile extends StatelessWidget {
+class TokenWidgetTile extends ConsumerWidget {
   final Widget? title;
   final List<String> subtitles;
   final Widget? leading;
@@ -28,7 +28,7 @@ class TokenWidgetTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => ListTile(
+  Widget build(BuildContext context, WidgetRef ref) => ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
         horizontalTitleGap: 8.0,
         leading: (leading != null) ? leading! : null,

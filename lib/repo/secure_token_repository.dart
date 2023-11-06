@@ -30,8 +30,10 @@ import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart'
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
+import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import '../widgets/default_dialog.dart';
 import '../widgets/default_dialog_button.dart';
 
@@ -91,8 +93,9 @@ class SecureTokenRepository implements TokenRepository {
     try {
       keyValueMap = await _storage.readAll();
     } on PlatformException catch (e, s) {
+      Logger.warning("Token found, but could not be decrypted.", name: 'storage_utils.dart#loadTokens', error: e, stackTrace: s, verbose: true);
       _decryptErrorDialog();
-      Logger.warning("Token found, but could not be decrypted.", name: 'storage_utils.dart#loadTokens', error: e, stackTrace: s);
+      return [];
     }
 
     List<Token> tokenList = [];
@@ -100,8 +103,6 @@ class SecureTokenRepository implements TokenRepository {
     for (var i = 0; i < keyValueMap.length; i++) {
       final value = keyValueMap.values.elementAt(i);
       final key = keyValueMap.keys.elementAt(i);
-      // for (String value in keyValueMap.values) {
-
       Map<String, dynamic>? serializedToken;
 
       try {
@@ -115,6 +116,7 @@ class SecureTokenRepository implements TokenRepository {
           name: 'storage_utils.dart#loadAllTokens',
           error: e,
           stackTrace: s,
+          verbose: true,
         );
         // Skip everything that does not fit a serialized token
         continue;
@@ -189,44 +191,85 @@ class SecureTokenRepository implements TokenRepository {
   static Future<String?> getNewFirebaseToken() async => _storage.read(key: _NEW_APP_TOKEN_KEY);
 }
 
-void _decryptErrorDialog() => showAsyncDialog(
+Future<void> _decryptErrorDialog() => showAsyncDialog(
+      barrierDismissible: false,
       builder: (context) => DefaultDialog(
         title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
         content: Text(AppLocalizations.of(context)!.decryptErrorContent),
         actions: [
           DefaultDialogButton(
-            onPressed: () {
-              _decryptErrorDeleteTokenConfirmationDialog();
+            onPressed: () async {
+              final isDataDeleted = await _decryptErrorDeleteTokenConfirmationDialog();
+              if (isDataDeleted == true) {
+                // ignore: use_build_context_synchronously
+                Navigator.pop(context);
+                globalRef?.read(tokenProvider.notifier).loadFromRepo();
+              }
             },
             child: Text(
-              AppLocalizations.of(context)!.decryptErrorButton,
+              AppLocalizations.of(context)!.decryptErrorButtonDelete,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),
           DefaultDialogButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.ok),
+              child: Text(AppLocalizations.of(context)!.decryptErrorButtonSendError),
+              onPressed: () async {
+                Logger.info('Sending error report', name: 'storage_utils.dart#_decryptErrorDialog');
+                await showDialog(
+                  context: context,
+                  builder: (context) => const SendErrorDialog(),
+                  useRootNavigator: false,
+                );
+              }),
+          DefaultDialogButton(
+            onPressed: () async {
+              showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) => const Center(
+                  child: SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              );
+              await Future.delayed(
+                const Duration(milliseconds: 500),
+              );
+              // ignore: use_build_context_synchronously
+              Navigator.pop(context);
+              // ignore: use_build_context_synchronously
+              Navigator.pop(context);
+              globalRef?.read(tokenProvider.notifier).loadFromRepo();
+            },
+            child: Text(AppLocalizations.of(context)!.decryptErrorButtonRetry),
           ),
         ],
       ),
     );
 
-void _decryptErrorDeleteTokenConfirmationDialog() => showAsyncDialog(
+Future<bool?> _decryptErrorDeleteTokenConfirmationDialog() => showAsyncDialog<bool>(
       builder: (context) => DefaultDialog(
         title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
         content: Text(AppLocalizations.of(context)!.decryptErrorDeleteConfirmationContent),
         actions: [
           DefaultDialogButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context, false),
             child: Text(AppLocalizations.of(context)!.cancel),
           ),
           DefaultDialogButton(
-            onPressed: () {
-              Logger.info('Deleting all tokens from secure storage', verbose: true, name: 'storage_utils.dart#_decryptErrorDeleteTokenConfirmationDialog');
-              return SecureTokenRepository._storage.deleteAll();
+            onPressed: () async {
+              Logger.info(
+                'Deleting all tokens from secure storage',
+                name: 'storage_utils.dart#_decryptErrorDeleteTokenConfirmationDialog',
+                verbose: true,
+              );
+              Navigator.pop(context, true);
+              await SecureTokenRepository._storage.deleteAll();
             },
             child: Text(
-              AppLocalizations.of(context)!.decryptErrorButton,
+              AppLocalizations.of(context)!.decryptErrorButtonDelete,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),

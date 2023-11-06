@@ -170,15 +170,21 @@
   "@tokensDoNotSupportSynchronization": {
     "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
   },
-  "errorRollOutFailed": "Rolling out token {name} failed.\nError code: {errorCode}",
+  "errorRollOutFailed": "Rolling out token {name} failed.",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
-      },
-      "errorCode": {
-        "example": "500"
+      }
+    }
+  },
+  "statusCode": "Status code: {statusCode}",
+  "@statusCode": {
+    "description": "Tells the user the status code of the error.",
+    "placeholders": {
+      "statusCode": {
+        "example": "400"
       }
     }
   },
@@ -211,9 +217,29 @@
   "@unexpectedError": {
     "description": "Title of page report mode."
   },
-  "pollingFailNoNetworkConnection": "Polling failed. Server cannot be reached.",
-  "@pollingFailNoNetworkConnection": {
-    "description": "Tells the user that the roll-out failed because no network connection is available."
+  "pollingFailed": "Polling failed.",
+  "@pollingFailed": {
+    "description": "Tells the user that the polling failed."
+  },
+  "noNetworkConnection": "No network connection.",
+  "@noNetworkConnection": {
+    "description": "Tells the user that there is no network connection."
+  },
+  "connectionFailed": "Connection failed.",
+  "@connectionFailed": {
+    "description": "Tells the user that the connection failed."
+  },
+  "checkYourNetwork": "Please check your network connection and try again.",
+  "@checkYourNetwork": {
+    "description": "Tells the user to check the network connection."
+  },
+  "serverNotReachable": "The server could not be reached.",
+  "@serverNotReachable": {
+    "description": "Tells the user that the server could not be reached."
+  },
+  "couldNotSignMessage": "Could not sign message.",
+  "@couldNotSignMessage": {
+    "description": "Tells the user that the message could not be signed."
   },
   "useDeviceLocaleTitle": "Use device language",
   "@useDeviceLocaleTitle": {
@@ -327,8 +353,8 @@
   "sendErrorDialogHeader": "Send via e-mail",
   "ok": "Ok",
   "noLogToSend": "There is log to send.",
-  "errorLogFileAttached": "The error log file is attached.",
-  "@errorLogFileAttached": {
+  "errorMailBody": "The error log file is attached.\nYou can replace this text with additional information about the error.",
+  "@errorMailBody": {
     "description": "Message for email body"
   },
   "errorLogCleared": "Error logs cleared.",
@@ -421,10 +447,21 @@
   "grantCameraPermissionDialogPermanentlyDenied": "Camera permission is permanently denied. Please grant camera permission in your Phone's settings.",
   "grantCameraPermissionDialogButton": "Grant permission",
   "decryptErrorTitle": "Decryption error",
-  "decryptErrorContent": "An error occurred while decrypting the tokens. Please try again.\nIf the error persists, you have to delete the corupted data",
-  "decryptErrorButton": "Delete all Tokens",
-  "decryptErrorDeleteConfirmationContent": "Are you sure you want to delete all tokens?",
+  "decryptErrorContent": "Unfortunately, the app was unable to decrypt your tokens. This indicates that the encryption key is broken. You can try again or delete the app data, which would delete the tokens in the app.",
+  "decryptErrorButtonDelete": "Delete",
+  "decryptErrorButtonSendError": "Send error",
+  "decryptErrorButtonRetry": "Retry",
+  "decryptErrorDeleteConfirmationContent": "Are you sure you want to delete the app data?",
   "hidePushTokens": "Hide push tokens",
   "hidePushTokensDescription": "Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.",
-  "licensesAndVersion": "Licenses and version"
+  "licensesAndVersion": "Licenses and version",
+  "introScanQrCode": "You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.",
+  "introAddTokenManually": "If you don't want to scan a QR code, you can also add tokens manually.",
+  "introTokenSwipe": "Swipe tokens to the left to see available actions.",
+  "introEditToken": "Here you can edit the token name and see some details.",
+  "introLockToken": "To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.",
+  "introDragToken": "Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.",
+  "introAddFolder": "You can create folders\nto organize your tokens.",
+  "introPollForChallenges": "You can check for new challenges by dragging down the token list.",
+  "introHidePushTokens": "Your push tokens are hidden now.\nBut you can still see them on the push token screen."
 }

@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
@@ -14,7 +15,6 @@ import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/settings_groups.dart';
 
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import '../test/tests_app_wrapper.dart';
 import '../test/tests_app_wrapper.mocks.dart';
 
@@ -23,7 +23,6 @@ void main() {
   late final MockSettingsRepository mockSettingsRepository;
   late final MockTokenRepository mockTokenRepository;
   late final MockTokenFolderRepository mockTokenFolderRepository;
-  late final MockQrParser mockQrParser;
   late final MockRsaUtils mockRsaUtils;
   late final MockFirebaseUtils mockFirebaseUtils;
   late final MockPrivacyIdeaIOClient mockIOClient;
@@ -41,17 +40,6 @@ void main() {
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
-    mockQrParser = MockQrParser();
-    when(mockQrParser.parseQRCodeToMap(any)).thenReturn(<String, dynamic>{
-      'URI_TYPE': 'PIPUSH',
-      'URI_LABEL': 'label',
-      'URI_ISSUER': 'issuer',
-      'URI_SERIAL': 'serial',
-      'URI_SSL_VERIFY': false,
-      'URI_ENROLLMENT_CREDENTIAL': 'enrollmentCredentials',
-      'URI_ROLLOUT_URL': Uri.parse('http://www.example.com'),
-      'URI_TTL': 10,
-    });
     mockRsaUtils = MockRsaUtils();
     when(mockRsaUtils.serializeRSAPublicKeyPKCS8(any)).thenAnswer((_) => 'publicKey');
     when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((_) => const RsaUtils()
@@ -66,28 +54,62 @@ void main() {
       sslVerify: anyNamed('sslVerify'),
     )).thenAnswer((_) => Future.value(Response('{"detail": {"public_key": "publicKey"}}', 200)));
   });
-  testWidgets('Licenses View', (tester) async {
-    runApp(TestsAppWrapper(
+
+  testWidgets('Views Test', (tester) async {
+    await tester.pumpWidget(TestsAppWrapper(
       overrides: [
         settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
         tokenProvider.overrideWith((ref) => TokenNotifier(
-            repository: mockTokenRepository, qrParser: mockQrParser, firebaseUtils: mockFirebaseUtils, rsaUtils: mockRsaUtils, ioClient: mockIOClient)),
+              repository: mockTokenRepository,
+              rsaUtils: mockRsaUtils,
+              firebaseUtils: mockFirebaseUtils,
+              ioClient: mockIOClient,
+            )),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
       ],
       child: PrivacyIDEAAuthenticator(customization: AppCustomization.defaultCustomization),
     ));
 
-    await waitFor(const Duration(seconds: 3), tester);
-    await tester.tap(find.byIcon(Icons.settings));
-    await tester.pumpAndSettle();
-    expect(find.text('Settings'), findsOneWidget);
-    expect(find.text('Theme'), findsOneWidget);
-    expect(find.text('Language'), findsOneWidget);
-    expect(find.text('Error logs'), findsOneWidget);
-    expect(find.byType(SettingsGroup), findsNWidgets(3));
-    globalRef!.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: 'otpauth://totp/issuer:label?secret=secret&issuer=issuer');
-    await waitFor(const Duration(seconds: 10), tester);
-    expect(find.text('Push Token'), findsOneWidget);
-    expect(find.byType(SettingsGroup), findsNWidgets(4));
-  });
+    await _licensesViewTest(tester);
+    await _popUntilMainView(tester);
+    await _settingsViewTest(tester);
+  }, timeout: const Timeout(Duration(minutes: 10)));
+}
+
+Future<void> _popUntilMainView(WidgetTester tester) async {
+  await pumpUntilFindNWidgets(tester, find.byIcon(Icons.arrow_back), 1, const Duration(seconds: 2));
+  while (find.byIcon(Icons.arrow_back).evaluate().isNotEmpty) {
+    await tester.tap(find.byIcon(Icons.arrow_back));
+    await pumpUntilFindNWidgets(tester, find.byIcon(Icons.arrow_back), 1, const Duration(seconds: 2));
+  }
+  return;
+}
+
+Future<void> _licensesViewTest(WidgetTester tester) async {
+  await pumpUntilFindNWidgets(tester, find.byIcon(Icons.info_outline), 1, const Duration(seconds: 10));
+  await tester.tap(find.byIcon(Icons.info_outline));
+  await tester.pumpAndSettle();
+  expect(find.text(ApplicationCustomization.defaultCustomization.appName), findsOneWidget);
+  expect(find.text(ApplicationCustomization.defaultCustomization.websiteLink), findsOneWidget);
+  await tester.pumpAndSettle();
+  expect(find.text('Licenses'), findsOneWidget);
+  expect(find.byType(Icon), findsOneWidget);
+  expect(find.byType(LicensePage), findsOneWidget);
+}
+
+Future<void> _settingsViewTest(WidgetTester tester) async {
+  await pumpUntilFindNWidgets(tester, find.byIcon(Icons.settings), 1, const Duration(seconds: 10));
+  await tester.tap(find.byIcon(Icons.settings));
+  await tester.pumpAndSettle();
+  expect(find.text('Settings'), findsOneWidget);
+  expect(find.text('Theme'), findsOneWidget);
+  expect(find.text('Language'), findsOneWidget);
+  expect(find.text('Error logs'), findsOneWidget);
+  expect(find.byType(SettingsGroup), findsNWidgets(3));
+  globalRef!.read(tokenProvider.notifier).addTokenFromOtpAuth(
+      otpAuth:
+          'otpauth://pipush/label?url=http%3A%2F%2Fwww.example.com&ttl=10&issuer=issuer&enrollment_credential=enrollmentCredentials&v=1&serial=serial&serial=serial&sslverify=0');
+  await pumpUntilFindNWidgets(tester, find.text('Push Token'), 1, const Duration(minutes: 5));
+  expect(find.text('Push Token'), findsOneWidget);
+  expect(find.byType(SettingsGroup), findsNWidgets(4));
 }

@@ -10,7 +10,7 @@ import '../utils/logger.dart';
 /// It also ensures that the settings are saved to the device.
 /// To Update a state use: ref.read(settingsProvider.notifier).anyMethod(value)
 class SettingsNotifier extends StateNotifier<SettingsState> {
-  late Future<void> isLoading;
+  late Future<SettingsState> loadingRepo;
   final SettingsRepository _repo;
 
   SettingsNotifier({
@@ -21,15 +21,20 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     loadFromRepo();
   }
   void loadFromRepo() async {
-    isLoading = Future<void>(() async {
-      state = await _repo.loadSettings();
-      Logger.info('Loading settings from repo: $state', name: 'settings_notifier.dart#_loadFromRepo');
+    loadingRepo = Future(() async {
+      final newState = await _repo.loadSettings();
+      state = newState;
+      Logger.info('Loading settings from repo: $newState', name: 'settings_notifier.dart#_loadFromRepo');
+      return newState;
     });
   }
 
   void _saveToRepo() async {
-    Logger.info('Saving settings to repo: $state', name: 'settings_notifier.dart#_saveToRepo');
-    await _repo.saveSettings(state);
+    loadingRepo = Future(() async {
+      await _repo.saveSettings(state);
+      Logger.info('Saving settings to repo: $state', name: 'settings_notifier.dart#_saveToRepo');
+      return state;
+    });
   }
 
   void addCrashReportRecipient(String email) {
@@ -112,20 +117,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     _saveToRepo();
   }
 
-  void setHidePushTokens({bool? isHidden, HidePushTokens? hidePushTokensState}) {
-    assert(isHidden != null || hidePushTokensState != null);
-    assert(isHidden == null || hidePushTokensState == null);
-    Logger.info('Hide push tokens set to $isHidden', name: 'settings_notifier.dart#setHidePushTokens');
-    if (isHidden != null) {
-      if (isHidden) {
-        state = state.copyWith(hidePushTokensState: HidePushTokens.isHiddenNotNoticed);
-      } else {
-        state = state.copyWith(hidePushTokensState: HidePushTokens.notHidden);
-      }
-    }
-    if (hidePushTokensState != null) {
-      state = state.copyWith(hidePushTokensState: hidePushTokensState);
-    }
+  void setHidePushTokens(bool value) {
+    Logger.info('Hide push tokens set to $value', name: 'settings_notifier.dart#setHidePushTokens');
+    state = state.copyWith(hidePushTokens: value);
     _saveToRepo();
   }
 }

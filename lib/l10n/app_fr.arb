@@ -180,16 +180,22 @@
   "@tokensDoNotSupportSynchronization": {
     "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
   },
-  "errorRollOutFailed": "Le déploiement du jeton {name} a échoué. Erreur réseau: {errorCode}",
+  "errorRollOutFailed": "Le déploiement du jeton {name} a échoué.",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "type": "text",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
-      },
-      "errorCode": {
-        "example": "500"
+      }
+    }
+  },
+  "statusCode": "Code d'état : {statusCode}",
+  "@statusCode": {
+    "description": "Tells the user the status code of the error.",
+    "placeholders": {
+      "statusCode": {
+        "example": "400"
       }
     }
   },
@@ -219,9 +225,29 @@
   "@unexpectedError": {
     "description": "Title of page report mode."
   },
-  "pollingFailNoNetworkConnection": "L'interrogation a échoué. Le serveur est injoignable.",
-  "@pollingFailNoNetworkConnection": {
-    "description": "Tells the user that the roll-out failed because no network connection is available."
+  "pollingFailed": "Échec de la requête.",
+  "@pollingFailed": {
+    "description": "Tells the user that the polling failed."
+  },
+  "noNetworkConnection": "Pas de connexion au réseau.",
+  "@noNetworkConnection": {
+    "description": "Tells the user that there is no network connection."
+  },
+  "connectionFailed": "La connexion a échoué.",
+  "@connectionFailed": {
+    "description": "Tells the user that the connection failed."
+  },
+  "checkYourNetwork": "Veuillez vérifier votre connexion réseau et réessayer.",
+  "@checkYourNetwork": {
+    "description": "Tells the user to check the network connection."
+  },
+  "serverNotReachable": "Le serveur n'a pas pu être atteint.",
+  "@serverNotReachable": {
+    "description": "Tells the user that the server could not be reached."
+  },
+  "couldNotSignMessage": "Impossible de signer le message.",
+  "@couldNotSignMessage": {
+    "description": "Tells the user that the message could not be signed."
   },
   "useDeviceLocaleTitle": "Utiliser la langue de l'appareil",
   "@useDeviceLocaleTitle": {
@@ -338,8 +364,8 @@
   "sendErrorDialogHeader": "Envoyer par e-mail",
   "ok": "Ok",
   "noLogToSend": "Il y a un journal à envoyer",
-  "errorLogFileAttached": "Le fichier journal des erreurs est joint",
-  "@errorLogFileAttached": {
+  "errorMailBody": "Le fichier journal des erreurs est joint.\nVous pouvez remplacer ce texte par des informations supplémentaires sur l'erreur.",
+  "@errorMailBody": {
     "description": "Message pour le corps du courriel"
   },
   "errorLogCleared": "Journaux d'erreur effacés",
@@ -434,9 +460,11 @@
   "grantCameraPermissionDialogPermanentlyDenied": "L'autorisation de l'appareil photo est refusée de manière permanente. Veuillez accorder l'autorisation à l'appareil photo dans les paramètres de votre téléphone.",
   "grantCameraPermissionDialogButton": "Accorder l'autorisation",
   "decryptErrorTitle": "Erreur de décryptage",
-  "decryptErrorContent": "Une erreur s'est produite lors du décryptage des jetons. Veuillez réessayer. Si l'erreur persiste, vous devez supprimer les données corrompues",
-  "decryptErrorButton": "Supprimer tous les jetons",
-  "decryptErrorDeleteConfirmationContent": "Are you sure you want to delete all tokens ?",
+  "decryptErrorContent": "Malheureusement, l'application n'a pas pu décrypter vos jetons. Cela indique que la clé de cryptage est cassée. Vous pouvez réessayer ou supprimer les données de l'application, ce qui supprimera les jetons dans l'application.",
+  "decryptErrorButtonDelete": "Supprimer",
+  "decryptErrorButtonSendError": "Erreur d'envoi",
+  "decryptErrorButtonRetry": "Réessayer",
+  "decryptErrorDeleteConfirmationContent": "Êtes-vous sûr de vouloir supprimer les données de l'application ?",
   "hidePushTokens": "Hide push tokens",
   "hidePushTokensDescription": "Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé",
   "licensesAndVersion": "Licences et version"

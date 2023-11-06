@@ -26,7 +26,7 @@ class TokenState {
     tokens.sort((a, b) => (a.sortIndex ?? double.infinity).compareTo(b.sortIndex ?? double.infinity));
   }
 
-  T currentOf<T extends Token>(T token) => tokens.firstWhere((element) => element.id == token.id) as T;
+  T? currentOf<T extends Token>(T token) => tokens.firstWhereOrNull((element) => element.id == token.id) as T?;
 
   TokenState withToken(Token token) {
     final newTokens = List<Token>.from(tokens);
@@ -72,6 +72,7 @@ class TokenState {
     final index = newTokens.indexWhere((element) => element.id == token.id);
     if (index == -1) {
       Logger.warning('Tried to replace a token that does not exist.', name: 'token_state.dart#replaceToken');
+      return this;
     }
     newTokens[index] = token;
     return TokenState(tokens: newTokens);

@@ -12,7 +12,7 @@ import '../../../../../widgets/default_dialog.dart';
 
 class RenameTokenFolderAction extends StatelessWidget {
   final TokenFolder folder;
-  const RenameTokenFolderAction({required this.folder, Key? key}) : super(key: key);
+  const RenameTokenFolderAction({required this.folder, super.key});
 
   @override
   Widget build(BuildContext context) {

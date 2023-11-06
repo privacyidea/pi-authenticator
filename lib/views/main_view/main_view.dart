@@ -6,6 +6,8 @@ import '../../model/states/app_state.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import 'main_view_widgets/expandable_appbar.dart';
+import '../../widgets/status_bar.dart';
+import 'main_view_widgets/connectivity_listener.dart';
 import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
 import 'main_view_widgets/main_view_tokens_list_filtered.dart';
@@ -18,7 +20,7 @@ class MainView extends ConsumerStatefulWidget {
   final Widget appIcon;
   final String appName;
 
-  const MainView({required this.appIcon, required this.appName, Key? key}) : super(key: key);
+  const MainView({required this.appIcon, required this.appName, super.key});
 
   @override
   ConsumerState<MainView> createState() => _MainViewState();
@@ -58,19 +60,23 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
             child: widget.appIcon,
           ),
         ),
-        body: Stack(
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          children: [
-            Visibility(
-              visible: !hasFilter,
-              child: MainViewTokensList(nestedScrollViewKey: globalKey),
+        body: ConnectivityListener(
+          child: StatusBar(
+            child: Stack(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              children: [
+                Visibility(
+                  visible: !hasFilter,
+                  child: MainViewTokensList(nestedScrollViewKey: globalKey),
+                ),
+                const MainViewNavigationBar(),
+                Visibility(
+                  visible: hasFilter,
+                  child: const MainViewTokensListFiltered(),
+                ),
+              ],
             ),
-            const MainViewNavigationBar(),
-            Visibility(
-              visible: hasFilter,
-              child: const MainViewTokensListFiltered(),
-            ),
-          ],
+          ),
         ),
       ),
     );

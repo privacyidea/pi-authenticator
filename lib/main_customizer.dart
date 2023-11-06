@@ -82,7 +82,7 @@ class CustomizationAuthenticator extends ConsumerWidget {
             ),
         SettingsView.routeName: (context) => const SettingsView(),
         AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
-        QRScannerView.routeName: (context) => QRScannerView(),
+        QRScannerView.routeName: (context) => const QRScannerView(),
         LicenseView.routeName: (context) => LicenseView(
               appImage: applicationCustomizer.appImage,
               appName: applicationCustomizer.appName,

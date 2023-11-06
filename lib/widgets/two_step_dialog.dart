@@ -25,46 +25,80 @@ import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import 'package:privacyidea_authenticator/widgets/default_dialog.dart';
 
-class TwoStepDialog extends StatefulWidget {
+import '../utils/logger.dart';
+import 'widget_keys.dart';
+
+class GenerateTwoStepDialog extends StatelessWidget {
   final int _saltLength;
   final int _iterations;
   final int _keyLength;
   final Uint8List _password;
 
-  const TwoStepDialog({super.key, required int saltLength, required int iterations, required int keyLength, required Uint8List password})
+  const GenerateTwoStepDialog({super.key, required int saltLength, required int iterations, required int keyLength, required Uint8List password})
       : _saltLength = saltLength,
         _iterations = iterations,
         _keyLength = keyLength,
         _password = password;
 
+  void _do2Step(BuildContext context) async {
+    // 1. Generate salt.
+    final Uint8List salt = secureRandom().nextBytes(_saltLength);
+
+    // 2. Generate secret.
+    final Uint8List generatedSecret = await pbkdf2(
+      salt: salt,
+      iterations: _iterations,
+      keyLength: _keyLength,
+      password: _password,
+    );
+
+    String phoneChecksum = await generatePhoneChecksum(phonePart: salt);
+    if (!context.mounted) {
+      Logger.warning('GenerateTwoStepDialog: context is not mounted anymore. Aborting.');
+      return;
+    }
+
+    // 3. Show phone part if this widget is still mounted.
+    Navigator.of(context).pop(generatedSecret);
+    showAsyncDialog(
+        barrierDismissible: false,
+        builder: (context) => TwoStepDialog(
+              phoneChecksum: phoneChecksum,
+            ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _do2Step(context);
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+      child: DefaultDialog(
+        scrollable: true,
+        title: Text(
+          AppLocalizations.of(context)!.generatingPhonePart,
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
+        content: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[CircularProgressIndicator()],
+        ),
+      ),
+    );
+  }
+}
+
+class TwoStepDialog extends StatefulWidget {
+  final String phoneChecksum;
+  const TwoStepDialog({super.key, required this.phoneChecksum});
   @override
   State<StatefulWidget> createState() => _TwoStepDialogState();
 }
 
 class _TwoStepDialogState extends State<TwoStepDialog> {
-  late String _title;
-  Widget _content = const Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: <Widget>[CircularProgressIndicator()],
-  );
-  VoidCallback? _onPressed;
-  late Uint8List _generatedSecret;
-
-  @override
-  void initState() {
-    super.initState();
-    _do2Step();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _title = AppLocalizations.of(context)!.generatingPhonePart;
-  }
-
   @override
   Widget build(BuildContext context) {
     return BackdropFilter(
@@ -75,14 +109,17 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
         child: DefaultDialog(
           scrollable: true,
           title: Text(
-            _title,
+            AppLocalizations.of(context)!.phonePart,
             overflow: TextOverflow.fade,
             softWrap: false,
           ),
-          content: _content,
+          content: Text(
+            splitPeriodically(widget.phoneChecksum, 4),
+            key: twoStepDialogContent,
+          ),
           actions: [
             TextButton(
-              onPressed: _onPressed,
+              onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 AppLocalizations.of(context)!.dismiss,
                 overflow: TextOverflow.fade,
@@ -93,32 +130,5 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
         ),
       ),
     );
-  }
-
-  void _do2Step() async {
-    // 1. Generate salt.
-    Uint8List salt = secureRandom().nextBytes(widget._saltLength);
-
-    // 2. Generate secret.
-    _generatedSecret = await pbkdf2(
-      salt: salt,
-      iterations: widget._iterations,
-      keyLength: widget._keyLength,
-      password: widget._password,
-    );
-
-    // 3. Show phone part.
-    String phoneChecksum = await generatePhoneChecksum(phonePart: salt);
-    String show = splitPeriodically(phoneChecksum, 4);
-    // Update UI.
-    setState(() {
-      _title = AppLocalizations.of(context)!.phonePart;
-      _content = Text(
-        show,
-        overflow: TextOverflow.fade,
-        softWrap: false,
-      );
-      _onPressed = () => Navigator.of(context).pop(_generatedSecret);
-    });
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/enums/introduction_enum.dart';
 
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
@@ -41,7 +42,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> _init() async {
     await Future.delayed(_splashScreenDuration + _splashScreenDelay * 2);
-    final isFirstRun = ref.read(settingsProvider).isFirstRun;
+    await ref.read(introductionProvider.notifier).loadingRepo;
+    final isFirstRun = ref.read(introductionProvider).isConditionFulfilled(ref, Introduction.introductionScreen);
     final ConsumerStatefulWidget nextView;
     if (isFirstRun) {
       nextView = OnboardingView(appName: widget.appName);

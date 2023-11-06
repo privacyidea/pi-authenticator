@@ -341,7 +341,7 @@ class MockFirebaseUtils extends _i1.Mock implements _i9.FirebaseUtils {
   _i6.Future<void> initFirebase({
     required _i6.Future<void> Function(_i10.RemoteMessage)? foregroundHandler,
     required _i6.Future<void> Function(_i10.RemoteMessage)? backgroundHandler,
-    required void Function(String?)? updateFirebaseToken,
+    required dynamic Function(String?)? updateFirebaseToken,
   }) =>
       (super.noSuchMethod(
         Invocation.method(

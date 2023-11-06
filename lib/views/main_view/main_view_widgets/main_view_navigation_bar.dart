@@ -1,8 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import '../../../model/enums/introduction_enum.dart';
+import '../../../utils/riverpod_providers.dart';
 
+import '../../../widgets/focused_item_as_overlay.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../settings_view/settings_view.dart';
 import 'app_bar_item.dart';
@@ -12,7 +14,7 @@ import 'main_view_navigation_buttons/license_push_view_button.dart';
 import 'main_view_navigation_buttons/qr_scanner_button.dart';
 
 class MainViewNavigationBar extends ConsumerWidget {
-  const MainViewNavigationBar({Key? key}) : super(key: key);
+  const MainViewNavigationBar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,9 +38,15 @@ class MainViewNavigationBar extends ConsumerWidget {
                       ),
                       painter: CustomPaintNavigationBar(buildContext: context),
                     ),
-                    const Center(
+                    Center(
                       heightFactor: 0.6,
-                      child: QrScannerButton(),
+                      child: FocusedItemAsOverlay(
+                          onComplete: () {
+                            ref.read(introductionProvider.notifier).complete(Introduction.scanQrCode);
+                          },
+                          isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.scanQrCode),
+                          tooltipWhenFocused: AppLocalizations.of(context)!.introScanQrCode,
+                          child: const QrScannerButton()),
                     ),
                     Center(
                       child: Row(
@@ -61,25 +69,41 @@ class MainViewNavigationBar extends ConsumerWidget {
                                   onPressed: () {
                                     Navigator.pushNamed(context, AddTokenManuallyView.routeName);
                                   },
-                                  icon: const Icon(Icons.add_moderator),
+                                  icon: FocusedItemAsOverlay(
+                                    onComplete: () {
+                                      ref.read(introductionProvider.notifier).complete(Introduction.addTokenManually);
+                                    },
+                                    isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.addTokenManually),
+                                    tooltipWhenFocused: AppLocalizations.of(context)!.introAddTokenManually,
+                                    child: const FittedBox(
+                                      child: Icon(Icons.add_moderator),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(width: min(110, navHeight * 0.8 + 30)),
+                          const Expanded(child: SizedBox()),
                           Expanded(
                             child: Center(
                               child: Padding(
                                 padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
-                                child: AppBarItem(
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AddTokenFolderDialog(),
-                                      useRootNavigator: false,
-                                    );
-                                  },
-                                  icon: const Icon(Icons.create_new_folder),
+                                child: FocusedItemAsOverlay(
+                                  isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.addFolder),
+                                  tooltipWhenFocused: AppLocalizations.of(context)!.introAddFolder,
+                                  onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.addFolder),
+                                  child: AppBarItem(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AddTokenFolderDialog(),
+                                        useRootNavigator: false,
+                                      );
+                                    },
+                                    icon: const FittedBox(
+                                      child: Icon(Icons.create_new_folder),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -92,7 +116,9 @@ class MainViewNavigationBar extends ConsumerWidget {
                                   onPressed: () {
                                     Navigator.pushNamed(context, SettingsView.routeName);
                                   },
-                                  icon: const Icon(Icons.settings),
+                                  icon: const FittedBox(
+                                    child: Icon(Icons.settings),
+                                  ),
                                 ),
                               ),
                             ),

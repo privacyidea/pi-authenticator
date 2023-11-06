@@ -24,27 +24,27 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/model/push_request.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
-import 'package:privacyidea_authenticator/repo/secure_token_repository.dart';
-import 'package:privacyidea_authenticator/state_notifiers/push_request_notifier.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
+import '../l10n/app_localizations.dart';
+import '../model/push_request.dart';
+import '../model/tokens/push_token.dart';
+import '../repo/secure_token_repository.dart';
+import '../state_notifiers/push_request_notifier.dart';
+import 'customizations.dart';
+import 'firebase_utils.dart';
 import 'logger.dart';
 import 'network_utils.dart';
+import 'riverpod_providers.dart';
+import 'rsa_utils.dart';
+import 'utils.dart';
+import 'view_utils.dart';
 
 /// This class bundles all logic that is needed to handle incomig PushRequests, e.g.,
 /// firebase, polling, notifications.
 class PushProvider {
   static PushProvider? instance;
+  bool pollingIsEnabled = false;
   bool _initialized = false;
   Timer? _pollTimer;
   PushRequestNotifier? pushSubscriber; // must be set before receiving push messages
@@ -63,8 +63,14 @@ class PushProvider {
     await firebaseUtils.initFirebase(
       foregroundHandler: _foregroundHandler,
       backgroundHandler: _backgroundHandler,
-      updateFirebaseToken: _updateFirebaseToken,
+      updateFirebaseToken: updateFirebaseToken,
     );
+  }
+
+  void setPollingEnabled(bool? enablePolling) {
+    if (enablePolling == null) return;
+    _startOrStopPolling(enablePolling);
+    pollingIsEnabled = enablePolling;
   }
 
   factory PushProvider({
@@ -83,21 +89,12 @@ class PushProvider {
       }
     }
 
-    if (pollingEnabled != null) {
-      instance!._initStateAsync(pollingEnabled);
-    }
+    instance!.setPollingEnabled(pollingEnabled);
+
     return instance!;
   }
 
   // INITIALIZATIONS
-
-  /// Handles asynchronous calls that should be triggered by `initState`.
-  Future<void> _initStateAsync(bool pollingEnabled) async {
-    if (pollingEnabled) {
-      pollForChallenges();
-    }
-    _startOrStopPolling(pollingEnabled);
-  }
 
   // FOREGROUND HANDLING
   Future<void> _foregroundHandler(RemoteMessage remoteMessage) async {
@@ -225,8 +222,8 @@ class PushProvider {
     // Start polling if enabled and not already polling
     if (pollingEnabled && _pollTimer == null) {
       Logger.info('Polling is enabled.', name: 'push_provider.dart#_startPollingIfEnabled');
-      _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) => pollForChallenges());
-      pollForChallenges();
+      _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) => pollForChallenges(isManually: false));
+      pollForChallenges(isManually: false);
       return;
     }
     // Stop polling if it's disabled and currently polling
@@ -240,37 +237,40 @@ class PushProvider {
     return;
   }
 
-  Future<String?> pollForChallenges({bool showMessageForEachToken = false}) async {
-    final connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.none) {
-      Logger.info('Tried to poll without any internet connection available.', name: 'push_provider.dart#pollForChallenges');
-      return AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailNoNetworkConnection;
-    }
-
+  Future<void> pollForChallenges({required bool isManually}) async {
     // Get all push tokens
     List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
 
     // Disable polling if no push tokens exist
-    if (pushTokens.isEmpty && globalRef?.read(settingsProvider).enablePolling == true) {
-      Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
-      globalRef?.read(settingsProvider.notifier).setPolling(false);
-      return null;
+    if (pushTokens.isEmpty) {
+      if (globalRef?.read(settingsProvider).enablePolling == true) {
+        Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
+        globalRef?.read(settingsProvider.notifier).setPolling(false);
+      }
+      return;
+    }
+
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      if (isManually) {
+        Logger.info('Tried to poll without any internet connection available.', name: 'push_provider.dart#pollForChallenges');
+        globalRef?.read(statusMessageProvider.notifier).state = (
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.noNetworkConnection,
+        );
+      }
+      return;
     }
 
     // Start request for each token
     Logger.info('Polling for challenges: ${pushTokens.length} Tokens', name: 'push_provider.dart#pollForChallenges');
     for (PushToken p in pushTokens) {
-      pollForChallenge(p).then((errorMessage) {
-        if (errorMessage != null && showMessageForEachToken) {
-          Logger.warning(errorMessage, name: 'push_provider.dart#pollForChallenges');
-          showMessage(message: errorMessage);
-        }
-      });
+      pollForChallenge(p);
     }
-    return null;
+    return;
   }
 
-  Future<String?> pollForChallenge(PushToken token) async {
+  Future<void> pollForChallenge(PushToken token) async {
     String timestamp = DateTime.now().toUtc().toIso8601String();
 
     String message = '${token.serial}|$timestamp';
@@ -279,8 +279,12 @@ class PushProvider {
     Logger.info(rsaUtils.runtimeType.toString(), name: 'push_provider.dart#pollForChallenge');
     String? signature = await rsaUtils.trySignWithToken(token, message);
     if (signature == null) {
+      globalRef?.read(statusMessageProvider.notifier).state = (
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.couldNotSignMessage,
+      );
       Logger.warning('Polling push tokens failed because signing the message failed.', name: 'push_provider.dart#pollForChallenge');
-      return null;
+      return;
     }
     Map<String, String> parameters = {
       'serial': token.serial,
@@ -307,18 +311,31 @@ class PushProvider {
           break;
 
         case 403:
+          final error = getErrorMessageFromResponse(response);
+          globalRef?.read(statusMessageProvider.notifier).state = (
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+            error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
+          );
           Logger.warning('Polling push token failed with status code ${response.statusCode}',
               name: 'push_provider.dart#pollForChallenge', error: getErrorMessageFromResponse(response));
-          return null;
+          return;
 
         default:
-          var error = getErrorMessageFromResponse(response);
-          return "${AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial)}\n$error";
+          final error = getErrorMessageFromResponse(response);
+          globalRef?.read(statusMessageProvider.notifier).state = (
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+            error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
+          );
+          return;
       }
     } catch (e) {
-      return "${AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial)}\n${e.toString()}";
+      globalRef?.read(statusMessageProvider.notifier).state = (
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial),
+        null,
+      );
+      return;
     }
-    return null;
+    return;
   }
 
   /// Checks if the firebase token was changed and updates it if necessary.
@@ -327,39 +344,44 @@ class PushProvider {
 
     if (firebaseToken != null && (await SecureTokenRepository.getCurrentFirebaseToken()) != firebaseToken) {
       try {
-        _updateFirebaseToken(firebaseToken);
-      } catch (error) {
-        final SnackBar snackBar = SnackBar(
-          content: Text(
-            "Unknown error: $error",
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        );
-        globalSnackbarKey.currentState?.showSnackBar(snackBar);
+        await updateFirebaseToken(firebaseToken);
+      } catch (error, stackTrace) {
+        Logger.error('Could not update firebase token.', name: 'push_provider.dart#updateFbTokenIfChanged', error: error, stackTrace: stackTrace);
       }
     }
   }
 
   /// This method attempts to update the fbToken for all PushTokens that can be
   /// updated. I.e. all tokens that know the url of their respective privacyIDEA
-  /// server. If the update fails for one or all tokens, this method does *not*
-  /// give any feedback!.
+  /// server.
+  /// If the fbToken is not provided, it will be fetched from the firebase instance.
+  /// If the fbToken is not available, this method will return null.
+  /// Returns a tuple of two lists. The first list contains all tokens that
+  /// could not be updated. The second list contains all tokens that do not
+  /// support updating the fbToken.
   ///
   /// This should only be used to attempt to update the fbToken automatically,
   /// as this can not be guaranteed to work. There is a manual option available
   /// through the settings also.
-  static void _updateFirebaseToken(String? firebaseToken) async {
+  static Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) async {
+    firebaseToken ??= await instance?.firebaseUtils?.getFBToken();
     if (firebaseToken == null) {
-      // Nothing to update here!
-      return;
+      Logger.warning('Could not update firebase token because no firebase token is available.', name: 'push_provider.dart#_updateFirebaseToken');
+      return null;
     }
 
     List<PushToken> tokenList = (await const SecureTokenRepository().loadTokens()).whereType<PushToken>().where((t) => t.url != null).toList();
 
     bool allUpdated = true;
 
+    final List<PushToken> failedTokens = [];
+    final List<PushToken> unsuportedTokens = [];
+
     for (PushToken p in tokenList) {
+      if (p.url == null) {
+        unsuportedTokens.add(p);
+        continue;
+      }
       // POST /ttype/push HTTP/1.1
       //Host: example.com
       //
@@ -369,13 +391,12 @@ class PushProvider {
       //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
 
       String timestamp = DateTime.now().toUtc().toIso8601String();
-
       String message = '$firebaseToken|${p.serial}|$timestamp';
-      // Because no context is available, trySignWithToken will fail without feedback for the user
-      // Just like this whole function // TODO improve that?
       String? signature = await const RsaUtils().trySignWithToken(p, message);
       if (signature == null) {
-        return;
+        failedTokens.add(p);
+        allUpdated = false;
+        continue;
       }
       Response response = instance != null
           ? await instance!._ioClient.doPost(
@@ -387,6 +408,7 @@ class PushProvider {
         Logger.info('Updating firebase token for push token succeeded!', name: 'push_provider.dart#_updateFirebaseToken');
       } else {
         Logger.warning('Updating firebase token for push token failed!', name: 'push_provider.dart#_updateFirebaseToken');
+        failedTokens.add(p);
         allUpdated = false;
       }
     }
@@ -394,5 +416,6 @@ class PushProvider {
     if (allUpdated) {
       SecureTokenRepository.setCurrentFirebaseToken(firebaseToken);
     }
+    return (failedTokens, unsuportedTokens);
   }
 }

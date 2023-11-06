@@ -346,8 +346,14 @@ abstract class AppLocalizations {
   /// Tells the user that the token could not be rolled out, because a network error occurred.
   ///
   /// In en, this message translates to:
-  /// **'Rolling out token {name} failed.\nError code: {errorCode}'**
-  String errorRollOutFailed(Object name, Object errorCode);
+  /// **'Rolling out token {name} failed.'**
+  String errorRollOutFailed(Object name);
+
+  /// Tells the user the status code of the error.
+  ///
+  /// In en, this message translates to:
+  /// **'Status code: {statusCode}'**
+  String statusCode(Object statusCode);
 
   /// Tells the user that synchronizing the push tokens failed because the server could not be reached.
   ///
@@ -385,11 +391,41 @@ abstract class AppLocalizations {
   /// **'An unexpected error occurred.'**
   String get unexpectedError;
 
-  /// Tells the user that the roll-out failed because no network connection is available.
+  /// Tells the user that the polling failed.
   ///
   /// In en, this message translates to:
-  /// **'Polling failed. Server cannot be reached.'**
-  String get pollingFailNoNetworkConnection;
+  /// **'Polling failed.'**
+  String get pollingFailed;
+
+  /// Tells the user that there is no network connection.
+  ///
+  /// In en, this message translates to:
+  /// **'No network connection.'**
+  String get noNetworkConnection;
+
+  /// Tells the user that the connection failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed.'**
+  String get connectionFailed;
+
+  /// Tells the user to check the network connection.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your network connection and try again.'**
+  String get checkYourNetwork;
+
+  /// Tells the user that the server could not be reached.
+  ///
+  /// In en, this message translates to:
+  /// **'The server could not be reached.'**
+  String get serverNotReachable;
+
+  /// Tells the user that the message could not be signed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not sign message.'**
+  String get couldNotSignMessage;
 
   /// Title of the switch tile where using the devices language can be enabled.
   ///
@@ -610,8 +646,8 @@ abstract class AppLocalizations {
   /// Message for email body
   ///
   /// In en, this message translates to:
-  /// **'The error log file is attached.'**
-  String get errorLogFileAttached;
+  /// **'The error log file is attached.\nYou can replace this text with additional information about the error.'**
+  String get errorMailBody;
 
   /// No description provided for @errorLogCleared.
   ///
@@ -880,19 +916,31 @@ abstract class AppLocalizations {
   /// No description provided for @decryptErrorContent.
   ///
   /// In en, this message translates to:
-  /// **'An error occurred while decrypting the tokens. Please try again.\nIf the error persists, you have to delete the corupted data'**
+  /// **'Unfortunately, the app was unable to decrypt your tokens. This indicates that the encryption key is broken. You can try again or delete the app data, which would delete the tokens in the app.'**
   String get decryptErrorContent;
 
-  /// No description provided for @decryptErrorButton.
+  /// No description provided for @decryptErrorButtonDelete.
   ///
   /// In en, this message translates to:
-  /// **'Delete all Tokens'**
-  String get decryptErrorButton;
+  /// **'Delete'**
+  String get decryptErrorButtonDelete;
+
+  /// No description provided for @decryptErrorButtonSendError.
+  ///
+  /// In en, this message translates to:
+  /// **'Send error'**
+  String get decryptErrorButtonSendError;
+
+  /// No description provided for @decryptErrorButtonRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get decryptErrorButtonRetry;
 
   /// No description provided for @decryptErrorDeleteConfirmationContent.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to delete all tokens?'**
+  /// **'Are you sure you want to delete the app data?'**
   String get decryptErrorDeleteConfirmationContent;
 
   /// No description provided for @hidePushTokens.
@@ -912,6 +960,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Licenses and version'**
   String get licensesAndVersion;
+
+  /// No description provided for @introScanQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.'**
+  String get introScanQrCode;
+
+  /// No description provided for @introAddTokenManually.
+  ///
+  /// In en, this message translates to:
+  /// **'If you don\'t want to scan a QR code, you can also add tokens manually.'**
+  String get introAddTokenManually;
+
+  /// No description provided for @introTokenSwipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe tokens to the left to see available actions.'**
+  String get introTokenSwipe;
+
+  /// No description provided for @introEditToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Here you can edit the token name and see some details.'**
+  String get introEditToken;
+
+  /// No description provided for @introLockToken.
+  ///
+  /// In en, this message translates to:
+  /// **'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.'**
+  String get introLockToken;
+
+  /// No description provided for @introDragToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.'**
+  String get introDragToken;
+
+  /// No description provided for @introAddFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'You can create folders\nto organize your tokens.'**
+  String get introAddFolder;
+
+  /// No description provided for @introPollForChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'You can check for new challenges by dragging down the token list.'**
+  String get introPollForChallenges;
+
+  /// No description provided for @introHidePushTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Your push tokens are hidden now.\nBut you can still see them on the push token screen.'**
+  String get introHidePushTokens;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../model/states/settings_state.dart';
 import '../../model/tokens/push_token.dart';
 import '../../utils/riverpod_providers.dart';
 import '../license_view/license_view.dart';
@@ -199,8 +198,8 @@ class SettingsView extends ConsumerWidget {
                         overflow: TextOverflow.fade,
                       ),
                       trailing: Switch(
-                        value: ref.watch(settingsProvider).hidePushTokensState != HidePushTokens.notHidden,
-                        onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(isHidden: value),
+                        value: ref.watch(settingsProvider).hidePushTokens,
+                        onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value),
                       ),
                     )
                 ],

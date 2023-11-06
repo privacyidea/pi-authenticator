@@ -129,8 +129,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get tokensDoNotSupportSynchronization => 'Následující tokeny nepodporují synchronizaci a musí být znovu zaregistrovány:';
 
   @override
-  String errorRollOutFailed(Object name, Object errorCode) {
-    return 'Registrace tokenu $name selhala. Kód chyby: $errorCode';
+  String errorRollOutFailed(Object name) {
+    return 'Registrace tokenu $name selhala.';
+  }
+
+  @override
+  String statusCode(Object statusCode) {
+    return 'Stavový kód: $statusCode';
   }
 
   @override
@@ -156,7 +161,22 @@ class AppLocalizationsCs extends AppLocalizations {
   String get unexpectedError => 'Nastala neočekávaná chyba.';
 
   @override
-  String get pollingFailNoNetworkConnection => 'Stahování selhalo. Server není dostupný.';
+  String get pollingFailed => 'Dotaz se nezdařil.';
+
+  @override
+  String get noNetworkConnection => 'Žádné připojení k síti.';
+
+  @override
+  String get connectionFailed => 'Připojení se nezdařilo.';
+
+  @override
+  String get checkYourNetwork => 'Zkontrolujte prosím síťové připojení a zkuste to znovu.';
+
+  @override
+  String get serverNotReachable => 'Na server se nepodařilo dovolat.';
+
+  @override
+  String get couldNotSignMessage => 'Zprávu se nepodařilo podepsat.';
 
   @override
   String get useDeviceLocaleTitle => 'Použít jazyk zařízení';
@@ -269,7 +289,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get noLogToSend => 'Je třeba odeslat protokol.';
 
   @override
-  String get errorLogFileAttached => 'Přiložen je soubor protokolu o chybách.';
+  String get errorMailBody => 'Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.';
 
   @override
   String get errorLogCleared => 'Protokoly chyb byly vymazány.';
@@ -408,13 +428,19 @@ class AppLocalizationsCs extends AppLocalizations {
   String get decryptErrorTitle => 'Chyba dešifrování';
 
   @override
-  String get decryptErrorContent => 'Při dešifrování tokenů došlo k chybě. Zkuste to prosím znovu.\nPokud chyba přetrvává, musíte poškozená data odstranit.';
+  String get decryptErrorContent => 'Bohužel se aplikaci nepodařilo dešifrovat vaše tokeny. To znamená, že šifrovací klíč je poškozen. Můžete to zkusit znovu nebo odstranit data aplikace, čímž by došlo k odstranění tokenů v aplikaci.';
 
   @override
-  String get decryptErrorButton => 'Odstranit všechny tokeny';
+  String get decryptErrorButtonDelete => 'Odstranit';
 
   @override
-  String get decryptErrorDeleteConfirmationContent => 'Určitě chcete odstranit všechny tokeny?';
+  String get decryptErrorButtonSendError => 'Odeslat chybu';
+
+  @override
+  String get decryptErrorButtonRetry => 'Opakování';
+
+  @override
+  String get decryptErrorDeleteConfirmationContent => 'Jste si jisti, že chcete data aplikace odstranit?';
 
   @override
   String get hidePushTokens => 'Skrýt push tokeny';
@@ -424,4 +450,31 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get licensesAndVersion => 'Licence a verze';
+
+  @override
+  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+
+  @override
+  String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
+
+  @override
+  String get introTokenSwipe => 'Swipe tokens to the left to see available actions.';
+
+  @override
+  String get introEditToken => 'Here you can edit the token name and see some details.';
+
+  @override
+  String get introLockToken => 'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.';
+
+  @override
+  String get introDragToken => 'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.';
+
+  @override
+  String get introAddFolder => 'You can create folders\nto organize your tokens.';
+
+  @override
+  String get introPollForChallenges => 'You can check for new challenges by dragging down the token list.';
+
+  @override
+  String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';
 }

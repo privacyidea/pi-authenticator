@@ -45,8 +45,7 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
               message: AppLocalizations.of(context)!.pollingChallenges,
               duration: const Duration(seconds: 1),
             );
-            final errorMessage = await PushProvider().pollForChallenges(showMessageForEachToken: true);
-            if (errorMessage != null) showMessage(message: errorMessage);
+            await PushProvider().pollForChallenges(isManually: true);
           },
           child: SlidableAutoCloseBehavior(
             child: DragItemScroller(

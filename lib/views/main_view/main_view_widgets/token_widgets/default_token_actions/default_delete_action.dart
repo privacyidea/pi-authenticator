@@ -16,7 +16,7 @@ class DefaultDeleteAction extends TokenAction {
   const DefaultDeleteAction({super.key, required this.token});
 
   @override
-  CustomSlidableAction build(BuildContext context) {
+  CustomSlidableAction build(context, ref) {
     return CustomSlidableAction(
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,

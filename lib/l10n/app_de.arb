@@ -178,15 +178,21 @@
   "@tokensDoNotSupportSynchronization": {
     "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
   },
-  "errorRollOutFailed": "Ausrollen von {name} ist fehlgeschlagen. Fehlercode: {errorCode}",
+  "errorRollOutFailed": "Ausrollen von {name} ist fehlgeschlagen.",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
-      },
-      "errorCode": {
-        "example": "500"
+      }
+    }
+  },
+  "statusCode": "Statuscode: {statusCode}",
+  "@statusCode": {
+    "description": "Tells the user the status code of the error.",
+    "placeholders": {
+      "statusCode": {
+        "example": "400"
       }
     }
   },
@@ -212,9 +218,29 @@
   "@unexpectedError": {
     "description": "Title of page report mode."
   },
-  "pollingFailNoNetworkConnection": "Abfrage fehlgeschlagen, der Server ist nicht erreichbar.",
-  "@pollingFailNoNetworkConnection": {
-    "description": "Tells the user that the roll-out failed because no network connection is available."
+  "pollingFailed": "Abfrage fehlgeschlagen.",
+  "@pollingFailed": {
+    "description": "Tells the user that the polling failed."
+  },
+  "noNetworkConnection": "Keine Netzwerkverbindung.",
+  "@noNetworkConnection": {
+    "description": "Tells the user that there is no network connection."
+  },
+  "connectionFailed": "Verbindung fehlgeschlagen.",
+  "@connectionFailed": {
+    "description": "Tells the user that the connection failed."
+  },
+  "checkYourNetwork": "Bitte überprüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut.",
+  "@checkYourNetwork": {
+    "description": "Tells the user to check the network connection."
+  },
+  "serverNotReachable": "Der Server konnte nicht erreicht werden.",
+  "@serverNotReachable": {
+    "description": "Tells the user that the server could not be reached."
+  },
+  "couldNotSignMessage": "Nachricht konnte nicht signiert werden.",
+  "@couldNotSignMessage": {
+    "description": "Tells the user that the message could not be signed."
   },
   "useDeviceLocaleTitle": "Nutze Systemsprache",
   "@useDeviceLocaleTitle": {
@@ -328,8 +354,8 @@
   "sendErrorDialogHeader": "Per E-Mail senden",
   "ok": "Ok",
   "noLogToSend": "Es gibt kein Protokoll zu senden.",
-  "errorLogFileAttached": "Die Fehlerprotokolldatei ist angehängt.",
-  "@errorLogFileAttached": {
+  "errorMailBody": "Die Fehlerprotokolldatei ist angehängt.\nSie können diesen Text durch zusätzliche Informationen über den Fehler ersetzen.",
+  "@errorMailBody": {
     "description": "Message for email body"
   },
   "errorLogCleared": "Fehlerprotokolle gelöscht",
@@ -409,9 +435,11 @@
   "grantCameraPermissionDialogPermanentlyDenied": "Sie haben die Berechtigung für den Kamerazugriff permanent verweigert. Bitte aktivieren Sie die Berechtigung in den Einstellungen ihres Smartphones.",
   "grantCameraPermissionDialogButton": "Berechtigung erteilen",
   "decryptErrorTitle": "Entschlüsselung fehlgeschlagen",
-  "decryptErrorContent": "Beim Entschlüsseln der Token ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.\nWenn der Fehler weiterhin besteht, müssen Sie die beschädigten Daten löschen",
-  "decryptErrorButton": "Alle Token löschen",
-  "decryptErrorDeleteConfirmationContent": "Sind Sie sicher, dass Sie alle Token löschen wollen?",
+  "decryptErrorContent": "Leider konnten Ihre Token nicht entschlüsselt werden. Das deutet darauf hin, dass der Verschlüsselungsschlüssel nicht mehr verfügbar ist. Sie können es erneut versuchen oder die App Daten löschen. Dabei werden alle Token aus der App geschlöscht.",
+  "decryptErrorButtonDelete": "Löschen.",
+  "decryptErrorButtonSendError": "Fehler senden",
+  "decryptErrorButtonRetry": "Wiederholen",
+  "decryptErrorDeleteConfirmationContent": "Sind Sie sicher, dass Sie die App Daten löschen möchten?",
   "hidePushTokens": "Push-Token ausblenden",
   "hidePushTokensDescription": "Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.",
   "licensesAndVersion": "Lizenzen und Version"

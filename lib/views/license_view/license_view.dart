@@ -7,7 +7,7 @@ class LicenseView extends StatelessWidget {
   final Widget appImage;
   final String websiteLink;
 
-  const LicenseView({required this.appName, required this.websiteLink, required this.appImage, Key? key}) : super(key: key);
+  const LicenseView({required this.appName, required this.websiteLink, required this.appImage, super.key});
 
   @override
   Widget build(BuildContext context) => FutureBuilder(

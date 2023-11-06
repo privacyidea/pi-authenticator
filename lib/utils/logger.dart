@@ -26,7 +26,7 @@ class Logger {
   /*----------- STATIC FIELDS & GETTER -----------*/
   static Logger? _instance;
   static BuildContext? get _context => navigatorKey.currentContext;
-  static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorLogFileAttached : 'Error Log File Attached';
+  static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorMailBody : 'Error Log File Attached';
   static printer.Logger print = printer.Logger(
     printer: printer.PrettyPrinter(
       methodCount: 0,
@@ -114,7 +114,8 @@ class Logger {
   /*----------- LOGGING METHODS -----------*/
 
   static void info(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
-    final infoString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.INFO);
+    String infoString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.INFO);
+    infoString = _textFilter(infoString);
     if (instance._verbose || verbose) {
       instance._logToFile(infoString);
     }
@@ -122,7 +123,8 @@ class Logger {
   }
 
   static void warning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
-    final warningString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.WARNING);
+    String warningString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.WARNING);
+    warningString = _textFilter(warningString);
     if (instance._verbose || verbose) {
       instance._logToFile(warningString);
     }
@@ -130,7 +132,8 @@ class Logger {
   }
 
   static void error(String? message, {required dynamic error, required dynamic stackTrace, String? name}) {
-    final errorString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
+    String errorString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
+    errorString = _textFilter(errorString);
     if (message != null) {
       instance._lastError = message.substring(0, min(message.length, 100));
     } else if (error != null) {
@@ -177,9 +180,15 @@ class Logger {
       deviceInfo = _readIosDeviceInfo(data);
     }
 
+    final completeMailBody = """$_mailBody
+---------------------------------------------------------
+
+Device Parameters:
+$deviceInfo""";
+
     try {
       final MailOptions mailOptions = MailOptions(
-        body: '$_mailBody\n\n\nDevice Parameters:$deviceInfo\n\nStacktrace:\n${file.readAsStringSync()}',
+        body: completeMailBody,
         subject: _mailSubject,
         recipients: [_mailRecipient],
         attachments: [
@@ -333,10 +342,10 @@ class Logger {
 
   /*----------- HELPER -----------*/
 
-  String _textFilter(String text) {
+  static String _textFilter(String text) {
     for (var key in filterParameterKeys) {
       final regex = RegExp(r'(?<=' + key + r':\s).+?(?=[},])');
-      text = text.replaceAll(regex, '***');
+      text = text.replaceAll(regex, '******');
     }
     return text;
   }
