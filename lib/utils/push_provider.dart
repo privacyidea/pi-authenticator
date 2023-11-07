@@ -222,8 +222,8 @@ class PushProvider {
     // Start polling if enabled and not already polling
     if (pollingEnabled && _pollTimer == null) {
       Logger.info('Polling is enabled.', name: 'push_provider.dart#_startPollingIfEnabled');
-      _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) => pollForChallenges());
-      pollForChallenges();
+      _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) => pollForChallenges(isManually: false));
+      pollForChallenges(isManually: false);
       return;
     }
     // Stop polling if it's disabled and currently polling
@@ -237,24 +237,28 @@ class PushProvider {
     return;
   }
 
-  Future<void> pollForChallenges() async {
-    final connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.none) {
-      Logger.info('Tried to poll without any internet connection available.', name: 'push_provider.dart#pollForChallenges');
-      globalRef?.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.noNetworkConnection,
-      );
-      return;
-    }
-
+  Future<void> pollForChallenges({required bool isManually}) async {
     // Get all push tokens
     List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
 
     // Disable polling if no push tokens exist
-    if (pushTokens.isEmpty && globalRef?.read(settingsProvider).enablePolling == true) {
-      Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
-      globalRef?.read(settingsProvider.notifier).setPolling(false);
+    if (pushTokens.isEmpty) {
+      if (globalRef?.read(settingsProvider).enablePolling == true) {
+        Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
+        globalRef?.read(settingsProvider.notifier).setPolling(false);
+      }
+      return;
+    }
+
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      if (isManually) {
+        Logger.info('Tried to poll without any internet connection available.', name: 'push_provider.dart#pollForChallenges');
+        globalRef?.read(statusMessageProvider.notifier).state = (
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.noNetworkConnection,
+        );
+      }
       return;
     }
 
