@@ -13,6 +13,7 @@ import '../../../widgets/drag_item_scroller.dart';
 class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget {
   final TokenFolder? dependingFolder;
   final SortableMixin? nextSortable;
+  final double? bottomPaddingIfLast;
   final bool ignoreFolderId;
   final bool isLastDivider;
 
@@ -20,6 +21,7 @@ class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget 
     super.key,
     required this.dependingFolder,
     required this.nextSortable,
+    this.bottomPaddingIfLast,
     this.ignoreFolderId = false,
     this.isLastDivider = false,
   });
@@ -53,68 +55,26 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
   Widget build(BuildContext context) {
     final body = DragTarget(
       onWillAccept: (data) {
-        if (data is T == false) return false;
-        if (ref.read(dragItemScrollerStateProvider)) return false;
-        expansionController.forward();
-        return true;
+        final willAccept = _onWillAccept<T>(data, ref);
+        if (willAccept) {
+          expansionController.forward();
+        }
+        return willAccept;
       },
       onLeave: (data) {
         expansionController.reverse();
       },
       onAccept: (dragedSortable) {
         expansionController.reset();
-        // Higher index = lower in the list
-        dragedSortable as SortableMixin;
-        final allTokens = ref.read(tokenProvider).tokens;
-        final allFolders = ref.read(tokenFolderProvider).folders;
-        final allSortables = [...allTokens, ...allFolders];
-        allSortables.sort((a, b) => a.compareTo(b));
-        final oldIndex = allSortables.indexOf(dragedSortable);
-        if (oldIndex == -1) return; // If the draged item is not in the list we dont need to do anything
-        int newIndex;
-        if (widget.nextSortable == null) {
-          // If the draged item is moved to the end of the list the nextSortable is null. The newIndex will be set to the last index
-          newIndex = allSortables.length - 1;
-        } else {
-          if (oldIndex < allSortables.indexOf(widget.nextSortable!)) {
-            // If the draged item is moved down it dont pass the nextSortable so the newIndex is before the nextSortable
-            newIndex = allSortables.indexOf(widget.nextSortable!) - 1;
-          } else {
-            // If the draged item is moved up it pass the nextSortable so the newIndex is after the nextSortable
-            newIndex = allSortables.indexOf(widget.nextSortable!);
-          }
-        }
-        final dragedItemMovedUp = newIndex < oldIndex;
-        // When the draged item is a Token we need to update the folderId so its in the correct folder
-        if (dragedSortable is Token && !widget.ignoreFolderId) {
-          late int? previousFolderId = widget.dependingFolder?.folderId;
-          allSortables[oldIndex] = dragedSortable.copyWith(folderId: () => previousFolderId);
-        }
-
-        final modifiedSortables = [];
-        for (var i = 0; i < allSortables.length; i++) {
-          if (i < oldIndex && i < newIndex) {
-            modifiedSortables.add(allSortables[i].copyWith(sortIndex: i)); // This is before dragedSortable and newIndex so no changes needed
-            continue;
-          }
-          if (i > oldIndex && i > newIndex) {
-            modifiedSortables.add(allSortables[i].copyWith(sortIndex: i)); // This is after dragedSortable and newIndex so no changes needed
-            continue;
-          }
-          if (i == oldIndex) {
-            modifiedSortables.add(allSortables[i].copyWith(sortIndex: newIndex)); // This is dragedSortable so it needs to be moved to newIndex
-            continue;
-          }
-          modifiedSortables.add(allSortables[i].copyWith(
-              sortIndex: i + (dragedItemMovedUp ? 1 : -1))); // This is between dragedSortable and newIndex so it needs to be moved up (-1) or down (+1)
-          continue;
-        }
-
-        globalRef?.read(tokenProvider.notifier).updateTokens(
-            allTokens, (p0) => p0.copyWith(sortIndex: modifiedSortables.whereType<Token>().firstWhereOrNull((updated) => updated.id == p0.id)?.sortIndex));
-        globalRef?.read(tokenFolderProvider.notifier).updateFolders(modifiedSortables.whereType<TokenFolder>().toList());
+        _onAccept(
+          dragedSortable: dragedSortable,
+          nextSortable: widget.nextSortable,
+          ignoreFolderId: widget.ignoreFolderId,
+          dependingFolder: widget.dependingFolder,
+          ref: ref,
+        );
       },
-      builder: (context, accepted, rejected) {
+      builder: (context, _, __) {
         final dividerHeight = expansionController.value * 40 + 1.5;
         return Container(
           height: dividerHeight,
@@ -127,11 +87,90 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
       },
     );
 
-    return widget.isLastDivider
-        ? Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [body, SizedBox(height: 40 - 40 * expansionController.value)],
-          )
-        : body;
+    return widget.isLastDivider == false
+        ? body
+        : Column(
+            children: [
+              body,
+              Expanded(
+                child: DragTarget(
+                    onWillAccept: (data) => _onWillAccept<T>(data, ref),
+                    onAccept: (dragedSortable) => _onAccept(
+                          dragedSortable: dragedSortable,
+                          nextSortable: widget.nextSortable,
+                          ignoreFolderId: widget.ignoreFolderId,
+                          dependingFolder: widget.dependingFolder,
+                          ref: ref,
+                        ),
+                    builder: (context, _, __) => Container(height: 40 - 40 * expansionController.value + (widget.bottomPaddingIfLast ?? 0))),
+              )
+            ],
+          );
   }
+}
+
+bool _onWillAccept<T>(Object? data, WidgetRef ref) {
+  if (data is! T) return false;
+  if (ref.read(dragItemScrollerStateProvider)) return false;
+
+  return true;
+}
+
+void _onAccept({
+  required Object? dragedSortable,
+  SortableMixin? nextSortable,
+  required bool ignoreFolderId,
+  TokenFolder? dependingFolder,
+  required WidgetRef ref,
+}) {
+  if (dragedSortable is! SortableMixin) return;
+  // Higher index = lower in the list
+  final allTokens = ref.read(tokenProvider).tokens;
+  final allFolders = ref.read(tokenFolderProvider).folders;
+  final allSortables = [...allTokens, ...allFolders];
+  allSortables.sort((a, b) => a.compareTo(b));
+  final oldIndex = allSortables.indexOf(dragedSortable);
+  if (oldIndex == -1) return; // If the draged item is not in the list we dont need to do anything
+  int newIndex;
+  if (nextSortable == null) {
+    // If the draged item is moved to the end of the list the nextSortable is null. The newIndex will be set to the last index
+    newIndex = allSortables.length - 1;
+  } else {
+    if (oldIndex < allSortables.indexOf(nextSortable)) {
+      // If the draged item is moved down it dont pass the nextSortable so the newIndex is before the nextSortable
+      newIndex = allSortables.indexOf(nextSortable) - 1;
+    } else {
+      // If the draged item is moved up it pass the nextSortable so the newIndex is after the nextSortable
+      newIndex = allSortables.indexOf(nextSortable);
+    }
+  }
+  final dragedItemMovedUp = newIndex < oldIndex;
+  // When the draged item is a Token we need to update the folderId so its in the correct folder
+  if (dragedSortable is Token && !ignoreFolderId) {
+    late int? previousFolderId = dependingFolder?.folderId;
+    allSortables[oldIndex] = dragedSortable.copyWith(folderId: () => previousFolderId);
+  }
+
+  final modifiedSortables = [];
+  for (var i = 0; i < allSortables.length; i++) {
+    if (i < oldIndex && i < newIndex) {
+      modifiedSortables.add(allSortables[i].copyWith(sortIndex: i)); // This is before dragedSortable and newIndex so no changes needed
+      continue;
+    }
+    if (i > oldIndex && i > newIndex) {
+      modifiedSortables.add(allSortables[i].copyWith(sortIndex: i)); // This is after dragedSortable and newIndex so no changes needed
+      continue;
+    }
+    if (i == oldIndex) {
+      modifiedSortables.add(allSortables[i].copyWith(sortIndex: newIndex)); // This is dragedSortable so it needs to be moved to newIndex
+      continue;
+    }
+    modifiedSortables.add(allSortables[i]
+        .copyWith(sortIndex: i + (dragedItemMovedUp ? 1 : -1))); // This is between dragedSortable and newIndex so it needs to be moved up (-1) or down (+1)
+    continue;
+  }
+
+  globalRef?.read(tokenProvider.notifier).updateTokens(
+      allTokens, (p0) => p0.copyWith(sortIndex: modifiedSortables.whereType<Token>().firstWhereOrNull((updated) => updated.id == p0.id)?.sortIndex));
+  globalRef?.read(tokenFolderProvider.notifier).updateFolders(modifiedSortables.whereType<TokenFolder>().toList());
 }

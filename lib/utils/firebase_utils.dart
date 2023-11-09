@@ -28,6 +28,7 @@ class FirebaseUtils {
       return;
     }
     _initialized = true;
+    Logger.info('Initializing Firebase', name: 'firebase_utils.dart#initFirebase');
     await Firebase.initializeApp();
 
     try {

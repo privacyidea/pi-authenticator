@@ -314,6 +314,7 @@ void _testTokenNotifier() {
       expect(state.tokens, after);
       verify(mockRepo.saveOrReplaceTokens([after.first])).called(1);
     });
+
     test('rolloutPushToken', () async {
       final container = ProviderContainer();
       final mockRepo = MockTokenRepository();
@@ -362,6 +363,17 @@ void _testTokenNotifier() {
         body: anyNamed('body'),
         sslVerify: anyNamed('sslVerify'),
       )).called(greaterThan(0));
+    });
+    test('loadFromRepo', () async {
+      final mockRepo = MockTokenRepository();
+      final before = <Token>[
+        HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret'),
+      ];
+      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      final notifier = TokenNotifier(repository: mockRepo);
+      final result = await notifier.loadFromRepo();
+      expect(result, true);
+      expect(notifier.state.tokens, before);
     });
   });
 }
