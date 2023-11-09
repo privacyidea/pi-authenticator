@@ -20,8 +20,8 @@
   "@name": {
     "description": "Describes the field where the tokens name should be entered."
   },
-  "secret": "Geheimnis",
-  "@secret": {
+  "secretKey": "Geheimer Schlüssel",
+  "@secretKey": {
     "description": "Describes the field where the tokens secret should be entered."
   },
   "encoding": "Kodierung",

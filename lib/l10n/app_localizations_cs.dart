@@ -14,7 +14,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get name => 'Název';
 
   @override
-  String get secret => 'Heslo';
+  String get secretKey => 'Tajný klíč';
 
   @override
   String get encoding => 'Kódování';

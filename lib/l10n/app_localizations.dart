@@ -124,8 +124,8 @@ abstract class AppLocalizations {
   /// Describes the field where the tokens secret should be entered.
   ///
   /// In en, this message translates to:
-  /// **'Secret'**
-  String get secret;
+  /// **'Secret key'**
+  String get secretKey;
 
   /// Title of the dropdown button where the encoding is selected.
   ///

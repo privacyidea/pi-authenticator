@@ -89,7 +89,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
                 autovalidateMode: _autoValidateSecret,
                 focusNode: _secretFieldFocus,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.secret,
+                  labelText: AppLocalizations.of(context)!.secretKey,
                 ),
                 validator: (value) {
                   if (value!.isEmpty) {

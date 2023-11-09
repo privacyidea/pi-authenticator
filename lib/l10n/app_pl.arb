@@ -16,8 +16,8 @@
   "@name": {
     "description": "Describes the field where the tokens name should be entered."
   },
-  "secret": "Sekret",
-  "@secret": {
+  "secretKey": "Tajny klucz",
+  "@secretKey": {
     "description": "Describes the field where the tokens secret should be entered."
   },
   "encoding": "Kodowanie",
