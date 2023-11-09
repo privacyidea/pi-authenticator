@@ -14,7 +14,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get name => 'Nazwa';
 
   @override
-  String get secret => 'Sekret';
+  String get secretKey => 'Tajny klucz';
 
   @override
   String get encoding => 'Kodowanie';

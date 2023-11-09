@@ -164,16 +164,17 @@ class TokenNotifier extends StateNotifier<TokenState> {
     await _saveOrReplaceTokensRepo(updatedTokens);
   }
 
-  Future<void> updateToken<T extends Token>(T token, T Function(T) updater) async {
+  Future<T?> updateToken<T extends Token>(T token, T Function(T) updater) async {
     await loadingRepo;
     final current = state.currentOf<T>(token);
     if (current == null) {
       Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#updateToken');
-      return;
+      return null;
     }
     final updated = updater(current);
     state = state.replaceToken(updated);
     await _saveOrReplaceTokensRepo([updated]);
+    return updated;
   }
 
   Future<void> updateTokens<T extends Token>(List<T> token, T Function(T) updater) async {
@@ -279,7 +280,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
     // Re-add url and sslverify to android legacy tokens:
     if (token.url == null) {
-      token = token.copyWith(url: pr.uri, sslVerify: pr.sslVerify);
+      token = await updateToken(token, (p0) => p0.copyWith(url: pr.uri, sslVerify: pr.sslVerify));
+    }
+    if (token == null) {
+      Logger.warning('The requested token does not exist anymore', name: 'token_notifier.dart#addPushRequestToToken');
+      return false;
     }
     bool isVerified = token.privateTokenKey == null
         ? await _legacy.verify(token.serial, signedData, signature)
@@ -393,7 +398,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
         updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponse));
         try {
           RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
-          token = token.withPublicServerKey(publicServerKey);
+          updateToken(token, (p0) => p0.withPublicServerKey(publicServerKey));
         } on FormatException catch (e, s) {
           showMessage(message: "Couldn't parsing RSA public key: ${e.message}", duration: const Duration(seconds: 3));
           Logger.warning('Error while parsing RSA public key.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);

@@ -14,7 +14,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get name => 'Naam';
 
   @override
-  String get secret => 'Geheim';
+  String get secretKey => 'Geheime sleutel';
 
   @override
   String get encoding => 'Codering';

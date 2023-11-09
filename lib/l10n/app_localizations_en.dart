@@ -14,7 +14,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get name => 'Name';
 
   @override
-  String get secret => 'Secret';
+  String get secretKey => 'Secret key';
 
   @override
   String get encoding => 'Encoding';
