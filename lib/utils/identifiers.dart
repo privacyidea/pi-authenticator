@@ -87,3 +87,12 @@ const String SIGNING_ALGORITHM = 'SHA-256/RSA';
 
 // Custom error identifiers
 const String FIREBASE_TOKEN_ERROR_CODE = 'FIREBASE_TOKEN_ERROR_CODE';
+
+// Push request:
+const String PUSH_REQUEST_NONCE = 'nonce'; // 1.
+const String PUSH_REQUEST_URL = 'url'; // 2.
+const String PUSH_REQUEST_SERIAL = 'serial'; // 3.
+const String PUSH_REQUEST_QUESTION = 'question'; // 4.
+const String PUSH_REQUEST_TITLE = 'title'; // 5.
+const String PUSH_REQUEST_SSL_VERIFY = 'sslverify'; // 6.
+const String PUSH_REQUEST_SIGNATURE = 'signature';  // 7.

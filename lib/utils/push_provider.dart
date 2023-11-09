@@ -94,14 +94,25 @@ class PushProvider {
     return instance!;
   }
 
-  // INITIALIZATIONS
+  static Map<String, dynamic> _getAndValidateData(RemoteMessage remoteMessage) {
+    final Map<String, dynamic> data;
+    try {
+      data = remoteMessage.data;
+      PushRequest.verifyData(data);
+    } on ArgumentError catch (e) {
+      Logger.warning('Could not parse push request data.', name: 'push_provider.dart#_getAndValidateData', error: e, verbose: true);
+      throw TypeError();
+    }
+    return data;
+  }
 
   // FOREGROUND HANDLING
   Future<void> _foregroundHandler(RemoteMessage remoteMessage) async {
     Logger.info('Foreground message received.', name: 'push_provider.dart#_foregroundHandler');
     await SecureTokenRepository.protect(() async {
       try {
-        return _handleIncomingRequestForeground(remoteMessage);
+        final data = _getAndValidateData(remoteMessage);
+        return _handleIncomingRequestForeground(data);
       } on TypeError catch (e, s) {
         final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
         showMessage(message: errorMessage);
@@ -118,7 +129,8 @@ class PushProvider {
     Logger.info('Background message received.', name: 'push_provider.dart#_backgroundHandler');
     await SecureTokenRepository.protect(() async {
       try {
-        return _handleIncomingRequestBackground(remoteMessage);
+        final data = _getAndValidateData(remoteMessage);
+        return _handleIncomingRequestBackground(data);
       } on TypeError catch (e, s) {
         final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
         Logger.warning(errorMessage, name: 'push_provider.dart#_backgroundHandler', error: e, stackTrace: s);
@@ -132,74 +144,19 @@ class PushProvider {
   // HANDLING
   /// Handles incoming push requests by verifying the challenge and adding it
   /// to the token. This should be guarded by a lock.
-  Future<void> _handleIncomingRequestForeground(RemoteMessage message) async {
-    final data = message.data;
+  Future<void> _handleIncomingRequestForeground(Map<String, dynamic> data) async {
     Logger.info('Incoming push challenge.', name: 'push_provider.dart#_handleIncomingRequestForeground');
-    Uri? requestUri = Uri.tryParse(data['url']);
-    if (requestUri == null ||
-        data['nonce'] == null ||
-        data['serial'] == null ||
-        data['signature'] == null ||
-        data['title'] == null ||
-        data['question'] == null) {
-      Logger.warning('Could not parse url. Some required parameters are missing.', name: 'push_provider.dart#_handleIncomingRequestForeground');
-      return;
-    }
-
-    bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
-    PushRequest pushRequest = PushRequest(
-      title: data['title'],
-      question: data['question'],
-      uri: requestUri,
-      nonce: data['nonce'],
-      sslVerify: sslVerify,
-      id: data['nonce'].hashCode,
-      // FIXME This is not guaranteed to not lead to collisions, but they might be unlikely in this case.
-      expirationDate: DateTime.now().add(
-        const Duration(seconds: 120), // Push requests expire after 2 minutes.
-      ),
-      serial: data['serial'],
-      signature: data['signature'],
-    );
-
+    PushRequest pushRequest = PushRequest.fromMessageData(data);
     Logger.info('Incoming push challenge for token with serial.', name: 'push_provider.dart#_handleIncomingChallenge');
-
     pushSubscriber?.newRequest(pushRequest);
   }
 
   // HANDLING
   /// Handles incoming push requests by verifying the challenge and adding it
   /// to the token. This should be guarded by a lock.
-  static Future<void> _handleIncomingRequestBackground(RemoteMessage message) async {
-    final data = message.data;
+  static Future<void> _handleIncomingRequestBackground(Map<String, dynamic> data) async {
     Logger.info('Incoming push challenge.', name: 'push_provider.dart#_handleIncomingRequestBackground');
-    Uri? requestUri = Uri.tryParse(data['url']);
-    if (requestUri == null ||
-        data['nonce'] == null ||
-        data['serial'] == null ||
-        data['signature'] == null ||
-        data['title'] == null ||
-        data['question'] == null) {
-      Logger.warning('Could not parse url. Some required parameters are missing.', name: 'push_provider.dart#_handleIncomingRequestBackground');
-      return;
-    }
-
-    bool sslVerify = (int.tryParse(data['sslverify']) ?? 0) == 1;
-    PushRequest pushRequest = PushRequest(
-      title: data['title'],
-      question: data['question'],
-      uri: requestUri,
-      nonce: data['nonce'],
-      sslVerify: sslVerify,
-      id: data['nonce'].hashCode,
-      // FIXME This is not guaranteed to not lead to collisions, but they might be unlikely in this case.
-      expirationDate: DateTime.now().add(
-        const Duration(seconds: 120), // Push requests expire after 2 minutes.
-      ),
-      serial: data['serial'],
-      signature: data['signature'],
-    );
-
+    PushRequest pushRequest = PushRequest.fromMessageData(data);
     Logger.info('Incoming push challenge for token with serial.', name: 'push_provider.dart#_handleIncomingRequestBackground');
     _addPushRequestToTokenInSecureStoreage(pushRequest);
   }
