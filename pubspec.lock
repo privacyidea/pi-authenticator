@@ -546,14 +546,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
-  fluttertoast:
-    dependency: "direct main"
-    description:
-      name: fluttertoast
-      sha256: "69a5c4fcfe9a163bc927ff386c0dedd62575913bba942d0ce80c1fd092885255"
-      url: "https://pub.dev"
-    source: hosted
-    version: "8.2.3"
   frontend_server_client:
     dependency: transitive
     description:
@@ -668,14 +660,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.7.1"
-  lifecycle:
-    dependency: "direct main"
-    description:
-      name: lifecycle
-      sha256: ad96a411440e8ab5b8dd63eb6345b1385863f33a09ae073e0ea110159ea81787
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.8.0"
   lints:
     dependency: transitive
     description:
@@ -988,7 +972,7 @@ packages:
     source: hosted
     version: "2.1.6"
   pointycastle:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: pointycastle
       sha256: "7c1e5f0d23c9016c5bbd8b1473d0d3fb3fc851b876046039509e18e0c7485f2c"
@@ -1208,14 +1192,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
-  streaming_shared_preferences:
-    dependency: "direct main"
-    description:
-      name: streaming_shared_preferences
-      sha256: "015a7999d8cf6e87a685635e0614910116ee187c885ae0f630da276f8435e457"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   string_scanner:
     dependency: transitive
     description:

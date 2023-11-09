@@ -42,7 +42,7 @@ android {
 
     defaultConfig {
         applicationId "it.netknights.piauthenticator"
-        minSdkVersion 22    
+        minSdkVersion 21    
         targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
