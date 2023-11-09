@@ -42,6 +42,7 @@ dependencies:
   url_launcher: ^6.0.12
   uuid: ^4.0.0
   http: ^1.1.0
+  pointycastle: ^3.7.3
   mutex: ^3.0.0
   flutter_lints: ^3.0.0
   expandable: ^5.0.1

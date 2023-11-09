@@ -71,8 +71,11 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
                     child: Column(
                       children: [
                         ..._buildSortableWidgets(sortables, draggingSortable),
-                        if (draggingSortable != null)
-                          const Expanded(child: DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true, bottomPaddingIfLast: 80))
+                        (draggingSortable != null)
+                            ? const Expanded(child: DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true, bottomPaddingIfLast: 80))
+                            : const SizedBox(
+                                height: 80,
+                              ),
                       ],
                     ),
                   ),
