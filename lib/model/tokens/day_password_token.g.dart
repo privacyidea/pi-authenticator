@@ -6,8 +6,7 @@ part of 'day_password_token.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) =>
-    DayPasswordToken(
+DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) => DayPasswordToken(
       period: Duration(microseconds: json['period'] as int),
       label: json['label'] as String,
       issuer: json['issuer'] as String,
@@ -15,9 +14,7 @@ DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) =>
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,
       secret: json['secret'] as String,
-      viewMode: $enumDecodeNullable(
-              _$DayPasswordTokenViewModeEnumMap, json['viewMode']) ??
-          DayPasswordTokenViewMode.VALIDFOR,
+      viewMode: $enumDecodeNullable(_$DayPasswordTokenViewModeEnumMap, json['viewMode']) ?? DayPasswordTokenViewMode.VALIDFOR,
       type: json['type'] as String?,
       pin: json['pin'] as bool?,
       tokenImage: json['tokenImage'] as String?,
@@ -26,8 +23,7 @@ DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) =>
       folderId: json['folderId'] as int?,
     );
 
-Map<String, dynamic> _$DayPasswordTokenToJson(DayPasswordToken instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$DayPasswordTokenToJson(DayPasswordToken instance) => <String, dynamic>{
       'label': instance.label,
       'issuer': instance.issuer,
       'id': instance.id,

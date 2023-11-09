@@ -3,13 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../model/enums/algorithms.dart';
+import '../../model/enums/encodings.dart';
 import '../../model/enums/token_types.dart';
 import '../../model/tokens/day_password_token.dart';
 import '../../model/tokens/hotp_token.dart';
 import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/totp_token.dart';
 import '../../utils/crypto_utils.dart';
-import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import 'add_token_manually_view_widgets/labeled_dropdown_button.dart';

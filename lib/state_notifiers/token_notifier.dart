@@ -15,6 +15,7 @@ import 'package:pointycastle/asymmetric/api.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
+import '../model/enums/push_token_rollout_state.dart';
 import '../model/enums/schemes.dart';
 import '../model/push_request.dart';
 import '../model/states/token_state.dart';
@@ -338,10 +339,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     assert(token.url != null, 'Token url is null. Cannot rollout token without url.');
     Logger.info('Rolling out token "${token.id}"', name: 'token_notifier.dart#rolloutPushToken');
     if (token.isRolledOut) return true;
-    if (token.rolloutState != PushTokenRollOutState.rolloutNotStarted &&
-        token.rolloutState != PushTokenRollOutState.generatingRSAKeyPairFailed &&
-        token.rolloutState != PushTokenRollOutState.sendRSAPublicKeyFailed &&
-        token.rolloutState != PushTokenRollOutState.parsingResponseFailed) {
+    if (token.rolloutState.rollOutInProgress) {
       Logger.info('Ignoring rollout request: Rollout of token "${token.id}" already started. Tokenstate: ${token.rolloutState} ',
           name: 'token_notifier.dart#rolloutPushToken');
       return false;

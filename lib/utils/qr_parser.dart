@@ -22,6 +22,8 @@ import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/supported_versions.dart';
+import '../model/enums/algorithms.dart';
+import '../model/enums/encodings.dart';
 import '../model/enums/token_types.dart';
 
 class QrParser {

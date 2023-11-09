@@ -22,13 +22,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
-import 'identifiers.dart';
+import '../model/enums/algorithms.dart';
 
 /// Inserts [char] at the position [pos] in the given String ([str]),
 /// and returns the resulting String.
@@ -98,17 +96,6 @@ void checkNotificationPermission() async {
     Logger.info('Notification permission is permanently denied!');
   }
 }
-
-String rolloutMsg(PushTokenRollOutState rolloutState, BuildContext context) => switch (rolloutState) {
-      PushTokenRollOutState.rolloutNotStarted => AppLocalizations.of(context)!.rollingOut,
-      PushTokenRollOutState.generatingRSAKeyPair => AppLocalizations.of(context)!.generatingRSAKeyPair,
-      PushTokenRollOutState.generatingRSAKeyPairFailed => AppLocalizations.of(context)!.generatingRSAKeyPairFailed,
-      PushTokenRollOutState.sendRSAPublicKey => AppLocalizations.of(context)!.sendingRSAPublicKey,
-      PushTokenRollOutState.sendRSAPublicKeyFailed => AppLocalizations.of(context)!.sendingRSAPublicKeyFailed,
-      PushTokenRollOutState.parsingResponse => AppLocalizations.of(context)!.parsingResponse,
-      PushTokenRollOutState.parsingResponseFailed => AppLocalizations.of(context)!.parsingResponseFailed,
-      PushTokenRollOutState.rolloutComplete => AppLocalizations.of(context)!.rolloutCompleted,
-    };
 
 String? getErrorMessageFromResponse(Response response) {
   String body = response.body;

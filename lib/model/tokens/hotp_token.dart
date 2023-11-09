@@ -5,6 +5,8 @@ import '../../utils/identifiers.dart';
 
 import '../../utils/crypto_utils.dart';
 import '../../utils/utils.dart';
+import '../enums/algorithms.dart';
+import '../enums/encodings.dart';
 import '../enums/token_types.dart';
 import 'otp_token.dart';
 
@@ -35,7 +37,7 @@ class HOTPToken extends OTPToken {
         secret,
         counter,
         length: digits,
-        algorithm: mapAlgorithms(algorithm),
+        algorithm: algorithm.otpLibraryAlgorithm,
         isGoogle: true,
       );
 

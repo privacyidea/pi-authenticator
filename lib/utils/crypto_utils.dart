@@ -26,10 +26,8 @@ import 'package:base32/base32.dart' as base32_converter;
 import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hex/hex.dart' as hex_converter;
-import 'package:otp/otp.dart' as otp_library;
 import 'package:pointycastle/export.dart';
-
-import 'identifiers.dart';
+import '../model/enums/encodings.dart';
 
 Future<Uint8List> pbkdf2({required Uint8List salt, required int iterations, required int keyLength, required Uint8List password}) async {
   ArgumentError.checkNotNull(salt);
@@ -110,9 +108,3 @@ bool isValidEncoding(String secret, Encodings encoding) {
   }
   return true;
 }
-
-otp_library.Algorithm mapAlgorithms(Algorithms algorithm) => switch (algorithm) {
-      Algorithms.SHA1 => otp_library.Algorithm.SHA1,
-      Algorithms.SHA256 => otp_library.Algorithm.SHA256,
-      Algorithms.SHA512 => otp_library.Algorithm.SHA512,
-    };

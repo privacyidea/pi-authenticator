@@ -1,4 +1,4 @@
-import '../../utils/identifiers.dart';
+import '../enums/algorithms.dart';
 import 'token.dart';
 
 abstract class OTPToken extends Token {

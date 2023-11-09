@@ -24,58 +24,6 @@
 
 const defaultCrashReportRecipient = 'app-crash@netknights.it';
 
-enum Encodings {
-  none,
-  base32,
-  hex,
-}
-
-extension EncodingsExtension on Encodings {
-  String get asString => switch (this) {
-        Encodings.none => 'none',
-        Encodings.base32 => 'base32',
-        Encodings.hex => 'hex',
-      };
-}
-
-enum Algorithms {
-  SHA1,
-  SHA256,
-  SHA512,
-}
-
-extension AlgorithmsExtension on Algorithms {
-  String get asString => switch (this) {
-        Algorithms.SHA1 => 'SHA1',
-        Algorithms.SHA256 => 'SHA256',
-        Algorithms.SHA512 => 'SHA512',
-      };
-
-  Algorithms fromString(String string) => switch (string) {
-        'SHA1' => Algorithms.SHA1,
-        'SHA256' => Algorithms.SHA256,
-        'SHA512' => Algorithms.SHA512,
-        _ => throw ArgumentError('Invalid algorithm string'),
-      };
-  bool isString(String encoding) => encoding.toLowerCase() == asString.toLowerCase();
-}
-
-enum DayPasswordTokenViewMode {
-  VALIDFOR,
-  VALIDUNTIL,
-}
-
-enum PushTokenRollOutState {
-  rolloutNotStarted,
-  generatingRSAKeyPair,
-  generatingRSAKeyPairFailed,
-  sendRSAPublicKey,
-  sendRSAPublicKeyFailed,
-  parsingResponse,
-  parsingResponseFailed,
-  rolloutComplete,
-}
-
 // qr codes:
 const String URI_TYPE = 'URI_TYPE';
 const String URI_LABEL = 'URI_LABEL';

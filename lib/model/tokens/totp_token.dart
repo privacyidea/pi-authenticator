@@ -5,6 +5,8 @@ import 'package:uuid/uuid.dart';
 import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/utils.dart';
+import '../enums/algorithms.dart';
+import '../enums/encodings.dart';
 import '../enums/token_types.dart';
 import 'otp_token.dart';
 
@@ -22,7 +24,7 @@ class TOTPToken extends OTPToken {
         secret,
         DateTime.now().millisecondsSinceEpoch,
         length: digits,
-        algorithm: mapAlgorithms(algorithm),
+        algorithm: algorithm.otpLibraryAlgorithm,
         interval: period,
         isGoogle: true,
       );

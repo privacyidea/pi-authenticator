@@ -2,9 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../../../../../model/enums/push_token_rollout_state.dart';
 import '../../../../../model/mixins/sortable_mixin.dart';
 import '../../../../../model/tokens/push_token.dart';
-import '../../../../../utils/identifiers.dart';
 import '../token_widget.dart';
 import '../token_widget_base.dart';
 import 'actions/edit_push_token_action.dart';
