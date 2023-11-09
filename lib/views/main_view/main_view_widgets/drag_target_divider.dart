@@ -94,7 +94,7 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
               body,
               Expanded(
                 child: DragTarget(
-                    onWillAccept: (data) => _onWillAccept<T>(data, ref),
+                    onWillAccept: (data) => _onWillAccept<SortableMixin>(data, ref),
                     onAccept: (dragedSortable) => _onAccept(
                           dragedSortable: dragedSortable,
                           nextSortable: widget.nextSortable,
