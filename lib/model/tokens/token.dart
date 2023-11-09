@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../utils/identifiers.dart';
-import '../../utils/utils.dart';
+import '../enums/token_types.dart';
 import '../mixins/sortable_mixin.dart';
 import 'day_password_token.dart';
 import 'hotp_token.dart';
@@ -26,18 +26,18 @@ abstract class Token with SortableMixin {
 
   factory Token.fromJson(Map<String, dynamic> json) {
     String type = json['type'];
-    if (type.toLowerCase() == enumAsString(TokenTypes.HOTP).toLowerCase()) return HOTPToken.fromJson(json);
-    if (type.toLowerCase() == enumAsString(TokenTypes.TOTP).toLowerCase()) return TOTPToken.fromJson(json);
-    if (type.toLowerCase() == enumAsString(TokenTypes.PIPUSH).toLowerCase()) return PushToken.fromJson(json);
-    if (type.toLowerCase() == enumAsString(TokenTypes.DAYPASSWORD).toLowerCase()) return DayPasswordToken.fromJson(json);
+    if (TokenTypes.HOTP.isString(type)) return HOTPToken.fromJson(json);
+    if (TokenTypes.TOTP.isString(type)) return TOTPToken.fromJson(json);
+    if (TokenTypes.PIPUSH.isString(type)) return PushToken.fromJson(json);
+    if (TokenTypes.DAYPASSWORD.isString(type)) return DayPasswordToken.fromJson(json);
     throw ArgumentError.value(json, 'json', 'Building the token type [$type] is not a supported right now.');
   }
   factory Token.fromUriMap(Map<String, dynamic> uriMap) {
     String type = uriMap[URI_TYPE];
-    if (type.toLowerCase() == enumAsString(TokenTypes.HOTP).toLowerCase()) return HOTPToken.fromUriMap(uriMap);
-    if (type.toLowerCase() == enumAsString(TokenTypes.TOTP).toLowerCase()) return TOTPToken.fromUriMap(uriMap);
-    if (type.toLowerCase() == enumAsString(TokenTypes.PIPUSH).toLowerCase()) return PushToken.fromUriMap(uriMap);
-    if (type.toLowerCase() == enumAsString(TokenTypes.DAYPASSWORD).toLowerCase()) return DayPasswordToken.fromUriMap(uriMap);
+    if (TokenTypes.HOTP.isString(type)) return HOTPToken.fromUriMap(uriMap);
+    if (TokenTypes.TOTP.isString(type)) return TOTPToken.fromUriMap(uriMap);
+    if (TokenTypes.PIPUSH.isString(type)) return PushToken.fromUriMap(uriMap);
+    if (TokenTypes.DAYPASSWORD.isString(type)) return DayPasswordToken.fromUriMap(uriMap);
     throw ArgumentError.value(uriMap, 'uri', 'Building the token type [$type] is not a supported right now.');
   }
 

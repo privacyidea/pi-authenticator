@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../interfaces/repo/introduction_repository.dart';
-import '../model/enums/introduction_enum.dart';
+import '../model/enums/introduction.dart';
 import '../model/states/introduction_state.dart';
 import '../utils/logger.dart';
 

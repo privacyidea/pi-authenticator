@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/utils.dart';
+import '../enums/token_types.dart';
 import 'otp_token.dart';
 
 part 'day_password_token.g.dart';
@@ -32,7 +33,7 @@ class DayPasswordToken extends OTPToken {
     super.isLocked,
     super.folderId,
   })  : period = period.inSeconds > 0 ? period : const Duration(hours: 24),
-        super(type: enumAsString(TokenTypes.DAYPASSWORD));
+        super(type: TokenTypes.DAYPASSWORD.asString);
 
   @override
   DayPasswordToken copyWith({
@@ -56,7 +57,7 @@ class DayPasswordToken extends OTPToken {
         label: label ?? this.label,
         issuer: issuer ?? this.issuer,
         id: id ?? this.id,
-        type: enumAsString(TokenTypes.DAYPASSWORD),
+        type: TokenTypes.DAYPASSWORD.asString,
         algorithm: algorithm ?? this.algorithm,
         digits: digits ?? this.digits,
         secret: secret ?? this.secret,

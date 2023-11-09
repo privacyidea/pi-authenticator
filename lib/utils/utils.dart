@@ -57,28 +57,23 @@ String splitPeriodically(String str, int period) {
 
 Algorithms mapStringToAlgorithm(String algoAsString) {
   for (Algorithms alg in Algorithms.values) {
-    if (equalsIgnoreCase(enumAsString(alg), algoAsString)) {
+    if (alg.isString(algoAsString)) {
       return alg;
     }
   }
-
   throw ArgumentError.value(algoAsString, 'algorAsString', '$algoAsString cannot be mapped to $Algorithms');
 }
 
-/// This implementation is taken from the library
-/// [foundation](https://api.flutter.dev/flutter/foundation/describeEnum.html).
-/// That library sadly depends on [dart.ui] and thus cannot be used in tests.
-/// Therefore, only using this code enables us to use this library ([utils.dart])
-/// in tests.
+// / This implementation is taken from the library
+// / [foundation](https://api.flutter.dev/flutter/foundation/describeEnum.html).
+// / That library sadly depends on [dart.ui] and thus cannot be used in tests.
+// / Therefore, only using this code enables us to use this library ([utils.dart])
+// / in tests.
 String enumAsString(Enum enumEntry) {
   final String description = enumEntry.toString();
   final int indexOfDot = description.indexOf('.');
   assert(indexOfDot != -1 && indexOfDot < description.length - 1);
   return description.substring(indexOfDot + 1);
-}
-
-bool equalsIgnoreCase(String s1, String s2) {
-  return s1.toLowerCase() == s2.toLowerCase();
 }
 
 /// If permission is already given, this function does nothing

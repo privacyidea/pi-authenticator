@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/utils.dart';
+import '../enums/token_types.dart';
 import 'otp_token.dart';
 
 part 'totp_token.g.dart';
@@ -41,7 +42,7 @@ class TOTPToken extends OTPToken {
     super.isLocked,
     super.folderId,
   })  : period = period < 1 ? 30 : period, // period must be greater than 0 otherwise IntegerDivisionByZeroException is thrown in OTP.generateTOTPCodeString
-        super(type: enumAsString(TokenTypes.TOTP));
+        super(type: TokenTypes.TOTP.asString);
 
   @override
   TOTPToken copyWith({

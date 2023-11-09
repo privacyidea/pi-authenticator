@@ -190,11 +190,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<void> handleLink(Uri uri) async {
     await loadingRepo;
-    if (uri.scheme == enumAsString(UriSchemes.otpauth)) {
+    if (UriSchemes.otpauth.isName(uri.scheme)) {
       await addTokenFromOtpAuth(otpAuth: uri.toString());
       return;
     }
-    if (uri.scheme == enumAsString(UriSchemes.pia)) {
+    if (UriSchemes.pia.isName(uri.scheme)) {
       await addTokenFromPia(pia: uri.toString());
       return;
     }

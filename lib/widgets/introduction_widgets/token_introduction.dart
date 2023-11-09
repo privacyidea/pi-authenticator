@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/widgets/focused_item_as_overlay.dart';
 
-import '../../model/enums/introduction_enum.dart';
+import '../../model/enums/introduction.dart';
 import '../../utils/riverpod_providers.dart';
 
 class TokenIntroduction extends ConsumerWidget {

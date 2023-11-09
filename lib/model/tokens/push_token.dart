@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 import '../../utils/custom_int_buffer.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/rsa_utils.dart';
-import '../../utils/utils.dart';
+import '../enums/token_types.dart';
 import '../push_request.dart';
 import '../push_request_queue.dart';
 import 'token.dart';
@@ -87,7 +87,7 @@ class PushToken extends Token {
         rolloutState = rolloutState ?? PushTokenRollOutState.rolloutNotStarted,
         knownPushRequests = knownPushRequests ?? CustomIntBuffer(),
         pushRequests = pushRequests ?? PushRequestQueue(),
-        super(type: enumAsString(TokenTypes.PIPUSH));
+        super(type: TokenTypes.PIPUSH.asString);
 
   @override
   PushToken copyWith({

@@ -22,7 +22,7 @@ import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/supported_versions.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
+import '../model/enums/token_types.dart';
 
 class QrParser {
   const QrParser();
@@ -40,11 +40,9 @@ class QrParser {
     }
 
     String type = uri.host;
-    if (equalsIgnoreCase(type, enumAsString(TokenTypes.HOTP)) ||
-        equalsIgnoreCase(type, enumAsString(TokenTypes.TOTP)) ||
-        equalsIgnoreCase(type, enumAsString(TokenTypes.DAYPASSWORD))) {
+    if (TokenTypes.HOTP.isString(type) || TokenTypes.TOTP.isString(type) || TokenTypes.DAYPASSWORD.isString(type)) {
       return _parseOtpAuth(uri);
-    } else if (equalsIgnoreCase(type, enumAsString(TokenTypes.PIPUSH))) {
+    } else if (TokenTypes.PIPUSH.isString(type)) {
       return _parsePiAuth(uri);
     }
 
@@ -166,11 +164,9 @@ class QrParser {
       uriMap[URI_IMAGE] = uri.queryParameters['image'];
     }
 
-    String algorithm = uri.queryParameters['algorithm'] ?? enumAsString(Algorithms.SHA1); // Optional parameter
+    String algorithm = uri.queryParameters['algorithm'] ?? Algorithms.SHA1.asString; // Optional parameter
 
-    if (!equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA1)) &&
-        !equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA256)) &&
-        !equalsIgnoreCase(algorithm, enumAsString(Algorithms.SHA512))) {
+    if (!Algorithms.SHA1.isString(algorithm) && !Algorithms.SHA256.isString(algorithm) && !Algorithms.SHA512.isString(algorithm)) {
       throw ArgumentError.value(
         uri,
         'uri',
@@ -211,7 +207,7 @@ class QrParser {
       throw ArgumentError.value(
         uri,
         'uri',
-        '[${enumAsString(Encodings.base32)}] is not a valid encoding for [$secretAsString].',
+        '[${Encodings.base32.asString}] is not a valid encoding for [$secretAsString].',
       );
     }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
-import '../../../../../../model/enums/introduction_enum.dart';
+import '../../../../../../model/enums/introduction.dart';
 import '../../../../../../model/tokens/totp_token.dart';
 import '../../../../../../utils/app_customizer.dart';
 import '../../../../../../utils/customizations.dart';

@@ -1,10 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:otp/otp.dart' as otp_library;
 import 'package:uuid/uuid.dart';
+import '../../utils/identifiers.dart';
 
 import '../../utils/crypto_utils.dart';
-import '../../utils/identifiers.dart';
 import '../../utils/utils.dart';
+import '../enums/token_types.dart';
 import 'otp_token.dart';
 
 part 'hotp_token.g.dart';
@@ -27,7 +28,7 @@ class HOTPToken extends OTPToken {
     super.sortIndex,
     super.isLocked,
     super.folderId,
-  }) : super(type: enumAsString(TokenTypes.HOTP));
+  }) : super(type: TokenTypes.HOTP.asString);
 
   @override
   String get otpValue => otp_library.OTP.generateHOTPCodeString(

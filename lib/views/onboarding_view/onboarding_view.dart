@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../model/enums/introduction_enum.dart';
+import '../../model/enums/introduction.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/dot_indicator.dart';
 import '../main_view/main_view.dart';

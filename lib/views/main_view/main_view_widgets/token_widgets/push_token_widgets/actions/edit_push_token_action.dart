@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
-import '../../../../../../model/enums/introduction_enum.dart';
+import '../../../../../../model/enums/introduction.dart';
 import '../../../../../../model/tokens/push_token.dart';
 import '../../../../../../repo/secure_token_repository.dart';
 import '../../../../../../utils/app_customizer.dart';

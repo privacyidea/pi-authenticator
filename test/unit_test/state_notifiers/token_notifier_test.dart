@@ -8,6 +8,7 @@ import 'package:mockito/annotations.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
+import 'package:privacyidea_authenticator/model/enums/token_types.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/push_request_queue.dart';
 import 'package:privacyidea_authenticator/model/states/token_state.dart';
@@ -20,7 +21,6 @@ import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/qr_parser.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import 'token_notifier_test.mocks.dart';
 
@@ -227,7 +227,7 @@ void _testTokenNotifier() {
         URI_ALGORITHM: 'SHA256',
         URI_DIGITS: 6,
         URI_SECRET: Uint8List.fromList([73, 65, 63, 72, 65, 74, 32]),
-        URI_TYPE: enumAsString(TokenTypes.HOTP),
+        URI_TYPE: TokenTypes.HOTP.asString,
       });
       when(mockQrParser.is2StepURI(any)).thenReturn(false);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
