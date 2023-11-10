@@ -61,4 +61,13 @@ const String PUSH_REQUEST_SERIAL = 'serial'; // 3.
 const String PUSH_REQUEST_QUESTION = 'question'; // 4.
 const String PUSH_REQUEST_TITLE = 'title'; // 5.
 const String PUSH_REQUEST_SSL_VERIFY = 'sslverify'; // 6.
-const String PUSH_REQUEST_SIGNATURE = 'signature';  // 7.
+const String PUSH_REQUEST_SIGNATURE = 'signature'; // 7.
+
+bool validateMap(Map<String, dynamic> map, List<String> keys) {
+  for (String key in keys) {
+    if (!map.containsKey(key)) {
+      return false;
+    }
+  }
+  return true;
+}

@@ -6,17 +6,16 @@ import 'package:base32/base32.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/scheme_processors/scheme_processor_interface.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
 import '../model/enums/push_token_rollout_state.dart';
-import '../model/enums/schemes.dart';
 import '../model/push_request.dart';
 import '../model/states/token_state.dart';
 import '../model/tokens/hotp_token.dart';
@@ -28,17 +27,14 @@ import '../utils/firebase_utils.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
 import '../utils/network_utils.dart';
-import '../utils/qr_parser.dart';
 import '../utils/riverpod_providers.dart';
 import '../utils/rsa_utils.dart';
 import '../utils/utils.dart';
 import '../utils/view_utils.dart';
-import '../widgets/two_step_dialog.dart';
 
 class TokenNotifier extends StateNotifier<TokenState> {
   late Future<TokenState> loadingRepo;
   final TokenRepository _repo;
-  final QrParser _qrParser;
   final RsaUtils _rsaUtils;
   final LegacyUtils _legacy;
   final PrivacyIdeaIOClient _ioClient;
@@ -47,13 +43,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
   TokenNotifier({
     TokenState? initialState,
     TokenRepository? repository,
-    QrParser? qrParser,
     RsaUtils? rsaUtils,
     LegacyUtils? legacy,
     PrivacyIdeaIOClient? ioClient,
     FirebaseUtils? firebaseUtils,
   })  : _rsaUtils = rsaUtils ?? const RsaUtils(),
-        _qrParser = qrParser ?? const QrParser(),
         _repo = repository ?? const SecureTokenRepository(),
         _legacy = legacy ?? const LegacyUtils(),
         _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
@@ -189,78 +183,34 @@ class TokenNotifier extends StateNotifier<TokenState> {
     await _saveOrReplaceTokensRepo(updatedTokens);
   }
 
+  Future<void> handleQrCode(Object? qrCode) async {
+    Uri uri;
+    try {
+      qrCode as String;
+      uri = Uri.parse(qrCode);
+    } catch (_) {
+      showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
+      return;
+    }
+    await handleLink(uri);
+  }
+
   Future<void> handleLink(Uri uri) async {
     await loadingRepo;
-    if (UriSchemes.otpauth.isName(uri.scheme)) {
-      await addTokenFromOtpAuth(otpAuth: uri.toString());
-      return;
-    }
-    if (UriSchemes.pia.isName(uri.scheme)) {
-      await addTokenFromPia(pia: uri.toString());
-      return;
-    }
-    showMessage(message: 'Scheme "${uri.scheme}" is not supported', duration: const Duration(seconds: 3));
-  }
-
-  Future<void> addTokenFromPia({required String pia}) async {
-    await loadingRepo;
-    // TODO: Implement pia:// scheme
-    showMessage(message: 'Scheme "pia" is not implemented yet', duration: const Duration(seconds: 3));
-  }
-
-  Future<void> addTokenFromOtpAuth({
-    required String otpAuth,
-  }) async {
-    await loadingRepo;
-    Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
-
+    List<Token>? tokens;
     try {
-      Map<String, dynamic> uriMap = _qrParser.parseQRCodeToMap(otpAuth);
-      if (_qrParser.is2StepURI(Uri.parse(otpAuth))) {
-        final secret = uriMap[URI_SECRET] as Uint8List;
-        // Calculate the whole secret.
-        Uint8List? twoStepSecret;
-        while (twoStepSecret == null) {
-          twoStepSecret = (await showAsyncDialog<Uint8List>(
-            barrierDismissible: false,
-            builder: (BuildContext context) => GenerateTwoStepDialog(
-              iterations: uriMap[URI_ITERATIONS],
-              keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
-              saltLength: uriMap[URI_SALT_LENGTH],
-              password: secret,
-            ),
-          ));
-          await Future.delayed(const Duration(milliseconds: 500));
-        }
-        uriMap[URI_SECRET] = twoStepSecret;
-      }
-      Token newToken;
-      try {
-        newToken = Token.fromUriMap(uriMap);
-      } on FormatException catch (e) {
-        Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
-        showMessage(message: e.message, duration: const Duration(seconds: 3));
-        await loadingRepo;
-        return;
-      }
-
-      if (newToken is PushToken && state.tokens.contains(newToken)) {
-        showMessage(message: 'A token with the serial ${newToken.serial} already exists!', duration: const Duration(seconds: 2));
-        await loadingRepo;
-        return;
-      }
-      await addOrReplaceToken(newToken);
-      if (newToken is PushToken) {
-        await rolloutPushToken(newToken);
-      }
-      return;
-    } on ArgumentError catch (e, s) {
-      // Error while parsing qr code.
-      Logger.warning('Malformed QR code:', name: 'token_notifier.dart#_handleOtpAuth', error: e, stackTrace: s);
-      showMessage(message: '${e.message}\n Please inform the creator of this qr code about the problem.', duration: const Duration(seconds: 8));
-
+      tokens = await SchemeProcessor.processUri(uri);
+    } catch (_) {
+      // TODO: handle exceptions
+    }
+    if (tokens == null || tokens.isEmpty) {
+      // globalRef?.read(statusMessageProvider.notifier).state = (
+      //   AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSchemeNotSupported,
+      //   AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSchemeNotSupportedMessage(uri.scheme),
+      // );
       return;
     }
+    // await addTokens(tokens);
   }
 
   Future<bool> addPushRequestToToken(PushRequest pr) async {
