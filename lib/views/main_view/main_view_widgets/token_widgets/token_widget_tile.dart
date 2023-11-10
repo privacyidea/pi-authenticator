@@ -2,14 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_action.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/custom_trailing.dart';
+import 'default_token_actions/default_delete_action.dart';
+import 'default_token_actions/default_edit_action.dart';
+import 'default_token_actions/default_lock_action.dart';
 
 final disableCopyOtpProvider = StateProvider<bool>((ref) => false);
 
 class TokenWidgetTile extends StatelessWidget {
   final Widget? title;
-  final List<String> subtitles;
+  final Token token;
+  final TokenAction? deleteAction;
+  final TokenAction? editAction;
+  final TokenAction? lockAction;
   final Widget? leading;
   final Widget? trailing;
   final Function()? onTap;
@@ -17,9 +26,12 @@ class TokenWidgetTile extends StatelessWidget {
   final String? tokenImage;
 
   const TokenWidgetTile({
+    required this.token,
     this.leading,
     this.title,
-    this.subtitles = const [],
+    this.deleteAction,
+    this.editAction,
+    this.lockAction,
     this.trailing,
     this.onTap,
     this.tokenIsLocked = false,
@@ -28,39 +40,154 @@ class TokenWidgetTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-        horizontalTitleGap: 8.0,
-        leading: (leading != null) ? leading! : null,
-        onTap: onTap,
-        title: title,
-        subtitle: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TokenImage(tokenImage: tokenImage),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 4.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    for (var line in subtitles)
-                      Text(
-                        line,
-                        style: Theme.of(context).listTileTheme.subtitleTextStyle,
-                        textAlign: TextAlign.left,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                      ),
-                  ],
-                ),
-              ),
+  Widget build(BuildContext context) => Container(
+        margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(10),
+              bottomRight: Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
-        trailing: CustomTrailing(
-          child: trailing ?? const SizedBox(),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+          ),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10)),
+                ),
+              ),
+              Container(
+                color: Colors.transparent,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).highlightColor,
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                          margin: const EdgeInsets.all(10.0),
+                          child: Text(token.label,
+                              style: const TextStyle(fontSize: 18))),
+                      PopupMenuButton<String>(
+                        onSelected: (String choice) {
+                          if (choice == 'delete') {
+                            (deleteAction ?? DefaultDeleteAction(token: token))
+                                .handle(context);
+                          } else if (choice == 'edit') {
+                            (editAction ?? DefaultEditAction(token: token))
+                                .handle(context);
+                          } else if (choice == 'lock') {
+                            (lockAction ?? DefaultLockAction(token: token))
+                                .handle(context);
+                          }
+                        },
+                        itemBuilder: (BuildContext context) {
+                          List<PopupMenuEntry<String>> actions = [];
+
+                          actions.add(PopupMenuItem<String>(
+                            value: 'delete',
+                            child: ListTile(
+                              leading: const Icon(Icons.delete),
+                              title: Text(AppLocalizations.of(context)!.delete),
+                            ),
+                          ));
+
+                          actions.add(PopupMenuItem<String>(
+                            value: 'edit',
+                            child: ListTile(
+                              leading: const Icon(Icons.edit),
+                              title: Text(AppLocalizations.of(context)!.edit),
+                            ),
+                          ));
+
+                          if (token.pin == false) {
+                            if (token.isLocked) {
+                              actions.add(PopupMenuItem<String>(
+                                value: 'lock',
+                                child: ListTile(
+                                  leading: const Icon(Icons.lock),
+                                  title: Text(
+                                      AppLocalizations.of(context)!.unlock),
+                                ),
+                              ));
+                            } else {
+                              actions.add(PopupMenuItem<String>(
+                                value: 'lock',
+                                child: ListTile(
+                                  leading: const Icon(Icons.lock),
+                                  title:
+                                      Text(AppLocalizations.of(context)!.lock),
+                                ),
+                              ));
+                            }
+                          }
+
+                          return actions;
+                        },
+                        icon: const Icon(Icons.more_horiz),
+                        offset: const Offset(0, 50),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+                horizontalTitleGap: 8.0,
+                leading: (leading != null) ? leading! : null,
+                onTap: onTap,
+                title: title,
+                subtitle: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TokenImage(tokenImage: tokenImage),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              token.issuer,
+                              style: Theme.of(context)
+                                  .listTileTheme
+                                  .subtitleTextStyle,
+                              textAlign: TextAlign.left,
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                trailing: CustomTrailing(
+                  child: trailing ?? const SizedBox(),
+                ),
+              ),
+            ],
+          ),
         ),
       );
 }

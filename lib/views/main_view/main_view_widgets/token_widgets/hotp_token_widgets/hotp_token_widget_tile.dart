@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/hotp_token_widgets/actions/edit_hotp_token_action.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/hotp_token.dart';
@@ -79,6 +80,8 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
   @override
   Widget build(BuildContext context) {
     return TokenWidgetTile(
+      token: widget.token,
+      editAction: EditHOTPTokenAction(token: widget.token),
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
       tokenImage: widget.token.tokenImage,
       tokenIsLocked: widget.token.isLocked,
@@ -100,10 +103,6 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
           ),
         ),
       ),
-      subtitles: [
-        if (widget.token.label.isNotEmpty) widget.token.label,
-        if (widget.token.issuer.isNotEmpty) widget.token.issuer,
-      ],
       trailing: HideableWidget(
         token: widget.token,
         isHiddenNotifier: isHidden,

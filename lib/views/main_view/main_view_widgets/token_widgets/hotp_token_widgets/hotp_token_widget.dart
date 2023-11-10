@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../../model/tokens/hotp_token.dart';
 import '../token_widget.dart';
 import '../token_widget_base.dart';
-import 'actions/edit_hotp_token_action.dart';
 import 'hotp_token_widget_tile.dart';
 
 class HOTPTokenWidget extends TokenWidget {
@@ -21,7 +20,6 @@ class HOTPTokenWidget extends TokenWidget {
       token: token,
       tile: HOTPTokenWidgetTile(token: token, key: ValueKey(token.id)),
       dragIcon: Icons.replay,
-      editAction: EditHOTPTokenAction(token: token),
     );
   }
 }

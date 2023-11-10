@@ -11,6 +11,7 @@ import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
 import '../../../../../widgets/hideable_widget_.dart';
 import '../token_widget_tile.dart';
+import 'actions/edit_totp_token_action.dart';
 
 class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   final TOTPToken token;
@@ -106,6 +107,8 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
     final appstate = ref.watch(appStateProvider);
     _onAppStateChange(appstate);
     return TokenWidgetTile(
+      token: widget.token,
+      editAction: EditTOTPTokenAction(token: widget.token),
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
       tokenImage: widget.token.tokenImage,
       tokenIsLocked: widget.token.isLocked,
@@ -128,10 +131,6 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
           ),
         ),
       ),
-      subtitles: [
-        if (widget.token.label.isNotEmpty) widget.token.label,
-        if (widget.token.issuer.isNotEmpty) widget.token.issuer,
-      ],
       trailing: HideableWidget(
         token: widget.token,
         isHiddenNotifier: isHidden,

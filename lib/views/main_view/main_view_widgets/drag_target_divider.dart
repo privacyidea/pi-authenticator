@@ -119,7 +119,6 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
         return Container(
           height: dividerHeight,
           decoration: BoxDecoration(
-            color: Theme.of(context).dividerColor,
             borderRadius: BorderRadius.circular(dividerHeight / 4),
           ),
           margin: EdgeInsets.only(left: 8 - expansionController.value * 2, right: 8 - expansionController.value * 2, top: 8, bottom: 8),

@@ -7,27 +7,16 @@ import '../../../../model/mixins/sortable_mixin.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../utils/text_size.dart';
-import 'default_token_actions/default_delete_action.dart';
-import 'default_token_actions/default_edit_action.dart';
-import 'default_token_actions/default_lock_action.dart';
-import 'token_action.dart';
-import 'token_widget_slideable.dart';
 
 class TokenWidgetBase extends ConsumerWidget {
   final Widget tile;
   final Token token;
-  final TokenAction? deleteAction;
-  final TokenAction? editAction;
-  final TokenAction? lockAction;
   final List<Widget> stack;
   final IconData dragIcon;
 
   const TokenWidgetBase({
     required this.tile,
     required this.token,
-    this.deleteAction,
-    this.editAction,
-    this.lockAction,
     this.stack = const <Widget>[],
     this.dragIcon = Icons.drag_handle,
     super.key,
@@ -36,15 +25,7 @@ class TokenWidgetBase extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final SortableMixin? draggingSortable = ref.watch(draggingSortableProvider);
-    final List<TokenAction> actions = [
-      deleteAction ?? DefaultDeleteAction(token: token, key: Key('${token.id}deleteAction')),
-      editAction ?? DefaultEditAction(token: token, key: Key('${token.id}editAction')),
-    ];
-    if ((token.pin == false)) {
-      actions.add(
-        lockAction ?? DefaultLockAction(token: token, key: Key('${token.id}lockAction')),
-      );
-    }
+
     return draggingSortable == null
         ? LongPressDraggable(
             maxSimultaneousDrags: 1,
@@ -76,20 +57,10 @@ class TokenWidgetBase extends ConsumerWidget {
               ],
             ),
             data: token,
-            child: TokenWidgetSlideable(
-              token: token,
-              actions: actions,
-              stack: stack,
-              tile: tile,
-            ),
+            child: tile,
           )
         : draggingSortable == token
             ? const SizedBox()
-            : TokenWidgetSlideable(
-                token: token,
-                actions: actions,
-                stack: stack,
-                tile: tile,
-              );
+            : tile;
   }
 }
