@@ -41,17 +41,19 @@ class TokenWidgetTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+        margin: const EdgeInsets.only(left: 20.0, top: 0.1, right: 20.0, bottom: 0.1),
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
               bottomLeft: Radius.circular(10),
               bottomRight: Radius.circular(10)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.2),
-              spreadRadius: 5,
-              blurRadius: 7,
+              spreadRadius: 1,
+              blurRadius: 2,
               offset: const Offset(0, 3),
             ),
           ],

@@ -86,7 +86,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     if (sortables.isEmpty) return [];
     sortables.sort((a, b) => a.compareTo(b));
     // just for small space between appBar and first element
-    widgets.add(const SizedBox(height: 20));
+    widgets.add(const SizedBox(height: 2));
     for (var i = 0; i < sortables.length; i++) {
       final isFirst = i == 0;
       final isDraggingTheCurrent = draggingSortable == sortables[i];

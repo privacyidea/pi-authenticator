@@ -51,6 +51,8 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
 
   @override
   Widget build(BuildContext context) {
+    Color dividerColor = Colors.transparent;
+
     final body = DragTarget(
       onWillAccept: (data) {
         if (data is T == false) return false;
@@ -116,9 +118,11 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
       },
       builder: (context, accepted, rejected) {
         final dividerHeight = expansionController.value * 40 + 1.5;
+        dividerColor = accepted.isNotEmpty ? Theme.of(context).dividerColor : Colors.transparent;
         return Container(
           height: dividerHeight,
           decoration: BoxDecoration(
+            color: dividerColor,
             borderRadius: BorderRadius.circular(dividerHeight / 4),
           ),
           margin: EdgeInsets.only(left: 8 - expansionController.value * 2, right: 8 - expansionController.value * 2, top: 8, bottom: 8),
