@@ -1,11 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/tokens/hotp_token.dart';
-import '../../../../../../utils/app_customizer.dart';
 import '../../../../../../utils/customizations.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
@@ -17,32 +15,16 @@ class EditHOTPTokenAction extends TokenAction {
   final HOTPToken token;
 
   const EditHOTPTokenAction({
-    super.key,
     required this.token,
   });
 
   @override
-  CustomSlidableAction build(BuildContext context) => CustomSlidableAction(
-      backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
-      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
-      onPressed: (context) async {
-        if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
-          return;
-        }
-        _showDialog();
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Icon(Icons.edit),
-          Text(
-            AppLocalizations.of(context)!.edit,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        ],
-      ));
+  void handle(BuildContext context) async {
+    if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
+      return;
+    }
+    _showDialog();
+  }
 
   void _showDialog() {
     final tokenLabel = TextEditingController(text: token.label);

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/day_password_token_widgets/actions/edit_day_password_token_action.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/day_password_token.dart';
@@ -75,6 +76,8 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
     final duration = Duration(seconds: secondsLeft.ceil());
     final durationString = duration.toString().split('.').first;
     return TokenWidgetTile(
+      token: widget.token,
+      editAction: EditDayPassowrdTokenAction(token: widget.token),
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
       tokenImage: widget.token.tokenImage,
       tokenIsLocked: widget.token.isLocked,
@@ -96,10 +99,6 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
           ),
         ),
       ),
-      subtitles: [
-        if (widget.token.label.isNotEmpty) widget.token.label,
-        if (widget.token.issuer.isNotEmpty) widget.token.issuer,
-      ],
       trailing: GestureDetector(
         behavior: HitTestBehavior.deferToChild,
         onTap: () {

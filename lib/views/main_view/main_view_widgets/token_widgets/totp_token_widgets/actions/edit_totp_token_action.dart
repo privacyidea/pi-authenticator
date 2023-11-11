@@ -15,32 +15,16 @@ class EditTOTPTokenAction extends TokenAction {
   final TOTPToken token;
 
   const EditTOTPTokenAction({
-    super.key,
     required this.token,
   });
 
   @override
-  CustomSlidableAction build(BuildContext context) => CustomSlidableAction(
-      backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
-      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
-      onPressed: (context) async {
-        if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
-          return;
-        }
-        _showDialog();
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Icon(Icons.edit),
-          Text(
-            AppLocalizations.of(context)!.edit,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        ],
-      ));
+  void handle(BuildContext context) async {
+    if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
+      return;
+    }
+    _showDialog();
+  }
 
   void _showDialog() {
     final tokenLabel = TextEditingController(text: token.label);

@@ -19,19 +19,10 @@ class TokenWidgetSlideable extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Slidable(
-        key: ValueKey(token.id),
-        groupTag: 'myTag', // This is used to only let one be open at a time.
-        endActionPane: ActionPane(
-          motion: const DrawerMotion(),
-          extentRatio: 1,
-          children: actions,
-        ),
-        child: Stack(
-          children: [
-            tile,
-            for (var item in stack) item,
-          ],
-        ),
+  Widget build(BuildContext context) => Stack(
+        children: [
+          tile,
+          for (var item in stack) item,
+        ],
       );
 }
