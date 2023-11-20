@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -9,7 +7,6 @@ import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
-import 'package:privacyidea_authenticator/model/enums/token_types.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/push_request_queue.dart';
 import 'package:privacyidea_authenticator/model/states/token_state.dart';
@@ -18,9 +15,7 @@ import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
-import 'package:privacyidea_authenticator/utils/qr_parser.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
 import 'token_notifier_test.mocks.dart';
@@ -28,7 +23,6 @@ import 'token_notifier_test.mocks.dart';
 @GenerateMocks(
   [
     TokenRepository,
-    QrParser,
     RsaUtils,
     PrivacyIdeaIOClient,
     FirebaseUtils,
@@ -212,7 +206,6 @@ void _testTokenNotifier() {
     test('addTokenFromOtpAuth', () async {
       final container = ProviderContainer();
       final mockRepo = MockTokenRepository();
-      final mockQrParser = MockQrParser();
       final before = <Token>[
         HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret'),
       ];
@@ -222,20 +215,20 @@ void _testTokenNotifier() {
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
-      when(mockQrParser.parseQRCodeToMap('otpAuthString')).thenReturn({
-        URI_LABEL: 'label2',
-        URI_ISSUER: 'issuer2',
-        URI_ALGORITHM: 'SHA256',
-        URI_DIGITS: 6,
-        URI_SECRET: Uint8List.fromList([73, 65, 63, 72, 65, 74, 32]),
-        URI_TYPE: TokenTypes.HOTP.asString,
-      });
-      when(mockQrParser.is2StepURI(any)).thenReturn(false);
+      // when(mockQrParser.parseUriToMap('otpAuthString')).thenReturn({
+      //   URI_LABEL: 'label2',
+      //   URI_ISSUER: 'issuer2',
+      //   URI_ALGORITHM: 'SHA256',
+      //   URI_DIGITS: 6,
+      //   URI_SECRET: Uint8List.fromList([73, 65, 63, 72, 65, 74, 32]),
+      //   URI_TYPE: TokenTypes.HOTP.asString,
+      // });
+      // when(mockQrParser._is2StepURI(any)).thenReturn(false);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, qrParser: mockQrParser),
+        (ref) => TokenNotifier(repository: mockRepo),
       );
       final notifier = container.read(testProvider.notifier);
-      await notifier.addTokenFromOtpAuth(otpAuth: 'otpAuthString');
+      await notifier.handleQrCode('otpAuthString');
       final state = container.read(testProvider);
       expect(state, isNotNull);
       after.last = after.last.copyWith(id: state.tokens.last.id);
@@ -344,7 +337,6 @@ void _testTokenNotifier() {
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(
           repository: mockRepo,
-          qrParser: MockQrParser(),
           rsaUtils: mockRsaUtils,
           ioClient: mockIOClient,
           firebaseUtils: mockFirebaseUtils,

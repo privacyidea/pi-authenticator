@@ -183,6 +183,8 @@ class TokenNotifier extends StateNotifier<TokenState> {
     await _saveOrReplaceTokensRepo(updatedTokens);
   }
 
+  // The retun value of a qrCode could be any object. In this case should be a String that is a valid URI.
+  // If it is not a valid URI, the user will be informed.
   Future<void> handleQrCode(Object? qrCode) async {
     Uri uri;
     try {
@@ -210,7 +212,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       // );
       return;
     }
-    // await addTokens(tokens);
+    addOrReplaceTokens(tokens);
   }
 
   Future<bool> addPushRequestToToken(PushRequest pr) async {

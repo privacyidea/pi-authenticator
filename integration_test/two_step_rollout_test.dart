@@ -72,9 +72,8 @@ void main() {
 
 Future<void> _addTwoStepHotpTokenTest(WidgetTester tester) async {
   await pumpUntilFindNWidgets(tester, find.byType(MainView), 1, const Duration(seconds: 10));
-  globalRef!.read(tokenProvider.notifier).addTokenFromOtpAuth(
-      otpAuth:
-          'otpauth://hotp/OATH0001DBD0?secret=AALIBQJMOGEE7SAVEZ5D3K2ADO7MVFQD&counter=1&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000');
+  globalRef!.read(tokenProvider.notifier).handleQrCode(
+      'otpauth://hotp/OATH0001DBD0?secret=AALIBQJMOGEE7SAVEZ5D3K2ADO7MVFQD&counter=1&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000');
   await pumpUntilFindNWidgets(tester, find.text('Phone part:'), 1, const Duration(seconds: 20));
   expect(find.text('Phone part:'), findsOneWidget);
   final finder = find.byKey(twoStepDialogContent);
@@ -92,9 +91,8 @@ Future<void> _addTwoStepHotpTokenTest(WidgetTester tester) async {
 
 Future<void> _addTwoStepTotpTokenTest(WidgetTester tester) async {
   await pumpUntilFindNWidgets(tester, find.byType(MainView), 1, const Duration(seconds: 10));
-  globalRef!.read(tokenProvider.notifier).addTokenFromOtpAuth(
-      otpAuth:
-          'otpauth://totp/TOTP00009D5F?secret=NZ4OPONKAAGDFN2QHV26ZWYVTLFER4C6&period=30&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000');
+  globalRef!.read(tokenProvider.notifier).handleQrCode(
+      'otpauth://totp/TOTP00009D5F?secret=NZ4OPONKAAGDFN2QHV26ZWYVTLFER4C6&period=30&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000');
   await pumpUntilFindNWidgets(tester, find.text('Phone part:'), 1, const Duration(seconds: 20));
   expect(find.text('Phone part:'), findsOneWidget);
   final finder = find.byKey(twoStepDialogContent);

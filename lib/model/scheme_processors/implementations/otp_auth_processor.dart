@@ -18,6 +18,7 @@ class OtpAuthProcessor extends SchemeProcessor {
   Set<String> supportedScheme = {'otpauth'};
   @override
   Future<List<Token>?> process(Uri uri) async {
+    if (!supportedScheme.contains(uri.scheme)) return null;
     Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
     Map<String, dynamic> uriMap;
     try {
@@ -78,7 +79,7 @@ Map<String, dynamic> _parseOtpToken(Uri uri) {
     // otpauth://pipush/LABEL?PARAMETERS
     return _parsePiPushToken(uri);
   }
-  if (TokenTypes.HOTP.isString(type) && TokenTypes.TOTP.isString(type) && TokenTypes.DAYPASSWORD.isString(type)) {
+  if (TokenTypes.HOTP.isString(type) || TokenTypes.TOTP.isString(type) || TokenTypes.DAYPASSWORD.isString(type)) {
     return _parseOtpAuth(uri);
   }
   throw ArgumentError.value(

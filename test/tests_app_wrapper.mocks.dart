@@ -4,9 +4,9 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i6;
-import 'dart:typed_data' as _i14;
+import 'dart:typed_data' as _i13;
 
-import 'package:firebase_messaging/firebase_messaging.dart' as _i17;
+import 'package:firebase_messaging/firebase_messaging.dart' as _i16;
 import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:pointycastle/export.dart' as _i4;
@@ -19,12 +19,11 @@ import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart'
 import 'package:privacyidea_authenticator/model/states/settings_state.dart'
     as _i2;
 import 'package:privacyidea_authenticator/model/token_folder.dart' as _i10;
-import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i15;
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i14;
 import 'package:privacyidea_authenticator/model/tokens/token.dart' as _i7;
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i16;
+import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i15;
 import 'package:privacyidea_authenticator/utils/network_utils.dart' as _i11;
-import 'package:privacyidea_authenticator/utils/qr_parser.dart' as _i12;
-import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i13;
+import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i12;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -311,36 +310,10 @@ class MockPrivacyIdeaIOClient extends _i1.Mock
       ) as _i6.Future<_i3.Response>);
 }
 
-/// A class which mocks [QrParser].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockQrParser extends _i1.Mock implements _i12.QrParser {
-  @override
-  Map<String, dynamic> parseQRCodeToMap(String? uriAsString) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #parseQRCodeToMap,
-          [uriAsString],
-        ),
-        returnValue: <String, dynamic>{},
-        returnValueForMissingStub: <String, dynamic>{},
-      ) as Map<String, dynamic>);
-
-  @override
-  bool is2StepURI(Uri? uri) => (super.noSuchMethod(
-        Invocation.method(
-          #is2StepURI,
-          [uri],
-        ),
-        returnValue: false,
-        returnValueForMissingStub: false,
-      ) as bool);
-}
-
 /// A class which mocks [RsaUtils].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
+class MockRsaUtils extends _i1.Mock implements _i12.RsaUtils {
   @override
   _i4.RSAPublicKey deserializeRSAPublicKeyPKCS1(String? keyStr) =>
       (super.noSuchMethod(
@@ -446,8 +419,8 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
   @override
   bool verifyRSASignature(
     _i4.RSAPublicKey? publicKey,
-    _i14.Uint8List? signedMessage,
-    _i14.Uint8List? signature,
+    _i13.Uint8List? signedMessage,
+    _i13.Uint8List? signature,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -464,7 +437,7 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
 
   @override
   _i6.Future<String?> trySignWithToken(
-    _i15.PushToken? token,
+    _i14.PushToken? token,
     String? message,
   ) =>
       (super.noSuchMethod(
@@ -513,7 +486,7 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
   @override
   String createBase32Signature(
     _i4.RSAPrivateKey? privateKey,
-    _i14.Uint8List? dataToSign,
+    _i13.Uint8List? dataToSign,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -528,9 +501,9 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
       ) as String);
 
   @override
-  _i14.Uint8List createRSASignature(
+  _i13.Uint8List createRSASignature(
     _i4.RSAPrivateKey? privateKey,
-    _i14.Uint8List? dataToSign,
+    _i13.Uint8List? dataToSign,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -540,19 +513,19 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
             dataToSign,
           ],
         ),
-        returnValue: _i14.Uint8List(0),
-        returnValueForMissingStub: _i14.Uint8List(0),
-      ) as _i14.Uint8List);
+        returnValue: _i13.Uint8List(0),
+        returnValueForMissingStub: _i13.Uint8List(0),
+      ) as _i13.Uint8List);
 }
 
 /// A class which mocks [FirebaseUtils].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockFirebaseUtils extends _i1.Mock implements _i16.FirebaseUtils {
+class MockFirebaseUtils extends _i1.Mock implements _i15.FirebaseUtils {
   @override
   _i6.Future<void> initFirebase({
-    required _i6.Future<void> Function(_i17.RemoteMessage)? foregroundHandler,
-    required _i6.Future<void> Function(_i17.RemoteMessage)? backgroundHandler,
+    required _i6.Future<void> Function(_i16.RemoteMessage)? foregroundHandler,
+    required _i6.Future<void> Function(_i16.RemoteMessage)? backgroundHandler,
     required dynamic Function(String?)? updateFirebaseToken,
   }) =>
       (super.noSuchMethod(
