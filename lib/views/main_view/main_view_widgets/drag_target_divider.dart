@@ -140,29 +140,31 @@ void _onAccept({
       // If the draged item is moved down it dont pass the nextSortable so the newIndex is before the nextSortable
       newIndex = allSortables.indexOf(nextSortable) - 1;
     } else {
-      // If the draged item is moved up it pass the nextSortable so the newIndex is after the nextSortable
+      // If the draged item is moved up it pass the nextSortable so the newIndex will be the place of the nextSortable
       newIndex = allSortables.indexOf(nextSortable);
     }
   }
   final dragedItemMovedUp = newIndex < oldIndex;
-  // When the draged item is a Token we need to update the folderId so its in the correct folder
-  if (dragedSortable is Token && !ignoreFolderId) {
-    late int? previousFolderId = dependingFolder?.folderId;
-    allSortables[oldIndex] = dragedSortable.copyWith(folderId: () => previousFolderId);
-  }
 
   final modifiedSortables = [];
   for (var i = 0; i < allSortables.length; i++) {
     if (i < oldIndex && i < newIndex) {
-      modifiedSortables.add(allSortables[i].copyWith(sortIndex: i)); // This is before dragedSortable and newIndex so no changes needed
+      // This is before dragedSortable and newIndex so no changes needed
       continue;
     }
     if (i > oldIndex && i > newIndex) {
-      modifiedSortables.add(allSortables[i].copyWith(sortIndex: i)); // This is after dragedSortable and newIndex so no changes needed
+      // This is after dragedSortable and newIndex so no changes needed
       continue;
     }
     if (i == oldIndex) {
-      modifiedSortables.add(allSortables[i].copyWith(sortIndex: newIndex)); // This is dragedSortable so it needs to be moved to newIndex
+      // This is dragedSortable so it needs to be moved to newIndex
+      SortableMixin currentSortable = allSortables[i];
+      if (currentSortable is Token && !ignoreFolderId) {
+        // When the draged Sortable is a Token we need to update the folderId so it is in the correct folder
+        final previousFolderId = dependingFolder?.folderId;
+        currentSortable = currentSortable.copyWith(folderId: () => previousFolderId);
+      }
+      modifiedSortables.add(currentSortable.copyWith(sortIndex: newIndex));
       continue;
     }
     modifiedSortables.add(allSortables[i]
@@ -170,7 +172,9 @@ void _onAccept({
     continue;
   }
 
-  globalRef?.read(tokenProvider.notifier).updateTokens(
-      allTokens, (p0) => p0.copyWith(sortIndex: modifiedSortables.whereType<Token>().firstWhereOrNull((updated) => updated.id == p0.id)?.sortIndex));
+  globalRef?.read(tokenProvider.notifier).updateTokens(allTokens, (p0) {
+    final modifiedToken = modifiedSortables.whereType<Token>().firstWhereOrNull((updated) => updated.id == p0.id);
+    return p0.copyWith(sortIndex: modifiedToken?.sortIndex, folderId: modifiedToken != null ? () => modifiedToken.folderId : null);
+  });
   globalRef?.read(tokenFolderProvider.notifier).updateFolders(modifiedSortables.whereType<TokenFolder>().toList());
 }
