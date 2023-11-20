@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/enums/introduction.dart';
+import '../../model/enums/introduction.dart';
 
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';

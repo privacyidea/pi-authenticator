@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
+import '../../../../../model/enums/push_token_rollout_state.dart';
 
 import '../../../../../model/tokens/push_token.dart';
 

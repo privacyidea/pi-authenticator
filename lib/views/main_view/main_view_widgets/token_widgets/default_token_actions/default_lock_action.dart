@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/widgets/focused_item_as_overlay.dart';
+import '../../../../../widgets/focused_item_as_overlay.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/introduction.dart';

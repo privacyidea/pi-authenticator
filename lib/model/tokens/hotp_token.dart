@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:otp/otp.dart' as otp_library;
 import 'package:uuid/uuid.dart';
-import '../../utils/identifiers.dart';
 
 import '../../utils/crypto_utils.dart';
+import '../../utils/identifiers.dart';
 import '../../utils/utils.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';

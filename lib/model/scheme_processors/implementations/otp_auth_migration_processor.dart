@@ -1,12 +1,13 @@
 // Original Code: https://github.com/johncallahan/otpauth_migration/blob/main/lib/otpauth_migration.dart Copyright © 2022 John R. Callahan
 // Modified by Frank Merkel <frank.merkel@netknights.it>
 
-import 'otp_auth_processor.dart';
-import '../../tokens/token.dart';
-import '../scheme_processor_interface.dart';
 import 'dart:convert';
 import 'dart:typed_data';
+
 import '../../../proto/generated/GoogleAuthenticatorImport.pb.dart';
+import '../../tokens/token.dart';
+import '../scheme_processor_interface.dart';
+import 'otp_auth_processor.dart';
 
 class OtpAuthMigrationProcessor extends SchemeProcessor {
   final OtpAuthProcessor otpAuthProcessor = OtpAuthProcessor();

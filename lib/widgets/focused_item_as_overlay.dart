@@ -4,10 +4,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
-import 'pulse_icon.dart';
-import 'tooltip_box.dart';
 
 import '../utils/text_size.dart';
+import 'pulse_icon.dart';
+import 'tooltip_box.dart';
 
 class FocusedItemAsOverlay extends StatelessWidget {
   final bool isFocused;

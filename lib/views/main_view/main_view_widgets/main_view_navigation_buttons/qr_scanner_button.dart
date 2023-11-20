@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
+import '../../../../utils/customizations.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/riverpod_providers.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/introduction.dart';
 import '../../../utils/riverpod_providers.dart';
 

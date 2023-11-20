@@ -1,5 +1,4 @@
 import '../tokens/push_token.dart';
-
 import '../tokens/token.dart';
 
 // class TokenFilter {

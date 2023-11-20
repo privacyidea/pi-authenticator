@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import '../model/states/introduction_state.dart';
-import '../utils/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interfaces/repo/introduction_repository.dart';
+import '../model/states/introduction_state.dart';
+import '../utils/logger.dart';
 
 class PreferenceIntroductionRepository implements IntroductionRepository {
   static const String _completedIntroductionsKey = 'COMPLETED_INTRODUCTIONS';
