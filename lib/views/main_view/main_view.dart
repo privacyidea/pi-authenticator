@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
+import 'package:privacyidea_authenticator/model/states/token_filter.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/app_bar_item.dart';
 
 import '../../model/states/app_state.dart';
 import '../../utils/logger.dart';
@@ -48,6 +50,7 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: ExpandableAppBar(
+        startExpand: hasFilter,
         appBar: AppBar(
           title: Text(
             widget.appName,
@@ -59,22 +62,35 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
             padding: const EdgeInsets.all(4),
             child: widget.appIcon,
           ),
+          actions: [
+            hasFilter
+                ? AppBarItem(
+                    onPressed: () {
+                      ref.read(tokenFilterProvider.notifier).state = null;
+                    },
+                    icon: const Icon(Icons.close),
+                  )
+                : AppBarItem(
+                    onPressed: () {
+                      ref.read(tokenFilterProvider.notifier).state = TokenFilter(
+                        // filterCategory: TokenFilterCategory.issuer,
+                        searchQuery: '',
+                      );
+                    },
+                    icon: const Icon(Icons.search),
+                  ),
+          ],
         ),
         body: ConnectivityListener(
           child: StatusBar(
-            child: Stack(
-              children: [
-                Visibility(
-                  visible: !hasFilter,
-                  child: MainViewTokensList(nestedScrollViewKey: globalKey),
-                ),
-                Visibility(
-                  visible: hasFilter,
-                  child: const MainViewTokensListFiltered(),
-                ),
-                const MainViewNavigationBar(),
-              ],
-            ),
+            child: !hasFilter
+                ? Stack(
+                    children: [
+                      MainViewTokensList(nestedScrollViewKey: globalKey),
+                      const MainViewNavigationBar(),
+                    ],
+                  )
+                : const MainViewTokensListFiltered(),
           ),
         ),
       ),

@@ -5,49 +5,56 @@ import '../../../model/states/token_filter.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../utils/utils.dart';
 
-class SearchTokenWidget extends ConsumerStatefulWidget {
+class SearchTokenWidget extends StatelessWidget {
   final bool searchActive;
   const SearchTokenWidget({required this.searchActive, super.key});
 
   @override
-  ConsumerState<SearchTokenWidget> createState() => _SearchTokenWidgetState();
+  Widget build(BuildContext context) => searchActive ? const SearchInputField() : const SizedBox();
 }
 
-class _SearchTokenWidgetState extends ConsumerState<SearchTokenWidget> {
+class SearchInputField extends ConsumerStatefulWidget {
+  const SearchInputField({super.key});
+
+  @override
+  ConsumerState<SearchInputField> createState() => _SearchInputFieldState();
+}
+
+class _SearchInputFieldState extends ConsumerState<SearchInputField> {
   TokenFilterCategory searchCategory = TokenFilterCategory.label;
   final TextEditingController _controller = TextEditingController();
 
   void _resetFilter() {
-    ref.read(tokenFilterProvider.notifier).state = null;
-    setState(() {
-      searchCategory = TokenFilterCategory.label;
-      _controller.clear();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      globalRef?.read(tokenFilterProvider.notifier).state = null;
     });
     return;
   }
 
   void _updateFilter() {
     ref.read(tokenFilterProvider.notifier).state = TokenFilter(
-      filterCategory: searchCategory,
+      // filterCategory: searchCategory,
       searchQuery: _controller.text,
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (widget.searchActive == false) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _resetFilter());
-    }
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: TextField(
+  void dispose() {
+    _resetFilter();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => TextField(
         controller: _controller,
-        onChanged: (value) => value.isEmpty ? _resetFilter() : _updateFilter(),
+        onChanged: (value) => _updateFilter(),
         decoration: InputDecoration(
           hintText: 'Label / Serial / Issuer',
           border: InputBorder.none,
           prefixIcon: const Icon(Icons.search),
-          suffixIcon: SizedBox(
+          suffixIcon: Container(
+            margin: const EdgeInsets.only(right: 12),
             height: 24,
             child: DropdownButton<TokenFilterCategory>(
               value: searchCategory,
@@ -68,7 +75,5 @@ class _SearchTokenWidgetState extends ConsumerState<SearchTokenWidget> {
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

@@ -11,10 +11,10 @@ class StatusBar extends ConsumerStatefulWidget {
   const StatusBar({super.key, required this.child});
 
   @override
-  ConsumerState<StatusBar> createState() => _ConnectivityStatusBarState();
+  ConsumerState<StatusBar> createState() => _StatusBarState();
 }
 
-class _ConnectivityStatusBarState extends ConsumerState<StatusBar> {
+class _StatusBarState extends ConsumerState<StatusBar> {
   (String, String?)? previousStatusMessage;
   (String, String?)? currentStatusMessage;
   Queue<(String, String?)> statusbarQueue = Queue();

@@ -331,6 +331,8 @@ ThemeData _generateTheme(ThemeCustomization theme, Brightness brightness) {
       ),
       scaffoldBackgroundColor: theme.backgroundColor,
       cardColor: theme.backgroundColor,
+      shadowColor: theme.shadowColor,
+      // shadowColor: Colors.transparent,
       appBarTheme: const AppBarTheme().copyWith(
         backgroundColor: theme.backgroundColor,
         shadowColor: theme.shadowColor,
@@ -347,6 +349,7 @@ ThemeData _generateTheme(ThemeCustomization theme, Brightness brightness) {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: theme.qrButtonBackgroundColor ?? theme.primaryColor,
         foregroundColor: theme.qrButtonIconColor ?? theme.onPrimary,
+        elevation: 0,
       ),
       listTileTheme: ListTileThemeData(
         tileColor: theme.backgroundColor,
