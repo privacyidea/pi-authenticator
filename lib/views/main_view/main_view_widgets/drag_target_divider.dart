@@ -140,7 +140,7 @@ void _onAccept({
       // If the draged item is moved down it dont pass the nextSortable so the newIndex is before the nextSortable
       newIndex = allSortables.indexOf(nextSortable) - 1;
     } else {
-      // If the draged item is moved up it pass the nextSortable so the newIndex is after the nextSortable
+      // If the draged item is moved up it pass the nextSortable so the newIndex will be the place of the nextSortable
       newIndex = allSortables.indexOf(nextSortable);
     }
   }
