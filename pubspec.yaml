@@ -52,7 +52,7 @@ dependencies:
   firebase_core: ^2.14.0
   pi_authenticator_legacy:
     path: local_plugins/pi-authenticator-legacy
-  collection: ^1.15.0
+  collection: ^1.17.2
   uni_links: ^0.5.1
   local_auth: ^2.1.6
   lottie: ^2.4.0
