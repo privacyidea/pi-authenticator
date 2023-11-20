@@ -201,7 +201,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     for (var i = 0; i < tokens.length; i++) ...[
-                      if (draggingSortable != tokens[i] && (i != 0 || draggingSortable != null))
+                      if (draggingSortable != tokens[i] && (i != 0 || draggingSortable is Token))
                         DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: tokens[i]),
                       TokenWidgetBuilder.fromToken(
                         tokens[i],
