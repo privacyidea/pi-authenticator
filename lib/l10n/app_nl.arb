@@ -421,10 +421,7 @@
   "@authToDeclinePushRequest": {
     "description": "Message for the rollout process"
   },
-  "incomingAuthRequestError": "Het bericht bevatte niet de benodigde gegevens of de gegevens waren misvormd.",
-  "@incomingAuthRequestError": {
-    "description": "Message for the rollout process"
-  },
+  "pushRequestParseError": "Het pushverzoek kon niet worden verwerkt.",
   "imageUrl": "Afbeeldings-URL",
   "errorRollOutSSLHandshakeFailed": "SSL-handdruk mislukt. Uitrollen niet mogelijk.",
   "@errorRollOutSSLHandshakeFailed": {
@@ -464,5 +461,6 @@
   "decryptErrorDeleteConfirmationContent": "Weet je zeker dat je de app-gegevens wilt verwijderen?",
   "hidePushTokens": "Verberg push tokens",
   "hidePushTokensDescription": "Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.",
-  "licensesAndVersion": "Licenties en versie"
+  "licensesAndVersion": "Licenties en versie",
+  "privacyPolicy": ""
 }

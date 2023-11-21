@@ -379,7 +379,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get authToDeclinePushRequest => 'Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.';
 
   @override
-  String get incomingAuthRequestError => 'Die Nachricht enthielt nicht die erforderlichen Daten oder die Daten waren falsch formatiert.';
+  String get pushRequestParseError => 'Die Push-Anfrage konnte nicht verarbeitet werden.';
 
   @override
   String get imageUrl => 'Bild URL';
@@ -453,6 +453,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get licensesAndVersion => 'Lizenzen und Version';
+
+  @override
+  String get privacyPolicy => '';
 
   @override
   String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';

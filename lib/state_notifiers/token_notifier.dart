@@ -239,9 +239,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
       Logger.warning('The requested token does not exist anymore', name: 'token_notifier.dart#addPushRequestToToken');
       return false;
     }
+    Logger.warning('signedData: ${signedData}', name: 'token_notifier.dart#addPushRequestToToken');
+    Logger.warning('signature: ${signature}', name: 'token_notifier.dart#addPushRequestToToken');
     bool isVerified = token.privateTokenKey == null
         ? await _legacy.verify(token.serial, signedData, signature)
-        : _rsaUtils.verifyRSASignature(token.rsaPublicServerKey!, utf8.encode(signedData) as Uint8List, base32.decode(signature));
+        : _rsaUtils.verifyRSASignature(token.rsaPublicServerKey!, utf8.encode(signedData), base32.decode(signature));
 
     if (!isVerified) {
       Logger.warning(

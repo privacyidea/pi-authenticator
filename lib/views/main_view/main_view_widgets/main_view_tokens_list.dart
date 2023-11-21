@@ -93,7 +93,6 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
 
   List<Widget> _buildSortableWidgets(List<SortableMixin> sortables, SortableMixin? draggingSortable) {
     List<Widget> widgets = [];
-    bool addedAnToken = false;
     if (sortables.isEmpty) return [];
     sortables.sort((a, b) => a.compareTo(b));
     for (var i = 0; i < sortables.length; i++) {
@@ -108,12 +107,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
       if (!isDraggingTheCurrent && ((!isFirst && !previousWasExpandedFolder) || draggingSortable != null)) {
         widgets.add(DragTargetDivider(dependingFolder: null, nextSortable: sortables[i]));
       }
-      if (!addedAnToken && sortables[i] is Token) {
-        addedAnToken = true;
-        widgets.add(TokenIntroduction(child: SortableWidgetBuilder.fromSortable(sortables[i])));
-      } else {
-        widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
-      }
+      widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
     }
 
     return widgets;

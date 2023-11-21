@@ -379,7 +379,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get authToDeclinePushRequest => 'Uwierzytelnij, aby odrzucić żądanie push.';
 
   @override
-  String get incomingAuthRequestError => 'Wiadomość nie zawierała wymaganych danych lub dane były zniekształcone.';
+  String get pushRequestParseError => 'Żądanie push nie mogło zostać przetworzone.';
 
   @override
   String get imageUrl => 'Adres URL obrazu';
@@ -453,6 +453,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get licensesAndVersion => 'Licencje i wersja';
+
+  @override
+  String get privacyPolicy => '';
 
   @override
   String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';

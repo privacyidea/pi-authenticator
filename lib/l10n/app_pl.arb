@@ -418,7 +418,7 @@
     "description": "Message for the rollout process"
   },
   "authToDeclinePushRequest": "Uwierzytelnij, aby odrzucić żądanie push.",
-  "incomingAuthRequestError": "Wiadomość nie zawierała wymaganych danych lub dane były zniekształcone.",
+  "pushRequestParseError": "Żądanie push nie mogło zostać przetworzone.",
   "imageUrl": "Adres URL obrazu",
   "errorRollOutSSLHandshakeFailed": "Uścisk dłoni SSL nie powiódł się. Rozwijanie nie jest możliwe.",
   "errorWhenPullingChallenges": "Wystąpił błąd podczas odpytywania o wyzwania {name}",
@@ -455,5 +455,6 @@
   "decryptErrorDeleteConfirmationContent": "Czy na pewno chcesz usunąć dane aplikacji?",
   "hidePushTokens": "Ukryj tokeny push",
   "hidePushTokensDescription": "Ukryj tokeny push z listy tokenów. Nie spowoduje to usunięcia tokenów i będą one nadal widoczne na osobnym ekranie",
-  "licensesAndVersion": "Licencje i wersja"
+  "licensesAndVersion": "Licencje i wersja",
+  "privacyPolicy": ""
 }
