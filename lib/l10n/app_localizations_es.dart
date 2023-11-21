@@ -449,8 +449,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get hidePushTokensDescription => 'Ocultar tokens push de la lista de tokens. Esto no borrará los tokens y seguirán siendo visibles en una pantalla aparte';
 
   @override
+  String get settingsGroupGeneral => 'Información general';
+
+  @override
   String get licensesAndVersion => 'Licencias y versión';
 
   @override
-  String get privacyPolicy => '';
+  String get privacyPolicy => 'Política de privacidad';
 }

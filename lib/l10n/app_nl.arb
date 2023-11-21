@@ -453,6 +453,7 @@
   "decryptErrorDeleteConfirmationContent": "Weet je zeker dat je de app-gegevens wilt verwijderen?",
   "hidePushTokens": "Verberg push tokens",
   "hidePushTokensDescription": "Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.",
+  "settingsGroupGeneral": "Algemene informatie",
   "licensesAndVersion": "Licenties en versie",
-  "privacyPolicy": ""
+  "privacyPolicy": "Privacybeleid"
 }

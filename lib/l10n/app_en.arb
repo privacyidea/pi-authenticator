@@ -454,6 +454,7 @@
   "decryptErrorDeleteConfirmationContent": "Are you sure you want to delete the app data?",
   "hidePushTokens": "Hide push tokens",
   "hidePushTokensDescription": "Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.",
+  "settingsGroupGeneral": "General",
   "licensesAndVersion": "Licenses and version",
   "privacyPolicy": "Privacy policy"
 }

@@ -467,6 +467,7 @@
   "decryptErrorDeleteConfirmationContent": "Êtes-vous sûr de vouloir supprimer les données de l'application ?",
   "hidePushTokens": "Hide push tokens",
   "hidePushTokensDescription": "Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé",
+  "settingsGroupGeneral": "Généralités",
   "licensesAndVersion": "Licences et version",
-  "privacyPolicy": ""
+  "privacyPolicy": "Politique de confidentialité"
 }

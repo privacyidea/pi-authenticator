@@ -449,8 +449,11 @@ class AppLocalizationsCs extends AppLocalizations {
   String get hidePushTokensDescription => 'Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.';
 
   @override
+  String get settingsGroupGeneral => 'Obecné informace';
+
+  @override
   String get licensesAndVersion => 'Licence a verze';
 
   @override
-  String get privacyPolicy => '';
+  String get privacyPolicy => 'Zásady ochrany osobních údajů';
 }

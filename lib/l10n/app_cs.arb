@@ -463,6 +463,7 @@
   "decryptErrorDeleteConfirmationContent": "Jste si jisti, že chcete data aplikace odstranit?",
   "hidePushTokens": "Skrýt push tokeny",
   "hidePushTokensDescription": "Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.",
+  "settingsGroupGeneral": "Obecné informace",
   "licensesAndVersion": "Licence a verze",
-  "privacyPolicy": ""
+  "privacyPolicy": "Zásady ochrany osobních údajů"
 }

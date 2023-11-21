@@ -442,6 +442,7 @@
   "decryptErrorDeleteConfirmationContent": "Sind Sie sicher, dass Sie die App Daten löschen möchten?",
   "hidePushTokens": "Push-Token ausblenden",
   "hidePushTokensDescription": "Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.",
+  "settingsGroupGeneral": "Allgemeines",
   "licensesAndVersion": "Lizenzen und Version",
-  "privacyPolicy": ""
+  "privacyPolicy": "Datenschutzerklärung"
 }

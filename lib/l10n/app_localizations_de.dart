@@ -449,8 +449,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get hidePushTokensDescription => 'Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.';
 
   @override
+  String get settingsGroupGeneral => 'Allgemeines';
+
+  @override
   String get licensesAndVersion => 'Lizenzen und Version';
 
   @override
-  String get privacyPolicy => '';
+  String get privacyPolicy => 'Datenschutzerklärung';
 }

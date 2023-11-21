@@ -1,6 +1,7 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/tokens/push_token.dart';
@@ -36,6 +37,41 @@ class SettingsView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SettingsGroup(
+              title: AppLocalizations.of(context)!.settingsGroupGeneral,
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    Uri uri = Uri.parse("https://netknights.it/en/privacy-statement/");
+                    if (!await launchUrl(uri)) {
+                      throw Exception('Could not launch $uri');
+                    }
+                  },
+                  child: ListTile(
+                    title: Text(
+                      AppLocalizations.of(context)!.privacyPolicy,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, LicenseView.routeName);
+                  },
+                  child: ListTile(
+                    title: Text(
+                      AppLocalizations.of(context)!.licensesAndVersion,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                    ),
+                  ),
+                )
+              ],
+            ),
+            const Divider(),
             SettingsGroup(
               title: AppLocalizations.of(context)!.theme,
               children: [
@@ -228,20 +264,6 @@ class SettingsView extends ConsumerWidget {
                   ),
                 ),
               ),
-              const Divider(),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, LicenseView.routeName);
-                },
-                child: ListTile(
-                  title: Text(
-                    AppLocalizations.of(context)!.licensesAndVersion,
-                    style: Theme.of(context).textTheme.titleMedium,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                  ),
-                ),
-              )
             ]),
           ],
         ),

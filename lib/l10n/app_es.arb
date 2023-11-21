@@ -459,6 +459,7 @@
   "decryptErrorDeleteConfirmationContent": "¿Estás seguro de que quieres borrar los datos de la aplicación?",
   "hidePushTokens": "Ocultar tokens push",
   "hidePushTokensDescription": "Ocultar tokens push de la lista de tokens. Esto no borrará los tokens y seguirán siendo visibles en una pantalla aparte",
+  "settingsGroupGeneral": "Información general",
   "licensesAndVersion": "Licencias y versión",
-  "privacyPolicy": ""
+  "privacyPolicy": "Política de privacidad"
 }

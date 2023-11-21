@@ -955,6 +955,12 @@ abstract class AppLocalizations {
   /// **'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.'**
   String get hidePushTokensDescription;
 
+  /// No description provided for @settingsGroupGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get settingsGroupGeneral;
+
   /// No description provided for @licensesAndVersion.
   ///
   /// In en, this message translates to:

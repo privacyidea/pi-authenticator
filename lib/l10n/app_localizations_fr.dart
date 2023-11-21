@@ -449,8 +449,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get hidePushTokensDescription => 'Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé';
 
   @override
+  String get settingsGroupGeneral => 'Généralités';
+
+  @override
   String get licensesAndVersion => 'Licences et version';
 
   @override
-  String get privacyPolicy => '';
+  String get privacyPolicy => 'Politique de confidentialité';
 }
