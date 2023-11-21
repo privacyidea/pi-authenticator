@@ -415,7 +415,7 @@
   "errorRollOutNoConnectionToServer": "Der Rollout von Token {name} ist fehlgeschlagen, der Server konnte nicht erreicht werden.",
   "authToAcceptPushRequest": "Bitte authentifizieren Sie sich, um die Anfrage anzunehmen.",
   "authToDeclinePushRequest": "Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.",
-  "incomingAuthRequestError": "Die Nachricht enthielt nicht die erforderlichen Daten oder die Daten waren falsch formatiert.",
+  "pushRequestParseError": "Die Push-Anfrage konnte nicht verarbeitet werden.",
   "errorRollOutSSLHandshakeFailed": "SSL-Handshake fehlgeschlagen. Roll-out nicht möglich.",
   "errorRollOutTokenExpired": "Das Ausrollen dieses Tokens ist nicht mehr möglich.\nDer Token {name} ist abgelaufen.",
   "@errorRollOutTokenExpired": {
@@ -442,5 +442,6 @@
   "decryptErrorDeleteConfirmationContent": "Sind Sie sicher, dass Sie die App Daten löschen möchten?",
   "hidePushTokens": "Push-Token ausblenden",
   "hidePushTokensDescription": "Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.",
-  "licensesAndVersion": "Lizenzen und Version"
+  "licensesAndVersion": "Lizenzen und Version",
+  "privacyPolicy": ""
 }

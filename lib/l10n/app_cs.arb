@@ -427,7 +427,7 @@
   },
   "authToAcceptPushRequest": "Pro přijetí požadavku na push notifikaci se přihlaste.",
   "authToDeclinePushRequest": "Pro odmítnutí požadavku na push notifikaci se přihlaste.",
-  "incomingAuthRequestError": "Zpráva neposkytla potřebná data nebo byla data chybně formulována.",
+  "pushRequestParseError": "Požadavek na odeslání se nepodařilo zpracovat.",
   "imageUrl": "URL obrázku",
   "errorRollOutSSLHandshakeFailed": "SSL handshake se nezdařil. Roll-out není možný.",
   "errorWhenPullingChallenges": "Při dotazování na výzvy {name} došlo k chybě.",
@@ -463,5 +463,6 @@
   "decryptErrorDeleteConfirmationContent": "Jste si jisti, že chcete data aplikace odstranit?",
   "hidePushTokens": "Skrýt push tokeny",
   "hidePushTokensDescription": "Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.",
-  "licensesAndVersion": "Licence a verze"
+  "licensesAndVersion": "Licence a verze",
+  "privacyPolicy": ""
 }

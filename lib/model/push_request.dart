@@ -91,10 +91,13 @@ class PushRequest {
       sslVerify: data[PUSH_REQUEST_SSL_VERIFY] == '1',
       serial: data[PUSH_REQUEST_SERIAL],
       expirationDate: DateTime.now().add(const Duration(minutes: 2)),
+      signature: data[PUSH_REQUEST_SIGNATURE],
     );
   }
 
-  static verifyData(Map<String, dynamic> data) {
+  /// Verify that the data is valid.
+  /// Throws ArgumentError if data is invalid
+  static void verifyData(Map<String, dynamic> data) {
     if (data[PUSH_REQUEST_TITLE] is! String) {
       throw ArgumentError('Push request title is ${data[PUSH_REQUEST_TITLE].runtimeType}. Expected String.');
     }

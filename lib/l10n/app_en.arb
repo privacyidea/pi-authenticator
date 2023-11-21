@@ -413,7 +413,7 @@
   },
   "authToAcceptPushRequest": "Please authenticate to accept the push request.",
   "authToDeclinePushRequest": "Please authenticate to decline the push request.",
-  "incomingAuthRequestError": "The message didn't provided the needed data or the data was malformed.",
+  "pushRequestParseError": "Push request could not be parsed.",
   "imageUrl": "Image URL",
   "errorRollOutSSLHandshakeFailed": "SSL handshake failed. Roll-out not possible.",
   "@errorRollOutSSLHandshakeFailed": {
@@ -454,5 +454,6 @@
   "decryptErrorDeleteConfirmationContent": "Are you sure you want to delete the app data?",
   "hidePushTokens": "Hide push tokens",
   "hidePushTokensDescription": "Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.",
-  "licensesAndVersion": "Licenses and version"
+  "licensesAndVersion": "Licenses and version",
+  "privacyPolicy": "Privacy policy"
 }

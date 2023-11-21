@@ -38,7 +38,6 @@ import 'network_utils.dart';
 import 'riverpod_providers.dart';
 import 'rsa_utils.dart';
 import 'utils.dart';
-import 'view_utils.dart';
 
 /// This class bundles all logic that is needed to handle incomig PushRequests, e.g.,
 /// firebase, polling, notifications.
@@ -94,14 +93,30 @@ class PushProvider {
     return instance!;
   }
 
-  static Map<String, dynamic> _getAndValidateData(RemoteMessage remoteMessage) {
+  static Map<String, dynamic> _getAndValidateDataFromRemoteMessage(RemoteMessage remoteMessage) {
     final Map<String, dynamic> data;
     try {
       data = remoteMessage.data;
       PushRequest.verifyData(data);
     } on ArgumentError catch (e) {
-      Logger.warning('Could not parse push request data.', name: 'push_provider.dart#_getAndValidateData', error: e, verbose: true);
-      throw TypeError();
+      Logger.warning('Could not parse push request data.', name: 'push_provider.dart#_getAndValidateDataFromRemoteMessage', error: e, verbose: true);
+      rethrow;
+    }
+    return data;
+  }
+
+  List<Map<String, dynamic>> _getAndValidateDataFromResponse(Response response) {
+    final List<Map<String, dynamic>> data;
+    try {
+      data = jsonDecode(response.body)['result']['value'].cast<Map<String, dynamic>>();
+      for (Map<String, dynamic> dataUnit in data) {
+        // The signature of this message must not be verified as each push
+        // request gets verified independently.
+        PushRequest.verifyData(dataUnit);
+      }
+    } on ArgumentError catch (e) {
+      Logger.warning('Could not parse push request data.', name: 'push_provider.dart#_getAndValidateDataFromResponse', error: e, verbose: true);
+      rethrow;
     }
     return data;
   }
@@ -109,14 +124,19 @@ class PushProvider {
   // FOREGROUND HANDLING
   Future<void> _foregroundHandler(RemoteMessage remoteMessage) async {
     Logger.info('Foreground message received.', name: 'push_provider.dart#_foregroundHandler');
+
     await SecureTokenRepository.protect(() async {
+      Map<String, dynamic> data;
       try {
-        final data = _getAndValidateData(remoteMessage);
+        data = _getAndValidateDataFromRemoteMessage(remoteMessage);
+      } on ArgumentError catch (_) {
+        Logger.info('Try requesting the challenge by polling.', name: 'push_provider.dart#_foregroundHandler');
+        await pollForChallenges(isManually: false);
+        return;
+      }
+      // Here we can be sure that the data is valid
+      try {
         return _handleIncomingRequestForeground(data);
-      } on TypeError catch (e, s) {
-        final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
-        showMessage(message: errorMessage);
-        Logger.warning(errorMessage, name: 'push_provider.dart#_foregroundHandler', error: e, stackTrace: s);
       } catch (e, s) {
         final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError;
         Logger.error(errorMessage, name: 'push_provider.dart#_foregroundHandler', error: e, stackTrace: s);
@@ -128,15 +148,18 @@ class PushProvider {
   static Future<void> _backgroundHandler(RemoteMessage remoteMessage) async {
     Logger.info('Background message received.', name: 'push_provider.dart#_backgroundHandler');
     await SecureTokenRepository.protect(() async {
+      Map<String, dynamic> data;
       try {
-        final data = _getAndValidateData(remoteMessage);
+        data = _getAndValidateDataFromRemoteMessage(remoteMessage);
+      } on ArgumentError catch (_) {
+        return;
+      }
+      // Here we can be sure that the data is valid
+      try {
         return _handleIncomingRequestBackground(data);
-      } on TypeError catch (e, s) {
-        final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.incomingAuthRequestError;
-        Logger.warning(errorMessage, name: 'push_provider.dart#_backgroundHandler', error: e, stackTrace: s);
       } catch (e, s) {
-        final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError;
-        Logger.error(errorMessage, name: 'push_provider.dart#_backgroundHandler', error: e, stackTrace: s);
+        Logger.error('Something went wrong while handling the push request in the background.',
+            name: 'push_provider.dart#_backgroundHandler', error: e, stackTrace: s);
       }
     });
   }
@@ -249,48 +272,56 @@ class PushProvider {
       'signature': signature,
     };
 
+    final Response response;
+
     try {
-      Response response = instance != null
+      response = instance != null
           ? await instance!._ioClient.doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify)
           : await const PrivacyIdeaIOClient().doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify);
-
-      switch (response.statusCode) {
-        case 200:
-          // The signature of this message must not be verified as each push
-          // request gets verified independently.
-          Map<String, dynamic> result = jsonDecode(response.body)['result'];
-          List challengeList = result['value'].cast<Map<String, dynamic>>();
-
-          for (Map<String, dynamic> challenge in challengeList) {
-            Logger.info('Received challenge', name: 'push_provider.dart#pollForChallenge');
-            _foregroundHandler(RemoteMessage(data: challenge));
-          }
-          break;
-
-        case 403:
-          final error = getErrorMessageFromResponse(response);
-          globalRef?.read(statusMessageProvider.notifier).state = (
-            AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
-            error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
-          );
-          Logger.warning('Polling push token failed with status code ${response.statusCode}',
-              name: 'push_provider.dart#pollForChallenge', error: getErrorMessageFromResponse(response));
-          return;
-
-        default:
-          final error = getErrorMessageFromResponse(response);
-          globalRef?.read(statusMessageProvider.notifier).state = (
-            AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
-            error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
-          );
-          return;
-      }
     } catch (e) {
       globalRef?.read(statusMessageProvider.notifier).state = (
         AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial),
         null,
       );
       return;
+    }
+    final List<Map<String, dynamic>> challengeList;
+    switch (response.statusCode) {
+      case 200:
+        try {
+          challengeList = _getAndValidateDataFromResponse(response);
+        } catch (_) {
+          globalRef?.read(statusMessageProvider.notifier).state = (
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial),
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.pushRequestParseError,
+          );
+          return;
+        }
+
+        // Everything is fine, we can just continue
+        break;
+
+      case 403:
+        final error = getErrorMessageFromResponse(response);
+        globalRef?.read(statusMessageProvider.notifier).state = (
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+          error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
+        );
+        Logger.warning('Polling push token failed with status code ${response.statusCode}',
+            name: 'push_provider.dart#pollForChallenge', error: getErrorMessageFromResponse(response));
+        return;
+
+      default:
+        final error = getErrorMessageFromResponse(response);
+        globalRef?.read(statusMessageProvider.notifier).state = (
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+          error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
+        );
+        return;
+    }
+    Logger.info('Received ${challengeList.length} challenge(s) for ${token.label}', name: 'push_provider.dart#pollForChallenge');
+    for (Map<String, dynamic> challengeData in challengeList) {
+      _handleIncomingRequestForeground((challengeData));
     }
     return;
   }

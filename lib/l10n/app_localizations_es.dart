@@ -379,7 +379,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get authToDeclinePushRequest => 'Por favor, autentifíquese para rechazar la solicitud push.';
 
   @override
-  String get incomingAuthRequestError => 'El mensaje no proporcionaba los datos necesarios o los datos estaban malformados.';
+  String get pushRequestParseError => 'No se ha podido procesar la solicitud push.';
 
   @override
   String get imageUrl => 'URL de la imagen';
@@ -450,4 +450,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get licensesAndVersion => 'Licencias y versión';
+
+  @override
+  String get privacyPolicy => '';
 }

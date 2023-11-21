@@ -66,17 +66,9 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
                 physics: allowToRefresh ? const AlwaysScrollableScrollPhysics() : null,
                 controller: scrollController,
                 slivers: [
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Column(
-                      children: [
-                        ..._buildSortableWidgets(sortables, draggingSortable),
-                        (draggingSortable != null)
-                            ? const Expanded(child: DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true, bottomPaddingIfLast: 80))
-                            : const SizedBox(
-                                height: 80,
-                              ),
-                      ],
+                  SliverList(
+                    delegate: SliverChildListDelegate(
+                      [..._buildSortableWidgets(sortables, draggingSortable)],
                     ),
                   ),
                 ],
@@ -107,7 +99,10 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
       }
       widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
     }
-
+    if (draggingSortable != null) {
+      widgets.add(const DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true));
+    }
+    widgets.add(const SizedBox(height: 80));
     return widgets;
   }
 }

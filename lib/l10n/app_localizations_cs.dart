@@ -379,7 +379,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get authToDeclinePushRequest => 'Pro odmítnutí požadavku na push notifikaci se přihlaste.';
 
   @override
-  String get incomingAuthRequestError => 'Zpráva neposkytla potřebná data nebo byla data chybně formulována.';
+  String get pushRequestParseError => 'Požadavek na odeslání se nepodařilo zpracovat.';
 
   @override
   String get imageUrl => 'URL obrázku';
@@ -450,4 +450,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get licensesAndVersion => 'Licence a verze';
+
+  @override
+  String get privacyPolicy => '';
 }

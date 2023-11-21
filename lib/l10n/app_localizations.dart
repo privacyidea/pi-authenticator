@@ -823,11 +823,11 @@ abstract class AppLocalizations {
   /// **'Please authenticate to decline the push request.'**
   String get authToDeclinePushRequest;
 
-  /// No description provided for @incomingAuthRequestError.
+  /// No description provided for @pushRequestParseError.
   ///
   /// In en, this message translates to:
-  /// **'The message didn\'t provided the needed data or the data was malformed.'**
-  String get incomingAuthRequestError;
+  /// **'Push request could not be parsed.'**
+  String get pushRequestParseError;
 
   /// No description provided for @imageUrl.
   ///
@@ -960,6 +960,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Licenses and version'**
   String get licensesAndVersion;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get privacyPolicy;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

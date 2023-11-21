@@ -379,7 +379,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get authToDeclinePushRequest => 'Authenticeer om de push aanvraag te weigeren.';
 
   @override
-  String get incomingAuthRequestError => 'Het bericht bevatte niet de benodigde gegevens of de gegevens waren misvormd.';
+  String get pushRequestParseError => 'Het pushverzoek kon niet worden verwerkt.';
 
   @override
   String get imageUrl => 'Afbeeldings-URL';
@@ -450,4 +450,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get licensesAndVersion => 'Licenties en versie';
+
+  @override
+  String get privacyPolicy => '';
 }

@@ -431,7 +431,7 @@
   "@authToDeclinePushRequest": {
     "description": "authToDeclinePushRequest"
   },
-  "incomingAuthRequestError": "Le message ne contenait pas les données nécessaires ou les données étaient mal formées.",
+  "pushRequestParseError": "La demande push n'a pas pu être traitée.",
   "imageUrl": "URL de l'image",
   "errorRollOutSSLHandshakeFailed": "Échec de la prise de contact SSL. Le déploiement n'est pas possible.",
   "errorWhenPullingChallenges": "Une erreur s'est produite lors de l'interrogation des défis de {name}",
@@ -467,5 +467,6 @@
   "decryptErrorDeleteConfirmationContent": "Êtes-vous sûr de vouloir supprimer les données de l'application ?",
   "hidePushTokens": "Hide push tokens",
   "hidePushTokensDescription": "Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé",
-  "licensesAndVersion": "Licences et version"
+  "licensesAndVersion": "Licences et version",
+  "privacyPolicy": ""
 }

@@ -423,7 +423,7 @@
   },
   "authToAcceptPushRequest": "Por favor, autentifíquese para aceptar la solicitud push.",
   "authToDeclinePushRequest": "Por favor, autentifíquese para rechazar la solicitud push.",
-  "incomingAuthRequestError": "El mensaje no proporcionaba los datos necesarios o los datos estaban malformados.",
+  "pushRequestParseError": "No se ha podido procesar la solicitud push.",
   "imageUrl": "URL de la imagen",
   "errorRollOutSSLHandshakeFailed": "Ha fallado el protocolo SSL. No es posible el despliegue.",
   "errorWhenPullingChallenges": "Se ha producido un error al buscar retos de {name}",
@@ -459,5 +459,6 @@
   "decryptErrorDeleteConfirmationContent": "¿Estás seguro de que quieres borrar los datos de la aplicación?",
   "hidePushTokens": "Ocultar tokens push",
   "hidePushTokensDescription": "Ocultar tokens push de la lista de tokens. Esto no borrará los tokens y seguirán siendo visibles en una pantalla aparte",
-  "licensesAndVersion": "Licencias y versión"
+  "licensesAndVersion": "Licencias y versión",
+  "privacyPolicy": ""
 }
