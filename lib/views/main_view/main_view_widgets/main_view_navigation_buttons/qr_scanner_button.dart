@@ -27,8 +27,9 @@ class QrScannerButton extends ConsumerWidget {
           if (globalNavigatorKey.currentContext == null) return;
 
           /// Open the QR-code scanner and call `handleQrCode`, with the scanned code as the argument.
-          Navigator.pushNamed(globalNavigatorKey.currentContext!, QRScannerView.routeName)
-              .then((qrCode) => ref.read(tokenProvider.notifier).handleQrCode(qrCode));
+          Navigator.pushNamed(globalNavigatorKey.currentContext!, QRScannerView.routeName).then((qrCode) {
+            if (qrCode != null) ref.read(tokenProvider.notifier).handleQrCode(qrCode);
+          });
         },
         tooltip: AppLocalizations.of(context)?.scanQrCode ?? '',
         child: const Icon(Icons.qr_code_scanner_outlined),

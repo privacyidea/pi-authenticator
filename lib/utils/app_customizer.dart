@@ -313,6 +313,7 @@ class ApplicationCustomization {
 
 ThemeData _generateTheme(ThemeCustomization theme, Brightness brightness) {
   return ThemeData(
+      useMaterial3: false,
       brightness: brightness,
       textTheme: const TextTheme().copyWith(
         bodyLarge: TextStyle(color: theme.foregroundColor),
@@ -354,7 +355,7 @@ ThemeData _generateTheme(ThemeCustomization theme, Brightness brightness) {
       listTileTheme: ListTileThemeData(
         tileColor: theme.backgroundColor,
         titleTextStyle: TextStyle(color: theme.tilePrimaryColor ?? theme.primaryColor),
-        subtitleTextStyle: TextStyle(color: theme.tileSubtitleColor),
+        subtitleTextStyle: TextStyle(color: theme.tileSubtitleColor ?? theme.subtitleColor),
         iconColor: theme.tileIconColor,
       ),
       colorScheme: brightness == Brightness.light

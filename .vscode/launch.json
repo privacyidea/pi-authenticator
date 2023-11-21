@@ -9,21 +9,21 @@
             "request": "launch",
             "type": "dart",
             "program": "lib/main_netknights.dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
         },
         {
             "name": "pi-authenticator (debug mode)",
             "request": "launch",
             "type": "dart",
             "program": "lib/main_netknights.dart",
-            "flutterMode": "debug"
+            "flutterMode": "debug",
         },
         {
             "name": "pi-authenticator (profile mode)",
             "request": "launch",
             "type": "dart",
             "program": "lib/main_netknights.dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
         },
     ]
 }
