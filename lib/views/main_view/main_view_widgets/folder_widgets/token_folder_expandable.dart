@@ -4,6 +4,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/model/states/token_filter.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_folder.dart';
@@ -20,8 +21,9 @@ import 'token_folder_actions.dart/rename_token_folder_action.dart';
 
 class TokenFolderExpandable extends ConsumerStatefulWidget {
   final TokenFolder folder;
+  final TokenFilter? filter;
 
-  const TokenFolderExpandable({super.key, required this.folder});
+  const TokenFolderExpandable({super.key, required this.folder, this.filter});
 
   @override
   ConsumerState<TokenFolderExpandable> createState() => _TokenFolderExpandableState();
@@ -61,7 +63,8 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
 
   @override
   ExpandablePanel build(BuildContext context) {
-    final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: ref.watch(settingsProvider).hidePushTokens ? [PushToken] : []);
+    List<Token> tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: ref.watch(settingsProvider).hidePushTokens ? [PushToken] : []);
+    tokens = widget.filter?.filterTokens(tokens) ?? tokens;
     final draggingSortable = ref.watch(draggingSortableProvider);
     if (tokens.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -202,13 +205,14 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                   children: [
                     for (var i = 0; i < tokens.length; i++) ...[
                       if (draggingSortable != tokens[i] && (i != 0 || draggingSortable is Token))
-                        DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: tokens[i]),
+                        widget.filter == null ? DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: tokens[i]) : const Divider(),
                       TokenWidgetBuilder.fromToken(
                         tokens[i],
                         withDivider: i < tokens.length - 1,
                       ),
                     ],
-                    if (tokens.isNotEmpty && draggingSortable is Token) DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: null),
+                    if (tokens.isNotEmpty && draggingSortable is Token)
+                      widget.filter == null ? DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: null) : const Divider(),
                     if (tokens.isNotEmpty && draggingSortable is! Token) const SizedBox(height: 8),
                   ],
                 ),
