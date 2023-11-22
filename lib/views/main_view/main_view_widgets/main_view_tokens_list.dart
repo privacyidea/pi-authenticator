@@ -54,7 +54,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
               message: AppLocalizations.of(context)!.pollingChallenges,
               duration: const Duration(seconds: 1),
             );
-            await PushProvider().pollForChallenges(isManually: true);
+            PollLoadingIndicator.pollForChallenges(context);
           },
           child: SlidableAutoCloseBehavior(
             child: DragItemScroller(
@@ -104,5 +104,51 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     }
     widgets.add(const SizedBox(height: 80));
     return widgets;
+  }
+}
+
+/// This widget is polling for challenges and closes itself when the polling is done.
+/// Usage: showDialog(context: context, builder: (_) => const PollLoadingIndicator());
+class PollLoadingIndicator extends StatefulWidget {
+  static void pollForChallenges(BuildContext context) {
+    Navigator.of(context).push(
+      PageRouteBuilder(pageBuilder: (context, _, __) => PollLoadingIndicator._(), opaque: false),
+    );
+  }
+
+  const PollLoadingIndicator._();
+
+  @override
+  State<PollLoadingIndicator> createState() => _PollLoadingIndicatorState();
+}
+
+class _PollLoadingIndicatorState extends State<PollLoadingIndicator> {
+  void _tryPop() {
+    if (mounted) {
+      print('PollLoadingIndicator Pop');
+      Navigator.of(context).pop();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print('PollLoadingIndicator initState');
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      PushProvider().pollForChallenges(isManually: true).then((_) => _tryPop());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(),
+        ],
+      ),
+    );
   }
 }
