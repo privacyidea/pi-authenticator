@@ -225,6 +225,15 @@
   "@pollingFailed": {
     "description": "Tells the user that the polling failed."
   },
+  "pollingFailedFor": "Fallo de sondeo para {serial}",
+  "@pollingFailedFor": {
+    "description": "Tells the user that the polling failed.",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "noNetworkConnection": "No hay conexión a la red.",
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."

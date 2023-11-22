@@ -164,6 +164,11 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pollingFailed => 'Dotaz se nezdařil.';
 
   @override
+  String pollingFailedFor(Object serial) {
+    return 'Dotaz na $serial se nezdařil.';
+  }
+
+  @override
   String get noNetworkConnection => 'Žádné připojení k síti.';
 
   @override

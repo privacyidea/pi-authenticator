@@ -164,6 +164,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pollingFailed => 'Abfrage fehlgeschlagen.';
 
   @override
+  String pollingFailedFor(Object serial) {
+    return 'Abfrage für $serial fehlgeschlagen.';
+  }
+
+  @override
   String get noNetworkConnection => 'Keine Netzwerkverbindung.';
 
   @override

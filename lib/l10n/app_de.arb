@@ -222,6 +222,15 @@
   "@pollingFailed": {
     "description": "Tells the user that the polling failed."
   },
+  "pollingFailedFor": "Abfrage für {serial} fehlgeschlagen.",
+  "@pollingFailedFor": {
+    "description": "Tells the user that the polling failed.",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "noNetworkConnection": "Keine Netzwerkverbindung.",
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."

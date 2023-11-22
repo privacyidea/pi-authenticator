@@ -164,6 +164,11 @@ class AppLocalizationsNl extends AppLocalizations {
   String get pollingFailed => 'Vraag mislukt.';
 
   @override
+  String pollingFailedFor(Object serial) {
+    return 'Query voor $serial mislukt.';
+  }
+
+  @override
   String get noNetworkConnection => 'Geen netwerkverbinding.';
 
   @override

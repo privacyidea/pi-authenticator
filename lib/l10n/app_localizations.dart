@@ -397,6 +397,12 @@ abstract class AppLocalizations {
   /// **'Polling failed.'**
   String get pollingFailed;
 
+  /// Tells the user that the polling failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Polling failed for {serial}'**
+  String pollingFailedFor(Object serial);
+
   /// Tells the user that there is no network connection.
   ///
   /// In en, this message translates to:
