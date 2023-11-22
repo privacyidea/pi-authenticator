@@ -244,9 +244,11 @@ class PushProvider {
 
     // Start request for each token
     Logger.info('Polling for challenges: ${pushTokens.length} Tokens', name: 'push_provider.dart#pollForChallenges');
+    final List<Future<void>> futures = [];
     for (PushToken p in pushTokens) {
-      pollForChallenge(p);
+      futures.add(pollForChallenge(p));
     }
+    await Future.wait(futures);
     return;
   }
 
