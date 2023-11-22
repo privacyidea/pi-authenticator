@@ -164,6 +164,11 @@ class AppLocalizationsNl extends AppLocalizations {
   String get pollingFailed => 'Vraag mislukt.';
 
   @override
+  String pollingFailedFor(Object serial) {
+    return 'Query voor $serial mislukt.';
+  }
+
+  @override
   String get noNetworkConnection => 'Geen netwerkverbinding.';
 
   @override
@@ -452,10 +457,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get hidePushTokensDescription => 'Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.';
 
   @override
+  String get settingsGroupGeneral => 'Algemene informatie';
+
+  @override
   String get licensesAndVersion => 'Licenties en versie';
 
   @override
-  String get privacyPolicy => '';
+  String get privacyPolicy => 'Privacybeleid';
 
   @override
   String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';

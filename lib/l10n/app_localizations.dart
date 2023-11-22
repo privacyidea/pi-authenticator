@@ -397,6 +397,12 @@ abstract class AppLocalizations {
   /// **'Polling failed.'**
   String get pollingFailed;
 
+  /// Tells the user that the polling failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Polling failed for {serial}'**
+  String pollingFailedFor(Object serial);
+
   /// Tells the user that there is no network connection.
   ///
   /// In en, this message translates to:
@@ -960,6 +966,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.'**
   String get hidePushTokensDescription;
+
+  /// No description provided for @settingsGroupGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get settingsGroupGeneral;
 
   /// No description provided for @licensesAndVersion.
   ///

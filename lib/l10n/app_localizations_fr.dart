@@ -164,6 +164,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pollingFailed => 'Échec de la requête.';
 
   @override
+  String pollingFailedFor(Object serial) {
+    return 'Echec de la requête pour $serial.';
+  }
+
+  @override
   String get noNetworkConnection => 'Pas de connexion au réseau.';
 
   @override
@@ -452,10 +457,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get hidePushTokensDescription => 'Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé';
 
   @override
+  String get settingsGroupGeneral => 'Généralités';
+
+  @override
   String get licensesAndVersion => 'Licences et version';
 
   @override
-  String get privacyPolicy => '';
+  String get privacyPolicy => 'Politique de confidentialité';
 
   @override
   String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';

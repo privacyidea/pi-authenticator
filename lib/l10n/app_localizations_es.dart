@@ -164,6 +164,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pollingFailed => 'Consulta fallida.';
 
   @override
+  String pollingFailedFor(Object serial) {
+    return 'Fallo de sondeo para $serial';
+  }
+
+  @override
   String get noNetworkConnection => 'No hay conexión a la red.';
 
   @override
@@ -452,10 +457,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get hidePushTokensDescription => 'Ocultar tokens push de la lista de tokens. Esto no borrará los tokens y seguirán siendo visibles en una pantalla aparte';
 
   @override
+  String get settingsGroupGeneral => 'Información general';
+
+  @override
   String get licensesAndVersion => 'Licencias y versión';
 
   @override
-  String get privacyPolicy => '';
+  String get privacyPolicy => 'Política de privacidad';
 
   @override
   String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';

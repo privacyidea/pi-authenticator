@@ -225,6 +225,15 @@
   "@pollingFailed": {
     "description": "Tells the user that the polling failed."
   },
+  "pollingFailedFor": "Fallo de sondeo para {serial}",
+  "@pollingFailedFor": {
+    "description": "Tells the user that the polling failed.",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "noNetworkConnection": "No hay conexión a la red.",
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
@@ -460,6 +469,7 @@
   "decryptErrorDeleteConfirmationContent": "¿Estás seguro de que quieres borrar los datos de la aplicación?",
   "hidePushTokens": "Ocultar tokens push",
   "hidePushTokensDescription": "Ocultar tokens push de la lista de tokens. Esto no borrará los tokens y seguirán siendo visibles en una pantalla aparte",
+  "settingsGroupGeneral": "Información general",
   "licensesAndVersion": "Licencias y versión",
-  "privacyPolicy": ""
+  "privacyPolicy": "Política de privacidad"
 }

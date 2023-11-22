@@ -164,6 +164,11 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pollingFailed => 'Dotaz se nezdařil.';
 
   @override
+  String pollingFailedFor(Object serial) {
+    return 'Dotaz na $serial se nezdařil.';
+  }
+
+  @override
   String get noNetworkConnection => 'Žádné připojení k síti.';
 
   @override
@@ -452,10 +457,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get hidePushTokensDescription => 'Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.';
 
   @override
+  String get settingsGroupGeneral => 'Obecné informace';
+
+  @override
   String get licensesAndVersion => 'Licence a verze';
 
   @override
-  String get privacyPolicy => '';
+  String get privacyPolicy => 'Zásady ochrany osobních údajů';
 
   @override
   String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';

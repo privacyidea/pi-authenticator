@@ -229,6 +229,15 @@
   "@pollingFailed": {
     "description": "Tells the user that the polling failed."
   },
+  "pollingFailedFor": "Echec de la requête pour {serial}.",
+  "@pollingFailedFor": {
+    "description": "Tells the user that the polling failed.",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "noNetworkConnection": "Pas de connexion au réseau.",
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
@@ -468,6 +477,7 @@
   "decryptErrorDeleteConfirmationContent": "Êtes-vous sûr de vouloir supprimer les données de l'application ?",
   "hidePushTokens": "Hide push tokens",
   "hidePushTokensDescription": "Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé",
+  "settingsGroupGeneral": "Généralités",
   "licensesAndVersion": "Licences et version",
-  "privacyPolicy": ""
+  "privacyPolicy": "Politique de confidentialité"
 }

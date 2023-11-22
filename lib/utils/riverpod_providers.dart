@@ -14,6 +14,7 @@ import '../model/states/token_filter.dart';
 import '../model/states/token_folder_state.dart';
 import '../model/states/token_state.dart';
 import '../repo/preference_introduction_repository.dart';
+import '../model/tokens/push_token.dart';
 import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_folder_repository.dart';
 import '../state_notifiers/app_state_notifier.dart';
@@ -70,6 +71,11 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
     },
   );
   return tokenNotifier;
+});
+
+final tokenWithPushRequestProvider = Provider<PushToken?>((ref) {
+  Logger.info("New pushTokensProvider created");
+  return ref.watch(tokenProvider).tokenWithPushRequest();
 });
 
 final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(

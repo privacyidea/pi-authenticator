@@ -52,61 +52,39 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
   }
 
   @override
-  Widget build(BuildContext context) {
-    final body = DragTarget(
-      onWillAccept: (data) {
-        final willAccept = _onWillAccept<T>(data, ref);
-        if (willAccept) {
-          expansionController.forward();
-        }
-        return willAccept;
-      },
-      onLeave: (data) {
-        expansionController.reverse();
-      },
-      onAccept: (dragedSortable) {
-        expansionController.reset();
-        _onAccept(
-          dragedSortable: dragedSortable,
-          nextSortable: widget.nextSortable,
-          ignoreFolderId: widget.ignoreFolderId,
-          dependingFolder: widget.dependingFolder,
-          ref: ref,
-        );
-      },
-      builder: (context, _, __) {
-        final dividerHeight = expansionController.value * 40 + 1.5;
-        return Container(
-          height: dividerHeight,
-          decoration: BoxDecoration(
-            color: Theme.of(context).dividerColor,
-            borderRadius: BorderRadius.circular(dividerHeight / 4),
-          ),
-          margin: EdgeInsets.only(left: 8 - expansionController.value * 2, right: 8 - expansionController.value * 2, top: 8, bottom: 8),
-        );
-      },
-    );
-
-    return widget.isLastDivider == false
-        ? body
-        : Column(
-            children: [
-              body,
-              Expanded(
-                child: DragTarget(
-                    onWillAccept: (data) => _onWillAccept<T>(data, ref),
-                    onAccept: (dragedSortable) => _onAccept(
-                          dragedSortable: dragedSortable,
-                          nextSortable: widget.nextSortable,
-                          ignoreFolderId: widget.ignoreFolderId,
-                          dependingFolder: widget.dependingFolder,
-                          ref: ref,
-                        ),
-                    builder: (context, _, __) => Container(height: 40 - 40 * expansionController.value + (widget.bottomPaddingIfLast ?? 0))),
-              )
-            ],
+  Widget build(BuildContext context) => DragTarget(
+        onWillAccept: (data) {
+          final willAccept = _onWillAccept<T>(data, ref);
+          if (willAccept) {
+            expansionController.forward();
+          }
+          return willAccept;
+        },
+        onLeave: (data) {
+          expansionController.reverse();
+        },
+        onAccept: (dragedSortable) {
+          expansionController.reset();
+          _onAccept(
+            dragedSortable: dragedSortable,
+            nextSortable: widget.nextSortable,
+            ignoreFolderId: widget.ignoreFolderId,
+            dependingFolder: widget.dependingFolder,
+            ref: ref,
           );
-  }
+        },
+        builder: (context, _, __) {
+          final dividerHeight = expansionController.value * 40 + 1.5;
+          return Container(
+            height: dividerHeight,
+            decoration: BoxDecoration(
+              color: Theme.of(context).dividerColor,
+              borderRadius: BorderRadius.circular(dividerHeight / 4),
+            ),
+            margin: EdgeInsets.only(left: 8 - expansionController.value * 2, right: 8 - expansionController.value * 2, top: 8, bottom: 8),
+          );
+        },
+      );
 }
 
 bool _onWillAccept<T>(Object? data, WidgetRef ref) {

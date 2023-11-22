@@ -164,6 +164,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pollingFailed => 'Polling failed.';
 
   @override
+  String pollingFailedFor(Object serial) {
+    return 'Polling failed for $serial';
+  }
+
+  @override
   String get noNetworkConnection => 'No network connection.';
 
   @override
@@ -450,6 +455,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hidePushTokensDescription => 'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
+
+  @override
+  String get settingsGroupGeneral => 'General';
 
   @override
   String get licensesAndVersion => 'Licenses and version';

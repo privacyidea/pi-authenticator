@@ -221,6 +221,15 @@
   "@pollingFailed": {
     "description": "Tells the user that the polling failed."
   },
+  "pollingFailedFor": "Polling failed for {serial}",
+  "@pollingFailedFor": {
+    "description": "Tells the user that the polling failed.",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "noNetworkConnection": "No network connection.",
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
@@ -454,6 +463,7 @@
   "decryptErrorDeleteConfirmationContent": "Are you sure you want to delete the app data?",
   "hidePushTokens": "Hide push tokens",
   "hidePushTokensDescription": "Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.",
+  "settingsGroupGeneral": "General",
   "licensesAndVersion": "Licenses and version",
   "privacyPolicy": "Privacy policy",
   "introScanQrCode": "You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.",

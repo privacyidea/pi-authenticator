@@ -6,6 +6,7 @@ import '../../model/states/app_state.dart';
 import '../../model/states/token_filter.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
+import 'main_view_widgets/push_request_listener.dart';
 import '../../widgets/status_bar.dart';
 import 'main_view_widgets/app_bar_item.dart';
 import 'main_view_widgets/connectivity_listener.dart';
@@ -81,16 +82,18 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
                   ),
           ],
         ),
-        body: ConnectivityListener(
-          child: StatusBar(
-            child: !hasFilter
-                ? Stack(
-                    children: [
-                      MainViewTokensList(nestedScrollViewKey: globalKey),
-                      const MainViewNavigationBar(),
-                    ],
-                  )
-                : const MainViewTokensListFiltered(),
+        body: PushRequestListener(
+          child: ConnectivityListener(
+            child: StatusBar(
+              child: !hasFilter
+                  ? Stack(
+                      children: [
+                        MainViewTokensList(nestedScrollViewKey: globalKey),
+                        const MainViewNavigationBar(),
+                      ],
+                    )
+                  : const MainViewTokensListFiltered(),
+            ),
           ),
         ),
       ),

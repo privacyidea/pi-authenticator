@@ -244,9 +244,11 @@ class PushProvider {
 
     // Start request for each token
     Logger.info('Polling for challenges: ${pushTokens.length} Tokens', name: 'push_provider.dart#pollForChallenges');
+    final List<Future<void>> futures = [];
     for (PushToken p in pushTokens) {
-      pollForChallenge(p);
+      futures.add(pollForChallenge(p));
     }
+    await Future.wait(futures);
     return;
   }
 
@@ -260,7 +262,7 @@ class PushProvider {
     String? signature = await rsaUtils.trySignWithToken(token, message);
     if (signature == null) {
       globalRef?.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailedFor(token.serial),
         AppLocalizations.of(globalNavigatorKey.currentContext!)!.couldNotSignMessage,
       );
       Logger.warning('Polling push tokens failed because signing the message failed.', name: 'push_provider.dart#pollForChallenge');
@@ -304,7 +306,7 @@ class PushProvider {
       case 403:
         final error = getErrorMessageFromResponse(response);
         globalRef?.read(statusMessageProvider.notifier).state = (
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailedFor(token.serial),
           error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
         );
         Logger.warning('Polling push token failed with status code ${response.statusCode}',
@@ -314,7 +316,7 @@ class PushProvider {
       default:
         final error = getErrorMessageFromResponse(response);
         globalRef?.read(statusMessageProvider.notifier).state = (
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailedFor(token.serial),
           error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
         );
         return;
