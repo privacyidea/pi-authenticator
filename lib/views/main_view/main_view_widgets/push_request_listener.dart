@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../l10n/app_localizations.dart';
-import '../model/tokens/push_token.dart';
-import '../utils/customizations.dart';
-import '../utils/lock_auth.dart';
-import '../utils/riverpod_providers.dart';
-import 'default_dialog.dart';
-import 'press_button.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../model/tokens/push_token.dart';
+import '../../../utils/customizations.dart';
+import '../../../utils/lock_auth.dart';
+import '../../../utils/riverpod_providers.dart';
+import '../../../widgets/default_dialog.dart';
+import '../../../widgets/press_button.dart';
 
 class PushRequestListener extends ConsumerStatefulWidget {
   final Widget child;
