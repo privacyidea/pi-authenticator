@@ -12,7 +12,6 @@ import '../../../utils/riverpod_providers.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/deactivateable_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
-import '../../../widgets/push_request_overlay.dart';
 import 'drag_target_divider.dart';
 import 'no_token_screen.dart';
 import 'sortable_widget_builder.dart';
@@ -41,7 +40,6 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     bool filterPushTokens = ref.watch(settingsProvider).hidePushTokens && tokenState.hasHOTPTokens;
 
     final tokenStateWithNoFolder = tokenState.tokensWithoutFolder(exclude: filterPushTokens ? [PushToken] : []);
-    final tokenWithPushRequest = tokenState.tokenWithPushRequest();
 
     List<SortableMixin> sortables = [...tokenFolders, ...tokenStateWithNoFolder];
 
@@ -77,7 +75,6 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
             ),
           ),
         ),
-        if (tokenWithPushRequest != null) PushRequestOverlay(tokenWithPushRequest),
       ],
     );
   }

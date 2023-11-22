@@ -10,7 +10,6 @@ import '../../../utils/riverpod_providers.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/deactivateable_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
-import '../../../widgets/push_request_overlay.dart';
 import '../../main_view/main_view_widgets/drag_target_divider.dart';
 import '../../main_view/main_view_widgets/sortable_widget_builder.dart';
 
@@ -33,7 +32,6 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
     final pushTokens = tokenState.pushTokens;
     final allowToRefresh = pushTokens.isNotEmpty;
     final draggingSortable = ref.watch(draggingSortableProvider);
-    final tokenWithPushRequest = tokenState.tokenWithPushRequest();
 
     List<SortableMixin> sortables = [...pushTokens];
     return Stack(
@@ -67,7 +65,6 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
             ),
           ),
         ),
-        if (tokenWithPushRequest != null) PushRequestOverlay(tokenWithPushRequest),
       ],
     );
   }
