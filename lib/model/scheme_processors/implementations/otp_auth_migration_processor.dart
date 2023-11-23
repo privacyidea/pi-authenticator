@@ -17,6 +17,7 @@ class OtpAuthMigrationProcessor extends SchemeProcessor {
   Set<String> supportedScheme = {'otpauth-migration'};
   @override
   Future<List<Token>?> process(Uri uri) async {
+    if (!supportedScheme.contains(uri.scheme)) return null;
     final value = uri.toString();
     // check prefix "otpauth-migration://offline?data="
     // extract suffix - Base64 encode
