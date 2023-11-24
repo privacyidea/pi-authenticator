@@ -5,7 +5,10 @@ import '../../../l10n/app_localizations.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../widgets/default_dialog.dart';
+import 'errorlog_buttons/delete_errorlog_button.dart';
 import 'send_error_dialog.dart';
+import 'errorlog_buttons/send_errorlog_button.dart';
+import 'errorlog_buttons/show_errorlog_button.dart';
 
 class LoggingMenu extends ConsumerWidget {
   const LoggingMenu({super.key});
@@ -26,53 +29,20 @@ class LoggingMenu extends ConsumerWidget {
         children: [
           ListTile(
             title: Text(
-              AppLocalizations.of(context)!.enableVerboseLogging,
+              'Ausführlich Protokollieren', //TODO: Translate
               style: Theme.of(context).textTheme.titleMedium,
-              overflow: TextOverflow.fade,
+              textAlign: TextAlign.center,
             ),
             contentPadding: const EdgeInsets.all(0),
+            // trailing: Checkbox(value: verboseLogging, onChanged: (value) => ref.read(settingsProvider.notifier).setVerboseLogging(value!)),
             trailing: Switch(value: verboseLogging, onChanged: (value) => ref.read(settingsProvider.notifier).setVerboseLogging(value)),
             style: ListTileStyle.list,
             onTap: () => ref.read(settingsProvider.notifier).toggleVerboseLogging(),
           ),
           const Divider(),
-          ListTile(
-            title: Text(
-              AppLocalizations.of(context)!.sendErrorHint,
-              style: Theme.of(context).textTheme.titleMedium,
-              overflow: TextOverflow.fade,
-            ),
-            contentPadding: const EdgeInsets.all(0),
-            trailing: ElevatedButton(
-              onPressed: () => _pressSendErrorLog(context),
-              child: Text(
-                AppLocalizations.of(context)!.open,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-            ),
-            style: ListTileStyle.drawer,
-            onTap: () => _pressSendErrorLog(context),
-          ),
-          const Divider(),
-          ListTile(
-            title: Text(
-              AppLocalizations.of(context)!.clearErrorLogHint,
-              style: Theme.of(context).textTheme.titleMedium,
-              overflow: TextOverflow.fade,
-            ),
-            contentPadding: const EdgeInsets.all(0),
-            trailing: ElevatedButton(
-              onPressed: () => _pressClearErrorLog(context),
-              child: Text(
-                AppLocalizations.of(context)!.delete,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-            ),
-            style: ListTileStyle.drawer,
-            onTap: () => _pressClearErrorLog(context),
-          ),
+          const ShowErrorLogButton(),
+          const DeleteErrorlogButton(),
+          const SendErrorLogButton(),
         ],
       ),
       actions: [
@@ -86,26 +56,5 @@ class LoggingMenu extends ConsumerWidget {
         ),
       ],
     );
-  }
-
-  void _pressSendErrorLog(BuildContext context) {
-    if (Logger.instance.logfileHasContent) {
-      showDialog(
-        useRootNavigator: false,
-        context: context,
-        builder: (context) => const SendErrorDialog(),
-      );
-    } else {
-      showDialog(
-        useRootNavigator: false,
-        context: context,
-        builder: (context) => const NoLogDialog(),
-      );
-    }
-  }
-
-  void _pressClearErrorLog(BuildContext context) {
-    Navigator.pop(context);
-    Logger.clearErrorLog();
   }
 }

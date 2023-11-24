@@ -330,6 +330,12 @@ ThemeData _generateTheme(ThemeCustomization theme, Brightness brightness) {
         labelLarge: TextStyle(color: theme.foregroundColor),
         labelSmall: TextStyle(color: theme.foregroundColor),
       ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.all(6),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      ),
       scaffoldBackgroundColor: theme.backgroundColor,
       cardColor: theme.backgroundColor,
       appBarTheme: const AppBarTheme().copyWith(

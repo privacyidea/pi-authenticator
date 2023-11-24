@@ -282,7 +282,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get clearErrorLogHint => 'Löscht die lokale Fehlerprotokolldatei';
 
   @override
-  String get logMenu => 'Protokollmenu';
+  String get logMenu => 'Protokollmenü';
 
   @override
   String get sendErrorDialogHeader => 'Per E-Mail senden';

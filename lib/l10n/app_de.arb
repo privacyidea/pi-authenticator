@@ -359,7 +359,7 @@
   },
   "enableVerboseLogging": "Fehler ausführlich protokollieren",
   "clearErrorLogHint": "Löscht die lokale Fehlerprotokolldatei",
-  "logMenu": "Protokollmenu",
+  "logMenu": "Protokollmenü",
   "sendErrorDialogHeader": "Per E-Mail senden",
   "ok": "Ok",
   "noLogToSend": "Es gibt kein Protokoll zu senden.",
