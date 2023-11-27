@@ -273,19 +273,31 @@ class AppLocalizationsNl extends AppLocalizations {
   String get errorLogTitle => 'Foutlogs';
 
   @override
-  String get sendErrorHint => 'Stuur ons de error log via e-mail';
-
-  @override
   String get enableVerboseLogging => 'Uitgebreide logboekregistratie inschakelen';
-
-  @override
-  String get clearErrorLogHint => 'Wist het lokale foutenlogbestand';
 
   @override
   String get logMenu => 'Logmenu';
 
   @override
   String get sendErrorDialogHeader => 'Verzenden via e-mail';
+
+  @override
+  String get sendErrorLog => 'Fehlerbericht senden';
+
+  @override
+  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+
+  @override
+  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+
+  @override
+  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
+
+  @override
+  String get verboseLogging => 'Ausführlich protokollieren';
+
+  @override
+  String get errorLogCleared => 'Foutlogs gewist';
 
   @override
   String get ok => 'Ok';
@@ -295,9 +307,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get errorMailBody => 'Het foutlogbestand is bijgevoegd.\nU kunt deze tekst vervangen door aanvullende informatie over de fout.';
-
-  @override
-  String get errorLogCleared => 'Foutlogs gewist';
 
   @override
   String get showDetails => 'Details tonen';

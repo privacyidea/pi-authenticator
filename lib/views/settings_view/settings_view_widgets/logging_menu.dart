@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../../../utils/logger.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../widgets/default_dialog.dart';
 import 'errorlog_buttons/delete_errorlog_button.dart';
-import 'send_error_dialog.dart';
 import 'errorlog_buttons/send_errorlog_button.dart';
 import 'errorlog_buttons/show_errorlog_button.dart';
 
@@ -29,12 +27,11 @@ class LoggingMenu extends ConsumerWidget {
         children: [
           ListTile(
             title: Text(
-              'Ausführlich Protokollieren', //TODO: Translate
+              AppLocalizations.of(context)!.verboseLogging,
               style: Theme.of(context).textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
             contentPadding: const EdgeInsets.all(0),
-            // trailing: Checkbox(value: verboseLogging, onChanged: (value) => ref.read(settingsProvider.notifier).setVerboseLogging(value!)),
             trailing: Switch(value: verboseLogging, onChanged: (value) => ref.read(settingsProvider.notifier).setVerboseLogging(value)),
             style: ListTileStyle.list,
             onTap: () => ref.read(settingsProvider.notifier).toggleVerboseLogging(),

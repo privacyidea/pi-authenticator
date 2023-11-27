@@ -273,19 +273,31 @@ class AppLocalizationsCs extends AppLocalizations {
   String get errorLogTitle => 'Protokoly o chybách';
 
   @override
-  String get sendErrorHint => 'Pošlete nám protokol o chybě e-mailem';
-
-  @override
   String get enableVerboseLogging => 'Povolit slovní protokolování';
-
-  @override
-  String get clearErrorLogHint => 'Vymaže místní soubor protokolu chyb';
 
   @override
   String get logMenu => 'Nabídka protokolu';
 
   @override
   String get sendErrorDialogHeader => 'Odeslat e-mailem';
+
+  @override
+  String get sendErrorLog => 'Fehlerbericht senden';
+
+  @override
+  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+
+  @override
+  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+
+  @override
+  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
+
+  @override
+  String get verboseLogging => 'Ausführlich protokollieren';
+
+  @override
+  String get errorLogCleared => 'Protokoly chyb byly vymazány.';
 
   @override
   String get ok => 'Ok';
@@ -295,9 +307,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get errorMailBody => 'Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.';
-
-  @override
-  String get errorLogCleared => 'Protokoly chyb byly vymazány.';
 
   @override
   String get showDetails => 'Zobrazit podrobnosti';

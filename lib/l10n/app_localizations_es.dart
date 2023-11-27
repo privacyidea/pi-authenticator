@@ -273,19 +273,31 @@ class AppLocalizationsEs extends AppLocalizations {
   String get errorLogTitle => 'Registros de errores';
 
   @override
-  String get sendErrorHint => 'Envíanos el registro de errores por correo electrónico';
-
-  @override
   String get enableVerboseLogging => 'Activar el registro detallado';
-
-  @override
-  String get clearErrorLogHint => 'Borra el archivo de registro de errores local';
 
   @override
   String get logMenu => 'Menú Registros';
 
   @override
   String get sendErrorDialogHeader => 'Enviar por correo electrónico';
+
+  @override
+  String get sendErrorLog => 'Fehlerbericht senden';
+
+  @override
+  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+
+  @override
+  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+
+  @override
+  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
+
+  @override
+  String get verboseLogging => 'Ausführlich protokollieren';
+
+  @override
+  String get errorLogCleared => 'Registros de error borrados';
 
   @override
   String get ok => 'Ok';
@@ -295,9 +307,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get errorMailBody => 'Se adjunta el archivo de registro de errores.\nPuede sustituir este texto por información adicional sobre el error.';
-
-  @override
-  String get errorLogCleared => 'Registros de error borrados';
 
   @override
   String get showDetails => 'Mostrar detalles';

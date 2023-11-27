@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -12,8 +10,8 @@ class SendErrorDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DefaultDialog(
-        title: const Text(
-          'Fehlerbericht senden', //TODO: Translate
+        title: Text(
+          AppLocalizations.of(context)!.sendErrorLog,
           overflow: TextOverflow.fade,
           softWrap: false,
         ),
@@ -22,16 +20,19 @@ class SendErrorDialog extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 child: Text(
-                  'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.', //TODO: Translate
+                  AppLocalizations.of(context)!.sendErrorLogDescription,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 child: TextButton(
-                    child: const Text('Datenschutzerklärung anzeigen'), onPressed: () => launchUrl(Uri.parse('https://netknights.it/en/privacy-statement/'))),
+                    child: Text(
+                      AppLocalizations.of(context)!.showPrivacyPolicy,
+                    ),
+                    onPressed: () => launchUrl(Uri.parse('https://netknights.it/en/privacy-statement/'))),
               ),
             ],
           ),
@@ -60,8 +61,8 @@ class NoLogDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultDialog(
       scrollable: true,
-      title: const Text(
-        'Das Fehlerprotokoll ist leer.', //TODO: Translate
+      title: Text(
+        AppLocalizations.of(context)!.errorLogEmpty,
       ),
       actions: [
         TextButton(

@@ -273,19 +273,31 @@ class AppLocalizationsPl extends AppLocalizations {
   String get errorLogTitle => 'Error logs';
 
   @override
-  String get sendErrorHint => 'Wyślij nam dziennik błędów pocztą e-mail';
-
-  @override
   String get enableVerboseLogging => 'Włącz szczegółowe rejestrowanie';
-
-  @override
-  String get clearErrorLogHint => 'Czyści lokalny plik dziennika błędów';
 
   @override
   String get logMenu => 'LogMenu';
 
   @override
   String get sendErrorDialogHeader => 'Wyślij przez e-mail';
+
+  @override
+  String get sendErrorLog => 'Fehlerbericht senden';
+
+  @override
+  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+
+  @override
+  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+
+  @override
+  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
+
+  @override
+  String get verboseLogging => 'Ausführlich protokollieren';
+
+  @override
+  String get errorLogCleared => 'Wyczyszczono dzienniki błędów';
 
   @override
   String get ok => 'Ok';
@@ -295,9 +307,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get errorMailBody => 'Plik dziennika błędów jest dołączony.\nTekst ten można zastąpić dodatkowymi informacjami o błędzie.';
-
-  @override
-  String get errorLogCleared => 'Wyczyszczono dzienniki błędów';
 
   @override
   String get showDetails => 'Pokaż szczegóły';

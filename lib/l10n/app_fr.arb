@@ -359,25 +359,23 @@
   "onBoardingText2": "Stockez les jetons sur votre \nappareil en toute sécurité\nProtégé par votre biométrie",
   "onBoardingTitle3": "Rendez-nous visite sur Github",
   "onBoardingText3": "Cette application est open source",
-  "errorLogTitle": "Journaux d'erreurs",
-  "sendErrorHint": "Envoyez-nous le journal des erreurs par courrier électronique",
-  "@sendErrorHint": {
-    "description": "Indice pour l'utilisateur sur ce qu'il va envoyer"
+  "errorLogTitle": "Journal d'erreur",
+  "logMenu": "Menu du journal",
+  "sendErrorLog": "Envoyer un rapport d'erreur",
+  "sendErrorLogDescription": "Un e-mail pré-rempli est créé.\nIl contient des informations sur l'application, l'erreur et le périphérique.\nVous pouvez modifier l'e-mail avant de l'envoyer.",
+  "@sendErrorLogDescription": {
+    "description": "Explanation for the user what he will send."
   },
-  "enableVerboseLogging": "Activer la journalisation verbeuse",
-  "clearErrorLogHint": "Efface le fichier journal des erreurs locales",
-  "logMenu": "Menu journal",
-  "@logMenu": {
-    "description": "logMenu"
-  },
-  "sendErrorDialogHeader": "Envoyer par e-mail",
+  "showPrivacyPolicy": "Afficher la déclaration de confidentialité",
+  "errorLogEmpty": "Le journal des erreurs est vide",
+  "verboseLogging": "Consigner en détail",
+  "errorLogCleared": "Journal d'erreur nettoyé",
   "ok": "Ok",
   "noLogToSend": "Il y a un journal à envoyer",
   "errorMailBody": "Le fichier journal des erreurs est joint.\nVous pouvez remplacer ce texte par des informations supplémentaires sur l'erreur.",
   "@errorMailBody": {
     "description": "Message pour le corps du courriel"
   },
-  "errorLogCleared": "Journaux d'erreur effacés",
   "showDetails": "Afficher les détails",
   "open": "Ouvrir",
   "sendErrorDialogBody": "Une erreur inattendue est survenue dans l'application. L'information suivante peut être transmise aux développeurs par email afin d'aider à corriger cette erreur dans le futur.",

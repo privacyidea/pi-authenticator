@@ -607,23 +607,11 @@ abstract class AppLocalizations {
   /// **'Error logs'**
   String get errorLogTitle;
 
-  /// Hint for the user about what he will send.
-  ///
-  /// In en, this message translates to:
-  /// **'Send us the error log via e-mail'**
-  String get sendErrorHint;
-
   /// No description provided for @enableVerboseLogging.
   ///
   /// In en, this message translates to:
   /// **'Enable verbose logging'**
   String get enableVerboseLogging;
-
-  /// No description provided for @clearErrorLogHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Clears the local error log file'**
-  String get clearErrorLogHint;
 
   /// No description provided for @logMenu.
   ///
@@ -636,6 +624,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send via e-mail'**
   String get sendErrorDialogHeader;
+
+  /// No description provided for @sendErrorLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Fehlerbericht senden'**
+  String get sendErrorLog;
+
+  /// Explanation for the user what he will send.
+  ///
+  /// In en, this message translates to:
+  /// **'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.'**
+  String get sendErrorLogDescription;
+
+  /// No description provided for @showPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Datenschutzerklärung anzeigen'**
+  String get showPrivacyPolicy;
+
+  /// No description provided for @errorLogEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Das Fehlerprotokoll ist leer.'**
+  String get errorLogEmpty;
+
+  /// No description provided for @verboseLogging.
+  ///
+  /// In en, this message translates to:
+  /// **'Ausführlich protokollieren'**
+  String get verboseLogging;
+
+  /// No description provided for @errorLogCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Error log cleared.'**
+  String get errorLogCleared;
 
   /// No description provided for @ok.
   ///
@@ -654,12 +678,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The error log file is attached.\nYou can replace this text with additional information about the error.'**
   String get errorMailBody;
-
-  /// No description provided for @errorLogCleared.
-  ///
-  /// In en, this message translates to:
-  /// **'Error logs cleared.'**
-  String get errorLogCleared;
 
   /// No description provided for @showDetails.
   ///

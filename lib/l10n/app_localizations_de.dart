@@ -273,31 +273,40 @@ class AppLocalizationsDe extends AppLocalizations {
   String get errorLogTitle => 'Fehlerprotokolle';
 
   @override
-  String get sendErrorHint => 'Senden Sie uns das Fehlerprotokoll per E-Mail';
-
-  @override
-  String get enableVerboseLogging => 'Fehler ausführlich protokollieren';
-
-  @override
-  String get clearErrorLogHint => 'Löscht die lokale Fehlerprotokolldatei';
+  String get enableVerboseLogging => 'Enable verbose logging';
 
   @override
   String get logMenu => 'Protokollmenü';
 
   @override
-  String get sendErrorDialogHeader => 'Per E-Mail senden';
+  String get sendErrorDialogHeader => 'Send via e-mail';
+
+  @override
+  String get sendErrorLog => 'Fehlerbericht senden';
+
+  @override
+  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+
+  @override
+  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+
+  @override
+  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
+
+  @override
+  String get verboseLogging => 'Ausführlich protokollieren';
+
+  @override
+  String get errorLogCleared => 'Fehlerprotokolle gelöscht';
 
   @override
   String get ok => 'Ok';
 
   @override
-  String get noLogToSend => 'Es gibt kein Protokoll zu senden.';
+  String get noLogToSend => 'There is log to send.';
 
   @override
   String get errorMailBody => 'Die Fehlerprotokolldatei ist angehängt.\nSie können diesen Text durch zusätzliche Informationen über den Fehler ersetzen.';
-
-  @override
-  String get errorLogCleared => 'Fehlerprotokolle gelöscht';
 
   @override
   String get showDetails => 'Details anzeigen';

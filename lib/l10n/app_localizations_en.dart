@@ -273,19 +273,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorLogTitle => 'Error logs';
 
   @override
-  String get sendErrorHint => 'Send us the error log via e-mail';
-
-  @override
   String get enableVerboseLogging => 'Enable verbose logging';
-
-  @override
-  String get clearErrorLogHint => 'Clears the local error log file';
 
   @override
   String get logMenu => 'Log menu';
 
   @override
   String get sendErrorDialogHeader => 'Send via e-mail';
+
+  @override
+  String get sendErrorLog => 'Fehlerbericht senden';
+
+  @override
+  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+
+  @override
+  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+
+  @override
+  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
+
+  @override
+  String get verboseLogging => 'Ausführlich protokollieren';
+
+  @override
+  String get errorLogCleared => 'Error log cleared.';
 
   @override
   String get ok => 'Ok';
@@ -295,9 +307,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorMailBody => 'The error log file is attached.\nYou can replace this text with additional information about the error.';
-
-  @override
-  String get errorLogCleared => 'Error logs cleared.';
 
   @override
   String get showDetails => 'Show details';

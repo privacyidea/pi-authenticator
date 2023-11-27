@@ -355,22 +355,23 @@
   "onBoardingText2": "Almacena tokens en tu teléfono/n de forma segura. Protegido por tus datos biométricos.",
   "onBoardingTitle3": "Visítenos en Github",
   "onBoardingText3": "Esta aplicación es de código abierto",
-  "errorLogTitle": "Registros de errores",
-  "sendErrorHint": "Envíanos el registro de errores por correo electrónico",
-  "@sendErrorHint": {
-    "description": "Hint for the user about what he will send."
+  "errorLogTitle": "Registro de errores",
+  "logMenu": "Menú de registro",
+  "sendErrorLog": "Enviar informe de error",
+  "sendErrorLogDescription": "Se crea un correo electrónico listo.\nContiene información sobre la app, el error y el dispositivo.\nPuedes editar el correo antes de enviarlo",
+  "@sendErrorLogDescription": {
+    "description": "Explanation for the user what he will send."
   },
-  "enableVerboseLogging": "Activar el registro detallado",
-  "clearErrorLogHint": "Borra el archivo de registro de errores local",
-  "logMenu": "Menú Registros",
-  "sendErrorDialogHeader": "Enviar por correo electrónico",
+  "showPrivacyPolicy": "Mostrar política de privacidad",
+  "errorLogEmpty": "El registro de errores está vacío",
+  "verboseLogging": "Registro detallado",
+  "errorLogCleared": "Registro de errores borrado",
   "ok": "Ok",
   "noLogToSend": "Hay log para enviar",
   "errorMailBody": "Se adjunta el archivo de registro de errores.\nPuede sustituir este texto por información adicional sobre el error.",
   "@errorMailBody": {
     "description": "Message for email body"
   },
-  "errorLogCleared": "Registros de error borrados",
   "showDetails": "Mostrar detalles",
   "open": "Abrir",
   "sendErrorDialogBody": "Se ha producido un error inesperado en la aplicación. La siguiente información puede ser enviada a los desarrolladores por correo electrónico para ayudar a prevenir este error en el futuro.",

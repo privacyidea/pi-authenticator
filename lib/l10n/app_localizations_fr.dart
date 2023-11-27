@@ -273,19 +273,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get errorLogTitle => 'Journaux d\'erreurs';
 
   @override
-  String get sendErrorHint => 'Envoyez-nous le journal des erreurs par courrier électronique';
-
-  @override
   String get enableVerboseLogging => 'Activer la journalisation verbeuse';
-
-  @override
-  String get clearErrorLogHint => 'Efface le fichier journal des erreurs locales';
 
   @override
   String get logMenu => 'Menu journal';
 
   @override
   String get sendErrorDialogHeader => 'Envoyer par e-mail';
+
+  @override
+  String get sendErrorLog => 'Fehlerbericht senden';
+
+  @override
+  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+
+  @override
+  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+
+  @override
+  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
+
+  @override
+  String get verboseLogging => 'Ausführlich protokollieren';
+
+  @override
+  String get errorLogCleared => 'Journaux d\'erreur effacés';
 
   @override
   String get ok => 'Ok';
@@ -295,9 +307,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get errorMailBody => 'Le fichier journal des erreurs est joint.\nVous pouvez remplacer ce texte par des informations supplémentaires sur l\'erreur.';
-
-  @override
-  String get errorLogCleared => 'Journaux d\'erreur effacés';
 
   @override
   String get showDetails => 'Afficher les détails';
