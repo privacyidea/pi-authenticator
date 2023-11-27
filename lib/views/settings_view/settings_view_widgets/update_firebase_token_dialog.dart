@@ -105,7 +105,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
       }
 
       final ScrollController controller = ScrollController();
-
+      if (!mounted) return;
       setState(() {
         _content = Scrollbar(
           thumbVisibility: true,

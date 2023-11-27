@@ -52,7 +52,9 @@ class Logger {
     return instance._navigatorKey!;
   }
 
-  Future<String> get errorLog async {
+  static Future<String> getErrorLog() => instance._getErrorLog();
+
+  Future<String> _getErrorLog() async {
     if (_fullPath == null) return '';
     final file = File(_fullPath!);
     return file.readAsString();

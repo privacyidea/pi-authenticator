@@ -351,22 +351,24 @@
   "onBoardingText2": "Store tokens on your device securely\nProtected by your biometrics",
   "onBoardingTitle3": "Visit us at Github",
   "onBoardingText3": "This app is open source",
-  "errorLogTitle": "Error logs",
-  "sendErrorHint": "Send us the error log via e-mail",
-  "@sendErrorHint": {
-    "description": "Hint for the user about what he will send."
-  },
-  "enableVerboseLogging": "Enable verbose logging",
-  "clearErrorLogHint": "Clears the local error log file",
+  "errorLogTitle": "Error log",
   "logMenu": "Log menu",
-  "sendErrorDialogHeader": "Send via e-mail",
+  "showErrorLog": "Show",
+  "clearErrorLog": "Clear",
+  "sendErrorLog": "Send",
+  "sendErrorLogDescription": "A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:",
+  "@sendErrorLogDescription": {
+    "description": "Explanation for the user what he will send."
+  },
+  "showPrivacyPolicy": "Show privacy policy",
+  "errorLogEmpty": "The error log is empty.",
+  "verboseLogging": "Verbose logging",
+  "errorLogCleared": "Error log cleared.",
   "ok": "Ok",
-  "noLogToSend": "There is log to send.",
   "errorMailBody": "The error log file is attached.\nYou can replace this text with additional information about the error.",
   "@errorMailBody": {
     "description": "Message for email body"
   },
-  "errorLogCleared": "Error logs cleared.",
   "showDetails": "Show details",
   "open": "Open",
   "sendErrorDialogBody": "An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.",

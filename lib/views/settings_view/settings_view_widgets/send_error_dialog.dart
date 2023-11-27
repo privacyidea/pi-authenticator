@@ -1,96 +1,57 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/logger.dart';
 import '../../../widgets/default_dialog.dart';
 
-class SendErrorDialog extends StatefulWidget {
+class SendErrorDialog extends StatelessWidget {
   const SendErrorDialog({super.key});
 
   @override
-  State<SendErrorDialog> createState() => _SendErrorDialogState();
-}
-
-class _SendErrorDialogState extends State<SendErrorDialog> {
-  @override
-  Widget build(BuildContext context) {
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: FutureBuilder<String>(
-        future: Logger.instance.errorLog,
-        builder: (context, errorLog) {
-          return DefaultDialog(
-            title: Text(
-              AppLocalizations.of(context)!.sendErrorDialogHeader,
+  Widget build(BuildContext context) => DefaultDialog(
+        title: Text(
+          AppLocalizations.of(context)!.sendErrorLog,
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
+        content: SingleChildScrollView(
+          controller: ScrollController(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                child: Text(
+                  AppLocalizations.of(context)!.sendErrorLogDescription,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                child: TextButton(
+                    child: Text(
+                      AppLocalizations.of(context)!.showPrivacyPolicy,
+                    ),
+                    onPressed: () => launchUrl(Uri.parse('https://netknights.it/en/privacy-statement/'))),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              AppLocalizations.of(context)!.dismiss,
               overflow: TextOverflow.fade,
               softWrap: false,
             ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SingleChildScrollView(
-                      controller: ScrollController(),
-                      child: Text(
-                        AppLocalizations.of(context)!.sendErrorDialogBody,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: Card(
-                    child: Scrollbar(
-                      scrollbarOrientation: ScrollbarOrientation.right,
-                      thumbVisibility: true,
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: errorLog.data != null
-                                ? Text(
-                                    errorLog.data.toString(),
-                                    style: const TextStyle(fontFamily: 'monospace', fontSize: 8),
-                                  )
-                                : const CircularProgressIndicator(),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  AppLocalizations.of(context)!.dismiss,
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                ),
-                onPressed: () => Navigator.pop(context),
-              ),
-              TextButton(
-                child: const Icon(Icons.email),
-                onPressed: () async {
-                  Logger.sendErrorLog();
-                },
-              )
-            ],
-          );
-        },
-      ),
-    );
-  }
+            onPressed: () => Navigator.pop(context),
+          ),
+          TextButton(
+            onPressed: () => Logger.sendErrorLog(),
+            child: const Icon(Icons.email),
+          )
+        ],
+      );
 }
 
 class NoLogDialog extends StatelessWidget {
@@ -101,7 +62,7 @@ class NoLogDialog extends StatelessWidget {
     return DefaultDialog(
       scrollable: true,
       title: Text(
-        AppLocalizations.of(context)!.noLogToSend,
+        AppLocalizations.of(context)!.errorLogEmpty,
       ),
       actions: [
         TextButton(

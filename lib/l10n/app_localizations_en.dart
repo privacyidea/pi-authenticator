@@ -270,34 +270,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onBoardingText3 => 'This app is open source';
 
   @override
-  String get errorLogTitle => 'Error logs';
-
-  @override
-  String get sendErrorHint => 'Send us the error log via e-mail';
-
-  @override
-  String get enableVerboseLogging => 'Enable verbose logging';
-
-  @override
-  String get clearErrorLogHint => 'Clears the local error log file';
+  String get errorLogTitle => 'Error log';
 
   @override
   String get logMenu => 'Log menu';
 
   @override
-  String get sendErrorDialogHeader => 'Send via e-mail';
+  String get showErrorLog => 'Show';
+
+  @override
+  String get clearErrorLog => 'Clear';
+
+  @override
+  String get sendErrorLog => 'Send';
+
+  @override
+  String get sendErrorLogDescription => 'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:';
+
+  @override
+  String get showPrivacyPolicy => 'Show privacy policy';
+
+  @override
+  String get errorLogEmpty => 'The error log is empty.';
+
+  @override
+  String get verboseLogging => 'Verbose logging';
+
+  @override
+  String get errorLogCleared => 'Error log cleared.';
 
   @override
   String get ok => 'Ok';
 
   @override
-  String get noLogToSend => 'There is log to send.';
-
-  @override
   String get errorMailBody => 'The error log file is attached.\nYou can replace this text with additional information about the error.';
-
-  @override
-  String get errorLogCleared => 'Error logs cleared.';
 
   @override
   String get showDetails => 'Show details';

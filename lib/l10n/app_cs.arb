@@ -359,22 +359,24 @@
   "onBoardingText2": "Uložte tokeny do svého zařízení\nchráněné biometrickým ověřením",
   "onBoardingTitle3": "Navštivte náš profil Github",
   "onBoardingText3": "Tuto aplikaci má open source",
-  "errorLogTitle": "Protokoly o chybách",
-  "sendErrorHint": "Pošlete nám protokol o chybě e-mailem",
-  "@sendErrorHint": {
-    "description": "Hint for the user about what he will send."
-  },
-  "enableVerboseLogging": "Povolit slovní protokolování",
-  "clearErrorLogHint": "Vymaže místní soubor protokolu chyb",
+  "errorLogTitle": "Protokol chyb",
   "logMenu": "Nabídka protokolu",
-  "sendErrorDialogHeader": "Odeslat e-mailem",
+  "showErrorLog": "Zobrazit",
+  "clearErrorLog": "Vymazat",
+  "sendErrorLog": "Odeslat",
+  "sendErrorLogDescription": "Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:",
+  "@sendErrorLogDescription": {
+    "description": "Explanation for the user what he will send."
+  },
+  "showPrivacyPolicy": "Zobrazit zásady ochrany osobních údajů",
+  "errorLogEmpty": "Protokol chyb je prázdný.",
+  "verboseLogging": "Zevrubné protokolování",
+  "errorLogCleared": "Protokol chyb vymazán.",
   "ok": "Ok",
-  "noLogToSend": "Je třeba odeslat protokol.",
   "errorMailBody": "Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.",
   "@errorMailBody": {
     "description": "Message for email body"
   },
-  "errorLogCleared": "Protokoly chyb byly vymazány.",
   "showDetails": "Zobrazit podrobnosti",
   "open": "Otevřít",
   "sendErrorDialogBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.",

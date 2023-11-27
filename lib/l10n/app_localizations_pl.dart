@@ -270,34 +270,40 @@ class AppLocalizationsPl extends AppLocalizations {
   String get onBoardingText3 => 'Ta aplikacja jest w open source';
 
   @override
-  String get errorLogTitle => 'Error logs';
+  String get errorLogTitle => 'Dziennik błędów';
 
   @override
-  String get sendErrorHint => 'Wyślij nam dziennik błędów pocztą e-mail';
+  String get logMenu => 'Menu dziennika';
 
   @override
-  String get enableVerboseLogging => 'Włącz szczegółowe rejestrowanie';
+  String get showErrorLog => 'Wyświetl';
 
   @override
-  String get clearErrorLogHint => 'Czyści lokalny plik dziennika błędów';
+  String get clearErrorLog => 'Usuń';
 
   @override
-  String get logMenu => 'LogMenu';
+  String get sendErrorLog => 'Wyślij';
 
   @override
-  String get sendErrorDialogHeader => 'Wyślij przez e-mail';
+  String get sendErrorLogDescription => 'Tworzona jest gotowa wiadomość e-mail zawierająca informacje o aplikacji, błędzie i urządzeniu.\nMożesz edytować wiadomość e-mail przed jej wysłaniem.\nTutaj można zobaczyć, w jaki sposób wykorzystujemy te informacje:';
+
+  @override
+  String get showPrivacyPolicy => 'Pokaż politykę prywatności';
+
+  @override
+  String get errorLogEmpty => 'Dziennik błędów jest pusty';
+
+  @override
+  String get verboseLogging => 'Wyczerpujące rejestrowanie';
+
+  @override
+  String get errorLogCleared => 'Dziennik błędów wyczyszczony.';
 
   @override
   String get ok => 'Ok';
 
   @override
-  String get noLogToSend => 'There is log to send.';
-
-  @override
   String get errorMailBody => 'Plik dziennika błędów jest dołączony.\nTekst ten można zastąpić dodatkowymi informacjami o błędzie.';
-
-  @override
-  String get errorLogCleared => 'Wyczyszczono dzienniki błędów';
 
   @override
   String get showDetails => 'Pokaż szczegóły';

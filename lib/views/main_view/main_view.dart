@@ -6,7 +6,6 @@ import '../../model/states/app_state.dart';
 import '../../model/states/token_filter.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
-import 'main_view_widgets/push_request_listener.dart';
 import '../../widgets/status_bar.dart';
 import 'main_view_widgets/app_bar_item.dart';
 import 'main_view_widgets/connectivity_listener.dart';
@@ -14,6 +13,7 @@ import 'main_view_widgets/expandable_appbar.dart';
 import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
 import 'main_view_widgets/main_view_tokens_list_filtered.dart';
+import 'main_view_widgets/push_request_listener.dart';
 
 export 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 

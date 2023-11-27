@@ -270,34 +270,40 @@ class AppLocalizationsNl extends AppLocalizations {
   String get onBoardingText3 => 'Deze app is open source';
 
   @override
-  String get errorLogTitle => 'Foutlogs';
+  String get errorLogTitle => 'Foutenlogboek';
 
   @override
-  String get sendErrorHint => 'Stuur ons de error log via e-mail';
+  String get logMenu => 'Log menu';
 
   @override
-  String get enableVerboseLogging => 'Uitgebreide logboekregistratie inschakelen';
+  String get showErrorLog => 'Weergeven';
 
   @override
-  String get clearErrorLogHint => 'Wist het lokale foutenlogbestand';
+  String get clearErrorLog => 'Verwijderen';
 
   @override
-  String get logMenu => 'Logmenu';
+  String get sendErrorLog => 'verzenden';
 
   @override
-  String get sendErrorDialogHeader => 'Verzenden via e-mail';
+  String get sendErrorLogDescription => 'Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:';
+
+  @override
+  String get showPrivacyPolicy => 'Privacybeleid tonen';
+
+  @override
+  String get errorLogEmpty => 'Het foutenlogboek is leeg.';
+
+  @override
+  String get verboseLogging => 'Verbose loggen';
+
+  @override
+  String get errorLogCleared => 'Foutenlogboek gewist.';
 
   @override
   String get ok => 'Ok';
 
   @override
-  String get noLogToSend => 'Er is een log om te verzenden.';
-
-  @override
   String get errorMailBody => 'Het foutlogbestand is bijgevoegd.\nU kunt deze tekst vervangen door aanvullende informatie over de fout.';
-
-  @override
-  String get errorLogCleared => 'Foutlogs gewist';
 
   @override
   String get showDetails => 'Details tonen';

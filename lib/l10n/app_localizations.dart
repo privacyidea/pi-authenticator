@@ -604,26 +604,8 @@ abstract class AppLocalizations {
   /// No description provided for @errorLogTitle.
   ///
   /// In en, this message translates to:
-  /// **'Error logs'**
+  /// **'Error log'**
   String get errorLogTitle;
-
-  /// Hint for the user about what he will send.
-  ///
-  /// In en, this message translates to:
-  /// **'Send us the error log via e-mail'**
-  String get sendErrorHint;
-
-  /// No description provided for @enableVerboseLogging.
-  ///
-  /// In en, this message translates to:
-  /// **'Enable verbose logging'**
-  String get enableVerboseLogging;
-
-  /// No description provided for @clearErrorLogHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Clears the local error log file'**
-  String get clearErrorLogHint;
 
   /// No description provided for @logMenu.
   ///
@@ -631,11 +613,53 @@ abstract class AppLocalizations {
   /// **'Log menu'**
   String get logMenu;
 
-  /// No description provided for @sendErrorDialogHeader.
+  /// No description provided for @showErrorLog.
   ///
   /// In en, this message translates to:
-  /// **'Send via e-mail'**
-  String get sendErrorDialogHeader;
+  /// **'Show'**
+  String get showErrorLog;
+
+  /// No description provided for @clearErrorLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearErrorLog;
+
+  /// No description provided for @sendErrorLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get sendErrorLog;
+
+  /// Explanation for the user what he will send.
+  ///
+  /// In en, this message translates to:
+  /// **'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:'**
+  String get sendErrorLogDescription;
+
+  /// No description provided for @showPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Show privacy policy'**
+  String get showPrivacyPolicy;
+
+  /// No description provided for @errorLogEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The error log is empty.'**
+  String get errorLogEmpty;
+
+  /// No description provided for @verboseLogging.
+  ///
+  /// In en, this message translates to:
+  /// **'Verbose logging'**
+  String get verboseLogging;
+
+  /// No description provided for @errorLogCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Error log cleared.'**
+  String get errorLogCleared;
 
   /// No description provided for @ok.
   ///
@@ -643,23 +667,11 @@ abstract class AppLocalizations {
   /// **'Ok'**
   String get ok;
 
-  /// No description provided for @noLogToSend.
-  ///
-  /// In en, this message translates to:
-  /// **'There is log to send.'**
-  String get noLogToSend;
-
   /// Message for email body
   ///
   /// In en, this message translates to:
   /// **'The error log file is attached.\nYou can replace this text with additional information about the error.'**
   String get errorMailBody;
-
-  /// No description provided for @errorLogCleared.
-  ///
-  /// In en, this message translates to:
-  /// **'Error logs cleared.'**
-  String get errorLogCleared;
 
   /// No description provided for @showDetails.
   ///

@@ -352,22 +352,24 @@
   "onBoardingText2": "Bewaar tokens op uw apparaat\nbeveiligd door uw biometrische gegevens",
   "onBoardingTitle3": "Bezoek ons op Github",
   "onBoardingText3": "Deze app is open source",
-  "errorLogTitle": "Foutlogs",
-  "sendErrorHint": "Stuur ons de error log via e-mail",
-  "@sendErrorHint": {
-    "description": "Hint for the user about what he will send."
+  "errorLogTitle": "Foutenlogboek",
+  "logMenu": "Log menu",
+  "showErrorLog": "Weergeven",
+  "clearErrorLog": "Verwijderen",
+  "sendErrorLog": "verzenden",
+  "sendErrorLogDescription": "Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:",
+  "@sendErrorLogDescription": {
+    "description": "Explanation for the user what he will send."
   },
-  "enableVerboseLogging": "Uitgebreide logboekregistratie inschakelen",
-  "clearErrorLogHint": "Wist het lokale foutenlogbestand",
-  "logMenu": "Logmenu",
-  "sendErrorDialogHeader": "Verzenden via e-mail",
+  "showPrivacyPolicy": "Privacybeleid tonen",
+  "errorLogEmpty": "Het foutenlogboek is leeg.",
+  "verboseLogging": "Verbose loggen",
+  "errorLogCleared": "Foutenlogboek gewist.",
   "ok": "Ok",
-  "noLogToSend": "Er is een log om te verzenden.",
   "errorMailBody": "Het foutlogbestand is bijgevoegd.\nU kunt deze tekst vervangen door aanvullende informatie over de fout.",
   "@errorMailBody": {
     "description": "Message for email body"
   },
-  "errorLogCleared": "Foutlogs gewist",
   "showDetails": "Details tonen",
   "open": "Openen",
   "sendErrorDialogBody": "Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.",

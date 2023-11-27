@@ -4,7 +4,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../model/states/introduction_state.dart';
 import '../state_notifiers/completed_introduction_notifier.dart';
-import 'customizations.dart';
 import '../l10n/app_localizations.dart';
 import '../model/mixins/sortable_mixin.dart';
 import '../model/push_request.dart';
@@ -24,6 +23,7 @@ import '../state_notifiers/settings_notifier.dart';
 import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
 import 'app_customizer.dart';
+import 'customizations.dart';
 import 'logger.dart';
 import 'push_provider.dart';
 

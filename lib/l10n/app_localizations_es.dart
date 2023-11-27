@@ -270,34 +270,40 @@ class AppLocalizationsEs extends AppLocalizations {
   String get onBoardingText3 => 'Esta aplicación es de código abierto';
 
   @override
-  String get errorLogTitle => 'Registros de errores';
+  String get errorLogTitle => 'Registro de errores';
 
   @override
-  String get sendErrorHint => 'Envíanos el registro de errores por correo electrónico';
+  String get logMenu => 'Menú de registro';
 
   @override
-  String get enableVerboseLogging => 'Activar el registro detallado';
+  String get showErrorLog => 'Mostrar';
 
   @override
-  String get clearErrorLogHint => 'Borra el archivo de registro de errores local';
+  String get clearErrorLog => 'Borrar';
 
   @override
-  String get logMenu => 'Menú Registros';
+  String get sendErrorLog => 'Enviar';
 
   @override
-  String get sendErrorDialogHeader => 'Enviar por correo electrónico';
+  String get sendErrorLogDescription => 'Se crea un correo electrónico listo.\nContiene información sobre la app, el error y el dispositivo.\nPuedes editar el correo antes de enviarlo.\nAquí puede ver cómo utilizamos la información:';
+
+  @override
+  String get showPrivacyPolicy => 'Mostrar política de privacidad';
+
+  @override
+  String get errorLogEmpty => 'El registro de errores está vacío';
+
+  @override
+  String get verboseLogging => 'Registro detallado';
+
+  @override
+  String get errorLogCleared => 'Registro de errores borrado';
 
   @override
   String get ok => 'Ok';
 
   @override
-  String get noLogToSend => 'Hay log para enviar';
-
-  @override
   String get errorMailBody => 'Se adjunta el archivo de registro de errores.\nPuede sustituir este texto por información adicional sobre el error.';
-
-  @override
-  String get errorLogCleared => 'Registros de error borrados';
 
   @override
   String get showDetails => 'Mostrar detalles';
