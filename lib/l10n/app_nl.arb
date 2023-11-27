@@ -355,7 +355,7 @@
   "errorLogTitle": "Foutenlogboek",
   "logMenu": "Log menu",
   "sendErrorLog": "Foutrapport verzenden",
-  "sendErrorLogDescription": "Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat",
+  "sendErrorLogDescription": "Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.",
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
   },
