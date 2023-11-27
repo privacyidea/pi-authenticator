@@ -276,28 +276,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logMenu => 'Log menu';
 
   @override
-  String get sendErrorLog => 'Fehlerbericht senden';
+  String get sendErrorLog => 'Send error report';
 
   @override
-  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+  String get sendErrorLogDescription => 'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.';
 
   @override
-  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+  String get showPrivacyPolicy => 'Show privacy policy';
 
   @override
-  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
+  String get errorLogEmpty => 'The error log is empty.';
 
   @override
-  String get verboseLogging => 'Ausführlich protokollieren';
+  String get verboseLogging => 'Log in detail';
 
   @override
   String get errorLogCleared => 'Error log cleared.';
 
   @override
   String get ok => 'Ok';
-
-  @override
-  String get noLogToSend => 'There is log to send.';
 
   @override
   String get errorMailBody => 'The error log file is attached.\nYou can replace this text with additional information about the error.';

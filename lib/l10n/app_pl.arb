@@ -367,7 +367,6 @@
   "verboseLogging": "Rejestruj szczegółowo",
   "errorLogCleared": "Dziennik błędów wyczyszczony.",
   "ok": "Ok",
-  "noLogToSend": "There is log to send.",
   "errorMailBody": "Plik dziennika błędów jest dołączony.\nTekst ten można zastąpić dodatkowymi informacjami o błędzie.",
   "@errorMailBody": {
     "description": "Message for email body"

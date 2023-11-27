@@ -297,9 +297,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get ok => 'Ok';
 
   @override
-  String get noLogToSend => 'Je třeba odeslat protokol.';
-
-  @override
   String get errorMailBody => 'Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.';
 
   @override

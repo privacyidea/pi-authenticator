@@ -371,7 +371,6 @@
   "verboseLogging": "Consigner en détail",
   "errorLogCleared": "Journal d'erreur nettoyé",
   "ok": "Ok",
-  "noLogToSend": "Il y a un journal à envoyer",
   "errorMailBody": "Le fichier journal des erreurs est joint.\nVous pouvez remplacer ce texte par des informations supplémentaires sur l'erreur.",
   "@errorMailBody": {
     "description": "Message pour le corps du courriel"

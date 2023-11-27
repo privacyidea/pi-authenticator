@@ -297,9 +297,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get ok => 'Ok';
 
   @override
-  String get noLogToSend => 'Er is een log om te verzenden.';
-
-  @override
   String get errorMailBody => 'Het foutlogbestand is bijgevoegd.\nU kunt deze tekst vervangen door aanvullende informatie over de fout.';
 
   @override

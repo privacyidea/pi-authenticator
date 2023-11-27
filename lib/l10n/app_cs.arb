@@ -370,7 +370,7 @@
   "errorLogEmpty": "Protokol chyb je prázdný.",
   "verboseLogging": "Podrobný protokol",
   "errorLogCleared": "Protokol chyb vymazán.",
-  "noLogToSend": "Je třeba odeslat protokol.",
+  "ok": "Ok",
   "errorMailBody": "Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.",
   "@errorMailBody": {
     "description": "Message for email body"

@@ -367,7 +367,6 @@
   "verboseLogging": "Registro detallado",
   "errorLogCleared": "Registro de errores borrado",
   "ok": "Ok",
-  "noLogToSend": "Hay log para enviar",
   "errorMailBody": "Se adjunta el archivo de registro de errores.\nPuede sustituir este texto por información adicional sobre el error.",
   "@errorMailBody": {
     "description": "Message for email body"

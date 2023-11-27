@@ -297,9 +297,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ok => 'Ok';
 
   @override
-  String get noLogToSend => 'Hay log para enviar';
-
-  @override
   String get errorMailBody => 'Se adjunta el archivo de registro de errores.\nPuede sustituir este texto por información adicional sobre el error.';
 
   @override

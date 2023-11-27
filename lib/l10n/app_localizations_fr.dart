@@ -297,9 +297,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get ok => 'Ok';
 
   @override
-  String get noLogToSend => 'Il y a un journal à envoyer';
-
-  @override
   String get errorMailBody => 'Le fichier journal des erreurs est joint.\nVous pouvez remplacer ce texte par des informations supplémentaires sur l\'erreur.';
 
   @override

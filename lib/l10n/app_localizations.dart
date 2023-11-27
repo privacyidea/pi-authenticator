@@ -616,31 +616,31 @@ abstract class AppLocalizations {
   /// No description provided for @sendErrorLog.
   ///
   /// In en, this message translates to:
-  /// **'Fehlerbericht senden'**
+  /// **'Send error report'**
   String get sendErrorLog;
 
   /// Explanation for the user what he will send.
   ///
   /// In en, this message translates to:
-  /// **'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.'**
+  /// **'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.'**
   String get sendErrorLogDescription;
 
   /// No description provided for @showPrivacyPolicy.
   ///
   /// In en, this message translates to:
-  /// **'Datenschutzerklärung anzeigen'**
+  /// **'Show privacy policy'**
   String get showPrivacyPolicy;
 
   /// No description provided for @errorLogEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Das Fehlerprotokoll ist leer.'**
+  /// **'The error log is empty.'**
   String get errorLogEmpty;
 
   /// No description provided for @verboseLogging.
   ///
   /// In en, this message translates to:
-  /// **'Ausführlich protokollieren'**
+  /// **'Log in detail'**
   String get verboseLogging;
 
   /// No description provided for @errorLogCleared.
@@ -654,12 +654,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ok'**
   String get ok;
-
-  /// No description provided for @noLogToSend.
-  ///
-  /// In en, this message translates to:
-  /// **'There is log to send.'**
-  String get noLogToSend;
 
   /// Message for email body
   ///
