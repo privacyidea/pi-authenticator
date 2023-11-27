@@ -77,6 +77,14 @@ abstract class Token with SortableMixin {
 
   @override
   String toString() {
-    return 'Token{label: $label, issuer: $issuer, id: $id, _sLocked: $isLocked, pin: $pin, tokenImage: $tokenImage, sortIndex: $sortIndex, type: $type, folderId: $folderId';
+    return 'Token{label: $label, '
+        'issuer: $issuer, '
+        'id: $id, '
+        '_isLocked: $isLocked, '
+        'pin: $pin, '
+        'tokenImage: $tokenImage, '
+        'type: $type, '
+        'sortIndex: $sortIndex, '
+        'folderId: $folderId';
   }
 }

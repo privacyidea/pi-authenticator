@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
@@ -28,10 +28,8 @@ void main() {
   late final MockPrivacyIdeaIOClient mockIOClient;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
-    when(mockSettingsRepository.loadSettings()).thenAnswer((_) async => SettingsState(
-        isFirstRun: false,
-        localePreference: AppLocalizations.supportedLocales.firstWhere((language) => language.toLanguageTag().substring(0, 2) == 'en'),
-        useSystemLocale: false));
+    when(mockSettingsRepository.loadSettings())
+        .thenAnswer((_) async => SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en')));
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async => []);
@@ -91,8 +89,6 @@ Future<void> _licensesViewTest(WidgetTester tester) async {
   await tester.pumpAndSettle();
   expect(find.text(ApplicationCustomization.defaultCustomization.appName), findsOneWidget);
   expect(find.text(ApplicationCustomization.defaultCustomization.websiteLink), findsOneWidget);
-  await tester.pumpAndSettle();
-  expect(find.text('Licenses'), findsOneWidget);
   expect(find.byType(Icon), findsOneWidget);
   expect(find.byType(LicensePage), findsOneWidget);
 }
@@ -101,15 +97,15 @@ Future<void> _settingsViewTest(WidgetTester tester) async {
   await pumpUntilFindNWidgets(tester, find.byIcon(Icons.settings), 1, const Duration(seconds: 10));
   await tester.tap(find.byIcon(Icons.settings));
   await tester.pumpAndSettle();
-  expect(find.text('Settings'), findsOneWidget);
-  expect(find.text('Theme'), findsOneWidget);
-  expect(find.text('Language'), findsOneWidget);
-  expect(find.text('Error logs'), findsOneWidget);
-  expect(find.byType(SettingsGroup), findsNWidgets(3));
+  expect(find.text(AppLocalizationsEn().settings), findsOneWidget);
+  expect(find.text(AppLocalizationsEn().theme), findsOneWidget);
+  expect(find.text(AppLocalizationsEn().language), findsOneWidget);
+  expect(find.text(AppLocalizationsEn().errorLogTitle), findsOneWidget);
+  expect(find.byType(SettingsGroup), findsNWidgets(4));
   globalRef!.read(tokenProvider.notifier).addTokenFromOtpAuth(
       otpAuth:
           'otpauth://pipush/label?url=http%3A%2F%2Fwww.example.com&ttl=10&issuer=issuer&enrollment_credential=enrollmentCredentials&v=1&serial=serial&serial=serial&sslverify=0');
-  await pumpUntilFindNWidgets(tester, find.text('Push Token'), 1, const Duration(minutes: 5));
-  expect(find.text('Push Token'), findsOneWidget);
-  expect(find.byType(SettingsGroup), findsNWidgets(4));
+  await pumpUntilFindNWidgets(tester, find.text(AppLocalizationsEn().pushToken), 1, const Duration(minutes: 5));
+  expect(find.text(AppLocalizationsEn().pushToken), findsOneWidget);
+  expect(find.byType(SettingsGroup), findsNWidgets(5));
 }

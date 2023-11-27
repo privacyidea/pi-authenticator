@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -25,7 +23,6 @@ class _MockPushProvider extends Mock implements PushProvider {
   }
 
   void simulatePush(PushRequest pushRequest) {
-    log(pushSubscriber.toString());
     pushSubscriber?.newRequest(pushRequest);
   }
 }
