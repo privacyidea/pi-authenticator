@@ -270,34 +270,28 @@ class AppLocalizationsNl extends AppLocalizations {
   String get onBoardingText3 => 'Deze app is open source';
 
   @override
-  String get errorLogTitle => 'Foutlogs';
+  String get errorLogTitle => 'Foutenlogboek';
 
   @override
-  String get enableVerboseLogging => 'Uitgebreide logboekregistratie inschakelen';
+  String get logMenu => 'Log menu';
 
   @override
-  String get logMenu => 'Logmenu';
+  String get sendErrorLog => 'Foutrapport verzenden';
 
   @override
-  String get sendErrorDialogHeader => 'Verzenden via e-mail';
+  String get sendErrorLogDescription => 'Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.';
 
   @override
-  String get sendErrorLog => 'Fehlerbericht senden';
+  String get showPrivacyPolicy => 'Privacybeleid tonen';
 
   @override
-  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+  String get errorLogEmpty => 'Het foutenlogboek is leeg.';
 
   @override
-  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+  String get verboseLogging => 'Log in detail';
 
   @override
-  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
-
-  @override
-  String get verboseLogging => 'Ausführlich protokollieren';
-
-  @override
-  String get errorLogCleared => 'Foutlogs gewist';
+  String get errorLogCleared => 'Foutenlogboek gewist.';
 
   @override
   String get ok => 'Ok';

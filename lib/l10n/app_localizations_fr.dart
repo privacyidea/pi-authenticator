@@ -270,34 +270,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get onBoardingText3 => 'Cette application est open source';
 
   @override
-  String get errorLogTitle => 'Journaux d\'erreurs';
+  String get errorLogTitle => 'Journal d\'erreur';
 
   @override
-  String get enableVerboseLogging => 'Activer la journalisation verbeuse';
+  String get logMenu => 'Menu du journal';
 
   @override
-  String get logMenu => 'Menu journal';
+  String get sendErrorLog => 'Envoyer un rapport d\'erreur';
 
   @override
-  String get sendErrorDialogHeader => 'Envoyer par e-mail';
+  String get sendErrorLogDescription => 'Un e-mail pré-rempli est créé.\nIl contient des informations sur l\'application, l\'erreur et le périphérique.\nVous pouvez modifier l\'e-mail avant de l\'envoyer.';
 
   @override
-  String get sendErrorLog => 'Fehlerbericht senden';
+  String get showPrivacyPolicy => 'Afficher la déclaration de confidentialité';
 
   @override
-  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+  String get errorLogEmpty => 'Le journal des erreurs est vide';
 
   @override
-  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+  String get verboseLogging => 'Consigner en détail';
 
   @override
-  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
-
-  @override
-  String get verboseLogging => 'Ausführlich protokollieren';
-
-  @override
-  String get errorLogCleared => 'Journaux d\'erreur effacés';
+  String get errorLogCleared => 'Journal d\'erreur nettoyé';
 
   @override
   String get ok => 'Ok';

@@ -270,16 +270,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onBoardingText3 => 'This app is open source';
 
   @override
-  String get errorLogTitle => 'Error logs';
-
-  @override
-  String get enableVerboseLogging => 'Enable verbose logging';
+  String get errorLogTitle => 'Error log';
 
   @override
   String get logMenu => 'Log menu';
-
-  @override
-  String get sendErrorDialogHeader => 'Send via e-mail';
 
   @override
   String get sendErrorLog => 'Fehlerbericht senden';

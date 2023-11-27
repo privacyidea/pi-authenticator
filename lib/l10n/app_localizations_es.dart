@@ -270,34 +270,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get onBoardingText3 => 'Esta aplicación es de código abierto';
 
   @override
-  String get errorLogTitle => 'Registros de errores';
+  String get errorLogTitle => 'Registro de errores';
 
   @override
-  String get enableVerboseLogging => 'Activar el registro detallado';
+  String get logMenu => 'Menú de registro';
 
   @override
-  String get logMenu => 'Menú Registros';
+  String get sendErrorLog => 'Enviar informe de error';
 
   @override
-  String get sendErrorDialogHeader => 'Enviar por correo electrónico';
+  String get sendErrorLogDescription => 'Se crea un correo electrónico listo.\nContiene información sobre la app, el error y el dispositivo.\nPuedes editar el correo antes de enviarlo';
 
   @override
-  String get sendErrorLog => 'Fehlerbericht senden';
+  String get showPrivacyPolicy => 'Mostrar política de privacidad';
 
   @override
-  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+  String get errorLogEmpty => 'El registro de errores está vacío';
 
   @override
-  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+  String get verboseLogging => 'Registro detallado';
 
   @override
-  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
-
-  @override
-  String get verboseLogging => 'Ausführlich protokollieren';
-
-  @override
-  String get errorLogCleared => 'Registros de error borrados';
+  String get errorLogCleared => 'Registro de errores borrado';
 
   @override
   String get ok => 'Ok';

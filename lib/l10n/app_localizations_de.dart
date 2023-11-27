@@ -270,16 +270,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onBoardingText3 => 'Diese App ist Open Source';
 
   @override
-  String get errorLogTitle => 'Fehlerprotokolle';
+  String get errorLogTitle => 'Fehlerprotokoll';
 
   @override
-  String get enableVerboseLogging => 'Enable verbose logging';
-
-  @override
-  String get logMenu => 'Protokollmenü';
-
-  @override
-  String get sendErrorDialogHeader => 'Send via e-mail';
+  String get logMenu => 'Log-Menü';
 
   @override
   String get sendErrorLog => 'Fehlerbericht senden';
@@ -297,7 +291,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get verboseLogging => 'Ausführlich protokollieren';
 
   @override
-  String get errorLogCleared => 'Fehlerprotokolle gelöscht';
+  String get errorLogCleared => 'Fehlerprotokoll gelöscht.';
 
   @override
   String get ok => 'Ok';

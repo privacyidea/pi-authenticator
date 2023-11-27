@@ -270,34 +270,28 @@ class AppLocalizationsCs extends AppLocalizations {
   String get onBoardingText3 => 'Tuto aplikaci má open source';
 
   @override
-  String get errorLogTitle => 'Protokoly o chybách';
-
-  @override
-  String get enableVerboseLogging => 'Povolit slovní protokolování';
+  String get errorLogTitle => 'Protokol chyb';
 
   @override
   String get logMenu => 'Nabídka protokolu';
 
   @override
-  String get sendErrorDialogHeader => 'Odeslat e-mailem';
+  String get sendErrorLog => 'Odeslat chybové hlášení';
 
   @override
-  String get sendErrorLog => 'Fehlerbericht senden';
+  String get sendErrorLogDescription => 'Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.';
 
   @override
-  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+  String get showPrivacyPolicy => 'Zobrazit zásady ochrany osobních údajů';
 
   @override
-  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+  String get errorLogEmpty => 'Protokol chyb je prázdný.';
 
   @override
-  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
+  String get verboseLogging => 'Podrobný protokol';
 
   @override
-  String get verboseLogging => 'Ausführlich protokollieren';
-
-  @override
-  String get errorLogCleared => 'Protokoly chyb byly vymazány.';
+  String get errorLogCleared => 'Protokol chyb vymazán.';
 
   @override
   String get ok => 'Ok';

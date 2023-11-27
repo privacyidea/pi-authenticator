@@ -270,34 +270,28 @@ class AppLocalizationsPl extends AppLocalizations {
   String get onBoardingText3 => 'Ta aplikacja jest w open source';
 
   @override
-  String get errorLogTitle => 'Error logs';
+  String get errorLogTitle => 'Dziennik błędów';
 
   @override
-  String get enableVerboseLogging => 'Włącz szczegółowe rejestrowanie';
+  String get logMenu => 'Menu dziennika';
 
   @override
-  String get logMenu => 'LogMenu';
+  String get sendErrorLog => 'Wyślij raport o błędzie';
 
   @override
-  String get sendErrorDialogHeader => 'Wyślij przez e-mail';
+  String get sendErrorLogDescription => 'Tworzona jest gotowa wiadomość e-mail zawierająca informacje o aplikacji, błędzie i urządzeniu.\nMożesz edytować wiadomość e-mail przed jej wysłaniem.';
 
   @override
-  String get sendErrorLog => 'Fehlerbericht senden';
+  String get showPrivacyPolicy => 'Pokaż politykę prywatności';
 
   @override
-  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+  String get errorLogEmpty => 'Dziennik błędów jest pusty';
 
   @override
-  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+  String get verboseLogging => 'Rejestruj szczegółowo';
 
   @override
-  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
-
-  @override
-  String get verboseLogging => 'Ausführlich protokollieren';
-
-  @override
-  String get errorLogCleared => 'Wyczyszczono dzienniki błędów';
+  String get errorLogCleared => 'Dziennik błędów wyczyszczony.';
 
   @override
   String get ok => 'Ok';

@@ -604,26 +604,14 @@ abstract class AppLocalizations {
   /// No description provided for @errorLogTitle.
   ///
   /// In en, this message translates to:
-  /// **'Error logs'**
+  /// **'Error log'**
   String get errorLogTitle;
-
-  /// No description provided for @enableVerboseLogging.
-  ///
-  /// In en, this message translates to:
-  /// **'Enable verbose logging'**
-  String get enableVerboseLogging;
 
   /// No description provided for @logMenu.
   ///
   /// In en, this message translates to:
   /// **'Log menu'**
   String get logMenu;
-
-  /// No description provided for @sendErrorDialogHeader.
-  ///
-  /// In en, this message translates to:
-  /// **'Send via e-mail'**
-  String get sendErrorDialogHeader;
 
   /// No description provided for @sendErrorLog.
   ///
