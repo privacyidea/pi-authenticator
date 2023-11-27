@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
@@ -21,7 +23,8 @@ void main() {
   late final MockTokenFolderRepository mockTokenFolderRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
-    when(mockSettingsRepository.loadSettings()).thenAnswer((_) async => SettingsState(isFirstRun: false));
+    when(mockSettingsRepository.loadSettings())
+        .thenAnswer((_) async => SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en')));
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async => [

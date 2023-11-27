@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
@@ -32,7 +33,7 @@ void main() {
   late final MockTokenFolderRepository mockTokenFolderRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
-    when(mockSettingsRepository.loadSettings()).thenAnswer((_) async => SettingsState());
+    when(mockSettingsRepository.loadSettings()).thenAnswer((_) async => SettingsState(useSystemLocale: false, localePreference: const Locale('en')));
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async => []);
@@ -65,7 +66,7 @@ void main() {
       await _createFolder(tester);
       await tester.pump(const Duration(milliseconds: 200));
       expect(find.byType(TokenFolderWidget), findsOneWidget);
-      expect(find.text('Folder'), findsOneWidget);
+      expect(find.text(AppLocalizationsEn().folderName), findsOneWidget);
       expect(find.byType(TokenWidgetBase).hitTestable(), findsNWidgets(3));
       await _moveFolderToTopPosition(tester);
       await _moveHotpTokenWidgetIntoFolder(tester);
@@ -101,16 +102,16 @@ Future<void> _addHotpToken(WidgetTester tester) async {
   expect(find.byType(LabeledDropdownButton<Algorithms>), findsOneWidget);
   expect(find.byType(LabeledDropdownButton<int>), findsOneWidget);
   expect(find.byType(LabeledDropdownButton<TokenTypes>), findsOneWidget);
-  expect(find.text('Add token'), findsOneWidget);
-  await tester.tap(find.text('Name'));
+  expect(find.text(AppLocalizationsEn().addToken), findsOneWidget);
+  await tester.tap(find.text(AppLocalizationsEn().name));
   await tester.pump();
   await tester.enterText(find.byType(TextField).first, 'test');
   await tester.pump();
-  await tester.tap(find.text('Secret'));
+  await tester.tap(find.text(AppLocalizationsEn().secretKey));
   await tester.pump();
   await tester.enterText(find.byType(TextField).last, 'test');
   await tester.pump();
-  await tester.tap(find.text('Add token'));
+  await tester.tap(find.text(AppLocalizationsEn().addToken));
   await tester.pump(const Duration(milliseconds: 1000));
 }
 
@@ -118,11 +119,11 @@ Future<void> _addTotpToken(WidgetTester tester) async {
   await tester.pump();
   await tester.tap(find.byIcon(Icons.add_moderator));
   await tester.pump(const Duration(milliseconds: 1000));
-  await tester.tap(find.text('Name'));
+  await tester.tap(find.text(AppLocalizationsEn().name));
   await tester.pump();
   await tester.enterText(find.byType(TextField).first, 'test');
   await tester.pump();
-  await tester.tap(find.text('Secret'));
+  await tester.tap(find.text(AppLocalizationsEn().secretKey));
   await tester.pump();
   await tester.enterText(find.byType(TextField).last, 'test');
   await tester.pump();
@@ -131,7 +132,7 @@ Future<void> _addTotpToken(WidgetTester tester) async {
   await tester.tap(find.text('TOTP'));
   await tester.pump();
   expect(find.byType(DropdownButton<int>), findsNWidgets(2));
-  await tester.tap(find.text('Add token'));
+  await tester.tap(find.text(AppLocalizationsEn().addToken));
   await tester.pump(const Duration(milliseconds: 1000));
 }
 
@@ -141,7 +142,7 @@ Future<void> _addDaypasswordToken(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 1000));
   await tester.enterText(find.byType(TextField).first, 'test');
   await tester.pump();
-  await tester.tap(find.text('Secret'));
+  await tester.tap(find.text(AppLocalizationsEn().secretKey));
   await tester.pump();
   await tester.enterText(find.byType(TextField).last, 'test');
   await tester.pump();
@@ -149,7 +150,7 @@ Future<void> _addDaypasswordToken(WidgetTester tester) async {
   await tester.pump();
   await tester.tap(find.text('DAYPASSWORD'));
   await tester.pump();
-  await tester.tap(find.text('Add token'));
+  await tester.tap(find.text(AppLocalizationsEn().addToken));
   await tester.pump(const Duration(milliseconds: 1000));
 }
 
@@ -157,9 +158,9 @@ Future<void> _createFolder(WidgetTester tester) async {
   await tester.pump();
   await tester.tap(find.byIcon(Icons.create_new_folder));
   await tester.pump(const Duration(milliseconds: 1000));
-  await tester.enterText(find.byType(TextField).first, 'Folder');
+  await tester.enterText(find.byType(TextField).first, AppLocalizationsEn().folderName);
   await tester.pump();
-  await tester.tap(find.text('Save'));
+  await tester.tap(find.text(AppLocalizationsEn().save));
   await tester.pump();
 }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
@@ -25,7 +26,8 @@ void main() {
   late final MockTokenFolderRepository mockTokenFolderRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
-    when(mockSettingsRepository.loadSettings()).thenAnswer((_) async => SettingsState(isFirstRun: false));
+    when(mockSettingsRepository.loadSettings())
+        .thenAnswer((_) async => SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en')));
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async => [
@@ -62,13 +64,13 @@ Future<void> _renameToken(WidgetTester tester, String newName) async {
   await pumpUntilFindNWidgets(tester, find.byType(EditHOTPTokenAction), 1, const Duration(seconds: 2));
   await tester.tap(find.byType(EditHOTPTokenAction));
   await tester.pumpAndSettle();
-  expect(find.text('Edit Token'), findsOneWidget);
+  expect(find.text(AppLocalizationsEn().editToken), findsOneWidget);
   expect(find.byType(TextFormField), findsNWidgets(3));
   await tester.pumpAndSettle();
   await tester.enterText(find.byType(TextFormField).first, '');
   await tester.enterText(find.byType(TextFormField).first, newName);
   await pumpUntilFindNWidgets(tester, find.widgetWithText(TextFormField, newName), 1, const Duration(seconds: 2));
-  await tester.tap(find.text('Save'));
+  await tester.tap(find.text(AppLocalizationsEn().save));
   await pumpUntilFindNWidgets(tester, find.text(newName), 1, const Duration(seconds: 2));
   expect(find.text(newName), findsOneWidget);
 }
@@ -82,9 +84,9 @@ Future<void> _deleteToken(WidgetTester tester) async {
   await pumpUntilFindNWidgets(tester, find.byType(EditHOTPTokenAction), 1, const Duration(seconds: 2));
   await tester.tap(find.byType(DefaultDeleteAction));
   await tester.pumpAndSettle();
-  expect(find.text('Confirm deletion'), findsOneWidget);
-  expect(find.text('Delete'), findsOneWidget);
-  await tester.tap(find.text('Delete'));
+  expect(find.text(AppLocalizationsEn().confirmDeletion), findsOneWidget);
+  expect(find.text(AppLocalizationsEn().delete), findsOneWidget);
+  await tester.tap(find.text(AppLocalizationsEn().delete));
   await tester.pumpAndSettle();
   expect(find.byType(HOTPTokenWidget), findsNothing);
 }
