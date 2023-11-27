@@ -7,6 +7,7 @@ import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/push_request_queue.dart';
 import 'package:privacyidea_authenticator/model/states/token_state.dart';
@@ -306,7 +307,7 @@ void _testTokenNotifier() {
 
       final notifier = TokenNotifier(repository: mockRepo, rsaUtils: mockRsaUtils, ioClient: mockIOClient, firebaseUtils: mockFirebaseUtils);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) => notifier);
-      await notifier.addTokenFromOtpAuth(otpAuth: otpAuth);
+      await notifier.handleQrCode(otpAuth);
       final tokenState = container.read(testProvider);
       expect(tokenState, isNotNull);
       expect(tokenState.tokens, after);
