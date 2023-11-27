@@ -276,10 +276,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logMenu => 'Menu du journal';
 
   @override
-  String get sendErrorLog => 'Envoyer un rapport d\'erreur';
+  String get showErrorLog => 'Afficher';
 
   @override
-  String get sendErrorLogDescription => 'Un e-mail pré-rempli est créé.\nIl contient des informations sur l\'application, l\'erreur et le périphérique.\nVous pouvez modifier l\'e-mail avant de l\'envoyer.';
+  String get clearErrorLog => 'Effacer';
+
+  @override
+  String get sendErrorLog => 'Envoyer';
+
+  @override
+  String get sendErrorLogDescription => 'Un e-mail pré-rempli est créé.\nIl contient des informations sur l\'application, l\'erreur et le périphérique.\nVous pouvez modifier l\'e-mail avant de l\'envoyer.\nVous pouvez voir ici comment nous utilisons les informations:';
 
   @override
   String get showPrivacyPolicy => 'Afficher la déclaration de confidentialité';
@@ -288,7 +294,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get errorLogEmpty => 'Le journal des erreurs est vide';
 
   @override
-  String get verboseLogging => 'Consigner en détail';
+  String get verboseLogging => 'Journalisation verbeuse';
 
   @override
   String get errorLogCleared => 'Journal d\'erreur nettoyé';

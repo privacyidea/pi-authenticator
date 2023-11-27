@@ -1,28 +1,18 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/logger.dart';
 import '../send_error_dialog.dart';
+import 'errorlog_button.dart';
 
 class SendErrorLogButton extends StatelessWidget {
   const SendErrorLogButton({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(0),
-        title: ElevatedButton(
-          onPressed: () => _pressSendErrorLog(context),
-          child: const Text(
-            'Fehlerbericht senden', //TODO: Translate
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => ErrorlogButton(
+        onPressed: () => _pressSendErrorLog(context),
+        text: AppLocalizations.of(context)!.sendErrorLog,
+      );
 }
 
 void _pressSendErrorLog(BuildContext context) {

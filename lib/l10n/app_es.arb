@@ -357,8 +357,10 @@
   "onBoardingText3": "Esta aplicación es de código abierto",
   "errorLogTitle": "Registro de errores",
   "logMenu": "Menú de registro",
-  "sendErrorLog": "Enviar informe de error",
-  "sendErrorLogDescription": "Se crea un correo electrónico listo.\nContiene información sobre la app, el error y el dispositivo.\nPuedes editar el correo antes de enviarlo",
+  "showErrorLog": "Mostrar",
+  "clearErrorLog": "Borrar",
+  "sendErrorLog": "Enviar",
+  "sendErrorLogDescription": "Se crea un correo electrónico listo.\nContiene información sobre la app, el error y el dispositivo.\nPuedes editar el correo antes de enviarlo.\nAquí puede ver cómo utilizamos la información:",
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
   },

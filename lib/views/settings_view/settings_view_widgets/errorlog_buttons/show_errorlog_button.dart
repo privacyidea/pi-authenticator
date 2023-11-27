@@ -4,27 +4,16 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/logger.dart';
 import '../../../../widgets/default_dialog.dart';
 import '../send_error_dialog.dart';
+import 'errorlog_button.dart';
 
 class ShowErrorLogButton extends StatelessWidget {
   const ShowErrorLogButton({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(0),
-        title: ElevatedButton(
-          onPressed: () => _pressShowErrorLog(context),
-          child: const Text(
-            'Fehlerprotokoll anzeigen', // 'Show Error Log', //TODO: Localize
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => ErrorlogButton(
+        onPressed: () => _pressShowErrorLog(context),
+        text: AppLocalizations.of(context)!.showErrorLog,
+      );
 }
 
 void _pressShowErrorLog(BuildContext context) {

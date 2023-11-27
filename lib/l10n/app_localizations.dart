@@ -613,16 +613,28 @@ abstract class AppLocalizations {
   /// **'Log menu'**
   String get logMenu;
 
+  /// No description provided for @showErrorLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get showErrorLog;
+
+  /// No description provided for @clearErrorLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearErrorLog;
+
   /// No description provided for @sendErrorLog.
   ///
   /// In en, this message translates to:
-  /// **'Send error report'**
+  /// **'Send'**
   String get sendErrorLog;
 
   /// Explanation for the user what he will send.
   ///
   /// In en, this message translates to:
-  /// **'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.'**
+  /// **'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:'**
   String get sendErrorLogDescription;
 
   /// No description provided for @showPrivacyPolicy.
@@ -640,7 +652,7 @@ abstract class AppLocalizations {
   /// No description provided for @verboseLogging.
   ///
   /// In en, this message translates to:
-  /// **'Log in detail'**
+  /// **'Verbose logging'**
   String get verboseLogging;
 
   /// No description provided for @errorLogCleared.

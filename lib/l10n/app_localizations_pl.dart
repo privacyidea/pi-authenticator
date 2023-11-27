@@ -276,10 +276,16 @@ class AppLocalizationsPl extends AppLocalizations {
   String get logMenu => 'Menu dziennika';
 
   @override
-  String get sendErrorLog => 'Wyślij raport o błędzie';
+  String get showErrorLog => 'Wyświetl';
 
   @override
-  String get sendErrorLogDescription => 'Tworzona jest gotowa wiadomość e-mail zawierająca informacje o aplikacji, błędzie i urządzeniu.\nMożesz edytować wiadomość e-mail przed jej wysłaniem.';
+  String get clearErrorLog => 'Usuń';
+
+  @override
+  String get sendErrorLog => 'Wyślij';
+
+  @override
+  String get sendErrorLogDescription => 'Tworzona jest gotowa wiadomość e-mail zawierająca informacje o aplikacji, błędzie i urządzeniu.\nMożesz edytować wiadomość e-mail przed jej wysłaniem.\nTutaj można zobaczyć, w jaki sposób wykorzystujemy te informacje:';
 
   @override
   String get showPrivacyPolicy => 'Pokaż politykę prywatności';
@@ -288,7 +294,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get errorLogEmpty => 'Dziennik błędów jest pusty';
 
   @override
-  String get verboseLogging => 'Rejestruj szczegółowo';
+  String get verboseLogging => 'Wyczerpujące rejestrowanie';
 
   @override
   String get errorLogCleared => 'Dziennik błędów wyczyszczony.';

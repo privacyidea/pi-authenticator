@@ -276,10 +276,16 @@ class AppLocalizationsCs extends AppLocalizations {
   String get logMenu => 'Nabídka protokolu';
 
   @override
-  String get sendErrorLog => 'Odeslat chybové hlášení';
+  String get showErrorLog => 'Zobrazit';
 
   @override
-  String get sendErrorLogDescription => 'Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.';
+  String get clearErrorLog => 'Vymazat';
+
+  @override
+  String get sendErrorLog => 'Odeslat';
+
+  @override
+  String get sendErrorLogDescription => 'Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:';
 
   @override
   String get showPrivacyPolicy => 'Zobrazit zásady ochrany osobních údajů';
@@ -288,7 +294,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get errorLogEmpty => 'Protokol chyb je prázdný.';
 
   @override
-  String get verboseLogging => 'Podrobný protokol';
+  String get verboseLogging => 'Zevrubné protokolování';
 
   @override
   String get errorLogCleared => 'Protokol chyb vymazán.';

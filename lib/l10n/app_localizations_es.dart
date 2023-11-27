@@ -276,10 +276,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get logMenu => 'Menú de registro';
 
   @override
-  String get sendErrorLog => 'Enviar informe de error';
+  String get showErrorLog => 'Mostrar';
 
   @override
-  String get sendErrorLogDescription => 'Se crea un correo electrónico listo.\nContiene información sobre la app, el error y el dispositivo.\nPuedes editar el correo antes de enviarlo';
+  String get clearErrorLog => 'Borrar';
+
+  @override
+  String get sendErrorLog => 'Enviar';
+
+  @override
+  String get sendErrorLogDescription => 'Se crea un correo electrónico listo.\nContiene información sobre la app, el error y el dispositivo.\nPuedes editar el correo antes de enviarlo.\nAquí puede ver cómo utilizamos la información:';
 
   @override
   String get showPrivacyPolicy => 'Mostrar política de privacidad';

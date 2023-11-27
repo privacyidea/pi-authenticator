@@ -15,43 +15,46 @@ class LoggingMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final verboseLogging = settings.verboseLogging;
-    return DefaultDialog(
-      scrollable: true,
-      title: Text(
-        AppLocalizations.of(context)!.logMenu,
-        style: Theme.of(context).listTileTheme.titleTextStyle,
-      ),
-      content: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            title: Text(
-              AppLocalizations.of(context)!.verboseLogging,
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.center,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: DefaultDialog(
+        scrollable: true,
+        title: Text(
+          AppLocalizations.of(context)!.logMenu,
+          style: Theme.of(context).listTileTheme.titleTextStyle,
+        ),
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text(
+                AppLocalizations.of(context)!.verboseLogging,
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
+              contentPadding: const EdgeInsets.all(0),
+              trailing: Switch(value: verboseLogging, onChanged: (value) => ref.read(settingsProvider.notifier).setVerboseLogging(value)),
+              style: ListTileStyle.list,
+              onTap: () => ref.read(settingsProvider.notifier).toggleVerboseLogging(),
             ),
-            contentPadding: const EdgeInsets.all(0),
-            trailing: Switch(value: verboseLogging, onChanged: (value) => ref.read(settingsProvider.notifier).setVerboseLogging(value)),
-            style: ListTileStyle.list,
-            onTap: () => ref.read(settingsProvider.notifier).toggleVerboseLogging(),
+            const Divider(),
+            const ShowErrorLogButton(),
+            const DeleteErrorlogButton(),
+            const SendErrorLogButton(),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              AppLocalizations.of(context)!.dismiss,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+            onPressed: () => Navigator.pop(context),
           ),
-          const Divider(),
-          const ShowErrorLogButton(),
-          const DeleteErrorlogButton(),
-          const SendErrorLogButton(),
         ],
       ),
-      actions: [
-        TextButton(
-          child: Text(
-            AppLocalizations.of(context)!.dismiss,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ],
     );
   }
 }

@@ -276,10 +276,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get logMenu => 'Log-Menü';
 
   @override
-  String get sendErrorLog => 'Fehlerbericht senden';
+  String get showErrorLog => 'Anzeigen';
 
   @override
-  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.';
+  String get clearErrorLog => 'Löschen';
+
+  @override
+  String get sendErrorLog => 'Senden';
+
+  @override
+  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWir die Informationen verwenden, sehen Sie hier:';
 
   @override
   String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
@@ -288,7 +294,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
 
   @override
-  String get verboseLogging => 'Ausführlich protokollieren';
+  String get verboseLogging => 'Ausführliche Protokollierung';
 
   @override
   String get errorLogCleared => 'Fehlerprotokoll gelöscht.';

@@ -276,10 +276,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get logMenu => 'Log menu';
 
   @override
-  String get sendErrorLog => 'Foutrapport verzenden';
+  String get showErrorLog => 'Weergeven';
 
   @override
-  String get sendErrorLogDescription => 'Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.';
+  String get clearErrorLog => 'Verwijderen';
+
+  @override
+  String get sendErrorLog => 'verzenden';
+
+  @override
+  String get sendErrorLogDescription => 'Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:';
 
   @override
   String get showPrivacyPolicy => 'Privacybeleid tonen';
@@ -288,7 +294,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get errorLogEmpty => 'Het foutenlogboek is leeg.';
 
   @override
-  String get verboseLogging => 'Log in detail';
+  String get verboseLogging => 'Verbose loggen';
 
   @override
   String get errorLogCleared => 'Foutenlogboek gewist.';

@@ -276,10 +276,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logMenu => 'Log menu';
 
   @override
-  String get sendErrorLog => 'Send error report';
+  String get showErrorLog => 'Show';
 
   @override
-  String get sendErrorLogDescription => 'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.';
+  String get clearErrorLog => 'Clear';
+
+  @override
+  String get sendErrorLog => 'Send';
+
+  @override
+  String get sendErrorLogDescription => 'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:';
 
   @override
   String get showPrivacyPolicy => 'Show privacy policy';
@@ -288,7 +294,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorLogEmpty => 'The error log is empty.';
 
   @override
-  String get verboseLogging => 'Log in detail';
+  String get verboseLogging => 'Verbose logging';
 
   @override
   String get errorLogCleared => 'Error log cleared.';
