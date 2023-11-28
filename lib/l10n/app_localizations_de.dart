@@ -14,7 +14,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get name => 'Name';
 
   @override
-  String get secret => 'Geheimnis';
+  String get secretKey => 'Geheimer Schlüssel';
 
   @override
   String get encoding => 'Kodierung';
@@ -164,6 +164,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pollingFailed => 'Abfrage fehlgeschlagen.';
 
   @override
+  String pollingFailedFor(Object serial) {
+    return 'Abfrage für $serial fehlgeschlagen.';
+  }
+
+  @override
   String get noNetworkConnection => 'Keine Netzwerkverbindung.';
 
   @override
@@ -265,34 +270,40 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onBoardingText3 => 'Diese App ist Open Source';
 
   @override
-  String get errorLogTitle => 'Fehlerprotokolle';
+  String get errorLogTitle => 'Fehlerprotokoll';
 
   @override
-  String get sendErrorHint => 'Senden Sie uns das Fehlerprotokoll per E-Mail';
+  String get logMenu => 'Log-Menü';
 
   @override
-  String get enableVerboseLogging => 'Fehler ausführlich protokollieren';
+  String get showErrorLog => 'Anzeigen';
 
   @override
-  String get clearErrorLogHint => 'Löscht die lokale Fehlerprotokolldatei';
+  String get clearErrorLog => 'Löschen';
 
   @override
-  String get logMenu => 'Protokollmenu';
+  String get sendErrorLog => 'Senden';
 
   @override
-  String get sendErrorDialogHeader => 'Per E-Mail senden';
+  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:';
+
+  @override
+  String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
+
+  @override
+  String get errorLogEmpty => 'Das Fehlerprotokoll ist leer.';
+
+  @override
+  String get verboseLogging => 'Ausführliche Protokollierung';
+
+  @override
+  String get errorLogCleared => 'Fehlerprotokoll gelöscht.';
 
   @override
   String get ok => 'Ok';
 
   @override
-  String get noLogToSend => 'Es gibt kein Protokoll zu senden.';
-
-  @override
   String get errorMailBody => 'Die Fehlerprotokolldatei ist angehängt.\nSie können diesen Text durch zusätzliche Informationen über den Fehler ersetzen.';
-
-  @override
-  String get errorLogCleared => 'Fehlerprotokolle gelöscht';
 
   @override
   String get showDetails => 'Details anzeigen';
@@ -379,7 +390,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get authToDeclinePushRequest => 'Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.';
 
   @override
-  String get incomingAuthRequestError => 'Die Nachricht enthielt nicht die erforderlichen Daten oder die Daten waren falsch formatiert.';
+  String get pushRequestParseError => 'Die Push-Anfrage konnte nicht verarbeitet werden.';
 
   @override
   String get imageUrl => 'Bild URL';
@@ -449,5 +460,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get hidePushTokensDescription => 'Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.';
 
   @override
+  String get settingsGroupGeneral => 'Allgemeines';
+
+  @override
   String get licensesAndVersion => 'Lizenzen und Version';
+
+  @override
+  String get privacyPolicy => 'Datenschutzerklärung';
 }

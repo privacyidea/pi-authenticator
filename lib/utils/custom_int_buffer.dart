@@ -35,6 +35,9 @@ class CustomIntBuffer {
 
   int get length => list.length;
 
+  @override
+  String toString() => list.toString();
+
   bool contains(int value) => list.contains(value);
 
   factory CustomIntBuffer.fromJson(Map<String, dynamic> json) => _$CustomIntBufferFromJson(json);

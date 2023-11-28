@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
-import '../../../l10n/app_localizations.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/push_token.dart';
+import '../../../utils/logger.dart';
 import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod_providers.dart';
-import '../../../utils/view_utils.dart';
 import '../../../widgets/deactivateable_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
-import '../../../widgets/push_request_overlay.dart';
 import 'drag_target_divider.dart';
 import 'no_token_screen.dart';
 import 'sortable_widget_builder.dart';
@@ -40,7 +37,6 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     bool filterPushTokens = ref.watch(settingsProvider).hidePushTokens && tokenState.hasHOTPTokens;
 
     final tokenStateWithNoFolder = tokenState.tokensWithoutFolder(exclude: filterPushTokens ? [PushToken] : []);
-    final tokenWithPushRequest = tokenState.tokenWithPushRequest();
 
     List<SortableMixin> sortables = [...tokenFolders, ...tokenStateWithNoFolder];
 
@@ -49,13 +45,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
         if (sortables.isEmpty) const NoTokenScreen(),
         DeactivateableRefreshIndicator(
           allowToRefresh: allowToRefresh,
-          onRefresh: () async {
-            showMessage(
-              message: AppLocalizations.of(context)!.pollingChallenges,
-              duration: const Duration(seconds: 1),
-            );
-            await PushProvider().pollForChallenges(isManually: true);
-          },
+          onRefresh: () async => PollLoadingIndicator.pollForChallenges(context),
           child: SlidableAutoCloseBehavior(
             child: DragItemScroller(
               listViewKey: listViewKey,
@@ -76,7 +66,6 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
             ),
           ),
         ),
-        if (tokenWithPushRequest != null) PushRequestOverlay(tokenWithPushRequest),
       ],
     );
   }
@@ -104,5 +93,53 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     }
     widgets.add(const SizedBox(height: 80));
     return widgets;
+  }
+}
+
+/// This widget is polling for challenges and closes itself when the polling is done.
+/// Usage: showDialog(context: context, builder: (_) => const PollLoadingIndicator());
+class PollLoadingIndicator extends StatelessWidget {
+  static double widgetSize = 40;
+  static OverlayEntry? _overlayEntry;
+  static void pollForChallenges(BuildContext context) {
+    if (_overlayEntry != null) return;
+    _overlayEntry = OverlayEntry(
+      builder: (context) => const PollLoadingIndicator._(),
+    );
+    Overlay.of(context).insert(_overlayEntry!);
+    Logger.info('Start polling for challenges', name: 'poll_loading_indicator.dart#initState');
+    PushProvider().pollForChallenges(isManually: true).then((_) {
+      Logger.info('Stop polling for challenges', name: 'poll_loading_indicator.dart#initState');
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+    });
+  }
+
+  const PollLoadingIndicator._();
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Positioned(
+      top: size.height * 0.08,
+      left: (size.width - widgetSize) / 2,
+      width: widgetSize,
+      height: widgetSize,
+      child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(99),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: const CircularProgressIndicator()),
+    );
   }
 }

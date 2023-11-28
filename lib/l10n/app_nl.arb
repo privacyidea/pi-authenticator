@@ -16,8 +16,8 @@
   "@name": {
     "description": "Describes the field where the tokens name should be entered."
   },
-  "secret": "Geheim",
-  "@secret": {
+  "secretKey": "Geheime sleutel",
+  "@secretKey": {
     "description": "Describes the field where the tokens secret should be entered."
   },
   "encoding": "Codering",
@@ -222,6 +222,15 @@
   "@pollingFailed": {
     "description": "Tells the user that the polling failed."
   },
+  "pollingFailedFor": "Query voor {serial} mislukt.",
+  "@pollingFailedFor": {
+    "description": "Tells the user that the polling failed.",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "noNetworkConnection": "Geen netwerkverbinding.",
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
@@ -343,22 +352,24 @@
   "onBoardingText2": "Bewaar tokens op uw apparaat\nbeveiligd door uw biometrische gegevens",
   "onBoardingTitle3": "Bezoek ons op Github",
   "onBoardingText3": "Deze app is open source",
-  "errorLogTitle": "Foutlogs",
-  "sendErrorHint": "Stuur ons de error log via e-mail",
-  "@sendErrorHint": {
-    "description": "Hint for the user about what he will send."
+  "errorLogTitle": "Foutenlogboek",
+  "logMenu": "Log menu",
+  "showErrorLog": "Weergeven",
+  "clearErrorLog": "Verwijderen",
+  "sendErrorLog": "verzenden",
+  "sendErrorLogDescription": "Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:",
+  "@sendErrorLogDescription": {
+    "description": "Explanation for the user what he will send."
   },
-  "enableVerboseLogging": "Uitgebreide logboekregistratie inschakelen",
-  "clearErrorLogHint": "Wist het lokale foutenlogbestand",
-  "logMenu": "Logmenu",
-  "sendErrorDialogHeader": "Verzenden via e-mail",
+  "showPrivacyPolicy": "Privacybeleid tonen",
+  "errorLogEmpty": "Het foutenlogboek is leeg.",
+  "verboseLogging": "Verbose loggen",
+  "errorLogCleared": "Foutenlogboek gewist.",
   "ok": "Ok",
-  "noLogToSend": "Er is een log om te verzenden.",
   "errorMailBody": "Het foutlogbestand is bijgevoegd.\nU kunt deze tekst vervangen door aanvullende informatie over de fout.",
   "@errorMailBody": {
     "description": "Message for email body"
   },
-  "errorLogCleared": "Foutlogs gewist",
   "showDetails": "Details tonen",
   "open": "Openen",
   "sendErrorDialogBody": "Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.",
@@ -421,10 +432,7 @@
   "@authToDeclinePushRequest": {
     "description": "Message for the rollout process"
   },
-  "incomingAuthRequestError": "Het bericht bevatte niet de benodigde gegevens of de gegevens waren misvormd.",
-  "@incomingAuthRequestError": {
-    "description": "Message for the rollout process"
-  },
+  "pushRequestParseError": "Het pushverzoek kon niet worden verwerkt.",
   "imageUrl": "Afbeeldings-URL",
   "errorRollOutSSLHandshakeFailed": "SSL-handdruk mislukt. Uitrollen niet mogelijk.",
   "@errorRollOutSSLHandshakeFailed": {
@@ -456,5 +464,7 @@
   "decryptErrorDeleteConfirmationContent": "Weet je zeker dat je de app-gegevens wilt verwijderen?",
   "hidePushTokens": "Verberg push tokens",
   "hidePushTokensDescription": "Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.",
-  "licensesAndVersion": "Licenties en versie"
+  "settingsGroupGeneral": "Algemene informatie",
+  "licensesAndVersion": "Licenties en versie",
+  "privacyPolicy": "Privacybeleid"
 }

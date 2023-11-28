@@ -12,8 +12,8 @@
   "@name": {
     "description": "Describes the field where the tokens name should be entered."
   },
-  "secret": "Secret",
-  "@secret": {
+  "secretKey": "Secret key",
+  "@secretKey": {
     "description": "Describes the field where the tokens secret should be entered."
   },
   "encoding": "Encoding",
@@ -221,6 +221,15 @@
   "@pollingFailed": {
     "description": "Tells the user that the polling failed."
   },
+  "pollingFailedFor": "Polling failed for {serial}",
+  "@pollingFailedFor": {
+    "description": "Tells the user that the polling failed.",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "noNetworkConnection": "No network connection.",
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
@@ -342,22 +351,24 @@
   "onBoardingText2": "Store tokens on your device securely\nProtected by your biometrics",
   "onBoardingTitle3": "Visit us at Github",
   "onBoardingText3": "This app is open source",
-  "errorLogTitle": "Error logs",
-  "sendErrorHint": "Send us the error log via e-mail",
-  "@sendErrorHint": {
-    "description": "Hint for the user about what he will send."
-  },
-  "enableVerboseLogging": "Enable verbose logging",
-  "clearErrorLogHint": "Clears the local error log file",
+  "errorLogTitle": "Error log",
   "logMenu": "Log menu",
-  "sendErrorDialogHeader": "Send via e-mail",
+  "showErrorLog": "Show",
+  "clearErrorLog": "Clear",
+  "sendErrorLog": "Send",
+  "sendErrorLogDescription": "A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:",
+  "@sendErrorLogDescription": {
+    "description": "Explanation for the user what he will send."
+  },
+  "showPrivacyPolicy": "Show privacy policy",
+  "errorLogEmpty": "The error log is empty.",
+  "verboseLogging": "Verbose logging",
+  "errorLogCleared": "Error log cleared.",
   "ok": "Ok",
-  "noLogToSend": "There is log to send.",
   "errorMailBody": "The error log file is attached.\nYou can replace this text with additional information about the error.",
   "@errorMailBody": {
     "description": "Message for email body"
   },
-  "errorLogCleared": "Error logs cleared.",
   "showDetails": "Show details",
   "open": "Open",
   "sendErrorDialogBody": "An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.",
@@ -413,7 +424,7 @@
   },
   "authToAcceptPushRequest": "Please authenticate to accept the push request.",
   "authToDeclinePushRequest": "Please authenticate to decline the push request.",
-  "incomingAuthRequestError": "The message didn't provided the needed data or the data was malformed.",
+  "pushRequestParseError": "Push request could not be parsed.",
   "imageUrl": "Image URL",
   "errorRollOutSSLHandshakeFailed": "SSL handshake failed. Roll-out not possible.",
   "@errorRollOutSSLHandshakeFailed": {
@@ -454,5 +465,7 @@
   "decryptErrorDeleteConfirmationContent": "Are you sure you want to delete the app data?",
   "hidePushTokens": "Hide push tokens",
   "hidePushTokensDescription": "Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.",
-  "licensesAndVersion": "Licenses and version"
+  "settingsGroupGeneral": "General",
+  "licensesAndVersion": "Licenses and version",
+  "privacyPolicy": "Privacy policy"
 }

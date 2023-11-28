@@ -1,5 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/identifiers.dart';
+import '../utils/logger.dart';
+
 part 'push_request.g.dart';
 
 @JsonSerializable()
@@ -72,4 +75,51 @@ class PushRequest {
   factory PushRequest.fromJson(Map<String, dynamic> json) => _$PushRequestFromJson(json);
 
   Map<String, dynamic> toJson() => _$PushRequestToJson(this);
+
+  factory PushRequest.fromMessageData(Map<String, dynamic> data) {
+    try {
+      verifyData(data);
+    } catch (e, s) {
+      Logger.error('Invalid push request data.', name: 'push_request.dart#fromMessageData', error: e, stackTrace: s);
+    }
+    return PushRequest(
+      title: data[PUSH_REQUEST_TITLE],
+      question: data[PUSH_REQUEST_QUESTION],
+      uri: Uri.parse(data[PUSH_REQUEST_URL]),
+      nonce: data[PUSH_REQUEST_NONCE],
+      id: data[PUSH_REQUEST_NONCE].hashCode,
+      sslVerify: data[PUSH_REQUEST_SSL_VERIFY] == '1',
+      serial: data[PUSH_REQUEST_SERIAL],
+      expirationDate: DateTime.now().add(const Duration(minutes: 2)),
+      signature: data[PUSH_REQUEST_SIGNATURE],
+    );
+  }
+
+  /// Verify that the data is valid.
+  /// Throws ArgumentError if data is invalid
+  static void verifyData(Map<String, dynamic> data) {
+    if (data[PUSH_REQUEST_TITLE] is! String) {
+      throw ArgumentError('Push request title is ${data[PUSH_REQUEST_TITLE].runtimeType}. Expected String.');
+    }
+    if (data[PUSH_REQUEST_QUESTION] is! String) {
+      throw ArgumentError('Push request question is ${data[PUSH_REQUEST_QUESTION].runtimeType}. Expected String.');
+    }
+    if (data[PUSH_REQUEST_URL] is! String) {
+      throw ArgumentError('Push request url is ${data[PUSH_REQUEST_URL].runtimeType}. Expected String.');
+    } else if (Uri.tryParse(data[PUSH_REQUEST_URL]) == null) {
+      throw ArgumentError('Push request url is a String but not a valid Uri.');
+    }
+    if (data[PUSH_REQUEST_NONCE] is! String) {
+      throw ArgumentError('Push request nonce is ${data[PUSH_REQUEST_NONCE].runtimeType}. Expected String.');
+    }
+    if (data[PUSH_REQUEST_SSL_VERIFY] is! String) {
+      throw ArgumentError('Push request sslVerify is ${data[PUSH_REQUEST_SSL_VERIFY].runtimeType}. Expected String.');
+    }
+    if (data[PUSH_REQUEST_SERIAL] is! String) {
+      throw ArgumentError('Push request serial is ${data[PUSH_REQUEST_SERIAL].runtimeType}. Expected String.');
+    }
+    if (data[PUSH_REQUEST_SIGNATURE] is! String) {
+      throw ArgumentError('Push request signature is ${data[PUSH_REQUEST_SIGNATURE].runtimeType}. Expected String.');
+    }
+  }
 }

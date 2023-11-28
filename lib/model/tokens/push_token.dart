@@ -146,18 +146,17 @@ class PushToken extends Token {
 
   @override
   String toString() {
-    return 'Push${super.toString()}'
+    return 'Push${super.toString()} '
         'expirationDate: $expirationDate, '
-        'serial: $serial, sslVerify: $sslVerify, '
+        'serial: $serial, '
+        'sslVerify: $sslVerify, '
         'enrollmentCredentials: $enrollmentCredentials, '
-        'url: $url, isRolledOut: $isRolledOut, '
+        'url: $url, '
+        'isRolledOut: $isRolledOut, '
         'rolloutState: $rolloutState, '
-        'sortIndex: $sortIndex, '
-        'pin: $pin, '
         'publicServerKey: $publicServerKey, '
         'publicTokenKey: $publicTokenKey, '
         'pushRequests: $pushRequests, '
-        'tokenImage: $tokenImage, '
         'knownPushRequests: $knownPushRequests}';
   }
 

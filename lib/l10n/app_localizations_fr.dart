@@ -14,7 +14,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get name => 'Nom';
 
   @override
-  String get secret => 'Secret';
+  String get secretKey => 'Clé secrète';
 
   @override
   String get encoding => 'Encodage';
@@ -164,6 +164,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pollingFailed => 'Échec de la requête.';
 
   @override
+  String pollingFailedFor(Object serial) {
+    return 'Echec de la requête pour $serial.';
+  }
+
+  @override
   String get noNetworkConnection => 'Pas de connexion au réseau.';
 
   @override
@@ -265,34 +270,40 @@ class AppLocalizationsFr extends AppLocalizations {
   String get onBoardingText3 => 'Cette application est open source';
 
   @override
-  String get errorLogTitle => 'Journaux d\'erreurs';
+  String get errorLogTitle => 'Journal d\'erreur';
 
   @override
-  String get sendErrorHint => 'Envoyez-nous le journal des erreurs par courrier électronique';
+  String get logMenu => 'Menu du journal';
 
   @override
-  String get enableVerboseLogging => 'Activer la journalisation verbeuse';
+  String get showErrorLog => 'Afficher';
 
   @override
-  String get clearErrorLogHint => 'Efface le fichier journal des erreurs locales';
+  String get clearErrorLog => 'Effacer';
 
   @override
-  String get logMenu => 'Menu journal';
+  String get sendErrorLog => 'Envoyer';
 
   @override
-  String get sendErrorDialogHeader => 'Envoyer par e-mail';
+  String get sendErrorLogDescription => 'Un e-mail pré-rempli est créé.\nIl contient des informations sur l\'application, l\'erreur et le périphérique.\nVous pouvez modifier l\'e-mail avant de l\'envoyer.\nVous pouvez voir ici comment nous utilisons les informations:';
+
+  @override
+  String get showPrivacyPolicy => 'Afficher la déclaration de confidentialité';
+
+  @override
+  String get errorLogEmpty => 'Le journal des erreurs est vide';
+
+  @override
+  String get verboseLogging => 'Journalisation verbeuse';
+
+  @override
+  String get errorLogCleared => 'Journal d\'erreur nettoyé';
 
   @override
   String get ok => 'Ok';
 
   @override
-  String get noLogToSend => 'Il y a un journal à envoyer';
-
-  @override
   String get errorMailBody => 'Le fichier journal des erreurs est joint.\nVous pouvez remplacer ce texte par des informations supplémentaires sur l\'erreur.';
-
-  @override
-  String get errorLogCleared => 'Journaux d\'erreur effacés';
 
   @override
   String get showDetails => 'Afficher les détails';
@@ -379,7 +390,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authToDeclinePushRequest => 'Veuillez vous authentifier pour refuser la demande de connexion.';
 
   @override
-  String get incomingAuthRequestError => 'Le message ne contenait pas les données nécessaires ou les données étaient mal formées.';
+  String get pushRequestParseError => 'La demande push n\'a pas pu être traitée.';
 
   @override
   String get imageUrl => 'URL de l\'image';
@@ -449,5 +460,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get hidePushTokensDescription => 'Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé';
 
   @override
+  String get settingsGroupGeneral => 'Généralités';
+
+  @override
   String get licensesAndVersion => 'Licences et version';
+
+  @override
+  String get privacyPolicy => 'Politique de confidentialité';
 }

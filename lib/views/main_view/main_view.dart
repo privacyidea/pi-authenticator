@@ -9,6 +9,7 @@ import '../../widgets/status_bar.dart';
 import 'main_view_widgets/connectivity_listener.dart';
 import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
+import 'main_view_widgets/push_request_listener.dart';
 
 export 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 
@@ -55,14 +56,16 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
             child: widget.appIcon,
           ),
         ),
-        body: ConnectivityListener(
-          child: StatusBar(
-            child: Stack(
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              children: [
-                MainViewTokensList(nestedScrollViewKey: globalKey),
-                const MainViewNavigationBar(),
-              ],
+        body: PushRequestListener(
+          child: ConnectivityListener(
+            child: StatusBar(
+              child: Stack(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                children: [
+                  MainViewTokensList(nestedScrollViewKey: globalKey),
+                  const MainViewNavigationBar(),
+                ],
+              ),
             ),
           ),
         ),

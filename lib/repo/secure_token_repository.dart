@@ -46,7 +46,7 @@ class SecureTokenRepository implements TokenRepository {
 
   /// Function [f] is executed, protected by Mutex [_m].
   /// That means, that calls of this method will always be executed serial.
-  static protect(Function f) => _m.protect(f as Future<dynamic> Function());
+  static protect(Future<dynamic> Function() f) => _m.protect(f);
 
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
 

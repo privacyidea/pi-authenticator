@@ -1,7 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
+
 import '../l10n/app_localizations.dart';
 import '../model/mixins/sortable_mixin.dart';
 import '../model/push_request.dart';
@@ -9,6 +9,7 @@ import '../model/states/app_state.dart';
 import '../model/states/settings_state.dart';
 import '../model/states/token_folder_state.dart';
 import '../model/states/token_state.dart';
+import '../model/tokens/push_token.dart';
 import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_folder_repository.dart';
 import '../state_notifiers/app_state_notifier.dart';
@@ -18,6 +19,7 @@ import '../state_notifiers/settings_notifier.dart';
 import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
 import 'app_customizer.dart';
+import 'customizations.dart';
 import 'logger.dart';
 import 'push_provider.dart';
 
@@ -65,6 +67,11 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
     },
   );
   return tokenNotifier;
+});
+
+final tokenWithPushRequestProvider = Provider<PushToken?>((ref) {
+  Logger.info("New pushTokensProvider created");
+  return ref.watch(tokenProvider).tokenWithPushRequest();
 });
 
 final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(

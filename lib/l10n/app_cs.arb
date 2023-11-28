@@ -20,8 +20,8 @@
   "@name": {
     "description": "Describes the field where the tokens name should be entered."
   },
-  "secret": "Heslo",
-  "@secret": {
+  "secretKey": "Tajný klíč",
+  "@secretKey": {
     "description": "Describes the field where the tokens secret should be entered."
   },
   "encoding": "Kódování",
@@ -229,6 +229,15 @@
   "@pollingFailed": {
     "description": "Tells the user that the polling failed."
   },
+  "pollingFailedFor": "Dotaz na {serial} se nezdařil.",
+  "@pollingFailedFor": {
+    "description": "Tells the user that the polling failed.",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "noNetworkConnection": "Žádné připojení k síti.",
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
@@ -350,22 +359,24 @@
   "onBoardingText2": "Uložte tokeny do svého zařízení\nchráněné biometrickým ověřením",
   "onBoardingTitle3": "Navštivte náš profil Github",
   "onBoardingText3": "Tuto aplikaci má open source",
-  "errorLogTitle": "Protokoly o chybách",
-  "sendErrorHint": "Pošlete nám protokol o chybě e-mailem",
-  "@sendErrorHint": {
-    "description": "Hint for the user about what he will send."
-  },
-  "enableVerboseLogging": "Povolit slovní protokolování",
-  "clearErrorLogHint": "Vymaže místní soubor protokolu chyb",
+  "errorLogTitle": "Protokol chyb",
   "logMenu": "Nabídka protokolu",
-  "sendErrorDialogHeader": "Odeslat e-mailem",
+  "showErrorLog": "Zobrazit",
+  "clearErrorLog": "Vymazat",
+  "sendErrorLog": "Odeslat",
+  "sendErrorLogDescription": "Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:",
+  "@sendErrorLogDescription": {
+    "description": "Explanation for the user what he will send."
+  },
+  "showPrivacyPolicy": "Zobrazit zásady ochrany osobních údajů",
+  "errorLogEmpty": "Protokol chyb je prázdný.",
+  "verboseLogging": "Zevrubné protokolování",
+  "errorLogCleared": "Protokol chyb vymazán.",
   "ok": "Ok",
-  "noLogToSend": "Je třeba odeslat protokol.",
   "errorMailBody": "Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.",
   "@errorMailBody": {
     "description": "Message for email body"
   },
-  "errorLogCleared": "Protokoly chyb byly vymazány.",
   "showDetails": "Zobrazit podrobnosti",
   "open": "Otevřít",
   "sendErrorDialogBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.",
@@ -427,7 +438,7 @@
   },
   "authToAcceptPushRequest": "Pro přijetí požadavku na push notifikaci se přihlaste.",
   "authToDeclinePushRequest": "Pro odmítnutí požadavku na push notifikaci se přihlaste.",
-  "incomingAuthRequestError": "Zpráva neposkytla potřebná data nebo byla data chybně formulována.",
+  "pushRequestParseError": "Požadavek na odeslání se nepodařilo zpracovat.",
   "imageUrl": "URL obrázku",
   "errorRollOutSSLHandshakeFailed": "SSL handshake se nezdařil. Roll-out není možný.",
   "errorWhenPullingChallenges": "Při dotazování na výzvy {name} došlo k chybě.",
@@ -463,5 +474,7 @@
   "decryptErrorDeleteConfirmationContent": "Jste si jisti, že chcete data aplikace odstranit?",
   "hidePushTokens": "Skrýt push tokeny",
   "hidePushTokensDescription": "Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.",
-  "licensesAndVersion": "Licence a verze"
+  "settingsGroupGeneral": "Obecné informace",
+  "licensesAndVersion": "Licence a verze",
+  "privacyPolicy": "Zásady ochrany osobních údajů"
 }

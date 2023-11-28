@@ -19,8 +19,6 @@
   limitations under the License.
 */
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
@@ -43,7 +41,6 @@ void main() async {
       navigatorKey: globalNavigatorKey,
       appRunner: () async {
         WidgetsFlutterBinding.ensureInitialized();
-        if (!kIsWeb) await Firebase.initializeApp();
         runApp(AppWrapper(child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization)));
       });
 }

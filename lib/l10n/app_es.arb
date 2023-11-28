@@ -20,8 +20,8 @@
   "@name": {
     "description": "Describes the field where the tokens name should be entered."
   },
-  "secret": "Secreto",
-  "@secret": {
+  "secretKey": "Clave secreta",
+  "@secretKey": {
     "description": "Describes the field where the tokens secret should be entered."
   },
   "encoding": "Codificación",
@@ -225,6 +225,15 @@
   "@pollingFailed": {
     "description": "Tells the user that the polling failed."
   },
+  "pollingFailedFor": "Fallo de sondeo para {serial}",
+  "@pollingFailedFor": {
+    "description": "Tells the user that the polling failed.",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "noNetworkConnection": "No hay conexión a la red.",
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
@@ -346,22 +355,24 @@
   "onBoardingText2": "Almacena tokens en tu teléfono/n de forma segura. Protegido por tus datos biométricos.",
   "onBoardingTitle3": "Visítenos en Github",
   "onBoardingText3": "Esta aplicación es de código abierto",
-  "errorLogTitle": "Registros de errores",
-  "sendErrorHint": "Envíanos el registro de errores por correo electrónico",
-  "@sendErrorHint": {
-    "description": "Hint for the user about what he will send."
+  "errorLogTitle": "Registro de errores",
+  "logMenu": "Menú de registro",
+  "showErrorLog": "Mostrar",
+  "clearErrorLog": "Borrar",
+  "sendErrorLog": "Enviar",
+  "sendErrorLogDescription": "Se crea un correo electrónico listo.\nContiene información sobre la app, el error y el dispositivo.\nPuedes editar el correo antes de enviarlo.\nAquí puede ver cómo utilizamos la información:",
+  "@sendErrorLogDescription": {
+    "description": "Explanation for the user what he will send."
   },
-  "enableVerboseLogging": "Activar el registro detallado",
-  "clearErrorLogHint": "Borra el archivo de registro de errores local",
-  "logMenu": "Menú Registros",
-  "sendErrorDialogHeader": "Enviar por correo electrónico",
+  "showPrivacyPolicy": "Mostrar política de privacidad",
+  "errorLogEmpty": "El registro de errores está vacío",
+  "verboseLogging": "Registro detallado",
+  "errorLogCleared": "Registro de errores borrado",
   "ok": "Ok",
-  "noLogToSend": "Hay log para enviar",
   "errorMailBody": "Se adjunta el archivo de registro de errores.\nPuede sustituir este texto por información adicional sobre el error.",
   "@errorMailBody": {
     "description": "Message for email body"
   },
-  "errorLogCleared": "Registros de error borrados",
   "showDetails": "Mostrar detalles",
   "open": "Abrir",
   "sendErrorDialogBody": "Se ha producido un error inesperado en la aplicación. La siguiente información puede ser enviada a los desarrolladores por correo electrónico para ayudar a prevenir este error en el futuro.",
@@ -423,7 +434,7 @@
   },
   "authToAcceptPushRequest": "Por favor, autentifíquese para aceptar la solicitud push.",
   "authToDeclinePushRequest": "Por favor, autentifíquese para rechazar la solicitud push.",
-  "incomingAuthRequestError": "El mensaje no proporcionaba los datos necesarios o los datos estaban malformados.",
+  "pushRequestParseError": "No se ha podido procesar la solicitud push.",
   "imageUrl": "URL de la imagen",
   "errorRollOutSSLHandshakeFailed": "Ha fallado el protocolo SSL. No es posible el despliegue.",
   "errorWhenPullingChallenges": "Se ha producido un error al buscar retos de {name}",
@@ -459,5 +470,7 @@
   "decryptErrorDeleteConfirmationContent": "¿Estás seguro de que quieres borrar los datos de la aplicación?",
   "hidePushTokens": "Ocultar tokens push",
   "hidePushTokensDescription": "Ocultar tokens push de la lista de tokens. Esto no borrará los tokens y seguirán siendo visibles en una pantalla aparte",
-  "licensesAndVersion": "Licencias y versión"
+  "settingsGroupGeneral": "Información general",
+  "licensesAndVersion": "Licencias y versión",
+  "privacyPolicy": "Política de privacidad"
 }

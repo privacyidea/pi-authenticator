@@ -20,8 +20,8 @@
   "@name": {
     "description": "Describes the field where the tokens name should be entered."
   },
-  "secret": "Geheimnis",
-  "@secret": {
+  "secretKey": "Geheimer Schlüssel",
+  "@secretKey": {
     "description": "Describes the field where the tokens secret should be entered."
   },
   "encoding": "Kodierung",
@@ -222,6 +222,15 @@
   "@pollingFailed": {
     "description": "Tells the user that the polling failed."
   },
+  "pollingFailedFor": "Abfrage für {serial} fehlgeschlagen.",
+  "@pollingFailedFor": {
+    "description": "Tells the user that the polling failed.",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "noNetworkConnection": "Keine Netzwerkverbindung.",
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
@@ -343,22 +352,24 @@
   "onBoardingText2": "Speichern Sie Ihre Token sicher auf diesem Gerät\nGeschützt durch Ihre biometrischen Daten",
   "onBoardingTitle3": "Besuchen Sie uns auf Github",
   "onBoardingText3": "Diese App ist Open Source",
-  "errorLogTitle": "Fehlerprotokolle",
-  "sendErrorHint": "Senden Sie uns das Fehlerprotokoll per E-Mail",
-  "@sendErrorHint": {
-    "description": "Hint for the user about what he will send."
+  "errorLogTitle": "Fehlerprotokoll",
+  "logMenu": "Log-Menü",
+  "showErrorLog": "Anzeigen",
+  "clearErrorLog": "Löschen",
+  "sendErrorLog": "Senden",
+  "sendErrorLogDescription": "Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:",
+  "@sendErrorLogDescription": {
+    "description": "Explanation for the user what he will send."
   },
-  "enableVerboseLogging": "Fehler ausführlich protokollieren",
-  "clearErrorLogHint": "Löscht die lokale Fehlerprotokolldatei",
-  "logMenu": "Protokollmenu",
-  "sendErrorDialogHeader": "Per E-Mail senden",
+  "showPrivacyPolicy": "Datenschutzerklärung anzeigen",
+  "errorLogEmpty": "Das Fehlerprotokoll ist leer.",
+  "verboseLogging": "Ausführliche Protokollierung",
+  "errorLogCleared": "Fehlerprotokoll gelöscht.",
   "ok": "Ok",
-  "noLogToSend": "Es gibt kein Protokoll zu senden.",
   "errorMailBody": "Die Fehlerprotokolldatei ist angehängt.\nSie können diesen Text durch zusätzliche Informationen über den Fehler ersetzen.",
   "@errorMailBody": {
     "description": "Message for email body"
   },
-  "errorLogCleared": "Fehlerprotokolle gelöscht",
   "showDetails": "Details anzeigen",
   "open": "Öffnen",
   "sendErrorDialogBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden.",
@@ -415,7 +426,7 @@
   "errorRollOutNoConnectionToServer": "Der Rollout von Token {name} ist fehlgeschlagen, der Server konnte nicht erreicht werden.",
   "authToAcceptPushRequest": "Bitte authentifizieren Sie sich, um die Anfrage anzunehmen.",
   "authToDeclinePushRequest": "Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.",
-  "incomingAuthRequestError": "Die Nachricht enthielt nicht die erforderlichen Daten oder die Daten waren falsch formatiert.",
+  "pushRequestParseError": "Die Push-Anfrage konnte nicht verarbeitet werden.",
   "errorRollOutSSLHandshakeFailed": "SSL-Handshake fehlgeschlagen. Roll-out nicht möglich.",
   "errorRollOutTokenExpired": "Das Ausrollen dieses Tokens ist nicht mehr möglich.\nDer Token {name} ist abgelaufen.",
   "@errorRollOutTokenExpired": {
@@ -442,5 +453,7 @@
   "decryptErrorDeleteConfirmationContent": "Sind Sie sicher, dass Sie die App Daten löschen möchten?",
   "hidePushTokens": "Push-Token ausblenden",
   "hidePushTokensDescription": "Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.",
-  "licensesAndVersion": "Lizenzen und Version"
+  "settingsGroupGeneral": "Allgemeines",
+  "licensesAndVersion": "Lizenzen und Version",
+  "privacyPolicy": "Datenschutzerklärung"
 }

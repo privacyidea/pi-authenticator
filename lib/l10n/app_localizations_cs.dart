@@ -14,7 +14,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get name => 'Název';
 
   @override
-  String get secret => 'Heslo';
+  String get secretKey => 'Tajný klíč';
 
   @override
   String get encoding => 'Kódování';
@@ -164,6 +164,11 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pollingFailed => 'Dotaz se nezdařil.';
 
   @override
+  String pollingFailedFor(Object serial) {
+    return 'Dotaz na $serial se nezdařil.';
+  }
+
+  @override
   String get noNetworkConnection => 'Žádné připojení k síti.';
 
   @override
@@ -265,34 +270,40 @@ class AppLocalizationsCs extends AppLocalizations {
   String get onBoardingText3 => 'Tuto aplikaci má open source';
 
   @override
-  String get errorLogTitle => 'Protokoly o chybách';
-
-  @override
-  String get sendErrorHint => 'Pošlete nám protokol o chybě e-mailem';
-
-  @override
-  String get enableVerboseLogging => 'Povolit slovní protokolování';
-
-  @override
-  String get clearErrorLogHint => 'Vymaže místní soubor protokolu chyb';
+  String get errorLogTitle => 'Protokol chyb';
 
   @override
   String get logMenu => 'Nabídka protokolu';
 
   @override
-  String get sendErrorDialogHeader => 'Odeslat e-mailem';
+  String get showErrorLog => 'Zobrazit';
+
+  @override
+  String get clearErrorLog => 'Vymazat';
+
+  @override
+  String get sendErrorLog => 'Odeslat';
+
+  @override
+  String get sendErrorLogDescription => 'Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:';
+
+  @override
+  String get showPrivacyPolicy => 'Zobrazit zásady ochrany osobních údajů';
+
+  @override
+  String get errorLogEmpty => 'Protokol chyb je prázdný.';
+
+  @override
+  String get verboseLogging => 'Zevrubné protokolování';
+
+  @override
+  String get errorLogCleared => 'Protokol chyb vymazán.';
 
   @override
   String get ok => 'Ok';
 
   @override
-  String get noLogToSend => 'Je třeba odeslat protokol.';
-
-  @override
   String get errorMailBody => 'Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.';
-
-  @override
-  String get errorLogCleared => 'Protokoly chyb byly vymazány.';
 
   @override
   String get showDetails => 'Zobrazit podrobnosti';
@@ -379,7 +390,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get authToDeclinePushRequest => 'Pro odmítnutí požadavku na push notifikaci se přihlaste.';
 
   @override
-  String get incomingAuthRequestError => 'Zpráva neposkytla potřebná data nebo byla data chybně formulována.';
+  String get pushRequestParseError => 'Požadavek na odeslání se nepodařilo zpracovat.';
 
   @override
   String get imageUrl => 'URL obrázku';
@@ -449,5 +460,11 @@ class AppLocalizationsCs extends AppLocalizations {
   String get hidePushTokensDescription => 'Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.';
 
   @override
+  String get settingsGroupGeneral => 'Obecné informace';
+
+  @override
   String get licensesAndVersion => 'Licence a verze';
+
+  @override
+  String get privacyPolicy => 'Zásady ochrany osobních údajů';
 }
