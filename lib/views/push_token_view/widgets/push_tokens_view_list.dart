@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
-import '../../../l10n/app_localizations.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
 import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod_providers.dart';
-import '../../../utils/view_utils.dart';
 import '../../../widgets/deactivateable_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
 import '../../main_view/main_view_widgets/drag_target_divider.dart';
@@ -38,13 +35,7 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
       children: [
         DeactivateableRefreshIndicator(
           allowToRefresh: allowToRefresh,
-          onRefresh: () async {
-            showMessage(
-              message: AppLocalizations.of(context)!.pollingChallenges,
-              duration: const Duration(seconds: 1),
-            );
-            await PushProvider().pollForChallenges(isManually: true);
-          },
+          onRefresh: () async => PushProvider().pollForChallenges(isManually: true),
           child: SlidableAutoCloseBehavior(
             child: DragItemScroller(
               listViewKey: listViewKey,

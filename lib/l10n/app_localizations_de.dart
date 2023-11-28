@@ -285,7 +285,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sendErrorLog => 'Senden';
 
   @override
-  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWir die Informationen verwenden, sehen Sie hier:';
+  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:';
 
   @override
   String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
