@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../l10n/app_localizations.dart';
-import '../../../../../model/states/app_state.dart';
 import '../../../../../model/tokens/totp_token.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
@@ -66,14 +65,14 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
     });
   }
 
-  void _onAppStateChange(AppState state) {
+  void _onAppStateChange(AppLifecycleState? state) {
     if (!mounted) return;
-    if (state == AppState.resume) {
+    if (state == AppLifecycleState.resumed) {
       setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
       animation.forward(from: 1 - secondsLeft / widget.token.period);
       return;
     }
-    if (state == AppState.pause) {
+    if (state == AppLifecycleState.paused) {
       animation.stop();
       return;
     }

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -7,7 +9,6 @@ import '../state_notifiers/completed_introduction_notifier.dart';
 import '../l10n/app_localizations.dart';
 import '../model/mixins/sortable_mixin.dart';
 import '../model/push_request.dart';
-import '../model/states/app_state.dart';
 import '../model/states/settings_state.dart';
 import '../model/states/token_filter.dart';
 import '../model/states/token_folder_state.dart';
@@ -16,7 +17,6 @@ import '../repo/preference_introduction_repository.dart';
 import '../model/tokens/push_token.dart';
 import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_folder_repository.dart';
-import '../state_notifiers/app_state_notifier.dart';
 import '../state_notifiers/deeplink_notifier.dart';
 import '../state_notifiers/push_request_notifier.dart';
 import '../state_notifiers/settings_notifier.dart';
@@ -64,7 +64,7 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
     appStateProvider,
     (previous, next) {
       Logger.info('tokenProvider reviced new AppState. Changed from $previous to $next');
-      if (previous == AppState.pause && next == AppState.resume) {
+      if (previous == AppLifecycleState.paused && next == AppLifecycleState.resumed) {
         Logger.info('Refreshing tokens on resume');
         tokenNotifier.refreshRolledOutPushTokens();
       }
@@ -101,7 +101,7 @@ final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushReque
     );
 
     ref.listen(appStateProvider, (previous, next) {
-      if (previous == AppState.pause && next == AppState.resume) {
+      if (previous == AppLifecycleState.paused && next == AppLifecycleState.resumed) {
         Logger.info('Polling for challenges on resume');
         pushProvider.pollForChallenges(isManually: false);
       }
@@ -116,10 +116,10 @@ final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, Uri?>((ref) {
   return DeeplinkNotifier();
 });
 
-final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>(
+final appStateProvider = StateProvider<AppLifecycleState?>(
   (ref) {
     Logger.info("New AppStateNotifier created");
-    return AppStateNotifier();
+    return null;
   },
 );
 
