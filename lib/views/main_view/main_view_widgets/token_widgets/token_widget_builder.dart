@@ -12,12 +12,7 @@ import 'token_widget.dart';
 import 'totp_token_widgets/totp_token_widget.dart';
 
 abstract class TokenWidgetBuilder {
-  static TokenWidget fromToken(
-    Token token, {
-    bool withDivider = true,
-    Key? key,
-  }) =>
-      switch (token.runtimeType) {
+  static TokenWidget fromToken(Token token, {Key? key}) => switch (token.runtimeType) {
         const (TOTPToken) => TOTPTokenWidget(token as TOTPToken, key: key),
         const (HOTPToken) => HOTPTokenWidget(token as HOTPToken, key: key),
         const (PushToken) => PushTokenWidget(token as PushToken, key: key),

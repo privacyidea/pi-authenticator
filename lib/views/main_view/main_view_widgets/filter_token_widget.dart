@@ -21,7 +21,6 @@ class SearchInputField extends ConsumerStatefulWidget {
 }
 
 class _SearchInputFieldState extends ConsumerState<SearchInputField> {
-  TokenFilterCategory searchCategory = TokenFilterCategory.label;
   final TextEditingController _controller = TextEditingController();
 
   void _resetFilter() {
@@ -49,31 +48,10 @@ class _SearchInputFieldState extends ConsumerState<SearchInputField> {
   Widget build(BuildContext context) => TextField(
         controller: _controller,
         onChanged: (value) => _updateFilter(),
-        decoration: InputDecoration(
-          hintText: 'Label / Serial / Issuer',
+        decoration: const InputDecoration(
+          hintText: 'Label / Serial / Issuer / Type',
           border: InputBorder.none,
-          prefixIcon: const Icon(Icons.search),
-          suffixIcon: Container(
-            margin: const EdgeInsets.only(right: 12),
-            height: 24,
-            child: DropdownButton<TokenFilterCategory>(
-              value: searchCategory,
-              items: TokenFilterCategory.values
-                  .map((element) => DropdownMenuItem(
-                      value: element,
-                      child: Text(
-                        enumAsString(element),
-                      )))
-                  .toList(),
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() {
-                  searchCategory = value;
-                });
-                if (_controller.text.isNotEmpty) _updateFilter();
-              },
-            ),
-          ),
+          prefixIcon: Icon(Icons.search),
         ),
       );
 }

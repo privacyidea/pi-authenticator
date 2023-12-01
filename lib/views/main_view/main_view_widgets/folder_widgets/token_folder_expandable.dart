@@ -4,7 +4,9 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:privacyidea_authenticator/model/states/token_filter.dart';
+import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_folder.dart';
@@ -22,8 +24,9 @@ import 'token_folder_actions.dart/rename_token_folder_action.dart';
 class TokenFolderExpandable extends ConsumerStatefulWidget {
   final TokenFolder folder;
   final TokenFilter? filter;
+  final bool? expanded;
 
-  const TokenFolderExpandable({super.key, required this.folder, this.filter});
+  const TokenFolderExpandable({super.key, required this.folder, this.filter, this.expanded});
 
   @override
   ConsumerState<TokenFolderExpandable> createState() => _TokenFolderExpandableState();
@@ -39,10 +42,10 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
     super.initState();
     animationController = AnimationController(
       duration: const Duration(milliseconds: 250),
-      value: widget.folder.isExpanded ? 0 : 1.0,
+      value: widget.expanded ?? widget.folder.isExpanded ? 0 : 1.0,
       vsync: this,
     );
-    expandableController = ExpandableController(initialExpanded: widget.folder.isExpanded);
+    expandableController = ExpandableController(initialExpanded: widget.expanded ?? widget.folder.isExpanded);
     expandableController.addListener(() {
       globalRef?.read(tokenFolderProvider.notifier).updateFolder(widget.folder.copyWith(isExpanded: expandableController.expanded));
       if (expandableController.expanded) {
@@ -162,9 +165,29 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                                   Icons.folder_open,
                                   color: Theme.of(context).listTileTheme.iconColor,
                                 )
-                              : Icon(
-                                  Icons.folder,
-                                  color: Theme.of(context).listTileTheme.iconColor,
+                              : Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.folder,
+                                      color: Theme.of(context).listTileTheme.iconColor,
+                                    ),
+                                    if (widget.folder.isLocked)
+                                      Positioned.fill(
+                                        child: LayoutBuilder(
+                                          builder: (context, constraints) {
+                                            return Container(
+                                              padding: EdgeInsets.only(left: widget.folder.isExpanded ? 2 : 0, top: 1),
+                                              child: Icon(
+                                                widget.folder.isExpanded ? MdiIcons.lockOpenVariant : MdiIcons.lock,
+                                                color: Theme.of(context).extension<ActionTheme>()?.lockColor.withOpacity(0.8),
+                                                size: constraints.maxHeight / 2.1,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                  ],
                                 ),
                         ),
                       ),
@@ -206,10 +229,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                     for (var i = 0; i < tokens.length; i++) ...[
                       if (draggingSortable != tokens[i] && (i != 0 || draggingSortable is Token))
                         widget.filter == null ? DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: tokens[i]) : const Divider(),
-                      TokenWidgetBuilder.fromToken(
-                        tokens[i],
-                        withDivider: i < tokens.length - 1,
-                      ),
+                      TokenWidgetBuilder.fromToken(tokens[i]),
                     ],
                     if (tokens.isNotEmpty && draggingSortable is Token)
                       widget.filter == null ? DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: null) : const Divider(),
