@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
-import '../../../l10n/app_localizations.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod_providers.dart';
-import '../../../utils/view_utils.dart';
 import '../../../widgets/deactivateable_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
 import 'drag_target_divider.dart';
@@ -48,13 +45,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
         if (sortables.isEmpty) const NoTokenScreen(),
         DeactivateableRefreshIndicator(
           allowToRefresh: allowToRefresh,
-          onRefresh: () async {
-            showMessage(
-              message: AppLocalizations.of(context)!.pollingChallenges,
-              duration: const Duration(seconds: 1),
-            );
-            PollLoadingIndicator.pollForChallenges(context);
-          },
+          onRefresh: () async => PollLoadingIndicator.pollForChallenges(context),
           child: SlidableAutoCloseBehavior(
             child: DragItemScroller(
               listViewKey: listViewKey,

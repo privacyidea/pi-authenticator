@@ -46,7 +46,7 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
   }
 
   Widget _pushRequestDialog(PushToken tokenWithPushRequest) => DefaultDialog(
-        title: Text(' ${tokenWithPushRequest.label}', style: Theme.of(context).textTheme.titleLarge!),
+        title: Center(child: Text(' ${tokenWithPushRequest.label}', textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge!)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
