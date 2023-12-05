@@ -83,7 +83,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
         child: InkWell(
           onTap: widget.token.isLocked && isHidden.value
               ? () async {
-                  if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
+                  if (await lockAuth(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
                     isHidden.value = false;
                   }
                 }

@@ -4,6 +4,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:home_widget/home_widget.dart';
+import 'package:privacyidea_authenticator/state_notifiers/home_widget_state_notifier.dart';
+import 'package:uni_links/uni_links.dart';
 import '../model/states/introduction_state.dart';
 import '../state_notifiers/completed_introduction_notifier.dart';
 import '../l10n/app_localizations.dart';
@@ -113,7 +116,10 @@ final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushReque
 
 final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, Uri?>((ref) {
   Logger.info("New DeeplinkNotifier created");
-  return DeeplinkNotifier();
+  return DeeplinkNotifier(sources: [
+    DeeplinkSource(name: 'uni_links', stream: uriLinkStream, initialUri: getInitialUri()),
+    DeeplinkSource(name: 'home_widget', stream: HomeWidget.widgetClicked, initialUri: HomeWidget.initiallyLaunchedFromHomeWidget()),
+  ]);
 });
 
 final appStateProvider = StateProvider<AppLifecycleState?>(
@@ -169,6 +175,9 @@ final appConstraintsProvider = StateProvider<BoxConstraints?>((ref) {
   Logger.info("New constraintsProvider created");
   return null;
 });
+
+// final homeWidgetProvider = StateNotifierProvider<HomeWidgetStateNotifier, HomeWidgetState>(
+//     (ref) => HomeWidgetStateNotifier(initState: HomeWidgetState(linkedHomeWidgets: {'32': '123'})));
 
 /// Only used for the app customizer
 final applicationCustomizerProvider = StateProvider<ApplicationCustomization>((ref) => ApplicationCustomization.defaultCustomization);

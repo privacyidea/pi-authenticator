@@ -4,20 +4,20 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import '../../../proto/generated/GoogleAuthenticatorImport.pb.dart';
-import '../../tokens/token.dart';
-import '../scheme_processor_interface.dart';
+import '../../../../proto/generated/GoogleAuthenticatorImport.pb.dart';
+import '../../../tokens/token.dart';
+import '../token_scheme_processor.dart';
 import 'otp_auth_processor.dart';
 
-class OtpAuthMigrationProcessor extends SchemeProcessor {
-  final OtpAuthProcessor otpAuthProcessor = OtpAuthProcessor();
+class OtpAuthMigrationProcessor extends TokenSchemeProcessor {
+  const OtpAuthMigrationProcessor();
+  static const OtpAuthProcessor otpAuthProcessor = OtpAuthProcessor();
 
-  OtpAuthMigrationProcessor();
   @override
-  Set<String> supportedScheme = {'otpauth-migration'};
+  Set<String> get supportedSchemes => {'otpauth-migration'};
   @override
   Future<List<Token>?> process(Uri uri) async {
-    if (!supportedScheme.contains(uri.scheme)) return null;
+    if (!supportedSchemes.contains(uri.scheme)) return null;
     final value = uri.toString();
     // check prefix "otpauth-migration://offline?data="
     // extract suffix - Base64 encode

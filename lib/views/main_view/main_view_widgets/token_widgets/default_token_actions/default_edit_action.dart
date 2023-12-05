@@ -24,7 +24,7 @@ class DefaultEditAction extends TokenAction {
         backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
         foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
         onPressed: (context) async {
-          if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
+          if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
             return;
           }
           _showDialog();

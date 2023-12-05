@@ -235,7 +235,7 @@ $deviceInfo""";
 
   void _runZonedGuarded() {
     if (_appRunner == null && _app == null) {
-      WidgetsFlutterBinding.ensureInitialized();
+      // WidgetsFlutterBinding.ensureInitialized();
       return;
     }
     runZonedGuarded<void>(

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'dart:io';
 
@@ -12,7 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import '../model/scheme_processors/scheme_processor_interface.dart';
+import '../model/processors/scheme_processor_interface.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
@@ -199,6 +200,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<void> handleLink(Uri uri) async {
+    log('Handling link: $uri');
     await loadingRepo;
     List<Token>? tokens;
     try {

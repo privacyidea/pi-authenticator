@@ -68,8 +68,8 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
                   flex: 6,
                   child: PressButton(
                     onPressed: () async {
-                      if (tokenWithPushRequest.isLocked &&
-                          await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) return;
+                      if (tokenWithPushRequest.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false)
+                        return;
                       globalRef?.read(pushRequestProvider.notifier).acceptPop(tokenWithPushRequest);
                       _closePushRequestDialog();
                     },
@@ -97,8 +97,7 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
                   child: PressButton(
                       style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
                       onPressed: () async {
-                        if (tokenWithPushRequest.isLocked &&
-                            await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
+                        if (tokenWithPushRequest.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
                           return;
                         }
                         _showConfirmationDialog(tokenWithPushRequest);

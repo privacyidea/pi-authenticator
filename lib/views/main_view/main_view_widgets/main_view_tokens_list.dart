@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/push_token.dart';
+import '../../../utils/home_widget_utils.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod_providers.dart';
@@ -28,6 +30,28 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
 
   Duration? lastTimeStamp;
 
+  void updateOTPValue(OTPToken? token) async {
+    // print('Getting Password');
+    // if (token == null) return;
+    // print('Password: ${token.otpValue}');
+
+    // final success = await HomeWidget.saveWidgetData<String>('_password', token.otpValue);
+
+    // (await PackageInfo.fromPlatform()).packageName;
+    // if (kDebugMode) {
+    //   packageName = packageName.replaceAll('.debug', '');
+    // }
+
+    // //  await HomeWidget.renderFlutterWidget(TokenWidgetBuilder.fromToken(token), key: 'token', logicalSize: Size(200, 100));
+    // print('Package Name: $packageName');
+    // print('Package Name: it.netknights.piauthenticator');
+
+    // final success2 = await HomeWidget.updateWidget(qualifiedAndroidName: '$packageName.AppWidgetProvider', iOSName: 'AppWidgetProviderDebug');
+    // print('Updated Widget: $success2');
+
+    // print('Updated Widget');
+  }
+
   @override
   Widget build(BuildContext context) {
     final tokenFolders = ref.watch(tokenFolderProvider).folders;
@@ -39,6 +63,10 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     final tokenStateWithNoFolder = tokenState.tokensWithoutFolder(exclude: filterPushTokens ? [PushToken] : []);
 
     List<SortableMixin> sortables = [...tokenFolders, ...tokenStateWithNoFolder];
+
+    final otpToken = sortables.whereType<OTPToken>().firstOrNull;
+    // homeWidgetReloadAllOtp();
+    updateOTPValue(otpToken);
 
     return Stack(
       children: [

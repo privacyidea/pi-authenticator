@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 
 import '../../utils/logger.dart';
 import '../token_folder.dart';
@@ -10,6 +11,9 @@ import '../tokens/token.dart';
 @immutable
 class TokenState {
   final List<Token> tokens;
+
+  List<OTPToken> get otpTokens => tokens.whereType<OTPToken>().toList();
+  bool get hasOTPTokens => otpTokens.isNotEmpty;
 
   List<HOTPToken> get hotpTokens => tokens.whereType<HOTPToken>().toList();
   bool get hasHOTPTokens => hotpTokens.isNotEmpty;

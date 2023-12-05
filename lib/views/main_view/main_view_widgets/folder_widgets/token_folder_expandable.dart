@@ -81,7 +81,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
             return;
           }
           if (tokens.isEmpty || (tokens.length == 1 && tokens.first == draggingSortable)) return;
-          if (widget.folder.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.uncollapseLockedFolder) == false) {
+          if (widget.folder.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.uncollapseLockedFolder) == false) {
             return;
           }
           if (!mounted) return;

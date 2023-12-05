@@ -20,7 +20,7 @@ class HideableWidget extends StatelessWidget {
     return token.isLocked && isHiddenNotifier.value
         ? IconButton(
             onPressed: () async {
-              if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
+              if (await lockAuth(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
                 isHiddenNotifier.value = false;
               }
             },

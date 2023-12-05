@@ -15,7 +15,7 @@ import 'view_utils.dart';
 
 bool authenticationInProgress = false;
 
-Future<bool> lockAuth({required BuildContext context, required String localizedReason}) async {
+Future<bool> lockAuth({required String localizedReason}) async {
   bool didAuthenticate = false;
   LocalAuthentication localAuth = LocalAuthentication();
 

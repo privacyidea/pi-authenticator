@@ -17,7 +17,7 @@ class LockTokenFolderAction extends StatelessWidget {
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.lockColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
-        if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
+        if (await lockAuth(localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
         globalRef?.read(tokenFolderProvider.notifier).updateFolder(folder.copyWith(isLocked: !folder.isLocked));
       },
       child: Column(

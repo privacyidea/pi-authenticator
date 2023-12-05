@@ -21,7 +21,7 @@ class DefaultDeleteAction extends TokenAction {
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (_) async {
-        if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)?.deleteLockedToken ?? '') == false) {
+        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)?.deleteLockedToken ?? '') == false) {
           return;
         }
         _showDialog();

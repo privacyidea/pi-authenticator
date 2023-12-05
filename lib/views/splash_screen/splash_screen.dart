@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../model/enums/introduction.dart';
 
+import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import '../main_view/main_view.dart';
@@ -28,6 +29,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    homeWidgetInit();
 
     Logger.info('Starting app.', name: 'main.dart#initState');
     Future.delayed(_splashScreenDelay, () {

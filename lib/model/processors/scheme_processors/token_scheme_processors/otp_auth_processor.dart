@@ -1,24 +1,24 @@
 import 'dart:typed_data';
 
-import '../../../utils/crypto_utils.dart';
-import '../../../utils/identifiers.dart';
-import '../../../utils/logger.dart';
-import '../../../utils/supported_versions.dart';
-import '../../../utils/view_utils.dart';
-import '../../../widgets/two_step_dialog.dart';
-import '../../enums/algorithms.dart';
-import '../../enums/encodings.dart';
-import '../../enums/token_types.dart';
-import '../../tokens/token.dart';
-import '../scheme_processor_interface.dart';
+import '../../../../utils/crypto_utils.dart';
+import '../../../../utils/identifiers.dart';
+import '../../../../utils/logger.dart';
+import '../../../../utils/supported_versions.dart';
+import '../../../../utils/view_utils.dart';
+import '../../../../widgets/two_step_dialog.dart';
+import '../../../enums/algorithms.dart';
+import '../../../enums/encodings.dart';
+import '../../../enums/token_types.dart';
+import '../../../tokens/token.dart';
+import '../token_scheme_processor.dart';
 
-class OtpAuthProcessor extends SchemeProcessor {
-  OtpAuthProcessor();
+class OtpAuthProcessor extends TokenSchemeProcessor {
+  const OtpAuthProcessor();
   @override
-  Set<String> supportedScheme = {'otpauth'};
+  Set<String> get supportedSchemes => {'otpauth'};
   @override
   Future<List<Token>?> process(Uri uri) async {
-    if (!supportedScheme.contains(uri.scheme)) return null;
+    if (!supportedSchemes.contains(uri.scheme)) return null;
     Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
     Map<String, dynamic> uriMap;
     try {
