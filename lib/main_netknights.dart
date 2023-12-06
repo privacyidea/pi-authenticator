@@ -18,6 +18,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+import 'dart:developer';
+
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,13 +52,18 @@ void main() async {
 }
 
 class PrivacyIDEAAuthenticator extends ConsumerWidget {
-  final ApplicationCustomization customization;
-  const PrivacyIDEAAuthenticator({required this.customization, super.key});
+  static ApplicationCustomization? customization;
+  final ApplicationCustomization _customization;
+  PrivacyIDEAAuthenticator({required ApplicationCustomization customization, super.key}) : _customization = customization {
+    // ignore: prefer_initializing_formals
+    PrivacyIDEAAuthenticator.customization = customization;
+  }
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsFlutterBinding.ensureInitialized();
     globalRef = ref;
     final locale = ref.watch(settingsProvider).currentLocale;
+    log('Current Locale: $locale');
     return LayoutBuilder(builder: (context, constraints) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(appConstraintsProvider.notifier).state = constraints;
@@ -67,32 +74,32 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: locale,
-        title: customization.appName,
-        theme: customization.generateLightTheme(),
-        darkTheme: customization.generateDarkTheme(),
+        title: _customization.appName,
+        theme: _customization.generateLightTheme(),
+        darkTheme: _customization.generateDarkTheme(),
         scaffoldMessengerKey: globalSnackbarKey, // <= this
         themeMode: EasyDynamicTheme.of(context).themeMode,
         initialRoute: SplashScreen.routeName,
         routes: {
           SplashScreen.routeName: (context) => SplashScreen(
-                appImage: customization.appImage,
-                appIcon: customization.appIcon,
-                appName: customization.appName,
+                appImage: _customization.appImage,
+                appIcon: _customization.appIcon,
+                appName: _customization.appName,
               ),
           OnboardingView.routeName: (context) => OnboardingView(
-                appName: customization.appName,
+                appName: _customization.appName,
               ),
           MainView.routeName: (context) => MainView(
-                appIcon: customization.appIcon,
-                appName: customization.appName,
+                appIcon: _customization.appIcon,
+                appName: _customization.appName,
               ),
           SettingsView.routeName: (context) => const SettingsView(),
           AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
           QRScannerView.routeName: (context) => const QRScannerView(),
           LicenseView.routeName: (context) => LicenseView(
-                appImage: customization.appImage,
-                appName: customization.appName,
-                websiteLink: customization.websiteLink,
+                appImage: _customization.appImage,
+                appName: _customization.appName,
+                websiteLink: _customization.websiteLink,
               ),
           PushTokensView.routeName: (context) => const PushTokensView(),
         },

@@ -29,7 +29,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    homeWidgetInit();
+
+    HomeWidgetUtils.homeWidgetInit();
 
     Logger.info('Starting app.', name: 'main.dart#initState');
     Future.delayed(_splashScreenDelay, () {
@@ -40,6 +41,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       }
     });
     _init();
+  }
+
+  @override
+  void dispose() {
+    Logger.info('Disposing app.', name: 'main.dart#dispose');
+    super.dispose();
   }
 
   Future<void> _init() async {

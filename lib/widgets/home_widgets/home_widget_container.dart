@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 class HomeWidgetContainer extends StatelessWidget {
   final String otp;
   final Size logicalSize;
-  late final ThemeData theme;
-  HomeWidgetContainer({super.key, required this.otp, ThemeData? theme, required this.logicalSize}) {
-    this.theme = theme ?? ThemeData.light();
-  }
+  final ThemeData theme;
+  const HomeWidgetContainer({super.key, required this.otp, required this.theme, required this.logicalSize});
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +12,8 @@ class HomeWidgetContainer extends StatelessWidget {
       width: logicalSize.width,
       height: logicalSize.height,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
         color: theme.colorScheme.background,
+        borderRadius: BorderRadius.circular(logicalSize.height / 4),
       ),
       child: Center(
         child: Text(

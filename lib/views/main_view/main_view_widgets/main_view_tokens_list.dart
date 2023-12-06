@@ -5,7 +5,6 @@ import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/push_token.dart';
-import '../../../utils/home_widget_utils.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod_providers.dart';

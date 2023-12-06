@@ -25,6 +25,6 @@ class HomeWidgetProcessor extends SchemeProcessor {
     final widgetId = uri.queryParameters['widgetId'];
     final tokenId = uri.queryParameters['tokenId'];
     if (widgetId == null || tokenId == null) return;
-    return homeWidgetShowOtp(widgetId, tokenId);
+    return HomeWidgetUtils.showOtp(widgetId, tokenId);
   }
 }

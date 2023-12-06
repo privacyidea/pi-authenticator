@@ -25,7 +25,7 @@ class LinkHomeWidgetView extends ConsumerWidget {
             title: Text(otpToken.label),
             subtitle: Text(splitPeriodically(otpString, otpString.length ~/ 2)),
             onTap: () async {
-              homeWidgetLink(homeWidgetId, otpToken.id);
+              HomeWidgetUtils.link(homeWidgetId, otpToken.id);
               FlutterAppMinimizer.minimize();
               Navigator.pop(context);
             },

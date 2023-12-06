@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ class ThemeCustomization {
   static const ThemeCustomization defaultDarkTheme = ThemeCustomization.defaultDarkWith();
 
   const ThemeCustomization({
+    required this.brightness,
     required this.primaryColor,
     required this.onPrimary,
     required this.subtitleColor,
@@ -45,7 +47,8 @@ class ThemeCustomization {
     this.navigationBarIconColor,
     this.qrButtonBackgroundColor,
     this.qrButtonIconColor,
-  })  : primaryColor = primaryColor ?? Colors.lightBlue,
+  })  : brightness = Brightness.light,
+        primaryColor = primaryColor ?? Colors.lightBlue,
         onPrimary = onPrimary ?? const Color(0xFF282828),
         subtitleColor = subtitleColor ?? const Color(0xFF9E9E9E),
         navigationBarColor = navigationBarColor ?? Colors.white,
@@ -75,7 +78,8 @@ class ThemeCustomization {
     this.navigationBarIconColor,
     this.qrButtonBackgroundColor,
     this.qrButtonIconColor,
-  })  : primaryColor = primaryColor ?? Colors.lightBlue,
+  })  : brightness = Brightness.dark,
+        primaryColor = primaryColor ?? Colors.lightBlue,
         onPrimary = onPrimary ?? const Color(0xFF282828),
         subtitleColor = subtitleColor ?? const Color(0xFF9E9E9E),
         backgroundColor = backgroundColor ?? const Color(0xFF303030),
@@ -86,6 +90,8 @@ class ThemeCustomization {
         lockColor = lockColor ?? const Color(0xffFFCC00),
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
         navigationBarColor = navigationBarColor ?? const Color(0xFF282828);
+
+  final Brightness brightness;
 
   // Basic colors
   final Color primaryColor;
@@ -113,6 +119,7 @@ class ThemeCustomization {
   final Color? qrButtonIconColor; // Default: onPrimary
 
   ThemeCustomization copyWith({
+    Brightness? brightness,
     Color? primaryColor,
     Color? onPrimary,
     Color? subtitleColor,
@@ -132,6 +139,7 @@ class ThemeCustomization {
     Color? Function()? qrButtonIconColor,
   }) =>
       ThemeCustomization(
+        brightness: brightness ?? this.brightness,
         primaryColor: primaryColor ?? this.primaryColor,
         onPrimary: onPrimary ?? this.onPrimary,
         subtitleColor: subtitleColor ?? this.subtitleColor,
@@ -151,47 +159,54 @@ class ThemeCustomization {
         qrButtonIconColor: qrButtonIconColor != null ? qrButtonIconColor() : this.qrButtonIconColor,
       );
 
-  factory ThemeCustomization.fromJsonDark(Map<String, dynamic> json) => ThemeCustomization.defaultDarkWith(
-        primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
-        onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
-        subtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
-        backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor'] as int) : null,
-        foregroundColor: json['foregroundColor'] != null ? Color(json['foregroundColor'] as int) : null,
-        shadowColor: json['shadowColor'] != null ? Color(json['shadowColor'] as int) : null,
-        deleteColor: json['deleteColor'] != null ? Color(json['deleteColor'] as int) : null,
-        renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
-        lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
-        actionButtonsForegroundColor: json['actionButtonsForegroundColor'] != null ? Color(json['actionButtonsForegroundColor'] as int) : null,
-        tilePrimaryColor: json['tilePrimaryColor'] != null ? Color(json['tilePrimaryColor'] as int) : null,
-        tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
-        tileSubtitleColor: json['tileSubtitleColor'] != null ? Color(json['tileSubtitleColor'] as int) : null,
-        navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
-        navigationBarIconColor: json['navigationBarIconColor'] != null ? Color(json['navigationBarIconColor'] as int) : null,
-        qrButtonBackgroundColor: json['qrButtonBackgroundColor'] != null ? Color(json['qrButtonBackgroundColor'] as int) : null,
-        qrButtonIconColor: json['qrButtonIconColor'] != null ? Color(json['qrButtonIconColor'] as int) : null,
-      );
-
-  factory ThemeCustomization.fromJsonLight(Map<String, dynamic> json) => ThemeCustomization.defaultLightWith(
-        primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
-        onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
-        subtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
-        backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor'] as int) : null,
-        foregroundColor: json['foregroundColor'] != null ? Color(json['foregroundColor'] as int) : null,
-        shadowColor: json['shadowColor'] != null ? Color(json['shadowColor'] as int) : null,
-        deleteColor: json['deleteColor'] != null ? Color(json['deleteColor'] as int) : null,
-        renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
-        lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
-        actionButtonsForegroundColor: json['actionButtonsForegroundColor'] != null ? Color(json['actionButtonsForegroundColor'] as int) : null,
-        tilePrimaryColor: json['tilePrimaryColor'] != null ? Color(json['tilePrimaryColor'] as int) : null,
-        tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
-        tileSubtitleColor: json['tileSubtitleColor'] != null ? Color(json['tileSubtitleColor'] as int) : null,
-        navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
-        navigationBarIconColor: json['navigationBarIconColor'] != null ? Color(json['navigationBarIconColor'] as int) : null,
-        qrButtonBackgroundColor: json['qrButtonBackgroundColor'] != null ? Color(json['qrButtonBackgroundColor'] as int) : null,
-        qrButtonIconColor: json['qrButtonIconColor'] != null ? Color(json['qrButtonIconColor'] as int) : null,
-      );
+  factory ThemeCustomization.fromJson(Map<String, dynamic> json) {
+    bool isLightTheme = json['brightness'] == 'light';
+    if (json['brightness'] == null && json['primaryColor'] != null) {
+      isLightTheme = _isColorBright(Color(json['primaryColor'] as int));
+    }
+    return isLightTheme
+        ? ThemeCustomization.defaultLightWith(
+            primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
+            onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
+            subtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
+            backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor'] as int) : null,
+            foregroundColor: json['foregroundColor'] != null ? Color(json['foregroundColor'] as int) : null,
+            shadowColor: json['shadowColor'] != null ? Color(json['shadowColor'] as int) : null,
+            deleteColor: json['deleteColor'] != null ? Color(json['deleteColor'] as int) : null,
+            renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
+            lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
+            actionButtonsForegroundColor: json['actionButtonsForegroundColor'] != null ? Color(json['actionButtonsForegroundColor'] as int) : null,
+            tilePrimaryColor: json['tilePrimaryColor'] != null ? Color(json['tilePrimaryColor'] as int) : null,
+            tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
+            tileSubtitleColor: json['tileSubtitleColor'] != null ? Color(json['tileSubtitleColor'] as int) : null,
+            navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
+            navigationBarIconColor: json['navigationBarIconColor'] != null ? Color(json['navigationBarIconColor'] as int) : null,
+            qrButtonBackgroundColor: json['qrButtonBackgroundColor'] != null ? Color(json['qrButtonBackgroundColor'] as int) : null,
+            qrButtonIconColor: json['qrButtonIconColor'] != null ? Color(json['qrButtonIconColor'] as int) : null,
+          )
+        : ThemeCustomization.defaultDarkWith(
+            primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
+            onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
+            subtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
+            backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor'] as int) : null,
+            foregroundColor: json['foregroundColor'] != null ? Color(json['foregroundColor'] as int) : null,
+            shadowColor: json['shadowColor'] != null ? Color(json['shadowColor'] as int) : null,
+            deleteColor: json['deleteColor'] != null ? Color(json['deleteColor'] as int) : null,
+            renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
+            lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
+            actionButtonsForegroundColor: json['actionButtonsForegroundColor'] != null ? Color(json['actionButtonsForegroundColor'] as int) : null,
+            tilePrimaryColor: json['tilePrimaryColor'] != null ? Color(json['tilePrimaryColor'] as int) : null,
+            tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
+            tileSubtitleColor: json['tileSubtitleColor'] != null ? Color(json['tileSubtitleColor'] as int) : null,
+            navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
+            navigationBarIconColor: json['navigationBarIconColor'] != null ? Color(json['navigationBarIconColor'] as int) : null,
+            qrButtonBackgroundColor: json['qrButtonBackgroundColor'] != null ? Color(json['qrButtonBackgroundColor'] as int) : null,
+            qrButtonIconColor: json['qrButtonIconColor'] != null ? Color(json['qrButtonIconColor'] as int) : null,
+          );
+  }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
+        'brightness': brightness == Brightness.light ? 'light' : 'dark',
         'primaryColor': primaryColor.value,
         'onPrimary': onPrimary.value,
         'subtitleColor': subtitleColor.value,
@@ -209,6 +224,126 @@ class ThemeCustomization {
         'navigationBarIconColor': navigationBarIconColor?.value,
         'qrButtonBackgroundColor': qrButtonBackgroundColor?.value,
       };
+
+  ThemeData generateTheme() {
+    return ThemeData(
+        useMaterial3: false,
+        brightness: brightness,
+        textTheme: const TextTheme().copyWith(
+          bodyLarge: TextStyle(color: foregroundColor),
+          bodyMedium: TextStyle(color: foregroundColor),
+          titleMedium: TextStyle(color: foregroundColor),
+          titleSmall: TextStyle(color: foregroundColor),
+          displayLarge: TextStyle(color: foregroundColor),
+          displayMedium: TextStyle(color: foregroundColor),
+          displaySmall: TextStyle(color: foregroundColor),
+          headlineMedium: TextStyle(color: foregroundColor),
+          headlineSmall: TextStyle(color: foregroundColor),
+          titleLarge: TextStyle(color: foregroundColor),
+          bodySmall: TextStyle(color: tileSubtitleColor),
+          labelLarge: TextStyle(color: foregroundColor),
+          labelSmall: TextStyle(color: foregroundColor),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(6),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+        scaffoldBackgroundColor: backgroundColor,
+        cardColor: backgroundColor,
+        shadowColor: shadowColor,
+        // shadowColor: Colors.transparent,
+        appBarTheme: const AppBarTheme().copyWith(
+          backgroundColor: backgroundColor,
+          shadowColor: shadowColor,
+          foregroundColor: foregroundColor,
+          elevation: 0,
+        ),
+        primaryIconTheme: IconThemeData(color: foregroundColor),
+        navigationBarTheme: const NavigationBarThemeData().copyWith(
+          backgroundColor: navigationBarColor,
+          shadowColor: shadowColor,
+          iconTheme: MaterialStatePropertyAll(IconThemeData(color: navigationBarIconColor ?? foregroundColor)),
+          elevation: 3,
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: qrButtonBackgroundColor ?? primaryColor,
+          foregroundColor: qrButtonIconColor ?? onPrimary,
+          elevation: 0,
+        ),
+        listTileTheme: ListTileThemeData(
+          tileColor: backgroundColor,
+          titleTextStyle: TextStyle(color: tilePrimaryColor ?? primaryColor),
+          subtitleTextStyle: TextStyle(color: tileSubtitleColor ?? subtitleColor),
+          iconColor: tileIconColor,
+        ),
+        colorScheme: brightness == Brightness.light
+            ? ColorScheme.light(
+                primary: primaryColor,
+                secondary: primaryColor,
+                onPrimary: onPrimary,
+                onSecondary: onPrimary,
+                errorContainer: deleteColor,
+              )
+            : ColorScheme.dark(
+                primary: primaryColor,
+                secondary: primaryColor,
+                onPrimary: onPrimary,
+                onSecondary: onPrimary,
+                errorContainer: deleteColor,
+              ),
+        checkboxTheme: CheckboxThemeData(
+          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primaryColor;
+            }
+            return null;
+          }),
+        ),
+        radioTheme: RadioThemeData(
+          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primaryColor;
+            }
+            return null;
+          }),
+        ),
+        switchTheme: SwitchThemeData(
+          thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primaryColor;
+            }
+            return null;
+          }),
+          trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return primaryColor;
+            }
+            return null;
+          }),
+        ),
+        extensions: [
+          ActionTheme(
+            deleteColor: deleteColor,
+            editColor: renameColor,
+            lockColor: lockColor,
+            foregroundColor: actionButtonsForegroundColor ?? foregroundColor,
+          ),
+        ]);
+  }
 }
 
 class ApplicationCustomization {
@@ -286,17 +421,17 @@ class ApplicationCustomization {
         darkTheme: darkTheme ?? this.darkTheme,
       );
 
-  ThemeData generateLightTheme() => _generateTheme(lightTheme, Brightness.light);
+  ThemeData generateLightTheme() => lightTheme.generateTheme();
 
-  ThemeData generateDarkTheme() => _generateTheme(darkTheme, Brightness.dark);
+  ThemeData generateDarkTheme() => darkTheme.generateTheme();
 
   factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => defaultCustomization.copyWith(
         appName: json['appName'] as String,
         websiteLink: json['websiteLink'] as String,
         appIconUint8List: json['appIconBASE64'] != null ? base64Decode(json['appIconBASE64']! as String) : null,
         appImageUint8List: json['appImageBASE64'] != null ? base64Decode(json['appImageBASE64'] as String) : null,
-        lightTheme: ThemeCustomization.fromJsonLight(json['lightTheme'] as Map<String, dynamic>),
-        darkTheme: ThemeCustomization.fromJsonDark(json['darkTheme'] as Map<String, dynamic>),
+        lightTheme: ThemeCustomization.fromJson(json['lightTheme'] as Map<String, dynamic>),
+        darkTheme: ThemeCustomization.fromJson(json['darkTheme'] as Map<String, dynamic>),
       );
 
   Map<String, dynamic> toJson() {
@@ -309,126 +444,6 @@ class ApplicationCustomization {
       'darkTheme': darkTheme.toJson(),
     };
   }
-}
-
-ThemeData _generateTheme(ThemeCustomization theme, Brightness brightness) {
-  return ThemeData(
-      useMaterial3: false,
-      brightness: brightness,
-      textTheme: const TextTheme().copyWith(
-        bodyLarge: TextStyle(color: theme.foregroundColor),
-        bodyMedium: TextStyle(color: theme.foregroundColor),
-        titleMedium: TextStyle(color: theme.foregroundColor),
-        titleSmall: TextStyle(color: theme.foregroundColor),
-        displayLarge: TextStyle(color: theme.foregroundColor),
-        displayMedium: TextStyle(color: theme.foregroundColor),
-        displaySmall: TextStyle(color: theme.foregroundColor),
-        headlineMedium: TextStyle(color: theme.foregroundColor),
-        headlineSmall: TextStyle(color: theme.foregroundColor),
-        titleLarge: TextStyle(color: theme.foregroundColor),
-        bodySmall: TextStyle(color: theme.tileSubtitleColor),
-        labelLarge: TextStyle(color: theme.foregroundColor),
-        labelSmall: TextStyle(color: theme.foregroundColor),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(6),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-      ),
-      scaffoldBackgroundColor: theme.backgroundColor,
-      cardColor: theme.backgroundColor,
-      shadowColor: theme.shadowColor,
-      // shadowColor: Colors.transparent,
-      appBarTheme: const AppBarTheme().copyWith(
-        backgroundColor: theme.backgroundColor,
-        shadowColor: theme.shadowColor,
-        foregroundColor: theme.foregroundColor,
-        elevation: 0,
-      ),
-      primaryIconTheme: IconThemeData(color: theme.foregroundColor),
-      navigationBarTheme: const NavigationBarThemeData().copyWith(
-        backgroundColor: theme.navigationBarColor,
-        shadowColor: theme.shadowColor,
-        iconTheme: MaterialStatePropertyAll(IconThemeData(color: theme.navigationBarIconColor ?? theme.foregroundColor)),
-        elevation: 3,
-      ),
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: theme.qrButtonBackgroundColor ?? theme.primaryColor,
-        foregroundColor: theme.qrButtonIconColor ?? theme.onPrimary,
-        elevation: 0,
-      ),
-      listTileTheme: ListTileThemeData(
-        tileColor: theme.backgroundColor,
-        titleTextStyle: TextStyle(color: theme.tilePrimaryColor ?? theme.primaryColor),
-        subtitleTextStyle: TextStyle(color: theme.tileSubtitleColor ?? theme.subtitleColor),
-        iconColor: theme.tileIconColor,
-      ),
-      colorScheme: brightness == Brightness.light
-          ? ColorScheme.light(
-              primary: theme.primaryColor,
-              secondary: theme.primaryColor,
-              onPrimary: theme.onPrimary,
-              onSecondary: theme.onPrimary,
-              errorContainer: theme.deleteColor,
-            )
-          : ColorScheme.dark(
-              primary: theme.primaryColor,
-              secondary: theme.primaryColor,
-              onPrimary: theme.onPrimary,
-              onSecondary: theme.onPrimary,
-              errorContainer: theme.deleteColor,
-            ),
-      checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
-            return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return theme.primaryColor;
-          }
-          return null;
-        }),
-      ),
-      radioTheme: RadioThemeData(
-        fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
-            return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return theme.primaryColor;
-          }
-          return null;
-        }),
-      ),
-      switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
-            return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return theme.primaryColor;
-          }
-          return null;
-        }),
-        trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
-            return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return theme.primaryColor;
-          }
-          return null;
-        }),
-      ),
-      extensions: [
-        ActionTheme(
-          deleteColor: theme.deleteColor,
-          editColor: theme.renameColor,
-          lockColor: theme.lockColor,
-          foregroundColor: theme.actionButtonsForegroundColor ?? theme.foregroundColor,
-        ),
-      ]);
 }
 
 class ActionTheme extends ThemeExtension<ActionTheme> {
@@ -463,9 +478,10 @@ class ActionTheme extends ThemeExtension<ActionTheme> {
 // /// Calculate HSP and check if the primary color is bright or dark
 // /// brightness  =  sqrt( .299 R^2 + .587 G^2 + .114 B^2 )
 // /// c.f., http://alienryderflex.com/hsp.html
-// bool _isColorBright(Color color) {
-//   return sqrt(0.299 * pow(color.red, 2) + 0.587 * pow(color.green, 2) + 0.114 * pow(color.blue, 2)) > 150;
-// }
+bool _isColorBright(Color color) {
+  return sqrt(0.299 * pow(color.red, 2) + 0.587 * pow(color.green, 2) + 0.114 * pow(color.blue, 2)) > 150;
+}
+
 final Uint8List defaultIconUint8List = base64Decode(
   "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADr8AAA6/ATgFUyQAAB7TSURBVHhe7X0JuF1Vefa79z77THeeM9yEYMKgEALEBhmMIFADiK1WqOPvw////WsLTyu/Px0stFpbq7Y+aC1K0TIIte2PUgUqRhEtgojBiAGChARIcpM7j2ee+777nHOb5E7nnnv2uecm933ud9fe65yz91rre9e3vrX22msZOI7Qff2tAQarKRsop1JOoZxMWUPpojRSvBSLMhMylAQlROmn7Ke8SnmZsoeyl3K457Yb4wyXPJY0AajwBgZnUN5EOZ+ykSJl11PcwgTlAGUX5acF2U1CRBguOSw5AlDpqxi8hXIF5QKKarhJWSzIYuyjPEF5hPJjkkGWY0lgSRCASm9hcDnlGoqU30GpVUj5j1H+v0KSQRajZlHTBKDiNzH4H5TfopykuCUG+Qv3U+4jEXY7MTWGmiNA9/WfZ5pyl/Hweso2ik/xSxxRykOUL5EIjzsxNYKaIgBr/FUMPkq5xIk4/pCjfJfyORLhB07MIqMmCEDFb2XwZ5RfdyJODDxI+WsS4Wf508XBohKAin8dg7+gfICymJ78YiFJuZPyVyTCISemylgUAlDxHgY3UG6mtCnuBMdhysdJgq/kT6uHqhOAyj+bwecp6s4t42hoHOFGEuGl/Kn7mG1ItOKg8v+Qwb0UDdMuYyo0dP3exi3bhid2bP9FPspdVMUCUPEah7+Nov78MkrDPZSP0BqM5U/dgesEoPI1Rn83ZbnWzx/PUj5EEui5gytw1fOm8j/I4HuUZeWXB/lLj7EcfzN/Wnm45gMw0fLwv0jR49dllI8g5Rr6BaP0Cyo+ZlDxJoCK1zX/nqJu3jIqCw0cqWJVDBW1AN3Xf179+7sov+NELKPS2EpL0EZLoO5iRVAxArDm2wy+RtGo3jLcw3kkwQqS4D8K5wtCRQhA5cuZVM1/vxOxDLfxRpKgvRKWoFK9APXx5fEvo3q4gRXvU4XjsrFgC8BE/CUDPcJdRvXxZlqCCVoCzUssCwvqBVD5/5tB1R9gLOMoaI7BtewdfCN/Oj+UTQAq/2IGaoP8TsQyFhMaLr6UJNiZPy0dZRGAytfU6x9TluI8veMVz1MuJgmG86elYd5OYPcNt8pvuINSlvLFuFg2h554Fj0JSiqLsUwOqVzOsWUnApRP5XeU+Vb+nXJgeSQYt4A2+UyKRl7nhXnfj7VfI1GfzJ/NHxNU/kVtdbji7A4MjSXQP5rGofEkDkwk8Hw8hUxG0+xZRKSmTao1mwZsw1iS04WylCSVOsY8p5UtRbDIPZYHZwZsrG3worvZh84WC+2NPvz7M33YORFHHfO8AFxPK/ClwvGcmNedqPyLGGgyY9nj+2L8h0/twtWXHkAo8SyVuw5Grh2ZVBMS8SBCERsj48DgWAaHR5M4OJHEy9EkhtJp8oIlKCZQWlhIfhLDWlBZVQasyIirRlPRjpIlholOjwcb6rxY0+jFymYvOpsttDQBDfUp+PwRWJ5x5MwhpLKvodl3Lv7lm/W4ZzCJbs+C6K73EC4iCZ7Ln86OkouPyq9joCnN5zoRZUIE+N1TunD51ufQH/4MRHbq0Qkt02Kt3wyvdRJscxXMXAey6RYkEnWIRHwYCxm0Gln0jqbQQ6vxWiSJV5IpFjhL3MhbjQYyok7X4kVLzlwJkNlOU8kRHoSlcSk5p4SbWO+1sa6etbnJixXNNjqaTTQ3ZlEXTMLrD8O0xpAxBpDOHkYysx+pzA5k+HvxhZd0LrWq7k/xwP0NuLc3ju6W1vwH5eOHlMtJAtmdWVFyGZEA6u/fkj8rH/9NgBcwGPkbR/FHwsm2CsY5c8rXqeW2dQblZBJjNSy955ltRSrZiGjUh4mQheHxHPqc5iSB/aGk05ywPeEVeCVew8vmpIk3m6050T0lap/HqZ3kEWbbsCxs9Mts+7Catbmr2YO2ZgNNDRkEAnHY3hDvM4wM+lmjD/G3r9Ls755UdP4q+X/HFro+X1H3ZyRAPe59qQerOlbADDYwMYUflgdNJvlC4XhGHJuWaUHl67n0kxQ9mlwQ5iLATHCKgv+KRSKrYVGTHnMtibGBCl4Lj4hRaE7i8QBCITYnNIgDY2k2JykcDCXwWiyFfjXIjlaOLGBekGxbRfO7lu3zGrbJq1ibO6nootn2+6OwbJltKjrXRyUfYG1+mTW7x1F0UV9OlvivxKwdQ4BD6CRbPS1dMP0s7vJJoN7AFpLglfzp9CgpjSTAwwz00saCUS4BZoPKqFhMxebEYwZJjE0UEsRcyRaiE7l0M5LJAJsUG6mUiWTaw9Yj51gZrycDrzdLSbE2R2B6xmjhB1mbewtm+xdUcnLSbDv3KtxvoZhCAJsJUnPY2gXD618ICe4lAfRq3YyYM/lU/jsZPJA/WzjcIMBMULFNlh3vo3upOTHNLoYdVF4jo01+L8PvjbNWD1LJg45CJEVWSckuJnNaC6CEGx7bsQSGTZ+7PBKoAdMA0Y/yp1MxU3PogMrXe3kVnYBQTUhpUrojimAZylSn0v2IpZ5HNPkTRJJPMHyK57sZT+WryPg9fb/4W12n6iDrcukU0mMDyGXYAyrP1Cgbt3Tf4EzSmRazEoDQ490Fef21CpXIsVJzEAlSSWTGBlmX5ZGWlcq3ktDvKBxPwYwEYO2Xw3dj/mwZiwaSIJuIIj0un07mqSz8P+pzWl3PZgHeTdHwYsVhMlOGyXaXx8X2VscnEo7Nu2lmnXKZFoaJbCyEzMRoIWLe0ACeVlSZgmnnA5Atmtv3ZR06ERVEmM7M+oAXm05aiaB3E+p858Bnr4dltTKjaRZGyPF3HCn8przmrzZQzIeTF+ZDPQ7b6obfPhf13ovQ4L0MjfZVMJLr8eTOIewJx6YfClZzkIw7FzB9Wgtr3mid2LH9nwvHk5i2aEmAtzHQe+yuIMnSWMluzslWjH1t9t47/GhttdHI/nagLgmPN0xqjiINDZMeYhfsNcqvnCFXjQYLTsL5b9oMVBmOcpU2hUxQ0Xm0rddT1jmjmh6tapNpRjpRj1jEi4lxdtRHUugfSuDwUBR7hkI4lIzBP53yj0IOnqZ2mMFGHjp3LBX0JHEhewRHTS2f9m4kgNa30Xo8riFFGU+lEB8aoFnQAls0Rh4PTgn6cHJLEGs6guhqD6C9zUZzk4FgQxq2PwrDYnfNGEJ6ciBG/fOsY0rzGmCmmKu5irEcOLc48h4Uj8mumrUJXmsNbGMlzFw7vfcmpOIBRMIejI/lMDicpKLjODgUwSujMeyLJqgO6sPkxWSDPSaa2D/1zcPUeZo7YQbq5kuC20mA3yscO5hyRypfa+xpYoGWYHMXyjC92/TYELLxMHJs6zTerieGmTQzpiov55fWoivgw6lNAaxpC2JlRwCdbT40t5iob8jCF4jD9LLpMIaRymkotofE2IN0tt/p1k0qTTJHGTtf5b/CT5zvy2x7zJWszaewNndT0eybZ1uRTTUgEfUjHDIxOprFwHACvYNRHBxmjR6PYSCedPLnKJkK9ngMNLKGL/w5BVPHsvK0rGBzMK+Boj7K2STB5CpmU9JBAtzE4LP5s2qASaBdT08MIxudcDI2HcSFKDMaU0feIYdiWQheG5saAlhLYqymxehs96Ot1YOGxhz8RzUnGtVTc3KIFmMfLUZ8UsmCCsI066mck6no1c7ooQedvE8L0sk6xB2zbWBkJI3+4TgOUdH7R6L4ZSiOrB5IyUN3arOBgGUiSCVr0Mk1SOmWB3brivkOFP1PEkAzuB0clUQqX1nQmP95TkSV4ZAgIhKUXnJyCRK0GCFVdRFDLZ2e0rE5Ob3Oj3WttBoddVhBYrS22CSGAX8gC4+docLVE1FtzNFSWEglLcRjJkITWQw57XMcPWyfXxuN4qVIwWzrqaNcZJpt1WYvZbaulKug0qV8WQKD+S2RBN8lASZ7BMcSQIM+mmGqlzwWBZnwKDKhsXmRYDqoKNSc6KleNi1yMEJsYXPCRhsrbQ/qWFNljjP8XpiWpS/FL6VoWnL/bbatgtn2LNhsuwSRgL0Cu4XWylCi5ySBlsA9hyTQ4pZTyCtmLJryBau+BVbjgp+HO8rSo992KrnTR2NeR2lQaKDDl0XSSGI4y3Y6E3XCFM8V31lv5L8XpPgstPH3uk5NKl9g2nKJGNLjQywzMXxOyLfTMnwOJgnQff0XlEd1/xYdVn0zLHZ18lgYEaaDMqr2WYotis5rVslzgenPxsJIh0YKEXPiykJ4pAXIasUuPfdffLD2W3WN7OpoRVgmcYHW4ISARgvpP2XCmiE+J5W3sLlnm3HENxnxPgZTRorcxlg6gzCl3nHHjgGZnY5FkBztY7PsuP3HDUTpHP2RoM+Lekttd4WgykPrqQo0R8XZRj9g+5EE0NDvh/Nn7sPx3pNJbO3uwLr162EESQF578eafJIAGXaz0lpS73gBHc9sBqGhAezb9Qs8fngYHUF/RZsgWU8zUD8bCbQ24S3OPal8dWzk/W/WudtQkjLpFK44/zx0bdqCCduP+Gz+SyVLpoagqdUd0RGMPP4gbnvsKTqeZY3xTwOWMJsEW5NJ9NxgehI8SgJcXiSAXvLQgkTNOncbkWQKW88+C10XvQ1hpk0josepjmeFUxHo4mw249j7wFdw+89eRKe/QivqSOnOQJFmFPmmI0EP5eyiE6hFnKqifPW5uwM2Vm4811lC2zpBlS8o3xYt3wvw4w1bfx0nmVlnxLMicJrONNKjg87MIuf8aKygnFwkgLZdqQqi2SzWtLXAV99UYrf1+IbUEqN/G2lahTNWtWO8ks4ulZ6j75TWjCLnukeRQM3+6UUCvL4Qug49tfPYHufBzzLyUBM4Ahsef8CxkBWFSJCMzzRQ9PqiFtYXQtfhcLDCeTweIL27ViwkgZ626lnLMTjFpANY3GptGYuJKU10haGBomgImZCmlU3ebIMsgJy/Vud0Gcc3aAk0UpiJjDvHxOoiAdyf/LGM2VGtZlEkCI04zw543CQCaEu2ml3mJasULmHJSXg4G5zKSNH33G4J8sg5TmE2FvEa9AH0ZKgiiw6Wgol0BhevXYF1V/42htkTUTlNBxWGl6XRHu5HMhZlIVWnaCqJHD07rz+IoYYuZyLssTnQubKlUdDXZeN4+Z8/h2/s60Une0nugwkyLYgA1/Ls3/KR7mM+BGiwWDjfuw/f+d6jaAgu+MXkqiMUjWHbpRej7ooPYYLd8CIBilxOpIHhGPCjCHBTMI5DD30OX/sVCeCtBgHyUPnX9CpfaSax3/Rh1LSXnPRbXqTofYvMgmZ863giAeyhM/7oAGUs/5yr+J1qQwSoHt3KBQtOU7eWmhSMvPOXopnvY03fOQh8i/JT+mDDGpcpfm2RMJMFXkaFUMcSDoWAh/uB7SPAbm1MLyyi0o/EMgFcRgv9GCsORDQpdZFr+3QQAZYfybgIte2TrUENQgQoGqVlnIAQAfRi3jJOUIgAWlhwGScoRAA9HjqeZlwuo3RoRppDgOVm4ESEYYRFAL1JIFnGCQbDtPpEAL0sqPfGl3GiwfK8YvbcdqO6qq/mY5ZxIsGw7L2yAELV9qtfRo1Ai03Z3heLBNB2IzWHxXpCdvwjp/Zf6xBPEuBXlFj+sDqYS7n6XK9s+7V5wlJlQk4LUZv51WxqCSxPw2OPmIH6ySZgP+Vg/tBd6IYprdpRglZFgPaGOuQX8F2CIAFsnx/REghs5LJIaf2jajwzMAwSwLevYdPWXocAdAQ1DvBLHbsNTYrQi6HGHEpVOcRZcK3teo19qZqALPz1LRguwQR4chnnbenJ6UJuglbJ8Hqf2X3dmc5AUBFPFEJXkWUGPckEOo0UjwuR00AJc6ZRNa/Bea1BxPVK0RKCUrvaa8LbsgIvFR8FzwR+ZudSiMQS81orsCzQKmkZetP2Ofo+kgBaHUxJdRVeZnA8GkdjJj5tmSjOsRIswQHapYNmF87fdAYm4olZy7DWMJTOYvPqNsTrVqF3LgvAjNnpKIbDUQSUeZdh2L6w4Q04K4YeSYDdlD35Q/eg9Xj2x5IwouNgBZmEiC/RPj2HQ8DTg8BjI8C3whbWnnMJ3hDQi6VLwwpIhblYDJs2bcaeXNOcLdhai4qIj+FAJOmUj6vg9U3bv6vtsvc5W8lMqoB+gHoB2m3KVSh7PekcIkMDaGbGtSiI4qJs/l4ZYwIGgO8z3KvHU/xgP23Sc/5T8f6r345QOFR7HvU06Gftv2RFPZpOuxD36R342XRKcpzmIfFH+zCQmmaZnIoib/4N2/v9Z9/e7DhhR1oAQXsDuQ/LwoEDB1GXzWCItHueNf0h1vgnWPP7lSyVQqEkVCHuYnxow9tw8zsuxfBEyNlhsxahJIdppZqSEVx19W/hx7mVJc232mBnMXSYFdJyeX4ui419/4zp9WvPZwfHEuApyqy7TFUCnbaF5w4cRnBkFN8dBnayliSk02no76ia8Z8et5E5+xp88revRl0yioGk6+7KvKCk9zNNXZkYPvaB9+LlzgvxbeZrziadn6/OjWPP3n3wel1eotEx/75d3hXrflGIcdbDnMTEju2Jxi3btFi0q0vFasr0C9EELlvZCG9DN/bO5SUX8ETcwqmrTsc7zlyD5rED+NmhYURMy1nxczExkM4gQgfumg2dePe1H8Lz7Rfgn0LsazNPc9mqc73ApvEX8JUfPYFmn6+UYigTMv9ercF4+/7PXPdYIfJoAggkgGYIXUdxLy1EjManPT6Oc049HT+Ms10q5W78zs8TNLOBlbho42ZcdlIzWiID2Nk/jHAqiyT7t1pv39WEE7LqI5kswuyZRFNxvHNtOz545TasvPBafNs4CQ+x5s+lfCeN/MJ76jMYe+ZB/LRnGPXaLNkt8F6mPxjz1LfcOPH0d9jg5jGlrLrzC0arj/gmJ8JF9CQS+MxVl+I/G9+I75RQaIIS7LgAPLiaPYNfs0PwD7+E/r278OKel/DLvlEc0ot4JttTjwU/rYO6VrI6+u2UDE+DYhrU6dDmz+FsFjlnlXKaqlwG6/wWzlzRitM2nIKu9Wch3nYKdmaa8C05fLo1b1JC049uJvFGdrzu+MdbMWj4tNC4izDgaWr7zuE7bzlq/8dpb0kS/C6D2/Nn7mGUhXpJiw9vufK9uGlC6wMXPigVhe+f4wO2+HLozo3BF+5FfPggRvt7MDTYj4GRMQyG2MeOpzBG71yLR+d/N13W+QGjG6hB7UHc4rXQGvChrbEe7a2tzqhkY/sqeFtXIx7sQo/RhGcSBnaqx6JrlqhANVhKxh83pxH9zzvwxZ88h07exz3I/JNgLZ3XHLr9pm8UIh3MRIA2BnIU1jgRLkE3P5hI4o9/7TRkz3g7/nbUKskKTIuCAlbTfm1ku7rGyqHVSLCnEYU3FQFSrJ6UbDKObDqJjPbi02YOrOFar8hkz8SkF27SctBLpvWgeIPIeAJIWEGEDT+GcjYO8me7UsgP785D6UXo67JgVwSBS0efwsfuvBONgbop3nhlkYMZaHgh8LqNW179y/fITk1ixuSTBBXZLHouyFSOJhP4+LaL8ULbefgaPRDt0FGKCZ0RRzJIOaS08JodlGYe67VzW8KPVPDyQSXshjtbDoxTxpiAPl1HcmxidM0yoJ9J+d288Ue9PXj43s/jByNJdC5su/i5QYJbDS0f6b3rz6dsJj1jVkiAtQy0dYysgavQ3vudRga/c9U2/CRwJu5nv1+LiKnsXcN0Fy9TsaWgqHy53Z9tGMULD9+Oe547iK6A1918EobH3m93dG/u+YePTFklaka3k13CcfYItGb7hfkY96Dhz4GsgUOv7MVV6xqxoqETz+p9JZaaazrRhY8Vl6D6LeW30un7eMMYXvvBPfjqz/eiK+h3XfmCYXo+zdr//cLpUZjL9nyRMpA/dA8qhGY6XnvSJu54+Lt4/eBP8Ed0kKQUFZyLuqkK5PBdRJfiZn8f9jxyB7780xfRVReoivLpVL1GL+erhbMpmLXjSSswQSsg9/St+Rh3EaAlGKe6H3npVZyHw3hXdwe8nnrs0Z5MhBzEpQInqdIwq9iHG4E3R3bhhw98Ff+6p69qNV+g+f/YwL/93eOF0ymYlQACCbCLwbsorvsCgvbmqfN4sL1nBNbeHdjaksGbuzpZYF68Jk9NqHUiSLtM4zvqgP/lH4bnhYfwlfvvx9OhNLp87rf5RRiWZ4d3xUl/MPH0IzM+QyupKOkQvofBv+TPqgMlTOME4YEevH9dCzZdcBlinRvxTKoeD8X5YdEzrxUyFLXKKvXuAHCuOcY+7jN48vFH8R/7R9BMk6+5EFWDuraBum199/7V9kLMtCg5RSTBtxnMuA25a6AT0DPYy/ZoGNeevgZnnXs+7O6z0GN3YmfCwpMahFksMhyh9LdqTN+bxqpkL6L7n8XPdzyFB18dBPx+dHmsqtX6Ikxf4O6+r39aQ/qzYj4EOI2BnhZqXcEqgknMZZAaHUB/mP3DZBIXtAex+YzTsXrDWWyYXochu43Ngxe/oq/wvJqJCvXbHRyrOV7LZrv+Rnr0G9if7zZjaE4OIT24Dz0v78KO3XvwzBi7MFR8JxW/GDA83h6rueNNh//xjw4VombEvIqGJLiewT/kz6oIms6c1r4f6UMulUSMSgklWPWzKZzfWoc3nLwGq9auR13HWqChC1G7ERNGECM5jzNiN0IZIimG+LtRKXSm6lgojVaGjlDRWkqzjXpsMrNoRhIN2Qjs+BgyE32Y6D+AngOvYPeBXuwcZ7vk8aLJZ7s/r282mCasYOP7eu/5RElN9rxTShJ8i8Fv5M+qCJGAyk+P9h+1AYImi044Gz6m4DVz2Njgw9qOZnS2d6CppR3BxhZ4g00w/fTIbDbOlo2cxPCQB7ymLs3/WszNyKZhkGg5EgspbQkbQSoWRiI8jvDECEZHhtE3PIr9oyHsicnUkBleGy2s6a5P5SoRbPfv7rvvU3Oa/iLKIYCeD+hpoUYKqwuRIJlgc9CX3wBhmkJP0WeQ84g0P9d3tEa+kXN2526yTPYwTASoMB+P8z/XP20dm9+XOE6JpbOYYDjm7FfPzzUsqfFpK/90sU61bN4l5z4Mr2+3t6P7zQf//g9K3kCwrGyQBNph9CFK9Rs5ai2rnTJpCfIbIJSWhaLl18CSXkrRL3Xu/JOOGSgzemgsYui8tCvXAmi9LDtqNbRcdvifbpafVjLKUuDEju17G7ds02Dt5Bak1YQzsZFmPBs/6sHWrCgqVM/qNTdA4w3HiunIUlM+YVps9xtu6L3rL9RTmxfKrsEkwZMkwToeLspuo86W6cx4TiSg4k5YiLT+ulv77v3kpwox8wIbtgXh9yk/yB9WGbTl2h2zEhtNL2WYXv8DLVvfdVPhdN5YEAEK7xJoy1ntOVh9OCRoglWvly9OPBIYtu/Hdkf3dS/+n830dsvDQi2ASKCnhXpW4PpbRTPBamiFGWwgCeTanRigH7ST1u+ag1+4YUHL/C2YAAJJoCVmNDbg+jsFM8HT2Ma2UHvlHv8kMCzPLlq+3zx8x5+wK7QwVIQAAkmgRSY04/RlJ6LaYF/d09QOwxc8vpsD03rWDNRfffjOWyqynkPFCCAUSLCNUpW1Bo4GlW5Zzq7ZM+yVu/RhmE+ZvsCVvfd84kAhZsGoKAEEkkDNgEjwIyeimqDSaR7zJPDYxxcJDOMRevxX9d33172FmIqg4gQQSAKtO/h2yn1ORDUhEthekqDTsQjHBwmMu+D1vbPv63+jVV0rCtdHULqvv/VmBppiXt3RGqO8IeMaxMcHvvmFTxSOKw7Xx/Indmx/vHHLNr1kcjGlqhtUljNkXEPQ8r3XUfm35U/dgesEEEiCl0iCf+fh6RS9fVw1qDnQmnjZhEiwZKzAzynvovJdH2WtCgEEkmC08bxtX+dhmHI+xc2X4Y6CoVe92CTk2CQorHF8mfIBKr9inv5sWJTSoF9wFoO/o1zuRFQJ2jM3E57cOLnWoLUaP0rFfzN/Wh1UzQIcCVqDfjYJ6iFoMGMTRRtYuw72oekPZpBLxWuJBOqm6MWN91P5O5yYKmLRS4HWQCtB/l/KhylNinMV7BamxwbpGGr3bFd6wfPB05SbqfhH86fVR81UAxLhFAYiwgco9YpzB8wyrUBqbGAxfYJ9lM9S7qbyNbF90VAzBCiCRFBP4fcoesysl1MrDzmEzizjfjYHiWqSQA/NvkT5KhVfE7u01BwBiiARNPlUJPgg5QzFVRQiwTSzjF2CXq+7g/J1Kr7io3kLQc0SoAgSIcBAL6e+l6Jeg3yGykAkmGOW8QIQoqgffzdlOxWvF9pqDjVPgCNBMqxkcAlFr6hp3YJuysJApVdwyFgzpDSIo3cnHqTSF+fR+DywpAhwJEgGva18LuUtlAsob6B0UeYPkSAWYe9g3kshqAvXQ5HStQCDnoC+SMUvmSdQS5YAx4KEkPJPpWyknFk4lh8hR1LPIGZfhlMkiIaQHh8qREyBvHW9cCGFv0iR0iW7qfCSX8SoNRw3BJgOJEUdg1aKSFAUDTqJEH5KcZ0o2f4USRBNDfd62T1s4LEUrvl2WldHj7cPF8JhKrzsSZi1BeC/ABatIOvf+x1NAAAAAElFTkSuQmCC",
 );
