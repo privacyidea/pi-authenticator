@@ -20,8 +20,6 @@ class PushRequestListener extends ConsumerStatefulWidget {
 }
 
 class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
-  PushToken? lastPushToken;
-
   void _closePushRequestDialog() {
     if (mounted) {
       Navigator.of(context).pop();
@@ -30,8 +28,9 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
 
   @override
   Widget build(BuildContext context) {
-    final tokenWithPushRequest = ref.watch(tokenWithPushRequestProvider);
-    if (tokenWithPushRequest != null && tokenWithPushRequest != lastPushToken) {
+    final tokensWithPushRequest = ref.watch(tokenProvider).pushTokens.where((token) => token.pushRequests.isNotEmpty);
+    final tokenWithPushRequest = tokensWithPushRequest.isNotEmpty ? tokensWithPushRequest.first : null;
+    if (tokenWithPushRequest != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showDialog(
           context: context,
@@ -41,7 +40,6 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
         );
       });
     }
-    lastPushToken = tokenWithPushRequest;
     return widget.child;
   }
 
