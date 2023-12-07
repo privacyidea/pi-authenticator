@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/push_provider.dart';
 
 import '../interfaces/repo/settings_repository.dart';
 import '../model/states/settings_state.dart';
@@ -23,6 +24,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   void loadFromRepo() async {
     isLoading = Future<void>(() async {
       state = await _repo.loadSettings();
+      PushProvider(pollingEnabled: state.enablePolling);
       Logger.info('Loading settings from repo: $state', name: 'settings_notifier.dart#_loadFromRepo');
     });
   }

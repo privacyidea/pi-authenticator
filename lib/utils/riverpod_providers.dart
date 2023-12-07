@@ -78,14 +78,15 @@ final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
 final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>(
   (ref) {
     Logger.info("New PushRequestNotifier created");
+    final pushProvider = PushProvider();
     ref.listen(settingsProvider, (previous, next) {
+      Logger.warning("settingsProvider changed from $previous to $next");
       if (previous?.enablePolling != next.enablePolling) {
         Logger.info("Polling enabled changed from ${previous?.enablePolling} to ${next.enablePolling}");
-        PushProvider.instance?.setPollingEnabled(next.enablePolling);
+        pushProvider.setPollingEnabled(next.enablePolling);
       }
     });
 
-    final pushProvider = PushProvider(pollingEnabled: false);
     final pushRequestNotifier = PushRequestNotifier(
       pushProvider: pushProvider,
     );
