@@ -16,7 +16,6 @@ import '../model/states/token_filter.dart';
 import '../model/states/token_folder_state.dart';
 import '../model/states/token_state.dart';
 import '../repo/preference_introduction_repository.dart';
-import '../model/tokens/push_token.dart';
 import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_folder_repository.dart';
 import '../state_notifiers/deeplink_notifier.dart';
@@ -78,11 +77,6 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
   name: 'tokenProvider',
 );
 
-final tokenWithPushRequestProvider = Provider<PushToken?>((ref) {
-  Logger.info("New pushTokensProvider created");
-  return ref.watch(tokenProvider).tokenWithPushRequest();
-}, name: 'tokenWithPushRequestProvider');
-
 final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
   (ref) {
     // Using Logger here will cause a circular dependency because Logger uses settingsProvider (logging verbosity)
@@ -94,14 +88,15 @@ final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
 final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>(
   (ref) {
     Logger.info("New PushRequestNotifier created");
+    final pushProvider = PushProvider();
     ref.listen(settingsProvider, (previous, next) {
+      Logger.warning("settingsProvider changed from $previous to $next");
       if (previous?.enablePolling != next.enablePolling) {
         Logger.info("Polling enabled changed from ${previous?.enablePolling} to ${next.enablePolling}");
-        PushProvider.instance?.setPollingEnabled(next.enablePolling);
+        pushProvider.setPollingEnabled(next.enablePolling);
       }
     });
 
-    final pushProvider = PushProvider(pollingEnabled: false);
     final pushRequestNotifier = PushRequestNotifier(
       pushProvider: pushProvider,
     );
