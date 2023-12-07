@@ -41,6 +41,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> _init() async {
     await Future.delayed(_splashScreenDuration + _splashScreenDelay * 2);
+    await ref.read(settingsProvider.notifier).isLoading;
+    await ref.read(tokenProvider.notifier).isLoading;
     final isFirstRun = ref.read(settingsProvider).isFirstRun;
     final ConsumerStatefulWidget nextView;
     if (isFirstRun) {

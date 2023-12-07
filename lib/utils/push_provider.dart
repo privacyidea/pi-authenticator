@@ -146,6 +146,7 @@ class PushProvider {
   }
 
   // BACKGROUND HANDLING
+  @pragma('vm:entry-point')
   static Future<void> _backgroundHandler(RemoteMessage remoteMessage) async {
     Logger.info('Background message received.', name: 'push_provider.dart#_backgroundHandler');
     await SecureTokenRepository.protect(() async {
