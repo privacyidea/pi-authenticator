@@ -131,7 +131,7 @@ class PushProvider {
         data = _getAndValidateDataFromRemoteMessage(remoteMessage);
       } on ArgumentError catch (_) {
         Logger.info('Try requesting the challenge by polling.', name: 'push_provider.dart#_foregroundHandler');
-        await pollForChallenges(isManually: false);
+        await pollForChallenges(isManually: true);
         return;
       }
       // Here we can be sure that the data is valid
@@ -219,10 +219,12 @@ class PushProvider {
 
   Future<void> pollForChallenges({required bool isManually}) async {
     // Get all push tokens
+    await globalRef?.read(tokenProvider.notifier).isLoading;
     List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
 
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
+      await globalRef?.read(settingsProvider.notifier).isLoading;
       if (globalRef?.read(settingsProvider).enablePolling == true) {
         Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
         globalRef?.read(settingsProvider.notifier).setPolling(false);
