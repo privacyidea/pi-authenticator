@@ -10,101 +10,88 @@ import es.antonborri.home_widget.HomeWidgetLaunchIntent
 import es.antonborri.home_widget.HomeWidgetProvider
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
+import androidx.appcompat.app.AppCompatDelegate
+import android.content.res.Configuration
+import android.os.Bundle
 import java.io.File
 
 class AppWidgetProvider : HomeWidgetProvider() {
+    override fun onAppWidgetOptionsChanged( context: Context, 
+     appWidgetManager: AppWidgetManager, 
+     appWidgetId: Int, 
+     newOptions: Bundle) {
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+        println("onAppWidgetOptionsChanged")
+    }
+
+
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray, widgetData: SharedPreferences) {
+        when (context.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> { 
+                println("night mode")
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                println("day mode")
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+                println("undefined mode")
+            }
+        }
+        val isNightMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+        println("isNightMode: $isNightMode")
+        val editor = widgetData.edit()
+        editor.putString("_widgetIds", appWidgetIds.joinToString(","))
+        editor.apply()
         appWidgetIds.forEach { widgetId ->
             val views = RemoteViews(context.packageName, R.layout.widget_layout).apply {
 
                 val tokenId = widgetData.getString("_tokenId$widgetId", null)
                 if(tokenId == null) {
-                    val imagePath = widgetData.getString("_tokenContainerEmpty", null)
-                    println("imagePath is $imagePath")
-                    if(imagePath != null) {
-                        val imageFile = File(imagePath)
-                        val imageExists = imageFile.exists()
-                        if (imageExists && imageFile.absolutePath != null) {
-                           val myBitmap: Bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
-                           setImageViewBitmap(R.id.widget_image, myBitmap)
-                        } else {
-                           println("image not found!, looked @: $imagePath")
-                        }
-                    }
+                  val success =  _loadImageFromWidgetDataString(widgetData, "_tokenContainerEmpty", R.id.widget_image, this)
                     // No token yet, so the user has to select one
                     val pendingIntent = HomeWidgetLaunchIntent.getActivity(context,
                             MainActivity::class.java,
                             Uri.parse("homewidgetnavigate://link?id=$widgetId"))
                     setOnClickPendingIntent(R.id.widget_root, pendingIntent)
                 }  else {
-                    val imagePath = widgetData.getString("_tokenContainer$widgetId", null)
-                    if(imagePath != null) {
-                        val imageFile = File(imagePath)
-                        val imageExists = imageFile.exists()
-                        if (imageExists && imageFile.absolutePath != null) {
-                            println("imagePath is $imagePath")
-                            val myBitmap: Bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
-                            setImageViewBitmap(R.id.widget_image, myBitmap)
-                        } else {
-                            println("image not found!, looked @: $imagePath")
-                        }
-                                  // Pending intent to update counter on button click
-                        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context,
+                    _loadImageFromWidgetDataString(widgetData, "_tokenContainer$widgetId", R.id.widget_image, this)
+                    
+                    val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context,
                         Uri.parse("homewidget://show?widgetId=$widgetId&tokenId=$tokenId"))
-                        setOnClickPendingIntent(R.id.widget_root, backgroundIntent)
-                    } else {
-                        println("imagePath is null")
-                    } 
+                    setOnClickPendingIntent(R.id.widget_root, backgroundIntent)
+
+                    _loadImageFromWidgetDataString(widgetData, "_settingsIcon", R.id.widget_settings, this)
+                    val pendingIntent = HomeWidgetLaunchIntent.getActivity(context,
+                        MainActivity::class.java,
+                        Uri.parse("homewidgetnavigate://link?id=$widgetId"))
+                    setOnClickPendingIntent(R.id.widget_settings, pendingIntent)
                 }
-
-
-                // var imagePath = widgetData.getString("_tokenContainer$widgetId", null)
-                // var needInit = false
-                // if(imagePath == null) {
-                //     println("imagePath is null")
-                //     needInit = true
-                //     imagePath = widgetData.getString("_tokenContainerEmpty", null)
-                // } 
-                // if(imagePath != null) {
-                //     println("imagePath is $imagePath")
-                //     val imageFile = File(imagePath)
-                //     val imageExists = imageFile.exists()
-                //     if (imageExists) {
-                //        val myBitmap: Bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
-                //        setImageViewBitmap(R.id.widget_image, myBitmap)
-                //     } else {
-                //        println("image not found!, looked @: $imagePath")
-                //     }
-                // } 
- 
-                // if(needInit) {
-                //     // No token yet, so the user has to select one
-                //     val pendingIntent = HomeWidgetLaunchIntent.getActivity(context,
-                //             MainActivity::class.java,
-                //             Uri.parse("homewidgetnavigate://link?id=$widgetId"))
-                //     setOnClickPendingIntent(R.id.widget_root, pendingIntent)
-                // }
-
-
-                // val currentPassword = widgetData.getString("_password", "No password")
-                // val tokenId = widgetData.getString("_tokenId", "No token id")
-
-                // val tokenPwText = "$currentPassword"
-                // if(tokenPwText.length < 1) {
-                //     setTextViewText(R.id.token_pw, "No password")
-                // } else {
-                //     setTextViewText(R.id.token_pw, tokenPwText)
-                // }
-
-                // Pending intent to update counter on button click
-                // val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context,
-                //         Uri.parse("myappwidget://getpassword?tokenId=$tokenId"))
-                // setOnClickPendingIntent(R.id.widget_root, backgroundIntent)
-                // val backgroundIntent2 = HomeWidgetBackgroundIntent.getBroadcast(context,
-                //         Uri.parse("myappwidget://getpassword?tokenId=tokenIds2"))
-                // setOnClickPendingIntent(R.id.widget_root, backgroundIntent2)
             }
             appWidgetManager.updateAppWidget(widgetId, views)
         }
+    }
+    fun _loadImageFromWidgetDataString(widgetData: SharedPreferences, key: String, xmlElement: Int, view: RemoteViews): Boolean {
+        
+        val imagePath = widgetData.getString("$key", null)
+        if(imagePath == null) {
+            return false
+            println("imagePath is null")
+        } 
+        
+        val imageFile = File(imagePath)
+        val imageExists = imageFile.exists()
+        if (imageExists && imageFile.absolutePath == null) {
+            return false
+            println("image not found!, looked @: $imagePath")
+        }
+       
+        println("imagePath is $imagePath")
+        try {
+            val myBitmap: Bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+            view.setImageViewBitmap(xmlElement, myBitmap)
+        } catch (e: Exception) {
+            return false
+        }
+        return true
     }
 }

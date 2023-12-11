@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../model/processors/scheme_processors/home_widget_processor.dart';
 import '../model/processors/scheme_processors/navigation_scheme_processor.dart';
 import '../state_notifiers/deeplink_notifier.dart';
-import 'customizations.dart';
 
 class StateObserver extends ConsumerWidget {
   final List<StateNotifierProivderListener> listeners;
@@ -38,16 +37,22 @@ abstract class DeepLinkListener extends StateNotifierProivderListener<DeeplinkNo
 }
 
 class NavigationDeepLinkListener extends DeepLinkListener {
-  const NavigationDeepLinkListener({
+  static BuildContext? _context;
+  NavigationDeepLinkListener({
     required StateNotifierProvider<DeeplinkNotifier, Uri?> provider,
+    BuildContext? context,
   }) : super(
           deeplinkProvider: provider,
-          onNewState: _onNewState,
-        );
+          onNewState: (Uri? previous, Uri? next) {
+            _onNewState(previous, next);
+          },
+        ) {
+    _context = context;
+  }
 
   static void _onNewState(Uri? previous, Uri? next) {
     if (next == null) return;
-    NavigationSchemeProcessor.processUri(next, context: globalNavigatorKey.currentState?.context);
+    NavigationSchemeProcessor.processUri(next, context: _context);
   }
 }
 

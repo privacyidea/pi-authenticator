@@ -1,6 +1,7 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/home_widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -85,7 +86,10 @@ class SettingsView extends ConsumerWidget {
                   value: ThemeMode.light,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: (dynamic value) => EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: false),
+                  onChanged: (dynamic value) {
+                    EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: false);
+                    HomeWidgetUtils.setBrightness(Brightness.light);
+                  },
                 ),
                 RadioListTile(
                   title: Text(
@@ -97,7 +101,10 @@ class SettingsView extends ConsumerWidget {
                   value: ThemeMode.dark,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: (dynamic value) => EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: true),
+                  onChanged: (dynamic value) {
+                    EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: true);
+                    HomeWidgetUtils.setBrightness(Brightness.dark);
+                  },
                 ),
                 RadioListTile(
                   title: Text(
@@ -107,7 +114,10 @@ class SettingsView extends ConsumerWidget {
                   value: ThemeMode.system,
                   groupValue: EasyDynamicTheme.of(context).themeMode,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: (dynamic value) => EasyDynamicTheme.of(context).changeTheme(dynamic: true, dark: false),
+                  onChanged: (dynamic value) {
+                    EasyDynamicTheme.of(context).changeTheme(dynamic: true, dark: false);
+                    HomeWidgetUtils.setBrightness(MediaQuery.of(context).platformBrightness);
+                  },
                 ),
               ],
             ),

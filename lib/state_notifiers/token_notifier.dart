@@ -13,11 +13,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import '../model/processors/scheme_processor_interface.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
 import '../model/enums/push_token_rollout_state.dart';
+import '../model/processors/scheme_processors/token_scheme_processor.dart';
 import '../model/push_request.dart';
 import '../model/states/token_state.dart';
 import '../model/tokens/hotp_token.dart';
@@ -204,7 +204,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     await loadingRepo;
     List<Token>? tokens;
     try {
-      tokens = await SchemeProcessor.processUri(uri);
+      tokens = await TokenSchemeProcessor.processUri(uri);
     } catch (_) {
       // TODO: handle exceptions
     }

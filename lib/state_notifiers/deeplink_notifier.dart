@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uni_links/uni_links.dart';
 
 import '../utils/logger.dart';
 
@@ -38,7 +37,7 @@ class DeeplinkNotifier extends StateNotifier<Uri?> {
         if (uri == null) return;
         state = uri;
       }, onError: (Object err) {
-        Logger.warning('Got error on Uri: $err');
+        Logger.error('Error getting uri from ${source.name}', error: err, stackTrace: StackTrace.current);
       }));
     }
   }
@@ -49,12 +48,12 @@ class DeeplinkNotifier extends StateNotifier<Uri?> {
     Logger.info('_handleInitialUri called');
 
     for (var source in _sources) {
-      final initialUri = await getInitialUri();
+      final initialUri = await source.initialUri;
       if (initialUri != null) {
-        Logger.info('Got initial uri from ${source.name}');
         if (!mounted) return;
         state = initialUri;
-        return;
+        Logger.info('Got initial uri from ${source.name}');
+        return; // There can only be one initial uri
       }
     }
   }

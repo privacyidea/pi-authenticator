@@ -160,11 +160,12 @@ class ThemeCustomization {
       );
 
   factory ThemeCustomization.fromJson(Map<String, dynamic> json) {
-    bool isLightTheme = json['brightness'] == 'light';
+    bool isLightTheme = json['brightness'] == 'dark' ? false : true;
     if (json['brightness'] == null && json['primaryColor'] != null) {
       isLightTheme = _isColorBright(Color(json['primaryColor'] as int));
     }
-    return isLightTheme
+    print('isLightTheme: $isLightTheme primaryColor: ${json['primaryColor']}');
+    final themeCustomization = isLightTheme
         ? ThemeCustomization.defaultLightWith(
             primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
             onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
@@ -203,6 +204,10 @@ class ThemeCustomization {
             qrButtonBackgroundColor: json['qrButtonBackgroundColor'] != null ? Color(json['qrButtonBackgroundColor'] as int) : null,
             qrButtonIconColor: json['qrButtonIconColor'] != null ? Color(json['qrButtonIconColor'] as int) : null,
           );
+    print('themeCustomization.primaryColor ${themeCustomization.primaryColor}');
+    final theme = themeCustomization.generateTheme();
+    print('theme.primaryColor2 ${theme.primaryColor}');
+    return themeCustomization;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -229,6 +234,7 @@ class ThemeCustomization {
     return ThemeData(
         useMaterial3: false,
         brightness: brightness,
+        primaryColor: primaryColor,
         textTheme: const TextTheme().copyWith(
           bodyLarge: TextStyle(color: foregroundColor),
           bodyMedium: TextStyle(color: foregroundColor),
