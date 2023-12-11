@@ -1,6 +1,24 @@
 # Changelog
 
-## [4.2.0] - TBD
+## [4.2.3] - 2023-12.11
+ - Fixed some minor issues
+ - Improved app stability
+ - Added link to privacy policy
+
+## [4.2.2] - 2023-11-08
+ - Fixed an issue that occurred when reordering a push token during rollout.
+ - Fixed denying permissions throwing an error
+ - Fixed camera issue with Android SDK 23 or lower
+ - Fixed an error when launching a website
+ - Implemented more unit tests
+ - Implemented integration tests
+ - Removed shadow in iOS due to flickering (workaroud)
+ - Replaced misunderstood button in intro screen
+ - Added a new status bar that appears when something has gone wrong that is not an application error.
+
+## [4.2.1] - Version skipped
+
+## [4.2.0] - 2023-09-27
  - Support for daypasswordtokens
  - Added folders to group tokens
  - Added an errorlog menu to settings
