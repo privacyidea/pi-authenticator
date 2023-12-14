@@ -6,11 +6,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:uni_links/uni_links.dart';
-import '../model/states/introduction_state.dart';
-import '../state_notifiers/completed_introduction_notifier.dart';
+
 import '../l10n/app_localizations.dart';
 import '../model/mixins/sortable_mixin.dart';
 import '../model/push_request.dart';
+import '../model/states/introduction_state.dart';
 import '../model/states/settings_state.dart';
 import '../model/states/token_filter.dart';
 import '../model/states/token_folder_state.dart';
@@ -18,15 +18,17 @@ import '../model/states/token_state.dart';
 import '../repo/preference_introduction_repository.dart';
 import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_folder_repository.dart';
+import '../state_notifiers/completed_introduction_notifier.dart';
 import '../state_notifiers/deeplink_notifier.dart';
 import '../state_notifiers/push_request_notifier.dart';
 import '../state_notifiers/settings_notifier.dart';
 import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
 import 'app_customizer.dart';
-import 'customizations.dart';
+import 'globals.dart';
 import 'logger.dart';
 import 'push_provider.dart';
+import 'riverpod_state_listener.dart';
 
 // Never use globalRef to .watch() a provider. only use it to .read() a provider
 // Otherwise the whole app will rebuild on every state change of the provider
@@ -43,7 +45,7 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         return;
       }
       Logger.info("tokenProvider received new deeplink");
-      tokenNotifier.handleLink(newLink);
+      tokenNotifier.handleLink(newLink.uri);
     });
 
     ref.listen(pushRequestProvider, (previous, newPushRequest) {
@@ -113,7 +115,7 @@ final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushReque
   name: 'pushRequestProvider',
 );
 
-final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, Uri?>(
+final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, DeepLink?>(
   (ref) {
     Logger.info("New DeeplinkNotifier created");
     return DeeplinkNotifier(sources: [

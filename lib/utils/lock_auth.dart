@@ -9,7 +9,7 @@ import 'package:local_auth_ios/local_auth_ios.dart';
 
 import '../l10n/app_localizations.dart';
 import '../widgets/default_dialog.dart';
-import 'customizations.dart';
+import 'globals.dart';
 import 'logger.dart';
 import 'view_utils.dart';
 

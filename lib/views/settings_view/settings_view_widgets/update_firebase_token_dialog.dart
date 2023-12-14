@@ -24,7 +24,7 @@ import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../model/tokens/push_token.dart';
-import '../../../utils/customizations.dart';
+import '../../../utils/globals.dart';
 import '../../../utils/push_provider.dart';
 import '../../../widgets/default_dialog.dart';
 

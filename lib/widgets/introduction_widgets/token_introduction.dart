@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../l10n/app_localizations.dart';
-import '../focused_item_as_overlay.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../model/enums/introduction.dart';
 import '../../utils/riverpod_providers.dart';
+import '../focused_item_as_overlay.dart';
 
 class TokenIntroduction extends ConsumerWidget {
   final Widget child;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
+import '../../../utils/logger.dart';
 
-import '../../../utils/customizations.dart';
+import '../../../utils/globals.dart';
 import '../scheme_processor_interface.dart';
 import 'navigation_scheme_processors/home_widget_navigate_processor.dart';
 
@@ -13,9 +13,9 @@ abstract class NavigationSchemeProcessor implements SchemeProcessor {
   };
 
   @override
-  Future<void> process(Uri uri, {BuildContext? context});
+  Future<void> process(Uri uri, {BuildContext? context, bool fromInit = false});
 
-  static Future<void> processUri(Uri uri, {BuildContext? context}) async {
+  static Future<void> processUri(Uri uri, {BuildContext? context, required bool fromInit}) async {
     if (context == null) {
       Logger.info('Current context is null, waiting for navigator context', name: 'processUri#NavigationSchemeProcessor');
       final key = await contextedGlobalNavigatorKey;

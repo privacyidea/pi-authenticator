@@ -6,5 +6,5 @@ class PiaProcessor extends TokenSchemeProcessor {
   @override
   Set<String> get supportedSchemes => {'pia'};
   @override
-  Future<List<Token>?> process(Uri uri) async => [];
+  Future<List<Token>?> process(Uri uri, {bool fromInit = false}) async => [];
 }

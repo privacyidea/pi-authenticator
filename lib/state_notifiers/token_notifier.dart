@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-
 import 'dart:io';
 
 import 'package:base32/base32.dart';
@@ -13,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import '../utils/home_widget_utils.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
@@ -24,8 +24,8 @@ import '../model/tokens/hotp_token.dart';
 import '../model/tokens/push_token.dart';
 import '../model/tokens/token.dart';
 import '../repo/secure_token_repository.dart';
-import '../utils/customizations.dart';
 import '../utils/firebase_utils.dart';
+import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
 import '../utils/network_utils.dart';
@@ -41,6 +41,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   final LegacyUtils _legacy;
   final PrivacyIdeaIOClient _ioClient;
   final FirebaseUtils _firebaseUtils;
+  final HomeWidgetUtils _homeWidgetUtils;
 
   TokenNotifier({
     TokenState? initialState,
@@ -49,11 +50,13 @@ class TokenNotifier extends StateNotifier<TokenState> {
     LegacyUtils? legacy,
     PrivacyIdeaIOClient? ioClient,
     FirebaseUtils? firebaseUtils,
+    HomeWidgetUtils? homeWidgetUtils,
   })  : _rsaUtils = rsaUtils ?? const RsaUtils(),
         _repo = repository ?? const SecureTokenRepository(),
         _legacy = legacy ?? const LegacyUtils(),
         _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
         _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
+        _homeWidgetUtils = homeWidgetUtils ?? HomeWidgetUtils(),
         super(
           initialState ?? TokenState(),
         ) {
@@ -171,18 +174,21 @@ class TokenNotifier extends StateNotifier<TokenState> {
     final updated = updater(current);
     state = state.replaceToken(updated);
     await _saveOrReplaceTokensRepo([updated]);
+    await _homeWidgetUtils.updateTokenIfLinked(updated);
     return updated;
   }
 
-  Future<void> updateTokens<T extends Token>(List<T> token, T Function(T) updater) async {
+  Future<List<Token>> updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) async {
     await loadingRepo;
     List<T> updatedTokens = [];
-    for (final t in token) {
-      final current = state.currentOf<T>(t) ?? t;
+    for (final token in tokens) {
+      final current = state.currentOf<T>(token) ?? token;
       updatedTokens.add(updater(current));
     }
     state = state.replaceTokens(updatedTokens);
     await _saveOrReplaceTokensRepo(updatedTokens);
+    await _homeWidgetUtils.updateTokensIfLinked(updatedTokens);
+    return updatedTokens;
   }
 
   // The retun value of a qrCode could be any object. In this case should be a String that is a valid URI.

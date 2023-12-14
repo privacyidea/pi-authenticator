@@ -4,10 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../utils/logger.dart';
+import '../utils/riverpod_state_listener.dart';
 
 bool _initialUriIsHandled = false;
 
-class DeeplinkNotifier extends StateNotifier<Uri?> {
+class DeeplinkNotifier extends StateNotifier<DeepLink?> {
   final List<StreamSubscription> _subs = [];
   final List<DeeplinkSource> _sources;
   DeeplinkNotifier({required List<DeeplinkSource> sources})
@@ -35,7 +36,7 @@ class DeeplinkNotifier extends StateNotifier<Uri?> {
         Logger.info('Got uri from ${source.name}');
         if (!mounted) return;
         if (uri == null) return;
-        state = uri;
+        state = DeepLink(uri);
       }, onError: (Object err) {
         Logger.error('Error getting uri from ${source.name}', error: err, stackTrace: StackTrace.current);
       }));
@@ -51,7 +52,7 @@ class DeeplinkNotifier extends StateNotifier<Uri?> {
       final initialUri = await source.initialUri;
       if (initialUri != null) {
         if (!mounted) return;
-        state = initialUri;
+        state = DeepLink(initialUri, fromInit: true);
         Logger.info('Got initial uri from ${source.name}');
         return; // There can only be one initial uri
       }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../model/enums/introduction.dart';
 
+import '../../model/enums/introduction.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
@@ -10,6 +10,8 @@ import '../onboarding_view/onboarding_view.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   static const routeName = '/';
+  static Widget? _initialView;
+  static bool didNavigated = false;
 
   final Widget appImage;
   final Widget appIcon;
@@ -19,6 +21,18 @@ class SplashScreen extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
+
+  static void setInitialView(Widget initialView) {
+    if (_initialView != null) {
+      Logger.warning('Initial view is already set. Ignoring new initial view: $initialView', name: 'splash_screen.dart#setInitialView');
+      return;
+    }
+    if (didNavigated) {
+      Logger.warning('Splashscreen already navigated. Ignoring new initial view: $initialView', name: 'splash_screen.dart#setInitialView');
+      return;
+    }
+    _initialView = initialView;
+  }
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
@@ -30,7 +44,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     super.initState();
 
-    HomeWidgetUtils.homeWidgetInit();
+    HomeWidgetUtils().homeWidgetInit();
 
     Logger.info('Starting app.', name: 'main.dart#initState');
     Future.delayed(_splashScreenDelay, () {
@@ -39,8 +53,25 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           _appIconIsVisible = true;
         });
       }
+      Future.wait(
+        <Future>[
+          Future.delayed(_splashScreenDuration),
+          ref.read(settingsProvider.notifier).loadingRepo,
+          ref.read(tokenProvider.notifier).loadingRepo,
+          ref.read(introductionProvider.notifier).loadingRepo,
+        ],
+        eagerError: true,
+        cleanUp: (error) {
+          Logger.error('Error while loading app: $error', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
+        },
+      ).then((values) {
+        Logger.warning('SplashScreen: Future completed with ${values.length} values', name: 'main.dart#initState');
+        for (final value in values) {
+          Logger.warning('SplashScreen: Future completed with value: $value', name: 'main.dart#initState');
+        }
+        _navigate();
+      });
     });
-    _init();
   }
 
   @override
@@ -49,27 +80,58 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     super.dispose();
   }
 
-  Future<void> _init() async {
-    await Future.delayed(_splashScreenDuration + _splashScreenDelay * 2 + Duration(seconds: 10));
-    await ref.read(introductionProvider.notifier).loadingRepo;
-    await ref.read(settingsProvider.notifier).loadingRepo;
-    await ref.read(tokenProvider.notifier).loadingRepo;
+  Future<void> _navigate() async {
+    SplashScreen.didNavigated = true;
+    await Future.wait([
+      if (SplashScreen._initialView != null)
+        Navigator.push<bool>(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => SplashScreen._initialView!,
+            transitionDuration: _splashScreenDuration,
+            transitionsBuilder: (_, a, __, view) => FadeTransition(
+              opacity: CurvedAnimation(
+                curve: const Interval(0, 1, curve: Curves.easeOut),
+                parent: a,
+              ),
+              child: view,
+            ),
+          ),
+        ),
+    ]);
+    _pushReplace();
+    // if (SplashScreen._initialView != null) {
+    //   Future.delayed(_splashScreenDuration, () =>));
+    //    Navigator.push(context, PageRouteBuilder(pageBuilder: (_, __, ___) => SplashScreen._initialView!));
+    // }
+  }
+
+  void _pushReplace() {
     final isFirstRun = ref.read(introductionProvider).isConditionFulfilled(ref, Introduction.introductionScreen) && ref.read(settingsProvider).isFirstRun;
-    final ConsumerStatefulWidget nextView;
-    if (isFirstRun) {
-      nextView = OnboardingView(appName: widget.appName);
+    final nextView = isFirstRun ? OnboardingView(appName: widget.appName) : MainView(appName: widget.appName, appIcon: widget.appIcon);
+    if (SplashScreen._initialView != null) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => nextView,
+        ),
+      );
     } else {
-      nextView = MainView(appName: widget.appName, appIcon: widget.appIcon);
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => nextView,
+          transitionDuration: _splashScreenDuration,
+          transitionsBuilder: (_, a, __, view) => FadeTransition(
+            opacity: CurvedAnimation(
+              curve: const Interval(0, 1, curve: Curves.easeOut),
+              parent: a,
+            ),
+            child: view,
+          ),
+        ),
+      );
     }
-    // ignore: use_build_context_synchronously
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) => nextView,
-        transitionDuration: _splashScreenDuration * 2,
-        transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
-      ),
-    );
   }
 
   @override
@@ -80,6 +142,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         child: AnimatedOpacity(
           opacity: _appIconIsVisible ? 1.0 : 0.0,
           duration: _splashScreenDuration,
+          curve: Curves.easeOut,
           child: Padding(
             padding: const EdgeInsets.all(32.0),
             child: widget.appImage,

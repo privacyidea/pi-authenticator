@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import '../../../../../widgets/focused_item_as_overlay.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/introduction.dart';
@@ -9,6 +8,7 @@ import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../widgets/focused_item_as_overlay.dart';
 import '../token_action.dart';
 
 class DefaultLockAction extends TokenAction {

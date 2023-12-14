@@ -8,7 +8,7 @@ import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
 import '../../../../../../model/tokens/hotp_token.dart';
 import '../../../../../../utils/app_customizer.dart';
-import '../../../../../../utils/customizations.dart';
+import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
 import '../../../../../../utils/utils.dart';

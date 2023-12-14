@@ -7,7 +7,7 @@ import '../../../../../../model/enums/introduction.dart';
 import '../../../../../../model/tokens/push_token.dart';
 import '../../../../../../repo/secure_token_repository.dart';
 import '../../../../../../utils/app_customizer.dart';
-import '../../../../../../utils/customizations.dart';
+import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
 import '../../../../../../widgets/default_dialog.dart';

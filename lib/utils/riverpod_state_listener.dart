@@ -5,21 +5,6 @@ import '../model/processors/scheme_processors/home_widget_processor.dart';
 import '../model/processors/scheme_processors/navigation_scheme_processor.dart';
 import '../state_notifiers/deeplink_notifier.dart';
 
-class StateObserver extends ConsumerWidget {
-  final List<StateNotifierProivderListener> listeners;
-  final Widget child;
-
-  const StateObserver({super.key, required this.listeners, required this.child});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    for (final listener in listeners) {
-      listener.buildListen(ref);
-    }
-    return child;
-  }
-}
-
 abstract class StateNotifierProivderListener<T extends StateNotifier<S>, S> {
   final StateNotifierProvider<T, S> provider;
   final void Function(S? previous, S next) onNewState;
@@ -29,9 +14,9 @@ abstract class StateNotifierProivderListener<T extends StateNotifier<S>, S> {
   }
 }
 
-abstract class DeepLinkListener extends StateNotifierProivderListener<DeeplinkNotifier, Uri?> {
+abstract class DeepLinkListener extends StateNotifierProivderListener<DeeplinkNotifier, DeepLink?> {
   const DeepLinkListener({
-    required StateNotifierProvider<DeeplinkNotifier, Uri?> deeplinkProvider,
+    required StateNotifierProvider<DeeplinkNotifier, DeepLink?> deeplinkProvider,
     required super.onNewState,
   }) : super(provider: deeplinkProvider);
 }
@@ -39,33 +24,39 @@ abstract class DeepLinkListener extends StateNotifierProivderListener<DeeplinkNo
 class NavigationDeepLinkListener extends DeepLinkListener {
   static BuildContext? _context;
   NavigationDeepLinkListener({
-    required StateNotifierProvider<DeeplinkNotifier, Uri?> provider,
+    required StateNotifierProvider<DeeplinkNotifier, DeepLink?> provider,
     BuildContext? context,
   }) : super(
           deeplinkProvider: provider,
-          onNewState: (Uri? previous, Uri? next) {
+          onNewState: (DeepLink? previous, DeepLink? next) {
             _onNewState(previous, next);
           },
         ) {
     _context = context;
   }
 
-  static void _onNewState(Uri? previous, Uri? next) {
+  static void _onNewState(DeepLink? previous, DeepLink? next) {
     if (next == null) return;
-    NavigationSchemeProcessor.processUri(next, context: _context);
+    NavigationSchemeProcessor.processUri(next.uri, context: _context, fromInit: next.fromInit);
   }
 }
 
 class HomeWidgetDeepLinkListener extends DeepLinkListener {
   const HomeWidgetDeepLinkListener({
-    required StateNotifierProvider<DeeplinkNotifier, Uri?> provider,
+    required StateNotifierProvider<DeeplinkNotifier, DeepLink?> provider,
   }) : super(
           deeplinkProvider: provider,
           onNewState: _onNewState,
         );
 
-  static void _onNewState(Uri? previous, Uri? next) {
+  static void _onNewState(DeepLink? previous, DeepLink? next) {
     if (next == null) return;
-    const HomeWidgetProcessor().process(next);
+    const HomeWidgetProcessor().process(next.uri, fromInit: next.fromInit);
   }
+}
+
+class DeepLink {
+  final Uri uri;
+  final bool fromInit;
+  const DeepLink(this.uri, {this.fromInit = false});
 }

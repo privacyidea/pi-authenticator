@@ -58,7 +58,7 @@ class ThemeCustomization {
         deleteColor = deleteColor ?? const Color(0xffE04D2D),
         renameColor = renameColor ?? const Color(0xff6A8FE5),
         lockColor = lockColor ?? const Color(0xffFFD633),
-        tileIconColor = tileIconColor ?? const Color(0xff9E9E9E);
+        tileIconColor = tileIconColor ?? const Color(0xff757575); // darkerversion: 0xff757575
 
   const ThemeCustomization.defaultDarkWith({
     Color? primaryColor,

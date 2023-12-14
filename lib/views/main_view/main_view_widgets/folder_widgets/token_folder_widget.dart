@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../model/token_folder.dart';
 import '../../../../utils/riverpod_providers.dart';
-import '../../../../utils/text_size.dart';
+import '../../../../utils/utils.dart';
 import 'token_folder_expandable.dart';
 
 class TokenFolderWidget extends ConsumerWidget {

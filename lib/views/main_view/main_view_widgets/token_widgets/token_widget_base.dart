@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../model/mixins/sortable_mixin.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/riverpod_providers.dart';
-import '../../../../utils/text_size.dart';
+import '../../../../utils/utils.dart';
 import 'default_token_actions/default_delete_action.dart';
 import 'default_token_actions/default_edit_action.dart';
 import 'default_token_actions/default_lock_action.dart';

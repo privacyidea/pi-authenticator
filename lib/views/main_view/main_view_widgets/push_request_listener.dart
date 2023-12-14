@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/tokens/push_token.dart';
-import '../../../utils/customizations.dart';
+import '../../../utils/globals.dart';
 import '../../../utils/lock_auth.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../widgets/default_dialog.dart';

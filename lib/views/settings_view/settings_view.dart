@@ -1,11 +1,11 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/home_widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/tokens/push_token.dart';
+import '../../utils/home_widget_utils.dart';
 import '../../utils/riverpod_providers.dart';
 import '../license_view/license_view.dart';
 import 'settings_view_widgets/logging_menu.dart';
@@ -88,7 +88,7 @@ class SettingsView extends ConsumerWidget {
                   controlAffinity: ListTileControlAffinity.trailing,
                   onChanged: (dynamic value) {
                     EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: false);
-                    HomeWidgetUtils.setBrightness(Brightness.light);
+                    HomeWidgetUtils().setCurrentThemeMode(ThemeMode.light);
                   },
                 ),
                 RadioListTile(
@@ -103,7 +103,7 @@ class SettingsView extends ConsumerWidget {
                   controlAffinity: ListTileControlAffinity.trailing,
                   onChanged: (dynamic value) {
                     EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: true);
-                    HomeWidgetUtils.setBrightness(Brightness.dark);
+                    HomeWidgetUtils().setCurrentThemeMode(ThemeMode.dark);
                   },
                 ),
                 RadioListTile(
@@ -116,7 +116,7 @@ class SettingsView extends ConsumerWidget {
                   controlAffinity: ListTileControlAffinity.trailing,
                   onChanged: (dynamic value) {
                     EasyDynamicTheme.of(context).changeTheme(dynamic: true, dark: false);
-                    HomeWidgetUtils.setBrightness(MediaQuery.of(context).platformBrightness);
+                    HomeWidgetUtils().setCurrentThemeMode(ThemeMode.system);
                   },
                 ),
               ],

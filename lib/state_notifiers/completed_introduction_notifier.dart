@@ -6,16 +6,24 @@ import '../model/states/introduction_state.dart';
 import '../utils/logger.dart';
 
 class InrtroductionNotifier extends StateNotifier<IntroductionState> {
-  Future<IntroductionState>? loadingRepo;
+  late Future<IntroductionState> loadingRepo;
 
   final IntroductionRepository _repo;
   InrtroductionNotifier({required IntroductionRepository repository})
       : _repo = repository,
         super(const IntroductionState()) {
-    _loadFromRepo();
+    _init();
   }
 
-  Future<void> _loadFromRepo() async {
+  Future<void> _init() async {
+    loadingRepo = Future(() async {
+      await loadFromRepo();
+      return state;
+    });
+    await loadingRepo;
+  }
+
+  Future<void> loadFromRepo() async {
     loadingRepo = Future<IntroductionState>(() async {
       final newState = await _repo.loadCompletedIntroductions();
       state = newState;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
+import '../../../utils/logger.dart';
 
 import 'qr_code_scanner_overlay.dart';
 

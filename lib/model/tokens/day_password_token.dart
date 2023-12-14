@@ -17,6 +17,7 @@ part 'day_password_token.g.dart';
 @JsonSerializable()
 @immutable
 class DayPasswordToken extends OTPToken {
+  static String get tokenType => TokenTypes.DAYPASSWORD.asString;
   final DayPasswordTokenViewMode viewMode;
   final Duration period;
 

@@ -6,7 +6,7 @@ import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/introduction.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/app_customizer.dart';
-import '../../../../../utils/customizations.dart';
+import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod_providers.dart';

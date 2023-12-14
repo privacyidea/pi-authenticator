@@ -14,6 +14,7 @@ part 'totp_token.g.dart';
 
 @JsonSerializable()
 class TOTPToken extends OTPToken {
+  static String get tokenType => TokenTypes.TOTP.asString;
   // this value is used to calculate the current 'counter' of this token
   // based on the UNIX systemtime), the counter is used to calculate the
   // current otp value

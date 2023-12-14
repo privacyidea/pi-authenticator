@@ -13,7 +13,7 @@ abstract class TokenSchemeProcessor implements SchemeProcessor {
   };
 
   @override
-  Future<List<Token>?> process(Uri uri);
+  Future<List<Token>?> process(Uri uri, {bool fromInit = false});
 
   static Future<List<Token>?> processUri(Uri uri) async {
     for (TokenSchemeProcessor processor in implementations) {

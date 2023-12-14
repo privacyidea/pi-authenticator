@@ -14,6 +14,7 @@ part 'hotp_token.g.dart';
 
 @JsonSerializable()
 class HOTPToken extends OTPToken {
+  static String get tokenType => TokenTypes.HOTP.asString;
   final int counter; // this value is used to calculate the current otp value
 
   HOTPToken({
