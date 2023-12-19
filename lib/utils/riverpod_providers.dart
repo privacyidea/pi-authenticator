@@ -87,7 +87,6 @@ final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushReque
       }
     });
 
-    pushProvider.pollForChallenges(isManually: false);
     final pushRequestNotifier = PushRequestNotifier(
       pushProvider: pushProvider,
     );

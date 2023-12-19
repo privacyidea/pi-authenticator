@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../widgets/push_request_listener.dart';
+
 class LicenseView extends StatelessWidget {
   static const String routeName = '/license';
   final String appName;
@@ -10,16 +12,18 @@ class LicenseView extends StatelessWidget {
   const LicenseView({required this.appName, required this.websiteLink, required this.appImage, super.key});
 
   @override
-  Widget build(BuildContext context) => FutureBuilder(
-        future: PackageInfo.fromPlatform(),
-        builder: (context, platformInfo) => LicensePage(
-          applicationName: appName,
-          applicationIcon: Padding(
-            padding: const EdgeInsets.all(32),
-            child: appImage,
+  Widget build(BuildContext context) => PushRequestListener(
+        child: FutureBuilder(
+          future: PackageInfo.fromPlatform(),
+          builder: (context, platformInfo) => LicensePage(
+            applicationName: appName,
+            applicationIcon: Padding(
+              padding: const EdgeInsets.all(32),
+              child: appImage,
+            ),
+            applicationLegalese: websiteLink,
+            applicationVersion: platformInfo.data == null ? '' : '${platformInfo.data?.version}+${platformInfo.data?.buildNumber}',
           ),
-          applicationLegalese: websiteLink,
-          applicationVersion: platformInfo.data == null ? '' : '${platformInfo.data?.version}+${platformInfo.data?.buildNumber}',
         ),
       );
 }

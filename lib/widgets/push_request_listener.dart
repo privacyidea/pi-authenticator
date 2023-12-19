@@ -2,14 +2,15 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/push_provider.dart';
 
-import '../../../l10n/app_localizations.dart';
-import '../../../model/tokens/push_token.dart';
-import '../../../utils/customizations.dart';
-import '../../../utils/lock_auth.dart';
-import '../../../utils/riverpod_providers.dart';
-import '../../../widgets/default_dialog.dart';
-import '../../../widgets/press_button.dart';
+import '../l10n/app_localizations.dart';
+import '../model/tokens/push_token.dart';
+import '../utils/customizations.dart';
+import '../utils/lock_auth.dart';
+import '../utils/riverpod_providers.dart';
+import 'default_dialog.dart';
+import 'press_button.dart';
 
 class PushRequestListener extends ConsumerStatefulWidget {
   final Widget child;
@@ -20,6 +21,14 @@ class PushRequestListener extends ConsumerStatefulWidget {
 }
 
 class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      PushProvider().pollForChallenges(isManually: false);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final tokensWithPushRequest = ref.watch(tokenProvider).pushTokens.where((token) => token.pushRequests.isNotEmpty);
