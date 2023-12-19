@@ -13,7 +13,7 @@ import 'main_view_widgets/expandable_appbar.dart';
 import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
 import 'main_view_widgets/main_view_tokens_list_filtered.dart';
-import 'main_view_widgets/push_request_listener.dart';
+import '../../widgets/push_request_listener.dart';
 
 export 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 
@@ -50,42 +50,42 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
   @override
   Widget build(BuildContext context) {
     final hasFilter = ref.watch(tokenFilterProvider) != null;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: ExpandableAppBar(
-        startExpand: hasFilter,
-        appBar: AppBar(
-          title: Text(
-            widget.appName,
-            overflow: TextOverflow.ellipsis,
-            // maxLines: 2 only works like this.
-            maxLines: 2, // Title can be shown on small screens too.
+    return PushRequestListener(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: ExpandableAppBar(
+          startExpand: hasFilter,
+          appBar: AppBar(
+            title: Text(
+              widget.appName,
+              overflow: TextOverflow.ellipsis,
+              // maxLines: 2 only works like this.
+              maxLines: 2, // Title can be shown on small screens too.
+            ),
+            leading: Padding(
+              padding: const EdgeInsets.all(4),
+              child: widget.appIcon,
+            ),
+            actions: [
+              hasFilter
+                  ? AppBarItem(
+                      onPressed: () {
+                        ref.read(tokenFilterProvider.notifier).state = null;
+                      },
+                      icon: const Icon(Icons.close),
+                    )
+                  : AppBarItem(
+                      onPressed: () {
+                        ref.read(tokenFilterProvider.notifier).state = TokenFilter(
+                          // filterCategory: TokenFilterCategory.issuer,
+                          searchQuery: '',
+                        );
+                      },
+                      icon: const Icon(Icons.search),
+                    ),
+            ],
           ),
-          leading: Padding(
-            padding: const EdgeInsets.all(4),
-            child: widget.appIcon,
-          ),
-          actions: [
-            hasFilter
-                ? AppBarItem(
-                    onPressed: () {
-                      ref.read(tokenFilterProvider.notifier).state = null;
-                    },
-                    icon: const Icon(Icons.close),
-                  )
-                : AppBarItem(
-                    onPressed: () {
-                      ref.read(tokenFilterProvider.notifier).state = TokenFilter(
-                        // filterCategory: TokenFilterCategory.issuer,
-                        searchQuery: '',
-                      );
-                    },
-                    icon: const Icon(Icons.search),
-                  ),
-          ],
-        ),
-        body: PushRequestListener(
-          child: ConnectivityListener(
+          body: ConnectivityListener(
             child: StatusBar(
               child: !hasFilter
                   ? Stack(
