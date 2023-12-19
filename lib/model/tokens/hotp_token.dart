@@ -17,6 +17,9 @@ class HOTPToken extends OTPToken {
   static String get tokenType => TokenTypes.HOTP.asString;
   final int counter; // this value is used to calculate the current otp value
 
+  @override
+  Duration get showDuration => const Duration(seconds: 30);
+
   HOTPToken({
     this.counter = 0,
     required super.label,
@@ -26,10 +29,11 @@ class HOTPToken extends OTPToken {
     required super.digits,
     required super.secret,
     String? type, // just for @JsonSerializable(): type of HOTPToken is always TokenTypes.HOTP
-    super.pin,
     super.tokenImage,
     super.sortIndex,
+    super.pin,
     super.isLocked,
+    super.isHidden,
     super.folderId,
   }) : super(type: TokenTypes.HOTP.asString);
 
@@ -53,10 +57,11 @@ class HOTPToken extends OTPToken {
     Algorithms? algorithm,
     int? digits,
     String? secret,
-    bool? pin,
     String? tokenImage,
     int? sortIndex,
+    bool? pin,
     bool? isLocked,
+    bool? isHidden,
     int? Function()? folderId,
   }) =>
       HOTPToken(
@@ -67,10 +72,11 @@ class HOTPToken extends OTPToken {
         algorithm: algorithm ?? this.algorithm,
         digits: digits ?? this.digits,
         secret: secret ?? this.secret,
-        pin: pin ?? this.pin,
         tokenImage: tokenImage ?? this.tokenImage,
         sortIndex: sortIndex ?? this.sortIndex,
+        pin: pin ?? this.pin,
         isLocked: isLocked ?? this.isLocked,
+        isHidden: isHidden ?? this.isHidden,
         folderId: folderId != null ? folderId() : this.folderId,
       );
 
@@ -102,7 +108,7 @@ class HOTPToken extends OTPToken {
     return hotpToken;
   }
 
-  factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json);
+  factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json).copyWith(isHidden: true);
 
   Map<String, dynamic> toJson() => _$HOTPTokenToJson(this);
 }

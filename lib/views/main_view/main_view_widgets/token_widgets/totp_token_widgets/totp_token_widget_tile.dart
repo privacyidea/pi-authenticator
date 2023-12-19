@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/totp_token.dart';
-import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
@@ -24,7 +23,6 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   double secondsLeft = 0;
   late AnimationController animation;
   late DateTime lastCount;
-  final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
 
   void _copyOtpValue() {
     if (globalRef?.read(disableCopyOtpProvider) ?? false) return;
@@ -52,17 +50,6 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
     secondsLeft = widget.token.secondsUntilNextOTP;
     lastCount = DateTime.now();
     _startCountDown();
-    isHidden.addListener(() {
-      if (mounted) {
-        setState(() {
-          if (isHidden.value == false) {
-            Future.delayed(Duration(milliseconds: (widget.token.period * 1000 + (secondsLeft * 1000).toInt())), () {
-              isHidden.value = true;
-            });
-          }
-        });
-      }
-    });
   }
 
   void _onAppStateChange(AppLifecycleState? state) {
@@ -111,19 +98,13 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
       title: Align(
         alignment: Alignment.centerLeft,
         child: InkWell(
-          onTap: widget.token.isLocked && isHidden.value
-              ? () async {
-                  if (await lockAuth(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
-                    isHidden.value = false;
-                  }
-                }
-              : _copyOtpValue,
+          onTap: widget.token.isLocked && widget.token.isHidden ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token) : _copyOtpValue,
           child: HideableText(
             key: Key(widget.token.hashCode.toString()),
             text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
             textScaleFactor: 1.9,
             enabled: widget.token.isLocked,
-            isHiddenNotifier: isHidden,
+            isHidden: widget.token.isHidden,
           ),
         ),
       ),
@@ -133,7 +114,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
       ],
       trailing: HideableWidget(
         token: widget.token,
-        isHiddenNotifier: isHidden,
+        isHidden: widget.token.isHidden,
         child: AnimatedBuilder(
           animation: animation,
           builder: (context, child) {

@@ -19,15 +19,20 @@ class ThemeCustomization {
     required this.deleteColor,
     required this.renameColor,
     required this.lockColor,
-    required this.actionButtonsForegroundColor,
-    required this.tilePrimaryColor,
     required this.tileIconColor,
-    required this.tileSubtitleColor,
     required this.navigationBarColor,
-    required this.navigationBarIconColor,
-    required this.qrButtonBackgroundColor,
-    required this.qrButtonIconColor,
-  });
+    Color? actionButtonsForegroundColor,
+    Color? tilePrimaryColor,
+    Color? tileSubtitleColor,
+    Color? navigationBarIconColor,
+    Color? qrButtonBackgroundColor,
+    Color? qrButtonIconColor,
+  })  : _actionButtonsForegroundColor = actionButtonsForegroundColor,
+        _tilePrimaryColor = tilePrimaryColor,
+        _tileSubtitleColor = tileSubtitleColor,
+        _navigationBarIconColor = navigationBarIconColor,
+        _qrButtonBackgroundColor = qrButtonBackgroundColor,
+        _qrButtonIconColor = qrButtonIconColor;
 
   const ThemeCustomization.defaultLightWith({
     Color? primaryColor,
@@ -39,26 +44,34 @@ class ThemeCustomization {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
-    this.actionButtonsForegroundColor,
-    this.tilePrimaryColor,
     Color? tileIconColor,
-    this.tileSubtitleColor,
     Color? navigationBarColor,
-    this.navigationBarIconColor,
-    this.qrButtonBackgroundColor,
-    this.qrButtonIconColor,
+    // From here on the colors have a default value based on another given color
+    Color? actionButtonsForegroundColor, // Default: foregroundColor
+    Color? tilePrimaryColor, // Default: primaryColor
+    Color? tileSubtitleColor, // Default: subtitleColor
+    Color? navigationBarIconColor, // Default: foregroundColor
+    Color? qrButtonBackgroundColor, // Default: primaryColor
+    Color? qrButtonIconColor, // Default: onPrimary
   })  : brightness = Brightness.light,
         primaryColor = primaryColor ?? Colors.lightBlue,
-        onPrimary = onPrimary ?? const Color(0xFF282828),
-        subtitleColor = subtitleColor ?? const Color(0xFF9E9E9E),
-        navigationBarColor = navigationBarColor ?? Colors.white,
-        backgroundColor = backgroundColor ?? const Color(0xFFEFEFEF),
+        onPrimary = onPrimary ?? const Color(0xff282828),
+        subtitleColor = subtitleColor ?? const Color(0xff9E9E9E),
+        backgroundColor = backgroundColor ?? const Color(0xffEFEFEF),
         foregroundColor = foregroundColor ?? const Color(0xff282828),
-        shadowColor = shadowColor ?? const Color(0xFF303030),
+        shadowColor = shadowColor ?? const Color(0xff303030),
         deleteColor = deleteColor ?? const Color(0xffE04D2D),
         renameColor = renameColor ?? const Color(0xff6A8FE5),
         lockColor = lockColor ?? const Color(0xffFFD633),
-        tileIconColor = tileIconColor ?? const Color(0xff757575); // darkerversion: 0xff757575
+        tileIconColor = tileIconColor ?? const Color(0xff757575),
+        navigationBarColor = navigationBarColor ?? Colors.white,
+        // From here on the colors have a default value based on another given color
+        _actionButtonsForegroundColor = actionButtonsForegroundColor,
+        _tilePrimaryColor = tilePrimaryColor,
+        _tileSubtitleColor = tileSubtitleColor,
+        _navigationBarIconColor = navigationBarIconColor,
+        _qrButtonBackgroundColor = qrButtonBackgroundColor,
+        _qrButtonIconColor = qrButtonIconColor;
 
   const ThemeCustomization.defaultDarkWith({
     Color? primaryColor,
@@ -70,14 +83,15 @@ class ThemeCustomization {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
-    this.actionButtonsForegroundColor,
-    this.tilePrimaryColor,
     Color? tileIconColor,
-    this.tileSubtitleColor,
     Color? navigationBarColor,
-    this.navigationBarIconColor,
-    this.qrButtonBackgroundColor,
-    this.qrButtonIconColor,
+    // From here on the colors have a default value based on another given color
+    Color? actionButtonsForegroundColor, // Default: foregroundColor
+    Color? tilePrimaryColor, // Default: primaryColor
+    Color? tileSubtitleColor, // Default: subtitleColor
+    Color? navigationBarIconColor, // Default: foregroundColor
+    Color? qrButtonBackgroundColor, // Default: primaryColor
+    Color? qrButtonIconColor, // Default: onPrimary
   })  : brightness = Brightness.dark,
         primaryColor = primaryColor ?? Colors.lightBlue,
         onPrimary = onPrimary ?? const Color(0xFF282828),
@@ -89,7 +103,14 @@ class ThemeCustomization {
         renameColor = renameColor ?? const Color(0xff527EDB),
         lockColor = lockColor ?? const Color(0xffFFCC00),
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
-        navigationBarColor = navigationBarColor ?? const Color(0xFF282828);
+        navigationBarColor = navigationBarColor ?? const Color(0xFF282828),
+        // From here on the colors have a default value based on another given color
+        _actionButtonsForegroundColor = actionButtonsForegroundColor,
+        _tilePrimaryColor = tilePrimaryColor,
+        _tileSubtitleColor = tileSubtitleColor,
+        _navigationBarIconColor = navigationBarIconColor,
+        _qrButtonBackgroundColor = qrButtonBackgroundColor,
+        _qrButtonIconColor = qrButtonIconColor;
 
   final Brightness brightness;
 
@@ -105,18 +126,24 @@ class ThemeCustomization {
   final Color deleteColor;
   final Color renameColor;
   final Color lockColor;
-  final Color? actionButtonsForegroundColor; // Default: foregroundColor
+  final Color? _actionButtonsForegroundColor; // Default: foregroundColor
+  Color get actionButtonsForegroundColor => _actionButtonsForegroundColor ?? foregroundColor;
 
   // List tile
-  final Color? tilePrimaryColor; // Default: primaryColor
+  final Color? _tilePrimaryColor; // Default: primaryColor
+  Color get tilePrimaryColor => _tilePrimaryColor ?? primaryColor;
   final Color tileIconColor;
-  final Color? tileSubtitleColor; // Default: subtitleColor
+  final Color? _tileSubtitleColor; // Default: subtitleColor
+  Color get tileSubtitleColor => _tileSubtitleColor ?? subtitleColor;
 
   // Navigation bar
   final Color navigationBarColor;
-  final Color? navigationBarIconColor; // Default: foregroundColor
-  final Color? qrButtonBackgroundColor; // Default: primaryColor
-  final Color? qrButtonIconColor; // Default: onPrimary
+  final Color? _navigationBarIconColor; // Default: foregroundColor
+  Color get navigationBarIconColor => _navigationBarIconColor ?? foregroundColor;
+  final Color? _qrButtonBackgroundColor; // Default: primaryColor
+  Color get qrButtonBackgroundColor => _qrButtonBackgroundColor ?? primaryColor;
+  final Color? _qrButtonIconColor; // Default: onPrimary
+  Color get qrButtonIconColor => _qrButtonIconColor ?? onPrimary;
 
   ThemeCustomization copyWith({
     Brightness? brightness,
@@ -129,14 +156,15 @@ class ThemeCustomization {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
-    Color? Function()? actionButtonsForegroundColor,
-    Color? Function()? tilePrimaryColor,
     Color? tileIconColor,
-    Color? Function()? tileSubtitleColor,
     Color? navigationBarColor,
-    Color? Function()? navigationBarIconColor,
-    Color? Function()? qrButtonBackgroundColor,
-    Color? Function()? qrButtonIconColor,
+    // From here on the colors have a default value based on another given color
+    Color? Function()? actionButtonsForegroundColor, // Default: foregroundColor
+    Color? Function()? tilePrimaryColor, // Default: primaryColor
+    Color? Function()? tileSubtitleColor, // Default: subtitleColor
+    Color? Function()? navigationBarIconColor, // Default: foregroundColor
+    Color? Function()? qrButtonBackgroundColor, // Default: primaryColor
+    Color? Function()? qrButtonIconColor, // Default: onPrimary
   }) =>
       ThemeCustomization(
         brightness: brightness ?? this.brightness,
@@ -164,8 +192,7 @@ class ThemeCustomization {
     if (json['brightness'] == null && json['primaryColor'] != null) {
       isLightTheme = _isColorBright(Color(json['primaryColor'] as int));
     }
-    print('isLightTheme: $isLightTheme primaryColor: ${json['primaryColor']}');
-    final themeCustomization = isLightTheme
+    return isLightTheme
         ? ThemeCustomization.defaultLightWith(
             primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
             onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
@@ -204,10 +231,6 @@ class ThemeCustomization {
             qrButtonBackgroundColor: json['qrButtonBackgroundColor'] != null ? Color(json['qrButtonBackgroundColor'] as int) : null,
             qrButtonIconColor: json['qrButtonIconColor'] != null ? Color(json['qrButtonIconColor'] as int) : null,
           );
-    print('themeCustomization.primaryColor ${themeCustomization.primaryColor}');
-    final theme = themeCustomization.generateTheme();
-    print('theme.primaryColor2 ${theme.primaryColor}');
-    return themeCustomization;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -221,135 +244,141 @@ class ThemeCustomization {
         'deleteColor': deleteColor.value,
         'renameColor': renameColor.value,
         'lockColor': lockColor.value,
-        'actionButtonsForegroundColor': actionButtonsForegroundColor?.value,
-        'tilePrimaryColor': tilePrimaryColor?.value,
         'tileIconColor': tileIconColor.value,
-        'tileSubtitleColor': tileSubtitleColor?.value,
         'navigationBarColor': navigationBarColor.value,
-        'navigationBarIconColor': navigationBarIconColor?.value,
-        'qrButtonBackgroundColor': qrButtonBackgroundColor?.value,
+        '_actionButtonsForegroundColor': _actionButtonsForegroundColor?.value,
+        '_tilePrimaryColor': _tilePrimaryColor?.value,
+        '_tileSubtitleColor': _tileSubtitleColor?.value,
+        '_navigationBarIconColor': _navigationBarIconColor?.value,
+        '_qrButtonBackgroundColor': _qrButtonBackgroundColor?.value,
       };
 
-  ThemeData generateTheme() {
-    return ThemeData(
-        useMaterial3: false,
-        brightness: brightness,
-        primaryColor: primaryColor,
-        textTheme: const TextTheme().copyWith(
-          bodyLarge: TextStyle(color: foregroundColor),
-          bodyMedium: TextStyle(color: foregroundColor),
-          titleMedium: TextStyle(color: foregroundColor),
-          titleSmall: TextStyle(color: foregroundColor),
-          displayLarge: TextStyle(color: foregroundColor),
-          displayMedium: TextStyle(color: foregroundColor),
-          displaySmall: TextStyle(color: foregroundColor),
-          headlineMedium: TextStyle(color: foregroundColor),
-          headlineSmall: TextStyle(color: foregroundColor),
-          titleLarge: TextStyle(color: foregroundColor),
-          bodySmall: TextStyle(color: tileSubtitleColor),
-          labelLarge: TextStyle(color: foregroundColor),
-          labelSmall: TextStyle(color: foregroundColor),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(6),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+  ThemeData generateTheme() => ThemeData(
+          useMaterial3: false,
+          brightness: brightness,
+          primaryColor: primaryColor,
+          textTheme: const TextTheme().copyWith(
+            bodyLarge: TextStyle(color: foregroundColor),
+            bodyMedium: TextStyle(color: foregroundColor),
+            titleMedium: TextStyle(color: foregroundColor),
+            titleSmall: TextStyle(color: foregroundColor),
+            displayLarge: TextStyle(color: foregroundColor),
+            displayMedium: TextStyle(color: foregroundColor),
+            displaySmall: TextStyle(color: foregroundColor),
+            headlineMedium: TextStyle(color: foregroundColor),
+            headlineSmall: TextStyle(color: foregroundColor),
+            titleLarge: TextStyle(color: foregroundColor),
+            bodySmall: TextStyle(color: tileSubtitleColor),
+            labelLarge: TextStyle(color: foregroundColor),
+            labelSmall: TextStyle(color: foregroundColor),
           ),
-        ),
-        scaffoldBackgroundColor: backgroundColor,
-        cardColor: backgroundColor,
-        shadowColor: shadowColor,
-        // shadowColor: Colors.transparent,
-        appBarTheme: const AppBarTheme().copyWith(
-          backgroundColor: backgroundColor,
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.all(6),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+          ),
+          scaffoldBackgroundColor: backgroundColor,
+          cardColor: backgroundColor,
           shadowColor: shadowColor,
-          foregroundColor: foregroundColor,
-          elevation: 0,
-        ),
-        primaryIconTheme: IconThemeData(color: foregroundColor),
-        navigationBarTheme: const NavigationBarThemeData().copyWith(
-          backgroundColor: navigationBarColor,
-          shadowColor: shadowColor,
-          iconTheme: MaterialStatePropertyAll(IconThemeData(color: navigationBarIconColor ?? foregroundColor)),
-          elevation: 3,
-        ),
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: qrButtonBackgroundColor ?? primaryColor,
-          foregroundColor: qrButtonIconColor ?? onPrimary,
-          elevation: 0,
-        ),
-        listTileTheme: ListTileThemeData(
-          tileColor: backgroundColor,
-          titleTextStyle: TextStyle(color: tilePrimaryColor ?? primaryColor),
-          subtitleTextStyle: TextStyle(color: tileSubtitleColor ?? subtitleColor),
-          iconColor: tileIconColor,
-        ),
-        colorScheme: brightness == Brightness.light
-            ? ColorScheme.light(
-                primary: primaryColor,
-                secondary: primaryColor,
-                onPrimary: onPrimary,
-                onSecondary: onPrimary,
-                errorContainer: deleteColor,
-              )
-            : ColorScheme.dark(
-                primary: primaryColor,
-                secondary: primaryColor,
-                onPrimary: onPrimary,
-                onSecondary: onPrimary,
-                errorContainer: deleteColor,
+          // shadowColor: Colors.transparent,
+          appBarTheme: const AppBarTheme().copyWith(
+            backgroundColor: backgroundColor,
+            shadowColor: shadowColor,
+            foregroundColor: foregroundColor,
+            elevation: 0,
+          ),
+          primaryIconTheme: IconThemeData(color: foregroundColor),
+          navigationBarTheme: const NavigationBarThemeData().copyWith(
+            backgroundColor: navigationBarColor,
+            shadowColor: shadowColor,
+            iconTheme: MaterialStatePropertyAll(IconThemeData(color: navigationBarIconColor)),
+            elevation: 3,
+          ),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: qrButtonBackgroundColor,
+            foregroundColor: qrButtonIconColor,
+            elevation: 0,
+          ),
+          listTileTheme: ListTileThemeData(
+            tileColor: backgroundColor,
+            titleTextStyle: TextStyle(color: tilePrimaryColor),
+            subtitleTextStyle: TextStyle(color: tileSubtitleColor),
+            iconColor: tileIconColor,
+          ),
+          colorScheme: brightness == Brightness.light
+              ? ColorScheme.light(
+                  primary: primaryColor,
+                  secondary: primaryColor,
+                  onPrimary: onPrimary,
+                  onSecondary: onPrimary,
+                  errorContainer: deleteColor,
+                )
+              : ColorScheme.dark(
+                  primary: primaryColor,
+                  secondary: primaryColor,
+                  onPrimary: onPrimary,
+                  onSecondary: onPrimary,
+                  errorContainer: deleteColor,
+                ),
+          checkboxTheme: CheckboxThemeData(
+            fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+              if (states.contains(MaterialState.disabled)) {
+                return null;
+              }
+              if (states.contains(MaterialState.selected)) {
+                return primaryColor;
+              }
+              return null;
+            }),
+          ),
+          radioTheme: RadioThemeData(
+            fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+              if (states.contains(MaterialState.disabled)) {
+                return null;
+              }
+              if (states.contains(MaterialState.selected)) {
+                return primaryColor;
+              }
+              return null;
+            }),
+          ),
+          switchTheme: SwitchThemeData(
+            thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+              if (states.contains(MaterialState.disabled)) {
+                return null;
+              }
+              if (states.contains(MaterialState.selected)) {
+                return primaryColor;
+              }
+              return null;
+            }),
+            trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+              if (states.contains(MaterialState.disabled)) {
+                return null;
+              }
+              if (states.contains(MaterialState.selected)) {
+                return primaryColor;
+              }
+              return null;
+            }),
+          ),
+          extensions: [
+            ActionTheme(
+              deleteColor: deleteColor,
+              editColor: renameColor,
+              lockColor: lockColor,
+              foregroundColor: actionButtonsForegroundColor,
+            ),
+            ExtendedTextTheme(
+              tokenTile: TextStyle(
+                color: primaryColor,
               ),
-        checkboxTheme: CheckboxThemeData(
-          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return null;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return primaryColor;
-            }
-            return null;
-          }),
-        ),
-        radioTheme: RadioThemeData(
-          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return null;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return primaryColor;
-            }
-            return null;
-          }),
-        ),
-        switchTheme: SwitchThemeData(
-          thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return null;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return primaryColor;
-            }
-            return null;
-          }),
-          trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-            if (states.contains(MaterialState.disabled)) {
-              return null;
-            }
-            if (states.contains(MaterialState.selected)) {
-              return primaryColor;
-            }
-            return null;
-          }),
-        ),
-        extensions: [
-          ActionTheme(
-            deleteColor: deleteColor,
-            editColor: renameColor,
-            lockColor: lockColor,
-            foregroundColor: actionButtonsForegroundColor ?? foregroundColor,
-          ),
-        ]);
-  }
+              tokenTileSubtitle: TextStyle(
+                color: tileSubtitleColor,
+              ),
+            ),
+          ]);
 }
 
 class ApplicationCustomization {
@@ -450,6 +479,40 @@ class ApplicationCustomization {
       'darkTheme': darkTheme.toJson(),
     };
   }
+}
+
+class ExtendedTextTheme extends ThemeExtension<ExtendedTextTheme> {
+  final TextStyle tokenTile;
+  final TextStyle tokenTileSubtitle;
+  final String veilingCharacter;
+
+  ExtendedTextTheme({
+    this.veilingCharacter = '●',
+    TextStyle? tokenTile,
+    TextStyle? tokenTileSubtitle,
+  })  : tokenTile = const TextStyle(
+          fontFamily: 'monospace',
+          fontWeight: FontWeight.bold,
+        ).merge(tokenTile),
+        tokenTileSubtitle = const TextStyle(
+          fontFamily: 'monospace',
+          fontWeight: FontWeight.bold,
+        ).merge(tokenTileSubtitle);
+
+  @override
+  ThemeExtension<ExtendedTextTheme> copyWith({
+    TextStyle? otpTextStyle,
+    TextStyle? otpSubtitleTextStyle,
+  }) =>
+      ExtendedTextTheme(
+        tokenTile: otpTextStyle ?? tokenTile,
+        tokenTileSubtitle: otpSubtitleTextStyle ?? tokenTileSubtitle,
+      );
+
+  @override
+  ThemeExtension<ExtendedTextTheme> lerp(ExtendedTextTheme? other, double t) => ExtendedTextTheme(
+        tokenTile: TextStyle.lerp(tokenTile, other?.tokenTile, t) ?? tokenTile,
+      );
 }
 
 class ActionTheme extends ThemeExtension<ActionTheme> {

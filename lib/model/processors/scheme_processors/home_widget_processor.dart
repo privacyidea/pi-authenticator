@@ -1,6 +1,6 @@
-import '../scheme_processor_interface.dart';
 import '../../../utils/home_widget_utils.dart';
 import '../../../utils/logger.dart';
+import '../scheme_processor_interface.dart';
 
 class HomeWidgetProcessor extends SchemeProcessor {
   const HomeWidgetProcessor();
@@ -13,7 +13,7 @@ class HomeWidgetProcessor extends SchemeProcessor {
 
   @override
   Future<void> process(Uri uri, {bool fromInit = false}) async {
-    Logger.warning('HomeWidgetProcessor: Processing uri: $uri');
+    print('HomeWidgetProcessor: Processing uri: $uri');
     if (supportedSchemes.contains(uri.scheme) == false) return;
     return _processors[uri.host]?.call(uri);
   }

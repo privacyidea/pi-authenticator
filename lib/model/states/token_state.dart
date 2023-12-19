@@ -31,6 +31,7 @@ class TokenState {
   }
 
   T? currentOf<T extends Token>(T token) => tokens.firstWhereOrNull((element) => element.id == token.id) as T?;
+  T? currentOfId<T extends Token>(String id) => tokens.firstWhereOrNull((element) => element.id == id) as T?;
 
   TokenState withToken(Token token) {
     final newTokens = List<Token>.from(tokens);

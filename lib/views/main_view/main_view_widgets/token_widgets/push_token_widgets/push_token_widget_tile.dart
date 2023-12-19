@@ -20,7 +20,7 @@ class PushTokenWidgetTile extends ConsumerWidget {
       tokenImage: token.tokenImage,
       title: Text(
         token.label,
-        textScaleFactor: 1.9,
+        textScaler: const TextScaler.linear(1.9),
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
       ),

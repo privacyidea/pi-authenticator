@@ -19,6 +19,7 @@ abstract class OTPToken extends Token {
     super.tokenImage,
     super.sortIndex,
     super.isLocked,
+    super.isHidden,
     super.folderId,
   });
 
@@ -31,9 +32,10 @@ abstract class OTPToken extends Token {
     int? digits,
     String? secret,
     bool? pin,
+    bool? isLocked,
+    bool? isHidden,
     String? tokenImage,
     int? sortIndex,
-    bool? isLocked,
     int? Function()? folderId,
   });
 

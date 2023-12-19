@@ -70,7 +70,11 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         Logger.info('tokenProvider reviced new AppState. Changed from $previous to $next');
         if (previous == AppLifecycleState.paused && next == AppLifecycleState.resumed) {
           Logger.info('Refreshing tokens on resume');
-          tokenNotifier.refreshRolledOutPushTokens();
+          tokenNotifier.refreshTokens();
+        }
+        if (previous == AppLifecycleState.resumed && next == AppLifecycleState.paused) {
+          Logger.info('Cancelling all notifications on pause');
+          tokenNotifier.saveTokens();
         }
       },
     );

@@ -44,6 +44,27 @@ class AppWidgetProvider : HomeWidgetProvider() {
         // }
     }
 
+    override fun onEnabled(context: Context) {
+        super.onEnabled(context)
+        println("onEnabled")
+    }
+
+    override fun onDisabled(context: Context) {
+        super.onDisabled(context)
+        println("onDisabled")
+    }
+
+    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+        super.onDeleted(context, appWidgetIds)
+        println("onDeleted")
+    }
+
+    override fun onRestored(context: Context, oldWidgetIds: IntArray, newWidgetIds: IntArray) {
+        super.onRestored(context, oldWidgetIds, newWidgetIds)
+        println("onRestored")
+    }
+
+
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray, widgetData: SharedPreferences) {
         val nightModeSuffix: String
         val currentThemeMode = widgetData.getString("_currentThemeMode", "system")
@@ -55,8 +76,8 @@ class AppWidgetProvider : HomeWidgetProvider() {
             nightModeSuffix = if(currentThemeMode == "dark") "_dark" else "_light"
         }
         println("nightModeSuffix: $nightModeSuffix")
-
-        val editor = widgetData.edit()
+        
+        var editor = widgetData.edit()
         editor.putString("_widgetIds", appWidgetIds.joinToString(","))
         widgetData.getString("_copyText", null)?.let {
             val service = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -64,9 +85,18 @@ class AppWidgetProvider : HomeWidgetProvider() {
             service.setPrimaryClip(clip)
             editor.remove("_copyText")
         }
+        editor.putBoolean("_widgetIsRebuilding", true)
+        val rebuildingIds = widgetData.getString("_rebuildingWidgetIds", null)
+        editor.remove("_rebuildingWidgetIds")
+        var rebuildingWidgetIds: IntArray
+        if(rebuildingIds == null || rebuildingIds.isEmpty()) {
+            rebuildingWidgetIds = appWidgetIds   
+        } else {
+            rebuildingWidgetIds = rebuildingIds?.split(",")?.map { it.toInt() }?.toIntArray() ?: intArrayOf()
+        }
+        println("rebuildingWidgetIds: ${rebuildingWidgetIds.joinToString(",")}")
         editor.apply()
-
-        appWidgetIds.forEach { widgetId ->
+        rebuildingWidgetIds.forEach { widgetId ->
             val views = RemoteViews(context.packageName, R.layout.widget_layout).apply {
                 val tokenId = widgetData.getString("_tokenId$widgetId", null)
                 
@@ -76,22 +106,34 @@ class AppWidgetProvider : HomeWidgetProvider() {
                     _setContainerEmpty(context, widgetData, widgetId, nightModeSuffix, this)
                 } else {
                     val showToken = widgetData.getBoolean("_showWidget$widgetId", false)
+                    val tokenLocked = widgetData.getBoolean("_tokenLocked$widgetId", false)
+                    val actionBlocked = widgetData.getBoolean("_actionBlocked$tokenId", false)
+                    val tokenCopied = widgetData.getBoolean("_copyBlocked$widgetId", false)
                     println("showToken: $showToken")
                     _setSettingsIcon(context, widgetData, widgetId, nightModeSuffix, this)
-                    _setActionIcon(context, widgetData, widgetId, nightModeSuffix, this, showToken)
-                    if(showToken) {
+                    if(tokenCopied) {
+                        _setActionIcon(context, widgetData, widgetId, nightModeSuffix, this, false)
+                        _setTokenCopy(context, widgetData, widgetId, nightModeSuffix, this)
+                    } else if(showToken && !tokenLocked) {
+                        _setActionIcon(context, widgetData, widgetId, nightModeSuffix, this, !actionBlocked)
                         _setTokenOtp(context, widgetData, widgetId, nightModeSuffix, this)
                     } else {
-                        _setHiddenOtp(context, widgetData, widgetId, nightModeSuffix, this)
+                        _setActionIcon(context, widgetData, widgetId, nightModeSuffix, this, false)
+                        _setHiddenOtp(context, widgetData, widgetId, nightModeSuffix, this, tokenLocked)
                     }
                 }
             }
             appWidgetManager.updateAppWidget(widgetId, views)
         }
+
+        editor = widgetData.edit()
+        editor.putBoolean("_widgetIsRebuilding", false)
+        editor.apply()
     }
 
     fun _setBackground(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews) {
         _loadImageFromWidgetDataString(widgetData, "_tokenBackground$nightModeSuffix", R.id.widget_background, remoteViews)
+        remoteViews.setOnClickPendingIntent(R.id.widget_background, null)
     }
     fun _setSettingsIcon(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews) {
         _loadImageFromWidgetDataString(widgetData, "_settingsIcon$nightModeSuffix", R.id.widget_settings, remoteViews)
@@ -103,37 +145,53 @@ class AppWidgetProvider : HomeWidgetProvider() {
     fun _setActionIcon(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews, showToken: Boolean) {
         println("getString: _tokenType$widgetId")
         val tokenType = widgetData.getString("_tokenType$widgetId", null)
-        if(tokenType == null || showToken == false) {
+        if(tokenType == null) {
+            remoteViews.setImageViewBitmap(R.id.widget_action, null)
             remoteViews.setOnClickPendingIntent(R.id.widget_action, null)
-            if(tokenType == null) {
-                remoteViews.setImageViewBitmap(R.id.widget_action, null)
-                return
-            }
+            return
         }
-        val activeSuffix = if(showToken) "_active" else "_inactive"
-        _loadImageFromWidgetDataString(widgetData, "_tokenAction_$tokenType$activeSuffix$nightModeSuffix", R.id.widget_action, remoteViews)
-        val actionIntent = HomeWidgetBackgroundIntent.getBroadcast(context, Uri.parse("homewidget://action?widgetId=$widgetId"))
-        remoteViews.setOnClickPendingIntent(R.id.widget_action, actionIntent)
+        if(showToken) {
+            _loadImageFromWidgetDataString(widgetData, "_tokenAction_${tokenType}_active$nightModeSuffix", R.id.widget_action, remoteViews)
+            val actionIntent = HomeWidgetBackgroundIntent.getBroadcast(context, Uri.parse("homewidget://action?widgetId=$widgetId"))
+            remoteViews.setOnClickPendingIntent(R.id.widget_action, actionIntent)
+        } else {
+            _loadImageFromWidgetDataString(widgetData, "_tokenAction_${tokenType}_inactive$nightModeSuffix", R.id.widget_action, remoteViews)
+            remoteViews.setOnClickPendingIntent(R.id.widget_action, null)
+        }
     }
 
-    fun _setHiddenOtp(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews) {
+    fun _setHiddenOtp(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews, tokenLocked: Boolean) {
         _loadImageFromWidgetDataString(widgetData, "_tokenOtp${widgetId}_hidden$nightModeSuffix", R.id.widget_otp, remoteViews)
-        println("Uri.parse(homewidget://show?widgetId=$widgetId)")
+        println("tokenLocked: $tokenLocked")
+        if(tokenLocked) {
+            val pendingIntent = HomeWidgetLaunchIntent.getActivity(context,
+                MainActivity::class.java,
+                Uri.parse("homewidgetnavigate://showlocked?id=$widgetId"))
+            remoteViews.setOnClickPendingIntent(R.id.widget_otp, pendingIntent)
+        } else {
         val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context,
             Uri.parse("homewidget://show?widgetId=$widgetId"))
-        remoteViews.setOnClickPendingIntent(R.id.widget_otp, backgroundIntent)
+        remoteViews.setOnClickPendingIntent(R.id.widget_otp, backgroundIntent)}
     }
 
     fun _setTokenOtp(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews) {
         _loadImageFromWidgetDataString(widgetData, "_tokenOtp$widgetId$nightModeSuffix", R.id.widget_otp, remoteViews)
-        // copy token to clipboard
+        // Otp is visible, so the user can copy it to the clipboard with the next click
         val clipIntent = HomeWidgetBackgroundIntent.getBroadcast(context,
             Uri.parse("homewidget://copy?widgetId=$widgetId"))
         remoteViews.setOnClickPendingIntent(R.id.widget_otp, clipIntent)
     }
 
+    fun _setTokenCopy(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews) {
+        _loadImageFromWidgetDataString(widgetData, "_tokenCopy$nightModeSuffix", R.id.widget_otp, remoteViews)
+        // Token was just copied to clipboard, so when the user clicks again nothing should happen
+        remoteViews.setOnClickPendingIntent(R.id.widget_otp, null)
+    }
+
     fun _setContainerEmpty(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews) {
         _loadImageFromWidgetDataString(widgetData, "_tokenContainerEmpty$nightModeSuffix", R.id.widget_otp, remoteViews)
+        remoteViews.setImageViewBitmap(R.id.widget_settings, null);
+        remoteViews.setImageViewBitmap(R.id.widget_action, null);
         // No token yet, so the user has to select one
         val pendingIntent = HomeWidgetLaunchIntent.getActivity(context,
                 MainActivity::class.java,
@@ -149,6 +207,7 @@ class AppWidgetProvider : HomeWidgetProvider() {
         val imagePath = widgetData.getString("$key", null)
         if(imagePath == null) {
             println("imagePath is null")
+            view.setImageViewBitmap(xmlElement, null)
             return false
         } 
         

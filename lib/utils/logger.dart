@@ -135,7 +135,7 @@ class Logger {
     _printWarning(warningString);
   }
 
-  static void error(String? message, {required dynamic error, required dynamic stackTrace, String? name}) {
+  static void error(String? message, {dynamic error, dynamic stackTrace, String? name}) {
     String errorString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
     errorString = _textFilter(errorString);
     if (message != null) {

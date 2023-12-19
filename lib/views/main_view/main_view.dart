@@ -6,6 +6,7 @@ import '../../model/states/token_filter.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/status_bar.dart';
+import '../view_interface.dart';
 import 'main_view_widgets/app_bar_item.dart';
 import 'main_view_widgets/connectivity_listener.dart';
 import 'main_view_widgets/expandable_appbar.dart';
@@ -16,8 +17,11 @@ import 'main_view_widgets/push_request_listener.dart';
 
 export 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 
-class MainView extends ConsumerStatefulWidget {
+class MainView extends ConsumerStatefulView {
   static const routeName = '/mainView';
+
+  @override
+  RouteSettings get routeSettings => const RouteSettings(name: routeName);
 
   final Widget appIcon;
   final String appName;

@@ -14,8 +14,10 @@ abstract class Token with SortableMixin {
   final String label; // the name of the token, it cannot be uses as an identifier
   final String issuer; // The issuer of this token, currently unused.
   final String id; // this is the identifier of the token
-  final bool isLocked;
   final bool pin;
+  final bool isLocked;
+  final bool isHidden;
+  Duration get showDuration;
   final String? tokenImage;
   final int? folderId;
   @override
@@ -51,8 +53,10 @@ abstract class Token with SortableMixin {
     this.folderId,
     bool? pin,
     bool? isLocked,
+    bool? isHidden,
   })  : // when pin is true isLocked is also true otherwise it's the value of isLocked if it is null it's false
         isLocked = pin != null && pin ? true : isLocked ?? false,
+        isHidden = (pin != null && pin ? true : isLocked ?? false) == false ? false : isHidden ?? false,
         pin = pin ?? false;
 
   @override
@@ -61,6 +65,7 @@ abstract class Token with SortableMixin {
     String? issuer,
     String? id,
     bool? isLocked,
+    bool? isHidden,
     bool? pin,
     String? tokenImage,
     int? sortIndex,
@@ -80,8 +85,9 @@ abstract class Token with SortableMixin {
     return 'Token{label: $label, '
         'issuer: $issuer, '
         'id: $id, '
-        '_isLocked: $isLocked, '
         'pin: $pin, '
+        'isLocked: $isLocked, '
+        'isHidden: $isHidden, '
         'tokenImage: $tokenImage, '
         'type: $type, '
         'sortIndex: $sortIndex, '

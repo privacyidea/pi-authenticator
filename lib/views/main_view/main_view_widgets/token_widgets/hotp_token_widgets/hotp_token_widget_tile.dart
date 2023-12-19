@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/hotp_token.dart';
-import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
@@ -22,7 +21,6 @@ class HOTPTokenWidgetTile extends ConsumerStatefulWidget {
 
 class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
   bool disableTrailingButton = false;
-  final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
 
   void _updateOtpValue() {
     setState(() {
@@ -61,22 +59,6 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    isHidden.addListener(() {
-      if (mounted) {
-        setState(() {
-          if (isHidden.value == false) {
-            Future.delayed(const Duration(seconds: 30), () {
-              isHidden.value = true;
-            });
-          }
-        });
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return TokenWidgetTile(
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
@@ -85,16 +67,10 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
       title: Align(
         alignment: Alignment.centerLeft,
         child: InkWell(
-          onTap: widget.token.isLocked && isHidden.value
-              ? () async {
-                  if (await lockAuth(localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
-                    isHidden.value = false;
-                  }
-                }
-              : _copyOtpValue,
+          onTap: widget.token.isLocked && widget.token.isHidden ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token) : _copyOtpValue,
           child: HideableText(
             textScaleFactor: 1.9,
-            isHiddenNotifier: isHidden,
+            isHidden: widget.token.isHidden,
             text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
             enabled: widget.token.isLocked,
           ),
@@ -106,7 +82,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
       ],
       trailing: HideableWidget(
         token: widget.token,
-        isHiddenNotifier: isHidden,
+        isHidden: widget.token.isHidden,
         child: IconButton(
           iconSize: 32,
           onPressed: disableTrailingButton ? null : () => _updateOtpValue(),

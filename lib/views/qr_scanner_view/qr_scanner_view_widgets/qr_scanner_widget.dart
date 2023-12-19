@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import '../../../utils/logger.dart';
 
+import '../../../utils/logger.dart';
 import 'qr_code_scanner_overlay.dart';
 
 class QRScannerWidget extends StatefulWidget {

@@ -2,9 +2,9 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../utils/utils.dart';
 
 import '../utils/riverpod_providers.dart';
+import '../utils/utils.dart';
 
 class StatusBar extends ConsumerStatefulWidget {
   final Widget child;

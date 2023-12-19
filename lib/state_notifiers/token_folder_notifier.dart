@@ -48,4 +48,9 @@ class TokenFolderNotifier extends StateNotifier<TokenFolderState> {
     state = newState;
     _saveOrReplaceFolders(newState.folders);
   }
+
+  void expandFolderById(int id) {
+    final folder = state.folders.firstWhere((element) => element.folderId == id).copyWith(isExpanded: true);
+    updateFolder(folder);
+  }
 }

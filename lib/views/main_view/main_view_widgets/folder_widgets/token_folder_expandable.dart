@@ -43,14 +43,6 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
       vsync: this,
     );
     expandableController = ExpandableController(initialExpanded: widget.folder.isExpanded);
-    expandableController.addListener(() {
-      globalRef?.read(tokenFolderProvider.notifier).updateFolder(widget.folder.copyWith(isExpanded: expandableController.expanded));
-      if (expandableController.expanded) {
-        animationController.reverse();
-      } else {
-        animationController.forward();
-      }
-    });
   }
 
   @override
@@ -61,23 +53,40 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
     super.dispose();
   }
 
+  void _setExpanded(bool expanded, {bool updateState = true}) {
+    if (expanded) {
+      animationController.reverse();
+    } else {
+      animationController.forward();
+    }
+    expandableController.expanded = expanded;
+    if (updateState) {
+      globalRef?.read(tokenFolderProvider.notifier).updateFolder(widget.folder.copyWith(isExpanded: expanded));
+    }
+  }
+
   @override
   ExpandablePanel build(BuildContext context) {
     List<Token> tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: ref.watch(settingsProvider).hidePushTokens ? [PushToken] : []);
     tokens = widget.filter?.filterTokens(tokens) ?? tokens;
     final draggingSortable = ref.watch(draggingSortableProvider);
-    if (tokens.isEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        expandableController.expanded = false;
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (tokens.isEmpty && expandableController.expanded) {
+        _setExpanded(false);
+        return;
+      }
+      if (widget.folder.isExpanded != expandableController.expanded) {
+        _setExpanded(widget.folder.isExpanded, updateState: false);
+      }
+    });
+
     return ExpandablePanel(
       theme: const ExpandableThemeData(hasIcon: false, tapBodyToCollapse: false, tapBodyToExpand: false),
       controller: expandableController,
       header: GestureDetector(
         onTap: () async {
           if (widget.folder.isExpanded) {
-            expandableController.expanded = false;
+            _setExpanded(false);
             return;
           }
           if (tokens.isEmpty || (tokens.length == 1 && tokens.first == draggingSortable)) return;
@@ -85,7 +94,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
             return;
           }
           if (!mounted) return;
-          expandableController.toggle();
+          _setExpanded(true);
         },
         child: Slidable(
           key: ValueKey('tokenFolder-${widget.folder.folderId}'),
@@ -107,7 +116,8 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                   if (widget.folder.isLocked) return true;
                   _expandTimer?.cancel();
                   _expandTimer = Timer(const Duration(milliseconds: 500), () {
-                    if (!expandableController.expanded && tokens.isNotEmpty) expandableController.expanded = true;
+                    if (!mounted) return;
+                    _setExpanded(true);
                   });
                   return true;
                 }

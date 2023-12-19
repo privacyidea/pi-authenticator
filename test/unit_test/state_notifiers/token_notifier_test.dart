@@ -60,7 +60,7 @@ void _testTokenNotifier() {
         (ref) => TokenNotifier(repository: mockRepo),
       );
       final notifier = container.read(testProvider.notifier);
-      expect(await notifier.refreshRolledOutPushTokens(), true);
+      expect(await notifier.refreshTokens(), true);
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);

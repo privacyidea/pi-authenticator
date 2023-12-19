@@ -15,6 +15,7 @@ import 'view_utils.dart';
 
 bool authenticationInProgress = false;
 
+/// Sends a request to the OS to authenticate the user. Returns true if the user was authenticated, false otherwise.
 Future<bool> lockAuth({required String localizedReason}) async {
   bool didAuthenticate = false;
   LocalAuthentication localAuth = LocalAuthentication();

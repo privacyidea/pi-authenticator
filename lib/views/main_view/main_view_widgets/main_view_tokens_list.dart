@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import '../../../model/tokens/otp_token.dart';
+
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
+import '../../../model/tokens/otp_token.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/push_provider.dart';

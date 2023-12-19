@@ -20,6 +20,8 @@ class PushToken extends Token {
   final DateTime? expirationDate;
   final String serial;
 
+  Duration get showDuration => Duration.zero;
+
   // Roll out
   final bool sslVerify;
   final String? enrollmentCredentials;
@@ -81,8 +83,9 @@ class PushToken extends Token {
     super.sortIndex,
     super.tokenImage,
     super.folderId,
-    super.isLocked,
     super.pin,
+    super.isLocked,
+    super.isHidden,
   })  : isRolledOut = isRolledOut ?? false,
         sslVerify = sslVerify ?? false,
         rolloutState = rolloutState ?? PushTokenRollOutState.rolloutNotStarted,
@@ -98,10 +101,9 @@ class PushToken extends Token {
     String? id,
     String? tokenImage,
     PushRequestQueue? pushRequests,
-    bool? isLocked,
-    bool? canToggleLock,
-    bool? relock,
     bool? pin,
+    bool? isLocked,
+    bool? isHidden,
     bool? sslVerify,
     String? enrollmentCredentials,
     Uri? url,
@@ -122,8 +124,9 @@ class PushToken extends Token {
       tokenImage: tokenImage ?? this.tokenImage,
       id: id ?? this.id,
       pushRequests: pushRequests ?? this.pushRequests,
-      isLocked: isLocked ?? this.isLocked,
       pin: pin ?? this.pin,
+      isLocked: isLocked ?? this.isLocked,
+      isHidden: isHidden ?? this.isHidden,
       sslVerify: sslVerify ?? this.sslVerify,
       enrollmentCredentials: enrollmentCredentials ?? this.enrollmentCredentials,
       url: url ?? this.url,
@@ -193,7 +196,7 @@ class PushToken extends Token {
       PushTokenRollOutState.parsingResponse || PushTokenRollOutState.parsingResponseFailed => PushTokenRollOutState.parsingResponseFailed,
       PushTokenRollOutState.rolloutComplete => PushTokenRollOutState.rolloutComplete,
     };
-    return newToken.copyWith(rolloutState: currentRolloutState);
+    return newToken.copyWith(rolloutState: currentRolloutState, isHidden: true);
   }
 
   Map<String, dynamic> toJson() => _$PushTokenToJson(this);

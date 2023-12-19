@@ -7,6 +7,7 @@ import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import '../main_view/main_view.dart';
 import '../onboarding_view/onboarding_view.dart';
+import '../view_interface.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   static const routeName = '/';
@@ -108,30 +109,24 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   void _pushReplace() {
     final isFirstRun = ref.read(introductionProvider).isConditionFulfilled(ref, Introduction.introductionScreen) && ref.read(settingsProvider).isFirstRun;
-    final nextView = isFirstRun ? OnboardingView(appName: widget.appName) : MainView(appName: widget.appName, appIcon: widget.appIcon);
-    if (SplashScreen._initialView != null) {
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => nextView,
-        ),
-      );
-    } else {
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => nextView,
-          transitionDuration: _splashScreenDuration,
-          transitionsBuilder: (_, a, __, view) => FadeTransition(
-            opacity: CurvedAnimation(
-              curve: const Interval(0, 1, curve: Curves.easeOut),
-              parent: a,
+    final ViewWidget nextView = isFirstRun ? OnboardingView(appName: widget.appName) : MainView(appName: widget.appName, appIcon: widget.appIcon);
+    final routeBuilder = SplashScreen._initialView == null
+        ? PageRouteBuilder(
+            pageBuilder: (_, __, ___) => nextView,
+            transitionDuration: _splashScreenDuration,
+            settings: nextView.routeSettings,
+            transitionsBuilder: (_, a, __, view) => FadeTransition(
+              opacity: CurvedAnimation(
+                curve: const Interval(0, 1, curve: Curves.easeOut),
+                parent: a,
+              ),
+              child: view,
             ),
-            child: view,
-          ),
-        ),
-      );
-    }
+          )
+        : PageRouteBuilder(
+            pageBuilder: (_, __, ___) => nextView,
+          );
+    Navigator.pushReplacement(context, routeBuilder);
   }
 
   @override

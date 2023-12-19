@@ -50,7 +50,10 @@ class TokenFolderWidget extends ConsumerWidget {
                 ),
               ],
             ),
-            child: TokenFolderExpandable(folder: folder),
+            child: TokenFolderExpandable(
+              folder: folder,
+              key: Key('TokenFolderExpandable#${folder.folderId}'),
+            ),
           )
         : (draggingFolder == folder)
             ? const SizedBox()

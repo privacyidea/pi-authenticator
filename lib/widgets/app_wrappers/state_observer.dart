@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../utils/riverpod_state_listener.dart';
 
 class StateObserver extends ConsumerWidget {
-  final List<StateNotifierProivderListener> listeners;
+  final List<StateNotifierProviderListener> listeners;
   final Widget child;
 
   const StateObserver({super.key, required this.listeners, required this.child});

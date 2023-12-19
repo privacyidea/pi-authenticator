@@ -12,7 +12,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import '../utils/home_widget_utils.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
@@ -26,7 +25,9 @@ import '../model/tokens/token.dart';
 import '../repo/secure_token_repository.dart';
 import '../utils/firebase_utils.dart';
 import '../utils/globals.dart';
+import '../utils/home_widget_utils.dart';
 import '../utils/identifiers.dart';
+import '../utils/lock_auth.dart';
 import '../utils/logger.dart';
 import '../utils/network_utils.dart';
 import '../utils/riverpod_providers.dart';
@@ -35,6 +36,7 @@ import '../utils/utils.dart';
 import '../utils/view_utils.dart';
 
 class TokenNotifier extends StateNotifier<TokenState> {
+  static final Map<String, Timer> _timers = {};
   late Future<TokenState> loadingRepo;
   final TokenRepository _repo;
   final RsaUtils _rsaUtils;
@@ -71,10 +73,10 @@ class TokenNotifier extends StateNotifier<TokenState> {
     await loadingRepo;
   }
 
-  Future<void> _saveOrReplaceTokensRepo(List<Token> tokens) async {
+  Future<void> _saveStateToRepo() async {
     await loadingRepo;
     loadingRepo = Future(() async {
-      final failedTokens = await _repo.saveOrReplaceTokens(tokens);
+      final failedTokens = await _repo.saveOrReplaceTokens(state.tokens);
       if (failedTokens.isNotEmpty) {
         Logger.warning(
           'Saving tokens failed. Failed Tokens: ${failedTokens.length}',
@@ -121,7 +123,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
   }
 
-  Future<bool> refreshRolledOutPushTokens() async {
+  Future<bool> refreshTokens() async {
     await loadingRepo;
     List<Token> tokens;
     try {
@@ -129,10 +131,20 @@ class TokenNotifier extends StateNotifier<TokenState> {
     } catch (_) {
       return false;
     }
-    final rolledOutPushToken = tokens.whereType<PushToken>().where((element) => element.isRolledOut).toList();
-    Logger.info('Refreshed ${rolledOutPushToken.length} Pushtokens from storage.', name: 'token_notifier.dart#refreshTokens');
-    state = state.addOrReplaceTokens(rolledOutPushToken);
+
+    Logger.info('Refreshed ${tokens.length} Tokens from storage.', name: 'token_notifier.dart#refreshTokens');
+    state = state.addOrReplaceTokens(tokens);
     return true;
+  }
+
+  Future<bool> saveTokens() async {
+    await loadingRepo;
+    try {
+      await _repo.saveOrReplaceTokens(state.tokens);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   Token? getTokenFromId(String id) {
@@ -143,7 +155,47 @@ class TokenNotifier extends StateNotifier<TokenState> {
     await loadingRepo;
     token = state.currentOf(token)?.copyWith(counter: token.counter + 1) ?? token.copyWith(counter: token.counter + 1);
     state = state.replaceToken(token);
-    await _saveOrReplaceTokensRepo([token]);
+    await _saveStateToRepo();
+  }
+
+  Future<void> hideToken(Token token) async {
+    await loadingRepo;
+    token = state.currentOf(token)?.copyWith(isHidden: true) ?? token.copyWith(isHidden: true);
+    state = state.replaceToken(token);
+    await _saveStateToRepo();
+  }
+
+  Future<void> showToken(Token token) async {
+    final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
+    if (!authenticated) return;
+    await loadingRepo;
+    token = state.currentOf(token)?.copyWith(isHidden: false) ?? token.copyWith(isHidden: false);
+    state = state.replaceToken(token);
+    await _saveStateToRepo();
+    _timers[token.id]?.cancel();
+    _timers[token.id] = Timer(token.showDuration, () async {
+      await hideToken(token);
+    });
+  }
+
+  Future<void> showTokenById(String tokenId) async {
+    final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
+    if (!authenticated) return;
+    await loadingRepo;
+    final token = state.currentOfId(tokenId)?.copyWith(isHidden: false);
+    if (token == null) {
+      Logger.warning('Tried to show token that does not exist.', name: 'token_notifier.dart#showTokenById');
+      return;
+    }
+    state = state.replaceToken(token);
+    await _saveStateToRepo();
+    if (token.folderId != null) {
+      globalRef?.read(tokenFolderProvider.notifier).expandFolderById(token.folderId!);
+    }
+    _timers[token.id]?.cancel();
+    _timers[token.id] = Timer(token.showDuration, () async {
+      await hideToken(token);
+    });
   }
 
   Future<void> removeToken(Token token) async {
@@ -155,13 +207,13 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<void> addOrReplaceToken(Token token) async {
     await loadingRepo;
     state = state.addOrReplaceToken(token);
-    await _saveOrReplaceTokensRepo([token]);
+    await _saveStateToRepo();
   }
 
   Future<void> addOrReplaceTokens(List<Token> updatedTokens) async {
     await loadingRepo;
     state = state.addOrReplaceTokens(updatedTokens);
-    await _saveOrReplaceTokensRepo(updatedTokens);
+    await _saveStateToRepo();
   }
 
   Future<T?> updateToken<T extends Token>(T token, T Function(T) updater) async {
@@ -173,7 +225,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     final updated = updater(current);
     state = state.replaceToken(updated);
-    await _saveOrReplaceTokensRepo([updated]);
+    await _saveStateToRepo();
     await _homeWidgetUtils.updateTokenIfLinked(updated);
     return updated;
   }
@@ -186,7 +238,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       updatedTokens.add(updater(current));
     }
     state = state.replaceTokens(updatedTokens);
-    await _saveOrReplaceTokensRepo(updatedTokens);
+    await _saveStateToRepo();
     await _homeWidgetUtils.updateTokensIfLinked(updatedTokens);
     return updatedTokens;
   }

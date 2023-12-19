@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
+import '../../utils/logger.dart';
 import '../../utils/utils.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
@@ -18,6 +19,13 @@ class TOTPToken extends OTPToken {
   // this value is used to calculate the current 'counter' of this token
   // based on the UNIX systemtime), the counter is used to calculate the
   // current otp value
+
+  @override
+  Duration get showDuration {
+    final Duration duration = Duration(milliseconds: (period * 1000 + (secondsUntilNextOTP * 1000).toInt()));
+    Logger.warning('TOTPToken.showDuration: $duration');
+    return duration;
+  }
 
   final int period;
   @override
@@ -39,10 +47,11 @@ class TOTPToken extends OTPToken {
     required super.digits,
     required super.secret,
     String? type, // just for @JsonSerializable(): type of TOTPToken is always TokenTypes.TOTP
-    super.pin,
     super.tokenImage,
     super.sortIndex,
+    super.pin,
     super.isLocked,
+    super.isHidden,
     super.folderId,
   })  : period = period < 1 ? 30 : period, // period must be greater than 0 otherwise IntegerDivisionByZeroException is thrown in OTP.generateTOTPCodeString
         super(type: TokenTypes.TOTP.asString);
@@ -55,11 +64,12 @@ class TOTPToken extends OTPToken {
     Algorithms? algorithm,
     int? digits,
     String? secret,
-    bool? pin,
     int? period,
     String? tokenImage,
     int? sortIndex,
+    bool? pin,
     bool? isLocked,
+    bool? isHidden,
     int? Function()? folderId,
   }) {
     return TOTPToken(
@@ -69,11 +79,12 @@ class TOTPToken extends OTPToken {
       algorithm: algorithm ?? this.algorithm,
       digits: digits ?? this.digits,
       secret: secret ?? this.secret,
-      pin: pin ?? this.pin,
       period: period ?? this.period,
       tokenImage: tokenImage ?? this.tokenImage,
       sortIndex: sortIndex ?? this.sortIndex,
+      pin: pin ?? this.pin,
       isLocked: isLocked ?? this.isLocked,
+      isHidden: isHidden ?? this.isHidden,
       folderId: folderId != null ? folderId() : this.folderId,
     );
   }
@@ -107,7 +118,7 @@ class TOTPToken extends OTPToken {
     return totpToken;
   }
 
-  factory TOTPToken.fromJson(Map<String, dynamic> json) => _$TOTPTokenFromJson(json);
+  factory TOTPToken.fromJson(Map<String, dynamic> json) => _$TOTPTokenFromJson(json).copyWith(isHidden: true);
 
   double get currentProgress {
     final secondsSinceEpoch = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
