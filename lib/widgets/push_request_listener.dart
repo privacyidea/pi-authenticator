@@ -61,85 +61,90 @@ class _PushRequestDialogState extends State<PushRequestDialog> {
   @override
   Widget build(BuildContext context) => isHandled
       ? const SizedBox()
-      : DefaultDialog(
-          title: Center(child: Text(' ${widget.tokenWithPushRequest.label}', textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge!)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                widget.tokenWithPushRequest.pushRequests.peek()?.title ?? '',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text(
-                  widget.tokenWithPushRequest.pushRequests.peek()?.question ?? '',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
+      : Container(
+          color: Colors.transparent,
+          child: Center(
+            child: DefaultDialog(
+              title: Center(child: Text(' ${widget.tokenWithPushRequest.label}', textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge!)),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    flex: 6,
-                    child: PressButton(
-                      onPressed: () async {
-                        if (widget.tokenWithPushRequest.isLocked &&
-                            await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) return;
-                        globalRef?.read(pushRequestProvider.notifier).acceptPop(widget.tokenWithPushRequest);
-                        if (mounted) setState(() => isHandled = true);
-                      },
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.accept.padRight(AppLocalizations.of(context)!.decline.length),
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            const Flexible(
-                              child: Icon(Icons.check_outlined),
-                            ),
-                          ],
-                        ),
-                      ),
+                  Text(
+                    widget.tokenWithPushRequest.pushRequests.peek()?.title ?? '',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      widget.tokenWithPushRequest.pushRequests.peek()?.question ?? '',
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
-                  const Expanded(child: SizedBox()),
-                  Expanded(
-                    flex: 6,
-                    child: PressButton(
-                        style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
-                        onPressed: () async {
-                          if (widget.tokenWithPushRequest.isLocked &&
-                              await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
-                            return;
-                          }
-                          _showConfirmationDialog(widget.tokenWithPushRequest);
-                        },
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.decline.padRight(AppLocalizations.of(context)!.accept.length),
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              const Flexible(
-                                flex: 1,
-                                child: Icon(Icons.close_outlined),
-                              ),
-                            ],
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                        flex: 6,
+                        child: PressButton(
+                          onPressed: () async {
+                            if (widget.tokenWithPushRequest.isLocked &&
+                                await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) return;
+                            globalRef?.read(pushRequestProvider.notifier).acceptPop(widget.tokenWithPushRequest);
+                            if (mounted) setState(() => isHandled = true);
+                          },
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.accept.padRight(AppLocalizations.of(context)!.decline.length),
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                const Flexible(
+                                  child: Icon(Icons.check_outlined),
+                                ),
+                              ],
+                            ),
                           ),
-                        )),
+                        ),
+                      ),
+                      const Expanded(child: SizedBox()),
+                      Expanded(
+                        flex: 6,
+                        child: PressButton(
+                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
+                            onPressed: () async {
+                              if (widget.tokenWithPushRequest.isLocked &&
+                                  await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
+                                return;
+                              }
+                              _showConfirmationDialog(widget.tokenWithPushRequest);
+                            },
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.decline.padRight(AppLocalizations.of(context)!.accept.length),
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                  const Flexible(
+                                    flex: 1,
+                                    child: Icon(Icons.close_outlined),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         );
 
