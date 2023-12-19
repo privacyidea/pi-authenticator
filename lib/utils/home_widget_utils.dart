@@ -37,8 +37,6 @@ void homeWidgetBackgroundCallback(Uri? uri) {
 class HomeWidgetUtils {
   HomeWidgetUtils._();
   static HomeWidgetUtils? _instance;
-  DateTime? _lastUpdate;
-  Timer? _updateTimer; // Used to wait for the HomeWidget to be ready
 
   /// Check widget_layout.xml for the sizes
   static const _widgetBackgroundSize = Size(130, 65);
@@ -507,7 +505,11 @@ class HomeWidgetUtils {
   /////////// Notifiy Update /////////////
   ////////////////////////////////////////
 
+  /// widgetIds that should be updated after the de
   final Set<String> _updatedWidgetIds = {};
+  // Used to wait for the HomeWidget to be ready
+  Timer? _updateTimer;
+  DateTime? _lastUpdate;
   static const _updateDelay = Duration(milliseconds: 250);
 
   /// This method has to be called after change to the HomeWidget to notify the HomeWidget to update
@@ -517,7 +519,8 @@ class HomeWidgetUtils {
       Logger.info('Update delayed: $updatedWidgetIds');
       _updatedWidgetIds.addAll(updatedWidgetIds);
       _updateTimer?.cancel();
-      _updateTimer = Timer(_updateDelay - Duration(milliseconds: DateTime.now().difference(_lastUpdate!).inMilliseconds), () async {
+      final nextDelayInMs = _updateDelay.inMilliseconds - DateTime.now().difference(_lastUpdate!).inMilliseconds;
+      _updateTimer = Timer(nextDelayInMs < 1 ? _updateDelay : Duration(milliseconds: nextDelayInMs), () async {
         Logger.info('Call Update from Timer');
         await _notifyUpdate(_updatedWidgetIds.toList());
       });
