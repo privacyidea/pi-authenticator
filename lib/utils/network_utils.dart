@@ -68,7 +68,7 @@ class PrivacyIdeaIOClient {
 
   /// Custom POST request allows to not verify certificates.
   Future<Response> doPost({required Uri url, required Map<String, String?> body, bool sslVerify = true}) async {
-    if (kIsWeb) return Response('', 405);
+    if (kIsWeb) return Response('Platform not supported', 405);
     Logger.info('Sending post request (SSLVerify: $sslVerify)', name: 'utils.dart#doPost');
 
     List<MapEntry> entries = body.entries.where((element) => element.value == null).toList();
@@ -94,6 +94,8 @@ class PrivacyIdeaIOClient {
       response = await ioClient.post(url, body: body);
     } on SocketException catch (e, s) {
       response = Response('${e.runtimeType} : $s', 404);
+    } on HandshakeException catch (e, s) {
+      response = Response('${e.runtimeType} : $s', 525);
     }
 
     if (response.statusCode != 200) {

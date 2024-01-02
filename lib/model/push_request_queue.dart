@@ -53,6 +53,8 @@ class PushRequestQueue {
 
   PushRequest pop() => list.removeAt(0);
 
+  PushRequest? tryPop() => list.isNotEmpty ? list.removeAt(0) : null;
+
   @override
   String toString() {
     return 'PushRequestQueue{_list: $list}';

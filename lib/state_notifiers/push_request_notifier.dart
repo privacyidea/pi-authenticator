@@ -53,10 +53,8 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
 
   // ACTIONS
   Future<bool> acceptPop(PushToken pushToken) async {
-    if (pushToken.pushRequests.peek() == null) {
-      return false;
-    }
-    final pushRequest = pushToken.pushRequests.pop();
+    final pushRequest = pushToken.pushRequests.tryPop();
+    if (pushRequest == null) return false;
     Logger.info('Approving push request.', name: 'push_request_notifier.dart#approve');
     final updatedPushRequest = pushRequest.copyWith(accepted: true);
     final successfullyApproved = await _handleReaction(pushRequest: updatedPushRequest, token: pushToken);
@@ -69,10 +67,8 @@ class PushRequestNotifier extends StateNotifier<PushRequest?> {
   }
 
   Future<bool> declinePop(PushToken pushToken) async {
-    if (pushToken.pushRequests.peek() == null) {
-      return false;
-    }
-    final pushRequest = pushToken.pushRequests.pop();
+    final pushRequest = pushToken.pushRequests.tryPop();
+    if (pushRequest == null) return false;
     Logger.info('Decline push request.', name: 'push_request_notifier.dart#decline');
     final updatedPushRequest = pushRequest.copyWith(accepted: false);
     final successfullyDeclined = await _handleReaction(pushRequest: updatedPushRequest, token: pushToken);
