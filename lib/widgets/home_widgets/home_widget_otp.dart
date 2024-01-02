@@ -61,7 +61,7 @@ class HomeWidgetOtp extends FlutterHomeWidgetBase {
             flex: 3,
             child: FittedBox(
               fit: BoxFit.contain,
-              alignment: Alignment.bottomLeft,
+              alignment: Alignment.centerLeft,
               child: Text(
                 text,
                 style: theme.extension<ExtendedTextTheme>()?.tokenTile,

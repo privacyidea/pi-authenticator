@@ -38,17 +38,17 @@ class HomeWidgetUtils {
   HomeWidgetUtils._();
   static HomeWidgetUtils? _instance;
 
-  /// Check widget_layout.xml for the sizes
-  static const _widgetBackgroundSize = Size(130, 65);
+  /// Check widget_layout.xml for the sizes. Double it for better quality
+  static const _widgetBackgroundSize = Size(130 * 2, 65 * 2);
 
-  /// Check widget_layout.xml for the sizes
-  static const _widgetOtpSize = Size(90, 38);
+  /// Check widget_layout.xml for the sizes. Double it for better quality
+  static const _widgetOtpSize = Size(98 * 2, 40 * 2);
 
-  /// Check widget_layout.xml for the sizes
-  static const _widgetSettingsSize = Size(14, 14);
+  /// Check widget_layout.xml for the sizes. Double it for better quality
+  static const _widgetSettingsSize = Size(14 * 2, 14 * 2);
 
-  /// Check widget_layout.xml for the sizes
-  static const _widgetActionSize = Size(24, 24);
+  /// Check widget_layout.xml for the sizes. Double it for better quality
+  static const _widgetActionSize = Size(24 * 2, 24 * 2);
 
   /// Default duration for showing the OTP
   static const _showDuration = Duration(seconds: 30);
@@ -61,8 +61,8 @@ class HomeWidgetUtils {
 
   final _mapTokenAction = <String, FutureOr<void> Function(String)>{
     HOTPToken.tokenType: (widgetId) => _instance?._hotpTokenAction(widgetId),
-    TOTPToken.tokenType: (_) {},
-    DayPasswordToken.tokenType: (_) {},
+    // TOTPToken.tokenType: (_) {},
+    // DayPasswordToken.tokenType: (_) {},
   };
 
   /////////////////////////////////////
@@ -113,9 +113,12 @@ class HomeWidgetUtils {
   final keyTokenLocked =
       '_tokenLocked'; // recive a bool if the token of the linked widget is locked. true = locked, false = not locked. Example: _tokenLocked32
   final keyWidgetIsRebuilding = '_widgetIsRebuilding';
-  final keyActionBlocked = '_actionBlocked';
-  final keyCopyBlocked = '_copyBlocked';
-  final keyRebuildingWidgetIds = '_rebuildingWidgetIds';
+  final keyActionBlocked =
+      '_actionBlocked'; // recive a bool if the action of the linked widget is blocked. true = blocked, false = not blocked. _actionBlocked${token.id}
+  final keyCopyBlocked =
+      '_copyBlocked'; // recive a bool if the copy of the linked widget is blocked. true = blocked, false = not blocked. _copyBlocked${widgetId} Example: _copyBlocked32
+  final keyRebuildingWidgetIds =
+      '_rebuildingWidgetIds'; // recive the widgetIds that should be updated after the HomeWidget is ready. each widgetId is seperated by ',' Example value: "32,33,35"
 
   ////////////////////////////////////////
   /////// Getter & Getterfunctions ///////
@@ -183,7 +186,20 @@ class HomeWidgetUtils {
     await HomeWidget.setAppGroupId(await _packageName);
     await _setThemeCustomization();
     await _updateStaticWidgets();
+    await _resetAllTokens();
     await _notifyUpdate(await _widgetIds);
+  }
+
+  Future<void> _resetAllTokens() async {
+    final widgetIds = await _widgetIds;
+    final futures = <Future>[];
+    for (String widgetId in widgetIds) {
+      final tokenId = await getTokenIdOfWidgetId(widgetId);
+      futures.add(HomeWidget.saveWidgetData('$keyShowToken$widgetId', false));
+      futures.add(HomeWidget.saveWidgetData('$keyCopyBlocked$widgetId', false));
+      futures.add(HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', false));
+    }
+    await Future.wait(futures);
   }
 
   Future<void> setCurrentThemeMode(ThemeMode themeMode) async {
@@ -308,13 +324,15 @@ class HomeWidgetUtils {
       await unlink(widgetId);
       return;
     }
+    final tokenAction = _mapTokenAction[token!.type];
+    if (tokenAction == null) return;
     final actionTimer = _actionTimers[tokenId];
     if (actionTimer != null && actionTimer.isActive) {
       Logger.info('Action blocked');
       return;
     }
     HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', true);
-    final widgetIds = await _getWidgetIdsOfTokens([token!.id]);
+    final widgetIds = await _getWidgetIdsOfTokens([token.id]);
     _actionTimers[tokenId] = Timer(const Duration(seconds: 1), () async {
       Logger.info('Unblocked action');
       await HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', false);
@@ -468,7 +486,7 @@ class HomeWidgetUtils {
   Future<void> _updateHomeWidgetUnlinked() async => await HomeWidgetUnlinkedBuilder(
         lightTheme: await _getThemeData(),
         darkTheme: await _getThemeData(dark: true),
-        logicalSize: _widgetBackgroundSize,
+        logicalSize: _widgetOtpSize,
         homeWidgetKey: keyTokenContainerEmpty,
         utils: this,
       ).renderFlutterWidgets();
@@ -476,7 +494,7 @@ class HomeWidgetUtils {
   Future<void> _updateHomeWidgetCopied() async => await HomeWidgetCopiedBuilder(
         lightTheme: await _getThemeData(),
         darkTheme: await _getThemeData(dark: true),
-        logicalSize: _widgetBackgroundSize,
+        logicalSize: _widgetOtpSize,
         homeWidgetKey: '$keyTokenCopy',
         utils: this,
       ).renderFlutterWidgets();

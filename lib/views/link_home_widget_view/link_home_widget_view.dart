@@ -7,13 +7,19 @@ import '../../utils/home_widget_utils.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../utils/utils.dart';
 
-class LinkHomeWidgetView extends ConsumerWidget {
+class LinkHomeWidgetView extends ConsumerStatefulWidget {
   final String homeWidgetId;
 
   const LinkHomeWidgetView({super.key, required this.homeWidgetId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LinkHomeWidgetView> createState() => _LinkHomeWidgetViewState();
+}
+
+class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
+  bool alreadyTapped = false;
+  @override
+  Widget build(BuildContext context) {
     final otpTokens = ref.watch(tokenProvider).otpTokens;
     return Scaffold(
       appBar: AppBar(
@@ -27,13 +33,20 @@ class LinkHomeWidgetView extends ConsumerWidget {
           return ListTile(
             title: Text(otpToken.label),
             subtitle: Text(splitPeriodically(otpString, otpString.length ~/ 2)),
-            onTap: () async {
-              await HomeWidgetUtils().link(homeWidgetId, otpToken.id);
-              await FlutterAppMinimizer.minimize();
-              if (context.mounted) {
-                Navigator.pop(context);
-              }
-            },
+            onTap: alreadyTapped
+                ? () {}
+                : () async {
+                    if (alreadyTapped) return;
+                    setState(() {
+                      alreadyTapped = true;
+                    });
+                    await HomeWidgetUtils().link(widget.homeWidgetId, otpToken.id);
+                    await FlutterAppMinimizer.minimize();
+                    await Future.delayed(const Duration(milliseconds: 500));
+                    if (mounted) {
+                      Navigator.pop(context);
+                    }
+                  },
           );
         },
         itemCount: otpTokens.length,

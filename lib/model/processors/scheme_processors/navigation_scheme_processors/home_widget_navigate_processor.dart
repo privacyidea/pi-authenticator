@@ -45,6 +45,7 @@ class HomeWidgetNavigateProcessor extends NavigationSchemeProcessor {
         LinkHomeWidgetView(homeWidgetId: uri.queryParameters['id']!),
       );
     } else {
+      Navigator.popUntil(context, (route) => route.settings.name == MainView.routeName);
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => LinkHomeWidgetView(homeWidgetId: uri.queryParameters['id']!),

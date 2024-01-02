@@ -30,8 +30,10 @@ class HomeWidgetUnlinked extends FlutterHomeWidgetBase {
         height: logicalSize.height,
         child: FittedBox(
           fit: BoxFit.contain,
+          alignment: Alignment.topRight,
           child: Text(
-            'No token linked',
+            'Tap to link\nyour token',
+            textAlign: TextAlign.center,
             style: theme.extension<ExtendedTextTheme>()?.tokenTileSubtitle,
           ),
         ),
