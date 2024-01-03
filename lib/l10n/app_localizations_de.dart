@@ -467,4 +467,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'Datenschutzerklärung';
+
+  @override
+  String legacySigningErrorTitle(Object tokenLabel) {
+    return 'Bei der Verwendung des veralteten Tokens ist ein Fehler aufgetreten: $tokenLabel';
+  }
+
+  @override
+  String get legacySigningErrorMessage => 'Der Token wurde in einer veralteten Version der App erstellt, was zu Problemen bei der Verwendung führen kann. Es wird empfohlen, einen neuen Push-Token zu erstellen, wenn das Problem weiterhin besteht!';
 }

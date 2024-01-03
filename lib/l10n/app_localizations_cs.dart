@@ -467,4 +467,12 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'Zásady ochrany osobních údajů';
+
+  @override
+  String legacySigningErrorTitle(Object tokenLabel) {
+    return 'Při použití zastaralého tokenu došlo k chybě: $tokenLabel';
+  }
+
+  @override
+  String get legacySigningErrorMessage => 'Token byl vytvořen v zastaralé verzi aplikace, což může vést k problémům při jeho používání.\nPokud problém přetrvává, doporučujeme vytvořit nový push token!';
 }
