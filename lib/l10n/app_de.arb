@@ -456,5 +456,18 @@
   "hidePushTokensDescription": "Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.",
   "settingsGroupGeneral": "Allgemeines",
   "licensesAndVersion": "Lizenzen und Version",
-  "privacyPolicy": "Datenschutzerklärung"
+  "privacyPolicy": "Datenschutzerklärung",
+  "legacySigningErrorTitle": "Bei der Verwendung des veralteten Tokens ist ein Fehler aufgetreten: {tokenLabel}",
+  "@legacySigningErrorTitle": {
+    "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
+    "placeholders": {
+      "tokenLabel": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "legacySigningErrorMessage": "Der Token wurde in einer veralteten Version der App erstellt, was zu Problemen bei der Verwendung führen kann. Es wird empfohlen, einen neuen Push-Token zu erstellen, wenn das Problem weiterhin besteht!",
+  "@legacySigningErrorMessage": {
+    "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
+  }
 }

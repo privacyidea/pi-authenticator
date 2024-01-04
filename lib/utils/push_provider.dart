@@ -57,6 +57,7 @@ class PushProvider {
 
   Future<void> initialize({required PushRequestNotifier pushSubscriber, required FirebaseUtils firebaseUtils}) async {
     if (_initialized) return;
+    Logger.warning('PushProvider is already initialized', name: 'push_provider.dart#initializePushProvider');
     _initialized = true;
     this.firebaseUtils = firebaseUtils;
     this.pushSubscriber = pushSubscriber;
