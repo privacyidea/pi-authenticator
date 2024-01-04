@@ -65,13 +65,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         cleanUp: (error) {
           Logger.error('Error while loading app: $error', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
         },
-      ).then((values) {
-        Logger.warning('SplashScreen: Future completed with ${values.length} values', name: 'main.dart#initState');
-        for (final value in values) {
-          Logger.warning('SplashScreen: Future completed with value: $value', name: 'main.dart#initState');
-        }
-        _navigate();
-      });
+      ).then((values) => _navigate());
     });
   }
 

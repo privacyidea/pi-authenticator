@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
@@ -27,10 +29,80 @@ import '../widgets/home_widgets/home_widget_otp.dart';
 import 'app_customizer.dart';
 import 'logger.dart';
 
+const appGroupId = 'group.single_token_widget';
+const minIosWidgetVersion = "15.0.0";
+
+class Version implements Comparable<Version> {
+  final int major;
+  final int minor;
+  final int patch;
+
+  const Version(this.major, this.minor, this.patch);
+
+  factory Version.parse(String version) {
+    final parts = version.split('.');
+    if (parts.length != 3) {
+      throw FormatException('Invalid version: $version');
+    }
+    return Version(int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
+  }
+
+  @override
+  operator ==(other) {
+    if (other is! Version) return false;
+    return major == other.major && minor == other.minor && patch == other.patch;
+  }
+
+  operator <(other) {
+    if (other is! Version) return false;
+    if (major >= other.major) return false;
+    if (minor >= other.minor) return false;
+    if (patch >= other.patch) return false;
+    return true;
+  }
+
+  operator >(other) {
+    if (other is! Version) return false;
+    if (major <= other.major) return false;
+    if (minor <= other.minor) return false;
+    if (patch <= other.patch) return false;
+    return true;
+  }
+
+  operator <=(other) {
+    if (other is! Version) return false;
+    if (major > other.major) return false;
+    if (minor > other.minor) return false;
+    if (patch > other.patch) return false;
+    return true;
+  }
+
+  operator >=(other) {
+    if (other is! Version) return false;
+    if (major < other.major) return false;
+    if (minor < other.minor) return false;
+    if (patch < other.patch) return false;
+    return true;
+  }
+
+  @override
+  int compareTo(Version other) {
+    if (major != other.major) return major.compareTo(other.major);
+    if (minor != other.minor) return minor.compareTo(other.minor);
+    return patch.compareTo(other.patch);
+  }
+
+  @override
+  String toString() => '$major.$minor.$patch';
+
+  @override
+  int get hashCode => major.hashCode ^ minor.hashCode ^ patch.hashCode;
+}
+
 /// This function is called on any interaction with the HomeWidget
 @pragma('vm:entry-point')
-void homeWidgetBackgroundCallback(Uri? uri) {
-  if (uri == null) return;
+void homeWidgetBackgroundCallback(Uri? uri) async {
+  if (uri == null || await HomeWidgetUtils.isHomeWidgetSupported == false) return;
   const HomeWidgetProcessor().process(uri);
 }
 
@@ -123,6 +195,25 @@ class HomeWidgetUtils {
   ////////////////////////////////////////
   /////// Getter & Getterfunctions ///////
   ////////////////////////////////////////
+
+  static bool? _isHomeWidgetSupported;
+  static Future<bool> get isHomeWidgetSupported async {
+    if (_isHomeWidgetSupported != null) return _isHomeWidgetSupported!;
+    if (Platform.isIOS) {
+      final deviceInfo = DeviceInfoPlugin();
+      final iosInfo = await deviceInfo.iosInfo;
+      final systemVersion = iosInfo.systemVersion;
+      final version = Version.parse(systemVersion);
+      final minVersion = Version.parse(minIosWidgetVersion);
+      _isHomeWidgetSupported = version >= minVersion;
+      print('iOS Version: $version, minVersion: $minVersion, isSupported: $_isHomeWidgetSupported');
+      return _isHomeWidgetSupported!;
+    }
+    _isHomeWidgetSupported = true;
+    print('isHomeWidgetSupported: $_isHomeWidgetSupported');
+    return _isHomeWidgetSupported!;
+  }
+
   Future<List<String>> get _widgetIds async => (await HomeWidget.getWidgetData<String?>(keyWidgetIds))?.split(',') ?? <String>[];
   static Future<String> get _packageName async =>
       kDebugMode ? (await PackageInfo.fromPlatform()).packageName.replaceAll('.debug', '') : (await PackageInfo.fromPlatform()).packageName;
@@ -136,9 +227,15 @@ class HomeWidgetUtils {
   //   return tokens;
   // }
 
-  Future<String?> getTokenIdOfWidgetId(String widgetId) async => await HomeWidget.getWidgetData<String?>('$keyTokenId$widgetId');
+  Future<String?> getTokenIdOfWidgetId(String widgetId) async {
+    if (await isHomeWidgetSupported == false) return null;
+    return await HomeWidget.getWidgetData<String?>('$keyTokenId$widgetId');
+  }
 
-  Future<OTPToken?> getTokenOfWidgetId(String? widgetId) async => widgetId == null ? null : _getTokenOfTokenId(await getTokenIdOfWidgetId(widgetId));
+  Future<OTPToken?> getTokenOfWidgetId(String? widgetId) async {
+    if (await isHomeWidgetSupported == false) return null;
+    return widgetId == null ? null : _getTokenOfTokenId(await getTokenIdOfWidgetId(widgetId));
+  }
 
   Future<Map<String, OTPToken?>> _getTokensOfWidgetIds(List<String> widgetIds) async {
     final tokenMap = <String, OTPToken?>{};
@@ -182,39 +279,31 @@ class HomeWidgetUtils {
 
   /// This method has to be called at least once before any other method is called
   Future<void> homeWidgetInit({TokenRepository? repository}) async {
+    if (await isHomeWidgetSupported == false) return;
     if (repository != null) _tokenRepository = repository;
-    await HomeWidget.setAppGroupId(await _packageName);
+    //await HomeWidget.setAppGroupId(await _packageName);
     await _setThemeCustomization();
     await _updateStaticWidgets();
     await _resetAllTokens();
     await _notifyUpdate(await _widgetIds);
   }
 
-  Future<void> _resetAllTokens() async {
-    final widgetIds = await _widgetIds;
-    final futures = <Future>[];
-    for (String widgetId in widgetIds) {
-      final tokenId = await getTokenIdOfWidgetId(widgetId);
-      futures.add(HomeWidget.saveWidgetData('$keyShowToken$widgetId', false));
-      futures.add(HomeWidget.saveWidgetData('$keyCopyBlocked$widgetId', false));
-      futures.add(HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', false));
-    }
-    await Future.wait(futures);
-  }
-
   Future<void> setCurrentThemeMode(ThemeMode themeMode) async {
+    if (await isHomeWidgetSupported == false) return;
     await _setCurrentThemeMode(themeMode);
     await _notifyUpdate(await _widgetIds);
   }
 
   // Call AFTER saving to the repository
   Future<void> updateTokenIfLinked(Token token) async {
+    if (await isHomeWidgetSupported == false) return;
     final updatedIds = await _updateTokenIfLinked(token);
     await _notifyUpdate(updatedIds);
   }
 
   // Call AFTER saving to the repository
   Future<void> updateTokensIfLinked(List<Token> tokens) async {
+    if (await isHomeWidgetSupported == false) return;
     // Map<widgetId, tokenId>
     Map<String, OTPToken?> widgetIdTokenIdMap = {};
     final hotpTokens = tokens.whereType<HOTPToken>().toList();
@@ -236,6 +325,7 @@ class HomeWidgetUtils {
   }
 
   Future<void> link(String widgetId, String tokenId) async {
+    if (await isHomeWidgetSupported == false) return;
     Logger.info('Linking HomeWidget with id $widgetId to token $tokenId');
     final token = await _getTokenOfTokenId(tokenId);
     if (token == null) {
@@ -250,11 +340,13 @@ class HomeWidgetUtils {
   }
 
   Future<void> unlink(String widgetId) async {
+    if (await isHomeWidgetSupported == false) return;
     await _unlink(widgetId);
     await _notifyUpdate([widgetId]);
   }
 
   Future<void> showOtp(String widgetId) async {
+    if (await isHomeWidgetSupported == false) return;
     OTPToken? otpToken = await getTokenOfWidgetId(widgetId);
 
     if (otpToken == null) {
@@ -271,6 +363,7 @@ class HomeWidgetUtils {
   }
 
   Future<void> handleChangedTokenState() async {
+    if (await isHomeWidgetSupported == false) return;
     final idTokenPairs = await _getTokensOfWidgetIds(await _widgetIds);
     final homeWidgetChanges = <Future>[];
     for (String widgetId in idTokenPairs.keys) {
@@ -291,6 +384,7 @@ class HomeWidgetUtils {
   final Map<String, Timer?> _copyTimers = {};
   static const _copyDelay = Duration(seconds: 2);
   Future<void> copyOtp(String widgetId) async {
+    if (await isHomeWidgetSupported == false) return;
     final copyTimer = _copyTimers[widgetId];
     if (copyTimer != null && copyTimer.isActive) {
       Logger.info('Copy blocked');
@@ -318,6 +412,7 @@ class HomeWidgetUtils {
   /// tokenId,Timer
   final Map<String, Timer?> _actionTimers = {};
   Future<void> performAction(String widgetId) async {
+    if (await isHomeWidgetSupported == false) return;
     final token = await getTokenOfWidgetId(widgetId);
     final tokenId = token?.id;
     if (tokenId == null) {
@@ -353,6 +448,18 @@ class HomeWidgetUtils {
     await _updateHwackground();
     await _updateHwConfigIcon();
     await _updateHwActionIcons();
+  }
+
+  Future<void> _resetAllTokens() async {
+    final widgetIds = await _widgetIds;
+    final futures = <Future>[];
+    for (String widgetId in widgetIds) {
+      final tokenId = await getTokenIdOfWidgetId(widgetId);
+      futures.add(HomeWidget.saveWidgetData('$keyShowToken$widgetId', false));
+      futures.add(HomeWidget.saveWidgetData('$keyCopyBlocked$widgetId', false));
+      futures.add(HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', false));
+    }
+    await Future.wait(futures);
   }
 
   Future<void> _updateHwActionIcons() async {
@@ -412,11 +519,14 @@ class HomeWidgetUtils {
   ////////////////////////////////////////
   ////////////// Rendering ///////////////
   ////////////////////////////////////////
-  Future<dynamic> renderFlutterWidget(Widget widget, {required String key, required Size logicalSize}) => HomeWidget.renderFlutterWidget(
-        widget,
-        key: '$key',
-        logicalSize: logicalSize,
-      );
+  Future<dynamic> renderFlutterWidget(Widget widget, {required String key, required Size logicalSize}) async {
+    if (await isHomeWidgetSupported == false) return;
+    return HomeWidget.renderFlutterWidget(
+      widget,
+      key: '$key',
+      logicalSize: logicalSize,
+    );
+  }
 
   Future<void> _updateHwackground() async => await HomeWidgetBackgroundBuilder(
         lightTheme: await _getThemeData(),
@@ -532,6 +642,7 @@ class HomeWidgetUtils {
 
   /// This method has to be called after change to the HomeWidget to notify the HomeWidget to update
   Future<void> _notifyUpdate(Iterable<String> updatedWidgetIds) async {
+    if (await isHomeWidgetSupported == false) return;
     Logger.info('Update requested for: $updatedWidgetIds');
     if (await _widgetIsRebuilding || _lastUpdate != null && DateTime.now().difference(_lastUpdate!) < _updateDelay) {
       Logger.info('Update delayed: $updatedWidgetIds');
