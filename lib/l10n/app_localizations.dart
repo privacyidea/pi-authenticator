@@ -93,7 +93,15 @@ abstract class AppLocalizations {
   ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('cs'), Locale('de'), Locale('en'), Locale('es'), Locale('fr'), Locale('nl'), Locale('pl')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('cs'),
+    Locale('de'),
+    Locale('en'),
+    Locale('es'),
+    Locale('fr'),
+    Locale('nl'),
+    Locale('pl')
+  ];
 
   /// Label for e.g. a button. Something gets accepted by the user.
   ///
@@ -1042,6 +1050,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your push tokens are hidden now.\nBut you can still see them on the push token screen.'**
   String get introHidePushTokens;
+
+  /// Title of the error dialog that is shown when an error occurs while using a legacy token.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occured while using the legacy token: {tokenLabel}'**
+  String legacySigningErrorTitle(Object tokenLabel);
+
+  /// Message of the error dialog that is shown when an error occurs while using a legacy token.
+  ///
+  /// In en, this message translates to:
+  /// **'The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!'**
+  String get legacySigningErrorMessage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -1060,26 +1080,23 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'cs':
-      return AppLocalizationsCs();
-    case 'de':
-      return AppLocalizationsDe();
-    case 'en':
-      return AppLocalizationsEn();
-    case 'es':
-      return AppLocalizationsEs();
-    case 'fr':
-      return AppLocalizationsFr();
-    case 'nl':
-      return AppLocalizationsNl();
-    case 'pl':
-      return AppLocalizationsPl();
+    case 'cs': return AppLocalizationsCs();
+    case 'de': return AppLocalizationsDe();
+    case 'en': return AppLocalizationsEn();
+    case 'es': return AppLocalizationsEs();
+    case 'fr': return AppLocalizationsFr();
+    case 'nl': return AppLocalizationsNl();
+    case 'pl': return AppLocalizationsPl();
   }
 
-  throw FlutterError('AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.'
+  );
 }

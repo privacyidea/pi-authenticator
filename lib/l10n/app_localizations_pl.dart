@@ -223,8 +223,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get goToSettingsButton => 'Idź do ustawień';
 
   @override
-  String get goToSettingsDescription =>
-      'Ustawienia zabezpieczeń, bądź uwierzytelnianie biometryczne nie są skonfigurowane w twoim urządzeniu. Skonfiguruj je w ustawieniach urządzenia.';
+  String get goToSettingsDescription => 'Ustawienia zabezpieczeń, bądź uwierzytelnianie biometryczne nie są skonfigurowane w twoim urządzeniu. Skonfiguruj je w ustawieniach urządzenia.';
 
   @override
   String get lockOut => 'Uwierzytelnianie biometryczne jest wyłączone. Zablokuj i odblokuj ponownie ekran, żeby je włączyć.';
@@ -286,8 +285,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get sendErrorLog => 'Wyślij';
 
   @override
-  String get sendErrorLogDescription =>
-      'Tworzona jest gotowa wiadomość e-mail zawierająca informacje o aplikacji, błędzie i urządzeniu.\nMożesz edytować wiadomość e-mail przed jej wysłaniem.\nTutaj można zobaczyć, w jaki sposób wykorzystujemy te informacje:';
+  String get sendErrorLogDescription => 'Tworzona jest gotowa wiadomość e-mail zawierająca informacje o aplikacji, błędzie i urządzeniu.\nMożesz edytować wiadomość e-mail przed jej wysłaniem.\nTutaj można zobaczyć, w jaki sposób wykorzystujemy te informacje:';
 
   @override
   String get showPrivacyPolicy => 'Pokaż politykę prywatności';
@@ -314,8 +312,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get open => 'Otwórz';
 
   @override
-  String get sendErrorDialogBody =>
-      'Napotkano nieoczekiwany błąd w aplikacji. Poniższa wiadomość może zostać wysłana do deweloperów poprzez email, żeby pomóc uniknąć tego problemu w przyszłości.';
+  String get sendErrorDialogBody => 'Napotkano nieoczekiwany błąd w aplikacji. Poniższa wiadomość może zostać wysłana do deweloperów poprzez email, żeby pomóc uniknąć tego problemu w przyszłości.';
 
   @override
   String get noFbToken => 'Brak dostępnego tokena Firebase';
@@ -436,8 +433,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Przyznaj uprawnienia kamery do skanowania kodów QR.';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied =>
-      'Uprawnienia do aparatu zostały trwale zablokowane. Przyznaj uprawnienia aparatu w ustawieniach telefonu.';
+  String get grantCameraPermissionDialogPermanentlyDenied => 'Uprawnienia do aparatu zostały trwale zablokowane. Przyznaj uprawnienia aparatu w ustawieniach telefonu.';
 
   @override
   String get grantCameraPermissionDialogButton => 'Grant permission';
@@ -446,8 +442,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get decryptErrorTitle => 'Decryption error';
 
   @override
-  String get decryptErrorContent =>
-      'Niestety, aplikacja nie była w stanie odszyfrować tokenów. Oznacza to, że klucz szyfrowania jest uszkodzony. Możesz spróbować ponownie lub usunąć dane aplikacji, co spowoduje usunięcie tokenów w aplikacji.';
+  String get decryptErrorContent => 'Niestety, aplikacja nie była w stanie odszyfrować tokenów. Oznacza to, że klucz szyfrowania jest uszkodzony. Możesz spróbować ponownie lub usunąć dane aplikacji, co spowoduje usunięcie tokenów w aplikacji.';
 
   @override
   String get decryptErrorButtonDelete => 'Usuń';
@@ -477,8 +472,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get privacyPolicy => 'Polityka prywatności';
 
   @override
-  String get introScanQrCode =>
-      'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
 
   @override
   String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
@@ -503,4 +497,12 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';
+
+  @override
+  String legacySigningErrorTitle(Object tokenLabel) {
+    return 'Wystąpił błąd podczas korzystania z przestarzałego tokena: $tokenLabel';
+  }
+
+  @override
+  String get legacySigningErrorMessage => 'Token został utworzony w nieaktualnej wersji aplikacji, co może prowadzić do problemów podczas korzystania z niego.\nZaleca się utworzenie nowego tokena push, jeśli problem nadal występuje!';
 }

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0DA36CBD26D4E8F400CDA64B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0DA36CBC26D4E8F400CDA64B /* GoogleService-Info.plist */; };
-		0DCCE7B526CE7AA30029E1D5 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
+		0DCCE7B526CE7AA30029E1D5 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		369B8C862B459656000E0321 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 369B8C852B459656000E0321 /* WidgetKit.framework */; };
 		369B8C882B459656000E0321 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 369B8C872B459656000E0321 /* SwiftUI.framework */; };
@@ -301,7 +301,7 @@
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
-				0DCCE7B526CE7AA30029E1D5 /* BuildFile in Resources */,
+				0DCCE7B526CE7AA30029E1D5 /* (null) in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 				0DA36CBD26D4E8F400CDA64B /* GoogleService-Info.plist in Resources */,
@@ -597,7 +597,7 @@
 				INFOPLIST_FILE = single_token_widget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = single_token_widget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 The Chromium Authors. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -640,7 +640,7 @@
 				INFOPLIST_FILE = single_token_widget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = single_token_widget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 The Chromium Authors. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -681,7 +681,7 @@
 				INFOPLIST_FILE = single_token_widget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = single_token_widget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 The Chromium Authors. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -105,8 +105,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enablePolling => 'Aktives Stellen von Push-Anfragen';
 
   @override
-  String get requestPushChallengesPeriodically =>
-      'Fordert regelmäßig Push-Anfragen vom Server an. Aktivieren Sie diese Funktion, wenn Nachrichten ansonsten nicht erhalten werden.';
+  String get requestPushChallengesPeriodically => 'Fordert regelmäßig Push-Anfragen vom Server an. Aktivieren Sie diese Funktion, wenn Nachrichten ansonsten nicht erhalten werden.';
 
   @override
   String get synchronizePushTokens => 'Synchronisiere Push Token';
@@ -224,8 +223,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get goToSettingsButton => 'Gehe zu Einstellungen';
 
   @override
-  String get goToSettingsDescription =>
-      'Authentifizierung durch Gerätepasswort oder Biometrie ist nicht eingerichtet. Bitte aktivieren Sie dies in den Geräteeinstellungen.';
+  String get goToSettingsDescription => 'Authentifizierung durch Gerätepasswort oder Biometrie ist nicht eingerichtet. Bitte aktivieren Sie dies in den Geräteeinstellungen.';
 
   @override
   String get lockOut => 'Biometrie ist deaktiviert. Bitte sperren und entsperren Sie Ihren Bildschirm um diese zu aktivieren.';
@@ -287,8 +285,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sendErrorLog => 'Senden';
 
   @override
-  String get sendErrorLogDescription =>
-      'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:';
+  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:';
 
   @override
   String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
@@ -315,8 +312,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get open => 'Öffnen';
 
   @override
-  String get sendErrorDialogBody =>
-      'Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden.';
+  String get sendErrorDialogBody => 'Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden.';
 
   @override
   String get noFbToken => 'Kein Firebase Token vorhanden';
@@ -437,8 +433,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Um QR-Codes zu scannen, benötigt die App Zugriff auf die Kamera.';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied =>
-      'Sie haben die Berechtigung für den Kamerazugriff permanent verweigert. Bitte aktivieren Sie die Berechtigung in den Einstellungen ihres Smartphones.';
+  String get grantCameraPermissionDialogPermanentlyDenied => 'Sie haben die Berechtigung für den Kamerazugriff permanent verweigert. Bitte aktivieren Sie die Berechtigung in den Einstellungen ihres Smartphones.';
 
   @override
   String get grantCameraPermissionDialogButton => 'Berechtigung erteilen';
@@ -447,8 +442,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get decryptErrorTitle => 'Entschlüsselung fehlgeschlagen';
 
   @override
-  String get decryptErrorContent =>
-      'Leider konnten Ihre Token nicht entschlüsselt werden. Das deutet darauf hin, dass der Verschlüsselungsschlüssel nicht mehr verfügbar ist. Sie können es erneut versuchen oder die App Daten löschen. Dabei werden alle Token aus der App geschlöscht.';
+  String get decryptErrorContent => 'Leider konnten Ihre Token nicht entschlüsselt werden. Das deutet darauf hin, dass der Verschlüsselungsschlüssel nicht mehr verfügbar ist. Sie können es erneut versuchen oder die App Daten löschen. Dabei werden alle Token aus der App geschlöscht.';
 
   @override
   String get decryptErrorButtonDelete => 'Löschen.';
@@ -466,8 +460,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get hidePushTokens => 'Push-Token ausblenden';
 
   @override
-  String get hidePushTokensDescription =>
-      'Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.';
+  String get hidePushTokensDescription => 'Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.';
 
   @override
   String get settingsGroupGeneral => 'Allgemeines';
@@ -479,8 +472,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get privacyPolicy => 'Datenschutzerklärung';
 
   @override
-  String get introScanQrCode =>
-      'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
 
   @override
   String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
@@ -505,4 +497,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';
+
+  @override
+  String legacySigningErrorTitle(Object tokenLabel) {
+    return 'Bei der Verwendung des veralteten Tokens ist ein Fehler aufgetreten: $tokenLabel';
+  }
+
+  @override
+  String get legacySigningErrorMessage => 'Der Token wurde in einer veralteten Version der App erstellt, was zu Problemen bei der Verwendung führen kann. Es wird empfohlen, einen neuen Push-Token zu erstellen, wenn das Problem weiterhin besteht!';
 }
