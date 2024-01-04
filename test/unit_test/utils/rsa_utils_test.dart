@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointycastle/export.dart';
@@ -115,9 +114,9 @@ void _testSerializingRSAKeys() {
 
       String message = 'I am a signature.';
 
-      var signature = rsaUtils.createRSASignature(privateKey, utf8.encode(message) as Uint8List);
+      var signature = rsaUtils.createRSASignature(privateKey, utf8.encode(message));
 
-      expect(true, rsaUtils.verifyRSASignature(publicKey, utf8.encode(message) as Uint8List, signature));
+      expect(true, rsaUtils.verifyRSASignature(publicKey, utf8.encode(message), signature));
     }, timeout: const Timeout(Duration(minutes: 5)));
 
     test('Signature is invalid', () async {
@@ -127,9 +126,9 @@ void _testSerializingRSAKeys() {
 
       String message = 'I am a signature.';
 
-      var signature = rsaUtils.createRSASignature(privateKey, utf8.encode(message) as Uint8List);
+      var signature = rsaUtils.createRSASignature(privateKey, utf8.encode(message));
 
-      expect(false, rsaUtils.verifyRSASignature(publicKey, utf8.encode('I am not the signature you are looking for.') as Uint8List, signature));
+      expect(false, rsaUtils.verifyRSASignature(publicKey, utf8.encode('I am not the signature you are looking for.'), signature));
     }, timeout: const Timeout(Duration(minutes: 5)));
   });
 }

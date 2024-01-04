@@ -218,7 +218,7 @@ class RsaUtils {
   /// Returns the signature on success and null on failure.
   Future<String?> trySignWithToken(PushToken token, String message) async {
     if (token.privateTokenKey != null) {
-      return createBase32Signature(token.rsaPrivateTokenKey!, utf8.encode(message) as Uint8List);
+      return createBase32Signature(token.rsaPrivateTokenKey!, utf8.encode(message));
     }
     // It is a legacy token so the operation could cause an exception
     try {
