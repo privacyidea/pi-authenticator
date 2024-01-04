@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/push_provider.dart';
+import '../utils/push_provider.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/tokens/push_token.dart';

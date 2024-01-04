@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'interfaces/flutter_home_widget_base.dart';
 
 import '../../utils/app_customizer.dart';
+import 'interfaces/flutter_home_widget_base.dart';
 import 'interfaces/flutter_home_widget_builder.dart';
 
 class HomeWidgetUnlinkedBuilder extends FlutterHomeWidgetBuilder<HomeWidgetUnlinked> {

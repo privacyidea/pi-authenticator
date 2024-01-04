@@ -5,7 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_widget/home_widget.dart';
-import 'package:privacyidea_authenticator/utils/home_widget_utils.dart';
+import 'home_widget_utils.dart';
 import 'package:uni_links/uni_links.dart';
 
 import '../l10n/app_localizations.dart';

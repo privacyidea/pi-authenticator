@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:mutex/mutex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:privacyidea_authenticator/widgets/home_widgets/home_widget_copied.dart';
-import 'package:privacyidea_authenticator/widgets/home_widgets/home_widget_unlinked.dart';
+import '../widgets/home_widgets/home_widget_copied.dart';
+import '../widgets/home_widgets/home_widget_unlinked.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../main_netknights.dart';
@@ -28,76 +28,10 @@ import '../widgets/home_widgets/home_widget_hidden.dart';
 import '../widgets/home_widgets/home_widget_otp.dart';
 import 'app_customizer.dart';
 import 'logger.dart';
+import 'version.dart';
 
-const appGroupId = 'group.single_token_widget';
+const appGroupId = 'group.authenticator_home_widget_group';
 const minIosWidgetVersion = "17.0.0";
-
-class Version implements Comparable<Version> {
-  final int major;
-  final int minor;
-  final int patch;
-
-  const Version(this.major, this.minor, this.patch);
-
-  factory Version.parse(String version) {
-    final parts = version.split('.');
-    if (parts.length != 3) {
-      throw FormatException('Invalid version: $version');
-    }
-    return Version(int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
-  }
-
-  @override
-  operator ==(other) {
-    if (other is! Version) return false;
-    return major == other.major && minor == other.minor && patch == other.patch;
-  }
-
-  operator <(other) {
-    if (other is! Version) return false;
-    if (major >= other.major) return false;
-    if (minor >= other.minor) return false;
-    if (patch >= other.patch) return false;
-    return true;
-  }
-
-  operator >(other) {
-    if (other is! Version) return false;
-    if (major <= other.major) return false;
-    if (minor <= other.minor) return false;
-    if (patch <= other.patch) return false;
-    return true;
-  }
-
-  operator <=(other) {
-    if (other is! Version) return false;
-    if (major > other.major) return false;
-    if (minor > other.minor) return false;
-    if (patch > other.patch) return false;
-    return true;
-  }
-
-  operator >=(other) {
-    if (other is! Version) return false;
-    if (major < other.major) return false;
-    if (minor < other.minor) return false;
-    if (patch < other.patch) return false;
-    return true;
-  }
-
-  @override
-  int compareTo(Version other) {
-    if (major != other.major) return major.compareTo(other.major);
-    if (minor != other.minor) return minor.compareTo(other.minor);
-    return patch.compareTo(other.patch);
-  }
-
-  @override
-  String toString() => '$major.$minor.$patch';
-
-  @override
-  int get hashCode => major.hashCode ^ minor.hashCode ^ patch.hashCode;
-}
 
 /// This function is called on any interaction with the HomeWidget
 @pragma('vm:entry-point')
