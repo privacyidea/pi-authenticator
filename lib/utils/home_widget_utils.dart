@@ -30,7 +30,7 @@ import 'app_customizer.dart';
 import 'logger.dart';
 
 const appGroupId = 'group.single_token_widget';
-const minIosWidgetVersion = "15.0.0";
+const minIosWidgetVersion = "17.0.0";
 
 class Version implements Comparable<Version> {
   final int major;
