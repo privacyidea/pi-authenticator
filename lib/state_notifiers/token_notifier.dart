@@ -16,7 +16,7 @@ import 'package:pointycastle/asymmetric/api.dart';
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
 import '../model/enums/push_token_rollout_state.dart';
-import '../model/processors/scheme_processors/token_scheme_processor.dart';
+import '../processors/scheme_processors/token_scheme_processor.dart';
 import '../model/push_request.dart';
 import '../model/states/token_state.dart';
 import '../model/tokens/hotp_token.dart';

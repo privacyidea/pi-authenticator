@@ -14,7 +14,7 @@ import '../widgets/home_widgets/home_widget_unlinked.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../main_netknights.dart';
-import '../model/processors/scheme_processors/home_widget_processor.dart';
+import '../processors/scheme_processors/home_widget_processor.dart';
 import '../model/tokens/day_password_token.dart';
 import '../model/tokens/hotp_token.dart';
 import '../model/tokens/otp_token.dart';

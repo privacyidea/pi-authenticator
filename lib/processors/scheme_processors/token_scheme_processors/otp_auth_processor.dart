@@ -1,15 +1,15 @@
 import 'dart:typed_data';
 
-import '../../../../utils/crypto_utils.dart';
-import '../../../../utils/identifiers.dart';
-import '../../../../utils/logger.dart';
-import '../../../../utils/supported_versions.dart';
-import '../../../../utils/view_utils.dart';
-import '../../../../widgets/two_step_dialog.dart';
-import '../../../enums/algorithms.dart';
-import '../../../enums/encodings.dart';
-import '../../../enums/token_types.dart';
-import '../../../tokens/token.dart';
+import '../../../utils/crypto_utils.dart';
+import '../../../utils/identifiers.dart';
+import '../../../utils/logger.dart';
+import '../../../utils/supported_versions.dart';
+import '../../../utils/view_utils.dart';
+import '../../../widgets/two_step_dialog.dart';
+import '../../../model/enums/algorithms.dart';
+import '../../../model/enums/encodings.dart';
+import '../../../model/enums/token_types.dart';
+import '../../../model/tokens/token.dart';
 import '../token_scheme_processor.dart';
 
 class OtpAuthProcessor extends TokenSchemeProcessor {

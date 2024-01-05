@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_launcher_icons/custom_exceptions.dart';
 
-import '../../../../utils/home_widget_utils.dart';
-import '../../../../utils/logger.dart';
-import '../../../../utils/riverpod_providers.dart';
-import '../../../../views/link_home_widget_view/link_home_widget_view.dart';
-import '../../../../views/main_view/main_view.dart';
-import '../../../../views/splash_screen/splash_screen.dart';
+import '../../../utils/home_widget_utils.dart';
+import '../../../utils/logger.dart';
+import '../../../utils/riverpod_providers.dart';
+import '../../../views/link_home_widget_view/link_home_widget_view.dart';
+import '../../../views/main_view/main_view.dart';
+import '../../../views/splash_screen/splash_screen.dart';
 import '../navigation_scheme_processor.dart';
 
 class HomeWidgetNavigateProcessor extends NavigationSchemeProcessor {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../utils/globals.dart';
-import '../../../utils/logger.dart';
+import '../../utils/globals.dart';
+import '../../utils/logger.dart';
 import '../scheme_processor_interface.dart';
 import 'navigation_scheme_processors/home_widget_navigate_processor.dart';
 

@@ -1,4 +1,4 @@
-import '../../../tokens/token.dart';
+import '../../../model/tokens/token.dart';
 import '../token_scheme_processor.dart';
 
 class PiaProcessor extends TokenSchemeProcessor {

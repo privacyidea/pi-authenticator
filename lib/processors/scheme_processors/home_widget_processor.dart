@@ -1,5 +1,5 @@
-import '../../../utils/home_widget_utils.dart';
-import '../../../utils/logger.dart';
+import '../../utils/home_widget_utils.dart';
+import '../../utils/logger.dart';
 import '../scheme_processor_interface.dart';
 
 class HomeWidgetProcessor extends SchemeProcessor {

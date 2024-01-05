@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../model/processors/scheme_processors/home_widget_processor.dart';
-import '../model/processors/scheme_processors/navigation_scheme_processor.dart';
+import '../processors/scheme_processors/home_widget_processor.dart';
+import '../processors/scheme_processors/navigation_scheme_processor.dart';
 import '../model/states/token_state.dart';
 import '../state_notifiers/deeplink_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
