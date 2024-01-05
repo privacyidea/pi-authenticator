@@ -1,5 +1,5 @@
 import '../../model/tokens/token.dart';
-import '../scheme_processor_interface.dart';
+import 'scheme_processor_interface.dart';
 import 'token_scheme_processors/otp_auth_migration_processor.dart';
 import 'token_scheme_processors/otp_auth_processor.dart';
 import 'token_scheme_processors/pia_processor.dart';

@@ -1,4 +1,4 @@
-import 'scheme_processors/token_scheme_processor.dart';
+import 'token_scheme_processor.dart';
 
 abstract class SchemeProcessor {
   const SchemeProcessor();
