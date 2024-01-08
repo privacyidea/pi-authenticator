@@ -77,6 +77,8 @@ dependencies:
   protobuf: ^3.1.0
   home_widget: ^0.4.1
   app_minimizer: ^1.0.0+2
+  encrypt: ^5.0.3
+  cryptography: ^2.7.0
 
 dev_dependencies:
   flutter_driver:
