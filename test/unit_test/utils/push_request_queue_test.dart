@@ -61,8 +61,8 @@ void verifyCustomListBehavesLikeQueue() {
       expect(fifo.isNotEmpty, true);
       expect(fifo.isEmpty, false);
 
-      var pop = fifo.pop();
-      expect(pop, pushRequest);
+      var tryPop = fifo.tryPop();
+      expect(tryPop, pushRequest);
 
       expect(fifo.isNotEmpty, false);
       expect(fifo.isEmpty, true);
@@ -126,7 +126,7 @@ void verifyCustomListBehavesLikeQueue() {
       fifo.add(three);
 
       expect(fifo.peek(), queue.first);
-      fifo.pop();
+      fifo.tryPop();
       queue.removeFirst();
       expect(fifo.peek(), queue.first);
 
@@ -134,10 +134,10 @@ void verifyCustomListBehavesLikeQueue() {
       fifo.add(four);
       queue.addLast(five);
       fifo.add(five);
-      expect(fifo.pop(), queue.removeFirst());
-      expect(fifo.pop(), queue.removeFirst());
-      expect(fifo.pop(), queue.removeFirst());
-      expect(fifo.pop(), queue.removeFirst());
+      expect(fifo.tryPop(), queue.removeFirst());
+      expect(fifo.tryPop(), queue.removeFirst());
+      expect(fifo.tryPop(), queue.removeFirst());
+      expect(fifo.tryPop(), queue.removeFirst());
 
       expect(fifo.isEmpty, true);
       expect(queue.isEmpty, true);
