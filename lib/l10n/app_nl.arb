@@ -466,5 +466,18 @@
   "hidePushTokensDescription": "Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.",
   "settingsGroupGeneral": "Algemene informatie",
   "licensesAndVersion": "Licenties en versie",
-  "privacyPolicy": "Privacybeleid"
+  "privacyPolicy": "Privacybeleid",
+  "legacySigningErrorTitle": "Er is een fout opgetreden bij het gebruik van het verouderde token: {tokenLabel}",
+  "@legacySigningErrorTitle": {
+    "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
+    "placeholders": {
+      "tokenLabel": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "legacySigningErrorMessage": "Het token is aangemaakt in een verouderde versie van de app, wat kan leiden tot problemen bij het gebruik ervan.\nHet wordt aanbevolen om een nieuw push token aan te maken als het probleem zich blijft voordoen!",
+  "@legacySigningErrorMessage": {
+    "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
+  }
 }

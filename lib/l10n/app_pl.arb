@@ -470,5 +470,18 @@
   "hidePushTokensDescription": "Ukryj tokeny push z listy tokenów. Nie spowoduje to usunięcia tokenów i będą one nadal widoczne na osobnym ekranie",
   "settingsGroupGeneral": "Informacje ogólne",
   "licensesAndVersion": "Licencje i wersja",
-  "privacyPolicy": "Polityka prywatności"
+  "privacyPolicy": "Polityka prywatności",
+  "legacySigningErrorTitle": "Wystąpił błąd podczas korzystania z przestarzałego tokena: {tokenLabel}",
+  "@legacySigningErrorTitle": {
+    "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
+    "placeholders": {
+      "tokenLabel": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "legacySigningErrorMessage": "Token został utworzony w nieaktualnej wersji aplikacji, co może prowadzić do problemów podczas korzystania z niego.\nZaleca się utworzenie nowego tokena push, jeśli problem nadal występuje!",
+  "@legacySigningErrorMessage": {
+    "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
+  }
 }

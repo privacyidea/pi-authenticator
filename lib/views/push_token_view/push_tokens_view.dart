@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/push_request_listener.dart';
 import 'widgets/push_tokens_view_list.dart';
 
 class PushTokensView extends StatelessWidget {
@@ -12,13 +13,15 @@ class PushTokensView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Push Tokens'),
       ),
-      body: Stack(
-        children: [
-          Center(
-            child: Icon(Icons.notifications_none, size: 300, color: Colors.grey.withOpacity(0.2)),
-          ),
-          const PushTokensViwList(),
-        ],
+      body: PushRequestListener(
+        child: Stack(
+          children: [
+            Center(
+              child: Icon(Icons.notifications_none, size: 300, color: Colors.grey.withOpacity(0.2)),
+            ),
+            const PushTokensViwList(),
+          ],
+        ),
       ),
     );
   }

@@ -990,6 +990,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Privacy policy'**
   String get privacyPolicy;
+
+  /// Title of the error dialog that is shown when an error occurs while using a legacy token.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occured while using the legacy token: {tokenLabel}'**
+  String legacySigningErrorTitle(Object tokenLabel);
+
+  /// Message of the error dialog that is shown when an error occurs while using a legacy token.
+  ///
+  /// In en, this message translates to:
+  /// **'The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!'**
+  String get legacySigningErrorMessage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

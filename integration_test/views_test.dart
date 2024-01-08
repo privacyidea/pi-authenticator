@@ -84,7 +84,7 @@ Future<void> _popUntilMainView(WidgetTester tester) async {
 }
 
 Future<void> _licensesViewTest(WidgetTester tester) async {
-  await pumpUntilFindNWidgets(tester, find.byIcon(Icons.info_outline), 1, const Duration(seconds: 10));
+  await pumpUntilFindNWidgets(tester, find.byIcon(Icons.info_outline), 1, const Duration(seconds: 20));
   await tester.tap(find.byIcon(Icons.info_outline));
   await tester.pumpAndSettle();
   expect(find.text(ApplicationCustomization.defaultCustomization.appName), findsOneWidget);

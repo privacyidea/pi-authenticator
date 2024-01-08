@@ -477,5 +477,18 @@
   "hidePushTokensDescription": "Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé",
   "settingsGroupGeneral": "Généralités",
   "licensesAndVersion": "Licences et version",
-  "privacyPolicy": "Politique de confidentialité"
+  "privacyPolicy": "Politique de confidentialité",
+  "legacySigningErrorTitle": "Une erreur s'est produite lors de l'utilisation du jeton obsolète : {tokenLabel}",
+  "@legacySigningErrorTitle": {
+    "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
+    "placeholders": {
+      "tokenLabel": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "legacySigningErrorMessage": "Le token a été créé dans une version obsolète de l'application, ce qui peut entraîner des problèmes d'utilisation.\nIl est recommandé de créer un nouveau token push si le problème persiste !",
+  "@legacySigningErrorMessage": {
+    "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
+  }
 }

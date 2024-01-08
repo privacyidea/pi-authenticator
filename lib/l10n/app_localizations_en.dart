@@ -467,4 +467,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'Privacy policy';
+
+  @override
+  String legacySigningErrorTitle(Object tokenLabel) {
+    return 'An error occured while using the legacy token: $tokenLabel';
+  }
+
+  @override
+  String get legacySigningErrorMessage => 'The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!';
 }

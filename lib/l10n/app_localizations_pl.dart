@@ -467,4 +467,12 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'Polityka prywatności';
+
+  @override
+  String legacySigningErrorTitle(Object tokenLabel) {
+    return 'Wystąpił błąd podczas korzystania z przestarzałego tokena: $tokenLabel';
+  }
+
+  @override
+  String get legacySigningErrorMessage => 'Token został utworzony w nieaktualnej wersji aplikacji, co może prowadzić do problemów podczas korzystania z niego.\nZaleca się utworzenie nowego tokena push, jeśli problem nadal występuje!';
 }

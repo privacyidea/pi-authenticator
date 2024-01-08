@@ -9,7 +9,7 @@ import '../../widgets/status_bar.dart';
 import 'main_view_widgets/connectivity_listener.dart';
 import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
-import 'main_view_widgets/push_request_listener.dart';
+import '../../widgets/push_request_listener.dart';
 
 export 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 
@@ -42,22 +42,22 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text(
-            widget.appName,
-            overflow: TextOverflow.ellipsis,
-            // maxLines: 2 only works like this.
-            maxLines: 2, // Title can be shown on small screens too.
+  Widget build(BuildContext context) => PushRequestListener(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: Text(
+              widget.appName,
+              overflow: TextOverflow.ellipsis,
+              // maxLines: 2 only works like this.
+              maxLines: 2, // Title can be shown on small screens too.
+            ),
+            leading: Padding(
+              padding: const EdgeInsets.all(4),
+              child: widget.appIcon,
+            ),
           ),
-          leading: Padding(
-            padding: const EdgeInsets.all(4),
-            child: widget.appIcon,
-          ),
-        ),
-        body: PushRequestListener(
-          child: ConnectivityListener(
+          body: ConnectivityListener(
             child: StatusBar(
               child: Stack(
                 clipBehavior: Clip.antiAliasWithSaveLayer,
