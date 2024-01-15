@@ -1,4 +1,5 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -8,6 +9,7 @@ import '../../model/tokens/push_token.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/push_request_listener.dart';
+import '../import_tokens_view/import_tokens_view.dart';
 import '../license_view/license_view.dart';
 import 'settings_view_widgets/logging_menu.dart';
 import 'settings_view_widgets/settings_groups.dart';
@@ -43,15 +45,15 @@ class SettingsView extends ConsumerWidget {
               SettingsGroup(
                 title: AppLocalizations.of(context)!.settingsGroupGeneral,
                 children: [
-                  GestureDetector(
-                    onTap: () async {
-                      Uri uri = Uri.parse("https://netknights.it/en/privacy-statement/");
-                      if (!await launchUrl(uri)) {
-                        throw Exception('Could not launch $uri');
-                      }
-                    },
-                    child: ListTile(
-                      title: Text(
+                  ListTile(
+                    title: GestureDetector(
+                      onTap: () async {
+                        Uri uri = Uri.parse("https://netknights.it/en/privacy-statement/");
+                        if (!await launchUrl(uri)) {
+                          throw Exception('Could not launch $uri');
+                        }
+                      },
+                      child: Text(
                         AppLocalizations.of(context)!.privacyPolicy,
                         style: Theme.of(context).textTheme.titleMedium,
                         overflow: TextOverflow.fade,
@@ -59,13 +61,36 @@ class SettingsView extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, LicenseView.routeName);
-                    },
-                    child: ListTile(
-                      title: Text(
+                  ListTile(
+                    title: GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, LicenseView.routeName);
+                      },
+                      child: Text(
                         AppLocalizations.of(context)!.licensesAndVersion,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    trailing: IconButton(
+                      splashRadius: 20,
+                      icon: const RotatedBox(
+                        quarterTurns: 1,
+                        child: Icon(FluentIcons.arrow_enter_20_filled),
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, ImportTokensView.routeName);
+                      },
+                    ),
+                    title: GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, ImportTokensView.routeName);
+                      },
+                      child: Text(
+                        AppLocalizations.of(context)!.importTokens,
                         style: Theme.of(context).textTheme.titleMedium,
                         overflow: TextOverflow.fade,
                         softWrap: false,

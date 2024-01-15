@@ -12,8 +12,9 @@ import '../token_widget_tile.dart';
 
 class HOTPTokenWidgetTile extends ConsumerStatefulWidget {
   final HOTPToken token;
+  final bool isPreview;
 
-  const HOTPTokenWidgetTile({required this.token, super.key});
+  const HOTPTokenWidgetTile(this.token, {super.key, this.isPreview = false});
 
   @override
   ConsumerState<HOTPTokenWidgetTile> createState() => _HOTPTokenWidgetTileState();
@@ -64,10 +65,15 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
       tokenImage: widget.token.tokenImage,
       tokenIsLocked: widget.token.isLocked,
+      isPreview: widget.isPreview,
       title: Align(
         alignment: Alignment.centerLeft,
         child: InkWell(
-          onTap: widget.token.isLocked && widget.token.isHidden ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token) : _copyOtpValue,
+          onTap: widget.isPreview
+              ? null
+              : widget.token.isLocked && widget.token.isHidden
+                  ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
+                  : _copyOtpValue,
           child: HideableText(
             textScaleFactor: 1.9,
             isHidden: widget.token.isHidden,
@@ -76,21 +82,38 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
           ),
         ),
       ),
-      subtitles: [
-        if (widget.token.label.isNotEmpty) widget.token.label,
-        if (widget.token.issuer.isNotEmpty) widget.token.issuer,
-      ],
-      trailing: HideableWidget(
-        token: widget.token,
-        isHidden: widget.token.isHidden,
-        child: IconButton(
-          iconSize: 32,
-          onPressed: disableTrailingButton ? null : () => _updateOtpValue(),
-          icon: const Icon(
-            Icons.replay,
-          ),
-        ),
-      ),
+      subtitles: widget.isPreview
+          ? [
+              (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
+                  ? '${widget.token.issuer}: ${widget.token.label}'
+                  : '${widget.token.issuer}${widget.token.label}',
+              'Algorithm: ${enumAsString(widget.token.algorithm)}',
+              'Counter: ${widget.token.counter}',
+            ]
+          : [
+              if (widget.token.label.isNotEmpty) widget.token.label,
+              if (widget.token.issuer.isNotEmpty) widget.token.issuer,
+            ],
+      trailing: widget.isPreview
+          ? const Icon(
+              size: 100,
+              Icons.replay,
+            )
+          : HideableWidget(
+              token: widget.token,
+              isHidden: widget.token.isHidden,
+              child: IconButton(
+                padding: const EdgeInsets.all(0),
+                onPressed: disableTrailingButton ? null : () => _updateOtpValue(),
+                icon: const FittedBox(
+                  fit: BoxFit.contain,
+                  child: Icon(
+                    size: 100,
+                    Icons.replay,
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }

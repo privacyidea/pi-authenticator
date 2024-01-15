@@ -12,8 +12,9 @@ import '../token_widget_tile.dart';
 
 class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   final TOTPToken token;
+  final bool isPreview;
 
-  const TOTPTokenWidgetTile(this.token, {super.key});
+  const TOTPTokenWidgetTile(this.token, {super.key, this.isPreview = false});
 
   @override
   ConsumerState<TOTPTokenWidgetTile> createState() => _TOTPTokenWidgetTileState();
@@ -92,13 +93,18 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
     final appstate = ref.watch(appStateProvider);
     _onAppStateChange(appstate);
     return TokenWidgetTile(
+      isPreview: widget.isPreview,
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
       tokenImage: widget.token.tokenImage,
       tokenIsLocked: widget.token.isLocked,
       title: Align(
         alignment: Alignment.centerLeft,
         child: InkWell(
-          onTap: widget.token.isLocked && widget.token.isHidden ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token) : _copyOtpValue,
+          onTap: widget.isPreview
+              ? null
+              : widget.token.isLocked && widget.token.isHidden
+                  ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
+                  : _copyOtpValue,
           child: HideableText(
             key: Key(widget.token.hashCode.toString()),
             text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
@@ -108,33 +114,38 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
           ),
         ),
       ),
-      subtitles: [
-        if (widget.token.label.isNotEmpty) widget.token.label,
-        if (widget.token.issuer.isNotEmpty) widget.token.issuer,
-      ],
+      subtitles: widget.isPreview
+          ? [
+              (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
+                  ? '${widget.token.issuer}: ${widget.token.label}'
+                  : widget.token.issuer + widget.token.label,
+              'Algorithm: ${enumAsString(widget.token.algorithm)}',
+              'Period: ${widget.token.period} seconds',
+            ]
+          : [
+              if (widget.token.label.isNotEmpty) widget.token.label,
+              if (widget.token.issuer.isNotEmpty) widget.token.issuer,
+            ],
       trailing: HideableWidget(
         token: widget.token,
         isHidden: widget.token.isHidden,
-        child: AnimatedBuilder(
-          animation: animation,
-          builder: (context, child) {
-            return Stack(
-              children: [
-                Center(
-                  child: Text(
-                    '${secondsLeft.round()}',
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                  ),
-                ),
-                Center(
-                  child: CircularProgressIndicator(
-                    value: animation.value,
-                  ),
-                ),
-              ],
-            );
-          },
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Text(
+              '${secondsLeft.round()}',
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+            AnimatedBuilder(
+              animation: animation,
+              builder: (context, child) {
+                return CircularProgressIndicator(
+                  value: animation.value,
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 /// The translations for Czech (`cs`).
@@ -505,4 +507,78 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get legacySigningErrorMessage => 'Token byl vytvořen v zastaralé verzi aplikace, což může vést k problémům při jeho používání.\nPokud problém přetrvává, doporučujeme vytvořit nový push token!';
+
+  @override
+  String get selectImportSource => 'Vyberte zdroj importu';
+
+  @override
+  String get importTokens => 'Importní token';
+
+  @override
+  String get selectFile => 'Vybrat soubor';
+
+  @override
+  String get decrypt => 'Dešifrovat';
+
+  @override
+  String fileNoValidBackupFor(Object name) {
+    return 'Vybraný soubor není platnou zálohou pro $name.';
+  }
+
+  @override
+  String get fileIsEncrypted => 'Vybraný soubor je zašifrovaný. Zadejte prosím heslo pro jeho dešifrování.';
+
+  @override
+  String get fileNotEncrypted => 'Vybraný soubor není zašifrovaný. Lze jej importovat přímo.';
+
+  @override
+  String get fileSuccessfullyDecrypted => 'Tokeny byly úspěšně dešifrovány a nyní je lze importovat.';
+
+  @override
+  String get password => 'Heslo';
+
+  @override
+  String get wrongPassword => 'Nesprávné heslo';
+
+  @override
+  String importExistingToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Soubor obsahuje $count tokenů, které jsou již v aplikaci.',
+      one: 'Soubor obsahuje token, který je již v aplikaci.',
+      zero: 'Soubor neobsahuje token, který je již v aplikaci.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importConflictToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Je konflikt s tokeny, které již existují.\nProsím, vyberte, který chcete zachovat.',
+      one: 'Je konflikt s tokeny, které již existují.\nProsím, vyberte, který chcete zachovat.',
+      zero: 'Není konflikt s tokeny, které již existují.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importNewToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Soubor obsahuje $count nových tokenů, které budou importovány.',
+      one: 'Soubor obsahuje nový token, který bude importován.',
+      zero: 'Soubor neobsahuje nový token.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importHint2FAS => 'Vyberte zálohu 2FAS. Pokud zálohu nemáte, vytvořte ji v aplikaci 2FAS.\nDoporučujeme použít heslo.';
+
+  @override
+  String get importHint2FASButton => 'Vyberte možnost Zálohování 2FAS';
 }

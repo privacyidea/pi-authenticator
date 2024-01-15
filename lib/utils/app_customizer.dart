@@ -272,6 +272,11 @@ class ThemeCustomization {
             labelLarge: TextStyle(color: foregroundColor),
             labelSmall: TextStyle(color: foregroundColor),
           ),
+          iconButtonTheme: IconButtonThemeData(
+            style: ButtonStyle(
+              foregroundColor: MaterialStateProperty.all(foregroundColor),
+            ),
+          ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(6),
@@ -287,6 +292,7 @@ class ThemeCustomization {
             shadowColor: shadowColor,
             foregroundColor: foregroundColor,
             elevation: 0,
+            titleSpacing: 6,
           ),
           primaryIconTheme: IconThemeData(color: foregroundColor),
           navigationBarTheme: const NavigationBarThemeData().copyWith(

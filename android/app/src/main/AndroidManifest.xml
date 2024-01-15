@@ -9,13 +9,29 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- required from API level 33 -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> <!-- To read images created by other apps -->
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" /> <!-- To read audios created by other apps -->
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" /> <!-- To read vidoes created by other apps -->
+
+    <!-- To read all files until API level 32 -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE" 
+        android:maxSdkVersion="32" />
+
+    <!-- To write all files until API level 29. We will MediaStore from API level 30 -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE" 
+        android:maxSdkVersion="29" />
+
 
     <application
         android:name="${applicationName}"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:label="privacyIDEA Authenticator"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

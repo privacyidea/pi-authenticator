@@ -469,5 +469,28 @@
   "legacySigningErrorMessage": "Der Token wurde in einer veralteten Version der App erstellt, was zu Problemen bei der Verwendung führen kann. Es wird empfohlen, einen neuen Push-Token zu erstellen, wenn das Problem weiterhin besteht!",
   "@legacySigningErrorMessage": {
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
-  }
+  },
+  "selectImportSource": "Importquelle auswählen",
+  "importTokens": "Token importieren",
+  "selectFile": "Datei auswählen",
+  "decrypt": "Entschlüsseln",
+  "fileNoValidBackupFor": "Die ausgewählte Datei ist kein gültiges Backup für {name}.",
+  "@fileNoValidBackupFor": {
+    "description": "Message that tells the user that the selected file is not a valid backup for the token.",
+    "placeholders": {
+      "name": {
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "fileIsEncrypted": "Die ausgewählte Datei ist verschlüsselt. Bitte gib das Passwort ein, um sie zu entschlüsseln.",
+  "fileNotEncrypted": "Die ausgewählte Datei ist nicht verschlüsselt. Sie kann direkt importiert werden.",
+  "fileSuccessfullyDecrypted": "Die Token wurden erfolgreich entschlüsselt, sie können nun importiert werden.",
+  "password": "Passwort",
+  "wrongPassword": "Falsches Passwort",
+  "importExistingToken": "{count, plural, zero{Die Datei enthält kein Token, das sich bereits in der Anwendung befindet.} one{Die Datei enthält ein Token, das sich bereits in der Anwendung befindet.} other{Die Datei enthält {count} Token, die sich bereits in der Anwendung befinden.}}",
+  "importConflictToken": "{count, plural, zero{Es besteht kein Konflikt mit bereits existierenden Token.} one{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.} other{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.}}",
+  "importNewToken": "{count, plural, zero{Die Datei enthält kein neues Token.} one{Die Datei enthält ein neues Token, das importiert wird.} other{Die Datei enthält {count} neue Token, die importiert werden.}}",
+  "importHint2FAS": "Wähle dein 2FAS Backup aus. Wenn du kein Backup hast, erstelle eines in der 2FAS App.\nWir empfehlen die Verwendung eines Passworts.",
+  "importHint2FASButton": "2FAS Backup auswählen"
 }

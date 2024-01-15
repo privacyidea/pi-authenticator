@@ -11,6 +11,7 @@ import '../enums/day_passoword_token_view_mode.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
 import 'otp_token.dart';
+import 'token.dart';
 
 part 'day_password_token.g.dart';
 
@@ -42,6 +43,11 @@ class DayPasswordToken extends OTPToken {
     super.isHidden,
   })  : period = period.inSeconds > 0 ? period : const Duration(hours: 24),
         super(type: TokenTypes.DAYPASSWORD.asString);
+
+  @override
+  bool sameValuesAs(Token other) {
+    return super.sameValuesAs(other) && other is DayPasswordToken && other.period == period;
+  }
 
   @override
   DayPasswordToken copyWith({

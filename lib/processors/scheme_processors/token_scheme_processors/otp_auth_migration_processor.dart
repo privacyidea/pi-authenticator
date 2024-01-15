@@ -4,8 +4,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import '../../../proto/generated/GoogleAuthenticatorImport.pb.dart';
 import '../../../model/tokens/token.dart';
+import '../../../proto/generated/GoogleAuthenticatorImport.pb.dart';
 import '../token_scheme_processor.dart';
 import 'otp_auth_processor.dart';
 

@@ -489,5 +489,28 @@
   "legacySigningErrorMessage": "The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!",
   "@legacySigningErrorMessage": {
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
-  }
+  },
+  "selectImportSource": "Select import source",
+  "importTokens": "Import token",
+  "selectFile": "Select file",
+  "decrypt": "Decrypt",
+  "fileNoValidBackupFor": "The selected file is not a valid backup for {name}.",
+  "@fileNoValidBackupFor": {
+    "description": "Message that tells the user that the selected file is not a valid backup for the token.",
+    "placeholders": {
+      "name": {
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "fileIsEncrypted": "The selected file is encrypted. Please enter the password to decrypt it.",
+  "fileNotEncrypted": "The selected file is not encrypted. It can be imported directly.",
+  "fileSuccessfullyDecrypted": "The tokens have been successfully decrypted and can now be imported.",
+  "password": "Password",
+  "wrongPassword": "Incorrect password",
+  "importExistingToken": "{count, plural, zero{The file does not contain a token that is already in the application.} one{The file contains a token that is already in the application.} other{The file contains {count} tokens that are already in the application.}}",
+  "importConflictToken": "{count, plural, zero{There is no conflict with tokens that already exist.} one{There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.} other{There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.}}",
+  "importNewToken": "{count, plural, zero{The file does not contain a new token.} one{The file contains a new token that will be imported.} other{The file contains {count} new tokens that will be imported.}}",
+  "importHint2FAS": "Select your 2FAS backup. If you don't have a backup, create one in the 2FAS app.\nWe recommend using a password.",
+  "importHint2FASButton": "Select 2FAS Backup"
 }

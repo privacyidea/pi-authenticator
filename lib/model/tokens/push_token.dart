@@ -20,6 +20,7 @@ class PushToken extends Token {
   final DateTime? expirationDate;
   final String serial;
 
+  @override
   Duration get showDuration => Duration.zero;
 
   // Roll out
@@ -92,6 +93,21 @@ class PushToken extends Token {
         knownPushRequests = knownPushRequests ?? CustomIntBuffer(),
         pushRequests = pushRequests ?? PushRequestQueue(),
         super(type: TokenTypes.PIPUSH.asString);
+
+  @override
+  bool sameValuesAs(Token other) {
+    return super.sameValuesAs(other) &&
+        other is PushToken &&
+        other.serial == serial &&
+        other.expirationDate == expirationDate &&
+        other.sslVerify == sslVerify &&
+        other.enrollmentCredentials == enrollmentCredentials &&
+        other.url == url &&
+        other.isRolledOut == isRolledOut &&
+        other.publicServerKey == publicServerKey &&
+        other.publicTokenKey == publicTokenKey &&
+        other.privateTokenKey == privateTokenKey;
+  }
 
   @override
   PushToken copyWith({

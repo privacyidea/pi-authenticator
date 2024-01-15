@@ -1,15 +1,15 @@
 import 'dart:typed_data';
 
+import '../../../model/enums/algorithms.dart';
+import '../../../model/enums/encodings.dart';
+import '../../../model/enums/token_types.dart';
+import '../../../model/tokens/token.dart';
 import '../../../utils/crypto_utils.dart';
 import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/supported_versions.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/two_step_dialog.dart';
-import '../../../model/enums/algorithms.dart';
-import '../../../model/enums/encodings.dart';
-import '../../../model/enums/token_types.dart';
-import '../../../model/tokens/token.dart';
 import '../token_scheme_processor.dart';
 
 class OtpAuthProcessor extends TokenSchemeProcessor {
@@ -99,7 +99,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
   // parse.path.substring(1) -> Label
   String infoLog = '\nKey: [..] | Value: [..]';
   uri.queryParameters.forEach((key, value) {
-    if (key == 'secret') {
+    if (key == URI_SECRET) {
       value = '********';
     }
     infoLog += '\n${key.padLeft(9)} | $value';

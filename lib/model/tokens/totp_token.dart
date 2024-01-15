@@ -10,6 +10,7 @@ import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
 import 'otp_token.dart';
+import 'token.dart';
 
 part 'totp_token.g.dart';
 
@@ -57,6 +58,11 @@ class TOTPToken extends OTPToken {
         super(type: TokenTypes.TOTP.asString);
 
   @override
+  bool sameValuesAs(Token other) {
+    return super.sameValuesAs(other) && other is TOTPToken && other.period == period;
+  }
+
+  @override
   TOTPToken copyWith({
     String? label,
     String? issuer,
@@ -96,7 +102,6 @@ class TOTPToken extends OTPToken {
 
   factory TOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
     if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
-    if (uriMap[URI_PERIOD] < 1) throw ArgumentError('Period must be greater than 0');
     if (uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
     TOTPToken totpToken;
     try {

@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:encrypt/encrypt.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
 class AESEncrypted {
   final String data;
@@ -46,7 +45,7 @@ class AESEncrypted {
     );
   }
 
-  Future<String?> decrypt(String password) async {
+  Future<String> decrypt(String password) async {
     final keyGenerator = Pbkdf2(macAlgorithm: macAlgorithm, iterations: iterations, bits: keyBitLengh);
 
     final SecretKey secretKey = await keyGenerator.deriveKeyFromPassword(password: password, nonce: saltBytes);
@@ -56,14 +55,12 @@ class AESEncrypted {
 
     final encrypter = Encrypter(AES(key, mode: aesMode));
     final String decryptedString;
-    // try {
-    final decrypted = encrypter.decryptBytes(Encrypted(dataBytes), iv: iv);
-    decryptedString = utf8.decode(decrypted);
-    // } catch (e) {
-    //   Logger.info('decryption failed');
-    //   return null;
-    // }
-
+    try {
+      final decrypted = encrypter.decryptBytes(Encrypted(dataBytes), iv: iv);
+      decryptedString = utf8.decode(decrypted);
+    } catch (e) {
+      throw Exception('Wrong password or corrupted data');
+    }
     return decryptedString;
   }
 }

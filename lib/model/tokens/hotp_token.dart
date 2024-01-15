@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:otp/otp.dart' as otp_library;
 import 'package:uuid/uuid.dart';
@@ -9,6 +11,7 @@ import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
 import 'otp_token.dart';
+import 'token.dart';
 
 part 'hotp_token.g.dart';
 
@@ -36,6 +39,11 @@ class HOTPToken extends OTPToken {
     super.isHidden,
     super.folderId,
   }) : super(type: TokenTypes.HOTP.asString);
+
+  @override
+  bool sameValuesAs(Token other) {
+    return super.sameValuesAs(other) && other is HOTPToken && other.counter == counter;
+  }
 
   @override
   String get otpValue => otp_library.OTP.generateHOTPCodeString(
@@ -103,6 +111,7 @@ class HOTPToken extends OTPToken {
         isLocked: uriMap[URI_PIN],
       );
     } catch (e) {
+      log(uriMap.toString());
       throw ArgumentError('Invalid URI: $e');
     }
     return hotpToken;

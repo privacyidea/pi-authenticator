@@ -10,7 +10,7 @@ import '../token_widget_tile.dart';
 
 class PushTokenWidgetTile extends ConsumerWidget {
   final PushToken token;
-  PushTokenWidgetTile(this.token) : super(key: ValueKey(token.id));
+  const PushTokenWidgetTile(this.token, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

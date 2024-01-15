@@ -216,10 +216,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                     for (var i = 0; i < tokens.length; i++) ...[
                       if (draggingSortable != tokens[i] && (i != 0 || draggingSortable is Token))
                         widget.filter == null ? DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: tokens[i]) : const Divider(),
-                      TokenWidgetBuilder.fromToken(
-                        tokens[i],
-                        withDivider: i < tokens.length - 1,
-                      ),
+                      TokenWidgetBuilder.fromToken(tokens[i]),
                     ],
                     if (tokens.isNotEmpty && draggingSortable is Token)
                       widget.filter == null ? DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: null) : const Divider(),

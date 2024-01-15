@@ -5,6 +5,7 @@ import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import '../../model/states/token_filter.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
+import '../../widgets/push_request_listener.dart';
 import '../../widgets/status_bar.dart';
 import '../view_interface.dart';
 import 'main_view_widgets/app_bar_item.dart';
@@ -13,7 +14,6 @@ import 'main_view_widgets/expandable_appbar.dart';
 import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
 import 'main_view_widgets/main_view_tokens_list_filtered.dart';
-import '../../widgets/push_request_listener.dart';
 
 export 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 
@@ -56,35 +56,35 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
         body: ExpandableAppBar(
           startExpand: hasFilter,
           appBar: AppBar(
-            title: Text(
-              widget.appName,
-              overflow: TextOverflow.ellipsis,
-              // maxLines: 2 only works like this.
-              maxLines: 2, // Title can be shown on small screens too.
-            ),
-            leading: Padding(
-              padding: const EdgeInsets.all(4),
-              child: widget.appIcon,
-            ),
-            actions: [
-              hasFilter
-                  ? AppBarItem(
-                      onPressed: () {
-                        ref.read(tokenFilterProvider.notifier).state = null;
-                      },
-                      icon: const Icon(Icons.close),
-                    )
-                  : AppBarItem(
-                      onPressed: () {
-                        ref.read(tokenFilterProvider.notifier).state = TokenFilter(
-                          // filterCategory: TokenFilterCategory.issuer,
-                          searchQuery: '',
-                        );
-                      },
-                      icon: const Icon(Icons.search),
-                    ),
-            ],
-          ),
+              titleSpacing: 6,
+              title: Text(
+                widget.appName,
+                overflow: TextOverflow.ellipsis,
+                // maxLines: 2 only works like this.
+                maxLines: 2, // Title can be shown on small screens too.
+              ),
+              leading: Padding(
+                padding: const EdgeInsets.all(4),
+                child: widget.appIcon,
+              ),
+              actions: [
+                hasFilter
+                    ? AppBarItem(
+                        onPressed: () {
+                          ref.read(tokenFilterProvider.notifier).state = null;
+                        },
+                        icon: const Icon(Icons.close),
+                      )
+                    : AppBarItem(
+                        onPressed: () {
+                          ref.read(tokenFilterProvider.notifier).state = TokenFilter(
+                            // filterCategory: TokenFilterCategory.issuer,
+                            searchQuery: '',
+                          );
+                        },
+                        icon: const Icon(Icons.search),
+                      ),
+              ]),
           body: ConnectivityListener(
             child: StatusBar(
               child: !hasFilter

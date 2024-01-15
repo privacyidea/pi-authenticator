@@ -24,6 +24,11 @@ abstract class OTPToken extends Token {
   });
 
   @override
+  bool sameValuesAs(Token other) {
+    return super.sameValuesAs(other) && other is OTPToken && other.algorithm == algorithm && other.digits == digits && other.secret == secret;
+  }
+
+  @override
   OTPToken copyWith({
     String? label,
     String? issuer,

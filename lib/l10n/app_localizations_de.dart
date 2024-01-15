@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 /// The translations for German (`de`).
@@ -505,4 +507,78 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get legacySigningErrorMessage => 'Der Token wurde in einer veralteten Version der App erstellt, was zu Problemen bei der Verwendung führen kann. Es wird empfohlen, einen neuen Push-Token zu erstellen, wenn das Problem weiterhin besteht!';
+
+  @override
+  String get selectImportSource => 'Importquelle auswählen';
+
+  @override
+  String get importTokens => 'Token importieren';
+
+  @override
+  String get selectFile => 'Datei auswählen';
+
+  @override
+  String get decrypt => 'Entschlüsseln';
+
+  @override
+  String fileNoValidBackupFor(Object name) {
+    return 'Die ausgewählte Datei ist kein gültiges Backup für $name.';
+  }
+
+  @override
+  String get fileIsEncrypted => 'Die ausgewählte Datei ist verschlüsselt. Bitte gib das Passwort ein, um sie zu entschlüsseln.';
+
+  @override
+  String get fileNotEncrypted => 'Die ausgewählte Datei ist nicht verschlüsselt. Sie kann direkt importiert werden.';
+
+  @override
+  String get fileSuccessfullyDecrypted => 'Die Token wurden erfolgreich entschlüsselt, sie können nun importiert werden.';
+
+  @override
+  String get password => 'Passwort';
+
+  @override
+  String get wrongPassword => 'Falsches Passwort';
+
+  @override
+  String importExistingToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Die Datei enthält $count Token, die sich bereits in der Anwendung befinden.',
+      one: 'Die Datei enthält ein Token, das sich bereits in der Anwendung befindet.',
+      zero: 'Die Datei enthält kein Token, das sich bereits in der Anwendung befindet.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importConflictToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.',
+      one: 'Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.',
+      zero: 'Es besteht kein Konflikt mit bereits existierenden Token.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importNewToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Die Datei enthält $count neue Token, die importiert werden.',
+      one: 'Die Datei enthält ein neues Token, das importiert wird.',
+      zero: 'Die Datei enthält kein neues Token.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importHint2FAS => 'Wähle dein 2FAS Backup aus. Wenn du kein Backup hast, erstelle eines in der 2FAS App.\nWir empfehlen die Verwendung eines Passworts.';
+
+  @override
+  String get importHint2FASButton => '2FAS Backup auswählen';
 }

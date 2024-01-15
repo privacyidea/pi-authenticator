@@ -1062,6 +1062,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!'**
   String get legacySigningErrorMessage;
+
+  /// No description provided for @selectImportSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Select import source'**
+  String get selectImportSource;
+
+  /// No description provided for @importTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Import token'**
+  String get importTokens;
+
+  /// No description provided for @selectFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Select file'**
+  String get selectFile;
+
+  /// No description provided for @decrypt.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrypt'**
+  String get decrypt;
+
+  /// Message that tells the user that the selected file is not a valid backup for the token.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected file is not a valid backup for {name}.'**
+  String fileNoValidBackupFor(Object name);
+
+  /// No description provided for @fileIsEncrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected file is encrypted. Please enter the password to decrypt it.'**
+  String get fileIsEncrypted;
+
+  /// No description provided for @fileNotEncrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected file is not encrypted. It can be imported directly.'**
+  String get fileNotEncrypted;
+
+  /// No description provided for @fileSuccessfullyDecrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'The tokens have been successfully decrypted and can now be imported.'**
+  String get fileSuccessfullyDecrypted;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @wrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password'**
+  String get wrongPassword;
+
+  /// No description provided for @importExistingToken.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, zero{The file does not contain a token that is already in the application.} one{The file contains a token that is already in the application.} other{The file contains {count} tokens that are already in the application.}}'**
+  String importExistingToken(num count);
+
+  /// No description provided for @importConflictToken.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, zero{There is no conflict with tokens that already exist.} one{There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.} other{There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.}}'**
+  String importConflictToken(num count);
+
+  /// No description provided for @importNewToken.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, zero{The file does not contain a new token.} one{The file contains a new token that will be imported.} other{The file contains {count} new tokens that will be imported.}}'**
+  String importNewToken(num count);
+
+  /// No description provided for @importHint2FAS.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your 2FAS backup. If you don\'t have a backup, create one in the 2FAS app.\nWe recommend using a password.'**
+  String get importHint2FAS;
+
+  /// No description provided for @importHint2FASButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Select 2FAS Backup'**
+  String get importHint2FASButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
