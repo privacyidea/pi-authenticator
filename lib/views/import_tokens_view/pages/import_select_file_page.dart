@@ -1,11 +1,11 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../model/token_import_source.dart';
 import '../../../utils/logger.dart';
-import 'import_file_decrypted_page.dart';
-import 'import_file_encrypted_page.dart';
+import 'import_decrypted_file_page.dart';
+import 'import_encrypted_file_page.dart';
 import 'import_invalid_file_page.dart';
 
 class ImportSelectFilePage extends StatefulWidget {
@@ -70,7 +70,7 @@ class _ImportSelectFilePageState extends State<ImportSelectFilePage> {
     final passwordIsNeeded = widget.selectedSource!.processor?.fileContentNeedsPassword(jsonString: fileContent) ?? false;
     if (passwordIsNeeded) {
       _pushReplacementAsync(
-        page: ImportFileEncryptedPage(
+        page: ImportEncryptedFilePage(
           importFunction: ({required String password}) async => await widget.selectedSource!.processor!.process(jsonString: fileContent, password: password),
           appName: widget.selectedSource!.appName,
         ),
@@ -78,7 +78,7 @@ class _ImportSelectFilePageState extends State<ImportSelectFilePage> {
       );
     } else {
       _pushReplacementAsync(
-        page: ImportFileDecryptedPage(
+        page: ImportDecryptedFilePage(
           importFunction: () async => await widget.selectedSource!.processor!.process(jsonString: fileContent),
           appName: widget.selectedSource!.appName,
         ),

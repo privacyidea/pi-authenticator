@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../utils/home_widget_utils.dart';
-import '../../../utils/logger.dart';
 import 'flutter_home_widget_base.dart';
 
 abstract class FlutterHomeWidgetBuilder<T extends FlutterHomeWidgetBase> {
@@ -36,12 +35,10 @@ abstract class FlutterHomeWidgetBuilder<T extends FlutterHomeWidgetBase> {
       key: '$homeWidgetKey$additionalSuffix${utils.keySuffixDark}',
       logicalSize: logicalSize,
     );
-    Logger.info('Saved widget under key: $homeWidgetKey$additionalSuffix${utils.keySuffixDark}');
     await utils.renderFlutterWidget(
       getWidget(isDark: false, aditionalSuffix: additionalSuffix),
       key: '$homeWidgetKey$additionalSuffix${utils.keySuffixLight}',
       logicalSize: logicalSize,
     );
-    Logger.info('Saved widget under key: $homeWidgetKey$additionalSuffix${utils.keySuffixLight}');
   }
 }

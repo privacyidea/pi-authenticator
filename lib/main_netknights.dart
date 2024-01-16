@@ -56,11 +56,11 @@ void main() async {
 }
 
 class PrivacyIDEAAuthenticator extends ConsumerWidget {
-  static ApplicationCustomization? customization;
+  static ApplicationCustomization? currentCustomization;
   final ApplicationCustomization _customization;
   PrivacyIDEAAuthenticator({required ApplicationCustomization customization, super.key}) : _customization = customization {
     // ignore: prefer_initializing_formals
-    PrivacyIDEAAuthenticator.customization = customization;
+    PrivacyIDEAAuthenticator.currentCustomization = customization;
   }
   @override
   Widget build(BuildContext context, WidgetRef ref) {

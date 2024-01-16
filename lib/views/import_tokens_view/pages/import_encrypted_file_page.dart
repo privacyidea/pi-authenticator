@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
-import 'import_file_decrypted_page.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../model/tokens/token.dart';
 import '../../../processors/token_import_processor/two_fas_import_file_processor.dart';
+import 'import_decrypted_file_page.dart';
 
-class ImportFileEncryptedPage extends StatefulWidget {
+class ImportEncryptedFilePage extends StatefulWidget {
   final Future<List<Token>> Function({required String password}) importFunction;
   final String appName;
 
-  const ImportFileEncryptedPage({super.key, required this.importFunction, required this.appName});
+  const ImportEncryptedFilePage({super.key, required this.importFunction, required this.appName});
 
   @override
-  State<ImportFileEncryptedPage> createState() => _ImportFileEncryptedPageState();
+  State<ImportEncryptedFilePage> createState() => _ImportEncryptedFilePageState();
 }
 
-class _ImportFileEncryptedPageState extends State<ImportFileEncryptedPage> {
+class _ImportEncryptedFilePageState extends State<ImportEncryptedFilePage> {
   final TextEditingController passwordController = TextEditingController();
   bool isPasswordVisible = false;
   bool wrongPassword = false;
@@ -90,7 +90,7 @@ class _ImportFileEncryptedPageState extends State<ImportFileEncryptedPage> {
                             try {
                               final tokens = await widget.importFunction(password: passwordController.text);
                               _pushAsync(MaterialPageRoute(
-                                builder: (context) => ImportFileDecryptedPage(
+                                builder: (context) => ImportDecryptedFilePage(
                                   importFunction: ({String? password}) => Future.value(tokens),
                                   appName: widget.appName,
                                 ),

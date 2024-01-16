@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../processors/token_import_processor/two_fas_import_file_processor.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/token_import_source.dart';
-
+import '../../processors/token_import_processor/two_fas_import_file_processor.dart';
 import 'pages/import_select_file_page.dart';
 
 class ImportTokensView extends ConsumerStatefulWidget {

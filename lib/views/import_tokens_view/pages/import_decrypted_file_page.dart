@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../l10n/app_localizations.dart';
-import '../../../utils/riverpod_providers.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../model/tokens/token.dart';
+import '../../../utils/riverpod_providers.dart';
 import '../widgets/import_token_entrys_list_tile.dart';
 import '../widgets/import_tokens_list.dart';
 
-class ImportFileDecryptedPage extends ConsumerStatefulWidget {
+class ImportDecryptedFilePage extends ConsumerStatefulWidget {
   final Future<List<Token>> Function() importFunction;
   final String appName;
-  const ImportFileDecryptedPage({super.key, required this.importFunction, required this.appName});
+  const ImportDecryptedFilePage({super.key, required this.importFunction, required this.appName});
 
   @override
-  ConsumerState<ImportFileDecryptedPage> createState() => _ImportFileNoPwState();
+  ConsumerState<ImportDecryptedFilePage> createState() => _ImportFileNoPwState();
 }
 
-class _ImportFileNoPwState extends ConsumerState<ImportFileDecryptedPage> {
+class _ImportFileNoPwState extends ConsumerState<ImportDecryptedFilePage> {
   ScrollController scrollController = ScrollController();
   Future<List<ImportTokenEntry>>? initImportTokenEntries;
   List<Token?>? importTokens;
@@ -187,7 +187,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportFileDecryptedPage> {
           continue;
         }
         if (importTokenEntry.newToken.sameValuesAs(importTokenEntry.oldToken!)) continue;
-        newImportTokens.add(importTokenEntry.selectedToken);
+        newImportTokens.add(importTokenEntry.selectedToken?.copyWith(id: importTokenEntry.oldToken!.id));
       }
       importTokens = newImportTokens;
     });

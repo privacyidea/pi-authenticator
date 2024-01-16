@@ -9,23 +9,23 @@ import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:mutex/mutex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import '../widgets/home_widgets/home_widget_copied.dart';
-import '../widgets/home_widgets/home_widget_unlinked.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../main_netknights.dart';
-import '../processors/scheme_processors/home_widget_processor.dart';
 import '../model/tokens/day_password_token.dart';
 import '../model/tokens/hotp_token.dart';
 import '../model/tokens/otp_token.dart';
 import '../model/tokens/token.dart';
 import '../model/tokens/totp_token.dart';
+import '../processors/scheme_processors/home_widget_processor.dart';
 import '../repo/secure_token_repository.dart';
 import '../widgets/home_widgets/home_widget_action.dart';
 import '../widgets/home_widgets/home_widget_background.dart';
 import '../widgets/home_widgets/home_widget_configure.dart';
+import '../widgets/home_widgets/home_widget_copied.dart';
 import '../widgets/home_widgets/home_widget_hidden.dart';
 import '../widgets/home_widgets/home_widget_otp.dart';
+import '../widgets/home_widgets/home_widget_unlinked.dart';
 import 'app_customizer.dart';
 import 'logger.dart';
 import 'version.dart';
@@ -357,19 +357,19 @@ class HomeWidgetUtils {
     if (tokenAction == null) return;
     final actionTimer = _actionTimers[tokenId];
     if (actionTimer != null && actionTimer.isActive) {
-      Logger.info('Action blocked');
+      Logger.info('Action blocked', name: 'home_widget_utils.dart#performAction');
       return;
     }
     HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', true);
     final widgetIds = await _getWidgetIdsOfTokens([token.id]);
     _actionTimers[tokenId] = Timer(const Duration(seconds: 1), () async {
-      Logger.info('Unblocked action');
+      Logger.info('Unblocked action', name: 'home_widget_utils.dart#performAction');
       await HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', false);
       await _notifyUpdate(widgetIds);
     });
 
     await _mapTokenAction[token.type]?.call(widgetId);
-    Logger.info('Performing action');
+    Logger.info('Performing action', name: 'home_widget_utils.dart#performAction');
     await _notifyUpdate(widgetIds);
   }
 
@@ -413,7 +413,7 @@ class HomeWidgetUtils {
   }
 
   Future<void> _unlink(String widgetId) async {
-    Logger.info('Unlinking HomeWidget with id $widgetId');
+    Logger.info('Unlinking HomeWidget with id $widgetId', name: 'home_widget_utils.dart#_unlink');
     await HomeWidget.saveWidgetData('$keyTokenId$widgetId', null);
     await _updateHomeWidgetUnlinked();
     await _removeTokenType(widgetId);
@@ -554,7 +554,7 @@ class HomeWidgetUtils {
   Future<void> _removeTokenType(String widgetId) async => await HomeWidget.saveWidgetData('$keyTokenType$widgetId', null);
 
   Future<void> _setThemeCustomization() async {
-    final customization = PrivacyIDEAAuthenticator.customization;
+    final customization = PrivacyIDEAAuthenticator.currentCustomization;
     await HomeWidget.saveWidgetData('$keyThemeCustomization$keySuffixDark', jsonEncode(customization?.darkTheme));
     _themeDataDark = customization?.darkTheme.generateTheme();
     await HomeWidget.saveWidgetData('$keyThemeCustomization$keySuffixLight', jsonEncode(customization?.lightTheme));
@@ -577,22 +577,22 @@ class HomeWidgetUtils {
   /// This method has to be called after change to the HomeWidget to notify the HomeWidget to update
   Future<void> _notifyUpdate(Iterable<String> updatedWidgetIds) async {
     if (await isHomeWidgetSupported == false) return;
-    Logger.info('Update requested for: $updatedWidgetIds');
+    if (updatedWidgetIds.isEmpty) return;
+    Logger.info('Update requested for: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate');
     if (await _widgetIsRebuilding || _lastUpdate != null && DateTime.now().difference(_lastUpdate!) < _updateDelay) {
-      Logger.info('Update delayed: $updatedWidgetIds');
+      Logger.info('Update delayed: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate');
       _updatedWidgetIds.addAll(updatedWidgetIds);
       _updateTimer?.cancel();
       final nextDelayInMs = _updateDelay.inMilliseconds - DateTime.now().difference(_lastUpdate!).inMilliseconds;
       _updateTimer = Timer(nextDelayInMs < 1 ? _updateDelay : Duration(milliseconds: nextDelayInMs), () async {
-        Logger.info('Call Update from Timer');
+        Logger.info('Call Update from Timer', name: 'home_widget_utils.dart#_notifyUpdate');
         await _notifyUpdate(_updatedWidgetIds.toList());
       });
       return;
     }
-    Logger.info('Notify Update: $updatedWidgetIds');
+    Logger.info('Notify Update: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate');
     _lastUpdate = DateTime.now();
-    HomeWidget.saveWidgetData(keyRebuildingWidgetIds, updatedWidgetIds.join(','));
-    String packageName = await _packageName;
-    await HomeWidget.updateWidget(qualifiedAndroidName: '$packageName.AppWidgetProvider', iOSName: 'AppWidgetProvider');
+    await HomeWidget.saveWidgetData(keyRebuildingWidgetIds, updatedWidgetIds.join(','));
+    await HomeWidget.updateWidget(qualifiedAndroidName: '${await _packageName}.AppWidgetProvider', iOSName: 'AppWidgetProvider');
   }
 }

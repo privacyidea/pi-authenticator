@@ -1,4 +1,5 @@
 import '../enums/algorithms.dart';
+import '../token_origin.dart';
 import 'token.dart';
 
 abstract class OTPToken extends Token {
@@ -21,6 +22,7 @@ abstract class OTPToken extends Token {
     super.isLocked,
     super.isHidden,
     super.folderId,
+    super.origin,
   });
 
   @override
@@ -42,6 +44,7 @@ abstract class OTPToken extends Token {
     String? tokenImage,
     int? sortIndex,
     int? Function()? folderId,
+    TokenOrigin? origin,
   });
 
   @override

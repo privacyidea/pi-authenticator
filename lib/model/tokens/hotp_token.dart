@@ -10,6 +10,8 @@ import '../../utils/utils.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
+import '../extensions/enum_extension.dart';
+import '../token_origin.dart';
 import 'otp_token.dart';
 import 'token.dart';
 
@@ -38,6 +40,7 @@ class HOTPToken extends OTPToken {
     super.isLocked,
     super.isHidden,
     super.folderId,
+    super.origin,
   }) : super(type: TokenTypes.HOTP.asString);
 
   @override
@@ -71,6 +74,7 @@ class HOTPToken extends OTPToken {
     bool? isLocked,
     bool? isHidden,
     int? Function()? folderId,
+    TokenOrigin? origin,
   }) =>
       HOTPToken(
         counter: counter ?? this.counter,
@@ -86,6 +90,7 @@ class HOTPToken extends OTPToken {
         isLocked: isLocked ?? this.isLocked,
         isHidden: isHidden ?? this.isHidden,
         folderId: folderId != null ? folderId() : this.folderId,
+        origin: origin ?? this.origin,
       );
 
   @override
@@ -109,6 +114,7 @@ class HOTPToken extends OTPToken {
         tokenImage: uriMap[URI_IMAGE],
         pin: uriMap[URI_PIN],
         isLocked: uriMap[URI_PIN],
+        origin: uriMap[URI_ORIGIN],
       );
     } catch (e) {
       log(uriMap.toString());

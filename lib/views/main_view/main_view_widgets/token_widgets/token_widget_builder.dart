@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'totp_token_widgets/totp_token_widget_tile.dart';
 
 import '../../../../model/tokens/day_password_token.dart';
 import '../../../../model/tokens/hotp_token.dart';
@@ -12,6 +11,7 @@ import 'hotp_token_widgets/hotp_token_widget_tile.dart';
 import 'push_token_widgets/push_token_widget.dart';
 import 'token_widget.dart';
 import 'totp_token_widgets/totp_token_widget.dart';
+import 'totp_token_widgets/totp_token_widget_tile.dart';
 
 abstract class TokenWidgetBuilder {
   static TokenWidget fromToken(

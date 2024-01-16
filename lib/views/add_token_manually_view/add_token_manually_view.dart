@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
+import '../../model/enums/token_origin_source_type.dart';
 import '../../model/enums/token_types.dart';
 import '../../model/tokens/day_password_token.dart';
 import '../../model/tokens/hotp_token.dart';
@@ -186,6 +187,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
       algorithm: _algorithmNotifier.value,
       digits: _digitsNotifier.value,
       secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),
+      origin: TokenOriginSourceType.manually.toTokenOrigin(),
     );
   }
 
@@ -197,6 +199,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
         digits: _digitsNotifier.value,
         secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),
         period: _periodNotifier.value,
+        origin: TokenOriginSourceType.manually.toTokenOrigin(),
       );
 
   DayPasswordToken _buildDayPasswordToken() => DayPasswordToken(
@@ -207,6 +210,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
         digits: _digitsNotifier.value,
         secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),
         period: Duration(hours: _periodDayPasswordNotifier.value),
+        origin: TokenOriginSourceType.manually.toTokenOrigin(),
       );
 
   /// Validates the inputs of the label and secret.

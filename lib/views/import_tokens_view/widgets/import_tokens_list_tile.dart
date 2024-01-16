@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
+
 import '../../../model/tokens/token.dart';
+import '../../main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 
 class ImportTokensListTile extends StatelessWidget {
   final Token token;

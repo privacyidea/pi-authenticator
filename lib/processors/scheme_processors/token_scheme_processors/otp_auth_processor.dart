@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';
+import '../../../model/enums/token_origin_source_type.dart';
 import '../../../model/enums/token_types.dart';
+import '../../../model/extensions/enum_extension.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/crypto_utils.dart';
 import '../../../utils/identifiers.dart';
@@ -48,6 +51,7 @@ class OtpAuthProcessor extends TokenSchemeProcessor {
         await Future.delayed(const Duration(milliseconds: 500));
       }
       uriMap[URI_SECRET] = twoStepSecret;
+      uriMap[URI_ORIGIN] = TokenOriginSourceType.link.toTokenOrigin(data: jsonEncode(uri.toString()));
     }
     Token newToken;
     try {
@@ -57,16 +61,6 @@ class OtpAuthProcessor extends TokenSchemeProcessor {
       showMessage(message: e.message, duration: const Duration(seconds: 3));
       return null;
     }
-
-    // if (newToken is PushToken && state.tokens.contains(newToken)) {
-    //   showMessage(message: 'A token with the serial ${newToken.serial} already exists!', duration: const Duration(seconds: 2));
-
-    //   return null;
-    // }
-    // await addOrReplaceToken(newToken);
-    // if (newToken is PushToken) {
-    //   await rolloutPushToken(newToken);
-    // }
     return [newToken];
   }
 }

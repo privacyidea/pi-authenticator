@@ -5,11 +5,13 @@ import 'package:uuid/uuid.dart';
 
 import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
+import '../extensions/enum_extension.dart';
 import '../../utils/utils.dart';
 import '../enums/algorithms.dart';
 import '../enums/day_passoword_token_view_mode.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
+import '../token_origin.dart';
 import 'otp_token.dart';
 import 'token.dart';
 
@@ -41,6 +43,7 @@ class DayPasswordToken extends OTPToken {
     super.pin,
     super.isLocked,
     super.isHidden,
+    super.origin,
   })  : period = period.inSeconds > 0 ? period : const Duration(hours: 24),
         super(type: TokenTypes.DAYPASSWORD.asString);
 
@@ -65,6 +68,7 @@ class DayPasswordToken extends OTPToken {
     bool? isLocked,
     bool? isHidden,
     int? Function()? folderId,
+    TokenOrigin? origin,
   }) =>
       DayPasswordToken(
         period: period ?? this.period,
@@ -82,6 +86,7 @@ class DayPasswordToken extends OTPToken {
         isLocked: isLocked ?? this.isLocked,
         isHidden: isHidden ?? this.isHidden,
         folderId: folderId != null ? folderId.call() : this.folderId,
+        origin: origin ?? this.origin,
       );
 
   @override
@@ -123,6 +128,7 @@ class DayPasswordToken extends OTPToken {
         tokenImage: uriMap[URI_IMAGE],
         pin: uriMap[URI_PIN],
         isLocked: uriMap[URI_PIN],
+        origin: uriMap[URI_ORIGIN],
       );
     } catch (e) {
       throw ArgumentError('Invalid URI: $e');

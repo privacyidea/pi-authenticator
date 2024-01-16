@@ -9,6 +9,8 @@ import '../../utils/utils.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
+import '../extensions/enum_extension.dart';
+import '../token_origin.dart';
 import 'otp_token.dart';
 import 'token.dart';
 
@@ -54,6 +56,7 @@ class TOTPToken extends OTPToken {
     super.isLocked,
     super.isHidden,
     super.folderId,
+    super.origin,
   })  : period = period < 1 ? 30 : period, // period must be greater than 0 otherwise IntegerDivisionByZeroException is thrown in OTP.generateTOTPCodeString
         super(type: TokenTypes.TOTP.asString);
 
@@ -77,6 +80,7 @@ class TOTPToken extends OTPToken {
     bool? isLocked,
     bool? isHidden,
     int? Function()? folderId,
+    TokenOrigin? origin,
   }) {
     return TOTPToken(
       label: label ?? this.label,
@@ -92,6 +96,7 @@ class TOTPToken extends OTPToken {
       isLocked: isLocked ?? this.isLocked,
       isHidden: isHidden ?? this.isHidden,
       folderId: folderId != null ? folderId() : this.folderId,
+      origin: origin ?? this.origin,
     );
   }
 
@@ -116,6 +121,7 @@ class TOTPToken extends OTPToken {
         period: uriMap[URI_PERIOD] ?? 30,
         pin: uriMap[URI_PIN],
         isLocked: uriMap[URI_PIN],
+        origin: uriMap[URI_ORIGIN],
       );
     } catch (e) {
       throw ArgumentError('Invalid URI: $e');

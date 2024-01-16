@@ -8,8 +8,10 @@ import '../../utils/identifiers.dart';
 import '../../utils/rsa_utils.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
+import '../extensions/enum_extension.dart';
 import '../push_request.dart';
 import '../push_request_queue.dart';
+import '../token_origin.dart';
 import 'token.dart';
 
 part 'push_token.g.dart';
@@ -87,6 +89,7 @@ class PushToken extends Token {
     super.pin,
     super.isLocked,
     super.isHidden,
+    super.origin,
   })  : isRolledOut = isRolledOut ?? false,
         sslVerify = sslVerify ?? false,
         rolloutState = rolloutState ?? PushTokenRollOutState.rolloutNotStarted,
@@ -132,6 +135,7 @@ class PushToken extends Token {
     PushTokenRollOutState? rolloutState,
     CustomIntBuffer? knownPushRequests,
     int? Function()? folderId,
+    TokenOrigin? origin,
   }) {
     return PushToken(
       label: label ?? this.label,
@@ -155,6 +159,7 @@ class PushToken extends Token {
       rolloutState: rolloutState ?? this.rolloutState,
       knownPushRequests: knownPushRequests ?? this.knownPushRequests,
       folderId: folderId != null ? folderId() : this.folderId,
+      origin: origin ?? this.origin,
     );
   }
 
@@ -195,6 +200,7 @@ class PushToken extends Token {
         tokenImage: uriMap[URI_IMAGE],
         pin: uriMap[URI_PIN],
         isLocked: uriMap[URI_PIN],
+        origin: uriMap[URI_ORIGIN],
       );
     } catch (e) {
       throw ArgumentError('Invalid URI: $e');

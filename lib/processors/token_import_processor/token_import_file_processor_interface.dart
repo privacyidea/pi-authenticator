@@ -1,6 +1,5 @@
 import '../../model/tokens/token.dart';
 import '../../utils/logger.dart';
-
 import 'two_fas_import_file_processor.dart';
 
 abstract class TokenImportProcessor {

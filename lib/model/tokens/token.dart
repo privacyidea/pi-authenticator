@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../utils/identifiers.dart';
 import '../enums/token_types.dart';
+import '../extensions/enum_extension.dart';
 import '../mixins/sortable_mixin.dart';
+import '../token_origin.dart';
 import 'day_password_token.dart';
 import 'hotp_token.dart';
 import 'push_token.dart';
@@ -23,6 +25,8 @@ abstract class Token with SortableMixin {
   @override
   final int? sortIndex;
 
+  final TokenOrigin? origin;
+
   // Must be string representation of TokenType enum.
   final String type; // Used to identify the token when deserializing.
 
@@ -34,7 +38,9 @@ abstract class Token with SortableMixin {
     if (TokenTypes.DAYPASSWORD.isString(type)) return DayPasswordToken.fromJson(json);
     throw ArgumentError.value(json, 'json', 'Building the token type [$type] is not a supported right now.');
   }
-  factory Token.fromUriMap(Map<String, dynamic> uriMap) {
+  factory Token.fromUriMap(
+    Map<String, dynamic> uriMap,
+  ) {
     String type = uriMap[URI_TYPE];
     if (TokenTypes.HOTP.isString(type)) return HOTPToken.fromUriMap(uriMap);
     if (TokenTypes.TOTP.isString(type)) return TOTPToken.fromUriMap(uriMap);
@@ -51,6 +57,7 @@ abstract class Token with SortableMixin {
     this.tokenImage,
     this.sortIndex,
     this.folderId,
+    this.origin,
     bool? pin,
     bool? isLocked,
     bool? isHidden,
@@ -82,6 +89,7 @@ abstract class Token with SortableMixin {
     String? tokenImage,
     int? sortIndex,
     int? Function()? folderId,
+    TokenOrigin? origin,
   });
 
   @override
@@ -103,6 +111,7 @@ abstract class Token with SortableMixin {
         'tokenImage: $tokenImage, '
         'type: $type, '
         'sortIndex: $sortIndex, '
-        'folderId: $folderId';
+        'folderId: $folderId, '
+        'origin: $origin, ';
   }
 }

@@ -25,6 +25,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:privacyidea_authenticator/model/extensions/enum_extension.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../model/enums/algorithms.dart';
