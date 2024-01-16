@@ -107,7 +107,7 @@ class TwoFasImportFileProcessor extends TokenImportProcessor {
     for (Map<String, dynamic> twoFasToken in tokensJsonList) {
       tokens.add(Token.fromUriMap(_twoFasToUriMap(twoFasToken)));
     }
-    Logger.warning('successfully imported ${tokens.length} tokens', name: 'two_fas_import_file_processor.dart#processPlainTokens');
+    Logger.info('successfully imported ${tokens.length} tokens', name: 'two_fas_import_file_processor.dart#processPlainTokens');
     return tokens;
   }
 
