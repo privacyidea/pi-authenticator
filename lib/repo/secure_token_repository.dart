@@ -111,6 +111,7 @@ class SecureTokenRepository implements TokenRepository {
         if (key == _CURRENT_APP_TOKEN_KEY || key == _NEW_APP_TOKEN_KEY) {
           continue;
         }
+        _storage.delete(key: key);
         Logger.warning(
           'Could not deserialize token from secure storage. Value: $value, key: $key',
           name: 'storage_utils.dart#loadAllTokens',

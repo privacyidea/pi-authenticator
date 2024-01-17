@@ -20,6 +20,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -56,6 +57,7 @@ class PushProvider {
 
   Future<void> initialize({required PushRequestNotifier pushSubscriber, required FirebaseUtils firebaseUtils}) async {
     if (_initialized) return;
+    Logger.warning('PushProvider is already initialized', name: 'push_provider.dart#initializePushProvider');
     _initialized = true;
     this.firebaseUtils = firebaseUtils;
     this.pushSubscriber = pushSubscriber;
@@ -131,7 +133,7 @@ class PushProvider {
         data = _getAndValidateDataFromRemoteMessage(remoteMessage);
       } on ArgumentError catch (_) {
         Logger.info('Try requesting the challenge by polling.', name: 'push_provider.dart#_foregroundHandler');
-        await pollForChallenges(isManually: false);
+        await pollForChallenges(isManually: true);
         return;
       }
       // Here we can be sure that the data is valid
@@ -145,6 +147,7 @@ class PushProvider {
   }
 
   // BACKGROUND HANDLING
+  @pragma('vm:entry-point')
   static Future<void> _backgroundHandler(RemoteMessage remoteMessage) async {
     Logger.info('Background message received.', name: 'push_provider.dart#_backgroundHandler');
     await SecureTokenRepository.protect(() async {
@@ -199,6 +202,7 @@ class PushProvider {
   }
 
   void _startOrStopPolling(bool pollingEnabled) {
+    log('Polling is enabled: $pollingEnabled', name: 'push_provider.dart#_startOrStopPolling');
     // Start polling if enabled and not already polling
     if (pollingEnabled && _pollTimer == null) {
       Logger.info('Polling is enabled.', name: 'push_provider.dart#_startPollingIfEnabled');
@@ -219,10 +223,12 @@ class PushProvider {
 
   Future<void> pollForChallenges({required bool isManually}) async {
     // Get all push tokens
+    await globalRef?.read(tokenProvider.notifier).isLoading;
     List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
 
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
+      await globalRef?.read(settingsProvider.notifier).isLoading;
       if (globalRef?.read(settingsProvider).enablePolling == true) {
         Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
         globalRef?.read(settingsProvider.notifier).setPolling(false);
@@ -246,13 +252,13 @@ class PushProvider {
     Logger.info('Polling for challenges: ${pushTokens.length} Tokens', name: 'push_provider.dart#pollForChallenges');
     final List<Future<void>> futures = [];
     for (PushToken p in pushTokens) {
-      futures.add(pollForChallenge(p));
+      futures.add(pollForChallenge(p, isManually: isManually));
     }
     await Future.wait(futures);
     return;
   }
 
-  Future<void> pollForChallenge(PushToken token) async {
+  Future<void> pollForChallenge(PushToken token, {bool isManually = true}) async {
     String timestamp = DateTime.now().toUtc().toIso8601String();
 
     String message = '${token.serial}|$timestamp';
@@ -293,10 +299,12 @@ class PushProvider {
         try {
           challengeList = _getAndValidateDataFromResponse(response);
         } catch (_) {
-          globalRef?.read(statusMessageProvider.notifier).state = (
-            AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial),
-            AppLocalizations.of(globalNavigatorKey.currentContext!)!.pushRequestParseError,
-          );
+          if (isManually) {
+            globalRef?.read(statusMessageProvider.notifier).state = (
+              AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial),
+              AppLocalizations.of(globalNavigatorKey.currentContext!)!.pushRequestParseError,
+            );
+          }
           return;
         }
 
@@ -305,20 +313,24 @@ class PushProvider {
 
       case 403:
         final error = getErrorMessageFromResponse(response);
-        globalRef?.read(statusMessageProvider.notifier).state = (
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailedFor(token.serial),
-          error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
-        );
+        if (isManually) {
+          globalRef?.read(statusMessageProvider.notifier).state = (
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailedFor(token.serial),
+            error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
+          );
+        }
         Logger.warning('Polling push token failed with status code ${response.statusCode}',
             name: 'push_provider.dart#pollForChallenge', error: getErrorMessageFromResponse(response));
         return;
 
       default:
         final error = getErrorMessageFromResponse(response);
-        globalRef?.read(statusMessageProvider.notifier).state = (
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailedFor(token.serial),
-          error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
-        );
+        if (isManually) {
+          globalRef?.read(statusMessageProvider.notifier).state = (
+            AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailedFor(token.serial),
+            error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
+          );
+        }
         return;
     }
     Logger.info('Received ${challengeList.length} challenge(s) for ${token.label}', name: 'push_provider.dart#pollForChallenge');

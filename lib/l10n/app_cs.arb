@@ -477,5 +477,18 @@
   "hidePushTokensDescription": "Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.",
   "settingsGroupGeneral": "Obecné informace",
   "licensesAndVersion": "Licence a verze",
-  "privacyPolicy": "Zásady ochrany osobních údajů"
+  "privacyPolicy": "Zásady ochrany osobních údajů",
+  "legacySigningErrorTitle": "Při použití zastaralého tokenu došlo k chybě: {tokenLabel}",
+  "@legacySigningErrorTitle": {
+    "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
+    "placeholders": {
+      "tokenLabel": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "legacySigningErrorMessage": "Token byl vytvořen v zastaralé verzi aplikace, což může vést k problémům při jeho používání.\nPokud problém přetrvává, doporučujeme vytvořit nový push token!",
+  "@legacySigningErrorMessage": {
+    "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
+  }
 }

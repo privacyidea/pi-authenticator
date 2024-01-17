@@ -73,11 +73,6 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) {
   return tokenNotifier;
 });
 
-final tokenWithPushRequestProvider = Provider<PushToken?>((ref) {
-  Logger.info("New pushTokensProvider created");
-  return ref.watch(tokenProvider).tokenWithPushRequest();
-});
-
 final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
   (ref) {
     // Using Logger here will cause a circular dependency because Logger uses settingsProvider (logging verbosity)
@@ -88,14 +83,15 @@ final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
 final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>(
   (ref) {
     Logger.info("New PushRequestNotifier created");
+    final pushProvider = PushProvider();
     ref.listen(settingsProvider, (previous, next) {
+      Logger.warning("settingsProvider changed from $previous to $next");
       if (previous?.enablePolling != next.enablePolling) {
         Logger.info("Polling enabled changed from ${previous?.enablePolling} to ${next.enablePolling}");
-        PushProvider.instance?.setPollingEnabled(next.enablePolling);
+        pushProvider.setPollingEnabled(next.enablePolling);
       }
     });
 
-    final pushProvider = PushProvider(pollingEnabled: false);
     final pushRequestNotifier = PushRequestNotifier(
       pushProvider: pushProvider,
     );

@@ -2,14 +2,15 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/push_provider.dart';
 
-import '../../../l10n/app_localizations.dart';
-import '../../../model/tokens/push_token.dart';
-import '../../../utils/customizations.dart';
-import '../../../utils/lock_auth.dart';
-import '../../../utils/riverpod_providers.dart';
-import '../../../widgets/default_dialog.dart';
-import '../../../widgets/press_button.dart';
+import '../l10n/app_localizations.dart';
+import '../model/tokens/push_token.dart';
+import '../utils/customizations.dart';
+import '../utils/lock_auth.dart';
+import '../utils/riverpod_providers.dart';
+import 'default_dialog.dart';
+import 'press_button.dart';
 
 class PushRequestListener extends ConsumerStatefulWidget {
   final Widget child;
@@ -20,112 +21,132 @@ class PushRequestListener extends ConsumerStatefulWidget {
 }
 
 class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
-  PushToken? lastPushToken;
-
-  void _closePushRequestDialog() {
-    if (mounted) {
-      Navigator.of(context).pop();
-    }
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      PushProvider().pollForChallenges(isManually: false);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final tokenWithPushRequest = ref.watch(tokenWithPushRequestProvider);
-    if (tokenWithPushRequest != null && tokenWithPushRequest != lastPushToken) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showDialog(
-          context: context,
-          builder: (context) => _pushRequestDialog(tokenWithPushRequest),
-          useRootNavigator: false,
-          barrierDismissible: false,
-        );
-      });
-    }
-    lastPushToken = tokenWithPushRequest;
-    return widget.child;
+    final tokensWithPushRequest = ref.watch(tokenProvider).pushTokens.where((token) => token.pushRequests.isNotEmpty);
+    final tokenWithPushRequest = tokensWithPushRequest.isNotEmpty ? tokensWithPushRequest.first : null;
+    return Stack(
+      children: [
+        widget.child,
+        if (tokenWithPushRequest != null)
+          PushRequestDialog(
+            tokenWithPushRequest,
+            key: Key('${tokenWithPushRequest.pushRequests.peek().hashCode.toString()}#PushRequestDialog'),
+          ),
+      ],
+    );
   }
+}
 
-  Widget _pushRequestDialog(PushToken tokenWithPushRequest) => DefaultDialog(
-        title: Center(child: Text(' ${tokenWithPushRequest.label}', textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge!)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              tokenWithPushRequest.pushRequests.peek()?.title ?? '',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Text(
-                tokenWithPushRequest.pushRequests.peek()?.question ?? '',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  flex: 6,
-                  child: PressButton(
-                    onPressed: () async {
-                      if (tokenWithPushRequest.isLocked &&
-                          await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) return;
-                      globalRef?.read(pushRequestProvider.notifier).acceptPop(tokenWithPushRequest);
-                      _closePushRequestDialog();
-                    },
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.accept.padRight(AppLocalizations.of(context)!.decline.length),
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          const Flexible(
-                            child: Icon(Icons.check_outlined),
-                          ),
-                        ],
-                      ),
+class PushRequestDialog extends StatefulWidget {
+  final PushToken tokenWithPushRequest;
+
+  const PushRequestDialog(this.tokenWithPushRequest, {super.key});
+
+  @override
+  State<PushRequestDialog> createState() => _PushRequestDialogState();
+}
+
+class _PushRequestDialogState extends State<PushRequestDialog> {
+  bool isHandled = false;
+
+  @override
+  Widget build(BuildContext context) => isHandled
+      ? const SizedBox()
+      : Container(
+          color: Colors.transparent,
+          child: Center(
+            child: DefaultDialog(
+              title: Center(child: Text(' ${widget.tokenWithPushRequest.label}', textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge!)),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.tokenWithPushRequest.pushRequests.peek()?.title ?? '',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      widget.tokenWithPushRequest.pushRequests.peek()?.question ?? '',
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
-                ),
-                const Expanded(child: SizedBox()),
-                Expanded(
-                  flex: 6,
-                  child: PressButton(
-                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
-                      onPressed: () async {
-                        if (tokenWithPushRequest.isLocked &&
-                            await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
-                          return;
-                        }
-                        _showConfirmationDialog(tokenWithPushRequest);
-                      },
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.decline.padRight(AppLocalizations.of(context)!.accept.length),
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodyMedium,
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                        flex: 6,
+                        child: PressButton(
+                          onPressed: () async {
+                            if (widget.tokenWithPushRequest.isLocked &&
+                                await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) return;
+                            globalRef?.read(pushRequestProvider.notifier).acceptPop(widget.tokenWithPushRequest);
+                            if (mounted) setState(() => isHandled = true);
+                          },
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.accept.padRight(AppLocalizations.of(context)!.decline.length),
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                const Flexible(
+                                  child: Icon(Icons.check_outlined),
+                                ),
+                              ],
                             ),
-                            const Flexible(
-                              flex: 1,
-                              child: Icon(Icons.close_outlined),
-                            ),
-                          ],
+                          ),
                         ),
-                      )),
-                ),
-              ],
+                      ),
+                      const Expanded(child: SizedBox()),
+                      Expanded(
+                        flex: 6,
+                        child: PressButton(
+                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
+                            onPressed: () async {
+                              if (widget.tokenWithPushRequest.isLocked &&
+                                  await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
+                                return;
+                              }
+                              _showConfirmationDialog(widget.tokenWithPushRequest);
+                            },
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.decline.padRight(AppLocalizations.of(context)!.accept.length),
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                  const Flexible(
+                                    flex: 1,
+                                    child: Icon(Icons.close_outlined),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      );
+          ),
+        );
 
   void _showConfirmationDialog(PushToken token) => showDialog(
       useRootNavigator: false,
@@ -185,7 +206,7 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
                                 onPressed: () {
                                   globalRef?.read(pushRequestProvider.notifier).declinePop(token);
                                   Navigator.of(context).pop();
-                                  _closePushRequestDialog();
+                                  if (mounted) setState(() => isHandled = true);
                                 },
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -217,7 +238,7 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
                                   //TODO: Notify issuer
                                   globalRef?.read(pushRequestProvider.notifier).declinePop(token);
                                   Navigator.of(context).pop();
-                                  _closePushRequestDialog();
+                                  if (mounted) setState(() => isHandled = true);
                                 },
                                 child: Column(
                                   children: [

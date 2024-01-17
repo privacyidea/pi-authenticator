@@ -51,7 +51,7 @@ class PushRequestQueue {
 
   PushRequest? peek() => list.isNotEmpty ? list.first : null;
 
-  PushRequest pop() => list.removeAt(0);
+  PushRequest? tryPop() => list.isNotEmpty ? list.removeAt(0) : null;
 
   @override
   String toString() {

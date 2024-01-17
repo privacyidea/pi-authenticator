@@ -25,10 +25,13 @@ import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
+import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 
 class RsaUtils {
   const RsaUtils();
@@ -213,25 +216,19 @@ class RsaUtils {
   /// push token so that the app can directly access the private key.
   /// Returns the signature on success and null on failure.
   Future<String?> trySignWithToken(PushToken token, String message) async {
-    String? signature;
-    if (token.privateTokenKey == null) {
-      // It is a legacy token so the operation could cause an exception
-      try {
-        signature = await const LegacyUtils().sign(token.serial, message);
-      } catch (error, stackTrace) {
-        Logger.error("Error",
-            error: "An error occured while using the legacy token ${token.label}. "
-                "The token was enrolled in a old version of this app, which may cause trouble"
-                " using it. It is suggested to enroll a new push token if the problems persist!",
-            name: 'crypto_utils.dart#trySignWithToken',
-            stackTrace: stackTrace);
-        return null;
-      }
-    } else {
-      signature = createBase32Signature(token.rsaPrivateTokenKey!, utf8.encode(message) as Uint8List);
+    if (token.privateTokenKey != null) {
+      return createBase32Signature(token.rsaPrivateTokenKey!, utf8.encode(message) as Uint8List);
     }
+    // It is a legacy token so the operation could cause an exception
+    try {
+      return await const LegacyUtils().sign(token.serial, message);
+    } catch (error) {
+      final legacySigningErrorTitle = AppLocalizations.of(globalNavigatorKey.currentContext!)!.legacySigningErrorTitle(token.label);
+      final legacySigningErrorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.legacySigningErrorMessage;
+      globalRef?.read(statusMessageProvider.notifier).state = (legacySigningErrorTitle, legacySigningErrorMessage);
 
-    return signature;
+      return null;
+    }
   }
 
   Future<AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>> generateRSAKeyPair() async {
