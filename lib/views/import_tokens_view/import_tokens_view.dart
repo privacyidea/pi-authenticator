@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/token_import_source.dart';
-import '../../processors/token_import_processor/two_fas_import_file_processor.dart';
+import '../../processors/token_import_processor/free_otp_file_import_processor.dart';
+import '../../processors/token_import_processor/two_fas_file_import_processor.dart';
 import 'pages/import_select_file_page.dart';
 
 class ImportTokensView extends ConsumerStatefulWidget {
@@ -26,7 +27,7 @@ class ImportTokensView extends ConsumerStatefulWidget {
       appName: 'FreeOTP',
       importHint: (context) => '', //  AppLocalizations.of(context)!.importHintFreeOTP,
       iconPath: '${_importSourceIconFolder}freeotp.png',
-      processor: null,
+      processor: const FreeOtpFileImportProcessor(),
     ),
     TokenImportSource(
       appName: 'LastPass Authenticator',
@@ -44,7 +45,7 @@ class ImportTokensView extends ConsumerStatefulWidget {
       appName: '2FAS Authenticator',
       importHint: (context) => AppLocalizations.of(context)!.importHint2FAS,
       iconPath: '${_importSourceIconFolder}2fas.png',
-      processor: const TwoFasImportFileProcessor(),
+      processor: const TwoFasFileImportProcessor(),
     ),
   ];
 

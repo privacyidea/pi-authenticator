@@ -1,7 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
+import 'dart:developer';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
@@ -11,10 +13,10 @@ import '../../model/token_origin.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
-import 'token_import_file_processor_interface.dart';
+import 'token_file_import_processor_interface.dart';
 
-class TwoFasImportFileProcessor extends TokenImportProcessor {
-  const TwoFasImportFileProcessor();
+class TwoFasFileImportProcessor extends TokenFileImportProcessor {
+  const TwoFasFileImportProcessor();
   static const String TWOFAS_TYPE = 'tokenType';
   static const String TWOFAS_ISSUER = 'name';
   static const String TWOFAS_SECRET = 'secret';
@@ -23,38 +25,36 @@ class TwoFasImportFileProcessor extends TokenImportProcessor {
   static const String TWOFAS_COUNTER = 'counter';
 
   @override
-  Future<List<Token>> process({String? jsonString, Map<String, dynamic>? json, String? password}) async {
-    assert(jsonString != null || json != null);
-    assert(jsonString == null || json == null);
-    if (password == null) return processPlainFile(jsonString: jsonString, json: json);
-    return processEncryptedFile(jsonString: jsonString, json: json, password: password);
+  Future<List<Token>> process({required XFile file, String? password}) async {
+    final String fileContent = await file.readAsString();
+    final Map<String, dynamic> json;
+    try {
+      json = jsonDecode(fileContent) as Map<String, dynamic>;
+    } catch (e) {
+      throw InvalidFileContentException('No valid 2FAS import file');
+    }
+    if (password == null) return processPlainFile(jsonString: fileContent, json: json);
+    return processEncryptedFile(jsonString: fileContent, json: json, password: password);
   }
 
   @override
-  bool fileContentNeedsPassword({String? jsonString, Map<String, dynamic>? json}) {
-    assert(jsonString != null || json != null);
-    assert(jsonString == null || json == null);
+  Future<bool> fileNeedsPassword({required XFile file}) async {
     try {
-      json ??= jsonDecode(jsonString!) as Map<String, dynamic>;
+      final Map<String, dynamic> json = jsonDecode(await file.readAsString()) as Map<String, dynamic>;
+      return json['servicesEncrypted'] != null;
     } catch (e) {
       return false;
     }
-    return json['servicesEncrypted'] != null;
   }
 
   @override
-  bool fileContentIsValid({String? jsonString, Map<String, dynamic>? json}) {
-    assert(jsonString != null || json != null);
-    assert(jsonString == null || json == null);
+  Future<bool> fileIsValid({required XFile file}) async {
     try {
-      json ??= jsonDecode(jsonString!) as Map<String, dynamic>;
+      final Map<String, dynamic> json = jsonDecode(await file.readAsString()) as Map<String, dynamic>;
+      return json['servicesEncrypted'] != null || json['services'] != null;
     } catch (e) {
       return false;
     }
-    if (json['servicesEncrypted'] == null && json['services'] == null) {
-      return false;
-    }
-    return true;
   }
 
   Future<List<Token>> processEncryptedFile({String? jsonString, Map<String, dynamic>? json, required String password}) async {
@@ -69,7 +69,14 @@ class TwoFasImportFileProcessor extends TokenImportProcessor {
     final String decryptedTokens;
     final List<dynamic> decryptedTokensJsonList;
     try {
-      decryptedTokens = await AESEncrypted.fromSingleEncryptedString(json['servicesEncrypted']).decrypt(password);
+      final servicesEncrypted = json['servicesEncrypted'] as String;
+      final splitted = servicesEncrypted.split(':');
+      log(splitted.toString());
+      decryptedTokens = await AESEncrypted(
+        data: base64Decode(splitted[0]),
+        salt: base64Decode(splitted[1]),
+        iv: base64Decode(splitted[2]),
+      ).decrypt(password);
     } catch (e) {
       Logger.warning('Failed to decrypt 2FAS import file', error: e, name: 'two_fas_import_file_processor.dart#processEncryptedFile');
       throw WrongDecryptionPasswordException('Wrong decryption password');

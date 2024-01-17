@@ -37,7 +37,7 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   flutter_slidable: ^3.0.0
   package_info_plus: ^5.0.1
-  asn1lib: ^1.0.3
+  asn1lib: ^1.5.0
   flutter_markdown: ^0.6.8
   url_launcher: ^6.0.12
   uuid: ^4.0.0
