@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/processors/token_import_processor/aegis_import_file_processor.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/token_import_source.dart';
@@ -36,10 +37,10 @@ class ImportTokensView extends ConsumerStatefulWidget {
       processor: null,
     ),
     TokenImportSource(
-      appName: 'OTP Auth',
-      importHint: (context) => '', //  AppLocalizations.of(context)!.importHintOTPAuth,
-      iconPath: '${_importSourceIconFolder}otp_auth.png',
-      processor: null,
+      appName: 'Aegis Authenticator',
+      importHint: (context) => '', //  AppLocalizations.of(context)!.importHintAegisAuthenticator,
+      iconPath: '${_importSourceIconFolder}aegis_authenticator.png',
+      processor: AegisImportFileProcessor(),
     ),
     TokenImportSource(
       appName: '2FAS Authenticator',
