@@ -1,7 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:file_selector/file_selector.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
 
@@ -23,9 +22,26 @@ class AegisImportFileProcessor extends TokenFileImportProcessor {
   static const String AEGIS_COUNTER = 'counter';
   static const String AEGIS_PIN = 'pin';
 
-  bool _isValidPlain(Map<String, dynamic> json) => json['db'] != null && json['db']['entries'] != null && json['db']['entries'].length > 0;
-  bool _isValidEncrypted(Map<String, dynamic> json) =>
-      json['header'] != null && json['header']['slots'] != null && json['header']['slots'] > 0 && json['db'] != null;
+  bool _isValidPlain(Map<String, dynamic> json) {
+    try {
+      return json['db'] != null && json['db'] is Map<String, dynamic> && json['db']['entries'] != null && json['db']['entries'].length > 0;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  bool _isValidEncrypted(Map<String, dynamic> json) {
+    try {
+      return json['header'] != null &&
+          json['header']['slots'] != null &&
+          (json['header']['slots'] as List).isNotEmpty &&
+          json['db'] != null &&
+          (json['db'] is String);
+    } catch (e) {
+      return false;
+    }
+  }
+
   @override
   Future<bool> fileIsValid({required XFile file}) async {
     final Map<String, dynamic> json;
@@ -93,9 +109,9 @@ class AegisImportFileProcessor extends TokenFileImportProcessor {
 
   List<Token> _processEncrypted(Map<String, dynamic> json, String? password) {
     final List<Token> tokens = [];
-    final String db = json['db'];
-    final String header = json['header'];
-    return [];
+    final String dbEncrypted = json['db'];
+    final Map<String, dynamic> header = json['header'];
+    return tokens;
   }
 
   final examplePlain = [
