@@ -223,12 +223,12 @@ class PushProvider {
 
   Future<void> pollForChallenges({required bool isManually}) async {
     // Get all push tokens
-    await globalRef?.read(tokenProvider.notifier).isLoading;
+    await globalRef?.read(tokenProvider.notifier).loadingRepo;
     List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
 
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
-      await globalRef?.read(settingsProvider.notifier).isLoading;
+      await globalRef?.read(settingsProvider.notifier).loadingRepo;
       if (globalRef?.read(settingsProvider).enablePolling == true) {
         Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
         globalRef?.read(settingsProvider.notifier).setPolling(false);

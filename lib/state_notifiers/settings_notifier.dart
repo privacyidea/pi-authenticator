@@ -27,6 +27,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       PushProvider(pollingEnabled: state.enablePolling);
       state = newState;
       Logger.info('Loading settings from repo: $newState', name: 'settings_notifier.dart#_loadFromRepo');
+      return newState;
     });
   }
 

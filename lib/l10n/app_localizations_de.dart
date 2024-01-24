@@ -497,4 +497,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';
+
+  @override
+  String legacySigningErrorTitle(Object tokenLabel) {
+    return 'Bei der Verwendung des veralteten Tokens ist ein Fehler aufgetreten: $tokenLabel';
+  }
+
+  @override
+  String get legacySigningErrorMessage => 'Der Token wurde in einer veralteten Version der App erstellt, was zu Problemen bei der Verwendung führen kann. Es wird empfohlen, einen neuen Push-Token zu erstellen, wenn das Problem weiterhin besteht!';
 }

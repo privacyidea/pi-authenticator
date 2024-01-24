@@ -14,7 +14,6 @@ import '../model/states/token_filter.dart';
 import '../model/states/token_folder_state.dart';
 import '../model/states/token_state.dart';
 import '../repo/preference_introduction_repository.dart';
-import '../model/tokens/push_token.dart';
 import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_folder_repository.dart';
 import '../state_notifiers/deeplink_notifier.dart';

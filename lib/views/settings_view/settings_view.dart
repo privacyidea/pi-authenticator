@@ -69,14 +69,14 @@ class SettingsView extends ConsumerWidget {
                         overflow: TextOverflow.fade,
                         softWrap: false,
                       ),
-                    ),
-                    subtitle: Text(
-                      AppLocalizations.of(context)!.requestPushChallengesPeriodically,
-                      overflow: TextOverflow.fade,
-                    ),
-                    trailing: Switch(
-                      value: ref.watch(settingsProvider).enablePolling,
-                      onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
+                      subtitle: Text(
+                        AppLocalizations.of(context)!.requestPushChallengesPeriodically,
+                        overflow: TextOverflow.fade,
+                      ),
+                      trailing: Switch(
+                        value: ref.watch(settingsProvider).enablePolling,
+                        onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
+                      ),
                     ),
                   ),
                   if (ref.watch(tokenProvider).hasHOTPTokens)
