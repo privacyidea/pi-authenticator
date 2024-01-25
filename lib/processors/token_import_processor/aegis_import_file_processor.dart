@@ -1,7 +1,12 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
+import 'dart:isolate';
+import 'dart:typed_data';
+import 'package:cryptography/cryptography.dart' as crypto;
+import 'package:encrypt/encrypt.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
 
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
@@ -10,6 +15,22 @@ import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../utils/crypto_utils.dart';
 import 'token_file_import_processor_interface.dart';
+import 'two_fas_file_import_processor.dart';
+
+/// Args: [SendPort] sendPort, [ScryptParameters] scryptParameters, [String] password
+void _isolatedKdf(List args) {
+  final SendPort sendPort = args[0] as SendPort;
+  final scryptParameters = args[1] as ScryptParameters;
+  final String? password = args[2] as String?;
+
+  final kdf = Scrypt();
+  kdf.init(scryptParameters);
+  final Uint8List inp = Uint8List.fromList(utf8.encode(password!));
+  final Uint8List keyBytes = Uint8List(32);
+  kdf.deriveKey(inp, 0, keyBytes, 0);
+
+  sendPort.send(keyBytes);
+}
 
 class AegisImportFileProcessor extends TokenFileImportProcessor {
   static const String AEGIS_TYPE = 'type';
@@ -69,7 +90,12 @@ class AegisImportFileProcessor extends TokenFileImportProcessor {
   @override
   Future<List<Token>> process({required XFile file, String? password}) async {
     final String fileContent = await file.readAsString();
-    final json = jsonDecode(fileContent) as Map<String, dynamic>;
+    final Map<String, dynamic> json;
+    try {
+      json = jsonDecode(fileContent) as Map<String, dynamic>;
+    } catch (e) {
+      throw InvalidFileContentException('No valid Aegis import file');
+    }
     if (_isValidPlain(json)) {
       return _processPlain(json);
     } else if (_isValidEncrypted(json)) {
@@ -85,75 +111,80 @@ class AegisImportFileProcessor extends TokenFileImportProcessor {
       throw Exception('Unsupported backup version: ${json['db']['version']}.');
     }
     for (Map<String, dynamic> entry in json['db']['entries']) {
-      if (entry['type'] != 'totp' && entry['type'] != 'hotp') {
-        // TODO: support other token types
-        Logger.warning('Unsupported token type: ${entry['type']}', name: '_processPlain#OtpAuthImportFileProcessor');
-        continue;
+      try {
+        if (entry['type'] != 'totp' && entry['type'] != 'hotp') {
+          // TODO: support other token types
+          Logger.warning('Unsupported token type: ${entry['type']}', name: '_processPlain#OtpAuthImportFileProcessor');
+          continue;
+        }
+        Map<String, dynamic> info = entry['info'];
+        final entryUriMap = {
+          URI_TYPE: entry[AEGIS_TYPE],
+          URI_LABEL: entry[AEGIS_LABEL],
+          URI_ISSUER: entry[AEGIS_ISSUER],
+          URI_SECRET: decodeSecretToUint8(info[AEGIS_SECRET] as String, Encodings.none),
+          URI_ALGORITHM: info[AEGIS_ALGORITHM],
+          URI_DIGITS: info[AEGIS_DIGITS],
+          URI_PERIOD: info[AEGIS_PERIOD],
+          URI_COUNTER: info[AEGIS_COUNTER],
+          URI_PIN: info[AEGIS_PIN],
+        };
+        tokens.add(Token.fromUriMap(entryUriMap));
+      } catch (e) {
+        Logger.warning('Failed to parse token.', name: '_processPlain#OtpAuthImportFileProcessor');
       }
-      Map<String, dynamic> info = entry['info'];
-      final entryUriMap = {
-        URI_TYPE: entry[AEGIS_TYPE],
-        URI_LABEL: entry[AEGIS_LABEL],
-        URI_ISSUER: entry[AEGIS_ISSUER],
-        URI_SECRET: decodeSecretToUint8(info[AEGIS_SECRET] as String, Encodings.none),
-        URI_ALGORITHM: info[AEGIS_ALGORITHM],
-        URI_DIGITS: info[AEGIS_DIGITS],
-        URI_PERIOD: info[AEGIS_PERIOD],
-        URI_COUNTER: info[AEGIS_COUNTER],
-        URI_PIN: info[AEGIS_PIN],
-      };
-      tokens.add(Token.fromUriMap(entryUriMap));
     }
     return tokens;
   }
 
-  List<Token> _processEncrypted(Map<String, dynamic> json, String? password) {
-    final List<Token> tokens = [];
+  Future<Uint8List> runIsolatedKdf(ScryptParameters scryptParameters, String password) async {
+    final receivePort = ReceivePort();
+    try {
+      Isolate.spawn(_isolatedKdf, [receivePort.sendPort, scryptParameters, password]);
+    } catch (e) {
+      receivePort.close();
+    }
+    final Uint8List keyBytes = await receivePort.first;
+    return keyBytes;
+  }
+
+  Future<List<Token>> _processEncrypted(Map<String, dynamic> json, String? password) async {
     final String dbEncrypted = json['db'];
     final Map<String, dynamic> header = json['header'];
-    return tokens;
-  }
+    final Map<String, dynamic> dbParams = header['params'];
+    final Map<String, dynamic> key = header['slots'].first;
+    final Map<String, dynamic> keyParams = key['key_params'];
 
-  final examplePlain = [
-    {
-      "type": "totp",
-      "uuid": "ec530668-b9b6-4a87-bcad-e9872a71f844",
-      "name": "ybyb",
-      "issuer": "ynynsn",
-      "note": "dhdn",
-      "favorite": false,
-      "icon": null,
-      "info": {"secret": "AJSVANABSA", "algo": "SHA1", "digits": 6, "period": 30}
-    },
-    {
-      "type": "hotp",
-      "uuid": "2943a67b-0a1d-4d7b-b369-cb08b7a33852",
-      "name": "sbsbb",
-      "issuer": "",
-      "note": "",
-      "favorite": false,
-      "icon": null,
-      "info": {"secret": "BAJJG", "algo": "SHA1", "digits": 6, "counter": 0}
-    },
-    {
-      "type": "steam",
-      "uuid": "6b1003c9-1751-4c9e-8902-360f9ab72319",
-      "name": "Steam",
-      "issuer": "bynyn",
-      "note": "y\n",
-      "favorite": false,
-      "icon": null,
-      "info": {"secret": "YNYMYMYN", "algo": "SHA1", "digits": 5, "period": 30}
-    },
-    {
-      "type": "motp",
-      "uuid": "021c5fdd-fbe9-44ab-b685-ab8b27368a65",
-      "name": "motp",
-      "issuer": "",
-      "note": "",
-      "favorite": false,
-      "icon": null,
-      "info": {"secret": "VKVKVKVKVKVKVKVKVKVKVKVKVI", "algo": "MD5", "digits": 6, "period": 10, "pin": "1234"}
+    final passwordKeyBytes = await runIsolatedKdf(
+      ScryptParameters(key['n'], key['r'], key['p'], 32, decodeHexString(key['salt'])),
+      password!,
+    );
+    final slotNonceBytes = decodeHexString(keyParams['nonce']);
+    final cipher = crypto.AesGcm.with256bits(nonceLength: slotNonceBytes.length);
+    final List<int> masterKeyBytes;
+
+    try {
+      masterKeyBytes = await cipher.decrypt(
+        crypto.SecretBox(
+          decodeHexString(key['key']),
+          nonce: slotNonceBytes,
+          mac: crypto.Mac(decodeHexString(keyParams['tag'])),
+        ),
+        secretKey: crypto.SecretKey(passwordKeyBytes),
+      );
+    } catch (e) {
+      throw BadDecryptionPasswordException('Wrong password or corrupted data');
     }
-  ];
+    final dbDecryptedBytes = await cipher.decrypt(
+      crypto.SecretBox(
+        base64Decode(dbEncrypted),
+        nonce: decodeHexString(dbParams['nonce']),
+        mac: crypto.Mac(decodeHexString(dbParams['tag'])),
+      ),
+      secretKey: crypto.SecretKey(masterKeyBytes),
+    );
+    final dbDecrypted = utf8.decode(dbDecryptedBytes);
+    final dbJson = jsonDecode(dbDecrypted) as Map<String, dynamic>;
+    return _processPlain({'db': dbJson});
+  }
 }

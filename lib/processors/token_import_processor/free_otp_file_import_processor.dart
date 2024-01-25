@@ -7,7 +7,6 @@ import 'package:encrypt/encrypt.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/services.dart';
 import 'package:privacyidea_authenticator/processors/token_import_processor/token_file_import_processor_interface.dart';
-import 'package:privacyidea_authenticator/processors/token_import_processor/two_fas_file_import_processor.dart';
 
 import '../../model/encryption/aes_encrypted.dart';
 import '../../model/tokens/token.dart';
@@ -103,8 +102,12 @@ final masterKey = {
   "mSalt": [74, 64, 37, -90, -37, 3, -94, 65, -11, 8, 77, 12, 65, -98, 89, 50, 9, 70, -113, 109, -97, 113, 4, 106, -23, 97, 80, 67, -32, 103, -39, -102]
 };
 final _35902690_b031_41c3_bdc7_ca7edeb3b4e7 = {
-  "key":
-      "{\"mCipher\":\"AES\/GCM\/NoPadding\",\"mCipherText\":[18,-100,-77,-120,-37,-128,31,-98,-23,62,31,103,2,72,-14,58,-120],\"mParameters\":[48,17,4,12,-90,-88,21,4,-108,51,-122,-109,9,-59,45,-99,2,1,16],\"mToken\":\"HmacSHA256\"}"
+  "key": {
+    "mCipher": "AES\/GCM\/NoPadding",
+    "mCipherText": [18, -100, -77, -120, -37, -128, 31, -98, -23, 62, 31, 103, 2, 72, -14, 58, -120],
+    "mParameters": [48, 17, 4, 12, -90, -88, 21, 4, -108, 51, -122, -109, 9, -59, 45, -99, 2, 1, 16],
+    "mToken": "HmacSHA256",
+  }
 };
 final _35902690_b031_41c3_bdc7_ca7edeb3b4e7_token = {
   "algo": "SHA256",
@@ -116,12 +119,57 @@ final _35902690_b031_41c3_bdc7_ca7edeb3b4e7_token = {
   "type": "HOTP"
 };
 final _2134ec38_1d21_4754_9c4a_d359d5fc9e6c = {
-  "key":
-      "{\"mCipher\":\"AES\/GCM\/NoPadding\",\"mCipherText\":[-61,92,108,-81,-5,-2,1,-92,111,45,-13,50,118,92,101,-82,-51,-4,68,-107,-68,-108,79,83,-64,49,69,-109,-16,-11,93,-33,-10,72,-113,40],\"mParameters\":[48,17,4,12,-22,33,-123,-102,4,-26,97,40,-61,-52,-50,-54,2,1,16],\"mToken\":\"HmacSHA1\"}"
+  "key": {
+    "mCipher": "AES\/GCM\/NoPadding",
+    "mCipherText": [
+      -61,
+      92,
+      108,
+      -81,
+      -5,
+      -2,
+      1,
+      -92,
+      111,
+      45,
+      -13,
+      50,
+      118,
+      92,
+      101,
+      -82,
+      -51,
+      -4,
+      68,
+      -107,
+      -68,
+      -108,
+      79,
+      83,
+      -64,
+      49,
+      69,
+      -109,
+      -16,
+      -11,
+      93,
+      -33,
+      -10,
+      72,
+      -113,
+      40
+    ],
+    "mParameters": [48, 17, 4, 12, -22, 33, -123, -102, 4, -26, 97, 40, -61, -52, -50, -54, 2, 1, 16],
+    "mToken": "HmacSHA1",
+  }
 };
 final _5d9f2634_c65e_4e79_9469_346f3f247d1f = {
-  "key":
-      "{\"mCipher\":\"AES\/GCM\/NoPadding\",\"mCipherText\":[-33,-52,-73,76,-29,-27,-75,79,42,24,-36,-12,-15,83,-40,-84,-25,-44,55],\"mParameters\":[48,17,4,12,-108,-91,-124,27,41,-1,-53,-96,14,74,-16,-117,2,1,16],\"mToken\":\"HmacSHA512\"}"
+  "key": {
+    "mCipher": "AES\/GCM\/NoPadding",
+    "mCipherText": [-33, -52, -73, 76, -29, -27, -75, 79, 42, 24, -36, -12, -15, 83, -40, -84, -25, -44, 55],
+    "mParameters": [48, 17, 4, 12, -108, -91, -124, 27, 41, -1, -53, -96, 14, 74, -16, -117, 2, 1, 16],
+    "mToken": "HmacSHA512",
+  }
 };
 final _5d9f2634_c65e_4e79_9469_346f3f247d1f_token = {
   "algo": "SHA512",

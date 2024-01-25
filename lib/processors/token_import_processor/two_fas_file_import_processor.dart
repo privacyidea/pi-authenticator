@@ -79,7 +79,7 @@ class TwoFasFileImportProcessor extends TokenFileImportProcessor {
       ).decrypt(password);
     } catch (e) {
       Logger.warning('Failed to decrypt 2FAS import file', error: e, name: 'two_fas_import_file_processor.dart#processEncryptedFile');
-      throw WrongDecryptionPasswordException('Wrong decryption password');
+      throw BadDecryptionPasswordException('Wrong decryption password');
     }
     try {
       decryptedTokensJsonList = jsonDecode(decryptedTokens);
@@ -102,7 +102,7 @@ class TwoFasFileImportProcessor extends TokenFileImportProcessor {
         throw InvalidFileContentException('No valid 2FAS import file');
       } else {
         Logger.warning('2FAS import file is encrypted', name: 'two_fas_import_file_processor.dart#processPlainFile');
-        throw WrongDecryptionPasswordException('2FAS import file is encrypted');
+        throw BadDecryptionPasswordException('2FAS import file is encrypted');
       }
     }
     Logger.info('2FAS import file contains ${tokensJsonList.length} tokens', name: 'two_fas_import_file_processor.dart#processPlainFile');
@@ -136,12 +136,12 @@ class TwoFasFileImportProcessor extends TokenFileImportProcessor {
   }
 }
 
-class WrongDecryptionPasswordException implements Exception {
+class BadDecryptionPasswordException implements Exception {
   final String message;
-  WrongDecryptionPasswordException(this.message);
+  BadDecryptionPasswordException(this.message);
   @override
   String toString() {
-    return 'WrongDecryptionPasswordException: $message';
+    return 'BadDecryptionPasswordException: $message';
   }
 }
 

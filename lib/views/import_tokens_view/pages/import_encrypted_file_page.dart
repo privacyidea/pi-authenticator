@@ -105,6 +105,7 @@ class _ImportEncryptedFilePageState extends State<ImportEncryptedFilePage> {
   final TextEditingController passwordController = TextEditingController();
   bool isPasswordVisible = false;
   bool wrongPassword = false;
+  Future<void>? future;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -169,26 +170,41 @@ class _ImportEncryptedFilePageState extends State<ImportEncryptedFilePage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: passwordController.text.isEmpty || wrongPassword
-                        ? null
-                        : () async {
-                            try {
-                              final tokens = await widget.importFunction(password: passwordController.text);
-                              _pushAsync(MaterialPageRoute(
-                                builder: (context) => ImportDecryptedFilePage(
-                                  importFunction: ({String? password}) => Future.value(tokens),
-                                  appName: widget.appName,
-                                ),
-                              ));
-                            } on WrongDecryptionPasswordException catch (_) {
-                              setState(() {
-                                wrongPassword = true;
-                              });
-                            }
-                          },
-                    child: Text(AppLocalizations.of(context)!.decrypt),
-                  ),
+                  future != null
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                          onPressed: passwordController.text.isEmpty || wrongPassword
+                              ? null
+                              : () async {
+                                  setState(() {
+                                    future = Future<void>(
+                                      () async {
+                                        // Future.delayed(const Duration(seconds: 1)).then((value) => null);
+                                        List<Token> tokens;
+                                        try {
+                                          tokens = await widget.importFunction(password: passwordController.text);
+                                        } on BadDecryptionPasswordException catch (_) {
+                                          setState(() {
+                                            wrongPassword = true;
+                                            future = null;
+                                          });
+                                          return;
+                                        }
+                                        setState(() {
+                                          future = null;
+                                        });
+                                        _pushAsync(MaterialPageRoute(
+                                          builder: (context) => ImportDecryptedFilePage(
+                                            importFunction: ({String? password}) => Future(() => tokens),
+                                            appName: widget.appName,
+                                          ),
+                                        ));
+                                      },
+                                    );
+                                  });
+                                },
+                          child: Text(AppLocalizations.of(context)!.decrypt),
+                        ),
                 ],
               ),
             ),
