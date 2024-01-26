@@ -16,6 +16,8 @@ class TokenWidgetTile extends ConsumerWidget {
   final bool tokenIsLocked;
   final String? tokenImage;
 
+  final bool isPreview;
+
   const TokenWidgetTile({
     this.leading,
     this.title,
@@ -24,16 +26,21 @@ class TokenWidgetTile extends ConsumerWidget {
     this.onTap,
     this.tokenIsLocked = false,
     this.tokenImage,
+    this.isPreview = false,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-        horizontalTitleGap: 8.0,
+        horizontalTitleGap: isPreview ? 0 : 8,
         leading: (leading != null) ? leading! : null,
         onTap: onTap,
-        title: title,
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.topLeft,
+          child: title,
+        ),
         subtitle: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -59,8 +66,17 @@ class TokenWidgetTile extends ConsumerWidget {
             ),
           ],
         ),
-        trailing: CustomTrailing(
-          child: trailing ?? const SizedBox(),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Flexible(
+              child: CustomTrailing(
+                maxPercentWidth: isPreview ? 20 : null,
+                child: trailing ?? const SizedBox(),
+              ),
+            ),
+          ],
         ),
       );
 }

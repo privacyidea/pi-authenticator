@@ -5,7 +5,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 
-import '../utils/text_size.dart';
+import '../utils/utils.dart';
 import 'pulse_icon.dart';
 import 'tooltip_box.dart';
 

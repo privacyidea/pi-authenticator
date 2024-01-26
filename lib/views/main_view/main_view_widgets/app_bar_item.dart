@@ -10,7 +10,7 @@ class AppBarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       padding: const EdgeInsets.all(0),
-      splashRadius: 0.1,
+      splashRadius: 20,
       onPressed: onPressed,
       color: Theme.of(context).navigationBarTheme.iconTheme?.resolve({})?.color,
       icon: SizedBox(

@@ -4,7 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/app_customizer.dart';
-import '../../../../../utils/customizations.dart';
+import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../widgets/default_dialog.dart';
@@ -21,7 +21,7 @@ class DefaultDeleteAction extends TokenAction {
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (_) async {
-        if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)?.deleteLockedToken ?? '') == false) {
+        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)?.deleteLockedToken ?? '') == false) {
           return;
         }
         _showDialog();

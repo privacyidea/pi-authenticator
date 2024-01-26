@@ -487,5 +487,28 @@
   "legacySigningErrorMessage": "Het token is aangemaakt in een verouderde versie van de app, wat kan leiden tot problemen bij het gebruik ervan.\nHet wordt aanbevolen om een nieuw push token aan te maken als het probleem zich blijft voordoen!",
   "@legacySigningErrorMessage": {
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
-  }
+  },
+  "selectImportSource": "Selecteer importbron",
+  "importTokens": "Token importeren",
+  "selectFile": "Selecteer bestand",
+  "decrypt": "Decoderen",
+  "fileNoValidBackupFor": "Het geselecteerde bestand is geen geldige back-up voor {name}.",
+  "@fileNoValidBackupFor": {
+    "description": "Bericht dat de gebruiker vertelt dat het geselecteerde bestand geen geldige back-up is voor het token.",
+    "placeholders": {
+      "naam": {
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "fileIsEncrypted": "Het geselecteerde bestand is gecodeerd. Voer het wachtwoord in om het te decoderen",
+  "fileNotEncrypted": "Het geselecteerde bestand is niet gecodeerd. Het kan direct worden geïmporteerd",
+  "fileSuccessfullyDecrypted": "De tokens zijn succesvol gedecodeerd en kunnen nu worden geïmporteerd.",
+  "password": "Wachtwoord",
+  "wrongPassword": "Onjuist wachtwoord",
+  "importExistingToken": "{count, plural, zero{Het bestand bevat geen token dat al in de toepassing is.} one{Het bestand bevat een token dat al in de toepassing is.} other{Het bestand bevat {count} tokens die al in de toepassing zijn.}}",
+  "importConflictToken": "{count, plural, zero{Er is geen conflict met tokens die al bestaan.} one{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.} other{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.}}",
+  "importNewToken": "{count, plural, zero{Het bestand bevat geen nieuw token.} one{Het bestand bevat een nieuw token dat zal worden geïmporteerd.} other{Het bestand bevat {count} nieuwe tokens die zullen worden geïmporteerd.}}",
+  "importHint2FAS": "Selecteer uw 2FAS-back-up. Als je geen back-up hebt, maak er dan een aan in de 2FAS-app.\nWe raden aan een wachtwoord te gebruiken.",
+  "importHint2FASButton": "Selecteer 2FAS Backup"
 }

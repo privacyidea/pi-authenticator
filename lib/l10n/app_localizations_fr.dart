@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 /// The translations for French (`fr`).
@@ -105,7 +107,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get enablePolling => 'Activer l\'interrogation du serveur.';
 
   @override
-  String get requestPushChallengesPeriodically => 'Demander des challenges push depuis le serveur périodiquement. Activer cette fonction si les challenges push ne sont pas reçus normalement.';
+  String get requestPushChallengesPeriodically =>
+      'Demander des challenges push depuis le serveur périodiquement. Activer cette fonction si les challenges push ne sont pas reçus normalement.';
 
   @override
   String get synchronizePushTokens => 'Synchoniser les jetons Push';
@@ -223,7 +226,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get goToSettingsButton => 'Aller aux paramètres';
 
   @override
-  String get goToSettingsDescription => 'L\'authentification par identifiants ou biométrie n\'est pas configurée sur votre appareil. Veuillez le configurer dans les paramètres de l\'appareil.';
+  String get goToSettingsDescription =>
+      'L\'authentification par identifiants ou biométrie n\'est pas configurée sur votre appareil. Veuillez le configurer dans les paramètres de l\'appareil.';
 
   @override
   String get lockOut => 'L\'authentification biométrique est désactivée. Veuillez verrouiller et déverrouiller votre écran pour l\'activer.';
@@ -285,7 +289,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sendErrorLog => 'Envoyer';
 
   @override
-  String get sendErrorLogDescription => 'Un e-mail pré-rempli est créé.\nIl contient des informations sur l\'application, l\'erreur et le périphérique.\nVous pouvez modifier l\'e-mail avant de l\'envoyer.\nVous pouvez voir ici comment nous utilisons les informations:';
+  String get sendErrorLogDescription =>
+      'Un e-mail pré-rempli est créé.\nIl contient des informations sur l\'application, l\'erreur et le périphérique.\nVous pouvez modifier l\'e-mail avant de l\'envoyer.\nVous pouvez voir ici comment nous utilisons les informations:';
 
   @override
   String get showPrivacyPolicy => 'Afficher la déclaration de confidentialité';
@@ -312,7 +317,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get open => 'Ouvrir';
 
   @override
-  String get sendErrorDialogBody => 'Une erreur inattendue est survenue dans l\'application. L\'information suivante peut être transmise aux développeurs par email afin d\'aider à corriger cette erreur dans le futur.';
+  String get sendErrorDialogBody =>
+      'Une erreur inattendue est survenue dans l\'application. L\'information suivante peut être transmise aux développeurs par email afin d\'aider à corriger cette erreur dans le futur.';
 
   @override
   String get noFbToken => 'Pas de jeton Firebase';
@@ -433,7 +439,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Veuillez accorder à la caméra l\'autorisation de scanner les codes QR';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied => 'L\'autorisation de l\'appareil photo est refusée de manière permanente. Veuillez accorder l\'autorisation à l\'appareil photo dans les paramètres de votre téléphone.';
+  String get grantCameraPermissionDialogPermanentlyDenied =>
+      'L\'autorisation de l\'appareil photo est refusée de manière permanente. Veuillez accorder l\'autorisation à l\'appareil photo dans les paramètres de votre téléphone.';
 
   @override
   String get grantCameraPermissionDialogButton => 'Accorder l\'autorisation';
@@ -442,7 +449,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get decryptErrorTitle => 'Erreur de décryptage';
 
   @override
-  String get decryptErrorContent => 'Malheureusement, l\'application n\'a pas pu décrypter vos jetons. Cela indique que la clé de cryptage est cassée. Vous pouvez réessayer ou supprimer les données de l\'application, ce qui supprimera les jetons dans l\'application.';
+  String get decryptErrorContent =>
+      'Malheureusement, l\'application n\'a pas pu décrypter vos jetons. Cela indique que la clé de cryptage est cassée. Vous pouvez réessayer ou supprimer les données de l\'application, ce qui supprimera les jetons dans l\'application.';
 
   @override
   String get decryptErrorButtonDelete => 'Supprimer';
@@ -460,7 +468,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get hidePushTokens => 'Hide push tokens';
 
   @override
-  String get hidePushTokensDescription => 'Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé';
+  String get hidePushTokensDescription =>
+      'Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé';
 
   @override
   String get settingsGroupGeneral => 'Généralités';
@@ -472,7 +481,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get privacyPolicy => 'Politique de confidentialité';
 
   @override
-  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+  String get introScanQrCode =>
+      'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
 
   @override
   String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
@@ -504,5 +514,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get legacySigningErrorMessage => 'Le token a été créé dans une version obsolète de l\'application, ce qui peut entraîner des problèmes d\'utilisation.\nIl est recommandé de créer un nouveau token push si le problème persiste !';
+  String get legacySigningErrorMessage =>
+      'Le token a été créé dans une version obsolète de l\'application, ce qui peut entraîner des problèmes d\'utilisation.\nIl est recommandé de créer un nouveau token push si le problème persiste !';
 }

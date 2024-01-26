@@ -143,7 +143,7 @@ class SecureTokenRepository implements TokenRepository {
       tokenList.add(Token.fromJson(serializedToken));
     }
 
-    Logger.info('Loaded ${tokenList.length} tokens from secure storage');
+    //Logger.info('Loaded ${tokenList.length} tokens from secure storage');
     return tokenList;
   }
 

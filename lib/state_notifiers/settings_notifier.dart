@@ -1,11 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/push_provider.dart';
 
 import '../interfaces/repo/settings_repository.dart';
 import '../model/states/settings_state.dart';
 import '../utils/logger.dart';
+import '../utils/push_provider.dart';
 
 /// This class provies access to the device specific settings.
 /// It also ensures that the settings are saved to the device.
@@ -26,6 +26,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final newState = await _repo.loadSettings();
       PushProvider(pollingEnabled: state.enablePolling);
       state = newState;
+      PushProvider(pollingEnabled: state.enablePolling);
       Logger.info('Loading settings from repo: $newState', name: 'settings_notifier.dart#_loadFromRepo');
       return newState;
     });

@@ -8,8 +8,10 @@ import '../../utils/identifiers.dart';
 import '../../utils/rsa_utils.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
+import '../extensions/enum_extension.dart';
 import '../push_request.dart';
 import '../push_request_queue.dart';
+import '../token_origin.dart';
 import 'token.dart';
 
 part 'push_token.g.dart';
@@ -19,6 +21,9 @@ class PushToken extends Token {
   static RsaUtils rsaParser = const RsaUtils();
   final DateTime? expirationDate;
   final String serial;
+
+  @override
+  Duration get showDuration => Duration.zero;
 
   // Roll out
   final bool sslVerify;
@@ -81,14 +86,31 @@ class PushToken extends Token {
     super.sortIndex,
     super.tokenImage,
     super.folderId,
-    super.isLocked,
     super.pin,
+    super.isLocked,
+    super.isHidden,
+    super.origin,
   })  : isRolledOut = isRolledOut ?? false,
         sslVerify = sslVerify ?? false,
         rolloutState = rolloutState ?? PushTokenRollOutState.rolloutNotStarted,
         knownPushRequests = knownPushRequests ?? CustomIntBuffer(),
         pushRequests = pushRequests ?? PushRequestQueue(),
         super(type: TokenTypes.PIPUSH.asString);
+
+  @override
+  bool sameValuesAs(Token other) {
+    return super.sameValuesAs(other) &&
+        other is PushToken &&
+        other.serial == serial &&
+        other.expirationDate == expirationDate &&
+        other.sslVerify == sslVerify &&
+        other.enrollmentCredentials == enrollmentCredentials &&
+        other.url == url &&
+        other.isRolledOut == isRolledOut &&
+        other.publicServerKey == publicServerKey &&
+        other.publicTokenKey == publicTokenKey &&
+        other.privateTokenKey == privateTokenKey;
+  }
 
   @override
   PushToken copyWith({
@@ -98,10 +120,9 @@ class PushToken extends Token {
     String? id,
     String? tokenImage,
     PushRequestQueue? pushRequests,
-    bool? isLocked,
-    bool? canToggleLock,
-    bool? relock,
     bool? pin,
+    bool? isLocked,
+    bool? isHidden,
     bool? sslVerify,
     String? enrollmentCredentials,
     Uri? url,
@@ -114,6 +135,7 @@ class PushToken extends Token {
     PushTokenRollOutState? rolloutState,
     CustomIntBuffer? knownPushRequests,
     int? Function()? folderId,
+    TokenOrigin? origin,
   }) {
     return PushToken(
       label: label ?? this.label,
@@ -122,8 +144,9 @@ class PushToken extends Token {
       tokenImage: tokenImage ?? this.tokenImage,
       id: id ?? this.id,
       pushRequests: pushRequests ?? this.pushRequests,
-      isLocked: isLocked ?? this.isLocked,
       pin: pin ?? this.pin,
+      isLocked: isLocked ?? this.isLocked,
+      isHidden: isHidden ?? this.isHidden,
       sslVerify: sslVerify ?? this.sslVerify,
       enrollmentCredentials: enrollmentCredentials ?? this.enrollmentCredentials,
       url: url ?? this.url,
@@ -136,6 +159,7 @@ class PushToken extends Token {
       rolloutState: rolloutState ?? this.rolloutState,
       knownPushRequests: knownPushRequests ?? this.knownPushRequests,
       folderId: folderId != null ? folderId() : this.folderId,
+      origin: origin ?? this.origin,
     );
   }
 
@@ -176,6 +200,7 @@ class PushToken extends Token {
         tokenImage: uriMap[URI_IMAGE],
         pin: uriMap[URI_PIN],
         isLocked: uriMap[URI_PIN],
+        origin: uriMap[URI_ORIGIN],
       );
     } catch (e) {
       throw ArgumentError('Invalid URI: $e');
@@ -193,7 +218,7 @@ class PushToken extends Token {
       PushTokenRollOutState.parsingResponse || PushTokenRollOutState.parsingResponseFailed => PushTokenRollOutState.parsingResponseFailed,
       PushTokenRollOutState.rolloutComplete => PushTokenRollOutState.rolloutComplete,
     };
-    return newToken.copyWith(rolloutState: currentRolloutState);
+    return newToken.copyWith(rolloutState: currentRolloutState, isHidden: true);
   }
 
   Map<String, dynamic> toJson() => _$PushTokenToJson(this);

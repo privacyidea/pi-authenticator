@@ -8,6 +8,7 @@ import '../../model/enums/introduction.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/dot_indicator.dart';
 import '../main_view/main_view.dart';
+import '../view_interface.dart';
 import 'onboading_view_widgets/onboarding_page.dart';
 
 class LottieFiles {
@@ -28,8 +29,11 @@ List<LottieFiles> lottieFiles = [
   ),
 ];
 
-class OnboardingView extends ConsumerStatefulWidget {
+class OnboardingView extends ConsumerStatefulView {
   static const String routeName = '/onboarding';
+  @override
+  RouteSettings get routeSettings => const RouteSettings(name: routeName);
+
   final String appName;
 
   const OnboardingView({required this.appName, super.key});

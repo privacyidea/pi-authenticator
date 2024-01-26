@@ -7,7 +7,7 @@ import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
 import '../../../../../../model/tokens/day_password_token.dart';
 import '../../../../../../utils/app_customizer.dart';
-import '../../../../../../utils/customizations.dart';
+import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
 import '../../../../../../utils/utils.dart';
@@ -28,7 +28,7 @@ class EditDayPassowrdTokenAction extends TokenAction {
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
-        if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
+        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
           return;
         }
         _showDialog();

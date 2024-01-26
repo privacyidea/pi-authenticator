@@ -22,8 +22,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:privacyidea_authenticator/model/extensions/enum_extension.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../model/enums/algorithms.dart';
@@ -107,4 +109,10 @@ String? getErrorMessageFromResponse(Response response) {
     errorMessage = null;
   }
   return errorMessage;
+}
+
+Size textSizeOf(String text, TextStyle style, {int? maxLines = 1, double minWidth = 0, double maxWidth = double.infinity}) {
+  final TextPainter textPainter = TextPainter(text: TextSpan(text: text, style: style), maxLines: maxLines, textDirection: TextDirection.ltr)
+    ..layout(minWidth: minWidth, maxWidth: maxWidth);
+  return textPainter.size;
 }

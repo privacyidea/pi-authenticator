@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../../../model/enums/push_token_rollout_state.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../model/enums/push_token_rollout_state.dart';
 import '../../../../../model/tokens/push_token.dart';
-import '../../../../../utils/customizations.dart';
+import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../widgets/default_dialog.dart';
 import '../../../../../widgets/press_button.dart';

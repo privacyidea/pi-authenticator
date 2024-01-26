@@ -1,4 +1,5 @@
 import '../enums/algorithms.dart';
+import '../token_origin.dart';
 import 'token.dart';
 
 abstract class OTPToken extends Token {
@@ -19,8 +20,15 @@ abstract class OTPToken extends Token {
     super.tokenImage,
     super.sortIndex,
     super.isLocked,
+    super.isHidden,
     super.folderId,
+    super.origin,
   });
+
+  @override
+  bool sameValuesAs(Token other) {
+    return super.sameValuesAs(other) && other is OTPToken && other.algorithm == algorithm && other.digits == digits && other.secret == secret;
+  }
 
   @override
   OTPToken copyWith({
@@ -31,10 +39,12 @@ abstract class OTPToken extends Token {
     int? digits,
     String? secret,
     bool? pin,
+    bool? isLocked,
+    bool? isHidden,
     String? tokenImage,
     int? sortIndex,
-    bool? isLocked,
     int? Function()? folderId,
+    TokenOrigin? origin,
   });
 
   @override

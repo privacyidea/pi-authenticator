@@ -5,20 +5,27 @@ import 'package:uuid/uuid.dart';
 
 import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
+import '../extensions/enum_extension.dart';
 import '../../utils/utils.dart';
 import '../enums/algorithms.dart';
 import '../enums/day_passoword_token_view_mode.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
+import '../token_origin.dart';
 import 'otp_token.dart';
+import 'token.dart';
 
 part 'day_password_token.g.dart';
 
 @JsonSerializable()
 @immutable
 class DayPasswordToken extends OTPToken {
+  static String get tokenType => TokenTypes.DAYPASSWORD.asString;
   final DayPasswordTokenViewMode viewMode;
   final Duration period;
+
+  @override
+  Duration get showDuration => const Duration(seconds: 30);
 
   DayPasswordToken({
     required Duration period,
@@ -30,13 +37,20 @@ class DayPasswordToken extends OTPToken {
     required super.secret,
     this.viewMode = DayPasswordTokenViewMode.VALIDFOR,
     String? type, // just for @JsonSerializable(): type of DayPasswordToken is always TokenTypes.DAYPASSWORD
-    super.pin,
     super.tokenImage,
     super.sortIndex,
-    super.isLocked,
     super.folderId,
+    super.pin,
+    super.isLocked,
+    super.isHidden,
+    super.origin,
   })  : period = period.inSeconds > 0 ? period : const Duration(hours: 24),
         super(type: TokenTypes.DAYPASSWORD.asString);
+
+  @override
+  bool sameValuesAs(Token other) {
+    return super.sameValuesAs(other) && other is DayPasswordToken && other.period == period;
+  }
 
   @override
   DayPasswordToken copyWith({
@@ -48,11 +62,13 @@ class DayPasswordToken extends OTPToken {
     Algorithms? algorithm,
     int? digits,
     String? secret,
-    bool? pin,
     String? tokenImage,
     int? sortIndex,
+    bool? pin,
     bool? isLocked,
+    bool? isHidden,
     int? Function()? folderId,
+    TokenOrigin? origin,
   }) =>
       DayPasswordToken(
         period: period ?? this.period,
@@ -64,11 +80,13 @@ class DayPasswordToken extends OTPToken {
         algorithm: algorithm ?? this.algorithm,
         digits: digits ?? this.digits,
         secret: secret ?? this.secret,
-        pin: pin ?? this.pin,
         tokenImage: tokenImage ?? this.tokenImage,
         sortIndex: sortIndex ?? this.sortIndex,
+        pin: pin ?? this.pin,
         isLocked: isLocked ?? this.isLocked,
+        isHidden: isHidden ?? this.isHidden,
         folderId: folderId != null ? folderId.call() : this.folderId,
+        origin: origin ?? this.origin,
       );
 
   @override
@@ -110,6 +128,7 @@ class DayPasswordToken extends OTPToken {
         tokenImage: uriMap[URI_IMAGE],
         pin: uriMap[URI_PIN],
         isLocked: uriMap[URI_PIN],
+        origin: uriMap[URI_ORIGIN],
       );
     } catch (e) {
       throw ArgumentError('Invalid URI: $e');
@@ -117,7 +136,7 @@ class DayPasswordToken extends OTPToken {
     return dayPasswordToken;
   }
 
-  factory DayPasswordToken.fromJson(Map<String, dynamic> json) => _$DayPasswordTokenFromJson(json);
+  factory DayPasswordToken.fromJson(Map<String, dynamic> json) => _$DayPasswordTokenFromJson(json).copyWith(isHidden: true);
   Map<String, dynamic> toJson() => _$DayPasswordTokenToJson(this);
 
   @override

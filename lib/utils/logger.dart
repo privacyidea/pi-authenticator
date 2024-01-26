@@ -11,19 +11,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart' as printer;
+import 'package:mutex/mutex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
-import 'customizations.dart';
+import 'globals.dart';
 import 'riverpod_providers.dart';
 
 final provider = Provider<int>((ref) => 0);
 
 class Logger {
   /*----------- STATIC FIELDS & GETTER -----------*/
+  static final Mutex _mutexWriteFile = Mutex();
   static Logger? _instance;
   static BuildContext? get _context => navigatorKey.currentContext;
   static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorMailBody : 'Error Log File Attached';
@@ -133,7 +135,7 @@ class Logger {
     _printWarning(warningString);
   }
 
-  static void error(String? message, {required dynamic error, required dynamic stackTrace, String? name}) {
+  static void error(String? message, {dynamic error, dynamic stackTrace, String? name}) {
     String errorString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
     errorString = _textFilter(errorString);
     if (message != null) {
@@ -143,11 +145,18 @@ class Logger {
     }
     instance._logToFile(errorString);
     instance._showSnackbar();
-    _printError(message, error: error, stackTrace: stackTrace, name: name);
+    StackTrace? stackTraceObject;
+    if (stackTrace is StackTrace) {
+      stackTraceObject = stackTrace;
+    } else if (stackTrace is String) {
+      stackTraceObject = StackTrace.fromString(stackTrace);
+    }
+    _printError(message, error: error, stackTrace: stackTraceObject, name: name);
   }
 
   Future<void> _logToFile(String fileMessage) async {
     if (_enableLoggingToFile == false) return;
+    await _mutexWriteFile.acquire();
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/$_filename');
 
@@ -159,6 +168,7 @@ class Logger {
     } finally {
       _print('Message logged into file');
     }
+    _mutexWriteFile.release();
   }
 
   static void sendErrorLog() {
@@ -235,7 +245,7 @@ $deviceInfo""";
 
   void _runZonedGuarded() {
     if (_appRunner == null && _app == null) {
-      WidgetsFlutterBinding.ensureInitialized();
+      // WidgetsFlutterBinding.ensureInitialized();
       return;
     }
     runZonedGuarded<void>(

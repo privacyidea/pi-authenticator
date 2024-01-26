@@ -1,12 +1,15 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/tokens/push_token.dart';
+import '../../utils/home_widget_utils.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/push_request_listener.dart';
+import '../import_tokens_view/import_tokens_view.dart';
 import '../license_view/license_view.dart';
 import 'settings_view_widgets/logging_menu.dart';
 import 'settings_view_widgets/settings_groups.dart';
@@ -42,15 +45,15 @@ class SettingsView extends ConsumerWidget {
               SettingsGroup(
                 title: AppLocalizations.of(context)!.settingsGroupGeneral,
                 children: [
-                  GestureDetector(
-                    onTap: () async {
-                      Uri uri = Uri.parse("https://netknights.it/en/privacy-statement/");
-                      if (!await launchUrl(uri)) {
-                        throw Exception('Could not launch $uri');
-                      }
-                    },
-                    child: ListTile(
-                      title: Text(
+                  ListTile(
+                    title: GestureDetector(
+                      onTap: () async {
+                        Uri uri = Uri.parse("https://netknights.it/en/privacy-statement/");
+                        if (!await launchUrl(uri)) {
+                          throw Exception('Could not launch $uri');
+                        }
+                      },
+                      child: Text(
                         AppLocalizations.of(context)!.privacyPolicy,
                         style: Theme.of(context).textTheme.titleMedium,
                         overflow: TextOverflow.fade,
@@ -58,48 +61,42 @@ class SettingsView extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, LicenseView.routeName);
-                    },
-                    child: ListTile(
-                      title: Text(
+                  ListTile(
+                    title: GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, LicenseView.routeName);
+                      },
+                      child: Text(
                         AppLocalizations.of(context)!.licensesAndVersion,
                         style: Theme.of(context).textTheme.titleMedium,
                         overflow: TextOverflow.fade,
                         softWrap: false,
                       ),
-                      subtitle: Text(
-                        AppLocalizations.of(context)!.requestPushChallengesPeriodically,
-                        overflow: TextOverflow.fade,
-                      ),
-                      trailing: Switch(
-                        value: ref.watch(settingsProvider).enablePolling,
-                        onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
-                      ),
                     ),
                   ),
-                  if (ref.watch(tokenProvider).hasHOTPTokens)
-                    ListTile(
-                      title: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: AppLocalizations.of(context)!.hidePushTokens,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                          ],
-                        ),
+                  ListTile(
+                    trailing: IconButton(
+                      splashRadius: 20,
+                      icon: const RotatedBox(
+                        quarterTurns: 1,
+                        child: Icon(FluentIcons.arrow_enter_20_filled),
                       ),
-                      subtitle: Text(
-                        AppLocalizations.of(context)!.hidePushTokensDescription,
+                      onPressed: () {
+                        Navigator.pushNamed(context, ImportTokensView.routeName);
+                      },
+                    ),
+                    title: GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, ImportTokensView.routeName);
+                      },
+                      child: Text(
+                        AppLocalizations.of(context)!.importTokens,
+                        style: Theme.of(context).textTheme.titleMedium,
                         overflow: TextOverflow.fade,
+                        softWrap: false,
                       ),
-                      trailing: Switch(
-                        value: ref.watch(settingsProvider).hidePushTokens,
-                        onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value),
-                      ),
-                    )
+                    ),
+                  )
                 ],
               ),
               const Divider(),
@@ -116,7 +113,10 @@ class SettingsView extends ConsumerWidget {
                     value: ThemeMode.light,
                     groupValue: EasyDynamicTheme.of(context).themeMode,
                     controlAffinity: ListTileControlAffinity.trailing,
-                    onChanged: (dynamic value) => EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: false),
+                    onChanged: (dynamic value) {
+                      EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: false);
+                      HomeWidgetUtils().setCurrentThemeMode(ThemeMode.light);
+                    },
                   ),
                   RadioListTile(
                     title: Text(
@@ -128,7 +128,10 @@ class SettingsView extends ConsumerWidget {
                     value: ThemeMode.dark,
                     groupValue: EasyDynamicTheme.of(context).themeMode,
                     controlAffinity: ListTileControlAffinity.trailing,
-                    onChanged: (dynamic value) => EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: true),
+                    onChanged: (dynamic value) {
+                      EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: true);
+                      HomeWidgetUtils().setCurrentThemeMode(ThemeMode.dark);
+                    },
                   ),
                   RadioListTile(
                     title: Text(
@@ -138,7 +141,10 @@ class SettingsView extends ConsumerWidget {
                     value: ThemeMode.system,
                     groupValue: EasyDynamicTheme.of(context).themeMode,
                     controlAffinity: ListTileControlAffinity.trailing,
-                    onChanged: (dynamic value) => EasyDynamicTheme.of(context).changeTheme(dynamic: true, dark: false),
+                    onChanged: (dynamic value) {
+                      EasyDynamicTheme.of(context).changeTheme(dynamic: true, dark: false);
+                      HomeWidgetUtils().setCurrentThemeMode(ThemeMode.system);
+                    },
                   ),
                 ],
               ),
@@ -249,6 +255,27 @@ class SettingsView extends ConsumerWidget {
                         onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
                       ),
                     ),
+                    if (ref.watch(tokenProvider).hasHOTPTokens)
+                      ListTile(
+                        title: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: AppLocalizations.of(context)!.hidePushTokens,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                        subtitle: Text(
+                          AppLocalizations.of(context)!.hidePushTokensDescription,
+                          overflow: TextOverflow.fade,
+                        ),
+                        trailing: Switch(
+                          value: ref.watch(settingsProvider).hidePushTokens,
+                          onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value),
+                        ),
+                      )
                   ],
                 ),
               ),

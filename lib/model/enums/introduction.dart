@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
-import '../../l10n/app_localizations.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../utils/riverpod_providers.dart';
 import '../states/introduction_state.dart';
 

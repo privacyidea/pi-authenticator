@@ -491,5 +491,28 @@
   "legacySigningErrorMessage": "Le token a été créé dans une version obsolète de l'application, ce qui peut entraîner des problèmes d'utilisation.\nIl est recommandé de créer un nouveau token push si le problème persiste !",
   "@legacySigningErrorMessage": {
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
-  }
+  },
+  "selectImportSource": "Sélectionner la source d'importation",
+  "importTokens": "Importer un jeton",
+  "selectFile": "Sélectionner un fichier",
+  "decrypt": "Décrypter",
+  "fileNoValidBackupFor": "Le fichier sélectionné n'est pas une sauvegarde valide pour {name}",
+  "@fileNoValidBackupFor": {
+    "description": "Message indiquant à l'utilisateur que le fichier sélectionné n'est pas une sauvegarde valide pour le jeton",
+    "placeholders": {
+      "name": {
+        "exemple": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "fileIsEncrypted": "Le fichier sélectionné est crypté. Veuillez saisir le mot de passe pour le décrypter.",
+  "fileNotEncrypted": "Le fichier sélectionné n'est pas crypté. Il peut être importé directement.",
+  "fileSuccessfullyDecrypted": "Les tokens ont été décryptés avec succès, ils peuvent maintenant être importés.",
+  "password": "Mot de passe",
+  "wrongPassword": "Mot de passe incorrect",
+  "importExistingToken": "{count, plural, zero{Le fichier ne contient pas de token déjà présent dans l'application.} one{Le fichier contient un token déjà présent dans l'application.} other{Le fichier contient {count} des tokens déjà présents dans l'application.}}",
+  "importConflictToken": "{count, plural, zero{Il n'y a pas de conflit avec des tokens déjà existants.} one{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.} other{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.}}",
+  "importNewToken": "{count, plural, zero{Le fichier ne contient pas de nouveau token.} one{Le fichier contient un nouveau token qui sera importé.} other{Le fichier contient {count} nouveaux tokens qui seront importés.}}",
+  "importHint2FAS": "Choisis ta sauvegarde 2FAS. Si tu n'as pas de sauvegarde, crée-en une dans l'app 2FAS.\nNous te recommandons d'utiliser un mot de passe.",
+  "importHint2FASButton": "Sélectionner 2FAS Backup"
 }

@@ -28,10 +28,11 @@ import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
-import 'package:privacyidea_authenticator/utils/customizations.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
+
+import 'globals.dart';
 
 class RsaUtils {
   const RsaUtils();
@@ -217,7 +218,7 @@ class RsaUtils {
   /// Returns the signature on success and null on failure.
   Future<String?> trySignWithToken(PushToken token, String message) async {
     if (token.privateTokenKey != null) {
-      return createBase32Signature(token.rsaPrivateTokenKey!, utf8.encode(message) as Uint8List);
+      return createBase32Signature(token.rsaPrivateTokenKey!, utf8.encode(message));
     }
     // It is a legacy token so the operation could cause an exception
     try {

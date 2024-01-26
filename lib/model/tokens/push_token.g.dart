@@ -35,19 +35,25 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       sortIndex: json['sortIndex'] as int?,
       tokenImage: json['tokenImage'] as String?,
       folderId: json['folderId'] as int?,
-      isLocked: json['isLocked'] as bool?,
       pin: json['pin'] as bool?,
+      isLocked: json['isLocked'] as bool?,
+      isHidden: json['isHidden'] as bool?,
+      origin: json['origin'] == null
+          ? null
+          : TokenOrigin.fromJson(json['origin'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'label': instance.label,
       'issuer': instance.issuer,
       'id': instance.id,
-      'isLocked': instance.isLocked,
       'pin': instance.pin,
+      'isLocked': instance.isLocked,
+      'isHidden': instance.isHidden,
       'tokenImage': instance.tokenImage,
       'folderId': instance.folderId,
       'sortIndex': instance.sortIndex,
+      'origin': instance.origin,
       'type': instance.type,
       'expirationDate': instance.expirationDate?.toIso8601String(),
       'serial': instance.serial,

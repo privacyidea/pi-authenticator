@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/totp_token.dart';
-import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
@@ -13,8 +12,9 @@ import '../token_widget_tile.dart';
 
 class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   final TOTPToken token;
+  final bool isPreview;
 
-  const TOTPTokenWidgetTile(this.token, {super.key});
+  const TOTPTokenWidgetTile(this.token, {super.key, this.isPreview = false});
 
   @override
   ConsumerState<TOTPTokenWidgetTile> createState() => _TOTPTokenWidgetTileState();
@@ -24,7 +24,6 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   double secondsLeft = 0;
   late AnimationController animation;
   late DateTime lastCount;
-  final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
 
   void _copyOtpValue() {
     if (globalRef?.read(disableCopyOtpProvider) ?? false) return;
@@ -52,17 +51,6 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
     secondsLeft = widget.token.secondsUntilNextOTP;
     lastCount = DateTime.now();
     _startCountDown();
-    isHidden.addListener(() {
-      if (mounted) {
-        setState(() {
-          if (isHidden.value == false) {
-            Future.delayed(Duration(milliseconds: (widget.token.period * 1000 + (secondsLeft * 1000).toInt())), () {
-              isHidden.value = true;
-            });
-          }
-        });
-      }
-    });
   }
 
   void _onAppStateChange(AppLifecycleState? state) {
@@ -105,55 +93,59 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
     final appstate = ref.watch(appStateProvider);
     _onAppStateChange(appstate);
     return TokenWidgetTile(
+      isPreview: widget.isPreview,
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
       tokenImage: widget.token.tokenImage,
       tokenIsLocked: widget.token.isLocked,
       title: Align(
         alignment: Alignment.centerLeft,
         child: InkWell(
-          onTap: widget.token.isLocked && isHidden.value
-              ? () async {
-                  if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
-                    isHidden.value = false;
-                  }
-                }
-              : _copyOtpValue,
+          onTap: widget.isPreview
+              ? null
+              : widget.token.isLocked && widget.token.isHidden
+                  ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
+                  : _copyOtpValue,
           child: HideableText(
             key: Key(widget.token.hashCode.toString()),
             text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
             textScaleFactor: 1.9,
             enabled: widget.token.isLocked,
-            isHiddenNotifier: isHidden,
+            isHidden: widget.token.isHidden,
           ),
         ),
       ),
-      subtitles: [
-        if (widget.token.label.isNotEmpty) widget.token.label,
-        if (widget.token.issuer.isNotEmpty) widget.token.issuer,
-      ],
+      subtitles: widget.isPreview
+          ? [
+              (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
+                  ? '${widget.token.issuer}: ${widget.token.label}'
+                  : widget.token.issuer + widget.token.label,
+              'Algorithm: ${enumAsString(widget.token.algorithm)}',
+              'Period: ${widget.token.period} seconds',
+            ]
+          : [
+              if (widget.token.label.isNotEmpty) widget.token.label,
+              if (widget.token.issuer.isNotEmpty) widget.token.issuer,
+            ],
       trailing: HideableWidget(
         token: widget.token,
-        isHiddenNotifier: isHidden,
-        child: AnimatedBuilder(
-          animation: animation,
-          builder: (context, child) {
-            return Stack(
-              children: [
-                Center(
-                  child: Text(
-                    '${secondsLeft.round()}',
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                  ),
-                ),
-                Center(
-                  child: CircularProgressIndicator(
-                    value: animation.value,
-                  ),
-                ),
-              ],
-            );
-          },
+        isHidden: widget.token.isHidden,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Text(
+              '${secondsLeft.round()}',
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+            AnimatedBuilder(
+              animation: animation,
+              builder: (context, child) {
+                return CircularProgressIndicator(
+                  value: animation.value,
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

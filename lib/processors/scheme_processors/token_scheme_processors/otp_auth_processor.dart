@@ -1,24 +1,27 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
+import '../../../model/enums/algorithms.dart';
+import '../../../model/enums/encodings.dart';
+import '../../../model/enums/token_origin_source_type.dart';
+import '../../../model/enums/token_types.dart';
+import '../../../model/extensions/enum_extension.dart';
+import '../../../model/tokens/token.dart';
 import '../../../utils/crypto_utils.dart';
 import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/supported_versions.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/two_step_dialog.dart';
-import '../../enums/algorithms.dart';
-import '../../enums/encodings.dart';
-import '../../enums/token_types.dart';
-import '../../tokens/token.dart';
-import '../scheme_processor_interface.dart';
+import '../token_scheme_processor.dart';
 
-class OtpAuthProcessor extends SchemeProcessor {
-  OtpAuthProcessor();
+class OtpAuthProcessor extends TokenSchemeProcessor {
+  const OtpAuthProcessor();
   @override
-  Set<String> supportedScheme = {'otpauth'};
+  Set<String> get supportedSchemes => {'otpauth'};
   @override
-  Future<List<Token>?> process(Uri uri) async {
-    if (!supportedScheme.contains(uri.scheme)) return null;
+  Future<List<Token>?> process(Uri uri, {bool fromInit = false}) async {
+    if (!supportedSchemes.contains(uri.scheme)) return null;
     Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
     Map<String, dynamic> uriMap;
     try {
@@ -48,6 +51,7 @@ class OtpAuthProcessor extends SchemeProcessor {
         await Future.delayed(const Duration(milliseconds: 500));
       }
       uriMap[URI_SECRET] = twoStepSecret;
+      uriMap[URI_ORIGIN] = TokenOriginSourceType.link.toTokenOrigin(data: jsonEncode(uri.toString()));
     }
     Token newToken;
     try {
@@ -57,16 +61,6 @@ class OtpAuthProcessor extends SchemeProcessor {
       showMessage(message: e.message, duration: const Duration(seconds: 3));
       return null;
     }
-
-    // if (newToken is PushToken && state.tokens.contains(newToken)) {
-    //   showMessage(message: 'A token with the serial ${newToken.serial} already exists!', duration: const Duration(seconds: 2));
-
-    //   return null;
-    // }
-    // await addOrReplaceToken(newToken);
-    // if (newToken is PushToken) {
-    //   await rolloutPushToken(newToken);
-    // }
     return [newToken];
   }
 }
@@ -99,7 +93,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
   // parse.path.substring(1) -> Label
   String infoLog = '\nKey: [..] | Value: [..]';
   uri.queryParameters.forEach((key, value) {
-    if (key == 'secret') {
+    if (key == URI_SECRET) {
       value = '********';
     }
     infoLog += '\n${key.padLeft(9)} | $value';

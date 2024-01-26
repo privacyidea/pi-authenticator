@@ -24,3 +24,11 @@ import 'package:flutter/material.dart';
 
 final globalSnackbarKey = GlobalKey<ScaffoldMessengerState>();
 final globalNavigatorKey = GlobalKey<NavigatorState>();
+final Future<GlobalKey<NavigatorState>> contextedGlobalNavigatorKey = Future(() async => await _getContextedGlobalNavigatorKey());
+Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKey() async {
+  if (globalNavigatorKey.currentContext != null) {
+    return globalNavigatorKey;
+  } else {
+    return await Future.delayed(const Duration(milliseconds: 500), _getContextedGlobalNavigatorKey);
+  }
+}

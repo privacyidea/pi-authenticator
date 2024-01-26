@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:otp/otp.dart' as otp_library;
 import 'package:uuid/uuid.dart';
@@ -8,13 +10,20 @@ import '../../utils/utils.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
+import '../extensions/enum_extension.dart';
+import '../token_origin.dart';
 import 'otp_token.dart';
+import 'token.dart';
 
 part 'hotp_token.g.dart';
 
 @JsonSerializable()
 class HOTPToken extends OTPToken {
+  static String get tokenType => TokenTypes.HOTP.asString;
   final int counter; // this value is used to calculate the current otp value
+
+  @override
+  Duration get showDuration => const Duration(seconds: 30);
 
   HOTPToken({
     this.counter = 0,
@@ -25,12 +34,19 @@ class HOTPToken extends OTPToken {
     required super.digits,
     required super.secret,
     String? type, // just for @JsonSerializable(): type of HOTPToken is always TokenTypes.HOTP
-    super.pin,
     super.tokenImage,
     super.sortIndex,
+    super.pin,
     super.isLocked,
+    super.isHidden,
     super.folderId,
+    super.origin,
   }) : super(type: TokenTypes.HOTP.asString);
+
+  @override
+  bool sameValuesAs(Token other) {
+    return super.sameValuesAs(other) && other is HOTPToken && other.counter == counter;
+  }
 
   @override
   String get otpValue => otp_library.OTP.generateHOTPCodeString(
@@ -52,11 +68,13 @@ class HOTPToken extends OTPToken {
     Algorithms? algorithm,
     int? digits,
     String? secret,
-    bool? pin,
     String? tokenImage,
     int? sortIndex,
+    bool? pin,
     bool? isLocked,
+    bool? isHidden,
     int? Function()? folderId,
+    TokenOrigin? origin,
   }) =>
       HOTPToken(
         counter: counter ?? this.counter,
@@ -66,11 +84,13 @@ class HOTPToken extends OTPToken {
         algorithm: algorithm ?? this.algorithm,
         digits: digits ?? this.digits,
         secret: secret ?? this.secret,
-        pin: pin ?? this.pin,
         tokenImage: tokenImage ?? this.tokenImage,
         sortIndex: sortIndex ?? this.sortIndex,
+        pin: pin ?? this.pin,
         isLocked: isLocked ?? this.isLocked,
+        isHidden: isHidden ?? this.isHidden,
         folderId: folderId != null ? folderId() : this.folderId,
+        origin: origin ?? this.origin,
       );
 
   @override
@@ -94,14 +114,16 @@ class HOTPToken extends OTPToken {
         tokenImage: uriMap[URI_IMAGE],
         pin: uriMap[URI_PIN],
         isLocked: uriMap[URI_PIN],
+        origin: uriMap[URI_ORIGIN],
       );
     } catch (e) {
+      log(uriMap.toString());
       throw ArgumentError('Invalid URI: $e');
     }
     return hotpToken;
   }
 
-  factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json);
+  factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json).copyWith(isHidden: true);
 
   Map<String, dynamic> toJson() => _$HOTPTokenToJson(this);
 }

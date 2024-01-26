@@ -2,15 +2,15 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/push_provider.dart';
 
-import '../l10n/app_localizations.dart';
-import '../model/tokens/push_token.dart';
-import '../utils/customizations.dart';
-import '../utils/lock_auth.dart';
-import '../utils/riverpod_providers.dart';
-import 'default_dialog.dart';
-import 'press_button.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../model/tokens/push_token.dart';
+import '../../../utils/globals.dart';
+import '../../../utils/lock_auth.dart';
+import '../../../utils/riverpod_providers.dart';
+import '../../../widgets/default_dialog.dart';
+import '../../../widgets/press_button.dart';
+import '../utils/push_provider.dart';
 
 class PushRequestListener extends ConsumerStatefulWidget {
   final Widget child;
@@ -88,7 +88,7 @@ class _PushRequestDialogState extends State<PushRequestDialog> {
                         child: PressButton(
                           onPressed: () async {
                             if (widget.tokenWithPushRequest.isLocked &&
-                                await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) return;
+                                await lockAuth(localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) return;
                             globalRef?.read(pushRequestProvider.notifier).acceptPop(widget.tokenWithPushRequest);
                             if (mounted) setState(() => isHandled = true);
                           },
@@ -117,7 +117,7 @@ class _PushRequestDialogState extends State<PushRequestDialog> {
                             style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
                             onPressed: () async {
                               if (widget.tokenWithPushRequest.isLocked &&
-                                  await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
+                                  await lockAuth(localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
                                 return;
                               }
                               _showConfirmationDialog(widget.tokenWithPushRequest);

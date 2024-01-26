@@ -144,7 +144,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: 6,
-          secret: encodeSecretAs(utf8.encode('secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
           counter: 0,
         );
         expect(token0.otpValue, '814628');
@@ -157,7 +157,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: 6,
-          secret: encodeSecretAs(utf8.encode('secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
           counter: 1,
         );
         expect(token1.otpValue, '533881');
@@ -170,7 +170,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: 6,
-          secret: encodeSecretAs(utf8.encode('secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
           counter: 2,
         );
         expect(token2.otpValue, '720111');
@@ -183,7 +183,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: 6,
-          secret: encodeSecretAs(utf8.encode('secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
           counter: 8,
         );
         expect(token8.otpValue, '963685');
@@ -200,7 +200,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: 8,
-          secret: encodeSecretAs(utf8.encode('secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
           counter: 0,
         );
         expect(token0.otpValue, '31814628');
@@ -213,7 +213,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: 8,
-          secret: encodeSecretAs(utf8.encode('secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
           counter: 1,
         );
         expect(token1.otpValue, '28533881');
@@ -226,7 +226,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: 8,
-          secret: encodeSecretAs(utf8.encode('secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
           counter: 2,
         );
         expect(token2.otpValue, '31720111');
@@ -239,7 +239,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: 8,
-          secret: encodeSecretAs(utf8.encode('secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
           counter: 8,
         );
         expect(token8.otpValue, '15963685');
@@ -256,7 +256,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: 6,
-          secret: encodeSecretAs(utf8.encode('Secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('Secret'), Encodings.base32),
           counter: 0,
         );
         expect(token0.otpValue, '292574');
@@ -269,7 +269,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA256,
           digits: 6,
-          secret: encodeSecretAs(utf8.encode('Secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('Secret'), Encodings.base32),
           counter: 0,
         );
         expect(token1.otpValue, '203782');
@@ -282,7 +282,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA512,
           digits: 6,
-          secret: encodeSecretAs(utf8.encode('Secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('Secret'), Encodings.base32),
           counter: 0,
         );
         expect(token2.otpValue, '636350');
@@ -298,7 +298,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: 8,
-          secret: encodeSecretAs(utf8.encode('Secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('Secret'), Encodings.base32),
           counter: 0,
         );
         expect(token0.otpValue, '25292574');
@@ -311,7 +311,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA256,
           digits: 8,
-          secret: encodeSecretAs(utf8.encode('Secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('Secret'), Encodings.base32),
           counter: 0,
         );
         expect(token1.otpValue, '25203782');
@@ -324,7 +324,7 @@ void _testHotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA512,
           digits: 8,
-          secret: encodeSecretAs(utf8.encode('Secret') as Uint8List, Encodings.base32),
+          secret: encodeSecretAs(utf8.encode('Secret'), Encodings.base32),
           counter: 0,
         );
         expect(token2.otpValue, '99636350');

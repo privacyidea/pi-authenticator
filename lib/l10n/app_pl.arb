@@ -484,5 +484,28 @@
   "legacySigningErrorMessage": "Token został utworzony w nieaktualnej wersji aplikacji, co może prowadzić do problemów podczas korzystania z niego.\nZaleca się utworzenie nowego tokena push, jeśli problem nadal występuje!",
   "@legacySigningErrorMessage": {
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
-  }
+  },
+  "selectImportSource": "Wybierz źródło importu",
+  "importTokens": "Token importu",
+  "selectFile": "Wybierz plik",
+  "decrypt": "Odszyfruj",
+  "fileNoValidBackupFor": "Wybrany plik nie jest prawidłową kopią zapasową dla {name}.",
+  "@fileNoValidBackupFor": {
+    "description": "Komunikat informujący użytkownika, że wybrany plik nie jest prawidłową kopią zapasową dla tokena.",
+    "placeholders": {
+      "name": {
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "fileIsEncrypted": "Wybrany plik jest zaszyfrowany. Wprowadź hasło, aby go odszyfrować.",
+  "fileNotEncrypted": "Wybrany plik nie jest zaszyfrowany. Można go zaimportować bezpośrednio.",
+  "fileSuccessfullyDecrypted": "Tokeny zostały pomyślnie odszyfrowane i można je teraz zaimportować.",
+  "password": "Hasło",
+  "wrongPassword": "Nieprawidłowe hasło",
+  "importExistingToken": "{count, plural, zero{ Plik nie zawiera tokenu, który już istnieje w aplikacji.} one{ Plik zawiera token, który już istnieje w aplikacji.} other{ Plik zawiera {count} tokenów, które już istnieją w aplikacji.}}",
+  "importConflictToken": "{count, plural, zero{Nie ma konfliktu z tokenami, które już istnieją.} one{Istnieje konflikt z tokenami, które już istnieją.} other{Istnieje konflikt z tokenami, które już istnieją.}}",
+  "importNewToken": "{count, plural, zero{Plik nie zawiera nowego tokena.} one{Plik zawiera nowy token, który zostanie zaimportowany.} other{Plik zawiera {count} nowych tokenów, które zostaną zaimportowane.}}",
+  "importHint2FAS": "Wybierz kopię zapasową 2FAS. Jeśli nie masz kopii zapasowej, utwórz ją w aplikacji 2FAS.\nZalecamy użycie hasła.",
+  "importHint2FASButton": "Wybierz 2FAS Backup"
 }

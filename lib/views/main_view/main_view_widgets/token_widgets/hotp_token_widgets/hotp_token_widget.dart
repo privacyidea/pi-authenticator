@@ -19,7 +19,7 @@ class HOTPTokenWidget extends TokenWidget {
   TokenWidgetBase build(BuildContext context) {
     return TokenWidgetBase(
       token: token,
-      tile: HOTPTokenWidgetTile(token: token, key: ValueKey(token.id)),
+      tile: HOTPTokenWidgetTile(token, key: ValueKey(token.id)),
       dragIcon: Icons.replay,
       editAction: EditHOTPTokenAction(token: token),
     );

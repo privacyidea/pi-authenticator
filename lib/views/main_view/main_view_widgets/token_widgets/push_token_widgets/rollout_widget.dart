@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../../model/enums/push_token_rollout_state.dart';
 
+import '../../../../../model/enums/push_token_rollout_state.dart';
 import '../../../../../model/tokens/push_token.dart';
 
 class RolloutWidget extends StatelessWidget {

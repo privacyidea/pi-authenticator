@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../../../../utils/customizations.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/globals.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../utils/view_utils.dart';
 import '../../../../widgets/default_dialog.dart';
