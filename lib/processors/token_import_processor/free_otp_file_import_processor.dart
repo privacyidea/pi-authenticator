@@ -30,19 +30,19 @@ class FreeOtpFileImportProcessor implements TokenFileImportProcessor {
     final mCipherTextInt = (masterKey['mEncryptedKey']['mCipherText'] as List).cast<int>();
     final mIvAsn1 = (masterKey['mEncryptedKey']['mParameters'] as List).cast<int>(); // IV as ASN.1
     // print(mIvAsn1);
-    // final asn1Parser = ASN1Parser(Uint8List.fromList(mIvAsn1));
-    // final ivAsn1 = asn1Parser.nextObject() as ASN1Sequence;
+    final asn1Parser = ASN1Parser(Uint8List.fromList(mIvAsn1));
+    final ivAsn1 = asn1Parser.nextObject() as ASN1Sequence;
     // for (var i = 0; i < ivAsn1.elements!.length; i++) {
     //   print("$i: ${ivAsn1.elements![i].runtimeType}");
     // }
     // final tempIV = ivAsn1.valueBytes;
-    // final asn1OctetString = ivAsn1.elements![0] as ASN1OctetString;
-    // final ivBytes = asn1OctetString.valueBytes!;
+    final asn1OctetString = ivAsn1.elements![0] as ASN1OctetString;
+    final ivBytes = asn1OctetString.valueBytes!;
     // final ivStringUtf8 = utf8.decode(ivBytes);
     // print(ivStringUtf8);
     // final asn1Integer = ivAsn1.elements![1] as ASN1Integer;
 
-    final iv = IV.fromBase16('a1089241a831b3345e251c4b');
+    final iv = IV(ivBytes);
     final mIterations = masterKey['mIterations'] as int;
     final mSaltInt = (masterKey['mSalt'] as List).cast<int>();
 
@@ -51,7 +51,7 @@ class FreeOtpFileImportProcessor implements TokenFileImportProcessor {
 
     final keyGenerator = Pbkdf2(macAlgorithm: Hmac.sha512(), iterations: mIterations, bits: saltBytes.length * 8);
 
-    final SecretKey secretKey = await keyGenerator.deriveKey(secretKey: SecretKey(utf8.encode(password!)), nonce: saltBytes);
+    final SecretKey secretKey = await keyGenerator.deriveKeyFromPassword(password: password!, nonce: saltBytes);
     final Uint8List keyBytes = Uint8List.fromList(await secretKey.extractBytes());
     final Key key = Key(keyBytes);
 
