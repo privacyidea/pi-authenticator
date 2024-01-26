@@ -30,19 +30,26 @@ class FreeOtpFileImportProcessor implements TokenFileImportProcessor {
     final mCipherTextInt = (masterKey['mEncryptedKey']['mCipherText'] as List).cast<int>();
     final mIvAsn1 = (masterKey['mEncryptedKey']['mParameters'] as List).cast<int>(); // IV as ASN.1
     // print(mIvAsn1);
-    // final asn1Parser = ASN1Parser(Uint8List.fromList(mIvAsn1));
-    // final ivAsn1 = asn1Parser.nextObject() as ASN1Sequence;
+    final asn1Parser = ASN1Parser(Uint8List.fromList(mIvAsn1));
+    final ivAsn1 = asn1Parser.nextObject() as ASN1Sequence;
     // for (var i = 0; i < ivAsn1.elements!.length; i++) {
     //   print("$i: ${ivAsn1.elements![i].runtimeType}");
     // }
     // final tempIV = ivAsn1.valueBytes;
-    // final asn1OctetString = ivAsn1.elements![0] as ASN1OctetString;
-    // final ivBytes = asn1OctetString.valueBytes!;
+    final asn1OctetString = ivAsn1.elements![0] as ASN1OctetString;
+    final ivOctetBytes = asn1OctetString.valueBytes!;
     // final ivStringUtf8 = utf8.decode(ivBytes);
     // print(ivStringUtf8);
-    // final asn1Integer = ivAsn1.elements![1] as ASN1Integer;
+    final asn1Integer = ivAsn1.elements![1] as ASN1Integer;
+    final ivLength = asn1Integer.integer!.toInt();
+    print('$ivLength should be 16');
 
-    final iv = IV.fromBase16('a1089241a831b3345e251c4b');
+    final ivBytes = Uint8List(ivLength);
+    for (var i = 0; i < ivOctetBytes.length; i++) {
+      ivBytes[i] = ivOctetBytes[i];
+    }
+
+    final iv = IV(ivBytes);
     final mIterations = masterKey['mIterations'] as int;
     final mSaltInt = (masterKey['mSalt'] as List).cast<int>();
 
