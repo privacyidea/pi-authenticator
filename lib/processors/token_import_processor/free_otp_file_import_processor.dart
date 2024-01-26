@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ffi';
 
-import 'package:asn1lib/asn1lib.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/services.dart';
+import 'package:pointycastle/pointycastle.dart';
 import 'package:privacyidea_authenticator/processors/token_import_processor/token_file_import_processor_interface.dart';
 
 import '../../model/encryption/aes_encrypted.dart';
@@ -26,52 +27,54 @@ class FreeOtpFileImportProcessor implements TokenFileImportProcessor {
   Future<List<Token>> process({required XFile file, String? password}) async {
     final fileContent = (await const MethodChannel('readValueFromFile').invokeMethod('json', {'path': file.path}) as Map).cast<String, dynamic>();
     final masterKey = jsonDecode(fileContent.remove(mMasterKey) as String) as Map<String, dynamic>;
-    final mCipherText = (masterKey['mEncryptedKey']['mCipherText'] as List).cast<int>();
-    final mParametersASN1 = (masterKey['mEncryptedKey']['mParameters'] as List).cast<int>();
-    final mParameters = ASN1Parser(Uint8List.fromList(mParametersASN1)).nextObject().valueBytes();
+    final mCipherTextInt = (masterKey['mEncryptedKey']['mCipherText'] as List).cast<int>();
+    final mIvAsn1 = (masterKey['mEncryptedKey']['mParameters'] as List).cast<int>(); // IV as ASN.1
+    // print(mIvAsn1);
+    // final asn1Parser = ASN1Parser(Uint8List.fromList(mIvAsn1));
+    // final ivAsn1 = asn1Parser.nextObject() as ASN1Sequence;
+    // for (var i = 0; i < ivAsn1.elements!.length; i++) {
+    //   print("$i: ${ivAsn1.elements![i].runtimeType}");
+    // }
+    // final tempIV = ivAsn1.valueBytes;
+    // final asn1OctetString = ivAsn1.elements![0] as ASN1OctetString;
+    // final ivBytes = asn1OctetString.valueBytes!;
+    // final ivStringUtf8 = utf8.decode(ivBytes);
+    // print(ivStringUtf8);
+    // final asn1Integer = ivAsn1.elements![1] as ASN1Integer;
+
+    final iv = IV.fromBase16('a1089241a831b3345e251c4b');
     final mIterations = masterKey['mIterations'] as int;
-    final mSalt = (masterKey['mSalt'] as List).cast<int>();
-    final mCipher = masterKey['mEncryptedKey']['mCipher'] as String;
+    final mSaltInt = (masterKey['mSalt'] as List).cast<int>();
 
-    final padding = mCipher.split('/').last;
-    log('padding: $padding');
-    final data = Uint8List.fromList(mCipherText);
-    log('data: $data');
-    final salt = Uint8List.fromList(mSalt);
-    log('salt: $salt');
-    final iv = Uint8List.fromList(mParameters);
-    log('iv: $iv');
-    final iterations = mIterations;
-    log('iterations: $iterations');
-    final macAlgorithm = Hmac.sha512();
-    log('macAlgorithm: $macAlgorithm');
-    const aesMode = AESMode.gcm;
-    log('aesMode: $aesMode');
+    final saltBytes = Uint8List.fromList(mSaltInt);
+    final cipherTextBytes = Uint8List.fromList(mCipherTextInt);
 
-    // try {
-    final masterKeyDecrypted = await AESEncrypted(
-      data: data,
-      salt: salt,
-      iv: iv,
-      macAlgorithm: macAlgorithm,
-      iterations: iterations,
-      aesMode: aesMode,
-      padding: padding,
-    ).decrypt(password!);
-    log('Master key: $masterKeyDecrypted');
+    final keyGenerator = Pbkdf2(macAlgorithm: Hmac.sha512(), iterations: mIterations, bits: saltBytes.length * 8);
+
+    final SecretKey secretKey = await keyGenerator.deriveKey(secretKey: SecretKey(utf8.encode(password!)), nonce: saltBytes);
+    final Uint8List keyBytes = Uint8List.fromList(await secretKey.extractBytes());
+    final Key key = Key(keyBytes);
+
+    final encrypter = Encrypter(AES(key, mode: AESMode.gcm, padding: 'NoPadding'));
+    final String decryptedString;
+
+    final decrypted = encrypter.decryptBytes(Encrypted(cipherTextBytes), iv: iv);
+    decryptedString = utf8.decode(decrypted);
+
+    print(decryptedString);
+
     // } catch (e) {
     //   throw WrongDecryptionPasswordException('Wrong password or corrupted data');
     // }
 
-    final tokens = <Token>[];
-    fileContent.forEach((key, value) {
-      if (key.endsWith("-token")) {
-        log('token: $value');
-        // Do stuff with master key and token
-      }
-    });
+    // final tokens = <Token>[];
+    // fileContent.forEach((key, value) {
+    //   if (key.endsWith("-token")) {
+    //     log('token: $value');
+    //     // Do stuff with master key and token
+    //   }
+    // });
 
-    log(fileContent.runtimeType.toString());
     return [];
   }
 

@@ -39,12 +39,12 @@ class AESEncrypted {
     final encrypter = Encrypter(AES(key, mode: aesMode, padding: padding));
     final iv = IV.fromBase64(ivBase64);
     final String decryptedString;
-    // try {
-    final decrypted = encrypter.decryptBytes(Encrypted(data), iv: iv);
-    // decryptedString = utf8.decode(decrypted);
-    // } catch (e) {
-    //   throw Exception('Wrong password or corrupted data');
-    // }
-    return 'decryptedString';
+    try {
+      final decrypted = encrypter.decryptBytes(Encrypted(data), iv: iv);
+      decryptedString = utf8.decode(decrypted);
+    } catch (e) {
+      throw Exception('Wrong password or corrupted data');
+    }
+    return decryptedString;
   }
 }
