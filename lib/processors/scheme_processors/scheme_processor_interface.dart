@@ -1,17 +1,22 @@
-import 'token_scheme_processor.dart';
+import 'package:privacyidea_authenticator/processors/scheme_processors/home_widget_processor.dart';
+import 'package:privacyidea_authenticator/processors/scheme_processors/navigation_scheme_processors/navigation_scheme_processor_interface.dart';
+
+import 'token_scheme_processors/token_scheme_processor_interface.dart';
 
 abstract class SchemeProcessor {
   const SchemeProcessor();
   Set<String> get supportedSchemes;
-  Future<dynamic> process(Uri uri, {bool fromInit = false});
+  Future<dynamic> processUri(Uri uri, {bool fromInit = false});
 
-  static final List<SchemeProcessor> _processors = [
+  static final List<SchemeProcessor> implementations = [
+    const HomeWidgetProcessor(),
+    ...NavigationSchemeProcessor.implementations,
     ...TokenSchemeProcessor.implementations,
   ];
-  static Future<dynamic> processUri(Uri uri, {bool fromInit = false}) async {
-    for (SchemeProcessor processor in _processors) {
+  static Future<dynamic> processUriByAny(Uri uri, {bool fromInit = false}) async {
+    for (SchemeProcessor processor in implementations) {
       if (processor.supportedSchemes.contains(uri.scheme)) {
-        return await processor.process(uri);
+        return await processor.processUri(uri);
       }
     }
     return null;

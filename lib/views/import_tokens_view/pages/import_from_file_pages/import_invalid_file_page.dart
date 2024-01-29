@@ -1,19 +1,38 @@
 import 'package:flutter/material.dart';
 
-import '../../../l10n/app_localizations.dart';
-import '../../../model/token_import_source.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../model/token_import_source.dart';
 
-class ImportInvalidFilePage extends StatelessWidget {
+class ImportInvalidFilePage extends StatefulWidget {
   final TokenImportSource selectedSource;
-  final void Function(BuildContext Function()) pickAFile;
+  final void Function(BuildContext? Function()) pickAFile;
 
   const ImportInvalidFilePage({super.key, required this.selectedSource, required this.pickAFile});
 
   @override
+  State<ImportInvalidFilePage> createState() => _ImportInvalidFilePageState();
+}
+
+class _ImportInvalidFilePageState extends State<ImportInvalidFilePage> {
+  BuildContext? _currentContext;
+  @override
+  void initState() {
+    _currentContext = context;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _currentContext = null;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    _currentContext = context;
     return Scaffold(
       appBar: AppBar(
-        title: Text(selectedSource.appName),
+        title: Text(widget.selectedSource.appName),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -30,12 +49,12 @@ class ImportInvalidFilePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  AppLocalizations.of(context)!.fileNoValidBackupFor(selectedSource.appName),
+                  AppLocalizations.of(context)!.fileNoValidBackupFrom(widget.selectedSource.appName),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => pickAFile(() => context),
+                  onPressed: () => widget.pickAFile(() => _currentContext),
                   child: Text(AppLocalizations.of(context)!.selectFile),
                 ),
               ],

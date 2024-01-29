@@ -1,54 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/processors/token_import_processor/aegis_import_file_processor.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/token_import_source.dart';
-import '../../processors/token_import_processor/free_otp_file_import_processor.dart';
-import '../../processors/token_import_processor/two_fas_file_import_processor.dart';
-import 'pages/import_select_file_page.dart';
+import 'pages/import_from_file_pages/import_select_file_page.dart';
+import 'pages/import_from_qr_pages/import_start_qr_scan_page.dart';
 
 class ImportTokensView extends ConsumerStatefulWidget {
   static const routeName = '/import_tokens';
-  static const _importSourceIconFolder = 'assets/images/import_sources/';
-  static List<TokenImportSource> appList = [
-    TokenImportSource(
-      appName: 'Google Authenticator',
-      importHint: (context) => '', // AppLocalizations.of(context)!.importHintGoogleAuthenticator,
-      iconPath: '${_importSourceIconFolder}google_authenticator.png',
-      processor: null,
-    ),
-    TokenImportSource(
-      appName: 'Authy',
-      importHint: (context) => '', //  AppLocalizations.of(context)!.importHintAuthy,
-      iconPath: '${_importSourceIconFolder}authy.png',
-      processor: null,
-    ),
-    TokenImportSource(
-      appName: 'FreeOTP',
-      importHint: (context) => '', //  AppLocalizations.of(context)!.importHintFreeOTP,
-      iconPath: '${_importSourceIconFolder}freeotp.png',
-      processor: const FreeOtpFileImportProcessor(),
-    ),
-    TokenImportSource(
-      appName: 'LastPass Authenticator',
-      importHint: (context) => '', //  AppLocalizations.of(context)!.importHintLastPassAuthenticator,
-      iconPath: '${_importSourceIconFolder}lastpass_authenticator.png',
-      processor: null,
-    ),
-    TokenImportSource(
-      appName: 'Aegis Authenticator',
-      importHint: (context) => '', //  AppLocalizations.of(context)!.importHintAegisAuthenticator,
-      iconPath: '${_importSourceIconFolder}aegis_authenticator.png',
-      processor: AegisImportFileProcessor(),
-    ),
-    TokenImportSource(
-      appName: '2FAS Authenticator',
-      importHint: (context) => AppLocalizations.of(context)!.importHint2FAS,
-      iconPath: '${_importSourceIconFolder}2fas.png',
-      processor: const TwoFasFileImportProcessor(),
-    ),
-  ];
 
   final TokenImportSource? selectedSource;
   const ImportTokensView({this.selectedSource, super.key});
@@ -71,12 +30,11 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
     passwordController = TextEditingController(text: '');
   }
 
-  void onPressed(TokenImportSource tokenImportSource) => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ImportSelectFilePage(selectedSource: tokenImportSource),
-        ),
-      );
+  void onPressed(TokenImportSource tokenImportSource) => switch (tokenImportSource.runtimeType) {
+        const (TokenImportQrScanSource) => onPressedQrScan(tokenImportSource as TokenImportQrScanSource),
+        const (TokenImportFileSource) => onPressedFile(tokenImportSource as TokenImportFileSource),
+        _ => throw Exception('Unknown token import source type: ${tokenImportSource.runtimeType}'),
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +50,7 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              for (final item in ImportTokensView.appList)
+              for (final item in TokenImportSourceList.appList)
                 ListTile(
                   // leading: Image.asset(appList[index].iconPath!),
                   title: TextButton(
@@ -107,6 +65,24 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void onPressedQrScan(TokenImportQrScanSource tokenImportSource) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImportStartQrScanPage(selectedSource: tokenImportSource),
+      ),
+    );
+  }
+
+  void onPressedFile(TokenImportFileSource tokenImportSource) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImportSelectFilePage(selectedSource: tokenImportSource),
       ),
     );
   }

@@ -21,7 +21,7 @@ import '../model/states/token_state.dart';
 import '../model/tokens/hotp_token.dart';
 import '../model/tokens/push_token.dart';
 import '../model/tokens/token.dart';
-import '../processors/scheme_processors/token_scheme_processor.dart';
+import '../processors/scheme_processors/token_scheme_processors/token_scheme_processor_interface.dart';
 import '../repo/secure_token_repository.dart';
 import '../utils/firebase_utils.dart';
 import '../utils/globals.dart';
@@ -262,7 +262,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     await loadingRepo;
     List<Token>? tokens;
     try {
-      tokens = await TokenSchemeProcessor.processUri(uri);
+      tokens = await TokenSchemeProcessor.processUriByAny(uri);
     } catch (_) {
       // TODO: handle exceptions
     }

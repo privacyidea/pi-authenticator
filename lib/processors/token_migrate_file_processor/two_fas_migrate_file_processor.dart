@@ -13,9 +13,9 @@ import '../../model/token_origin.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
-import 'token_file_import_processor_interface.dart';
+import 'token_migrate_file_processor_interface.dart';
 
-class TwoFasFileImportProcessor extends TokenFileImportProcessor {
+class TwoFasFileImportProcessor extends TokenMigrateFileProcessor {
   const TwoFasFileImportProcessor();
   static const String TWOFAS_TYPE = 'tokenType';
   static const String TWOFAS_ISSUER = 'name';
@@ -25,7 +25,7 @@ class TwoFasFileImportProcessor extends TokenFileImportProcessor {
   static const String TWOFAS_COUNTER = 'counter';
 
   @override
-  Future<List<Token>> process({required XFile file, String? password}) async {
+  Future<List<Token>> processFile({required XFile file, String? password}) async {
     final String fileContent = await file.readAsString();
     final Map<String, dynamic> json;
     try {

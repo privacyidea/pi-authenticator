@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/globals.dart';
-import '../../utils/logger.dart';
-import 'navigation_scheme_processors/home_widget_navigate_processor.dart';
-import 'scheme_processor_interface.dart';
+import '../../../utils/globals.dart';
+import '../../../utils/logger.dart';
+import 'home_widget_navigate_processor.dart';
+import '../scheme_processor_interface.dart';
 
 abstract class NavigationSchemeProcessor implements SchemeProcessor {
   const NavigationSchemeProcessor();
@@ -13,9 +13,9 @@ abstract class NavigationSchemeProcessor implements SchemeProcessor {
   };
 
   @override
-  Future<void> process(Uri uri, {BuildContext? context, bool fromInit = false});
+  Future<void> processUri(Uri uri, {BuildContext? context, bool fromInit = false});
 
-  static Future<void> processUri(Uri uri, {BuildContext? context, required bool fromInit}) async {
+  static Future<void> processUriByAny(Uri uri, {BuildContext? context, required bool fromInit}) async {
     if (context == null) {
       Logger.info('Current context is null, waiting for navigator context', name: 'processUri#NavigationSchemeProcessor');
       final key = await contextedGlobalNavigatorKey;
@@ -29,7 +29,7 @@ abstract class NavigationSchemeProcessor implements SchemeProcessor {
         Logger.info('Processing scheme ${uri.scheme} with ${processor.runtimeType}', name: 'processUri#NavigationSchemeProcessor');
         // ignoring use_build_context_synchronously is ok because we got the context after the await. The Context cannot be expired.
         // ignore: use_build_context_synchronously
-        futures.add(processor.process(uri, context: context, fromInit: fromInit));
+        futures.add(processor.processUri(uri, context: context, fromInit: fromInit));
       }
     }
     await Future.wait(futures);

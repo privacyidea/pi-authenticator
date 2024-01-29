@@ -37,7 +37,7 @@ const minIosWidgetVersion = "17.0.0";
 @pragma('vm:entry-point')
 void homeWidgetBackgroundCallback(Uri? uri) async {
   if (uri == null || await HomeWidgetUtils.isHomeWidgetSupported == false) return;
-  const HomeWidgetProcessor().process(uri);
+  const HomeWidgetProcessor().processUri(uri);
 }
 
 class HomeWidgetUtils {

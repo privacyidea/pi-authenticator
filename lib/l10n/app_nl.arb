@@ -492,8 +492,8 @@
   "importTokens": "Token importeren",
   "selectFile": "Selecteer bestand",
   "decrypt": "Decoderen",
-  "fileNoValidBackupFor": "Het geselecteerde bestand is geen geldige back-up voor {name}.",
-  "@fileNoValidBackupFor": {
+  "fileNoValidBackupFrom": "Het geselecteerde bestand is geen geldige back-up voor {name}.",
+  "@fileNoValidBackupFrom": {
     "description": "Bericht dat de gebruiker vertelt dat het geselecteerde bestand geen geldige back-up is voor het token.",
     "placeholders": {
       "naam": {

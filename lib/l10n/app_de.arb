@@ -474,8 +474,8 @@
   "importTokens": "Token importieren",
   "selectFile": "Datei auswählen",
   "decrypt": "Entschlüsseln",
-  "fileNoValidBackupFor": "Die ausgewählte Datei ist kein gültiges Backup für {name}.",
-  "@fileNoValidBackupFor": {
+  "fileNoValidBackupFrom": "Die ausgewählte Datei ist kein gültiges Backup von {name}.",
+  "@fileNoValidBackupFrom": {
     "description": "Message that tells the user that the selected file is not a valid backup for the token.",
     "placeholders": {
       "name": {
@@ -492,5 +492,7 @@
   "importConflictToken": "{count, plural, zero{Es besteht kein Konflikt mit bereits existierenden Token.} one{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.} other{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.}}",
   "importNewToken": "{count, plural, zero{Die Datei enthält kein neues Token.} one{Die Datei enthält ein neues Token, das importiert wird.} other{Die Datei enthält {count} neue Token, die importiert werden.}}",
   "importHint2FAS": "Wähle dein 2FAS Backup aus. Wenn du kein Backup hast, erstelle eines in der 2FAS App.\nWir empfehlen die Verwendung eines Passworts.",
-  "importHint2FASButton": "2FAS Backup auswählen"
+  "importHint2FASButton": "2FAS Backup auswählen",
+  "startQrScan": "QR-Code scannen",
+  "scanNoValidBackupFrom": "Der gescannte QR-Code ist kein gültiges Backup von {Name}."
 }

@@ -489,8 +489,8 @@
   "importTokens": "Token importu",
   "selectFile": "Wybierz plik",
   "decrypt": "Odszyfruj",
-  "fileNoValidBackupFor": "Wybrany plik nie jest prawidłową kopią zapasową dla {name}.",
-  "@fileNoValidBackupFor": {
+  "fileNoValidBackupFrom": "Wybrany plik nie jest prawidłową kopią zapasową dla {name}.",
+  "@fileNoValidBackupFrom": {
     "description": "Komunikat informujący użytkownika, że wybrany plik nie jest prawidłową kopią zapasową dla tokena.",
     "placeholders": {
       "name": {

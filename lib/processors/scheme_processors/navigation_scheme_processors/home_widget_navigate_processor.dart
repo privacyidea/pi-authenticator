@@ -7,9 +7,9 @@ import '../../../utils/riverpod_providers.dart';
 import '../../../views/link_home_widget_view/link_home_widget_view.dart';
 import '../../../views/main_view/main_view.dart';
 import '../../../views/splash_screen/splash_screen.dart';
-import '../navigation_scheme_processor.dart';
+import 'navigation_scheme_processor_interface.dart';
 
-class HomeWidgetNavigateProcessor extends NavigationSchemeProcessor {
+class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
   HomeWidgetNavigateProcessor();
 
   static final Map<String, Future<void> Function(Uri, BuildContext, {bool fromInit})> _processors = {
@@ -18,7 +18,7 @@ class HomeWidgetNavigateProcessor extends NavigationSchemeProcessor {
   };
 
   @override
-  Future<void> process(Uri uri, {BuildContext? context, bool fromInit = false}) async {
+  Future<void> processUri(Uri uri, {BuildContext? context, bool fromInit = false}) async {
     if (context == null) {
       Logger.error('HomeWidgetNavigateProcessor: Cannot Navigate without context',
           error: const InvalidConfigException('context is null'), stackTrace: StackTrace.current);

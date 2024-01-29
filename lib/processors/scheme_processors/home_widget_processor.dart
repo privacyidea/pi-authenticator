@@ -2,7 +2,7 @@ import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
 import 'scheme_processor_interface.dart';
 
-class HomeWidgetProcessor extends SchemeProcessor {
+class HomeWidgetProcessor implements SchemeProcessor {
   const HomeWidgetProcessor();
 
   static final Map<String, Future<void> Function(Uri)> _processors = {
@@ -12,7 +12,7 @@ class HomeWidgetProcessor extends SchemeProcessor {
   };
 
   @override
-  Future<void> process(Uri uri, {bool fromInit = false}) async {
+  Future<void> processUri(Uri uri, {bool fromInit = false}) async {
     print('HomeWidgetProcessor: Processing uri: $uri');
     if (supportedSchemes.contains(uri.scheme) == false) return;
     return _processors[uri.host]?.call(uri);

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../l10n/app_localizations.dart';
-import '../../../model/tokens/token.dart';
-import '../../../utils/riverpod_providers.dart';
-import '../widgets/import_token_entrys_list_tile.dart';
-import '../widgets/import_tokens_list.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../model/tokens/token.dart';
+import '../../../../utils/riverpod_providers.dart';
+import '../../widgets/import_token_entrys_list_tile.dart';
+import '../../widgets/import_tokens_list.dart';
 
 class ImportDecryptedFilePage extends ConsumerStatefulWidget {
   final Future<List<Token>> Function() importFunction;

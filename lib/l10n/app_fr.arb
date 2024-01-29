@@ -496,8 +496,8 @@
   "importTokens": "Importer un jeton",
   "selectFile": "Sélectionner un fichier",
   "decrypt": "Décrypter",
-  "fileNoValidBackupFor": "Le fichier sélectionné n'est pas une sauvegarde valide pour {name}",
-  "@fileNoValidBackupFor": {
+  "fileNoValidBackupFrom": "Le fichier sélectionné n'est pas une sauvegarde valide pour {name}",
+  "@fileNoValidBackupFrom": {
     "description": "Message indiquant à l'utilisateur que le fichier sélectionné n'est pas une sauvegarde valide pour le jeton",
     "placeholders": {
       "name": {
