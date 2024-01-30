@@ -498,16 +498,17 @@
       }
     }
   },
-  "fileIsEncrypted": "Wybrany plik jest zaszyfrowany. Wprowadź hasło, aby go odszyfrować.",
-  "fileNotEncrypted": "Wybrany plik nie jest zaszyfrowany. Można go zaimportować bezpośrednio.",
-  "fileSuccessfullyDecrypted": "Tokeny zostały pomyślnie odszyfrowane i można je teraz zaimportować.",
+  "tokensAreEncrypted": "Tokeny są zaszyfrowane. Wprowadź hasło, aby je odszyfrować",
+  "tokensNotEncrypted": "Tokeny nie są zaszyfrowane i mogą być importowane bezpośrednio.",
+  "tokensSuccessfullyDecrypted": "Tokeny zostały pomyślnie odszyfrowane i można je teraz zaimportować.",
   "password": "Hasło",
   "wrongPassword": "Nieprawidłowe hasło",
   "importExistingToken": "{count, plural, zero{ Plik nie zawiera tokenu, który już istnieje w aplikacji.} one{ Plik zawiera token, który już istnieje w aplikacji.} other{ Plik zawiera {count} tokenów, które już istnieją w aplikacji.}}",
   "importConflictToken": "{count, plural, zero{Nie ma konfliktu z tokenami, które już istnieją.} one{Istnieje konflikt z tokenami, które już istnieją.} other{Istnieje konflikt z tokenami, które już istnieją.}}",
   "importNewToken": "{count, plural, zero{Plik nie zawiera nowego tokena.} one{Plik zawiera nowy token, który zostanie zaimportowany.} other{Plik zawiera {count} nowych tokenów, które zostaną zaimportowane.}}",
-  "importHint2FAS": "Wybierz kopię zapasową 2FAS. Jeśli nie masz kopii zapasowej, utwórz ją w aplikacji 2FAS.\nZalecamy użycie hasła.",
-  "importHint2FASButton": "Wybierz 2FAS Backup",
+  "importHint2FAS": "Wybierz kopię zapasową 2FAS.\nJeśli nie masz kopii zapasowej, utwórz ją w aplikacji 2FAS. Zalecamy użycie hasła.",
+  "importHintAegis": "Wybierz kopię zapasową Aegis.\nJeśli nie masz kopii zapasowej, utwórz ją w aplikacji Aegis. Do importu wymagane jest hasło ustawione podczas pierwszego uruchomienia Aegis.",
+  "importHintGoogle": "Zeskanuj kod QR otrzymany podczas eksportowania kont z Google Authenticator.\n\nAlternatywnie możesz zrobić zrzut ekranu kodu QR i wybrać plik. (Przechowywanie zrzutu ekranu na urządzeniu nie jest bezpieczne)",
   "startQrScan": "Scan",
   "scanNoValidBackupFrom": "Zeskanowany kod QR nie jest prawidłową kopią zapasową {name}"
 }

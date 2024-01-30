@@ -526,13 +526,13 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get fileIsEncrypted => 'Het geselecteerde bestand is gecodeerd. Voer het wachtwoord in om het te decoderen';
+  String get tokensAreEncrypted => 'De tokens zijn gecodeerd. Voer het wachtwoord in om ze te decoderen.';
 
   @override
-  String get fileNotEncrypted => 'Het geselecteerde bestand is niet gecodeerd. Het kan direct worden geïmporteerd';
+  String get tokensNotEncrypted => 'De tokens zijn niet versleuteld en kunnen direct worden geïmporteerd.';
 
   @override
-  String get fileSuccessfullyDecrypted => 'De tokens zijn succesvol gedecodeerd en kunnen nu worden geïmporteerd.';
+  String get tokensSuccessfullyDecrypted => 'De tokens zijn succesvol gedecodeerd en kunnen nu worden geïmporteerd.';
 
   @override
   String get password => 'Wachtwoord';
@@ -577,10 +577,13 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get importHint2FAS => 'Selecteer uw 2FAS-back-up. Als je geen back-up hebt, maak er dan een aan in de 2FAS-app.\nWe raden aan een wachtwoord te gebruiken.';
+  String get importHint2FAS => 'Wähle dein 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.';
 
   @override
-  String get importHint2FASButton => 'Selecteer 2FAS Backup';
+  String get importHintAegis => 'Wähle dein Aegis-Backup aus.\nWenn Sie kein Backup haben, erstellen Sie bitte eins in der Aegis-App. Für den Import wird das Passwort benötigt, das beim ersten Start von Aegis festgelegt wurde.';
+
+  @override
+  String get importHintGoogle => 'Scan de QR-code die je ontvangt wanneer je je accounts exporteert vanuit Google Authenticator.\n\nJe kunt ook een screenshot maken van de QR-code en het bestand selecteren. (Het is niet veilig om de schermafbeelding op je apparaat te bewaren)';
 
   @override
   String get startQrScan => 'Scan';

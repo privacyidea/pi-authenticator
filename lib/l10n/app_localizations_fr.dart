@@ -526,13 +526,13 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get fileIsEncrypted => 'Le fichier sélectionné est crypté. Veuillez saisir le mot de passe pour le décrypter.';
+  String get tokensAreEncrypted => 'Les jetons sont cryptés. Veuillez saisir le mot de passe pour les décrypter';
 
   @override
-  String get fileNotEncrypted => 'Le fichier sélectionné n\'est pas crypté. Il peut être importé directement.';
+  String get tokensNotEncrypted => 'Les tokens ne sont pas cryptés, et peuvent être importés directement';
 
   @override
-  String get fileSuccessfullyDecrypted => 'Les tokens ont été décryptés avec succès, ils peuvent maintenant être importés.';
+  String get tokensSuccessfullyDecrypted => 'Les tokens ont été décryptés avec succès, ils peuvent maintenant être importés.';
 
   @override
   String get password => 'Mot de passe';
@@ -577,10 +577,13 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get importHint2FAS => 'Choisis ta sauvegarde 2FAS. Si tu n\'as pas de sauvegarde, crée-en une dans l\'app 2FAS.\nNous te recommandons d\'utiliser un mot de passe.';
+  String get importHint2FAS => 'Choisissez votre sauvegarde 2FAS.\nSi vous n\'avez pas de sauvegarde, créez-en une dans l\'application 2FAS. Nous vous recommandons d\'utiliser un mot de passe';
 
   @override
-  String get importHint2FASButton => 'Sélectionner 2FAS Backup';
+  String get importHintAegis => 'Sélectionnez votre sauvegarde Aegis.\nSi vous n\'avez pas de sauvegarde, veuillez en créer une dans l\'application Aegis. Pour l\'importation, le mot de passe défini lors du premier démarrage d\'Aegis est nécessaire';
+
+  @override
+  String get importHintGoogle => 'Scannez le code QR que vous obtenez lorsque vous exportez vos comptes depuis Google Authenticator.\n\nVous pouvez également faire une capture d\'écran du code QR et sélectionner le fichier. (Il n\'est pas sûr de conserver la capture d\'écran sur votre appareil)';
 
   @override
   String get startQrScan => 'Numériser';

@@ -526,13 +526,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get fileIsEncrypted => 'The selected file is encrypted. Please enter the password to decrypt it.';
+  String get tokensAreEncrypted => 'The tokens are encrypted. Please enter the password to decrypt them.';
 
   @override
-  String get fileNotEncrypted => 'The selected file is not encrypted. It can be imported directly.';
+  String get tokensNotEncrypted => 'The tokens are not encrypted and can be imported directly.';
 
   @override
-  String get fileSuccessfullyDecrypted => 'The tokens have been successfully decrypted and can now be imported.';
+  String get tokensSuccessfullyDecrypted => 'The tokens have been successfully decrypted and can now be imported.';
 
   @override
   String get password => 'Password';
@@ -577,10 +577,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get importHint2FAS => 'Select your 2FAS backup. If you don\'t have a backup, create one in the 2FAS app.\nWe recommend using a password.';
+  String get importHint2FAS => 'Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.';
 
   @override
-  String get importHint2FASButton => 'Select 2FAS Backup';
+  String get importHintAegis => 'Select your Aegis backup.\nIf you do not have a backup, please create one in the Aegis app. The password that was set when Aegis was first started is required for the import.';
+
+  @override
+  String get importHintGoogle => 'Scan the QR code you receive when you export your accounts from Google Authenticator.\n\nAlternatively, you can take a screenshot of the QR code and select the file. (It is not safe to keep the screenshot on your device)';
 
   @override
   String get startQrScan => 'Scan';

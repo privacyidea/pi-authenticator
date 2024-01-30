@@ -52,13 +52,13 @@ class TokenImportSourceList {
   static List<TokenImportSource> appList = [
     TokenImportQrScanSource(
       appName: 'Google Authenticator',
-      importHint: (context) => '', // AppLocalizations.of(context)!.importHintGoogleAuthenticator,
+      importHint: (context) => AppLocalizations.of(context)!.importHintGoogle,
       iconPath: '${_importSourceIconFolder}google_authenticator.png',
       processor: const OtpAuthMigrationProcessor(),
     ),
     TokenImportFileSource(
       appName: 'Aegis Authenticator',
-      importHint: (context) => '', //  AppLocalizations.of(context)!.importHintAegisAuthenticator,
+      importHint: (context) => AppLocalizations.of(context)!.importHintAegis,
       iconPath: '${_importSourceIconFolder}aegis_authenticator.png',
       processor: const AegisImportFileProcessor(),
     ),

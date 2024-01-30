@@ -41,7 +41,7 @@ class _ImportEncryptedFilePageState extends State<ImportEncryptedFilePage> {
                   ),
                   const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
                   Text(
-                    AppLocalizations.of(context)!.fileIsEncrypted,
+                    AppLocalizations.of(context)!.tokensAreEncrypted,
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(

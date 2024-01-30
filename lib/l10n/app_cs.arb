@@ -504,16 +504,17 @@
       }
     }
   },
-  "fileIsEncrypted": "Vybraný soubor je zašifrovaný. Zadejte prosím heslo pro jeho dešifrování.",
-  "fileNotEncrypted": "Vybraný soubor není zašifrovaný. Lze jej importovat přímo.",
-  "fileSuccessfullyDecrypted": "Tokeny byly úspěšně dešifrovány a nyní je lze importovat.",
+  "tokensAreEncrypted": "Tokeny jsou zašifrované. Please enter the password to decrypt them.",
+  "tokensNotEncrypted": "Tokeny nejsou šifrované a lze je importovat přímo.",
+  "tokensSuccessfullyDecrypted": "Tokeny byly úspěšně dešifrovány a nyní je lze importovat.",
   "password": "Heslo",
   "wrongPassword": "Nesprávné heslo",
   "importExistingToken": "{count, plural, zero{Soubor neobsahuje token, který je již v aplikaci.} one{Soubor obsahuje token, který je již v aplikaci.} other{Soubor obsahuje {count} tokenů, které jsou již v aplikaci.}}",
   "importConflictToken": "{count, plural, zero{Není konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který chcete zachovat.}}",
   "importNewToken": "{count, plural, zero{Soubor neobsahuje nový token.} one{Soubor obsahuje nový token, který bude importován.} other{Soubor obsahuje {count} nových tokenů, které budou importovány.}}",
-  "importHint2FAS": "Vyberte zálohu 2FAS. Pokud zálohu nemáte, vytvořte ji v aplikaci 2FAS.\nDoporučujeme použít heslo.",
-  "importHint2FASButton": "Vyberte možnost Zálohování 2FAS",
+  "importHint2FAS": "Vyberte zálohu 2FAS.\nPokud zálohu nemáte, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.",
+  "importHintAegis": "Vyberte svou zálohu Aegis.\nPokud zálohu nemáte, vytvořte si ji v aplikaci Aegis. Pro import je vyžadováno heslo, které bylo nastaveno při prvním spuštění aplikace Aegis.",
+  "importHintGoogle": "Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.\n\nPřípadně můžete pořídit snímek obrazovky QR kódu a vybrat soubor. (Není bezpečné uchovávat snímek obrazovky ve svém zařízení).",
   "startQrScan": "Skenování",
   "scanNoValidBackupFrom": "Naskenovaný QR kód není platnou zálohou z {name}."
 }

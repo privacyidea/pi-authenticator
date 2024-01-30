@@ -526,13 +526,13 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get fileIsEncrypted => 'Wybrany plik jest zaszyfrowany. Wprowadź hasło, aby go odszyfrować.';
+  String get tokensAreEncrypted => 'Tokeny są zaszyfrowane. Wprowadź hasło, aby je odszyfrować';
 
   @override
-  String get fileNotEncrypted => 'Wybrany plik nie jest zaszyfrowany. Można go zaimportować bezpośrednio.';
+  String get tokensNotEncrypted => 'Tokeny nie są zaszyfrowane i mogą być importowane bezpośrednio.';
 
   @override
-  String get fileSuccessfullyDecrypted => 'Tokeny zostały pomyślnie odszyfrowane i można je teraz zaimportować.';
+  String get tokensSuccessfullyDecrypted => 'Tokeny zostały pomyślnie odszyfrowane i można je teraz zaimportować.';
 
   @override
   String get password => 'Hasło';
@@ -577,10 +577,13 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get importHint2FAS => 'Wybierz kopię zapasową 2FAS. Jeśli nie masz kopii zapasowej, utwórz ją w aplikacji 2FAS.\nZalecamy użycie hasła.';
+  String get importHint2FAS => 'Wybierz kopię zapasową 2FAS.\nJeśli nie masz kopii zapasowej, utwórz ją w aplikacji 2FAS. Zalecamy użycie hasła.';
 
   @override
-  String get importHint2FASButton => 'Wybierz 2FAS Backup';
+  String get importHintAegis => 'Wybierz kopię zapasową Aegis.\nJeśli nie masz kopii zapasowej, utwórz ją w aplikacji Aegis. Do importu wymagane jest hasło ustawione podczas pierwszego uruchomienia Aegis.';
+
+  @override
+  String get importHintGoogle => 'Zeskanuj kod QR otrzymany podczas eksportowania kont z Google Authenticator.\n\nAlternatywnie możesz zrobić zrzut ekranu kodu QR i wybrać plik. (Przechowywanie zrzutu ekranu na urządzeniu nie jest bezpieczne)';
 
   @override
   String get startQrScan => 'Scan';

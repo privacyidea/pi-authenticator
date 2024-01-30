@@ -501,16 +501,17 @@
       }
     }
   },
-  "fileIsEncrypted": "Het geselecteerde bestand is gecodeerd. Voer het wachtwoord in om het te decoderen",
-  "fileNotEncrypted": "Het geselecteerde bestand is niet gecodeerd. Het kan direct worden geïmporteerd",
-  "fileSuccessfullyDecrypted": "De tokens zijn succesvol gedecodeerd en kunnen nu worden geïmporteerd.",
+  "tokensAreEncrypted": "De tokens zijn gecodeerd. Voer het wachtwoord in om ze te decoderen.",
+  "tokensNotEncrypted": "De tokens zijn niet versleuteld en kunnen direct worden geïmporteerd.",
+  "tokensSuccessfullyDecrypted": "De tokens zijn succesvol gedecodeerd en kunnen nu worden geïmporteerd.",
   "password": "Wachtwoord",
   "wrongPassword": "Onjuist wachtwoord",
   "importExistingToken": "{count, plural, zero{Het bestand bevat geen token dat al in de toepassing is.} one{Het bestand bevat een token dat al in de toepassing is.} other{Het bestand bevat {count} tokens die al in de toepassing zijn.}}",
   "importConflictToken": "{count, plural, zero{Er is geen conflict met tokens die al bestaan.} one{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.} other{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.}}",
   "importNewToken": "{count, plural, zero{Het bestand bevat geen nieuw token.} one{Het bestand bevat een nieuw token dat zal worden geïmporteerd.} other{Het bestand bevat {count} nieuwe tokens die zullen worden geïmporteerd.}}",
-  "importHint2FAS": "Selecteer uw 2FAS-back-up. Als je geen back-up hebt, maak er dan een aan in de 2FAS-app.\nWe raden aan een wachtwoord te gebruiken.",
-  "importHint2FASButton": "Selecteer 2FAS Backup",
+  "importHint2FAS": "Wähle dein 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.",
+  "importHintAegis": "Wähle dein Aegis-Backup aus.\nWenn Sie kein Backup haben, erstellen Sie bitte eins in der Aegis-App. Für den Import wird das Passwort benötigt, das beim ersten Start von Aegis festgelegt wurde.",
+  "importHintGoogle": "Scan de QR-code die je ontvangt wanneer je je accounts exporteert vanuit Google Authenticator.\n\nJe kunt ook een screenshot maken van de QR-code en het bestand selecteren. (Het is niet veilig om de schermafbeelding op je apparaat te bewaren)",
   "startQrScan": "Scan",
   "scanNoValidBackupFrom": "De gescande QR code is geen geldige backup van {name}."
 }

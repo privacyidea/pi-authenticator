@@ -1093,23 +1093,23 @@ abstract class AppLocalizations {
   /// **'The selected file is not a valid backup from {name}.'**
   String fileNoValidBackupFrom(Object name);
 
-  /// No description provided for @fileIsEncrypted.
+  /// No description provided for @tokensAreEncrypted.
   ///
   /// In en, this message translates to:
-  /// **'The selected file is encrypted. Please enter the password to decrypt it.'**
-  String get fileIsEncrypted;
+  /// **'The tokens are encrypted. Please enter the password to decrypt them.'**
+  String get tokensAreEncrypted;
 
-  /// No description provided for @fileNotEncrypted.
+  /// No description provided for @tokensNotEncrypted.
   ///
   /// In en, this message translates to:
-  /// **'The selected file is not encrypted. It can be imported directly.'**
-  String get fileNotEncrypted;
+  /// **'The tokens are not encrypted and can be imported directly.'**
+  String get tokensNotEncrypted;
 
-  /// No description provided for @fileSuccessfullyDecrypted.
+  /// No description provided for @tokensSuccessfullyDecrypted.
   ///
   /// In en, this message translates to:
   /// **'The tokens have been successfully decrypted and can now be imported.'**
-  String get fileSuccessfullyDecrypted;
+  String get tokensSuccessfullyDecrypted;
 
   /// No description provided for @password.
   ///
@@ -1144,14 +1144,20 @@ abstract class AppLocalizations {
   /// No description provided for @importHint2FAS.
   ///
   /// In en, this message translates to:
-  /// **'Select your 2FAS backup. If you don\'t have a backup, create one in the 2FAS app.\nWe recommend using a password.'**
+  /// **'Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.'**
   String get importHint2FAS;
 
-  /// No description provided for @importHint2FASButton.
+  /// No description provided for @importHintAegis.
   ///
   /// In en, this message translates to:
-  /// **'Select 2FAS Backup'**
-  String get importHint2FASButton;
+  /// **'Select your Aegis backup.\nIf you do not have a backup, please create one in the Aegis app. The password that was set when Aegis was first started is required for the import.'**
+  String get importHintAegis;
+
+  /// No description provided for @importHintGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the QR code you receive when you export your accounts from Google Authenticator.\n\nAlternatively, you can take a screenshot of the QR code and select the file. (It is not safe to keep the screenshot on your device)'**
+  String get importHintGoogle;
 
   /// No description provided for @startQrScan.
   ///

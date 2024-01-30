@@ -500,16 +500,17 @@
       }
     }
   },
-  "fileIsEncrypted": "El archivo seleccionado está cifrado. Por favor, introduzca la contraseña para desencriptarlo",
-  "fileNotEncrypted": "El archivo seleccionado no está cifrado. Se puede importar directamente",
-  "fileSuccessfullyDecrypted": "Los tokens se han descifrado correctamente y ya se pueden importar.",
+  "tokensAreEncrypted": "Los tokens están encriptados. Por favor, introduce la contraseña para descifrarlos",
+  "tokensNotEncrypted": "Los tokens no están encriptados y se pueden importar directamente",
+  "tokensSuccessfullyDecrypted": "Los tokens se han descifrado correctamente y ya se pueden importar.",
   "password": "Contraseña",
   "wrongPassword": "Contraseña incorrecta",
   "importExistingToken": "{count, plural, zero{El archivo no contiene un token que ya está en la aplicación.} one{El archivo contiene un token que ya está en la aplicación.} other{El archivo contiene {count} tokens que ya están en la aplicación.}}",
   "importConflictToken": "{count, plural, zero{No hay conflicto con tokens que ya existen.} one{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.} other{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.}}",
   "importNewToken": "{count, plural, zero{El archivo no contiene un nuevo token.} one{El archivo contiene un nuevo token que será importado.} other{El archivo contiene {count} nuevos tokens que serán importados.}}",
-  "importHint2FAS": "Seleccione su copia de seguridad de 2FAS. Si no tiene copia de seguridad, cree una en la aplicación 2FAS.\nLe recomendamos que utilice una contraseña.",
-  "importHint2FASButton": "Seleccione 2FAS Backup",
+  "importHint2FAS": "Seleccione su copia de seguridad de 2FAS.\nSi no tiene copia de seguridad, cree una en la aplicación 2FAS. Recomendamos utilizar una contraseña",
+  "importHintAegis": "Seleccione su copia de seguridad de Aegis.\nSi no dispone de una copia de seguridad, cree una en la aplicación Aegis. La contraseña que se estableció al iniciar Aegis por primera vez es necesaria para la importación.",
+  "importHintGoogle": "Escanea el código QR que recibes al exportar tus cuentas desde Google Authenticator.\n\nAlternativamente, puedes hacer una captura de pantalla del código QR y seleccionar el archivo. (No es seguro guardar la captura de pantalla en su dispositivo)",
   "startQrScan": "Escanear",
   "scanNoValidBackupFrom": "El código QR escaneado no es una copia de seguridad válida de {name}"
 }

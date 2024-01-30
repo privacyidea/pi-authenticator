@@ -526,13 +526,13 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get fileIsEncrypted => 'Vybraný soubor je zašifrovaný. Zadejte prosím heslo pro jeho dešifrování.';
+  String get tokensAreEncrypted => 'Tokeny jsou zašifrované. Please enter the password to decrypt them.';
 
   @override
-  String get fileNotEncrypted => 'Vybraný soubor není zašifrovaný. Lze jej importovat přímo.';
+  String get tokensNotEncrypted => 'Tokeny nejsou šifrované a lze je importovat přímo.';
 
   @override
-  String get fileSuccessfullyDecrypted => 'Tokeny byly úspěšně dešifrovány a nyní je lze importovat.';
+  String get tokensSuccessfullyDecrypted => 'Tokeny byly úspěšně dešifrovány a nyní je lze importovat.';
 
   @override
   String get password => 'Heslo';
@@ -577,10 +577,13 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get importHint2FAS => 'Vyberte zálohu 2FAS. Pokud zálohu nemáte, vytvořte ji v aplikaci 2FAS.\nDoporučujeme použít heslo.';
+  String get importHint2FAS => 'Vyberte zálohu 2FAS.\nPokud zálohu nemáte, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.';
 
   @override
-  String get importHint2FASButton => 'Vyberte možnost Zálohování 2FAS';
+  String get importHintAegis => 'Vyberte svou zálohu Aegis.\nPokud zálohu nemáte, vytvořte si ji v aplikaci Aegis. Pro import je vyžadováno heslo, které bylo nastaveno při prvním spuštění aplikace Aegis.';
+
+  @override
+  String get importHintGoogle => 'Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.\n\nPřípadně můžete pořídit snímek obrazovky QR kódu a vybrat soubor. (Není bezpečné uchovávat snímek obrazovky ve svém zařízení).';
 
   @override
   String get startQrScan => 'Skenování';
