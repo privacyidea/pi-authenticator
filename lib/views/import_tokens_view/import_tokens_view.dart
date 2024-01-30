@@ -9,7 +9,13 @@ import 'pages/import_from_qr_pages/import_start_qr_scan_page.dart';
 class ImportTokensView extends ConsumerStatefulWidget {
   static const routeName = '/import_tokens';
 
+  static const double pagePaddingHorizontal = 40;
+  static const double itemSpacingHorizontal = 20;
+  static const double itemSpacingVertical = 10;
+  static const double iconSize = 100;
+
   final TokenImportSource? selectedSource;
+
   const ImportTokensView({this.selectedSource, super.key});
 
   @override

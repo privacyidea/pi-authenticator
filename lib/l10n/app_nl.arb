@@ -492,11 +492,11 @@
   "importTokens": "Token importeren",
   "selectFile": "Selecteer bestand",
   "decrypt": "Decoderen",
-  "fileNoValidBackupFrom": "Het geselecteerde bestand is geen geldige back-up voor {name}.",
+  "fileNoValidBackupFrom": "Het geselecteerde bestand is geen geldige back-up van {name}.",
   "@fileNoValidBackupFrom": {
     "description": "Bericht dat de gebruiker vertelt dat het geselecteerde bestand geen geldige back-up is voor het token.",
     "placeholders": {
-      "naam": {
+      "naanamem": {
         "example": "privacyIDEA Authenticator"
       }
     }
@@ -510,5 +510,7 @@
   "importConflictToken": "{count, plural, zero{Er is geen conflict met tokens die al bestaan.} one{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.} other{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.}}",
   "importNewToken": "{count, plural, zero{Het bestand bevat geen nieuw token.} one{Het bestand bevat een nieuw token dat zal worden geïmporteerd.} other{Het bestand bevat {count} nieuwe tokens die zullen worden geïmporteerd.}}",
   "importHint2FAS": "Selecteer uw 2FAS-back-up. Als je geen back-up hebt, maak er dan een aan in de 2FAS-app.\nWe raden aan een wachtwoord te gebruiken.",
-  "importHint2FASButton": "Selecteer 2FAS Backup"
+  "importHint2FASButton": "Selecteer 2FAS Backup",
+  "startQrScan": "Scan",
+  "scanNoValidBackupFrom": "De gescande QR code is geen geldige backup van {name}."
 }

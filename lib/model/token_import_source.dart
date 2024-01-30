@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/processors/mixins/token_migrate_processor.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_scheme_processors/otp_auth_migration_processor.dart';
 
+import '../l10n/app_localizations.dart';
 import '../processors/token_migrate_file_processor/aegis_migrate_file_processor.dart';
 import '../processors/token_migrate_file_processor/token_migrate_file_processor_interface.dart';
 import '../processors/token_migrate_file_processor/two_fas_migrate_file_processor.dart';
@@ -63,7 +64,7 @@ class TokenImportSourceList {
     ),
     TokenImportFileSource(
       appName: '2FAS Authenticator',
-      importHint: (context) => '', // AppLocalizations.of(context)!.importHint2FAS,
+      importHint: (context) => AppLocalizations.of(context)!.importHint2FAS,
       iconPath: '${_importSourceIconFolder}2fas.png',
       processor: const TwoFasFileImportProcessor(),
     ),

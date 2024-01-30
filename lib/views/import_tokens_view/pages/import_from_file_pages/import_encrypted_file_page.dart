@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../processors/token_migrate_file_processor/two_fas_migrate_file_processor.dart';
+import '../../import_tokens_view.dart';
 import 'import_decrypted_file_page.dart';
 
 class ImportEncryptedFilePage extends StatefulWidget {
@@ -30,21 +31,21 @@ class _ImportEncryptedFilePageState extends State<ImportEncryptedFilePage> {
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
+              padding: const EdgeInsets.symmetric(horizontal: ImportTokensView.pagePaddingHorizontal),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Icon(
                     Icons.file_present,
-                    size: 100,
+                    size: ImportTokensView.iconSize,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
                   Text(
                     AppLocalizations.of(context)!.fileIsEncrypted,
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
-                    height: 80,
+                    height: ImportTokensView.itemSpacingHorizontal * 4,
                     child: Row(
                       children: [
                         Flexible(
@@ -61,7 +62,7 @@ class _ImportEncryptedFilePageState extends State<ImportEncryptedFilePage> {
                             obscureText: !isPasswordVisible,
                           ),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: ImportTokensView.itemSpacingVertical),
                         Flexible(
                           child: GestureDetector(
                             child: const SizedBox(
@@ -83,41 +84,49 @@ class _ImportEncryptedFilePageState extends State<ImportEncryptedFilePage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
                   future != null
                       ? const CircularProgressIndicator()
-                      : ElevatedButton(
-                          onPressed: passwordController.text.isEmpty || wrongPassword
-                              ? null
-                              : () async {
-                                  setState(() {
-                                    future = Future<void>(
-                                      () async {
-                                        // Future.delayed(const Duration(seconds: 1)).then((value) => null);
-                                        List<Token> tokens;
-                                        try {
-                                          tokens = await widget.importFunction(password: passwordController.text);
-                                        } on BadDecryptionPasswordException catch (_) {
+                      : SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: passwordController.text.isEmpty || wrongPassword
+                                ? null
+                                : () async {
+                                    setState(() {
+                                      future = Future<void>(
+                                        () async {
+                                          // Future.delayed(const Duration(seconds: 1)).then((value) => null);
+                                          List<Token> tokens;
+                                          try {
+                                            tokens = await widget.importFunction(password: passwordController.text);
+                                          } on BadDecryptionPasswordException catch (_) {
+                                            setState(() {
+                                              wrongPassword = true;
+                                              future = null;
+                                            });
+                                            return;
+                                          }
                                           setState(() {
-                                            wrongPassword = true;
                                             future = null;
                                           });
-                                          return;
-                                        }
-                                        setState(() {
-                                          future = null;
-                                        });
-                                        _pushAsync(MaterialPageRoute(
-                                          builder: (context) => ImportDecryptedFilePage(
-                                            importFunction: ({String? password}) => Future(() => tokens),
-                                            appName: widget.appName,
-                                          ),
-                                        ));
-                                      },
-                                    );
-                                  });
-                                },
-                          child: Text(AppLocalizations.of(context)!.decrypt),
+                                          _pushAsync(MaterialPageRoute(
+                                            builder: (context) => ImportDecryptedFilePage(
+                                              importFunction: ({String? password}) => Future(() => tokens),
+                                              appName: widget.appName,
+                                            ),
+                                          ));
+                                        },
+                                      );
+                                    });
+                                  },
+                            child: Text(
+                              AppLocalizations.of(context)!.decrypt,
+                              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                            ),
+                          ),
                         ),
                 ],
               ),

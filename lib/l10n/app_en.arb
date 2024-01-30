@@ -513,6 +513,6 @@
   "importNewToken": "{count, plural, zero{The file does not contain a new token.} one{The file contains a new token that will be imported.} other{The file contains {count} new tokens that will be imported.}}",
   "importHint2FAS": "Select your 2FAS backup. If you don't have a backup, create one in the 2FAS app.\nWe recommend using a password.",
   "importHint2FASButton": "Select 2FAS Backup",
-  "startQrScan": "Scan QR code",
+  "startQrScan": "Scan",
   "scanNoValidBackupFrom": "The scanned QR code is not a valid backup from {name}."
 }

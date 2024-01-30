@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/riverpod_providers.dart';
+import '../../import_tokens_view.dart';
 import '../../widgets/import_token_entrys_list_tile.dart';
 import '../../widgets/import_tokens_list.dart';
 
@@ -92,14 +93,14 @@ class _ImportFileNoPwState extends ConsumerState<ImportDecryptedFilePage> {
               child: Column(
                 children: [
                   const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40),
+                    padding: EdgeInsets.symmetric(horizontal: ImportTokensView.pagePaddingHorizontal),
                     child: Icon(
                       Icons.file_present,
                       color: Colors.green,
-                      size: 100,
+                      size: ImportTokensView.iconSize,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
                   FutureBuilder(
                       future: initImportTokenEntries,
                       builder: (context, snapshot) {
@@ -163,13 +164,24 @@ class _ImportFileNoPwState extends ConsumerState<ImportDecryptedFilePage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-            child: ElevatedButton(
-              onPressed: importTokens == null || importTokens!.contains(null)
-                  ? null
-                  : () => ref.read(tokenProvider.notifier).addOrReplaceTokens(importTokens!.cast<Token>()).then((_) => _popAll()),
-              child: Text(
-                importTokens?.isEmpty == false ? AppLocalizations.of(context)!.importTokens : AppLocalizations.of(context)!.ok,
+            padding: const EdgeInsets.fromLTRB(
+              ImportTokensView.pagePaddingHorizontal,
+              0,
+              ImportTokensView.pagePaddingHorizontal,
+              8,
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: importTokens == null || importTokens!.contains(null)
+                    ? null
+                    : () => ref.read(tokenProvider.notifier).addOrReplaceTokens(importTokens!.cast<Token>()).then((_) => _popAll()),
+                child: Text(
+                  importTokens?.isEmpty == false ? AppLocalizations.of(context)!.importTokens : AppLocalizations.of(context)!.ok,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
               ),
             ),
           ),

@@ -496,7 +496,7 @@
   "importTokens": "Importer un jeton",
   "selectFile": "Sélectionner un fichier",
   "decrypt": "Décrypter",
-  "fileNoValidBackupFrom": "Le fichier sélectionné n'est pas une sauvegarde valide pour {name}",
+  "fileNoValidBackupFrom": "Le fichier sélectionné n'est pas une sauvegarde valide de {name}",
   "@fileNoValidBackupFrom": {
     "description": "Message indiquant à l'utilisateur que le fichier sélectionné n'est pas une sauvegarde valide pour le jeton",
     "placeholders": {
@@ -514,5 +514,7 @@
   "importConflictToken": "{count, plural, zero{Il n'y a pas de conflit avec des tokens déjà existants.} one{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.} other{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.}}",
   "importNewToken": "{count, plural, zero{Le fichier ne contient pas de nouveau token.} one{Le fichier contient un nouveau token qui sera importé.} other{Le fichier contient {count} nouveaux tokens qui seront importés.}}",
   "importHint2FAS": "Choisis ta sauvegarde 2FAS. Si tu n'as pas de sauvegarde, crée-en une dans l'app 2FAS.\nNous te recommandons d'utiliser un mot de passe.",
-  "importHint2FASButton": "Sélectionner 2FAS Backup"
+  "importHint2FASButton": "Sélectionner 2FAS Backup",
+  "startQrScan": "Numériser",
+  "fileNoValidQrScanFrom": "Le code QR scanné n'est pas une sauvegarde valide de {name}."
 }

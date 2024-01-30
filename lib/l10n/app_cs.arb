@@ -514,6 +514,6 @@
   "importNewToken": "{count, plural, zero{Soubor neobsahuje nový token.} one{Soubor obsahuje nový token, který bude importován.} other{Soubor obsahuje {count} nových tokenů, které budou importovány.}}",
   "importHint2FAS": "Vyberte zálohu 2FAS. Pokud zálohu nemáte, vytvořte ji v aplikaci 2FAS.\nDoporučujeme použít heslo.",
   "importHint2FASButton": "Vyberte možnost Zálohování 2FAS",
-  "startQrScan": "Skenovat QR kód",
+  "startQrScan": "Skenování",
   "scanNoValidBackupFrom": "Naskenovaný QR kód není platnou zálohou z {name}."
 }

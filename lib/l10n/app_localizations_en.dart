@@ -107,8 +107,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enablePolling => 'Enable polling';
 
   @override
-  String get requestPushChallengesPeriodically =>
-      'Request push challenges from the server periodically. Enable this if push challenges are not received normally.';
+  String get requestPushChallengesPeriodically => 'Request push challenges from the server periodically. Enable this if push challenges are not received normally.';
 
   @override
   String get synchronizePushTokens => 'Synchronize push tokens';
@@ -288,8 +287,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendErrorLog => 'Send';
 
   @override
-  String get sendErrorLogDescription =>
-      'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:';
+  String get sendErrorLogDescription => 'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:';
 
   @override
   String get showPrivacyPolicy => 'Show privacy policy';
@@ -316,8 +314,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get open => 'Open';
 
   @override
-  String get sendErrorDialogBody =>
-      'An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.';
+  String get sendErrorDialogBody => 'An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.';
 
   @override
   String get noFbToken => 'No Firebase token available';
@@ -438,8 +435,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Please grant camera permission to scan QR codes.';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied =>
-      'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.';
+  String get grantCameraPermissionDialogPermanentlyDenied => 'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.';
 
   @override
   String get grantCameraPermissionDialogButton => 'Grant permission';
@@ -448,8 +444,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get decryptErrorTitle => 'Decryption error';
 
   @override
-  String get decryptErrorContent =>
-      'Unfortunately, the app was unable to decrypt your tokens. This indicates that the encryption key is broken. You can try again or delete the app data, which would delete the tokens in the app.';
+  String get decryptErrorContent => 'Unfortunately, the app was unable to decrypt your tokens. This indicates that the encryption key is broken. You can try again or delete the app data, which would delete the tokens in the app.';
 
   @override
   String get decryptErrorButtonDelete => 'Delete';
@@ -467,8 +462,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hidePushTokens => 'Hide push tokens';
 
   @override
-  String get hidePushTokensDescription =>
-      'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
+  String get hidePushTokensDescription => 'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
 
   @override
   String get settingsGroupGeneral => 'General';
@@ -480,8 +474,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicy => 'Privacy policy';
 
   @override
-  String get introScanQrCode =>
-      'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
 
   @override
   String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
@@ -513,8 +506,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get legacySigningErrorMessage =>
-      'The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!';
+  String get legacySigningErrorMessage => 'The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!';
 
   @override
   String get selectImportSource => 'Select import source';
@@ -530,7 +522,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String fileNoValidBackupFrom(Object name) {
-    return 'The selected file is not a valid backup for $name.';
+    return 'The selected file is not a valid backup from $name.';
   }
 
   @override
@@ -589,4 +581,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get importHint2FASButton => 'Select 2FAS Backup';
+
+  @override
+  String get startQrScan => 'Scan';
+
+  @override
+  String scanNoValidBackupFrom(Object name) {
+    return 'The scanned QR code is not a valid backup from $name.';
+  }
 }

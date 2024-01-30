@@ -93,7 +93,15 @@ abstract class AppLocalizations {
   ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('cs'), Locale('de'), Locale('en'), Locale('es'), Locale('fr'), Locale('nl'), Locale('pl')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('cs'),
+    Locale('de'),
+    Locale('en'),
+    Locale('es'),
+    Locale('fr'),
+    Locale('nl'),
+    Locale('pl')
+  ];
 
   /// Label for e.g. a button. Something gets accepted by the user.
   ///
@@ -1082,7 +1090,7 @@ abstract class AppLocalizations {
   /// Message that tells the user that the selected file is not a valid backup for the token.
   ///
   /// In en, this message translates to:
-  /// **'The selected file is not a valid backup for {name}.'**
+  /// **'The selected file is not a valid backup from {name}.'**
   String fileNoValidBackupFrom(Object name);
 
   /// No description provided for @fileIsEncrypted.
@@ -1144,6 +1152,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select 2FAS Backup'**
   String get importHint2FASButton;
+
+  /// No description provided for @startQrScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get startQrScan;
+
+  /// No description provided for @scanNoValidBackupFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'The scanned QR code is not a valid backup from {name}.'**
+  String scanNoValidBackupFrom(Object name);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -1162,26 +1182,23 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'cs':
-      return AppLocalizationsCs();
-    case 'de':
-      return AppLocalizationsDe();
-    case 'en':
-      return AppLocalizationsEn();
-    case 'es':
-      return AppLocalizationsEs();
-    case 'fr':
-      return AppLocalizationsFr();
-    case 'nl':
-      return AppLocalizationsNl();
-    case 'pl':
-      return AppLocalizationsPl();
+    case 'cs': return AppLocalizationsCs();
+    case 'de': return AppLocalizationsDe();
+    case 'en': return AppLocalizationsEn();
+    case 'es': return AppLocalizationsEs();
+    case 'fr': return AppLocalizationsFr();
+    case 'nl': return AppLocalizationsNl();
+    case 'pl': return AppLocalizationsPl();
   }
 
-  throw FlutterError('AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.'
+  );
 }
