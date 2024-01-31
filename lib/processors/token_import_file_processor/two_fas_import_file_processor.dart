@@ -13,9 +13,9 @@ import '../../model/token_origin.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
-import 'token_migrate_file_processor_interface.dart';
+import 'token_import_file_processor_interface.dart';
 
-class TwoFasFileImportProcessor extends TokenMigrateFileProcessor {
+class TwoFasFileImportProcessor extends TokenImportFileProcessor {
   const TwoFasFileImportProcessor();
   static const String TWOFAS_TYPE = 'tokenType';
   static const String TWOFAS_ISSUER = 'name';
@@ -127,8 +127,8 @@ class TwoFasFileImportProcessor extends TokenMigrateFileProcessor {
       URI_LABEL: twoFasOTP[TWOFAS_LABEL],
       URI_DIGITS: twoFasOTP[TWOFAS_DIGITS],
       URI_COUNTER: twoFasOTP[TWOFAS_COUNTER],
-      URI_ORIGIN: TokenOrigin(
-        source: TokenOriginSourceType.import,
+      URI_ORIGIN: TokenOriginData(
+        source: TokenOriginSourceType.backupFile,
         appName: '2FAS Authenticator',
         data: jsonEncode(twoFasToken),
       ),

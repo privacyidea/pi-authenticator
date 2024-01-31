@@ -68,7 +68,7 @@ class DayPasswordToken extends OTPToken {
     bool? isLocked,
     bool? isHidden,
     int? Function()? folderId,
-    TokenOrigin? origin,
+    TokenOriginData? origin,
   }) =>
       DayPasswordToken(
         period: period ?? this.period,

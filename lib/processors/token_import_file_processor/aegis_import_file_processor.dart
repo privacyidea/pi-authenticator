@@ -14,8 +14,8 @@ import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../utils/crypto_utils.dart';
-import 'token_migrate_file_processor_interface.dart';
-import 'two_fas_migrate_file_processor.dart';
+import 'token_import_file_processor_interface.dart';
+import 'two_fas_import_file_processor.dart';
 
 /// Args: [SendPort] sendPort, [ScryptParameters] scryptParameters, [String] password
 void _isolatedKdf(List args) {
@@ -32,7 +32,7 @@ void _isolatedKdf(List args) {
   sendPort.send(keyBytes);
 }
 
-class AegisImportFileProcessor extends TokenMigrateFileProcessor {
+class AegisImportFileProcessor extends TokenImportFileProcessor {
   const AegisImportFileProcessor();
 
   static const String AEGIS_TYPE = 'type';

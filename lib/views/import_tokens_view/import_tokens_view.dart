@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/views/import_tokens_view/pages/import_start_page.dart';
+import 'package:privacyidea_authenticator/views/import_tokens_view/pages/select_import_type_page.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../model/token_import_source.dart';
-import 'pages/import_from_file_pages/import_select_file_page.dart';
-import 'pages/import_from_qr_pages/import_start_qr_scan_page.dart';
+import '../../model/token_import_origin.dart';
 
 class ImportTokensView extends ConsumerStatefulWidget {
   static const routeName = '/import_tokens';
@@ -14,7 +14,7 @@ class ImportTokensView extends ConsumerStatefulWidget {
   static const double itemSpacingVertical = 10;
   static const double iconSize = 100;
 
-  final TokenImportSource? selectedSource;
+  final TokenImportOrigin? selectedSource;
 
   const ImportTokensView({this.selectedSource, super.key});
 
@@ -23,24 +23,20 @@ class ImportTokensView extends ConsumerStatefulWidget {
 }
 
 class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
-  String? fileContent;
-  TextEditingController? passwordController;
-  bool fileContentIsValid = false;
-  bool wrongPassword = false;
-  bool passwordIsNeeded = false;
-  bool isPasswordVisible = false;
-
-  @override
-  void initState() {
-    super.initState();
-    passwordController = TextEditingController(text: '');
+  void _onPressed(TokenImportOrigin tokenImportOrigin) {
+    if (tokenImportOrigin.importEntitys.length == 1) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ImportStartPage(
+            appName: tokenImportOrigin.appName,
+            selectedEntity: tokenImportOrigin.importEntitys.first,
+          ),
+        ),
+      );
+      return;
+    }
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SelectImportTypePage(tokenImportSource: tokenImportOrigin)));
   }
-
-  void onPressed(TokenImportSource tokenImportSource) => switch (tokenImportSource.runtimeType) {
-        const (TokenImportQrScanSource) => onPressedQrScan(tokenImportSource as TokenImportQrScanSource),
-        const (TokenImportFileSource) => onPressedFile(tokenImportSource as TokenImportFileSource),
-        _ => throw Exception('Unknown token import source type: ${tokenImportSource.runtimeType}'),
-      };
 
   @override
   Widget build(BuildContext context) {
@@ -60,35 +56,17 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
                 ListTile(
                   // leading: Image.asset(appList[index].iconPath!),
                   title: TextButton(
-                    onPressed: () => onPressed(item),
+                    onPressed: () => _onPressed(item),
                     child: Text(item.appName),
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.arrow_forward_ios),
-                    onPressed: () => onPressed(item),
+                    onPressed: () => _onPressed(item),
                   ),
                 ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void onPressedQrScan(TokenImportQrScanSource tokenImportSource) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ImportStartQrScanPage(selectedSource: tokenImportSource),
-      ),
-    );
-  }
-
-  void onPressedFile(TokenImportFileSource tokenImportSource) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ImportSelectFilePage(selectedSource: tokenImportSource),
       ),
     );
   }

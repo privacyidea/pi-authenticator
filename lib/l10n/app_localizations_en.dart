@@ -586,7 +586,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importHintGoogle => 'Scan the QR code you receive when you export your accounts from Google Authenticator.\n\nAlternatively, you can take a screenshot of the QR code and select the file. (It is not safe to keep the screenshot on your device)';
 
   @override
-  String get startQrScan => 'Scan';
+  String get qrScan => 'Scan';
 
   @override
   String scanNoValidBackupFrom(Object name) {

@@ -13,9 +13,9 @@ import '../../../utils/logger.dart';
 import '../../../utils/supported_versions.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/two_step_dialog.dart';
-import 'token_scheme_processor_interface.dart';
+import 'token_import_scheme_processor_interface.dart';
 
-class OtpAuthProcessor extends TokenSchemeProcessor {
+class OtpAuthProcessor extends TokenImportSchemeProcessor {
   const OtpAuthProcessor();
   @override
   Set<String> get supportedSchemes => {'otpauth'};

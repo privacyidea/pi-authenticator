@@ -511,6 +511,6 @@
   "importHint2FAS": "Seleccione su copia de seguridad de 2FAS.\nSi no tiene copia de seguridad, cree una en la aplicación 2FAS. Recomendamos utilizar una contraseña",
   "importHintAegis": "Seleccione su copia de seguridad de Aegis.\nSi no dispone de una copia de seguridad, cree una en la aplicación Aegis. La contraseña que se estableció al iniciar Aegis por primera vez es necesaria para la importación.",
   "importHintGoogle": "Escanea el código QR que recibes al exportar tus cuentas desde Google Authenticator.\n\nAlternativamente, puedes hacer una captura de pantalla del código QR y seleccionar el archivo. (No es seguro guardar la captura de pantalla en su dispositivo)",
-  "startQrScan": "Escanear",
+  "qrScan": "Escanear",
   "scanNoValidBackupFrom": "El código QR escaneado no es una copia de seguridad válida de {name}"
 }

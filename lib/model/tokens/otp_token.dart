@@ -44,7 +44,7 @@ abstract class OTPToken extends Token {
     String? tokenImage,
     int? sortIndex,
     int? Function()? folderId,
-    TokenOrigin? origin,
+    TokenOriginData? origin,
   });
 
   @override

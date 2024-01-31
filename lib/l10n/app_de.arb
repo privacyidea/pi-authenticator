@@ -494,6 +494,6 @@
   "importHint2FAS": "Wähle dein 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.",
   "importHintAegis": "Wähle dein Aegis-Backup aus.\nWenn Sie kein Backup haben, erstellen Sie bitte eins in der Aegis-App. Für den Import wird das Passwort benötigt, das beim ersten Start von Aegis festgelegt wurde.",
   "importHintGoogle": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.\n\nAlternativ können Sie einen Screenshot des QR-Codes machen und die Datei auswählen. (Es ist nicht sicher, den Screenshot auf Ihrem Gerät zu behalten)",
-  "startQrScan": "Scannen",
+  "qrScan": "Scannen",
   "scanNoValidBackupFrom": "Der gescannte QR-Code ist kein gültiges Backup von {name}."
 }

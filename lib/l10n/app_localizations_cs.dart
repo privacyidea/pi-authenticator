@@ -586,7 +586,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get importHintGoogle => 'Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.\n\nPřípadně můžete pořídit snímek obrazovky QR kódu a vybrat soubor. (Není bezpečné uchovávat snímek obrazovky ve svém zařízení).';
 
   @override
-  String get startQrScan => 'Skenování';
+  String get qrScan => 'Skenování';
 
   @override
   String scanNoValidBackupFrom(Object name) {

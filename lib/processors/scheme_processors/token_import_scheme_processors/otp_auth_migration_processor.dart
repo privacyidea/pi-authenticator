@@ -6,23 +6,12 @@ import 'dart:typed_data';
 
 import '../../../model/tokens/token.dart';
 import '../../../proto/generated/GoogleAuthenticatorImport.pb.dart';
-import '../../mixins/token_migrate_processor.dart';
-import 'token_scheme_processor_interface.dart';
+import 'token_import_scheme_processor_interface.dart';
 import 'otp_auth_processor.dart';
 
-class OtpAuthMigrationProcessor extends TokenSchemeProcessor with TokenMigrateProcessor {
+class OtpAuthMigrationProcessor extends TokenImportSchemeProcessor {
   const OtpAuthMigrationProcessor();
   static const OtpAuthProcessor otpAuthProcessor = OtpAuthProcessor();
-
-  @override
-
-  /// data: [Uri] uri
-  /// args: [bool] fromInit
-  Future<List<Token>> processTokenImport(dynamic data, {List<dynamic>? args}) async {
-    if (data is! Uri) return [];
-    final fromInit = args?.firstOrNull ?? false;
-    return processUri(data, fromInit: fromInit);
-  }
 
   @override
   Set<String> get supportedSchemes => {'otpauth-migration'};

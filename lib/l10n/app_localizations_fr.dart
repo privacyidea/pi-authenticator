@@ -586,7 +586,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get importHintGoogle => 'Scannez le code QR que vous obtenez lorsque vous exportez vos comptes depuis Google Authenticator.\n\nVous pouvez également faire une capture d\'écran du code QR et sélectionner le fichier. (Il n\'est pas sûr de conserver la capture d\'écran sur votre appareil)';
 
   @override
-  String get startQrScan => 'Numériser';
+  String get qrScan => 'Numériser';
 
   @override
   String scanNoValidBackupFrom(Object name) {

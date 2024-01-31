@@ -1159,11 +1159,11 @@ abstract class AppLocalizations {
   /// **'Scan the QR code you receive when you export your accounts from Google Authenticator.\n\nAlternatively, you can take a screenshot of the QR code and select the file. (It is not safe to keep the screenshot on your device)'**
   String get importHintGoogle;
 
-  /// No description provided for @startQrScan.
+  /// No description provided for @qrScan.
   ///
   /// In en, this message translates to:
   /// **'Scan'**
-  String get startQrScan;
+  String get qrScan;
 
   /// No description provided for @scanNoValidBackupFrom.
   ///

@@ -1,33 +1,29 @@
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/processors/token_migrate_file_processor/aegis_migrate_file_processor.dart';
+import 'package:privacyidea_authenticator/processors/token_import_file_processor/aegis_import_file_processor.dart';
 
 import '../../model/tokens/token.dart';
 import '../../utils/logger.dart';
-import '../mixins/token_migrate_processor.dart';
-import 'two_fas_migrate_file_processor.dart';
+import '../mixins/token_import_processor.dart';
+import 'two_fas_import_file_processor.dart';
 
-abstract class TokenMigrateFileProcessor with TokenMigrateProcessor {
-  const TokenMigrateFileProcessor();
+abstract class TokenImportFileProcessor with TokenImportProcessor<XFile, String?> {
+  const TokenImportFileProcessor();
 
   @override
-
-  /// data: [XFile] file
-  /// args: [String] password
-  Future<List<Token>> processTokenImport(dynamic data, {List<dynamic>? args}) async {
-    if (data is! XFile) return [];
-    return await processFile(file: data, password: args?.firstOrNull as String?);
+  Future<List<Token>> processTokenMigrate(XFile data, {String? args}) async {
+    return processFile(file: data, password: args);
   }
 
   Future<List<Token>> processFile({required XFile file, String? password});
 
-  static final List<TokenMigrateFileProcessor> implementations = [
+  static final List<TokenImportFileProcessor> implementations = [
     const AegisImportFileProcessor(),
     const TwoFasFileImportProcessor(),
   ];
 
   static Future<List<Token>> processFileByAny({required XFile file, String? password}) async {
     List<Token> tokens = [];
-    for (TokenMigrateFileProcessor processor in implementations) {
+    for (TokenImportFileProcessor processor in implementations) {
       try {
         tokens.addAll(await processor.processFile(file: file, password: password));
         return tokens;

@@ -509,6 +509,6 @@
   "importHint2FAS": "Wybierz kopię zapasową 2FAS.\nJeśli nie masz kopii zapasowej, utwórz ją w aplikacji 2FAS. Zalecamy użycie hasła.",
   "importHintAegis": "Wybierz kopię zapasową Aegis.\nJeśli nie masz kopii zapasowej, utwórz ją w aplikacji Aegis. Do importu wymagane jest hasło ustawione podczas pierwszego uruchomienia Aegis.",
   "importHintGoogle": "Zeskanuj kod QR otrzymany podczas eksportowania kont z Google Authenticator.\n\nAlternatywnie możesz zrobić zrzut ekranu kodu QR i wybrać plik. (Przechowywanie zrzutu ekranu na urządzeniu nie jest bezpieczne)",
-  "startQrScan": "Scan",
+  "qrScan": "Scan",
   "scanNoValidBackupFrom": "Zeskanowany kod QR nie jest prawidłową kopią zapasową {name}"
 }

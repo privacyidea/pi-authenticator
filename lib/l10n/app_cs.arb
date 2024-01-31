@@ -515,6 +515,6 @@
   "importHint2FAS": "Vyberte zálohu 2FAS.\nPokud zálohu nemáte, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.",
   "importHintAegis": "Vyberte svou zálohu Aegis.\nPokud zálohu nemáte, vytvořte si ji v aplikaci Aegis. Pro import je vyžadováno heslo, které bylo nastaveno při prvním spuštění aplikace Aegis.",
   "importHintGoogle": "Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.\n\nPřípadně můžete pořídit snímek obrazovky QR kódu a vybrat soubor. (Není bezpečné uchovávat snímek obrazovky ve svém zařízení).",
-  "startQrScan": "Skenování",
+  "qrScan": "Skenování",
   "scanNoValidBackupFrom": "Naskenovaný QR kód není platnou zálohou z {name}."
 }
