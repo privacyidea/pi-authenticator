@@ -1,6 +1,5 @@
-import 'package:privacyidea_authenticator/processors/scheme_processors/home_widget_processor.dart';
-import 'package:privacyidea_authenticator/processors/scheme_processors/navigation_scheme_processors/navigation_scheme_processor_interface.dart';
-
+import 'home_widget_processor.dart';
+import 'navigation_scheme_processors/navigation_scheme_processor_interface.dart';
 import 'token_import_scheme_processors/token_import_scheme_processor_interface.dart';
 
 abstract class SchemeProcessor {

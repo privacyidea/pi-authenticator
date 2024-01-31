@@ -512,6 +512,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectImportSource => 'Select import source';
 
   @override
+  String get selectImportType => 'How do you want to import the tokens?';
+
+  @override
   String get importTokens => 'Import token';
 
   @override
@@ -519,11 +522,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get decrypt => 'Decrypt';
-
-  @override
-  String fileNoValidBackupFrom(Object name) {
-    return 'The selected file is not a valid backup from $name.';
-  }
 
   @override
   String get tokensAreEncrypted => 'The tokens are encrypted. Please enter the password to decrypt them.';
@@ -544,6 +542,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get qrScan => 'Scan';
 
   @override
+  String get enterLink => 'Enter link';
+
+  @override
   String invalidBackupFile(Object appName) {
     return 'The selected file is not a valid backup of $appName.';
   }
@@ -560,7 +561,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String invalidLink(Object appName) {
-    return 'The link entered is not a valid token from $appName.';
+    return 'The link entered is not a valid token of $appName, or it is not supported.';
   }
 
   @override
@@ -609,7 +610,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importHintAegisQrScan => 'Scan the QR code you receive when you transfer entries from Aegis.';
 
   @override
-  String get importHintAegisLink => 'Enter the link that you receive when you transfer tags from Aegis.';
+  String get importHintAegisLink => 'Enter the link you receive when you transfer entries from Aegis.';
 
   @override
   String get importHintGoogleQrScan => 'Scan the QR code you receive when you export your accounts from Google Authenticator.';

@@ -6,8 +6,8 @@ import 'dart:typed_data';
 
 import '../../../model/tokens/token.dart';
 import '../../../proto/generated/GoogleAuthenticatorImport.pb.dart';
-import 'token_import_scheme_processor_interface.dart';
 import 'otp_auth_processor.dart';
+import 'token_import_scheme_processor_interface.dart';
 
 class OtpAuthMigrationProcessor extends TokenImportSchemeProcessor {
   const OtpAuthMigrationProcessor();

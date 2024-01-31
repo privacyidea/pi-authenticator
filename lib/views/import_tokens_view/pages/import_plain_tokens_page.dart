@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/enums/token_import_type.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../model/enums/token_import_type.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../import_tokens_view.dart';

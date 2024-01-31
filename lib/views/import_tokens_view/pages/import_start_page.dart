@@ -66,7 +66,7 @@ class _ImportStartPageState extends State<ImportStartPage> {
                   TextField(
                     controller: _linkController,
                     decoration: InputDecoration(
-                      labelText: 'Not Implemented', // AppLocalizations.of(context)!.link,
+                      labelText: "Token link",
                     ),
                   ),
                 ],
@@ -167,6 +167,9 @@ class _ImportStartPageState extends State<ImportStartPage> {
   }
 
   void _validateLink(TokenImportProcessor? processor) async {
+    if (_linkController.text.isEmpty) {
+      return;
+    }
     assert(processor is TokenImportSchemeProcessor);
     final schemeProcessor = processor as TokenImportSchemeProcessor;
     final Uri uri;
@@ -176,7 +179,15 @@ class _ImportStartPageState extends State<ImportStartPage> {
       setState(() => _dataIsValid = false);
       return;
     }
-    _routeImportPlainTokensPage(tokens: await schemeProcessor.processUri(uri));
+    final tokens = await schemeProcessor.processUri(uri);
+    if (tokens.isEmpty) {
+      setState(() => _dataIsValid = false);
+      return;
+    }
+    if (mounted == false) return;
+    // ignore: use_build_context_synchronously
+    FocusScope.of(context).unfocus();
+    _routeImportPlainTokensPage(tokens: tokens);
   }
 
   void _routeImportPlainTokensPage({required List<Token> tokens}) {

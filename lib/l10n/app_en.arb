@@ -491,35 +491,28 @@
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
   },
   "selectImportSource": "Select import source",
+  "selectImportType": "How do you want to import the tokens?",
   "importTokens": "Import token",
   "selectFile": "Select file",
   "decrypt": "Decrypt",
-  "fileNoValidBackupFrom": "The selected file is not a valid backup from {name}.",
-  "@fileNoValidBackupFrom": {
-    "description": "Message that tells the user that the selected file is not a valid backup for the token.",
-    "placeholders": {
-      "name": {
-        "example": "privacyIDEA Authenticator"
-      }
-    }
-  },
   "tokensAreEncrypted": "The tokens are encrypted. Please enter the password to decrypt them.",
   "tokensNotEncrypted": "The tokens are not encrypted and can be imported directly.",
   "tokensSuccessfullyDecrypted": "The tokens have been successfully decrypted and can now be imported.",
   "password": "Password",
   "wrongPassword": "Incorrect password",
   "qrScan": "Scan",
+  "enterLink": "Enter link",
   "invalidBackupFile": "The selected file is not a valid backup of {appName}.",
   "invalidQrScan": "The scanned QR code is not a valid backup of {appName}.",
   "invalidQrFile": "The selected file does not contain a valid QR code from {appName}.",
-  "invalidLink": "The link entered is not a valid token from {appName}.",
+  "invalidLink": "The link entered is not a valid token of {appName}, or it is not supported.",
   "importExistingToken": "{count, plural, zero{no token was found that is already in the application} one{a token was found that is already in the application} other{a {count} token was found that is already in the application}}",
   "importConflictToken": "{count, plural, zero{There is no conflict with tokens that already exist.} one{There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.} other{There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.}}",
   "importNewToken": "{count, plural, zero{No new token was found.} one{A new token was found that will be imported.} other{A {count} of new tokens were found that will be imported.}}",
   "importHint2FAS": "Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.",
   "importHintAegisBackupFile": "Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.",
   "importHintAegisQrScan": "Scan the QR code you receive when you transfer entries from Aegis.",
-  "importHintAegisLink": "Enter the link that you receive when you transfer tags from Aegis.",
+  "importHintAegisLink": "Enter the link you receive when you transfer entries from Aegis.",
   "importHintGoogleQrScan": "Scan the QR code you receive when you export your accounts from Google Authenticator.",
   "importHintGoogleQrFile": "Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!"
 }

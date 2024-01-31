@@ -1069,6 +1069,12 @@ abstract class AppLocalizations {
   /// **'Select import source'**
   String get selectImportSource;
 
+  /// No description provided for @selectImportType.
+  ///
+  /// In en, this message translates to:
+  /// **'How do you want to import the tokens?'**
+  String get selectImportType;
+
   /// No description provided for @importTokens.
   ///
   /// In en, this message translates to:
@@ -1086,12 +1092,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Decrypt'**
   String get decrypt;
-
-  /// Message that tells the user that the selected file is not a valid backup for the token.
-  ///
-  /// In en, this message translates to:
-  /// **'The selected file is not a valid backup from {name}.'**
-  String fileNoValidBackupFrom(Object name);
 
   /// No description provided for @tokensAreEncrypted.
   ///
@@ -1129,6 +1129,12 @@ abstract class AppLocalizations {
   /// **'Scan'**
   String get qrScan;
 
+  /// No description provided for @enterLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter link'**
+  String get enterLink;
+
   /// No description provided for @invalidBackupFile.
   ///
   /// In en, this message translates to:
@@ -1150,7 +1156,7 @@ abstract class AppLocalizations {
   /// No description provided for @invalidLink.
   ///
   /// In en, this message translates to:
-  /// **'The link entered is not a valid token from {appName}.'**
+  /// **'The link entered is not a valid token of {appName}, or it is not supported.'**
   String invalidLink(Object appName);
 
   /// No description provided for @importExistingToken.
@@ -1192,7 +1198,7 @@ abstract class AppLocalizations {
   /// No description provided for @importHintAegisLink.
   ///
   /// In en, this message translates to:
-  /// **'Enter the link that you receive when you transfer tags from Aegis.'**
+  /// **'Enter the link you receive when you transfer entries from Aegis.'**
   String get importHintAegisLink;
 
   /// No description provided for @importHintGoogleQrScan.

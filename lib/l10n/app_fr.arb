@@ -493,35 +493,28 @@
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
   },
   "selectImportSource": "Sélectionner la source d'importation",
+  "selectImportType": "Comment voulez-vous importer les jetons ?",
   "importTokens": "Importer un jeton",
   "selectFile": "Sélectionner un fichier",
   "decrypt": "Décrypter",
-  "fileNoValidBackupFrom": "Le fichier sélectionné n'est pas une sauvegarde valide de {name}",
-  "@fileNoValidBackupFrom": {
-    "description": "Message indiquant à l'utilisateur que le fichier sélectionné n'est pas une sauvegarde valide pour le jeton",
-    "placeholders": {
-      "name": {
-        "exemple": "privacyIDEA Authenticator"
-      }
-    }
-  },
   "tokensAreEncrypted": "Les jetons sont cryptés. Veuillez saisir le mot de passe pour les décrypter",
   "tokensNotEncrypted": "Les tokens ne sont pas cryptés, et peuvent être importés directement",
   "tokensSuccessfullyDecrypted": "Les tokens ont été décryptés avec succès, ils peuvent maintenant être importés.",
   "password": "Mot de passe",
   "wrongPassword": "Mot de passe incorrect",
   "qrScan": "Numériser",
+  "enterLink": "Saisir le lien",
   "invalidBackupFile": "Le fichier sélectionné n'est pas une sauvegarde valide de {appName}",
   "invalidQrScan": "Le code QR scanné n'est pas une sauvegarde valide de {appName}",
   "invalidQrFile": "Le fichier sélectionné ne contient pas de code QR valide de {appName}",
-  "invalidLink": "Le lien saisi n'est pas un jeton valide de {appName}",
+  "invalidLink": "Le lien saisi n'est pas un jeton valide de {appName}, ou il n'est pas pris en charge",
   "importExistingToken": "{count, plural, zero{aucun token déjà présent dans l'application n'a été trouvé.} one{un token déjà présent dans l'application a été trouvé.} other{aucun token {count} déjà présent dans l'application a été trouvé.}}",
   "importConflictToken": "{count, plural, zero{Il n'y a pas de conflit avec des tokens déjà existants.} one{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.} other{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.}}",
   "importNewToken": "{count, plural, zero{Aucun nouveau token n'a été trouvé.} one{Un nouveau token a été trouvé et sera importé.} other{Aucun {count} nouveau token a été trouvé et sera importé.}}",
   "importHint2FAS": "Choisissez votre sauvegarde 2FAS.\nSi vous n'avez pas de sauvegarde, créez-en une dans l'application 2FAS. Nous vous recommandons d'utiliser un mot de passe",
   "importHintAegisBackupFile": "Choisissez votre exportation Aegis (.JSON).\nSi vous n'avez pas d'exportation, veuillez en créer une via le menu Paramètres dans l'application Aegis. Il est recommandé d'utiliser un mot de passe",
-  "importHintAegisQrScan": "Scannez le code QR que vous recevez lorsque vous transférez des données depuis Aegis",
-  "importHintAegisLink": "Saisissez le lien que vous recevez lorsque vous transférez des données depuis Aegis",
+  "importHintAegisQrScan": "Scannez le code QR que vous recevez lorsque vous transférez des entrées depuis Aegis",
+  "importHintAegisLink": "Saisissez le lien que vous recevez lorsque vous transférez des entrées depuis Aegis",
   "importHintGoogleQrScan": "Scannez le code QR que vous recevez lorsque vous exportez vos comptes depuis Google Authenticator",
   "importHintGoogleQrFile": "Sélectionnez un fichier image avec le code QR que vous obtenez lorsque vous exportez vos comptes depuis Google Authenticator.\n!! Notez qu'il n'est pas sûr d'enregistrer le code QR sur votre appareil, car les jetons ne sont pas cryptés !!"
 }

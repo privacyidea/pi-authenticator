@@ -3,12 +3,12 @@
 import 'dart:convert';
 import 'dart:isolate';
 import 'dart:typed_data';
+
 import 'package:cryptography/cryptography.dart' as crypto;
 import 'package:encrypt/encrypt.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
-
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';

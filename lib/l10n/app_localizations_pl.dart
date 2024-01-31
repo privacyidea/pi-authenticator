@@ -512,6 +512,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get selectImportSource => 'Wybierz źródło importu';
 
   @override
+  String get selectImportType => 'How do you want to import the tokens?';
+
+  @override
   String get importTokens => 'Token importu';
 
   @override
@@ -519,11 +522,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get decrypt => 'Odszyfruj';
-
-  @override
-  String fileNoValidBackupFrom(Object name) {
-    return 'Wybrany plik nie jest prawidłową kopią zapasową $name.';
-  }
 
   @override
   String get tokensAreEncrypted => 'Tokeny są zaszyfrowane. Wprowadź hasło, aby je odszyfrować';
@@ -544,6 +542,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get qrScan => 'Scan';
 
   @override
+  String get enterLink => 'Wprowadź link';
+
+  @override
   String invalidBackupFile(Object appName) {
     return 'Wybrany plik nie jest prawidłową kopią zapasową $appName.';
   }
@@ -560,7 +561,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String invalidLink(Object appName) {
-    return 'Wprowadzony link nie jest prawidłowym tokenem z $appName.';
+    return 'Wprowadzony link nie jest prawidłowym tokenem $appName lub nie jest obsługiwany.';
   }
 
   @override
@@ -606,10 +607,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get importHintAegisBackupFile => 'Wybierz swój eksport Aegis (.JSON).\nJeśli nie masz eksportu, utwórz go za pomocą menu ustawień w aplikacji Aegis. Zalecane jest użycie hasła.';
 
   @override
-  String get importHintAegisQrScan => 'Zeskanuj kod QR otrzymany podczas przesyłania wpisów z Aegis.';
+  String get importHintAegisQrScan => 'Zeskanuj kod QR otrzymany podczas przesyłania wpisów z Aegis';
 
   @override
-  String get importHintAegisLink => 'Wprowadź link otrzymany podczas przesyłania tagów z Aegis.';
+  String get importHintAegisLink => 'Wprowadź link otrzymany podczas przesyłania wpisów z Aegis.';
 
   @override
   String get importHintGoogleQrScan => 'Zeskanuj kod QR otrzymany podczas eksportowania kont z Google Authenticator';

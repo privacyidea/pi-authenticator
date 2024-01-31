@@ -18,7 +18,7 @@ class SelectImportTypePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Import Type'),
+        title: Text(tokenImportSource.appName),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -37,7 +37,7 @@ class SelectImportTypePage extends StatelessWidget {
                 ),
                 const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
                 Text(
-                  'How do you want to import the token?',
+                  AppLocalizations.of(context)!.selectImportType,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
@@ -54,7 +54,7 @@ class SelectImportTypePage extends StatelessWidget {
                                 const (TokenImportType.backupFile) => AppLocalizations.of(context)!.selectFile,
                                 const (TokenImportType.qrScan) => AppLocalizations.of(context)!.scanQrCode,
                                 const (TokenImportType.qrFile) => AppLocalizations.of(context)!.selectFile,
-                                const (TokenImportType.link) => 'Not Implemented' //AppLocalizations.of(context)!.enterLink,
+                                const (TokenImportType.link) => AppLocalizations.of(context)!.enterLink,
                               },
                               style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                               overflow: TextOverflow.fade,

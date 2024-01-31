@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../utils/globals.dart';
 import '../../../utils/logger.dart';
-import 'home_widget_navigate_processor.dart';
 import '../scheme_processor_interface.dart';
+import 'home_widget_navigate_processor.dart';
 
 abstract class NavigationSchemeProcessor implements SchemeProcessor {
   const NavigationSchemeProcessor();

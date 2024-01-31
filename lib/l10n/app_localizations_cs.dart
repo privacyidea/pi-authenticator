@@ -512,6 +512,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get selectImportSource => 'Vyberte zdroj importu';
 
   @override
+  String get selectImportType => 'How do you want to import the tokens?';
+
+  @override
   String get importTokens => 'Importní token';
 
   @override
@@ -519,11 +522,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get decrypt => 'Dešifrovat';
-
-  @override
-  String fileNoValidBackupFrom(Object name) {
-    return 'Vybraný soubor není platnou zálohou z $name.';
-  }
 
   @override
   String get tokensAreEncrypted => 'Tokeny jsou zašifrované. Please enter the password to decrypt them.';
@@ -544,6 +542,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get qrScan => 'Skenování';
 
   @override
+  String get enterLink => 'Zadejte odkaz';
+
+  @override
   String invalidBackupFile(Object appName) {
     return 'Vybraný soubor není platnou zálohou $appName.';
   }
@@ -560,7 +561,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String invalidLink(Object appName) {
-    return 'Zadaný odkaz není platný token z $appName.';
+    return 'Zadaný odkaz není platným tokenem $appName nebo není podporován.';
   }
 
   @override
@@ -609,7 +610,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get importHintAegisQrScan => 'Naskenujte QR kód, který obdržíte při přenosu záznamů z aplikace Aegis.';
 
   @override
-  String get importHintAegisLink => 'Zadejte odkaz, který obdržíte při přenosu značek ze systému Aegis.';
+  String get importHintAegisLink => 'Zadejte odkaz, který obdržíte při přenosu záznamů ze systému Aegis.';
 
   @override
   String get importHintGoogleQrScan => 'Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.';

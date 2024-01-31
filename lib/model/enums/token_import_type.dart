@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../l10n/app_localizations.dart';
 
 enum TokenImportType {
@@ -21,7 +22,7 @@ extension TokenImportTypeExtension on TokenImportType {
         const (TokenImportType.backupFile) => AppLocalizations.of(context)!.selectFile,
         const (TokenImportType.qrScan) => AppLocalizations.of(context)!.scanQrCode,
         const (TokenImportType.qrFile) => AppLocalizations.of(context)!.selectFile,
-        const (TokenImportType.link) => 'Not Implemented' //AppLocalizations.of(context)!.enterLink,
+        const (TokenImportType.link) => AppLocalizations.of(context)!.enterLink,
       };
 
   String getErrorText(BuildContext context, {required String appName}) => switch (this) {

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/enums/token_import_type.dart';
-import 'package:privacyidea_authenticator/processors/mixins/token_import_processor.dart';
 
 import '../l10n/app_localizations.dart';
+import '../processors/mixins/token_import_processor.dart';
 import '../processors/scheme_processors/token_import_scheme_processors/otp_auth_migration_processor.dart';
 import '../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import '../processors/token_import_file_processor/aegis_import_file_processor.dart';
 import '../processors/token_import_file_processor/two_fas_import_file_processor.dart';
+import 'enums/token_import_type.dart';
 
 class TokenImportOrigin {
   final String appName;

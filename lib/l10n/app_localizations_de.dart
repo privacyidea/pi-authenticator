@@ -512,6 +512,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get selectImportSource => 'Importquelle auswählen';
 
   @override
+  String get selectImportType => 'How do you want to import the tokens?';
+
+  @override
   String get importTokens => 'Token importieren';
 
   @override
@@ -519,11 +522,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get decrypt => 'Entschlüsseln';
-
-  @override
-  String fileNoValidBackupFrom(Object name) {
-    return 'The selected file is not a valid backup from $name.';
-  }
 
   @override
   String get tokensAreEncrypted => 'Die Token sind verschlüsselt. Bitte gib das Passwort ein, um sie zu entschlüsseln.';
@@ -544,6 +542,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get qrScan => 'Scannen';
 
   @override
+  String get enterLink => 'Link eingeben';
+
+  @override
   String invalidBackupFile(Object appName) {
     return 'Die ausgewählte Datei ist kein gültiges Backup von $appName.';
   }
@@ -560,7 +561,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String invalidLink(Object appName) {
-    return 'Der eingegebene Link ist kein gültiger Token von $appName.';
+    return 'Der eingegebene Link ist kein gültiger Token von $appName, oder er wird nicht unterstützt.';
   }
 
   @override
@@ -606,10 +607,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get importHintAegisBackupFile => 'Wähle dein Aegis-Export (.JSON) aus.\nWenn Sie kein Export haben, erstellen Sie bitte eins über das Einstellungen Menu in der Aegis-App. Es wird das benutzen eines Passworts empfohlen.';
 
   @override
-  String get importHintAegisQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie eingtäge aus Aegis übertragen.';
+  String get importHintAegisQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie einträge aus Aegis übertragen.';
 
   @override
-  String get importHintAegisLink => 'Geben Sie den Link ein, den Sie erhalten, wenn Sie eingtäge aus Aegis übertragen.';
+  String get importHintAegisLink => 'Geben Sie den Link ein, den Sie erhalten, wenn Sie einträge aus Aegis übertragen.';
 
   @override
   String get importHintGoogleQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.';

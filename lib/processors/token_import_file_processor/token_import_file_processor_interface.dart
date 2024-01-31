@@ -1,9 +1,9 @@
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/processors/token_import_file_processor/aegis_import_file_processor.dart';
 
 import '../../model/tokens/token.dart';
 import '../../utils/logger.dart';
 import '../mixins/token_import_processor.dart';
+import 'aegis_import_file_processor.dart';
 import 'two_fas_import_file_processor.dart';
 
 abstract class TokenImportFileProcessor with TokenImportProcessor<XFile, String?> {
