@@ -541,13 +541,36 @@ class AppLocalizationsCs extends AppLocalizations {
   String get wrongPassword => 'Nesprávné heslo';
 
   @override
+  String get qrScan => 'Skenování';
+
+  @override
+  String invalidBackupFile(Object appName) {
+    return 'Vybraný soubor není platnou zálohou $appName.';
+  }
+
+  @override
+  String invalidQrScan(Object appName) {
+    return 'Naskenovaný QR kód není platnou zálohou $appName.';
+  }
+
+  @override
+  String invalidQrFile(Object appName) {
+    return 'Vybraný soubor neobsahuje platný QR kód z $appName.';
+  }
+
+  @override
+  String invalidLink(Object appName) {
+    return 'Zadaný odkaz není platný token z $appName.';
+  }
+
+  @override
   String importExistingToken(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Soubor obsahuje $count tokenů, které jsou již v aplikaci.',
-      one: 'Soubor obsahuje token, který je již v aplikaci.',
-      zero: 'Soubor neobsahuje token, který je již v aplikaci.',
+      other: 'byl nalezen token $count, který je již v aplikaci',
+      one: 'byl nalezen token, který je již v aplikaci',
+      zero: 'nebyl nalezen token, který je již v aplikaci',
     );
     return '$_temp0';
   }
@@ -557,9 +580,9 @@ class AppLocalizationsCs extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Je konflikt s tokeny, které již existují.\nProsím, vyberte, který chcete zachovat.',
-      one: 'Je konflikt s tokeny, které již existují.\nProsím, vyberte, který chcete zachovat.',
-      zero: 'Není konflikt s tokeny, které již existují.',
+      other: 'Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.',
+      one: 'Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.',
+      zero: 'Není žádný konflikt s tokeny, které již existují.',
     );
     return '$_temp0';
   }
@@ -569,27 +592,28 @@ class AppLocalizationsCs extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Soubor obsahuje $count nových tokenů, které budou importovány.',
-      one: 'Soubor obsahuje nový token, který bude importován.',
-      zero: 'Soubor neobsahuje nový token.',
+      other: 'Nalezen nový token $count, který bude importován.',
+      one: 'Nalezen nový token, který bude importován.',
+      zero: 'Nenalezen žádný nový token.',
     );
     return '$_temp0';
   }
 
   @override
-  String get importHint2FAS => 'Vyberte zálohu 2FAS.\nPokud zálohu nemáte, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.';
+  String get importHint2FAS => 'Vyberte zálohu 2FAS.\nPokud nemáte zálohu, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.';
 
   @override
-  String get importHintAegis => 'Vyberte svou zálohu Aegis.\nPokud zálohu nemáte, vytvořte si ji v aplikaci Aegis. Pro import je vyžadováno heslo, které bylo nastaveno při prvním spuštění aplikace Aegis.';
+  String get importHintAegisBackupFile => 'Vyberte svůj export Aegis (.JSON).\nPokud nemáte export, vytvořte si jej prostřednictvím nabídky nastavení v aplikaci Aegis. Doporučujeme použít heslo.';
 
   @override
-  String get importHintGoogle => 'Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.\n\nPřípadně můžete pořídit snímek obrazovky QR kódu a vybrat soubor. (Není bezpečné uchovávat snímek obrazovky ve svém zařízení).';
+  String get importHintAegisQrScan => 'Naskenujte QR kód, který obdržíte při přenosu záznamů z aplikace Aegis.';
 
   @override
-  String get qrScan => 'Skenování';
+  String get importHintAegisLink => 'Zadejte odkaz, který obdržíte při přenosu značek ze systému Aegis.';
 
   @override
-  String scanNoValidBackupFrom(Object name) {
-    return 'Naskenovaný QR kód není platnou zálohou z $name.';
-  }
+  String get importHintGoogleQrScan => 'Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.';
+
+  @override
+  String get importHintGoogleQrFile => 'Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!';
 }

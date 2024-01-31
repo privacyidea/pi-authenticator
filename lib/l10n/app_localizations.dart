@@ -1123,10 +1123,40 @@ abstract class AppLocalizations {
   /// **'Incorrect password'**
   String get wrongPassword;
 
+  /// No description provided for @qrScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get qrScan;
+
+  /// No description provided for @invalidBackupFile.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected file is not a valid backup of {appName}.'**
+  String invalidBackupFile(Object appName);
+
+  /// No description provided for @invalidQrScan.
+  ///
+  /// In en, this message translates to:
+  /// **'The scanned QR code is not a valid backup of {appName}.'**
+  String invalidQrScan(Object appName);
+
+  /// No description provided for @invalidQrFile.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected file does not contain a valid QR code from {appName}.'**
+  String invalidQrFile(Object appName);
+
+  /// No description provided for @invalidLink.
+  ///
+  /// In en, this message translates to:
+  /// **'The link entered is not a valid token from {appName}.'**
+  String invalidLink(Object appName);
+
   /// No description provided for @importExistingToken.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, zero{The file does not contain a token that is already in the application.} one{The file contains a token that is already in the application.} other{The file contains {count} tokens that are already in the application.}}'**
+  /// **'{count, plural, zero{no token was found that is already in the application} one{a token was found that is already in the application} other{a {count} token was found that is already in the application}}'**
   String importExistingToken(num count);
 
   /// No description provided for @importConflictToken.
@@ -1138,7 +1168,7 @@ abstract class AppLocalizations {
   /// No description provided for @importNewToken.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, zero{The file does not contain a new token.} one{The file contains a new token that will be imported.} other{The file contains {count} new tokens that will be imported.}}'**
+  /// **'{count, plural, zero{No new token was found.} one{A new token was found that will be imported.} other{A {count} of new tokens were found that will be imported.}}'**
   String importNewToken(num count);
 
   /// No description provided for @importHint2FAS.
@@ -1147,29 +1177,35 @@ abstract class AppLocalizations {
   /// **'Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.'**
   String get importHint2FAS;
 
-  /// No description provided for @importHintAegis.
+  /// No description provided for @importHintAegisBackupFile.
   ///
   /// In en, this message translates to:
-  /// **'Select your Aegis backup.\nIf you do not have a backup, please create one in the Aegis app. The password that was set when Aegis was first started is required for the import.'**
-  String get importHintAegis;
+  /// **'Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.'**
+  String get importHintAegisBackupFile;
 
-  /// No description provided for @importHintGoogle.
+  /// No description provided for @importHintAegisQrScan.
   ///
   /// In en, this message translates to:
-  /// **'Scan the QR code you receive when you export your accounts from Google Authenticator.\n\nAlternatively, you can take a screenshot of the QR code and select the file. (It is not safe to keep the screenshot on your device)'**
-  String get importHintGoogle;
+  /// **'Scan the QR code you receive when you transfer entries from Aegis.'**
+  String get importHintAegisQrScan;
 
-  /// No description provided for @qrScan.
+  /// No description provided for @importHintAegisLink.
   ///
   /// In en, this message translates to:
-  /// **'Scan'**
-  String get qrScan;
+  /// **'Enter the link that you receive when you transfer tags from Aegis.'**
+  String get importHintAegisLink;
 
-  /// No description provided for @scanNoValidBackupFrom.
+  /// No description provided for @importHintGoogleQrScan.
   ///
   /// In en, this message translates to:
-  /// **'The scanned QR code is not a valid backup from {name}.'**
-  String scanNoValidBackupFrom(Object name);
+  /// **'Scan the QR code you receive when you export your accounts from Google Authenticator.'**
+  String get importHintGoogleQrScan;
+
+  /// No description provided for @importHintGoogleQrFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!'**
+  String get importHintGoogleQrFile;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

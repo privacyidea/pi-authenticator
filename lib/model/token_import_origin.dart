@@ -35,17 +35,15 @@ class TokenImportSourceList {
       appName: 'Google Authenticator',
       iconPath: '${_importSourceIconFolder}google_authenticator.png',
       importEntitys: [
-        // TokenImportType.qrScan: const OtpAuthImportProcessor(),
-        // TokenImportType.qrFile: const OtpAuthImportProcessor(),
         TokenImportEntity(
           processor: const OtpAuthMigrationProcessor(),
           type: TokenImportType.qrScan,
-          importHint: (context) => AppLocalizations.of(context)!.importHintGoogle,
+          importHint: (context) => AppLocalizations.of(context)!.importHintGoogleQrScan,
         ),
         TokenImportEntity(
           processor: const OtpAuthMigrationProcessor(),
           type: TokenImportType.qrFile,
-          importHint: (context) => AppLocalizations.of(context)!.importHintGoogle,
+          importHint: (context) => AppLocalizations.of(context)!.importHintGoogleQrFile,
         ),
       ],
     ),
@@ -56,22 +54,17 @@ class TokenImportSourceList {
         TokenImportEntity(
           processor: const AegisImportFileProcessor(),
           type: TokenImportType.backupFile,
-          importHint: (context) => AppLocalizations.of(context)!.importHintAegis,
+          importHint: (context) => AppLocalizations.of(context)!.importHintAegisBackupFile,
         ),
         TokenImportEntity(
           processor: const OtpAuthProcessor(),
           type: TokenImportType.qrScan,
-          importHint: (context) => AppLocalizations.of(context)!.importHintAegis,
-        ),
-        TokenImportEntity(
-          processor: const OtpAuthProcessor(),
-          type: TokenImportType.qrFile,
-          importHint: (context) => AppLocalizations.of(context)!.importHintAegis,
+          importHint: (context) => AppLocalizations.of(context)!.importHintAegisQrScan,
         ),
         TokenImportEntity(
           processor: const OtpAuthProcessor(),
           type: TokenImportType.link,
-          importHint: (context) => AppLocalizations.of(context)!.importHintAegis,
+          importHint: (context) => AppLocalizations.of(context)!.importHintAegisLink,
         ),
       ],
     ),

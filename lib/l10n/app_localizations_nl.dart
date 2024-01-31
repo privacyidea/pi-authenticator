@@ -541,13 +541,36 @@ class AppLocalizationsNl extends AppLocalizations {
   String get wrongPassword => 'Onjuist wachtwoord';
 
   @override
+  String get qrScan => 'Scan';
+
+  @override
+  String invalidBackupFile(Object appName) {
+    return 'Het geselecteerde bestand is geen geldige backup van $appName.';
+  }
+
+  @override
+  String invalidQrScan(Object appName) {
+    return 'De gescande QR code is geen geldige backup van $appName.';
+  }
+
+  @override
+  String invalidQrFile(Object appName) {
+    return 'Het geselecteerde bestand bevat geen geldige QR code van $appName.';
+  }
+
+  @override
+  String invalidLink(Object appName) {
+    return 'De ingevoerde link is geen geldig token van $appName.';
+  }
+
+  @override
   String importExistingToken(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Het bestand bevat $count tokens die al in de toepassing zijn.',
-      one: 'Het bestand bevat een token dat al in de toepassing is.',
-      zero: 'Het bestand bevat geen token dat al in de toepassing is.',
+      other: 'er is een $count token gevonden dat al in de toepassing zit',
+      one: 'er is een token gevonden dat al in de toepassing zit',
+      zero: 'er is geen token gevonden dat al in de toepassing zit',
     );
     return '$_temp0';
   }
@@ -569,27 +592,28 @@ class AppLocalizationsNl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Het bestand bevat $count nieuwe tokens die zullen worden geïmporteerd.',
-      one: 'Het bestand bevat een nieuw token dat zal worden geïmporteerd.',
-      zero: 'Het bestand bevat geen nieuw token.',
+      other: 'Er is een nieuw token $count gevonden dat zal worden geïmporteerd.',
+      one: 'Er is een nieuw token gevonden dat zal worden geïmporteerd.',
+      zero: 'Er is geen nieuw token gevonden.',
     );
     return '$_temp0';
   }
 
   @override
-  String get importHint2FAS => 'Wähle dein 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.';
+  String get importHint2FAS => 'Selecteer uw 2FAS-back-up. Als u geen back-up hebt, maak er dan een aan in de 2FAS-app. Wij raden u aan een wachtwoord te gebruiken.';
 
   @override
-  String get importHintAegis => 'Wähle dein Aegis-Backup aus.\nWenn Sie kein Backup haben, erstellen Sie bitte eins in der Aegis-App. Für den Import wird das Passwort benötigt, das beim ersten Start von Aegis festgelegt wurde.';
+  String get importHintAegisBackupFile => 'Selecteer uw Aegis-export (.JSON).Als u geen export hebt, maak er dan een aan via het instellingenmenu in de Aegis-app. Het gebruik van een wachtwoord wordt aanbevolen.';
 
   @override
-  String get importHintGoogle => 'Scan de QR-code die je ontvangt wanneer je je accounts exporteert vanuit Google Authenticator.\n\nJe kunt ook een screenshot maken van de QR-code en het bestand selecteren. (Het is niet veilig om de schermafbeelding op je apparaat te bewaren)';
+  String get importHintAegisQrScan => 'Scan de QR-code die je ontvangt bij het overbrengen van items uit Aegis.';
 
   @override
-  String get qrScan => 'Scan';
+  String get importHintAegisLink => 'Voer de link in die u ontvangt wanneer u tags overdraagt vanuit Aegis.';
 
   @override
-  String scanNoValidBackupFrom(Object name) {
-    return 'De gescande QR code is geen geldige backup van $name.';
-  }
+  String get importHintGoogleQrScan => 'Scan de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.';
+
+  @override
+  String get importHintGoogleQrFile => 'Selecteer een afbeeldingsbestand met de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.\n!! Let op: het is niet veilig om de QR-code op je apparaat op te slaan, omdat de tokens niet versleuteld zijn !!';
 }

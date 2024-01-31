@@ -1,11 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:developer';
-
-import 'package:collection/collection.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:privacyidea_authenticator/model/enums/token_import_type.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
 
@@ -61,7 +57,7 @@ class _ImportStartPageState extends State<ImportStartPage> {
                 const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
                 _dataIsValid == false
                     ? Text(
-                        AppLocalizations.of(context)!.scanNoValidBackupFrom(widget.appName),
+                        widget.selectedEntity.type.getErrorText(context, appName: widget.appName),
                         textAlign: TextAlign.center,
                       )
                     : Text(widget.selectedEntity.importHint(context), textAlign: TextAlign.center),

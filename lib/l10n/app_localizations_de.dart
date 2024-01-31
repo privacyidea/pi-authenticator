@@ -522,7 +522,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String fileNoValidBackupFrom(Object name) {
-    return 'Die ausgewählte Datei ist kein gültiges Backup von $name.';
+    return 'The selected file is not a valid backup from $name.';
   }
 
   @override
@@ -541,13 +541,36 @@ class AppLocalizationsDe extends AppLocalizations {
   String get wrongPassword => 'Falsches Passwort';
 
   @override
+  String get qrScan => 'Scannen';
+
+  @override
+  String invalidBackupFile(Object appName) {
+    return 'Die ausgewählte Datei ist kein gültiges Backup von $appName.';
+  }
+
+  @override
+  String invalidQrScan(Object appName) {
+    return 'Der gescannte QR-Code ist kein gültiges Backup von $appName.';
+  }
+
+  @override
+  String invalidQrFile(Object appName) {
+    return 'Die ausgewählte Datei enthällt kein gültigen QR-Code von $appName.';
+  }
+
+  @override
+  String invalidLink(Object appName) {
+    return 'Der eingegebene Link ist kein gültiger Token von $appName.';
+  }
+
+  @override
   String importExistingToken(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Die Datei enthält $count Token, die sich bereits in der Anwendung befinden.',
-      one: 'Die Datei enthält ein Token, das sich bereits in der Anwendung befindet.',
-      zero: 'Die Datei enthält kein Token, das sich bereits in der Anwendung befindet.',
+      other: 'Es wurden $count Token gefunden, die sich bereits in der Anwendung befinden.',
+      one: 'Es wurde ein Token gefunden, das sich bereits in der Anwendung befindet.',
+      zero: 's wurde kein Token gefunden, das sich bereits in der Anwendung befindet.',
     );
     return '$_temp0';
   }
@@ -569,9 +592,9 @@ class AppLocalizationsDe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Die Datei enthält $count neue Token, die importiert werden.',
-      one: 'Die Datei enthält ein neues Token, das importiert wird.',
-      zero: 'Die Datei enthält kein neues Token.',
+      other: 'Es wurden $count neue Token gefunden, die importiert werden.',
+      one: 'Es wurde ein neues Token gefunden, das importiert wird.',
+      zero: 'Es wurde kein neues Token gefunden.',
     );
     return '$_temp0';
   }
@@ -580,16 +603,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get importHint2FAS => 'Wähle dein 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.';
 
   @override
-  String get importHintAegis => 'Wähle dein Aegis-Backup aus.\nWenn Sie kein Backup haben, erstellen Sie bitte eins in der Aegis-App. Für den Import wird das Passwort benötigt, das beim ersten Start von Aegis festgelegt wurde.';
+  String get importHintAegisBackupFile => 'Wähle dein Aegis-Export (.JSON) aus.\nWenn Sie kein Export haben, erstellen Sie bitte eins über das Einstellungen Menu in der Aegis-App. Es wird das benutzen eines Passworts empfohlen.';
 
   @override
-  String get importHintGoogle => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.\n\nAlternativ können Sie einen Screenshot des QR-Codes machen und die Datei auswählen. (Es ist nicht sicher, den Screenshot auf Ihrem Gerät zu behalten)';
+  String get importHintAegisQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie eingtäge aus Aegis übertragen.';
 
   @override
-  String get qrScan => 'Scannen';
+  String get importHintAegisLink => 'Geben Sie den Link ein, den Sie erhalten, wenn Sie eingtäge aus Aegis übertragen.';
 
   @override
-  String scanNoValidBackupFrom(Object name) {
-    return 'Der gescannte QR-Code ist kein gültiges Backup von $name.';
-  }
+  String get importHintGoogleQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.';
+
+  @override
+  String get importHintGoogleQrFile => 'Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.\n!! Beachte dass es nicht sicher ist den QR-Code auf ihren Gerät zu speichern, da die Token nicht verschlüsselt sind !!';
 }

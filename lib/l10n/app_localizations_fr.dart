@@ -541,13 +541,36 @@ class AppLocalizationsFr extends AppLocalizations {
   String get wrongPassword => 'Mot de passe incorrect';
 
   @override
+  String get qrScan => 'Numériser';
+
+  @override
+  String invalidBackupFile(Object appName) {
+    return 'Le fichier sélectionné n\'est pas une sauvegarde valide de $appName';
+  }
+
+  @override
+  String invalidQrScan(Object appName) {
+    return 'Le code QR scanné n\'est pas une sauvegarde valide de $appName';
+  }
+
+  @override
+  String invalidQrFile(Object appName) {
+    return 'Le fichier sélectionné ne contient pas de code QR valide de $appName';
+  }
+
+  @override
+  String invalidLink(Object appName) {
+    return 'Le lien saisi n\'est pas un jeton valide de $appName';
+  }
+
+  @override
   String importExistingToken(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Le fichier contient $count des tokens déjà présents dans l\'application.',
-      one: 'Le fichier contient un token déjà présent dans l\'application.',
-      zero: 'Le fichier ne contient pas de token déjà présent dans l\'application.',
+      other: 'aucun token $count déjà présent dans l\'application a été trouvé.',
+      one: 'un token déjà présent dans l\'application a été trouvé.',
+      zero: 'aucun token déjà présent dans l\'application n\'a été trouvé.',
     );
     return '$_temp0';
   }
@@ -569,9 +592,9 @@ class AppLocalizationsFr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Le fichier contient $count nouveaux tokens qui seront importés.',
-      one: 'Le fichier contient un nouveau token qui sera importé.',
-      zero: 'Le fichier ne contient pas de nouveau token.',
+      other: 'Aucun $count nouveau token a été trouvé et sera importé.',
+      one: 'Un nouveau token a été trouvé et sera importé.',
+      zero: 'Aucun nouveau token n\'a été trouvé.',
     );
     return '$_temp0';
   }
@@ -580,16 +603,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String get importHint2FAS => 'Choisissez votre sauvegarde 2FAS.\nSi vous n\'avez pas de sauvegarde, créez-en une dans l\'application 2FAS. Nous vous recommandons d\'utiliser un mot de passe';
 
   @override
-  String get importHintAegis => 'Sélectionnez votre sauvegarde Aegis.\nSi vous n\'avez pas de sauvegarde, veuillez en créer une dans l\'application Aegis. Pour l\'importation, le mot de passe défini lors du premier démarrage d\'Aegis est nécessaire';
+  String get importHintAegisBackupFile => 'Choisissez votre exportation Aegis (.JSON).\nSi vous n\'avez pas d\'exportation, veuillez en créer une via le menu Paramètres dans l\'application Aegis. Il est recommandé d\'utiliser un mot de passe';
 
   @override
-  String get importHintGoogle => 'Scannez le code QR que vous obtenez lorsque vous exportez vos comptes depuis Google Authenticator.\n\nVous pouvez également faire une capture d\'écran du code QR et sélectionner le fichier. (Il n\'est pas sûr de conserver la capture d\'écran sur votre appareil)';
+  String get importHintAegisQrScan => 'Scannez le code QR que vous recevez lorsque vous transférez des données depuis Aegis';
 
   @override
-  String get qrScan => 'Numériser';
+  String get importHintAegisLink => 'Saisissez le lien que vous recevez lorsque vous transférez des données depuis Aegis';
 
   @override
-  String scanNoValidBackupFrom(Object name) {
-    return 'The scanned QR code is not a valid backup from $name.';
-  }
+  String get importHintGoogleQrScan => 'Scannez le code QR que vous recevez lorsque vous exportez vos comptes depuis Google Authenticator';
+
+  @override
+  String get importHintGoogleQrFile => 'Sélectionnez un fichier image avec le code QR que vous obtenez lorsque vous exportez vos comptes depuis Google Authenticator.\n!! Notez qu\'il n\'est pas sûr d\'enregistrer le code QR sur votre appareil, car les jetons ne sont pas cryptés !!';
 }

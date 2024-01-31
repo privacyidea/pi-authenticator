@@ -474,26 +474,23 @@
   "importTokens": "Token importieren",
   "selectFile": "Datei auswählen",
   "decrypt": "Entschlüsseln",
-  "fileNoValidBackupFrom": "Die ausgewählte Datei ist kein gültiges Backup von {name}.",
-  "@fileNoValidBackupFrom": {
-    "description": "Message that tells the user that the selected file is not a valid backup for the token.",
-    "placeholders": {
-      "name": {
-        "example": "privacyIDEA Authenticator"
-      }
-    }
-  },
   "tokensAreEncrypted": "Die Token sind verschlüsselt. Bitte gib das Passwort ein, um sie zu entschlüsseln.",
   "tokensNotEncrypted": "Die Token sind unverschlüsselt, und können direkt importiert werden.",
   "tokensSuccessfullyDecrypted": "Die Token wurden erfolgreich entschlüsselt, sie können nun importiert werden.",
   "password": "Passwort",
   "wrongPassword": "Falsches Passwort",
-  "importExistingToken": "{count, plural, zero{Die Datei enthält kein Token, das sich bereits in der Anwendung befindet.} one{Die Datei enthält ein Token, das sich bereits in der Anwendung befindet.} other{Die Datei enthält {count} Token, die sich bereits in der Anwendung befinden.}}",
-  "importConflictToken": "{count, plural, zero{Es besteht kein Konflikt mit bereits existierenden Token.} one{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.} other{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.}}",
-  "importNewToken": "{count, plural, zero{Die Datei enthält kein neues Token.} one{Die Datei enthält ein neues Token, das importiert wird.} other{Die Datei enthält {count} neue Token, die importiert werden.}}",
-  "importHint2FAS": "Wähle dein 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.",
-  "importHintAegis": "Wähle dein Aegis-Backup aus.\nWenn Sie kein Backup haben, erstellen Sie bitte eins in der Aegis-App. Für den Import wird das Passwort benötigt, das beim ersten Start von Aegis festgelegt wurde.",
-  "importHintGoogle": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.\n\nAlternativ können Sie einen Screenshot des QR-Codes machen und die Datei auswählen. (Es ist nicht sicher, den Screenshot auf Ihrem Gerät zu behalten)",
   "qrScan": "Scannen",
-  "scanNoValidBackupFrom": "Der gescannte QR-Code ist kein gültiges Backup von {name}."
+  "invalidBackupFile": "Die ausgewählte Datei ist kein gültiges Backup von {appName}.",
+  "invalidQrScan": "Der gescannte QR-Code ist kein gültiges Backup von {appName}.",
+  "invalidQrFile": "Die ausgewählte Datei enthällt kein gültigen QR-Code von {appName}.",
+  "invalidLink": "Der eingegebene Link ist kein gültiger Token von {appName}.",
+  "importExistingToken": "{count, plural, zero{s wurde kein Token gefunden, das sich bereits in der Anwendung befindet.} one{Es wurde ein Token gefunden, das sich bereits in der Anwendung befindet.} other{Es wurden {count} Token gefunden, die sich bereits in der Anwendung befinden.}}",
+  "importConflictToken": "{count, plural, zero{Es besteht kein Konflikt mit bereits existierenden Token.} one{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.} other{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.}}",
+  "importNewToken": "{count, plural, zero{Es wurde kein neues Token gefunden.} one{Es wurde ein neues Token gefunden, das importiert wird.} other{Es wurden {count} neue Token gefunden, die importiert werden.}}",
+  "importHint2FAS": "Wähle dein 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.",
+  "importHintAegisBackupFile": "Wähle dein Aegis-Export (.JSON) aus.\nWenn Sie kein Export haben, erstellen Sie bitte eins über das Einstellungen Menu in der Aegis-App. Es wird das benutzen eines Passworts empfohlen.",
+  "importHintAegisQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie eingtäge aus Aegis übertragen.",
+  "importHintAegisLink": "Geben Sie den Link ein, den Sie erhalten, wenn Sie eingtäge aus Aegis übertragen.",
+  "importHintGoogleQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.",
+  "importHintGoogleQrFile": "Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.\n!! Beachte dass es nicht sicher ist den QR-Code auf ihren Gerät zu speichern, da die Token nicht verschlüsselt sind !!"
 }
