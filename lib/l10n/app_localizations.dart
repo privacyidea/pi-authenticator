@@ -1212,6 +1212,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!'**
   String get importHintGoogleQrFile;
+
+  /// No description provided for @qrFileDecodeError.
+  ///
+  /// In en, this message translates to:
+  /// **'It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.'**
+  String get qrFileDecodeError;
+
+  /// No description provided for @tokenLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Token link'**
+  String get tokenLink;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

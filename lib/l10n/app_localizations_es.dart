@@ -512,7 +512,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get selectImportSource => 'Seleccionar fuente de importación';
 
   @override
-  String get selectImportType => 'How do you want to import the tokens?';
+  String get selectImportType => 'Jak chcete importovat žetony?';
 
   @override
   String get importTokens => 'Importar token';
@@ -617,4 +617,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get importHintGoogleQrFile => 'Selecciona un archivo de imagen con el código QR que recibes al exportar tus cuentas desde Google Authenticator.\n!! Tenga en cuenta que no es seguro guardar el código QR en su dispositivo, ya que los tokens no están cifrados !!';
+
+  @override
+  String get qrFileDecodeError => 'No fue posible decodificar el código QR de la imagen seleccionada, por favor utilice el escáner de código QR en su lugar.';
+
+  @override
+  String get tokenLink => 'Enlace token';
 }

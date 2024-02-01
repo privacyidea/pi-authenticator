@@ -201,6 +201,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  charcode:
+    dependency: transitive
+    description:
+      name: charcode
+      sha256: fb98c0f6d12c920a02ee2d998da788bca066ca5f148492b7085ee23372b12306
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.1"
   checked_yaml:
     dependency: transitive
     description:
@@ -792,13 +800,13 @@ packages:
     source: hosted
     version: "4.0.2"
   image:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: image
-      sha256: "028f61960d56f26414eb616b48b04eb37d700cbe477b7fb09bf1d7ce57fd9271"
+      sha256: "49a0d4b0c12402853d3f227fe7c315601b238d126aa4caa5dbb2dcf99421aa4a"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.3"
+    version: "4.1.6"
   image_picker:
     dependency: transitive
     description:
@@ -1728,6 +1736,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  zxing2:
+    dependency: "direct main"
+    description:
+      name: zxing2
+      sha256: a042961441bd400f59595f9125ef5fca4c888daf0ea59c17f41e0e151f8a12b5
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
 sdks:
   dart: ">=3.2.3 <4.0.0"
   flutter: ">=3.16.6"

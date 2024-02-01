@@ -512,7 +512,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get selectImportSource => 'Vyberte zdroj importu';
 
   @override
-  String get selectImportType => 'How do you want to import the tokens?';
+  String get selectImportType => 'Jak chcete importovat žetony?';
 
   @override
   String get importTokens => 'Importní token';
@@ -617,4 +617,10 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get importHintGoogleQrFile => 'Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!';
+
+  @override
+  String get qrFileDecodeError => 'Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.';
+
+  @override
+  String get tokenLink => 'Token link';
 }

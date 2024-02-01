@@ -617,4 +617,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get importHintGoogleQrFile => 'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!';
+
+  @override
+  String get qrFileDecodeError => 'It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.';
+
+  @override
+  String get tokenLink => 'Token link';
 }

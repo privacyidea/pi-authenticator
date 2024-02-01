@@ -494,5 +494,7 @@
   "importHintAegisQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie einträge aus Aegis übertragen.",
   "importHintAegisLink": "Geben Sie den Link ein, den Sie erhalten, wenn Sie einträge aus Aegis übertragen.",
   "importHintGoogleQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.",
-  "importHintGoogleQrFile": "Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.\n!! Beachte dass es nicht sicher ist den QR-Code auf ihren Gerät zu speichern, da die Token nicht verschlüsselt sind !!"
+  "importHintGoogleQrFile": "Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.\n!! Beachte dass es nicht sicher ist den QR-Code auf ihren Gerät zu speichern, da die Token nicht verschlüsselt sind !!",
+  "qrFileDecodeError": "Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren, bitte verwenden Sie stattdessen den QR-Code-Scanner.",
+  "tokenLink": "Token Link"
 }

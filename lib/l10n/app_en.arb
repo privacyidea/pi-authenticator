@@ -514,5 +514,7 @@
   "importHintAegisQrScan": "Scan the QR code you receive when you transfer entries from Aegis.",
   "importHintAegisLink": "Enter the link you receive when you transfer entries from Aegis.",
   "importHintGoogleQrScan": "Scan the QR code you receive when you export your accounts from Google Authenticator.",
-  "importHintGoogleQrFile": "Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!"
+  "importHintGoogleQrFile": "Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!",
+  "qrFileDecodeError": "It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.",
+  "tokenLink": "Token link"
 }

@@ -84,6 +84,8 @@ dependencies:
   file_selector: ^1.0.2
   flutter_shake_animated: ^0.0.5
   flutter_zxing: ^1.5.2
+  zxing2: ^0.2.1
+  image: ^4.1.6
 
 dev_dependencies:
   flutter_driver:

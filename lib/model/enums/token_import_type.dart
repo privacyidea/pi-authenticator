@@ -24,11 +24,4 @@ extension TokenImportTypeExtension on TokenImportType {
         const (TokenImportType.qrFile) => AppLocalizations.of(context)!.selectFile,
         const (TokenImportType.link) => AppLocalizations.of(context)!.enterLink,
       };
-
-  String getErrorText(BuildContext context, {required String appName}) => switch (this) {
-        const (TokenImportType.backupFile) => AppLocalizations.of(context)!.invalidBackupFile(appName),
-        const (TokenImportType.qrScan) => AppLocalizations.of(context)!.invalidQrScan(appName),
-        const (TokenImportType.qrFile) => AppLocalizations.of(context)!.invalidQrFile(appName),
-        const (TokenImportType.link) => AppLocalizations.of(context)!.invalidLink(appName),
-      };
 }
