@@ -364,8 +364,8 @@ $deviceInfo""";
 
   String _convertLogToSingleString(String? message, {dynamic error, dynamic stackTrace, String? name, LogLevel logLevel = LogLevel.INFO}) {
     String fileMessage = '(${DateTime.now().toString()}) ${message ?? ''}';
-    fileMessage += name != null ? '\n$name' : '';
-    fileMessage += error != null ? '\n$error' : '';
+    fileMessage += name != null ? '\nFrom: $name' : '';
+    fileMessage += error != null ? '\nError: $error' : '';
     fileMessage += stackTrace != null ? '\nStacktrace:\n$stackTrace' : '';
 
     List<String> lineSeparatedStrings = fileMessage.split("\n");

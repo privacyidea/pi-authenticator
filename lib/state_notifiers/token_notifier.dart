@@ -72,6 +72,15 @@ class TokenNotifier extends StateNotifier<TokenState> {
     await loadingRepo;
   }
 
+  Future<void> _setNewState(TokenState newState) async {
+    state = newState;
+    if (newState.hasRolledOutPushTokens) checkNotificationPermission();
+    for (final element in newState.pushTokensToRollOut) {
+      rolloutPushToken(element);
+    }
+    await _saveStateToRepo();
+  }
+
   Future<void> _saveStateToRepo() async {
     await loadingRepo;
     loadingRepo = Future(() async {
@@ -104,21 +113,26 @@ class TokenNotifier extends StateNotifier<TokenState> {
     await loadingRepo;
   }
 
-  Future<TokenState?> loadFromRepo() async {
+  Future<TokenState?> loadFromRepo() {
     List<Token> tokens;
     try {
-      loadingRepo = Future(() async {
-        tokens = await _repo.loadTokens();
-        TokenState newState = TokenState(tokens: tokens);
-        state = newState;
-        if (state.pushTokens.firstWhereOrNull((element) => element.isRolledOut == true) != null) {
-          checkNotificationPermission();
-        }
-        return newState;
-      });
-      return await loadingRepo;
+      loadingRepo = Future(
+        () async {
+          tokens = await _repo.loadTokens();
+          TokenState newState = TokenState(tokens: tokens);
+          state = newState;
+          final pushTokensNotRolledOut = newState.pushTokensToRollOut;
+          for (final token in pushTokensNotRolledOut) {
+            rolloutPushToken(token);
+          }
+
+          if (state.hasRolledOutPushTokens) checkNotificationPermission();
+          return newState;
+        },
+      );
+      return loadingRepo;
     } catch (_) {
-      return null;
+      return Future(() => null);
     }
   }
 
@@ -153,15 +167,13 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<void> incrementCounter(HOTPToken token) async {
     await loadingRepo;
     token = state.currentOf(token)?.copyWith(counter: token.counter + 1) ?? token.copyWith(counter: token.counter + 1);
-    state = state.replaceToken(token);
-    await _saveStateToRepo();
+    _setNewState(state.replaceToken(token));
   }
 
   Future<void> hideToken(Token token) async {
     await loadingRepo;
     token = state.currentOf(token)?.copyWith(isHidden: true) ?? token.copyWith(isHidden: true);
-    state = state.replaceToken(token);
-    await _saveStateToRepo();
+    _setNewState(state.replaceToken(token));
   }
 
   Future<void> showToken(Token token) async {
@@ -169,8 +181,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     if (!authenticated) return;
     await loadingRepo;
     token = state.currentOf(token)?.copyWith(isHidden: false) ?? token.copyWith(isHidden: false);
-    state = state.replaceToken(token);
-    await _saveStateToRepo();
+    _setNewState(state.replaceToken(token));
     _timers[token.id]?.cancel();
     _timers[token.id] = Timer(token.showDuration, () async {
       await hideToken(token);
@@ -186,8 +197,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       Logger.warning('Tried to show token that does not exist.', name: 'token_notifier.dart#showTokenById');
       return;
     }
-    state = state.replaceToken(token);
-    await _saveStateToRepo();
+    _setNewState(state.replaceToken(token));
     if (token.folderId != null) {
       globalRef?.read(tokenFolderProvider.notifier).expandFolderById(token.folderId!);
     }
@@ -205,14 +215,12 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<void> addOrReplaceToken(Token token) async {
     await loadingRepo;
-    state = state.addOrReplaceToken(token);
-    await _saveStateToRepo();
+    await _setNewState(state.addOrReplaceToken(token));
   }
 
   Future<void> addOrReplaceTokens(List<Token> updatedTokens) async {
     await loadingRepo;
-    state = state.addOrReplaceTokens(updatedTokens);
-    await _saveStateToRepo();
+    await _setNewState(state.addOrReplaceTokens(updatedTokens));
   }
 
   Future<T?> updateToken<T extends Token>(T token, T Function(T) updater) async {
@@ -223,8 +231,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       return null;
     }
     final updated = updater(current);
-    state = state.replaceToken(updated);
-    await _saveStateToRepo();
+    await _setNewState(state.replaceToken(updated));
     await _homeWidgetUtils.updateTokenIfLinked(updated);
     return updated;
   }
@@ -236,8 +243,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       final current = state.currentOf<T>(token) ?? token;
       updatedTokens.add(updater(current));
     }
-    state = state.replaceTokens(updatedTokens);
-    await _saveStateToRepo();
+    await _setNewState(state.replaceTokens(updatedTokens));
     await _homeWidgetUtils.updateTokensIfLinked(updatedTokens);
     return updatedTokens;
   }
@@ -396,6 +402,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     try {
       // TODO What to do with poll only tokens if google-services is used?
 
+      Logger.warning('SSLVerify: ${token.sslVerify}', name: 'token_notifier.dart#rolloutPushToken');
       Response response = await _ioClient.doPost(
         sslVerify: token.sslVerify,
         url: token.url!,

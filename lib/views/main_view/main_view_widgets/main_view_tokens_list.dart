@@ -4,15 +4,13 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
-import '../../../model/tokens/otp_token.dart';
 import '../../../model/tokens/push_token.dart';
-import '../../../utils/logger.dart';
-import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../widgets/deactivateable_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
 import 'drag_target_divider.dart';
 import 'no_token_screen.dart';
+import 'poll_loading_indicator.dart';
 import 'sortable_widget_builder.dart';
 
 class MainViewTokensList extends ConsumerStatefulWidget {
@@ -30,28 +28,6 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
 
   Duration? lastTimeStamp;
 
-  void updateOTPValue(OTPToken? token) async {
-    // print('Getting Password');
-    // if (token == null) return;
-    // print('Password: ${token.otpValue}');
-
-    // final success = await HomeWidget.saveWidgetData<String>('_password', token.otpValue);
-
-    // (await PackageInfo.fromPlatform()).packageName;
-    // if (kDebugMode) {
-    //   packageName = packageName.replaceAll('.debug', '');
-    // }
-
-    // //  await HomeWidget.renderFlutterWidget(TokenWidgetBuilder.fromToken(token), key: 'token', logicalSize: Size(200, 100));
-    // print('Package Name: $packageName');
-    // print('Package Name: it.netknights.piauthenticator');
-
-    // final success2 = await HomeWidget.updateWidget(qualifiedAndroidName: '$packageName.AppWidgetProvider', iOSName: 'AppWidgetProviderDebug');
-    // print('Updated Widget: $success2');
-
-    // print('Updated Widget');
-  }
-
   @override
   Widget build(BuildContext context) {
     final tokenFolders = ref.watch(tokenFolderProvider).folders;
@@ -63,10 +39,6 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     final tokenStateWithNoFolder = tokenState.tokensWithoutFolder(exclude: filterPushTokens ? [PushToken] : []);
 
     List<SortableMixin> sortables = [...tokenFolders, ...tokenStateWithNoFolder];
-
-    final otpToken = sortables.whereType<OTPToken>().firstOrNull;
-    // homeWidgetReloadAllOtp();
-    updateOTPValue(otpToken);
 
     return Stack(
       children: [
@@ -89,11 +61,16 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
                     child: Column(
                       children: [
                         ..._buildSortableWidgets(sortables, draggingSortable),
-                        (draggingSortable != null)
-                            ? const Expanded(child: DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true, bottomPaddingIfLast: 80))
-                            : const SizedBox(
-                                height: 80,
-                              ),
+                        ...(draggingSortable != null)
+                            ? [
+                                const DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true, bottomPaddingIfLast: 80),
+                                const Expanded(
+                                  child: Opacity(
+                                      opacity: 0,
+                                      child: DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true, bottomPaddingIfLast: 80)),
+                                )
+                              ]
+                            : [const SizedBox(height: 80)]
                       ],
                     ),
                   ),
@@ -126,53 +103,5 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     }
 
     return widgets;
-  }
-}
-
-/// This widget is polling for challenges and closes itself when the polling is done.
-/// Usage: showDialog(context: context, builder: (_) => const PollLoadingIndicator());
-class PollLoadingIndicator extends StatelessWidget {
-  static double widgetSize = 40;
-  static OverlayEntry? _overlayEntry;
-  static void pollForChallenges(BuildContext context) {
-    if (_overlayEntry != null) return;
-    _overlayEntry = OverlayEntry(
-      builder: (context) => const PollLoadingIndicator._(),
-    );
-    Overlay.of(context).insert(_overlayEntry!);
-    Logger.info('Start polling for challenges', name: 'poll_loading_indicator.dart#initState');
-    PushProvider().pollForChallenges(isManually: true).then((_) {
-      Logger.info('Stop polling for challenges', name: 'poll_loading_indicator.dart#initState');
-      _overlayEntry?.remove();
-      _overlayEntry = null;
-    });
-  }
-
-  const PollLoadingIndicator._();
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    return Positioned(
-      top: size.height * 0.08,
-      left: (size.width - widgetSize) / 2,
-      width: widgetSize,
-      height: widgetSize,
-      child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(99),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: const CircularProgressIndicator()),
-    );
   }
 }
