@@ -104,7 +104,12 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
               isHidden: widget.token.isHidden,
               child: IconButton(
                 padding: const EdgeInsets.all(0),
-                onPressed: disableTrailingButton ? null : () => _updateOtpValue(),
+                onPressed: disableTrailingButton
+                    ? null
+                    : () {
+                        ref.read(tokenFolderProvider.notifier).collapseLockedFolders(); // TODO: Remove this line
+                        _updateOtpValue();
+                      },
                 icon: const FittedBox(
                   fit: BoxFit.contain,
                   child: Icon(

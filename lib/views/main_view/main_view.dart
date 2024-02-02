@@ -78,7 +78,6 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
                     : AppBarItem(
                         onPressed: () {
                           ref.read(tokenFilterProvider.notifier).state = TokenFilter(
-                            // filterCategory: TokenFilterCategory.issuer,
                             searchQuery: '',
                           );
                         },

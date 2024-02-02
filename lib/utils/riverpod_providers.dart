@@ -38,7 +38,7 @@ WidgetRef? globalRef;
 final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
   (ref) {
     Logger.info("New TokenNotifier created");
-    final tokenNotifier = TokenNotifier();
+    final newTokenNotifier = TokenNotifier();
 
     ref.listen(deeplinkProvider, (previous, newLink) {
       if (newLink == null) {
@@ -46,7 +46,7 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         return;
       }
       Logger.info("Received new deeplink", name: 'tokenProvider#deeplinkProvider');
-      tokenNotifier.handleLink(newLink.uri);
+      newTokenNotifier.handleLink(newLink.uri);
     });
 
     ref.listen(pushRequestProvider, (previous, newPushRequest) {
@@ -56,11 +56,11 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
       }
       if (newPushRequest.accepted == null) {
         Logger.info("Received new pushRequest", name: 'tokenProvider#pushRequestProvider');
-        tokenNotifier.addPushRequestToToken(newPushRequest);
+        newTokenNotifier.addPushRequestToToken(newPushRequest);
       }
       if (newPushRequest.accepted != null) {
         Logger.info("Received pushRequest with accepted=${newPushRequest.accepted}... removing it from state.", name: 'tokenProvider#pushRequestProvider');
-        tokenNotifier.removePushRequest(newPushRequest);
+        newTokenNotifier.removePushRequest(newPushRequest);
         FlutterLocalNotificationsPlugin().cancelAll();
       }
     });
@@ -71,16 +71,16 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         Logger.info('tokenProvider reviced new AppState. Changed from $previous to $next');
         if (previous == AppLifecycleState.paused && next == AppLifecycleState.resumed) {
           Logger.info('Refreshing tokens on resume', name: 'tokenProvider#appStateProvider');
-          tokenNotifier.refreshTokens();
+          newTokenNotifier.refreshTokens();
         }
         if (previous == AppLifecycleState.resumed && next == AppLifecycleState.paused) {
           Logger.info('Saving tokens and cancelling all notifications on pause', name: 'tokenProvider#appStateProvider');
           FlutterLocalNotificationsPlugin().cancelAll();
-          tokenNotifier.saveTokens();
+          newTokenNotifier.saveTokens();
         }
       },
     );
-    return tokenNotifier;
+    return newTokenNotifier;
   },
   name: 'tokenProvider',
 );
@@ -147,9 +147,14 @@ final appStateProvider = StateProvider<AppLifecycleState?>(
 final tokenFolderProvider = StateNotifierProvider<TokenFolderNotifier, TokenFolderState>(
   (ref) {
     Logger.info("New TokenFolderNotifier created", name: 'tokenFolderProvider');
-    return TokenFolderNotifier(
-      repository: PreferenceTokenFolderRepository(),
-    );
+    final newTokenFolderNotifier = TokenFolderNotifier(repository: PreferenceTokenFolderRepository());
+    ref.listen(appStateProvider, (previous, next) {
+      if (previous == AppLifecycleState.resumed && next == AppLifecycleState.paused) {
+        Logger.warning('Collapsing locked folders on pause', name: 'tokenFolderProvider#appStateProvider');
+        newTokenFolderNotifier.collapseLockedFolders();
+      }
+    });
+    return newTokenFolderNotifier;
   },
   name: 'tokenFolderProvider',
 );

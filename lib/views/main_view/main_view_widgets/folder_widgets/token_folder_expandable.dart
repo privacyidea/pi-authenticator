@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +25,9 @@ import 'token_folder_actions.dart/rename_token_folder_action.dart';
 class TokenFolderExpandable extends ConsumerStatefulWidget {
   final TokenFolder folder;
   final TokenFilter? filter;
-  final bool? expanded;
+  final bool? expandOverride;
 
-  const TokenFolderExpandable({super.key, required this.folder, this.filter, this.expanded});
+  const TokenFolderExpandable({super.key, required this.folder, this.filter, this.expandOverride});
 
   @override
   ConsumerState<TokenFolderExpandable> createState() => _TokenFolderExpandableState();
@@ -42,16 +43,21 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
     super.initState();
     animationController = AnimationController(
       duration: const Duration(milliseconds: 250),
-      value: widget.expanded ?? widget.folder.isExpanded ? 0 : 1.0,
+      value: widget.expandOverride ?? widget.folder.isExpanded ? 0 : 1.0,
       vsync: this,
     );
-    expandableController = ExpandableController(initialExpanded: widget.expanded ?? widget.folder.isExpanded);
+    expandableController = ExpandableController(initialExpanded: widget.expandOverride ?? widget.folder.isExpanded);
     expandableController.addListener(() {
-      globalRef?.read(tokenFolderProvider.notifier).updateFolder(widget.folder.copyWith(isExpanded: expandableController.expanded));
+      log('ExpandableController: ${expandableController.expanded}');
+      log('Folder: ${widget.folder.isExpanded}');
       if (expandableController.expanded) {
         animationController.reverse();
       } else {
         animationController.forward();
+      }
+      if (widget.expandOverride != null) return;
+      if (widget.folder.isExpanded != expandableController.expanded) {
+        globalRef?.read(tokenFolderProvider.notifier).updateFolder(widget.folder.copyWith(isExpanded: expandableController.expanded));
       }
     });
   }
@@ -64,40 +70,28 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
     super.dispose();
   }
 
-  void _setExpanded(bool expanded, {bool updateState = true}) {
-    if (expanded) {
-      animationController.reverse();
-    } else {
-      animationController.forward();
-    }
-    expandableController.expanded = expanded;
-    if (updateState) {
-      globalRef?.read(tokenFolderProvider.notifier).updateFolder(widget.folder.copyWith(isExpanded: expanded));
-    }
-  }
-
   @override
   ExpandablePanel build(BuildContext context) {
     List<Token> tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: ref.watch(settingsProvider).hidePushTokens ? [PushToken] : []);
     tokens = widget.filter?.filterTokens(tokens) ?? tokens;
     final draggingSortable = ref.watch(draggingSortableProvider);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    if (widget.expandOverride == null) {
       if (tokens.isEmpty && expandableController.expanded) {
-        _setExpanded(false);
-        return;
+        expandableController.value = false;
+      } else if (widget.folder.isExpanded != expandableController.expanded) {
+        expandableController.value = widget.folder.isExpanded;
       }
-      if (widget.folder.isExpanded != expandableController.expanded) {
-        _setExpanded(widget.folder.isExpanded, updateState: false);
-      }
-    });
-
+    } else {
+      expandableController.value = widget.expandOverride!;
+    }
     return ExpandablePanel(
       theme: const ExpandableThemeData(hasIcon: false, tapBodyToCollapse: false, tapBodyToExpand: false),
       controller: expandableController,
       header: GestureDetector(
         onTap: () async {
-          if (widget.folder.isExpanded) {
-            _setExpanded(false);
+          if (widget.expandOverride != null) return;
+          if (expandableController.value) {
+            expandableController.value = false;
             return;
           }
           if (tokens.isEmpty || (tokens.length == 1 && tokens.first == draggingSortable)) return;
@@ -105,7 +99,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
             return;
           }
           if (!mounted) return;
-          _setExpanded(true);
+          expandableController.value = true;
         },
         child: Slidable(
           key: ValueKey('tokenFolder-${widget.folder.folderId}'),
@@ -128,7 +122,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                   _expandTimer?.cancel();
                   _expandTimer = Timer(const Duration(milliseconds: 500), () {
                     if (!mounted) return;
-                    _setExpanded(true);
+                    expandableController.value = true;
                   });
                   return true;
                 }

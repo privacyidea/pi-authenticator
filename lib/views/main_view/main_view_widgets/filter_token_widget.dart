@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../model/states/token_filter.dart';
 import '../../../utils/riverpod_providers.dart';
-import '../../../utils/utils.dart';
 
 class SearchTokenWidget extends StatelessWidget {
   final bool searchActive;

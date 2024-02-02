@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../interfaces/repo/token_folder_repository.dart';
 import '../model/states/token_folder_state.dart';
 import '../model/token_folder.dart';
+import '../utils/logger.dart';
 
 class TokenFolderNotifier extends StateNotifier<TokenFolderState> {
   Future<void>? isLoading;
@@ -20,6 +23,7 @@ class TokenFolderNotifier extends StateNotifier<TokenFolderState> {
     isLoading = Future(() async {
       final failedFolders = await _repo.saveOrReplaceFolders(folders);
       if (failedFolders.isNotEmpty) {
+        Logger.error('Failed to save or replace folders: $failedFolders', name: 'TokenFolderNotifier#_saveOrReplaceFolders');
         state = state.withoutFolders(failedFolders);
       }
     });
@@ -38,6 +42,7 @@ class TokenFolderNotifier extends StateNotifier<TokenFolderState> {
   }
 
   void updateFolder(TokenFolder folder) {
+    log('Updating folder: $folder', name: 'TokenFolderNotifier#updateFolder');
     final newState = state.withUpdated([folder]);
     state = newState;
     _saveOrReplaceFolders(newState.folders);
@@ -52,5 +57,17 @@ class TokenFolderNotifier extends StateNotifier<TokenFolderState> {
   void expandFolderById(int id) {
     final folder = state.folders.firstWhere((element) => element.folderId == id).copyWith(isExpanded: true);
     updateFolder(folder);
+  }
+
+  void collapseLockedFolders() {
+    final lockedFolders = state.folders.where((element) => element.isLocked).toList();
+    Logger.warning('Collapsing locked folders before: $lockedFolders', name: 'TokenFolderNotifier#collapseLockedFolders');
+    for (var i = 0; i < lockedFolders.length; i++) {
+      lockedFolders[i] = lockedFolders[i].copyWith(isExpanded: false);
+    }
+    Logger.warning('Collapsed locked folders after: $lockedFolders', name: 'TokenFolderNotifier#collapseLockedFolders');
+    final newState = state.withUpdated(lockedFolders);
+    state = newState;
+    _saveOrReplaceFolders(newState.folders);
   }
 }

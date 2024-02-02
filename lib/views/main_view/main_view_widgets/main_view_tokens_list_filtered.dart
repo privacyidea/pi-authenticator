@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,6 +5,7 @@ import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/states/token_filter.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/token.dart';
+import '../../../utils/logger.dart';
 import '../../../utils/riverpod_providers.dart';
 import 'folder_widgets/token_folder_expandable.dart';
 import 'token_widgets/token_widget_builder.dart';
@@ -52,9 +51,10 @@ class MainViewTokensListFiltered extends ConsumerWidget {
   List<Widget> _buildFilteredFolder({required WidgetRef ref, required TokenFolder folder, required TokenFilter filter}) {
     if (filter.filterTokens(ref.watch(tokenProvider).tokensInFolder(folder)).isEmpty) return [];
     final expanded = filter.searchQuery.isNotEmpty && !folder.isLocked ? true : null; // Auto expand if search query is not empty and folder is not locked.
+    Logger.warning('Expanded: $expanded', name: 'main_view_tokens_list_filtered.dart#_buildFilteredFolder');
     final List<Widget> widgets = [];
     widgets.add(
-      TokenFolderExpandable(folder: folder, filter: filter, expanded: expanded, key: ValueKey('${folder.label}$expanded')),
+      TokenFolderExpandable(folder: folder, filter: filter, expandOverride: expanded, key: ValueKey('filteredFolder:${folder.folderId}')),
     );
     widgets.add(const Divider());
     return widgets;
