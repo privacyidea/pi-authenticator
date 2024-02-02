@@ -287,8 +287,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get sendErrorLog => 'verzenden';
 
   @override
-  String get sendErrorLogDescription =>
-      'Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:';
+  String get sendErrorLogDescription => 'Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:';
 
   @override
   String get showPrivacyPolicy => 'Privacybeleid tonen';
@@ -315,8 +314,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get open => 'Openen';
 
   @override
-  String get sendErrorDialogBody =>
-      'Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.';
+  String get sendErrorDialogBody => 'Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.';
 
   @override
   String get noFbToken => 'Geen Firebase Token beschikbaar';
@@ -437,8 +435,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Geef de camera toestemming om QR-codes te scannen.';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied =>
-      'Cameratoestemming is permanent geweigerd. Geef de camera toestemming in de instellingen van uw telefoon.';
+  String get grantCameraPermissionDialogPermanentlyDenied => 'Cameratoestemming is permanent geweigerd. Geef de camera toestemming in de instellingen van uw telefoon.';
 
   @override
   String get grantCameraPermissionDialogButton => 'Toestemming verlenen';
@@ -447,8 +444,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get decryptErrorTitle => 'Fout bij decoderen';
 
   @override
-  String get decryptErrorContent =>
-      'Helaas heeft de app je tokens niet kunnen decoderen. Dit geeft aan dat de coderingssleutel is verbroken. U kunt het opnieuw proberen of de app-gegevens verwijderen, waardoor de tokens in de app worden verwijderd.';
+  String get decryptErrorContent => 'Helaas heeft de app je tokens niet kunnen decoderen. Dit geeft aan dat de coderingssleutel is verbroken. U kunt het opnieuw proberen of de app-gegevens verwijderen, waardoor de tokens in de app worden verwijderd.';
 
   @override
   String get decryptErrorButtonDelete => 'Verwijderen';
@@ -466,8 +462,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get hidePushTokens => 'Verberg push tokens';
 
   @override
-  String get hidePushTokensDescription =>
-      'Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.';
+  String get hidePushTokensDescription => 'Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.';
 
   @override
   String get settingsGroupGeneral => 'Algemene informatie';
@@ -479,8 +474,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get privacyPolicy => 'Privacybeleid';
 
   @override
-  String get introScanQrCode =>
-      'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
 
   @override
   String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
@@ -512,6 +506,121 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get legacySigningErrorMessage =>
-      'Het token is aangemaakt in een verouderde versie van de app, wat kan leiden tot problemen bij het gebruik ervan.\nHet wordt aanbevolen om een nieuw push token aan te maken als het probleem zich blijft voordoen!';
+  String get legacySigningErrorMessage => 'Het token is aangemaakt in een verouderde versie van de app, wat kan leiden tot problemen bij het gebruik ervan.\nHet wordt aanbevolen om een nieuw push token aan te maken als het probleem zich blijft voordoen!';
+
+  @override
+  String get selectImportSource => 'Selecteer importbron';
+
+  @override
+  String get selectImportType => 'Hoe wilt u de tokens importeren?';
+
+  @override
+  String get importTokens => 'Token importeren';
+
+  @override
+  String get selectFile => 'Selecteer bestand';
+
+  @override
+  String get decrypt => 'Decoderen';
+
+  @override
+  String get tokensAreEncrypted => 'De tokens zijn gecodeerd. Voer het wachtwoord in om ze te decoderen.';
+
+  @override
+  String get tokensNotEncrypted => 'De tokens zijn niet versleuteld en kunnen direct worden geïmporteerd.';
+
+  @override
+  String get tokensSuccessfullyDecrypted => 'De tokens zijn succesvol gedecodeerd en kunnen nu worden geïmporteerd.';
+
+  @override
+  String get password => 'Wachtwoord';
+
+  @override
+  String get wrongPassword => 'Onjuist wachtwoord';
+
+  @override
+  String get qrScan => 'Scan';
+
+  @override
+  String get enterLink => 'Link invoeren';
+
+  @override
+  String invalidBackupFile(Object appName) {
+    return 'Het geselecteerde bestand is geen geldige backup van $appName.';
+  }
+
+  @override
+  String invalidQrScan(Object appName) {
+    return 'De gescande QR code is geen geldige backup van $appName.';
+  }
+
+  @override
+  String invalidQrFile(Object appName) {
+    return 'Het geselecteerde bestand bevat geen geldige QR code van $appName.';
+  }
+
+  @override
+  String invalidLink(Object appName) {
+    return 'De ingevoerde link is geen geldig token van $appName, of wordt niet ondersteund.';
+  }
+
+  @override
+  String importExistingToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'er is een $count token gevonden dat al in de toepassing zit',
+      one: 'er is een token gevonden dat al in de toepassing zit',
+      zero: 'er is geen token gevonden dat al in de toepassing zit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importConflictToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.',
+      one: 'Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.',
+      zero: 'Er is geen conflict met tokens die al bestaan.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importNewToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Er is een nieuw token $count gevonden dat zal worden geïmporteerd.',
+      one: 'Er is een nieuw token gevonden dat zal worden geïmporteerd.',
+      zero: 'Er is geen nieuw token gevonden.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importHint2FAS => 'Selecteer uw 2FAS-back-up. Als u geen back-up hebt, maak er dan een aan in de 2FAS-app. Wij raden u aan een wachtwoord te gebruiken.';
+
+  @override
+  String get importHintAegisBackupFile => 'Selecteer uw Aegis-export (.JSON).Als u geen export hebt, maak er dan een aan via het instellingenmenu in de Aegis-app. Het gebruik van een wachtwoord wordt aanbevolen.';
+
+  @override
+  String get importHintAegisQrScan => 'Scan de QR-code die u ontvangt bij het overbrengen van items uit Aegis.';
+
+  @override
+  String get importHintAegisLink => 'Voer de link in die u ontvangt wanneer u vermeldingen van Aegis overdraagt.';
+
+  @override
+  String get importHintGoogleQrScan => 'Scan de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.';
+
+  @override
+  String get importHintGoogleQrFile => 'Selecteer een afbeeldingsbestand met de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.\n!! Let op: het is niet veilig om de QR-code op je apparaat op te slaan, omdat de tokens niet versleuteld zijn !!';
+
+  @override
+  String get qrFileDecodeError => 'Het was niet mogelijk om de QR code te decoderen van de geselecteerde afbeelding, gebruik in plaats daarvan de QR code scanner.';
+
+  @override
+  String get tokenLink => 'tokenlink';
 }

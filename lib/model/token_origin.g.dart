@@ -6,13 +6,13 @@ part of 'token_origin.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-TokenOrigin _$TokenOriginFromJson(Map<String, dynamic> json) => TokenOrigin(
+TokenOriginData _$TokenOriginFromJson(Map<String, dynamic> json) => TokenOriginData(
       source: $enumDecode(_$TokenSourceTypeEnumMap, json['source']),
       data: json['data'] as String,
       appName: json['app'] as String?,
     );
 
-Map<String, dynamic> _$TokenOriginToJson(TokenOrigin instance) => <String, dynamic>{
+Map<String, dynamic> _$TokenOriginToJson(TokenOriginData instance) => <String, dynamic>{
       'source': _$TokenSourceTypeEnumMap[instance.source]!,
       'app': instance.appName,
       'data': instance.data,
@@ -21,6 +21,6 @@ Map<String, dynamic> _$TokenOriginToJson(TokenOrigin instance) => <String, dynam
 const _$TokenSourceTypeEnumMap = {
   TokenOriginSourceType.link: 'link',
   TokenOriginSourceType.manually: 'manual',
-  TokenOriginSourceType.import: 'import',
+  TokenOriginSourceType.backupFile: 'backupFile',
   TokenOriginSourceType.unknown: 'unknown',
 };

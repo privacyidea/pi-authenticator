@@ -2,12 +2,13 @@ import '../../main_netknights.dart';
 import '../token_origin.dart';
 
 enum TokenOriginSourceType {
+  backupFile,
   link,
   manually,
-  import,
   unknown,
 }
 
 extension TokenSourceTypeExtension on TokenOriginSourceType {
-  TokenOrigin toTokenOrigin({String data = ''}) => TokenOrigin(source: this, data: data, appName: PrivacyIDEAAuthenticator.currentCustomization?.appName);
+  TokenOriginData toTokenOrigin({String data = ''}) =>
+      TokenOriginData(source: this, data: data, appName: PrivacyIDEAAuthenticator.currentCustomization?.appName);
 }

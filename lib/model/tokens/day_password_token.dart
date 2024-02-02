@@ -5,12 +5,12 @@ import 'package:uuid/uuid.dart';
 
 import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
-import '../extensions/enum_extension.dart';
 import '../../utils/utils.dart';
 import '../enums/algorithms.dart';
 import '../enums/day_passoword_token_view_mode.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
+import '../extensions/enum_extension.dart';
 import '../token_origin.dart';
 import 'otp_token.dart';
 import 'token.dart';
@@ -68,7 +68,7 @@ class DayPasswordToken extends OTPToken {
     bool? isLocked,
     bool? isHidden,
     int? Function()? folderId,
-    TokenOrigin? origin,
+    TokenOriginData? origin,
   }) =>
       DayPasswordToken(
         period: period ?? this.period,

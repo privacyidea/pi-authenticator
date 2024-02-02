@@ -489,26 +489,30 @@
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
   },
   "selectImportSource": "Selecteer importbron",
+  "selectImportType": "Hoe wilt u de tokens importeren?",
   "importTokens": "Token importeren",
   "selectFile": "Selecteer bestand",
   "decrypt": "Decoderen",
-  "fileNoValidBackupFor": "Het geselecteerde bestand is geen geldige back-up voor {name}.",
-  "@fileNoValidBackupFor": {
-    "description": "Bericht dat de gebruiker vertelt dat het geselecteerde bestand geen geldige back-up is voor het token.",
-    "placeholders": {
-      "naam": {
-        "example": "privacyIDEA Authenticator"
-      }
-    }
-  },
-  "fileIsEncrypted": "Het geselecteerde bestand is gecodeerd. Voer het wachtwoord in om het te decoderen",
-  "fileNotEncrypted": "Het geselecteerde bestand is niet gecodeerd. Het kan direct worden geïmporteerd",
-  "fileSuccessfullyDecrypted": "De tokens zijn succesvol gedecodeerd en kunnen nu worden geïmporteerd.",
+  "tokensAreEncrypted": "De tokens zijn gecodeerd. Voer het wachtwoord in om ze te decoderen.",
+  "tokensNotEncrypted": "De tokens zijn niet versleuteld en kunnen direct worden geïmporteerd.",
+  "tokensSuccessfullyDecrypted": "De tokens zijn succesvol gedecodeerd en kunnen nu worden geïmporteerd.",
   "password": "Wachtwoord",
   "wrongPassword": "Onjuist wachtwoord",
-  "importExistingToken": "{count, plural, zero{Het bestand bevat geen token dat al in de toepassing is.} one{Het bestand bevat een token dat al in de toepassing is.} other{Het bestand bevat {count} tokens die al in de toepassing zijn.}}",
+  "qrScan": "Scan",
+  "enterLink": "Link invoeren",
+  "invalidBackupFile": "Het geselecteerde bestand is geen geldige backup van {appName}.",
+  "invalidQrScan": "De gescande QR code is geen geldige backup van {appName}.",
+  "invalidQrFile": "Het geselecteerde bestand bevat geen geldige QR code van {appName}.",
+  "invalidLink": "De ingevoerde link is geen geldig token van {appName}, of wordt niet ondersteund.",
+  "importExistingToken": "{count, plural, zero{er is geen token gevonden dat al in de toepassing zit} one{er is een token gevonden dat al in de toepassing zit} other{er is een {count} token gevonden dat al in de toepassing zit}}",
   "importConflictToken": "{count, plural, zero{Er is geen conflict met tokens die al bestaan.} one{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.} other{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.}}",
-  "importNewToken": "{count, plural, zero{Het bestand bevat geen nieuw token.} one{Het bestand bevat een nieuw token dat zal worden geïmporteerd.} other{Het bestand bevat {count} nieuwe tokens die zullen worden geïmporteerd.}}",
-  "importHint2FAS": "Selecteer uw 2FAS-back-up. Als je geen back-up hebt, maak er dan een aan in de 2FAS-app.\nWe raden aan een wachtwoord te gebruiken.",
-  "importHint2FASButton": "Selecteer 2FAS Backup"
+  "importNewToken": "{count, plural, zero{Er is geen nieuw token gevonden.} one{Er is een nieuw token gevonden dat zal worden geïmporteerd.} other{Er is een nieuw token {count} gevonden dat zal worden geïmporteerd.}}",
+  "importHint2FAS": "Selecteer uw 2FAS-back-up. Als u geen back-up hebt, maak er dan een aan in de 2FAS-app. Wij raden u aan een wachtwoord te gebruiken.",
+  "importHintAegisBackupFile": "Selecteer uw Aegis-export (.JSON).Als u geen export hebt, maak er dan een aan via het instellingenmenu in de Aegis-app. Het gebruik van een wachtwoord wordt aanbevolen.",
+  "importHintAegisQrScan": "Scan de QR-code die u ontvangt bij het overbrengen van items uit Aegis.",
+  "importHintAegisLink": "Voer de link in die u ontvangt wanneer u vermeldingen van Aegis overdraagt.",
+  "importHintGoogleQrScan": "Scan de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.",
+  "importHintGoogleQrFile": "Selecteer een afbeeldingsbestand met de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.\n!! Let op: het is niet veilig om de QR-code op je apparaat op te slaan, omdat de tokens niet versleuteld zijn !!",
+  "qrFileDecodeError": "Het was niet mogelijk om de QR code te decoderen van de geselecteerde afbeelding, gebruik in plaats daarvan de QR code scanner.",
+  "tokenLink": "tokenlink"
 }

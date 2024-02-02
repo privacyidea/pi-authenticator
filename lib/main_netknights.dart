@@ -39,6 +39,7 @@ import 'package:privacyidea_authenticator/views/qr_scanner_view/qr_scanner_view.
 import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
 import 'package:privacyidea_authenticator/views/splash_screen/splash_screen.dart';
 import 'package:privacyidea_authenticator/widgets/app_wrapper.dart';
+
 import 'utils/home_widget_utils.dart';
 
 void main() async {

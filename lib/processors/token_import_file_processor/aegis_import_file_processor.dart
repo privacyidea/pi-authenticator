@@ -3,19 +3,19 @@
 import 'dart:convert';
 import 'dart:isolate';
 import 'dart:typed_data';
+
 import 'package:cryptography/cryptography.dart' as crypto;
 import 'package:encrypt/encrypt.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
-
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../utils/crypto_utils.dart';
-import 'token_file_import_processor_interface.dart';
-import 'two_fas_file_import_processor.dart';
+import 'token_import_file_processor_interface.dart';
+import 'two_fas_import_file_processor.dart';
 
 /// Args: [SendPort] sendPort, [ScryptParameters] scryptParameters, [String] password
 void _isolatedKdf(List args) {
@@ -32,7 +32,9 @@ void _isolatedKdf(List args) {
   sendPort.send(keyBytes);
 }
 
-class AegisImportFileProcessor extends TokenFileImportProcessor {
+class AegisImportFileProcessor extends TokenImportFileProcessor {
+  const AegisImportFileProcessor();
+
   static const String AEGIS_TYPE = 'type';
   static const String AEGIS_LABEL = 'name';
   static const String AEGIS_ISSUER = 'issuer';
@@ -88,7 +90,7 @@ class AegisImportFileProcessor extends TokenFileImportProcessor {
   }
 
   @override
-  Future<List<Token>> process({required XFile file, String? password}) async {
+  Future<List<Token>> processFile({required XFile file, String? password}) async {
     final String fileContent = await file.readAsString();
     final Map<String, dynamic> json;
     try {

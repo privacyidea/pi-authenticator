@@ -13,15 +13,16 @@ import '../../../utils/logger.dart';
 import '../../../utils/supported_versions.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/two_step_dialog.dart';
-import '../token_scheme_processor.dart';
+import 'token_import_scheme_processor_interface.dart';
 
-class OtpAuthProcessor extends TokenSchemeProcessor {
+class OtpAuthProcessor extends TokenImportSchemeProcessor {
   const OtpAuthProcessor();
   @override
   Set<String> get supportedSchemes => {'otpauth'};
+
   @override
-  Future<List<Token>?> process(Uri uri, {bool fromInit = false}) async {
-    if (!supportedSchemes.contains(uri.scheme)) return null;
+  Future<List<Token>> processUri(Uri uri, {bool fromInit = false}) async {
+    if (!supportedSchemes.contains(uri.scheme)) return [];
     Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
     Map<String, dynamic> uriMap;
     try {
@@ -31,7 +32,7 @@ class OtpAuthProcessor extends TokenSchemeProcessor {
       Logger.warning('Malformed QR code:', name: 'token_notifier.dart#_handleOtpAuth', error: e, stackTrace: s);
       //showMessage(message: '${e.message}\n Please inform the creator of this qr code about the problem.', duration: const Duration(seconds: 8));
 
-      return null;
+      return [];
     }
     if (_is2StepURI(uri)) {
       validateMap(uriMap, [URI_SECRET, URI_ITERATIONS, URI_OUTPUT_LENGTH_IN_BYTES, URI_SALT_LENGTH]);
@@ -59,7 +60,7 @@ class OtpAuthProcessor extends TokenSchemeProcessor {
     } on FormatException catch (e) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
       showMessage(message: e.message, duration: const Duration(seconds: 3));
-      return null;
+      return [];
     }
     return [newToken];
   }

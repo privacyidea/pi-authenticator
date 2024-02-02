@@ -21,9 +21,7 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
       isLocked: json['isLocked'] as bool?,
       isHidden: json['isHidden'] as bool?,
       folderId: json['folderId'] as int?,
-      origin: json['origin'] == null
-          ? null
-          : TokenOrigin.fromJson(json['origin'] as Map<String, dynamic>),
+      origin: json['origin'] == null ? null : TokenOriginData.fromJson(json['origin'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{

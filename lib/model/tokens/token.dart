@@ -25,7 +25,7 @@ abstract class Token with SortableMixin {
   @override
   final int? sortIndex;
 
-  final TokenOrigin? origin;
+  final TokenOriginData? origin;
 
   // Must be string representation of TokenType enum.
   final String type; // Used to identify the token when deserializing.
@@ -89,7 +89,7 @@ abstract class Token with SortableMixin {
     String? tokenImage,
     int? sortIndex,
     int? Function()? folderId,
-    TokenOrigin? origin,
+    TokenOriginData? origin,
   });
 
   @override

@@ -93,7 +93,15 @@ abstract class AppLocalizations {
   ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('cs'), Locale('de'), Locale('en'), Locale('es'), Locale('fr'), Locale('nl'), Locale('pl')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('cs'),
+    Locale('de'),
+    Locale('en'),
+    Locale('es'),
+    Locale('fr'),
+    Locale('nl'),
+    Locale('pl')
+  ];
 
   /// Label for e.g. a button. Something gets accepted by the user.
   ///
@@ -1054,6 +1062,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!'**
   String get legacySigningErrorMessage;
+
+  /// No description provided for @selectImportSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Select import source'**
+  String get selectImportSource;
+
+  /// No description provided for @selectImportType.
+  ///
+  /// In en, this message translates to:
+  /// **'How do you want to import the tokens?'**
+  String get selectImportType;
+
+  /// No description provided for @importTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Import token'**
+  String get importTokens;
+
+  /// No description provided for @selectFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Select file'**
+  String get selectFile;
+
+  /// No description provided for @decrypt.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrypt'**
+  String get decrypt;
+
+  /// No description provided for @tokensAreEncrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'The tokens are encrypted. Please enter the password to decrypt them.'**
+  String get tokensAreEncrypted;
+
+  /// No description provided for @tokensNotEncrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'The tokens are not encrypted and can be imported directly.'**
+  String get tokensNotEncrypted;
+
+  /// No description provided for @tokensSuccessfullyDecrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'The tokens have been successfully decrypted and can now be imported.'**
+  String get tokensSuccessfullyDecrypted;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @wrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password'**
+  String get wrongPassword;
+
+  /// No description provided for @qrScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get qrScan;
+
+  /// No description provided for @enterLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter link'**
+  String get enterLink;
+
+  /// No description provided for @invalidBackupFile.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected file is not a valid backup of {appName}.'**
+  String invalidBackupFile(Object appName);
+
+  /// No description provided for @invalidQrScan.
+  ///
+  /// In en, this message translates to:
+  /// **'The scanned QR code is not a valid backup of {appName}.'**
+  String invalidQrScan(Object appName);
+
+  /// No description provided for @invalidQrFile.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected file does not contain a valid QR code from {appName}.'**
+  String invalidQrFile(Object appName);
+
+  /// No description provided for @invalidLink.
+  ///
+  /// In en, this message translates to:
+  /// **'The link entered is not a valid token of {appName}, or it is not supported.'**
+  String invalidLink(Object appName);
+
+  /// No description provided for @importExistingToken.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, zero{no token was found that is already in the application} one{a token was found that is already in the application} other{a {count} token was found that is already in the application}}'**
+  String importExistingToken(num count);
+
+  /// No description provided for @importConflictToken.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, zero{There is no conflict with tokens that already exist.} one{There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.} other{There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.}}'**
+  String importConflictToken(num count);
+
+  /// No description provided for @importNewToken.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, zero{No new token was found.} one{A new token was found that will be imported.} other{A {count} of new tokens were found that will be imported.}}'**
+  String importNewToken(num count);
+
+  /// No description provided for @importHint2FAS.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.'**
+  String get importHint2FAS;
+
+  /// No description provided for @importHintAegisBackupFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.'**
+  String get importHintAegisBackupFile;
+
+  /// No description provided for @importHintAegisQrScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the QR code you receive when you transfer entries from Aegis.'**
+  String get importHintAegisQrScan;
+
+  /// No description provided for @importHintAegisLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the link you receive when you transfer entries from Aegis.'**
+  String get importHintAegisLink;
+
+  /// No description provided for @importHintGoogleQrScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the QR code you receive when you export your accounts from Google Authenticator.'**
+  String get importHintGoogleQrScan;
+
+  /// No description provided for @importHintGoogleQrFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!'**
+  String get importHintGoogleQrFile;
+
+  /// No description provided for @qrFileDecodeError.
+  ///
+  /// In en, this message translates to:
+  /// **'It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.'**
+  String get qrFileDecodeError;
+
+  /// No description provided for @tokenLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Token link'**
+  String get tokenLink;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -1072,26 +1242,23 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'cs':
-      return AppLocalizationsCs();
-    case 'de':
-      return AppLocalizationsDe();
-    case 'en':
-      return AppLocalizationsEn();
-    case 'es':
-      return AppLocalizationsEs();
-    case 'fr':
-      return AppLocalizationsFr();
-    case 'nl':
-      return AppLocalizationsNl();
-    case 'pl':
-      return AppLocalizationsPl();
+    case 'cs': return AppLocalizationsCs();
+    case 'de': return AppLocalizationsDe();
+    case 'en': return AppLocalizationsEn();
+    case 'es': return AppLocalizationsEs();
+    case 'fr': return AppLocalizationsFr();
+    case 'nl': return AppLocalizationsNl();
+    case 'pl': return AppLocalizationsPl();
   }
 
-  throw FlutterError('AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.'
+  );
 }

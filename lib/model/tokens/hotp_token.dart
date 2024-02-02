@@ -74,7 +74,7 @@ class HOTPToken extends OTPToken {
     bool? isLocked,
     bool? isHidden,
     int? Function()? folderId,
-    TokenOrigin? origin,
+    TokenOriginData? origin,
   }) =>
       HOTPToken(
         counter: counter ?? this.counter,

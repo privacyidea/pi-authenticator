@@ -135,7 +135,7 @@ class PushToken extends Token {
     PushTokenRollOutState? rolloutState,
     CustomIntBuffer? knownPushRequests,
     int? Function()? folderId,
-    TokenOrigin? origin,
+    TokenOriginData? origin,
   }) {
     return PushToken(
       label: label ?? this.label,

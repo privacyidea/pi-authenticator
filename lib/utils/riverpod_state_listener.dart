@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/states/token_state.dart';
 import '../processors/scheme_processors/home_widget_processor.dart';
-import '../processors/scheme_processors/navigation_scheme_processor.dart';
+import '../processors/scheme_processors/navigation_scheme_processors/navigation_scheme_processor_interface.dart';
 import '../state_notifiers/deeplink_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
 import 'home_widget_utils.dart';
@@ -37,7 +37,7 @@ class NavigationDeepLinkListener extends DeepLinkListener {
 
   static void _onNewState(DeepLink? previous, DeepLink? next) {
     if (next == null) return;
-    NavigationSchemeProcessor.processUri(next.uri, context: _context, fromInit: next.fromInit);
+    NavigationSchemeProcessor.processUriByAny(next.uri, context: _context, fromInit: next.fromInit);
   }
 }
 
@@ -51,7 +51,7 @@ class HomeWidgetDeepLinkListener extends DeepLinkListener {
 
   static void _onNewState(DeepLink? previous, DeepLink? next) {
     if (next == null) return;
-    const HomeWidgetProcessor().process(next.uri, fromInit: next.fromInit);
+    const HomeWidgetProcessor().processUri(next.uri, fromInit: next.fromInit);
   }
 }
 

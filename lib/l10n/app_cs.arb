@@ -492,26 +492,30 @@
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
   },
   "selectImportSource": "Vyberte zdroj importu",
+  "selectImportType": "Jak chcete importovat žetony?",
   "importTokens": "Importní token",
   "selectFile": "Vybrat soubor",
   "decrypt": "Dešifrovat",
-  "fileNoValidBackupFor": "Vybraný soubor není platnou zálohou pro {name}.",
-  "@fileNoValidBackupFor": {
-    "description": "Zpráva, která uživateli sděluje, že vybraný soubor není platnou zálohou pro daný token.",
-    "placeholders": {
-      "name": {
-        "example": "privacyIDEA Authenticator"
-      }
-    }
-  },
-  "fileIsEncrypted": "Vybraný soubor je zašifrovaný. Zadejte prosím heslo pro jeho dešifrování.",
-  "fileNotEncrypted": "Vybraný soubor není zašifrovaný. Lze jej importovat přímo.",
-  "fileSuccessfullyDecrypted": "Tokeny byly úspěšně dešifrovány a nyní je lze importovat.",
+  "tokensAreEncrypted": "Tokeny jsou zašifrované. Please enter the password to decrypt them.",
+  "tokensNotEncrypted": "Tokeny nejsou šifrované a lze je importovat přímo.",
+  "tokensSuccessfullyDecrypted": "Tokeny byly úspěšně dešifrovány a nyní je lze importovat.",
   "password": "Heslo",
   "wrongPassword": "Nesprávné heslo",
-  "importExistingToken": "{count, plural, zero{Soubor neobsahuje token, který je již v aplikaci.} one{Soubor obsahuje token, který je již v aplikaci.} other{Soubor obsahuje {count} tokenů, které jsou již v aplikaci.}}",
-  "importConflictToken": "{count, plural, zero{Není konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který chcete zachovat.}}",
-  "importNewToken": "{count, plural, zero{Soubor neobsahuje nový token.} one{Soubor obsahuje nový token, který bude importován.} other{Soubor obsahuje {count} nových tokenů, které budou importovány.}}",
-  "importHint2FAS": "Vyberte zálohu 2FAS. Pokud zálohu nemáte, vytvořte ji v aplikaci 2FAS.\nDoporučujeme použít heslo.",
-  "importHint2FASButton": "Vyberte možnost Zálohování 2FAS"
+  "qrScan": "Skenování",
+  "enterLink": "Zadejte odkaz",
+  "invalidBackupFile": "Vybraný soubor není platnou zálohou {appName}.",
+  "invalidQrScan": "Naskenovaný QR kód není platnou zálohou {appName}.",
+  "invalidQrFile": "Vybraný soubor neobsahuje platný QR kód z {appName}.",
+  "invalidLink": "Zadaný odkaz není platným tokenem {appName} nebo není podporován.",
+  "importExistingToken": "{count, plural, zero{nebyl nalezen token, který je již v aplikaci} one{byl nalezen token, který je již v aplikaci} other{byl nalezen token {count}, který je již v aplikaci}}",
+  "importConflictToken": "{count, plural, zero{Není žádný konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.}}",
+  "importNewToken": "{count, plural, zero{Nenalezen žádný nový token.} one{Nalezen nový token, který bude importován.} other{Nalezen nový token {count}, který bude importován.}}",
+  "importHint2FAS": "Vyberte zálohu 2FAS.\nPokud nemáte zálohu, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.",
+  "importHintAegisBackupFile": "Vyberte svůj export Aegis (.JSON).\nPokud nemáte export, vytvořte si jej prostřednictvím nabídky nastavení v aplikaci Aegis. Doporučujeme použít heslo.",
+  "importHintAegisQrScan": "Naskenujte QR kód, který obdržíte při přenosu záznamů z aplikace Aegis.",
+  "importHintAegisLink": "Zadejte odkaz, který obdržíte při přenosu záznamů ze systému Aegis.",
+  "importHintGoogleQrScan": "Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.",
+  "importHintGoogleQrFile": "Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!",
+  "qrFileDecodeError": "Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.",
+  "tokenLink": "Token link"
 }

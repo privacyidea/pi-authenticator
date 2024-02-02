@@ -107,8 +107,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enablePolling => 'Enable polling';
 
   @override
-  String get requestPushChallengesPeriodically =>
-      'Request push challenges from the server periodically. Enable this if push challenges are not received normally.';
+  String get requestPushChallengesPeriodically => 'Request push challenges from the server periodically. Enable this if push challenges are not received normally.';
 
   @override
   String get synchronizePushTokens => 'Synchronize push tokens';
@@ -288,8 +287,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendErrorLog => 'Send';
 
   @override
-  String get sendErrorLogDescription =>
-      'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:';
+  String get sendErrorLogDescription => 'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:';
 
   @override
   String get showPrivacyPolicy => 'Show privacy policy';
@@ -316,8 +314,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get open => 'Open';
 
   @override
-  String get sendErrorDialogBody =>
-      'An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.';
+  String get sendErrorDialogBody => 'An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.';
 
   @override
   String get noFbToken => 'No Firebase token available';
@@ -438,8 +435,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Please grant camera permission to scan QR codes.';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied =>
-      'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.';
+  String get grantCameraPermissionDialogPermanentlyDenied => 'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.';
 
   @override
   String get grantCameraPermissionDialogButton => 'Grant permission';
@@ -448,8 +444,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get decryptErrorTitle => 'Decryption error';
 
   @override
-  String get decryptErrorContent =>
-      'Unfortunately, the app was unable to decrypt your tokens. This indicates that the encryption key is broken. You can try again or delete the app data, which would delete the tokens in the app.';
+  String get decryptErrorContent => 'Unfortunately, the app was unable to decrypt your tokens. This indicates that the encryption key is broken. You can try again or delete the app data, which would delete the tokens in the app.';
 
   @override
   String get decryptErrorButtonDelete => 'Delete';
@@ -467,8 +462,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hidePushTokens => 'Hide push tokens';
 
   @override
-  String get hidePushTokensDescription =>
-      'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
+  String get hidePushTokensDescription => 'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
 
   @override
   String get settingsGroupGeneral => 'General';
@@ -480,8 +474,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicy => 'Privacy policy';
 
   @override
-  String get introScanQrCode =>
-      'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
 
   @override
   String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
@@ -513,6 +506,121 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get legacySigningErrorMessage =>
-      'The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!';
+  String get legacySigningErrorMessage => 'The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!';
+
+  @override
+  String get selectImportSource => 'Select import source';
+
+  @override
+  String get selectImportType => 'How do you want to import the tokens?';
+
+  @override
+  String get importTokens => 'Import token';
+
+  @override
+  String get selectFile => 'Select file';
+
+  @override
+  String get decrypt => 'Decrypt';
+
+  @override
+  String get tokensAreEncrypted => 'The tokens are encrypted. Please enter the password to decrypt them.';
+
+  @override
+  String get tokensNotEncrypted => 'The tokens are not encrypted and can be imported directly.';
+
+  @override
+  String get tokensSuccessfullyDecrypted => 'The tokens have been successfully decrypted and can now be imported.';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get wrongPassword => 'Incorrect password';
+
+  @override
+  String get qrScan => 'Scan';
+
+  @override
+  String get enterLink => 'Enter link';
+
+  @override
+  String invalidBackupFile(Object appName) {
+    return 'The selected file is not a valid backup of $appName.';
+  }
+
+  @override
+  String invalidQrScan(Object appName) {
+    return 'The scanned QR code is not a valid backup of $appName.';
+  }
+
+  @override
+  String invalidQrFile(Object appName) {
+    return 'The selected file does not contain a valid QR code from $appName.';
+  }
+
+  @override
+  String invalidLink(Object appName) {
+    return 'The link entered is not a valid token of $appName, or it is not supported.';
+  }
+
+  @override
+  String importExistingToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'a $count token was found that is already in the application',
+      one: 'a token was found that is already in the application',
+      zero: 'no token was found that is already in the application',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importConflictToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.',
+      one: 'There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.',
+      zero: 'There is no conflict with tokens that already exist.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importNewToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'A $count of new tokens were found that will be imported.',
+      one: 'A new token was found that will be imported.',
+      zero: 'No new token was found.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importHint2FAS => 'Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.';
+
+  @override
+  String get importHintAegisBackupFile => 'Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.';
+
+  @override
+  String get importHintAegisQrScan => 'Scan the QR code you receive when you transfer entries from Aegis.';
+
+  @override
+  String get importHintAegisLink => 'Enter the link you receive when you transfer entries from Aegis.';
+
+  @override
+  String get importHintGoogleQrScan => 'Scan the QR code you receive when you export your accounts from Google Authenticator.';
+
+  @override
+  String get importHintGoogleQrFile => 'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!';
+
+  @override
+  String get qrFileDecodeError => 'It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.';
+
+  @override
+  String get tokenLink => 'Token link';
 }

@@ -287,8 +287,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get sendErrorLog => 'Odeslat';
 
   @override
-  String get sendErrorLogDescription =>
-      'Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:';
+  String get sendErrorLogDescription => 'Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:';
 
   @override
   String get showPrivacyPolicy => 'Zobrazit zásady ochrany osobních údajů';
@@ -315,8 +314,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get open => 'Otevřít';
 
   @override
-  String get sendErrorDialogBody =>
-      'V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.';
+  String get sendErrorDialogBody => 'V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.';
 
   @override
   String get noFbToken => 'Není k dispozici žádný token Firebase.';
@@ -446,8 +444,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get decryptErrorTitle => 'Chyba dešifrování';
 
   @override
-  String get decryptErrorContent =>
-      'Bohužel se aplikaci nepodařilo dešifrovat vaše tokeny. To znamená, že šifrovací klíč je poškozen. Můžete to zkusit znovu nebo odstranit data aplikace, čímž by došlo k odstranění tokenů v aplikaci.';
+  String get decryptErrorContent => 'Bohužel se aplikaci nepodařilo dešifrovat vaše tokeny. To znamená, že šifrovací klíč je poškozen. Můžete to zkusit znovu nebo odstranit data aplikace, čímž by došlo k odstranění tokenů v aplikaci.';
 
   @override
   String get decryptErrorButtonDelete => 'Odstranit';
@@ -477,8 +474,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get privacyPolicy => 'Zásady ochrany osobních údajů';
 
   @override
-  String get introScanQrCode =>
-      'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
 
   @override
   String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
@@ -510,6 +506,121 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get legacySigningErrorMessage =>
-      'Token byl vytvořen v zastaralé verzi aplikace, což může vést k problémům při jeho používání.\nPokud problém přetrvává, doporučujeme vytvořit nový push token!';
+  String get legacySigningErrorMessage => 'Token byl vytvořen v zastaralé verzi aplikace, což může vést k problémům při jeho používání.\nPokud problém přetrvává, doporučujeme vytvořit nový push token!';
+
+  @override
+  String get selectImportSource => 'Vyberte zdroj importu';
+
+  @override
+  String get selectImportType => 'Jak chcete importovat žetony?';
+
+  @override
+  String get importTokens => 'Importní token';
+
+  @override
+  String get selectFile => 'Vybrat soubor';
+
+  @override
+  String get decrypt => 'Dešifrovat';
+
+  @override
+  String get tokensAreEncrypted => 'Tokeny jsou zašifrované. Please enter the password to decrypt them.';
+
+  @override
+  String get tokensNotEncrypted => 'Tokeny nejsou šifrované a lze je importovat přímo.';
+
+  @override
+  String get tokensSuccessfullyDecrypted => 'Tokeny byly úspěšně dešifrovány a nyní je lze importovat.';
+
+  @override
+  String get password => 'Heslo';
+
+  @override
+  String get wrongPassword => 'Nesprávné heslo';
+
+  @override
+  String get qrScan => 'Skenování';
+
+  @override
+  String get enterLink => 'Zadejte odkaz';
+
+  @override
+  String invalidBackupFile(Object appName) {
+    return 'Vybraný soubor není platnou zálohou $appName.';
+  }
+
+  @override
+  String invalidQrScan(Object appName) {
+    return 'Naskenovaný QR kód není platnou zálohou $appName.';
+  }
+
+  @override
+  String invalidQrFile(Object appName) {
+    return 'Vybraný soubor neobsahuje platný QR kód z $appName.';
+  }
+
+  @override
+  String invalidLink(Object appName) {
+    return 'Zadaný odkaz není platným tokenem $appName nebo není podporován.';
+  }
+
+  @override
+  String importExistingToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'byl nalezen token $count, který je již v aplikaci',
+      one: 'byl nalezen token, který je již v aplikaci',
+      zero: 'nebyl nalezen token, který je již v aplikaci',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importConflictToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.',
+      one: 'Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.',
+      zero: 'Není žádný konflikt s tokeny, které již existují.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importNewToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Nalezen nový token $count, který bude importován.',
+      one: 'Nalezen nový token, který bude importován.',
+      zero: 'Nenalezen žádný nový token.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importHint2FAS => 'Vyberte zálohu 2FAS.\nPokud nemáte zálohu, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.';
+
+  @override
+  String get importHintAegisBackupFile => 'Vyberte svůj export Aegis (.JSON).\nPokud nemáte export, vytvořte si jej prostřednictvím nabídky nastavení v aplikaci Aegis. Doporučujeme použít heslo.';
+
+  @override
+  String get importHintAegisQrScan => 'Naskenujte QR kód, který obdržíte při přenosu záznamů z aplikace Aegis.';
+
+  @override
+  String get importHintAegisLink => 'Zadejte odkaz, který obdržíte při přenosu záznamů ze systému Aegis.';
+
+  @override
+  String get importHintGoogleQrScan => 'Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.';
+
+  @override
+  String get importHintGoogleQrFile => 'Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!';
+
+  @override
+  String get qrFileDecodeError => 'Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.';
+
+  @override
+  String get tokenLink => 'Token link';
 }

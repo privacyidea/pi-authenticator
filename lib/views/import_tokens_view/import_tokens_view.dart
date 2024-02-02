@@ -1,56 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/processors/token_import_processor/aegis_import_file_processor.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../model/token_import_source.dart';
-import '../../processors/token_import_processor/free_otp_file_import_processor.dart';
-import '../../processors/token_import_processor/two_fas_file_import_processor.dart';
-import 'pages/import_select_file_page.dart';
+import '../../model/token_import_origin.dart';
+import 'pages/import_start_page.dart';
+import 'pages/select_import_type_page.dart';
 
 class ImportTokensView extends ConsumerStatefulWidget {
   static const routeName = '/import_tokens';
-  static const _importSourceIconFolder = 'assets/images/import_sources/';
-  static List<TokenImportSource> appList = [
-    TokenImportSource(
-      appName: 'Google Authenticator',
-      importHint: (context) => '', // AppLocalizations.of(context)!.importHintGoogleAuthenticator,
-      iconPath: '${_importSourceIconFolder}google_authenticator.png',
-      processor: null,
-    ),
-    TokenImportSource(
-      appName: 'Authy',
-      importHint: (context) => '', //  AppLocalizations.of(context)!.importHintAuthy,
-      iconPath: '${_importSourceIconFolder}authy.png',
-      processor: null,
-    ),
-    TokenImportSource(
-      appName: 'FreeOTP',
-      importHint: (context) => '', //  AppLocalizations.of(context)!.importHintFreeOTP,
-      iconPath: '${_importSourceIconFolder}freeotp.png',
-      processor: const FreeOtpFileImportProcessor(),
-    ),
-    TokenImportSource(
-      appName: 'LastPass Authenticator',
-      importHint: (context) => '', //  AppLocalizations.of(context)!.importHintLastPassAuthenticator,
-      iconPath: '${_importSourceIconFolder}lastpass_authenticator.png',
-      processor: null,
-    ),
-    TokenImportSource(
-      appName: 'Aegis Authenticator',
-      importHint: (context) => '', //  AppLocalizations.of(context)!.importHintAegisAuthenticator,
-      iconPath: '${_importSourceIconFolder}aegis_authenticator.png',
-      processor: AegisImportFileProcessor(),
-    ),
-    TokenImportSource(
-      appName: '2FAS Authenticator',
-      importHint: (context) => AppLocalizations.of(context)!.importHint2FAS,
-      iconPath: '${_importSourceIconFolder}2fas.png',
-      processor: const TwoFasFileImportProcessor(),
-    ),
-  ];
 
-  final TokenImportSource? selectedSource;
+  static const double pagePaddingHorizontal = 40;
+  static const double itemSpacingHorizontal = 20;
+  static const double itemSpacingVertical = 10;
+  static const double iconSize = 100;
+
+  final TokenImportOrigin? selectedSource;
+
   const ImportTokensView({this.selectedSource, super.key});
 
   @override
@@ -58,25 +23,20 @@ class ImportTokensView extends ConsumerStatefulWidget {
 }
 
 class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
-  String? fileContent;
-  TextEditingController? passwordController;
-  bool fileContentIsValid = false;
-  bool wrongPassword = false;
-  bool passwordIsNeeded = false;
-  bool isPasswordVisible = false;
-
-  @override
-  void initState() {
-    super.initState();
-    passwordController = TextEditingController(text: '');
-  }
-
-  void onPressed(TokenImportSource tokenImportSource) => Navigator.push(
-        context,
+  void _onPressed(TokenImportOrigin tokenImportOrigin) {
+    if (tokenImportOrigin.importEntitys.length == 1) {
+      Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => ImportSelectFilePage(selectedSource: tokenImportSource),
+          builder: (context) => ImportStartPage(
+            appName: tokenImportOrigin.appName,
+            selectedEntity: tokenImportOrigin.importEntitys.first,
+          ),
         ),
       );
+      return;
+    }
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SelectImportTypePage(tokenImportSource: tokenImportOrigin)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,16 +52,16 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              for (final item in ImportTokensView.appList)
+              for (final item in TokenImportSourceList.appList)
                 ListTile(
                   // leading: Image.asset(appList[index].iconPath!),
                   title: TextButton(
-                    onPressed: () => onPressed(item),
+                    onPressed: () => _onPressed(item),
                     child: Text(item.appName),
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.arrow_forward_ios),
-                    onPressed: () => onPressed(item),
+                    onPressed: () => _onPressed(item),
                   ),
                 ),
             ],

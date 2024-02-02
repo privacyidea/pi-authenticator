@@ -107,8 +107,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get enablePolling => 'Activer l\'interrogation du serveur.';
 
   @override
-  String get requestPushChallengesPeriodically =>
-      'Demander des challenges push depuis le serveur périodiquement. Activer cette fonction si les challenges push ne sont pas reçus normalement.';
+  String get requestPushChallengesPeriodically => 'Demander des challenges push depuis le serveur périodiquement. Activer cette fonction si les challenges push ne sont pas reçus normalement.';
 
   @override
   String get synchronizePushTokens => 'Synchoniser les jetons Push';
@@ -226,8 +225,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get goToSettingsButton => 'Aller aux paramètres';
 
   @override
-  String get goToSettingsDescription =>
-      'L\'authentification par identifiants ou biométrie n\'est pas configurée sur votre appareil. Veuillez le configurer dans les paramètres de l\'appareil.';
+  String get goToSettingsDescription => 'L\'authentification par identifiants ou biométrie n\'est pas configurée sur votre appareil. Veuillez le configurer dans les paramètres de l\'appareil.';
 
   @override
   String get lockOut => 'L\'authentification biométrique est désactivée. Veuillez verrouiller et déverrouiller votre écran pour l\'activer.';
@@ -289,8 +287,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sendErrorLog => 'Envoyer';
 
   @override
-  String get sendErrorLogDescription =>
-      'Un e-mail pré-rempli est créé.\nIl contient des informations sur l\'application, l\'erreur et le périphérique.\nVous pouvez modifier l\'e-mail avant de l\'envoyer.\nVous pouvez voir ici comment nous utilisons les informations:';
+  String get sendErrorLogDescription => 'Un e-mail pré-rempli est créé.\nIl contient des informations sur l\'application, l\'erreur et le périphérique.\nVous pouvez modifier l\'e-mail avant de l\'envoyer.\nVous pouvez voir ici comment nous utilisons les informations:';
 
   @override
   String get showPrivacyPolicy => 'Afficher la déclaration de confidentialité';
@@ -317,8 +314,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get open => 'Ouvrir';
 
   @override
-  String get sendErrorDialogBody =>
-      'Une erreur inattendue est survenue dans l\'application. L\'information suivante peut être transmise aux développeurs par email afin d\'aider à corriger cette erreur dans le futur.';
+  String get sendErrorDialogBody => 'Une erreur inattendue est survenue dans l\'application. L\'information suivante peut être transmise aux développeurs par email afin d\'aider à corriger cette erreur dans le futur.';
 
   @override
   String get noFbToken => 'Pas de jeton Firebase';
@@ -439,8 +435,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Veuillez accorder à la caméra l\'autorisation de scanner les codes QR';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied =>
-      'L\'autorisation de l\'appareil photo est refusée de manière permanente. Veuillez accorder l\'autorisation à l\'appareil photo dans les paramètres de votre téléphone.';
+  String get grantCameraPermissionDialogPermanentlyDenied => 'L\'autorisation de l\'appareil photo est refusée de manière permanente. Veuillez accorder l\'autorisation à l\'appareil photo dans les paramètres de votre téléphone.';
 
   @override
   String get grantCameraPermissionDialogButton => 'Accorder l\'autorisation';
@@ -449,8 +444,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get decryptErrorTitle => 'Erreur de décryptage';
 
   @override
-  String get decryptErrorContent =>
-      'Malheureusement, l\'application n\'a pas pu décrypter vos jetons. Cela indique que la clé de cryptage est cassée. Vous pouvez réessayer ou supprimer les données de l\'application, ce qui supprimera les jetons dans l\'application.';
+  String get decryptErrorContent => 'Malheureusement, l\'application n\'a pas pu décrypter vos jetons. Cela indique que la clé de cryptage est cassée. Vous pouvez réessayer ou supprimer les données de l\'application, ce qui supprimera les jetons dans l\'application.';
 
   @override
   String get decryptErrorButtonDelete => 'Supprimer';
@@ -468,8 +462,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get hidePushTokens => 'Hide push tokens';
 
   @override
-  String get hidePushTokensDescription =>
-      'Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé';
+  String get hidePushTokensDescription => 'Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé';
 
   @override
   String get settingsGroupGeneral => 'Généralités';
@@ -481,8 +474,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get privacyPolicy => 'Politique de confidentialité';
 
   @override
-  String get introScanQrCode =>
-      'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
 
   @override
   String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
@@ -514,6 +506,121 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get legacySigningErrorMessage =>
-      'Le token a été créé dans une version obsolète de l\'application, ce qui peut entraîner des problèmes d\'utilisation.\nIl est recommandé de créer un nouveau token push si le problème persiste !';
+  String get legacySigningErrorMessage => 'Le token a été créé dans une version obsolète de l\'application, ce qui peut entraîner des problèmes d\'utilisation.\nIl est recommandé de créer un nouveau token push si le problème persiste !';
+
+  @override
+  String get selectImportSource => 'Sélectionner la source d\'importation';
+
+  @override
+  String get selectImportType => 'Comment voulez-vous importer les jetons ?';
+
+  @override
+  String get importTokens => 'Importer un jeton';
+
+  @override
+  String get selectFile => 'Sélectionner un fichier';
+
+  @override
+  String get decrypt => 'Décrypter';
+
+  @override
+  String get tokensAreEncrypted => 'Les jetons sont cryptés. Veuillez saisir le mot de passe pour les décrypter';
+
+  @override
+  String get tokensNotEncrypted => 'Les tokens ne sont pas cryptés, et peuvent être importés directement';
+
+  @override
+  String get tokensSuccessfullyDecrypted => 'Les tokens ont été décryptés avec succès, ils peuvent maintenant être importés.';
+
+  @override
+  String get password => 'Mot de passe';
+
+  @override
+  String get wrongPassword => 'Mot de passe incorrect';
+
+  @override
+  String get qrScan => 'Numériser';
+
+  @override
+  String get enterLink => 'Saisir le lien';
+
+  @override
+  String invalidBackupFile(Object appName) {
+    return 'Le fichier sélectionné n\'est pas une sauvegarde valide de $appName';
+  }
+
+  @override
+  String invalidQrScan(Object appName) {
+    return 'Le code QR scanné n\'est pas une sauvegarde valide de $appName';
+  }
+
+  @override
+  String invalidQrFile(Object appName) {
+    return 'Le fichier sélectionné ne contient pas de code QR valide de $appName';
+  }
+
+  @override
+  String invalidLink(Object appName) {
+    return 'Le lien saisi n\'est pas un jeton valide de $appName, ou il n\'est pas pris en charge';
+  }
+
+  @override
+  String importExistingToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'aucun token $count déjà présent dans l\'application a été trouvé.',
+      one: 'un token déjà présent dans l\'application a été trouvé.',
+      zero: 'aucun token déjà présent dans l\'application n\'a été trouvé.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importConflictToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.',
+      one: 'Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.',
+      zero: 'Il n\'y a pas de conflit avec des tokens déjà existants.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importNewToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Aucun $count nouveau token a été trouvé et sera importé.',
+      one: 'Un nouveau token a été trouvé et sera importé.',
+      zero: 'Aucun nouveau token n\'a été trouvé.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importHint2FAS => 'Choisissez votre sauvegarde 2FAS.\nSi vous n\'avez pas de sauvegarde, créez-en une dans l\'application 2FAS. Nous vous recommandons d\'utiliser un mot de passe';
+
+  @override
+  String get importHintAegisBackupFile => 'Choisissez votre exportation Aegis (.JSON).\nSi vous n\'avez pas d\'exportation, veuillez en créer une via le menu Paramètres dans l\'application Aegis. Il est recommandé d\'utiliser un mot de passe';
+
+  @override
+  String get importHintAegisQrScan => 'Scannez le code QR que vous recevez lorsque vous transférez des entrées depuis Aegis';
+
+  @override
+  String get importHintAegisLink => 'Saisissez le lien que vous recevez lorsque vous transférez des entrées depuis Aegis';
+
+  @override
+  String get importHintGoogleQrScan => 'Scannez le code QR que vous recevez lorsque vous exportez vos comptes depuis Google Authenticator';
+
+  @override
+  String get importHintGoogleQrFile => 'Sélectionnez un fichier image avec le code QR que vous obtenez lorsque vous exportez vos comptes depuis Google Authenticator.\n!! Notez qu\'il n\'est pas sûr d\'enregistrer le code QR sur votre appareil, car les jetons ne sont pas cryptés !!';
+
+  @override
+  String get qrFileDecodeError => 'Il n\'a pas été possible de décoder le code QR à partir de l\'image sélectionnée, veuillez utiliser le scanner de code QR à la place';
+
+  @override
+  String get tokenLink => 'Lien vers le token';
 }

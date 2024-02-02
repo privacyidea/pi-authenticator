@@ -80,7 +80,7 @@ class TOTPToken extends OTPToken {
     bool? isLocked,
     bool? isHidden,
     int? Function()? folderId,
-    TokenOrigin? origin,
+    TokenOriginData? origin,
   }) {
     return TOTPToken(
       label: label ?? this.label,
