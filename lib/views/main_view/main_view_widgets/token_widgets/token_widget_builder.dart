@@ -14,11 +14,7 @@ import 'totp_token_widgets/totp_token_widget.dart';
 import 'totp_token_widgets/totp_token_widget_tile.dart';
 
 abstract class TokenWidgetBuilder {
-  static TokenWidget fromToken(
-    Token token, {
-    Key? key,
-  }) =>
-      switch (token.runtimeType) {
+  static TokenWidget fromToken(Token token, {Key? key}) => switch (token.runtimeType) {
         const (TOTPToken) => TOTPTokenWidget(token as TOTPToken, key: key),
         const (HOTPToken) => HOTPTokenWidget(token as HOTPToken, key: key),
         const (PushToken) => PushTokenWidget(token as PushToken, key: key),
@@ -26,11 +22,7 @@ abstract class TokenWidgetBuilder {
         _ => throw UnimplementedError('Token type (${token.runtimeType}) not supported in this Version of the App')
       };
 
-  static Widget previewFromToken(
-    Token token, {
-    Key? key,
-  }) =>
-      switch (token.runtimeType) {
+  static Widget previewFromToken(Token token, {Key? key}) => switch (token.runtimeType) {
         const (TOTPToken) => TOTPTokenWidgetTile(token as TOTPToken, key: key, isPreview: true),
         const (HOTPToken) => HOTPTokenWidgetTile(token as HOTPToken, key: key, isPreview: true),
         // PA tokens are not exportable, so there is no need for an import preview for Push Tokens and Day Password Tokens now.

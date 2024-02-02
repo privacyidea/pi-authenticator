@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -49,9 +51,11 @@ class MainViewTokensListFiltered extends ConsumerWidget {
 
   List<Widget> _buildFilteredFolder({required WidgetRef ref, required TokenFolder folder, required TokenFilter filter}) {
     if (filter.filterTokens(ref.watch(tokenProvider).tokensInFolder(folder)).isEmpty) return [];
-
+    final expanded = filter.searchQuery.isNotEmpty && !folder.isLocked ? true : null; // Auto expand if search query is not empty and folder is not locked.
     final List<Widget> widgets = [];
-    widgets.add(TokenFolderExpandable(folder: folder, filter: filter));
+    widgets.add(
+      TokenFolderExpandable(folder: folder, filter: filter, expanded: expanded, key: ValueKey('${folder.label}$expanded')),
+    );
     widgets.add(const Divider());
     return widgets;
   }
