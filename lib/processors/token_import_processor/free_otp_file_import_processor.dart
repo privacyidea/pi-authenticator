@@ -37,10 +37,17 @@ class FreeOtpFileImportProcessor implements TokenFileImportProcessor {
     // }
     // final tempIV = ivAsn1.valueBytes;
     final asn1OctetString = ivAsn1.elements![0] as ASN1OctetString;
-    final ivBytes = asn1OctetString.valueBytes!;
+    final ivOctetBytes = asn1OctetString.valueBytes!;
     // final ivStringUtf8 = utf8.decode(ivBytes);
     // print(ivStringUtf8);
-    // final asn1Integer = ivAsn1.elements![1] as ASN1Integer;
+    final asn1Integer = ivAsn1.elements![1] as ASN1Integer;
+    final ivLength = asn1Integer.integer!.toInt();
+    print('$ivLength should be 16');
+
+    final ivBytes = Uint8List(ivLength);
+    for (var i = 0; i < ivOctetBytes.length; i++) {
+      ivBytes[i] = ivOctetBytes[i];
+    }
 
     final iv = IV(ivBytes);
     final mIterations = masterKey['mIterations'] as int;
