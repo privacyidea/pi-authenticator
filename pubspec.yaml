@@ -80,10 +80,7 @@ dependencies:
   encrypt: ^5.0.3
   cryptography: ^2.7.0
   fluentui_system_icons: ^1.1.223
-  file_picker: ^6.1.1
   file_selector: ^1.0.2
-  flutter_shake_animated: ^0.0.5
-  flutter_zxing: ^1.5.2
   zxing2: ^0.2.1
   image: ^4.1.6
 

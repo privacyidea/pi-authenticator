@@ -1,7 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
@@ -71,7 +70,6 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
     try {
       final servicesEncrypted = json['servicesEncrypted'] as String;
       final splitted = servicesEncrypted.split(':');
-      log(splitted.toString());
       decryptedTokens = await AESEncrypted(
         data: base64Decode(splitted[0]),
         salt: base64Decode(splitted[1]),

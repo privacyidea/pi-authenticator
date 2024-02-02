@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/views/import_tokens_view/widgets/no_conflict_import_tokens_list.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../import_tokens_view.dart';
-import '../widgets/import_token_entrys_list_tile.dart';
-import '../widgets/import_tokens_list.dart';
+import '../widgets/conflicted_import_tokens_tile.dart';
+import '../widgets/conflicted_import_tokens_list.dart';
 
 class ImportPlainTokensPage extends ConsumerStatefulWidget {
   final String appName;
@@ -23,18 +24,20 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
   ScrollController scrollController = ScrollController();
   List<Token?>? tokensToKeep;
   List<ImportTokenEntry> importTokenEntrys = [];
-  bool isMaxScrollExtent = false;
+  bool isMaxScrollExtent = true;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final map = ref.read(tokenProvider).tokensWithSameSectet(widget.importedTokens);
-      final List<ImportTokenEntry> importTokenEntries = [];
-      map.forEach((key, value) {
-        importTokenEntries.add(ImportTokenEntry(newToken: key, oldToken: value));
+      importTokenEntrys = [];
+      setState(() {
+        map.forEach((key, value) {
+          importTokenEntrys.add(ImportTokenEntry(newToken: key, oldToken: value));
+        });
       });
-      _setImportTokens(importTokenEntries);
+      _setTokensToKeep(importTokenEntrys);
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -75,14 +78,14 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
 
     final List<ImportTokenEntry> conflictedImports = [];
     final List<ImportTokenEntry> newImports = [];
-    final List<ImportTokenEntry> duplicates = [];
+    final List<ImportTokenEntry> duplicateImport = [];
     for (final importTokenEntry in importTokenEntrys) {
       if (importTokenEntry.oldToken == null) {
         newImports.add(importTokenEntry);
         continue;
       }
       if (importTokenEntry.newToken.sameValuesAs(importTokenEntry.oldToken!)) {
-        duplicates.add(importTokenEntry);
+        duplicateImport.add(importTokenEntry);
         continue;
       }
       conflictedImports.add(importTokenEntry);
@@ -115,26 +118,26 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
                   Column(
                     children: [
                       if (conflictedImports.isNotEmpty)
-                        ImportTokensList(
+                        ConflictedImportTokensList(
                           title: AppLocalizations.of(context)!.importConflictToken(conflictedImports.length),
                           titlePadding: const EdgeInsets.symmetric(horizontal: 40),
                           leadingDivider: false,
-                          importTokenEntries: conflictedImports,
-                          selectCallback: (newImportTokenEntrys) => _setImportTokens(newImportTokenEntrys),
+                          importEntries: conflictedImports,
+                          updateImportTokenEntry: _updateImportTokenEntry,
                         ),
                       if (newImports.isNotEmpty)
-                        ImportTokensList(
+                        NoConflictImportTokensList(
                           title: AppLocalizations.of(context)!.importNewToken(newImports.length),
                           titlePadding: const EdgeInsets.symmetric(horizontal: 40),
                           leadingDivider: conflictedImports.isNotEmpty,
                           importTokens: newImports.map((e) => e.newToken).toList(),
                         ),
-                      if (duplicates.isNotEmpty)
-                        ImportTokensList(
-                          title: AppLocalizations.of(context)!.importExistingToken(duplicates.length),
+                      if (duplicateImport.isNotEmpty)
+                        NoConflictImportTokensList(
+                          title: AppLocalizations.of(context)!.importExistingToken(duplicateImport.length),
                           titlePadding: const EdgeInsets.symmetric(horizontal: 40),
                           leadingDivider: newImports.isNotEmpty || conflictedImports.isNotEmpty,
-                          importTokens: duplicates.map((e) => e.oldToken!).toList(),
+                          importTokens: duplicateImport.map((e) => e.oldToken!).toList(),
                           borderColor: null,
                         ),
                     ],
@@ -179,19 +182,24 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
     );
   }
 
-  void _setImportTokens(List<ImportTokenEntry> newImportTokenEntrys) {
+  void _updateImportTokenEntry(ImportTokenEntry oldEntry, ImportTokenEntry newEntry) {
     setState(() {
-      importTokenEntrys = newImportTokenEntrys;
-      final newImportTokens = <Token?>[];
-      for (final importTokenEntry in newImportTokenEntrys) {
+      importTokenEntrys[importTokenEntrys.indexOf(oldEntry)] = newEntry;
+    });
+    _setTokensToKeep(importTokenEntrys);
+  }
+
+  void _setTokensToKeep(List<ImportTokenEntry> tokens) {
+    setState(() {
+      tokensToKeep = [];
+      for (final importTokenEntry in importTokenEntrys) {
         if (importTokenEntry.oldToken == null) {
-          newImportTokens.add(importTokenEntry.newToken);
+          tokensToKeep!.add(importTokenEntry.newToken);
           continue;
         }
         if (importTokenEntry.newToken.sameValuesAs(importTokenEntry.oldToken!)) continue;
-        newImportTokens.add(importTokenEntry.selectedToken?.copyWith(id: importTokenEntry.oldToken!.id));
+        tokensToKeep!.add(importTokenEntry.selectedToken?.copyWith(id: importTokenEntry.oldToken!.id));
       }
-      tokensToKeep = newImportTokens;
     });
   }
 }

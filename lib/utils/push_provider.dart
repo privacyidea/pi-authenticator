@@ -20,7 +20,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -202,7 +201,6 @@ class PushProvider {
   }
 
   void _startOrStopPolling(bool pollingEnabled) {
-    log('Polling is enabled: $pollingEnabled', name: 'push_provider.dart#_startOrStopPolling');
     // Start polling if enabled and not already polling
     if (pollingEnabled && _pollTimer == null) {
       Logger.info('Polling is enabled.', name: 'push_provider.dart#_startPollingIfEnabled');

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -113,7 +112,6 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
   // Is also called when the orientation changes. FIXME: Find a better way to handle this.
   @override
   void onAppResume() {
-    log('onAppResume');
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _updateOverlay();
     });
@@ -122,7 +120,6 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
 
   @override
   void didUpdateWidget(covariant _FocusedItemOverlay oldWidget) {
-    log('didUpdateWidget');
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _updateOverlay();
     });
@@ -244,7 +241,6 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
   }
 
   void _updateOverlay() {
-    log('_updateOverlay');
     _overlayEntryBackdrop.remove();
     _overlayEntryChild?.remove();
     _overlayEntryText?.remove();

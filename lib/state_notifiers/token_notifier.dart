@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:base32/base32.dart';
@@ -258,7 +257,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<void> handleLink(Uri uri) async {
-    log('Handling link: $uri');
     await loadingRepo;
     List<Token>? tokens;
     try {

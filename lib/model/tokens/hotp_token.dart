@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:otp/otp.dart' as otp_library;
 import 'package:uuid/uuid.dart';
@@ -117,7 +115,6 @@ class HOTPToken extends OTPToken {
         origin: uriMap[URI_ORIGIN],
       );
     } catch (e) {
-      log(uriMap.toString());
       throw ArgumentError('Invalid URI: $e');
     }
     return hotpToken;

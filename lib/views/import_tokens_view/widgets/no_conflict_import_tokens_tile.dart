@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import '../../../model/tokens/token.dart';
 import '../../main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 
-class ImportTokensListTile extends StatelessWidget {
+class NoConflictImportTokensTile extends StatelessWidget {
   final Token token;
   final Token? selected;
   final void Function()? onTap;
   final Alignment? alignment;
   final double? width;
   final Color? borderColor;
-  const ImportTokensListTile({
+  const NoConflictImportTokensTile({
     required this.token,
     required this.selected,
     this.onTap,
