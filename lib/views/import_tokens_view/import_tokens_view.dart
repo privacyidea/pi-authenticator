@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/views/view_interface.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/token_import_origin.dart';
 import 'pages/import_start_page.dart';
 import 'pages/select_import_type_page.dart';
 
-class ImportTokensView extends ConsumerStatefulWidget {
+class ImportTokensView extends ConsumerStatefulView {
+  @override
+  RouteSettings get routeSettings => const RouteSettings(name: routeName);
   static const routeName = '/import_tokens';
 
   static const double pagePaddingHorizontal = 40;

@@ -6,8 +6,14 @@ import '../../utils/app_customizer.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../utils/utils.dart';
+import '../view_interface.dart';
 
-class LinkHomeWidgetView extends ConsumerStatefulWidget {
+class LinkHomeWidgetView extends ConsumerStatefulView {
+  @override
+  RouteSettings get routeSettings => const RouteSettings(name: routeName);
+
+  static const routeName = '/link_home_widget';
+
   final String homeWidgetId;
 
   const LinkHomeWidgetView({super.key, required this.homeWidgetId});

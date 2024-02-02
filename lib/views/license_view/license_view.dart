@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:privacyidea_authenticator/views/view_interface.dart';
 
 import '../../widgets/push_request_listener.dart';
 
-class LicenseView extends StatelessWidget {
+class LicenseView extends StatelessView {
+  @override
+  RouteSettings get routeSettings => const RouteSettings(name: routeName);
   static const String routeName = '/license';
   final String appName;
   final Widget appImage;

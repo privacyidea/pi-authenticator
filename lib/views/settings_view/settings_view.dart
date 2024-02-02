@@ -2,6 +2,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/views/view_interface.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -15,7 +16,9 @@ import 'settings_view_widgets/logging_menu.dart';
 import 'settings_view_widgets/settings_groups.dart';
 import 'settings_view_widgets/update_firebase_token_dialog.dart';
 
-class SettingsView extends ConsumerWidget {
+class SettingsView extends ConsumerView {
+  @override
+  RouteSettings get routeSettings => const RouteSettings(name: routeName);
   static const String routeName = '/settings';
 
   const SettingsView({super.key});
