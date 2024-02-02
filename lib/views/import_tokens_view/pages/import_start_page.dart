@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:developer';
 import 'dart:isolate';
 
 import 'package:file_selector/file_selector.dart';
@@ -229,7 +228,6 @@ class _ImportStartPageState extends State<ImportStartPage> {
       setState(() => _errorText = AppLocalizations.of(context)!.invalidQrFile(widget.appName));
       return;
     }
-    log('uri: $uri');
     final tokens = await schemeProcessor.processUri(uri);
     if (tokens.isEmpty) {
       setState(() => _errorText = AppLocalizations.of(context)!.invalidQrFile(widget.appName));

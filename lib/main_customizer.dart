@@ -18,7 +18,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-import 'dart:developer';
 
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +53,6 @@ class CustomizationAuthenticator extends ConsumerWidget {
     final state = ref.watch(settingsProvider);
     final locale = state.currentLocale;
     final applicationCustomizer = ref.watch(applicationCustomizerProvider);
-    log('CustomizationAuthenticator build', name: 'main_customizer.dart#build');
     return LayoutBuilder(
       builder: (context, constraints) {
         WidgetsBinding.instance.addPostFrameCallback((_) {

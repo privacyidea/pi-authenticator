@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,7 +21,6 @@ class MainViewNavigationBar extends ConsumerWidget {
     BoxConstraints? constraints = ref.watch(appConstraintsProvider);
     constraints ??= const BoxConstraints();
     final navWidth = constraints.maxWidth;
-    log("Constraints max height: ${constraints.maxHeight}");
     final navHeight = constraints.maxHeight * 0.10;
     return SizedBox(
       width: constraints.maxWidth,
