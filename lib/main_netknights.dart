@@ -47,7 +47,7 @@ void main() async {
         WidgetsFlutterBinding.ensureInitialized();
         await HomeWidget.setAppGroupId(appGroupId);
         if (await HomeWidgetUtils.isHomeWidgetSupported) {
-          await HomeWidget.registerBackgroundCallback(homeWidgetBackgroundCallback);
+          await HomeWidget.registerInteractivityCallback(homeWidgetBackgroundCallback);
         }
         runApp(AppWrapper(child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization)));
       });
@@ -69,6 +69,9 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
         ref.read(appConstraintsProvider.notifier).state = constraints;
       });
       return MaterialApp(
+        scrollBehavior: ScrollConfiguration.of(context).copyWith(
+          physics: const BouncingScrollPhysics(),
+        ),
         debugShowCheckedModeBanner: true,
         navigatorKey: globalNavigatorKey,
         localizationsDelegates: AppLocalizations.localizationsDelegates,

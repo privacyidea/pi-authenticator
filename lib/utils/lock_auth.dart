@@ -8,7 +8,7 @@ import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_ios/local_auth_ios.dart';
 
 import '../l10n/app_localizations.dart';
-import '../widgets/default_dialog.dart';
+import '../widgets/dialog_widgets/default_dialog.dart';
 import 'globals.dart';
 import 'logger.dart';
 import 'view_utils.dart';

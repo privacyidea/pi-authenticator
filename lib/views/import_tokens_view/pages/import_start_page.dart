@@ -4,14 +4,14 @@ import 'dart:isolate';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
 import 'package:privacyidea_authenticator/model/enums/token_import_type.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/scheme_processor_interface.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
+import 'package:zxing2/qrcode.dart';
 // ignore: implementation_imports
 import 'package:zxing2/src/format_reader_exception.dart';
 
-import 'package:image/image.dart' as img;
-import 'package:zxing2/qrcode.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/token_import_origin.dart';
 import '../../../model/tokens/token.dart';

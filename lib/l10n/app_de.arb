@@ -92,7 +92,7 @@
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted."
   },
-  "confirmDeletionOf": "Bestätigen Sie das Löschen von {name}?",
+  "confirmDeletionOf": "Sind Sie sicher dass sie {name} löschen möchten?",
   "@confirmDeletionOf": {
     "description": "Asks for confirmation on deleting a token.",
     "placeholders": {
@@ -100,6 +100,14 @@
         "example": "PUSH1234"
       }
     }
+  },
+  "confirmTokenDeletionHint": "Unter Umständen können Sie sich nicht mehr einloggen, wenn Sie diesen Token löschen.\nBitte stellen Sie sicher, dass Sie sich ohne diesen Token in den dazugehörigen Account einloggen können.",
+  "@confirmTokenDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a token."
+  },
+  "confirmFolderDeletionHint": "Das Löschen eines Ordners hat keine Auswirkungen auf die Token, die sich darin befinden.\nDie Token werden in die Hauptliste verschoben.",
+  "@confirmFolderDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a folder."
   },
   "generatingPhonePart": "Generiere Telefonanteil",
   "@generatingPhonePart": {
@@ -486,7 +494,7 @@
   "invalidQrScan": "Der gescannte QR-Code ist kein gültiges Backup von {appName}.",
   "invalidQrFile": "Die ausgewählte Datei enthällt kein gültigen QR-Code von {appName}.",
   "invalidLink": "Der eingegebene Link ist kein gültiger Token von {appName}, oder er wird nicht unterstützt.",
-  "importExistingToken": "{count, plural, zero{s wurde kein Token gefunden, das sich bereits in der Anwendung befindet.} one{Es wurde ein Token gefunden, das sich bereits in der Anwendung befindet.} other{Es wurden {count} Token gefunden, die sich bereits in der Anwendung befinden.}}",
+  "importExistingToken": "{count, plural, zero{Es wurde kein Token gefunden, das sich bereits in der App befindet.} one{Es wurde ein Token gefunden, das sich bereits in der Anwendung befindet.} other{Es wurden {count} Token gefunden, die sich bereits in der Anwendung befinden.}}",
   "importConflictToken": "{count, plural, zero{Es besteht kein Konflikt mit bereits existierenden Token.} one{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.} other{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.}}",
   "importNewToken": "{count, plural, zero{Es wurde kein neues Token gefunden.} one{Es wurde ein neues Token gefunden, das importiert wird.} other{Es wurden {count} neue Token gefunden, die importiert werden.}}",
   "importHint2FAS": "Wähle dein 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.",

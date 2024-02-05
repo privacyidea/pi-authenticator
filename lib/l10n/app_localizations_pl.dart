@@ -75,6 +75,12 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get confirmTokenDeletionHint => 'Usunięcie tego tokenu może uniemożliwić zalogowanie się. Upewnij się, że możesz zalogować się na powiązane konto bez tego tokenu.';
+
+  @override
+  String get confirmFolderDeletionHint => 'Usunięcie folderu nie ma wpływu na znajdujące się w nim tokeny. Tokeny są przenoszone do głównej listy.';
+
+  @override
   String get generatingPhonePart => 'Generowanie sekretu po stronie telefonu...';
 
   @override
@@ -569,9 +575,9 @@ class AppLocalizationsPl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'znaleziono token $count, który jest już w aplikacji',
-      one: 'znaleziono token, który jest już w aplikacji',
-      zero: 'nie znaleziono tokena, który jest już w aplikacji',
+      other: 'Znaleziono $count tokenów, które już znajdują się w aplikacji.',
+      one: 'Znaleziono token, który już istnieje w aplikacji.',
+      zero: 'Nie znaleziono tokena, który już znajduje się w aplikacji.',
     );
     return '$_temp0';
   }

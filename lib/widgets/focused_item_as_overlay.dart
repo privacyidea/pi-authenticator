@@ -1,12 +1,14 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../utils/utils.dart';
 import 'pulse_icon.dart';
-import 'tooltip_box.dart';
+import 'tooltip_container.dart';
 
 class FocusedItemAsOverlay extends StatelessWidget {
   final bool isFocused;
@@ -167,7 +169,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
           top: clampedOffset.dy,
           width: overlaySize.width,
           height: overlaySize.height,
-          child: TooltipBox(
+          child: TooltipContainer(
             widget.tooltipWhenFocused!,
             padding: tooltipPadding,
             margin: tooltipMargin,
@@ -181,10 +183,13 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
     final renderBox = context.findRenderObject() as RenderBox;
     final boxsize = renderBox.size;
 
+    Logger.warning('boxsize: $boxsize');
+
     final renderBoxOffset = renderBox.localToGlobal(Offset.zero);
 
-    const circlePadding = 25;
     const circleThinkness = 2.0;
+    final circlePadding = min(renderBoxOffset.dy - circleThinkness, min(renderBoxOffset.dx, 25.0));
+    final BorderRadius borderRadius = BorderRadius.circular(max(circlePadding * 2, min(boxsize.width, boxsize.height) / 6));
 
     _overlayEntryChild = OverlayEntry(
       builder: (overlayContext) => Stack(
@@ -198,6 +203,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
                   child: PulseIcon(
                     width: boxsize.width + circlePadding,
                     height: boxsize.height + circlePadding,
+                    borderRadius: borderRadius,
                     child: Material(
                       color: Colors.transparent,
                       child: SizedBox(
@@ -212,7 +218,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
                   width: boxsize.width + circlePadding,
                   height: boxsize.height + circlePadding,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(999),
+                    borderRadius: borderRadius,
                     border: Border.all(color: Theme.of(context).primaryColor, width: circleThinkness),
                   ),
                 ),

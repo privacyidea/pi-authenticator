@@ -26,10 +26,10 @@ import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
-import 'package:privacyidea_authenticator/widgets/default_dialog.dart';
+import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
-import '../utils/logger.dart';
-import 'widget_keys.dart';
+import '../../utils/logger.dart';
+import '../widget_keys.dart';
 
 class GenerateTwoStepDialog extends StatelessWidget {
   final int _saltLength;
@@ -84,7 +84,7 @@ class GenerateTwoStepDialog extends StatelessWidget {
         ),
         content: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[CircularProgressIndicator()],
+          children: [CircularProgressIndicator()],
         ),
       ),
     );
@@ -103,8 +103,8 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
   Widget build(BuildContext context) {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: WillPopScope(
-        onWillPop: () async => false,
+      child: PopScope(
+        canPop: false,
         // Prevents closing the dialog without returning a secret.
         child: DefaultDialog(
           scrollable: true,

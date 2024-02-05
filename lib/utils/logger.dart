@@ -363,8 +363,9 @@ $deviceInfo""";
   }
 
   String _convertLogToSingleString(String? message, {dynamic error, dynamic stackTrace, String? name, LogLevel logLevel = LogLevel.INFO}) {
-    String fileMessage = '(${DateTime.now().toString()}) ${message ?? ''}';
-    fileMessage += name != null ? '\nFrom: $name' : '';
+    String fileMessage = '${DateTime.now().toString()}';
+    fileMessage += name != null ? ' [$name]\n' : '\n';
+    fileMessage += message ?? '';
     fileMessage += error != null ? '\nError: $error' : '';
     fileMessage += stackTrace != null ? '\nStacktrace:\n$stackTrace' : '';
 
@@ -428,7 +429,7 @@ String _readIosDeviceInfo(IosDeviceInfo data) => 'name: ${data.name}\n'
     'utsname.version: ${data.utsname.version}\n'
     'utsname.machine: ${data.utsname.machine}\n';
 
-final filterParameterKeys = <String>['fbtoken', 'new_fb_token'];
+final filterParameterKeys = ['fbtoken', 'new_fb_token'];
 
 enum LogLevel {
   INFO,

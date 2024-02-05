@@ -35,13 +35,13 @@ class PollLoadingIndicator extends StatelessWidget {
       child: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(99),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
+                color: Theme.of(context).shadowColor.withOpacity(0.3),
+                blurRadius: 2,
+                offset: const Offset(0, 2),
               ),
             ],
           ),

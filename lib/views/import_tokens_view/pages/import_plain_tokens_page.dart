@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/views/import_tokens_view/widgets/no_conflict_import_tokens_list.dart';
+import '../widgets/no_conflict_import_tokens_list.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';

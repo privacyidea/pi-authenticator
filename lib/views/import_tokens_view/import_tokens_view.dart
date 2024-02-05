@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/views/view_interface.dart';
+import '../view_interface.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/token_import_origin.dart';

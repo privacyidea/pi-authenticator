@@ -7,7 +7,7 @@ import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
-import '../../../../../widgets/default_dialog.dart';
+import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class DeleteTokenFolderAction extends StatelessWidget {
   final TokenFolder folder;

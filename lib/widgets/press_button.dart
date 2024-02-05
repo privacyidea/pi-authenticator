@@ -36,7 +36,7 @@ class _PressButtonState extends State<PressButton> {
     return ElevatedButton(
       onPressed: isPressable ? press : null,
       style: widget.style,
-      child: FittedBox(child: widget.child),
+      child: widget.child,
     );
   }
 }

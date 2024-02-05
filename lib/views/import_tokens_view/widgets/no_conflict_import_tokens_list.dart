@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import '../../../model/tokens/token.dart';
 
 import 'no_conflict_import_tokens_tile.dart';
 

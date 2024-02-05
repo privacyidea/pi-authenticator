@@ -102,6 +102,14 @@
       }
     }
   },
+  "confirmTokenDeletionHint": "Pokud tento token odstraníte, nebude již možné se přihlásit.\nProsím, ujistěte se, že se můžete přihlásit k přidruženému účtu bez tohoto tokenu.",
+  "@confirmTokenDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a token."
+  },
+  "confirmFolderDeletionHint": "Odstranění složky nemá žádný vliv na tokeny v ní.\nTokeny jsou přesunuty do hlavního seznamu.",
+  "@confirmFolderDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a folder."
+  },
   "generatingPhonePart": "Generování klientské části",
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
@@ -507,7 +515,7 @@
   "invalidQrScan": "Naskenovaný QR kód není platnou zálohou {appName}.",
   "invalidQrFile": "Vybraný soubor neobsahuje platný QR kód z {appName}.",
   "invalidLink": "Zadaný odkaz není platným tokenem {appName} nebo není podporován.",
-  "importExistingToken": "{count, plural, zero{nebyl nalezen token, který je již v aplikaci} one{byl nalezen token, který je již v aplikaci} other{byl nalezen token {count}, který je již v aplikaci}}",
+  "importExistingToken": "{count, plural, zero{Nebyl nalezen žádný token, který by se již v aplikaci nacházel.} one{Byl nalezen token, který již v aplikaci existuje.} other{{count} byly nalezeny tokeny, které se již v aplikaci nacházejí.}}",
   "importConflictToken": "{count, plural, zero{Není žádný konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.}}",
   "importNewToken": "{count, plural, zero{Nenalezen žádný nový token.} one{Nalezen nový token, který bude importován.} other{Nalezen nový token {count}, který bude importován.}}",
   "importHint2FAS": "Vyberte zálohu 2FAS.\nPokud nemáte zálohu, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.",

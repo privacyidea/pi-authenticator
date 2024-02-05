@@ -93,6 +93,14 @@
       }
     }
   },
+  "confirmTokenDeletionHint": "You may no longer be able to log in if you delete this token.\nPlease make sure that you can log in to the associated account without this token.",
+  "@confirmTokenDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a token."
+  },
+  "confirmFolderDeletionHint": "Deleting a folder has no effect on the tokens in it.\nThe tokens are moved to the main list.",
+  "@confirmFolderDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a folder."
+  },
   "generatingPhonePart": "Generating phone part",
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
@@ -506,9 +514,9 @@
   "invalidQrScan": "The scanned QR code is not a valid backup of {appName}.",
   "invalidQrFile": "The selected file does not contain a valid QR code from {appName}.",
   "invalidLink": "The link entered is not a valid token of {appName}, or it is not supported.",
-  "importExistingToken": "{count, plural, zero{no token was found that is already in the application} one{a token was found that is already in the application} other{a {count} token was found that is already in the application}}",
-  "importConflictToken": "{count, plural, zero{There is no conflict with tokens that already exist.} one{There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.} other{There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.}}",
-  "importNewToken": "{count, plural, zero{No new token was found.} one{A new token was found that will be imported.} other{A {count} of new tokens were found that will be imported.}}",
+  "importExistingToken": "{count, plural, zero{No token was found that is already in the application.} one{A token was found that already exists in the application.} other{{count} tokens was found that are already in the application.}}",
+  "importConflictToken": "{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with an existing token.\nPlease choose which one you want to keep.} other{There are conflicts with existing tokens.\nPlease choose which one you want to keep.}}",
+  "importNewToken": "{count, plural, zero{No new token has been found.} one{A new token has been found and is being imported.} other{{count} new tokens have been found and will be imported.}}",
   "importHint2FAS": "Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.",
   "importHintAegisBackupFile": "Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.",
   "importHintAegisQrScan": "Scan the QR code you receive when you transfer entries from Aegis.",

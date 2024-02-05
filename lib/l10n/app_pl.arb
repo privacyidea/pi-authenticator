@@ -98,6 +98,14 @@
       }
     }
   },
+  "confirmTokenDeletionHint": "Usunięcie tego tokenu może uniemożliwić zalogowanie się. Upewnij się, że możesz zalogować się na powiązane konto bez tego tokenu.",
+  "@confirmTokenDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a token."
+  },
+  "confirmFolderDeletionHint": "Usunięcie folderu nie ma wpływu na znajdujące się w nim tokeny. Tokeny są przenoszone do głównej listy.",
+  "@confirmFolderDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a folder."
+  },
   "generatingPhonePart": "Generowanie sekretu po stronie telefonu...",
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
@@ -501,7 +509,7 @@
   "invalidQrScan": "Zeskanowany kod QR nie jest prawidłową kopią zapasową {appName}.",
   "invalidQrFile": "Wybrany plik nie zawiera prawidłowego kodu QR z {appName}.",
   "invalidLink": "Wprowadzony link nie jest prawidłowym tokenem {appName} lub nie jest obsługiwany.",
-  "importExistingToken": "{count, plural, zero{nie znaleziono tokena, który jest już w aplikacji} one{znaleziono token, który jest już w aplikacji} other{znaleziono token {count}, który jest już w aplikacji}}",
+  "importExistingToken": "{count, plural, zero{Nie znaleziono tokena, który już znajduje się w aplikacji.} one{Znaleziono token, który już istnieje w aplikacji.} other{Znaleziono {count} tokenów, które już znajdują się w aplikacji.}}",
   "importConflictToken": "{count, plural, zero{Nie ma konfliktu z tokenami, które już istnieją.} one{Istnieje konflikt z tokenami, które już istnieją.} other{Istnieje konflikt z tokenami, które już istnieją.}}",
   "importNewToken": "{count, plural, zero{Nie znaleziono nowego tokena.} one{Znaleziono nowy token, który zostanie zaimportowany.} other{Znaleziono nowy token {count}, który zostanie zaimportowany.}}",
   "importHint2FAS": "Wybierz kopię zapasową 2FAS. Jeśli nie masz kopii zapasowej, utwórz ją w aplikacji 2FAS. Zalecamy użycie hasła.",

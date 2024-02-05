@@ -97,6 +97,14 @@
       }
     }
   },
+  "confirmTokenDeletionHint": "U kunt mogelijk niet meer inloggen als u dit token verwijdert. Controleer of u zonder dit token kunt inloggen op het gekoppelde account.",
+  "@confirmTokenDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a token."
+  },
+  "confirmFolderDeletionHint": "Het verwijderen van een map heeft geen effect op de tokens in de map. De tokens worden verplaatst naar de hoofdlijst.",
+  "@confirmFolderDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a folder."
+  },
   "generatingPhonePart": "Genereren telefoon gedeelte",
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
@@ -504,7 +512,7 @@
   "invalidQrScan": "De gescande QR code is geen geldige backup van {appName}.",
   "invalidQrFile": "Het geselecteerde bestand bevat geen geldige QR code van {appName}.",
   "invalidLink": "De ingevoerde link is geen geldig token van {appName}, of wordt niet ondersteund.",
-  "importExistingToken": "{count, plural, zero{er is geen token gevonden dat al in de toepassing zit} one{er is een token gevonden dat al in de toepassing zit} other{er is een {count} token gevonden dat al in de toepassing zit}}",
+  "importExistingToken": "{count, plural, zero{Er is geen token gevonden dat al in de toepassing aanwezig is.} one{Er is een token gevonden dat al bestaat in de applicatie.} other{{count} tokens gevonden die al in de applicatie staan.}}",
   "importConflictToken": "{count, plural, zero{Er is geen conflict met tokens die al bestaan.} one{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.} other{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.}}",
   "importNewToken": "{count, plural, zero{Er is geen nieuw token gevonden.} one{Er is een nieuw token gevonden dat zal worden geïmporteerd.} other{Er is een nieuw token {count} gevonden dat zal worden geïmporteerd.}}",
   "importHint2FAS": "Selecteer uw 2FAS-back-up. Als u geen back-up hebt, maak er dan een aan in de 2FAS-app. Wij raden u aan een wachtwoord te gebruiken.",

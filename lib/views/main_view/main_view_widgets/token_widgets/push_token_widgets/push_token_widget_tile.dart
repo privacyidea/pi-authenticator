@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/widgets/custom_trailing.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/introduction.dart';
@@ -34,9 +35,14 @@ class PushTokenWidgetTile extends ConsumerWidget {
         onComplete: () {
           ref.read(introductionProvider.notifier).complete(Introduction.pollForChallenges);
         },
-        child: const Icon(
-          Icons.notifications,
-          size: 26,
+        child: const CustomTrailing(
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: Icon(
+              size: 100,
+              Icons.notifications,
+            ),
+          ),
         ),
       ),
     );

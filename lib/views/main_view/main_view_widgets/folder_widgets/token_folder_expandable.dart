@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:privacyidea_authenticator/model/states/token_filter.dart';
-import 'package:privacyidea_authenticator/utils/app_customizer.dart';
+import '../../../../model/states/token_filter.dart';
+import '../../../../utils/app_customizer.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_folder.dart';
@@ -48,8 +47,6 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
     );
     expandableController = ExpandableController(initialExpanded: widget.expandOverride ?? widget.folder.isExpanded);
     expandableController.addListener(() {
-      log('ExpandableController: ${expandableController.expanded}');
-      log('Folder: ${widget.folder.isExpanded}');
       if (expandableController.expanded) {
         animationController.reverse();
       } else {
@@ -57,7 +54,9 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
       }
       if (widget.expandOverride != null) return;
       if (widget.folder.isExpanded != expandableController.expanded) {
-        globalRef?.read(tokenFolderProvider.notifier).updateFolder(widget.folder.copyWith(isExpanded: expandableController.expanded));
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          globalRef?.read(tokenFolderProvider.notifier).updateFolder(widget.folder.copyWith(isExpanded: expandableController.expanded));
+        });
       }
     });
   }
@@ -192,8 +191,15 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                                               padding: EdgeInsets.only(left: widget.folder.isExpanded ? 2 : 0, top: 1),
                                               child: Icon(
                                                 widget.folder.isExpanded ? MdiIcons.lockOpenVariant : MdiIcons.lock,
-                                                color: Theme.of(context).extension<ActionTheme>()?.lockColor.withOpacity(0.8),
+                                                color: Theme.of(context).extension<ActionTheme>()?.lockColor,
                                                 size: constraints.maxHeight / 2.1,
+                                                shadows: [
+                                                  Shadow(
+                                                    color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.3),
+                                                    offset: const Offset(0.5, 0.5),
+                                                    blurRadius: 2,
+                                                  )
+                                                ],
                                               ),
                                             );
                                           },

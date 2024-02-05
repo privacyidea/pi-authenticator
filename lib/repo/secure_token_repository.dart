@@ -34,8 +34,8 @@ import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
-import '../widgets/default_dialog.dart';
-import '../widgets/default_dialog_button.dart';
+import '../widgets/dialog_widgets/default_dialog.dart';
+import '../widgets/dialog_widgets/default_dialog_button.dart';
 
 // TODO How to test the behavior of this class?
 class SecureTokenRepository implements TokenRepository {

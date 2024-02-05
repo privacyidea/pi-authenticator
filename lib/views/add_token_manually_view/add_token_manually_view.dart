@@ -148,7 +148,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
                 child: ElevatedButton(
                   child: Text(
                     AppLocalizations.of(context)!.addToken,
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                     overflow: TextOverflow.fade,
                     softWrap: false,
                   ),

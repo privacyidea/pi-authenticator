@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-import '../../../../widgets/custom_trailing.dart';
-
 final disableCopyOtpProvider = StateProvider<bool>((ref) => false);
 
 class TokenWidgetTile extends ConsumerWidget {
@@ -66,18 +64,7 @@ class TokenWidgetTile extends ConsumerWidget {
             ),
           ],
         ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Flexible(
-              child: CustomTrailing(
-                maxPercentWidth: isPreview ? 20 : null,
-                child: trailing ?? const SizedBox(),
-              ),
-            ),
-          ],
-        ),
+        trailing: trailing ?? const SizedBox(),
       );
 }
 

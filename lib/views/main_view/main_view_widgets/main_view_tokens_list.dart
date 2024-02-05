@@ -8,6 +8,7 @@ import '../../../model/tokens/push_token.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../widgets/deactivateable_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
+import '../../../widgets/introduction_widgets/token_introduction.dart';
 import 'drag_target_divider.dart';
 import 'no_token_screen.dart';
 import 'poll_loading_indicator.dart';
@@ -53,14 +54,20 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
               scrollController: scrollController,
               child: CustomScrollView(
                 key: listViewKey,
-                physics: allowToRefresh ? const AlwaysScrollableScrollPhysics() : null,
+                physics: allowToRefresh ? const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()) : const BouncingScrollPhysics(),
                 controller: scrollController,
                 slivers: [
                   SliverFillRemaining(
                     hasScrollBody: false,
                     child: Column(
                       children: [
-                        ..._buildSortableWidgets(sortables, draggingSortable),
+                        TokenIntroduction(
+                          child: Column(
+                            children: [
+                              ..._buildSortableWidgets(sortables, draggingSortable),
+                            ],
+                          ),
+                        ),
                         ...(draggingSortable != null)
                             ? [
                                 const DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true, bottomPaddingIfLast: 80),

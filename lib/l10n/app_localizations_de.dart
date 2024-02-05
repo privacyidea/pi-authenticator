@@ -71,8 +71,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String confirmDeletionOf(Object name) {
-    return 'Bestätigen Sie das Löschen von $name?';
+    return 'Sind Sie sicher dass sie $name löschen möchten?';
   }
+
+  @override
+  String get confirmTokenDeletionHint => 'Unter Umständen können Sie sich nicht mehr einloggen, wenn Sie diesen Token löschen.\nBitte stellen Sie sicher, dass Sie sich ohne diesen Token in den dazugehörigen Account einloggen können.';
+
+  @override
+  String get confirmFolderDeletionHint => 'Das Löschen eines Ordners hat keine Auswirkungen auf die Token, die sich darin befinden.\nDie Token werden in die Hauptliste verschoben.';
 
   @override
   String get generatingPhonePart => 'Generiere Telefonanteil';
@@ -571,7 +577,7 @@ class AppLocalizationsDe extends AppLocalizations {
       locale: localeName,
       other: 'Es wurden $count Token gefunden, die sich bereits in der Anwendung befinden.',
       one: 'Es wurde ein Token gefunden, das sich bereits in der Anwendung befindet.',
-      zero: 's wurde kein Token gefunden, das sich bereits in der Anwendung befindet.',
+      zero: 'Es wurde kein Token gefunden, das sich bereits in der App befindet.',
     );
     return '$_temp0';
   }

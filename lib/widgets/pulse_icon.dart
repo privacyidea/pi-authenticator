@@ -5,6 +5,7 @@ class PulseIcon extends StatefulWidget {
     required this.width,
     required this.height,
     required this.child,
+    required this.borderRadius,
     this.isPulsing = true,
     super.key,
   });
@@ -13,6 +14,7 @@ class PulseIcon extends StatefulWidget {
   final double height;
   final Widget child;
   final bool isPulsing;
+  final BorderRadius borderRadius;
 
   @override
   State<PulseIcon> createState() => _PulseIconState();
@@ -58,9 +60,7 @@ class _PulseIconState extends State<PulseIcon> with SingleTickerProviderStateMix
                   child: Container(
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primary,
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(9999),
-                      ),
+                      borderRadius: widget.borderRadius,
                     ),
                     width: widget.width,
                     height: widget.height,

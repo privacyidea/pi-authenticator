@@ -279,8 +279,12 @@ class ThemeCustomization {
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
+              foregroundColor: onPrimary,
+              backgroundColor: primaryColor,
               padding: const EdgeInsets.all(6),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shadowColor: shadowColor,
+              elevation: 1.5,
             ),
           ),
           scaffoldBackgroundColor: backgroundColor,
@@ -307,7 +311,7 @@ class ThemeCustomization {
             elevation: 0,
           ),
           listTileTheme: ListTileThemeData(
-            tileColor: backgroundColor,
+            tileColor: Colors.transparent,
             titleTextStyle: TextStyle(color: tilePrimaryColor),
             subtitleTextStyle: TextStyle(color: tileSubtitleColor),
             iconColor: tileIconColor,
@@ -318,6 +322,7 @@ class ThemeCustomization {
                   secondary: primaryColor,
                   onPrimary: onPrimary,
                   onSecondary: onPrimary,
+                  error: deleteColor,
                   errorContainer: deleteColor,
                 )
               : ColorScheme.dark(
@@ -325,6 +330,7 @@ class ThemeCustomization {
                   secondary: primaryColor,
                   onPrimary: onPrimary,
                   onSecondary: onPrimary,
+                  error: deleteColor,
                   errorContainer: deleteColor,
                 ),
           checkboxTheme: CheckboxThemeData(

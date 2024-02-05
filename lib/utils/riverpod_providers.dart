@@ -150,7 +150,7 @@ final tokenFolderProvider = StateNotifierProvider<TokenFolderNotifier, TokenFold
     final newTokenFolderNotifier = TokenFolderNotifier(repository: PreferenceTokenFolderRepository());
     ref.listen(appStateProvider, (previous, next) {
       if (previous == AppLifecycleState.resumed && next == AppLifecycleState.paused) {
-        Logger.warning('Collapsing locked folders on pause', name: 'tokenFolderProvider#appStateProvider');
+        Logger.info('Collapsing locked folders on pause', name: 'tokenFolderProvider#appStateProvider');
         newTokenFolderNotifier.collapseLockedFolders();
       }
     });

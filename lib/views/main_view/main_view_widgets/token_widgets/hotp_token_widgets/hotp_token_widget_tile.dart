@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/widgets/custom_trailing.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/hotp_token.dart';
@@ -94,31 +95,33 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
               if (widget.token.label.isNotEmpty) widget.token.label,
               if (widget.token.issuer.isNotEmpty) widget.token.issuer,
             ],
-      trailing: widget.isPreview
-          ? const Icon(
-              size: 100,
-              Icons.replay,
-            )
-          : HideableWidget(
-              token: widget.token,
-              isHidden: widget.token.isHidden,
-              child: IconButton(
-                padding: const EdgeInsets.all(0),
-                onPressed: disableTrailingButton
-                    ? null
-                    : () {
-                        ref.read(tokenFolderProvider.notifier).collapseLockedFolders(); // TODO: Remove this line
-                        _updateOtpValue();
-                      },
-                icon: const FittedBox(
-                  fit: BoxFit.contain,
-                  child: Icon(
-                    size: 100,
-                    Icons.replay,
+      trailing: CustomTrailing(
+        child: widget.isPreview
+            ? const Icon(
+                size: 100,
+                Icons.replay,
+              )
+            : HideableWidget(
+                token: widget.token,
+                isHidden: widget.token.isHidden,
+                child: IconButton(
+                  padding: const EdgeInsets.all(0),
+                  onPressed: disableTrailingButton
+                      ? null
+                      : () {
+                          ref.read(tokenFolderProvider.notifier).collapseLockedFolders(); // TODO: Remove this line
+                          _updateOtpValue();
+                        },
+                  icon: const FittedBox(
+                    fit: BoxFit.contain,
+                    child: Icon(
+                      size: 100,
+                      Icons.replay,
+                    ),
                   ),
                 ),
               ),
-            ),
+      ),
     );
   }
 }

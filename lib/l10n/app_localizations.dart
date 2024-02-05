@@ -235,6 +235,18 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete {name}?'**
   String confirmDeletionOf(Object name);
 
+  /// Gives the user a hint about the consequences of deleting a token.
+  ///
+  /// In en, this message translates to:
+  /// **'You may no longer be able to log in if you delete this token.\nPlease make sure that you can log in to the associated account without this token.'**
+  String get confirmTokenDeletionHint;
+
+  /// Gives the user a hint about the consequences of deleting a folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting a folder has no effect on the tokens in it.\nThe tokens are moved to the main list.'**
+  String get confirmFolderDeletionHint;
+
   /// Title of a dialog telling the user that the phone part gets generated right now.
   ///
   /// In en, this message translates to:
@@ -1162,19 +1174,19 @@ abstract class AppLocalizations {
   /// No description provided for @importExistingToken.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, zero{no token was found that is already in the application} one{a token was found that is already in the application} other{a {count} token was found that is already in the application}}'**
+  /// **'{count, plural, zero{No token was found that is already in the application.} one{A token was found that already exists in the application.} other{{count} tokens was found that are already in the application.}}'**
   String importExistingToken(num count);
 
   /// No description provided for @importConflictToken.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, zero{There is no conflict with tokens that already exist.} one{There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.} other{There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.}}'**
+  /// **'{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with an existing token.\nPlease choose which one you want to keep.} other{There are conflicts with existing tokens.\nPlease choose which one you want to keep.}}'**
   String importConflictToken(num count);
 
   /// No description provided for @importNewToken.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, zero{No new token was found.} one{A new token was found that will be imported.} other{A {count} of new tokens were found that will be imported.}}'**
+  /// **'{count, plural, zero{No new token has been found.} one{A new token has been found and is being imported.} other{{count} new tokens have been found and will be imported.}}'**
   String importNewToken(num count);
 
   /// No description provided for @importHint2FAS.

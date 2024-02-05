@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/enums/introduction.dart';
 import '../../../../utils/riverpod_providers.dart';
-import '../../../../widgets/default_dialog.dart';
+import '../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class AddTokenFolderDialog extends ConsumerWidget {
   final textController = TextEditingController();

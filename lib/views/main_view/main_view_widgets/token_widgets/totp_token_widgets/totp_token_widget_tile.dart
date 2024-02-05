@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/widgets/custom_trailing.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/totp_token.dart';
@@ -126,26 +127,28 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
               if (widget.token.label.isNotEmpty) widget.token.label,
               if (widget.token.issuer.isNotEmpty) widget.token.issuer,
             ],
-      trailing: HideableWidget(
-        token: widget.token,
-        isHidden: widget.token.isHidden,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Text(
-              '${secondsLeft.round()}',
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-            AnimatedBuilder(
-              animation: animation,
-              builder: (context, child) {
-                return CircularProgressIndicator(
-                  value: animation.value,
-                );
-              },
-            ),
-          ],
+      trailing: CustomTrailing(
+        child: HideableWidget(
+          token: widget.token,
+          isHidden: widget.token.isHidden,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Text(
+                '${secondsLeft.round()}',
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
+              AnimatedBuilder(
+                animation: animation,
+                builder: (context, child) {
+                  return CircularProgressIndicator(
+                    value: animation.value,
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -101,6 +101,14 @@
       }
     }
   },
+  "confirmTokenDeletionHint": "Es posible que ya no pueda iniciar sesión si elimina este token.\nAsegúrese de que puede iniciar sesión en la cuenta asociada sin este token.",
+  "@confirmTokenDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a token."
+  },
+  "confirmFolderDeletionHint": "Eliminar una carpeta no afecta a los tokens que contiene.\nLos tokens se mueven a la lista principal.",
+  "@confirmFolderDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a folder."
+  },
   "generatingPhonePart": "Generar parte telefónico",
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
@@ -503,7 +511,7 @@
   "invalidQrScan": "El código QR escaneado no es una copia de seguridad válida de {appName}",
   "invalidQrFile": "El archivo seleccionado no contiene un código QR válido de {appName}",
   "invalidLink": "El enlace introducido no es un token válido de {appName}, o no es compatible",
-  "importExistingToken": "{count, plural, zero{no se ha encontrado ningún token que ya esté en la aplicación} one{se ha encontrado un token que ya está en la aplicación} other{se ha encontrado un token {count} que ya está en la aplicación}}",
+  "importExistingToken": "{count, plural, zero{No se ha encontrado ningún token que ya esté en la aplicación.} one{Se ha encontrado un token que ya existe en la aplicación.} other{Se han encontrado {count} tokens que ya están en la aplicación.}}",
   "importConflictToken": "{count, plural, zero{No hay conflicto con tokens que ya existen.} one{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.} other{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.}}",
   "importNewToken": "{count, plural, zero{No se ha encontrado un nuevo token.} one{Se ha encontrado un nuevo token que se importará.} other{Se ha encontrado un nuevo token {count} que se importará.}}",
   "importHint2FAS": "Seleccione su copia de seguridad de 2FAS. Si no tiene una copia de seguridad, cree una en la aplicación 2FAS. Le recomendamos que utilice una contraseña",

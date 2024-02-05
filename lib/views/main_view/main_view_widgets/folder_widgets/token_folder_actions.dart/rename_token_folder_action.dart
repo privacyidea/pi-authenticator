@@ -8,7 +8,7 @@ import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod_providers.dart';
-import '../../../../../widgets/default_dialog.dart';
+import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class RenameTokenFolderAction extends StatelessWidget {
   final TokenFolder folder;

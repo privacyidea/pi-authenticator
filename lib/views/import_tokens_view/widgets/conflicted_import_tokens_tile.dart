@@ -85,19 +85,25 @@ class _ConflictedImportTokensTileState extends State<ConflictedImportTokensTile>
               child: Row(
                 children: [
                   Flexible(
-                    child: NoConflictImportTokensTile(
-                      token: widget.importTokenEntry.newToken,
-                      selected: widget.importTokenEntry.selectedToken,
-                      alignment: Alignment.centerRight,
-                      onTap: widget.importTokenEntry.oldToken != null ? () => _setSelectedToken(widget.importTokenEntry.newToken) : null,
+                    child: Container(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: NoConflictImportTokensTile(
+                        token: widget.importTokenEntry.newToken,
+                        selected: widget.importTokenEntry.selectedToken,
+                        alignment: Alignment.centerRight,
+                        onTap: widget.importTokenEntry.oldToken != null ? () => _setSelectedToken(widget.importTokenEntry.newToken) : null,
+                      ),
                     ),
                   ),
-                  Flexible(
-                    child: NoConflictImportTokensTile(
-                      token: widget.importTokenEntry.oldToken!,
-                      selected: widget.importTokenEntry.selectedToken,
-                      alignment: Alignment.centerLeft,
-                      onTap: () => _setSelectedToken(widget.importTokenEntry.oldToken!),
+                  Container(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: Flexible(
+                      child: NoConflictImportTokensTile(
+                        token: widget.importTokenEntry.oldToken!,
+                        selected: widget.importTokenEntry.selectedToken,
+                        alignment: Alignment.centerLeft,
+                        onTap: () => _setSelectedToken(widget.importTokenEntry.oldToken!),
+                      ),
                     ),
                   ),
                 ],

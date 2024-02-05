@@ -75,6 +75,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get confirmTokenDeletionHint => 'You may no longer be able to log in if you delete this token.\nPlease make sure that you can log in to the associated account without this token.';
+
+  @override
+  String get confirmFolderDeletionHint => 'Deleting a folder has no effect on the tokens in it.\nThe tokens are moved to the main list.';
+
+  @override
   String get generatingPhonePart => 'Generating phone part';
 
   @override
@@ -569,9 +575,9 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'a $count token was found that is already in the application',
-      one: 'a token was found that is already in the application',
-      zero: 'no token was found that is already in the application',
+      other: '$count tokens was found that are already in the application.',
+      one: 'A token was found that already exists in the application.',
+      zero: 'No token was found that is already in the application.',
     );
     return '$_temp0';
   }
@@ -581,9 +587,9 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.',
-      one: 'There is a conflict with tokens that already exist.\nPlease select which one you would like to keep.',
-      zero: 'There is no conflict with tokens that already exist.',
+      other: 'There are conflicts with existing tokens.\nPlease choose which one you want to keep.',
+      one: 'There is a conflict with an existing token.\nPlease choose which one you want to keep.',
+      zero: 'There is no conflict with existing tokens.',
     );
     return '$_temp0';
   }
@@ -593,9 +599,9 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'A $count of new tokens were found that will be imported.',
-      one: 'A new token was found that will be imported.',
-      zero: 'No new token was found.',
+      other: '$count new tokens have been found and will be imported.',
+      one: 'A new token has been found and is being imported.',
+      zero: 'No new token has been found.',
     );
     return '$_temp0';
   }

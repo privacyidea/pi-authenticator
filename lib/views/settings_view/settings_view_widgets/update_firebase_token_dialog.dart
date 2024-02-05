@@ -26,7 +26,7 @@ import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/globals.dart';
 import '../../../utils/push_provider.dart';
-import '../../../widgets/default_dialog.dart';
+import '../../../widgets/dialog_widgets/default_dialog.dart';
 
 class UpdateFirebaseTokenDialog extends StatefulWidget {
   const UpdateFirebaseTokenDialog({super.key});

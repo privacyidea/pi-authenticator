@@ -75,6 +75,12 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String get confirmTokenDeletionHint => 'U kunt mogelijk niet meer inloggen als u dit token verwijdert. Controleer of u zonder dit token kunt inloggen op het gekoppelde account.';
+
+  @override
+  String get confirmFolderDeletionHint => 'Het verwijderen van een map heeft geen effect op de tokens in de map. De tokens worden verplaatst naar de hoofdlijst.';
+
+  @override
   String get generatingPhonePart => 'Genereren telefoon gedeelte';
 
   @override
@@ -569,9 +575,9 @@ class AppLocalizationsNl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'er is een $count token gevonden dat al in de toepassing zit',
-      one: 'er is een token gevonden dat al in de toepassing zit',
-      zero: 'er is geen token gevonden dat al in de toepassing zit',
+      other: '$count tokens gevonden die al in de applicatie staan.',
+      one: 'Er is een token gevonden dat al bestaat in de applicatie.',
+      zero: 'Er is geen token gevonden dat al in de toepassing aanwezig is.',
     );
     return '$_temp0';
   }

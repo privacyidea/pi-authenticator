@@ -17,6 +17,8 @@ class DeactivateableRefreshIndicator extends StatelessWidget {
     return allowToRefresh
         ? RefreshIndicator(
             onRefresh: onRefresh,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            triggerMode: RefreshIndicatorTriggerMode.anywhere,
             child: child,
           )
         : child;

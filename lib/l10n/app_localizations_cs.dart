@@ -75,6 +75,12 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
+  String get confirmTokenDeletionHint => 'Pokud tento token odstraníte, nebude již možné se přihlásit.\nProsím, ujistěte se, že se můžete přihlásit k přidruženému účtu bez tohoto tokenu.';
+
+  @override
+  String get confirmFolderDeletionHint => 'Odstranění složky nemá žádný vliv na tokeny v ní.\nTokeny jsou přesunuty do hlavního seznamu.';
+
+  @override
   String get generatingPhonePart => 'Generování klientské části';
 
   @override
@@ -569,9 +575,9 @@ class AppLocalizationsCs extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'byl nalezen token $count, který je již v aplikaci',
-      one: 'byl nalezen token, který je již v aplikaci',
-      zero: 'nebyl nalezen token, který je již v aplikaci',
+      other: '$count byly nalezeny tokeny, které se již v aplikaci nacházejí.',
+      one: 'Byl nalezen token, který již v aplikaci existuje.',
+      zero: 'Nebyl nalezen žádný token, který by se již v aplikaci nacházel.',
     );
     return '$_temp0';
   }

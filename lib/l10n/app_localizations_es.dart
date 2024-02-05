@@ -75,6 +75,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get confirmTokenDeletionHint => 'Es posible que ya no pueda iniciar sesión si elimina este token.\nAsegúrese de que puede iniciar sesión en la cuenta asociada sin este token.';
+
+  @override
+  String get confirmFolderDeletionHint => 'Eliminar una carpeta no afecta a los tokens que contiene.\nLos tokens se mueven a la lista principal.';
+
+  @override
   String get generatingPhonePart => 'Generar parte telefónico';
 
   @override
@@ -569,9 +575,9 @@ class AppLocalizationsEs extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'se ha encontrado un token $count que ya está en la aplicación',
-      one: 'se ha encontrado un token que ya está en la aplicación',
-      zero: 'no se ha encontrado ningún token que ya esté en la aplicación',
+      other: 'Se han encontrado $count tokens que ya están en la aplicación.',
+      one: 'Se ha encontrado un token que ya existe en la aplicación.',
+      zero: 'No se ha encontrado ningún token que ya esté en la aplicación.',
     );
     return '$_temp0';
   }

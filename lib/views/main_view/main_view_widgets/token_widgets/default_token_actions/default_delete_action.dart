@@ -7,7 +7,7 @@ import '../../../../../utils/app_customizer.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
-import '../../../../../widgets/default_dialog.dart';
+import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../token_action.dart';
 
 class DefaultDeleteAction extends TokenAction {
@@ -51,11 +51,19 @@ class DefaultDeleteAction extends TokenAction {
               scrollable: true,
               title: Text(
                 AppLocalizations.of(context)!.confirmDeletion,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.error),
               ),
-              content: Text(
-                AppLocalizations.of(context)!.confirmDeletionOf(token.label),
+              content: Column(
+                children: [
+                  Text(AppLocalizations.of(context)!.confirmDeletionOf(token.label), style: Theme.of(context).textTheme.bodyMedium),
+                  const SizedBox(height: 8),
+                  Text(
+                    AppLocalizations.of(context)!.confirmTokenDeletionHint,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ),
-              actions: <Widget>[
+              actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text(

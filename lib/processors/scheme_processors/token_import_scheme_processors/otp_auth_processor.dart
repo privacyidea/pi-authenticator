@@ -12,7 +12,7 @@ import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/supported_versions.dart';
 import '../../../utils/view_utils.dart';
-import '../../../widgets/two_step_dialog.dart';
+import '../../../widgets/dialog_widgets/two_step_dialog.dart';
 import 'token_import_scheme_processor_interface.dart';
 
 class OtpAuthProcessor extends TokenImportSchemeProcessor {

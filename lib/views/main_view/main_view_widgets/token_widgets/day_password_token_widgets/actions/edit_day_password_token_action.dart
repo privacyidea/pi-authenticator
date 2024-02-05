@@ -11,7 +11,7 @@ import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
 import '../../../../../../utils/utils.dart';
-import '../../../../../../widgets/default_dialog.dart';
+import '../../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../token_action.dart';
 

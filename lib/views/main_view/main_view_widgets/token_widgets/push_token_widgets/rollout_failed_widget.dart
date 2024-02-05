@@ -5,7 +5,7 @@ import '../../../../../model/enums/push_token_rollout_state.dart';
 import '../../../../../model/tokens/push_token.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod_providers.dart';
-import '../../../../../widgets/default_dialog.dart';
+import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../widgets/press_button.dart';
 
 class RolloutFailedWidget extends StatelessWidget {

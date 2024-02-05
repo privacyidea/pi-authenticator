@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class TooltipBox extends StatelessWidget {
+class TooltipContainer extends StatelessWidget {
   final String tooltip;
   final EdgeInsets padding;
   final EdgeInsets margin;
   final double border;
   final TextStyle textStyle;
-  const TooltipBox(
+  const TooltipContainer(
     this.tooltip, {
     super.key,
     required this.padding,
