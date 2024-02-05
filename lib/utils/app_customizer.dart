@@ -310,6 +310,11 @@ class ThemeCustomization {
             foregroundColor: qrButtonIconColor,
             elevation: 0,
           ),
+          textButtonTheme: TextButtonThemeData(
+            style: ButtonStyle(
+              overlayColor: MaterialStateColor.resolveWith((states) => foregroundColor.withOpacity(0.1)),
+            ),
+          ),
           listTileTheme: ListTileThemeData(
             tileColor: Colors.transparent,
             titleTextStyle: TextStyle(color: tilePrimaryColor),

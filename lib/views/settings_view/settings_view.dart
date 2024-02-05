@@ -14,6 +14,7 @@ import '../license_view/license_view.dart';
 import '../view_interface.dart';
 import 'settings_view_widgets/logging_menu.dart';
 import 'settings_view_widgets/settings_groups.dart';
+import 'settings_view_widgets/settings_list_tile_button.dart';
 import 'settings_view_widgets/update_firebase_token_dialog.dart';
 
 class SettingsView extends ConsumerView {
@@ -48,56 +49,54 @@ class SettingsView extends ConsumerView {
               SettingsGroup(
                 title: AppLocalizations.of(context)!.settingsGroupGeneral,
                 children: [
-                  ListTile(
-                    title: GestureDetector(
-                      onTap: () async {
-                        Uri uri = Uri.parse("https://netknights.it/en/privacy-statement/");
-                        if (!await launchUrl(uri)) {
-                          throw Exception('Could not launch $uri');
-                        }
-                      },
-                      child: Text(
-                        AppLocalizations.of(context)!.privacyPolicy,
-                        style: Theme.of(context).textTheme.titleMedium,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                      ),
+                  SettingsListTileButton(
+                    onPressed: () async {
+                      Uri uri = Uri.parse("https://netknights.it/en/privacy-statement/");
+                      if (!await launchUrl(uri)) {
+                        throw Exception('Could not launch $uri');
+                      }
+                    },
+                    title: Text(
+                      AppLocalizations.of(context)!.privacyPolicy,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
                     ),
                   ),
-                  ListTile(
-                    title: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, LicenseView.routeName);
-                      },
-                      child: Text(
-                        AppLocalizations.of(context)!.licensesAndVersion,
-                        style: Theme.of(context).textTheme.titleMedium,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                      ),
+                  SettingsListTileButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, LicenseView.routeName);
+                    },
+                    title: Text(
+                      AppLocalizations.of(context)!.licensesAndVersion,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
                     ),
                   ),
-                  ListTile(
-                    trailing: IconButton(
-                      splashRadius: 20,
-                      icon: const RotatedBox(
-                        quarterTurns: 1,
-                        child: Icon(FluentIcons.arrow_enter_20_filled),
-                      ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, ImportTokensView.routeName);
-                      },
+                  SettingsListTileButton(
+                    onPressed: () {},
+                    title: Text(
+                      'Feedback',
+                      style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
                     ),
-                    title: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, ImportTokensView.routeName);
-                      },
-                      child: Text(
-                        AppLocalizations.of(context)!.importTokens,
-                        style: Theme.of(context).textTheme.titleMedium,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                      ),
+                    icon: const Icon(FluentIcons.chat_32_regular),
+                  ),
+                  SettingsListTileButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, ImportTokensView.routeName);
+                    },
+                    title: Text(
+                      AppLocalizations.of(context)!.importTokens,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                    ),
+                    icon: const RotatedBox(
+                      quarterTurns: 1,
+                      child: Icon(FluentIcons.arrow_enter_20_filled),
                     ),
                   )
                 ],
@@ -283,29 +282,32 @@ class SettingsView extends ConsumerView {
                 ),
               ),
               const Divider(),
-              SettingsGroup(title: AppLocalizations.of(context)!.errorLogTitle, children: [
-                ListTile(
-                  title: Text(
-                    AppLocalizations.of(context)!.logMenu,
-                    style: Theme.of(context).textTheme.titleMedium,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                  ),
-                  style: ListTileStyle.list,
-                  trailing: ElevatedButton(
-                    child: Text(
-                      AppLocalizations.of(context)!.open,
+              SettingsGroup(
+                title: AppLocalizations.of(context)!.errorLogTitle,
+                children: [
+                  ListTile(
+                    title: Text(
+                      AppLocalizations.of(context)!.logMenu,
+                      style: Theme.of(context).textTheme.titleMedium,
                       overflow: TextOverflow.fade,
                       softWrap: false,
                     ),
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (context) => const LoggingMenu(),
-                      useRootNavigator: false,
+                    style: ListTileStyle.list,
+                    trailing: ElevatedButton(
+                      child: Text(
+                        AppLocalizations.of(context)!.open,
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                      ),
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) => const LoggingMenu(),
+                        useRootNavigator: false,
+                      ),
                     ),
                   ),
-                ),
-              ]),
+                ],
+              ),
             ],
           ),
         ),

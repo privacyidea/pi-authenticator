@@ -29,7 +29,7 @@ class AddTokenManuallyView extends ConsumerStatefulWidget {
 }
 
 class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
-  final ValueNotifier<Algorithms> _algorithmNotifier = ValueNotifier(Algorithms.SHA1);
+  final ValueNotifier<Algorithms> _algorithmNotifier = ValueNotifier(Algorithms.SHA512);
   final ValueNotifier<Encodings> _encodingNotifier = ValueNotifier(Encodings.none);
   final ValueNotifier<TokenTypes> _typeNotifier = ValueNotifier(TokenTypes.HOTP);
   final ValueNotifier<int> _digitsNotifier = ValueNotifier(AddTokenManuallyView.allowedDigits[0]);
@@ -110,7 +110,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
               ),
               LabeledDropdownButton<Algorithms>(
                 label: AppLocalizations.of(context)!.algorithm,
-                values: Algorithms.values,
+                values: Algorithms.values.reversed.toList(),
                 valueNotifier: _algorithmNotifier,
               ),
               LabeledDropdownButton<int>(
