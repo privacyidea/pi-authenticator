@@ -24,6 +24,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:privacyidea_authenticator/model/extensions/enum_extension.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
@@ -116,3 +117,5 @@ Size textSizeOf(String text, TextStyle style, {int? maxLines = 1, double minWidt
     ..layout(minWidth: minWidth, maxWidth: maxWidth);
   return textPainter.size;
 }
+
+Future<String> getPackageName() async => (await PackageInfo.fromPlatform()).packageName.replaceAll('.debug', '');

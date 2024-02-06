@@ -371,7 +371,7 @@
   "logMenu": "Menu du journal",
   "showErrorLog": "Afficher",
   "clearErrorLog": "Effacer",
-  "sendErrorLog": "Envoyer",
+  "send": "Envoyer",
   "sendErrorLogDescription": "Un e-mail pré-rempli est créé.\nIl contient des informations sur l'application, l'erreur et le périphérique.\nVous pouvez modifier l'e-mail avant de l'envoyer.\nVous pouvez voir ici comment nous utilisons les informations:",
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
@@ -526,5 +526,17 @@
   "importHintGoogleQrScan": "Scannez le code QR que vous recevez lorsque vous exportez vos comptes depuis Google Authenticator",
   "importHintGoogleQrFile": "Sélectionnez un fichier image avec le code QR que vous obtenez lorsque vous exportez vos comptes depuis Google Authenticator.\n!! Notez qu'il n'est pas sûr d'enregistrer le code QR sur votre appareil, car les jetons ne sont pas cryptés !!",
   "qrFileDecodeError": "Il n'a pas été possible de décoder le code QR à partir de l'image sélectionnée, veuillez utiliser le scanner de code QR à la place",
-  "tokenLink": "Lien vers le token"
+  "tokenLink": "Lien vers le token",
+  "feedback": "Retour d'information",
+  "feedbackTitle": "Vos commentaires sont toujours les bienvenus !",
+  "feedbackDescription": "Si vous avez des questions, des suggestions ou des problèmes, n'hésitez pas à nous en faire part",
+  "feedbackHint": "Un e-mail prêt à l'emploi s'ouvre, que vous pouvez nous envoyer. Si vous le souhaitez, des informations sur votre appareil et la version de l'application seront ajoutées. Vous pouvez vérifier et modifier l'e-mail avant de l'envoyer.",
+  "feedbackPrivacyPolicy1": "En envoyant le retour d'information, vous acceptez notre ",
+  "feedbackPrivacyPolicy2": "politique de confidentialité",
+  "@feedbackPrivacyPolicy2": {
+    "description": "Taping on this should open the privacy policy."
+  },
+  "feedbackPrivacyPolicy3": ".",
+  "addSystemInfo": "Ajouter des informations sur le système",
+  "feedbackThanks": "Merci pour vos commentaires !"
 }

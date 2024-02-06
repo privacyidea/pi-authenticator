@@ -371,7 +371,7 @@
   "logMenu": "Nabídka protokolu",
   "showErrorLog": "Zobrazit",
   "clearErrorLog": "Vymazat",
-  "sendErrorLog": "Odeslat",
+  "send": "Odeslat",
   "sendErrorLogDescription": "Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:",
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
@@ -525,5 +525,17 @@
   "importHintGoogleQrScan": "Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.",
   "importHintGoogleQrFile": "Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!",
   "qrFileDecodeError": "Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.",
-  "tokenLink": "Token link"
+  "tokenLink": "Token link",
+  "feedback": "Zpětná vazba",
+  "feedbackTitle": "Vaše zpětná vazba je vždy vítána!",
+  "feedbackDescription": "Pokud máte nějaké dotazy, návrhy nebo problémy, dejte nám prosím vědět.",
+  "feedbackHint": "Otevře se připravený e-mail, který nám můžete zaslat. V případě potřeby budou doplněny informace o vašem zařízení a verzi aplikace. Před odesláním můžete e-mail zkontrolovat a upravit.",
+  "feedbackPrivacyPolicy1": "Odesláním zpětné vazby souhlasíte s našimi ",
+  "feedbackPrivacyPolicy2": "zásadami ochrany osobních údajů",
+  "@feedbackPrivacyPolicy2": {
+    "description": "Taping on this should open the privacy policy."
+  },
+  "feedbackPrivacyPolicy3": ".",
+  "addSystemInfo": "Přidat systémové informace",
+  "feedbackThanks": "Děkujeme za zpětnou vazbu!"
 }

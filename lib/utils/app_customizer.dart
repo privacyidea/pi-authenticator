@@ -267,7 +267,7 @@ class ThemeCustomization {
             displaySmall: TextStyle(color: foregroundColor),
             headlineMedium: TextStyle(color: foregroundColor),
             headlineSmall: TextStyle(color: foregroundColor),
-            titleLarge: TextStyle(color: foregroundColor),
+            titleLarge: TextStyle(color: primaryColor),
             bodySmall: TextStyle(color: tileSubtitleColor),
             labelLarge: TextStyle(color: foregroundColor),
             labelSmall: TextStyle(color: foregroundColor),

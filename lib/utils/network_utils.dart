@@ -152,7 +152,7 @@ class PrivacyIdeaIOClient {
     }
 
     if (response.statusCode != 200) {
-      Logger.warning('Received unexpected response', name: 'utils.dart#doGet');
+      Logger.warning('Received unexpected response: ${response.statusCode}', name: 'utils.dart#doGet');
     }
 
     ioClient.close();

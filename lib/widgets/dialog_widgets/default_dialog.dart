@@ -6,12 +6,14 @@ class DefaultDialog extends StatelessWidget {
   final bool? scrollable;
   final Widget? title;
   final List<Widget>? actions;
+  final MainAxisAlignment? actionsAlignment;
   final Widget? content;
 
   const DefaultDialog({
     this.scrollable,
     this.title,
     this.actions,
+    this.actionsAlignment,
     this.content,
     super.key,
   });
@@ -27,6 +29,7 @@ class DefaultDialog extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(16),
           ),
+          actionsAlignment: actionsAlignment ?? MainAxisAlignment.end,
           scrollable: scrollable ?? false,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           actionsPadding: const EdgeInsets.symmetric(horizontal: 8),

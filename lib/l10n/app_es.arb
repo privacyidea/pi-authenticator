@@ -367,7 +367,7 @@
   "logMenu": "Menú de registro",
   "showErrorLog": "Mostrar",
   "clearErrorLog": "Borrar",
-  "sendErrorLog": "Enviar",
+  "send": "Enviar",
   "sendErrorLogDescription": "Se crea un correo electrónico listo.\nContiene información sobre la app, el error y el dispositivo.\nPuedes editar el correo antes de enviarlo.\nAquí puede ver cómo utilizamos la información:",
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
@@ -521,5 +521,17 @@
   "importHintGoogleQrScan": "Escanea el código QR que recibes al exportar tus cuentas desde Google Authenticator",
   "importHintGoogleQrFile": "Selecciona un archivo de imagen con el código QR que recibes al exportar tus cuentas desde Google Authenticator.\n!! Tenga en cuenta que no es seguro guardar el código QR en su dispositivo, ya que los tokens no están cifrados !!",
   "qrFileDecodeError": "No fue posible decodificar el código QR de la imagen seleccionada, por favor utilice el escáner de código QR en su lugar.",
-  "tokenLink": "Enlace token"
+  "tokenLink": "Enlace token",
+  "feedback": "Comentarios",
+  "feedbackTitle": "¡Tus comentarios son siempre bienvenidos!",
+  "feedbackDescription": "Si tienes alguna pregunta, sugerencia o problema, háznoslo saber",
+  "feedbackHint": "Se abrirá un correo electrónico preparado que podrá enviarnos. Si lo desea, se añadirá información sobre su dispositivo y la versión de la aplicación. Puede comprobar y editar el correo electrónico antes de enviarlo.",
+  "feedbackPrivacyPolicy1": "Al enviar sus comentarios, acepta nuestra ",
+  "feedbackPrivacyPolicy2": "política de privacidad",
+  "@feedbackPrivacyPolicy2": {
+    "description": "Taping on this should open the privacy policy."
+  },
+  "feedbackPrivacyPolicy3": ".",
+  "addSystemInfo": "Añadir información del sistema",
+  "feedbackThanks": "¡Gracias por sus comentarios!"
 }

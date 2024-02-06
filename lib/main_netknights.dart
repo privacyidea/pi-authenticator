@@ -39,6 +39,7 @@ import 'package:privacyidea_authenticator/views/splash_screen/splash_screen.dart
 import 'package:privacyidea_authenticator/widgets/app_wrapper.dart';
 
 import 'utils/home_widget_utils.dart';
+import 'views/feedback_view/feedback_view.dart';
 
 void main() async {
   Logger.init(
@@ -84,28 +85,29 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
         themeMode: EasyDynamicTheme.of(context).themeMode,
         initialRoute: SplashScreen.routeName,
         routes: {
-          SplashScreen.routeName: (context) => SplashScreen(
+          AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
+          FeedbackView.routeName: (context) => const FeedbackView(),
+          ImportTokensView.routeName: (context) => const ImportTokensView(),
+          LicenseView.routeName: (context) => LicenseView(
                 appImage: _customization.appImage,
+                appName: _customization.appName,
+                websiteLink: _customization.websiteLink,
+              ),
+          MainView.routeName: (context) => MainView(
                 appIcon: _customization.appIcon,
                 appName: _customization.appName,
               ),
           OnboardingView.routeName: (context) => OnboardingView(
                 appName: _customization.appName,
               ),
-          MainView.routeName: (context) => MainView(
+          PushTokensView.routeName: (context) => const PushTokensView(),
+          SettingsView.routeName: (context) => const SettingsView(),
+          SplashScreen.routeName: (context) => SplashScreen(
+                appImage: _customization.appImage,
                 appIcon: _customization.appIcon,
                 appName: _customization.appName,
               ),
-          SettingsView.routeName: (context) => const SettingsView(),
-          AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
           QRScannerView.routeName: (context) => const QRScannerView(),
-          LicenseView.routeName: (context) => LicenseView(
-                appImage: _customization.appImage,
-                appName: _customization.appName,
-                websiteLink: _customization.websiteLink,
-              ),
-          PushTokensView.routeName: (context) => const PushTokensView(),
-          ImportTokensView.routeName: (context) => const ImportTokensView(),
         },
       );
     });

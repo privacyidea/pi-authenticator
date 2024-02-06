@@ -11,7 +11,7 @@ class SendErrorDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) => DefaultDialog(
         title: Text(
-          AppLocalizations.of(context)!.sendErrorLog,
+          AppLocalizations.of(context)!.send,
           overflow: TextOverflow.fade,
           softWrap: false,
         ),

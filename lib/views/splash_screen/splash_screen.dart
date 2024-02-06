@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../model/enums/introduction.dart';
+import '../../utils/app_info_utils.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
@@ -45,8 +46,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     super.initState();
 
-    HomeWidgetUtils().homeWidgetInit();
-
     Logger.info('Starting app.', name: 'main.dart#initState');
     Future.delayed(_splashScreenDelay, () {
       if (mounted) {
@@ -60,6 +59,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           ref.read(settingsProvider.notifier).loadingRepo,
           ref.read(tokenProvider.notifier).loadingRepo,
           ref.read(introductionProvider.notifier).loadingRepo,
+          AppInfoUtils.init(),
+          HomeWidgetUtils().homeWidgetInit(),
         ],
         eagerError: true,
         cleanUp: (error) {

@@ -290,7 +290,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get clearErrorLog => 'Löschen';
 
   @override
-  String get sendErrorLog => 'Senden';
+  String get send => 'Senden';
 
   @override
   String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:';
@@ -629,4 +629,31 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tokenLink => 'Token Link';
+
+  @override
+  String get feedback => 'Feedback';
+
+  @override
+  String get feedbackTitle => 'Ihr Feedback ist immer willkommen!';
+
+  @override
+  String get feedbackDescription => 'Wenn Sie Fragen, Anregungen oder Probleme haben, lassen Sie es uns wissen.';
+
+  @override
+  String get feedbackHint => 'Es öffnet sich eine vorgefertigte E-Mail, die Sie an uns senden können. Falls gewünscht, werden Informationen über Ihr Gerät und die Version der Anwendung hinzugefügt. Vor dem Versenden können Sie die E-Mail überprüfen und bearbeiten.';
+
+  @override
+  String get feedbackPrivacyPolicy1 => 'Mit dem Senden des Feedbacks stimmen Sie unsere ';
+
+  @override
+  String get feedbackPrivacyPolicy2 => 'Datenschutzerklärung';
+
+  @override
+  String get feedbackPrivacyPolicy3 => ' zu.';
+
+  @override
+  String get addSystemInfo => 'Systeminfos hinzufügen';
+
+  @override
+  String get feedbackThanks => 'Vielen Dank für Ihr Feedback!';
 }

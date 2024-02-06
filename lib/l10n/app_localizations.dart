@@ -637,11 +637,11 @@ abstract class AppLocalizations {
   /// **'Clear'**
   String get clearErrorLog;
 
-  /// No description provided for @sendErrorLog.
+  /// No description provided for @send.
   ///
   /// In en, this message translates to:
   /// **'Send'**
-  String get sendErrorLog;
+  String get send;
 
   /// Explanation for the user what he will send.
   ///
@@ -1236,6 +1236,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Token link'**
   String get tokenLink;
+
+  /// No description provided for @feedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get feedback;
+
+  /// No description provided for @feedbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your feedback is always welcome!'**
+  String get feedbackTitle;
+
+  /// No description provided for @feedbackDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'If you have any questions, suggestions or problems, please let us know.'**
+  String get feedbackDescription;
+
+  /// No description provided for @feedbackHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A ready-made e-mail will open, which you can send to us. If desired, information about your device and the version of the application will be added. You can check and edit the email before sending it.'**
+  String get feedbackHint;
+
+  /// No description provided for @feedbackPrivacyPolicy1.
+  ///
+  /// In en, this message translates to:
+  /// **'By sending the feedback you agree to our '**
+  String get feedbackPrivacyPolicy1;
+
+  /// Taping on this should open the privacy policy.
+  ///
+  /// In en, this message translates to:
+  /// **'privacy policy'**
+  String get feedbackPrivacyPolicy2;
+
+  /// No description provided for @feedbackPrivacyPolicy3.
+  ///
+  /// In en, this message translates to:
+  /// **'.'**
+  String get feedbackPrivacyPolicy3;
+
+  /// No description provided for @addSystemInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add system information'**
+  String get addSystemInfo;
+
+  /// No description provided for @feedbackThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for your feedback!'**
+  String get feedbackThanks;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

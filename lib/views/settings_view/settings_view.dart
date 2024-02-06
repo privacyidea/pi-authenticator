@@ -6,9 +6,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/tokens/push_token.dart';
+import '../../utils/globals.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/push_request_listener.dart';
+import '../feedback_view/feedback_view.dart';
 import '../import_tokens_view/import_tokens_view.dart';
 import '../license_view/license_view.dart';
 import '../view_interface.dart';
@@ -51,9 +53,8 @@ class SettingsView extends ConsumerView {
                 children: [
                   SettingsListTileButton(
                     onPressed: () async {
-                      Uri uri = Uri.parse("https://netknights.it/en/privacy-statement/");
-                      if (!await launchUrl(uri)) {
-                        throw Exception('Could not launch $uri');
+                      if (!await launchUrl(policyStatementUri)) {
+                        throw Exception('Could not launch $policyStatementUri');
                       }
                     },
                     title: Text(
@@ -75,7 +76,9 @@ class SettingsView extends ConsumerView {
                     ),
                   ),
                   SettingsListTileButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, FeedbackView.routeName);
+                    },
                     title: Text(
                       'Feedback',
                       style: Theme.of(context).textTheme.titleMedium,

@@ -11,7 +11,7 @@ class SendErrorLogButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ErrorlogButton(
         onPressed: () => _pressSendErrorLog(context),
-        text: AppLocalizations.of(context)!.sendErrorLog,
+        text: AppLocalizations.of(context)!.send,
       );
 }
 

@@ -364,7 +364,7 @@
   "logMenu": "Log menu",
   "showErrorLog": "Weergeven",
   "clearErrorLog": "Verwijderen",
-  "sendErrorLog": "verzenden",
+  "send": "verzenden",
   "sendErrorLogDescription": "Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:",
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
@@ -522,5 +522,17 @@
   "importHintGoogleQrScan": "Scan de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.",
   "importHintGoogleQrFile": "Selecteer een afbeeldingsbestand met de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.\n!! Let op: het is niet veilig om de QR-code op je apparaat op te slaan, omdat de tokens niet versleuteld zijn !!",
   "qrFileDecodeError": "Het was niet mogelijk om de QR code te decoderen van de geselecteerde afbeelding, gebruik in plaats daarvan de QR code scanner.",
-  "tokenLink": "tokenlink"
+  "tokenLink": "tokenlink",
+  "feedback": "Feedback",
+  "feedbackTitel": "Uw feedback is altijd welkom!",
+  "feedbackDescription": "Als je vragen, suggesties of problemen hebt, laat het ons dan weten.",
+  "feedbackHint": "Er wordt een kant-en-klare e-mail geopend die je naar ons kunt sturen. Indien gewenst wordt informatie over je apparaat en de versie van de applicatie toegevoegd. U kunt de e-mail controleren en bewerken voordat u deze verzendt.",
+  "feedbackPrivacyPolicy1": "Door feedback te sturen ga je akkoord met ons ",
+  "feedbackPrivacyPolicy2": "privacybeleid",
+  "@feedbackPrivacyPolicy2": {
+    "description": "Hierop tikken moet het privacybeleid openen."
+  },
+  "feedbackPrivacyPolicy3": ".",
+  "addSystemInfo": "Systeeminformatie toevoegen",
+  "feedbackDankwoord": "Bedankt voor je feedback!"
 }

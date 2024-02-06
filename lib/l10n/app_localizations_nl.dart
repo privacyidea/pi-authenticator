@@ -290,7 +290,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get clearErrorLog => 'Verwijderen';
 
   @override
-  String get sendErrorLog => 'verzenden';
+  String get send => 'verzenden';
 
   @override
   String get sendErrorLogDescription => 'Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:';
@@ -629,4 +629,31 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get tokenLink => 'tokenlink';
+
+  @override
+  String get feedback => 'Feedback';
+
+  @override
+  String get feedbackTitle => 'Your feedback is always welcome!';
+
+  @override
+  String get feedbackDescription => 'Als je vragen, suggesties of problemen hebt, laat het ons dan weten.';
+
+  @override
+  String get feedbackHint => 'Er wordt een kant-en-klare e-mail geopend die je naar ons kunt sturen. Indien gewenst wordt informatie over je apparaat en de versie van de applicatie toegevoegd. U kunt de e-mail controleren en bewerken voordat u deze verzendt.';
+
+  @override
+  String get feedbackPrivacyPolicy1 => 'Door feedback te sturen ga je akkoord met ons ';
+
+  @override
+  String get feedbackPrivacyPolicy2 => 'privacybeleid';
+
+  @override
+  String get feedbackPrivacyPolicy3 => '.';
+
+  @override
+  String get addSystemInfo => 'Systeeminformatie toevoegen';
+
+  @override
+  String get feedbackThanks => 'Thank you for your feedback!';
 }

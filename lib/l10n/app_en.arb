@@ -363,7 +363,7 @@
   "logMenu": "Log menu",
   "showErrorLog": "Show",
   "clearErrorLog": "Clear",
-  "sendErrorLog": "Send",
+  "send": "Send",
   "sendErrorLogDescription": "A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:",
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
@@ -524,5 +524,17 @@
   "importHintGoogleQrScan": "Scan the QR code you receive when you export your accounts from Google Authenticator.",
   "importHintGoogleQrFile": "Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!",
   "qrFileDecodeError": "It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.",
-  "tokenLink": "Token link"
+  "tokenLink": "Token link",
+  "feedback": "Feedback",
+  "feedbackTitle": "Your feedback is always welcome!",
+  "feedbackDescription": "If you have any questions, suggestions or problems, please let us know.",
+  "feedbackHint": "A ready-made e-mail will open, which you can send to us. If desired, information about your device and the version of the application will be added. You can check and edit the email before sending it.",
+  "feedbackPrivacyPolicy1": "By sending the feedback you agree to our ",
+  "feedbackPrivacyPolicy2": "privacy policy",
+  "@feedbackPrivacyPolicy2": {
+    "description": "Taping on this should open the privacy policy."
+  },
+  "feedbackPrivacyPolicy3": ".",
+  "addSystemInfo": "Add system information",
+  "feedbackThanks": "Thank you for your feedback!"
 }

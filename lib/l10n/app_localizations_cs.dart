@@ -290,7 +290,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get clearErrorLog => 'Vymazat';
 
   @override
-  String get sendErrorLog => 'Odeslat';
+  String get send => 'Odeslat';
 
   @override
   String get sendErrorLogDescription => 'Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:';
@@ -629,4 +629,31 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get tokenLink => 'Token link';
+
+  @override
+  String get feedback => 'Zpětná vazba';
+
+  @override
+  String get feedbackTitle => 'Vaše zpětná vazba je vždy vítána!';
+
+  @override
+  String get feedbackDescription => 'Pokud máte nějaké dotazy, návrhy nebo problémy, dejte nám prosím vědět.';
+
+  @override
+  String get feedbackHint => 'Otevře se připravený e-mail, který nám můžete zaslat. V případě potřeby budou doplněny informace o vašem zařízení a verzi aplikace. Před odesláním můžete e-mail zkontrolovat a upravit.';
+
+  @override
+  String get feedbackPrivacyPolicy1 => 'Odesláním zpětné vazby souhlasíte s našimi ';
+
+  @override
+  String get feedbackPrivacyPolicy2 => 'zásadami ochrany osobních údajů';
+
+  @override
+  String get feedbackPrivacyPolicy3 => '.';
+
+  @override
+  String get addSystemInfo => 'Přidat systémové informace';
+
+  @override
+  String get feedbackThanks => 'Děkujeme za zpětnou vazbu!';
 }
