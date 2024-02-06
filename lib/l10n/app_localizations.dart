@@ -1285,11 +1285,17 @@ abstract class AppLocalizations {
   /// **'Add system information'**
   String get addSystemInfo;
 
-  /// No description provided for @feedbackThanks.
+  /// No description provided for @feedbackSentTitle.
   ///
   /// In en, this message translates to:
-  /// **'Thank you for your feedback!'**
-  String get feedbackThanks;
+  /// **'Feedback sent'**
+  String get feedbackSentTitle;
+
+  /// No description provided for @feedbackSentDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you very much for your help in making this application better!'**
+  String get feedbackSentDescription;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

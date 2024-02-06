@@ -537,5 +537,6 @@
   },
   "feedbackPrivacyPolicy3": ".",
   "addSystemInfo": "Přidat systémové informace",
-  "feedbackThanks": "Děkujeme za zpětnou vazbu!"
+  "feedbackSentTitle": "Zpětná vazba odeslána",
+  "feedbackSentDescription": "Děkujeme vám za pomoc při vylepšování této aplikace!"
 }

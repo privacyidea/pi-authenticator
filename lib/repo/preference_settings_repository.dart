@@ -12,6 +12,7 @@ class PreferenceSettingsRepository extends SettingsRepository {
   static const String _localePreferenceKey = 'KEY_LOCALE_PREFERENCE';
   static const String _useSystemLocaleKey = 'KEY_USE_SYSTEM_LOCALE';
   static const String _enableLoggingKey = 'KEY_VERBOSE_LOGGING';
+  static const String _hidePushTokensKey = 'KEY_HIDE_PUSH_TOKENS';
 
   late final Future<SharedPreferences> _preferences;
   SettingsState? _lastState;
@@ -22,26 +23,21 @@ class PreferenceSettingsRepository extends SettingsRepository {
 
   @override
   Future<SettingsState> loadSettings() async {
-    final isFirstRun = (await _preferences).getBool(_isFirstRunKey);
-    final showGuideOnStart = (await _preferences).getBool(_showGuideOnStartKey);
-    final hideOpts = (await _preferences).getBool(_prefHideOtps);
-    final enablePolling = (await _preferences).getBool(_prefEnablePoll);
-    final crashReportRecipients = (await _preferences).getStringList(_crashReportRecipientsKey)?.toSet();
-    final localePreference =
-        (await _preferences).getString(_localePreferenceKey) != null ? SettingsState.decodeLocale((await _preferences).getString(_localePreferenceKey)!) : null;
-    final useSystemLocale = (await _preferences).getBool(_useSystemLocaleKey);
-    final verboseLogging = (await _preferences).getBool(_enableLoggingKey);
-    _lastState = SettingsState(
-      isFirstRun: isFirstRun,
-      showGuideOnStart: showGuideOnStart,
-      hideOpts: hideOpts,
-      enablePolling: enablePolling,
-      crashReportRecipients: crashReportRecipients,
-      localePreference: localePreference,
-      useSystemLocale: useSystemLocale,
-      verboseLogging: verboseLogging,
+    final newState = SettingsState(
+      isFirstRun: (await _preferences).getBool(_isFirstRunKey),
+      showGuideOnStart: (await _preferences).getBool(_showGuideOnStartKey),
+      hideOpts: (await _preferences).getBool(_prefHideOtps),
+      enablePolling: (await _preferences).getBool(_prefEnablePoll),
+      crashReportRecipients: (await _preferences).getStringList(_crashReportRecipientsKey)?.toSet(),
+      localePreference: (await _preferences).getString(_localePreferenceKey) != null
+          ? SettingsState.decodeLocale((await _preferences).getString(_localePreferenceKey)!)
+          : null,
+      useSystemLocale: (await _preferences).getBool(_useSystemLocaleKey),
+      verboseLogging: (await _preferences).getBool(_enableLoggingKey),
+      hidePushTokens: (await _preferences).getBool(_hidePushTokensKey),
     );
-    return _lastState!;
+    _lastState = newState;
+    return newState;
   }
 
   @override

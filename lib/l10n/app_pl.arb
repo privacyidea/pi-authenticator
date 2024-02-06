@@ -531,5 +531,6 @@
   },
   "feedbackPrivacyPolicy3": ".",
   "addSystemInfo": "Dodaj informacje systemowe",
-  "feedbackThanks": "Dziękujemy za opinię!"
+  "feedbackSentTitle": "Opinia została wysłana",
+  "feedbackSentDescription": "Dziękujemy bardzo za pomoc w ulepszeniu tej aplikacji!"
 }

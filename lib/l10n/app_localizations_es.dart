@@ -655,5 +655,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addSystemInfo => 'Añadir información del sistema';
 
   @override
-  String get feedbackThanks => '¡Gracias por sus comentarios!';
+  String get feedbackSentTitle => 'Comentarios enviados';
+
+  @override
+  String get feedbackSentDescription => 'Muchas gracias por su ayuda para mejorar esta aplicación.';
 }

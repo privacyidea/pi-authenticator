@@ -136,16 +136,18 @@ class _FeedbackViewState extends State<FeedbackView> {
                       final sended = await _sendMail(mailText);
                       if (sended) {
                         showAsyncDialog(
-                            builder: (context) => DefaultDialog(
-                                  title: Text(AppLocalizations.of(context)!.feedbackThanks),
-                                  actionsAlignment: MainAxisAlignment.center,
-                                  actions: [
-                                    ElevatedButton(
-                                        onPressed: () => Navigator.of(context).popUntil((route) => route.settings.name == MainView.routeName),
-                                        child: Text(AppLocalizations.of(context)!.ok))
-                                  ],
-                                ),
-                            barrierDismissible: false);
+                          builder: (context) => DefaultDialog(
+                            title: Text(AppLocalizations.of(context)!.feedbackSentTitle),
+                            content: Text(AppLocalizations.of(context)!.feedbackSentDescription),
+                            actionsAlignment: MainAxisAlignment.center,
+                            actions: [
+                              ElevatedButton(
+                                  onPressed: () => Navigator.of(context).popUntil((route) => route.settings.name == MainView.routeName),
+                                  child: Text(AppLocalizations.of(context)!.ok))
+                            ],
+                          ),
+                          barrierDismissible: false,
+                        );
                       }
                     },
                     child: Row(

@@ -536,5 +536,6 @@
   },
   "feedbackPrivacyPolicy3": ".",
   "addSystemInfo": "Add system information",
-  "feedbackThanks": "Thank you for your feedback!"
+  "feedbackSentTitle": "Feedback sent",
+  "feedbackSentDescription": "Thank you very much for your help in making this application better!"
 }

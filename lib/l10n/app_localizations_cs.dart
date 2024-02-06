@@ -655,5 +655,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get addSystemInfo => 'Přidat systémové informace';
 
   @override
-  String get feedbackThanks => 'Děkujeme za zpětnou vazbu!';
+  String get feedbackSentTitle => 'Zpětná vazba odeslána';
+
+  @override
+  String get feedbackSentDescription => 'Děkujeme vám za pomoc při vylepšování této aplikace!';
 }

@@ -534,5 +534,6 @@
   },
   "feedbackPrivacyPolicy3": ".",
   "addSystemInfo": "Systeeminformatie toevoegen",
-  "feedbackDankwoord": "Bedankt voor je feedback!"
+  "feedbackSentTitle": "Feedback verzonden",
+  "feedbackDankwoord": "Hartelijk dank voor je hulp om deze applicatie beter te maken!"
 }
