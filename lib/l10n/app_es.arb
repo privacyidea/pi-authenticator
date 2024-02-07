@@ -1,5 +1,11 @@
 {
   "@@last_modified": "2023-08-07",
+  "patchNotesV4_3_0NewFeatures1": "Añadido soporte para importar tokens de Google, Aegis y 2FAS Authenticator. En el futuro se añadirán más fuentes de importación",
+  "patchNotesV4_3_0NewFeatures2": "Añadida opción de feedback a los ajustes",
+  "patchNotesV4_3_0NewFeatures3": "Los tokens push ahora se pueden ocultar de la lista de tokens",
+  "patchNotesV4_3_0NewFeatures4": "Se han añadido introducciones para ayudar a los nuevos usuarios a empezar",
+  "patchNotesV4_3_0NewFeatures5": "Ahora puedes buscar tokens tocando la lupa de la esquina superior derecha",
+  "patchNotesV4_3_0NewFeatures6": "Añadido Token HomeWidget para Android 12 y posteriores",
   "guide": "guía",
   "@guide": {
     "description": "Button to open the guide screen."

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/version.dart';
 
 import '../interfaces/repo/settings_repository.dart';
 import '../model/states/settings_state.dart';
@@ -123,6 +124,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   void setHidePushTokens(bool value) {
     Logger.info('Hide push tokens set to $value', name: 'settings_notifier.dart#setHidePushTokens');
     state = state.copyWith(hidePushTokens: value);
+    _saveToRepo();
+  }
+
+  void setLatestStartedVersion(Version version) {
+    Logger.info('Latest started version set to $version', name: 'settings_notifier.dart#setLatestStartedVersion');
+    state = state.copyWith(latestStartedVersion: version);
     _saveToRepo();
   }
 }

@@ -1,3 +1,4 @@
+import 'package:privacyidea_authenticator/utils/version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interfaces/repo/settings_repository.dart';
@@ -13,6 +14,7 @@ class PreferenceSettingsRepository extends SettingsRepository {
   static const String _useSystemLocaleKey = 'KEY_USE_SYSTEM_LOCALE';
   static const String _enableLoggingKey = 'KEY_VERBOSE_LOGGING';
   static const String _hidePushTokensKey = 'KEY_HIDE_PUSH_TOKENS';
+  static const String _latestVersionKey = 'KEY_LATEST_VERSION';
 
   late final Future<SharedPreferences> _preferences;
   SettingsState? _lastState;
@@ -23,18 +25,18 @@ class PreferenceSettingsRepository extends SettingsRepository {
 
   @override
   Future<SettingsState> loadSettings() async {
+    final prefs = await _preferences;
     final newState = SettingsState(
-      isFirstRun: (await _preferences).getBool(_isFirstRunKey),
-      showGuideOnStart: (await _preferences).getBool(_showGuideOnStartKey),
-      hideOpts: (await _preferences).getBool(_prefHideOtps),
-      enablePolling: (await _preferences).getBool(_prefEnablePoll),
-      crashReportRecipients: (await _preferences).getStringList(_crashReportRecipientsKey)?.toSet(),
-      localePreference: (await _preferences).getString(_localePreferenceKey) != null
-          ? SettingsState.decodeLocale((await _preferences).getString(_localePreferenceKey)!)
-          : null,
-      useSystemLocale: (await _preferences).getBool(_useSystemLocaleKey),
-      verboseLogging: (await _preferences).getBool(_enableLoggingKey),
-      hidePushTokens: (await _preferences).getBool(_hidePushTokensKey),
+      isFirstRun: prefs.getBool(_isFirstRunKey),
+      showGuideOnStart: prefs.getBool(_showGuideOnStartKey),
+      hideOpts: prefs.getBool(_prefHideOtps),
+      enablePolling: prefs.getBool(_prefEnablePoll),
+      crashReportRecipients: prefs.getStringList(_crashReportRecipientsKey)?.toSet(),
+      localePreference: prefs.getString(_localePreferenceKey) != null ? SettingsState.decodeLocale(prefs.getString(_localePreferenceKey)!) : null,
+      useSystemLocale: prefs.getBool(_useSystemLocaleKey),
+      verboseLogging: prefs.getBool(_enableLoggingKey),
+      hidePushTokens: prefs.getBool(_hidePushTokensKey),
+      latestVersion: prefs.getString(_latestVersionKey) != null ? Version.parse(prefs.getString(_latestVersionKey)!) : null,
     );
     _lastState = newState;
     return newState;
@@ -42,18 +44,22 @@ class PreferenceSettingsRepository extends SettingsRepository {
 
   @override
   Future<bool> saveSettings(SettingsState settings) async {
-    if (_lastState?.isFirstRun != settings.isFirstRun) (await _preferences).setBool(_isFirstRunKey, settings.isFirstRun);
-    if (_lastState?.showGuideOnStart != settings.showGuideOnStart) (await _preferences).setBool(_showGuideOnStartKey, settings.showGuideOnStart);
-    if (_lastState?.hideOpts != settings.hideOpts) (await _preferences).setBool(_prefHideOtps, settings.hideOpts);
-    if (_lastState?.enablePolling != settings.enablePolling) (await _preferences).setBool(_prefEnablePoll, settings.enablePolling);
-    if (_lastState?.crashReportRecipients != settings.crashReportRecipients) {
-      (await _preferences).setStringList(_crashReportRecipientsKey, settings.crashReportRecipients.toList());
-    }
-    if (_lastState?.localePreference != settings.localePreference) {
-      await (await _preferences).setString(_localePreferenceKey, SettingsState.encodeLocale(settings.localePreference));
-    }
-    if (_lastState?.useSystemLocale != settings.useSystemLocale) (await _preferences).setBool(_useSystemLocaleKey, settings.useSystemLocale);
-    if (_lastState?.verboseLogging != settings.verboseLogging) (await _preferences).setBool(_enableLoggingKey, settings.verboseLogging);
+    final prefs = await _preferences;
+    final futures = <Future>[
+      if (_lastState?.isFirstRun != settings.isFirstRun) prefs.setBool(_isFirstRunKey, settings.isFirstRun),
+      if (_lastState?.showGuideOnStart != settings.showGuideOnStart) prefs.setBool(_showGuideOnStartKey, settings.showGuideOnStart),
+      if (_lastState?.hideOpts != settings.hideOpts) prefs.setBool(_prefHideOtps, settings.hideOpts),
+      if (_lastState?.enablePolling != settings.enablePolling) prefs.setBool(_prefEnablePoll, settings.enablePolling),
+      if (_lastState?.crashReportRecipients != settings.crashReportRecipients)
+        prefs.setStringList(_crashReportRecipientsKey, settings.crashReportRecipients.toList()),
+      if (_lastState?.localePreference != settings.localePreference)
+        prefs.setString(_localePreferenceKey, SettingsState.encodeLocale(settings.localePreference)),
+      if (_lastState?.useSystemLocale != settings.useSystemLocale) prefs.setBool(_useSystemLocaleKey, settings.useSystemLocale),
+      if (_lastState?.verboseLogging != settings.verboseLogging) prefs.setBool(_enableLoggingKey, settings.verboseLogging),
+      if (_lastState?.hidePushTokens != settings.hidePushTokens) prefs.setBool(_hidePushTokensKey, settings.hidePushTokens),
+      if (_lastState?.latestStartedVersion != settings.latestStartedVersion) prefs.setString(_latestVersionKey, settings.latestStartedVersion.toString()),
+    ];
+    await Future.wait(futures);
     _lastState = settings;
     return true;
   }

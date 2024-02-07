@@ -20,19 +20,39 @@ class Version implements Comparable<Version> {
   }
 
   operator <(other) {
-    if (other is! Version) return false;
-    if (major >= other.major) return false;
-    if (minor >= other.minor) return false;
-    if (patch >= other.patch) return false;
-    return true;
+    if (other is! Version) {
+      return false;
+    }
+    if (major != other.major) {
+      if (major < other.major) return true;
+      return false;
+    }
+    if (minor != other.minor) {
+      if (minor < other.minor) return true;
+      return false;
+    }
+    if (patch != other.patch) {
+      if (patch < other.patch) return true;
+      return false;
+    }
+    return false;
   }
 
   operator >(other) {
     if (other is! Version) return false;
-    if (major <= other.major) return false;
-    if (minor <= other.minor) return false;
-    if (patch <= other.patch) return false;
-    return true;
+    if (major != other.major) {
+      if (major > other.major) return true;
+      return false;
+    }
+    if (minor != other.minor) {
+      if (minor > other.minor) return true;
+      return false;
+    }
+    if (patch != other.patch) {
+      if (patch > other.patch) return true;
+      return false;
+    }
+    return false;
   }
 
   operator <=(other) {
@@ -62,5 +82,11 @@ class Version implements Comparable<Version> {
   String toString() => '$major.$minor.$patch';
 
   @override
-  int get hashCode => major.hashCode ^ minor.hashCode ^ patch.hashCode;
+  int get hashCode {
+    int hash = 17;
+    hash = hash * 31 + major.hashCode;
+    hash = hash * 31 + minor.hashCode;
+    hash = hash * 31 + patch.hashCode;
+    return hash;
+  }
 }

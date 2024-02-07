@@ -54,7 +54,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
               scrollController: scrollController,
               child: CustomScrollView(
                 key: listViewKey,
-                physics: allowToRefresh ? const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()) : const BouncingScrollPhysics(),
+                physics: allowToRefresh ? const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()) : const BouncingScrollPhysics(),
                 controller: scrollController,
                 slivers: [
                   SliverFillRemaining(

@@ -7,6 +7,33 @@ class AppLocalizationsNl extends AppLocalizations {
   AppLocalizationsNl([String locale = 'nl']) : super(locale);
 
   @override
+  String get patchNotesNewFeatures => 'New features';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures1 => 'Ondersteuning toegevoegd voor het importeren van tokens van Google, Aegis en 2FAS Authenticator. Meer importbronnen zullen in de toekomst worden toegevoegd.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures2 => 'Feedbackoptie toegevoegd aan de instellingen.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures3 => 'Push tokens kunnen nu verborgen worden in de tokenlijst.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures4 => 'Introducties zijn toegevoegd om nieuwe gebruikers op weg te helpen.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures5 => 'Je kunt nu naar tokens zoeken door op het vergrootglas in de rechterbovenhoek te tikken.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures6 => 'HomeWidget Token toegevoegd voor Android 12 en hoger.';
+
+  @override
+  String get patchNotesImprovements => 'Improvements';
+
+  @override
+  String get patchNotesBugFixes => 'Bug fixes';
+
+  @override
   String get accept => 'Accepteren';
 
   @override
@@ -659,4 +686,10 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get feedbackSentDescription => 'Thank you very much for your help in making this application better!';
+
+  @override
+  String get patchNotesDialogTitle => 'What\'s new?';
+
+  @override
+  String get version => 'Version';
 }

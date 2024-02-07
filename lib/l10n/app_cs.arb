@@ -1,5 +1,11 @@
 {
   "@@last_modified": "2023-08-07",
+  "patchNotesV4_3_0NewFeatures1": "Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.",
+  "patchNotesV4_3_0NewFeatures2": "Do nastavení byla přidána možnost zpětné vazby.",
+  "patchNotesV4_3_0NewFeatures3": "Tokeny Push lze nyní skrýt ze seznamu tokenů.",
+  "patchNotesV4_3_0NewFeatures4": "Byly přidány úvodní informace, které novým uživatelům usnadní začátky.",
+  "patchNotesV4_3_0NewFeatures5": "Žetony nyní můžete vyhledávat klepnutím na lupu v pravém horním rohu.",
+  "patchNotesV4_3_0NewFeatures6": "Přidán token HomeWidget pro systém Android 12 a novější.",
   "guide": "Průvodce",
   "@guide": {
     "description": "Button to open the guide screen."

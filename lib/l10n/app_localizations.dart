@@ -103,6 +103,60 @@ abstract class AppLocalizations {
     Locale('pl')
   ];
 
+  /// No description provided for @patchNotesNewFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'New features'**
+  String get patchNotesNewFeatures;
+
+  /// No description provided for @patchNotesV4_3_0NewFeatures1.
+  ///
+  /// In en, this message translates to:
+  /// **'Added support for importing tokens from Google, Aegis and 2FAS Authenticator. More import sources will be added in the future.'**
+  String get patchNotesV4_3_0NewFeatures1;
+
+  /// No description provided for @patchNotesV4_3_0NewFeatures2.
+  ///
+  /// In en, this message translates to:
+  /// **'Added feedback option to the settings.'**
+  String get patchNotesV4_3_0NewFeatures2;
+
+  /// No description provided for @patchNotesV4_3_0NewFeatures3.
+  ///
+  /// In en, this message translates to:
+  /// **'Push tokens can now be hidden from the token list.'**
+  String get patchNotesV4_3_0NewFeatures3;
+
+  /// No description provided for @patchNotesV4_3_0NewFeatures4.
+  ///
+  /// In en, this message translates to:
+  /// **'Introductions have been added to help new users get started.'**
+  String get patchNotesV4_3_0NewFeatures4;
+
+  /// No description provided for @patchNotesV4_3_0NewFeatures5.
+  ///
+  /// In en, this message translates to:
+  /// **'You can now seach for tokens by taping the magnifying glass in the top right corner.'**
+  String get patchNotesV4_3_0NewFeatures5;
+
+  /// No description provided for @patchNotesV4_3_0NewFeatures6.
+  ///
+  /// In en, this message translates to:
+  /// **'Added HomeWidget Token for Android 12 and later.'**
+  String get patchNotesV4_3_0NewFeatures6;
+
+  /// No description provided for @patchNotesImprovements.
+  ///
+  /// In en, this message translates to:
+  /// **'Improvements'**
+  String get patchNotesImprovements;
+
+  /// No description provided for @patchNotesBugFixes.
+  ///
+  /// In en, this message translates to:
+  /// **'Bug fixes'**
+  String get patchNotesBugFixes;
+
   /// Label for e.g. a button. Something gets accepted by the user.
   ///
   /// In en, this message translates to:
@@ -1296,6 +1350,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Thank you very much for your help in making this application better!'**
   String get feedbackSentDescription;
+
+  /// No description provided for @patchNotesDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new?'**
+  String get patchNotesDialogTitle;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

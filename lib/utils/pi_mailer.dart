@@ -6,7 +6,7 @@ class PiMailer {
   static String get _mailRecipient => 'app-crash@netknights.it';
   static String _mailSubject(String? subject, String? subjectPrefix, bool subjectAppVersion) {
     String mailSubject = subjectPrefix != null ? '[$subjectPrefix] ' : '';
-    if (subjectAppVersion) mailSubject += '(${AppInfoUtils.appVersionString}+${AppInfoUtils.appBuildNumber}) ';
+    if (subjectAppVersion) mailSubject += '(${AppInfoUtils.currentVersionString}+${AppInfoUtils.currentBuildNumber}) ';
     mailSubject += '${AppInfoUtils.appName}';
     if (subject != null) mailSubject += ' >>> $subject';
     return mailSubject;

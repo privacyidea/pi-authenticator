@@ -26,13 +26,13 @@ class AppInfoUtils {
   static String get packageName => isInitialized ? _packageName : throw Exception('AppInfoUtils not initialized');
   static late final String _packageName;
 
-  static String get appVersionAndBuildNumber => isInitialized ? 'v$appVersion+$appBuildNumber' : throw Exception('AppInfoUtils not initialized');
+  static String get currentVersionAndBuildNumber => isInitialized ? 'v$currentVersion+$currentBuildNumber' : throw Exception('AppInfoUtils not initialized');
 
-  static Version get appVersion => isInitialized ? _appVersion : throw Exception('AppInfoUtils not initialized');
-  static String get appVersionString => isInitialized ? _appVersion.toString() : throw Exception('AppInfoUtils not initialized');
+  static Version get currentVersion => isInitialized ? _appVersion : throw Exception('AppInfoUtils not initialized');
+  static String get currentVersionString => isInitialized ? _appVersion.toString() : throw Exception('AppInfoUtils not initialized');
   static late final Version _appVersion;
 
-  static String get appBuildNumber => isInitialized ? _appBuildNumber : throw Exception('AppInfoUtils not initialized');
+  static String get currentBuildNumber => isInitialized ? _appBuildNumber : throw Exception('AppInfoUtils not initialized');
   static late final String _appBuildNumber;
 
   static String get dartVersion => Platform.version;

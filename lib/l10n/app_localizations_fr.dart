@@ -7,6 +7,33 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
+  String get patchNotesNewFeatures => 'New features';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures1 => 'Ajout de la prise en charge de l\'importation de jetons depuis Google, Aegis et 2FAS Authenticator. D\'autres sources d\'importation seront ajoutées à l\'avenir.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures2 => 'Ajout d\'une option de retour d\'information dans les paramètres';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures3 => 'Les jetons de poussée peuvent maintenant être cachés de la liste des jetons';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures4 => 'Des introductions ont été ajoutées pour aider les nouveaux utilisateurs à démarrer';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures5 => 'Vous pouvez désormais rechercher des jetons en appuyant sur la loupe dans le coin supérieur droit';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures6 => 'Ajout du jeton HomeWidget pour Android 12 et les versions ultérieures';
+
+  @override
+  String get patchNotesImprovements => 'Improvements';
+
+  @override
+  String get patchNotesBugFixes => 'Bug fixes';
+
+  @override
   String get accept => 'Accepter';
 
   @override
@@ -659,4 +686,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get feedbackSentDescription => 'Merci beaucoup pour votre aide dans l\'amélioration de cette application !';
+
+  @override
+  String get patchNotesDialogTitle => 'What\'s new?';
+
+  @override
+  String get version => 'Version';
 }

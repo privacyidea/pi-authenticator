@@ -7,6 +7,33 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get patchNotesNewFeatures => 'New features';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures1 => 'Unterstützung für den Import von Token von Google, Aegis und 2FAS Authenticator hinzugefügt. Weitere Importquellen werden in Zukunft hinzugefügt.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures2 => 'Feedback-Option zu den Einstellungen hinzugefügt.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures3 => 'Push-Tokens können jetzt aus der Token-Liste ausgeblendet werden.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures4 => 'Es wurden Einführungen hinzugefügt, um neuen Benutzern den Einstieg zu erleichtern.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures5 => 'Sie können jetzt nach Token suchen, indem Sie auf die Lupe in der oberen rechten Ecke tippen.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures6 => 'Der Token für HomeWidget wurde für Android 12 und höher hinzugefügt.';
+
+  @override
+  String get patchNotesImprovements => 'Improvements';
+
+  @override
+  String get patchNotesBugFixes => 'Bug fixes';
+
+  @override
   String get accept => 'Akzeptieren';
 
   @override
@@ -659,4 +686,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get feedbackSentDescription => 'Vielen Dank für Ihre Hilfe bei der Verbesserung dieser App!';
+
+  @override
+  String get patchNotesDialogTitle => 'What\'s new?';
+
+  @override
+  String get version => 'Version';
 }

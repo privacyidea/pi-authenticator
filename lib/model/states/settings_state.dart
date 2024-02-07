@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
+import 'package:privacyidea_authenticator/utils/version.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../utils/identifiers.dart';
@@ -19,6 +20,7 @@ class SettingsState {
   static bool get _useSystemLocaleDefault => true;
   static bool get _enableLoggingDefault => false;
   static bool get _hidePushTokensDefault => false;
+  static Version get _latestVersionDefault => Version.parse('0.0.0');
 
   final bool isFirstRun;
   final bool showGuideOnStart;
@@ -33,6 +35,7 @@ class SettingsState {
   final bool useSystemLocale;
   final bool verboseLogging;
   final bool hidePushTokens;
+  final Version latestStartedVersion;
 
   SettingsState({
     bool? isFirstRun,
@@ -44,6 +47,7 @@ class SettingsState {
     bool? useSystemLocale,
     bool? verboseLogging,
     bool? hidePushTokens,
+    Version? latestVersion,
   })  : isFirstRun = isFirstRun ?? _isFirstRunDefault,
         showGuideOnStart = showGuideOnStart ?? _showGuideOnStartDefault,
         hideOpts = hideOpts ?? _hideOtpsDefault,
@@ -52,7 +56,8 @@ class SettingsState {
         localePreference = localePreference ?? _localePreferenceDefault,
         useSystemLocale = useSystemLocale ?? _useSystemLocaleDefault,
         verboseLogging = verboseLogging ?? _enableLoggingDefault,
-        hidePushTokens = hidePushTokens ?? _hidePushTokensDefault;
+        hidePushTokens = hidePushTokens ?? _hidePushTokensDefault,
+        latestStartedVersion = latestVersion ?? _latestVersionDefault;
 
   SettingsState copyWith({
     bool? isFirstRun,
@@ -64,6 +69,7 @@ class SettingsState {
     bool? useSystemLocale,
     bool? verboseLogging,
     bool? hidePushTokens,
+    Version? latestStartedVersion,
   }) {
     return SettingsState(
       isFirstRun: isFirstRun ?? this.isFirstRun,
@@ -75,6 +81,7 @@ class SettingsState {
       useSystemLocale: useSystemLocale ?? this.useSystemLocale,
       verboseLogging: verboseLogging ?? this.verboseLogging,
       hidePushTokens: hidePushTokens ?? this.hidePushTokens,
+      latestVersion: latestStartedVersion ?? this.latestStartedVersion,
     );
   }
 

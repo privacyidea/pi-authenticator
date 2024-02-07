@@ -4,6 +4,7 @@ import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 
 import '../../model/states/token_filter.dart';
 import '../../utils/logger.dart';
+import '../../utils/patch_notes_utils.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/push_request_listener.dart';
 import '../../widgets/status_bar.dart';
@@ -34,6 +35,16 @@ class MainView extends ConsumerStatefulView {
 
 class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
   final globalKey = GlobalKey<NestedScrollViewState>();
+
+  @override
+  void initState() {
+    super.initState();
+    final latestStartedVersion = globalRef?.read(settingsProvider).latestStartedVersion;
+    if (latestStartedVersion == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      PatchNotesUtils.showPatchNotesIfNeeded(context, latestStartedVersion);
+    });
+  }
 
   @override
   void onAppResume() {
