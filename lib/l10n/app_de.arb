@@ -1,5 +1,8 @@
 {
   "@@last_modified": "2023-08-07",
+  "patchNotesNewFeatures": "Neue Funktionen",
+  "patchNotesImprovements": "Verbesserungen",
+  "patchNotesBugFixes": "Fehlerbehebungen",
   "patchNotesV4_3_0NewFeatures1": "Unterstützung für den Import von Token von Google, Aegis und 2FAS Authenticator hinzugefügt. Weitere Importquellen werden in Zukunft hinzugefügt.",
   "patchNotesV4_3_0NewFeatures2": "Feedback-Option zu den Einstellungen hinzugefügt.",
   "patchNotesV4_3_0NewFeatures3": "Push-Tokens können jetzt aus der Token-Liste ausgeblendet werden.",
@@ -472,6 +475,15 @@
   "licensesAndVersion": "Lizenzen und Version",
   "privacyPolicy": "Datenschutzerklärung",
   "legacySigningErrorTitle": "Bei der Verwendung des veralteten Tokens ist ein Fehler aufgetreten: {tokenLabel}",
+  "introScanQrCode": "Sie können QR-Codes scannen, um Token hinzuzufügen.\nWir unterstützen alle gängigen Two-Factor-Authentication Token und auch die privacyIDEA Token.",
+  "introAddTokenManually": "Wenn Sie keinen QR-Code scannen möchten, können Sie Token auch manuell hinzufügen.",
+  "introTokenSwipe": "Streichen Sie Token nach links, um die verfügbaren Aktionen zu sehen.",
+  "introEditToken": "Hier können Sie den Namen des Tokens bearbeiten und einige Details einsehen.",
+  "introLockToken": "Um die Sicherheit noch weiter zu erhöhen, können Sie Token sperren.\nDer Token kann dann erst nach der Authentifizierung verwendet werden.",
+  "introDragToken": "Reorganisieren Sie Ihre Token, indem Sie sie einige Sekunden lang drücken und dann an die gewünschte Position ziehen.",
+  "introAddFolder": "Sie können Ordner erstellen, um Ihre Token zu organisieren.",
+  "introPollForChallenges": "Sie können nach neuen Herausforderungen suchen, indem Sie die Liste der Token nach unten ziehen.",
+  "introHidePushTokens": "Deine Push-Token sind jetzt versteckt.\nAber du kannst sie immer noch auf dem Bildschirm mit den Push-Token sehen.",
   "@legacySigningErrorTitle": {
     "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
     "placeholders": {
@@ -523,5 +535,7 @@
   "feedbackPrivacyPolicy3": " zu.",
   "addSystemInfo": "Systeminfos hinzufügen",
   "feedbackSentTitle": "Feedback gesendet",
-  "feedbackSentDescription": "Vielen Dank für Ihre Hilfe bei der Verbesserung dieser App!"
+  "feedbackSentDescription": "Vielen Dank für Ihre Hilfe bei der Verbesserung dieser App!",
+  "patchNotesDialogTitle": "Was ist neu?",
+  "version": "Version"
 }

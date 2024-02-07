@@ -26,6 +26,7 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
   bool alreadyTapped = false;
   @override
   Widget build(BuildContext context) {
+    final veilingCharacter = Theme.of(context).extension<ExtendedTextTheme>()?.veilingCharacter ?? '●';
     final otpTokens = ref.watch(tokenProvider).otpTokens;
     return Scaffold(
       appBar: AppBar(
@@ -34,8 +35,8 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
       body: ListView.builder(
         itemBuilder: (context, index) {
           final otpToken = otpTokens[index];
-          final veilingCharacter = Theme.of(context).extension<ExtendedTextTheme>()?.veilingCharacter ?? '●';
-          final otpString = otpToken.isLocked ? veilingCharacter * otpToken.otpValue.length : otpToken.otpValue;
+          final folderIsLocked = ref.watch(tokenFolderProvider).getFolderById(otpToken.folderId)?.isLocked ?? false;
+          final otpString = otpToken.isLocked || folderIsLocked ? veilingCharacter * otpToken.otpValue.length : otpToken.otpValue;
           return ListTile(
             title: Text(otpToken.label),
             subtitle: Text(splitPeriodically(otpString, otpString.length ~/ 2)),

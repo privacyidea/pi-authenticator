@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 import '../token_folder.dart';
@@ -52,4 +53,6 @@ class TokenFolderState {
   String toString() => 'TokenFolderState{folders: $folders}';
 
   get newFolderId => folders.fold(0, (previousValue, element) => max(previousValue, element.folderId)) + 1;
+
+  TokenFolder? getFolderById(int? id) => id == null ? null : folders.firstWhereOrNull((element) => element.folderId == id);
 }

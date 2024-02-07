@@ -74,6 +74,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
     List<Token> tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: ref.watch(settingsProvider).hidePushTokens ? [PushToken] : []);
     tokens = widget.filter?.filterTokens(tokens) ?? tokens;
     final draggingSortable = ref.watch(draggingSortableProvider);
+
     if (widget.expandOverride == null) {
       if (tokens.isEmpty && expandableController.expanded) {
         expandableController.value = false;

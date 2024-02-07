@@ -1,5 +1,8 @@
 {
   "@@last_modified": "2023-08-07",
+  "patchNotesNewFeatures": "Nouvelles caractéristiques",
+  "patchNotesImprovements": "Améliorations",
+  "patchNotesBugFixes": "Bug fixes",
   "patchNotesV4_3_0NewFeatures1": "Ajout de la prise en charge de l'importation de jetons depuis Google, Aegis et 2FAS Authenticator. D'autres sources d'importation seront ajoutées à l'avenir.",
   "patchNotesV4_3_0NewFeatures2": "Ajout d'une option de retour d'information dans les paramètres",
   "patchNotesV4_3_0NewFeatures3": "Les jetons de poussée peuvent maintenant être cachés de la liste des jetons",
@@ -493,6 +496,15 @@
   "settingsGroupGeneral": "Généralités",
   "licensesAndVersion": "Licences et version",
   "privacyPolicy": "Politique de confidentialité",
+  "introScanQrCode": "You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.",
+  "introAddTokenManually": "Si vous ne souhaitez pas scanner un code QR, vous pouvez également ajouter des jetons manuellement.",
+  "introTokenSwipe": "Balayez les tokens vers la gauche pour voir les actions disponibles",
+  "introEditToken": "Ici, vous pouvez modifier le nom du token et voir quelques détails",
+  "introLockToken": "Pour améliorer encore la sécurité, vous pouvez verrouiller les tokens. Le token ne peut alors être utilisé qu'après l'authentification.",
+  "introDragToken": "Réorganisez vos jetons en appuyant dessus pendant quelques secondes, puis en les faisant glisser jusqu'à la position souhaitée",
+  "introAddFolder": "Vous pouvez créer des dossiers pour organiser vos jetons",
+  "introPollForChallenges": "Vous pouvez vérifier la présence de nouveaux défis en faisant glisser la liste des jetons vers le bas",
+  "introHidePushTokens": "Vos jetons sont maintenant cachés, mais vous pouvez toujours les voir sur l'écran des jetons",
   "legacySigningErrorTitle": "Une erreur s'est produite lors de l'utilisation du jeton obsolète : {tokenLabel}",
   "@legacySigningErrorTitle": {
     "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
@@ -545,5 +557,7 @@
   "feedbackPrivacyPolicy3": ".",
   "addSystemInfo": "Ajouter des informations sur le système",
   "feedbackSentTitle": "Retour d'information envoyé",
-  "feedbackSentDescription": "Merci beaucoup pour votre aide dans l'amélioration de cette application !"
+  "feedbackSentDescription": "Merci beaucoup pour votre aide dans l'amélioration de cette application !",
+  "patchNotesDialogTitle": "Quoi de neuf ?",
+  "version": "Version"
 }

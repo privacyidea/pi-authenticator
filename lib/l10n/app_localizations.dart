@@ -109,6 +109,18 @@ abstract class AppLocalizations {
   /// **'New features'**
   String get patchNotesNewFeatures;
 
+  /// No description provided for @patchNotesImprovements.
+  ///
+  /// In en, this message translates to:
+  /// **'Improvements'**
+  String get patchNotesImprovements;
+
+  /// No description provided for @patchNotesBugFixes.
+  ///
+  /// In en, this message translates to:
+  /// **'Bug fixes'**
+  String get patchNotesBugFixes;
+
   /// No description provided for @patchNotesV4_3_0NewFeatures1.
   ///
   /// In en, this message translates to:
@@ -144,18 +156,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Added HomeWidget Token for Android 12 and later.'**
   String get patchNotesV4_3_0NewFeatures6;
-
-  /// No description provided for @patchNotesImprovements.
-  ///
-  /// In en, this message translates to:
-  /// **'Improvements'**
-  String get patchNotesImprovements;
-
-  /// No description provided for @patchNotesBugFixes.
-  ///
-  /// In en, this message translates to:
-  /// **'Bug fixes'**
-  String get patchNotesBugFixes;
 
   /// Label for e.g. a button. Something gets accepted by the user.
   ///

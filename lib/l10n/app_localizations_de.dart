@@ -7,7 +7,13 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
-  String get patchNotesNewFeatures => 'New features';
+  String get patchNotesNewFeatures => 'Neue Funktionen';
+
+  @override
+  String get patchNotesImprovements => 'Verbesserungen';
+
+  @override
+  String get patchNotesBugFixes => 'Fehlerbehebungen';
 
   @override
   String get patchNotesV4_3_0NewFeatures1 => 'Unterstützung für den Import von Token von Google, Aegis und 2FAS Authenticator hinzugefügt. Weitere Importquellen werden in Zukunft hinzugefügt.';
@@ -26,12 +32,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get patchNotesV4_3_0NewFeatures6 => 'Der Token für HomeWidget wurde für Android 12 und höher hinzugefügt.';
-
-  @override
-  String get patchNotesImprovements => 'Improvements';
-
-  @override
-  String get patchNotesBugFixes => 'Bug fixes';
 
   @override
   String get accept => 'Akzeptieren';
@@ -507,31 +507,31 @@ class AppLocalizationsDe extends AppLocalizations {
   String get privacyPolicy => 'Datenschutzerklärung';
 
   @override
-  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+  String get introScanQrCode => 'Sie können QR-Codes scannen, um Token hinzuzufügen.\nWir unterstützen alle gängigen Two-Factor-Authentication Token und auch die privacyIDEA Token.';
 
   @override
-  String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
+  String get introAddTokenManually => 'Wenn Sie keinen QR-Code scannen möchten, können Sie Token auch manuell hinzufügen.';
 
   @override
-  String get introTokenSwipe => 'Swipe tokens to the left to see available actions.';
+  String get introTokenSwipe => 'Streichen Sie Token nach links, um die verfügbaren Aktionen zu sehen.';
 
   @override
-  String get introEditToken => 'Here you can edit the token name and see some details.';
+  String get introEditToken => 'Hier können Sie den Namen des Tokens bearbeiten und einige Details einsehen.';
 
   @override
-  String get introLockToken => 'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.';
+  String get introLockToken => 'Um die Sicherheit noch weiter zu erhöhen, können Sie Token sperren.\nDer Token kann dann erst nach der Authentifizierung verwendet werden.';
 
   @override
-  String get introDragToken => 'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.';
+  String get introDragToken => 'Reorganisieren Sie Ihre Token, indem Sie sie einige Sekunden lang drücken und dann an die gewünschte Position ziehen.';
 
   @override
-  String get introAddFolder => 'You can create folders\nto organize your tokens.';
+  String get introAddFolder => 'Sie können Ordner erstellen, um Ihre Token zu organisieren.';
 
   @override
-  String get introPollForChallenges => 'You can check for new challenges by dragging down the token list.';
+  String get introPollForChallenges => 'Sie können nach neuen Herausforderungen suchen, indem Sie die Liste der Token nach unten ziehen.';
 
   @override
-  String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';
+  String get introHidePushTokens => 'Deine Push-Token sind jetzt versteckt.\nAber du kannst sie immer noch auf dem Bildschirm mit den Push-Token sehen.';
 
   @override
   String legacySigningErrorTitle(Object tokenLabel) {
@@ -688,7 +688,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get feedbackSentDescription => 'Vielen Dank für Ihre Hilfe bei der Verbesserung dieser App!';
 
   @override
-  String get patchNotesDialogTitle => 'What\'s new?';
+  String get patchNotesDialogTitle => 'Was ist neu?';
 
   @override
   String get version => 'Version';

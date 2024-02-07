@@ -79,6 +79,7 @@ class DefaultDeleteAction extends TokenAction {
                   },
                   child: Text(
                     AppLocalizations.of(context)!.delete,
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
                     overflow: TextOverflow.fade,
                     softWrap: false,
                   ),

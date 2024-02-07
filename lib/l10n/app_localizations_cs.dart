@@ -7,7 +7,13 @@ class AppLocalizationsCs extends AppLocalizations {
   AppLocalizationsCs([String locale = 'cs']) : super(locale);
 
   @override
-  String get patchNotesNewFeatures => 'New features';
+  String get patchNotesNewFeatures => 'Nové funkce';
+
+  @override
+  String get patchNotesImprovements => 'Improvements';
+
+  @override
+  String get patchNotesBugFixes => 'Opravy chyb';
 
   @override
   String get patchNotesV4_3_0NewFeatures1 => 'Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.';
@@ -26,12 +32,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get patchNotesV4_3_0NewFeatures6 => 'Přidán token HomeWidget pro systém Android 12 a novější.';
-
-  @override
-  String get patchNotesImprovements => 'Improvements';
-
-  @override
-  String get patchNotesBugFixes => 'Bug fixes';
 
   @override
   String get accept => 'Přijmout';
@@ -507,35 +507,35 @@ class AppLocalizationsCs extends AppLocalizations {
   String get privacyPolicy => 'Zásady ochrany osobních údajů';
 
   @override
-  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+  String get introScanQrCode => 'Podporujeme všechny běžné dvoufaktorové autentizační tokeny a také tokeny privacyIDEA.';
 
   @override
-  String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
+  String get introAddTokenManually => 'Pokud nechcete skenovat QR kód, můžete tokeny přidávat také ručně.';
 
   @override
-  String get introTokenSwipe => 'Swipe tokens to the left to see available actions.';
+  String get introTokenSwipe => 'Přejetím po tokenech doleva zobrazíte dostupné akce.';
 
   @override
-  String get introEditToken => 'Here you can edit the token name and see some details.';
+  String get introEditToken => 'Zde můžete upravit název tokenu a zobrazit některé podrobnosti.';
 
   @override
-  String get introLockToken => 'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.';
+  String get introLockToken => 'To improve security even more, you can lock tokens. Then the token can only be used after authentication.';
 
   @override
-  String get introDragToken => 'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.';
+  String get introDragToken => 'Reorganizujte tokeny tak, že je na několik sekund stisknete a poté je přetáhnete na požadované místo.';
 
   @override
-  String get introAddFolder => 'You can create folders\nto organize your tokens.';
+  String get introAddFolder => 'Můžete vytvářet složky\npro uspořádání svých tokenů.';
 
   @override
-  String get introPollForChallenges => 'You can check for new challenges by dragging down the token list.';
+  String get introPollForChallenges => 'Můžete zkontrolovat nové výzvy přetažením seznamu tokenů dolů.';
 
   @override
-  String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';
+  String get introHidePushTokens => 'Vaše push tokeny jsou nyní skryté.\nNa obrazovce push tokenů je však stále vidíte.';
 
   @override
   String legacySigningErrorTitle(Object tokenLabel) {
-    return 'Při použití zastaralého tokenu došlo k chybě: $tokenLabel';
+    return 'Při použití staršího tokenu došlo k chybě: $tokenLabel';
   }
 
   @override
@@ -688,8 +688,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get feedbackSentDescription => 'Děkujeme vám za pomoc při vylepšování této aplikace!';
 
   @override
-  String get patchNotesDialogTitle => 'What\'s new?';
+  String get patchNotesDialogTitle => 'Co je nového?';
 
   @override
-  String get version => 'Version';
+  String get version => 'Verze';
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -9,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:mutex/mutex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:privacyidea_authenticator/model/token_folder.dart';
 
+import '../interfaces/repo/token_folder_repository.dart';
 import '../interfaces/repo/token_repository.dart';
 import '../main_netknights.dart';
 import '../model/tokens/day_password_token.dart';
@@ -18,6 +21,7 @@ import '../model/tokens/otp_token.dart';
 import '../model/tokens/token.dart';
 import '../model/tokens/totp_token.dart';
 import '../processors/scheme_processors/home_widget_processor.dart';
+import '../repo/preference_token_folder_repository.dart';
 import '../repo/secure_token_repository.dart';
 import '../widgets/home_widgets/home_widget_action.dart';
 import '../widgets/home_widgets/home_widget_background.dart';
@@ -59,9 +63,10 @@ class HomeWidgetUtils {
   /// Default duration for showing the OTP
   static const _showDuration = Duration(seconds: 30);
 
-  factory HomeWidgetUtils({TokenRepository? repository}) {
+  factory HomeWidgetUtils({TokenRepository? tokenRepository, TokenFolderRepository? tokenFolderRepository}) {
     _instance ??= HomeWidgetUtils._();
-    _tokenRepository = repository ?? const SecureTokenRepository();
+    _tokenRepository = tokenRepository ?? const SecureTokenRepository();
+    _folderRepository = tokenFolderRepository ?? PreferenceTokenFolderRepository();
     return _instance!;
   }
 
@@ -75,6 +80,7 @@ class HomeWidgetUtils {
   /////////// Repository  /////////////
   /////////////////////////////////////
   static TokenRepository? _tokenRepository;
+  static TokenFolderRepository? _folderRepository;
   static final Mutex _repoMutex = Mutex();
   static Future<List<OTPToken>> get _otpTokens async => (await _loadTokensFromRepo()).whereType<OTPToken>().toList();
   static Future<OTPToken?> _getTokenOfTokenId(String? tokenId) async {
@@ -154,12 +160,9 @@ class HomeWidgetUtils {
   static Future<List<OTPToken>> _loadTokensFromRepo() async => (await _tokenRepository?.loadTokens())?.whereType<OTPToken>().toList() ?? [];
   static Future<void>? _saveTokensToRepo(List<OTPToken> tokens) => _tokenRepository?.saveOrReplaceTokens(tokens);
 
-  // static Future<List<OTPToken>> _getTokensOfTokenIds(List<String> tokenIds) async {
-  //   await _repoMutex.acquire();
-  //   final tokens = tokenIds.isEmpty ? <OTPToken>[] : (await _loadTokensFromRepo()).where((token) => tokenIds.contains(token.id)).toList();
-  //   _repoMutex.release();
-  //   return tokens;
-  // }
+  static Future<List<TokenFolder>> _loadFoldersFromRepo() async {
+    return (await _folderRepository?.loadFolders()) ?? [];
+  }
 
   Future<String?> getTokenIdOfWidgetId(String widgetId) async {
     if (await isHomeWidgetSupported == false) return null;
@@ -267,7 +270,7 @@ class HomeWidgetUtils {
       return;
     }
     await HomeWidget.saveWidgetData('$keyTokenId$widgetId', tokenId);
-    await HomeWidget.saveWidgetData('$keyTokenLocked$widgetId', token.isLocked);
+    await HomeWidget.saveWidgetData('$keyTokenLocked$widgetId', token.isLocked || ((await _folderOf(token))?.isLocked ?? false));
     await _updateHomeWidgetHideOtp(token, widgetId);
     await _setTokenType(widgetId, token.type);
     await _notifyUpdate([widgetId]);
@@ -306,7 +309,7 @@ class HomeWidgetUtils {
         homeWidgetChanges.add(_unlink(widgetId));
         continue;
       }
-      homeWidgetChanges.add(HomeWidget.saveWidgetData('$keyTokenLocked$widgetId', token.isLocked));
+      homeWidgetChanges.add(HomeWidget.saveWidgetData('$keyTokenLocked$widgetId', token.isLocked || ((await _folderOf(token))?.isLocked ?? false)));
       homeWidgetChanges.add(HomeWidget.saveWidgetData('$keyShowToken$widgetId', false));
       homeWidgetChanges.add(_updateHomeWidgetHideOtp(token, widgetId));
     }
@@ -448,6 +451,12 @@ class HomeWidgetUtils {
     }
     await Future.wait(futures);
     return widgetIds;
+  }
+
+  Future<TokenFolder?> _folderOf(Token token) async {
+    final folderId = token.folderId;
+    final allFolders = await _loadFoldersFromRepo();
+    return allFolders.firstWhereOrNull((token) => token.folderId == folderId);
   }
 
   ////////////////////////////////////////

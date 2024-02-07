@@ -1,5 +1,8 @@
 {
   "@@last_modified": "2023-08-07",
+  "patchNotesNewFeatures": "Nové funkce",
+  "patchNotesImprovements": "Improvements",
+  "patchNotesBugFixes": "Opravy chyb",
   "patchNotesV4_3_0NewFeatures1": "Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.",
   "patchNotesV4_3_0NewFeatures2": "Do nastavení byla přidána možnost zpětné vazby.",
   "patchNotesV4_3_0NewFeatures3": "Tokeny Push lze nyní skrýt ze seznamu tokenů.",
@@ -492,7 +495,16 @@
   "settingsGroupGeneral": "Obecné informace",
   "licensesAndVersion": "Licence a verze",
   "privacyPolicy": "Zásady ochrany osobních údajů",
-  "legacySigningErrorTitle": "Při použití zastaralého tokenu došlo k chybě: {tokenLabel}",
+  "introScanQrCode": "Podporujeme všechny běžné dvoufaktorové autentizační tokeny a také tokeny privacyIDEA.",
+  "introAddTokenManually": "Pokud nechcete skenovat QR kód, můžete tokeny přidávat také ručně.",
+  "introTokenSwipe": "Přejetím po tokenech doleva zobrazíte dostupné akce.",
+  "introEditToken": "Zde můžete upravit název tokenu a zobrazit některé podrobnosti.",
+  "introLockToken": "To improve security even more, you can lock tokens. Then the token can only be used after authentication.",
+  "introDragToken": "Reorganizujte tokeny tak, že je na několik sekund stisknete a poté je přetáhnete na požadované místo.",
+  "introAddFolder": "Můžete vytvářet složky\npro uspořádání svých tokenů.",
+  "introPollForChallenges": "Můžete zkontrolovat nové výzvy přetažením seznamu tokenů dolů.",
+  "introHidePushTokens": "Vaše push tokeny jsou nyní skryté.\nNa obrazovce push tokenů je však stále vidíte.",
+  "legacySigningErrorTitle": "Při použití staršího tokenu došlo k chybě: {tokenLabel}",
   "@legacySigningErrorTitle": {
     "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
     "placeholders": {
@@ -544,5 +556,7 @@
   "feedbackPrivacyPolicy3": ".",
   "addSystemInfo": "Přidat systémové informace",
   "feedbackSentTitle": "Zpětná vazba odeslána",
-  "feedbackSentDescription": "Děkujeme vám za pomoc při vylepšování této aplikace!"
+  "feedbackSentDescription": "Děkujeme vám za pomoc při vylepšování této aplikace!",
+  "patchNotesDialogTitle": "Co je nového?",
+  "version": "Verze"
 }

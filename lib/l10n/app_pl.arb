@@ -1,5 +1,8 @@
 {
   "@@last_modified": "2023-08-07",
+  "patchNotesNewFeatures": "Nowe funkcje",
+  "patchNotesImprovements": "Ulepszenia",
+  "patchNotesBugFixes": "Poprawki błędów",
   "patchNotesV4_3_0NewFeatures1": "Dodano obsługę importowania tokenów z Google, Aegis i 2FAS Authenticator. Więcej źródeł importu zostanie dodanych w przyszłości",
   "patchNotesV4_3_0NewFeatures2": "Dodano opcję opinii do ustawień.",
   "patchNotesV4_3_0NewFeatures3": "Tokeny push można teraz ukryć na liście tokenów",
@@ -486,6 +489,15 @@
   "settingsGroupGeneral": "Informacje ogólne",
   "licensesAndVersion": "Licencje i wersja",
   "privacyPolicy": "Polityka prywatności",
+  "introScanQrCode": "Możesz skanować kody QR, aby dodawać tokeny. Obsługujemy każdy popularny token uwierzytelniania dwuskładnikowego, a także tokeny privacyIDEA.",
+  "introAddTokenManually": "Jeśli nie chcesz skanować kodu QR, możesz również dodać tokeny ręcznie.",
+  "introTokenSwipe": "Przesuń tokeny w lewo, aby zobaczyć dostępne akcje.",
+  "introEditToken": "Tutaj możesz edytować nazwę tokena i zobaczyć kilka szczegółów.",
+  "introLockToken": "Aby jeszcze bardziej zwiększyć bezpieczeństwo, możesz zablokować tokeny. Wtedy token może być używany tylko po uwierzytelnieniu.",
+  "introDragToken": "Reorganizuj swoje tokeny, naciskając je przez kilka sekund, a następnie przeciągając je do żądanej pozycji.",
+  "introAddFolder": "Możesz tworzyć foldery, aby organizować swoje tokeny.",
+  "introPollForChallenges": "Możesz sprawdzić nowe wyzwania, przeciągając listę tokenów w dół.",
+  "introHidePushTokens": "Twoje tokeny push są teraz ukryte, ale nadal możesz je zobaczyć na ekranie tokenów push.",
   "legacySigningErrorTitle": "Wystąpił błąd podczas korzystania z przestarzałego tokena: {tokenLabel}",
   "@legacySigningErrorTitle": {
     "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
@@ -538,5 +550,7 @@
   "feedbackPrivacyPolicy3": ".",
   "addSystemInfo": "Dodaj informacje systemowe",
   "feedbackSentTitle": "Opinia została wysłana",
-  "feedbackSentDescription": "Dziękujemy bardzo za pomoc w ulepszeniu tej aplikacji!"
+  "feedbackSentDescription": "Dziękujemy bardzo za pomoc w ulepszeniu tej aplikacji!",
+  "patchNotesDialogTitle": "Co nowego?",
+  "version": "Wersja"
 }

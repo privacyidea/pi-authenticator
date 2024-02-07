@@ -7,7 +7,13 @@ class AppLocalizationsNl extends AppLocalizations {
   AppLocalizationsNl([String locale = 'nl']) : super(locale);
 
   @override
-  String get patchNotesNewFeatures => 'New features';
+  String get patchNotesNewFeatures => 'Nieuwe functies';
+
+  @override
+  String get patchNotesImprovements => 'Verbeteringen';
+
+  @override
+  String get patchNotesBugFixes => 'Bugfixes';
 
   @override
   String get patchNotesV4_3_0NewFeatures1 => 'Ondersteuning toegevoegd voor het importeren van tokens van Google, Aegis en 2FAS Authenticator. Meer importbronnen zullen in de toekomst worden toegevoegd.';
@@ -26,12 +32,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get patchNotesV4_3_0NewFeatures6 => 'HomeWidget Token toegevoegd voor Android 12 en hoger.';
-
-  @override
-  String get patchNotesImprovements => 'Improvements';
-
-  @override
-  String get patchNotesBugFixes => 'Bug fixes';
 
   @override
   String get accept => 'Accepteren';
@@ -507,31 +507,31 @@ class AppLocalizationsNl extends AppLocalizations {
   String get privacyPolicy => 'Privacybeleid';
 
   @override
-  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+  String get introScanQrCode => 'Je kunt QR-codes scannen om tokens toe te voegen.We ondersteunen alle gangbare Two-Factor-Authenticatie tokens en ook de privacyIDEA tokens.';
 
   @override
-  String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
+  String get introAddTokenManually => 'Als je geen QR-code wilt scannen, kun je tokens ook handmatig toevoegen.';
 
   @override
-  String get introTokenSwipe => 'Swipe tokens to the left to see available actions.';
+  String get introTokenSwipe => 'Veeg tokens naar links om beschikbare acties te zien.';
 
   @override
-  String get introEditToken => 'Here you can edit the token name and see some details.';
+  String get introEditToken => 'Hier kun je de naam van het token bewerken en enkele details bekijken.';
 
   @override
-  String get introLockToken => 'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.';
+  String get introLockToken => 'Om de beveiliging nog meer te verbeteren, kun je tokens vergrendelen.¨Dan kan het token alleen gebruikt worden na authenticatie.';
 
   @override
-  String get introDragToken => 'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.';
+  String get introDragToken => 'Reorganiseer je tokens door er een paar seconden op te drukken en het dan naar de gewenste positie te slepen.';
 
   @override
-  String get introAddFolder => 'You can create folders\nto organize your tokens.';
+  String get introAddFolder => 'Je kunt mappen maken om je tokens te organiseren.';
 
   @override
-  String get introPollForChallenges => 'You can check for new challenges by dragging down the token list.';
+  String get introPollForChallenges => 'Je kunt controleren of er nieuwe uitdagingen zijn door de lijst met tokens naar beneden te slepen.';
 
   @override
-  String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';
+  String get introHidePushTokens => 'Je push tokens zijn nu verborgen, maar je kunt ze nog steeds zien op het push token scherm.';
 
   @override
   String legacySigningErrorTitle(Object tokenLabel) {
@@ -661,7 +661,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get feedback => 'Feedback';
 
   @override
-  String get feedbackTitle => 'Your feedback is always welcome!';
+  String get feedbackTitle => 'Uw feedback is altijd welkom!';
 
   @override
   String get feedbackDescription => 'Als je vragen, suggesties of problemen hebt, laat het ons dan weten.';
@@ -685,11 +685,11 @@ class AppLocalizationsNl extends AppLocalizations {
   String get feedbackSentTitle => 'Feedback verzonden';
 
   @override
-  String get feedbackSentDescription => 'Thank you very much for your help in making this application better!';
+  String get feedbackSentDescription => 'Hartelijk dank voor je hulp om deze applicatie beter te maken!';
 
   @override
-  String get patchNotesDialogTitle => 'What\'s new?';
+  String get patchNotesDialogTitle => 'Wat is er nieuw?';
 
   @override
-  String get version => 'Version';
+  String get version => 'Versie';
 }

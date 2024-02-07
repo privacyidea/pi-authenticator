@@ -10,6 +10,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get patchNotesNewFeatures => 'New features';
 
   @override
+  String get patchNotesImprovements => 'Improvements';
+
+  @override
+  String get patchNotesBugFixes => 'Bug fixes';
+
+  @override
   String get patchNotesV4_3_0NewFeatures1 => 'Added support for importing tokens from Google, Aegis and 2FAS Authenticator. More import sources will be added in the future.';
 
   @override
@@ -26,12 +32,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get patchNotesV4_3_0NewFeatures6 => 'Added HomeWidget Token for Android 12 and later.';
-
-  @override
-  String get patchNotesImprovements => 'Improvements';
-
-  @override
-  String get patchNotesBugFixes => 'Bug fixes';
 
   @override
   String get accept => 'Accept';

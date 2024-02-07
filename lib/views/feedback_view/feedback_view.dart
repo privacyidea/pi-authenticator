@@ -79,7 +79,7 @@ class _FeedbackViewState extends State<FeedbackView> {
                             ),
                             TextSpan(text: AppLocalizations.of(context)!.feedbackPrivacyPolicy1, style: Theme.of(context).textTheme.bodySmall),
                             TextSpan(
-                              text: AppLocalizations.of(context)!.feedbackPrivacyPolicy1,
+                              text: AppLocalizations.of(context)!.feedbackPrivacyPolicy2,
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.blue),
                               recognizer: TapGestureRecognizer()..onTap = () => launchUrl(policyStatementUri),
                             ),

@@ -1,14 +1,14 @@
 {
   "@@last_modified": "2023-08-07",
   "patchNotesNewFeatures": "New features",
+  "patchNotesImprovements": "Improvements",
+  "patchNotesBugFixes": "Bug fixes",
   "patchNotesV4_3_0NewFeatures1": "Added support for importing tokens from Google, Aegis and 2FAS Authenticator. More import sources will be added in the future.",
   "patchNotesV4_3_0NewFeatures2": "Added feedback option to the settings.",
   "patchNotesV4_3_0NewFeatures3": "Push tokens can now be hidden from the token list.",
   "patchNotesV4_3_0NewFeatures4": "Introductions have been added to help new users get started.",
   "patchNotesV4_3_0NewFeatures5": "You can now seach for tokens by taping the magnifying glass in the top right corner.",
   "patchNotesV4_3_0NewFeatures6": "Added HomeWidget Token for Android 12 and later.",
-  "patchNotesImprovements": "Improvements",
-  "patchNotesBugFixes": "Bug fixes",
   "accept": "Accept",
   "@accept": {
     "description": "Label for e.g. a button. Something gets accepted by the user."

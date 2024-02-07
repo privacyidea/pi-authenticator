@@ -1,5 +1,8 @@
 {
   "@@last_modified": "2023-08-07",
+  "patchNotesNewFeatures": "Nuevas características",
+  "patchNotesImprovements": "Mejoras",
+  "patchNotesBugFixes": "Corrección de errores",
   "patchNotesV4_3_0NewFeatures1": "Añadido soporte para importar tokens de Google, Aegis y 2FAS Authenticator. En el futuro se añadirán más fuentes de importación",
   "patchNotesV4_3_0NewFeatures2": "Añadida opción de feedback a los ajustes",
   "patchNotesV4_3_0NewFeatures3": "Los tokens push ahora se pueden ocultar de la lista de tokens",
@@ -488,6 +491,15 @@
   "settingsGroupGeneral": "Información general",
   "licensesAndVersion": "Licencias y versión",
   "privacyPolicy": "Política de privacidad",
+  "introScanQrCode": "Puedes escanear códigos QR para añadir tokens.\nSoportamos todos los tokens comunes de Two-Factor-Authentication y también los tokens privacyIDEA",
+  "introAddTokenManually": "Si no quieres escanear un código QR, también puedes añadir tokens manualmente",
+  "introTokenSwipe": "Desliza los tokens hacia la izquierda para ver las acciones disponibles",
+  "introEditToken": "Aquí puedes editar el nombre del token y ver algunos detalles",
+  "introLockToken": "Para mejorar la seguridad aún más, puedes bloquear los tokens.\nEntonces el token sólo se puede utilizar después de la autenticación.",
+  "introDragToken": "Reorganiza tus tokens pulsándolo durante unos segundos y arrastrándolo a la posición deseada",
+  "introAddFolder": "Puedes crear carpetas\npara organizar tus tokens",
+  "introPollForChallenges": "Puedes buscar nuevos retos arrastrando hacia abajo la lista de tokens",
+  "introHidePushTokens": "Tus push tokens están ahora ocultos.\nPero puedes seguir viéndolos en la pantalla de push tokens.",
   "legacySigningErrorTitle": "Se ha producido un error al utilizar el token obsoleto: {tokenLabel}",
   "@legacySigningErrorTitle": {
     "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
@@ -540,5 +552,7 @@
   "feedbackPrivacyPolicy3": ".",
   "addSystemInfo": "Añadir información del sistema",
   "feedbackSentTitle": "Comentarios enviados",
-  "feedbackSentDescription": "Muchas gracias por su ayuda para mejorar esta aplicación."
+  "feedbackSentDescription": "Muchas gracias por su ayuda para mejorar esta aplicación.",
+  "patchNotesDialogTitle": "¿Qué hay de nuevo?",
+  "version": "Versión"
 }

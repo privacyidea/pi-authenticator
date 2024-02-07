@@ -61,67 +61,60 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return TokenWidgetTile(
-      key: Key('${widget.token.hashCode}TokenWidgetTile'),
-      tokenImage: widget.token.tokenImage,
-      tokenIsLocked: widget.token.isLocked,
-      isPreview: widget.isPreview,
-      title: Align(
-        alignment: Alignment.centerLeft,
-        child: InkWell(
-          onTap: widget.isPreview
-              ? null
-              : widget.token.isLocked && widget.token.isHidden
-                  ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
-                  : _copyOtpValue,
-          child: HideableText(
-            textScaleFactor: 1.9,
-            isHidden: widget.token.isHidden,
-            text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
-            enabled: widget.token.isLocked,
+  Widget build(BuildContext context) => TokenWidgetTile(
+        key: Key('${widget.token.hashCode}TokenWidgetTile'),
+        tokenImage: widget.token.tokenImage,
+        tokenIsLocked: widget.token.isLocked,
+        isPreview: widget.isPreview,
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: InkWell(
+            onTap: widget.isPreview
+                ? null
+                : widget.token.isLocked && widget.token.isHidden
+                    ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
+                    : _copyOtpValue,
+            child: HideableText(
+              textScaleFactor: 1.9,
+              isHidden: widget.token.isHidden,
+              text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
+              enabled: widget.token.isLocked,
+            ),
           ),
         ),
-      ),
-      subtitles: widget.isPreview
-          ? [
-              (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
-                  ? '${widget.token.issuer}: ${widget.token.label}'
-                  : '${widget.token.issuer}${widget.token.label}',
-              'Algorithm: ${enumAsString(widget.token.algorithm)}',
-              'Counter: ${widget.token.counter}',
-            ]
-          : [
-              if (widget.token.label.isNotEmpty) widget.token.label,
-              if (widget.token.issuer.isNotEmpty) widget.token.issuer,
-            ],
-      trailing: CustomTrailing(
-        child: widget.isPreview
-            ? const Icon(
-                size: 100,
-                Icons.replay,
-              )
-            : HideableWidget(
-                token: widget.token,
-                isHidden: widget.token.isHidden,
-                child: IconButton(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: disableTrailingButton
-                      ? null
-                      : () {
-                          ref.read(tokenFolderProvider.notifier).collapseLockedFolders(); // TODO: Remove this line
-                          _updateOtpValue();
-                        },
-                  icon: const FittedBox(
-                    fit: BoxFit.contain,
-                    child: Icon(
-                      size: 100,
-                      Icons.replay,
+        subtitles: widget.isPreview
+            ? [
+                (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
+                    ? '${widget.token.issuer}: ${widget.token.label}'
+                    : '${widget.token.issuer}${widget.token.label}',
+                'Algorithm: ${enumAsString(widget.token.algorithm)}',
+                'Counter: ${widget.token.counter}',
+              ]
+            : [
+                if (widget.token.label.isNotEmpty) widget.token.label,
+                if (widget.token.issuer.isNotEmpty) widget.token.issuer,
+              ],
+        trailing: CustomTrailing(
+          child: widget.isPreview
+              ? const Icon(
+                  size: 100,
+                  Icons.replay,
+                )
+              : HideableWidget(
+                  token: widget.token,
+                  isHidden: widget.token.isHidden,
+                  child: IconButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: disableTrailingButton ? null : () => _updateOtpValue(),
+                    icon: const FittedBox(
+                      fit: BoxFit.contain,
+                      child: Icon(
+                        size: 100,
+                        Icons.replay,
+                      ),
                     ),
                   ),
                 ),
-              ),
-      ),
-    );
-  }
+        ),
+      );
 }
