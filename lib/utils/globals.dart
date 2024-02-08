@@ -22,6 +22,25 @@
 
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+import '../model/enums/patch_note_type.dart';
+import 'version.dart';
+
+Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocalizations localizations) => {
+      const Version(4, 3, 0): {
+        PatchNoteType.newFeature: [
+          localizations.patchNotesV4_3_0NewFeatures1,
+          localizations.patchNotesV4_3_0NewFeatures2,
+          localizations.patchNotesV4_3_0NewFeatures3,
+          localizations.patchNotesV4_3_0NewFeatures4,
+          localizations.patchNotesV4_3_0NewFeatures5,
+        ],
+        PatchNoteType.bugFix: [
+          localizations.patchNotesV4_3_0NewFeatures6,
+        ],
+      }
+    };
+
 final globalSnackbarKey = GlobalKey<ScaffoldMessengerState>();
 final globalNavigatorKey = GlobalKey<NavigatorState>();
 final Future<GlobalKey<NavigatorState>> contextedGlobalNavigatorKey = Future(() async => await _getContextedGlobalNavigatorKey());

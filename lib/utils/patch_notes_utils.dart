@@ -9,26 +9,11 @@ import 'logger.dart';
 import 'version.dart';
 
 class PatchNotesUtils {
-  static Map<Version, Map<PatchNoteType, List<String>>> _patchNotes(AppLocalizations localizations) => {
-        const Version(4, 3, 0): {
-          PatchNoteType.newFeature: [
-            localizations.patchNotesV4_3_0NewFeatures1,
-            localizations.patchNotesV4_3_0NewFeatures2,
-            localizations.patchNotesV4_3_0NewFeatures3,
-            localizations.patchNotesV4_3_0NewFeatures4,
-            localizations.patchNotesV4_3_0NewFeatures5,
-          ],
-          PatchNoteType.bugFix: [
-            localizations.patchNotesV4_3_0NewFeatures6,
-          ],
-        }
-      };
-
   static Map<Version, Map<PatchNoteType, List<String>>> _getNewPatchNotes({required BuildContext context, required Version latestStartedVersion}) {
     final context = globalNavigatorKey.currentContext;
     if (context == null) return {};
     final Map<Version, Map<PatchNoteType, List<String>>> newNotes = {};
-    final allNotes = _patchNotes(AppLocalizations.of(context)!);
+    final allNotes = getLocalizedPatchNotes(AppLocalizations.of(context)!);
     for (Version noteVersion in allNotes.keys) {
       if (noteVersion >= latestStartedVersion) newNotes.addAll({noteVersion: allNotes[noteVersion]!});
     }
