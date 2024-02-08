@@ -36,8 +36,8 @@ class PrivacyIdeaIOClient {
   /// Dummy network request can be used to trigger the network access permission
   /// on iOS devices. Doing this at an appropriate place in the code can prevent
   /// SocketExceptions.
-  Future<void> triggerNetworkAccessPermission({required Uri url, bool sslVerify = true}) async {
-    if (kIsWeb) return;
+  Future<bool> triggerNetworkAccessPermission({required Uri url, bool sslVerify = true, bool isRetry = false}) async {
+    if (kIsWeb) return false;
     HttpClient httpClient = HttpClient();
     httpClient.badCertificateCallback = ((X509Certificate cert, String host, int port) => !sslVerify);
     httpClient.userAgent = 'privacyIDEA-App'
@@ -50,20 +50,36 @@ class PrivacyIdeaIOClient {
     try {
       await ioClient.post(url, body: '');
     } on SocketException {
-      if (globalNavigatorKey.currentState?.context == null) return;
-      globalRef?.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(globalNavigatorKey.currentState!.context)!.connectionFailed,
-        AppLocalizations.of(globalNavigatorKey.currentState!.context)!.checkYourNetwork,
+      Logger.error('SocketException', name: 'utils.dart#triggerNetworkAccessPermission');
+      if (isRetry) {
+        Logger.warning('SocketException while retrying', name: 'utils.dart#triggerNetworkAccessPermission');
+        if (globalNavigatorKey.currentState?.context != null) {
+          globalRef?.read(statusMessageProvider.notifier).state = (
+            AppLocalizations.of(globalNavigatorKey.currentState!.context)!.connectionFailed,
+            AppLocalizations.of(globalNavigatorKey.currentState!.context)!.checkYourNetwork,
+          );
+        }
+        ioClient.close();
+        return false;
+      }
+      ioClient.close();
+      return Future.delayed(
+        const Duration(seconds: 10),
+        () => triggerNetworkAccessPermission(url: url, sslVerify: sslVerify, isRetry: true),
       );
     } on ClientException {
-      if (globalNavigatorKey.currentState?.context == null) return;
+      Logger.warning('ClientException', name: 'utils.dart#triggerNetworkAccessPermission');
+      ioClient.close();
+      if (globalNavigatorKey.currentState?.context == null) return false;
       globalRef?.read(statusMessageProvider.notifier).state = (
         AppLocalizations.of(globalNavigatorKey.currentState!.context)!.connectionFailed,
         AppLocalizations.of(globalNavigatorKey.currentState!.context)!.checkYourNetwork,
       );
+      return false;
     } finally {
       ioClient.close();
     }
+    return true;
   }
 
   /// Custom POST request allows to not verify certificates.

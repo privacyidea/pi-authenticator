@@ -121,8 +121,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
           tokens = await _repo.loadTokens();
           TokenState newState = TokenState(tokens: tokens);
           state = newState;
-          final pushTokensNotRolledOut = newState.pushTokensToRollOut;
-          for (final token in pushTokensNotRolledOut) {
+          for (final token in newState.pushTokensToRollOut) {
             rolloutPushToken(token);
           }
 
@@ -374,9 +373,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
       removeToken(token);
       return false;
     }
-    if (!kIsWeb && Platform.isIOS) {
-      await _ioClient.triggerNetworkAccessPermission(url: token.url!, sslVerify: token.sslVerify);
-    }
 
     if (token.privateTokenKey == null) {
       token = await updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.generatingRSAKeyPair)) ?? token;
@@ -398,7 +394,15 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
 
     token = await updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKey)) ?? token;
-
+    if (!kIsWeb && Platform.isIOS) {
+      Logger.warning('Triggering network access permission for token "${token.id}"', name: 'token_notifier.dart#rolloutPushToken');
+      if (await _ioClient.triggerNetworkAccessPermission(url: token.url!, sslVerify: token.sslVerify) == false) {
+        Logger.warning('Network access permission for token "${token.id}" failed.', name: 'token_notifier.dart#rolloutPushToken');
+        updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
+        return false;
+      }
+      Logger.warning('Network access permission for token "${token.id}" successful.', name: 'token_notifier.dart#rolloutPushToken');
+    }
     try {
       // TODO What to do with poll only tokens if google-services is used?
 
