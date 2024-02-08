@@ -35,7 +35,7 @@ class _PressButtonState extends State<PressButton> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: isPressable ? press : null,
-      style: widget.style,
+      style: widget.style?.merge(Theme.of(context).elevatedButtonTheme.style),
       child: widget.child,
     );
   }

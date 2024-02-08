@@ -39,7 +39,7 @@ class RolloutFailedWidget extends StatelessWidget {
                   onPressed: () => globalRef?.read(tokenProvider.notifier).rolloutPushToken(token),
                   child: Text(
                     AppLocalizations.of(context)!.retryRollout,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     overflow: TextOverflow.fade,
                     softWrap: false,
                   ),
@@ -53,7 +53,7 @@ class RolloutFailedWidget extends StatelessWidget {
                   onPressed: () => _showDialog(),
                   child: Text(
                     AppLocalizations.of(context)!.delete,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     overflow: TextOverflow.fade,
                     softWrap: false,
                   ),
