@@ -74,14 +74,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
 
   OverlayEntry? _overlayEntryText;
   OverlayEntry? _overlayEntryChild;
-  final OverlayEntry _overlayEntryBackdrop = OverlayEntry(
-    builder: (overlayContext) => BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-      child: const Center(
-        child: SizedBox(),
-      ),
-    ),
-  );
+  OverlayEntry? _overlayEntryBackdrop;
 
   @override
   Widget build(BuildContext context) => widget.child;
@@ -241,21 +234,30 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
       ),
     );
 
-    Overlay.of(context).insert(_overlayEntryBackdrop);
+    _overlayEntryBackdrop = OverlayEntry(
+      builder: (overlayContext) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+        child: const Center(
+          child: SizedBox(),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_overlayEntryBackdrop!);
     Overlay.of(context).insert(_overlayEntryChild!);
     if (_overlayEntryText != null) Overlay.of(context).insert(_overlayEntryText!);
   }
 
   void _updateOverlay() {
-    _overlayEntryBackdrop.remove();
+    _overlayEntryBackdrop?.remove();
     _overlayEntryChild?.remove();
     _overlayEntryText?.remove();
     _showOverlay();
   }
 
   void _disposeOverlay() {
-    _overlayEntryBackdrop.remove();
-    _overlayEntryBackdrop.markNeedsBuild();
+    _overlayEntryBackdrop?.remove();
+    _overlayEntryBackdrop = null;
     _overlayEntryChild?.remove();
     _overlayEntryChild = null;
     _overlayEntryText?.remove();
