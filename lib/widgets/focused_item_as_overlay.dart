@@ -3,7 +3,6 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../utils/utils.dart';
@@ -65,10 +64,12 @@ class _FocusedItemOverlay extends StatefulWidget {
   State<_FocusedItemOverlay> createState() => _FocusedItemOverlayState();
 }
 
-class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with LifecycleMixin {
+class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
   static const tooltipPadding = EdgeInsets.all(8);
   static const tooltipMargin = EdgeInsets.all(4);
   static const tooltipBorderWidth = 2.0;
+
+  Timer? _delayTimer;
 
   Offset lastChildPosition = Offset.zero;
 
@@ -81,8 +82,9 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
 
   @override
   void initState() {
+    Logger.warning("FocusedItemOverlay: initState");
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _showOverlay();
+      _updateOverlay();
 
       if (widget.childIsMoving) {
         Timer.periodic(const Duration(milliseconds: 16), (timer) {
@@ -100,25 +102,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
         });
       }
     });
-
     super.initState();
-  }
-
-  // Is also called when the orientation changes. FIXME: Find a better way to handle this.
-  @override
-  void onAppResume() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _updateOverlay();
-    });
-    super.onAppResume();
-  }
-
-  @override
-  void didUpdateWidget(covariant _FocusedItemOverlay oldWidget) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _updateOverlay();
-    });
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -129,14 +113,25 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
     super.dispose();
   }
 
-  void _showOverlay() {
+  @override
+  void didUpdateWidget(covariant _FocusedItemOverlay oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _updateOverlay();
+    });
+  }
+
+  void _updateOverlay() {
     if (mounted == false) return;
     if (ModalRoute.of(context)?.isCurrent == false) {
-      Future.delayed(const Duration(milliseconds: 200), () {
-        _showOverlay();
+      _delayTimer ??= Timer(const Duration(milliseconds: 125), () {
+        _delayTimer?.cancel();
+        _delayTimer = null;
+        _updateOverlay();
       });
       return;
     }
+    _disposeOverlay();
     if (widget.tooltipWhenFocused != null) {
       final textSize = textSizeOf(
         widget.tooltipWhenFocused!,
@@ -175,8 +170,6 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
 
     final renderBox = context.findRenderObject() as RenderBox;
     final boxsize = renderBox.size;
-
-    Logger.warning('boxsize: $boxsize');
 
     final renderBoxOffset = renderBox.localToGlobal(Offset.zero);
 
@@ -246,13 +239,6 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> with Lifecycle
     Overlay.of(context).insert(_overlayEntryBackdrop!);
     Overlay.of(context).insert(_overlayEntryChild!);
     if (_overlayEntryText != null) Overlay.of(context).insert(_overlayEntryText!);
-  }
-
-  void _updateOverlay() {
-    _overlayEntryBackdrop?.remove();
-    _overlayEntryChild?.remove();
-    _overlayEntryText?.remove();
-    _showOverlay();
   }
 
   void _disposeOverlay() {
