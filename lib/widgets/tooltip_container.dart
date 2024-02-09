@@ -20,7 +20,7 @@ class TooltipContainer extends StatelessWidget {
         padding: padding,
         margin: margin,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).navigationBarTheme.backgroundColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Theme.of(context).primaryColor, width: border),
           boxShadow: [

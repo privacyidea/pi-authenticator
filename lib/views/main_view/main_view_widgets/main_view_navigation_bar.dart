@@ -77,8 +77,11 @@ class MainViewNavigationBar extends ConsumerWidget {
                                 },
                                 isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.addTokenManually),
                                 tooltipWhenFocused: AppLocalizations.of(context)!.introAddTokenManually,
-                                child: const FittedBox(
-                                  child: Icon(Icons.add_moderator),
+                                child: FittedBox(
+                                  child: Icon(
+                                    Icons.add_moderator,
+                                    color: Theme.of(context).navigationBarTheme.iconTheme?.resolve({})?.color,
+                                  ),
                                 ),
                               ),
                             ),
@@ -102,8 +105,11 @@ class MainViewNavigationBar extends ConsumerWidget {
                                     useRootNavigator: false,
                                   );
                                 },
-                                icon: const FittedBox(
-                                  child: Icon(Icons.create_new_folder),
+                                icon: FittedBox(
+                                  child: Icon(
+                                    Icons.create_new_folder,
+                                    color: Theme.of(context).navigationBarTheme.iconTheme?.resolve({})?.color,
+                                  ),
                                 ),
                               ),
                             ),

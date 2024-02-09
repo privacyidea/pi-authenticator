@@ -268,7 +268,7 @@ class ThemeCustomization {
             headlineMedium: TextStyle(color: foregroundColor),
             headlineSmall: TextStyle(color: foregroundColor),
             titleLarge: TextStyle(color: primaryColor),
-            bodySmall: TextStyle(color: tileSubtitleColor),
+            bodySmall: TextStyle(color: subtitleColor),
             labelLarge: TextStyle(color: foregroundColor),
             labelSmall: TextStyle(color: foregroundColor),
           ),
@@ -298,7 +298,22 @@ class ThemeCustomization {
             elevation: 0,
             titleSpacing: 6,
           ),
-          primaryIconTheme: IconThemeData(color: foregroundColor),
+          inputDecorationTheme: InputDecorationTheme(
+            labelStyle: TextStyle(color: foregroundColor),
+            hintStyle: TextStyle(color: primaryColor),
+            errorStyle: TextStyle(color: deleteColor),
+            border: UnderlineInputBorder(
+              borderSide: BorderSide(color: shadowColor),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: subtitleColor),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: primaryColor),
+            ),
+          ),
+          primaryIconTheme: IconThemeData(color: onPrimary),
+          iconTheme: IconThemeData(color: foregroundColor),
           navigationBarTheme: const NavigationBarThemeData().copyWith(
             backgroundColor: navigationBarColor,
             shadowColor: shadowColor,
