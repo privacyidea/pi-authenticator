@@ -371,6 +371,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get save => 'Uložit';
 
   @override
+  String get create => 'Vytvořit';
+
+  @override
   String get validFor => 'Platné pro';
 
   @override

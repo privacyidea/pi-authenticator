@@ -407,6 +407,7 @@
   "editToken": "Upravit token",
   "edit": "Upravit",
   "save": "Uložit",
+  "create": "Vytvořit",
   "validFor": "Platné pro",
   "validUntil": "Platné do",
   "deleteLockedToken": "Prosím, autentifikujte se pro smazání uzamčeného tokenu.",

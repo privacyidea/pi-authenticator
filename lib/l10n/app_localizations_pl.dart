@@ -371,6 +371,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get save => 'Zapisz';
 
   @override
+  String get create => 'Utwórz';
+
+  @override
   String get validFor => 'Ważny przez';
 
   @override

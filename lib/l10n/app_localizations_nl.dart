@@ -371,6 +371,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get save => 'Opslaan';
 
   @override
+  String get create => 'Creëer';
+
+  @override
   String get validFor => 'Geldig voor';
 
   @override

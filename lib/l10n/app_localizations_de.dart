@@ -371,6 +371,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get save => 'Speichern';
 
   @override
+  String get create => 'Erstellen';
+
+  @override
   String get validFor => 'Gültig für';
 
   @override

@@ -400,6 +400,7 @@
   "editToken": "Token bewerken",
   "edit": "Bewerken",
   "save": "Opslaan",
+  "create": "Creëer",
   "validFor": "Geldig voor",
   "validUntil": "Geldig tot",
   "deleteLockedToken": "Verifieer om het vergrendelde token te verwijderen.",

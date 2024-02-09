@@ -400,6 +400,7 @@
   "editToken": "Token bearbeiten",
   "edit": "Bearbeiten",
   "save": "Speichern",
+  "create": "Erstellen",
   "validFor": "Gültig für",
   "validUntil": "Gültig bis",
   "deleteLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu löschen.",

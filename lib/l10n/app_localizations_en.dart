@@ -16,7 +16,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get patchNotesBugFixes => 'Bug fixes';
 
   @override
-  String get patchNotesV4_3_0NewFeatures1 => 'Added support for importing tokens from Google, Aegis and 2FAS Authenticator. More import sources will be added in the future.';
+  String get patchNotesV4_3_0NewFeatures1 => 'Support for importing tokens from Google, Aegis and 2FAS Authenticator has been added. More import sources will be added in the future.';
 
   @override
   String get patchNotesV4_3_0NewFeatures2 => 'Added feedback option to the settings.';
@@ -28,10 +28,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get patchNotesV4_3_0NewFeatures4 => 'Introductions have been added to help new users get started.';
 
   @override
-  String get patchNotesV4_3_0NewFeatures5 => 'You can now seach for tokens by taping the magnifying glass in the top right corner.';
+  String get patchNotesV4_3_0NewFeatures5 => 'You can now search for tokens by tapping the magnifying glass in the upper right corner.';
 
   @override
-  String get patchNotesV4_3_0NewFeatures6 => 'Added HomeWidget Token for Android 12 and later.';
+  String get patchNotesV4_3_0NewFeatures6 => 'Added HomeWidget token for Android 12 and later.';
 
   @override
   String get accept => 'Accept';
@@ -371,6 +371,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save => 'Save';
 
   @override
+  String get create => 'Create';
+
+  @override
   String get validFor => 'Valid for';
 
   @override
@@ -392,7 +395,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addANewFolder => 'Create new folder';
 
   @override
-  String get folderName => 'Foldername';
+  String get folderName => 'Folder name';
 
   @override
   String get retryRollout => 'Retry rollout';

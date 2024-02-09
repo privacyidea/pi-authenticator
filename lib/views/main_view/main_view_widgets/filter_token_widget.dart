@@ -22,6 +22,17 @@ class SearchInputField extends ConsumerStatefulWidget {
 class _SearchInputFieldState extends ConsumerState<SearchInputField> {
   final TextEditingController _controller = TextEditingController();
 
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_updateFilter);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
   void _resetFilter() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       globalRef?.read(tokenFilterProvider.notifier).state = null;
@@ -39,6 +50,8 @@ class _SearchInputFieldState extends ConsumerState<SearchInputField> {
   @override
   void dispose() {
     _resetFilter();
+    _focusNode.unfocus();
+    _focusNode.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -46,10 +59,12 @@ class _SearchInputFieldState extends ConsumerState<SearchInputField> {
   @override
   Widget build(BuildContext context) => TextField(
         controller: _controller,
-        onChanged: (value) => _updateFilter(),
+        focusNode: _focusNode,
         decoration: const InputDecoration(
           hintText: 'Label / Serial / Issuer / Type',
           border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
           prefixIcon: Icon(Icons.search),
         ),
       );

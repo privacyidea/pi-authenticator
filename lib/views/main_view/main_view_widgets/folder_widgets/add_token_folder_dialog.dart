@@ -39,7 +39,7 @@ class AddTokenFolderDialog extends ConsumerWidget {
         ),
         TextButton(
             child: Text(
-              AppLocalizations.of(context)!.save,
+              AppLocalizations.of(context)!.create,
               overflow: TextOverflow.fade,
               softWrap: false,
             ),

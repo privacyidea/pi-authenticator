@@ -124,7 +124,7 @@ abstract class AppLocalizations {
   /// No description provided for @patchNotesV4_3_0NewFeatures1.
   ///
   /// In en, this message translates to:
-  /// **'Added support for importing tokens from Google, Aegis and 2FAS Authenticator. More import sources will be added in the future.'**
+  /// **'Support for importing tokens from Google, Aegis and 2FAS Authenticator has been added. More import sources will be added in the future.'**
   String get patchNotesV4_3_0NewFeatures1;
 
   /// No description provided for @patchNotesV4_3_0NewFeatures2.
@@ -148,13 +148,13 @@ abstract class AppLocalizations {
   /// No description provided for @patchNotesV4_3_0NewFeatures5.
   ///
   /// In en, this message translates to:
-  /// **'You can now seach for tokens by taping the magnifying glass in the top right corner.'**
+  /// **'You can now search for tokens by tapping the magnifying glass in the upper right corner.'**
   String get patchNotesV4_3_0NewFeatures5;
 
   /// No description provided for @patchNotesV4_3_0NewFeatures6.
   ///
   /// In en, this message translates to:
-  /// **'Added HomeWidget Token for Android 12 and later.'**
+  /// **'Added HomeWidget token for Android 12 and later.'**
   String get patchNotesV4_3_0NewFeatures6;
 
   /// Label for e.g. a button. Something gets accepted by the user.
@@ -799,6 +799,12 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
+  /// No description provided for @create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get create;
+
   /// No description provided for @validFor.
   ///
   /// In en, this message translates to:
@@ -844,7 +850,7 @@ abstract class AppLocalizations {
   /// No description provided for @folderName.
   ///
   /// In en, this message translates to:
-  /// **'Foldername'**
+  /// **'Folder name'**
   String get folderName;
 
   /// No description provided for @retryRollout.

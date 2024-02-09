@@ -403,6 +403,7 @@
   "editToken": "Edytuj token",
   "edit": "Edytuj",
   "save": "Zapisz",
+  "create": "Utwórz",
   "validFor": "Ważny przez",
   "validUntil": "Ważny do",
   "deleteLockedToken": "Uwierzytelnij, aby usunąć zablokowany token.",

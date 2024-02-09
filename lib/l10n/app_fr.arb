@@ -407,6 +407,7 @@
   "editToken": "Modifier le jeton",
   "edit": "Modifier",
   "save": "Enregistrer",
+  "create": "créer",
   "validFor": "Valide pour",
   "validUntil": "Valide jusqu'à",
   "deleteLockedToken": "Veuillez vous authentifier pour supprimer le jeton verrouillé.",
