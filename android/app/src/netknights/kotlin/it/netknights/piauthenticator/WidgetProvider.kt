@@ -10,7 +10,6 @@ import es.antonborri.home_widget.HomeWidgetLaunchIntent
 import es.antonborri.home_widget.HomeWidgetProvider
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
-import androidx.appcompat.app.AppCompatDelegate
 import android.content.res.Configuration
 import android.os.Bundle
 import android.content.ClipboardManager
@@ -20,50 +19,7 @@ import android.content.Intent
 import android.app.PendingIntent
 import java.io.File
 
-// val WIDGET_BUTTON = "it.netknights.piauthenticator.WIDGET_BUTTON"
-
 class AppWidgetProvider : HomeWidgetProvider() {
-
-    fun onConfigurationChanged(newConfiguration: Configuration) {
-        println("onConfigurationChanged#AppWidgetProvider")
-        // val nightModeSuffix = if(newConfiguration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) "_dark" else "_light"
-        // val widgetData = getWidgetData(newConfiguration)
-        // val widgetIds = widgetData.getString("_widgetIds", null)
-        // if(widgetIds != null) {
-        //     val appWidgetIds = widgetIds.split(",").map { it.toInt() }.toIntArray()
-        //     onUpdate(newConfiguration.applicationContext, AppWidgetManager.getInstance(newConfiguration.applicationContext), appWidgetIds, widgetData)
-        // }
-    }
-
-    override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-        println("onReceive")
-        // if (WIDGET_BUTTON.equals(intent.getAction())) {
-        //     println("onReceive2")
-        //     // do something here
-        // }
-    }
-
-    override fun onEnabled(context: Context) {
-        super.onEnabled(context)
-        println("onEnabled")
-    }
-
-    override fun onDisabled(context: Context) {
-        super.onDisabled(context)
-        println("onDisabled")
-    }
-
-    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
-        super.onDeleted(context, appWidgetIds)
-        println("onDeleted")
-    }
-
-    override fun onRestored(context: Context, oldWidgetIds: IntArray, newWidgetIds: IntArray) {
-        super.onRestored(context, oldWidgetIds, newWidgetIds)
-        println("onRestored")
-    }
-
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray, widgetData: SharedPreferences) {
         val nightModeSuffix: String

@@ -52,18 +52,4 @@ class MainActivity : FlutterFragmentActivity() {
 
         }
     }
-
-    override fun onConfigurationChanged(newConfiguration: Configuration) {
-        super.onConfigurationChanged(newConfiguration)
-        updateHomeWidget()
-    }
-
-    fun updateHomeWidget() {
-        val intent = Intent(this, AppWidgetProvider::class.java)
-        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-        val ids = AppWidgetManager.getInstance(application).getAppWidgetIds(ComponentName(application, AppWidgetProvider::class.java))
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-        sendBroadcast(intent)
-
-    }
 }

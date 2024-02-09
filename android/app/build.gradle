@@ -27,10 +27,11 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('key.properties')
+def keystorePropertiesFile = rootProject.file('app/src/netknights/key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
+
 
 android {
     compileSdkVersion 34
@@ -50,7 +51,7 @@ android {
     }
 
     signingConfigs {
-        release {
+        netknights {
             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword keystoreProperties['storePassword']
             keyAlias keystoreProperties['keyAlias']
@@ -58,11 +59,18 @@ android {
         }
     }
 
+    flavorDimensions "pi-authenticator"
+    
+    productFlavors {
+        netknights{
+            dimension "pi-authenticator"
+            applicationId "it.netknights.piauthenticator"
+            signingConfig signingConfigs.netknights
+        }
+    }
+   
     buildTypes {
         release {
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.release
-
             // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type.
             minifyEnabled false
@@ -91,7 +99,5 @@ flutter {
 }
 
 dependencies {
-    implementation "androidx.appcompat:appcompat:1.6.1"
-    implementation "androidx.appcompat:appcompat-resources:1.6.1"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

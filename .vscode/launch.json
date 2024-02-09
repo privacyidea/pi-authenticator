@@ -5,25 +5,30 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "pi-authenticator (release mode)",
-            "request": "launch",
+            "name": "privacyIDEA Authenticator - release",
             "type": "dart",
-            "program": "lib/main_netknights.dart",
-            "flutterMode": "release",
+            "request": "launch",
+            "program": "lib/mains/main_netknights.dart",
+            "args": [
+                "--flavor",
+                "netknights",
+                "--target",
+                "lib/mains/main_netknights.dart",
+                "--release"
+            ]
         },
         {
-            "name": "pi-authenticator (debug mode)",
-            "request": "launch",
+            "name": "privacyIDEA Authenticator - debug",
             "type": "dart",
-            "program": "lib/main_netknights.dart",
-            "flutterMode": "debug",
-        },
-        {
-            "name": "pi-authenticator (profile mode)",
             "request": "launch",
-            "type": "dart",
-            "program": "lib/main_netknights.dart",
-            "flutterMode": "profile",
+            "program": "lib/mains/main_netknights.dart",
+            "args": [
+                "--flavor",
+                "netknights",
+                "--target",
+                "lib/mains/main_netknights.dart",
+                "--debug"
+            ]
         },
     ]
 }
