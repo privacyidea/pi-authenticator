@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
@@ -32,10 +31,8 @@ import '../widgets/home_widgets/home_widget_otp.dart';
 import '../widgets/home_widgets/home_widget_unlinked.dart';
 import 'app_customizer.dart';
 import 'logger.dart';
-import 'version.dart';
 
 const appGroupId = 'group.authenticator_home_widget_group';
-const minIosWidgetVersion = "17.0.0";
 
 /// This function is called on any interaction with the HomeWidget
 @pragma('vm:entry-point')
@@ -140,17 +137,10 @@ class HomeWidgetUtils {
   static Future<bool> get isHomeWidgetSupported async {
     if (_isHomeWidgetSupported != null) return _isHomeWidgetSupported!;
     if (Platform.isIOS) {
-      final deviceInfo = DeviceInfoPlugin();
-      final iosInfo = await deviceInfo.iosInfo;
-      final systemVersion = iosInfo.systemVersion;
-      final version = Version.parse(systemVersion);
-      final minVersion = Version.parse(minIosWidgetVersion);
-      _isHomeWidgetSupported = version >= minVersion;
-      print('iOS Version: $version, minVersion: $minVersion, isSupported: $_isHomeWidgetSupported');
+      _isHomeWidgetSupported = false;
       return _isHomeWidgetSupported!;
     }
     _isHomeWidgetSupported = true;
-    print('isHomeWidgetSupported: $_isHomeWidgetSupported');
     return _isHomeWidgetSupported!;
   }
 

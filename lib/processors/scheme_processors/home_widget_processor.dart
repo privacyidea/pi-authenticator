@@ -13,7 +13,6 @@ class HomeWidgetProcessor implements SchemeProcessor {
 
   @override
   Future<void> processUri(Uri uri, {bool fromInit = false}) async {
-    print('HomeWidgetProcessor: Processing uri: $uri');
     if (supportedSchemes.contains(uri.scheme) == false) return;
     return _processors[uri.host]?.call(uri);
   }
