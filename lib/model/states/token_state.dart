@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import '../enums/push_token_rollout_state.dart';
 
 import '../../utils/logger.dart';
+import '../enums/push_token_rollout_state.dart';
 import '../token_folder.dart';
 import '../tokens/hotp_token.dart';
 import '../tokens/otp_token.dart';

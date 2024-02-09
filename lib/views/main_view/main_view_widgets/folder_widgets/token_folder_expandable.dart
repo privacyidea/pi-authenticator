@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import '../../../../model/states/token_filter.dart';
-import '../../../../utils/app_customizer.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../model/states/token_filter.dart';
 import '../../../../model/token_folder.dart';
 import '../../../../model/tokens/push_token.dart';
 import '../../../../model/tokens/token.dart';
+import '../../../../utils/app_customizer.dart';
 import '../../../../utils/lock_auth.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../widgets/custom_trailing.dart';

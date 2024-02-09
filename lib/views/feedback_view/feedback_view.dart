@@ -1,11 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/pi_mailer.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
-import 'package:privacyidea_authenticator/views/view_interface.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
+import '../../l10n/app_localizations.dart';
+import '../../utils/pi_mailer.dart';
+import '../../utils/view_utils.dart';
+import '../main_view/main_view.dart';
+import '../view_interface.dart';
+import '../../widgets/dialog_widgets/default_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/app_info_utils.dart';

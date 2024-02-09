@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/widgets/custom_trailing.dart';
+import '../../../../../widgets/custom_trailing.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/introduction.dart';

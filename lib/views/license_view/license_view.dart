@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import '../view_interface.dart';
 
 import '../../widgets/push_request_listener.dart';
+import '../view_interface.dart';
 
 class LicenseView extends StatelessView {
   @override

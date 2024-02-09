@@ -38,8 +38,8 @@ import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart
 import 'package:privacyidea_authenticator/views/splash_screen/splash_screen.dart';
 import 'package:privacyidea_authenticator/widgets/app_wrapper.dart';
 
-import 'utils/home_widget_utils.dart';
-import 'views/feedback_view/feedback_view.dart';
+import '../utils/home_widget_utils.dart';
+import '../views/feedback_view/feedback_view.dart';
 
 void main() async {
   Logger.init(

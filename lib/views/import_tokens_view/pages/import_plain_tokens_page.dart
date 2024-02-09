@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../widgets/no_conflict_import_tokens_list.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../import_tokens_view.dart';
-import '../widgets/conflicted_import_tokens_tile.dart';
 import '../widgets/conflicted_import_tokens_list.dart';
+import '../widgets/conflicted_import_tokens_tile.dart';
+import '../widgets/no_conflict_import_tokens_list.dart';
 
 class ImportPlainTokensPage extends ConsumerStatefulWidget {
   final String appName;

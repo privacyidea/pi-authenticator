@@ -1,6 +1,6 @@
 import 'package:flutter_mailer/flutter_mailer.dart';
-import 'package:privacyidea_authenticator/utils/app_info_utils.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'app_info_utils.dart';
+import 'logger.dart';
 
 class PiMailer {
   static String get _mailRecipient => 'app-crash@netknights.it';

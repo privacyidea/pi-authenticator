@@ -3,7 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
+import '../utils/logger.dart';
 
 import '../utils/utils.dart';
 import 'pulse_icon.dart';

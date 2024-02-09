@@ -1,4 +1,4 @@
-import '../../main_netknights.dart';
+import '../../mains/main_netknights.dart';
 import '../token_origin.dart';
 import '../tokens/token.dart';
 

@@ -1,4 +1,4 @@
-import 'package:privacyidea_authenticator/utils/version.dart';
+import '../utils/version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interfaces/repo/settings_repository.dart';

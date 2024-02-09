@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:privacyidea_authenticator/utils/version.dart';
+import 'version.dart';
 
 class AppInfoUtils {
   static bool isInitialized = false;

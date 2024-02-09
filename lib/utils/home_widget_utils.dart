@@ -10,11 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:mutex/mutex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:privacyidea_authenticator/model/token_folder.dart';
+import '../model/token_folder.dart';
 
 import '../interfaces/repo/token_folder_repository.dart';
 import '../interfaces/repo/token_repository.dart';
-import '../main_netknights.dart';
+import '../mains/main_netknights.dart';
 import '../model/tokens/day_password_token.dart';
 import '../model/tokens/hotp_token.dart';
 import '../model/tokens/otp_token.dart';
