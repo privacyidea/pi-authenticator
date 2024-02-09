@@ -354,6 +354,7 @@ class ThemeCustomization {
                   errorContainer: deleteColor,
                 ),
           checkboxTheme: CheckboxThemeData(
+            checkColor: MaterialStateProperty.resolveWith<Color?>((_) => onPrimary),
             fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
               if (states.contains(MaterialState.disabled)) {
                 return null;
