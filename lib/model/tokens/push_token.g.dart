@@ -12,16 +12,25 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       issuer: json['issuer'] as String,
       id: json['id'] as String,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
-      expirationDate: json['expirationDate'] == null ? null : DateTime.parse(json['expirationDate'] as String),
+      expirationDate: json['expirationDate'] == null
+          ? null
+          : DateTime.parse(json['expirationDate'] as String),
       enrollmentCredentials: json['enrollmentCredentials'] as String?,
       publicServerKey: json['publicServerKey'] as String?,
       publicTokenKey: json['publicTokenKey'] as String?,
       privateTokenKey: json['privateTokenKey'] as String?,
       isRolledOut: json['isRolledOut'] as bool?,
       sslVerify: json['sslVerify'] as bool?,
-      rolloutState: $enumDecodeNullable(_$PushTokenRollOutStateEnumMap, json['rolloutState']),
-      pushRequests: json['pushRequests'] == null ? null : PushRequestQueue.fromJson(json['pushRequests'] as Map<String, dynamic>),
-      knownPushRequests: json['knownPushRequests'] == null ? null : CustomIntBuffer.fromJson(json['knownPushRequests'] as Map<String, dynamic>),
+      rolloutState: $enumDecodeNullable(
+          _$PushTokenRollOutStateEnumMap, json['rolloutState']),
+      pushRequests: json['pushRequests'] == null
+          ? null
+          : PushRequestQueue.fromJson(
+              json['pushRequests'] as Map<String, dynamic>),
+      knownPushRequests: json['knownPushRequests'] == null
+          ? null
+          : CustomIntBuffer.fromJson(
+              json['knownPushRequests'] as Map<String, dynamic>),
       type: json['type'] as String?,
       sortIndex: json['sortIndex'] as int?,
       tokenImage: json['tokenImage'] as String?,
@@ -29,7 +38,9 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       pin: json['pin'] as bool?,
       isLocked: json['isLocked'] as bool?,
       isHidden: json['isHidden'] as bool?,
-      origin: json['origin'] == null ? null : TokenOriginData.fromJson(json['origin'] as Map<String, dynamic>),
+      origin: json['origin'] == null
+          ? null
+          : TokenOriginData.fromJson(json['origin'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
@@ -61,7 +72,8 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
 const _$PushTokenRollOutStateEnumMap = {
   PushTokenRollOutState.rolloutNotStarted: 'rolloutNotStarted',
   PushTokenRollOutState.generatingRSAKeyPair: 'generatingRSAKeyPair',
-  PushTokenRollOutState.generatingRSAKeyPairFailed: 'generatingRSAKeyPairFailed',
+  PushTokenRollOutState.generatingRSAKeyPairFailed:
+      'generatingRSAKeyPairFailed',
   PushTokenRollOutState.sendRSAPublicKey: 'sendRSAPublicKey',
   PushTokenRollOutState.sendRSAPublicKeyFailed: 'sendRSAPublicKeyFailed',
   PushTokenRollOutState.parsingResponse: 'parsingResponse',

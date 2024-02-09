@@ -21,7 +21,9 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
       isLocked: json['isLocked'] as bool?,
       isHidden: json['isHidden'] as bool?,
       folderId: json['folderId'] as int?,
-      origin: json['origin'] == null ? null : TokenOriginData.fromJson(json['origin'] as Map<String, dynamic>),
+      origin: json['origin'] == null
+          ? null
+          : TokenOriginData.fromJson(json['origin'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{

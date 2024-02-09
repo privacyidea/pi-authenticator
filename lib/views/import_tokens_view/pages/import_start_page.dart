@@ -6,6 +6,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:privacyidea_authenticator/model/enums/token_import_type.dart';
+import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/scheme_processor_interface.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
 import 'package:zxing2/qrcode.dart';
@@ -186,7 +187,9 @@ class _ImportStartPageState extends State<ImportStartPage> {
       setState(() => _errorText = AppLocalizations.of(context)!.invalidQrScan(widget.appName));
       return;
     }
-    _routeImportPlainTokensPage(tokens: await schemeProcessor.processUri(uri));
+    List<Token> tokens = await schemeProcessor.processUri(uri);
+    tokens = tokens.map((token) => TokenOriginSourceType.qrScan.addOriginToToken(token: token, data: result, appName: widget.appName)).toList();
+    _routeImportPlainTokensPage(tokens: tokens);
     return;
   }
 
@@ -228,11 +231,12 @@ class _ImportStartPageState extends State<ImportStartPage> {
       setState(() => _errorText = AppLocalizations.of(context)!.invalidQrFile(widget.appName));
       return;
     }
-    final tokens = await schemeProcessor.processUri(uri);
+    List<Token> tokens = await schemeProcessor.processUri(uri);
     if (tokens.isEmpty) {
       setState(() => _errorText = AppLocalizations.of(context)!.invalidQrFile(widget.appName));
       return;
     }
+    tokens = tokens.map((token) => TokenOriginSourceType.qrFile.addOriginToToken(token: token, data: result.text, appName: widget.appName)).toList();
 
     _routeImportPlainTokensPage(tokens: tokens);
   }
@@ -250,11 +254,12 @@ class _ImportStartPageState extends State<ImportStartPage> {
       setState(() => _errorText = AppLocalizations.of(context)!.invalidLink(widget.appName));
       return;
     }
-    final tokens = await schemeProcessor.processUri(uri);
+    List<Token> tokens = await schemeProcessor.processUri(uri);
     if (tokens.isEmpty) {
       setState(() => _errorText = AppLocalizations.of(context)!.invalidLink(widget.appName));
       return;
     }
+    tokens = tokens.map((token) => TokenOriginSourceType.link.addOriginToToken(token: token, data: _linkController.text, appName: widget.appName)).toList();
     if (mounted == false) return;
     setState(() => FocusScope.of(context).unfocus());
     _routeImportPlainTokensPage(tokens: tokens);

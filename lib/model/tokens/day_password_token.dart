@@ -128,7 +128,6 @@ class DayPasswordToken extends OTPToken {
         tokenImage: uriMap[URI_IMAGE],
         pin: uriMap[URI_PIN],
         isLocked: uriMap[URI_PIN],
-        origin: uriMap[URI_ORIGIN],
       );
     } catch (e) {
       throw ArgumentError('Invalid URI: $e');

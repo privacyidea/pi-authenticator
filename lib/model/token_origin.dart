@@ -15,7 +15,7 @@ class TokenOriginData {
   @override
   String toString() => 'TokenOrigin{source: $source, app: $appName}';
 
-  factory TokenOriginData.fromJson(Map<String, dynamic> json) => _$TokenOriginFromJson(json);
+  factory TokenOriginData.fromJson(Map<String, dynamic> json) => _$TokenOriginDataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$TokenOriginToJson(this);
+  Map<String, dynamic> toJson() => _$TokenOriginDataToJson(this);
 }

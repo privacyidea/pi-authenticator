@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';
-import '../../../model/enums/token_origin_source_type.dart';
 import '../../../model/enums/token_types.dart';
 import '../../../model/extensions/enum_extension.dart';
 import '../../../model/tokens/token.dart';
@@ -52,7 +50,6 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
         await Future.delayed(const Duration(milliseconds: 500));
       }
       uriMap[URI_SECRET] = twoStepSecret;
-      uriMap[URI_ORIGIN] = TokenOriginSourceType.link.toTokenOrigin(data: jsonEncode(uri.toString()));
     }
     Token newToken;
     try {

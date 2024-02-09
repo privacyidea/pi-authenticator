@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
@@ -247,7 +248,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     return updatedTokens;
   }
 
-  // The retun value of a qrCode could be any object. In this case should be a String that is a valid URI.
+  // The return value of a qrCode could be any object. In this case should be a String that is a valid URI.
   // If it is not a valid URI, the user will be informed.
   Future<void> handleQrCode(Object? qrCode) async {
     Uri uri;
@@ -258,25 +259,23 @@ class TokenNotifier extends StateNotifier<TokenState> {
       showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
       return;
     }
-    await handleLink(uri);
+    List<Token> tokens = await _tokensFromUri(uri);
+    tokens = tokens.map((e) => TokenOriginSourceType.qrScan.addOriginToToken(token: e, data: qrCode)).toList();
+    addOrReplaceTokens(tokens);
   }
 
   Future<void> handleLink(Uri uri) async {
-    await loadingRepo;
+    List<Token> tokens = await _tokensFromUri(uri);
+    tokens = tokens.map((e) => TokenOriginSourceType.link.addOriginToToken(token: e, data: uri.toString())).toList();
+    addOrReplaceTokens(tokens);
+  }
+
+  Future<List<Token>> _tokensFromUri(Uri uri) async {
     List<Token>? tokens;
     try {
       tokens = await TokenImportSchemeProcessor.processUriByAny(uri);
-    } catch (_) {
-      // TODO: handle exceptions
-    }
-    if (tokens == null || tokens.isEmpty) {
-      // globalRef?.read(statusMessageProvider.notifier).state = (
-      //   AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSchemeNotSupported,
-      //   AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSchemeNotSupportedMessage(uri.scheme),
-      // );
-      return;
-    }
-    addOrReplaceTokens(tokens);
+    } catch (_) {}
+    return tokens ?? [];
   }
 
   Future<bool> addPushRequestToToken(PushRequest pr) async {

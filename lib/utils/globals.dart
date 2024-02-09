@@ -34,8 +34,6 @@ Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocaliz
           localizations.patchNotesV4_3_0NewFeatures3,
           localizations.patchNotesV4_3_0NewFeatures4,
           localizations.patchNotesV4_3_0NewFeatures5,
-        ],
-        PatchNoteType.bugFix: [
           localizations.patchNotesV4_3_0NewFeatures6,
         ],
       }

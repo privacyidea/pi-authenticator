@@ -64,7 +64,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         ],
         eagerError: true,
         cleanUp: (error) {
-          Logger.error('Error while loading app: $error', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
+          Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
         },
       ).then((values) => _navigate());
     });
@@ -72,7 +72,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   void dispose() {
-    Logger.info('Disposing app.', name: 'main.dart#dispose');
+    Logger.info('Disposing Splash Screen', name: 'main.dart#dispose');
     super.dispose();
   }
 

@@ -323,9 +323,10 @@ class MockPrivacyIdeaIOClient extends _i1.Mock
   }
 
   @override
-  _i5.Future<void> triggerNetworkAccessPermission({
+  _i5.Future<bool> triggerNetworkAccessPermission({
     required Uri? url,
     bool? sslVerify = true,
+    bool? isRetry = false,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -334,11 +335,11 @@ class MockPrivacyIdeaIOClient extends _i1.Mock
           {
             #url: url,
             #sslVerify: sslVerify,
+            #isRetry: isRetry,
           },
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
   _i5.Future<_i3.Response> doPost({

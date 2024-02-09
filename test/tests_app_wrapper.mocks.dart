@@ -209,9 +209,10 @@ class MockTokenFolderRepository extends _i1.Mock
 class MockPrivacyIdeaIOClient extends _i1.Mock
     implements _i11.PrivacyIdeaIOClient {
   @override
-  _i6.Future<void> triggerNetworkAccessPermission({
+  _i6.Future<bool> triggerNetworkAccessPermission({
     required Uri? url,
     bool? sslVerify = true,
+    bool? isRetry = false,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -220,11 +221,12 @@ class MockPrivacyIdeaIOClient extends _i1.Mock
           {
             #url: url,
             #sslVerify: sslVerify,
+            #isRetry: isRetry,
           },
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i6.Future<bool>.value(false),
+        returnValueForMissingStub: _i6.Future<bool>.value(false),
+      ) as _i6.Future<bool>);
 
   @override
   _i6.Future<_i3.Response> doPost({

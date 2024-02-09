@@ -121,7 +121,6 @@ class TOTPToken extends OTPToken {
         period: uriMap[URI_PERIOD] ?? 30,
         pin: uriMap[URI_PIN],
         isLocked: uriMap[URI_PIN],
-        origin: uriMap[URI_ORIGIN],
       );
     } catch (e) {
       throw ArgumentError('Invalid URI: $e');

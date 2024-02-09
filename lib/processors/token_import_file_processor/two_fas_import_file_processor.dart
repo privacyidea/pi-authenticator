@@ -4,11 +4,9 @@ import 'dart:convert';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
-import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../model/encryption/aes_encrypted.dart';
-import '../../model/token_origin.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
@@ -125,11 +123,6 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
       URI_LABEL: twoFasOTP[TWOFAS_LABEL],
       URI_DIGITS: twoFasOTP[TWOFAS_DIGITS],
       URI_COUNTER: twoFasOTP[TWOFAS_COUNTER],
-      URI_ORIGIN: TokenOriginData(
-        source: TokenOriginSourceType.backupFile,
-        appName: '2FAS Authenticator',
-        data: jsonEncode(twoFasToken),
-      ),
     };
   }
 }

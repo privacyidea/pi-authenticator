@@ -24,8 +24,6 @@
 
 const defaultCrashReportRecipient = 'app-crash@netknights.it';
 
-const String URI_ORIGIN = 'URI_ORIGIN';
-
 // qr codes:
 const String URI_TYPE = 'URI_TYPE';
 const String URI_LABEL = 'URI_LABEL';
