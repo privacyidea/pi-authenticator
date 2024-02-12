@@ -8,7 +8,7 @@
   "patchNotesV4_3_0NewFeatures3": "Push tokens can now be hidden from the token list.",
   "patchNotesV4_3_0NewFeatures4": "Introductions have been added to help new users get started.",
   "patchNotesV4_3_0NewFeatures5": "You can now search for tokens by tapping the magnifying glass in the upper right corner.",
-  "patchNotesV4_3_0NewFeatures6": "Added HomeWidget for token on Android 12 and later.",
+  "patchNotesV4_3_0NewFeatures6": "Added HomeWidget token for Android 12 and later.",
   "accept": "Accept",
   "@accept": {
     "description": "Label for e.g. a button. Something gets accepted by the user."
@@ -287,7 +287,7 @@
   "@authenticateToUnLockToken": {
     "description": "Reason to authenticate when trying to lock or unlock a token."
   },
-  "biometricRequiredTitle": "Biometrics not set up",
+  "biometricRequiredTitle": "Biometrics not setup",
   "@biometricRequiredTitle": {
     "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters."
   },
@@ -307,7 +307,7 @@
   "@deviceCredentialsRequiredTitle": {
     "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
   },
-  "deviceCredentialsSetupDescription": "Set up device credentials in the device settings",
+  "deviceCredentialsSetupDescription": "Setup device credentials in the device's settings",
   "@deviceCredentialsSetupDescription": {
     "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side."
   },
@@ -373,7 +373,7 @@
   "showErrorLog": "Show",
   "clearErrorLog": "Clear",
   "send": "Send",
-  "sendErrorLogDescription": "A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see how we use the information here:",
+  "sendErrorLogDescription": "A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:",
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
   },
@@ -404,7 +404,7 @@
   "validUntil": "Valid until",
   "deleteLockedToken": "Please authenticate to delete the locked token.",
   "editLockedToken": "Please authenticate to edit the locked token.",
-  "expandLockedFolder": "Please authenticate to expand the locked folder.",
+  "expandLockedFolder": "Please authenticate to uncollapse the locked folder.",
   "renameTokenFolder": "Rename folder",
   "@renameTokenFolder": {
     "description": "Title of the dialog where a new name for a token folder can be entered."
@@ -525,14 +525,14 @@
   "invalidQrFile": "The selected file does not contain a valid QR code from {appName}.",
   "invalidLink": "The link entered is not a valid token of {appName}, or it is not supported.",
   "importExistingToken": "{count, plural, zero{No token was found that is already in the application.} one{A token was found that already exists in the application.} other{{count} tokens was found that are already in the application.}}",
-  "importConflictToken": "{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with an existing token.\nPlease choose which one you want to keep.} other{There are conflicts with existing tokens.\nPlease choose those you want to keep.}}",
+  "importConflictToken": "{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with an existing token.\nPlease choose which one you want to keep.} other{There are conflicts with existing tokens.\nPlease choose which one you want to keep.}}",
   "importNewToken": "{count, plural, zero{No new token has been found.} one{A new token has been found and is being imported.} other{{count} new tokens have been found and will be imported.}}",
   "importHint2FAS": "Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.",
-  "importHintAegisBackupFile": "Select your Aegis export (.json).\nIf you do not have an export, please create one via the settings menu in the Aegis app. We recommend using a password.",
+  "importHintAegisBackupFile": "Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.",
   "importHintAegisQrScan": "Scan the QR code you receive when you transfer entries from Aegis.",
   "importHintAegisLink": "Enter the link you receive when you transfer entries from Aegis.",
   "importHintGoogleQrScan": "Scan the QR code you receive when you export your accounts from Google Authenticator.",
-  "importHintGoogleQrFile": "Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! The QR code contains the token in unencrypted form. Do not keep it for longer than needed !!",
+  "importHintGoogleQrFile": "Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!",
   "qrFileDecodeError": "It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.",
   "tokenLink": "Token link",
   "feedback": "Feedback",
@@ -542,7 +542,7 @@
   "feedbackPrivacyPolicy1": "By sending the feedback you agree to our ",
   "feedbackPrivacyPolicy2": "privacy policy",
   "@feedbackPrivacyPolicy2": {
-    "description": "Tapping on this should open the privacy policy."
+    "description": "Taping on this should open the privacy policy."
   },
   "feedbackPrivacyPolicy3": ".",
   "addSystemInfo": "Add system information",

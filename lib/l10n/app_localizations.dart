@@ -154,7 +154,7 @@ abstract class AppLocalizations {
   /// No description provided for @patchNotesV4_3_0NewFeatures6.
   ///
   /// In en, this message translates to:
-  /// **'Added HomeWidget for token on Android 12 and later.'**
+  /// **'Added HomeWidget token for Android 12 and later.'**
   String get patchNotesV4_3_0NewFeatures6;
 
   /// Label for e.g. a button. Something gets accepted by the user.
@@ -532,7 +532,7 @@ abstract class AppLocalizations {
   /// Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters.
   ///
   /// In en, this message translates to:
-  /// **'Biometrics not set up'**
+  /// **'Biometrics not setup'**
   String get biometricRequiredTitle;
 
   /// Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters.
@@ -562,7 +562,7 @@ abstract class AppLocalizations {
   /// Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side.
   ///
   /// In en, this message translates to:
-  /// **'Set up device credentials in the device settings'**
+  /// **'Setup device credentials in the device\'s settings'**
   String get deviceCredentialsSetupDescription;
 
   /// Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters.
@@ -700,7 +700,7 @@ abstract class AppLocalizations {
   /// Explanation for the user what he will send.
   ///
   /// In en, this message translates to:
-  /// **'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see how we use the information here:'**
+  /// **'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:'**
   String get sendErrorLogDescription;
 
   /// No description provided for @showPrivacyPolicy.
@@ -832,7 +832,7 @@ abstract class AppLocalizations {
   /// No description provided for @expandLockedFolder.
   ///
   /// In en, this message translates to:
-  /// **'Please authenticate to expand the locked folder.'**
+  /// **'Please authenticate to uncollapse the locked folder.'**
   String get expandLockedFolder;
 
   /// Title of the dialog where a new name for a token folder can be entered.
@@ -1240,7 +1240,7 @@ abstract class AppLocalizations {
   /// No description provided for @importConflictToken.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with an existing token.\nPlease choose which one you want to keep.} other{There are conflicts with existing tokens.\nPlease choose those you want to keep.}}'**
+  /// **'{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with an existing token.\nPlease choose which one you want to keep.} other{There are conflicts with existing tokens.\nPlease choose which one you want to keep.}}'**
   String importConflictToken(num count);
 
   /// No description provided for @importNewToken.
@@ -1258,7 +1258,7 @@ abstract class AppLocalizations {
   /// No description provided for @importHintAegisBackupFile.
   ///
   /// In en, this message translates to:
-  /// **'Select your Aegis export (.json).\nIf you do not have an export, please create one via the settings menu in the Aegis app. We recommend using a password.'**
+  /// **'Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.'**
   String get importHintAegisBackupFile;
 
   /// No description provided for @importHintAegisQrScan.
@@ -1282,7 +1282,7 @@ abstract class AppLocalizations {
   /// No description provided for @importHintGoogleQrFile.
   ///
   /// In en, this message translates to:
-  /// **'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! The QR code contains the token in unencrypted form. Do not keep it for longer than needed !!'**
+  /// **'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!'**
   String get importHintGoogleQrFile;
 
   /// No description provided for @qrFileDecodeError.
@@ -1327,7 +1327,7 @@ abstract class AppLocalizations {
   /// **'By sending the feedback you agree to our '**
   String get feedbackPrivacyPolicy1;
 
-  /// Tapping on this should open the privacy policy.
+  /// Taping on this should open the privacy policy.
   ///
   /// In en, this message translates to:
   /// **'privacy policy'**

@@ -77,11 +77,13 @@ android {
         netknights{
             dimension "pi-authenticator"
             applicationId "it.netknights.piauthenticator"
+            resValue "string", "app_name", "privacyIDEA Authenticator"
             signingConfig signingConfigs.netknights
         }
         netknights_debug{
             dimension "pi-authenticator"
             applicationId "it.netknights.piauthenticator.debug"
+            resValue "string", "app_name", "Internal - privacyIDEA Authenticator"
             signingConfig signingConfigs.netknights_debug
         }
     }

@@ -4,11 +4,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:mutex/mutex.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import '../model/token_folder.dart';
 
 import '../interfaces/repo/token_folder_repository.dart';
@@ -145,8 +143,9 @@ class HomeWidgetUtils {
   }
 
   Future<List<String>> get _widgetIds async => (await HomeWidget.getWidgetData<String?>(keyWidgetIds))?.split(',') ?? <String>[];
-  static Future<String> get _packageName async =>
-      kDebugMode ? (await PackageInfo.fromPlatform()).packageName.replaceAll('.debug', '') : (await PackageInfo.fromPlatform()).packageName;
+
+  // _packageId must be the exact id of the package variable in "AndroidManifest.xml" !! NOT the applicationId of the flavor !!
+  static const String _packageId = "it.netknights.piauthenticator";
   static Future<List<OTPToken>> _loadTokensFromRepo() async => (await _tokenRepository?.loadTokens())?.whereType<OTPToken>().toList() ?? [];
   static Future<void>? _saveTokensToRepo(List<OTPToken> tokens) => _tokenRepository?.saveOrReplaceTokens(tokens);
 
@@ -208,7 +207,6 @@ class HomeWidgetUtils {
   Future<void> homeWidgetInit({TokenRepository? repository}) async {
     if (await isHomeWidgetSupported == false) return;
     if (repository != null) _tokenRepository = repository;
-    //await HomeWidget.setAppGroupId(await _packageName);
     await _setThemeCustomization();
     await _updateStaticWidgets();
     await _resetAllTokens();
@@ -592,6 +590,6 @@ class HomeWidgetUtils {
     Logger.info('Notify Update: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate');
     _lastUpdate = DateTime.now();
     await HomeWidget.saveWidgetData(keyRebuildingWidgetIds, updatedWidgetIds.join(','));
-    await HomeWidget.updateWidget(qualifiedAndroidName: '${await _packageName}.AppWidgetProvider', iOSName: 'AppWidgetProvider');
+    await HomeWidget.updateWidget(qualifiedAndroidName: '${await _packageId}.AppWidgetProvider', iOSName: 'AppWidgetProvider');
   }
 }
