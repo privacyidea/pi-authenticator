@@ -31,7 +31,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get patchNotesV4_3_0NewFeatures5 => 'Sie können jetzt nach Token suchen, indem Sie auf die Lupe in der oberen rechten Ecke tippen.';
 
   @override
-  String get patchNotesV4_3_0NewFeatures6 => 'Der Token für HomeWidget wurde für Android 12 und höher hinzugefügt.';
+  String get patchNotesV4_3_0NewFeatures6 => 'Ab Android 12 kann für einen Token ein Widget auf dem Homescreen erstellt werden.';
 
   @override
   String get accept => 'Akzeptieren';
@@ -98,7 +98,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String confirmDeletionOf(Object name) {
-    return 'Sind Sie sicher dass sie $name löschen möchten?';
+    return 'Sind Sie sicher dass Sie $name löschen möchten?';
   }
 
   @override
@@ -386,7 +386,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get editLockedToken => 'Bitte authentifizieren Sie sich, um den gesperrten Token zu bearbeiten.';
 
   @override
-  String get uncollapseLockedFolder => 'Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.';
+  String get expandLockedFolder => 'Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.';
 
   @override
   String get renameTokenFolder => 'Ordner umbenennen';
@@ -516,7 +516,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get introAddTokenManually => 'Wenn Sie keinen QR-Code scannen möchten, können Sie Token auch manuell hinzufügen.';
 
   @override
-  String get introTokenSwipe => 'Streichen Sie Token nach links, um die verfügbaren Aktionen zu sehen.';
+  String get introTokenSwipe => 'Wischen Sie Token nach links, um die verfügbaren Aktionen zu sehen.';
 
   @override
   String get introEditToken => 'Hier können Sie den Namen des Tokens bearbeiten und einige Details einsehen.';
@@ -531,7 +531,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get introAddFolder => 'Sie können Ordner erstellen, um Ihre Token zu organisieren.';
 
   @override
-  String get introPollForChallenges => 'Sie können nach neuen Herausforderungen suchen, indem Sie die Liste der Token nach unten ziehen.';
+  String get introPollForChallenges => 'Sie können neue Push-Anmeldungen abfragen, indem Sie die Liste der Token nach unten ziehen.';
 
   @override
   String get introHidePushTokens => 'Deine Push-Token sind jetzt versteckt.\nAber du kannst sie immer noch auf dem Bildschirm mit den Push-Token sehen.';
@@ -563,7 +563,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tokensAreEncrypted => 'Die Token sind verschlüsselt. Bitte gib das Passwort ein, um sie zu entschlüsseln.';
 
   @override
-  String get tokensNotEncrypted => 'Die Token sind unverschlüsselt, und können direkt importiert werden.';
+  String get tokensNotEncrypted => 'Die Token sind unverschlüsselt und können direkt importiert werden.';
 
   @override
   String get tokensSuccessfullyDecrypted => 'Die Token wurden erfolgreich entschlüsselt, sie können nun importiert werden.';
@@ -637,25 +637,25 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get importHint2FAS => 'Wähle dein 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.';
+  String get importHint2FAS => 'Wählen Sie das 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.';
 
   @override
-  String get importHintAegisBackupFile => 'Wähle dein Aegis-Export (.JSON) aus.\nWenn Sie kein Export haben, erstellen Sie bitte eins über das Einstellungen Menu in der Aegis-App. Es wird das benutzen eines Passworts empfohlen.';
+  String get importHintAegisBackupFile => 'Wähle dein Aegis-Export (.json) aus.\nWenn Sie keinen Export haben, erstellen Sie bitte eins über das Einstellungen Menu in der Aegis-App. Wir empfehlen die Verwendung eines Passworts.';
 
   @override
-  String get importHintAegisQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie einträge aus Aegis übertragen.';
+  String get importHintAegisQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Einträge aus Aegis übertragen.';
 
   @override
-  String get importHintAegisLink => 'Geben Sie den Link ein, den Sie erhalten, wenn Sie einträge aus Aegis übertragen.';
+  String get importHintAegisLink => 'Geben Sie den Link ein, den Sie erhalten, wenn Sie Einträge aus Aegis übertragen.';
 
   @override
   String get importHintGoogleQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.';
 
   @override
-  String get importHintGoogleQrFile => 'Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.\n!! Beachte dass es nicht sicher ist den QR-Code auf ihren Gerät zu speichern, da die Token nicht verschlüsselt sind !!';
+  String get importHintGoogleQrFile => 'Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus dem Google Authenticator exportieren.\n!! Der QR-Code enthält die Token in unverschlüsselter Form. Es ist deshalb nicht sicher, diesen länger als nötig aufzubewahren !!';
 
   @override
-  String get qrFileDecodeError => 'Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren, bitte verwenden Sie stattdessen den QR-Code-Scanner.';
+  String get qrFileDecodeError => 'Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren. Bitte verwenden Sie stattdessen den QR-Code-Scanner.';
 
   @override
   String get tokenLink => 'Token Link';
@@ -673,7 +673,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get feedbackHint => 'Es öffnet sich eine vorgefertigte E-Mail, die Sie an uns senden können. Falls gewünscht, werden Informationen über Ihr Gerät und die Version der Anwendung hinzugefügt. Vor dem Versenden können Sie die E-Mail überprüfen und bearbeiten.';
 
   @override
-  String get feedbackPrivacyPolicy1 => 'Mit dem Senden des Feedbacks stimmen Sie unsere ';
+  String get feedbackPrivacyPolicy1 => 'Mit dem Senden des Feedbacks stimmen Sie unserer ';
 
   @override
   String get feedbackPrivacyPolicy2 => 'Datenschutzerklärung';

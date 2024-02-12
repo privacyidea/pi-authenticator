@@ -405,7 +405,7 @@
   "validUntil": "Gültig bis",
   "deleteLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu löschen.",
   "editLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu bearbeiten.",
-  "uncollapseLockedFolder": "Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.",
+  "expandLockedFolder": "Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.",
   "renameTokenFolder": "Ordner umbenennen",
   "addANewFolder": "Neuen Ordner anlegen",
   "folderName": "Ordnername",

@@ -386,7 +386,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get editLockedToken => 'Aby edytować zablokowany token, należy się uwierzytelnić.';
 
   @override
-  String get uncollapseLockedFolder => 'Uwierzytelnij, aby otworzyć zablokowany folder.';
+  String get expandLockedFolder => 'Uwierzytelnij, aby otworzyć zablokowany folder.';
 
   @override
   String get renameTokenFolder => 'Zmiana nazwy folderu';

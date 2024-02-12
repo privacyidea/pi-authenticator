@@ -386,7 +386,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get editLockedToken => 'Verifieer om het vergrendelde token te bewerken.';
 
   @override
-  String get uncollapseLockedFolder => 'Verifieer om de vergrendelde map te openen.';
+  String get expandLockedFolder => 'Verifieer om de vergrendelde map te openen.';
 
   @override
   String get renameTokenFolder => 'Map hernoemen';

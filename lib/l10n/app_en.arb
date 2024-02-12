@@ -404,7 +404,7 @@
   "validUntil": "Valid until",
   "deleteLockedToken": "Please authenticate to delete the locked token.",
   "editLockedToken": "Please authenticate to edit the locked token.",
-  "uncollapseLockedFolder": "Please authenticate to expand the locked folder.",
+  "expandLockedFolder": "Please authenticate to expand the locked folder.",
   "renameTokenFolder": "Rename folder",
   "@renameTokenFolder": {
     "description": "Title of the dialog where a new name for a token folder can be entered."

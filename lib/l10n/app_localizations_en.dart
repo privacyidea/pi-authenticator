@@ -31,7 +31,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get patchNotesV4_3_0NewFeatures5 => 'You can now search for tokens by tapping the magnifying glass in the upper right corner.';
 
   @override
-  String get patchNotesV4_3_0NewFeatures6 => 'Added HomeWidget token for Android 12 and later.';
+  String get patchNotesV4_3_0NewFeatures6 => 'Added HomeWidget for token on Android 12 and later.';
 
   @override
   String get accept => 'Accept';
@@ -234,7 +234,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authenticateToUnLockToken => 'Please authenticate to change the lock status of the token.';
 
   @override
-  String get biometricRequiredTitle => 'Biometrics not setup';
+  String get biometricRequiredTitle => 'Biometrics not set up';
 
   @override
   String get biometricHint => 'Authentication required';
@@ -249,7 +249,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deviceCredentialsRequiredTitle => 'Device credentials not set up';
 
   @override
-  String get deviceCredentialsSetupDescription => 'Setup device credentials in the device\'s settings';
+  String get deviceCredentialsSetupDescription => 'Set up device credentials in the device settings';
 
   @override
   String get signInTitle => 'Authentication required';
@@ -320,7 +320,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get send => 'Send';
 
   @override
-  String get sendErrorLogDescription => 'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:';
+  String get sendErrorLogDescription => 'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see how we use the information here:';
 
   @override
   String get showPrivacyPolicy => 'Show privacy policy';
@@ -386,7 +386,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editLockedToken => 'Please authenticate to edit the locked token.';
 
   @override
-  String get uncollapseLockedFolder => 'Please authenticate to uncollapse the locked folder.';
+  String get expandLockedFolder => 'Please authenticate to expand the locked folder.';
 
   @override
   String get renameTokenFolder => 'Rename folder';
@@ -617,7 +617,7 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'There are conflicts with existing tokens.\nPlease choose which one you want to keep.',
+      other: 'There are conflicts with existing tokens.\nPlease choose those you want to keep.',
       one: 'There is a conflict with an existing token.\nPlease choose which one you want to keep.',
       zero: 'There is no conflict with existing tokens.',
     );
@@ -640,7 +640,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importHint2FAS => 'Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.';
 
   @override
-  String get importHintAegisBackupFile => 'Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.';
+  String get importHintAegisBackupFile => 'Select your Aegis export (.json).\nIf you do not have an export, please create one via the settings menu in the Aegis app. We recommend using a password.';
 
   @override
   String get importHintAegisQrScan => 'Scan the QR code you receive when you transfer entries from Aegis.';
@@ -652,7 +652,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importHintGoogleQrScan => 'Scan the QR code you receive when you export your accounts from Google Authenticator.';
 
   @override
-  String get importHintGoogleQrFile => 'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!';
+  String get importHintGoogleQrFile => 'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! The QR code contains the token in unencrypted form. Do not keep it for longer than needed !!';
 
   @override
   String get qrFileDecodeError => 'It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.';

@@ -408,7 +408,7 @@
   "validUntil": "Válido hasta",
   "deleteLockedToken": "Por favor, autentíquese para eliminar el token bloqueado.",
   "editLockedToken": "Por favor, autentíquese para editar el token bloqueado.",
-  "uncollapseLockedFolder": "Por favor, autentifíquese para abrir la carpeta bloqueada.",
+  "expandLockedFolder": "Por favor, autentifíquese para abrir la carpeta bloqueada.",
   "renameTokenFolder": "Cambiar nombre de carpeta",
   "addANewFolder": "Crear nueva carpeta",
   "folderName": "Nombre de la carpeta",

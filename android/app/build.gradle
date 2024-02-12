@@ -26,10 +26,16 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
-def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('app/src/netknights/key.properties')
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+def keystorePropertiesNetknights = new Properties()
+def keystorePropertiesFileNetknights = rootProject.file('app/src/netknights/key.properties')
+if (keystorePropertiesFileNetknights.exists()) {
+    keystorePropertiesNetknights.load(new FileInputStream(keystorePropertiesFileNetknights))
+}
+
+def keystorePropertiesNetknightsDebug = new Properties()
+def keystorePropertiesFileNetknightsDebug = rootProject.file('app/src/netknights_debug/key.properties')
+if (keystorePropertiesFileNetknightsDebug.exists()) {
+    keystorePropertiesNetknightsDebug.load(new FileInputStream(keystorePropertiesFileNetknightsDebug))
 }
 
 
@@ -52,10 +58,16 @@ android {
 
     signingConfigs {
         netknights {
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
+            storeFile keystorePropertiesNetknights['storeFile'] ? file(keystorePropertiesNetknights['storeFile']) : null
+            storePassword keystorePropertiesNetknights['storePassword']
+            keyAlias keystorePropertiesNetknights['keyAlias']
+            keyPassword keystorePropertiesNetknights['keyPassword']
+        }        
+        netknights_debug {
+            storeFile keystorePropertiesNetknightsDebug['storeFile'] ? file(keystorePropertiesNetknightsDebug['storeFile']) : null
+            storePassword keystorePropertiesNetknightsDebug['storePassword']
+            keyAlias keystorePropertiesNetknightsDebug['keyAlias']
+            keyPassword keystorePropertiesNetknightsDebug['keyPassword']
         }
     }
 
@@ -66,6 +78,11 @@ android {
             dimension "pi-authenticator"
             applicationId "it.netknights.piauthenticator"
             signingConfig signingConfigs.netknights
+        }
+        netknights_debug{
+            dimension "pi-authenticator"
+            applicationId "it.netknights.piauthenticator.debug"
+            signingConfig signingConfigs.netknights_debug
         }
     }
    
@@ -90,6 +107,12 @@ android {
         debug {
             applicationIdSuffix ".debug"
             debuggable true
+
+            shrinkResources false
+
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
         }
     }
 }

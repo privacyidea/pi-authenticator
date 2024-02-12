@@ -386,7 +386,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get editLockedToken => 'Prosím, autentifikujte se pro úpravu uzamčeného tokenu.';
 
   @override
-  String get uncollapseLockedFolder => 'Chcete-li otevřít uzamčenou složku, ověřte se.';
+  String get expandLockedFolder => 'Chcete-li otevřít uzamčenou složku, ověřte se.';
 
   @override
   String get renameTokenFolder => 'Přejmenování složky';

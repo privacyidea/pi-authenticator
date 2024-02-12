@@ -412,7 +412,7 @@
   "validUntil": "Valide jusqu'à",
   "deleteLockedToken": "Veuillez vous authentifier pour supprimer le jeton verrouillé.",
   "editLockedToken": "Veuillez vous authentifier pour modifier le jeton verrouillé.",
-  "uncollapseLockedFolder": "Veuillez vous authentifier pour ouvrir le dossier verrouillé.",
+  "expandLockedFolder": "Veuillez vous authentifier pour ouvrir le dossier verrouillé.",
   "renameTokenFolder": "Renommer le dossier",
   "addANewFolder": "Créer un nouveau dossier",
   "folderName": "Nom du dossier",

@@ -386,7 +386,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get editLockedToken => 'Por favor, autentíquese para editar el token bloqueado.';
 
   @override
-  String get uncollapseLockedFolder => 'Por favor, autentifíquese para abrir la carpeta bloqueada.';
+  String get expandLockedFolder => 'Por favor, autentifíquese para abrir la carpeta bloqueada.';
 
   @override
   String get renameTokenFolder => 'Cambiar nombre de carpeta';

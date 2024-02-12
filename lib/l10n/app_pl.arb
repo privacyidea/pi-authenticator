@@ -408,7 +408,7 @@
   "validUntil": "Ważny do",
   "deleteLockedToken": "Uwierzytelnij, aby usunąć zablokowany token.",
   "editLockedToken": "Aby edytować zablokowany token, należy się uwierzytelnić.",
-  "uncollapseLockedFolder": "Uwierzytelnij, aby otworzyć zablokowany folder.",
+  "expandLockedFolder": "Uwierzytelnij, aby otworzyć zablokowany folder.",
   "renameTokenFolder": "Zmiana nazwy folderu",
   "addANewFolder": "Utwórz nowy folder",
   "folderName": "Nazwa folderu",

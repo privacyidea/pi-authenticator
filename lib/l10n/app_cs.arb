@@ -412,7 +412,7 @@
   "validUntil": "Platné do",
   "deleteLockedToken": "Prosím, autentifikujte se pro smazání uzamčeného tokenu.",
   "editLockedToken": "Prosím, autentifikujte se pro úpravu uzamčeného tokenu.",
-  "uncollapseLockedFolder": "Chcete-li otevřít uzamčenou složku, ověřte se.",
+  "expandLockedFolder": "Chcete-li otevřít uzamčenou složku, ověřte se.",
   "renameTokenFolder": "Přejmenování složky",
   "addANewFolder": "Vytvoření nové složky",
   "folderName": "Název složky",

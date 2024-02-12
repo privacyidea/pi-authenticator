@@ -386,7 +386,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get editLockedToken => 'Veuillez vous authentifier pour modifier le jeton verrouillé.';
 
   @override
-  String get uncollapseLockedFolder => 'Veuillez vous authentifier pour ouvrir le dossier verrouillé.';
+  String get expandLockedFolder => 'Veuillez vous authentifier pour ouvrir le dossier verrouillé.';
 
   @override
   String get renameTokenFolder => 'Renommer le dossier';

@@ -405,7 +405,7 @@
   "validUntil": "Geldig tot",
   "deleteLockedToken": "Verifieer om het vergrendelde token te verwijderen.",
   "editLockedToken": "Verifieer om het vergrendelde token te bewerken.",
-  "uncollapseLockedFolder": "Verifieer om de vergrendelde map te openen.",
+  "expandLockedFolder": "Verifieer om de vergrendelde map te openen.",
   "renameTokenFolder": "Map hernoemen",
   "addANewFolder": "Nieuwe map maken",
   "folderName": "Mapnaam",
