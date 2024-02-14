@@ -12,6 +12,7 @@ import '../tokens/token.dart';
 @immutable
 class TokenState {
   final List<Token> tokens;
+  final List<Token> lastlyUpdatedTokens;
 
   List<OTPToken> get otpTokens => tokens.whereType<OTPToken>().toList();
   bool get hasOTPTokens => otpTokens.isNotEmpty;
@@ -26,7 +27,9 @@ class TokenState {
   List<PushToken> get pushTokensToRollOut =>
       pushTokens.where((element) => !element.isRolledOut && element.rolloutState == PushTokenRollOutState.rolloutNotStarted).toList();
 
-  TokenState({List<Token> tokens = const []}) : tokens = List<Token>.from(tokens) {
+  TokenState({List<Token> tokens = const [], List<Token>? lastlyUpdatedTokens})
+      : tokens = List<Token>.from(tokens),
+        lastlyUpdatedTokens = lastlyUpdatedTokens ?? List<Token>.from(tokens) {
     _sort(this.tokens);
   }
   TokenState repaceList({List<Token>? tokens}) => TokenState(tokens: tokens ?? this.tokens);
@@ -61,25 +64,25 @@ class TokenState {
   TokenState withToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     newTokens.add(token);
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]);
   }
 
   TokenState withTokens(List<Token> tokens) {
     final newTokens = List<Token>.from(this.tokens);
     newTokens.addAll(tokens);
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
   }
 
   TokenState withoutToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     newTokens.removeWhere((element) => element.id == token.id);
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]);
   }
 
   TokenState withoutTokens(List<Token> tokens) {
     final newTokens = List<Token>.from(this.tokens);
     newTokens.removeWhere((element) => tokens.any((token) => token.id == element.id));
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
   }
 
   // Add a token if it does not exist yet
@@ -92,7 +95,7 @@ class TokenState {
     } else {
       newTokens[index] = token;
     }
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]);
   }
 
   // Replace the token if it does exist
@@ -105,7 +108,7 @@ class TokenState {
       return this;
     }
     newTokens[index] = token;
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]);
   }
 
   // replace all tokens where the id is the same
@@ -120,7 +123,7 @@ class TokenState {
       }
       newTokens[index] = token;
     }
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
   }
 
   // Replace the tokens if it does exist
@@ -135,7 +138,7 @@ class TokenState {
       }
       newTokens[index] = token;
     }
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
   }
 
   List<Token> tokensInFolder(TokenFolder folder, {List<Type>? only, List<Type>? exclude}) => tokens.where((token) {

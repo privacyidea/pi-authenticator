@@ -60,7 +60,7 @@ class SecureTokenRepository implements TokenRepository {
   /// in the storage the existing value is overwritten.
   /// Returns all tokens that could not be saved.
   @override
-  Future<List<Token>> saveOrReplaceTokens(List<Token> tokens) async {
+  Future<List<Token>> saveNewState(List<Token> tokens) async {
     final failedTokens = <Token>[];
     for (var element in tokens) {
       if (!await _saveOrReplaceToken(element)) {

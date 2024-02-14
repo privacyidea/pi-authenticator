@@ -84,10 +84,10 @@ class MockTokenRepository extends _i1.Mock implements _i4.TokenRepository {
   }
 
   @override
-  _i5.Future<List<_i6.Token>> saveOrReplaceTokens(List<_i6.Token>? tokens) =>
+  _i5.Future<List<_i6.Token>> saveNewState(List<_i6.Token>? tokens) =>
       (super.noSuchMethod(
         Invocation.method(
-          #saveOrReplaceTokens,
+          #saveNewState,
           [tokens],
         ),
         returnValue: _i5.Future<List<_i6.Token>>.value(<_i6.Token>[]),

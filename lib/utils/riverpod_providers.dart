@@ -15,6 +15,7 @@ import '../model/states/settings_state.dart';
 import '../model/states/token_filter.dart';
 import '../model/states/token_folder_state.dart';
 import '../model/states/token_state.dart';
+import '../model/tokens/otp_token.dart';
 import '../repo/preference_introduction_repository.dart';
 import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_folder_repository.dart';
@@ -205,6 +206,16 @@ final appConstraintsProvider = StateProvider<BoxConstraints?>(
   (ref) {
     Logger.info("New constraintsProvider created", name: 'appConstraintsProvider');
     return null;
+  },
+);
+
+final homeWidgetProvider = StateProvider<Map<String, OTPToken>>(
+  (ref) {
+    Logger.info("New homeWidgetProvider created", name: 'homeWidgetProvider');
+    ref.listen(tokenProvider, (previous, next) {
+      HomeWidgetUtils().updateTokensIfLinked(next.lastlyUpdatedTokens);
+    });
+    return {};
   },
 );
 

@@ -43,7 +43,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
   final LegacyUtils _legacy;
   final PrivacyIdeaIOClient _ioClient;
   final FirebaseUtils _firebaseUtils;
-  final HomeWidgetUtils _homeWidgetUtils;
 
   TokenNotifier({
     TokenState? initialState,
@@ -58,7 +57,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
         _legacy = legacy ?? const LegacyUtils(),
         _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
         _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
-        _homeWidgetUtils = homeWidgetUtils ?? HomeWidgetUtils(),
         super(
           initialState ?? TokenState(),
         ) {
@@ -77,7 +75,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     state = newState;
     if (newState.hasRolledOutPushTokens) checkNotificationPermission();
     for (final element in newState.pushTokensToRollOut) {
-      rolloutPushToken(element);
+      await rolloutPushToken(element);
     }
     await _saveStateToRepo();
   }
@@ -85,7 +83,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<void> _saveStateToRepo() async {
     await loadingRepo;
     loadingRepo = Future(() async {
-      final failedTokens = await _repo.saveOrReplaceTokens(state.tokens);
+      final failedTokens = await _repo.saveNewState(state.tokens);
       if (failedTokens.isNotEmpty) {
         Logger.warning(
           'Saving tokens failed. Failed Tokens: ${failedTokens.length}',
@@ -153,7 +151,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<bool> saveTokens() async {
     await loadingRepo;
     try {
-      await _repo.saveOrReplaceTokens(state.tokens);
+      await _repo.saveNewState(state.tokens);
       return true;
     } catch (_) {
       return false;
@@ -167,7 +165,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<void> incrementCounter(HOTPToken token) async {
     await loadingRepo;
     token = state.currentOf(token)?.copyWith(counter: token.counter + 1) ?? token.copyWith(counter: token.counter + 1);
-    _setNewState(state.replaceToken(token));
+    await _setNewState(state.replaceToken(token));
   }
 
   Future<void> hideToken(Token token) async {
@@ -232,7 +230,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     final updated = updater(current);
     await _setNewState(state.replaceToken(updated));
-    await _homeWidgetUtils.updateTokenIfLinked(updated);
     return updated;
   }
 
@@ -244,7 +241,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
       updatedTokens.add(updater(current));
     }
     await _setNewState(state.replaceTokens(updatedTokens));
-    await _homeWidgetUtils.updateTokensIfLinked(updatedTokens);
     return updatedTokens;
   }
 
@@ -261,13 +257,13 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     List<Token> tokens = await _tokensFromUri(uri);
     tokens = tokens.map((e) => TokenOriginSourceType.qrScan.addOriginToToken(token: e, data: qrCode)).toList();
-    addOrReplaceTokens(tokens);
+    await addOrReplaceTokens(tokens);
   }
 
   Future<void> handleLink(Uri uri) async {
     List<Token> tokens = await _tokensFromUri(uri);
     tokens = tokens.map((e) => TokenOriginSourceType.link.addOriginToToken(token: e, data: uri.toString())).toList();
-    addOrReplaceTokens(tokens);
+    await addOrReplaceTokens(tokens);
   }
 
   Future<List<Token>> _tokensFromUri(Uri uri) async {

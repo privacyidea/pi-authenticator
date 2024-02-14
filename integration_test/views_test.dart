@@ -6,6 +6,8 @@ import 'package:mockito/mockito.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/mains/main_netknights.dart';
+import 'package:privacyidea_authenticator/model/enums/introduction.dart';
+import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
@@ -13,6 +15,7 @@ import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
+import 'package:privacyidea_authenticator/utils/version.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/settings_groups.dart';
 
 import '../test/tests_app_wrapper.dart';
@@ -26,14 +29,15 @@ void main() {
   late final MockRsaUtils mockRsaUtils;
   late final MockFirebaseUtils mockFirebaseUtils;
   late final MockPrivacyIdeaIOClient mockIOClient;
+  late final MockIntroductionRepository mockIntroductionRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
-    when(mockSettingsRepository.loadSettings())
-        .thenAnswer((_) async => SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en')));
+    when(mockSettingsRepository.loadSettings()).thenAnswer((_) async =>
+        SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en'), latestVersion: Version.parse('999.999.999')));
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async => []);
-    when(mockTokenRepository.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
+    when(mockTokenRepository.saveNewState(any)).thenAnswer((_) async => []);
     when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
@@ -51,6 +55,9 @@ void main() {
       body: anyNamed('body'),
       sslVerify: anyNamed('sslVerify'),
     )).thenAnswer((_) => Future.value(Response('{"detail": {"public_key": "publicKey"}}', 200)));
+    mockIntroductionRepository = MockIntroductionRepository();
+    final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
+    when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
   });
 
   testWidgets('Views Test', (tester) async {

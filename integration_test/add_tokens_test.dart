@@ -6,8 +6,11 @@ import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
+import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/model/enums/token_types.dart';
+import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
+import 'package:privacyidea_authenticator/state_notifiers/completed_introduction_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
@@ -31,17 +34,21 @@ void main() {
   late final MockSettingsRepository mockSettingsRepository;
   late final MockTokenRepository mockTokenRepository;
   late final MockTokenFolderRepository mockTokenFolderRepository;
+  late final MockIntroductionRepository mockIntroductionRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
     when(mockSettingsRepository.loadSettings()).thenAnswer((_) async => SettingsState(useSystemLocale: false, localePreference: const Locale('en')));
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async => []);
-    when(mockTokenRepository.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
+    when(mockTokenRepository.saveNewState(any)).thenAnswer((_) async => []);
     when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
+    mockIntroductionRepository = MockIntroductionRepository();
+    final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
+    when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
   });
   testWidgets(
     'Add Tokens Test',
@@ -51,6 +58,7 @@ void main() {
           settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
           tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
           tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
+          introductionProvider.overrideWith((ref) => InrtroductionNotifier(repository: mockIntroductionRepository)),
         ],
         child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
       ));
@@ -82,13 +90,17 @@ void main() {
 }
 
 Future<void> _introToMainView(WidgetTester tester) async {
-  final Finder finder = find.byType(FloatingActionButton);
+  var finder = find.byType(FloatingActionButton);
   await pumpUntilFindNWidgets(tester, finder, 1, const Duration(seconds: 10));
   await tester.tap(find.byType(FloatingActionButton));
-  await tester.pump(const Duration(milliseconds: 1000));
+  await tester.pump(const Duration(milliseconds: 2000));
   await tester.tap(find.byType(FloatingActionButton));
-  await tester.pump(const Duration(milliseconds: 1000));
+  await tester.pump(const Duration(milliseconds: 2000));
   await tester.tap(find.byType(FloatingActionButton));
+  await tester.pump(const Duration(milliseconds: 2000));
+  finder = find.text(AppLocalizationsEn().ok);
+  await pumpUntilFindNWidgets(tester, finder, 1, const Duration(seconds: 10));
+  await tester.tap(finder);
   await tester.pump(const Duration(milliseconds: 1000));
 }
 
@@ -160,7 +172,7 @@ Future<void> _createFolder(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 1000));
   await tester.enterText(find.byType(TextField).first, AppLocalizationsEn().folderName);
   await tester.pump();
-  await tester.tap(find.text(AppLocalizationsEn().save));
+  await tester.tap(find.text(AppLocalizationsEn().create));
   await tester.pump();
 }
 
@@ -208,7 +220,7 @@ Future<void> _openFolder(WidgetTester tester) async {
 
 void expectMainViewIsEmptyAndCorrect() {
   expect(find.byType(FloatingActionButton), findsOneWidget);
-  expect(find.byType(AppBarItem), findsNWidgets(4));
+  expect(find.byType(AppBarItem), findsNWidgets(5)); // 4 at BottomNavigationBar and 1 at AppBar
   expect(find.byType(TokenWidgetBase), findsNothing);
   expect(find.byType(TokenFolderWidget), findsNothing);
   expect(find.text(ApplicationCustomization.defaultCustomization.appName), findsOneWidget);

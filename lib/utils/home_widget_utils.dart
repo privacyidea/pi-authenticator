@@ -7,6 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import '../model/token_folder.dart';
 
 import '../interfaces/repo/token_folder_repository.dart';
@@ -147,7 +148,7 @@ class HomeWidgetUtils {
   // _packageId must be the exact id of the package variable in "AndroidManifest.xml" !! NOT the applicationId of the flavor !!
   static const String _packageId = "it.netknights.piauthenticator";
   static Future<List<OTPToken>> _loadTokensFromRepo() async => (await _tokenRepository?.loadTokens())?.whereType<OTPToken>().toList() ?? [];
-  static Future<void>? _saveTokensToRepo(List<OTPToken> tokens) => _tokenRepository?.saveOrReplaceTokens(tokens);
+  static Future<void>? _saveTokensToRepo(List<OTPToken> tokens) => _tokenRepository?.saveNewState(tokens);
 
   static Future<List<TokenFolder>> _loadFoldersFromRepo() async {
     return (await _folderRepository?.loadFolders()) ?? [];
@@ -257,11 +258,7 @@ class HomeWidgetUtils {
       await unlink(widgetId);
       return;
     }
-    await HomeWidget.saveWidgetData('$keyTokenId$widgetId', tokenId);
-    await HomeWidget.saveWidgetData('$keyTokenLocked$widgetId', token.isLocked || ((await _folderOf(token))?.isLocked ?? false));
-    await _updateHomeWidgetHideOtp(token, widgetId);
-    await _setTokenType(widgetId, token.type);
-    await _notifyUpdate([widgetId]);
+    await _link(widgetId, token);
   }
 
   Future<void> unlink(String widgetId) async {
@@ -403,11 +400,29 @@ class HomeWidgetUtils {
     });
   }
 
+  Future<void> _link(String widgetId, OTPToken token) async {
+    await HomeWidget.saveWidgetData('$keyTokenId$widgetId', token.id);
+    await HomeWidget.saveWidgetData('$keyTokenLocked$widgetId', token.isLocked || ((await _folderOf(token))?.isLocked ?? false));
+    await _updateHomeWidgetHideOtp(token, widgetId);
+    await _setTokenType(widgetId, token.type);
+    await _notifyUpdate([widgetId]);
+    var state = globalRef?.read(homeWidgetProvider.notifier).state;
+    if (state != null) {
+      state[widgetId] = token;
+      globalRef?.read(homeWidgetProvider.notifier).state = state;
+    }
+  }
+
   Future<void> _unlink(String widgetId) async {
     Logger.info('Unlinking HomeWidget with id $widgetId', name: 'home_widget_utils.dart#_unlink');
     await HomeWidget.saveWidgetData('$keyTokenId$widgetId', null);
     await _updateHomeWidgetUnlinked();
     await _removeTokenType(widgetId);
+    var state = globalRef?.read(homeWidgetProvider.notifier).state;
+    if (state != null) {
+      state.remove(widgetId);
+      globalRef?.read(homeWidgetProvider.notifier).state = state;
+    }
   }
 
   Future<void> _hotpTokenAction(String widgetId) async {

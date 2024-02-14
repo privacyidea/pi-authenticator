@@ -197,7 +197,7 @@ class PushProvider {
     final prList = token.pushRequests;
     prList.add(pushRequest);
     token = token.copyWith(pushRequests: prList);
-    await const SecureTokenRepository().saveOrReplaceTokens([token]);
+    await const SecureTokenRepository().saveNewState([token]);
   }
 
   void _startOrStopPolling(bool pollingEnabled) {
