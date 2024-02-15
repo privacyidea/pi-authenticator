@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'customizations.dart';
+import 'globals.dart';
 import 'logger.dart';
 
 /// Shows a snackbar message to the user for a given `Duration`.

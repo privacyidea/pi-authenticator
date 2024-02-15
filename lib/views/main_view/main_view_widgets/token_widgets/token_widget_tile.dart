@@ -3,11 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-import '../../../../widgets/custom_trailing.dart';
-
 final disableCopyOtpProvider = StateProvider<bool>((ref) => false);
 
-class TokenWidgetTile extends StatelessWidget {
+class TokenWidgetTile extends ConsumerWidget {
   final Widget? title;
   final List<String> subtitles;
   final Widget? leading;
@@ -15,6 +13,8 @@ class TokenWidgetTile extends StatelessWidget {
   final Function()? onTap;
   final bool tokenIsLocked;
   final String? tokenImage;
+
+  final bool isPreview;
 
   const TokenWidgetTile({
     this.leading,
@@ -24,16 +24,21 @@ class TokenWidgetTile extends StatelessWidget {
     this.onTap,
     this.tokenIsLocked = false,
     this.tokenImage,
+    this.isPreview = false,
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) => ListTile(
+  Widget build(BuildContext context, WidgetRef ref) => ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-        horizontalTitleGap: 8.0,
+        horizontalTitleGap: isPreview ? 0 : 8,
         leading: (leading != null) ? leading! : null,
         onTap: onTap,
-        title: title,
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.topLeft,
+          child: title,
+        ),
         subtitle: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -59,9 +64,7 @@ class TokenWidgetTile extends StatelessWidget {
             ),
           ],
         ),
-        trailing: CustomTrailing(
-          child: trailing ?? const SizedBox(),
-        ),
+        trailing: trailing ?? const SizedBox(),
       );
 }
 

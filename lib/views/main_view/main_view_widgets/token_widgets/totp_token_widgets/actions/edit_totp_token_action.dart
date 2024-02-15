@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
+import '../../../../../../model/enums/introduction.dart';
 import '../../../../../../model/tokens/totp_token.dart';
 import '../../../../../../utils/app_customizer.dart';
-import '../../../../../../utils/customizations.dart';
+import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
 import '../../../../../../utils/utils.dart';
-import '../../../../../../widgets/default_dialog.dart';
+import '../../../../../../widgets/dialog_widgets/default_dialog.dart';
+import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../token_action.dart';
 
 class EditTOTPTokenAction extends TokenAction {
@@ -20,26 +22,33 @@ class EditTOTPTokenAction extends TokenAction {
   });
 
   @override
-  CustomSlidableAction build(BuildContext context) => CustomSlidableAction(
+  CustomSlidableAction build(context, ref) => CustomSlidableAction(
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
-        if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
+        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
           return;
         }
         _showDialog();
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Icon(Icons.edit),
-          Text(
-            AppLocalizations.of(context)!.edit,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        ],
+      child: FocusedItemAsOverlay(
+        tooltipWhenFocused: AppLocalizations.of(context)!.introEditToken,
+        childIsMoving: true,
+        alignment: Alignment.bottomCenter,
+        isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.editToken),
+        onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(Icons.edit),
+            Text(
+              AppLocalizations.of(context)!.edit,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+          ],
+        ),
       ));
 
   void _showDialog() {

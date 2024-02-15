@@ -1,5 +1,14 @@
 {
   "@@last_modified": "2023-08-07",
+  "patchNotesNewFeatures": "Nuevas características",
+  "patchNotesImprovements": "Mejoras",
+  "patchNotesBugFixes": "Corrección de errores",
+  "patchNotesV4_3_0NewFeatures1": "Añadido soporte para importar tokens de Google, Aegis y 2FAS Authenticator. En el futuro se añadirán más fuentes de importación",
+  "patchNotesV4_3_0NewFeatures2": "Añadida opción de feedback a los ajustes",
+  "patchNotesV4_3_0NewFeatures3": "Los tokens push ahora se pueden ocultar de la lista de tokens",
+  "patchNotesV4_3_0NewFeatures4": "Se han añadido introducciones para ayudar a los nuevos usuarios a empezar",
+  "patchNotesV4_3_0NewFeatures5": "Ahora puedes buscar tokens tocando la lupa de la esquina superior derecha",
+  "patchNotesV4_3_0NewFeatures6": "Añadido Token HomeWidget para Android 12 y posteriores",
   "guide": "guía",
   "@guide": {
     "description": "Button to open the guide screen."
@@ -100,6 +109,14 @@
         "example": "PUSH1234"
       }
     }
+  },
+  "confirmTokenDeletionHint": "Es posible que ya no pueda iniciar sesión si elimina este token.\nAsegúrese de que puede iniciar sesión en la cuenta asociada sin este token.",
+  "@confirmTokenDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a token."
+  },
+  "confirmFolderDeletionHint": "Eliminar una carpeta no afecta a los tokens que contiene.\nLos tokens se mueven a la lista principal.",
+  "@confirmFolderDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a folder."
   },
   "generatingPhonePart": "Generar parte telefónico",
   "@generatingPhonePart": {
@@ -352,14 +369,14 @@
   },
   "onBoardingText1": "Autenticación de dos factores\nmuy fácil",
   "onBoardingTitle2": "Máxima seguridad",
-  "onBoardingText2": "Almacena tokens en tu teléfono/n de forma segura. Protegido por tus datos biométricos.",
+  "onBoardingText2": "Almacena fichas de forma segura en tu teléfono.\nProtegido por tus datos biométricos.",
   "onBoardingTitle3": "Visítenos en Github",
   "onBoardingText3": "Esta aplicación es de código abierto",
   "errorLogTitle": "Registro de errores",
   "logMenu": "Menú de registro",
   "showErrorLog": "Mostrar",
   "clearErrorLog": "Borrar",
-  "sendErrorLog": "Enviar",
+  "send": "Enviar",
   "sendErrorLogDescription": "Se crea un correo electrónico listo.\nContiene información sobre la app, el error y el dispositivo.\nPuedes editar el correo antes de enviarlo.\nAquí puede ver cómo utilizamos la información:",
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
@@ -386,11 +403,12 @@
   "editToken": "Editar token",
   "edit": "Editar",
   "save": "Guardar",
+  "create": "Crear",
   "validFor": "Válido para",
   "validUntil": "Válido hasta",
   "deleteLockedToken": "Por favor, autentíquese para eliminar el token bloqueado.",
   "editLockedToken": "Por favor, autentíquese para editar el token bloqueado.",
-  "uncollapseLockedFolder": "Por favor, autentifíquese para abrir la carpeta bloqueada.",
+  "expandLockedFolder": "Por favor, autentifíquese para abrir la carpeta bloqueada.",
   "renameTokenFolder": "Cambiar nombre de carpeta",
   "addANewFolder": "Crear nueva carpeta",
   "folderName": "Nombre de la carpeta",
@@ -445,8 +463,9 @@
       }
     }
   },
-  "errorRollOutTokenExpired": "El despliegue de este token ya no es posible.\nEl token {name} ha caducado.",
-  "@errorRollOutTokenExpired": {
+  "errorRollOutNotPossibleAnymore": "El despliegue de este token ya no es posible.",
+  "errorTokenExpired": "El token {name} ha caducado.",
+  "@errorTokenExpired": {
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
@@ -473,6 +492,15 @@
   "settingsGroupGeneral": "Información general",
   "licensesAndVersion": "Licencias y versión",
   "privacyPolicy": "Política de privacidad",
+  "introScanQrCode": "Puedes escanear códigos QR para añadir tokens.\nSoportamos todos los tokens comunes de Two-Factor-Authentication y también los tokens privacyIDEA",
+  "introAddTokenManually": "Si no quieres escanear un código QR, también puedes añadir tokens manualmente",
+  "introTokenSwipe": "Desliza los tokens hacia la izquierda para ver las acciones disponibles",
+  "introEditToken": "Aquí puedes editar el nombre del token y ver algunos detalles",
+  "introLockToken": "Para mejorar la seguridad aún más, puedes bloquear los tokens.\nEntonces el token sólo se puede utilizar después de la autenticación.",
+  "introDragToken": "Reorganiza tus tokens pulsándolo durante unos segundos y arrastrándolo a la posición deseada",
+  "introAddFolder": "Puedes crear carpetas\npara organizar tus tokens",
+  "introPollForChallenges": "Puedes buscar nuevos retos arrastrando hacia abajo la lista de tokens",
+  "introHidePushTokens": "Tus push tokens están ahora ocultos.\nPero puedes seguir viéndolos en la pantalla de push tokens.",
   "legacySigningErrorTitle": "Se ha producido un error al utilizar el token obsoleto: {tokenLabel}",
   "@legacySigningErrorTitle": {
     "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
@@ -485,5 +513,47 @@
   "legacySigningErrorMessage": "El token se creó en una versión obsoleta de la aplicación, lo que puede provocar problemas al utilizarlo.\nSe recomienda crear un nuevo token push si el problema persiste.",
   "@legacySigningErrorMessage": {
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
-  }
+  },
+  "selectImportSource": "Seleccionar fuente de importación",
+  "selectImportType": "Jak chcete importovat žetony?",
+  "importTokens": "Importar token",
+  "selectFile": "Seleccionar archivo",
+  "decrypt": "Descifrar",
+  "tokensAreEncrypted": "Los tokens están encriptados. Por favor, introduce la contraseña para descifrarlos",
+  "tokensNotEncrypted": "Los tokens no están encriptados y se pueden importar directamente",
+  "tokensSuccessfullyDecrypted": "Los tokens se han descifrado correctamente y ya se pueden importar.",
+  "password": "Contraseña",
+  "wrongPassword": "Contraseña incorrecta",
+  "qrScan": "Escanear",
+  "enterLink": "Introducir enlace",
+  "invalidBackupFile": "El archivo seleccionado no es una copia de seguridad válida de {appName}",
+  "invalidQrScan": "El código QR escaneado no es una copia de seguridad válida de {appName}",
+  "invalidQrFile": "El archivo seleccionado no contiene un código QR válido de {appName}",
+  "invalidLink": "El enlace introducido no es un token válido de {appName}, o no es compatible",
+  "importExistingToken": "{count, plural, zero{No se ha encontrado ningún token que ya esté en la aplicación.} one{Se ha encontrado un token que ya existe en la aplicación.} other{Se han encontrado {count} tokens que ya están en la aplicación.}}",
+  "importConflictToken": "{count, plural, zero{No hay conflicto con tokens que ya existen.} one{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.} other{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.}}",
+  "importNewToken": "{count, plural, zero{No se ha encontrado un nuevo token.} one{Se ha encontrado un nuevo token que se importará.} other{Se ha encontrado un nuevo token {count} que se importará.}}",
+  "importHint2FAS": "Seleccione su copia de seguridad de 2FAS. Si no tiene una copia de seguridad, cree una en la aplicación 2FAS. Le recomendamos que utilice una contraseña",
+  "importHintAegisBackupFile": "Seleccione su exportación de Aegis (.JSON).\nSi no tiene una exportación, cree una a través del menú de configuración en la app de Aegis. Se recomienda utilizar una contraseña",
+  "importHintAegisQrScan": "Escanea el código QR que recibes al transferir entradas desde Aegis",
+  "importHintAegisLink": "Introduzca el enlace que recibe al transferir entradas desde Aegis",
+  "importHintGoogleQrScan": "Escanea el código QR que recibes al exportar tus cuentas desde Google Authenticator",
+  "importHintGoogleQrFile": "Selecciona un archivo de imagen con el código QR que recibes al exportar tus cuentas desde Google Authenticator.\n!! Tenga en cuenta que no es seguro guardar el código QR en su dispositivo, ya que los tokens no están cifrados !!",
+  "qrFileDecodeError": "No fue posible decodificar el código QR de la imagen seleccionada, por favor utilice el escáner de código QR en su lugar.",
+  "tokenLink": "Enlace token",
+  "feedback": "Comentarios",
+  "feedbackTitle": "¡Tus comentarios son siempre bienvenidos!",
+  "feedbackDescription": "Si tienes alguna pregunta, sugerencia o problema, háznoslo saber",
+  "feedbackHint": "Se abrirá un correo electrónico preparado que podrá enviarnos. Si lo desea, se añadirá información sobre su dispositivo y la versión de la aplicación. Puede comprobar y editar el correo electrónico antes de enviarlo.",
+  "feedbackPrivacyPolicy1": "Al enviar sus comentarios, acepta nuestra ",
+  "feedbackPrivacyPolicy2": "política de privacidad",
+  "@feedbackPrivacyPolicy2": {
+    "description": "Taping on this should open the privacy policy."
+  },
+  "feedbackPrivacyPolicy3": ".",
+  "addSystemInfo": "Añadir información del sistema",
+  "feedbackSentTitle": "Comentarios enviados",
+  "feedbackSentDescription": "Muchas gracias por su ayuda para mejorar esta aplicación.",
+  "patchNotesDialogTitle": "¿Qué hay de nuevo?",
+  "version": "Versión"
 }

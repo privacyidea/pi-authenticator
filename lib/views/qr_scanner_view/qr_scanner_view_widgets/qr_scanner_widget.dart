@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../../utils/logger.dart';
 import 'qr_code_scanner_overlay.dart';
 
 class QRScannerWidget extends StatefulWidget {
@@ -29,9 +30,7 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
                 if (alreadyDetected) return;
                 alreadyDetected = true;
                 final List<Barcode> barcodes = capture.barcodes;
-                for (final barcode in barcodes) {
-                  debugPrint('Barcode found! ${barcode.rawValue}');
-                }
+                Logger.info('Found ${barcodes.length} barcode(s).', name: 'QRScannerWidget#onDetect');
 
                 Navigator.pop(context, barcodes.first.rawValue);
               },

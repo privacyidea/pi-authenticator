@@ -24,11 +24,12 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/model/extensions/enum_extension.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
-import 'identifiers.dart';
+import '../model/enums/algorithms.dart';
 
 /// Inserts [char] at the position [pos] in the given String ([str]),
 /// and returns the resulting String.
@@ -57,28 +58,23 @@ String splitPeriodically(String str, int period) {
 
 Algorithms mapStringToAlgorithm(String algoAsString) {
   for (Algorithms alg in Algorithms.values) {
-    if (equalsIgnoreCase(enumAsString(alg), algoAsString)) {
+    if (alg.isString(algoAsString)) {
       return alg;
     }
   }
-
   throw ArgumentError.value(algoAsString, 'algorAsString', '$algoAsString cannot be mapped to $Algorithms');
 }
 
-/// This implementation is taken from the library
-/// [foundation](https://api.flutter.dev/flutter/foundation/describeEnum.html).
-/// That library sadly depends on [dart.ui] and thus cannot be used in tests.
-/// Therefore, only using this code enables us to use this library ([utils.dart])
-/// in tests.
+// / This implementation is taken from the library
+// / [foundation](https://api.flutter.dev/flutter/foundation/describeEnum.html).
+// / That library sadly depends on [dart.ui] and thus cannot be used in tests.
+// / Therefore, only using this code enables us to use this library ([utils.dart])
+// / in tests.
 String enumAsString(Enum enumEntry) {
   final String description = enumEntry.toString();
   final int indexOfDot = description.indexOf('.');
   assert(indexOfDot != -1 && indexOfDot < description.length - 1);
   return description.substring(indexOfDot + 1);
-}
-
-bool equalsIgnoreCase(String s1, String s2) {
-  return s1.toLowerCase() == s2.toLowerCase();
 }
 
 /// If permission is already given, this function does nothing
@@ -104,17 +100,6 @@ void checkNotificationPermission() async {
   }
 }
 
-String rolloutMsg(PushTokenRollOutState rolloutState, BuildContext context) => switch (rolloutState) {
-      PushTokenRollOutState.rolloutNotStarted => AppLocalizations.of(context)!.rollingOut,
-      PushTokenRollOutState.generatingRSAKeyPair => AppLocalizations.of(context)!.generatingRSAKeyPair,
-      PushTokenRollOutState.generatingRSAKeyPairFailed => AppLocalizations.of(context)!.generatingRSAKeyPairFailed,
-      PushTokenRollOutState.sendRSAPublicKey => AppLocalizations.of(context)!.sendingRSAPublicKey,
-      PushTokenRollOutState.sendRSAPublicKeyFailed => AppLocalizations.of(context)!.sendingRSAPublicKeyFailed,
-      PushTokenRollOutState.parsingResponse => AppLocalizations.of(context)!.parsingResponse,
-      PushTokenRollOutState.parsingResponseFailed => AppLocalizations.of(context)!.parsingResponseFailed,
-      PushTokenRollOutState.rolloutComplete => AppLocalizations.of(context)!.rolloutCompleted,
-    };
-
 String? getErrorMessageFromResponse(Response response) {
   String body = response.body;
   String? errorMessage;
@@ -126,3 +111,11 @@ String? getErrorMessageFromResponse(Response response) {
   }
   return errorMessage;
 }
+
+Size textSizeOf(String text, TextStyle style, {int? maxLines = 1, double minWidth = 0, double maxWidth = double.infinity}) {
+  final TextPainter textPainter = TextPainter(text: TextSpan(text: text, style: style), maxLines: maxLines, textDirection: TextDirection.ltr)
+    ..layout(minWidth: minWidth, maxWidth: maxWidth);
+  return textPainter.size;
+}
+
+Future<String> getPackageName() async => (await PackageInfo.fromPlatform()).packageName.replaceAll('.debug', '');

@@ -1,5 +1,14 @@
 {
   "@@last_modified": "2023-08-07",
+  "patchNotesNewFeatures": "Nové funkce",
+  "patchNotesImprovements": "Improvements",
+  "patchNotesBugFixes": "Opravy chyb",
+  "patchNotesV4_3_0NewFeatures1": "Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.",
+  "patchNotesV4_3_0NewFeatures2": "Do nastavení byla přidána možnost zpětné vazby.",
+  "patchNotesV4_3_0NewFeatures3": "Tokeny Push lze nyní skrýt ze seznamu tokenů.",
+  "patchNotesV4_3_0NewFeatures4": "Byly přidány úvodní informace, které novým uživatelům usnadní začátky.",
+  "patchNotesV4_3_0NewFeatures5": "Žetony nyní můžete vyhledávat klepnutím na lupu v pravém horním rohu.",
+  "patchNotesV4_3_0NewFeatures6": "Přidán token HomeWidget pro systém Android 12 a novější.",
   "guide": "Průvodce",
   "@guide": {
     "description": "Button to open the guide screen."
@@ -101,6 +110,14 @@
         "example": "PUSH1234"
       }
     }
+  },
+  "confirmTokenDeletionHint": "Pokud tento token odstraníte, nebude již možné se přihlásit.\nProsím, ujistěte se, že se můžete přihlásit k přidruženému účtu bez tohoto tokenu.",
+  "@confirmTokenDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a token."
+  },
+  "confirmFolderDeletionHint": "Odstranění složky nemá žádný vliv na tokeny v ní.\nTokeny jsou přesunuty do hlavního seznamu.",
+  "@confirmFolderDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a folder."
   },
   "generatingPhonePart": "Generování klientské části",
   "@generatingPhonePart": {
@@ -363,7 +380,7 @@
   "logMenu": "Nabídka protokolu",
   "showErrorLog": "Zobrazit",
   "clearErrorLog": "Vymazat",
-  "sendErrorLog": "Odeslat",
+  "send": "Odeslat",
   "sendErrorLogDescription": "Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:",
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
@@ -390,11 +407,12 @@
   "editToken": "Upravit token",
   "edit": "Upravit",
   "save": "Uložit",
+  "create": "Vytvořit",
   "validFor": "Platné pro",
   "validUntil": "Platné do",
   "deleteLockedToken": "Prosím, autentifikujte se pro smazání uzamčeného tokenu.",
   "editLockedToken": "Prosím, autentifikujte se pro úpravu uzamčeného tokenu.",
-  "uncollapseLockedFolder": "Chcete-li otevřít uzamčenou složku, ověřte se.",
+  "expandLockedFolder": "Chcete-li otevřít uzamčenou složku, ověřte se.",
   "renameTokenFolder": "Přejmenování složky",
   "addANewFolder": "Vytvoření nové složky",
   "folderName": "Název složky",
@@ -449,8 +467,9 @@
       }
     }
   },
-  "errorRollOutTokenExpired": "Roll-out tohoto tokenu již není možný.\nPlatnost tokenu {name} vypršela.",
-  "@errorRollOutTokenExpired": {
+  "errorRollOutNotPossibleAnymore": "Roll-out tohoto tokenu již není možný.",
+  "errorTokenExpired": "Platnost tokenu {name} vypršela.",
+  "@errorTokenExpired": {
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
@@ -477,7 +496,16 @@
   "settingsGroupGeneral": "Obecné informace",
   "licensesAndVersion": "Licence a verze",
   "privacyPolicy": "Zásady ochrany osobních údajů",
-  "legacySigningErrorTitle": "Při použití zastaralého tokenu došlo k chybě: {tokenLabel}",
+  "introScanQrCode": "Podporujeme všechny běžné dvoufaktorové autentizační tokeny a také tokeny privacyIDEA.",
+  "introAddTokenManually": "Pokud nechcete skenovat QR kód, můžete tokeny přidávat také ručně.",
+  "introTokenSwipe": "Přejetím po tokenech doleva zobrazíte dostupné akce.",
+  "introEditToken": "Zde můžete upravit název tokenu a zobrazit některé podrobnosti.",
+  "introLockToken": "To improve security even more, you can lock tokens. Then the token can only be used after authentication.",
+  "introDragToken": "Reorganizujte tokeny tak, že je na několik sekund stisknete a poté je přetáhnete na požadované místo.",
+  "introAddFolder": "Můžete vytvářet složky\npro uspořádání svých tokenů.",
+  "introPollForChallenges": "Můžete zkontrolovat nové výzvy přetažením seznamu tokenů dolů.",
+  "introHidePushTokens": "Vaše push tokeny jsou nyní skryté.\nNa obrazovce push tokenů je však stále vidíte.",
+  "legacySigningErrorTitle": "Při použití staršího tokenu došlo k chybě: {tokenLabel}",
   "@legacySigningErrorTitle": {
     "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
     "placeholders": {
@@ -489,5 +517,47 @@
   "legacySigningErrorMessage": "Token byl vytvořen v zastaralé verzi aplikace, což může vést k problémům při jeho používání.\nPokud problém přetrvává, doporučujeme vytvořit nový push token!",
   "@legacySigningErrorMessage": {
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
-  }
+  },
+  "selectImportSource": "Vyberte zdroj importu",
+  "selectImportType": "Jak chcete importovat žetony?",
+  "importTokens": "Importní token",
+  "selectFile": "Vybrat soubor",
+  "decrypt": "Dešifrovat",
+  "tokensAreEncrypted": "Tokeny jsou zašifrované. Please enter the password to decrypt them.",
+  "tokensNotEncrypted": "Tokeny nejsou šifrované a lze je importovat přímo.",
+  "tokensSuccessfullyDecrypted": "Tokeny byly úspěšně dešifrovány a nyní je lze importovat.",
+  "password": "Heslo",
+  "wrongPassword": "Nesprávné heslo",
+  "qrScan": "Skenování",
+  "enterLink": "Zadejte odkaz",
+  "invalidBackupFile": "Vybraný soubor není platnou zálohou {appName}.",
+  "invalidQrScan": "Naskenovaný QR kód není platnou zálohou {appName}.",
+  "invalidQrFile": "Vybraný soubor neobsahuje platný QR kód z {appName}.",
+  "invalidLink": "Zadaný odkaz není platným tokenem {appName} nebo není podporován.",
+  "importExistingToken": "{count, plural, zero{Nebyl nalezen žádný token, který by se již v aplikaci nacházel.} one{Byl nalezen token, který již v aplikaci existuje.} other{{count} byly nalezeny tokeny, které se již v aplikaci nacházejí.}}",
+  "importConflictToken": "{count, plural, zero{Není žádný konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.}}",
+  "importNewToken": "{count, plural, zero{Nenalezen žádný nový token.} one{Nalezen nový token, který bude importován.} other{Nalezen nový token {count}, který bude importován.}}",
+  "importHint2FAS": "Vyberte zálohu 2FAS.\nPokud nemáte zálohu, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.",
+  "importHintAegisBackupFile": "Vyberte svůj export Aegis (.JSON).\nPokud nemáte export, vytvořte si jej prostřednictvím nabídky nastavení v aplikaci Aegis. Doporučujeme použít heslo.",
+  "importHintAegisQrScan": "Naskenujte QR kód, který obdržíte při přenosu záznamů z aplikace Aegis.",
+  "importHintAegisLink": "Zadejte odkaz, který obdržíte při přenosu záznamů ze systému Aegis.",
+  "importHintGoogleQrScan": "Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.",
+  "importHintGoogleQrFile": "Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!",
+  "qrFileDecodeError": "Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.",
+  "tokenLink": "Token link",
+  "feedback": "Zpětná vazba",
+  "feedbackTitle": "Vaše zpětná vazba je vždy vítána!",
+  "feedbackDescription": "Pokud máte nějaké dotazy, návrhy nebo problémy, dejte nám prosím vědět.",
+  "feedbackHint": "Otevře se připravený e-mail, který nám můžete zaslat. V případě potřeby budou doplněny informace o vašem zařízení a verzi aplikace. Před odesláním můžete e-mail zkontrolovat a upravit.",
+  "feedbackPrivacyPolicy1": "Odesláním zpětné vazby souhlasíte s našimi ",
+  "feedbackPrivacyPolicy2": "zásadami ochrany osobních údajů",
+  "@feedbackPrivacyPolicy2": {
+    "description": "Taping on this should open the privacy policy."
+  },
+  "feedbackPrivacyPolicy3": ".",
+  "addSystemInfo": "Přidat systémové informace",
+  "feedbackSentTitle": "Zpětná vazba odeslána",
+  "feedbackSentDescription": "Děkujeme vám za pomoc při vylepšování této aplikace!",
+  "patchNotesDialogTitle": "Co je nového?",
+  "version": "Verze"
 }

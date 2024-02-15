@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -43,12 +42,9 @@ class CustomPaintNavigationBar extends CustomPainter {
       ..lineTo(size.width * 0.0, size.height * 1.0) // point 8
       ..close(); // point 1
 
-    // TODO: remove this if statement when the shadow bug is fixed on iOS
-    if (Platform.isIOS == false) {
-      canvas.translate(0, -elevation);
-      canvas.drawShadow(path, shadowColor, elevation, false);
-      canvas.translate(0, elevation);
-    }
+    canvas.translate(0, -elevation);
+    canvas.drawShadow(path, shadowColor, elevation, false);
+    canvas.translate(0, elevation);
     canvas.drawPath(path, paint);
   }
 

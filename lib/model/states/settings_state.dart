@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
+import '../../utils/version.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../utils/identifiers.dart';
@@ -18,7 +19,8 @@ class SettingsState {
 
   static bool get _useSystemLocaleDefault => true;
   static bool get _enableLoggingDefault => false;
-  static HidePushTokens get _hidePushTokensStateDefault => HidePushTokens.notHidden;
+  static bool get _hidePushTokensDefault => false;
+  static Version get _latestVersionDefault => Version.parse('0.0.0');
 
   final bool isFirstRun;
   final bool showGuideOnStart;
@@ -32,8 +34,8 @@ class SettingsState {
       : localePreference;
   final bool useSystemLocale;
   final bool verboseLogging;
-  final HidePushTokens hidePushTokensState;
-  bool get hidePushTokens => hidePushTokensState != HidePushTokens.notHidden;
+  final bool hidePushTokens;
+  final Version latestStartedVersion;
 
   SettingsState({
     bool? isFirstRun,
@@ -44,7 +46,8 @@ class SettingsState {
     Locale? localePreference,
     bool? useSystemLocale,
     bool? verboseLogging,
-    HidePushTokens? hidePushTokensState,
+    bool? hidePushTokens,
+    Version? latestVersion,
   })  : isFirstRun = isFirstRun ?? _isFirstRunDefault,
         showGuideOnStart = showGuideOnStart ?? _showGuideOnStartDefault,
         hideOpts = hideOpts ?? _hideOtpsDefault,
@@ -53,7 +56,8 @@ class SettingsState {
         localePreference = localePreference ?? _localePreferenceDefault,
         useSystemLocale = useSystemLocale ?? _useSystemLocaleDefault,
         verboseLogging = verboseLogging ?? _enableLoggingDefault,
-        hidePushTokensState = hidePushTokensState ?? _hidePushTokensStateDefault;
+        hidePushTokens = hidePushTokens ?? _hidePushTokensDefault,
+        latestStartedVersion = latestVersion ?? _latestVersionDefault;
 
   SettingsState copyWith({
     bool? isFirstRun,
@@ -64,7 +68,8 @@ class SettingsState {
     Locale? localePreference,
     bool? useSystemLocale,
     bool? verboseLogging,
-    HidePushTokens? hidePushTokensState,
+    bool? hidePushTokens,
+    Version? latestStartedVersion,
   }) {
     return SettingsState(
       isFirstRun: isFirstRun ?? this.isFirstRun,
@@ -75,14 +80,15 @@ class SettingsState {
       localePreference: localePreference ?? this.localePreference,
       useSystemLocale: useSystemLocale ?? this.useSystemLocale,
       verboseLogging: verboseLogging ?? this.verboseLogging,
-      hidePushTokensState: hidePushTokensState ?? this.hidePushTokensState,
+      hidePushTokens: hidePushTokens ?? this.hidePushTokens,
+      latestVersion: latestStartedVersion ?? this.latestStartedVersion,
     );
   }
 
   @override
   String toString() => 'SettingsState(isFirstRun: $isFirstRun, showGuideOnStart: $showGuideOnStart, hideOpts: $hideOpts, enablePolling: $enablePolling, '
       'crashReportRecipients: $crashReportRecipients, localePreference: $localePreference, useSystemLocale: $useSystemLocale, verboseLogging: $verboseLogging, '
-      'hidePushTokensState: $hidePushTokensState)';
+      'hidePushTokens: $hidePushTokens)';
 
   static String encodeLocale(Locale locale) {
     return '${locale.languageCode}#${locale.countryCode}';
@@ -102,17 +108,11 @@ class SettingsState {
         other.localePreference.toString() == localePreference.toString() &&
         other.useSystemLocale == useSystemLocale &&
         other.verboseLogging == verboseLogging &&
-        other.hidePushTokensState == hidePushTokensState;
+        other.hidePushTokens == hidePushTokens;
   }
 
   static Locale decodeLocale(String str) {
     var split = str.split('#');
     return split[1] == 'null' ? Locale(split[0]) : Locale(split[0], split[1]);
   }
-}
-
-enum HidePushTokens {
-  notHidden,
-  isHiddenNotNoticed,
-  isHiddenAndNoticed,
 }

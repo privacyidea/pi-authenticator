@@ -21,42 +21,8 @@
 */
 
 // default email address for crash reports
+
 const defaultCrashReportRecipient = 'app-crash@netknights.it';
-
-enum Encodings {
-  none,
-  base32,
-  hex,
-}
-
-enum Algorithms {
-  SHA1,
-  SHA256,
-  SHA512,
-}
-
-enum TokenTypes {
-  HOTP,
-  TOTP,
-  PIPUSH,
-  DAYPASSWORD,
-}
-
-enum DayPasswordTokenViewMode {
-  VALIDFOR,
-  VALIDUNTIL,
-}
-
-enum PushTokenRollOutState {
-  rolloutNotStarted,
-  generatingRSAKeyPair,
-  generatingRSAKeyPairFailed,
-  sendRSAPublicKey,
-  sendRSAPublicKeyFailed,
-  parsingResponse,
-  parsingResponseFailed,
-  rolloutComplete,
-}
 
 // qr codes:
 const String URI_TYPE = 'URI_TYPE';
@@ -95,4 +61,13 @@ const String PUSH_REQUEST_SERIAL = 'serial'; // 3.
 const String PUSH_REQUEST_QUESTION = 'question'; // 4.
 const String PUSH_REQUEST_TITLE = 'title'; // 5.
 const String PUSH_REQUEST_SSL_VERIFY = 'sslverify'; // 6.
-const String PUSH_REQUEST_SIGNATURE = 'signature';  // 7.
+const String PUSH_REQUEST_SIGNATURE = 'signature'; // 7.
+
+bool validateMap(Map<String, dynamic> map, List<String> keys) {
+  for (String key in keys) {
+    if (!map.containsKey(key)) {
+      return false;
+    }
+  }
+  return true;
+}

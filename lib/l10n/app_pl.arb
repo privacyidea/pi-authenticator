@@ -1,5 +1,14 @@
 {
   "@@last_modified": "2023-08-07",
+  "patchNotesNewFeatures": "Nowe funkcje",
+  "patchNotesImprovements": "Ulepszenia",
+  "patchNotesBugFixes": "Poprawki błędów",
+  "patchNotesV4_3_0NewFeatures1": "Dodano obsługę importowania tokenów z Google, Aegis i 2FAS Authenticator. Więcej źródeł importu zostanie dodanych w przyszłości",
+  "patchNotesV4_3_0NewFeatures2": "Dodano opcję opinii do ustawień.",
+  "patchNotesV4_3_0NewFeatures3": "Tokeny push można teraz ukryć na liście tokenów",
+  "patchNotesV4_3_0NewFeatures4": "Dodano wprowadzenia, aby ułatwić nowym użytkownikom rozpoczęcie pracy.",
+  "patchNotesV4_3_0NewFeatures5": "Możesz teraz wyszukiwać tokeny, dotykając szkła powiększającego w prawym górnym rogu.",
+  "patchNotesV4_3_0NewFeatures6": "Dodano token HomeWidget dla systemu Android 12 i nowszych.",
   "guide": "Przewodnik",
   "@guide": {
     "description": "Button to open the guide screen."
@@ -97,6 +106,14 @@
         "example": "PUSH1234"
       }
     }
+  },
+  "confirmTokenDeletionHint": "Usunięcie tego tokenu może uniemożliwić zalogowanie się. Upewnij się, że możesz zalogować się na powiązane konto bez tego tokenu.",
+  "@confirmTokenDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a token."
+  },
+  "confirmFolderDeletionHint": "Usunięcie folderu nie ma wpływu na znajdujące się w nim tokeny. Tokeny są przenoszone do głównej listy.",
+  "@confirmFolderDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a folder."
   },
   "generatingPhonePart": "Generowanie sekretu po stronie telefonu...",
   "@generatingPhonePart": {
@@ -359,7 +376,7 @@
   "logMenu": "Menu dziennika",
   "showErrorLog": "Wyświetl",
   "clearErrorLog": "Usuń",
-  "sendErrorLog": "Wyślij",
+  "send": "Wyślij",
   "sendErrorLogDescription": "Tworzona jest gotowa wiadomość e-mail zawierająca informacje o aplikacji, błędzie i urządzeniu.\nMożesz edytować wiadomość e-mail przed jej wysłaniem.\nTutaj można zobaczyć, w jaki sposób wykorzystujemy te informacje:",
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
@@ -386,11 +403,12 @@
   "editToken": "Edytuj token",
   "edit": "Edytuj",
   "save": "Zapisz",
+  "create": "Utwórz",
   "validFor": "Ważny przez",
   "validUntil": "Ważny do",
   "deleteLockedToken": "Uwierzytelnij, aby usunąć zablokowany token.",
   "editLockedToken": "Aby edytować zablokowany token, należy się uwierzytelnić.",
-  "uncollapseLockedFolder": "Uwierzytelnij, aby otworzyć zablokowany folder.",
+  "expandLockedFolder": "Uwierzytelnij, aby otworzyć zablokowany folder.",
   "renameTokenFolder": "Zmiana nazwy folderu",
   "addANewFolder": "Utwórz nowy folder",
   "folderName": "Nazwa folderu",
@@ -443,11 +461,12 @@
       }
     }
   },
-  "errorRollOutTokenExpired": "Wstać z łóżka tego tokena nie jest już możliwe.\nToken {name} wygasł.",
-  "@errorRollOutTokenExpired": {
+  "errorRollOutNotPossibleAnymore": "Wstać z łóżka tego tokena nie jest już możliwe.",
+  "errorTokenExpired": "Token {name} wygasł.",
+  "@errorTokenExpired": {
     "placeholders": {
       "name": {
-        "example": "PUSH1234"
+        "example": "PUSH1234A"
       }
     }
   },
@@ -471,6 +490,15 @@
   "settingsGroupGeneral": "Informacje ogólne",
   "licensesAndVersion": "Licencje i wersja",
   "privacyPolicy": "Polityka prywatności",
+  "introScanQrCode": "Możesz skanować kody QR, aby dodawać tokeny. Obsługujemy każdy popularny token uwierzytelniania dwuskładnikowego, a także tokeny privacyIDEA.",
+  "introAddTokenManually": "Jeśli nie chcesz skanować kodu QR, możesz również dodać tokeny ręcznie.",
+  "introTokenSwipe": "Przesuń tokeny w lewo, aby zobaczyć dostępne akcje.",
+  "introEditToken": "Tutaj możesz edytować nazwę tokena i zobaczyć kilka szczegółów.",
+  "introLockToken": "Aby jeszcze bardziej zwiększyć bezpieczeństwo, możesz zablokować tokeny. Wtedy token może być używany tylko po uwierzytelnieniu.",
+  "introDragToken": "Reorganizuj swoje tokeny, naciskając je przez kilka sekund, a następnie przeciągając je do żądanej pozycji.",
+  "introAddFolder": "Możesz tworzyć foldery, aby organizować swoje tokeny.",
+  "introPollForChallenges": "Możesz sprawdzić nowe wyzwania, przeciągając listę tokenów w dół.",
+  "introHidePushTokens": "Twoje tokeny push są teraz ukryte, ale nadal możesz je zobaczyć na ekranie tokenów push.",
   "legacySigningErrorTitle": "Wystąpił błąd podczas korzystania z przestarzałego tokena: {tokenLabel}",
   "@legacySigningErrorTitle": {
     "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
@@ -483,5 +511,47 @@
   "legacySigningErrorMessage": "Token został utworzony w nieaktualnej wersji aplikacji, co może prowadzić do problemów podczas korzystania z niego.\nZaleca się utworzenie nowego tokena push, jeśli problem nadal występuje!",
   "@legacySigningErrorMessage": {
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
-  }
+  },
+  "selectImportSource": "Wybierz źródło importu",
+  "selectImportType": "Jak chcesz zaimportować tokeny?",
+  "importTokens": "Token importu",
+  "selectFile": "Wybierz plik",
+  "decrypt": "Odszyfruj",
+  "tokensAreEncrypted": "Tokeny są zaszyfrowane. Wprowadź hasło, aby je odszyfrować",
+  "tokensNotEncrypted": "Tokeny nie są zaszyfrowane i mogą być importowane bezpośrednio.",
+  "tokensSuccessfullyDecrypted": "Tokeny zostały pomyślnie odszyfrowane i można je teraz zaimportować.",
+  "password": "Hasło",
+  "wrongPassword": "Nieprawidłowe hasło",
+  "qrScan": "Scan",
+  "enterLink": "Wprowadź link",
+  "invalidBackupFile": "Wybrany plik nie jest prawidłową kopią zapasową {appName}.",
+  "invalidQrScan": "Zeskanowany kod QR nie jest prawidłową kopią zapasową {appName}.",
+  "invalidQrFile": "Wybrany plik nie zawiera prawidłowego kodu QR z {appName}.",
+  "invalidLink": "Wprowadzony link nie jest prawidłowym tokenem {appName} lub nie jest obsługiwany.",
+  "importExistingToken": "{count, plural, zero{Nie znaleziono tokena, który już znajduje się w aplikacji.} one{Znaleziono token, który już istnieje w aplikacji.} other{Znaleziono {count} tokenów, które już znajdują się w aplikacji.}}",
+  "importConflictToken": "{count, plural, zero{Nie ma konfliktu z tokenami, które już istnieją.} one{Istnieje konflikt z tokenami, które już istnieją.} other{Istnieje konflikt z tokenami, które już istnieją.}}",
+  "importNewToken": "{count, plural, zero{Nie znaleziono nowego tokena.} one{Znaleziono nowy token, który zostanie zaimportowany.} other{Znaleziono nowy token {count}, który zostanie zaimportowany.}}",
+  "importHint2FAS": "Wybierz kopię zapasową 2FAS. Jeśli nie masz kopii zapasowej, utwórz ją w aplikacji 2FAS. Zalecamy użycie hasła.",
+  "importHintAegisBackupFile": "Wybierz swój eksport Aegis (.JSON).\nJeśli nie masz eksportu, utwórz go za pomocą menu ustawień w aplikacji Aegis. Zalecane jest użycie hasła.",
+  "importHintAegisQrScan": "Zeskanuj kod QR otrzymany podczas przesyłania wpisów z Aegis",
+  "importHintAegisLink": "Wprowadź link otrzymany podczas przesyłania wpisów z Aegis.",
+  "importHintGoogleQrScan": "Zeskanuj kod QR otrzymany podczas eksportowania kont z Google Authenticator",
+  "importHintGoogleQrFile": "Wybierz plik obrazu z kodem QR otrzymanym podczas eksportowania kont z Google Authenticator.\n!! Należy pamiętać, że zapisywanie kodu QR na urządzeniu nie jest bezpieczne, ponieważ tokeny nie są szyfrowane !!",
+  "qrFileDecodeError": "Nie można było zdekodować kodu QR z wybranego obrazu, zamiast tego użyj skanera kodów QR.",
+  "tokenLink": "TokenLink",
+  "feedback": "Informacje zwrotne",
+  "feedbackTitle": "Twoja opinia jest zawsze mile widziana!",
+  "feedbackDescription": "Jeśli masz jakieś pytania, sugestie lub problemy, daj nam znać.",
+  "feedbackHint": "Otworzy się gotowa wiadomość e-mail, którą możesz do nas wysłać. W razie potrzeby dodane zostaną informacje o urządzeniu i wersji aplikacji. Możesz sprawdzić i edytować wiadomość e-mail przed jej wysłaniem.",
+  "feedbackPrivacyPolicy1": "Wysyłając opinię, zgadzasz się z naszą ",
+  "feedbackPrivacyPolicy2": "polityką prywatności",
+  "@feedbackPrivacyPolicy2": {
+    "description": "Tapnięcie na to powinno otworzyć politykę prywatności."
+  },
+  "feedbackPrivacyPolicy3": ".",
+  "addSystemInfo": "Dodaj informacje systemowe",
+  "feedbackSentTitle": "Opinia została wysłana",
+  "feedbackSentDescription": "Dziękujemy bardzo za pomoc w ulepszeniu tej aplikacji!",
+  "patchNotesDialogTitle": "Co nowego?",
+  "version": "Wersja"
 }

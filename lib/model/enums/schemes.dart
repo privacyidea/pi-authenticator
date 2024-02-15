@@ -1,4 +1,0 @@
-enum UriSchemes {
-  otpauth,
-  pia,
-}

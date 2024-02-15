@@ -8,7 +8,6 @@ import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repositor
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
-import 'package:privacyidea_authenticator/utils/qr_parser.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
 @GenerateNiceMocks([
@@ -16,7 +15,6 @@ import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
   MockSpec<SettingsRepository>(),
   MockSpec<TokenFolderRepository>(),
   MockSpec<PrivacyIdeaIOClient>(),
-  MockSpec<QrParser>(),
   MockSpec<RsaUtils>(),
   MockSpec<FirebaseUtils>(),
 ])

@@ -5,25 +5,25 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart' as printer;
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:mutex/mutex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/app_customizer.dart';
+import 'package:privacyidea_authenticator/utils/app_info_utils.dart';
+import 'package:privacyidea_authenticator/utils/pi_mailer.dart';
 
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
-import 'customizations.dart';
+import 'globals.dart';
 import 'riverpod_providers.dart';
 
 final provider = Provider<int>((ref) => 0);
 
 class Logger {
   /*----------- STATIC FIELDS & GETTER -----------*/
+  static final Mutex _mutexWriteFile = Mutex();
   static Logger? _instance;
   static BuildContext? get _context => navigatorKey.currentContext;
   static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorMailBody : 'Error Log File Attached';
@@ -65,15 +65,10 @@ class Logger {
   Widget? _app;
   String _lastError = 'No error Message';
   GlobalKey<NavigatorState>? _navigatorKey;
-  PackageInfo? _platformInfos;
   String? _logPath;
   bool _enableLoggingToFile = false;
   bool _flutterIsRunning = false;
 
-  String get _mailRecipient => 'app-crash@netknights.it';
-  String get _mailSubject => _platformInfos != null
-      ? '(${_platformInfos!.version}+${_platformInfos!.buildNumber}) ${_platformInfos!.appName} >>> $_lastError'
-      : '${ApplicationCustomization.defaultCustomization.appName} >>> $_lastError';
   String get _filename => 'logfile.txt';
   String? get _fullPath => _logPath != null ? '$_logPath/$_filename' : null;
   bool get _verbose {
@@ -133,7 +128,7 @@ class Logger {
     _printWarning(warningString);
   }
 
-  static void error(String? message, {required dynamic error, required dynamic stackTrace, String? name}) {
+  static void error(String? message, {dynamic error, dynamic stackTrace, String? name}) {
     String errorString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
     errorString = _textFilter(errorString);
     if (message != null) {
@@ -143,11 +138,18 @@ class Logger {
     }
     instance._logToFile(errorString);
     instance._showSnackbar();
-    _printError(message, error: error, stackTrace: stackTrace, name: name);
+    StackTrace? stackTraceObject;
+    if (stackTrace is StackTrace) {
+      stackTraceObject = stackTrace;
+    } else if (stackTrace is String) {
+      stackTraceObject = StackTrace.fromString(stackTrace);
+    }
+    _printError(message, error: error, stackTrace: stackTraceObject, name: name);
   }
 
   Future<void> _logToFile(String fileMessage) async {
     if (_enableLoggingToFile == false) return;
+    await _mutexWriteFile.acquire();
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/$_filename');
 
@@ -159,50 +161,27 @@ class Logger {
     } finally {
       _print('Message logged into file');
     }
+    _mutexWriteFile.release();
   }
 
   static void sendErrorLog() {
     instance._sendErrorLog();
   }
 
-  Future<bool> _sendErrorLog() async {
-    if (_fullPath == null || kIsWeb) return false;
+  Future<bool> _sendErrorLog() {
+    if (_fullPath == null || kIsWeb) return Future.value(false);
     final File file = File(_fullPath!);
     if (!file.existsSync() || file.lengthSync() == 0) {
-      return false;
+      return Future.value(false);
     }
-
-    String deviceInfo = '';
-    // android or ios
-    if (Platform.isAndroid) {
-      final AndroidDeviceInfo build = await DeviceInfoPlugin().androidInfo;
-      deviceInfo = _readAndroidBuildData(build);
-    } else if (Platform.isIOS) {
-      final IosDeviceInfo data = await DeviceInfoPlugin().iosInfo;
-      deviceInfo = _readIosDeviceInfo(data);
-    }
+    String deviceInfo = AppInfoUtils.deviceInfoString;
 
     final completeMailBody = """$_mailBody
 ---------------------------------------------------------
 
-Device Parameters:
-$deviceInfo""";
+Device Parameters $deviceInfo""";
 
-    try {
-      final MailOptions mailOptions = MailOptions(
-        body: completeMailBody,
-        subject: _mailSubject,
-        recipients: [_mailRecipient],
-        attachments: [
-          _fullPath!,
-        ],
-      );
-      await FlutterMailer.send(mailOptions);
-    } catch (e, stackTrace) {
-      Logger.error('Was not able to send the Email', error: e, stackTrace: stackTrace, name: 'Logger#_sendErrorLog()');
-      return false;
-    }
-    return true;
+    return PiMailer.sendMail(subject: _lastError, body: completeMailBody, attachments: [_fullPath!]);
   }
 
   static void clearErrorLog() {
@@ -229,13 +208,12 @@ $deviceInfo""";
   Future<void> _setupLogger() async {
     await _setupErrorHooks();
     _setupNavigatorKey();
-    await _setupPlatformInfos();
     await _setupLogPath();
   }
 
   void _runZonedGuarded() {
     if (_appRunner == null && _app == null) {
-      WidgetsFlutterBinding.ensureInitialized();
+      // WidgetsFlutterBinding.ensureInitialized();
       return;
     }
     runZonedGuarded<void>(
@@ -258,11 +236,6 @@ $deviceInfo""";
   // Has no effect if _navigatorKey is already set
   void _setupNavigatorKey([GlobalKey<NavigatorState>? navigatorKey]) {
     _navigatorKey ??= navigatorKey ?? GlobalKey<NavigatorState>();
-  }
-
-  Future<void> _setupPlatformInfos() async {
-    if (_flutterIsRunning == false) return;
-    _platformInfos = await PackageInfo.fromPlatform();
   }
 
   Future<void> _setupLogPath() async {
@@ -353,9 +326,10 @@ $deviceInfo""";
   }
 
   String _convertLogToSingleString(String? message, {dynamic error, dynamic stackTrace, String? name, LogLevel logLevel = LogLevel.INFO}) {
-    String fileMessage = '(${DateTime.now().toString()}) ${message ?? ''}';
-    fileMessage += name != null ? '\n$name' : '';
-    fileMessage += error != null ? '\n$error' : '';
+    String fileMessage = '${DateTime.now().toString()}';
+    fileMessage += name != null ? ' [$name]\n' : '\n';
+    fileMessage += message ?? '';
+    fileMessage += error != null ? '\nError: $error' : '';
     fileMessage += stackTrace != null ? '\nStacktrace:\n$stackTrace' : '';
 
     List<String> lineSeparatedStrings = fileMessage.split("\n");
@@ -368,57 +342,9 @@ $deviceInfo""";
     }
     return fileMessage;
   }
-
-  String _readAndroidBuildData(AndroidDeviceInfo build) => 'version.securityPatch: ${build.version.securityPatch}\n'
-      'version.sdkInt: ${build.version.sdkInt}\n'
-      'version.release: ${build.version.release}\n'
-      'version.previewSdkInt: ${build.version.previewSdkInt}\n'
-      'version.incremental: ${build.version.incremental}\n'
-      'version.codename: ${build.version.codename}\n'
-      'version.baseOS: ${build.version.baseOS}\n'
-      'board: ${build.board}\n'
-      'bootloader: ${build.bootloader}\n'
-      'brand: ${build.brand}\n'
-      'device: ${build.device}\n'
-      'display: ${build.display}\n'
-      'fingerprint: ${build.fingerprint}\n'
-      'hardware: ${build.hardware}\n'
-      'host: ${build.host}\n'
-      'id: ${build.id}\n'
-      'manufacturer: ${build.manufacturer}\n'
-      'model: ${build.model}\n'
-      'product: ${build.product}\n'
-      'supported32BitAbis: ${build.supported32BitAbis}\n'
-      'supported64BitAbis: ${build.supported64BitAbis}\n'
-      'supportedAbis: ${build.supportedAbis}\n'
-      'tags: ${build.tags}\n'
-      'type: ${build.type}\n'
-      'isPhysicalDevice: ${build.isPhysicalDevice}\n'
-      'systemFeatures: ${build.systemFeatures}\n'
-      'displaySizeInches: ${((build.displayMetrics.sizeInches * 10).roundToDouble() / 10)}\n'
-      'displayWidthPixels: ${build.displayMetrics.widthPx}\n'
-      'displayWidthInches: ${build.displayMetrics.widthInches}\n'
-      'displayHeightPixels: ${build.displayMetrics.heightPx}\n'
-      'displayHeightInches: ${build.displayMetrics.heightInches}\n'
-      'displayXDpi: ${build.displayMetrics.xDpi}\n'
-      'displayYDpi: ${build.displayMetrics.yDpi}\n'
-      'serialNumber: ${build.serialNumber}\n';
 }
 
-String _readIosDeviceInfo(IosDeviceInfo data) => 'name: ${data.name}\n'
-    'systemName: ${data.systemName}\n'
-    'systemVersion: ${data.systemVersion}\n'
-    'model: ${data.model}\n'
-    'localizedModel: ${data.localizedModel}\n'
-    'identifierForVendor: ${data.identifierForVendor}\n'
-    'isPhysicalDevice: ${data.isPhysicalDevice}\n'
-    'utsname.sysname: ${data.utsname.sysname}\n'
-    'utsname.nodename: ${data.utsname.nodename}\n'
-    'utsname.release: ${data.utsname.release}\n'
-    'utsname.version: ${data.utsname.version}\n'
-    'utsname.machine: ${data.utsname.machine}\n';
-
-final filterParameterKeys = <String>['fbtoken', 'new_fb_token'];
+final filterParameterKeys = ['fbtoken', 'new_fb_token'];
 
 enum LogLevel {
   INFO,

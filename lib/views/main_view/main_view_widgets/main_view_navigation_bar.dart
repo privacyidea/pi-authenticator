@@ -1,8 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../l10n/app_localizations.dart';
+import '../../../model/enums/introduction.dart';
+import '../../../utils/riverpod_providers.dart';
+import '../../../widgets/focused_item_as_overlay.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../settings_view/settings_view.dart';
 import 'app_bar_item.dart';
@@ -16,96 +18,126 @@ class MainViewNavigationBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Positioned.fill(
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          final navWidth = constraints.maxWidth;
-          final navHeight = constraints.maxHeight * 0.10;
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              SizedBox(
-                width: navWidth,
-                height: navHeight,
-                child: Stack(
-                  children: [
-                    CustomPaint(
-                      size: Size(
-                        navWidth,
-                        navHeight,
-                      ),
-                      painter: CustomPaintNavigationBar(buildContext: context),
-                    ),
-                    const Center(
-                      heightFactor: 0.6,
-                      child: QrScannerButton(),
-                    ),
-                    Center(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
-                                child: const LicensePushViewButton(),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
-                                child: AppBarItem(
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, AddTokenManuallyView.routeName);
-                                  },
-                                  icon: const Icon(Icons.add_moderator),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: min(110, navHeight * 0.8 + 30)),
-                          Expanded(
-                            child: Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
-                                child: AppBarItem(
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AddTokenFolderDialog(),
-                                      useRootNavigator: false,
-                                    );
-                                  },
-                                  icon: const Icon(Icons.create_new_folder),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
-                                child: AppBarItem(
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, SettingsView.routeName);
-                                  },
-                                  icon: const Icon(Icons.settings),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+    BoxConstraints? constraints = ref.watch(appConstraintsProvider);
+    constraints ??= const BoxConstraints();
+    final navWidth = constraints.maxWidth;
+    final navHeight = constraints.maxHeight * 0.10;
+    return SizedBox(
+      width: constraints.maxWidth,
+      height: constraints.maxHeight,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          SizedBox(
+            width: navWidth,
+            height: navHeight,
+            child: Stack(
+              children: [
+                CustomPaint(
+                  size: Size(
+                    navWidth,
+                    navHeight,
+                  ),
+                  painter: CustomPaintNavigationBar(buildContext: context),
                 ),
-              ),
-            ],
-          );
-        },
+                Center(
+                  heightFactor: 0.6,
+                  child: FocusedItemAsOverlay(
+                      onComplete: () {
+                        ref.read(introductionProvider.notifier).complete(Introduction.scanQrCode);
+                      },
+                      isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.scanQrCode),
+                      tooltipWhenFocused: AppLocalizations.of(context)!.introScanQrCode,
+                      child: const QrScannerButton()),
+                ),
+                Center(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
+                            child: const LicensePushViewButton(),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
+                            child: AppBarItem(
+                              onPressed: () {
+                                Navigator.pushNamed(context, AddTokenManuallyView.routeName);
+                              },
+                              icon: FocusedItemAsOverlay(
+                                onComplete: () {
+                                  ref.read(introductionProvider.notifier).complete(Introduction.addTokenManually);
+                                },
+                                isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.addTokenManually),
+                                tooltipWhenFocused: AppLocalizations.of(context)!.introAddTokenManually,
+                                child: FittedBox(
+                                  child: Icon(
+                                    Icons.add_moderator,
+                                    color: Theme.of(context).navigationBarTheme.iconTheme?.resolve({})?.color,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Expanded(child: SizedBox()),
+                      Expanded(
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
+                            child: FocusedItemAsOverlay(
+                              isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.addFolder),
+                              tooltipWhenFocused: AppLocalizations.of(context)!.introAddFolder,
+                              onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.addFolder),
+                              child: AppBarItem(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AddTokenFolderDialog(),
+                                    useRootNavigator: false,
+                                  );
+                                },
+                                icon: FittedBox(
+                                  child: Icon(
+                                    Icons.create_new_folder,
+                                    color: Theme.of(context).navigationBarTheme.iconTheme?.resolve({})?.color,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
+                            child: AppBarItem(
+                              onPressed: () {
+                                Navigator.pushNamed(context, SettingsView.routeName);
+                              },
+                              icon: const FittedBox(
+                                child: Icon(Icons.settings),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

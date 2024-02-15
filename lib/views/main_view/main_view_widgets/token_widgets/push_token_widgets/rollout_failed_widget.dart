@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../model/enums/push_token_rollout_state.dart';
 import '../../../../../model/tokens/push_token.dart';
-import '../../../../../utils/customizations.dart';
+import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod_providers.dart';
-import '../../../../../utils/utils.dart';
-import '../../../../../widgets/default_dialog.dart';
+import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../widgets/press_button.dart';
 
 class RolloutFailedWidget extends StatelessWidget {
@@ -24,7 +24,7 @@ class RolloutFailedWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 6.0),
             child: FittedBox(
               child: Text(
-                rolloutMsg(token.rolloutState, context),
+                token.rolloutState.rolloutMsg(context),
                 style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
@@ -39,7 +39,7 @@ class RolloutFailedWidget extends StatelessWidget {
                   onPressed: () => globalRef?.read(tokenProvider.notifier).rolloutPushToken(token),
                   child: Text(
                     AppLocalizations.of(context)!.retryRollout,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     overflow: TextOverflow.fade,
                     softWrap: false,
                   ),
@@ -53,7 +53,7 @@ class RolloutFailedWidget extends StatelessWidget {
                   onPressed: () => _showDialog(),
                   child: Text(
                     AppLocalizations.of(context)!.delete,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     overflow: TextOverflow.fade,
                     softWrap: false,
                   ),

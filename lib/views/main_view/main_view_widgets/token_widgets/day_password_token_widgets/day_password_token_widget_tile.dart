@@ -6,9 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../model/enums/day_passoword_token_view_mode.dart';
 import '../../../../../model/tokens/day_password_token.dart';
-import '../../../../../utils/identifiers.dart';
-import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
@@ -25,7 +24,6 @@ class DayPasswordTokenWidgetTile extends ConsumerStatefulWidget {
 class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWidgetTile> {
   double secondsLeft = 0;
   late DateTime lastCount;
-  final ValueNotifier<bool> isHidden = ValueNotifier<bool>(true);
 
   @override
   void initState() {
@@ -81,19 +79,12 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
       title: Align(
         alignment: Alignment.centerLeft,
         child: InkWell(
-          onTap: widget.token.isLocked && isHidden.value
-              ? () async {
-                  if (await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.authenticateToShowOtp)) {
-                    isHidden.value = false;
-                  }
-                }
-              : _copyOtpValue,
+          onTap: widget.token.isLocked && widget.token.isHidden ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token) : _copyOtpValue,
           child: HideableText(
-            text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
-            textScaleFactor: 1.9,
-            enabled: widget.token.isLocked,
-            isHiddenNotifier: isHidden,
-          ),
+              text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
+              textScaleFactor: 1.9,
+              enabled: widget.token.isLocked,
+              isHidden: widget.token.isHidden),
         ),
       ),
       subtitles: [

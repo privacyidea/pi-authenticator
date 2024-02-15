@@ -21,12 +21,16 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/widgets/default_dialog.dart';
-import 'package:privacyidea_authenticator/widgets/default_dialog_button.dart';
+import 'package:privacyidea_authenticator/views/view_interface.dart';
+import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
+import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog_button.dart';
 
 import 'qr_scanner_view_widgets/qr_scanner_widget.dart';
 
-class QRScannerView extends StatelessWidget {
+class QRScannerView extends StatelessView {
+  @override
+  RouteSettings get routeSettings => const RouteSettings(name: routeName);
+
   static const routeName = '/qr_scanner';
 
   const QRScannerView({super.key});
@@ -35,9 +39,9 @@ class QRScannerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.black,
         leading: IconButton(
             icon: const Icon(
               Icons.arrow_back,

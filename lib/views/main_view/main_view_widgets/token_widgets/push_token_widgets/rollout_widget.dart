@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../model/enums/push_token_rollout_state.dart';
 import '../../../../../model/tokens/push_token.dart';
-import '../../../../../utils/utils.dart';
 
 class RolloutWidget extends StatelessWidget {
   final PushToken token;
@@ -13,7 +13,7 @@ class RolloutWidget extends StatelessWidget {
         children: [
           const CircularProgressIndicator(),
           Text(
-            rolloutMsg(token.rolloutState, context),
+            token.rolloutState.rolloutMsg(context),
             style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.center,
             overflow: TextOverflow.fade,

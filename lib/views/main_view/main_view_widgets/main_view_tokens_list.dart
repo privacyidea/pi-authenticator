@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/push_token.dart';
-import '../../../utils/logger.dart';
-import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../widgets/deactivateable_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
+import '../../../widgets/introduction_widgets/token_introduction.dart';
 import 'drag_target_divider.dart';
 import 'no_token_screen.dart';
+import 'poll_loading_indicator.dart';
 import 'sortable_widget_builder.dart';
 
 class MainViewTokensList extends ConsumerStatefulWidget {
@@ -53,12 +54,31 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
               scrollController: scrollController,
               child: CustomScrollView(
                 key: listViewKey,
-                physics: allowToRefresh ? const AlwaysScrollableScrollPhysics() : null,
+                physics: allowToRefresh ? const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()) : const BouncingScrollPhysics(),
                 controller: scrollController,
                 slivers: [
-                  SliverList(
-                    delegate: SliverChildListDelegate(
-                      [..._buildSortableWidgets(sortables, draggingSortable)],
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Column(
+                      children: [
+                        TokenIntroduction(
+                          child: Column(
+                            children: [
+                              ..._buildSortableWidgets(sortables, draggingSortable),
+                            ],
+                          ),
+                        ),
+                        ...(draggingSortable != null)
+                            ? [
+                                const DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true, bottomPaddingIfLast: 80),
+                                const Expanded(
+                                  child: Opacity(
+                                      opacity: 0,
+                                      child: DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true, bottomPaddingIfLast: 80)),
+                                )
+                              ]
+                            : [const SizedBox(height: 80)]
+                      ],
                     ),
                   ),
                 ],
@@ -88,58 +108,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
       }
       widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
     }
-    if (draggingSortable != null) {
-      widgets.add(const DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true));
-    }
-    widgets.add(const SizedBox(height: 80));
+
     return widgets;
-  }
-}
-
-/// This widget is polling for challenges and closes itself when the polling is done.
-/// Usage: showDialog(context: context, builder: (_) => const PollLoadingIndicator());
-class PollLoadingIndicator extends StatelessWidget {
-  static double widgetSize = 40;
-  static OverlayEntry? _overlayEntry;
-  static void pollForChallenges(BuildContext context) {
-    if (_overlayEntry != null) return;
-    _overlayEntry = OverlayEntry(
-      builder: (context) => const PollLoadingIndicator._(),
-    );
-    Overlay.of(context).insert(_overlayEntry!);
-    Logger.info('Start polling for challenges', name: 'poll_loading_indicator.dart#initState');
-    PushProvider().pollForChallenges(isManually: true).then((_) {
-      Logger.info('Stop polling for challenges', name: 'poll_loading_indicator.dart#initState');
-      _overlayEntry?.remove();
-      _overlayEntry = null;
-    });
-  }
-
-  const PollLoadingIndicator._();
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    return Positioned(
-      top: size.height * 0.08,
-      left: (size.width - widgetSize) / 2,
-      width: widgetSize,
-      height: widgetSize,
-      child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(99),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: const CircularProgressIndicator()),
-    );
   }
 }

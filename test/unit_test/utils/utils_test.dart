@@ -18,7 +18,7 @@
   limitations under the License.
 */
 import 'package:flutter_test/flutter_test.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 void main() {
@@ -26,7 +26,6 @@ void main() {
   _testSplitPeriodically();
   _testMapStringToAlgorithm();
   _testEnumAsString();
-  _testEqualsIgnoreCase();
 }
 
 void _testInsertCharAt() {
@@ -69,14 +68,5 @@ void _testEnumAsString() {
     test('Test SHA1', () => expect(enumAsString(Algorithms.SHA1), 'SHA1'));
     test('Test SHA256', () => expect(enumAsString(Algorithms.SHA256), 'SHA256'));
     test('Test SHA512', () => expect(enumAsString(Algorithms.SHA512), 'SHA512'));
-  });
-}
-
-void _testEqualsIgnoreCase() {
-  group('equalsIgnoreCase', () {
-    test('Test different case', () => expect(equalsIgnoreCase('ABC', 'abc'), true));
-    test('Test same case', () => expect(equalsIgnoreCase('ABC', 'ABC'), true));
-    test('Test not equal same case', () => expect(equalsIgnoreCase('ABC', 'AB'), false));
-    test('Test not equal different case', () => expect(equalsIgnoreCase('ABC', 'ab'), false));
   });
 }

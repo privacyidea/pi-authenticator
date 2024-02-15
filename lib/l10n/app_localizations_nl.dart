@@ -1,8 +1,37 @@
+import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 /// The translations for Dutch Flemish (`nl`).
 class AppLocalizationsNl extends AppLocalizations {
   AppLocalizationsNl([String locale = 'nl']) : super(locale);
+
+  @override
+  String get patchNotesNewFeatures => 'Nieuwe functies';
+
+  @override
+  String get patchNotesImprovements => 'Verbeteringen';
+
+  @override
+  String get patchNotesBugFixes => 'Bugfixes';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures1 => 'Ondersteuning toegevoegd voor het importeren van tokens van Google, Aegis en 2FAS Authenticator. Meer importbronnen zullen in de toekomst worden toegevoegd.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures2 => 'Feedbackoptie toegevoegd aan de instellingen.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures3 => 'Push tokens kunnen nu verborgen worden in de tokenlijst.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures4 => 'Introducties zijn toegevoegd om nieuwe gebruikers op weg te helpen.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures5 => 'Je kunt nu naar tokens zoeken door op het vergrootglas in de rechterbovenhoek te tikken.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures6 => 'HomeWidget Token toegevoegd voor Android 12 en hoger.';
 
   @override
   String get accept => 'Accepteren';
@@ -71,6 +100,12 @@ class AppLocalizationsNl extends AppLocalizations {
   String confirmDeletionOf(Object name) {
     return 'Weet u zeker dat u $name wilt verwijderen?';
   }
+
+  @override
+  String get confirmTokenDeletionHint => 'U kunt mogelijk niet meer inloggen als u dit token verwijdert. Controleer of u zonder dit token kunt inloggen op het gekoppelde account.';
+
+  @override
+  String get confirmFolderDeletionHint => 'Het verwijderen van een map heeft geen effect op de tokens in de map. De tokens worden verplaatst naar de hoofdlijst.';
 
   @override
   String get generatingPhonePart => 'Genereren telefoon gedeelte';
@@ -282,7 +317,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get clearErrorLog => 'Verwijderen';
 
   @override
-  String get sendErrorLog => 'verzenden';
+  String get send => 'verzenden';
 
   @override
   String get sendErrorLogDescription => 'Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:';
@@ -336,6 +371,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get save => 'Opslaan';
 
   @override
+  String get create => 'Creëer';
+
+  @override
   String get validFor => 'Geldig voor';
 
   @override
@@ -348,7 +386,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get editLockedToken => 'Verifieer om het vergrendelde token te bewerken.';
 
   @override
-  String get uncollapseLockedFolder => 'Verifieer om de vergrendelde map te openen.';
+  String get expandLockedFolder => 'Verifieer om de vergrendelde map te openen.';
 
   @override
   String get renameTokenFolder => 'Map hernoemen';
@@ -404,8 +442,11 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String errorRollOutTokenExpired(Object name) {
-    return 'Het uitrollen van dit token is niet meer mogelijk.\nHet token $name is verlopen.';
+  String get errorRollOutNotPossibleAnymore => 'Het uitrollen van dit token is niet meer mogelijk.';
+
+  @override
+  String errorTokenExpired(Object name) {
+    return 'Het token $name is verlopen.';
   }
 
   @override
@@ -469,10 +510,189 @@ class AppLocalizationsNl extends AppLocalizations {
   String get privacyPolicy => 'Privacybeleid';
 
   @override
+  String get introScanQrCode => 'Je kunt QR-codes scannen om tokens toe te voegen.We ondersteunen alle gangbare Two-Factor-Authenticatie tokens en ook de privacyIDEA tokens.';
+
+  @override
+  String get introAddTokenManually => 'Als je geen QR-code wilt scannen, kun je tokens ook handmatig toevoegen.';
+
+  @override
+  String get introTokenSwipe => 'Veeg tokens naar links om beschikbare acties te zien.';
+
+  @override
+  String get introEditToken => 'Hier kun je de naam van het token bewerken en enkele details bekijken.';
+
+  @override
+  String get introLockToken => 'Om de beveiliging nog meer te verbeteren, kun je tokens vergrendelen.¨Dan kan het token alleen gebruikt worden na authenticatie.';
+
+  @override
+  String get introDragToken => 'Reorganiseer je tokens door er een paar seconden op te drukken en het dan naar de gewenste positie te slepen.';
+
+  @override
+  String get introAddFolder => 'Je kunt mappen maken om je tokens te organiseren.';
+
+  @override
+  String get introPollForChallenges => 'Je kunt controleren of er nieuwe uitdagingen zijn door de lijst met tokens naar beneden te slepen.';
+
+  @override
+  String get introHidePushTokens => 'Je push tokens zijn nu verborgen, maar je kunt ze nog steeds zien op het push token scherm.';
+
+  @override
   String legacySigningErrorTitle(Object tokenLabel) {
     return 'Er is een fout opgetreden bij het gebruik van het verouderde token: $tokenLabel';
   }
 
   @override
   String get legacySigningErrorMessage => 'Het token is aangemaakt in een verouderde versie van de app, wat kan leiden tot problemen bij het gebruik ervan.\nHet wordt aanbevolen om een nieuw push token aan te maken als het probleem zich blijft voordoen!';
+
+  @override
+  String get selectImportSource => 'Selecteer importbron';
+
+  @override
+  String get selectImportType => 'Hoe wilt u de tokens importeren?';
+
+  @override
+  String get importTokens => 'Token importeren';
+
+  @override
+  String get selectFile => 'Selecteer bestand';
+
+  @override
+  String get decrypt => 'Decoderen';
+
+  @override
+  String get tokensAreEncrypted => 'De tokens zijn gecodeerd. Voer het wachtwoord in om ze te decoderen.';
+
+  @override
+  String get tokensNotEncrypted => 'De tokens zijn niet versleuteld en kunnen direct worden geïmporteerd.';
+
+  @override
+  String get tokensSuccessfullyDecrypted => 'De tokens zijn succesvol gedecodeerd en kunnen nu worden geïmporteerd.';
+
+  @override
+  String get password => 'Wachtwoord';
+
+  @override
+  String get wrongPassword => 'Onjuist wachtwoord';
+
+  @override
+  String get qrScan => 'Scan';
+
+  @override
+  String get enterLink => 'Link invoeren';
+
+  @override
+  String invalidBackupFile(Object appName) {
+    return 'Het geselecteerde bestand is geen geldige backup van $appName.';
+  }
+
+  @override
+  String invalidQrScan(Object appName) {
+    return 'De gescande QR code is geen geldige backup van $appName.';
+  }
+
+  @override
+  String invalidQrFile(Object appName) {
+    return 'Het geselecteerde bestand bevat geen geldige QR code van $appName.';
+  }
+
+  @override
+  String invalidLink(Object appName) {
+    return 'De ingevoerde link is geen geldig token van $appName, of wordt niet ondersteund.';
+  }
+
+  @override
+  String importExistingToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tokens gevonden die al in de applicatie staan.',
+      one: 'Er is een token gevonden dat al bestaat in de applicatie.',
+      zero: 'Er is geen token gevonden dat al in de toepassing aanwezig is.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importConflictToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.',
+      one: 'Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.',
+      zero: 'Er is geen conflict met tokens die al bestaan.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importNewToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Er is een nieuw token $count gevonden dat zal worden geïmporteerd.',
+      one: 'Er is een nieuw token gevonden dat zal worden geïmporteerd.',
+      zero: 'Er is geen nieuw token gevonden.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importHint2FAS => 'Selecteer uw 2FAS-back-up. Als u geen back-up hebt, maak er dan een aan in de 2FAS-app. Wij raden u aan een wachtwoord te gebruiken.';
+
+  @override
+  String get importHintAegisBackupFile => 'Selecteer uw Aegis-export (.JSON).Als u geen export hebt, maak er dan een aan via het instellingenmenu in de Aegis-app. Het gebruik van een wachtwoord wordt aanbevolen.';
+
+  @override
+  String get importHintAegisQrScan => 'Scan de QR-code die u ontvangt bij het overbrengen van items uit Aegis.';
+
+  @override
+  String get importHintAegisLink => 'Voer de link in die u ontvangt wanneer u vermeldingen van Aegis overdraagt.';
+
+  @override
+  String get importHintGoogleQrScan => 'Scan de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.';
+
+  @override
+  String get importHintGoogleQrFile => 'Selecteer een afbeeldingsbestand met de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.\n!! Let op: het is niet veilig om de QR-code op je apparaat op te slaan, omdat de tokens niet versleuteld zijn !!';
+
+  @override
+  String get qrFileDecodeError => 'Het was niet mogelijk om de QR code te decoderen van de geselecteerde afbeelding, gebruik in plaats daarvan de QR code scanner.';
+
+  @override
+  String get tokenLink => 'tokenlink';
+
+  @override
+  String get feedback => 'Feedback';
+
+  @override
+  String get feedbackTitle => 'Uw feedback is altijd welkom!';
+
+  @override
+  String get feedbackDescription => 'Als je vragen, suggesties of problemen hebt, laat het ons dan weten.';
+
+  @override
+  String get feedbackHint => 'Er wordt een kant-en-klare e-mail geopend die je naar ons kunt sturen. Indien gewenst wordt informatie over je apparaat en de versie van de applicatie toegevoegd. U kunt de e-mail controleren en bewerken voordat u deze verzendt.';
+
+  @override
+  String get feedbackPrivacyPolicy1 => 'Door feedback te sturen ga je akkoord met ons ';
+
+  @override
+  String get feedbackPrivacyPolicy2 => 'privacybeleid';
+
+  @override
+  String get feedbackPrivacyPolicy3 => '.';
+
+  @override
+  String get addSystemInfo => 'Systeeminformatie toevoegen';
+
+  @override
+  String get feedbackSentTitle => 'Feedback verzonden';
+
+  @override
+  String get feedbackSentDescription => 'Hartelijk dank voor je hulp om deze applicatie beter te maken!';
+
+  @override
+  String get patchNotesDialogTitle => 'Wat is er nieuw?';
+
+  @override
+  String get version => 'Versie';
 }

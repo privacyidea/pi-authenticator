@@ -4,10 +4,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_folder.dart';
 import '../../../../../utils/app_customizer.dart';
-import '../../../../../utils/customizations.dart';
+import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
-import '../../../../../widgets/default_dialog.dart';
+import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class DeleteTokenFolderAction extends StatelessWidget {
   final TokenFolder folder;
@@ -19,7 +19,7 @@ class DeleteTokenFolderAction extends StatelessWidget {
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
-        if (folder.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
+        if (folder.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
         _showDialog();
       },
       child: Column(

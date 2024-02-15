@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../utils/riverpod_providers.dart';
-import '../utils/text_size.dart';
+import '../utils/utils.dart';
 
 class StatusBar extends ConsumerStatefulWidget {
   final Widget child;
   const StatusBar({super.key, required this.child});
 
   @override
-  ConsumerState<StatusBar> createState() => _ConnectivityStatusBarState();
+  ConsumerState<StatusBar> createState() => _StatusBarState();
 }
 
-class _ConnectivityStatusBarState extends ConsumerState<StatusBar> {
+class _StatusBarState extends ConsumerState<StatusBar> {
   (String, String?)? previousStatusMessage;
   (String, String?)? currentStatusMessage;
   Queue<(String, String?)> statusbarQueue = Queue();
@@ -184,32 +184,24 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with Sing
                     color: Theme.of(context).colorScheme.error,
                   ),
                   padding: const EdgeInsets.all(padding),
-                  child: Center(
-                    child: LayoutBuilder(builder: (context, constraints) {
-                      return Column(
-                        children: [
-                          SizedBox(
-                            width: maxWidth,
-                            child: Center(
-                              child: Text(
-                                widget.statusText,
-                                style: statusTextStyle,
-                              ),
-                            ),
+                  child: SizedBox(
+                    width: maxWidth,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.statusText,
+                          style: statusTextStyle,
+                          textAlign: TextAlign.center,
+                        ),
+                        if (widget.statusSubText != null)
+                          Text(
+                            widget.statusSubText!,
+                            style: statusSubTextStyle,
+                            textAlign: TextAlign.center,
                           ),
-                          if (widget.statusSubText != null)
-                            SizedBox(
-                              width: maxWidth,
-                              child: Center(
-                                child: Text(
-                                  widget.statusSubText!,
-                                  style: statusSubTextStyle,
-                                ),
-                              ),
-                            ),
-                        ],
-                      );
-                    }),
+                      ],
+                    ),
                   ),
                 ),
                 Positioned.fill(

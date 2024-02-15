@@ -1,8 +1,37 @@
+import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 /// The translations for English (`en`).
 class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get patchNotesNewFeatures => 'New features';
+
+  @override
+  String get patchNotesImprovements => 'Improvements';
+
+  @override
+  String get patchNotesBugFixes => 'Bug fixes';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures1 => 'Support for importing tokens from Google, Aegis and 2FAS Authenticator has been added. More import sources will be added in the future.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures2 => 'Added feedback option to the settings.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures3 => 'Push tokens can now be hidden from the token list.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures4 => 'Introductions have been added to help new users get started.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures5 => 'You can now search for tokens by tapping the magnifying glass in the upper right corner.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures6 => 'Added HomeWidget token for Android 12 and later.';
 
   @override
   String get accept => 'Accept';
@@ -71,6 +100,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String confirmDeletionOf(Object name) {
     return 'Are you sure you want to delete $name?';
   }
+
+  @override
+  String get confirmTokenDeletionHint => 'You may no longer be able to log in if you delete this token.\nPlease make sure that you can log in to the associated account without this token.';
+
+  @override
+  String get confirmFolderDeletionHint => 'Deleting a folder has no effect on the tokens in it.\nThe tokens are moved to the main list.';
 
   @override
   String get generatingPhonePart => 'Generating phone part';
@@ -282,7 +317,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearErrorLog => 'Clear';
 
   @override
-  String get sendErrorLog => 'Send';
+  String get send => 'Send';
 
   @override
   String get sendErrorLogDescription => 'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:';
@@ -336,6 +371,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save => 'Save';
 
   @override
+  String get create => 'Create';
+
+  @override
   String get validFor => 'Valid for';
 
   @override
@@ -348,7 +386,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editLockedToken => 'Please authenticate to edit the locked token.';
 
   @override
-  String get uncollapseLockedFolder => 'Please authenticate to uncollapse the locked folder.';
+  String get expandLockedFolder => 'Please authenticate to uncollapse the locked folder.';
 
   @override
   String get renameTokenFolder => 'Rename folder';
@@ -357,7 +395,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addANewFolder => 'Create new folder';
 
   @override
-  String get folderName => 'Foldername';
+  String get folderName => 'Folder name';
 
   @override
   String get retryRollout => 'Retry rollout';
@@ -404,8 +442,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String errorRollOutTokenExpired(Object name) {
-    return 'Rolling out this Token is not possible anymore.\nThe token $name has expired.';
+  String get errorRollOutNotPossibleAnymore => 'Rolling out this Token is not possible anymore.';
+
+  @override
+  String errorTokenExpired(Object name) {
+    return 'The token $name has expired.';
   }
 
   @override
@@ -469,10 +510,189 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicy => 'Privacy policy';
 
   @override
+  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+
+  @override
+  String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
+
+  @override
+  String get introTokenSwipe => 'Swipe tokens to the left to see available actions.';
+
+  @override
+  String get introEditToken => 'Here you can edit the token name and see some details.';
+
+  @override
+  String get introLockToken => 'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.';
+
+  @override
+  String get introDragToken => 'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.';
+
+  @override
+  String get introAddFolder => 'You can create folders\nto organize your tokens.';
+
+  @override
+  String get introPollForChallenges => 'You can check for new challenges by dragging down the token list.';
+
+  @override
+  String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';
+
+  @override
   String legacySigningErrorTitle(Object tokenLabel) {
     return 'An error occured while using the legacy token: $tokenLabel';
   }
 
   @override
   String get legacySigningErrorMessage => 'The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!';
+
+  @override
+  String get selectImportSource => 'Select import source';
+
+  @override
+  String get selectImportType => 'How do you want to import the tokens?';
+
+  @override
+  String get importTokens => 'Import token';
+
+  @override
+  String get selectFile => 'Select file';
+
+  @override
+  String get decrypt => 'Decrypt';
+
+  @override
+  String get tokensAreEncrypted => 'The tokens are encrypted. Please enter the password to decrypt them.';
+
+  @override
+  String get tokensNotEncrypted => 'The tokens are not encrypted and can be imported directly.';
+
+  @override
+  String get tokensSuccessfullyDecrypted => 'The tokens have been successfully decrypted and can now be imported.';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get wrongPassword => 'Incorrect password';
+
+  @override
+  String get qrScan => 'Scan';
+
+  @override
+  String get enterLink => 'Enter link';
+
+  @override
+  String invalidBackupFile(Object appName) {
+    return 'The selected file is not a valid backup of $appName.';
+  }
+
+  @override
+  String invalidQrScan(Object appName) {
+    return 'The scanned QR code is not a valid backup of $appName.';
+  }
+
+  @override
+  String invalidQrFile(Object appName) {
+    return 'The selected file does not contain a valid QR code from $appName.';
+  }
+
+  @override
+  String invalidLink(Object appName) {
+    return 'The link entered is not a valid token of $appName, or it is not supported.';
+  }
+
+  @override
+  String importExistingToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tokens was found that are already in the application.',
+      one: 'A token was found that already exists in the application.',
+      zero: 'No token was found that is already in the application.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importConflictToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'There are conflicts with existing tokens.\nPlease choose which one you want to keep.',
+      one: 'There is a conflict with an existing token.\nPlease choose which one you want to keep.',
+      zero: 'There is no conflict with existing tokens.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importNewToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new tokens have been found and will be imported.',
+      one: 'A new token has been found and is being imported.',
+      zero: 'No new token has been found.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importHint2FAS => 'Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.';
+
+  @override
+  String get importHintAegisBackupFile => 'Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.';
+
+  @override
+  String get importHintAegisQrScan => 'Scan the QR code you receive when you transfer entries from Aegis.';
+
+  @override
+  String get importHintAegisLink => 'Enter the link you receive when you transfer entries from Aegis.';
+
+  @override
+  String get importHintGoogleQrScan => 'Scan the QR code you receive when you export your accounts from Google Authenticator.';
+
+  @override
+  String get importHintGoogleQrFile => 'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!';
+
+  @override
+  String get qrFileDecodeError => 'It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.';
+
+  @override
+  String get tokenLink => 'Token link';
+
+  @override
+  String get feedback => 'Feedback';
+
+  @override
+  String get feedbackTitle => 'Your feedback is always welcome!';
+
+  @override
+  String get feedbackDescription => 'If you have any questions, suggestions or problems, please let us know.';
+
+  @override
+  String get feedbackHint => 'A ready-made e-mail will open, which you can send to us. If desired, information about your device and the version of the application will be added. You can check and edit the email before sending it.';
+
+  @override
+  String get feedbackPrivacyPolicy1 => 'By sending the feedback you agree to our ';
+
+  @override
+  String get feedbackPrivacyPolicy2 => 'privacy policy';
+
+  @override
+  String get feedbackPrivacyPolicy3 => '.';
+
+  @override
+  String get addSystemInfo => 'Add system information';
+
+  @override
+  String get feedbackSentTitle => 'Feedback sent';
+
+  @override
+  String get feedbackSentDescription => 'Thank you very much for your help in making this application better!';
+
+  @override
+  String get patchNotesDialogTitle => 'What\'s new?';
+
+  @override
+  String get version => 'Version';
 }

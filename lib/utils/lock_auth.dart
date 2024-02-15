@@ -8,14 +8,15 @@ import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_ios/local_auth_ios.dart';
 
 import '../l10n/app_localizations.dart';
-import '../widgets/default_dialog.dart';
-import 'customizations.dart';
+import '../widgets/dialog_widgets/default_dialog.dart';
+import 'globals.dart';
 import 'logger.dart';
 import 'view_utils.dart';
 
 bool authenticationInProgress = false;
 
-Future<bool> lockAuth({required BuildContext context, required String localizedReason}) async {
+/// Sends a request to the OS to authenticate the user. Returns true if the user was authenticated, false otherwise.
+Future<bool> lockAuth({required String localizedReason}) async {
   bool didAuthenticate = false;
   LocalAuthentication localAuth = LocalAuthentication();
 

@@ -20,7 +20,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -32,8 +31,8 @@ import '../model/push_request.dart';
 import '../model/tokens/push_token.dart';
 import '../repo/secure_token_repository.dart';
 import '../state_notifiers/push_request_notifier.dart';
-import 'customizations.dart';
 import 'firebase_utils.dart';
+import 'globals.dart';
 import 'logger.dart';
 import 'network_utils.dart';
 import 'riverpod_providers.dart';
@@ -202,7 +201,6 @@ class PushProvider {
   }
 
   void _startOrStopPolling(bool pollingEnabled) {
-    log('Polling is enabled: $pollingEnabled', name: 'push_provider.dart#_startOrStopPolling');
     // Start polling if enabled and not already polling
     if (pollingEnabled && _pollTimer == null) {
       Logger.info('Polling is enabled.', name: 'push_provider.dart#_startPollingIfEnabled');
@@ -223,12 +221,12 @@ class PushProvider {
 
   Future<void> pollForChallenges({required bool isManually}) async {
     // Get all push tokens
-    await globalRef?.read(tokenProvider.notifier).isLoading;
+    await globalRef?.read(tokenProvider.notifier).loadingRepo;
     List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
 
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
-      await globalRef?.read(settingsProvider.notifier).isLoading;
+      await globalRef?.read(settingsProvider.notifier).loadingRepo;
       if (globalRef?.read(settingsProvider).enablePolling == true) {
         Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
         globalRef?.read(settingsProvider.notifier).setPolling(false);

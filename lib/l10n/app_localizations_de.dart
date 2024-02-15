@@ -1,8 +1,37 @@
+import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 /// The translations for German (`de`).
 class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
+
+  @override
+  String get patchNotesNewFeatures => 'Neue Funktionen';
+
+  @override
+  String get patchNotesImprovements => 'Verbesserungen';
+
+  @override
+  String get patchNotesBugFixes => 'Fehlerbehebungen';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures1 => 'Unterstützung für den Import von Token von Google, Aegis und 2FAS Authenticator hinzugefügt. Weitere Importquellen werden in Zukunft hinzugefügt.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures2 => 'Feedback-Option zu den Einstellungen hinzugefügt.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures3 => 'Push-Tokens können jetzt aus der Token-Liste ausgeblendet werden.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures4 => 'Es wurden Einführungen hinzugefügt, um neuen Benutzern den Einstieg zu erleichtern.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures5 => 'Sie können jetzt nach Token suchen, indem Sie auf die Lupe in der oberen rechten Ecke tippen.';
+
+  @override
+  String get patchNotesV4_3_0NewFeatures6 => 'Ab Android 12 kann für einen Token ein Widget auf dem Homescreen erstellt werden.';
 
   @override
   String get accept => 'Akzeptieren';
@@ -69,8 +98,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String confirmDeletionOf(Object name) {
-    return 'Bestätigen Sie das Löschen von $name?';
+    return 'Sind Sie sicher dass Sie $name löschen möchten?';
   }
+
+  @override
+  String get confirmTokenDeletionHint => 'Unter Umständen können Sie sich nicht mehr einloggen, wenn Sie diesen Token löschen.\nBitte stellen Sie sicher, dass Sie sich ohne diesen Token in den dazugehörigen Account einloggen können.';
+
+  @override
+  String get confirmFolderDeletionHint => 'Das Löschen eines Ordners hat keine Auswirkungen auf die Token, die sich darin befinden.\nDie Token werden in die Hauptliste verschoben.';
 
   @override
   String get generatingPhonePart => 'Generiere Telefonanteil';
@@ -282,7 +317,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get clearErrorLog => 'Löschen';
 
   @override
-  String get sendErrorLog => 'Senden';
+  String get send => 'Senden';
 
   @override
   String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:';
@@ -336,6 +371,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get save => 'Speichern';
 
   @override
+  String get create => 'Erstellen';
+
+  @override
   String get validFor => 'Gültig für';
 
   @override
@@ -348,7 +386,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get editLockedToken => 'Bitte authentifizieren Sie sich, um den gesperrten Token zu bearbeiten.';
 
   @override
-  String get uncollapseLockedFolder => 'Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.';
+  String get expandLockedFolder => 'Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.';
 
   @override
   String get renameTokenFolder => 'Ordner umbenennen';
@@ -404,8 +442,11 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String errorRollOutTokenExpired(Object name) {
-    return 'Das Ausrollen dieses Tokens ist nicht mehr möglich.\nDer Token $name ist abgelaufen.';
+  String get errorRollOutNotPossibleAnymore => 'Das Ausrollen dieses Tokens ist nicht mehr möglich.';
+
+  @override
+  String errorTokenExpired(Object name) {
+    return 'Der Token $name ist abgelaufen.';
   }
 
   @override
@@ -469,10 +510,189 @@ class AppLocalizationsDe extends AppLocalizations {
   String get privacyPolicy => 'Datenschutzerklärung';
 
   @override
+  String get introScanQrCode => 'Sie können QR-Codes scannen, um Token hinzuzufügen.\nWir unterstützen alle gängigen Two-Factor-Authentication Token und auch die privacyIDEA Token.';
+
+  @override
+  String get introAddTokenManually => 'Wenn Sie keinen QR-Code scannen möchten, können Sie Token auch manuell hinzufügen.';
+
+  @override
+  String get introTokenSwipe => 'Wischen Sie Token nach links, um die verfügbaren Aktionen zu sehen.';
+
+  @override
+  String get introEditToken => 'Hier können Sie den Namen des Tokens bearbeiten und einige Details einsehen.';
+
+  @override
+  String get introLockToken => 'Um die Sicherheit noch weiter zu erhöhen, können Sie Token sperren.\nDer Token kann dann erst nach der Authentifizierung verwendet werden.';
+
+  @override
+  String get introDragToken => 'Reorganisieren Sie Ihre Token, indem Sie sie einige Sekunden lang drücken und dann an die gewünschte Position ziehen.';
+
+  @override
+  String get introAddFolder => 'Sie können Ordner erstellen, um Ihre Token zu organisieren.';
+
+  @override
+  String get introPollForChallenges => 'Sie können neue Push-Anmeldungen abfragen, indem Sie die Liste der Token nach unten ziehen.';
+
+  @override
+  String get introHidePushTokens => 'Deine Push-Token sind jetzt versteckt.\nAber du kannst sie immer noch auf dem Bildschirm mit den Push-Token sehen.';
+
+  @override
   String legacySigningErrorTitle(Object tokenLabel) {
     return 'Bei der Verwendung des veralteten Tokens ist ein Fehler aufgetreten: $tokenLabel';
   }
 
   @override
   String get legacySigningErrorMessage => 'Der Token wurde in einer veralteten Version der App erstellt, was zu Problemen bei der Verwendung führen kann. Es wird empfohlen, einen neuen Push-Token zu erstellen, wenn das Problem weiterhin besteht!';
+
+  @override
+  String get selectImportSource => 'Importquelle auswählen';
+
+  @override
+  String get selectImportType => 'Wie wollen Sie die Token importieren?';
+
+  @override
+  String get importTokens => 'Token importieren';
+
+  @override
+  String get selectFile => 'Datei auswählen';
+
+  @override
+  String get decrypt => 'Entschlüsseln';
+
+  @override
+  String get tokensAreEncrypted => 'Die Token sind verschlüsselt. Bitte gib das Passwort ein, um sie zu entschlüsseln.';
+
+  @override
+  String get tokensNotEncrypted => 'Die Token sind unverschlüsselt und können direkt importiert werden.';
+
+  @override
+  String get tokensSuccessfullyDecrypted => 'Die Token wurden erfolgreich entschlüsselt, sie können nun importiert werden.';
+
+  @override
+  String get password => 'Passwort';
+
+  @override
+  String get wrongPassword => 'Falsches Passwort';
+
+  @override
+  String get qrScan => 'Scannen';
+
+  @override
+  String get enterLink => 'Link eingeben';
+
+  @override
+  String invalidBackupFile(Object appName) {
+    return 'Die ausgewählte Datei ist kein gültiges Backup von $appName.';
+  }
+
+  @override
+  String invalidQrScan(Object appName) {
+    return 'Der gescannte QR-Code ist kein gültiges Backup von $appName.';
+  }
+
+  @override
+  String invalidQrFile(Object appName) {
+    return 'Die ausgewählte Datei enthällt kein gültigen QR-Code von $appName.';
+  }
+
+  @override
+  String invalidLink(Object appName) {
+    return 'Der eingegebene Link ist kein gültiger Token von $appName, oder er wird nicht unterstützt.';
+  }
+
+  @override
+  String importExistingToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Es wurden $count Token gefunden, die sich bereits in der Anwendung befinden.',
+      one: 'Es wurde ein Token gefunden, das sich bereits in der Anwendung befindet.',
+      zero: 'Es wurde kein Token gefunden, das sich bereits in der App befindet.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importConflictToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.',
+      one: 'Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.',
+      zero: 'Es besteht kein Konflikt mit bereits existierenden Token.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importNewToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Es wurden $count neue Token gefunden, die importiert werden.',
+      one: 'Es wurde ein neues Token gefunden, das importiert wird.',
+      zero: 'Es wurde kein neues Token gefunden.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importHint2FAS => 'Wählen Sie das 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.';
+
+  @override
+  String get importHintAegisBackupFile => 'Wähle dein Aegis-Export (.json) aus.\nWenn Sie keinen Export haben, erstellen Sie bitte eins über das Einstellungen Menu in der Aegis-App. Wir empfehlen die Verwendung eines Passworts.';
+
+  @override
+  String get importHintAegisQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Einträge aus Aegis übertragen.';
+
+  @override
+  String get importHintAegisLink => 'Geben Sie den Link ein, den Sie erhalten, wenn Sie Einträge aus Aegis übertragen.';
+
+  @override
+  String get importHintGoogleQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.';
+
+  @override
+  String get importHintGoogleQrFile => 'Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus dem Google Authenticator exportieren.\n!! Der QR-Code enthält die Token in unverschlüsselter Form. Es ist deshalb nicht sicher, diesen länger als nötig aufzubewahren !!';
+
+  @override
+  String get qrFileDecodeError => 'Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren. Bitte verwenden Sie stattdessen den QR-Code-Scanner.';
+
+  @override
+  String get tokenLink => 'Token Link';
+
+  @override
+  String get feedback => 'Feedback';
+
+  @override
+  String get feedbackTitle => 'Ihr Feedback ist immer willkommen!';
+
+  @override
+  String get feedbackDescription => 'Wenn Sie Fragen, Anregungen oder Probleme haben, lassen Sie es uns wissen.';
+
+  @override
+  String get feedbackHint => 'Es öffnet sich eine vorgefertigte E-Mail, die Sie an uns senden können. Falls gewünscht, werden Informationen über Ihr Gerät und die Version der Anwendung hinzugefügt. Vor dem Versenden können Sie die E-Mail überprüfen und bearbeiten.';
+
+  @override
+  String get feedbackPrivacyPolicy1 => 'Mit dem Senden des Feedbacks stimmen Sie unserer ';
+
+  @override
+  String get feedbackPrivacyPolicy2 => 'Datenschutzerklärung';
+
+  @override
+  String get feedbackPrivacyPolicy3 => ' zu.';
+
+  @override
+  String get addSystemInfo => 'Systeminfos hinzufügen';
+
+  @override
+  String get feedbackSentTitle => 'Feedback gesendet';
+
+  @override
+  String get feedbackSentDescription => 'Vielen Dank für Ihre Hilfe bei der Verbesserung dieser App!';
+
+  @override
+  String get patchNotesDialogTitle => 'Was ist neu?';
+
+  @override
+  String get version => 'Version';
 }

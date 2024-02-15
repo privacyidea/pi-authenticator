@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
+import '../../../../../../model/enums/introduction.dart';
 import '../../../../../../model/tokens/push_token.dart';
 import '../../../../../../repo/secure_token_repository.dart';
 import '../../../../../../utils/app_customizer.dart';
-import '../../../../../../utils/customizations.dart';
+import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
-import '../../../../../../widgets/default_dialog.dart';
+import '../../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../../widgets/enable_text_form_field_after_many_taps.dart';
+import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../token_action.dart';
 
 class EditPushTokenAction extends TokenAction {
@@ -21,26 +24,33 @@ class EditPushTokenAction extends TokenAction {
   });
 
   @override
-  CustomSlidableAction build(BuildContext context) => CustomSlidableAction(
+  CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
-        if (token.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
+        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
           return;
         }
         _showDialog();
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Icon(Icons.edit),
-          Text(
-            AppLocalizations.of(context)!.edit,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        ],
+      child: FocusedItemAsOverlay(
+        tooltipWhenFocused: AppLocalizations.of(context)!.introEditToken,
+        childIsMoving: true,
+        alignment: Alignment.bottomCenter,
+        isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.editToken),
+        onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(Icons.edit),
+            Text(
+              AppLocalizations.of(context)!.edit,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+          ],
+        ),
       ));
 
   void _showDialog() {

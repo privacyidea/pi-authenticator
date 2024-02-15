@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
-import 'package:privacyidea_authenticator/main_netknights.dart';
+import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
@@ -77,10 +77,8 @@ void main() {
 
 Future<void> _addTwoStepHotpTokenTest(WidgetTester tester) async {
   await pumpUntilFindNWidgets(tester, find.byType(MainView), 1, const Duration(seconds: 10));
-  Logger.info('Adding HOTP Token');
-  globalRef!.read(tokenProvider.notifier).addTokenFromOtpAuth(
-      otpAuth:
-          'otpauth://hotp/OATH0001DBD0?secret=AALIBQJMOGEE7SAVEZ5D3K2ADO7MVFQD&counter=1&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000');
+  globalRef!.read(tokenProvider.notifier).handleQrCode(
+      'otpauth://hotp/OATH0001DBD0?secret=AALIBQJMOGEE7SAVEZ5D3K2ADO7MVFQD&counter=1&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000');
   Logger.info('Finding phone part dialog');
   await pumpUntilFindNWidgets(tester, find.text(AppLocalizationsEn().phonePart), 1, const Duration(seconds: 20));
   expect(find.text(AppLocalizationsEn().phonePart), findsOneWidget);
@@ -101,10 +99,8 @@ Future<void> _addTwoStepHotpTokenTest(WidgetTester tester) async {
 
 Future<void> _addTwoStepTotpTokenTest(WidgetTester tester) async {
   await pumpUntilFindNWidgets(tester, find.byType(MainView), 1, const Duration(seconds: 10));
-  Logger.info('Adding TOTP Token');
-  globalRef!.read(tokenProvider.notifier).addTokenFromOtpAuth(
-      otpAuth:
-          'otpauth://totp/TOTP00009D5F?secret=NZ4OPONKAAGDFN2QHV26ZWYVTLFER4C6&period=30&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000');
+  globalRef!.read(tokenProvider.notifier).handleQrCode(
+      'otpauth://totp/TOTP00009D5F?secret=NZ4OPONKAAGDFN2QHV26ZWYVTLFER4C6&period=30&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000');
   Logger.info('Finding phone part dialog');
   await pumpUntilFindNWidgets(tester, find.text(AppLocalizationsEn().phonePart), 1, const Duration(seconds: 20));
   expect(find.text(AppLocalizationsEn().phonePart), findsOneWidget);

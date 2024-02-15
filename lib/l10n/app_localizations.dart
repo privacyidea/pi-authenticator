@@ -103,6 +103,60 @@ abstract class AppLocalizations {
     Locale('pl')
   ];
 
+  /// No description provided for @patchNotesNewFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'New features'**
+  String get patchNotesNewFeatures;
+
+  /// No description provided for @patchNotesImprovements.
+  ///
+  /// In en, this message translates to:
+  /// **'Improvements'**
+  String get patchNotesImprovements;
+
+  /// No description provided for @patchNotesBugFixes.
+  ///
+  /// In en, this message translates to:
+  /// **'Bug fixes'**
+  String get patchNotesBugFixes;
+
+  /// No description provided for @patchNotesV4_3_0NewFeatures1.
+  ///
+  /// In en, this message translates to:
+  /// **'Support for importing tokens from Google, Aegis and 2FAS Authenticator has been added. More import sources will be added in the future.'**
+  String get patchNotesV4_3_0NewFeatures1;
+
+  /// No description provided for @patchNotesV4_3_0NewFeatures2.
+  ///
+  /// In en, this message translates to:
+  /// **'Added feedback option to the settings.'**
+  String get patchNotesV4_3_0NewFeatures2;
+
+  /// No description provided for @patchNotesV4_3_0NewFeatures3.
+  ///
+  /// In en, this message translates to:
+  /// **'Push tokens can now be hidden from the token list.'**
+  String get patchNotesV4_3_0NewFeatures3;
+
+  /// No description provided for @patchNotesV4_3_0NewFeatures4.
+  ///
+  /// In en, this message translates to:
+  /// **'Introductions have been added to help new users get started.'**
+  String get patchNotesV4_3_0NewFeatures4;
+
+  /// No description provided for @patchNotesV4_3_0NewFeatures5.
+  ///
+  /// In en, this message translates to:
+  /// **'You can now search for tokens by tapping the magnifying glass in the upper right corner.'**
+  String get patchNotesV4_3_0NewFeatures5;
+
+  /// No description provided for @patchNotesV4_3_0NewFeatures6.
+  ///
+  /// In en, this message translates to:
+  /// **'Added HomeWidget token for Android 12 and later.'**
+  String get patchNotesV4_3_0NewFeatures6;
+
   /// Label for e.g. a button. Something gets accepted by the user.
   ///
   /// In en, this message translates to:
@@ -234,6 +288,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to delete {name}?'**
   String confirmDeletionOf(Object name);
+
+  /// Gives the user a hint about the consequences of deleting a token.
+  ///
+  /// In en, this message translates to:
+  /// **'You may no longer be able to log in if you delete this token.\nPlease make sure that you can log in to the associated account without this token.'**
+  String get confirmTokenDeletionHint;
+
+  /// Gives the user a hint about the consequences of deleting a folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting a folder has no effect on the tokens in it.\nThe tokens are moved to the main list.'**
+  String get confirmFolderDeletionHint;
 
   /// Title of a dialog telling the user that the phone part gets generated right now.
   ///
@@ -625,11 +691,11 @@ abstract class AppLocalizations {
   /// **'Clear'**
   String get clearErrorLog;
 
-  /// No description provided for @sendErrorLog.
+  /// No description provided for @send.
   ///
   /// In en, this message translates to:
   /// **'Send'**
-  String get sendErrorLog;
+  String get send;
 
   /// Explanation for the user what he will send.
   ///
@@ -733,6 +799,12 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
+  /// No description provided for @create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get create;
+
   /// No description provided for @validFor.
   ///
   /// In en, this message translates to:
@@ -757,11 +829,11 @@ abstract class AppLocalizations {
   /// **'Please authenticate to edit the locked token.'**
   String get editLockedToken;
 
-  /// No description provided for @uncollapseLockedFolder.
+  /// No description provided for @expandLockedFolder.
   ///
   /// In en, this message translates to:
   /// **'Please authenticate to uncollapse the locked folder.'**
-  String get uncollapseLockedFolder;
+  String get expandLockedFolder;
 
   /// Title of the dialog where a new name for a token folder can be entered.
   ///
@@ -778,7 +850,7 @@ abstract class AppLocalizations {
   /// No description provided for @folderName.
   ///
   /// In en, this message translates to:
-  /// **'Foldername'**
+  /// **'Folder name'**
   String get folderName;
 
   /// No description provided for @retryRollout.
@@ -865,11 +937,17 @@ abstract class AppLocalizations {
   /// **'An error occured when polling for challenges of {name}'**
   String errorWhenPullingChallenges(Object name);
 
-  /// Tells the user that the roll-out failed because the token has expired.
+  /// No description provided for @errorRollOutNotPossibleAnymore.
   ///
   /// In en, this message translates to:
-  /// **'Rolling out this Token is not possible anymore.\nThe token {name} has expired.'**
-  String errorRollOutTokenExpired(Object name);
+  /// **'Rolling out this Token is not possible anymore.'**
+  String get errorRollOutNotPossibleAnymore;
+
+  /// No description provided for @errorTokenExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'The token {name} has expired.'**
+  String errorTokenExpired(Object name);
 
   /// No description provided for @yes.
   ///
@@ -991,6 +1069,60 @@ abstract class AppLocalizations {
   /// **'Privacy policy'**
   String get privacyPolicy;
 
+  /// No description provided for @introScanQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.'**
+  String get introScanQrCode;
+
+  /// No description provided for @introAddTokenManually.
+  ///
+  /// In en, this message translates to:
+  /// **'If you don\'t want to scan a QR code, you can also add tokens manually.'**
+  String get introAddTokenManually;
+
+  /// No description provided for @introTokenSwipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe tokens to the left to see available actions.'**
+  String get introTokenSwipe;
+
+  /// No description provided for @introEditToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Here you can edit the token name and see some details.'**
+  String get introEditToken;
+
+  /// No description provided for @introLockToken.
+  ///
+  /// In en, this message translates to:
+  /// **'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.'**
+  String get introLockToken;
+
+  /// No description provided for @introDragToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.'**
+  String get introDragToken;
+
+  /// No description provided for @introAddFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'You can create folders\nto organize your tokens.'**
+  String get introAddFolder;
+
+  /// No description provided for @introPollForChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'You can check for new challenges by dragging down the token list.'**
+  String get introPollForChallenges;
+
+  /// No description provided for @introHidePushTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Your push tokens are hidden now.\nBut you can still see them on the push token screen.'**
+  String get introHidePushTokens;
+
   /// Title of the error dialog that is shown when an error occurs while using a legacy token.
   ///
   /// In en, this message translates to:
@@ -1002,6 +1134,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!'**
   String get legacySigningErrorMessage;
+
+  /// No description provided for @selectImportSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Select import source'**
+  String get selectImportSource;
+
+  /// No description provided for @selectImportType.
+  ///
+  /// In en, this message translates to:
+  /// **'How do you want to import the tokens?'**
+  String get selectImportType;
+
+  /// No description provided for @importTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Import token'**
+  String get importTokens;
+
+  /// No description provided for @selectFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Select file'**
+  String get selectFile;
+
+  /// No description provided for @decrypt.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrypt'**
+  String get decrypt;
+
+  /// No description provided for @tokensAreEncrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'The tokens are encrypted. Please enter the password to decrypt them.'**
+  String get tokensAreEncrypted;
+
+  /// No description provided for @tokensNotEncrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'The tokens are not encrypted and can be imported directly.'**
+  String get tokensNotEncrypted;
+
+  /// No description provided for @tokensSuccessfullyDecrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'The tokens have been successfully decrypted and can now be imported.'**
+  String get tokensSuccessfullyDecrypted;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @wrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password'**
+  String get wrongPassword;
+
+  /// No description provided for @qrScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get qrScan;
+
+  /// No description provided for @enterLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter link'**
+  String get enterLink;
+
+  /// No description provided for @invalidBackupFile.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected file is not a valid backup of {appName}.'**
+  String invalidBackupFile(Object appName);
+
+  /// No description provided for @invalidQrScan.
+  ///
+  /// In en, this message translates to:
+  /// **'The scanned QR code is not a valid backup of {appName}.'**
+  String invalidQrScan(Object appName);
+
+  /// No description provided for @invalidQrFile.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected file does not contain a valid QR code from {appName}.'**
+  String invalidQrFile(Object appName);
+
+  /// No description provided for @invalidLink.
+  ///
+  /// In en, this message translates to:
+  /// **'The link entered is not a valid token of {appName}, or it is not supported.'**
+  String invalidLink(Object appName);
+
+  /// No description provided for @importExistingToken.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, zero{No token was found that is already in the application.} one{A token was found that already exists in the application.} other{{count} tokens was found that are already in the application.}}'**
+  String importExistingToken(num count);
+
+  /// No description provided for @importConflictToken.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with an existing token.\nPlease choose which one you want to keep.} other{There are conflicts with existing tokens.\nPlease choose which one you want to keep.}}'**
+  String importConflictToken(num count);
+
+  /// No description provided for @importNewToken.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, zero{No new token has been found.} one{A new token has been found and is being imported.} other{{count} new tokens have been found and will be imported.}}'**
+  String importNewToken(num count);
+
+  /// No description provided for @importHint2FAS.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.'**
+  String get importHint2FAS;
+
+  /// No description provided for @importHintAegisBackupFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.'**
+  String get importHintAegisBackupFile;
+
+  /// No description provided for @importHintAegisQrScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the QR code you receive when you transfer entries from Aegis.'**
+  String get importHintAegisQrScan;
+
+  /// No description provided for @importHintAegisLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the link you receive when you transfer entries from Aegis.'**
+  String get importHintAegisLink;
+
+  /// No description provided for @importHintGoogleQrScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the QR code you receive when you export your accounts from Google Authenticator.'**
+  String get importHintGoogleQrScan;
+
+  /// No description provided for @importHintGoogleQrFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!'**
+  String get importHintGoogleQrFile;
+
+  /// No description provided for @qrFileDecodeError.
+  ///
+  /// In en, this message translates to:
+  /// **'It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.'**
+  String get qrFileDecodeError;
+
+  /// No description provided for @tokenLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Token link'**
+  String get tokenLink;
+
+  /// No description provided for @feedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get feedback;
+
+  /// No description provided for @feedbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your feedback is always welcome!'**
+  String get feedbackTitle;
+
+  /// No description provided for @feedbackDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'If you have any questions, suggestions or problems, please let us know.'**
+  String get feedbackDescription;
+
+  /// No description provided for @feedbackHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A ready-made e-mail will open, which you can send to us. If desired, information about your device and the version of the application will be added. You can check and edit the email before sending it.'**
+  String get feedbackHint;
+
+  /// No description provided for @feedbackPrivacyPolicy1.
+  ///
+  /// In en, this message translates to:
+  /// **'By sending the feedback you agree to our '**
+  String get feedbackPrivacyPolicy1;
+
+  /// Taping on this should open the privacy policy.
+  ///
+  /// In en, this message translates to:
+  /// **'privacy policy'**
+  String get feedbackPrivacyPolicy2;
+
+  /// No description provided for @feedbackPrivacyPolicy3.
+  ///
+  /// In en, this message translates to:
+  /// **'.'**
+  String get feedbackPrivacyPolicy3;
+
+  /// No description provided for @addSystemInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add system information'**
+  String get addSystemInfo;
+
+  /// No description provided for @feedbackSentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback sent'**
+  String get feedbackSentTitle;
+
+  /// No description provided for @feedbackSentDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you very much for your help in making this application better!'**
+  String get feedbackSentDescription;
+
+  /// No description provided for @patchNotesDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new?'**
+  String get patchNotesDialogTitle;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

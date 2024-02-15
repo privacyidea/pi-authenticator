@@ -14,7 +14,7 @@ publish_to: none
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 4.2.3+402305 # TODO Set the right version number 
+version: 4.3.0+403003 # TODO Set the right version number 
 # version: major.minor.build          + 2x major|2x minor|3x build
 # version: version number             + build number (optional)
 # android: build-name                 + versionCode
@@ -36,8 +36,8 @@ dependencies:
   otp: ^3.0.1
   flutter_secure_storage: ^9.0.0
   flutter_slidable: ^3.0.0
-  package_info_plus: ^4.0.2
-  asn1lib: ^1.0.3
+  package_info_plus: ^5.0.1
+  asn1lib: ^1.5.0
   flutter_markdown: ^0.6.8
   url_launcher: ^6.0.12
   uuid: ^4.0.0
@@ -52,10 +52,10 @@ dependencies:
   firebase_core: ^2.14.0
   pi_authenticator_legacy:
     path: local_plugins/pi-authenticator-legacy
-  collection: ^1.15.0
+  collection: ^1.17.2
   uni_links: ^0.5.1
   local_auth: ^2.1.6
-  lottie: ^2.4.0
+  lottie: ^3.0.0
   flare_flutter: ^3.0.2
   flutter_mailer: ^2.1.1
   permission_handler: ^11.0.0
@@ -72,7 +72,18 @@ dependencies:
   device_info_plus: ^9.0.3
   json_annotation: ^4.8.1
   equatable: ^2.0.5
-  mobile_scanner: ^3.4.1
+  mobile_scanner: ^4.0.0
+  arrow_path: ^3.1.0
+  protobuf: ^3.1.0
+  home_widget: ^0.4.1
+  app_minimizer: ^1.0.0+2
+  encrypt: ^5.0.3
+  cryptography: ^2.7.0
+  fluentui_system_icons: ^1.1.223
+  file_selector: ^1.0.2
+  zxing2: ^0.2.1
+  image: ^4.1.6
+  material_design_icons_flutter: ^7.0.7296
 
 dev_dependencies:
   flutter_driver:

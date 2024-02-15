@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/globals.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../utils/view_utils.dart';
-import '../../../../widgets/default_dialog.dart';
+import '../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../qr_scanner_view/qr_scanner_view.dart';
 
 class QrScannerButton extends ConsumerWidget {
@@ -23,11 +24,11 @@ class QrScannerButton extends ConsumerWidget {
             );
             return;
           }
+          if (globalNavigatorKey.currentContext == null) return;
 
-          /// Open the QR-code scanner and call `_handleOtpAuth`, with the scanned code as the argument.
-          // ignore: use_build_context_synchronously
-          Navigator.pushNamed(context, QRScannerView.routeName).then((qrCode) {
-            if (qrCode != null) ref.read(tokenProvider.notifier).addTokenFromOtpAuth(otpAuth: qrCode as String);
+          /// Open the QR-code scanner and call `handleQrCode`, with the scanned code as the argument.
+          Navigator.pushNamed(globalNavigatorKey.currentContext!, QRScannerView.routeName).then((qrCode) {
+            if (qrCode != null) ref.read(tokenProvider.notifier).handleQrCode(qrCode);
           });
         },
         tooltip: AppLocalizations.of(context)?.scanQrCode ?? '',

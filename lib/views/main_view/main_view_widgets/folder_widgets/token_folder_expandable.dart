@@ -4,11 +4,14 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../model/states/token_filter.dart';
 import '../../../../model/token_folder.dart';
 import '../../../../model/tokens/push_token.dart';
 import '../../../../model/tokens/token.dart';
+import '../../../../utils/app_customizer.dart';
 import '../../../../utils/lock_auth.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../widgets/custom_trailing.dart';
@@ -20,8 +23,10 @@ import 'token_folder_actions.dart/rename_token_folder_action.dart';
 
 class TokenFolderExpandable extends ConsumerStatefulWidget {
   final TokenFolder folder;
+  final TokenFilter? filter;
+  final bool? expandOverride;
 
-  const TokenFolderExpandable({super.key, required this.folder});
+  const TokenFolderExpandable({super.key, required this.folder, this.filter, this.expandOverride});
 
   @override
   ConsumerState<TokenFolderExpandable> createState() => _TokenFolderExpandableState();
@@ -37,16 +42,21 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
     super.initState();
     animationController = AnimationController(
       duration: const Duration(milliseconds: 250),
-      value: widget.folder.isExpanded ? 0 : 1.0,
+      value: widget.expandOverride ?? widget.folder.isExpanded ? 0 : 1.0,
       vsync: this,
     );
-    expandableController = ExpandableController(initialExpanded: widget.folder.isExpanded);
+    expandableController = ExpandableController(initialExpanded: widget.expandOverride ?? widget.folder.isExpanded);
     expandableController.addListener(() {
-      globalRef?.read(tokenFolderProvider.notifier).updateFolder(widget.folder.copyWith(isExpanded: expandableController.expanded));
       if (expandableController.expanded) {
         animationController.reverse();
       } else {
         animationController.forward();
+      }
+      if (widget.expandOverride != null) return;
+      if (widget.folder.isExpanded != expandableController.expanded) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          globalRef?.read(tokenFolderProvider.notifier).updateFolder(widget.folder.copyWith(isExpanded: expandableController.expanded));
+        });
       }
     });
   }
@@ -61,28 +71,35 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
 
   @override
   ExpandablePanel build(BuildContext context) {
-    final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: ref.watch(settingsProvider).hidePushTokens ? [PushToken] : []);
+    List<Token> tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: ref.watch(settingsProvider).hidePushTokens ? [PushToken] : []);
+    tokens = widget.filter?.filterTokens(tokens) ?? tokens;
     final draggingSortable = ref.watch(draggingSortableProvider);
-    if (tokens.isEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        expandableController.expanded = false;
-      });
+
+    if (widget.expandOverride == null) {
+      if (tokens.isEmpty && expandableController.expanded) {
+        expandableController.value = false;
+      } else if (widget.folder.isExpanded != expandableController.expanded) {
+        expandableController.value = widget.folder.isExpanded;
+      }
+    } else {
+      expandableController.value = widget.expandOverride!;
     }
     return ExpandablePanel(
       theme: const ExpandableThemeData(hasIcon: false, tapBodyToCollapse: false, tapBodyToExpand: false),
       controller: expandableController,
       header: GestureDetector(
         onTap: () async {
-          if (widget.folder.isExpanded) {
-            expandableController.expanded = false;
+          if (widget.expandOverride != null) return;
+          if (expandableController.value) {
+            expandableController.value = false;
             return;
           }
           if (tokens.isEmpty || (tokens.length == 1 && tokens.first == draggingSortable)) return;
-          if (widget.folder.isLocked && await lockAuth(context: context, localizedReason: AppLocalizations.of(context)!.uncollapseLockedFolder) == false) {
+          if (widget.folder.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.expandLockedFolder) == false) {
             return;
           }
           if (!mounted) return;
-          expandableController.toggle();
+          expandableController.value = true;
         },
         child: Slidable(
           key: ValueKey('tokenFolder-${widget.folder.folderId}'),
@@ -104,7 +121,8 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                   if (widget.folder.isLocked) return true;
                   _expandTimer?.cancel();
                   _expandTimer = Timer(const Duration(milliseconds: 500), () {
-                    if (!expandableController.expanded && tokens.isNotEmpty) expandableController.expanded = true;
+                    if (!mounted) return;
+                    expandableController.value = true;
                   });
                   return true;
                 }
@@ -159,9 +177,36 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                                   Icons.folder_open,
                                   color: Theme.of(context).listTileTheme.iconColor,
                                 )
-                              : Icon(
-                                  Icons.folder,
-                                  color: Theme.of(context).listTileTheme.iconColor,
+                              : Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.folder,
+                                      color: Theme.of(context).listTileTheme.iconColor,
+                                    ),
+                                    if (widget.folder.isLocked)
+                                      Positioned.fill(
+                                        child: LayoutBuilder(
+                                          builder: (context, constraints) {
+                                            return Container(
+                                              padding: EdgeInsets.only(left: widget.folder.isExpanded ? 2 : 0, top: 1),
+                                              child: Icon(
+                                                widget.folder.isExpanded ? MdiIcons.lockOpenVariant : MdiIcons.lock,
+                                                color: Theme.of(context).extension<ActionTheme>()?.lockColor,
+                                                size: constraints.maxHeight / 2.1,
+                                                shadows: [
+                                                  Shadow(
+                                                    color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.3),
+                                                    offset: const Offset(0.5, 0.5),
+                                                    blurRadius: 2,
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                  ],
                                 ),
                         ),
                       ),
@@ -202,13 +247,11 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                   children: [
                     for (var i = 0; i < tokens.length; i++) ...[
                       if (draggingSortable != tokens[i] && (i != 0 || draggingSortable is Token))
-                        DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: tokens[i]),
-                      TokenWidgetBuilder.fromToken(
-                        tokens[i],
-                        withDivider: i < tokens.length - 1,
-                      ),
+                        widget.filter == null ? DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: tokens[i]) : const Divider(),
+                      TokenWidgetBuilder.fromToken(tokens[i]),
                     ],
-                    if (tokens.isNotEmpty && draggingSortable is Token) DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: null),
+                    if (tokens.isNotEmpty && draggingSortable is Token)
+                      widget.filter == null ? DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: null) : const Divider(),
                     if (tokens.isNotEmpty && draggingSortable is! Token) const SizedBox(height: 8),
                   ],
                 ),

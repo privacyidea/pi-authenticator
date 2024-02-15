@@ -5,7 +5,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
-import 'package:privacyidea_authenticator/main_netknights.dart';
+import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
@@ -102,9 +102,8 @@ Future<void> _settingsViewTest(WidgetTester tester) async {
   expect(find.text(AppLocalizationsEn().language), findsOneWidget);
   expect(find.text(AppLocalizationsEn().errorLogTitle), findsOneWidget);
   expect(find.byType(SettingsGroup), findsNWidgets(4));
-  globalRef!.read(tokenProvider.notifier).addTokenFromOtpAuth(
-      otpAuth:
-          'otpauth://pipush/label?url=http%3A%2F%2Fwww.example.com&ttl=10&issuer=issuer&enrollment_credential=enrollmentCredentials&v=1&serial=serial&serial=serial&sslverify=0');
+  globalRef!.read(tokenProvider.notifier).handleQrCode(
+      'otpauth://pipush/label?url=http%3A%2F%2Fwww.example.com&ttl=10&issuer=issuer&enrollment_credential=enrollmentCredentials&v=1&serial=serial&serial=serial&sslverify=0');
   await pumpUntilFindNWidgets(tester, find.text(AppLocalizationsEn().pushToken), 1, const Duration(minutes: 5));
   expect(find.text(AppLocalizationsEn().pushToken), findsOneWidget);
   expect(find.byType(SettingsGroup), findsNWidgets(5));

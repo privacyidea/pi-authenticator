@@ -1,5 +1,14 @@
 {
   "@@last_modified": "2023-08-07",
+  "patchNotesNewFeatures": "Neue Funktionen",
+  "patchNotesImprovements": "Verbesserungen",
+  "patchNotesBugFixes": "Fehlerbehebungen",
+  "patchNotesV4_3_0NewFeatures1": "Unterstützung für den Import von Token von Google, Aegis und 2FAS Authenticator hinzugefügt. Weitere Importquellen werden in Zukunft hinzugefügt.",
+  "patchNotesV4_3_0NewFeatures2": "Feedback-Option zu den Einstellungen hinzugefügt.",
+  "patchNotesV4_3_0NewFeatures3": "Push-Tokens können jetzt aus der Token-Liste ausgeblendet werden.",
+  "patchNotesV4_3_0NewFeatures4": "Es wurden Einführungen hinzugefügt, um neuen Benutzern den Einstieg zu erleichtern.",
+  "patchNotesV4_3_0NewFeatures5": "Sie können jetzt nach Token suchen, indem Sie auf die Lupe in der oberen rechten Ecke tippen.",
+  "patchNotesV4_3_0NewFeatures6": "Ab Android 12 kann für einen Token ein Widget auf dem Homescreen erstellt werden.",
   "guide": "Anleitung",
   "@guide": {
     "description": "Button to open the guide screen."
@@ -92,7 +101,7 @@
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted."
   },
-  "confirmDeletionOf": "Bestätigen Sie das Löschen von {name}?",
+  "confirmDeletionOf": "Sind Sie sicher dass Sie {name} löschen möchten?",
   "@confirmDeletionOf": {
     "description": "Asks for confirmation on deleting a token.",
     "placeholders": {
@@ -100,6 +109,14 @@
         "example": "PUSH1234"
       }
     }
+  },
+  "confirmTokenDeletionHint": "Unter Umständen können Sie sich nicht mehr einloggen, wenn Sie diesen Token löschen.\nBitte stellen Sie sicher, dass Sie sich ohne diesen Token in den dazugehörigen Account einloggen können.",
+  "@confirmTokenDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a token."
+  },
+  "confirmFolderDeletionHint": "Das Löschen eines Ordners hat keine Auswirkungen auf die Token, die sich darin befinden.\nDie Token werden in die Hauptliste verschoben.",
+  "@confirmFolderDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a folder."
   },
   "generatingPhonePart": "Generiere Telefonanteil",
   "@generatingPhonePart": {
@@ -356,7 +373,7 @@
   "logMenu": "Log-Menü",
   "showErrorLog": "Anzeigen",
   "clearErrorLog": "Löschen",
-  "sendErrorLog": "Senden",
+  "send": "Senden",
   "sendErrorLogDescription": "Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:",
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
@@ -383,11 +400,12 @@
   "editToken": "Token bearbeiten",
   "edit": "Bearbeiten",
   "save": "Speichern",
+  "create": "Erstellen",
   "validFor": "Gültig für",
   "validUntil": "Gültig bis",
   "deleteLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu löschen.",
   "editLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu bearbeiten.",
-  "uncollapseLockedFolder": "Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.",
+  "expandLockedFolder": "Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.",
   "renameTokenFolder": "Ordner umbenennen",
   "addANewFolder": "Neuen Ordner anlegen",
   "folderName": "Ordnername",
@@ -428,8 +446,9 @@
   "authToDeclinePushRequest": "Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.",
   "pushRequestParseError": "Die Push-Anfrage konnte nicht verarbeitet werden.",
   "errorRollOutSSLHandshakeFailed": "SSL-Handshake fehlgeschlagen. Roll-out nicht möglich.",
-  "errorRollOutTokenExpired": "Das Ausrollen dieses Tokens ist nicht mehr möglich.\nDer Token {name} ist abgelaufen.",
-  "@errorRollOutTokenExpired": {
+  "errorRollOutNotPossibleAnymore": "Das Ausrollen dieses Tokens ist nicht mehr möglich.",
+  "errorTokenExpired": "Der Token {name} ist abgelaufen.",
+  "@errorTokenExpired": {
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
@@ -457,6 +476,15 @@
   "licensesAndVersion": "Lizenzen und Version",
   "privacyPolicy": "Datenschutzerklärung",
   "legacySigningErrorTitle": "Bei der Verwendung des veralteten Tokens ist ein Fehler aufgetreten: {tokenLabel}",
+  "introScanQrCode": "Sie können QR-Codes scannen, um Token hinzuzufügen.\nWir unterstützen alle gängigen Two-Factor-Authentication Token und auch die privacyIDEA Token.",
+  "introAddTokenManually": "Wenn Sie keinen QR-Code scannen möchten, können Sie Token auch manuell hinzufügen.",
+  "introTokenSwipe": "Wischen Sie Token nach links, um die verfügbaren Aktionen zu sehen.",
+  "introEditToken": "Hier können Sie den Namen des Tokens bearbeiten und einige Details einsehen.",
+  "introLockToken": "Um die Sicherheit noch weiter zu erhöhen, können Sie Token sperren.\nDer Token kann dann erst nach der Authentifizierung verwendet werden.",
+  "introDragToken": "Reorganisieren Sie Ihre Token, indem Sie sie einige Sekunden lang drücken und dann an die gewünschte Position ziehen.",
+  "introAddFolder": "Sie können Ordner erstellen, um Ihre Token zu organisieren.",
+  "introPollForChallenges": "Sie können neue Push-Anmeldungen abfragen, indem Sie die Liste der Token nach unten ziehen.",
+  "introHidePushTokens": "Deine Push-Token sind jetzt versteckt.\nAber du kannst sie immer noch auf dem Bildschirm mit den Push-Token sehen.",
   "@legacySigningErrorTitle": {
     "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
     "placeholders": {
@@ -468,5 +496,47 @@
   "legacySigningErrorMessage": "Der Token wurde in einer veralteten Version der App erstellt, was zu Problemen bei der Verwendung führen kann. Es wird empfohlen, einen neuen Push-Token zu erstellen, wenn das Problem weiterhin besteht!",
   "@legacySigningErrorMessage": {
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
-  }
+  },
+  "selectImportSource": "Importquelle auswählen",
+  "selectImportType": "Wie wollen Sie die Token importieren?",
+  "importTokens": "Token importieren",
+  "selectFile": "Datei auswählen",
+  "decrypt": "Entschlüsseln",
+  "tokensAreEncrypted": "Die Token sind verschlüsselt. Bitte gib das Passwort ein, um sie zu entschlüsseln.",
+  "tokensNotEncrypted": "Die Token sind unverschlüsselt und können direkt importiert werden.",
+  "tokensSuccessfullyDecrypted": "Die Token wurden erfolgreich entschlüsselt, sie können nun importiert werden.",
+  "password": "Passwort",
+  "wrongPassword": "Falsches Passwort",
+  "qrScan": "Scannen",
+  "enterLink": "Link eingeben",
+  "invalidBackupFile": "Die ausgewählte Datei ist kein gültiges Backup von {appName}.",
+  "invalidQrScan": "Der gescannte QR-Code ist kein gültiges Backup von {appName}.",
+  "invalidQrFile": "Die ausgewählte Datei enthällt kein gültigen QR-Code von {appName}.",
+  "invalidLink": "Der eingegebene Link ist kein gültiger Token von {appName}, oder er wird nicht unterstützt.",
+  "importExistingToken": "{count, plural, zero{Es wurde kein Token gefunden, das sich bereits in der App befindet.} one{Es wurde ein Token gefunden, das sich bereits in der Anwendung befindet.} other{Es wurden {count} Token gefunden, die sich bereits in der Anwendung befinden.}}",
+  "importConflictToken": "{count, plural, zero{Es besteht kein Konflikt mit bereits existierenden Token.} one{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.} other{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.}}",
+  "importNewToken": "{count, plural, zero{Es wurde kein neues Token gefunden.} one{Es wurde ein neues Token gefunden, das importiert wird.} other{Es wurden {count} neue Token gefunden, die importiert werden.}}",
+  "importHint2FAS": "Wählen Sie das 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.",
+  "importHintAegisBackupFile": "Wähle dein Aegis-Export (.json) aus.\nWenn Sie keinen Export haben, erstellen Sie bitte eins über das Einstellungen Menu in der Aegis-App. Wir empfehlen die Verwendung eines Passworts.",
+  "importHintAegisQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Einträge aus Aegis übertragen.",
+  "importHintAegisLink": "Geben Sie den Link ein, den Sie erhalten, wenn Sie Einträge aus Aegis übertragen.",
+  "importHintGoogleQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.",
+  "importHintGoogleQrFile": "Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus dem Google Authenticator exportieren.\n!! Der QR-Code enthält die Token in unverschlüsselter Form. Es ist deshalb nicht sicher, diesen länger als nötig aufzubewahren !!",
+  "qrFileDecodeError": "Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren. Bitte verwenden Sie stattdessen den QR-Code-Scanner.",
+  "tokenLink": "Token Link",
+  "feedback": "Feedback",
+  "feedbackTitle": "Ihr Feedback ist immer willkommen!",
+  "feedbackDescription": "Wenn Sie Fragen, Anregungen oder Probleme haben, lassen Sie es uns wissen.",
+  "feedbackHint": "Es öffnet sich eine vorgefertigte E-Mail, die Sie an uns senden können. Falls gewünscht, werden Informationen über Ihr Gerät und die Version der Anwendung hinzugefügt. Vor dem Versenden können Sie die E-Mail überprüfen und bearbeiten.",
+  "feedbackPrivacyPolicy1": "Mit dem Senden des Feedbacks stimmen Sie unserer ",
+  "feedbackPrivacyPolicy2": "Datenschutzerklärung",
+  "@feedbackPrivacyPolicy2": {
+    "description": "Tapping on this should open the privacy policy."
+  },
+  "feedbackPrivacyPolicy3": " zu.",
+  "addSystemInfo": "Systeminfos hinzufügen",
+  "feedbackSentTitle": "Feedback gesendet",
+  "feedbackSentDescription": "Vielen Dank für Ihre Hilfe bei der Verbesserung dieser App!",
+  "patchNotesDialogTitle": "Was ist neu?",
+  "version": "Version"
 }

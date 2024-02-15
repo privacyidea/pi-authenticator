@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/riverpod_providers.dart';
-import '../../../widgets/default_dialog.dart';
+import '../../../widgets/dialog_widgets/default_dialog.dart';
 import 'errorlog_buttons/delete_errorlog_button.dart';
 import 'errorlog_buttons/send_errorlog_button.dart';
 import 'errorlog_buttons/show_errorlog_button.dart';

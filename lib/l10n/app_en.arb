@@ -1,5 +1,14 @@
 {
   "@@last_modified": "2023-08-07",
+  "patchNotesNewFeatures": "New features",
+  "patchNotesImprovements": "Improvements",
+  "patchNotesBugFixes": "Bug fixes",
+  "patchNotesV4_3_0NewFeatures1": "Support for importing tokens from Google, Aegis and 2FAS Authenticator has been added. More import sources will be added in the future.",
+  "patchNotesV4_3_0NewFeatures2": "Added feedback option to the settings.",
+  "patchNotesV4_3_0NewFeatures3": "Push tokens can now be hidden from the token list.",
+  "patchNotesV4_3_0NewFeatures4": "Introductions have been added to help new users get started.",
+  "patchNotesV4_3_0NewFeatures5": "You can now search for tokens by tapping the magnifying glass in the upper right corner.",
+  "patchNotesV4_3_0NewFeatures6": "Added HomeWidget token for Android 12 and later.",
   "accept": "Accept",
   "@accept": {
     "description": "Label for e.g. a button. Something gets accepted by the user."
@@ -92,6 +101,14 @@
         "example": "PUSH1234"
       }
     }
+  },
+  "confirmTokenDeletionHint": "You may no longer be able to log in if you delete this token.\nPlease make sure that you can log in to the associated account without this token.",
+  "@confirmTokenDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a token."
+  },
+  "confirmFolderDeletionHint": "Deleting a folder has no effect on the tokens in it.\nThe tokens are moved to the main list.",
+  "@confirmFolderDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a folder."
   },
   "generatingPhonePart": "Generating phone part",
   "@generatingPhonePart": {
@@ -355,7 +372,7 @@
   "logMenu": "Log menu",
   "showErrorLog": "Show",
   "clearErrorLog": "Clear",
-  "sendErrorLog": "Send",
+  "send": "Send",
   "sendErrorLogDescription": "A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:",
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
@@ -382,17 +399,18 @@
   "editToken": "Edit Token",
   "edit": "Edit",
   "save": "Save",
+  "create": "Create",
   "validFor": "Valid for",
   "validUntil": "Valid until",
   "deleteLockedToken": "Please authenticate to delete the locked token.",
   "editLockedToken": "Please authenticate to edit the locked token.",
-  "uncollapseLockedFolder": "Please authenticate to uncollapse the locked folder.",
+  "expandLockedFolder": "Please authenticate to uncollapse the locked folder.",
   "renameTokenFolder": "Rename folder",
   "@renameTokenFolder": {
     "description": "Title of the dialog where a new name for a token folder can be entered."
   },
   "addANewFolder": "Create new folder",
-  "folderName": "Foldername",
+  "folderName": "Folder name",
   "retryRollout": "Retry rollout",
   "generatingRSAKeyPair": "Generating RSA key pair",
   "@generatingRSAKeyPair": {
@@ -439,9 +457,9 @@
       }
     }
   },
-  "errorRollOutTokenExpired": "Rolling out this Token is not possible anymore.\nThe token {name} has expired.",
-  "@errorRollOutTokenExpired": {
-    "description": "Tells the user that the roll-out failed because the token has expired.",
+  "errorRollOutNotPossibleAnymore": "Rolling out this Token is not possible anymore.",
+  "errorTokenExpired": "The token {name} has expired.",
+  "@errorTokenExpired": {
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
@@ -468,6 +486,15 @@
   "settingsGroupGeneral": "General",
   "licensesAndVersion": "Licenses and version",
   "privacyPolicy": "Privacy policy",
+  "introScanQrCode": "You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.",
+  "introAddTokenManually": "If you don't want to scan a QR code, you can also add tokens manually.",
+  "introTokenSwipe": "Swipe tokens to the left to see available actions.",
+  "introEditToken": "Here you can edit the token name and see some details.",
+  "introLockToken": "To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.",
+  "introDragToken": "Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.",
+  "introAddFolder": "You can create folders\nto organize your tokens.",
+  "introPollForChallenges": "You can check for new challenges by dragging down the token list.",
+  "introHidePushTokens": "Your push tokens are hidden now.\nBut you can still see them on the push token screen.",
   "legacySigningErrorTitle": "An error occured while using the legacy token: {tokenLabel}",
   "@legacySigningErrorTitle": {
     "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
@@ -480,5 +507,47 @@
   "legacySigningErrorMessage": "The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!",
   "@legacySigningErrorMessage": {
     "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
-  }
+  },
+  "selectImportSource": "Select import source",
+  "selectImportType": "How do you want to import the tokens?",
+  "importTokens": "Import token",
+  "selectFile": "Select file",
+  "decrypt": "Decrypt",
+  "tokensAreEncrypted": "The tokens are encrypted. Please enter the password to decrypt them.",
+  "tokensNotEncrypted": "The tokens are not encrypted and can be imported directly.",
+  "tokensSuccessfullyDecrypted": "The tokens have been successfully decrypted and can now be imported.",
+  "password": "Password",
+  "wrongPassword": "Incorrect password",
+  "qrScan": "Scan",
+  "enterLink": "Enter link",
+  "invalidBackupFile": "The selected file is not a valid backup of {appName}.",
+  "invalidQrScan": "The scanned QR code is not a valid backup of {appName}.",
+  "invalidQrFile": "The selected file does not contain a valid QR code from {appName}.",
+  "invalidLink": "The link entered is not a valid token of {appName}, or it is not supported.",
+  "importExistingToken": "{count, plural, zero{No token was found that is already in the application.} one{A token was found that already exists in the application.} other{{count} tokens was found that are already in the application.}}",
+  "importConflictToken": "{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with an existing token.\nPlease choose which one you want to keep.} other{There are conflicts with existing tokens.\nPlease choose which one you want to keep.}}",
+  "importNewToken": "{count, plural, zero{No new token has been found.} one{A new token has been found and is being imported.} other{{count} new tokens have been found and will be imported.}}",
+  "importHint2FAS": "Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.",
+  "importHintAegisBackupFile": "Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.",
+  "importHintAegisQrScan": "Scan the QR code you receive when you transfer entries from Aegis.",
+  "importHintAegisLink": "Enter the link you receive when you transfer entries from Aegis.",
+  "importHintGoogleQrScan": "Scan the QR code you receive when you export your accounts from Google Authenticator.",
+  "importHintGoogleQrFile": "Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!",
+  "qrFileDecodeError": "It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.",
+  "tokenLink": "Token link",
+  "feedback": "Feedback",
+  "feedbackTitle": "Your feedback is always welcome!",
+  "feedbackDescription": "If you have any questions, suggestions or problems, please let us know.",
+  "feedbackHint": "A ready-made e-mail will open, which you can send to us. If desired, information about your device and the version of the application will be added. You can check and edit the email before sending it.",
+  "feedbackPrivacyPolicy1": "By sending the feedback you agree to our ",
+  "feedbackPrivacyPolicy2": "privacy policy",
+  "@feedbackPrivacyPolicy2": {
+    "description": "Taping on this should open the privacy policy."
+  },
+  "feedbackPrivacyPolicy3": ".",
+  "addSystemInfo": "Add system information",
+  "feedbackSentTitle": "Feedback sent",
+  "feedbackSentDescription": "Thank you very much for your help in making this application better!",
+  "patchNotesDialogTitle": "What's new?",
+  "version": "Version"
 }

@@ -31,19 +31,23 @@ class SettingsGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
+      children: [
         ListTile(
           dense: true,
           leading: Text(
             _title,
-            style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
+            style: theme.textTheme.titleMedium!.copyWith(color: theme.colorScheme.secondary, fontWeight: FontWeight.bold),
             overflow: TextOverflow.fade,
             softWrap: false,
           ),
         ),
-        ..._children,
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Column(children: _children),
+        ),
       ],
     );
   }

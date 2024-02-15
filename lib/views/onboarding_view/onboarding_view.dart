@@ -4,9 +4,11 @@ import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../model/enums/introduction.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/dot_indicator.dart';
 import '../main_view/main_view.dart';
+import '../view_interface.dart';
 import 'onboading_view_widgets/onboarding_page.dart';
 
 class LottieFiles {
@@ -27,8 +29,11 @@ List<LottieFiles> lottieFiles = [
   ),
 ];
 
-class OnboardingView extends ConsumerStatefulWidget {
+class OnboardingView extends ConsumerStatefulView {
   static const String routeName = '/onboarding';
+  @override
+  RouteSettings get routeSettings => const RouteSettings(name: routeName);
+
   final String appName;
 
   const OnboardingView({required this.appName, super.key});
@@ -123,6 +128,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
           onPressed: () {
             if (_currentIndex == lottieFiles.length - 1) {
               ref.read(settingsProvider.notifier).setFirstRun(false);
+              ref.read(introductionProvider.notifier).complete(Introduction.introductionScreen);
               Navigator.of(context).pushReplacementNamed(MainView.routeName);
               return;
             }

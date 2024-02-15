@@ -3,7 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/logger.dart';
-import '../../../widgets/default_dialog.dart';
+import '../../../widgets/dialog_widgets/default_dialog.dart';
 
 class SendErrorDialog extends StatelessWidget {
   const SendErrorDialog({super.key});
@@ -11,7 +11,7 @@ class SendErrorDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) => DefaultDialog(
         title: Text(
-          AppLocalizations.of(context)!.sendErrorLog,
+          AppLocalizations.of(context)!.send,
           overflow: TextOverflow.fade,
           softWrap: false,
         ),

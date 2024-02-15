@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../repo/secure_token_repository.dart';
-import 'customizations.dart';
+import 'globals.dart';
 import 'identifiers.dart';
 import 'logger.dart';
 

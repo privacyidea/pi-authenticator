@@ -34,7 +34,7 @@ import 'package:flutter/material.dart';
 /// of the real characters in [text].
 /// If [replaceWhitespaces] is true, whitespaces in [text] are replaced by
 /// [replaceCharacter] too.
-/// [isHiddenNotifier] handles the tap detection on the widget that un-hides the content.
+/// [isHidden] handles the tap detection on the widget that un-hides the content.
 class HideableText extends StatelessWidget {
   final String text;
   final bool hideOnDefault;
@@ -43,12 +43,12 @@ class HideableText extends StatelessWidget {
   final bool enabled;
   final String replaceCharacter;
   final bool replaceWhitespaces;
-  final ValueNotifier<bool> isHiddenNotifier;
+  final bool isHidden;
 
   const HideableText({
     super.key,
     required this.text,
-    required this.isHiddenNotifier,
+    required this.isHidden,
     this.hideOnDefault = true,
     this.textScaleFactor = 1.0,
     this.textStyle,
@@ -60,8 +60,8 @@ class HideableText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      isHiddenNotifier.value && enabled ? text.replaceAll(RegExp(replaceWhitespaces ? r'.' : r'[^\s]'), replaceCharacter) : text,
-      textScaleFactor: textScaleFactor,
+      isHidden && enabled ? text.replaceAll(RegExp(replaceWhitespaces ? r'.' : r'[^\s]'), replaceCharacter) : text,
+      textScaler: const TextScaler.linear(1.9),
       style: textStyle != null
           ? textStyle!.copyWith(fontFamily: 'monospace', fontWeight: FontWeight.bold)
           : const TextStyle(
