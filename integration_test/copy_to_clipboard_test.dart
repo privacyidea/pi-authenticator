@@ -34,7 +34,7 @@ void main() {
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async => [
           HOTPToken(label: 'test', issuer: 'test', id: 'id', algorithm: Algorithms.SHA256, digits: 6, secret: 'secret', counter: 0),
         ]);
-    when(mockTokenRepository.saveNewState(any)).thenAnswer((_) async => []);
+    when(mockTokenRepository.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
     when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);

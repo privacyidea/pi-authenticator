@@ -73,10 +73,12 @@ class TokenState {
     return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
   }
 
+  // Removes the token from the State
+  // Sets the lastlyUpdatedTokens to an empty list because no token was updated only removed
   TokenState withoutToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     newTokens.removeWhere((element) => element.id == token.id);
-    return TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: const []);
   }
 
   TokenState withoutTokens(List<Token> tokens) {
@@ -130,6 +132,7 @@ class TokenState {
   // Do nothing if it does not exist
   TokenState replaceTokens(List<Token> tokens) {
     final newTokens = List<Token>.from(this.tokens);
+    final lastlyUpdatedTokens = <Token>[];
     for (var token in tokens) {
       final index = newTokens.indexWhere((element) => element.id == token.id);
       if (index == -1) {
@@ -137,8 +140,9 @@ class TokenState {
         continue;
       }
       newTokens[index] = token;
+      lastlyUpdatedTokens.add(token);
     }
-    return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: lastlyUpdatedTokens);
   }
 
   List<Token> tokensInFolder(TokenFolder folder, {List<Type>? only, List<Type>? exclude}) => tokens.where((token) {

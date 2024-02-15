@@ -72,12 +72,12 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         Logger.info('tokenProvider reviced new AppState. Changed from $previous to $next');
         if (previous == AppLifecycleState.paused && next == AppLifecycleState.resumed) {
           Logger.info('Refreshing tokens on resume', name: 'tokenProvider#appStateProvider');
-          newTokenNotifier.refreshTokens();
+          newTokenNotifier.loadStateFromRepo();
         }
         if (previous == AppLifecycleState.resumed && next == AppLifecycleState.paused) {
           Logger.info('Saving tokens and cancelling all notifications on pause', name: 'tokenProvider#appStateProvider');
           FlutterLocalNotificationsPlugin().cancelAll();
-          newTokenNotifier.saveTokens();
+          newTokenNotifier.saveStateToRepo();
         }
       },
     );

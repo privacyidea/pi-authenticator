@@ -41,7 +41,7 @@ void main() {
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async => []);
-    when(mockTokenRepository.saveNewState(any)).thenAnswer((_) async => []);
+    when(mockTokenRepository.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
     when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);

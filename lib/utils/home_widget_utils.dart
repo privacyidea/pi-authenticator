@@ -148,7 +148,7 @@ class HomeWidgetUtils {
   // _packageId must be the exact id of the package variable in "AndroidManifest.xml" !! NOT the applicationId of the flavor !!
   static const String _packageId = "it.netknights.piauthenticator";
   static Future<List<OTPToken>> _loadTokensFromRepo() async => (await _tokenRepository?.loadTokens())?.whereType<OTPToken>().toList() ?? [];
-  static Future<void>? _saveTokensToRepo(List<OTPToken> tokens) => _tokenRepository?.saveNewState(tokens);
+  static Future<void>? _saveTokensToRepo(List<OTPToken> tokens) => _tokenRepository?.saveOrReplaceTokens(tokens);
 
   static Future<List<TokenFolder>> _loadFoldersFromRepo() async {
     return (await _folderRepository?.loadFolders()) ?? [];

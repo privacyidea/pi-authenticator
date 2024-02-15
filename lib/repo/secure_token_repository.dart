@@ -60,7 +60,7 @@ class SecureTokenRepository implements TokenRepository {
   /// in the storage the existing value is overwritten.
   /// Returns all tokens that could not be saved.
   @override
-  Future<List<Token>> saveNewState(List<Token> tokens) async {
+  Future<List<Token>> saveOrReplaceTokens(List<Token> tokens) async {
     final failedTokens = <Token>[];
     for (var element in tokens) {
       if (!await _saveOrReplaceToken(element)) {
@@ -204,7 +204,7 @@ Future<void> _decryptErrorDialog() => showAsyncDialog(
               if (isDataDeleted == true) {
                 // ignore: use_build_context_synchronously
                 Navigator.pop(context);
-                globalRef?.read(tokenProvider.notifier).loadFromRepo();
+                globalRef?.read(tokenProvider.notifier).loadStateFromRepo();
               }
             },
             child: Text(
@@ -242,7 +242,7 @@ Future<void> _decryptErrorDialog() => showAsyncDialog(
               Navigator.pop(context);
               // ignore: use_build_context_synchronously
               Navigator.pop(context);
-              globalRef?.read(tokenProvider.notifier).loadFromRepo();
+              globalRef?.read(tokenProvider.notifier).loadStateFromRepo();
             },
             child: Text(AppLocalizations.of(context)!.decryptErrorButtonRetry),
           ),

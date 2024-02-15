@@ -38,6 +38,7 @@ import '../utils/view_utils.dart';
 class TokenNotifier extends StateNotifier<TokenState> {
   static final Map<String, Timer> _timers = {};
   late Future<TokenState> loadingRepo;
+  late Future<List<Token>?> updatingTokens = Future(() => null);
   final TokenRepository _repo;
   final RsaUtils _rsaUtils;
   final LegacyUtils _legacy;
@@ -64,26 +65,21 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<void> _init() async {
-    loadingRepo = Future(() async {
-      await loadFromRepo();
-      return state;
-    });
+    await _loadFromRepo();
     await loadingRepo;
+    Logger.info('TokenNotifier initialized.', name: 'token_notifier.dart#_init');
   }
 
-  Future<void> _setNewState(TokenState newState) async {
-    state = newState;
-    if (newState.hasRolledOutPushTokens) checkNotificationPermission();
-    for (final element in newState.pushTokensToRollOut) {
-      await rolloutPushToken(element);
-    }
-    await _saveStateToRepo();
-  }
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////// Repository and Token Handling ///////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+  /// Always waits for other repo methods
 
-  Future<void> _saveStateToRepo() async {
+  Future<List<Token>> _addOrReplaceTokens(List<Token> tokens) async {
+    state = state.addOrReplaceTokens(tokens);
     await loadingRepo;
     loadingRepo = Future(() async {
-      final failedTokens = await _repo.saveNewState(state.tokens);
+      final failedTokens = await _repo.saveOrReplaceTokens(state.lastlyUpdatedTokens);
       if (failedTokens.isNotEmpty) {
         Logger.warning(
           'Saving tokens failed. Failed Tokens: ${failedTokens.length}',
@@ -95,91 +91,132 @@ class TokenNotifier extends StateNotifier<TokenState> {
       }
       return state;
     });
-    await loadingRepo;
+    return (await loadingRepo).lastlyUpdatedTokens;
   }
 
-  Future<void> _deleteTokensRepo(List<Token> tokens) async {
+  Future<List<Token>> _replaceTokens(List<Token> tokens) async {
+    state = state.replaceTokens(tokens);
     await loadingRepo;
     loadingRepo = Future(() async {
-      final failedTokens = await _repo.deleteTokens(tokens);
-      TokenState newState = state.addOrReplaceTokens(failedTokens);
-      state = newState;
-      if (state.hasPushTokens == false) {
-        globalRef?.read(settingsProvider.notifier).setHidePushTokens(false);
+      final failedTokens = await _repo.saveOrReplaceTokens(state.lastlyUpdatedTokens);
+      if (failedTokens.isNotEmpty) {
+        Logger.warning(
+          'Saving tokens failed. Failed Tokens: ${failedTokens.length}',
+          name: 'token_notifier.dart#_saveOrReplaceTokens',
+        );
+        final newState = state.addOrReplaceTokens(failedTokens);
+        state = newState;
+        return newState;
       }
-      return newState;
+      return state;
     });
-    await loadingRepo;
+    return (await loadingRepo).lastlyUpdatedTokens;
   }
 
-  Future<TokenState?> loadFromRepo() {
+  Future<bool> _removeToken(Token token) async {
+    await loadingRepo;
+    state = state.withoutToken(token);
+    loadingRepo = Future(() async {
+      final failedTokens = await _repo.deleteTokens([token]);
+      if (failedTokens.isNotEmpty) {
+        Logger.warning(
+          'Deleting tokens failed. Failed Tokens: ${failedTokens.length}',
+          name: 'token_notifier.dart#_deleteTokensRepo',
+        );
+        final newState = state.addOrReplaceTokens(failedTokens);
+        state = newState;
+        return newState;
+      }
+      return state;
+    });
+    final failedTokens = (await loadingRepo).lastlyUpdatedTokens;
+    return failedTokens.isEmpty;
+  }
+
+  Future<TokenState> _loadFromRepo() async {
     List<Token> tokens;
-    try {
-      loadingRepo = Future(
-        () async {
+    loadingRepo = Future(
+      () async {
+        try {
           tokens = await _repo.loadTokens();
           TokenState newState = TokenState(tokens: tokens);
           state = newState;
-          for (final token in newState.pushTokensToRollOut) {
-            rolloutPushToken(token);
-          }
-
-          if (state.hasRolledOutPushTokens) checkNotificationPermission();
           return newState;
-        },
-      );
-      return loadingRepo;
-    } catch (_) {
-      return Future(() => null);
-    }
+        } catch (_) {
+          return Future(() => state);
+        }
+      },
+    );
+    final newState = await loadingRepo;
+    await _handlePushTokensIfExist();
+    return newState;
   }
 
-  Future<bool> refreshTokens() async {
-    await loadingRepo;
-    List<Token> tokens;
-    try {
-      tokens = await _repo.loadTokens();
-    } catch (_) {
-      return false;
-    }
+  //////////////////////////////////////////////////////////////////////////////
+  ///////////////////////// Update Token Methods ///////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  /// Always waits for repo and other updating methods
 
-    Logger.info('Refreshed ${tokens.length} Tokens from storage.', name: 'token_notifier.dart#refreshTokens');
-    state = state.addOrReplaceTokens(tokens);
-    return true;
+  Future<T?> updateToken<T extends Token>(T token, T Function(T) updater) async {
+    await updatingTokens;
+    updatingTokens = Future(() async {
+      await loadingRepo;
+      final current = state.currentOf<T>(token);
+      if (current == null) {
+        Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#updateToken');
+        return null;
+      }
+      final updated = updater(current);
+      return _replaceTokens([updated]);
+    });
+    return (await updatingTokens)?.whereType<T>().firstOrNull;
   }
 
-  Future<bool> saveTokens() async {
-    await loadingRepo;
-    try {
-      await _repo.saveNewState(state.tokens);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  Token? getTokenFromId(String id) {
-    return state.tokens.firstWhereOrNull((element) => element.id == id);
+  Future<List<T>> updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) async {
+    await updatingTokens;
+    updatingTokens = Future(() async {
+      await loadingRepo;
+      List<T> updatedTokens = [];
+      for (final token in tokens) {
+        final current = state.currentOf<T>(token) ?? token;
+        updatedTokens.add(updater(current));
+      }
+      await _replaceTokens(updatedTokens);
+      return updatedTokens;
+    });
+    return (await updatingTokens)?.whereType<T>().toList() ?? [];
   }
 
   Future<void> incrementCounter(HOTPToken token) async {
-    await loadingRepo;
-    token = state.currentOf(token)?.copyWith(counter: token.counter + 1) ?? token.copyWith(counter: token.counter + 1);
-    await _setNewState(state.replaceToken(token));
+    await updatingTokens;
+    updatingTokens = Future(() async {
+      await loadingRepo;
+      token = state.currentOf(token)?.copyWith(counter: token.counter + 1) ?? token.copyWith(counter: token.counter + 1);
+      return await _replaceTokens([token]);
+    });
+    await updatingTokens;
   }
 
   Future<void> hideToken(Token token) async {
-    await loadingRepo;
-    token = state.currentOf(token)?.copyWith(isHidden: true) ?? token.copyWith(isHidden: true);
-    _setNewState(state.replaceToken(token));
+    await updatingTokens;
+    updatingTokens = Future(() async {
+      await loadingRepo;
+      token = state.currentOf(token)?.copyWith(isHidden: true) ?? token.copyWith(isHidden: true);
+      return await _replaceTokens([token]);
+    });
+    await updatingTokens;
   }
 
   Future<void> showToken(Token token) async {
-    final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
-    if (!authenticated) return;
-    await loadingRepo;
-    token = state.currentOf(token)?.copyWith(isHidden: false) ?? token.copyWith(isHidden: false);
-    _setNewState(state.replaceToken(token));
+    await updatingTokens;
+    updatingTokens = Future(() async {
+      final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
+      if (!authenticated) return null;
+      await loadingRepo;
+      token = state.currentOf(token)?.copyWith(isHidden: false) ?? token.copyWith(isHidden: false);
+      return _addOrReplaceTokens([token]);
+    });
+    await updatingTokens;
     _timers[token.id]?.cancel();
     _timers[token.id] = Timer(token.showDuration, () async {
       await hideToken(token);
@@ -187,95 +224,65 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<void> showTokenById(String tokenId) async {
-    final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
-    if (!authenticated) return;
-    await loadingRepo;
-    final token = state.currentOfId(tokenId)?.copyWith(isHidden: false);
-    if (token == null) {
-      Logger.warning('Tried to show token that does not exist.', name: 'token_notifier.dart#showTokenById');
-      return;
+    await updatingTokens;
+    final token = getTokenFromId(tokenId);
+    if (token != null) {
+      await showToken(token);
     }
-    _setNewState(state.replaceToken(token));
-    if (token.folderId != null) {
-      globalRef?.read(tokenFolderProvider.notifier).expandFolderById(token.folderId!);
-    }
-    _timers[token.id]?.cancel();
-    _timers[token.id] = Timer(token.showDuration, () async {
-      await hideToken(token);
-    });
-  }
-
-  Future<void> removeToken(Token token) async {
-    await loadingRepo;
-    state = state.withoutToken(token);
-    await _deleteTokensRepo([token]);
   }
 
   Future<void> addOrReplaceToken(Token token) async {
-    await loadingRepo;
-    await _setNewState(state.addOrReplaceToken(token));
+    await updatingTokens;
+    updatingTokens = Future(() async {
+      await loadingRepo;
+      return _addOrReplaceTokens([token]);
+    });
+    await updatingTokens;
   }
 
   Future<void> addOrReplaceTokens(List<Token> updatedTokens) async {
-    await loadingRepo;
-    await _setNewState(state.addOrReplaceTokens(updatedTokens));
+    await updatingTokens;
+    updatingTokens = Future(() async {
+      await loadingRepo;
+      return _addOrReplaceTokens(updatedTokens);
+    });
+    await updatingTokens;
   }
 
-  Future<T?> updateToken<T extends Token>(T token, T Function(T) updater) async {
-    await loadingRepo;
-    final current = state.currentOf<T>(token);
-    if (current == null) {
-      Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#updateToken');
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////// UI Interaction Methods //////////////////////////////
+  /////// These methods are used to interact with the UI and the user. /////////
+  //////////////////////////////////////////////////////////////////////////////
+  /// Always waits for updating Functions to use the latest state
+
+  Future<TokenState?> loadStateFromRepo() async {
+    await updatingTokens;
+    try {
+      return await _loadFromRepo();
+    } catch (_) {
+      Logger.warning('Loading tokens from storage failed.', name: 'token_notifier.dart#loadStateFromRepo');
       return null;
     }
-    final updated = updater(current);
-    await _setNewState(state.replaceToken(updated));
-    return updated;
   }
 
-  Future<List<Token>> updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) async {
-    await loadingRepo;
-    List<T> updatedTokens = [];
-    for (final token in tokens) {
-      final current = state.currentOf<T>(token) ?? token;
-      updatedTokens.add(updater(current));
-    }
-    await _setNewState(state.replaceTokens(updatedTokens));
-    return updatedTokens;
-  }
-
-  // The return value of a qrCode could be any object. In this case should be a String that is a valid URI.
-  // If it is not a valid URI, the user will be informed.
-  Future<void> handleQrCode(Object? qrCode) async {
-    Uri uri;
+  Future<bool> saveStateToRepo() async {
+    await updatingTokens;
     try {
-      qrCode as String;
-      uri = Uri.parse(qrCode);
+      await _repo.saveOrReplaceTokens(state.tokens);
+      Logger.info('Saved ${state.tokens.length} Tokens to storage.', name: 'token_notifier.dart#saveStateToRepo');
+      return true;
     } catch (_) {
-      showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
-      return;
+      Logger.warning('Saving tokens to storage failed.', name: 'token_notifier.dart#saveStateToRepo');
+      return false;
     }
-    List<Token> tokens = await _tokensFromUri(uri);
-    tokens = tokens.map((e) => TokenOriginSourceType.qrScan.addOriginToToken(token: e, data: qrCode)).toList();
-    await addOrReplaceTokens(tokens);
   }
 
-  Future<void> handleLink(Uri uri) async {
-    List<Token> tokens = await _tokensFromUri(uri);
-    tokens = tokens.map((e) => TokenOriginSourceType.link.addOriginToToken(token: e, data: uri.toString())).toList();
-    await addOrReplaceTokens(tokens);
-  }
-
-  Future<List<Token>> _tokensFromUri(Uri uri) async {
-    List<Token>? tokens;
-    try {
-      tokens = await TokenImportSchemeProcessor.processUriByAny(uri);
-    } catch (_) {}
-    return tokens ?? [];
+  Future<void> removeToken(Token token) async {
+    await _removeToken(token);
   }
 
   Future<bool> addPushRequestToToken(PushRequest pr) async {
-    await loadingRepo;
+    await updatingTokens;
     PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pr.serial && t.isRolledOut);
     Logger.info('Adding push request to token', name: 'token_notifier.dart#addPushRequestToToken');
     if (token == null) {
@@ -332,7 +339,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<bool> removePushRequest(PushRequest pushRequest) async {
-    await loadingRepo;
+    await updatingTokens;
     Logger.info('Removing push request ${pushRequest.id}');
     PushToken? token = state.tokens.whereType<PushToken>().firstWhereOrNull((t) => t.serial == pushRequest.serial);
 
@@ -347,10 +354,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<bool> rolloutPushToken(PushToken token) async {
+    await updatingTokens;
     token = (getTokenFromId(token.id)) as PushToken? ?? token;
     assert(token.url != null, 'Token url is null. Cannot rollout token without url.');
     Logger.info('Rolling out token "${token.id}"', name: 'token_notifier.dart#rolloutPushToken');
-    if (token.isRolledOut) return true;
+    if (token.isRolledOut) {
+      Logger.info('Ignoring rollout request: Token "${token.id}" already rolled out.', name: 'token_notifier.dart#rolloutPushToken');
+      return true;
+    }
     if (token.rolloutState.rollOutInProgress) {
       Logger.info('Ignoring rollout request: Rollout of token "${token.id}" already started. Tokenstate: ${token.rolloutState} ',
           name: 'token_notifier.dart#rolloutPushToken');
@@ -365,12 +376,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
           AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorTokenExpired(token.label),
         );
       }
-      removeToken(token);
+      _removeToken(token);
       return false;
     }
 
     if (token.privateTokenKey == null) {
+      Logger.info('Updating rollout state of token "${token.id}" to generatingRSAKeyPair', name: 'token_notifier.dart#rolloutPushToken');
       token = await updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.generatingRSAKeyPair)) ?? token;
+      Logger.info('Updated token "${token.id}"', name: 'token_notifier.dart#rolloutPushToken');
       try {
         final keyPair = await _rsaUtils.generateRSAKeyPair();
         token = token.withPrivateTokenKey(keyPair.privateKey);
@@ -480,17 +493,71 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  //////////////////////// Add New Tokens Methods /////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+  /// Does not need to wait for updating functions because they doesn't depend on any state
+
+  // The return value of a qrCode could be any object. In this case should be a String that is a valid URI.
+  // If it is not a valid URI, the user will be informed.
+  Future<void> handleQrCode(Object? qrCode) async {
+    Uri uri;
+    try {
+      qrCode as String;
+      uri = Uri.parse(qrCode);
+    } catch (_) {
+      showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
+      return;
+    }
+    List<Token> tokens = await _tokensFromUri(uri);
+    tokens = tokens.map((e) => TokenOriginSourceType.qrScan.addOriginToToken(token: e, data: qrCode)).toList();
+    await addOrReplaceTokens(tokens);
+    await _handlePushTokensIfExist();
+  }
+
+  Future<void> handleLink(Uri uri) async {
+    List<Token> tokens = await _tokensFromUri(uri);
+    tokens = tokens.map((e) => TokenOriginSourceType.link.addOriginToToken(token: e, data: uri.toString())).toList();
+    await addOrReplaceTokens(tokens);
+    await _handlePushTokensIfExist();
+  }
+
+  Future<List<Token>> _tokensFromUri(Uri uri) async {
+    List<Token>? tokens;
+    try {
+      tokens = await TokenImportSchemeProcessor.processUriByAny(uri);
+    } catch (_) {}
+    return tokens ?? [];
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  ///////////////////////// Helper Methods /////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
   Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
     Logger.info('Parsing rollout response, try to extract public_key.', name: 'token_notifier.dart#_parseRollOutResponse');
     try {
       String key = json.decode(response.body)['detail']['public_key'];
       key = key.replaceAll('\n', '');
 
-      Logger.info('Extracting public key was successful.', name: 'token_notifier.dart#_parseRollOutResponse', error: key);
+      Logger.info('Extracting public key was successful.', name: 'token_notifier.dart#_parseRollOutResponse');
 
       return _rsaUtils.deserializeRSAPublicKeyPKCS1(key);
     } on FormatException catch (e) {
       throw FormatException('Response body does not contain RSA public key.', e);
     }
+  }
+
+  Future<void> _handlePushTokensIfExist() async {
+    await loadingRepo;
+    if (state.hasRolledOutPushTokens) checkNotificationPermission();
+    for (final element in state.pushTokensToRollOut) {
+      Logger.info('Handling push token "${element.id}"', name: 'token_notifier.dart#_handlePushTokensIfExist');
+      await rolloutPushToken(element);
+    }
+  }
+
+  Token? getTokenFromId(String id) {
+    return state.tokens.firstWhereOrNull((element) => element.id == id);
   }
 }
