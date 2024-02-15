@@ -31,7 +31,7 @@ jobs:
     - run: "flutter upgrade"
     - run: "flutter --version"
     - run: "flutter pub get"
-    - run: "flutter build ios -t 'lib/main_netknights.dart' --no-codesign"
+    - run: "flutter build ios -t 'lib/mains/main_netknights.dart' --debug --flavor netknights --no-codesign"
 
   build_appbundle:
     name: (Android)
@@ -57,5 +57,4 @@ jobs:
       - run: "flutter --version"
       - run: "flutter pub get"
       - run: 'flutter clean'
-      - run: "flutter build apk -t 'lib/main_netknights.dart' --debug"
-
+      - run: "flutter build apk -t 'lib/mains/main_netknights.dart' --debug --flavor netknights"
