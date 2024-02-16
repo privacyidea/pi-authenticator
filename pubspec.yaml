@@ -72,7 +72,7 @@ dependencies:
   device_info_plus: ^9.0.3
   json_annotation: ^4.8.1
   equatable: ^2.0.5
-  mobile_scanner: ^4.0.0
+  mobile_scanner: 3.5.5
   arrow_path: ^3.1.0
   protobuf: ^3.1.0
   home_widget: ^0.4.1

@@ -808,10 +808,10 @@ packages:
     dependency: "direct main"
     description:
       name: local_auth_android
-      sha256: "54e9c35ce52c06333355ab0d0f41e4c06dbca354b23426765ba41dfb1de27598"
+      sha256: "3bcd732dda7c75fcb7ddaef12e131230f53dcc8c00790d0d6efb3aa0fbbeda57"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.36"
+    version: "1.0.37"
   local_auth_ios:
     dependency: "direct main"
     description:
@@ -912,10 +912,10 @@ packages:
     dependency: "direct main"
     description:
       name: mobile_scanner
-      sha256: "619ed5fd43ca9007a151f00c3dc43feedeaf235fe5647735d0237c38849d49dc"
+      sha256: c3e5bba1cb626b6ab4fc46610f72a136803f6854267967e19f4a4a6a31ff9b74
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.0"
+    version: "3.5.5"
   mockito:
     dependency: "direct dev"
     description:
@@ -1484,10 +1484,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_platform_interface
-      sha256: a932c3a8082e118f80a475ce692fde89dc20fddb24c57360b96bc56f7035de1f
+      sha256: "552f8a1e663569be95a8190206a38187b531910283c3e982193e4f2733f01029"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.2"
   url_launcher_web:
     dependency: transitive
     description:
