@@ -490,7 +490,6 @@
 				FLUTTER_APPLICATION_PATH = "/Users/frankmerkel/Documents/GitHub/pi-authenticator";
 				FLUTTER_BUILD_DIR = build;
 				FLUTTER_BUILD_NUMBER = "$(FLUTTER_BUILD_NUMBER)";
-				FLUTTER_ROOT = /Users/frankmerkel/src/flutter;
 				FLUTTER_TARGET = "$(FLUTTER_APPLICATION_PATH)/lib/mains/main_netknights.dart";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -588,7 +587,6 @@
 				FLUTTER_APPLICATION_PATH = "/Users/frankmerkel/Documents/GitHub/pi-authenticator";
 				FLUTTER_BUILD_DIR = build;
 				FLUTTER_BUILD_NUMBER = "$(FLUTTER_BUILD_NUMBER)";
-				FLUTTER_ROOT = /Users/frankmerkel/src/flutter;
 				FLUTTER_TARGET = "$(FLUTTER_APPLICATION_PATH)/lib/mains/main_netknights.dart";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
