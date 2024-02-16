@@ -91,7 +91,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
   // parse.path.substring(1) -> Label
   String infoLog = '\nKey: [..] | Value: [..]';
   uri.queryParameters.forEach((key, value) {
-    if (key == URI_SECRET) {
+    if (key == URI_SECRET || key.toLowerCase().contains('secret')) {
       value = '********';
     }
     infoLog += '\n${key.padLeft(9)} | $value';
