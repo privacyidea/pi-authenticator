@@ -8,6 +8,7 @@ import '../token_origin.dart';
 import 'day_password_token.dart';
 import 'hotp_token.dart';
 import 'push_token.dart';
+import 'steam_token.dart';
 import 'totp_token.dart';
 
 @immutable
@@ -36,6 +37,7 @@ abstract class Token with SortableMixin {
     if (TokenTypes.TOTP.isString(type)) return TOTPToken.fromJson(json);
     if (TokenTypes.PIPUSH.isString(type)) return PushToken.fromJson(json);
     if (TokenTypes.DAYPASSWORD.isString(type)) return DayPasswordToken.fromJson(json);
+    if (TokenTypes.STEAM.isString(type)) return SteamToken.fromJson(json);
     throw ArgumentError.value(json, 'json', 'Building the token type [$type] is not a supported right now.');
   }
   factory Token.fromUriMap(
@@ -46,6 +48,7 @@ abstract class Token with SortableMixin {
     if (TokenTypes.TOTP.isString(type)) return TOTPToken.fromUriMap(uriMap);
     if (TokenTypes.PIPUSH.isString(type)) return PushToken.fromUriMap(uriMap);
     if (TokenTypes.DAYPASSWORD.isString(type)) return DayPasswordToken.fromUriMap(uriMap);
+    if (TokenTypes.STEAM.isString(type)) return SteamToken.fromUriMap(uriMap);
     throw ArgumentError.value(uriMap, 'uri', 'Building the token type [$type] is not a supported right now.');
   }
 

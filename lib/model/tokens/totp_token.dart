@@ -31,6 +31,7 @@ class TOTPToken extends OTPToken {
   }
 
   final int period;
+
   @override
   String get otpValue => otp_library.OTP.generateTOTPCodeString(
         secret,
@@ -49,7 +50,7 @@ class TOTPToken extends OTPToken {
     required super.algorithm,
     required super.digits,
     required super.secret,
-    String? type, // just for @JsonSerializable(): type of TOTPToken is always TokenTypes.TOTP
+    String? type,
     super.tokenImage,
     super.sortIndex,
     super.pin,
@@ -58,7 +59,7 @@ class TOTPToken extends OTPToken {
     super.folderId,
     super.origin,
   })  : period = period < 1 ? 30 : period, // period must be greater than 0 otherwise IntegerDivisionByZeroException is thrown in OTP.generateTOTPCodeString
-        super(type: TokenTypes.TOTP.asString);
+        super(type: type ?? tokenType);
 
   @override
   bool sameValuesAs(Token other) {

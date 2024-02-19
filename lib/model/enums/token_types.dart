@@ -5,4 +5,5 @@ enum TokenTypes {
   TOTP,
   PIPUSH,
   DAYPASSWORD,
+  STEAM,
 }

@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/tokens/steam_token.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -97,26 +100,35 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
                 validator: (value) {
                   if (value!.isEmpty) {
                     return AppLocalizations.of(context)!.pleaseEnterASecretForThisToken;
-                  } else if (!isValidEncoding(value, _encodingNotifier.value)) {
+                  } else if (!isValidEncoding(value, _typeNotifier.value != TokenTypes.STEAM ? _encodingNotifier.value : Encodings.base32)) {
                     return AppLocalizations.of(context)!.theSecretDoesNotFitTheCurrentEncoding;
                   }
                   return null;
                 },
               ),
-              LabeledDropdownButton<Encodings>(
-                label: AppLocalizations.of(context)!.encoding,
-                values: Encodings.values,
-                valueNotifier: _encodingNotifier,
+              Visibility(
+                visible: _typeNotifier.value != TokenTypes.STEAM,
+                child: LabeledDropdownButton<Encodings>(
+                  label: AppLocalizations.of(context)!.encoding,
+                  values: Encodings.values,
+                  valueNotifier: _encodingNotifier,
+                ),
               ),
-              LabeledDropdownButton<Algorithms>(
-                label: AppLocalizations.of(context)!.algorithm,
-                values: Algorithms.values.reversed.toList(),
-                valueNotifier: _algorithmNotifier,
+              Visibility(
+                visible: _typeNotifier.value != TokenTypes.STEAM,
+                child: LabeledDropdownButton<Algorithms>(
+                  label: AppLocalizations.of(context)!.algorithm,
+                  values: Algorithms.values.reversed.toList(),
+                  valueNotifier: _algorithmNotifier,
+                ),
               ),
-              LabeledDropdownButton<int>(
-                label: AppLocalizations.of(context)!.digits,
-                values: AddTokenManuallyView.allowedDigits,
-                valueNotifier: _digitsNotifier,
+              Visibility(
+                visible: _typeNotifier.value != TokenTypes.STEAM,
+                child: LabeledDropdownButton<int>(
+                  label: AppLocalizations.of(context)!.digits,
+                  values: AddTokenManuallyView.allowedDigits,
+                  valueNotifier: _digitsNotifier,
+                ),
               ),
               LabeledDropdownButton<TokenTypes>(
                 label: AppLocalizations.of(context)!.type,
@@ -175,6 +187,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
       TokenTypes.HOTP => _buildHOTPToken(),
       TokenTypes.TOTP => _buildTOTPToken(),
       TokenTypes.DAYPASSWORD => _buildDayPasswordToken(),
+      TokenTypes.STEAM => _buildSteamToken(),
       _ => null,
     };
   }
@@ -210,6 +223,17 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
         digits: _digitsNotifier.value,
         secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),
         period: Duration(hours: _periodDayPasswordNotifier.value),
+        origin: TokenOriginSourceType.manually.toTokenOrigin(),
+      );
+
+  SteamToken _buildSteamToken() => SteamToken(
+        label: _labelController.text,
+        issuer: '',
+        id: const Uuid().v4(),
+        algorithm: Algorithms.SHA1,
+        digits: 5,
+        secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, Encodings.base32), Encodings.base32),
+        period: 30,
         origin: TokenOriginSourceType.manually.toTokenOrigin(),
       );
 
