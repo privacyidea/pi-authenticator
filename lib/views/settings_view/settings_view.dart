@@ -260,7 +260,7 @@ class SettingsView extends ConsumerView {
                         onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
                       ),
                     ),
-                    if (ref.watch(tokenProvider).hasHOTPTokens)
+                    if (ref.watch(tokenProvider).hasOTPTokens)
                       ListTile(
                         title: RichText(
                           text: TextSpan(
