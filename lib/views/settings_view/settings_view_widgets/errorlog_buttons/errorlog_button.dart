@@ -6,15 +6,13 @@ class ErrorlogButton extends StatelessWidget {
   const ErrorlogButton({super.key, required this.onPressed, required this.text});
 
   @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: const EdgeInsets.all(0),
-      title: LayoutBuilder(builder: (context, constraints) {
-        return Row(
+  Widget build(BuildContext context) => ListTile(
+        title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ConstrainedBox(
-              constraints: BoxConstraints(minWidth: constraints.maxWidth * 0.66, maxWidth: constraints.maxWidth),
+            const Flexible(child: SizedBox()),
+            Expanded(
+              flex: 4,
               child: ElevatedButton(
                 onPressed: onPressed,
                 child: Text(
@@ -24,9 +22,8 @@ class ErrorlogButton extends StatelessWidget {
                 ),
               ),
             ),
+            const Flexible(child: SizedBox()),
           ],
-        );
-      }),
-    );
-  }
+        ),
+      );
 }
