@@ -19,7 +19,7 @@ jobs:
 
         - uses: subosito/flutter-action@v2
           with:
-            flutter-version: '3.16.5'
+            flutter-version: '3.19.0'
             channel: 'stable'
   
         # Run integration test
@@ -29,5 +29,5 @@ jobs:
             api-level: ${{ matrix.api-level }}
             arch: x86_64
             profile: Nexus 6
-            script: flutter test integration_test --flavor netknights -d emulator-5554
+            script: flutter test integration_test --flavor netknights
   

@@ -5,9 +5,9 @@ platform :ios, '12.0'
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 project 'Runner', {
-  'Debug-netknights' => :debug,
-  'Profile-netknights' => :release,
-  'Release-netknights' => :release,
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
 }
 
 def flutter_root
@@ -27,13 +27,12 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 
 flutter_ios_podfile_setup
 
-target 'netknights' do
+target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
-
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
