@@ -45,9 +45,10 @@ jobs:
         api-level: [ 21, 30, 34 ] # [minSdk, most used, newest]
         target: [ default ] # [default, google_apis]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
+          distribution: 'zulu'
           java-version: '17.0.7'
       - uses: subosito/flutter-action@v2
         with:
