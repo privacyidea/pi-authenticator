@@ -556,5 +556,7 @@
   "feedbackSentTitle": "Feedback verzonden",
   "feedbackSentDescription": "Hartelijk dank voor je hulp om deze applicatie beter te maken!",
   "patchNotesDialogTitle": "Wat is er nieuw?",
-  "version": "Versie"
+  "version": "Versie",
+  "noMailAppTitle": "Geen mail app gevonden",
+  "noMailAppDescription": "Er is geen e-mail app geïnstalleerd of geïnitialiseerd op dit apparaat, probeer het opnieuw wanneer u in staat bent om een e-mailbericht te verzenden."
 }

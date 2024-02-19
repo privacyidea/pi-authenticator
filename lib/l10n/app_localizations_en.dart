@@ -695,4 +695,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get version => 'Version';
+
+  @override
+  String get noMailAppTitle => 'No mail app found';
+
+  @override
+  String get noMailAppDescription => 'There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message.';
 }

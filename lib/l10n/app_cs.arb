@@ -559,5 +559,7 @@
   "feedbackSentTitle": "Zpětná vazba odeslána",
   "feedbackSentDescription": "Děkujeme vám za pomoc při vylepšování této aplikace!",
   "patchNotesDialogTitle": "Co je nového?",
-  "version": "Verze"
+  "version": "Verze",
+  "noMailAppTitle": "Není nainstalována žádná e-mailová aplikace",
+  "noMailAppDescription": "There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message."
 }

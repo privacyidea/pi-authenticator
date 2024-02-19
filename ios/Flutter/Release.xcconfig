@@ -1,2 +1,2 @@
-#include "Pods/Target Support Files/Pods-netknights/Pods-netknights.release-netknights.xcconfig"
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
 #include "Generated.xcconfig"

@@ -1,4 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
+import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 import 'app_info_utils.dart';
 import 'logger.dart';
 
@@ -27,6 +32,24 @@ class PiMailer {
         attachments: attachments,
       );
       await FlutterMailer.send(mailOptions);
+    } on PlatformException catch (e, stackTrace) {
+      if (e.code == 'UNAVAILABLE') {
+        showAsyncDialog(
+          builder: (context) => DefaultDialog(
+            title: Text(AppLocalizations.of(context)!.noMailAppTitle),
+            content: Text(AppLocalizations.of(context)!.noMailAppDescription),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+        return false;
+      }
+      Logger.error('Was not able to send the Email', error: e, stackTrace: stackTrace, name: 'pi_mailer.dart#sendMail');
+      return false;
     } catch (e, stackTrace) {
       Logger.error('Was not able to send the Email', error: e, stackTrace: stackTrace, name: 'pi_mailer.dart#sendMail');
       return false;

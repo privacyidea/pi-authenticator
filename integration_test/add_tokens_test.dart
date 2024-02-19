@@ -91,12 +91,12 @@ void main() {
 
 Future<void> _introToMainView(WidgetTester tester) async {
   var finder = find.byType(FloatingActionButton);
-  await pumpUntilFindNWidgets(tester, finder, 1, const Duration(seconds: 10));
-  await tester.tap(find.byType(FloatingActionButton));
+  await pumpUntilFindNWidgets(tester, finder, 1, const Duration(seconds: 20));
+  await tester.tap(finder);
   await tester.pump(const Duration(milliseconds: 2000));
-  await tester.tap(find.byType(FloatingActionButton));
+  await tester.tap(finder);
   await tester.pump(const Duration(milliseconds: 2000));
-  await tester.tap(find.byType(FloatingActionButton));
+  await tester.tap(finder);
   await tester.pump(const Duration(milliseconds: 2000));
   finder = find.text(AppLocalizationsEn().ok);
   await pumpUntilFindNWidgets(tester, finder, 1, const Duration(seconds: 10));

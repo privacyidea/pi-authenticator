@@ -560,5 +560,7 @@
   "feedbackSentTitle": "Retour d'information envoyé",
   "feedbackSentDescription": "Merci beaucoup pour votre aide dans l'amélioration de cette application !",
   "patchNotesDialogTitle": "Quoi de neuf ?",
-  "version": "Version"
+  "version": "Version",
+  "noMailAppTitle": "Aucune application de messagerie trouvée",
+  "noMailAppDescription": "Aucune application de messagerie n'est installée ou initialisée sur cet appareil. Veuillez réessayer lorsque vous serez en mesure d'envoyer un message électronique."
 }

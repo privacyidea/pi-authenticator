@@ -279,7 +279,10 @@ Device Parameters $deviceInfo""";
 
   static void _printError(String? message, {dynamic error, StackTrace? stackTrace, String? name}) {
     if (!kDebugMode) return;
-    print.e(message, error: error, stackTrace: stackTrace);
+    var message0 = DateTime.now().toString();
+    message0 += name != null ? ' [$name]\n' : '\n';
+    message0 += message ?? '';
+    print.e(message0, error: error, stackTrace: stackTrace);
   }
 
   /*----------- DISPLAY OUTPUTS -----------*/
