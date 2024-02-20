@@ -1,8 +1,10 @@
+import 'package:base32/base32.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:privacyidea_authenticator/extensions/int_extension.dart';
 import 'package:privacyidea_authenticator/model/extensions/enum_extension.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
-import 'package:otp/otp.dart' as otp_library;
+
+import 'package:crypto/crypto.dart';
 
 import '../enums/algorithms.dart';
 import '../enums/token_types.dart';
@@ -69,12 +71,14 @@ class SteamToken extends TOTPToken {
 
   @override
   String get otpValue {
-    var code = otp_library.OTP.generateTOTPCode(
-      secret,
-      DateTime.now().millisecondsSinceEpoch,
-      algorithm: otp_library.Algorithm.SHA1,
-      interval: 30,
-    );
+    final counterBytes = (DateTime.now().millisecondsSinceEpoch ~/ 1000 ~/ period).bytes;
+    final secretList = base32.decode(secret.toUpperCase());
+    final hmac = Hmac(sha1, secretList);
+    final digest = hmac.convert(counterBytes).bytes;
+    final offset = digest[digest.length - 1] & 0x0f;
+
+    var code = ((digest[offset] & 0x7f) << 24) | ((digest[offset + 1] & 0xff) << 16) | ((digest[offset + 2] & 0xff) << 8) | (digest[offset + 3] & 0xff);
+
     final stringBuffer = StringBuffer();
     for (int i = 0; i < digits; i++) {
       stringBuffer.write(steamAlphabet[code % steamAlphabet.length]);
