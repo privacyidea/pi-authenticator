@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:base32/base32.dart';
@@ -134,6 +135,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<TokenState> _loadFromRepo() async {
+    log('_loadFromRepo');
     List<Token> tokens;
     loadingRepo = Future(
       () async {
@@ -207,28 +209,36 @@ class TokenNotifier extends StateNotifier<TokenState> {
     await updatingTokens;
   }
 
-  Future<void> showToken(Token token) async {
+  Future<bool> showToken(Token token) async {
     await updatingTokens;
+    log('showToken');
     updatingTokens = Future(() async {
       final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
+      log('authenticated: $authenticated');
       if (!authenticated) return null;
       await loadingRepo;
       token = state.currentOf(token)?.copyWith(isHidden: false) ?? token.copyWith(isHidden: false);
+      log('token: $token');
       return _addOrReplaceTokens([token]);
     });
-    await updatingTokens;
+    final authenticated = (await updatingTokens)?.isNotEmpty ?? false;
+    log('authenticated_2: $authenticated');
     _timers[token.id]?.cancel();
     _timers[token.id] = Timer(token.showDuration, () async {
+      log('hideToken');
       await hideToken(token);
+      log('hideToken_2');
     });
+    return authenticated;
   }
 
-  Future<void> showTokenById(String tokenId) async {
+  Future<bool> showTokenById(String tokenId) async {
     await updatingTokens;
     final token = getTokenFromId(tokenId);
     if (token != null) {
-      await showToken(token);
+      return await showToken(token);
     }
+    return false;
   }
 
   Future<void> addOrReplaceToken(Token token) async {
@@ -256,7 +266,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// Always waits for updating Functions to use the latest state
 
   Future<TokenState?> loadStateFromRepo() async {
+    log("loadStateFromRepo");
     await updatingTokens;
+    log("loadStateFromRepo_2");
     try {
       return await _loadFromRepo();
     } catch (_) {
@@ -267,6 +279,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<bool> saveStateToRepo() async {
     await updatingTokens;
+    _cancelTimers();
     try {
       await _repo.saveOrReplaceTokens(state.tokens);
       Logger.info('Saved ${state.tokens.length} Tokens to storage.', name: 'token_notifier.dart#saveStateToRepo');
@@ -559,5 +572,12 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Token? getTokenFromId(String id) {
     return state.tokens.firstWhereOrNull((element) => element.id == id);
+  }
+
+  void _cancelTimers() {
+    for (final key in _timers.keys) {
+      _timers[key]?.cancel();
+    }
+    _timers.clear();
   }
 }

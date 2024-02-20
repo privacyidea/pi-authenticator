@@ -78,23 +78,23 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> _navigate() async {
     SplashScreen.didNavigated = true;
-    await Future.wait([
-      if (SplashScreen._initialView != null)
-        Navigator.push<bool>(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (_, __, ___) => SplashScreen._initialView!,
-            transitionDuration: _splashScreenDuration,
-            transitionsBuilder: (_, a, __, view) => FadeTransition(
-              opacity: CurvedAnimation(
-                curve: const Interval(0, 1, curve: Curves.easeOut),
-                parent: a,
-              ),
-              child: view,
+    if (SplashScreen._initialView != null) {
+      await Navigator.push<bool>(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => SplashScreen._initialView!,
+          transitionDuration: _splashScreenDuration,
+          transitionsBuilder: (_, a, __, view) => FadeTransition(
+            opacity: CurvedAnimation(
+              curve: const Interval(0, 1, curve: Curves.easeOut),
+              parent: a,
             ),
+            child: view,
           ),
         ),
-    ]);
+      );
+    }
+
     _pushReplace();
   }
 
@@ -117,6 +117,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         : PageRouteBuilder(
             pageBuilder: (_, __, ___) => nextView,
           );
+    Navigator.of(context).popUntil((route) => route.isFirst);
     Navigator.pushReplacement(context, routeBuilder);
   }
 
