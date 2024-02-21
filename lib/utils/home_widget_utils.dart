@@ -135,6 +135,9 @@ class HomeWidgetUtils {
   /////// Getter & Getterfunctions ///////
   ////////////////////////////////////////
 
+  Stream<Uri?> get widgetClicked => HomeWidget.widgetClicked;
+  Future<Uri?> initiallyLaunchedFromHomeWidget() => HomeWidget.initiallyLaunchedFromHomeWidget();
+
   Future<List<String>> get _widgetIds async => (await HomeWidget.getWidgetData<String?>(keyWidgetIds))?.split(',') ?? <String>[];
 
   // _packageId must be the exact id of the package variable in "AndroidManifest.xml" !! NOT the applicationId of the flavor !!
@@ -692,4 +695,8 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   Future<void> updateTokenIfLinked(Token token) async {}
   @override
   Future<void> updateTokensIfLinked(List<Token> tokens) async {}
+  @override
+  Future<Uri?> initiallyLaunchedFromHomeWidget() => Future.value(null);
+  @override
+  Stream<Uri?> get widgetClicked => const Stream.empty();
 }
