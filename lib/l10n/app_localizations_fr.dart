@@ -701,4 +701,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noMailAppDescription => 'Aucune application de messagerie n\'est installée ou initialisée sur cet appareil. Veuillez réessayer lorsque vous serez en mesure d\'envoyer un message électronique.';
+
+  @override
+  String get authenticationRequest => 'Authentification';
+
+  @override
+  String requestInfo(Object issuer, Object account) {
+    return 'Envoyé par $issuer pour votre compte : \"$account\"';
+  }
 }

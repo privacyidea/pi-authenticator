@@ -6,11 +6,13 @@ class CustomTrailing extends StatelessWidget {
   final Widget child;
   final double maxPercentWidth;
   final double maxPixelsWidth;
+  final EdgeInsetsGeometry? padding;
+  final BoxFit fit;
 
   /// Creates a widget that limits the width of [child] to [maxPercentWidth] of
   /// the parent width or [maxPixelsWidth] if the parent width is too small.
   /// Defaults: [maxPercentWidth] = 27.5, [maxPixelsWidth] = 85
-  const CustomTrailing({required this.child, super.key, double? maxPercentWidth, double? maxPixelsWidth})
+  const CustomTrailing({required this.child, super.key, double? maxPercentWidth, double? maxPixelsWidth, this.padding, this.fit = BoxFit.contain})
       : maxPercentWidth = maxPercentWidth ?? 27.5,
         maxPixelsWidth = maxPixelsWidth ?? 85;
 
@@ -22,10 +24,10 @@ class CustomTrailing extends StatelessWidget {
         width: boxSize,
         height: boxSize,
         child: Padding(
-          padding: EdgeInsets.all(boxSize / 12),
+          padding: padding ?? EdgeInsets.all(boxSize / 16),
           child: FittedBox(
-            fit: BoxFit.contain,
-            child: Center(child: child),
+            fit: fit,
+            child: child,
           ),
         ),
       );

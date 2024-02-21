@@ -131,6 +131,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       return state;
     });
     final failedTokens = (await loadingRepo).lastlyUpdatedTokens;
+    await _handlePushTokensIfExist();
     return failedTokens.isEmpty;
   }
 
@@ -563,7 +564,15 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<void> _handlePushTokensIfExist() async {
     await loadingRepo;
-    if (state.hasRolledOutPushTokens) checkNotificationPermission();
+    if (state.hasPushTokens == false) {
+      if (globalRef?.read(settingsProvider).hidePushTokens == true) {
+        globalRef!.read(settingsProvider.notifier).setHidePushTokens(false);
+      }
+      return;
+    }
+    if (state.hasRolledOutPushTokens) {
+      checkNotificationPermission();
+    }
     for (final element in state.pushTokensToRollOut) {
       Logger.info('Handling push token "${element.id}"', name: 'token_notifier.dart#_handlePushTokensIfExist');
       await rolloutPushToken(element);

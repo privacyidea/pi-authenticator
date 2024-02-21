@@ -35,7 +35,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     final tokenState = ref.watch(tokenProvider);
     final allowToRefresh = tokenState.hasPushTokens;
     final draggingSortable = ref.watch(draggingSortableProvider);
-    bool filterPushTokens = ref.watch(settingsProvider).hidePushTokens && tokenState.hasHOTPTokens;
+    bool filterPushTokens = ref.watch(settingsProvider).hidePushTokens && tokenState.hasOTPTokens;
 
     final tokenStateWithNoFolder = tokenState.tokensWithoutFolder(exclude: filterPushTokens ? [PushToken] : []);
 

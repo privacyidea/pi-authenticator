@@ -31,7 +31,7 @@ class SettingsView extends ConsumerView {
     final tokens = ref.watch(tokenProvider).tokens;
     final enrolledPushTokenList = tokens.whereType<PushToken>().where((e) => e.isRolledOut).toList();
     final unsupported = enrolledPushTokenList.where((e) => e.url == null).toList();
-    final showPushSettingsGroup = enrolledPushTokenList.isNotEmpty;
+    final enablePushSettingsGroup = enrolledPushTokenList.isNotEmpty;
 
     return PushRequestListener(
       child: Scaffold(
@@ -195,94 +195,94 @@ class SettingsView extends ConsumerView {
                   ),
                 ],
               ),
-              Visibility(
-                visible: showPushSettingsGroup,
-                child: SettingsGroup(
-                  title: AppLocalizations.of(context)!.pushToken,
-                  children: [
-                    ListTile(
-                      title: Text(
-                        AppLocalizations.of(context)!.synchronizePushTokens,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      subtitle: Text(
-                        AppLocalizations.of(context)!.synchronizesTokensWithServer,
+              SettingsGroup(
+                isActive: enablePushSettingsGroup,
+                title: AppLocalizations.of(context)!.pushToken,
+                children: [
+                  ListTile(
+                    title: Text(
+                      AppLocalizations.of(context)!.synchronizePushTokens,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    subtitle: Text(
+                      AppLocalizations.of(context)!.synchronizesTokensWithServer,
+                      overflow: TextOverflow.fade,
+                    ),
+                    trailing: ElevatedButton(
+                      onPressed: enablePushSettingsGroup
+                          ? () {
+                              showDialog(
+                                useRootNavigator: false,
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) => const UpdateFirebaseTokenDialog(),
+                              );
+                            }
+                          : null,
+                      child: Text(
+                        AppLocalizations.of(context)!.sync,
                         overflow: TextOverflow.fade,
-                      ),
-                      trailing: ElevatedButton(
-                        child: Text(
-                          AppLocalizations.of(context)!.sync,
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                        ),
-                        onPressed: () {
-                          showDialog(
-                            useRootNavigator: false,
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) => const UpdateFirebaseTokenDialog(),
-                          );
-                        },
+                        softWrap: false,
                       ),
                     ),
+                  ),
+                  ListTile(
+                    title: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: AppLocalizations.of(context)!.enablePolling,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          // Add clickable icon to inform user of unsupported push tokens (for polling)
+                          WidgetSpan(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: unsupported.isNotEmpty && enrolledPushTokenList.isNotEmpty
+                                  ? GestureDetector(
+                                      onTap: () {}, // () => _showPollingInfo(unsupported),
+                                      child: const Icon(
+                                        Icons.info_outline,
+                                        color: Colors.red,
+                                      ),
+                                    )
+                                  : null,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    subtitle: Text(
+                      AppLocalizations.of(context)!.requestPushChallengesPeriodically,
+                      overflow: TextOverflow.fade,
+                    ),
+                    trailing: Switch(
+                      value: ref.watch(settingsProvider).enablePolling,
+                      onChanged: enablePushSettingsGroup ? (value) => ref.read(settingsProvider.notifier).setPolling(value) : null,
+                    ),
+                  ),
+                  if (ref.watch(tokenProvider).hasOTPTokens)
                     ListTile(
                       title: RichText(
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: AppLocalizations.of(context)!.enablePolling,
+                              text: AppLocalizations.of(context)!.hidePushTokens,
                               style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            // Add clickable icon to inform user of unsupported push tokens (for polling)
-                            WidgetSpan(
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: unsupported.isNotEmpty && enrolledPushTokenList.isNotEmpty
-                                    ? GestureDetector(
-                                        onTap: () {}, // () => _showPollingInfo(unsupported),
-                                        child: const Icon(
-                                          Icons.info_outline,
-                                          color: Colors.red,
-                                        ),
-                                      )
-                                    : null,
-                              ),
                             ),
                           ],
                         ),
                       ),
                       subtitle: Text(
-                        AppLocalizations.of(context)!.requestPushChallengesPeriodically,
+                        AppLocalizations.of(context)!.hidePushTokensDescription,
                         overflow: TextOverflow.fade,
                       ),
                       trailing: Switch(
-                        value: ref.watch(settingsProvider).enablePolling,
-                        onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
+                        value: ref.watch(settingsProvider).hidePushTokens,
+                        onChanged: enablePushSettingsGroup ? (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value) : null,
                       ),
-                    ),
-                    if (ref.watch(tokenProvider).hasOTPTokens)
-                      ListTile(
-                        title: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: AppLocalizations.of(context)!.hidePushTokens,
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                        subtitle: Text(
-                          AppLocalizations.of(context)!.hidePushTokensDescription,
-                          overflow: TextOverflow.fade,
-                        ),
-                        trailing: Switch(
-                          value: ref.watch(settingsProvider).hidePushTokens,
-                          onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value),
-                        ),
-                      )
-                  ],
-                ),
+                    )
+                ],
               ),
               const Divider(),
               SettingsGroup(

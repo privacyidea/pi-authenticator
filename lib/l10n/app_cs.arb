@@ -561,5 +561,17 @@
   "patchNotesDialogTitle": "Co je nového?",
   "version": "Verze",
   "noMailAppTitle": "Není nainstalována žádná e-mailová aplikace",
-  "noMailAppDescription": "There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message."
+  "noMailAppDescription": "There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message.",
+  "authenticationRequest": "Žádost o ověření",
+  "requestInfo": "Odesláno {issuer} pro váš účet: \"{account}\"",
+  "@requestInfo": {
+    "placeholders": {
+      "issuer": {
+        "example": "privacyIDEA"
+      },
+      "account": {
+        "example": "GitHub"
+      }
+    }
+  }
 }

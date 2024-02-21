@@ -701,4 +701,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noMailAppDescription => 'There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message.';
+
+  @override
+  String get authenticationRequest => 'Authentication request';
+
+  @override
+  String requestInfo(Object issuer, Object account) {
+    return 'Sent by $issuer for your account: \"$account\"';
+  }
 }

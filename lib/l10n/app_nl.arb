@@ -558,5 +558,17 @@
   "patchNotesDialogTitle": "Wat is er nieuw?",
   "version": "Versie",
   "noMailAppTitle": "Geen mail app gevonden",
-  "noMailAppDescription": "Er is geen e-mail app geïnstalleerd of geïnitialiseerd op dit apparaat, probeer het opnieuw wanneer u in staat bent om een e-mailbericht te verzenden."
+  "noMailAppDescription": "Er is geen e-mail app geïnstalleerd of geïnitialiseerd op dit apparaat, probeer het opnieuw wanneer u in staat bent om een e-mailbericht te verzenden.",
+  "authenticationRequest": "Verificatieverzoek",
+  "requestInfo": "Verzonden door {issuer} voor uw account: \"{account}\"",
+  "@requestInfo": {
+    "placeholders": {
+      "issuer": {
+        "example": "privacyIDEA"
+      },
+      "account": {
+        "example": "GitHub"
+      }
+    }
+  }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../../utils/logger.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../token_folder.dart';
-import '../tokens/hotp_token.dart';
 import '../tokens/otp_token.dart';
 import '../tokens/push_token.dart';
 import '../tokens/token.dart';
@@ -16,9 +15,6 @@ class TokenState {
 
   List<OTPToken> get otpTokens => tokens.whereType<OTPToken>().toList();
   bool get hasOTPTokens => otpTokens.isNotEmpty;
-
-  List<HOTPToken> get hotpTokens => tokens.whereType<HOTPToken>().toList();
-  bool get hasHOTPTokens => hotpTokens.isNotEmpty;
 
   List<PushToken> get pushTokens => tokens.whereType<PushToken>().toList();
   bool get hasPushTokens => pushTokens.isNotEmpty;
