@@ -261,27 +261,26 @@ class SettingsView extends ConsumerView {
                       onChanged: enablePushSettingsGroup ? (value) => ref.read(settingsProvider.notifier).setPolling(value) : null,
                     ),
                   ),
-                  if (ref.watch(tokenProvider).hasOTPTokens)
-                    ListTile(
-                      title: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: AppLocalizations.of(context)!.hidePushTokens,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                          ],
-                        ),
+                  ListTile(
+                    title: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: AppLocalizations.of(context)!.hidePushTokens,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ],
                       ),
-                      subtitle: Text(
-                        AppLocalizations.of(context)!.hidePushTokensDescription,
-                        overflow: TextOverflow.fade,
-                      ),
-                      trailing: Switch(
-                        value: ref.watch(settingsProvider).hidePushTokens,
-                        onChanged: enablePushSettingsGroup ? (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value) : null,
-                      ),
-                    )
+                    ),
+                    subtitle: Text(
+                      AppLocalizations.of(context)!.hidePushTokensDescription,
+                      overflow: TextOverflow.fade,
+                    ),
+                    trailing: Switch(
+                      value: ref.watch(settingsProvider).hidePushTokens,
+                      onChanged: enablePushSettingsGroup ? (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value) : null,
+                    ),
+                  )
                 ],
               ),
               const Divider(),
