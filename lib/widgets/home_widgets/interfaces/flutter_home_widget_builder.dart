@@ -32,12 +32,12 @@ abstract class FlutterHomeWidgetBuilder<T extends FlutterHomeWidgetBase> {
   Future<dynamic> renderFlutterWidgets({String additionalSuffix = ''}) async {
     await utils.renderFlutterWidget(
       getWidget(isDark: true, aditionalSuffix: additionalSuffix),
-      key: '$homeWidgetKey$additionalSuffix${utils.keySuffixDark}',
+      key: '$homeWidgetKey$additionalSuffix${HomeWidgetUtils.keySuffixDark}',
       logicalSize: logicalSize,
     );
     await utils.renderFlutterWidget(
       getWidget(isDark: false, aditionalSuffix: additionalSuffix),
-      key: '$homeWidgetKey$additionalSuffix${utils.keySuffixLight}',
+      key: '$homeWidgetKey$additionalSuffix${HomeWidgetUtils.keySuffixLight}',
       logicalSize: logicalSize,
     );
   }

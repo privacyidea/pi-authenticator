@@ -32,7 +32,6 @@ class DeeplinkNotifier extends StateNotifier<DeepLink?> {
     if (kIsWeb) return;
 
     for (var source in _sources) {
-      if (source.isSupported != null && await source.isSupported == false) continue;
       _subs.add(source.stream.listen((Uri? uri) {
         Logger.info('Got uri from ${source.name}');
         if (!mounted) return;
@@ -50,7 +49,6 @@ class DeeplinkNotifier extends StateNotifier<DeepLink?> {
     Logger.info('_handleInitialUri called');
 
     for (var source in _sources) {
-      if (source.isSupported != null && await source.isSupported == false) continue;
       final initialUri = await source.initialUri;
       if (initialUri != null) {
         if (!mounted) return;
@@ -66,6 +64,5 @@ class DeeplinkSource {
   final String name;
   final Stream<Uri?> stream;
   final Future<Uri?> initialUri;
-  final Future<bool>? isSupported;
-  DeeplinkSource({required this.name, required this.stream, required this.initialUri, this.isSupported});
+  DeeplinkSource({required this.name, required this.stream, required this.initialUri});
 }

@@ -130,7 +130,6 @@ final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, DeepLink?>(
         name: 'home_widget',
         stream: HomeWidget.widgetClicked,
         initialUri: HomeWidget.initiallyLaunchedFromHomeWidget(),
-        isSupported: HomeWidgetUtils.isHomeWidgetSupported,
       ),
     ]);
   },

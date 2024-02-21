@@ -46,9 +46,9 @@ void main() async {
       navigatorKey: globalNavigatorKey,
       appRunner: () async {
         WidgetsFlutterBinding.ensureInitialized();
-        await HomeWidget.setAppGroupId(appGroupId);
-        if (await HomeWidgetUtils.isHomeWidgetSupported) {
+        if (HomeWidgetUtils().isSupported) {
           await HomeWidget.registerInteractivityCallback(homeWidgetBackgroundCallback);
+          await HomeWidget.setAppGroupId(appGroupId);
         }
         runApp(AppWrapper(child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization)));
       });
