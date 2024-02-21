@@ -564,11 +564,10 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<void> _handlePushTokensIfExist() async {
     await loadingRepo;
-    if (state.hasPushTokens == false) {
+    if (state.hasPushTokens == false || state.hasOTPTokens == false) {
       if (globalRef?.read(settingsProvider).hidePushTokens == true) {
         globalRef!.read(settingsProvider.notifier).setHidePushTokens(false);
       }
-      return;
     }
     if (state.hasRolledOutPushTokens) {
       checkNotificationPermission();

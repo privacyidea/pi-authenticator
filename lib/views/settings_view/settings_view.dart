@@ -278,7 +278,9 @@ class SettingsView extends ConsumerView {
                     ),
                     trailing: Switch(
                       value: ref.watch(settingsProvider).hidePushTokens,
-                      onChanged: enablePushSettingsGroup ? (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value) : null,
+                      onChanged: enablePushSettingsGroup && ref.watch(tokenProvider).hasOTPTokens
+                          ? (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value)
+                          : null,
                     ),
                   )
                 ],
