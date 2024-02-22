@@ -41,7 +41,6 @@ void homeWidgetBackgroundCallback(Uri? uri) async {
 }
 
 class HomeWidgetUtils {
-  bool isSupported = true;
   HomeWidgetUtils._();
   static HomeWidgetUtils? _instance;
 
@@ -196,6 +195,11 @@ class HomeWidgetUtils {
   /////////// Public Methods /////////////
   ////////////////////////////////////////
   /// Note: Prefer to call private methods inside of Public Methods to avoid unnecessary rendering ///
+
+  Future<bool?> registerInteractivityCallback(void Function(Uri? uri) homeWidgetBackgroundCallback) =>
+      HomeWidget.registerInteractivityCallback(homeWidgetBackgroundCallback);
+
+  Future<bool?> setAppGroupId(String appGroupId) => HomeWidget.setAppGroupId(appGroupId);
 
   /// This method has to be called at least once before any other method is called
   Future<void> homeWidgetInit({TokenRepository? repository}) async {
@@ -586,13 +590,11 @@ class HomeWidgetUtils {
     Logger.info('Notify Update: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate');
     _lastUpdate = DateTime.now();
     await HomeWidget.saveWidgetData(keyRebuildingWidgetIds, updatedWidgetIds.join(','));
-    await HomeWidget.updateWidget(qualifiedAndroidName: '${await _packageId}.AppWidgetProvider', iOSName: 'AppWidgetProvider');
+    await HomeWidget.updateWidget(qualifiedAndroidName: '$_packageId.AppWidgetProvider', iOSName: 'AppWidgetProvider');
   }
 }
 
 class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
-  @override
-  bool isSupported = false;
   @override
   DateTime? _lastUpdate;
   @override
@@ -699,4 +701,8 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   Future<Uri?> initiallyLaunchedFromHomeWidget() => Future.value(null);
   @override
   Stream<Uri?> get widgetClicked => const Stream.empty();
+  @override
+  Future<bool?> registerInteractivityCallback(void Function(Uri? uri) homeWidgetBackgroundCallback) => Future.value(null);
+  @override
+  Future<bool?> setAppGroupId(String appGroupId) => Future.value(null);
 }

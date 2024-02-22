@@ -50,13 +50,12 @@ class PrivacyIdeaIOClient {
     try {
       await ioClient.post(url, body: '');
     } on SocketException {
-      Logger.error('SocketException', name: 'utils.dart#triggerNetworkAccessPermission');
       if (isRetry) {
         Logger.warning('SocketException while retrying', name: 'utils.dart#triggerNetworkAccessPermission');
         if (globalNavigatorKey.currentState?.context != null) {
           globalRef?.read(statusMessageProvider.notifier).state = (
-            AppLocalizations.of(globalNavigatorKey.currentState!.context)!.connectionFailed,
-            AppLocalizations.of(globalNavigatorKey.currentState!.context)!.checkYourNetwork,
+            AppLocalizations.of(await globalContext)!.connectionFailed,
+            AppLocalizations.of(await globalContext)!.checkYourNetwork,
           );
         }
         ioClient.close();
@@ -72,8 +71,8 @@ class PrivacyIdeaIOClient {
       ioClient.close();
       if (globalNavigatorKey.currentState?.context == null) return false;
       globalRef?.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(globalNavigatorKey.currentState!.context)!.connectionFailed,
-        AppLocalizations.of(globalNavigatorKey.currentState!.context)!.checkYourNetwork,
+        AppLocalizations.of(await globalContext)!.connectionFailed,
+        AppLocalizations.of(await globalContext)!.checkYourNetwork,
       );
       return false;
     } finally {

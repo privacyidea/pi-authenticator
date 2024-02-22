@@ -21,7 +21,6 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:home_widget/home_widget.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
@@ -46,10 +45,8 @@ void main() async {
       navigatorKey: globalNavigatorKey,
       appRunner: () async {
         WidgetsFlutterBinding.ensureInitialized();
-        if (HomeWidgetUtils().isSupported) {
-          await HomeWidget.registerInteractivityCallback(homeWidgetBackgroundCallback);
-          await HomeWidget.setAppGroupId(appGroupId);
-        }
+        await HomeWidgetUtils().registerInteractivityCallback(homeWidgetBackgroundCallback);
+        await HomeWidgetUtils().setAppGroupId(appGroupId);
         runApp(AppWrapper(child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization)));
       });
 }
