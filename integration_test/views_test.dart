@@ -108,7 +108,7 @@ Future<void> _settingsViewTest(WidgetTester tester) async {
   expect(find.text(AppLocalizationsEn().theme), findsOneWidget);
   expect(find.text(AppLocalizationsEn().language), findsOneWidget);
   expect(find.text(AppLocalizationsEn().errorLogTitle), findsOneWidget);
-  expect(find.byType(SettingsGroup), findsNWidgets(4));
+  expect(find.byType(SettingsGroup), findsNWidgets(5));
   globalRef!.read(tokenProvider.notifier).handleQrCode(
       'otpauth://pipush/label?url=http%3A%2F%2Fwww.example.com&ttl=10&issuer=issuer&enrollment_credential=enrollmentCredentials&v=1&serial=serial&serial=serial&sslverify=0');
   await pumpUntilFindNWidgets(tester, find.text(AppLocalizationsEn().pushToken), 1, const Duration(minutes: 5));

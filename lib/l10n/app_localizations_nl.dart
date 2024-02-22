@@ -701,4 +701,12 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get noMailAppDescription => 'Er is geen e-mail app geïnstalleerd of geïnitialiseerd op dit apparaat, probeer het opnieuw wanneer u in staat bent om een e-mailbericht te verzenden.';
+
+  @override
+  String get authenticationRequest => 'Verificatieverzoek';
+
+  @override
+  String requestInfo(Object issuer, Object account) {
+    return 'Verzonden door $issuer voor uw account: \"$account\"';
+  }
 }

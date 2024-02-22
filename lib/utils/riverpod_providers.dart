@@ -4,7 +4,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:home_widget/home_widget.dart';
 import 'package:uni_links/uni_links.dart';
 
 import '../l10n/app_localizations.dart';
@@ -128,9 +127,8 @@ final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, DeepLink?>(
       DeeplinkSource(name: 'uni_links', stream: uriLinkStream, initialUri: getInitialUri()),
       DeeplinkSource(
         name: 'home_widget',
-        stream: HomeWidget.widgetClicked,
-        initialUri: HomeWidget.initiallyLaunchedFromHomeWidget(),
-        isSupported: HomeWidgetUtils.isHomeWidgetSupported,
+        stream: HomeWidgetUtils().widgetClicked,
+        initialUri: HomeWidgetUtils().initiallyLaunchedFromHomeWidget(),
       ),
     ]);
   },

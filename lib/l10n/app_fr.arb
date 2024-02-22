@@ -562,5 +562,17 @@
   "patchNotesDialogTitle": "Quoi de neuf ?",
   "version": "Version",
   "noMailAppTitle": "Aucune application de messagerie trouvée",
-  "noMailAppDescription": "Aucune application de messagerie n'est installée ou initialisée sur cet appareil. Veuillez réessayer lorsque vous serez en mesure d'envoyer un message électronique."
+  "noMailAppDescription": "Aucune application de messagerie n'est installée ou initialisée sur cet appareil. Veuillez réessayer lorsque vous serez en mesure d'envoyer un message électronique.",
+  "authenticationRequest": "Authentification",
+  "requestInfo": "Envoyé par {issuer} pour votre compte : \"{account}\"",
+  "@requestInfo": {
+    "placeholders": {
+      "issuer": {
+        "exemple": "privacyIDEA"
+      },
+      "account": {
+        "exemple": "GitHub"
+      }
+    }
+  }
 }
