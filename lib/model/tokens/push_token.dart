@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:uuid/uuid.dart';
@@ -9,8 +8,6 @@ import '../../utils/rsa_utils.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
 import '../extensions/enum_extension.dart';
-import '../push_request.dart';
-import '../push_request_queue.dart';
 import '../token_origin.dart';
 import 'token.dart';
 
@@ -45,31 +42,10 @@ class PushToken extends Token {
   RSAPrivateKey? get rsaPrivateTokenKey => privateTokenKey == null ? null : rsaParser.deserializeRSAPrivateKeyPKCS1(privateTokenKey!);
   PushToken withPrivateTokenKey(RSAPrivateKey key) => copyWith(privateTokenKey: rsaParser.serializeRSAPrivateKeyPKCS1(key));
 
-  PushToken withPushRequest(PushRequest pr) {
-    pushRequests.add(pr);
-    knownPushRequests.put(pr.id);
-    return copyWith(pushRequests: pushRequests, knownPushRequests: knownPushRequests);
-  }
-
-  PushToken withoutPushRequest(PushRequest pr) {
-    if (pushRequests.list.firstWhereOrNull((element) => element.id == pr.id) != null) {
-      pushRequests.remove(pr);
-    }
-    return copyWith(pushRequests: pushRequests);
-  }
-
-  late final PushRequestQueue pushRequests;
-  final CustomIntBuffer knownPushRequests;
-
-  bool knowsRequestWithId(int id) {
-    bool exists = pushRequests.any((element) => element.id == id);
-    return exists || knownPushRequests.contains(id);
-  }
-
   PushToken({
     required this.serial,
-    required super.label,
-    required super.issuer,
+    super.label,
+    super.issuer,
     required super.id,
     this.url,
     this.expirationDate,
@@ -80,8 +56,6 @@ class PushToken extends Token {
     bool? isRolledOut,
     bool? sslVerify,
     PushTokenRollOutState? rolloutState,
-    PushRequestQueue? pushRequests,
-    CustomIntBuffer? knownPushRequests,
     String? type, // just for @JsonSerializable(): type of PushToken is always TokenTypes.PIPUSH
     super.sortIndex,
     super.tokenImage,
@@ -93,8 +67,6 @@ class PushToken extends Token {
   })  : isRolledOut = isRolledOut ?? false,
         sslVerify = sslVerify ?? false,
         rolloutState = rolloutState ?? PushTokenRollOutState.rolloutNotStarted,
-        knownPushRequests = knownPushRequests ?? CustomIntBuffer(),
-        pushRequests = pushRequests ?? PushRequestQueue(),
         super(type: TokenTypes.PIPUSH.asString);
 
   @override
@@ -119,7 +91,6 @@ class PushToken extends Token {
     String? issuer,
     String? id,
     String? tokenImage,
-    PushRequestQueue? pushRequests,
     bool? pin,
     bool? isLocked,
     bool? isHidden,
@@ -143,7 +114,6 @@ class PushToken extends Token {
       issuer: issuer ?? this.issuer,
       tokenImage: tokenImage ?? this.tokenImage,
       id: id ?? this.id,
-      pushRequests: pushRequests ?? this.pushRequests,
       pin: pin ?? this.pin,
       isLocked: isLocked ?? this.isLocked,
       isHidden: isHidden ?? this.isHidden,
@@ -157,7 +127,6 @@ class PushToken extends Token {
       expirationDate: expirationDate ?? this.expirationDate,
       isRolledOut: isRolledOut ?? this.isRolledOut,
       rolloutState: rolloutState ?? this.rolloutState,
-      knownPushRequests: knownPushRequests ?? this.knownPushRequests,
       folderId: folderId != null ? folderId() : this.folderId,
       origin: origin ?? this.origin,
     );
@@ -180,9 +149,7 @@ class PushToken extends Token {
         'isRolledOut: $isRolledOut, '
         'rolloutState: $rolloutState, '
         'publicServerKey: $publicServerKey, '
-        'publicTokenKey: $publicTokenKey, '
-        'pushRequests: $pushRequests, '
-        'knownPushRequests: $knownPushRequests}';
+        'publicTokenKey: $publicTokenKey}';
   }
 
   factory PushToken.fromUriMap(Map<String, dynamic> uriMap) {
@@ -209,7 +176,6 @@ class PushToken extends Token {
 
   factory PushToken.fromJson(Map<String, dynamic> json) {
     final newToken = _$PushTokenFromJson(json);
-    newToken.pushRequests.removeWhere((request) => request.expirationDate.isBefore(DateTime.now()));
     final currentRolloutState = switch (newToken.rolloutState) {
       PushTokenRollOutState.rolloutNotStarted => PushTokenRollOutState.rolloutNotStarted,
       PushTokenRollOutState.generatingRSAKeyPair || PushTokenRollOutState.generatingRSAKeyPairFailed => PushTokenRollOutState.generatingRSAKeyPairFailed,

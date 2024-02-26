@@ -25,8 +25,6 @@ class HOTPToken extends OTPToken {
 
   HOTPToken({
     this.counter = 0,
-    required super.label,
-    required super.issuer,
     required super.id,
     required super.algorithm,
     required super.digits,
@@ -39,6 +37,8 @@ class HOTPToken extends OTPToken {
     super.isHidden,
     super.folderId,
     super.origin,
+    super.label = '',
+    super.issuer = '',
   }) : super(type: TokenTypes.HOTP.asString);
 
   @override

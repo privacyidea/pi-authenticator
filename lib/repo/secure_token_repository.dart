@@ -20,6 +20,7 @@
   limitations under the License.
 */
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -46,7 +47,8 @@ class SecureTokenRepository implements TokenRepository {
 
   /// Function [f] is executed, protected by Mutex [_m].
   /// That means, that calls of this method will always be executed serial.
-  static protect(Future<dynamic> Function() f) => _m.protect(f);
+  static Future<T> protect<T>(Future<T> Function() f) => _m.protect<T>(f);
+  Future<T> protectCall<T>(Future<T> Function() f) => protect(f);
 
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
@@ -56,24 +58,88 @@ class SecureTokenRepository implements TokenRepository {
   // TOKENS
   // ###########################################################################
 
+  @override
+  Future<Token?> loadToken(String id) => protect<Token?>(() async {
+        final token = await _storage.read(key: _GLOBAL_PREFIX + id);
+        if (token == null) {
+          Logger.warning('Token not found in secure storage', name: 'storage_utils.dart#loadToken');
+          return null;
+        }
+        return Token.fromJson(jsonDecode(token));
+      });
+
+  /// Returns a list of all tokens that are saved in the secure storage of
+  /// this device.
+  /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
+  @override
+  Future<List<Token>> loadTokens() => protect<List<Token>>(() async {
+        late Map<String, String> keyValueMap;
+        try {
+          keyValueMap = await _storage.readAll();
+        } on PlatformException catch (e, s) {
+          Logger.warning("Token found, but could not be decrypted.", name: 'storage_utils.dart#loadTokens', error: e, stackTrace: s, verbose: true);
+          _decryptErrorDialog();
+          return [];
+        }
+
+        List<Token> tokenList = [];
+
+        for (var i = 0; i < keyValueMap.length; i++) {
+          final value = keyValueMap.values.elementAt(i);
+          final key = keyValueMap.keys.elementAt(i);
+          Map<String, dynamic>? valueJson;
+          if (!key.startsWith(_GLOBAL_PREFIX)) {
+            // Every token should start with the global prefix.
+            // But not everything that starts with the global prefix is a token.
+            continue;
+          }
+
+          try {
+            valueJson = jsonDecode(value);
+          } on FormatException catch (_) {
+            // Value should be a json. Skip everything that is not a json.
+            continue;
+          }
+
+          if (valueJson == null || !valueJson.containsKey('type')) {
+            Logger.warning(
+                'Could not deserialize token from secure storage. Value: $value\nserializedToken = $valueJson\ncontainsKey(type) = ${valueJson?.containsKey('type')} ',
+                name: 'storage_utils.dart#loadAllTokens');
+            // If valueJson is null or does not contain a type, it can't be a token. Skip it.
+            continue;
+          }
+
+          // TODO token.version might be deprecated, is there a reason to use it?
+          // TODO when the token version (token.version) changed handle this here.
+
+          tokenList.add(Token.fromJson(valueJson));
+        }
+
+        //Logger.info('Loaded ${tokenList.length} tokens from secure storage');
+        return tokenList;
+      });
+
   /// Saves [token]s securely on the device, if [token] already exists
   /// in the storage the existing value is overwritten.
   /// Returns all tokens that could not be saved.
   @override
-  Future<List<Token>> saveOrReplaceTokens(List<Token> tokens) async {
-    final failedTokens = <Token>[];
-    for (var element in tokens) {
-      if (!await _saveOrReplaceToken(element)) {
-        failedTokens.add(element);
-      }
-    }
-    if (failedTokens.isNotEmpty) {
-      Logger.warning('Could not save all tokens to secure storage', name: 'storage_utils.dart#saveOrReplaceTokens', stackTrace: StackTrace.current);
-    } else {
-      Logger.info('Saved all (${tokens.length}) tokens to secure storage');
-    }
-    return failedTokens;
-  }
+  Future<List<T>> saveOrReplaceTokens<T extends Token>(List<T> tokens) => protect<List<T>>(() async {
+        final failedTokens = <T>[];
+        for (var element in tokens) {
+          if (!await _saveOrReplaceToken(element)) {
+            failedTokens.add(element);
+          }
+        }
+        if (failedTokens.isNotEmpty) {
+          Logger.warning('Could not save all tokens to secure storage', name: 'storage_utils.dart#saveOrReplaceTokens', stackTrace: StackTrace.current);
+        } else {
+          Logger.info('Saved all (${tokens.length}) tokens to secure storage');
+        }
+        return failedTokens;
+      });
+
+  @override
+  Future<bool> saveOrReplaceToken(Token token) => protect<bool>(() => _saveOrReplaceToken(token));
 
   Future<bool> _saveOrReplaceToken(Token token) async {
     try {
@@ -84,85 +150,26 @@ class SecureTokenRepository implements TokenRepository {
     return true;
   }
 
-  /// Returns a list of all tokens that are saved in the secure storage of
-  /// this device.
-  /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
+  /// Deletes the saved jsons of [tokens] from the secure storage.
   @override
-  Future<List<Token>> loadTokens() async {
-    late Map<String, String> keyValueMap;
-    try {
-      keyValueMap = await _storage.readAll();
-    } on PlatformException catch (e, s) {
-      Logger.warning("Token found, but could not be decrypted.", name: 'storage_utils.dart#loadTokens', error: e, stackTrace: s, verbose: true);
-      _decryptErrorDialog();
-      return [];
-    }
-
-    List<Token> tokenList = [];
-
-    for (var i = 0; i < keyValueMap.length; i++) {
-      final value = keyValueMap.values.elementAt(i);
-      final key = keyValueMap.keys.elementAt(i);
-      Map<String, dynamic>? serializedToken;
-
-      try {
-        serializedToken = jsonDecode(value);
-      } on FormatException catch (e, s) {
-        if (key == _CURRENT_APP_TOKEN_KEY || key == _NEW_APP_TOKEN_KEY) {
-          continue;
+  Future<List<T>> deleteTokens<T extends Token>(List<T> tokens) => protect<List<T>>(() async {
+        final failedTokens = <T>[];
+        for (var element in tokens) {
+          if (!await _deleteToken(element)) {
+            failedTokens.add(element);
+          }
         }
-        _storage.delete(key: key);
-        Logger.warning(
-          'Could not deserialize token from secure storage. Value: $value, key: $key',
-          name: 'storage_utils.dart#loadAllTokens',
-          error: e,
-          stackTrace: s,
-          verbose: true,
-        );
-        // Skip everything that does not fit a serialized token
-        continue;
-      }
-
-      if (serializedToken == null || !serializedToken.containsKey('type')) {
-        Logger.warning(
-            'Could not deserialize token from secure storage. Value: $value\nserializedToken = $serializedToken\ncontainsKey(type) = ${serializedToken?.containsKey('type')} ',
-            name: 'storage_utils.dart#loadAllTokens');
-        // Skip everything that fits for deserialization but is not a token
-        continue;
-      }
-
-      // TODO token.version might be deprecated, is there a reason to use it?
-      // TODO when the token version (token.version) changed handle this here.
-
-      // TODO Is this still needed? Can a json annotation be used instead to
-      //  define default values?
-      // Handle new fields here
-      serializedToken['issuer'] ??= '';
-      serializedToken['label'] ??= '';
-
-      tokenList.add(Token.fromJson(serializedToken));
-    }
-
-    //Logger.info('Loaded ${tokenList.length} tokens from secure storage');
-    return tokenList;
-  }
-
-  @override
-  Future<List<Token>> deleteTokens(List<Token> tokens) async {
-    final failedTokens = <Token>[];
-    for (var element in tokens) {
-      if (!await _deleteToken(element)) {
-        failedTokens.add(element);
-      }
-    }
-    if (failedTokens.isNotEmpty) {
-      Logger.warning('Could not delete all tokens from secure storage',
-          name: 'storage_utils.dart#deleteTokens', error: 'Failed tokens: $failedTokens', stackTrace: StackTrace.current);
-    }
-    return failedTokens;
-  }
+        if (failedTokens.isNotEmpty) {
+          Logger.warning('Could not delete all tokens from secure storage',
+              name: 'storage_utils.dart#deleteTokens', error: 'Failed tokens: $failedTokens', stackTrace: StackTrace.current);
+        }
+        return failedTokens;
+      });
 
   /// Deletes the saved json of [token] from the secure storage.
+  @override
+  Future<bool> deleteToken(Token token) => protect<bool>(() => _deleteToken(token));
+
   Future<bool> _deleteToken(Token token) async {
     try {
       _storage.delete(key: _GLOBAL_PREFIX + token.id);
@@ -177,19 +184,14 @@ class SecureTokenRepository implements TokenRepository {
   // ###########################################################################
   // FIREBASE CONFIG
   // ###########################################################################
-
   static const _CURRENT_APP_TOKEN_KEY = '${_GLOBAL_PREFIX}CURRENT_APP_TOKEN';
-
-  static Future<void> setCurrentFirebaseToken(String str) async => _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str);
-
-  static Future<String?> getCurrentFirebaseToken() async => _storage.read(key: _CURRENT_APP_TOKEN_KEY);
-
+  static Future<void> setCurrentFirebaseToken(String str) => protect(() => _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str));
+  static Future<String?> getCurrentFirebaseToken() => protect(() => _storage.read(key: _CURRENT_APP_TOKEN_KEY));
   static const _NEW_APP_TOKEN_KEY = '${_GLOBAL_PREFIX}NEW_APP_TOKEN';
 
   // This is used for checking if the token was updated.
-  static Future<void> setNewFirebaseToken(String str) async => _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
-
-  static Future<String?> getNewFirebaseToken() async => _storage.read(key: _NEW_APP_TOKEN_KEY);
+  static Future<void> setNewFirebaseToken(String str) => protect(() => _storage.write(key: _NEW_APP_TOKEN_KEY, value: str));
+  static Future<String?> getNewFirebaseToken() => protect(() => _storage.read(key: _NEW_APP_TOKEN_KEY));
 }
 
 Future<void> _decryptErrorDialog() => showAsyncDialog(

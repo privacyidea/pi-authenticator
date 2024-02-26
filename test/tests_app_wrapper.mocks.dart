@@ -111,16 +111,14 @@ class _FakeIntroductionState_5 extends _i1.SmartFake
 /// See the documentation for Mockito's code generation for more information.
 class MockTokenRepository extends _i1.Mock implements _i6.TokenRepository {
   @override
-  _i7.Future<List<_i8.Token>> saveOrReplaceTokens(List<_i8.Token>? tokens) =>
-      (super.noSuchMethod(
+  _i7.Future<_i8.Token?> loadToken(String? id) => (super.noSuchMethod(
         Invocation.method(
-          #saveOrReplaceTokens,
-          [tokens],
+          #loadToken,
+          [id],
         ),
-        returnValue: _i7.Future<List<_i8.Token>>.value(<_i8.Token>[]),
-        returnValueForMissingStub:
-            _i7.Future<List<_i8.Token>>.value(<_i8.Token>[]),
-      ) as _i7.Future<List<_i8.Token>>);
+        returnValue: _i7.Future<_i8.Token?>.value(),
+        returnValueForMissingStub: _i7.Future<_i8.Token?>.value(),
+      ) as _i7.Future<_i8.Token?>);
 
   @override
   _i7.Future<List<_i8.Token>> loadTokens() => (super.noSuchMethod(
@@ -134,16 +132,47 @@ class MockTokenRepository extends _i1.Mock implements _i6.TokenRepository {
       ) as _i7.Future<List<_i8.Token>>);
 
   @override
-  _i7.Future<List<_i8.Token>> deleteTokens(List<_i8.Token>? tokens) =>
+  _i7.Future<bool> saveOrReplaceToken(_i8.Token? token) => (super.noSuchMethod(
+        Invocation.method(
+          #saveOrReplaceToken,
+          [token],
+        ),
+        returnValue: _i7.Future<bool>.value(false),
+        returnValueForMissingStub: _i7.Future<bool>.value(false),
+      ) as _i7.Future<bool>);
+
+  @override
+  _i7.Future<List<T>> saveOrReplaceTokens<T extends _i8.Token>(
+          List<T>? tokens) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #saveOrReplaceTokens,
+          [tokens],
+        ),
+        returnValue: _i7.Future<List<T>>.value(<T>[]),
+        returnValueForMissingStub: _i7.Future<List<T>>.value(<T>[]),
+      ) as _i7.Future<List<T>>);
+
+  @override
+  _i7.Future<bool> deleteToken(_i8.Token? token) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteToken,
+          [token],
+        ),
+        returnValue: _i7.Future<bool>.value(false),
+        returnValueForMissingStub: _i7.Future<bool>.value(false),
+      ) as _i7.Future<bool>);
+
+  @override
+  _i7.Future<List<T>> deleteTokens<T extends _i8.Token>(List<T>? tokens) =>
       (super.noSuchMethod(
         Invocation.method(
           #deleteTokens,
           [tokens],
         ),
-        returnValue: _i7.Future<List<_i8.Token>>.value(<_i8.Token>[]),
-        returnValueForMissingStub:
-            _i7.Future<List<_i8.Token>>.value(<_i8.Token>[]),
-      ) as _i7.Future<List<_i8.Token>>);
+        returnValue: _i7.Future<List<T>>.value(<T>[]),
+        returnValueForMissingStub: _i7.Future<List<T>>.value(<T>[]),
+      ) as _i7.Future<List<T>>);
 }
 
 /// A class which mocks [SettingsRepository].

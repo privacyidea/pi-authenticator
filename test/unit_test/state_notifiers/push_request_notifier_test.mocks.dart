@@ -11,9 +11,11 @@ import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i5;
 import 'package:pointycastle/export.dart' as _i2;
+import 'package:privacyidea_authenticator/model/push_request.dart' as _i13;
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i8;
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i10;
 import 'package:privacyidea_authenticator/utils/network_utils.dart' as _i9;
+import 'package:privacyidea_authenticator/utils/push_provider.dart' as _i12;
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i4;
 
 // ignore_for_file: type=lint
@@ -396,4 +398,84 @@ class MockFirebaseUtils extends _i1.Mock implements _i10.FirebaseUtils {
         ),
         returnValue: _i7.Future<String?>.value(),
       ) as _i7.Future<String?>);
+}
+
+/// A class which mocks [PushProvider].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPushProvider extends _i1.Mock implements _i12.PushProvider {
+  MockPushProvider() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  bool get pollingIsEnabled => (super.noSuchMethod(
+        Invocation.getter(#pollingIsEnabled),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  set pollingIsEnabled(bool? _pollingIsEnabled) => super.noSuchMethod(
+        Invocation.setter(
+          #pollingIsEnabled,
+          _pollingIsEnabled,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void setPollingEnabled(bool? enablePolling) => super.noSuchMethod(
+        Invocation.method(
+          #setPollingEnabled,
+          [enablePolling],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i7.Future<void> pollForChallenges({required bool? isManually}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #pollForChallenges,
+          [],
+          {#isManually: isManually},
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
+
+  @override
+  _i7.Future<void> pollForChallenge(
+    _i8.PushToken? token, {
+    bool? isManually = true,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #pollForChallenge,
+          [token],
+          {#isManually: isManually},
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
+
+  @override
+  void unsubscribe(void Function(_i13.PushRequest)? newRequest) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #unsubscribe,
+          [newRequest],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void subscribe(void Function(_i13.PushRequest)? newRequest) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #subscribe,
+          [newRequest],
+        ),
+        returnValueForMissingStub: null,
+      );
 }

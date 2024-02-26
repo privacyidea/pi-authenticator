@@ -1,7 +1,14 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
+import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
+import 'package:base32/base32.dart';
 
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
+import '../utils/riverpod_providers.dart';
+import 'tokens/push_token.dart';
 
 part 'push_request.g.dart';
 
@@ -26,11 +33,10 @@ class PushRequest {
     required this.sslVerify,
     required this.id,
     required this.expirationDate,
-    String? serial,
-    String? signature,
+    this.serial = '',
+    this.signature = '',
     this.accepted,
-  })  : serial = serial ?? '',
-        signature = signature ?? '';
+  });
 
   PushRequest copyWith({
     String? title,
@@ -121,5 +127,35 @@ class PushRequest {
     if (data[PUSH_REQUEST_SIGNATURE] is! String) {
       throw ArgumentError('Push request signature is ${data[PUSH_REQUEST_SIGNATURE].runtimeType}. Expected String.');
     }
+  }
+
+  Future<bool> verifySignature(PushToken token, {LegacyUtils legacyUtils = const LegacyUtils(), RsaUtils rsaUtils = const RsaUtils()}) async {
+    Logger.info('Adding push request to token', name: 'push_request_notifier.dart#newRequest');
+    String signedData = '$nonce|'
+        '$uri|'
+        '$serial|'
+        '$question|'
+        '$title|'
+        '${sslVerify ? '1' : '0'}';
+
+    // Re-add url and sslverify to android legacy tokens:
+    if (token.url == null) {
+      globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(url: uri, sslVerify: sslVerify));
+    }
+
+    bool isVerified = token.privateTokenKey == null
+        ? await legacyUtils.verify(token.serial, signedData, signature)
+        : rsaUtils.verifyRSASignature(token.rsaPublicServerKey!, utf8.encode(signedData), base32.decode(signature));
+
+    if (!isVerified) {
+      Logger.warning(
+        'Validating incoming message failed.',
+        name: 'token_notifier.dart#addPushRequestToToken',
+        error: 'Signature does not match signed data.',
+      );
+      return false;
+    }
+    Logger.info('Validating incoming message was successful.', name: 'token_notifier.dart#addPushRequestToToken');
+    return true;
   }
 }

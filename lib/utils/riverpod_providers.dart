@@ -8,8 +8,8 @@ import 'package:uni_links/uni_links.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/mixins/sortable_mixin.dart';
-import '../model/push_request.dart';
 import '../model/states/introduction_state.dart';
+import '../model/states/push_request_state.dart';
 import '../model/states/settings_state.dart';
 import '../model/states/token_filter.dart';
 import '../model/states/token_folder_state.dart';
@@ -49,22 +49,6 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
       newTokenNotifier.handleLink(newLink.uri);
     });
 
-    ref.listen(pushRequestProvider, (previous, newPushRequest) {
-      if (newPushRequest == null) {
-        Logger.info("Received null pushRequest", name: 'tokenProvider#pushRequestProvider');
-        return;
-      }
-      if (newPushRequest.accepted == null) {
-        Logger.info("Received new pushRequest", name: 'tokenProvider#pushRequestProvider');
-        newTokenNotifier.addPushRequestToToken(newPushRequest);
-      }
-      if (newPushRequest.accepted != null) {
-        Logger.info("Received pushRequest with accepted=${newPushRequest.accepted}... removing it from state.", name: 'tokenProvider#pushRequestProvider');
-        newTokenNotifier.removePushRequest(newPushRequest);
-        FlutterLocalNotificationsPlugin().cancelAll();
-      }
-    });
-
     ref.listen(
       appStateProvider,
       (previous, next) {
@@ -76,7 +60,7 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         if (previous == AppLifecycleState.resumed && next == AppLifecycleState.paused) {
           Logger.info('Saving tokens and cancelling all notifications on pause', name: 'tokenProvider#appStateProvider');
           FlutterLocalNotificationsPlugin().cancelAll();
-          newTokenNotifier.saveStateToRepo();
+          newTokenNotifier.saveStateOnMinimizeApp();
         }
       },
     );
@@ -93,7 +77,7 @@ final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
   name: 'settingsProvider',
 );
 
-final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>(
+final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequestState>(
   (ref) {
     Logger.info("New PushRequestNotifier created", name: 'pushRequestProvider');
     final pushProvider = PushProvider();
@@ -171,7 +155,7 @@ final tokenFilterProvider = StateProvider<TokenFilter?>((ref) => null);
 final connectivityProvider = StreamProvider<ConnectivityResult>(
   (ref) {
     Logger.info("New connectivityProvider created", name: 'connectivityProvider');
-    ref.read(tokenProvider.notifier).loadingRepo.then(
+    ref.read(tokenProvider.notifier).initState.then(
       (newState) {
         Connectivity().checkConnectivity().then((connectivity) {
           Logger.info("First connectivity check: $connectivity", name: 'connectivityProvider#initialCheck');

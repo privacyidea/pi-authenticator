@@ -1,9 +1,9 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/extensions/color_extension.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../model/push_request.dart';
 import '../../model/tokens/push_token.dart';
 import '../../utils/globals.dart';
 import '../../utils/lock_auth.dart';
@@ -11,16 +11,16 @@ import '../../utils/riverpod_providers.dart';
 import '../press_button.dart';
 import 'default_dialog.dart';
 
-class PushRequestDialog extends StatefulWidget {
-  final PushToken tokenWithPushRequest;
+class PushRequestDialog extends ConsumerStatefulWidget {
+  final PushRequest pushRequest;
 
-  const PushRequestDialog(this.tokenWithPushRequest, {super.key});
+  const PushRequestDialog(this.pushRequest, {super.key});
 
   @override
-  State<PushRequestDialog> createState() => _PushRequestDialogState();
+  ConsumerState<PushRequestDialog> createState() => _PushRequestDialogState();
 }
 
-class _PushRequestDialogState extends State<PushRequestDialog> {
+class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
   static const titleScale = 1.35;
   static const questionScale = 1.1;
   double get lineHeight => Theme.of(context).textTheme.titleLarge?.fontSize ?? 16;
@@ -45,8 +45,16 @@ class _PushRequestDialogState extends State<PushRequestDialog> {
   @override
   Widget build(BuildContext context) {
     final lineHeight = this.lineHeight;
-    final question = widget.tokenWithPushRequest.pushRequests.peek()?.question;
-    return isHandled
+    final question = widget.pushRequest.question;
+    final token = ref.watch(tokenProvider).getTokenBySerial(widget.pushRequest.serial);
+    if (token == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (mounted) {
+          ref.read(pushRequestProvider.notifier).remove(widget.pushRequest);
+        }
+      });
+    }
+    return isHandled || token == null
         ? const SizedBox()
         : Container(
             color: Colors.transparent,
@@ -63,15 +71,15 @@ class _PushRequestDialogState extends State<PushRequestDialog> {
                 children: [
                   Text(
                     AppLocalizations.of(context)!.requestInfo(
-                      widget.tokenWithPushRequest.issuer,
-                      widget.tokenWithPushRequest.label,
+                      token.issuer,
+                      token.label,
                     ),
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: Theme.of(context).textTheme.titleMedium?.fontSize),
                     textScaler: const TextScaler.linear(questionScale),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: lineHeight),
-                  if (question != null) ...[
+                  ...[
                     Text(
                       question,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: Theme.of(context).textTheme.titleMedium?.fontSize),
@@ -85,9 +93,10 @@ class _PushRequestDialogState extends State<PushRequestDialog> {
                     height: lineHeight * titleScale * 2 + 16,
                     child: PressButton(
                       onPressed: () async {
-                        if (widget.tokenWithPushRequest.isLocked &&
-                            await lockAuth(localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) return;
-                        globalRef?.read(pushRequestProvider.notifier).acceptPop(widget.tokenWithPushRequest);
+                        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) {
+                          return;
+                        }
+                        globalRef?.read(pushRequestProvider.notifier).accept(token, widget.pushRequest);
                         if (mounted) setState(() => isHandled = true);
                       },
                       child: Row(
@@ -117,12 +126,11 @@ class _PushRequestDialogState extends State<PushRequestDialog> {
                     child: PressButton(
                         style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
                         onPressed: () async {
-                          if (widget.tokenWithPushRequest.isLocked &&
-                              await lockAuth(localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
+                          if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
                             return;
                           }
                           dialogIsOpen = true;
-                          await _showConfirmationDialog(widget.tokenWithPushRequest);
+                          await _showConfirmationDialog(token);
                           dialogIsOpen = false;
                         },
                         child: Row(
@@ -146,7 +154,7 @@ class _PushRequestDialogState extends State<PushRequestDialog> {
           );
   }
 
-  Future<void> _showConfirmationDialog(PushToken token) => showDialog(
+  Future<void> _showConfirmationDialog(PushToken pushToken) => showDialog(
       useRootNavigator: false,
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) {
@@ -178,7 +186,7 @@ class _PushRequestDialogState extends State<PushRequestDialog> {
                     flex: 6,
                     child: PressButton(
                       onPressed: () {
-                        globalRef?.read(pushRequestProvider.notifier).declinePop(token);
+                        globalRef?.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest);
                         Navigator.of(context).pop();
                         if (mounted) setState(() => isHandled = true);
                       },
@@ -213,7 +221,7 @@ class _PushRequestDialogState extends State<PushRequestDialog> {
                       style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
                       onPressed: () {
                         //TODO: Notify issuer
-                        globalRef?.read(pushRequestProvider.notifier).declinePop(token);
+                        globalRef?.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest);
                         Navigator.of(context).pop();
                         if (mounted) setState(() => isHandled = true);
                       },

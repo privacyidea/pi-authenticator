@@ -84,14 +84,13 @@ class MockTokenRepository extends _i1.Mock implements _i4.TokenRepository {
   }
 
   @override
-  _i5.Future<List<_i6.Token>> saveOrReplaceTokens(List<_i6.Token>? tokens) =>
-      (super.noSuchMethod(
+  _i5.Future<_i6.Token?> loadToken(String? id) => (super.noSuchMethod(
         Invocation.method(
-          #saveOrReplaceTokens,
-          [tokens],
+          #loadToken,
+          [id],
         ),
-        returnValue: _i5.Future<List<_i6.Token>>.value(<_i6.Token>[]),
-      ) as _i5.Future<List<_i6.Token>>);
+        returnValue: _i5.Future<_i6.Token?>.value(),
+      ) as _i5.Future<_i6.Token?>);
 
   @override
   _i5.Future<List<_i6.Token>> loadTokens() => (super.noSuchMethod(
@@ -103,14 +102,43 @@ class MockTokenRepository extends _i1.Mock implements _i4.TokenRepository {
       ) as _i5.Future<List<_i6.Token>>);
 
   @override
-  _i5.Future<List<_i6.Token>> deleteTokens(List<_i6.Token>? tokens) =>
+  _i5.Future<bool> saveOrReplaceToken(_i6.Token? token) => (super.noSuchMethod(
+        Invocation.method(
+          #saveOrReplaceToken,
+          [token],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<List<T>> saveOrReplaceTokens<T extends _i6.Token>(
+          List<T>? tokens) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #saveOrReplaceTokens,
+          [tokens],
+        ),
+        returnValue: _i5.Future<List<T>>.value(<T>[]),
+      ) as _i5.Future<List<T>>);
+
+  @override
+  _i5.Future<bool> deleteToken(_i6.Token? token) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteToken,
+          [token],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<List<T>> deleteTokens<T extends _i6.Token>(List<T>? tokens) =>
       (super.noSuchMethod(
         Invocation.method(
           #deleteTokens,
           [tokens],
         ),
-        returnValue: _i5.Future<List<_i6.Token>>.value(<_i6.Token>[]),
-      ) as _i5.Future<List<_i6.Token>>);
+        returnValue: _i5.Future<List<T>>.value(<T>[]),
+      ) as _i5.Future<List<T>>);
 }
 
 /// A class which mocks [RsaUtils].

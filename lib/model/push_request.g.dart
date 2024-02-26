@@ -14,8 +14,8 @@ PushRequest _$PushRequestFromJson(Map<String, dynamic> json) => PushRequest(
       sslVerify: json['sslVerify'] as bool,
       id: json['id'] as int,
       expirationDate: DateTime.parse(json['expirationDate'] as String),
-      serial: json['serial'] as String?,
-      signature: json['signature'] as String?,
+      serial: json['serial'] as String? ?? '',
+      signature: json['signature'] as String? ?? '',
       accepted: json['accepted'] as bool?,
     );
 

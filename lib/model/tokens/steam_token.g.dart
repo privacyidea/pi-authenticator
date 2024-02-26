@@ -8,8 +8,8 @@ part of 'steam_token.dart';
 
 SteamToken _$SteamTokenFromJson(Map<String, dynamic> json) => SteamToken(
       period: json['period'] as int,
-      label: json['label'] as String,
-      issuer: json['issuer'] as String,
+      label: json['label'] as String? ?? '',
+      issuer: json['issuer'] as String? ?? '',
       id: json['id'] as String,
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,

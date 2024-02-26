@@ -23,14 +23,15 @@ class TokenState {
   List<PushToken> get pushTokensToRollOut =>
       pushTokens.where((element) => !element.isRolledOut && element.rolloutState == PushTokenRollOutState.rolloutNotStarted).toList();
 
-  TokenState({List<Token> tokens = const [], List<Token>? lastlyUpdatedTokens})
+  TokenState({required List<Token> tokens, List<Token>? lastlyUpdatedTokens})
       : tokens = List<Token>.from(tokens),
-        lastlyUpdatedTokens = lastlyUpdatedTokens ?? List<Token>.from(tokens) {
+        lastlyUpdatedTokens = List<Token>.from(lastlyUpdatedTokens ?? tokens) {
     _sort(this.tokens);
   }
-  TokenState repaceList({List<Token>? tokens}) => TokenState(tokens: tokens ?? this.tokens);
 
-  Map<Token, Token?> tokensWithSameSectet(List<Token> tokens) {
+  PushToken? getTokenBySerial(String serial) => pushTokens.firstWhereOrNull((element) => element.serial == serial);
+
+  Map<Token, Token?> getTokensWithSameSectet(List<Token> tokens) {
     final tokensWithSameSectet = <Token, Token?>{};
     final stateTokens = this.tokens;
     List<OTPToken> otpTokens = tokens.whereType<OTPToken>().toList();
@@ -80,7 +81,7 @@ class TokenState {
   TokenState withoutTokens(List<Token> tokens) {
     final newTokens = List<Token>.from(this.tokens);
     newTokens.removeWhere((element) => tokens.any((token) => token.id == element.id));
-    return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: const []);
   }
 
   // Add a token if it does not exist yet
@@ -98,47 +99,51 @@ class TokenState {
 
   // Replace the token if it does exist
   // Do nothing if it does not exist
-  TokenState replaceToken(Token token) {
-    final newTokens = List<Token>.from(tokens);
+  (TokenState, bool) replaceToken(Token token) {
+    final newTokens = tokens.toList();
     final index = newTokens.indexWhere((element) => element.id == token.id);
     if (index == -1) {
       Logger.warning('Tried to replace a token that does not exist.', name: 'token_state.dart#replaceToken');
-      return this;
+      return (this, false);
     }
     newTokens[index] = token;
-    return TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]);
+    return (TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]), true);
   }
 
   // replace all tokens where the id is the same
   // if the id is none, add it to the list
-  TokenState addOrReplaceTokens(List<Token> tokens) {
+  TokenState addOrReplaceTokens<T extends Token>(List<T> tokens) {
     final newTokens = List<Token>.from(this.tokens);
+    final updatedTokens = <Token>[];
     for (var token in tokens) {
       final index = newTokens.indexWhere((element) => element.id == token.id);
       if (index == -1) {
         newTokens.add(token);
+        updatedTokens.add(token);
         continue;
       }
       newTokens[index] = token;
+      updatedTokens.add(token);
     }
-    return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: updatedTokens);
   }
 
   // Replace the tokens if it does exist
   // Do nothing if it does not exist
-  TokenState replaceTokens(List<Token> tokens) {
+  (TokenState, List<T>) replaceTokens<T extends Token>(List<T> tokens) {
     final newTokens = List<Token>.from(this.tokens);
-    final lastlyUpdatedTokens = <Token>[];
+    final updatedTokens = <T>[];
+    final failedToReplace = <T>[];
     for (var token in tokens) {
       final index = newTokens.indexWhere((element) => element.id == token.id);
       if (index == -1) {
         Logger.warning('Tried to replace a token that does not exist.', name: 'token_state.dart#replaceToken');
+        failedToReplace.add(token);
         continue;
       }
       newTokens[index] = token;
-      lastlyUpdatedTokens.add(token);
     }
-    return TokenState(tokens: newTokens, lastlyUpdatedTokens: lastlyUpdatedTokens);
+    return (TokenState(tokens: newTokens, lastlyUpdatedTokens: updatedTokens), failedToReplace);
   }
 
   List<Token> tokensInFolder(TokenFolder folder, {List<Type>? only, List<Type>? exclude}) => tokens.where((token) {
@@ -158,6 +163,4 @@ class TokenState {
         if (only != null && !only.contains(token.runtimeType)) return false;
         return true;
       }).toList();
-
-  PushToken? tokenWithPushRequest() => tokens.whereType<PushToken>().firstWhereOrNull((token) => token.pushRequests.isNotEmpty);
 }

@@ -29,8 +29,6 @@ class DayPasswordToken extends OTPToken {
 
   DayPasswordToken({
     required Duration period,
-    required super.label,
-    required super.issuer,
     required super.id,
     required super.algorithm,
     required super.digits,
@@ -44,6 +42,8 @@ class DayPasswordToken extends OTPToken {
     super.isLocked,
     super.isHidden,
     super.origin,
+    super.label = '',
+    super.issuer = '',
   })  : period = period.inSeconds > 0 ? period : const Duration(hours: 24),
         super(type: TokenTypes.DAYPASSWORD.asString);
 

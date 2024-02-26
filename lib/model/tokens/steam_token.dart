@@ -19,8 +19,6 @@ class SteamToken extends TOTPToken {
 
   SteamToken({
     required super.period,
-    required super.label,
-    required super.issuer,
     required super.id,
     required super.algorithm,
     required super.digits,
@@ -32,6 +30,8 @@ class SteamToken extends TOTPToken {
     super.isHidden,
     super.folderId,
     super.origin,
+    super.label = '',
+    super.issuer = '',
   }) : super(type: tokenType);
 
   @override

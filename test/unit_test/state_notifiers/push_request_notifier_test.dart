@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
-import 'package:privacyidea_authenticator/model/push_request_queue.dart';
+import 'package:privacyidea_authenticator/model/states/push_request_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/state_notifiers/push_request_notifier.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
@@ -14,20 +14,7 @@ import 'package:mockito/annotations.dart';
 
 import 'push_request_notifier_test.mocks.dart';
 
-class _MockPushProvider extends Mock implements PushProvider {
-  @override
-  PushRequestNotifier? pushSubscriber;
-  @override
-  Future<void> initialize({required PushRequestNotifier pushSubscriber, required FirebaseUtils firebaseUtils}) async {
-    this.pushSubscriber = pushSubscriber;
-  }
-
-  void simulatePush(PushRequest pushRequest) {
-    pushSubscriber?.newRequest(pushRequest);
-  }
-}
-
-@GenerateMocks([RsaUtils, PrivacyIdeaIOClient, FirebaseUtils])
+@GenerateMocks([RsaUtils, PrivacyIdeaIOClient, FirebaseUtils, PushProvider])
 void main() {
   _testPushRequestNotifier();
 }
@@ -36,15 +23,14 @@ void _testPushRequestNotifier() {
   group('PushRequestNotifier', () {
     test('newRequest', () async {
       final container = ProviderContainer();
-      final mockPushProvider = _MockPushProvider();
+      final mockPushProvider = MockPushProvider();
       final mockFirebaseUtils = MockFirebaseUtils();
       final notifier = PushRequestNotifier(
         pushProvider: mockPushProvider,
-        firebaseUtils: mockFirebaseUtils,
         ioClient: MockPrivacyIdeaIOClient(),
         rsaUtils: MockRsaUtils(),
       );
-      final testProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>((ref) => notifier);
+      final testProvider = StateNotifierProvider<PushRequestNotifier, PushRequestState>((ref) => notifier);
       await mockPushProvider.initialize(pushSubscriber: notifier, firebaseUtils: mockFirebaseUtils);
       final pr = PushRequest(
         title: 'title',
@@ -60,7 +46,7 @@ void _testPushRequestNotifier() {
     });
     test('accept', () async {
       final container = ProviderContainer();
-      final mockPushProvider = _MockPushProvider();
+      final mockPushProvider = MockPushProvider();
       final mockIoClient = MockPrivacyIdeaIOClient();
       final mockRsaUtils = MockRsaUtils();
       final mockFirebaseUtils = MockFirebaseUtils();
@@ -74,25 +60,24 @@ void _testPushRequestNotifier() {
         id: 1,
         expirationDate: DateTime.now().add(const Duration(minutes: 10)),
       );
-      final pushToken = PushToken(serial: 'serial', label: 'label', issuer: 'issuer', id: 'id', pushRequests: PushRequestQueue()..add(pr));
+      final pushToken = PushToken(serial: 'serial', label: 'label', issuer: 'issuer', id: 'id');
       when(mockRsaUtils.trySignWithToken(pushToken, any)).thenAnswer((_) async => 'signature');
       when(mockIoClient.doPost(
               url: Uri.parse('https://example.com/api/fetch?limit=10,20,30&max=100'),
               body: {'nonce': 'nonce', 'serial': 'serial', 'signature': 'signature'},
               sslVerify: false))
           .thenAnswer((_) async => Response('', 200));
-      final testProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>((ref) {
+      final testProvider = StateNotifierProvider<PushRequestNotifier, PushRequestState>((ref) {
         final notifier = PushRequestNotifier(
           pushProvider: mockPushProvider,
           ioClient: mockIoClient,
           rsaUtils: mockRsaUtils,
-          firebaseUtils: mockFirebaseUtils,
         );
         mockPushProvider.initialize(pushSubscriber: notifier, firebaseUtils: mockFirebaseUtils);
         return notifier;
       });
       final notifier = container.read(testProvider.notifier);
-      await notifier.acceptPop(pushToken);
+      await notifier.accept(pushToken);
       expect(container.read(testProvider)!.accepted, isTrue);
     });
     test('decline', () async {
@@ -111,25 +96,24 @@ void _testPushRequestNotifier() {
         id: 1,
         expirationDate: DateTime.now().add(const Duration(minutes: 10)),
       );
-      final pushToken = PushToken(serial: 'serial', label: 'label', issuer: 'issuer', id: 'id', pushRequests: PushRequestQueue()..add(pr));
+      final pushToken = PushToken(serial: 'serial', label: 'label', issuer: 'issuer', id: 'id');
       when(mockRsaUtils.trySignWithToken(pushToken, any)).thenAnswer((_) async => 'signature');
       when(mockIoClient.doPost(
               url: Uri.parse('https://example.com/api/fetch?limit=10,20,30&max=100'),
               body: {'nonce': 'nonce', 'serial': 'serial', 'signature': 'signature', 'decline': '1'},
               sslVerify: false))
           .thenAnswer((_) async => Response('', 200));
-      final testProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>((ref) {
+      final testProvider = StateNotifierProvider<PushRequestNotifier, PushRequestState>((ref) {
         final notifier = PushRequestNotifier(
           pushProvider: mockPushProvider,
           ioClient: mockIoClient,
           rsaUtils: mockRsaUtils,
-          firebaseUtils: mockFirebaseUtils,
         );
         mockPushProvider.initialize(pushSubscriber: notifier, firebaseUtils: mockFirebaseUtils);
         return notifier;
       });
       final notifier = container.read(testProvider.notifier);
-      await notifier.declinePop(pushToken);
+      await notifier.decline(pushToken);
       expect(container.read(testProvider)!.accepted, isFalse);
     });
   });

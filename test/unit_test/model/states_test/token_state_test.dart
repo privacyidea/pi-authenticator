@@ -22,12 +22,6 @@ void _testTokenState() {
       final state = TokenState(tokens: [_TokenMock(id: 'id')]);
       expect(state.tokens.first, isA<_TokenMock>());
     });
-    test('repaceList', () {
-      final state = TokenState(tokens: [_TokenMock(id: 'id')]);
-      final newState = state.repaceList(tokens: [_TokenMock(id: 'idCopy')]);
-      expect((state.tokens.first as _TokenMock).id, 'id');
-      expect((newState.tokens.first as _TokenMock).id, 'idCopy');
-    });
     test('withToken', () {
       final state = TokenState(tokens: [_TokenMock(id: 'id')]);
       final newState = state.withToken(_TokenMock(id: 'newid'));

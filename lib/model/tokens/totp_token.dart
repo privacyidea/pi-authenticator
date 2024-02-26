@@ -44,8 +44,6 @@ class TOTPToken extends OTPToken {
 
   TOTPToken({
     required int period,
-    required super.label,
-    required super.issuer,
     required super.id,
     required super.algorithm,
     required super.digits,
@@ -58,6 +56,8 @@ class TOTPToken extends OTPToken {
     super.isHidden,
     super.folderId,
     super.origin,
+    super.label = '',
+    super.issuer = '',
   })  : period = period < 1 ? 30 : period, // period must be greater than 0 otherwise IntegerDivisionByZeroException is thrown in OTP.generateTOTPCodeString
         super(type: type ?? tokenType);
 

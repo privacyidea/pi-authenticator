@@ -2,10 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
-import 'package:privacyidea_authenticator/model/push_request.dart';
-import 'package:privacyidea_authenticator/model/push_request_queue.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
-import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
 
 void main() {
   _testPushToken();
@@ -13,15 +10,6 @@ void main() {
 
 void _testPushToken() {
   group('Push Token creation/method', () {
-    final pr = PushRequest(
-      title: 'title',
-      question: 'question',
-      uri: Uri.parse('http://www.example.com'),
-      nonce: 'nonce',
-      sslVerify: false,
-      id: 0,
-      expirationDate: DateTime(2017, 9, 7, 17, 30),
-    );
     final pushToken = PushToken(
       serial: 'serial',
       expirationDate: DateTime(2017, 9, 7, 17, 30),
@@ -36,8 +24,6 @@ void _testPushToken() {
       privateTokenKey: 'privateTokenKey',
       isRolledOut: true,
       rolloutState: PushTokenRollOutState.rolloutNotStarted,
-      pushRequests: PushRequestQueue(),
-      knownPushRequests: CustomIntBuffer(),
       type: 'type',
       sortIndex: 0,
       tokenImage: 'example.png',
@@ -59,8 +45,6 @@ void _testPushToken() {
       expect(pushToken.privateTokenKey, 'privateTokenKey');
       expect(pushToken.isRolledOut, true);
       expect(pushToken.rolloutState, PushTokenRollOutState.rolloutNotStarted);
-      expect(pushToken.pushRequests, PushRequestQueue());
-      expect(pushToken.knownPushRequests.list, CustomIntBuffer().list);
       expect(pushToken.type, 'PIPUSH');
       expect(pushToken.sortIndex, 0);
       expect(pushToken.tokenImage, 'example.png');
@@ -82,9 +66,6 @@ void _testPushToken() {
         publicTokenKey: 'publicTokenKeyCopy',
         privateTokenKey: 'privateTokenKeyCopy',
         isRolledOut: false,
-        rolloutState: PushTokenRollOutState.rolloutComplete,
-        pushRequests: PushRequestQueue()..add(pr),
-        knownPushRequests: CustomIntBuffer()..put(0),
         sortIndex: 1,
         tokenImage: 'exampleCopy.png',
         folderId: () => 1,
@@ -104,94 +85,11 @@ void _testPushToken() {
       expect(copy.privateTokenKey, 'privateTokenKeyCopy');
       expect(copy.isRolledOut, false);
       expect(copy.rolloutState, PushTokenRollOutState.rolloutComplete);
-      expect(copy.pushRequests.list, [pr]);
-      expect(copy.knownPushRequests.list, [0]);
       expect(copy.sortIndex, 1);
       expect(copy.tokenImage, 'exampleCopy.png');
       expect(copy.folderId, 1);
       expect(copy.isLocked, false);
       expect(copy.pin, false);
-    });
-    test('withPushRequest', () {
-      final tokenWithPr = PushToken(
-        serial: 'serial',
-        expirationDate: DateTime(2017, 9, 7, 17, 30),
-        label: 'label',
-        issuer: 'issuer',
-        id: 'id',
-        sslVerify: true,
-        enrollmentCredentials: 'enrollmentCredentials',
-        url: Uri.parse('http://www.example.com'),
-        publicServerKey: 'publicServerKey',
-        publicTokenKey: 'publicTokenKey',
-        privateTokenKey: 'privateTokenKey',
-        isRolledOut: true,
-        rolloutState: PushTokenRollOutState.rolloutNotStarted,
-        pushRequests: PushRequestQueue(),
-        knownPushRequests: CustomIntBuffer(),
-        type: 'type',
-        sortIndex: 0,
-        tokenImage: 'example.png',
-        folderId: 0,
-        isLocked: true,
-        pin: true,
-      ).withPushRequest(pr);
-      expect(tokenWithPr.pushRequests.list, [pr]);
-      expect(tokenWithPr.knownPushRequests.list, [0]);
-    });
-    test('withoutPushrequest', () {
-      final tokenWithPr = PushToken(
-        serial: 'serial',
-        expirationDate: DateTime(2017, 9, 7, 17, 30),
-        label: 'label',
-        issuer: 'issuer',
-        id: 'id',
-        sslVerify: true,
-        enrollmentCredentials: 'enrollmentCredentials',
-        url: Uri.parse('http://www.example.com'),
-        publicServerKey: 'publicServerKey',
-        publicTokenKey: 'publicTokenKey',
-        privateTokenKey: 'privateTokenKey',
-        isRolledOut: true,
-        rolloutState: PushTokenRollOutState.rolloutNotStarted,
-        pushRequests: PushRequestQueue()..add(pr),
-        knownPushRequests: CustomIntBuffer()..put(0),
-        type: 'type',
-        sortIndex: 0,
-        tokenImage: 'example.png',
-        folderId: 0,
-        isLocked: true,
-        pin: true,
-      );
-      final tokenWithoutPr = tokenWithPr.withoutPushRequest(pr);
-      expect(tokenWithoutPr.pushRequests.list, []);
-      expect(tokenWithoutPr.knownPushRequests.list, [0]);
-    });
-    test('knowsRequestWithId', () {
-      final tokenWithPr = PushToken(
-        serial: 'serial',
-        expirationDate: DateTime(2017, 9, 7, 17, 30),
-        label: 'label',
-        issuer: 'issuer',
-        id: 'id',
-        sslVerify: true,
-        enrollmentCredentials: 'enrollmentCredentials',
-        url: Uri.parse('http://www.example.com'),
-        publicServerKey: 'publicServerKey',
-        publicTokenKey: 'publicTokenKey',
-        privateTokenKey: 'privateTokenKey',
-        isRolledOut: true,
-        rolloutState: PushTokenRollOutState.rolloutNotStarted,
-        pushRequests: PushRequestQueue()..add(pr),
-        knownPushRequests: CustomIntBuffer()..put(0),
-        type: 'type',
-        sortIndex: 0,
-        tokenImage: 'example.png',
-        folderId: 0,
-        isLocked: true,
-        pin: true,
-      );
-      expect(tokenWithPr.knowsRequestWithId(0), true);
     });
     test('fromJson', () {
       final json = <String, dynamic>{
@@ -214,8 +112,6 @@ void _testPushToken() {
         "publicServerKey": "publicServerKey",
         "privateTokenKey": "privateTokenKey",
         "publicTokenKey": "publicTokenKey",
-        "pushRequests": {"list": []},
-        "knownPushRequests": {"list": []}
       };
       final token = PushToken.fromJson(json);
       expect(token.label, 'label');
@@ -238,8 +134,6 @@ void _testPushToken() {
       expect(token.publicServerKey, 'publicServerKey');
       expect(token.privateTokenKey, 'privateTokenKey');
       expect(token.publicTokenKey, 'publicTokenKey');
-      expect(token.pushRequests.list, []);
-      expect(token.knownPushRequests.list, []);
     });
     test('toJson', () {
       final tokenJson = pushToken.toJson();

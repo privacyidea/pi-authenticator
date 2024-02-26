@@ -53,8 +53,8 @@ abstract class Token with SortableMixin {
   }
 
   const Token({
-    required this.label,
-    required this.issuer,
+    this.label = '',
+    this.issuer = '',
     required this.id,
     required this.type,
     this.tokenImage,

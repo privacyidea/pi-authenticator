@@ -9,8 +9,8 @@ part of 'day_password_token.dart';
 DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) =>
     DayPasswordToken(
       period: Duration(microseconds: json['period'] as int),
-      label: json['label'] as String,
-      issuer: json['issuer'] as String,
+      label: json['label'] as String? ?? '',
+      issuer: json['issuer'] as String? ?? '',
       id: json['id'] as String,
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,

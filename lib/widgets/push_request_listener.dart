@@ -24,15 +24,14 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
 
   @override
   Widget build(BuildContext context) {
-    final tokensWithPushRequest = ref.watch(tokenProvider).pushTokens.where((token) => token.pushRequests.isNotEmpty);
-    final tokenWithPushRequest = tokensWithPushRequest.isNotEmpty ? tokensWithPushRequest.first : null;
+    final pushRequest = ref.watch(pushRequestProvider).pushRequests.firstOrNull;
     return Stack(
       children: [
         widget.child,
-        if (tokenWithPushRequest != null)
+        if (pushRequest != null)
           PushRequestDialog(
-            tokenWithPushRequest,
-            key: Key('${tokenWithPushRequest.pushRequests.peek().hashCode.toString()}#PushRequestDialog'),
+            pushRequest,
+            key: Key('${pushRequest.hashCode.toString()}#PushRequestDialog'),
           ),
       ],
     );

@@ -12,8 +12,6 @@ abstract class OTPToken extends Token {
     required this.algorithm,
     required this.digits,
     required this.secret,
-    required super.label,
-    required super.issuer,
     required super.id,
     required super.type,
     super.pin,
@@ -23,6 +21,8 @@ abstract class OTPToken extends Token {
     super.isHidden,
     super.folderId,
     super.origin,
+    super.label = '',
+    super.issuer = '',
   });
 
   @override
