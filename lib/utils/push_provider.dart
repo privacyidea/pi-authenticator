@@ -139,44 +139,53 @@ class PushProvider {
   Future<void> _foregroundHandler(RemoteMessage remoteMessage) async {
     Logger.info('Foreground message received.', name: 'push_provider.dart#_foregroundHandler');
 
-    await SecureTokenRepository.protect(() async {
-      Map<String, dynamic> data;
-      try {
-        data = _getAndValidateDataFromRemoteMessage(remoteMessage);
-      } on ArgumentError catch (_) {
-        Logger.info('Try requesting the challenge by polling.', name: 'push_provider.dart#_foregroundHandler');
-        await pollForChallenges(isManually: true);
-        return;
-      }
-      // Here we can be sure that the data is valid
-      try {
-        return _handleIncomingRequestForeground(data);
-      } catch (e, s) {
-        final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError;
-        Logger.error(errorMessage, name: 'push_provider.dart#_foregroundHandler', error: e, stackTrace: s);
-      }
-    });
+    Map<String, dynamic> data;
+    try {
+      data = _getAndValidateDataFromRemoteMessage(remoteMessage);
+    } on ArgumentError catch (_) {
+      Logger.info('Try requesting the challenge by polling.', name: 'push_provider.dart#_foregroundHandler');
+      await pollForChallenges(isManually: true);
+      return;
+    }
+    // Here we can be sure that the data is valid
+    try {
+      return _handleIncomingRequestForeground(data);
+    } catch (e, s) {
+      final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError;
+      Logger.error(errorMessage, name: 'push_provider.dart#_foregroundHandler', error: e, stackTrace: s);
+    }
   }
 
   // BACKGROUND HANDLING
   @pragma('vm:entry-point')
   static Future<void> _backgroundHandler(RemoteMessage remoteMessage) async {
     Logger.info('Background message received.', name: 'push_provider.dart#_backgroundHandler');
-    await SecureTokenRepository.protect(() async {
-      Map<String, dynamic> data;
-      try {
-        data = _getAndValidateDataFromRemoteMessage(remoteMessage);
-      } on ArgumentError catch (_) {
-        return;
-      }
-      // Here we can be sure that the data is valid
-      try {
-        return _handleIncomingRequestBackground(data);
-      } catch (e, s) {
-        Logger.error('Something went wrong while handling the push request in the background.',
-            name: 'push_provider.dart#_backgroundHandler', error: e, stackTrace: s);
-      }
-    });
+
+    Map<String, dynamic> data;
+    try {
+      data = _getAndValidateDataFromRemoteMessage(remoteMessage);
+    } on ArgumentError catch (_) {
+      return;
+    }
+    // Here we can be sure that the data is valid
+    final bool success;
+    try {
+      success = await _handleIncomingRequestBackground(data);
+    } catch (e, s) {
+      Logger.error('Something went wrong while handling the push request in the background.',
+          name: 'push_provider.dart#_backgroundHandler', error: e, stackTrace: s);
+      return;
+    }
+    if (!success) {
+      Logger.warning('Handling the push request in the background failed.', name: 'push_provider.dart#_backgroundHandler');
+      return;
+    }
+    if (remoteMessage.notification == null) {
+      // await PiMessaging.instance.showNotification(
+      //   title: AppLocalizations.of(globalNavigatorKey.currentContext!)!.notificationTitle,
+      //   body: AppLocalizations.of(globalNavigatorKey.currentContext!)!.notificationBody,
+      // );
+    }
   }
 
   // HANDLING
@@ -204,24 +213,24 @@ class PushProvider {
   // HANDLING
   /// Handles incoming push requests by verifying the challenge and adding it
   /// to the token. This should be guarded by a lock.
-  static Future<void> _handleIncomingRequestBackground(Map<String, dynamic> data) async {
+  static Future<bool> _handleIncomingRequestBackground(Map<String, dynamic> data) async {
     Logger.info('Incoming push challenge.', name: 'push_provider.dart#_handleIncomingRequestBackground');
     PushRequest pushRequest = PushRequest.fromMessageData(data);
     final pushToken = (await _defaultTokenRepo.loadTokens()).whereType<PushToken>().firstWhereOrNull((t) => t.serial == pushRequest.serial);
     if (pushToken == null) {
       Logger.warning('No token found for serial ${pushRequest.serial}.', name: 'push_provider.dart#_handleIncomingRequestBackground');
-      return;
+      return false;
     }
     final repoSate = await _defaultPushRequestRepo.loadState();
     if (!await pushRequest.verifySignature(pushToken)) {
       Logger.warning('Signature verification failed.', name: 'push_provider.dart#_handleIncomingRequestBackground');
-      return;
+      return false;
     }
     if (repoSate.knowsRequest(pushRequest)) {
       Logger.info('Push request already known, ignoring.', name: 'push_provider.dart#_handleIncomingRequestBackground');
-      return;
+      return false;
     }
-    await _defaultPushRequestRepo.saveState(repoSate.withRequest(pushRequest: pushRequest));
+    return (await _defaultPushRequestRepo.saveState(repoSate.withRequest(pushRequest: pushRequest))).isEmpty;
   }
 
   void _startOrStopPolling(bool pollingEnabled) {

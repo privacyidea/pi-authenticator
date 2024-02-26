@@ -47,8 +47,7 @@ class SecureTokenRepository implements TokenRepository {
 
   /// Function [f] is executed, protected by Mutex [_m].
   /// That means, that calls of this method will always be executed serial.
-  static Future<T> protect<T>(Future<T> Function() f) => _m.protect<T>(f);
-  Future<T> protectCall<T>(Future<T> Function() f) => protect(f);
+  static Future<T> _protect<T>(Future<T> Function() f) => _m.protect<T>(f);
 
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
@@ -59,7 +58,7 @@ class SecureTokenRepository implements TokenRepository {
   // ###########################################################################
 
   @override
-  Future<Token?> loadToken(String id) => protect<Token?>(() async {
+  Future<Token?> loadToken(String id) => _protect<Token?>(() async {
         final token = await _storage.read(key: _GLOBAL_PREFIX + id);
         if (token == null) {
           Logger.warning('Token not found in secure storage', name: 'storage_utils.dart#loadToken');
@@ -72,7 +71,7 @@ class SecureTokenRepository implements TokenRepository {
   /// this device.
   /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
   @override
-  Future<List<Token>> loadTokens() => protect<List<Token>>(() async {
+  Future<List<Token>> loadTokens() => _protect<List<Token>>(() async {
         late Map<String, String> keyValueMap;
         try {
           keyValueMap = await _storage.readAll();
@@ -123,7 +122,7 @@ class SecureTokenRepository implements TokenRepository {
   /// in the storage the existing value is overwritten.
   /// Returns all tokens that could not be saved.
   @override
-  Future<List<T>> saveOrReplaceTokens<T extends Token>(List<T> tokens) => protect<List<T>>(() async {
+  Future<List<T>> saveOrReplaceTokens<T extends Token>(List<T> tokens) => _protect<List<T>>(() async {
         final failedTokens = <T>[];
         for (var element in tokens) {
           if (!await _saveOrReplaceToken(element)) {
@@ -139,7 +138,7 @@ class SecureTokenRepository implements TokenRepository {
       });
 
   @override
-  Future<bool> saveOrReplaceToken(Token token) => protect<bool>(() => _saveOrReplaceToken(token));
+  Future<bool> saveOrReplaceToken(Token token) => _protect<bool>(() => _saveOrReplaceToken(token));
 
   Future<bool> _saveOrReplaceToken(Token token) async {
     try {
@@ -152,7 +151,7 @@ class SecureTokenRepository implements TokenRepository {
 
   /// Deletes the saved jsons of [tokens] from the secure storage.
   @override
-  Future<List<T>> deleteTokens<T extends Token>(List<T> tokens) => protect<List<T>>(() async {
+  Future<List<T>> deleteTokens<T extends Token>(List<T> tokens) => _protect<List<T>>(() async {
         final failedTokens = <T>[];
         for (var element in tokens) {
           if (!await _deleteToken(element)) {
@@ -168,7 +167,7 @@ class SecureTokenRepository implements TokenRepository {
 
   /// Deletes the saved json of [token] from the secure storage.
   @override
-  Future<bool> deleteToken(Token token) => protect<bool>(() => _deleteToken(token));
+  Future<bool> deleteToken(Token token) => _protect<bool>(() => _deleteToken(token));
 
   Future<bool> _deleteToken(Token token) async {
     try {
@@ -185,13 +184,13 @@ class SecureTokenRepository implements TokenRepository {
   // FIREBASE CONFIG
   // ###########################################################################
   static const _CURRENT_APP_TOKEN_KEY = '${_GLOBAL_PREFIX}CURRENT_APP_TOKEN';
-  static Future<void> setCurrentFirebaseToken(String str) => protect(() => _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str));
-  static Future<String?> getCurrentFirebaseToken() => protect(() => _storage.read(key: _CURRENT_APP_TOKEN_KEY));
+  static Future<void> setCurrentFirebaseToken(String str) => _protect(() => _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str));
+  static Future<String?> getCurrentFirebaseToken() => _protect(() => _storage.read(key: _CURRENT_APP_TOKEN_KEY));
   static const _NEW_APP_TOKEN_KEY = '${_GLOBAL_PREFIX}NEW_APP_TOKEN';
 
   // This is used for checking if the token was updated.
-  static Future<void> setNewFirebaseToken(String str) => protect(() => _storage.write(key: _NEW_APP_TOKEN_KEY, value: str));
-  static Future<String?> getNewFirebaseToken() => protect(() => _storage.read(key: _NEW_APP_TOKEN_KEY));
+  static Future<void> setNewFirebaseToken(String str) => _protect(() => _storage.write(key: _NEW_APP_TOKEN_KEY, value: str));
+  static Future<String?> getNewFirebaseToken() => _protect(() => _storage.read(key: _NEW_APP_TOKEN_KEY));
 }
 
 Future<void> _decryptErrorDialog() => showAsyncDialog(
