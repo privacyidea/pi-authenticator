@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import '../../utils/custom_int_buffer.dart';
 import '../push_request.dart';
 
-// TODO part 'push_request_state.g.dart';
+part 'push_request_state.g.dart';
 
 @JsonSerializable()
 class PushRequestState {

@@ -22,9 +22,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/push_request_repository.dart';
-import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
@@ -49,12 +47,10 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
 
   PushRequestNotifier({
     PushRequestState? initState,
-    PushProvider? pushProvider,
     PrivacyIdeaIOClient? ioClient,
+    PushProvider? pushProvider,
     RsaUtils? rsaUtils,
-    LegacyUtils? legacy,
     PushRequestRepository? pushRepo,
-    TokenRepository? tokenRepo,
   })  : _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
         _pushProvider = pushProvider ?? PushProvider(),
         _rsaUtils = rsaUtils ?? const RsaUtils(),
@@ -67,9 +63,16 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
 
   Future<void> _init(PushRequestState? initialState) async {
     initState = initialState != null ? Future.value(initialState) : _loadFromRepo();
-    _pushProvider.subscribe(newRequest);
+    _pushProvider.subscribe(add);
     await initState;
     Logger.info('PushRequestNotifier initialized', name: 'push_request_notifier.dart#_init');
+  }
+
+  @override
+  void dispose() {
+    _pushProvider.unsubscribe(add);
+    _cancalAllTimers();
+    super.dispose();
   }
 
   /*
@@ -230,12 +233,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
 
   Future<bool> remove(PushRequest pushRequest) => _remove(pushRequest);
 
-  /////////////////////////////////////////////////////////////////////////////
-  ///////////////////// Add New PushRequest Methods ///////////////////////////
-  /////////////////////////////////////////////////////////////////////////////
-  /// Does not need to wait for updating functions because they doesn't depend on any state
-
-  Future<bool> newRequest(PushRequest pr) async {
+  Future<bool> add(PushRequest pr) async {
     if (state.knowsRequestId(pr.id)) {
       Logger.info(
         'The push request already exists.',

@@ -8,8 +8,6 @@ part of 'totp_token.dart';
 
 TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
       period: json['period'] as int,
-      label: json['label'] as String? ?? '',
-      issuer: json['issuer'] as String? ?? '',
       id: json['id'] as String,
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       digits: json['digits'] as int,
@@ -24,6 +22,8 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
       origin: json['origin'] == null
           ? null
           : TokenOriginData.fromJson(json['origin'] as Map<String, dynamic>),
+      label: json['label'] as String? ?? '',
+      issuer: json['issuer'] as String? ?? '',
     );
 
 Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{

@@ -8,8 +8,6 @@ import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
-import 'package:privacyidea_authenticator/model/push_request.dart';
-import 'package:privacyidea_authenticator/model/push_request_queue.dart';
 import 'package:privacyidea_authenticator/model/states/token_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
@@ -37,23 +35,13 @@ void main() {
 
 void _testTokenNotifier() {
   group('TokenNotifier', () {
-    test('refreshRolledOutPushTokens', () async {
+    test('loadStateFromRepo', () async {
       final container = ProviderContainer();
       final mockRepo = MockTokenRepository();
-      final before = <PushToken>[
-        PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true, pushRequests: PushRequestQueue()),
-      ];
-      final queue = PushRequestQueue()
-        ..add(PushRequest(
-            title: 'title',
-            question: 'question',
-            uri: Uri.parse('https://example.com'),
-            nonce: 'nonce',
-            sslVerify: false,
-            id: 1,
-            expirationDate: DateTime.now().add(const Duration(minutes: 3))));
-      final after = <PushToken>[
-        PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true, pushRequests: queue),
+      final before = [PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true)];
+      final after = [
+        PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true),
+        PushToken(label: 'label2', issuer: 'issuer2', id: 'id2', serial: 'serial2', isRolledOut: true)
       ];
       final responses = [before, after];
       when(mockRepo.loadTokens()).thenAnswer((_) async => responses.removeAt(0));
@@ -70,17 +58,15 @@ void _testTokenNotifier() {
     test('getTokenFromId', () async {
       final container = ProviderContainer();
       final mockRepo = MockTokenRepository();
-      final before = <Token>[
-        HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret'),
-      ];
+      final before = [HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret')];
       final after = before;
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(repository: mockRepo),
       );
       final notifier = container.read(testProvider.notifier);
-      await notifier.loadingRepo;
-      expect(notifier.getTokenFromId(before.first.id), before.first);
+      await notifier.initState;
+      expect(notifier.getTokenById(before.first.id), before.first);
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
@@ -267,7 +253,6 @@ void _testTokenNotifier() {
         publicServerKey: publicServerKeyString,
         publicTokenKey: publicTokenKeyString,
         privateTokenKey: privateTokenKeyString,
-        pushRequests: PushRequestQueue(),
       );
       final after = <Token>[
         HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret'),
@@ -318,7 +303,6 @@ void _testTokenNotifier() {
       expect(pushToken.rolloutState, pushTokenShouldBe.rolloutState);
       expect(pushToken.serial, pushTokenShouldBe.serial);
       expect(pushToken.isRolledOut, pushTokenShouldBe.isRolledOut);
-      expect(pushToken.pushRequests, pushTokenShouldBe.pushRequests);
       expect(pushToken.url, pushTokenShouldBe.url);
       expect(pushToken.label, pushTokenShouldBe.label);
       expect(pushToken.issuer, pushTokenShouldBe.issuer);
@@ -329,80 +313,6 @@ void _testTokenNotifier() {
       expect(pushToken.folderId, pushTokenShouldBe.folderId);
       expect(pushToken.sslVerify, pushTokenShouldBe.sslVerify);
     });
-    test('addPushRequestToToken', () async {
-      final container = ProviderContainer();
-      final mockRepo = MockTokenRepository();
-      final mockRsaUtils = MockRsaUtils();
-      final before = <PushToken>[
-        PushToken(
-          label: 'label',
-          issuer: 'issuer',
-          id: 'id',
-          serial: 'serial',
-          isRolledOut: true,
-          pushRequests: PushRequestQueue(),
-          url: Uri.parse('https://example.com'),
-          privateTokenKey: 'privateTokenKey',
-        ).withPublicServerKey(RSAPublicKey(BigInt.one, BigInt.one)),
-      ];
-      final pr = PushRequest(
-        title: 'title',
-        question: 'question',
-        uri: Uri.parse('https://example.com'),
-        nonce: 'nonce',
-        serial: 'serial',
-        sslVerify: false,
-        id: 1,
-        expirationDate: DateTime.now().add(const Duration(minutes: 3)),
-      );
-      final after = <PushToken>[
-        PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true, pushRequests: PushRequestQueue()..add(pr)),
-      ];
-      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
-      when(mockRepo.saveOrReplaceTokens([after.first])).thenAnswer((_) async => []);
-      when(mockRsaUtils.verifyRSASignature(any, any, any)).thenReturn(true);
-      final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, rsaUtils: mockRsaUtils),
-      );
-      final notifier = container.read(testProvider.notifier);
-      expect(await notifier.addPushRequestToToken(pr), true);
-      final state = container.read(testProvider);
-      expect(state, isNotNull);
-      expect(state.tokens, after);
-      verify(mockRepo.saveOrReplaceTokens([after.first])).called(1);
-      verify(mockRsaUtils.verifyRSASignature(any, any, any)).called(1);
-    });
-    test('removePushRequest', () async {
-      final container = ProviderContainer();
-      final mockRepo = MockTokenRepository();
-      final pr = PushRequest(
-          title: 'title',
-          question: 'question',
-          uri: Uri.parse('https://example.com'),
-          nonce: 'nonce',
-          serial: 'serial',
-          sslVerify: false,
-          id: 1,
-          expirationDate: DateTime.now().add(const Duration(minutes: 3)));
-      final before = <PushToken>[
-        PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true, pushRequests: PushRequestQueue()..add(pr)),
-      ];
-      final after = <PushToken>[
-        PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true, pushRequests: PushRequestQueue()),
-      ];
-      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
-      when(mockRepo.saveOrReplaceTokens([after.first])).thenAnswer((_) async => []);
-      final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo),
-      );
-      final notifier = container.read(testProvider.notifier);
-      await notifier.removePushRequest(pr);
-      final state = container.read(testProvider);
-      expect(state, isNotNull);
-      expect(state.tokens, after);
-      verify(mockRepo.saveOrReplaceTokens([after.first])).called(1);
-    });
-
     test('rolloutPushToken', () async {
       final container = ProviderContainer();
       final mockRepo = MockTokenRepository();

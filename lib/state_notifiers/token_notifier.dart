@@ -296,7 +296,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   /// Shows a token and returns the updated token if successful, the old token if not and null if the token does not exist or the user is not authenticated.
   Future<Token?> showTokenById(String tokenId) {
-    final token = getTokenFromId(tokenId);
+    final token = getTokenById(tokenId);
     if (token == null) {
       Logger.warning('Tried to show a token that does not exist.', name: 'token_notifier.dart#showTokenById');
       return Future.value(null);
@@ -336,7 +336,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<bool> rolloutPushToken(PushToken token) async {
     PushToken? pushToken;
-    pushToken = (getTokenFromId(token.id)) as PushToken?;
+    pushToken = (getTokenById(token.id)) as PushToken?;
     if (pushToken == null) {
       Logger.warning('Tried to rollout a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
       return false;
@@ -580,7 +580,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
   }
 
-  Token? getTokenFromId(String id) {
+  Token? getTokenById(String id) {
     return state.tokens.firstWhereOrNull((element) => element.id == id);
   }
 
