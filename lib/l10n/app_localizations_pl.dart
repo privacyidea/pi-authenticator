@@ -695,4 +695,18 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get version => 'Wersja';
+
+  @override
+  String get noMailAppTitle => 'Nie znaleziono aplikacji pocztowej';
+
+  @override
+  String get noMailAppDescription => 'Na tym urządzeniu nie zainstalowano ani nie zainicjowano aplikacji poczty e-mail, spróbuj ponownie, gdy będziesz w stanie wysłać wiadomość e-mail';
+
+  @override
+  String get authenticationRequest => 'Żądanie uwierzytelnienia';
+
+  @override
+  String requestInfo(Object issuer, Object account) {
+    return 'Wysłane przez $issuer dla twojego konta: \"$account\"';
+  }
 }

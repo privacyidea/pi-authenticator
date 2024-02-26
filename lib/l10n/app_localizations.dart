@@ -1368,6 +1368,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version'**
   String get version;
+
+  /// No description provided for @noMailAppTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No mail app found'**
+  String get noMailAppTitle;
+
+  /// No description provided for @noMailAppDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message.'**
+  String get noMailAppDescription;
+
+  /// No description provided for @authenticationRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication request'**
+  String get authenticationRequest;
+
+  /// Description of the authentication request.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent by {issuer} for your account: \"{account}\"'**
+  String requestInfo(Object issuer, Object account);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -5,6 +5,9 @@ class Version implements Comparable<Version> {
 
   const Version(this.major, this.minor, this.patch);
 
+  /// Parses a [version] string and returns a [Version] object.
+  /// Throws a [FormatException] if the input string is not a valid version.
+  /// Examples of accepted strings: "1.0.0", "0.0.1", "0.0.0"
   factory Version.parse(String version) {
     final parts = version.split('.');
     if (parts.length != 3) {

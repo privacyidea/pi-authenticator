@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../../utils/logger.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../token_folder.dart';
-import '../tokens/hotp_token.dart';
 import '../tokens/otp_token.dart';
 import '../tokens/push_token.dart';
 import '../tokens/token.dart';
@@ -12,12 +11,10 @@ import '../tokens/token.dart';
 @immutable
 class TokenState {
   final List<Token> tokens;
+  final List<Token> lastlyUpdatedTokens;
 
   List<OTPToken> get otpTokens => tokens.whereType<OTPToken>().toList();
   bool get hasOTPTokens => otpTokens.isNotEmpty;
-
-  List<HOTPToken> get hotpTokens => tokens.whereType<HOTPToken>().toList();
-  bool get hasHOTPTokens => hotpTokens.isNotEmpty;
 
   List<PushToken> get pushTokens => tokens.whereType<PushToken>().toList();
   bool get hasPushTokens => pushTokens.isNotEmpty;
@@ -26,7 +23,9 @@ class TokenState {
   List<PushToken> get pushTokensToRollOut =>
       pushTokens.where((element) => !element.isRolledOut && element.rolloutState == PushTokenRollOutState.rolloutNotStarted).toList();
 
-  TokenState({List<Token> tokens = const []}) : tokens = List<Token>.from(tokens) {
+  TokenState({List<Token> tokens = const [], List<Token>? lastlyUpdatedTokens})
+      : tokens = List<Token>.from(tokens),
+        lastlyUpdatedTokens = lastlyUpdatedTokens ?? List<Token>.from(tokens) {
     _sort(this.tokens);
   }
   TokenState repaceList({List<Token>? tokens}) => TokenState(tokens: tokens ?? this.tokens);
@@ -61,25 +60,27 @@ class TokenState {
   TokenState withToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     newTokens.add(token);
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]);
   }
 
   TokenState withTokens(List<Token> tokens) {
     final newTokens = List<Token>.from(this.tokens);
     newTokens.addAll(tokens);
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
   }
 
+  // Removes the token from the State
+  // Sets the lastlyUpdatedTokens to an empty list because no token was updated only removed
   TokenState withoutToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     newTokens.removeWhere((element) => element.id == token.id);
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: const []);
   }
 
   TokenState withoutTokens(List<Token> tokens) {
     final newTokens = List<Token>.from(this.tokens);
     newTokens.removeWhere((element) => tokens.any((token) => token.id == element.id));
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
   }
 
   // Add a token if it does not exist yet
@@ -92,7 +93,7 @@ class TokenState {
     } else {
       newTokens[index] = token;
     }
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]);
   }
 
   // Replace the token if it does exist
@@ -105,7 +106,7 @@ class TokenState {
       return this;
     }
     newTokens[index] = token;
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]);
   }
 
   // replace all tokens where the id is the same
@@ -120,13 +121,14 @@ class TokenState {
       }
       newTokens[index] = token;
     }
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
   }
 
   // Replace the tokens if it does exist
   // Do nothing if it does not exist
   TokenState replaceTokens(List<Token> tokens) {
     final newTokens = List<Token>.from(this.tokens);
+    final lastlyUpdatedTokens = <Token>[];
     for (var token in tokens) {
       final index = newTokens.indexWhere((element) => element.id == token.id);
       if (index == -1) {
@@ -134,8 +136,9 @@ class TokenState {
         continue;
       }
       newTokens[index] = token;
+      lastlyUpdatedTokens.add(token);
     }
-    return TokenState(tokens: newTokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: lastlyUpdatedTokens);
   }
 
   List<Token> tokensInFolder(TokenFolder folder, {List<Type>? only, List<Type>? exclude}) => tokens.where((token) {

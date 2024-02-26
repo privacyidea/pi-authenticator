@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/utils/home_widget_utils.dart';
 
 import '../../extensions/color_extension.dart';
 import 'interfaces/flutter_home_widget_base.dart';
@@ -18,13 +19,13 @@ class HomeWidgetAction extends FlutterHomeWidgetBase {
   });
 
   @override
-  Widget build(BuildContext context) => (aditionalSuffix == super.utils.keySuffixActive)
+  Widget build(BuildContext context) => (aditionalSuffix == HomeWidgetUtils.keySuffixActive)
       ? Icon(
           icon,
           size: min(logicalSize.width, logicalSize.height),
           color: theme.listTileTheme.iconColor,
         )
-      : (aditionalSuffix == super.utils.keySuffixInactive)
+      : (aditionalSuffix == HomeWidgetUtils.keySuffixInactive)
           ? Icon(
               icon,
               size: min(logicalSize.width, logicalSize.height),
@@ -56,7 +57,7 @@ class HomeWidgetActionBuilder extends FlutterHomeWidgetBuilder<HomeWidgetAction>
 
   @override
   Future<dynamic> renderFlutterWidgets({String additionalSuffix = ''}) async {
-    await super.renderFlutterWidgets(additionalSuffix: '$additionalSuffix${super.utils.keySuffixActive}');
-    await super.renderFlutterWidgets(additionalSuffix: '$additionalSuffix${super.utils.keySuffixInactive}');
+    await super.renderFlutterWidgets(additionalSuffix: '$additionalSuffix${HomeWidgetUtils.keySuffixActive}');
+    await super.renderFlutterWidgets(additionalSuffix: '$additionalSuffix${HomeWidgetUtils.keySuffixInactive}');
   }
 }

@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:privacyidea_authenticator/widgets/custom_trailing.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/day_passoword_token_view_mode.dart';
@@ -91,78 +93,57 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
         if (widget.token.label.isNotEmpty) widget.token.label,
         if (widget.token.issuer.isNotEmpty) widget.token.issuer,
       ],
-      trailing: GestureDetector(
-        behavior: HitTestBehavior.deferToChild,
-        onTap: () {
-          if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDFOR) {
-            globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
-            return;
-          }
-          if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDUNTIL) {
-            globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
-            return;
-          }
-        },
-        child: Container(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          width: double.infinity,
-          height: double.infinity,
-          child: switch (widget.token.viewMode) {
-            DayPasswordTokenViewMode.VALIDFOR => Column(
-                children: [
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      '${AppLocalizations.of(context)!.validFor}:',
-                      style: Theme.of(context).listTileTheme.subtitleTextStyle,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
-                    ),
-                  ),
-                  Expanded(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        durationString,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            DayPasswordTokenViewMode.VALIDUNTIL => Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      '${AppLocalizations.of(context)!.validUntil}:',
-                      style: Theme.of(context).listTileTheme.subtitleTextStyle,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
-                    ),
-                  ),
-                  Expanded(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        '$yMdString\n$ejmString',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                        maxLines: 2,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+      trailing: CustomTrailing(
+        padding: const EdgeInsets.all(0),
+        fit: BoxFit.none,
+        child: GestureDetector(
+          behavior: HitTestBehavior.deferToChild,
+          onTap: () {
+            if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDFOR) {
+              globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
+              return;
+            }
+            if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDUNTIL) {
+              globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
+              return;
+            }
           },
+          child: SizedBox(
+            height: Theme.of(context).textTheme.bodyLarge!.fontSize! * (Theme.of(context).textTheme.bodyLarge?.height ?? 1.2) * 3.1,
+            child: Column(
+              children: [
+                Expanded(
+                  child: Text(
+                    switch (widget.token.viewMode) {
+                      DayPasswordTokenViewMode.VALIDFOR => '${AppLocalizations.of(context)!.validFor}:',
+                      DayPasswordTokenViewMode.VALIDUNTIL => '${AppLocalizations.of(context)!.validUntil}:',
+                    },
+                    style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      switch (widget.token.viewMode) {
+                        DayPasswordTokenViewMode.VALIDFOR => durationString,
+                        DayPasswordTokenViewMode.VALIDUNTIL => '$yMdString\n$ejmString',
+                      },
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      maxLines: 2,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

@@ -204,7 +204,7 @@ Future<void> _decryptErrorDialog() => showAsyncDialog(
               if (isDataDeleted == true) {
                 // ignore: use_build_context_synchronously
                 Navigator.pop(context);
-                globalRef?.read(tokenProvider.notifier).loadFromRepo();
+                globalRef?.read(tokenProvider.notifier).loadStateFromRepo();
               }
             },
             child: Text(
@@ -242,7 +242,7 @@ Future<void> _decryptErrorDialog() => showAsyncDialog(
               Navigator.pop(context);
               // ignore: use_build_context_synchronously
               Navigator.pop(context);
-              globalRef?.read(tokenProvider.notifier).loadFromRepo();
+              globalRef?.read(tokenProvider.notifier).loadStateFromRepo();
             },
             child: Text(AppLocalizations.of(context)!.decryptErrorButtonRetry),
           ),

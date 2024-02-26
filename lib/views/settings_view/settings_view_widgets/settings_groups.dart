@@ -24,10 +24,12 @@ import 'package:flutter/material.dart';
 class SettingsGroup extends StatelessWidget {
   final String _title;
   final List<Widget> _children;
+  final bool _isActive;
 
-  const SettingsGroup({super.key, required String title, required List<Widget> children})
+  const SettingsGroup({super.key, required String title, required List<Widget> children, bool isActive = true})
       : _title = title,
-        _children = children;
+        _children = children,
+        _isActive = isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,7 @@ class SettingsGroup extends StatelessWidget {
           dense: true,
           leading: Text(
             _title,
-            style: theme.textTheme.titleMedium!.copyWith(color: theme.colorScheme.secondary, fontWeight: FontWeight.bold),
+            style: theme.textTheme.titleLarge?.copyWith(color: _isActive ? null : Colors.grey),
             overflow: TextOverflow.fade,
             softWrap: false,
           ),

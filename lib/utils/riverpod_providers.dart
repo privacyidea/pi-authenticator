@@ -4,7 +4,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:home_widget/home_widget.dart';
 import 'package:uni_links/uni_links.dart';
 
 import '../l10n/app_localizations.dart';
@@ -15,6 +14,7 @@ import '../model/states/settings_state.dart';
 import '../model/states/token_filter.dart';
 import '../model/states/token_folder_state.dart';
 import '../model/states/token_state.dart';
+import '../model/tokens/otp_token.dart';
 import '../repo/preference_introduction_repository.dart';
 import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_folder_repository.dart';
@@ -71,12 +71,12 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         Logger.info('tokenProvider reviced new AppState. Changed from $previous to $next');
         if (previous == AppLifecycleState.paused && next == AppLifecycleState.resumed) {
           Logger.info('Refreshing tokens on resume', name: 'tokenProvider#appStateProvider');
-          newTokenNotifier.refreshTokens();
+          newTokenNotifier.loadStateFromRepo();
         }
         if (previous == AppLifecycleState.resumed && next == AppLifecycleState.paused) {
           Logger.info('Saving tokens and cancelling all notifications on pause', name: 'tokenProvider#appStateProvider');
           FlutterLocalNotificationsPlugin().cancelAll();
-          newTokenNotifier.saveTokens();
+          newTokenNotifier.saveStateToRepo();
         }
       },
     );
@@ -127,9 +127,8 @@ final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, DeepLink?>(
       DeeplinkSource(name: 'uni_links', stream: uriLinkStream, initialUri: getInitialUri()),
       DeeplinkSource(
         name: 'home_widget',
-        stream: HomeWidget.widgetClicked,
-        initialUri: HomeWidget.initiallyLaunchedFromHomeWidget(),
-        isSupported: HomeWidgetUtils.isHomeWidgetSupported,
+        stream: HomeWidgetUtils().widgetClicked,
+        initialUri: HomeWidgetUtils().initiallyLaunchedFromHomeWidget(),
       ),
     ]);
   },
@@ -205,6 +204,16 @@ final appConstraintsProvider = StateProvider<BoxConstraints?>(
   (ref) {
     Logger.info("New constraintsProvider created", name: 'appConstraintsProvider');
     return null;
+  },
+);
+
+final homeWidgetProvider = StateProvider<Map<String, OTPToken>>(
+  (ref) {
+    Logger.info("New homeWidgetProvider created", name: 'homeWidgetProvider');
+    ref.listen(tokenProvider, (previous, next) {
+      HomeWidgetUtils().updateTokensIfLinked(next.lastlyUpdatedTokens);
+    });
+    return {};
   },
 );
 

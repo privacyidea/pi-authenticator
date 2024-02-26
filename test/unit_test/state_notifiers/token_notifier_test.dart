@@ -16,6 +16,7 @@ import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
@@ -60,7 +61,7 @@ void _testTokenNotifier() {
         (ref) => TokenNotifier(repository: mockRepo),
       );
       final notifier = container.read(testProvider.notifier);
-      expect(await notifier.refreshTokens(), true);
+      expect((await notifier.loadStateFromRepo())?.tokens, after);
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
@@ -105,7 +106,7 @@ void _testTokenNotifier() {
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
-      verify(mockRepo.saveOrReplaceTokens([after.first])).called(1);
+      verify(mockRepo.saveOrReplaceTokens(after)).called(1);
     });
     test('removeToken', () async {
       final container = ProviderContainer();
@@ -216,20 +217,12 @@ void _testTokenNotifier() {
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
-      // when(mockQrParser.parseUriToMap('otpAuthString')).thenReturn({
-      //   URI_LABEL: 'label2',
-      //   URI_ISSUER: 'issuer2',
-      //   URI_ALGORITHM: 'SHA256',
-      //   URI_DIGITS: 6,
-      //   URI_SECRET: Uint8List.fromList([73, 65, 63, 72, 65, 74, 32]),
-      //   URI_TYPE: TokenTypes.HOTP.asString,
-      // });
-      // when(mockQrParser._is2StepURI(any)).thenReturn(false);
+
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(repository: mockRepo),
       );
       final notifier = container.read(testProvider.notifier);
-      await notifier.handleQrCode('otpAuthString');
+      await notifier.handleQrCode('otpauth://totp/issuer2:label2?secret=secret2&issuer=issuer2&algorithm=SHA256&digits=6&period=30');
       final state = container.read(testProvider);
       expect(state, isNotNull);
       after.last = after.last.copyWith(id: state.tokens.last.id);
@@ -299,7 +292,7 @@ void _testTokenNotifier() {
       )).thenAnswer(
         (_) => Future.value(
           Response(
-            '{"detail": {"public_key": "MIICCgKCAgEAomCYODF47vz/axztjlmEcepqZPC8NNhXTlPu/FPGJ+qIOq+swTiEYgmv8DYIAslqLy3EHa7JUouSlE3f1l4OUcqZvPGgEP5Cpbjnaddy6u4Pt37YLDtlhX7nnd+VZnDLxXxqQ62e1CEOJVjKWq1x2Bq2GPcQz0fwWfGjNH7PtN+F00i3NiN0FPigOD4p7Bcru1ihWToQMobzf/p1945Yu0fwfpwUhHn0cfG5uKUrXl4T24s0b92MA8CmxYKKlenEQu9EezljeH2PJ0h1kfv58xjAEVEdwjCb8jzHwXomzJWUqZHt0BexavR+sUQNyk8r5OdX0fgOo+4W3/H+b/0Ktn47Frn827pYB8c2AX8lqxFocP6lj62hjCfKWss0rgqQBegTd9trCuN2iiw/Dj1HLFzK2Z8JwGDrQni1F8nyevaaZOuZI3I4DAFJzYKcP/zDvkNs6qpa+P1kzg50ml3m0RONGIHrzcSeo3aVeaMMdHXKhB5dqrig6Sjblqt2hwdPAWQPOiq9pTAXZIJmXI0UJb3bfWKlPIUmiZPRs+xYom+aZ9VEBTLdcxGC6puAJyUsjoXBJTJqH7O8g/pWA02UfPALEcuDAVQOSJbahodkWmrBg8jIMnjNOkN1t9hxHbg5XSWidgei4D/MJp4xH9w0eHyVZSnVTY5Iah0GkCVQFVsCAwEAAQ==", "rollout_state": "enrolled", "serial": "PIPU0006BF18", "threadid": 140024860083968}, "id": 1, "jsonrpc": "2.0", "result": {"status": true, "value": true}, "time": 1701091444.6211884, "version": "privacyIDEA 3.9.dev3", "versionnumber": "3.9.dev3", "signature": "rsa_sha256_pss:c137b543b0df817ebd89ff53c5924c94f916c2bfebbe03ceb14e806ffdb46deb00fd336c83f3e0fb06ffbdf4926e83b5440f7f117498341608d644e4c1f2bbf9319eb59b98d5485c42b40325c9f29427cc8ae67728e486db247be0510a92f74936ea57436ecbe5304bcc50fcb624c3bde8e3039419592e9fbe8c0cb85431c2931ea8d6a6369fccf7e4c15c9cfaea896d8ec7896811545083bd6d3f5416e7d54b43f1f4752bf2a57c2b12a139fe217d1eec1292b071b9c6cef31e5f6eb957c7ad2a1d3bd105a74c80f961f5e307393824b8767807116a8573448f45f6cc112317105fb4e9e294f1a99faaf78b2f902ea1553cf5e428bfa98041c74cc23302df6f"}',
+            '{"detail": {"public_key": "$publicServerKeyString", "rollout_state": "enrolled", "serial": "PIPU0006BF18", "threadid": 140024860083968}, "id": 1, "jsonrpc": "2.0", "result": {"status": true, "value": true}, "time": 1701091444.6211884, "version": "privacyIDEA 3.9.dev3", "versionnumber": "3.9.dev3", "signature": "rsa_sha256_pss:c137b543b0df817ebd89ff53c5924c94f916c2bfebbe03ceb14e806ffdb46deb00fd336c83f3e0fb06ffbdf4926e83b5440f7f117498341608d644e4c1f2bbf9319eb59b98d5485c42b40325c9f29427cc8ae67728e486db247be0510a92f74936ea57436ecbe5304bcc50fcb624c3bde8e3039419592e9fbe8c0cb85431c2931ea8d6a6369fccf7e4c15c9cfaea896d8ec7896811545083bd6d3f5416e7d54b43f1f4752bf2a57c2b12a139fe217d1eec1292b071b9c6cef31e5f6eb957c7ad2a1d3bd105a74c80f961f5e307393824b8767807116a8573448f45f6cc112317105fb4e9e294f1a99faaf78b2f902ea1553cf5e428bfa98041c74cc23302df6f"}',
             200,
           ),
         ),
@@ -443,8 +436,11 @@ void _testTokenNotifier() {
           firebaseUtils: mockFirebaseUtils,
         ),
       );
+
       final notifier = container.read(testProvider.notifier);
+      Logger.info('before rolloutPushToken');
       expect(await notifier.rolloutPushToken(before.first), true);
+      Logger.info('after rolloutPushToken');
       final state = container.read(testProvider);
       expect(state, isNotNull);
       expect(state.tokens, after);
@@ -463,10 +459,12 @@ void _testTokenNotifier() {
       final before = <Token>[
         HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret'),
       ];
-      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockRepo.loadTokens()).thenAnswer((_) => Future.value(before));
       final notifier = TokenNotifier(repository: mockRepo);
-      final result = await notifier.loadFromRepo();
-      expect(result, true);
+      Logger.info('before loadFromRepo');
+      final newState = await notifier.loadStateFromRepo();
+      Logger.info('after loadFromRepo');
+      expect(newState?.tokens, before);
       expect(notifier.state.tokens, before);
     });
   });

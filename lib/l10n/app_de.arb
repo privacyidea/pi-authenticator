@@ -538,5 +538,19 @@
   "feedbackSentTitle": "Feedback gesendet",
   "feedbackSentDescription": "Vielen Dank für Ihre Hilfe bei der Verbesserung dieser App!",
   "patchNotesDialogTitle": "Was ist neu?",
-  "version": "Version"
+  "version": "Version",
+  "noMailAppTitle": "Keine Mail-App gefunden",
+  "noMailAppDescription": "Auf diesem Gerät ist keine E-Mail-App installiert oder initialisiert, bitte versuchen Sie es erneut, wenn Sie eine E-Mail-Nachricht senden können.",
+  "authenticationRequest": "Authentifizierung",
+  "requestInfo": "Gesendet von {issuer} für Ihr Konto: \"{account}\"",
+  "@requestInfo": {
+    "placeholders": {
+      "issuer": {
+        "example": "privacyIDEA"
+      },
+      "Konto": {
+        "example": "GitHub"
+      }
+    }
+  }
 }

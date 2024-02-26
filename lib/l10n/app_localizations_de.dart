@@ -695,4 +695,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get version => 'Version';
+
+  @override
+  String get noMailAppTitle => 'Keine Mail-App gefunden';
+
+  @override
+  String get noMailAppDescription => 'Auf diesem Gerät ist keine E-Mail-App installiert oder initialisiert, bitte versuchen Sie es erneut, wenn Sie eine E-Mail-Nachricht senden können.';
+
+  @override
+  String get authenticationRequest => 'Authentifizierung';
+
+  @override
+  String requestInfo(Object issuer, Object account) {
+    return 'Gesendet von $issuer für Ihr Konto: \"$account\"';
+  }
 }

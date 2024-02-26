@@ -4,6 +4,8 @@ import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/mains/main_netknights.dart';
+import 'package:privacyidea_authenticator/model/enums/introduction.dart';
+import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
@@ -11,6 +13,7 @@ import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
+import 'package:privacyidea_authenticator/utils/version.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/hotp_token_widgets/hotp_token_widget_tile.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/totp_token_widgets/totp_token_widget_tile.dart';
@@ -44,10 +47,11 @@ void main() {
   late final MockSettingsRepository mockSettingsRepository;
   late final MockTokenRepository mockTokenRepository;
   late final MockTokenFolderRepository mockTokenFolderRepository;
+  late final MockIntroductionRepository mockIntroductionRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
-    when(mockSettingsRepository.loadSettings())
-        .thenAnswer((_) async => SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en')));
+    when(mockSettingsRepository.loadSettings()).thenAnswer((_) async =>
+        SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en'), latestVersion: Version.parse('999.999.999')));
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async => []);
@@ -56,6 +60,9 @@ void main() {
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
+    mockIntroductionRepository = MockIntroductionRepository();
+    final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
+    when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
   });
   testWidgets(
     '2step rollout test',

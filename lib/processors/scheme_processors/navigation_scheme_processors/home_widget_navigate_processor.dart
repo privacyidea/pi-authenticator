@@ -5,7 +5,6 @@ import '../../../utils/home_widget_utils.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../views/link_home_widget_view/link_home_widget_view.dart';
-import '../../../views/main_view/main_view.dart';
 import '../../../views/splash_screen/splash_screen.dart';
 import 'navigation_scheme_processor_interface.dart';
 
@@ -45,7 +44,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
         LinkHomeWidgetView(homeWidgetId: uri.queryParameters['id']!),
       );
     } else {
-      Navigator.popUntil(context, (route) => route.settings.name == MainView.routeName);
+      Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => LinkHomeWidgetView(homeWidgetId: uri.queryParameters['id']!),
@@ -64,18 +63,25 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       return;
     }
     Logger.info('Showing otp of locked Token of homeWidget: ${uri.queryParameters['id']}', name: 'home_widget_processor.dart#_showLockedHomeWidgetProcessor');
-    if (!fromInit) {
-      Navigator.popUntil(context, (route) => route.settings.name == MainView.routeName);
-    }
+    Navigator.popUntil(context, (route) => route.isFirst);
+
     final tokenId = await HomeWidgetUtils().getTokenIdOfWidgetId(uri.queryParameters['id']!);
     if (tokenId == null) {
       Logger.warning('Could not find token for widget id: ${uri.queryParameters['id']}', name: 'home_widget_processor.dart#_showLockedHomeWidgetProcessor');
       return;
     }
+    await Future.delayed(const Duration(milliseconds: 200));
     if (globalRef == null) {
       Logger.warning('Could not find globalRef', name: 'home_widget_processor.dart#_showLockedHomeWidgetProcessor');
       return;
     }
-    globalRef!.read(tokenProvider.notifier).showTokenById(tokenId);
+    final authenticated = await globalRef!.read(tokenProvider.notifier).showTokenById(tokenId);
+
+    if (authenticated) {
+      final folderId = globalRef!.read(tokenProvider).currentOfId(tokenId)?.folderId;
+      if (folderId != null) {
+        globalRef!.read(tokenFolderProvider.notifier).expandFolderById(folderId);
+      }
+    }
   }
 }

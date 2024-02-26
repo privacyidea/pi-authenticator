@@ -31,4 +31,7 @@ class IntroductionState {
   }
 
   bool isConditionFulfilled(WidgetRef ref, Introduction introduction) => introduction.isConditionFulfilled(ref, this);
+
+  @override
+  String toString() => 'IntroductionState{completedIntroductions: $completedIntroductions}';
 }
