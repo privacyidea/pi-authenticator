@@ -27,6 +27,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/repo/secure_push_request_repository.dart';
+import 'package:privacyidea_authenticator/utils/pi_notifications.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/push_request.dart';
@@ -180,11 +181,14 @@ class PushProvider {
       Logger.warning('Handling the push request in the background failed.', name: 'push_provider.dart#_backgroundHandler');
       return;
     }
+    // PiNotifications.show('Push request', 'A new push request has been received.');
     if (remoteMessage.notification == null) {
-      // await PiMessaging.instance.showNotification(
-      //   title: AppLocalizations.of(globalNavigatorKey.currentContext!)!.notificationTitle,
-      //   body: AppLocalizations.of(globalNavigatorKey.currentContext!)!.notificationBody,
-      // );
+      PiNotifications.show(
+        // AppLocalizations.of(globalNavigatorKey.currentContext!)!.notificationTitle,
+        'Notification Title',
+        // AppLocalizations.of(globalNavigatorKey.currentContext!)!.notificationBody,
+        'Notification Body',
+      );
     }
   }
 

@@ -48,10 +48,8 @@ class SecureTokenRepository implements TokenRepository {
   /// Function [f] is executed, protected by Mutex [_m].
   /// That means, that calls of this method will always be executed serial.
   static Future<T> _protect<T>(Future<T> Function() f) => _m.protect<T>(f);
-
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
-
-  static const String _GLOBAL_PREFIX = 'app_v3_';
+  static const String _TOKEN_PREFIX = 'app_v3_';
 
   // ###########################################################################
   // TOKENS
@@ -59,7 +57,7 @@ class SecureTokenRepository implements TokenRepository {
 
   @override
   Future<Token?> loadToken(String id) => _protect<Token?>(() async {
-        final token = await _storage.read(key: _GLOBAL_PREFIX + id);
+        final token = await _storage.read(key: _TOKEN_PREFIX + id);
         if (token == null) {
           Logger.warning('Token not found in secure storage', name: 'storage_utils.dart#loadToken');
           return null;
@@ -87,7 +85,7 @@ class SecureTokenRepository implements TokenRepository {
           final value = keyValueMap.values.elementAt(i);
           final key = keyValueMap.keys.elementAt(i);
           Map<String, dynamic>? valueJson;
-          if (!key.startsWith(_GLOBAL_PREFIX)) {
+          if (!key.startsWith(_TOKEN_PREFIX)) {
             // Every token should start with the global prefix.
             // But not everything that starts with the global prefix is a token.
             continue;
@@ -142,7 +140,7 @@ class SecureTokenRepository implements TokenRepository {
 
   Future<bool> _saveOrReplaceToken(Token token) async {
     try {
-      await _storage.write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
+      await _storage.write(key: _TOKEN_PREFIX + token.id, value: jsonEncode(token));
     } catch (_) {
       return false;
     }
@@ -171,7 +169,7 @@ class SecureTokenRepository implements TokenRepository {
 
   Future<bool> _deleteToken(Token token) async {
     try {
-      _storage.delete(key: _GLOBAL_PREFIX + token.id);
+      _storage.delete(key: _TOKEN_PREFIX + token.id);
     } catch (e, s) {
       Logger.warning('Could not delete token from secure storage', name: 'storage_utils.dart#deleteToken', error: e, stackTrace: s);
       return false;
@@ -183,10 +181,10 @@ class SecureTokenRepository implements TokenRepository {
   // ###########################################################################
   // FIREBASE CONFIG
   // ###########################################################################
-  static const _CURRENT_APP_TOKEN_KEY = '${_GLOBAL_PREFIX}CURRENT_APP_TOKEN';
+  static const _CURRENT_APP_TOKEN_KEY = '${_TOKEN_PREFIX}CURRENT_APP_TOKEN';
   static Future<void> setCurrentFirebaseToken(String str) => _protect(() => _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str));
   static Future<String?> getCurrentFirebaseToken() => _protect(() => _storage.read(key: _CURRENT_APP_TOKEN_KEY));
-  static const _NEW_APP_TOKEN_KEY = '${_GLOBAL_PREFIX}NEW_APP_TOKEN';
+  static const _NEW_APP_TOKEN_KEY = '${_TOKEN_PREFIX}NEW_APP_TOKEN';
 
   // This is used for checking if the token was updated.
   static Future<void> setNewFirebaseToken(String str) => _protect(() => _storage.write(key: _NEW_APP_TOKEN_KEY, value: str));
