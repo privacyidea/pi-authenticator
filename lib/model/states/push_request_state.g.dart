@@ -8,13 +8,11 @@ part of 'push_request_state.dart';
 
 PushRequestState _$PushRequestStateFromJson(Map<String, dynamic> json) =>
     PushRequestState(
-      pushRequests: (json['pushRequests'] as List<dynamic>?)
-          ?.map((e) => PushRequest.fromJson(e as Map<String, dynamic>))
+      pushRequests: (json['pushRequests'] as List<dynamic>)
+          .map((e) => PushRequest.fromJson(e as Map<String, dynamic>))
           .toList(),
-      knownPushRequests: json['knownPushRequests'] == null
-          ? null
-          : CustomIntBuffer.fromJson(
-              json['knownPushRequests'] as Map<String, dynamic>),
+      knownPushRequests: CustomIntBuffer.fromJson(
+          json['knownPushRequests'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$PushRequestStateToJson(PushRequestState instance) =>

@@ -481,14 +481,67 @@ class MockPushRequestRepository extends _i1.Mock
       ) as _i8.Future<_i4.PushRequestState>);
 
   @override
-  _i8.Future<List<_i12.PushRequest>> saveState(
-          _i4.PushRequestState? pushRequestState) =>
+  _i8.Future<void> saveState(_i4.PushRequestState? pushRequestState) =>
       (super.noSuchMethod(
         Invocation.method(
           #saveState,
           [pushRequestState],
         ),
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
+
+  @override
+  _i8.Future<void> clearState() => (super.noSuchMethod(
+        Invocation.method(
+          #clearState,
+          [],
+        ),
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
+
+  @override
+  _i8.Future<_i4.PushRequestState> add(
+    _i12.PushRequest? pushRequest, {
+    _i4.PushRequestState? state,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #add,
+          [pushRequest],
+          {#state: state},
+        ),
         returnValue:
-            _i8.Future<List<_i12.PushRequest>>.value(<_i12.PushRequest>[]),
-      ) as _i8.Future<List<_i12.PushRequest>>);
+            _i8.Future<_i4.PushRequestState>.value(_FakePushRequestState_4(
+          this,
+          Invocation.method(
+            #add,
+            [pushRequest],
+            {#state: state},
+          ),
+        )),
+      ) as _i8.Future<_i4.PushRequestState>);
+
+  @override
+  _i8.Future<_i4.PushRequestState> remove(
+    _i12.PushRequest? pushRequest, {
+    _i4.PushRequestState? state,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #remove,
+          [pushRequest],
+          {#state: state},
+        ),
+        returnValue:
+            _i8.Future<_i4.PushRequestState>.value(_FakePushRequestState_4(
+          this,
+          Invocation.method(
+            #remove,
+            [pushRequest],
+            {#state: state},
+          ),
+        )),
+      ) as _i8.Future<_i4.PushRequestState>);
 }

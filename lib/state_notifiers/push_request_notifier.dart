@@ -32,6 +32,7 @@ import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
 import '../model/states/push_request_state.dart';
 import '../repo/secure_push_request_repository.dart';
+import '../utils/custom_int_buffer.dart';
 
 class PushRequestNotifier extends StateNotifier<PushRequestState> {
   late final Future<PushRequestState> initState;
@@ -56,7 +57,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
         _rsaUtils = rsaUtils ?? const RsaUtils(),
         _pushRepo = pushRepo ?? const SecurePushRequestRepository(),
         super(
-          initState ?? const PushRequestState(),
+          initState ?? const PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: [])),
         ) {
     _init(initState);
   }
@@ -84,18 +85,18 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
 
   Future<PushRequestState> _loadFromRepo() async {
     await loadingRepoMutex.acquire();
-    final loadedState = await _pushRepo.loadState();
+    final PushRequestState loadedState;
+    try {
+      loadedState = await _pushRepo.loadState();
+    } catch (e) {
+      Logger.error('Failed to load push request state from repo.', name: 'push_request_notifier.dart#_loadFromRepo', error: e);
+      loadingRepoMutex.release();
+      return state;
+    }
     _renewTimers(loadedState.pushRequests);
     state = loadedState;
     loadingRepoMutex.release();
     return loadedState;
-  }
-
-  Future<List<PushRequest>> _saveToRepo(PushRequestState saveState) async {
-    await loadingRepoMutex.acquire();
-    final failedRequests = await _pushRepo.saveState(saveState);
-    loadingRepoMutex.release();
-    return failedRequests;
   }
 
   /// Adds a PushRequest to repo and state. Returns true if successful, false if not.
@@ -103,12 +104,14 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   Future<bool> _addOrReplacePushRequest(PushRequest pushRequest) async {
     await loadingRepoMutex.acquire();
     final oldState = state;
-    final newState = oldState.addOrReplaceRequest(pushRequest);
-    final saved = await _pushRepo.saveState(newState);
-    if (saved.isNotEmpty) {
+    final newState = oldState.addOrReplace(pushRequest);
+    try {
+      await _pushRepo.saveState(newState);
+    } catch (e) {
       Logger.warning(
         'Failed to save push request: $pushRequest',
         name: 'push_request_notifier.dart#_addOrReplacePushRequest',
+        error: e,
       );
       loadingRepoMutex.release();
       return false;
@@ -133,11 +136,13 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
       loadingRepoMutex.release();
       return false;
     }
-    final saved = await _pushRepo.saveState(newState);
-    if (saved.isNotEmpty) {
+    try {
+      await _pushRepo.saveState(newState);
+    } catch (e) {
       Logger.warning(
         'Failed to save push request: $pushRequest',
         name: 'push_request_notifier.dart#_replacePushRequest',
+        error: e,
       );
       loadingRepoMutex.release();
       return false;
@@ -151,12 +156,13 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   Future<bool> _remove(PushRequest pushRequest) async {
     await loadingRepoMutex.acquire();
     final newState = state.withoutRequest(pushRequest);
-
-    final success = await _pushRepo.saveState(newState);
-    if (success.isNotEmpty) {
-      Logger.warning(
-        'Failed to delete push request from repo: $pushRequest',
-        name: 'push_request_notifier.dart#_removePushRequest',
+    try {
+      await _pushRepo.saveState(newState);
+    } catch (e) {
+      Logger.error(
+        'Failed to save push request state after removing push request.',
+        name: 'push_request_notifier.dart#_remove',
+        error: e,
       );
       loadingRepoMutex.release();
       return false;
@@ -166,11 +172,12 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     loadingRepoMutex.release();
     return true;
   }
-
+  /*
   //////////////////////////////////////////////////////////////////////////////
   ////////////////////// Update PushRequest Methods ////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   /// Updating layer is always use updatingRequestMutex for the latest state
+  */
 
   /// Updates a PushRequest of the current state. The updated PushRequest is saved to the repo and the state. Returns the updated PushRequest if successful, null if not.
   Future<PushRequest?> _updatePushRequest(PushRequest pushRequest, Future<PushRequest> Function(PushRequest) updater) async {
@@ -187,13 +194,16 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     return replaced ? updated : current;
   }
 
+  /*
   //////////////////////////////////////////////////////////////////////////////
-  //////////////////////// UI Interaction Methods //////////////////////////////
-  /////// These methods are used to interact with the UI and the user. /////////
+  //////////////////////////// Public Methods //////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   /// There is no need to use mutexes because the updating functions are always using the latest version of the updating tokens.
+  */
 
   /// Accepts a push request and returns true if successful, false if not.
+  /// An accepted push request is removed from the state.
+  /// It should be still in the CustomIntBuffer of the state.
   Future<bool> accept(PushToken pushToken, PushRequest pushRequest) async {
     if (pushRequest.accepted != null) {
       Logger.warning('The push request is already accepted or declined.', name: 'push_request_notifier.dart#decline');
@@ -209,9 +219,9 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
       }
       return updated;
     });
-
-    await _remove(pushRequest);
-    return updated?.accepted == true;
+    if (updated == null || updated.accepted != true) return false;
+    await _remove(updated);
+    return true;
   }
 
   Future<bool> decline(PushToken pushToken, PushRequest pushRequest) async {
@@ -228,10 +238,10 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
       }
       return updated;
     });
-    return updated?.accepted == false;
+    if (updated == null || updated.accepted != false) return false;
+    await _remove(updated);
+    return true;
   }
-
-  Future<bool> remove(PushRequest pushRequest) => _remove(pushRequest);
 
   Future<bool> add(PushRequest pr) async {
     if (state.knowsRequestId(pr.id)) {
@@ -242,12 +252,14 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
       return false;
     }
     // Save the pending request.
-    state = state.withRequest(pushRequest: pr);
+    await _addOrReplacePushRequest(pr);
     // Remove the request after it expires.
     _setupTimer(pr);
     Logger.info('Added push request ${pr.id} to state', name: 'token_notifier.dart#addPushRequestToToken');
     return true;
   }
+
+  Future<bool> remove(PushRequest pushRequest) => _remove(pushRequest);
 
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////// Helper Methods /////////////////////////////////////
@@ -266,16 +278,27 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     }
   }
 
+  /// Sets up a timer to remove the push request after it expires.
+  /// If the request is already expired, it will be removed immediately.
+  /// When the timer is set up, the old timer is canceled.
   void _setupTimer(PushRequest pr) {
+    _expirationTimers[pr.id.toString()]?.cancel();
     int time = pr.expirationDate.difference(DateTime.now()).inMilliseconds;
-    _expirationTimers[pr.id.toString()] = Timer(Duration(milliseconds: time < 1 ? 1 : time), () async => _remove(pr));
+    if (time < 1) {
+      _remove(pr);
+      return;
+    }
+    _expirationTimers[pr.id.toString()] = Timer(Duration(milliseconds: time), () async => _remove(pr));
   }
 
   void _setupAllTimers(List<PushRequest> pushRequests) {
     _cancalAllTimers();
     for (var pr in pushRequests) {
       int time = pr.expirationDate.difference(DateTime.now()).inMilliseconds;
-      _expirationTimers[pr.id.toString()] = Timer(Duration(milliseconds: time < 1 ? 1 : time), () async => _remove(pr));
+      if (time < 1) {
+        _remove(pr);
+      }
+      _expirationTimers[pr.id.toString()] = Timer(Duration(milliseconds: time), () async => _remove(pr));
     }
   }
 

@@ -66,6 +66,7 @@ void _testPushToken() {
         publicTokenKey: 'publicTokenKeyCopy',
         privateTokenKey: 'privateTokenKeyCopy',
         isRolledOut: false,
+        rolloutState: PushTokenRollOutState.rolloutComplete,
         sortIndex: 1,
         tokenImage: 'exampleCopy.png',
         folderId: () => 1,
@@ -159,8 +160,6 @@ void _testPushToken() {
         "publicServerKey": "publicServerKey",
         "privateTokenKey": "privateTokenKey",
         "publicTokenKey": "publicTokenKey",
-        "pushRequests": {"list": []},
-        "knownPushRequests": {"list": []}
       };
       expect(jsonEncode(tokenJson), jsonEncode(json));
     });

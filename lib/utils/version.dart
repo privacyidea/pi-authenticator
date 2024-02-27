@@ -85,11 +85,5 @@ class Version implements Comparable<Version> {
   String toString() => '$major.$minor.$patch';
 
   @override
-  int get hashCode {
-    int hash = 17;
-    hash = hash * 31 + major.hashCode;
-    hash = hash * 31 + minor.hashCode;
-    hash = hash * 31 + patch.hashCode;
-    return hash;
-  }
+  int get hashCode => Object.hash(major, minor, patch);
 }

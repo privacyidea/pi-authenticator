@@ -23,7 +23,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
     final value = await _storage.readAll();
     final result = <String, String>{};
     for (var key in value.keys) {
-      if (key.startsWith(_PR_PREFIX)) {
+      if (key.startsWith(_securePushRequestKey)) {
         result[key] = value[key]!;
       }
     }
@@ -31,76 +31,64 @@ class SecurePushRequestRepository implements PushRequestRepository {
   }
 
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
-
-  static const String _PR_PREFIX = 'app_v3_PR_';
-  static const String _KNOWN_PUSH_REQUESTS = 'known_push_requests';
+  static const String _securePushRequestKey = 'app_v3_pr_state';
 
   @override
-  Future<List<PushRequest>> saveState(PushRequestState pushRequestState) => protect<List<PushRequest>>(() async {
-        await _saveKnownPushRequests(pushRequestState.knownPushRequests);
-        return await _savePushRequests(pushRequestState.pushRequests);
-      });
+
+  /// Save the state to the secure storage.
+  /// This is a critical section, so it is protected by Mutex.
+  Future<void> saveState(PushRequestState pushRequestState) => protect<void>(() => _saveState(pushRequestState));
+  Future<void> _saveState(PushRequestState pushRequestState) async {
+    final stateJson = jsonEncode(pushRequestState.toJson());
+    await _storage.write(key: _securePushRequestKey, value: stateJson);
+  }
 
   @override
-  Future<PushRequestState> loadState() => protect<PushRequestState>(() async {
-        final pushRequests = await _loadPushRequests();
-        final knownPushRequests = await _loadKnownPushRequests();
-        return PushRequestState(pushRequests: pushRequests, knownPushRequests: knownPushRequests);
-      });
 
-  Future<List<PushRequest>> _savePushRequests(List<PushRequest> pushRequests) async {
-    final List<PushRequest> failedRequests = <PushRequest>[];
-    for (var key in (await readAllPushRequests()).keys) {
-      int index = pushRequests.indexWhere((element) => key == _keyOf(element));
-      if (index == -1) {
-        await _storage.delete(key: key);
-      } else {
-        try {
-          await _storage.write(
-            key: key,
-            value: jsonEncode(pushRequests[index].toJson()),
-          );
-        } catch (e) {
-          failedRequests.add(pushRequests[index]);
-          continue;
+  /// Load the state from the secure storage.
+  /// If no state is found, an empty state is returned.
+  /// This is a critical section, so it is protected by Mutex.
+  Future<PushRequestState> loadState() => protect<PushRequestState>(_loadState);
+  Future<PushRequestState> _loadState() async {
+    final String? stateJson = await _storage.read(key: _securePushRequestKey);
+    if (stateJson == null) {
+      return const PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: []));
+    }
+    return PushRequestState.fromJson(jsonDecode(stateJson));
+  }
+
+  @override
+
+  /// Adds a push request in the given state if it is not already known.
+  /// If no state is given, the current state is loaded from the secure storage.
+  /// This is a critical section, so it is protected by Mutex.
+  Future<PushRequestState> add(PushRequest pushRequest, {PushRequestState? state}) => protect<PushRequestState>(() async {
+        state ??= await _loadState();
+        if (state!.knowsRequest(pushRequest)) {
+          return state!;
         }
-        pushRequests.removeAt(index);
-      }
-    }
-    return failedRequests;
-  }
+        final newState = state!.withRequest(pushRequest);
+        await _saveState(newState);
+        return newState;
+      });
 
-  Future<List<PushRequest>> _loadPushRequests() async {
-    const pushRequests = <PushRequest>[];
-    final Map<String, String> all = await readAllPushRequests();
-    for (var key in all.keys) {
-      final jsonString = all[key];
-      if (jsonString != null) {
-        pushRequests.add(PushRequest.fromJson(jsonDecode(jsonString)));
-      }
-    }
-    return pushRequests;
-  }
+  @override
 
-  Future<CustomIntBuffer> _loadKnownPushRequests() async {
-    final String? knownPushRequests = await _storage.read(key: '$_PR_PREFIX$_KNOWN_PUSH_REQUESTS');
-    if (knownPushRequests == null) {
-      return const CustomIntBuffer();
-    }
-    return CustomIntBuffer.fromJson(jsonDecode(knownPushRequests));
-  }
+  /// Remove a push request from the state.
+  /// If no state is given, the current state is loaded from the secure storage.
+  /// This is a critical section, so it is protected by Mutex.
+  Future<PushRequestState> remove(PushRequest pushRequest, {PushRequestState? state}) => protect<PushRequestState>(() async {
+        state ??= await _loadState();
+        final newState = state!.withoutRequest(pushRequest);
+        await _saveState(newState);
+        return newState;
+      });
 
-  Future<bool> _saveKnownPushRequests(CustomIntBuffer knownPushRequests) async {
-    try {
-      await _storage.write(
-        key: '$_PR_PREFIX$_KNOWN_PUSH_REQUESTS',
-        value: jsonEncode(knownPushRequests.toJson()),
-      );
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
+  @override
 
-  String _keyOf(PushRequest pushRequest) => '$_PR_PREFIX${pushRequest.id}';
+  /// Removes all push requests from the repository.
+  /// If no state is saved, nothing will happen.
+  /// This is a critical section, so it is protected by Mutex.
+  Future<void> clearState() => protect<void>(() => _clearState());
+  Future<void> _clearState() => _storage.delete(key: _securePushRequestKey);
 }

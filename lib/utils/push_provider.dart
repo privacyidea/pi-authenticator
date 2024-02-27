@@ -225,16 +225,18 @@ class PushProvider {
       Logger.warning('No token found for serial ${pushRequest.serial}.', name: 'push_provider.dart#_handleIncomingRequestBackground');
       return false;
     }
-    final repoSate = await _defaultPushRequestRepo.loadState();
     if (!await pushRequest.verifySignature(pushToken)) {
       Logger.warning('Signature verification failed.', name: 'push_provider.dart#_handleIncomingRequestBackground');
       return false;
     }
-    if (repoSate.knowsRequest(pushRequest)) {
-      Logger.info('Push request already known, ignoring.', name: 'push_provider.dart#_handleIncomingRequestBackground');
+
+    try {
+      await _defaultPushRequestRepo.add(pushRequest);
+    } catch (e) {
+      Logger.error('Could not save push request state.', name: 'push_provider.dart#_handleIncomingRequestBackground', error: e);
       return false;
     }
-    return (await _defaultPushRequestRepo.saveState(repoSate.withRequest(pushRequest: pushRequest))).isEmpty;
+    return true;
   }
 
   void _startOrStopPolling(bool pollingEnabled) {

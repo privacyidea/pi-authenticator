@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import '../../../../model/tokens/day_password_token.dart';
@@ -18,7 +16,6 @@ import 'totp_token_widgets/totp_token_widget_tile.dart';
 
 abstract class TokenWidgetBuilder {
   static TokenWidget fromToken(Token token, {Key? key}) {
-    log("RuntimeType: ${token.runtimeType}");
     return switch (token.runtimeType) {
       const (TOTPToken) => TOTPTokenWidget(token as TOTPToken, key: key),
       const (HOTPToken) => HOTPTokenWidget(token as HOTPToken, key: key),
