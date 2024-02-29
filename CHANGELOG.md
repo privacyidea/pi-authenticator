@@ -1,6 +1,6 @@
 # Changelog
 
-## [4.3.0] - 2024-02-29
+## [4.3.0] - 
  - Support for importing tokens from Google, Aegis and 2FAS Authenticator has been added. More import sources will be added in the future.
  - Added feedback option to the settings.
  - Push tokens can now be hidden from the token list.
