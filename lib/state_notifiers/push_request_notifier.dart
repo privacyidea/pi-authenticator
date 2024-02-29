@@ -40,7 +40,8 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   final updatingRequestMutex = Mutex();
   final PushRequestRepository _pushRepo;
 
-  final PushProvider _pushProvider;
+  PushProvider _pushProvider;
+  PushProvider get pushProvider => _pushProvider;
   final PrivacyIdeaIOClient _ioClient;
   final RsaUtils _rsaUtils;
 
@@ -49,17 +50,23 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   PushRequestNotifier({
     PushRequestState? initState,
     PrivacyIdeaIOClient? ioClient,
-    PushProvider? pushProvider,
+    required PushProvider pushProvider,
     RsaUtils? rsaUtils,
     PushRequestRepository? pushRepo,
   })  : _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
-        _pushProvider = pushProvider ?? PushProvider(),
+        _pushProvider = pushProvider,
         _rsaUtils = rsaUtils ?? const RsaUtils(),
         _pushRepo = pushRepo ?? const SecurePushRequestRepository(),
         super(
           initState ?? const PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: [])),
         ) {
     _init(initState);
+  }
+
+  void swapPushProvider(PushProvider newProvider) {
+    _pushProvider.unsubscribe(add);
+    _pushProvider = newProvider;
+    _pushProvider.subscribe(add);
   }
 
   Future<void> _init(PushRequestState? initialState) async {
@@ -200,6 +207,8 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   //////////////////////////////////////////////////////////////////////////////
   /// There is no need to use mutexes because the updating functions are always using the latest version of the updating tokens.
   */
+
+  Future<PushRequestState> loadStateFromRepo() => _loadFromRepo();
 
   /// Accepts a push request and returns true if successful, false if not.
   /// An accepted push request is removed from the state.

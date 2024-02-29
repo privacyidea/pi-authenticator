@@ -510,6 +510,67 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
   }
 
+  /// This method attempts to update the fbToken for all PushTokens that can be
+  /// updated. I.e. all tokens that know the url of their respective privacyIDEA
+  /// server.
+  /// If the fbToken is not provided, it will be fetched from the firebase instance.
+  /// If the fbToken is not available, this method will return null.
+  /// Returns a tuple of two lists. The first list contains all tokens that
+  /// could not be updated. The second list contains all tokens that do not
+  /// support updating the fbToken.
+  ///
+  /// This should only be used to attempt to update the fbToken automatically,
+  /// as this can not be guaranteed to work. There is a manual option available
+  /// through the settings also.
+  Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) async {
+    firebaseToken ??= await _firebaseUtils.getFBToken();
+    if (firebaseToken == null) {
+      Logger.warning('Could not update firebase token because no firebase token is available.', name: 'push_provider.dart#updateFirebaseToken');
+      return null;
+    }
+    List<PushToken> tokenList = state.pushTokens.where((t) => t.url != null && t.isRolledOut).toList();
+    bool allUpdated = true;
+    final List<PushToken> failedTokens = [];
+    final List<PushToken> unsuportedTokens = [];
+
+    for (PushToken p in tokenList) {
+      if (p.url == null) {
+        unsuportedTokens.add(p);
+        continue;
+      }
+      // POST /ttype/push HTTP/1.1
+      //Host: example.com
+      //
+      //new_fb_token=<new firebase token>
+      //serial=<tokenserial>element
+      //timestamp=<timestamp>
+      //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
+      Logger.warning('Updating firebase token for push token "${p.serial}"', name: 'push_provider.dart#updateFirebaseToken');
+      String timestamp = DateTime.now().toUtc().toIso8601String();
+      String message = '$firebaseToken|${p.serial}|$timestamp';
+      String? signature = await const RsaUtils().trySignWithToken(p, message);
+      if (signature == null) {
+        failedTokens.add(p);
+        allUpdated = false;
+        continue;
+      }
+      Response response = await _ioClient.doPost(
+          sslVerify: p.sslVerify, url: p.url!, body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
+      if (response.statusCode == 200) {
+        Logger.info('Updating firebase token for push token succeeded!', name: 'push_provider.dart#updateFirebaseToken');
+      } else {
+        Logger.warning('Updating firebase token for push token failed!', name: 'push_provider.dart#updateFirebaseToken');
+        failedTokens.add(p);
+        allUpdated = false;
+      }
+    }
+
+    if (allUpdated) {
+      await _firebaseUtils.setCurrentFirebaseToken(firebaseToken);
+    }
+    return (failedTokens, unsuportedTokens);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   //////////////////////// Add New Tokens Methods /////////////////////////////
   /////////////////////////////////////////////////////////////////////////////

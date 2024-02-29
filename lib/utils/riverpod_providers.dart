@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:uni_links/uni_links.dart';
 
 import '../l10n/app_localizations.dart';
@@ -80,21 +81,38 @@ final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
 final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequestState>(
   (ref) {
     Logger.info("New PushRequestNotifier created", name: 'pushRequestProvider');
-    final pushProvider = PushProvider();
-    ref.listen(settingsProvider, (previous, next) {
-      if (previous?.enablePolling != next.enablePolling) {
-        Logger.info("Polling enabled changed from ${previous?.enablePolling} to ${next.enablePolling}", name: 'pushRequestProvider#settingsProvider');
-        pushProvider.setPollingEnabled(next.enablePolling);
-      }
-    });
-
+    final tokenState = ref.read(tokenProvider);
+    PushProvider pushProvider = tokenState.hasPushTokens ? PushProvider() : PlaceholderPushProvider(); // Until the state is loaded from the repo
     final pushRequestNotifier = PushRequestNotifier(
       pushProvider: pushProvider,
     );
 
+    ref.listen(tokenProvider, (previous, next) {
+      if (previous?.hasPushTokens == true && next.hasPushTokens == false) {
+        /// Last push token was deleted
+        Logger.info('Last push token was deleted. Deactivating push provider and deleting firebase token.', name: 'pushRequestProvider#tokenProvider');
+        pushRequestNotifier.swapPushProvider(PlaceholderPushProvider());
+        FirebaseUtils().deleteFirebaseToken();
+      }
+      Logger.info('Activating push provider: ${previous?.hasPushTokens != true} -> ${next.hasPushTokens == true}', name: 'pushRequestProvider#tokenProvider');
+      if (previous?.hasPushTokens != true && next.hasPushTokens == true) {
+        /// First push token was added
+        Logger.info('First push token was added. Activating push provider.', name: 'pushRequestProvider#tokenProvider');
+        pushRequestNotifier.swapPushProvider(PushProvider());
+      }
+    });
+
+    ref.listen(settingsProvider, (previous, next) {
+      if (previous?.enablePolling != next.enablePolling) {
+        Logger.info("Polling enabled changed from ${previous?.enablePolling} to ${next.enablePolling}", name: 'pushRequestProvider#settingsProvider');
+        pushRequestNotifier.pushProvider.setPollingEnabled(next.enablePolling);
+      }
+    });
+
     ref.listen(appStateProvider, (previous, next) {
       if (previous == AppLifecycleState.paused && next == AppLifecycleState.resumed) {
         Logger.info('Polling for challenges on resume', name: 'pushRequestProvider#appStateProvider');
+        pushRequestNotifier.loadStateFromRepo();
         pushProvider.pollForChallenges(isManually: false);
       }
     });

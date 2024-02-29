@@ -18,7 +18,7 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      PushProvider().pollForChallenges(isManually: false);
+      PushProvider.instance?.pollForChallenges(isManually: false);
     });
   }
 

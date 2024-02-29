@@ -14,7 +14,7 @@ class PollLoadingIndicator extends StatelessWidget {
     );
     Overlay.of(context).insert(_overlayEntry!);
     Logger.info('Start polling for challenges', name: 'poll_loading_indicator.dart#initState');
-    PushProvider().pollForChallenges(isManually: true).then((_) {
+    PushProvider.instance?.pollForChallenges(isManually: true).then((_) {
       Logger.info('Stop polling for challenges', name: 'poll_loading_indicator.dart#initState');
       _overlayEntry?.remove();
       _overlayEntry = null;

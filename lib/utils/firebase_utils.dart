@@ -1,9 +1,12 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:mutex/mutex.dart';
 
-import '../repo/secure_token_repository.dart';
 import 'globals.dart';
 import 'identifiers.dart';
 import 'logger.dart';
@@ -56,7 +59,7 @@ class FirebaseUtils {
     try {
       String? firebaseToken = await getFBToken();
 
-      if (firebaseToken != await SecureTokenRepository.getCurrentFirebaseToken() && firebaseToken != null) {
+      if (firebaseToken != await getCurrentFirebaseToken() && firebaseToken != null) {
         updateFirebaseToken(firebaseToken);
       }
     } on PlatformException catch (error) {
@@ -91,8 +94,8 @@ class FirebaseUtils {
     }
 
     FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
-      if ((await SecureTokenRepository.getCurrentFirebaseToken()) != newToken) {
-        await SecureTokenRepository.setNewFirebaseToken(newToken);
+      if ((await getCurrentFirebaseToken()) != newToken) {
+        await setNewFirebaseToken(newToken);
         // TODO what if this fails, when should a retry be attempted?
         try {
           updateFirebaseToken(newToken);
@@ -123,9 +126,10 @@ class FirebaseUtils {
 
     // Fall back to the last known firebase token
     if (firebaseToken == null) {
-      firebaseToken = await SecureTokenRepository.getCurrentFirebaseToken();
+      firebaseToken = await getCurrentFirebaseToken();
     } else {
-      await SecureTokenRepository.setNewFirebaseToken(firebaseToken);
+      Logger.info('New Firebase token retrieved', name: 'push_provider.dart#getFBToken');
+      await setNewFirebaseToken(firebaseToken);
     }
 
     if (firebaseToken == null) {
@@ -139,4 +143,56 @@ class FirebaseUtils {
 
     return firebaseToken;
   }
+
+  // ###########################################################################
+  // FIREBASE CONFIG
+  // ###########################################################################
+  static const _CURRENT_APP_TOKEN_KEY = '${GLOBAL_SECURE_REPO_PREFIX}CURRENT_APP_TOKEN';
+  static const _NEW_APP_TOKEN_KEY = '${GLOBAL_SECURE_REPO_PREFIX}NEW_APP_TOKEN';
+  static const _storage = FlutterSecureStorage();
+  static final _m = Mutex();
+  static Future<T> _protect<T>(Future<T> Function() f) => _m.protect<T>(f);
+
+  // Future<bool> deleteFirebaseToken() => _protect(() async {
+  //       final firebaseToken = await getCurrentFirebaseToken();
+  //       if (firebaseToken == null) {
+  //         return false;
+  //       }
+  //       await _storage.delete(key: _CURRENT_APP_TOKEN_KEY);
+  //       return true;
+  //     });
+
+  Future<void> deleteFirebaseToken() async {
+    final currentAvaible = await getCurrentFirebaseToken() != null;
+    final newAvaible = await getNewFirebaseToken() != null;
+    if (currentAvaible) {
+      Logger.info('Deleting current firebase token from secure storage', name: 'firebase_utils.dart#deleteFBToken');
+      await _storage.delete(key: _CURRENT_APP_TOKEN_KEY);
+    }
+    if (newAvaible) {
+      Logger.info('Deleting new firebase token from secure storage', name: 'firebase_utils.dart#deleteFBToken');
+      await _storage.delete(key: _NEW_APP_TOKEN_KEY);
+    }
+    if (currentAvaible || newAvaible) {
+      await Firebase.initializeApp();
+      await FirebaseMessaging.instance.deleteToken();
+      Logger.warning('Firebase token deleted from Firebase', name: 'firebase_utils.dart#deleteFBToken');
+    } else {
+      Logger.warning('Firebase token was not deleted because it was not available', name: 'firebase_utils.dart#deleteFBToken');
+    }
+  }
+
+  Future<void> setCurrentFirebaseToken(String str) {
+    Logger.info('Setting current firebase token', name: 'secure_token_repository.dart#setCurrentFirebaseToken');
+    return _protect(() => _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str));
+  } // FIXME: WHY CURRENT AND NEW TOKEN?
+
+  Future<String?> getCurrentFirebaseToken() => _protect(() => _storage.read(key: _CURRENT_APP_TOKEN_KEY));
+
+  // This is used for checking if the token was updated.
+  Future<void> setNewFirebaseToken(String str) => _protect(() {
+        Logger.info('Setting new firebase token', name: 'secure_token_repository.dart#setNewFirebaseToken');
+        return _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
+      });
+  Future<String?> getNewFirebaseToken() => _protect(() => _storage.read(key: _NEW_APP_TOKEN_KEY));
 }

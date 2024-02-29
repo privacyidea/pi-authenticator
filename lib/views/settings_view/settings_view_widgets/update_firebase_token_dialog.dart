@@ -19,23 +19,24 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/globals.dart';
-import '../../../utils/push_provider.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 
-class UpdateFirebaseTokenDialog extends StatefulWidget {
+class UpdateFirebaseTokenDialog extends ConsumerStatefulWidget {
   const UpdateFirebaseTokenDialog({super.key});
 
   @override
-  State<StatefulWidget> createState() => _UpdateFirebaseTokenDialogState();
+  ConsumerState<UpdateFirebaseTokenDialog> createState() => _UpdateFirebaseTokenDialogState();
 }
 
-class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
+class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenDialog> {
   Widget _content = const Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [CircularProgressIndicator()],
@@ -67,7 +68,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
 
     // TODO What to do with poll only tokens if google-services is used?
 
-    final tuple = await PushProvider.updateFirebaseToken();
+    final tuple = await ref.read(tokenProvider.notifier).updateFirebaseToken();
     if (tuple == null) {
       showMessage(message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection);
       return;
