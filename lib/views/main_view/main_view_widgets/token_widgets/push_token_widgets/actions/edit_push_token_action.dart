@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
@@ -160,23 +159,10 @@ class EditPushTokenAction extends TokenAction {
                   softWrap: false,
                 ),
                 children: [
-                  FutureBuilder(
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Text(
-                          snapshot.data != null ? snapshot.data.toString() : AppLocalizations.of(context)!.noFbToken,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        );
-                      } else {
-                        return const Text(
-                          '',
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                        );
-                      }
-                    },
-                    future: FirebaseUtils().getCurrentFirebaseToken(),
-                  ),
+                  Text(
+                    token.fbToken != null ? token.fbToken.toString() : AppLocalizations.of(context)!.noFbToken,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  )
                 ],
               ),
             ],

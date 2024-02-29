@@ -73,9 +73,8 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
       showMessage(message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection);
       return;
     }
-    late List<PushToken> tokenWithFailedUpdate;
-    late List<PushToken> tokenWithOutUrl;
-    (tokenWithFailedUpdate, tokenWithOutUrl) = tuple;
+
+    final (tokenWithFailedUpdate, tokenWithOutUrl) = tuple;
 
     if (tokenWithFailedUpdate.isEmpty && tokenWithOutUrl.isEmpty) {
       if (!mounted) return;

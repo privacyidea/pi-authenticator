@@ -132,9 +132,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   Future<bool> _replacePushRequest(PushRequest pushRequest) async {
     await loadingRepoMutex.acquire();
     final oldState = state;
-    PushRequestState newState;
-    bool replaced;
-    (newState, replaced) = oldState.replaceRequest(pushRequest);
+    final (newState, replaced) = oldState.replaceRequest(pushRequest);
     if (!replaced) {
       Logger.warning(
         'Tried to replace a push request that does not exist.',

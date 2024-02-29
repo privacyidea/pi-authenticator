@@ -115,9 +115,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// Replaces a token if it exists and returns true if successful, false if not.
   Future<bool> _replaceToken(Token token) async {
     await loadingRepoMutex.acquire();
-    TokenState newState;
-    bool replaced;
-    (newState, replaced) = state.replaceToken(token);
+    final (newState, replaced) = state.replaceToken(token);
     if (!replaced) {
       Logger.warning('Tried to replace a token that does not exist.', name: 'token_notifier.dart#_replaceToken');
       loadingRepoMutex.release();
@@ -141,9 +139,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<List<T>> _replaceTokens<T extends Token>(List<T> tokens) async {
     await loadingRepoMutex.acquire();
     final oldState = state;
-    TokenState newState;
-    List<T> failedToReplace;
-    (newState, failedToReplace) = state.replaceTokens(tokens);
+    final (newState, failedToReplace) = state.replaceTokens(tokens);
     state = newState;
     for (var e in failedToReplace) {
       tokens.remove(e);
@@ -332,6 +328,21 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<void> removeToken(Token token) async {
     await _removeToken(token);
+    if (token is PushToken) {
+      await _renewFirebaseToken();
+    }
+  }
+
+  Future<void> _renewFirebaseToken() async {
+    final newFbToken = await _firebaseUtils.renewFirebaseToken();
+    if (newFbToken == null) {
+      await _updateTokens(state.pushTokens, (p0) => p0.copyWith(fbToken: null));
+      Logger.warning('Could not update firebase token because no firebase token is available.', name: 'token_notifier.dart#removeToken');
+      return;
+    }
+    final (notUpdated, _) = (await updateFirebaseToken(newFbToken)) ?? (<PushToken>[], <PushToken>[]);
+    await _updateTokens(notUpdated, (p0) => p0.copyWith(fbToken: null));
+    await updateFirebaseToken(newFbToken);
   }
 
   Future<bool> rolloutPushToken(PushToken token) async {
@@ -528,7 +539,8 @@ class TokenNotifier extends StateNotifier<TokenState> {
       Logger.warning('Could not update firebase token because no firebase token is available.', name: 'push_provider.dart#updateFirebaseToken');
       return null;
     }
-    List<PushToken> tokenList = state.pushTokens.where((t) => t.url != null && t.isRolledOut).toList();
+    List<PushToken> tokenList = state.pushTokens.where((t) => t.isRolledOut && t.fbToken != firebaseToken).toList();
+    Logger.info('Updating firebase token for ${tokenList.length} push tokens.', name: 'push_provider.dart#updateFirebaseToken');
     bool allUpdated = true;
     final List<PushToken> failedTokens = [];
     final List<PushToken> unsuportedTokens = [];
@@ -558,6 +570,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
           sslVerify: p.sslVerify, url: p.url!, body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
       if (response.statusCode == 200) {
         Logger.info('Updating firebase token for push token succeeded!', name: 'push_provider.dart#updateFirebaseToken');
+        _updateToken(p, (p0) => p0.copyWith(fbToken: firebaseToken));
       } else {
         Logger.warning('Updating firebase token for push token failed!', name: 'push_provider.dart#updateFirebaseToken');
         failedTokens.add(p);
@@ -627,10 +640,15 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<void> _handlePushTokensIfExist() async {
-    if (state.hasPushTokens == false || state.hasOTPTokens == false) {
+    final pushTokens = state.pushTokens;
+    if (pushTokens.isNotEmpty || state.hasOTPTokens == false) {
       if (globalRef?.read(settingsProvider).hidePushTokens == true) {
         globalRef!.read(settingsProvider.notifier).setHidePushTokens(false);
       }
+    }
+    if (pushTokens.firstWhereOrNull((element) => element.isRolledOut && element.fbToken == null) != null) {
+      // If there is a push token without fbToken, then update the fbToken
+      await updateFirebaseToken();
     }
     if (state.hasRolledOutPushTokens) {
       checkNotificationPermission();

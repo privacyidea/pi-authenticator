@@ -18,6 +18,7 @@ class PushToken extends Token {
   static RsaUtils rsaParser = const RsaUtils();
   final DateTime? expirationDate;
   final String serial;
+  final String? fbToken;
 
   @override
   Duration get showDuration => Duration.zero;
@@ -47,6 +48,7 @@ class PushToken extends Token {
     super.label,
     super.issuer,
     required super.id,
+    this.fbToken,
     this.url,
     this.expirationDate,
     this.enrollmentCredentials,
@@ -73,6 +75,7 @@ class PushToken extends Token {
   bool sameValuesAs(Token other) {
     return super.sameValuesAs(other) &&
         other is PushToken &&
+        other.fbToken == fbToken &&
         other.serial == serial &&
         other.expirationDate == expirationDate &&
         other.sslVerify == sslVerify &&
@@ -91,6 +94,7 @@ class PushToken extends Token {
     String? issuer,
     String? id,
     String? tokenImage,
+    String? fbToken,
     bool? pin,
     bool? isLocked,
     bool? isHidden,
@@ -113,6 +117,7 @@ class PushToken extends Token {
       serial: serial ?? this.serial,
       issuer: issuer ?? this.issuer,
       tokenImage: tokenImage ?? this.tokenImage,
+      fbToken: fbToken ?? this.fbToken,
       id: id ?? this.id,
       pin: pin ?? this.pin,
       isLocked: isLocked ?? this.isLocked,

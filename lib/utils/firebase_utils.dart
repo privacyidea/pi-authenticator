@@ -32,8 +32,9 @@ class FirebaseUtils {
     }
     _initialized = true;
     Logger.info('Initializing Firebase', name: 'firebase_utils.dart#initFirebase');
-    await Firebase.initializeApp();
-
+    final app = await Firebase.initializeApp();
+    await app.setAutomaticDataCollectionEnabled(false);
+    Logger.warning('Automatic data collection: ${app.isAutomaticDataCollectionEnabled}', name: 'firebase_utils.dart#initFirebase');
     try {
       // await FirebaseMessaging.instance.requestPermission();
     } on FirebaseException catch (e, s) {
@@ -162,6 +163,17 @@ class FirebaseUtils {
   //       return true;
   //     });
 
+  Future<String?> renewFirebaseToken() async {
+    await deleteFirebaseToken();
+    String? newToken = await FirebaseMessaging.instance.getToken();
+    if (newToken == null) {
+      return null;
+    }
+    await setNewFirebaseToken(newToken);
+    await setCurrentFirebaseToken(newToken);
+    return newToken;
+  }
+
   Future<void> deleteFirebaseToken() async {
     final currentAvaible = await getCurrentFirebaseToken() != null;
     final newAvaible = await getNewFirebaseToken() != null;
@@ -174,7 +186,8 @@ class FirebaseUtils {
       await _storage.delete(key: _NEW_APP_TOKEN_KEY);
     }
     if (currentAvaible || newAvaible) {
-      await Firebase.initializeApp();
+      final app = await Firebase.initializeApp();
+      await app.setAutomaticDataCollectionEnabled(false);
       await FirebaseMessaging.instance.deleteToken();
       Logger.warning('Firebase token deleted from Firebase', name: 'firebase_utils.dart#deleteFBToken');
     } else {
