@@ -100,18 +100,21 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
       tokenIsLocked: widget.token.isLocked,
       title: Align(
         alignment: Alignment.centerLeft,
-        child: InkWell(
-          onTap: widget.isPreview
-              ? null
-              : widget.token.isLocked && widget.token.isHidden
-                  ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
-                  : _copyOtpValue,
-          child: HideableText(
-            key: Key(widget.token.hashCode.toString()),
-            text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
-            textScaleFactor: 1.9,
-            enabled: widget.token.isLocked,
-            isHidden: widget.token.isHidden,
+        child: Tooltip(
+          message: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+          child: InkWell(
+            onTap: widget.isPreview
+                ? null
+                : widget.token.isLocked && widget.token.isHidden
+                    ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
+                    : _copyOtpValue,
+            child: HideableText(
+              key: Key(widget.token.hashCode.toString()),
+              text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
+              textScaleFactor: 1.9,
+              enabled: widget.token.isLocked,
+              isHidden: widget.token.isHidden,
+            ),
           ),
         ),
       ),

@@ -567,5 +567,15 @@
         "example": "GitHub"
       }
     }
-  }
+  },
+  "errorUnlinkingPushToken": "Nie udało się odłączyć tokenu push {label}.",
+  "@errorUnlinkingPushToken": {
+    "description": "Error message when unlinking a push token failed.",
+    "placeholders": {
+      "label": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Zsynchronizuj tokeny push ręcznie za pomocą ustawień, gdy dostępne jest połączenie sieciowe"
 }

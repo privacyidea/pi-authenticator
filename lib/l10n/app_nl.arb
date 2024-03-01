@@ -570,5 +570,15 @@
         "example": "GitHub"
       }
     }
-  }
+  },
+  "errorUnlinkingPushToken": "Het is niet gelukt om het push token {label} te ontkoppelen.",
+  "@errorUnlinkingPushToken": {
+    "description": "Error message when unlinking a push token failed.",
+    "placeholders": {
+      "label": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Synchroniseer de push tokens handmatig via de instellingen als er een netwerkverbinding beschikbaar is."
 }

@@ -564,5 +564,24 @@
         "example": "GitHub"
       }
     }
-  }
+  },
+  "errorUnlinkingPushToken": "Failed to unlink the push token {label}.",
+  "@errorUnlinkingPushToken": {
+    "description": "Error message when unlinking a push token failed.",
+    "placeholders": {
+      "label": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Please synchronize the push tokens manually via the settings when a network connection is available.",
+  "pushTokens": "Push Tokens",
+  "continueButton": "Continue",
+  "addTokenManually": "Add token manually",
+  "addFolder": "Add folder",
+  "searchTokens": "Search tokens",
+  "closeSearchTokens": "Close search",
+  "increaseCounter": "Increase counter",
+  "copyOTPToClipboard": "Copy OTP to clipboard",
+  "licenses": "Licenses"
 }

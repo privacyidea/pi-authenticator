@@ -709,4 +709,39 @@ class AppLocalizationsFr extends AppLocalizations {
   String requestInfo(Object issuer, Object account) {
     return 'Envoyé par $issuer pour votre compte : \"$account\"';
   }
+
+  @override
+  String errorUnlinkingPushToken(Object label) {
+    return 'Echec du découplage du push token $label';
+  }
+
+  @override
+  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Veuillez synchroniser manuellement les jetons Push via les paramètres lorsqu\'une connexion réseau est disponible';
+
+  @override
+  String get pushTokens => 'Push Tokens';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get addTokenManually => 'Add token manually';
+
+  @override
+  String get addFolder => 'Add folder';
+
+  @override
+  String get searchTokens => 'Search tokens';
+
+  @override
+  String get closeSearchTokens => 'Close search';
+
+  @override
+  String get increaseCounter => 'Increase counter';
+
+  @override
+  String get copyOTPToClipboard => 'Copy OTP to clipboard';
+
+  @override
+  String get licenses => 'Licenses';
 }

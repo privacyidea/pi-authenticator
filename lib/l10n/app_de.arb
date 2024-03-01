@@ -552,5 +552,15 @@
         "example": "GitHub"
       }
     }
-  }
+  },
+  "errorUnlinkingPushToken": "Entkoppeln des Push Tokens {label} fehlgeschlagen.",
+  "@errorUnlinkingPushToken": {
+    "description": "Error message when unlinking a push token failed.",
+    "placeholders": {
+      "label": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Bitte synchronisieren Sie die Push Token über die Einstellungen manuell, wenn eine Netzwerkverbindung verfügbar ist."
 }

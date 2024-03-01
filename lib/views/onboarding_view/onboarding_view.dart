@@ -125,6 +125,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
+          tooltip: AppLocalizations.of(context)!.continueButton,
           onPressed: () {
             if (_currentIndex == lottieFiles.length - 1) {
               ref.read(settingsProvider.notifier).setFirstRun(false);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/loading_indicator.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
@@ -21,7 +22,7 @@ class DefaultDeleteAction extends TokenAction {
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (_) async {
-        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)?.deleteLockedToken ?? '') == false) {
+        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.deleteLockedToken) == false) {
           return;
         }
         _showDialog();
@@ -74,7 +75,7 @@ class DefaultDeleteAction extends TokenAction {
                 ),
                 TextButton(
                   onPressed: () {
-                    globalRef?.read(tokenProvider.notifier).removeToken(token);
+                    LoadingIndicator.show(context, () async => globalRef?.read(tokenProvider.notifier).removeToken(token));
                     Navigator.of(context).pop();
                   },
                   child: Text(

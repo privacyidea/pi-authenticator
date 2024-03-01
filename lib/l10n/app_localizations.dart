@@ -1392,6 +1392,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sent by {issuer} for your account: \"{account}\"'**
   String requestInfo(Object issuer, Object account);
+
+  /// Error message when unlinking a push token failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to unlink the push token {label}.'**
+  String errorUnlinkingPushToken(Object label);
+
+  /// No description provided for @pleaseSyncManuallyWhenNetworkIsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Please synchronize the push tokens manually via the settings when a network connection is available.'**
+  String get pleaseSyncManuallyWhenNetworkIsAvailable;
+
+  /// No description provided for @pushTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Push Tokens'**
+  String get pushTokens;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueButton;
+
+  /// No description provided for @addTokenManually.
+  ///
+  /// In en, this message translates to:
+  /// **'Add token manually'**
+  String get addTokenManually;
+
+  /// No description provided for @addFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add folder'**
+  String get addFolder;
+
+  /// No description provided for @searchTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Search tokens'**
+  String get searchTokens;
+
+  /// No description provided for @closeSearchTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Close search'**
+  String get closeSearchTokens;
+
+  /// No description provided for @increaseCounter.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase counter'**
+  String get increaseCounter;
+
+  /// No description provided for @copyOTPToClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy OTP to clipboard'**
+  String get copyOTPToClipboard;
+
+  /// No description provided for @licenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Licenses'**
+  String get licenses;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

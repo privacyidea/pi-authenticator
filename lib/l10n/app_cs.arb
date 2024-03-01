@@ -573,5 +573,15 @@
         "example": "GitHub"
       }
     }
-  }
+  },
+  "errorUnlinkingPushToken": "Nepodařilo se odlinkovat push token {label}.",
+  "@errorUnlinkingPushToken": {
+    "description": "Error message when unlinking a push token failed.",
+    "placeholders": {
+      "label": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Synchronizujte prosím push tokeny ručně prostřednictvím nastavení, když je k dispozici síťové připojení."
 }

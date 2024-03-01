@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
 import '../../model/states/token_filter.dart';
 import '../../utils/logger.dart';
@@ -81,12 +82,14 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
               actions: [
                 hasFilter
                     ? AppBarItem(
+                        tooltip: AppLocalizations.of(context)!.closeSearchTokens,
                         onPressed: () {
                           ref.read(tokenFilterProvider.notifier).state = null;
                         },
                         icon: const Icon(Icons.close),
                       )
                     : AppBarItem(
+                        tooltip: AppLocalizations.of(context)!.searchTokens,
                         onPressed: () {
                           ref.read(tokenFilterProvider.notifier).state = TokenFilter(
                             searchQuery: '',

@@ -574,5 +574,15 @@
         "exemple": "GitHub"
       }
     }
-  }
+  },
+  "errorUnlinkingPushToken": "Echec du découplage du push token {label}",
+  "@errorUnlinkingPushToken": {
+    "description": "Error message when unlinking a push token failed.",
+    "placeholders": {
+      "label": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Veuillez synchroniser manuellement les jetons Push via les paramètres lorsqu'une connexion réseau est disponible"
 }

@@ -26,7 +26,10 @@ class NoTokenScreen extends StatelessWidget {
               overflow: TextOverflow.fade,
               softWrap: false,
             ),
-            const Icon(Icons.qr_code_scanner_outlined),
+            Tooltip(
+              message: AppLocalizations.of(context)!.scanQrCode,
+              child: const Icon(Icons.qr_code_scanner_outlined),
+            ),
             Text(
               AppLocalizations.of(context)!.noResultText2,
               style: Theme.of(context).textTheme.titleMedium,

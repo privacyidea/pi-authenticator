@@ -344,29 +344,22 @@ class TokenNotifier extends StateNotifier<TokenState> {
         AppLocalizations.of(globalNavigatorKey.currentContext!)!.checkYourNetwork,
       );
     }
+
     _firebaseUtils.getFBToken().then((fbToken) async {
-      if (fbToken != null) {
-        final (notUpdated, _) = (await updateFirebaseToken(fbToken)) ?? (<PushToken>[], <PushToken>[]);
-        await _updateTokens(notUpdated, (p0) => p0.copyWith(fbToken: null));
-        return;
+      if (fbToken == null) {
+        await _updateTokens(state.pushTokens, (p0) => p0.copyWith(fbToken: null));
+        Logger.warning('Could not update firebase token because no firebase token is available.', name: 'token_notifier.dart#_removePushToken');
+        globalRef?.read(statusMessageProvider.notifier).state = (
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.pleaseSyncManuallyWhenNetworkIsAvailable,
+        );
       }
-      await _updateTokens(state.pushTokens, (p0) => p0.copyWith(fbToken: null));
-      Logger.warning('Could not update firebase token because no firebase token is available.', name: 'token_notifier.dart#_removePushToken');
-      globalRef?.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.pleaseSyncManuallyWhenNetworkIsAvailable,
-      );
+      final (notUpdated, _) = (await updateFirebaseToken(fbToken)) ?? (<PushToken>[], <PushToken>[]);
+      await _updateTokens(notUpdated, (p0) => p0.copyWith(fbToken: null));
+      return;
     });
     await _removeToken(token);
-
-    if (newFbToken == null) {
-      await _updateTokens(state.pushTokens, (p0) => p0.copyWith(fbToken: null));
-      Logger.warning('Could not update firebase token because no firebase token is available.', name: 'token_notifier.dart#removeToken');
-      return;
-    }
-    final (notUpdated, _) = (await updateFirebaseToken(newFbToken)) ?? (<PushToken>[], <PushToken>[]);
-    await _updateTokens(notUpdated, (p0) => p0.copyWith(fbToken: null));
-    await updateFirebaseToken(newFbToken);
+    Logger.info('Push token "${token.id}" removed successfully.', name: 'token_notifier.dart#_removePushToken');
   }
 
   Future<bool> rolloutPushToken(PushToken token) async {

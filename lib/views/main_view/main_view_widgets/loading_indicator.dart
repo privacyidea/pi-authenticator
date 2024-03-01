@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
 
 import '../../../utils/logger.dart';
-import '../../../utils/push_provider.dart';
 
 /// This widget is polling for challenges and closes itself when the polling is done.
-class PollLoadingIndicator extends StatelessWidget {
+class LoadingIndicator extends StatelessWidget {
   static double widgetSize = 40;
   static OverlayEntry? _overlayEntry;
-  static void pollForChallenges(BuildContext context) {
-    if (_overlayEntry != null) return;
+
+  static Future<T?> show<T>(BuildContext context, Future<T> Function() future) async {
+    if (_overlayEntry != null) return null;
     _overlayEntry = OverlayEntry(
-      builder: (context) => const PollLoadingIndicator._(),
+      builder: (context) => const LoadingIndicator._(),
     );
     Overlay.of(context).insert(_overlayEntry!);
-    Logger.info('Start polling for challenges', name: 'poll_loading_indicator.dart#initState');
-    PushProvider.instance?.pollForChallenges(isManually: true).then((_) {
-      Logger.info('Stop polling for challenges', name: 'poll_loading_indicator.dart#initState');
+    Logger.info('Showing loading indicator', name: 'loading_indicator.dart#show');
+
+    final T result = await future().then((value) {
+      Logger.info('Hiding loading indicator', name: 'loading_indicator.dart#show');
       _overlayEntry?.remove();
       _overlayEntry = null;
+      return value;
     });
+    return result;
   }
 
-  const PollLoadingIndicator._();
+  const LoadingIndicator._();
 
   @override
   Widget build(BuildContext context) {

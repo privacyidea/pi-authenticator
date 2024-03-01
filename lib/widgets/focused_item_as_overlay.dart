@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import '../utils/logger.dart';
 
 import '../utils/utils.dart';
@@ -212,14 +213,17 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
             ),
           ),
           Positioned.fill(
-            child: GestureDetector(
-              onTapDown: (details) {
-                widget.onComplete?.call();
-              },
-              child: Container(
-                height: double.maxFinite,
-                width: double.maxFinite,
-                color: Colors.transparent,
+            child: Tooltip(
+              message: AppLocalizations.of(context)!.continueButton,
+              child: GestureDetector(
+                onTapDown: (details) {
+                  widget.onComplete?.call();
+                },
+                child: Container(
+                  height: double.maxFinite,
+                  width: double.maxFinite,
+                  color: Colors.transparent,
+                ),
               ),
             ),
           ),

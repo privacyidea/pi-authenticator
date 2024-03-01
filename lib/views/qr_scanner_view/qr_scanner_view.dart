@@ -42,15 +42,8 @@ class QRScannerView extends StatelessView {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-              size: 32,
-            ),
-            onPressed: () {
-              Navigator.pop(context, null);
-            }),
+        foregroundColor: Colors.white,
+        elevation: 0,
       ),
       extendBodyBehindAppBar: true,
       body: FutureBuilder(

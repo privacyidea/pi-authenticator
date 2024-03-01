@@ -68,17 +68,20 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
         isPreview: widget.isPreview,
         title: Align(
           alignment: Alignment.centerLeft,
-          child: InkWell(
-            onTap: widget.isPreview
-                ? null
-                : widget.token.isLocked && widget.token.isHidden
-                    ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
-                    : _copyOtpValue,
-            child: HideableText(
-              textScaleFactor: 1.9,
-              isHidden: widget.token.isHidden,
-              text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
-              enabled: widget.token.isLocked,
+          child: Tooltip(
+            message: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+            child: InkWell(
+              onTap: widget.isPreview
+                  ? null
+                  : widget.token.isLocked && widget.token.isHidden
+                      ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
+                      : _copyOtpValue,
+              child: HideableText(
+                textScaleFactor: 1.9,
+                isHidden: widget.token.isHidden,
+                text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
+                enabled: widget.token.isLocked,
+              ),
             ),
           ),
         ),
@@ -104,6 +107,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
                   token: widget.token,
                   isHidden: widget.token.isHidden,
                   child: IconButton(
+                    tooltip: AppLocalizations.of(context)!.increaseCounter,
                     padding: const EdgeInsets.all(0),
                     onPressed: disableTrailingButton ? null : () => _updateOtpValue(),
                     icon: const FittedBox(

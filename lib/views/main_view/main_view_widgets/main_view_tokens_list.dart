@@ -5,13 +5,14 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/push_token.dart';
+import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../widgets/deactivateable_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
 import '../../../widgets/introduction_widgets/token_introduction.dart';
 import 'drag_target_divider.dart';
 import 'no_token_screen.dart';
-import 'poll_loading_indicator.dart';
+import 'loading_indicator.dart';
 import 'sortable_widget_builder.dart';
 
 class MainViewTokensList extends ConsumerStatefulWidget {
@@ -46,7 +47,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
         if (sortables.isEmpty) const NoTokenScreen(),
         DeactivateableRefreshIndicator(
           allowToRefresh: allowToRefresh,
-          onRefresh: () async => PollLoadingIndicator.pollForChallenges(context),
+          onRefresh: () async => LoadingIndicator.show(context, () async => PushProvider.instance?.pollForChallenges(isManually: true)),
           child: SlidableAutoCloseBehavior(
             child: DragItemScroller(
               listViewKey: listViewKey,
