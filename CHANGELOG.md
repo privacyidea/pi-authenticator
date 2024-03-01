@@ -3,7 +3,7 @@
 ## [4.3.0] - 
  - Support for importing tokens from Google, Aegis and 2FAS Authenticator has been added. More import sources will be added in the future.
  - Added feedback option to the settings.
- - Push tokens can now be hidden from the token list.
+ - Push tokens can now be moved to a separate list to not clutter the main list, because there is no interaction with them like with other token types.
  - Introductions have been added to help new users get started.
  - You can now search for tokens by tapping the magnifying glass in the upper right corner.
  - Added HomeWidget token for Android 12 and later.
