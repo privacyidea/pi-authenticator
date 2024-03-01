@@ -327,14 +327,38 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<void> removeToken(Token token) async {
-    await _removeToken(token);
     if (token is PushToken) {
-      await _renewFirebaseToken();
+      await _removePushToken(token);
+      return;
     }
+    await _removeToken(token);
   }
 
-  Future<void> _renewFirebaseToken() async {
-    final newFbToken = await _firebaseUtils.renewFirebaseToken();
+  Future<void> _removePushToken(PushToken token) async {
+    try {
+      await _firebaseUtils.deleteFirebaseToken();
+    } on SocketException {
+      Logger.warning('Could not delete firebase token.', name: 'token_notifier.dart#_removePushToken');
+      globalRef?.read(statusMessageProvider.notifier).state = (
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorUnlinkingPushToken(token.label),
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.checkYourNetwork,
+      );
+    }
+    _firebaseUtils.getFBToken().then((fbToken) async {
+      if (fbToken != null) {
+        final (notUpdated, _) = (await updateFirebaseToken(fbToken)) ?? (<PushToken>[], <PushToken>[]);
+        await _updateTokens(notUpdated, (p0) => p0.copyWith(fbToken: null));
+        return;
+      }
+      await _updateTokens(state.pushTokens, (p0) => p0.copyWith(fbToken: null));
+      Logger.warning('Could not update firebase token because no firebase token is available.', name: 'token_notifier.dart#_removePushToken');
+      globalRef?.read(statusMessageProvider.notifier).state = (
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.pleaseSyncManuallyWhenNetworkIsAvailable,
+      );
+    });
+    await _removeToken(token);
+
     if (newFbToken == null) {
       await _updateTokens(state.pushTokens, (p0) => p0.copyWith(fbToken: null));
       Logger.warning('Could not update firebase token because no firebase token is available.', name: 'token_notifier.dart#removeToken');
