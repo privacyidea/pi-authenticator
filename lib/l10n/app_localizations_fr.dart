@@ -728,20 +728,20 @@ class AppLocalizationsFr extends AppLocalizations {
   String get addTokenManually => 'Add token manually';
 
   @override
-  String get addFolder => 'Add folder';
+  String get addFolder => 'Ajouter un dossier';
 
   @override
-  String get searchTokens => 'Search tokens';
+  String get searchTokens => 'Jetons de recherche';
 
   @override
-  String get closeSearchTokens => 'Close search';
+  String get closeSearchTokens => 'Fermer la recherche';
 
   @override
-  String get increaseCounter => 'Increase counter';
+  String get increaseCounter => 'Augmenter le compteur';
 
   @override
-  String get copyOTPToClipboard => 'Copy OTP to clipboard';
+  String get copyOTPToClipboard => 'Copier l\'OTP dans le presse-papiers';
 
   @override
-  String get licenses => 'Licenses';
+  String get licenses => 'Licences';
 }

@@ -577,5 +577,14 @@
       }
     }
   },
-  "pleaseSyncManuallyWhenNetworkIsAvailable": "Zsynchronizuj tokeny push ręcznie za pomocą ustawień, gdy dostępne jest połączenie sieciowe"
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Zsynchronizuj tokeny push ręcznie za pomocą ustawień, gdy dostępne jest połączenie sieciowe",
+  "pushTokens": "Tokeny push",
+  "continueButton": "Kontynuuj",
+  "addTokenManually": "Dodaj token ręcznie",
+  "addFolder": "Dodaj folder",
+  "searchTokens": "Wyszukiwanie tokenów",
+  "closeSearchTokens": "Zamknij wyszukiwanie",
+  "increaseCounter": "Zwiększ licznik",
+  "copyOTPToClipboard": "Kopiowanie OTP do schowka",
+  "licenses": "Licencja"
 }

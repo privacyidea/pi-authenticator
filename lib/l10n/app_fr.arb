@@ -584,5 +584,14 @@
       }
     }
   },
-  "pleaseSyncManuallyWhenNetworkIsAvailable": "Veuillez synchroniser manuellement les jetons Push via les paramètres lorsqu'une connexion réseau est disponible"
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Veuillez synchroniser manuellement les jetons Push via les paramètres lorsqu'une connexion réseau est disponible",
+  "pushTokens": "Push Tokens",
+  "continueButton": "Continue",
+  "addTokenManually": "Add token manually",
+  "addFolder": "Ajouter un dossier",
+  "searchTokens": "Jetons de recherche",
+  "closeSearchTokens": "Fermer la recherche",
+  "increaseCounter": "Augmenter le compteur",
+  "copyOTPToClipboard": "Copier l'OTP dans le presse-papiers",
+  "licenses": "Licences"
 }

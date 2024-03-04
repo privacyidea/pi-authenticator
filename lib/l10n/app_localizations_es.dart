@@ -725,23 +725,23 @@ class AppLocalizationsEs extends AppLocalizations {
   String get continueButton => 'Continue';
 
   @override
-  String get addTokenManually => 'Add token manually';
+  String get addTokenManually => 'Añadir token manualmente';
 
   @override
-  String get addFolder => 'Add folder';
+  String get addFolder => 'Añadir carpeta';
 
   @override
-  String get searchTokens => 'Search tokens';
+  String get searchTokens => 'Buscar tokens';
 
   @override
-  String get closeSearchTokens => 'Close search';
+  String get closeSearchTokens => 'Cerrar búsqueda';
 
   @override
-  String get increaseCounter => 'Increase counter';
+  String get increaseCounter => 'Incrementar contador';
 
   @override
-  String get copyOTPToClipboard => 'Copy OTP to clipboard';
+  String get copyOTPToClipboard => 'Copiar OTP al portapapeles';
 
   @override
-  String get licenses => 'Licenses';
+  String get licenses => 'Licencias';
 }

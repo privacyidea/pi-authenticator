@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
 import '../model/tokens/token.dart';
 import '../utils/riverpod_providers.dart';
@@ -19,6 +20,7 @@ class HideableWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return token.isLocked && isHidden
         ? IconButton(
+            tooltip: AppLocalizations.of(context)!.authenticateToShowOtp,
             onPressed: () async => ref.read(tokenProvider.notifier).showToken(token),
             icon: const Icon(Icons.remove_red_eye_outlined),
           )

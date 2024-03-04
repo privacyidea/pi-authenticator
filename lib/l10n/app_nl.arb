@@ -580,5 +580,14 @@
       }
     }
   },
-  "pleaseSyncManuallyWhenNetworkIsAvailable": "Synchroniseer de push tokens handmatig via de instellingen als er een netwerkverbinding beschikbaar is."
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Synchroniseer de push tokens handmatig via de instellingen als er een netwerkverbinding beschikbaar is.",
+  "pushTokens": "Push Tokens",
+  "continueButton": "Ga verder",
+  "addTokenManually": "Voeg token handmatig toe",
+  "addFolder": "Map toevoegen",
+  "searchTokens": "Zoek tokens",
+  "closeSearchTokens": "Zoekopdracht sluiten",
+  "increaseCounter": "Verhoog teller",
+  "copyOTPToClipboard": "Kopieer OTP naar klembord",
+  "licenses": "Licenties"
 }

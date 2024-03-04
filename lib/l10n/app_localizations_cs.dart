@@ -719,29 +719,29 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Synchronizujte prosím push tokeny ručně prostřednictvím nastavení, když je k dispozici síťové připojení.';
 
   @override
-  String get pushTokens => 'Push Tokens';
+  String get pushTokens => 'Žetony Push';
 
   @override
-  String get continueButton => 'Continue';
+  String get continueButton => 'Pokračovat';
 
   @override
-  String get addTokenManually => 'Add token manually';
+  String get addTokenManually => 'Přidat token ručně';
 
   @override
-  String get addFolder => 'Add folder';
+  String get addFolder => 'Přidat složku';
 
   @override
-  String get searchTokens => 'Search tokens';
+  String get searchTokens => 'Hledat tokeny';
 
   @override
-  String get closeSearchTokens => 'Close search';
+  String get closeSearchTokens => 'Zavřít vyhledávání';
 
   @override
-  String get increaseCounter => 'Increase counter';
+  String get increaseCounter => 'Zvýšit počítadla';
 
   @override
-  String get copyOTPToClipboard => 'Copy OTP to clipboard';
+  String get copyOTPToClipboard => 'Zkopírovat OTP do schránky';
 
   @override
-  String get licenses => 'Licenses';
+  String get licenses => 'Licence';
 }

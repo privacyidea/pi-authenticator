@@ -719,29 +719,29 @@ class AppLocalizationsPl extends AppLocalizations {
   String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Zsynchronizuj tokeny push ręcznie za pomocą ustawień, gdy dostępne jest połączenie sieciowe';
 
   @override
-  String get pushTokens => 'Push Tokens';
+  String get pushTokens => 'Tokeny push';
 
   @override
-  String get continueButton => 'Continue';
+  String get continueButton => 'Kontynuuj';
 
   @override
-  String get addTokenManually => 'Add token manually';
+  String get addTokenManually => 'Dodaj token ręcznie';
 
   @override
-  String get addFolder => 'Add folder';
+  String get addFolder => 'Dodaj folder';
 
   @override
-  String get searchTokens => 'Search tokens';
+  String get searchTokens => 'Wyszukiwanie tokenów';
 
   @override
-  String get closeSearchTokens => 'Close search';
+  String get closeSearchTokens => 'Zamknij wyszukiwanie';
 
   @override
-  String get increaseCounter => 'Increase counter';
+  String get increaseCounter => 'Zwiększ licznik';
 
   @override
-  String get copyOTPToClipboard => 'Copy OTP to clipboard';
+  String get copyOTPToClipboard => 'Kopiowanie OTP do schowka';
 
   @override
-  String get licenses => 'Licenses';
+  String get licenses => 'Licencja';
 }

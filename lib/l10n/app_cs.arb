@@ -583,5 +583,14 @@
       }
     }
   },
-  "pleaseSyncManuallyWhenNetworkIsAvailable": "Synchronizujte prosím push tokeny ručně prostřednictvím nastavení, když je k dispozici síťové připojení."
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Synchronizujte prosím push tokeny ručně prostřednictvím nastavení, když je k dispozici síťové připojení.",
+  "pushTokens": "Žetony Push",
+  "continueButton": "Pokračovat",
+  "addTokenManually": "Přidat token ručně",
+  "addFolder": "Přidat složku",
+  "searchTokens": "Hledat tokeny",
+  "closeSearchTokens": "Zavřít vyhledávání",
+  "increaseCounter": "Zvýšit počítadla",
+  "copyOTPToClipboard": "Zkopírovat OTP do schránky",
+  "licenses": "Licence"
 }

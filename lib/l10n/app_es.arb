@@ -579,5 +579,14 @@
       }
     }
   },
-  "pleaseSyncManuallyWhenNetworkIsAvailable": "Por favor, sincronice los tokens push manualmente a través de los ajustes cuando haya una conexión de red disponible."
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Por favor, sincronice los tokens push manualmente a través de los ajustes cuando haya una conexión de red disponible.",
+  "pushTokens": "Push Tokens",
+  "continueButton": "Continue",
+  "addTokenManually": "Añadir token manualmente",
+  "addFolder": "Añadir carpeta",
+  "searchTokens": "Buscar tokens",
+  "closeSearchTokens": "Cerrar búsqueda",
+  "increaseCounter": "Incrementar contador",
+  "copyOTPToClipboard": "Copiar OTP al portapapeles",
+  "licenses": "Licencias"
 }

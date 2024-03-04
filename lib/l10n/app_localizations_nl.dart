@@ -722,26 +722,26 @@ class AppLocalizationsNl extends AppLocalizations {
   String get pushTokens => 'Push Tokens';
 
   @override
-  String get continueButton => 'Continue';
+  String get continueButton => 'Ga verder';
 
   @override
-  String get addTokenManually => 'Add token manually';
+  String get addTokenManually => 'Voeg token handmatig toe';
 
   @override
-  String get addFolder => 'Add folder';
+  String get addFolder => 'Map toevoegen';
 
   @override
-  String get searchTokens => 'Search tokens';
+  String get searchTokens => 'Zoek tokens';
 
   @override
-  String get closeSearchTokens => 'Close search';
+  String get closeSearchTokens => 'Zoekopdracht sluiten';
 
   @override
-  String get increaseCounter => 'Increase counter';
+  String get increaseCounter => 'Verhoog teller';
 
   @override
-  String get copyOTPToClipboard => 'Copy OTP to clipboard';
+  String get copyOTPToClipboard => 'Kopieer OTP naar klembord';
 
   @override
-  String get licenses => 'Licenses';
+  String get licenses => 'Licenties';
 }
