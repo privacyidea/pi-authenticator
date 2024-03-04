@@ -257,6 +257,7 @@ class ThemeCustomization {
           useMaterial3: false,
           brightness: brightness,
           primaryColor: primaryColor,
+          canvasColor: backgroundColor,
           textTheme: const TextTheme().copyWith(
             bodyLarge: TextStyle(color: foregroundColor),
             bodyMedium: TextStyle(color: foregroundColor),
