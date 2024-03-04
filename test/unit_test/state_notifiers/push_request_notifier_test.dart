@@ -6,7 +6,6 @@ import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/push_request_queue.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/state_notifiers/push_request_notifier.dart';
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
@@ -18,7 +17,7 @@ class _MockPushProvider extends Mock implements PushProvider {
   @override
   PushRequestNotifier? pushSubscriber;
   @override
-  Future<void> initialize({required PushRequestNotifier pushSubscriber, required FirebaseUtils firebaseUtils}) async {
+  Future<void> initialize({required PushRequestNotifier pushSubscriber}) async {
     this.pushSubscriber = pushSubscriber;
   }
 
@@ -27,7 +26,7 @@ class _MockPushProvider extends Mock implements PushProvider {
   }
 }
 
-@GenerateMocks([RsaUtils, PrivacyIdeaIOClient, FirebaseUtils])
+@GenerateMocks([RsaUtils, PrivacyIdeaIOClient])
 void main() {
   _testPushRequestNotifier();
 }
@@ -37,15 +36,13 @@ void _testPushRequestNotifier() {
     test('newRequest', () async {
       final container = ProviderContainer();
       final mockPushProvider = _MockPushProvider();
-      final mockFirebaseUtils = MockFirebaseUtils();
       final notifier = PushRequestNotifier(
         pushProvider: mockPushProvider,
-        firebaseUtils: mockFirebaseUtils,
         ioClient: MockPrivacyIdeaIOClient(),
         rsaUtils: MockRsaUtils(),
       );
       final testProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>((ref) => notifier);
-      await mockPushProvider.initialize(pushSubscriber: notifier, firebaseUtils: mockFirebaseUtils);
+      await mockPushProvider.initialize(pushSubscriber: notifier);
       final pr = PushRequest(
         title: 'title',
         question: 'question',
@@ -63,7 +60,6 @@ void _testPushRequestNotifier() {
       final mockPushProvider = _MockPushProvider();
       final mockIoClient = MockPrivacyIdeaIOClient();
       final mockRsaUtils = MockRsaUtils();
-      final mockFirebaseUtils = MockFirebaseUtils();
       final pr = PushRequest(
         title: 'title',
         serial: 'serial',
@@ -86,9 +82,8 @@ void _testPushRequestNotifier() {
           pushProvider: mockPushProvider,
           ioClient: mockIoClient,
           rsaUtils: mockRsaUtils,
-          firebaseUtils: mockFirebaseUtils,
         );
-        mockPushProvider.initialize(pushSubscriber: notifier, firebaseUtils: mockFirebaseUtils);
+        mockPushProvider.initialize(pushSubscriber: notifier);
         return notifier;
       });
       final notifier = container.read(testProvider.notifier);
@@ -100,7 +95,6 @@ void _testPushRequestNotifier() {
       final mockPushProvider = _MockPushProvider();
       final mockIoClient = MockPrivacyIdeaIOClient();
       final mockRsaUtils = MockRsaUtils();
-      final mockFirebaseUtils = MockFirebaseUtils();
       final pr = PushRequest(
         title: 'title',
         serial: 'serial',
@@ -123,9 +117,8 @@ void _testPushRequestNotifier() {
           pushProvider: mockPushProvider,
           ioClient: mockIoClient,
           rsaUtils: mockRsaUtils,
-          firebaseUtils: mockFirebaseUtils,
         );
-        mockPushProvider.initialize(pushSubscriber: notifier, firebaseUtils: mockFirebaseUtils);
+        mockPushProvider.initialize(pushSubscriber: notifier);
         return notifier;
       });
       final notifier = container.read(testProvider.notifier);

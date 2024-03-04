@@ -5,12 +5,9 @@ import 'dart:io';
 
 import 'package:base32/base32.dart';
 import 'package:collection/collection.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import '../model/enums/token_origin_source_type.dart';
 
@@ -24,10 +21,9 @@ import '../model/tokens/push_token.dart';
 import '../model/tokens/token.dart';
 import '../processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
 import '../repo/secure_token_repository.dart';
-import '../utils/firebase_utils.dart';
+
 import '../utils/globals.dart';
 import '../utils/home_widget_utils.dart';
-import '../utils/identifiers.dart';
 import '../utils/lock_auth.dart';
 import '../utils/logger.dart';
 import '../utils/network_utils.dart';
@@ -42,23 +38,17 @@ class TokenNotifier extends StateNotifier<TokenState> {
   late Future<List<Token>?> updatingTokens = Future(() => null);
   final TokenRepository _repo;
   final RsaUtils _rsaUtils;
-  final LegacyUtils _legacy;
   final PrivacyIdeaIOClient _ioClient;
-  final FirebaseUtils _firebaseUtils;
 
   TokenNotifier({
     TokenState? initialState,
     TokenRepository? repository,
     RsaUtils? rsaUtils,
-    LegacyUtils? legacy,
     PrivacyIdeaIOClient? ioClient,
-    FirebaseUtils? firebaseUtils,
     HomeWidgetUtils? homeWidgetUtils,
   })  : _rsaUtils = rsaUtils ?? const RsaUtils(),
         _repo = repository ?? const SecureTokenRepository(),
-        _legacy = legacy ?? const LegacyUtils(),
         _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
-        _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
         super(
           initialState ?? TokenState(),
         ) {
@@ -320,9 +310,8 @@ class TokenNotifier extends StateNotifier<TokenState> {
       return false;
     }
 
-    bool isVerified = token.privateTokenKey == null
-        ? await _legacy.verify(token.serial, signedData, signature)
-        : _rsaUtils.verifyRSASignature(token.rsaPublicServerKey!, utf8.encode(signedData), base32.decode(signature));
+    bool isVerified =
+        token.privateTokenKey == null ? false : _rsaUtils.verifyRSASignature(token.rsaPublicServerKey!, utf8.encode(signedData), base32.decode(signature));
 
     if (!isVerified) {
       Logger.warning(
@@ -435,7 +424,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
         body: {
           'enrollment_credential': token.enrollmentCredentials,
           'serial': token.serial,
-          'fbtoken': await _firebaseUtils.getFBToken(),
+          'fbtoken': '',
           'pubkey': _rsaUtils.serializeRSAPublicKeyPKCS8(token.rsaPublicTokenKey!),
         },
       );
@@ -482,7 +471,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       }
     } catch (e, s) {
       token = await updateToken(token, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed)) ?? token;
-      if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException || e is TimeoutException || e is FirebaseException) {
+      if (e is SocketException || e is TimeoutException) {
         Logger.warning('Connection error: Roll out push token failed.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
         showMessage(
           message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(token.label),

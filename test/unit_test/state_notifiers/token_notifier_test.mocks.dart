@@ -6,16 +6,13 @@
 import 'dart:async' as _i5;
 import 'dart:typed_data' as _i9;
 
-import 'package:firebase_messaging/firebase_messaging.dart' as _i13;
 import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i8;
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart' as _i14;
 import 'package:pointycastle/export.dart' as _i2;
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart' as _i4;
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i10;
 import 'package:privacyidea_authenticator/model/tokens/token.dart' as _i6;
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i12;
 import 'package:privacyidea_authenticator/utils/network_utils.dart' as _i11;
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i7;
 
@@ -383,94 +380,4 @@ class MockPrivacyIdeaIOClient extends _i1.Mock implements _i11.PrivacyIdeaIOClie
           ),
         )),
       ) as _i5.Future<_i3.Response>);
-}
-
-/// A class which mocks [FirebaseUtils].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockFirebaseUtils extends _i1.Mock implements _i12.FirebaseUtils {
-  MockFirebaseUtils() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i5.Future<void> initFirebase({
-    required _i5.Future<void> Function(_i13.RemoteMessage)? foregroundHandler,
-    required _i5.Future<void> Function(_i13.RemoteMessage)? backgroundHandler,
-    required dynamic Function(String?)? updateFirebaseToken,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #initFirebase,
-          [],
-          {
-            #foregroundHandler: foregroundHandler,
-            #backgroundHandler: backgroundHandler,
-            #updateFirebaseToken: updateFirebaseToken,
-          },
-        ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
-
-  @override
-  _i5.Future<String?> getFBToken() => (super.noSuchMethod(
-        Invocation.method(
-          #getFBToken,
-          [],
-        ),
-        returnValue: _i5.Future<String?>.value(),
-      ) as _i5.Future<String?>);
-}
-
-/// A class which mocks [LegacyUtils].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockLegacyUtils extends _i1.Mock implements _i14.LegacyUtils {
-  MockLegacyUtils() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i5.Future<String> sign(
-    String? serial,
-    String? message,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #sign,
-          [
-            serial,
-            message,
-          ],
-        ),
-        returnValue: _i5.Future<String>.value(_i8.dummyValue<String>(
-          this,
-          Invocation.method(
-            #sign,
-            [
-              serial,
-              message,
-            ],
-          ),
-        )),
-      ) as _i5.Future<String>);
-
-  @override
-  _i5.Future<bool> verify(
-    String? serial,
-    String? signedData,
-    String? signature,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #verify,
-          [
-            serial,
-            signedData,
-            signature,
-          ],
-        ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
 }

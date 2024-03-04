@@ -7,7 +7,6 @@ import 'package:privacyidea_authenticator/interfaces/repo/introduction_repositor
 import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
@@ -17,7 +16,6 @@ import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
   MockSpec<TokenFolderRepository>(),
   MockSpec<PrivacyIdeaIOClient>(),
   MockSpec<RsaUtils>(),
-  MockSpec<FirebaseUtils>(),
   MockSpec<IntroductionRepository>(),
 ])
 class TestsAppWrapper extends StatelessWidget {

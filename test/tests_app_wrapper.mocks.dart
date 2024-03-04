@@ -6,7 +6,6 @@
 import 'dart:async' as _i7;
 import 'dart:typed_data' as _i15;
 
-import 'package:firebase_messaging/firebase_messaging.dart' as _i18;
 import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i14;
@@ -20,7 +19,6 @@ import 'package:privacyidea_authenticator/model/states/settings_state.dart' as _
 import 'package:privacyidea_authenticator/model/token_folder.dart' as _i11;
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i16;
 import 'package:privacyidea_authenticator/model/tokens/token.dart' as _i8;
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i17;
 import 'package:privacyidea_authenticator/utils/network_utils.dart' as _i12;
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i13;
 
@@ -549,41 +547,6 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
         returnValue: _i15.Uint8List(0),
         returnValueForMissingStub: _i15.Uint8List(0),
       ) as _i15.Uint8List);
-}
-
-/// A class which mocks [FirebaseUtils].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockFirebaseUtils extends _i1.Mock implements _i17.FirebaseUtils {
-  @override
-  _i7.Future<void> initFirebase({
-    required _i7.Future<void> Function(_i18.RemoteMessage)? foregroundHandler,
-    required _i7.Future<void> Function(_i18.RemoteMessage)? backgroundHandler,
-    required dynamic Function(String?)? updateFirebaseToken,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #initFirebase,
-          [],
-          {
-            #foregroundHandler: foregroundHandler,
-            #backgroundHandler: backgroundHandler,
-            #updateFirebaseToken: updateFirebaseToken,
-          },
-        ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
-
-  @override
-  _i7.Future<String?> getFBToken() => (super.noSuchMethod(
-        Invocation.method(
-          #getFBToken,
-          [],
-        ),
-        returnValue: _i7.Future<String?>.value(),
-        returnValueForMissingStub: _i7.Future<String?>.value(),
-      ) as _i7.Future<String?>);
 }
 
 /// A class which mocks [IntroductionRepository].

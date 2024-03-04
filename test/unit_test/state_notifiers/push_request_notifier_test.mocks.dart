@@ -6,13 +6,11 @@
 import 'dart:async' as _i7;
 import 'dart:typed_data' as _i6;
 
-import 'package:firebase_messaging/firebase_messaging.dart' as _i11;
 import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i5;
 import 'package:pointycastle/export.dart' as _i2;
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i8;
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i10;
 import 'package:privacyidea_authenticator/utils/network_utils.dart' as _i9;
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i4;
 
@@ -49,9 +47,7 @@ class _FakeRSAPrivateKey_1 extends _i1.SmartFake implements _i2.RSAPrivateKey {
         );
 }
 
-class _FakeAsymmetricKeyPair_2<B extends _i2.PublicKey,
-        V extends _i2.PrivateKey> extends _i1.SmartFake
-    implements _i2.AsymmetricKeyPair<B, V> {
+class _FakeAsymmetricKeyPair_2<B extends _i2.PublicKey, V extends _i2.PrivateKey> extends _i1.SmartFake implements _i2.AsymmetricKeyPair<B, V> {
   _FakeAsymmetricKeyPair_2(
     Object parent,
     Invocation parentInvocation,
@@ -80,8 +76,7 @@ class MockRsaUtils extends _i1.Mock implements _i4.RsaUtils {
   }
 
   @override
-  _i2.RSAPublicKey deserializeRSAPublicKeyPKCS1(String? keyStr) =>
-      (super.noSuchMethod(
+  _i2.RSAPublicKey deserializeRSAPublicKeyPKCS1(String? keyStr) => (super.noSuchMethod(
         Invocation.method(
           #deserializeRSAPublicKeyPKCS1,
           [keyStr],
@@ -96,8 +91,7 @@ class MockRsaUtils extends _i1.Mock implements _i4.RsaUtils {
       ) as _i2.RSAPublicKey);
 
   @override
-  String serializeRSAPublicKeyPKCS1(_i2.RSAPublicKey? publicKey) =>
-      (super.noSuchMethod(
+  String serializeRSAPublicKeyPKCS1(_i2.RSAPublicKey? publicKey) => (super.noSuchMethod(
         Invocation.method(
           #serializeRSAPublicKeyPKCS1,
           [publicKey],
@@ -112,8 +106,7 @@ class MockRsaUtils extends _i1.Mock implements _i4.RsaUtils {
       ) as String);
 
   @override
-  _i2.RSAPublicKey deserializeRSAPublicKeyPKCS8(String? keyStr) =>
-      (super.noSuchMethod(
+  _i2.RSAPublicKey deserializeRSAPublicKeyPKCS8(String? keyStr) => (super.noSuchMethod(
         Invocation.method(
           #deserializeRSAPublicKeyPKCS8,
           [keyStr],
@@ -128,8 +121,7 @@ class MockRsaUtils extends _i1.Mock implements _i4.RsaUtils {
       ) as _i2.RSAPublicKey);
 
   @override
-  String serializeRSAPublicKeyPKCS8(_i2.RSAPublicKey? key) =>
-      (super.noSuchMethod(
+  String serializeRSAPublicKeyPKCS8(_i2.RSAPublicKey? key) => (super.noSuchMethod(
         Invocation.method(
           #serializeRSAPublicKeyPKCS8,
           [key],
@@ -144,8 +136,7 @@ class MockRsaUtils extends _i1.Mock implements _i4.RsaUtils {
       ) as String);
 
   @override
-  String serializeRSAPrivateKeyPKCS1(_i2.RSAPrivateKey? key) =>
-      (super.noSuchMethod(
+  String serializeRSAPrivateKeyPKCS1(_i2.RSAPrivateKey? key) => (super.noSuchMethod(
         Invocation.method(
           #serializeRSAPrivateKeyPKCS1,
           [key],
@@ -160,8 +151,7 @@ class MockRsaUtils extends _i1.Mock implements _i4.RsaUtils {
       ) as String);
 
   @override
-  _i2.RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String? keyStr) =>
-      (super.noSuchMethod(
+  _i2.RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String? keyStr) => (super.noSuchMethod(
         Invocation.method(
           #deserializeRSAPrivateKeyPKCS1,
           [keyStr],
@@ -210,24 +200,19 @@ class MockRsaUtils extends _i1.Mock implements _i4.RsaUtils {
       ) as _i7.Future<String?>);
 
   @override
-  _i7.Future<_i2.AsymmetricKeyPair<_i2.RSAPublicKey, _i2.RSAPrivateKey>>
-      generateRSAKeyPair() => (super.noSuchMethod(
-            Invocation.method(
-              #generateRSAKeyPair,
-              [],
-            ),
-            returnValue: _i7.Future<
-                    _i2.AsymmetricKeyPair<_i2.RSAPublicKey,
-                        _i2.RSAPrivateKey>>.value(
-                _FakeAsymmetricKeyPair_2<_i2.RSAPublicKey, _i2.RSAPrivateKey>(
-              this,
-              Invocation.method(
-                #generateRSAKeyPair,
-                [],
-              ),
-            )),
-          ) as _i7.Future<
-              _i2.AsymmetricKeyPair<_i2.RSAPublicKey, _i2.RSAPrivateKey>>);
+  _i7.Future<_i2.AsymmetricKeyPair<_i2.RSAPublicKey, _i2.RSAPrivateKey>> generateRSAKeyPair() => (super.noSuchMethod(
+        Invocation.method(
+          #generateRSAKeyPair,
+          [],
+        ),
+        returnValue: _i7.Future<_i2.AsymmetricKeyPair<_i2.RSAPublicKey, _i2.RSAPrivateKey>>.value(_FakeAsymmetricKeyPair_2<_i2.RSAPublicKey, _i2.RSAPrivateKey>(
+          this,
+          Invocation.method(
+            #generateRSAKeyPair,
+            [],
+          ),
+        )),
+      ) as _i7.Future<_i2.AsymmetricKeyPair<_i2.RSAPublicKey, _i2.RSAPrivateKey>>);
 
   @override
   String createBase32Signature(
@@ -274,8 +259,7 @@ class MockRsaUtils extends _i1.Mock implements _i4.RsaUtils {
 /// A class which mocks [PrivacyIdeaIOClient].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPrivacyIdeaIOClient extends _i1.Mock
-    implements _i9.PrivacyIdeaIOClient {
+class MockPrivacyIdeaIOClient extends _i1.Mock implements _i9.PrivacyIdeaIOClient {
   MockPrivacyIdeaIOClient() {
     _i1.throwOnMissingStub(this);
   }
@@ -358,42 +342,4 @@ class MockPrivacyIdeaIOClient extends _i1.Mock
           ),
         )),
       ) as _i7.Future<_i3.Response>);
-}
-
-/// A class which mocks [FirebaseUtils].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockFirebaseUtils extends _i1.Mock implements _i10.FirebaseUtils {
-  MockFirebaseUtils() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i7.Future<void> initFirebase({
-    required _i7.Future<void> Function(_i11.RemoteMessage)? foregroundHandler,
-    required _i7.Future<void> Function(_i11.RemoteMessage)? backgroundHandler,
-    required dynamic Function(String?)? updateFirebaseToken,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #initFirebase,
-          [],
-          {
-            #foregroundHandler: foregroundHandler,
-            #backgroundHandler: backgroundHandler,
-            #updateFirebaseToken: updateFirebaseToken,
-          },
-        ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
-
-  @override
-  _i7.Future<String?> getFBToken() => (super.noSuchMethod(
-        Invocation.method(
-          #getFBToken,
-          [],
-        ),
-        returnValue: _i7.Future<String?>.value(),
-      ) as _i7.Future<String?>);
 }

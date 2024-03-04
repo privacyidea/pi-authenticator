@@ -20,12 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
-import '../../../model/tokens/push_token.dart';
-import '../../../utils/globals.dart';
-import '../../../utils/push_provider.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 
 class UpdateFirebaseTokenDialog extends StatefulWidget {
@@ -36,7 +31,7 @@ class UpdateFirebaseTokenDialog extends StatefulWidget {
 }
 
 class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
-  Widget _content = const Row(
+  final Widget _content = const Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [CircularProgressIndicator()],
   );
@@ -44,7 +39,6 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
   @override
   void initState() {
     super.initState();
-    _updateFbTokens();
   }
 
   @override
@@ -60,65 +54,5 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
         ),
       ],
     );
-  }
-
-  void _updateFbTokens() async {
-    Logger.info('Starting update of firebase token.', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
-
-    // TODO What to do with poll only tokens if google-services is used?
-
-    final tuple = await PushProvider.updateFirebaseToken();
-    if (tuple == null) {
-      showMessage(message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection);
-      return;
-    }
-    late List<PushToken> tokenWithFailedUpdate;
-    late List<PushToken> tokenWithOutUrl;
-    (tokenWithFailedUpdate, tokenWithOutUrl) = tuple;
-
-    if (tokenWithFailedUpdate.isEmpty && tokenWithOutUrl.isEmpty) {
-      if (!mounted) return;
-      setState(() {
-        _content = Text(AppLocalizations.of(context)!.allTokensSynchronized);
-      });
-    } else {
-      List<Widget> children = [];
-
-      if (tokenWithFailedUpdate.isNotEmpty) {
-        children.add(
-          Text('${AppLocalizations.of(globalNavigatorKey.currentContext!)!.synchronizationFailed}\n'),
-        );
-        for (PushToken p in tokenWithFailedUpdate) {
-          children.add(Text('• ${p.label}'));
-        }
-      }
-
-      if (tokenWithOutUrl.isNotEmpty) {
-        if (children.isNotEmpty) {
-          children.add(const Divider());
-        }
-
-        children.add(Text(AppLocalizations.of(globalNavigatorKey.currentContext!)!.tokensDoNotSupportSynchronization));
-        for (PushToken p in tokenWithOutUrl) {
-          children.add(Text('• ${p.label}'));
-        }
-      }
-
-      final ScrollController controller = ScrollController();
-      if (!mounted) return;
-      setState(() {
-        _content = Scrollbar(
-          thumbVisibility: true,
-          controller: controller,
-          child: SingleChildScrollView(
-            controller: controller,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: children,
-            ),
-          ),
-        );
-      });
-    }
   }
 }

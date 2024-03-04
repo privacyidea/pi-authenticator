@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
@@ -15,7 +14,6 @@ import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
@@ -27,8 +25,6 @@ import 'token_notifier_test.mocks.dart';
     TokenRepository,
     RsaUtils,
     PrivacyIdeaIOClient,
-    FirebaseUtils,
-    LegacyUtils,
   ],
 )
 void main() {
@@ -234,7 +230,6 @@ void _testTokenNotifier() {
       final mockRepo = MockTokenRepository();
       final mockRsaUtils = MockRsaUtils();
       final mockIOClient = MockPrivacyIdeaIOClient();
-      final mockFirebaseUtils = MockFirebaseUtils();
       const rsaUtils = RsaUtils();
       const publicServerKeyString =
           'MIICCgKCAgEAomCYODF47vz/axztjlmEcepqZPC8NNhXTlPu/FPGJ+qIOq+swTiEYgmv8DYIAslqLy3EHa7JUouSlE3f1l4OUcqZvPGgEP5Cpbjnaddy6u4Pt37YLDtlhX7nnd+VZnDLxXxqQ62e1CEOJVjKWq1x2Bq2GPcQz0fwWfGjNH7PtN+F00i3NiN0FPigOD4p7Bcru1ihWToQMobzf/p1945Yu0fwfpwUhHn0cfG5uKUrXl4T24s0b92MA8CmxYKKlenEQu9EezljeH2PJ0h1kfv58xjAEVEdwjCb8jzHwXomzJWUqZHt0BexavR+sUQNyk8r5OdX0fgOo+4W3/H+b/0Ktn47Frn827pYB8c2AX8lqxFocP6lj62hjCfKWss0rgqQBegTd9trCuN2iiw/Dj1HLFzK2Z8JwGDrQni1F8nyevaaZOuZI3I4DAFJzYKcP/zDvkNs6qpa+P1kzg50ml3m0RONGIHrzcSeo3aVeaMMdHXKhB5dqrig6Sjblqt2hwdPAWQPOiq9pTAXZIJmXI0UJb3bfWKlPIUmiZPRs+xYom+aZ9VEBTLdcxGC6puAJyUsjoXBJTJqH7O8g/pWA02UfPALEcuDAVQOSJbahodkWmrBg8jIMnjNOkN1t9hxHbg5XSWidgei4D/MJp4xH9w0eHyVZSnVTY5Iah0GkCVQFVsCAwEAAQ==';
@@ -275,8 +270,6 @@ void _testTokenNotifier() {
       ];
       const otpAuth =
           'otpauth://pipush/PIPU0006BF18?url=https%3A//192.168.178.30/ttype/push&ttl=10&issuer=privacyIDEA&enrollment_credential=ae60d4744ac5384515574b85f538c6a4e0c7bc82&v=1&serial=PIPU0006BF18&sslverify=0';
-
-      when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'fbToken');
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((realInvocation) async => AsymmetricKeyPair(publicTokenKey, privateTokenKey));
       when(mockRsaUtils.serializeRSAPublicKeyPKCS8(publicServerKey)).thenReturn(publicServerKeyString);
@@ -298,7 +291,7 @@ void _testTokenNotifier() {
         ),
       );
 
-      final notifier = TokenNotifier(repository: mockRepo, rsaUtils: mockRsaUtils, ioClient: mockIOClient, firebaseUtils: mockFirebaseUtils);
+      final notifier = TokenNotifier(repository: mockRepo, rsaUtils: mockRsaUtils, ioClient: mockIOClient);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) => notifier);
       await notifier.handleQrCode(otpAuth);
       final tokenState = container.read(testProvider);
@@ -407,7 +400,6 @@ void _testTokenNotifier() {
       final container = ProviderContainer();
       final mockRepo = MockTokenRepository();
       final mockIOClient = MockPrivacyIdeaIOClient();
-      final mockFirebaseUtils = MockFirebaseUtils();
       final mockRsaUtils = MockRsaUtils();
       final uri = Uri.parse('https://example.com');
       final before = <PushToken>[
@@ -421,7 +413,6 @@ void _testTokenNotifier() {
       when(mockRsaUtils.serializeRSAPublicKeyPKCS8(any)).thenAnswer((_) => 'publicKey');
       when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((_) => const RsaUtils()
           .generateRSAKeyPair()); // We get here a random result anyway and is it more likely to make errors by mocking it than by using the real method
-      when(mockFirebaseUtils.getFBToken()).thenAnswer((_) => Future.value('fbToken'));
       when(mockRsaUtils.deserializeRSAPublicKeyPKCS1('publicKey')).thenAnswer((_) => RSAPublicKey(BigInt.one, BigInt.one));
       when(mockIOClient.doPost(
         url: anyNamed('url'),
@@ -433,7 +424,6 @@ void _testTokenNotifier() {
           repository: mockRepo,
           rsaUtils: mockRsaUtils,
           ioClient: mockIOClient,
-          firebaseUtils: mockFirebaseUtils,
         ),
       );
 
@@ -446,7 +436,6 @@ void _testTokenNotifier() {
       expect(state.tokens, after);
       verify(mockRepo.saveOrReplaceTokens([after.first])).called(greaterThan(0));
       verify(mockRsaUtils.serializeRSAPublicKeyPKCS8(any)).called(greaterThan(0));
-      verify(mockFirebaseUtils.getFBToken()).called(greaterThan(0));
       verify(mockRsaUtils.deserializeRSAPublicKeyPKCS1('publicKey')).called(greaterThan(0));
       verify(mockIOClient.doPost(
         url: anyNamed('url'),

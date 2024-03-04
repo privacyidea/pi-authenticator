@@ -27,7 +27,6 @@ void main() {
   late final MockTokenRepository mockTokenRepository;
   late final MockTokenFolderRepository mockTokenFolderRepository;
   late final MockRsaUtils mockRsaUtils;
-  late final MockFirebaseUtils mockFirebaseUtils;
   late final MockPrivacyIdeaIOClient mockIOClient;
   late final MockIntroductionRepository mockIntroductionRepository;
   setUp(() {
@@ -46,8 +45,6 @@ void main() {
     when(mockRsaUtils.serializeRSAPublicKeyPKCS8(any)).thenAnswer((_) => 'publicKey');
     when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((_) => const RsaUtils()
         .generateRSAKeyPair()); // We get here a random result anyway and is it more likely to make errors by mocking it than by using the real method
-    mockFirebaseUtils = MockFirebaseUtils();
-    when(mockFirebaseUtils.getFBToken()).thenAnswer((_) => Future.value('fbToken'));
     when(mockRsaUtils.deserializeRSAPublicKeyPKCS1('publicKey')).thenAnswer((_) => RSAPublicKey(BigInt.one, BigInt.one));
     mockIOClient = MockPrivacyIdeaIOClient();
     when(mockIOClient.doPost(
@@ -67,7 +64,6 @@ void main() {
         tokenProvider.overrideWith((ref) => TokenNotifier(
               repository: mockTokenRepository,
               rsaUtils: mockRsaUtils,
-              firebaseUtils: mockFirebaseUtils,
               ioClient: mockIOClient,
             )),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
