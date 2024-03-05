@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'version.dart';
 
@@ -14,8 +15,8 @@ class AppInfoUtils {
     _packageName = (await packageInfo).packageName;
     _appVersion = Version.parse((await packageInfo).version);
     _appBuildNumber = (await packageInfo).buildNumber;
-    _androidInfo = Platform.isAndroid ? await _deviceInfo.androidInfo : null;
-    _iosInfo = Platform.isIOS ? await _deviceInfo.iosInfo : null;
+    _androidInfo = !kIsWeb && Platform.isAndroid ? await _deviceInfo.androidInfo : null;
+    _iosInfo = !kIsWeb && Platform.isIOS ? await _deviceInfo.iosInfo : null;
 
     isInitialized = true;
   }
@@ -39,6 +40,7 @@ class AppInfoUtils {
   static String get platform => Platform.operatingSystem;
 
   static String get deviceInfoString {
+    if (kIsWeb) return 'Web: Not available.';
     if (Platform.isAndroid) {
       return 'Android:\n$_androidDeviceInfoString';
     } else if (Platform.isIOS) {
