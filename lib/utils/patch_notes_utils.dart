@@ -34,6 +34,11 @@ class PatchNotesUtils {
   static void _showPatchNotes({required BuildContext context, required Version latestStartedVersion}) {
     final newNotes = _getNewPatchNotes(context: context, latestStartedVersion: latestStartedVersion);
     if (newNotes.isEmpty) return;
-    showDialog(context: context, builder: (context) => PatchNotesDialog(newNotes: newNotes), barrierDismissible: false);
+    showDialog(
+      context: context,
+      builder: (context) => PatchNotesDialog(newNotes: newNotes),
+      barrierDismissible: false,
+      useRootNavigator: false,
+    );
   }
 }
