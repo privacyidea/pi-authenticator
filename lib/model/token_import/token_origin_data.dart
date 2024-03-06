@@ -1,8 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'enums/token_origin_source_type.dart';
+import '../enums/token_origin_source_type.dart';
 
-part 'token_origin.g.dart';
+part 'token_origin_data.g.dart';
 
 @JsonSerializable()
 class TokenOriginData {

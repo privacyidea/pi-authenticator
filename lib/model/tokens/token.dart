@@ -4,7 +4,7 @@ import '../../utils/identifiers.dart';
 import '../enums/token_types.dart';
 import '../extensions/enum_extension.dart';
 import '../mixins/sortable_mixin.dart';
-import '../token_origin.dart';
+import '../token_import/token_origin_data.dart';
 import 'day_password_token.dart';
 import 'hotp_token.dart';
 import 'push_token.dart';

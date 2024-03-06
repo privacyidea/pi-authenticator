@@ -8,7 +8,7 @@ import '../../utils/rsa_utils.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
 import '../extensions/enum_extension.dart';
-import '../token_origin.dart';
+import '../token_import/token_origin_data.dart';
 import 'token.dart';
 
 part 'push_token.g.dart';

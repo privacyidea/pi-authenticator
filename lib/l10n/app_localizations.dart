@@ -1285,6 +1285,12 @@ abstract class AppLocalizations {
   /// **'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!'**
   String get importHintGoogleQrFile;
 
+  /// No description provided for @importHintAuthenticatorProFile.
+  ///
+  /// In en, this message translates to:
+  /// **'To create a backup of the Authenticator Pro app, navigate to the settings and tap on \"Auto backup\". Select a storage location and set a password. Then press \"Back up now\" to export the tokens.'**
+  String get importHintAuthenticatorProFile;
+
   /// No description provided for @qrFileDecodeError.
   ///
   /// In en, this message translates to:

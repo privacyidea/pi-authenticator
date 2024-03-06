@@ -8,7 +8,7 @@ import 'package:crypto/crypto.dart';
 
 import '../enums/algorithms.dart';
 import '../enums/token_types.dart';
-import '../token_origin.dart';
+import '../token_import/token_origin_data.dart';
 
 part 'steam_token.g.dart';
 

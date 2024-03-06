@@ -1,7 +1,6 @@
-// ignore_for_file: constant_identifier_names
-
 import 'dart:convert';
 
+import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
@@ -68,11 +67,19 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
     try {
       final servicesEncrypted = json['servicesEncrypted'] as String;
       final splitted = servicesEncrypted.split(':');
-      decryptedTokens = await AESEncrypted(
-        data: base64Decode(splitted[0]),
-        salt: base64Decode(splitted[1]),
-        iv: base64Decode(splitted[2]),
-      ).decrypt(password);
+      final dataWithMac = base64Decode(splitted[0]);
+
+      final cypther = AesGcm.with256bits();
+      final salt = base64Decode(splitted[1]);
+      final iv = base64Decode(splitted[2]);
+
+      decryptedTokens = await AesEncrypted(
+        cypher: cypther,
+        kdf: Pbkdf2(macAlgorithm: Hmac.sha256(), iterations: 10000, bits: salt.length),
+        data: dataWithMac,
+        salt: salt,
+        iv: iv,
+      ).decryptToString(password);
     } catch (e) {
       Logger.warning('Failed to decrypt 2FAS import file', error: e, name: 'two_fas_import_file_processor.dart#processEncryptedFile');
       throw BadDecryptionPasswordException('Wrong decryption password');

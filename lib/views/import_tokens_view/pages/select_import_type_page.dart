@@ -5,20 +5,20 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
-import '../../../model/token_import_origin.dart';
+import '../../../model/token_import/token_import_origin.dart';
 import '../import_tokens_view.dart';
 import 'import_start_page.dart';
 
 class SelectImportTypePage extends StatelessWidget {
-  final TokenImportOrigin tokenImportSource;
+  final TokenImportOrigin tokenImportOrigin;
 
-  const SelectImportTypePage({super.key, required this.tokenImportSource});
+  const SelectImportTypePage({super.key, required this.tokenImportOrigin});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(tokenImportSource.appName),
+        title: Text(tokenImportOrigin.appName),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -41,7 +41,7 @@ class SelectImportTypePage extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
-                for (final importEntity in tokenImportSource.importEntitys)
+                for (final importEntity in tokenImportOrigin.importSources)
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -68,7 +68,7 @@ class SelectImportTypePage extends StatelessWidget {
                           Expanded(child: SizedBox()),
                         ],
                       ),
-                      onPressed: () => _routeStartPage(context: context, importEntity: importEntity),
+                      onPressed: () => _routeStartPage(context: context, importSource: importEntity),
                     ),
                   ),
                 const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
@@ -80,6 +80,6 @@ class SelectImportTypePage extends StatelessWidget {
     );
   }
 
-  void _routeStartPage({required TokenImportEntity importEntity, required BuildContext context}) =>
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ImportStartPage(appName: tokenImportSource.appName, selectedEntity: importEntity)));
+  void _routeStartPage({required TokenImportSource importSource, required BuildContext context}) =>
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ImportStartPage(appName: tokenImportOrigin.appName, selectedSource: importSource)));
 }

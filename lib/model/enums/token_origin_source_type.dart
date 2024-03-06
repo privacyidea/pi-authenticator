@@ -1,5 +1,5 @@
 import '../../mains/main_netknights.dart';
-import '../token_origin.dart';
+import '../token_import/token_origin_data.dart';
 import '../tokens/token.dart';
 
 enum TokenOriginSourceType {

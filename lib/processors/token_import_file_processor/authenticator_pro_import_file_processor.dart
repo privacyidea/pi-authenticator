@@ -1,30 +1,51 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
-import 'package:cross_file/src/types/interface.dart';
 import 'package:cryptography/cryptography.dart';
-import 'package:encrypt/encrypt.dart';
+import 'package:file_selector/file_selector.dart';
+import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/enums/token_types.dart';
+import 'package:privacyidea_authenticator/model/extensions/enum_extension.dart';
 
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
+import '../../model/encryption/aes_encrypted.dart';
+import '../../model/encryption/uint_8_buffer.dart';
 import 'token_import_file_processor_interface.dart';
 
 class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
-  static const String HEADER = "AUTHENTICATORPRO";
-  static const String HEADER_LEGACY = "AuthenticatorPro";
+  static const String header = "AUTHENTICATORPRO";
+  static const String headerLegacy = "AuthenticatorPro";
+
+  static final typeMap = {
+    1: TokenTypes.HOTP.asString,
+    2: TokenTypes.TOTP.asString,
+    //  3: 'mOTP', // Not supported
+    4: TokenTypes.STEAM.asString,
+    //   5: 'Yandex', // Not supported
+  };
+
+  static final algorithmMap = {
+    0: Algorithms.SHA1.asString,
+    1: Algorithms.SHA256.asString,
+    2: Algorithms.SHA512.asString,
+  };
+
+  const AuthenticatorProImportFileProcessor();
+
   @override
   Future<bool> fileIsValid({required XFile file}) async {
     try {
       final content = await file.readAsString();
-      json.decode(content);
-      return true;
+      return json.decode(content)['Authenticators'] != null;
     } catch (e) {
       try {
         final content = await file.readAsBytes();
-        final headerByteLength = utf8.encode(HEADER).length;
-        final header = content.sublist(0, headerByteLength);
-        final fileHeader = utf8.decode(header);
-        if (fileHeader == HEADER || fileHeader == HEADER_LEGACY) {
+        final headerByteLength = utf8.encode(header).length;
+        final importedHeader = content.sublist(0, headerByteLength);
+        final fileHeader = utf8.decode(importedHeader);
+        if (fileHeader == header || fileHeader == headerLegacy) {
           return true;
         }
         return false;
@@ -41,7 +62,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
       json.decode(content);
     } catch (e) {
       final content = await file.readAsBytes();
-      final headerByteLength = utf8.encode(HEADER).length;
+      final headerByteLength = utf8.encode(header).length;
       content.sublist(0, headerByteLength);
       return true;
     }
@@ -53,114 +74,114 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
     try {
       final bytes = await file.readAsBytes();
       Uint8Buffer uint8buffer = Uint8Buffer(data: bytes);
-      final headerByteLength = utf8.encode(HEADER).length;
+      final headerByteLength = utf8.encode(header).length;
       final fileHeader = utf8.decode(uint8buffer.readBytes(headerByteLength));
-
-      return switch (fileHeader) {
-        HEADER => _process(uint8buffer: uint8buffer, password: password!),
-        HEADER_LEGACY => _processLegacy(uint8buffer: uint8buffer, password: password!),
-        _ => throw Exception('Invalid file header'),
+      Logger.info('File header: $fileHeader', name: 'authenticator_pro_import_file_processor#processFile');
+      final plainText = switch (fileHeader) {
+        header => await _process(uint8buffer: uint8buffer, password: password ?? ''),
+        headerLegacy => await _processLegacy(uint8buffer: uint8buffer, password: password ?? ''),
+        _ => utf8.decode(bytes),
       };
+      return _processPlain(fileContent: plainText);
     } catch (e) {
-      return _processPlain(file: file);
+      return [];
     }
   }
 
-  Future<List<Token>> _process({required Uint8Buffer uint8buffer, required String password}) async {
-    // const int KEY_SIZE = 32; // 32 bytes = 256 bits
-    // const int MEMORY_COST = 16; // 2^16 KiB = 64 MiB
-    // const int PARALLELISM = 4;
-    // const int ITERATIONS = 3;
-    const int SALT_SIZE = 16;
-    const int IV_SIZE = 12;
+  Future<String> _process({required Uint8Buffer uint8buffer, required String password}) async {
+    // Modern version uses Argon2id
+    const int keySize = 32; // 32 bytes = 256 bits
+    const int memoryCost = 65536; // 2^16 KiB = 64 MiB
+    const int parallelism = 4;
+    const int iterations = 3;
+    const int saltSize = 16;
+    const int ivSize = 12;
 
-    // AES/GCM/NoPadding
-    final Cipher cypher = AesGcm.with256bits();
-    final salt = uint8buffer.readBytes(SALT_SIZE);
-    final iv = uint8buffer.readBytes(IV_SIZE);
-    final data = uint8buffer.readBytesToEnd();
+    final Argon2id kdf = Argon2id(
+      iterations: iterations,
+      parallelism: parallelism,
+      memory: memoryCost, // number in KiB
+      hashLength: keySize,
+    );
 
     final aesEncrypted = AesEncrypted(
-      cypher: cypher,
-      salt: salt,
-      iv: iv,
-      data: data,
+      cypher: AesGcm.with256bits(), // AES/GCM/NoPadding
+      salt: uint8buffer.readBytes(saltSize),
+      iv: uint8buffer.readBytes(ivSize),
+      data: uint8buffer.readBytesToEnd(),
+      kdf: kdf,
     );
+
+    final decrypted = await aesEncrypted.decryptToString(password);
+    return decrypted;
   }
 
-  Future<List<Token>> _processLegacy({required Uint8Buffer uint8buffer, required String password}) async {
-    const int ITERATIONS = 64000;
-    const int KEY_SIZE = 32 * Byte.SIZE;
-    const int SALT_SIZE = 20;
+  Future<String> _processLegacy({required Uint8Buffer uint8buffer, required String password}) async {
+    // Legacy uses PBKDF2
+    const int iterations = 64000;
+    // keySize = 256 bits
+    const int saltSizeByte = 20; // 20 Bytes = 160 bits
 
-    // AES/CBC/PKCS5Padding
+    // // AES/CBC/PKCS5Padding
 
-    final cypher = AesCbc.with256bits();
-    final salt = uint8buffer.readBytes(SALT_SIZE);
-    final iv = uint8buffer.readBytes(cypher.blockLength);
+    final cypher = AesCbc.with256bits(macAlgorithm: Hmac.sha1());
+    final ivLength = cypher.nonceLength;
+    // final salt = uint8buffer.readBytes(saltSize);
+    // final iv = uint8buffer.readBytes(cypher.blockLength);
+    final AesEncrypted aesEncrypted = AesEncrypted(
+      cypher: cypher,
+      kdf: Pbkdf2(
+        macAlgorithm: Hmac.sha256(), // KeySize = 256 bits
+        iterations: iterations,
+        bits: saltSizeByte * 8,
+      ),
+      salt: uint8buffer.readBytes(saltSizeByte),
+      iv: uint8buffer.readBytes(ivLength),
+      data: uint8buffer.readBytesToEnd(),
+    );
+
+    final decrypted = await aesEncrypted.decryptToString(password);
+    return decrypted;
   }
 
-  Future<List<Token>> _processPlain({required XFile file}) async {}
-}
+  Future<List<Token>> _processPlain({required String fileContent}) async {
+    Logger.info('Processing plain file', name: 'authenticator_pro_import_file_processor#_processPlain');
+    final tokensMap = (json.decode(fileContent)['Authenticators'].cast<Map<String, dynamic>>()) as List<Map<String, dynamic>>;
+    final result = <Token>[];
+    for (var tokenMap in tokensMap) {
+      final typeInt = tokenMap['Type'] as int;
+      final tokenType = typeMap[typeInt];
+      final issuer = tokenMap['Issuer'] as String;
+      final username = tokenMap['Username'] as String;
+      final secret = tokenMap['Secret'] as String;
+      final secretBytes = utf8.encode(secret);
+      final digits = tokenMap['Digits'] as int;
+      final period = tokenMap['Period'] as int;
+      final counter = tokenMap['Counter'] as int;
+      // final copyCount = tokenMap['CopyCount'] as int;
+      // final ranking = tokenMap['Ranking'] as int;
+      final algorithm = tokenMap['Algorithm'] as int;
+      //  final pin = tokenMap['Pin'] as String?;
+      //  final icon = tokenMap['Icon'] as String?;
+      if (tokenType == null) {
+        Logger.warning('Unsupported token type: $typeInt');
+        continue;
+      }
+      final uriMap = {
+        URI_TYPE: tokenType,
+        URI_ISSUER: issuer,
+        URI_LABEL: username,
+        URI_SECRET: secretBytes,
+        URI_DIGITS: digits,
+        URI_PERIOD: period,
+        URI_ALGORITHM: algorithmMap[algorithm],
+        URI_COUNTER: counter,
+        // URI_PIN: pin,
+      };
 
-class Uint8Buffer {
-  int currentPos = 0;
-  Uint8List data;
-  Uint8Buffer({required this.data});
-  factory Uint8Buffer.fromList(List<int> list) {
-    return Uint8Buffer(data: Uint8List.fromList(list));
-  }
-
-  void writeBytes(Uint8List bytes) {
-    data = Uint8List.fromList([...data, ...bytes]);
-  }
-
-  Uint8List readBytes(int length) {
-    final bytes = data.sublist(currentPos, currentPos + length);
-    currentPos += length;
-    return bytes;
-  }
-
-  Uint8List readBytesToEnd() {
-    final bytes = data.sublist(currentPos);
-    currentPos = data.length;
-    return bytes;
-  }
-}
-
-class AesEncrypted {
-  final Cipher cypher;
-  final Uint8List salt;
-  final Uint8List iv;
-  final Uint8List data;
-
-  // final int iterations;
-  final int parallelism;
-  final int memoryCost;
-  // final int keySize;
-
-  final Pbkdf2 pbkdf2;
-
-  AesEncrypted(
-      {required this.parallelism,
-      required this.memoryCost,
-      required this.pbkdf2,
-      required this.cypher,
-      required this.salt,
-      required this.iv,
-      required this.data});
-
-  Future<Uint8List> decrypt(String password) async {
-    final SecretKey secretKey = await pbkdf2.deriveKeyFromPassword(password: password, nonce: salt);
-    final Uint8List keyBytes = Uint8List.fromList(await secretKey.extractBytes());
-    final Key key = Key(keyBytes);
-
-    final encrypter = Encrypter(AES(key, mode: aesMode, padding: padding));
-    final IV iv = IV(this.iv);
-    try {
-      return Uint8List.fromList(encrypter.decryptBytes(Encrypted(data), iv: iv));
-    } catch (e) {
-      throw Exception('Wrong password or corrupted data');
+      final token = Token.fromUriMap(uriMap);
+      result.add(token);
     }
+    return result;
   }
 }

@@ -10,7 +10,7 @@ import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
 import '../extensions/enum_extension.dart';
-import '../token_origin.dart';
+import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
 import 'token.dart';
 

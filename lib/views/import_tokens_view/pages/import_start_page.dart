@@ -14,7 +14,7 @@ import 'package:zxing2/qrcode.dart';
 import 'package:zxing2/src/format_reader_exception.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../../../model/token_import_origin.dart';
+import '../../../model/token_import/token_import_origin.dart';
 import '../../../model/tokens/token.dart';
 import '../../../processors/mixins/token_import_processor.dart';
 import '../../../processors/token_import_file_processor/token_import_file_processor_interface.dart';
@@ -48,12 +48,12 @@ void _decodeQrFileIsolate(List<dynamic> args) async {
 
 class ImportStartPage extends StatefulWidget {
   final String appName;
-  final TokenImportEntity selectedEntity;
+  final TokenImportSource selectedSource;
 
   const ImportStartPage({
     super.key,
     required this.appName,
-    required this.selectedEntity,
+    required this.selectedSource,
   });
 
   @override
@@ -89,7 +89,7 @@ class _ImportStartPageState extends State<ImportStartPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
-                  widget.selectedEntity.type.icon,
+                  widget.selectedSource.type.icon,
                   color: _errorText != null ? Theme.of(context).colorScheme.error : null,
                   size: ImportTokensView.iconSize,
                 ),
@@ -99,8 +99,8 @@ class _ImportStartPageState extends State<ImportStartPage> {
                         _errorText!,
                         textAlign: TextAlign.center,
                       )
-                    : Text(widget.selectedEntity.importHint(context), textAlign: TextAlign.center),
-                if (widget.selectedEntity.type == TokenImportType.link) ...[
+                    : Text(widget.selectedSource.importHint(context), textAlign: TextAlign.center),
+                if (widget.selectedSource.type == TokenImportType.link) ...[
                   const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
                   TextField(
                     controller: _linkController,
@@ -115,7 +115,7 @@ class _ImportStartPageState extends State<ImportStartPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           child: Text(
-                            widget.selectedEntity.type.getButtonText(context),
+                            widget.selectedSource.type.getButtonText(context),
                             style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                             overflow: TextOverflow.fade,
                             softWrap: false,
@@ -123,11 +123,11 @@ class _ImportStartPageState extends State<ImportStartPage> {
                           onPressed: () {
                             setState(() => _errorText = null);
                             setState(() {
-                              future = Future(() => switch (widget.selectedEntity.type) {
-                                    const (TokenImportType.backupFile) => _pickBackupFile(widget.selectedEntity.processor),
-                                    const (TokenImportType.qrScan) => _scanQrCode(widget.selectedEntity.processor),
-                                    const (TokenImportType.qrFile) => _pickQrFile(widget.selectedEntity.processor),
-                                    const (TokenImportType.link) => _validateLink(widget.selectedEntity.processor),
+                              future = Future(() => switch (widget.selectedSource.type) {
+                                    const (TokenImportType.backupFile) => _pickBackupFile(widget.selectedSource.processor),
+                                    const (TokenImportType.qrScan) => _scanQrCode(widget.selectedSource.processor),
+                                    const (TokenImportType.qrFile) => _pickQrFile(widget.selectedSource.processor),
+                                    const (TokenImportType.link) => _validateLink(widget.selectedSource.processor),
                                   });
                               future!.then((value) {
                                 if (mounted == false) return;
@@ -272,7 +272,7 @@ class _ImportStartPageState extends State<ImportStartPage> {
         return ImportPlainTokensPage(
           appName: widget.appName,
           importedTokens: tokens,
-          selectedType: widget.selectedEntity.type,
+          selectedType: widget.selectedSource.type,
         );
       }),
     );
@@ -285,7 +285,7 @@ class _ImportStartPageState extends State<ImportStartPage> {
         return ImportEncryptedDataPage<T, V>(
           appName: widget.appName,
           data: data,
-          selectedType: widget.selectedEntity.type,
+          selectedType: widget.selectedSource.type,
           processor: processor,
         );
       }),

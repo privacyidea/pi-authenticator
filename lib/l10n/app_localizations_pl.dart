@@ -655,6 +655,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get importHintGoogleQrFile => 'Wybierz plik obrazu z kodem QR otrzymanym podczas eksportowania kont z Google Authenticator.\n!! Należy pamiętać, że zapisywanie kodu QR na urządzeniu nie jest bezpieczne, ponieważ tokeny nie są szyfrowane !!';
 
   @override
+  String get importHintAuthenticatorProFile => 'Aby utworzyć kopię zapasową aplikacji Authenticator Pro, przejdź do ustawień i dotknij \"Automatyczna kopia zapasowa\". Wybierz lokalizację przechowywania i ustaw hasło. Następnie naciśnij \"Utwórz teraz kopię zapasową\", aby wyeksportować tokeny.';
+
+  @override
   String get qrFileDecodeError => 'Nie można było zdekodować kodu QR z wybranego obrazu, zamiast tego użyj skanera kodów QR.';
 
   @override

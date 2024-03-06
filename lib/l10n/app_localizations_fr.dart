@@ -655,6 +655,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get importHintGoogleQrFile => 'Sélectionnez un fichier image avec le code QR que vous obtenez lorsque vous exportez vos comptes depuis Google Authenticator.\n!! Notez qu\'il n\'est pas sûr d\'enregistrer le code QR sur votre appareil, car les jetons ne sont pas cryptés !!';
 
   @override
+  String get importHintAuthenticatorProFile => 'Pour créer une sauvegarde de l\'application Authenticator Pro, accédez aux paramètres et appuyez sur \"Sauvegarde automatique\". Sélectionnez un emplacement de stockage et définissez un mot de passe. Puis appuyez sur \"Sauvegarder maintenant\" pour exporter les tokens.';
+
+  @override
   String get qrFileDecodeError => 'Il n\'a pas été possible de décoder le code QR à partir de l\'image sélectionnée, veuillez utiliser le scanner de code QR à la place';
 
   @override
