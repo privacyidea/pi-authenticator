@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:mutex/mutex.dart';
@@ -136,6 +137,17 @@ class HomeWidgetUtils {
 
   Stream<Uri?> get widgetClicked => HomeWidget.widgetClicked;
   Future<Uri?> initiallyLaunchedFromHomeWidget() => HomeWidget.initiallyLaunchedFromHomeWidget();
+
+  static bool? _isHomeWidgetSupported;
+  static Future<bool> get isHomeWidgetSupported async {
+    if (_isHomeWidgetSupported != null) return _isHomeWidgetSupported!;
+    if (kIsWeb || Platform.isIOS) {
+      _isHomeWidgetSupported = false;
+      return _isHomeWidgetSupported!;
+    }
+    _isHomeWidgetSupported = true;
+    return _isHomeWidgetSupported!;
+  }
 
   Future<List<String>> get _widgetIds async => (await HomeWidget.getWidgetData<String?>(keyWidgetIds))?.split(',') ?? <String>[];
 
