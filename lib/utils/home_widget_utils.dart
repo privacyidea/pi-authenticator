@@ -12,7 +12,7 @@ import '../model/token_folder.dart';
 
 import '../interfaces/repo/token_folder_repository.dart';
 import '../interfaces/repo/token_repository.dart';
-import '../mains/main_netknights.dart';
+import '../main.dart';
 import '../model/tokens/day_password_token.dart';
 import '../model/tokens/hotp_token.dart';
 import '../model/tokens/otp_token.dart';
