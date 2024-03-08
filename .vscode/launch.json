@@ -30,18 +30,5 @@
                 "--debug"
             ]
         },
-        {
-            "name": "privacyIDEA Authenticator - internal",
-            "type": "dart",
-            "request": "launch",
-            "program": "lib/mains/main_netknights.dart",
-            "args": [
-                "--flavor",
-                "netknights_debug",
-                "--target",
-                "lib/mains/main_netknights.dart",
-                "--release"
-            ]
-        },
     ]
 }
