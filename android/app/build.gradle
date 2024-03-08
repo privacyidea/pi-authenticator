@@ -22,7 +22,6 @@ if (flutterVersionName == null) {
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
@@ -32,11 +31,6 @@ if (keystorePropertiesFileNetknights.exists()) {
     keystorePropertiesNetknights.load(new FileInputStream(keystorePropertiesFileNetknights))
 }
 
-def keystorePropertiesNetknightsDebug = new Properties()
-def keystorePropertiesFileNetknightsDebug = rootProject.file('app/src/netknights_debug/key.properties')
-if (keystorePropertiesFileNetknightsDebug.exists()) {
-    keystorePropertiesNetknightsDebug.load(new FileInputStream(keystorePropertiesFileNetknightsDebug))
-}
 
 
 android {
@@ -63,12 +57,6 @@ android {
             keyAlias keystorePropertiesNetknights['keyAlias']
             keyPassword keystorePropertiesNetknights['keyPassword']
         }        
-        netknights_debug {
-            storeFile keystorePropertiesNetknightsDebug['storeFile'] ? file(keystorePropertiesNetknightsDebug['storeFile']) : null
-            storePassword keystorePropertiesNetknightsDebug['storePassword']
-            keyAlias keystorePropertiesNetknightsDebug['keyAlias']
-            keyPassword keystorePropertiesNetknightsDebug['keyPassword']
-        }
     }
 
     flavorDimensions "pi-authenticator"
@@ -79,12 +67,6 @@ android {
             applicationId "it.netknights.piauthenticator"
             resValue "string", "app_name", "privacyIDEA Authenticator"
             signingConfig signingConfigs.netknights
-        }
-        netknights_debug{
-            dimension "pi-authenticator"
-            applicationId "it.netknights.piauthenticator.debug"
-            resValue "string", "app_name", "Internal - privacyIDEA Authenticator"
-            signingConfig signingConfigs.netknights_debug
         }
     }
    
