@@ -38,7 +38,7 @@ import 'rsa_utils.dart';
 import 'utils.dart';
 
 /// This class bundles all logic that is needed to handle incomig PushRequests, e.g.,
-/// firebase, polling, notifications.
+/// polling, notifications.
 class PushProvider {
   static PushProvider? instance;
   bool pollingIsEnabled = false;
