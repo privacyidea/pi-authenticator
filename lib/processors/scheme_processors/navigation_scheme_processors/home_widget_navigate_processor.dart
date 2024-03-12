@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_launcher_icons/custom_exceptions.dart';
 
 import '../../../utils/home_widget_utils.dart';
 import '../../../utils/logger.dart';
@@ -19,8 +18,11 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
   @override
   Future<void> processUri(Uri uri, {BuildContext? context, bool fromInit = false}) async {
     if (context == null) {
-      Logger.error('HomeWidgetNavigateProcessor: Cannot Navigate without context',
-          error: const InvalidConfigException('context is null'), stackTrace: StackTrace.current);
+      Logger.error(
+        'HomeWidgetNavigateProcessor: Cannot Navigate without context',
+        error: Exception('context is null'),
+        stackTrace: StackTrace.current,
+      );
       return;
     }
     Logger.warning('HomeWidgetNavigateProcessor: Processing uri: $uri');
