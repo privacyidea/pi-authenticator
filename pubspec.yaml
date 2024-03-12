@@ -59,14 +59,12 @@ dependencies:
   # URI
   uni_links: ^0.5.1
   url_launcher: ^6.0.12
-  http: ^1.1.0
+  http: ^1.2.0
   connectivity_plus: ^5.0.1
   flutter_mailer: ^2.1.1
   # Riverpod
   flutter_riverpod: ^2.3.6
   flutterlifecyclehooks: ^4.0.0
-
-
   # Icons
   lottie: ^3.0.0
   cupertino_icons: ^1.0.4
@@ -78,6 +76,7 @@ dependencies:
   expandable: ^5.0.1
   camera: ^0.10.5+9
   flutter_zxing: ^1.5.2
+  firebase_messaging: ^14.7.19
 
 dev_dependencies:
   flutter_driver:
