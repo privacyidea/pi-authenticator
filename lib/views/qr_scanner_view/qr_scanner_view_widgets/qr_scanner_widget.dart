@@ -1,17 +1,32 @@
+import 'dart:async';
 import 'dart:developer';
-import 'dart:typed_data';
-
+import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:image/image.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:zxing2/qrcode.dart';
-// import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../../utils/image_converter.dart';
 import 'qr_code_scanner_overlay.dart';
 
+/// Args: [SendPort] sendPort, [BinaryBitmap] bitmap
+/// Returns: [Result] result or [null] if no QR code was found or [Exception] if an error occurred
+void _isolatedDecodeQRCode(List args) {
+  final SendPort sendPort = args[0] as SendPort;
+  final BinaryBitmap bitmap = args[1] as BinaryBitmap;
+  try {
+    final result = QRCodeReader().decode(bitmap);
+    sendPort.send(result);
+  } on NotFoundException catch (_) {
+    sendPort.send(null);
+  } catch (e, s) {
+    Logger.warning('Error decoding QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_isolatedDecodeQRCode');
+    sendPort.send(e);
+  }
+}
+
 class QRScannerWidget extends StatefulWidget {
-  // final _key = GlobalKey<QrCameraState>();
   const QRScannerWidget({super.key});
 
   @override
@@ -19,8 +34,9 @@ class QRScannerWidget extends StatefulWidget {
 }
 
 class _QRScannerWidgetState extends State<QRScannerWidget> {
-  bool alreadyDetected = false;
   late Future<CameraController> _controller;
+  bool _alreadyDetected = false;
+  Timer? _scanTimer;
 
   @override
   void initState() {
@@ -37,47 +53,58 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
   Future<CameraController> _initCamera() async {
     final cameras = await availableCameras();
     final backCamera = cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.back);
-    final controller = CameraController(backCamera, ResolutionPreset.medium, enableAudio: false);
+    final controller = CameraController(backCamera, ResolutionPreset.low, enableAudio: false);
     await controller.initialize();
     controller.startImageStream((image) => _scanQrCode(image));
     return controller;
   }
 
-  bool currentlyScanning = false;
-
   void _scanQrCode(CameraImage cameraImage) async {
-    if (alreadyDetected || currentlyScanning) return;
-    currentlyScanning = true;
+    if (_alreadyDetected || _scanTimer?.isActive == true) return;
+    _scanTimer = Timer(const Duration(seconds: 1), () {});
+    // currentlyScanning = true;
     log('Scanning QR Code');
-    Uint8List imageBytes = cameraImage.planes[0].bytes;
-
-    final image = decodeImage(imageBytes);
-    if (image == null) {
-      currentlyScanning = false;
-      return;
-    }
+    final image = ImageConverter.fromCameraImage(cameraImage, 0).toImage();
     log('Image decoded');
-
     LuminanceSource source = RGBLuminanceSource(
       image.width,
       image.height,
       image.convert(numChannels: 4).getBytes(order: ChannelOrder.abgr).buffer.asInt32List(),
     );
     var bitmap = BinaryBitmap(GlobalHistogramBinarizer(source));
-
-    var reader = QRCodeReader();
-
     Result result;
     try {
-      result = reader.decode(bitmap);
-    } catch (e) {
-      log(e.toString());
+      final decodeResult = await _decodeQRCode(bitmap);
+      if (decodeResult == null) return;
+      result = decodeResult;
+    } on ChecksumException catch (e, s) {
+      Logger.warning('Error decoding QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_scanQrCode');
+      return;
+    } catch (e, s) {
+      Logger.error('Error decoding QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_scanQrCode');
       return;
     }
+    _alreadyDetected = true;
     log('QR Code detected: ${result.text}');
+    return _navigatorReturn(result.text);
+  }
 
-    final controller = await _controller;
-    controller.stopImageStream();
+  Future<Result?> _decodeQRCode(BinaryBitmap bitmap) async {
+    final receivePort = ReceivePort();
+    try {
+      Isolate.spawn(_isolatedDecodeQRCode, [receivePort.sendPort, bitmap]);
+    } catch (e) {
+      receivePort.close();
+    }
+    final result = await receivePort.first;
+    if (result is Exception) {
+      throw result;
+    }
+    return result as Result?;
+  }
+
+  void _navigatorReturn(String qrCode) {
+    Navigator.of(context).pop(qrCode);
   }
 
   @override
