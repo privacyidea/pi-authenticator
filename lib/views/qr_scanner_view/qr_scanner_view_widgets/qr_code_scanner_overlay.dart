@@ -17,46 +17,37 @@ class ScannerOverlayShape extends ShapeBorder {
   EdgeInsetsGeometry get dimensions => const EdgeInsets.all(10.0);
 
   @override
-  Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
-    return Path()
-      ..fillType = PathFillType.evenOdd
-      ..addPath(getOuterPath(rect), Offset.zero);
-  }
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) => Path()
+    ..fillType = PathFillType.evenOdd
+    ..addPath(getOuterPath(rect), Offset.zero);
 
   @override
-  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    {
-      Path getLeftTopPath(Rect rect) {
-        return Path()
-          ..moveTo(rect.left, rect.bottom)
-          ..lineTo(rect.left, rect.top)
-          ..lineTo(rect.right, rect.top);
-      }
-
-      return getLeftTopPath(rect)
-        ..lineTo(
-          rect.right,
-          rect.bottom,
-        )
-        ..lineTo(
-          rect.left,
-          rect.bottom,
-        )
-        ..lineTo(
-          rect.left,
-          rect.top,
-        );
-    }
-  }
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) => Path()
+    ..moveTo(rect.left, rect.bottom)
+    ..lineTo(rect.left, rect.top)
+    ..lineTo(rect.right, rect.top)
+    ..lineTo(rect.right, rect.bottom)
+    ..lineTo(rect.left, rect.bottom);
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
     const lineSize = 30;
 
+    final isPortrait = rect.height > rect.width;
+
     final width = rect.width;
-    final borderWidthSize = width * 10 / 100;
+    final double borderWidthSize;
     final height = rect.height;
-    final borderHeightSize = height - (width - borderWidthSize);
+    final double borderHeightSize;
+
+    if (isPortrait) {
+      borderWidthSize = width * 10 / 100;
+      borderHeightSize = height - (width - borderWidthSize);
+    } else {
+      borderHeightSize = height * 10 / 100;
+      borderWidthSize = width - (height - borderHeightSize);
+    }
+
     final borderSize = Size(borderWidthSize / 2, borderHeightSize / 2);
 
     var paint = Paint()

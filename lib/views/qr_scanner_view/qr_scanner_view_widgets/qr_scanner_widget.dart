@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -63,9 +62,8 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
     if (_alreadyDetected || _scanTimer?.isActive == true) return;
     _scanTimer = Timer(const Duration(seconds: 1), () {});
     // currentlyScanning = true;
-    log('Scanning QR Code');
     final image = ImageConverter.fromCameraImage(cameraImage, 0).toImage();
-    log('Image decoded');
+
     LuminanceSource source = RGBLuminanceSource(
       image.width,
       image.height,
@@ -85,7 +83,6 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
       return;
     }
     _alreadyDetected = true;
-    log('QR Code detected: ${result.text}');
     return _navigatorReturn(result.text);
   }
 
