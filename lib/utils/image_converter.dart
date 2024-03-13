@@ -86,10 +86,14 @@ class ImageConverter {
 
   factory ImageConverter._fromBGRA8888(CameraImage image) {
     log('ImageConverter._fromBGRA8888');
+    const numChannels = 4; // 1 for alpha, 3 for RGB
     return ImageConverter(
       image: imglib.Image.fromBytes(
-        width: (image.planes[0].bytesPerRow / 4).round(),
+        width: image.width,
         height: image.height,
+        rowStride: image.planes[0].bytesPerRow,
+        numChannels: numChannels,
+        bytesOffset: numChannels * 7, // i don't know why 7 pixels, but it works
         bytes: (image.planes[0].bytes).buffer,
       ),
     );
