@@ -1,7 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imglib;
 
 class ImageConverter {
@@ -13,13 +15,87 @@ class ImageConverter {
   }) : size = Size(image.width.toDouble(), image.height.toDouble());
 
   factory ImageConverter.fromCameraImage(CameraImage image, int rotation, {bool isFrontCamera = false}) {
-    if (image.format.group != ImageFormatGroup.yuv420 || image.planes.length != 3) {
-      throw ArgumentError('Only support YUV_420 format');
-    }
-    return ImageConverter._rotatedCameraImage(image, rotation: rotation, mirror: isFrontCamera);
+    return switch (image.format.group) {
+      ImageFormatGroup.yuv420 => ImageConverter._fromYUV420(image, rotation, isFrontCamera),
+      ImageFormatGroup.bgra8888 => ImageConverter._fromBGRA8888(image),
+      ImageFormatGroup.jpeg => ImageConverter._fromJPEG(image),
+      ImageFormatGroup.nv21 => ImageConverter._fromNV21(image),
+      ImageFormatGroup.unknown => throw ArgumentError('Unknown image format'),
+    };
   }
 
-  factory ImageConverter._rotatedCameraImage(CameraImage image, {required int rotation, required bool mirror}) {
+  factory ImageConverter._fromNV21(CameraImage image) {
+    log('ImageConverter._fromNV21');
+    final width = image.width.toInt();
+    final height = image.height.toInt();
+    Uint8List yuv420sp = image.planes[0].bytes;
+    final convertedImage = imglib.Image(height: height, width: width);
+    final int frameSize = width * height;
+
+    for (int j = 0, yp = 0; j < height; j++) {
+      int uvp = frameSize + (j >> 1) * width, u = 0, v = 0;
+      for (int i = 0; i < width; i++, yp++) {
+        int y = (0xff & yuv420sp[yp]) - 16;
+        if (y < 0) y = 0;
+        if ((i & 1) == 0) {
+          v = (0xff & yuv420sp[uvp++]) - 128;
+          u = (0xff & yuv420sp[uvp++]) - 128;
+        }
+        int y1192 = 1192 * y;
+        int r = (y1192 + 1634 * v);
+        int g = (y1192 - 833 * v - 400 * u);
+        int b = (y1192 + 2066 * u);
+
+        if (r < 0) {
+          r = 0;
+        } else if (r > 262143) {
+          r = 262143;
+        }
+        if (g < 0) {
+          g = 0;
+        } else if (g > 262143) {
+          g = 262143;
+        }
+        if (b < 0) {
+          b = 0;
+        } else if (b > 262143) {
+          b = 262143;
+        }
+
+        // getting their 8-bit values.
+        convertedImage.setPixelRgba(
+          i,
+          j,
+          ((r << 6) & 0xff0000) >> 16,
+          ((g >> 2) & 0xff00) >> 8,
+          (b >> 10) & 0xff,
+          0xff,
+        );
+      }
+    }
+
+    return ImageConverter(
+      image: convertedImage,
+    );
+  }
+
+  factory ImageConverter._fromJPEG(CameraImage image) {
+    log('ImageConverter._fromJPEG');
+    return ImageConverter(image: imglib.decodeJpg(image.planes[0].bytes)!);
+  }
+
+  factory ImageConverter._fromBGRA8888(CameraImage image) {
+    log('ImageConverter._fromBGRA8888');
+    return ImageConverter(
+      image: imglib.Image.fromBytes(
+        width: (image.planes[0].bytesPerRow / 4).round(),
+        height: image.height,
+        bytes: (image.planes[0].bytes).buffer,
+      ),
+    );
+  }
+
+  factory ImageConverter._fromYUV420(CameraImage image, int rotation, bool mirror) {
     rotation = 360 - rotation; // if the rotation is 90, we need to rotate by 270 to get the correct rotation
     const alpha = 0xFF;
     final height = image.height;
