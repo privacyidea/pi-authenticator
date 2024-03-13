@@ -61,25 +61,31 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
   }
 
   Future<void> _scanQrCode(CameraImage cameraImage) async {
-    final image = ImageConverter.fromCameraImage(cameraImage, 0).toImage();
-
-    LuminanceSource source = RGBLuminanceSource(
-      image.width,
-      image.height,
-      image.convert(numChannels: 4).getBytes(order: ChannelOrder.abgr).buffer.asInt32List(),
-    );
-    var bitmap = BinaryBitmap(GlobalHistogramBinarizer(source));
-    Result result;
     try {
-      final decodeResult = await _decodeQRCode(bitmap);
-      if (decodeResult == null) return;
-      result = decodeResult;
+      final image = ImageConverter.fromCameraImage(cameraImage, 0).toImage();
+
+      LuminanceSource source = RGBLuminanceSource(
+        image.width,
+        image.height,
+        image.convert(numChannels: 4).getBytes(order: ChannelOrder.abgr).buffer.asInt32List(),
+      );
+      var bitmap = BinaryBitmap(GlobalHistogramBinarizer(source));
+      Result result;
+      try {
+        final decodeResult = await _decodeQRCode(bitmap);
+        if (decodeResult == null) return;
+        result = decodeResult;
+      } catch (e, s) {
+        Logger.warning('Error decoding QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_scanQrCode');
+        return;
+      }
+      _alreadyDetected = true;
+      return _navigatorReturn(result.text);
     } catch (e, s) {
-      Logger.warning('Error decoding QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_scanQrCode');
-      return;
+      _alreadyDetected = true;
+      Logger.error('Unexpected error while scanning QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_scanQrCode');
+      return _navigatorReturn('');
     }
-    _alreadyDetected = true;
-    return _navigatorReturn(result.text);
   }
 
   Future<Result?> _decodeQRCode(BinaryBitmap bitmap) async {

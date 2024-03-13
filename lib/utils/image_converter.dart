@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
@@ -25,7 +24,6 @@ class ImageConverter {
   }
 
   factory ImageConverter._fromNV21(CameraImage image) {
-    log('ImageConverter._fromNV21');
     final width = image.width.toInt();
     final height = image.height.toInt();
     Uint8List yuv420sp = image.planes[0].bytes;
@@ -80,12 +78,10 @@ class ImageConverter {
   }
 
   factory ImageConverter._fromJPEG(CameraImage image) {
-    log('ImageConverter._fromJPEG');
     return ImageConverter(image: imglib.decodeJpg(image.planes[0].bytes)!);
   }
 
   factory ImageConverter._fromBGRA8888(CameraImage image) {
-    log('ImageConverter._fromBGRA8888');
     const numChannels = 4; // 1 for alpha, 3 for RGB
     return ImageConverter(
       image: imglib.Image.fromBytes(
