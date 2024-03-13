@@ -19,8 +19,7 @@ void _isolatedDecodeQRCode(List args) {
     sendPort.send(result);
   } on NotFoundException catch (_) {
     sendPort.send(null);
-  } catch (e, s) {
-    Logger.warning('Error decoding QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_isolatedDecodeQRCode');
+  } catch (e) {
     sendPort.send(e);
   }
 }
@@ -35,7 +34,7 @@ class QRScannerWidget extends StatefulWidget {
 class _QRScannerWidgetState extends State<QRScannerWidget> {
   late Future<CameraController> _controller;
   bool _alreadyDetected = false;
-  Timer? _scanTimer;
+  Future<void>? _scanTimer;
 
   @override
   void initState() {
@@ -54,14 +53,14 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
     final backCamera = cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.back);
     final controller = CameraController(backCamera, ResolutionPreset.low, enableAudio: false);
     await controller.initialize();
-    controller.startImageStream((image) => _scanQrCode(image));
+    controller.startImageStream((image) {
+      if (_alreadyDetected || _scanTimer != null) return;
+      _scanTimer = _scanQrCode(image)..whenComplete(() => _scanTimer = null);
+    });
     return controller;
   }
 
-  void _scanQrCode(CameraImage cameraImage) async {
-    if (_alreadyDetected || _scanTimer?.isActive == true) return;
-    _scanTimer = Timer(const Duration(seconds: 1), () {});
-    // currentlyScanning = true;
+  Future<void> _scanQrCode(CameraImage cameraImage) async {
     final image = ImageConverter.fromCameraImage(cameraImage, 0).toImage();
 
     LuminanceSource source = RGBLuminanceSource(
@@ -75,11 +74,8 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
       final decodeResult = await _decodeQRCode(bitmap);
       if (decodeResult == null) return;
       result = decodeResult;
-    } on ChecksumException catch (e, s) {
-      Logger.warning('Error decoding QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_scanQrCode');
-      return;
     } catch (e, s) {
-      Logger.error('Error decoding QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_scanQrCode');
+      Logger.warning('Error decoding QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_scanQrCode');
       return;
     }
     _alreadyDetected = true;
@@ -101,6 +97,7 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
   }
 
   void _navigatorReturn(String qrCode) {
+    if (!mounted) return;
     Navigator.of(context).pop(qrCode);
   }
 
