@@ -37,56 +37,56 @@ class QRScannerView extends StatelessView {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-              size: 32,
-            ),
-            onPressed: () {
-              Navigator.pop(context, null);
-            }),
-      ),
-      extendBodyBehindAppBar: true,
-      body: FutureBuilder(
-        future: Permission.camera.request(),
-        builder: (context, isGranted) {
-          if (isGranted.connectionState != ConnectionState.done) return const SizedBox();
-          if (isGranted.data == PermissionStatus.permanentlyDenied) {
-            return DefaultDialog(
-              title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
-              content: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogPermanentlyDenied),
-            );
-          }
-          if (isGranted.data != PermissionStatus.granted) {
-            return DefaultDialog(
-              title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
-              content: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogContent),
-              actions: [
-                DefaultDialogButton(
-                  child: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogButton),
-                  onPressed: () {
-                    //Trigger the permission to request it
-                    Permission.camera.request();
-                  },
+    return FutureBuilder(
+      future: Permission.camera.request(),
+      builder: (context, isGranted) {
+        if (isGranted.connectionState != ConnectionState.done) return const SizedBox();
+        if (isGranted.data == PermissionStatus.permanentlyDenied) {
+          return DefaultDialog(
+            title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
+            content: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogPermanentlyDenied),
+          );
+        }
+        if (isGranted.data != PermissionStatus.granted) {
+          return DefaultDialog(
+            title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
+            content: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogContent),
+            actions: [
+              DefaultDialogButton(
+                child: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogButton),
+                onPressed: () {
+                  //Trigger the permission to request it
+                  Permission.camera.request();
+                },
+              ),
+              DefaultDialogButton(
+                child: Text(AppLocalizations.of(context)!.cancel),
+                onPressed: () {
+                  Navigator.pop(context, null);
+                },
+              ),
+            ],
+          );
+        }
+        return SafeArea(
+          child: Stack(
+            children: [
+              const QRScannerWidget(),
+              Scaffold(
+                resizeToAvoidBottomInset: false,
+                backgroundColor: Colors.transparent,
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
                 ),
-                DefaultDialogButton(
-                  child: Text(AppLocalizations.of(context)!.cancel),
-                  onPressed: () {
-                    Navigator.pop(context, null);
-                  },
-                ),
-              ],
-            );
-          }
-          return const QRScannerWidget();
-        },
-      ),
+                extendBodyBehindAppBar: true,
+                body: const SizedBox(),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
