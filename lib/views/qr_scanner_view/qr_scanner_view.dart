@@ -55,7 +55,7 @@ class _QRScannerViewState extends State<QRScannerView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Future.value(_cameraPermission ?? _requestCameraPermission()),
+      future: Future<PermissionStatus?>(() async => _cameraPermission ?? await _requestCameraPermission()),
       builder: (context, isGranted) {
         if (isGranted.connectionState != ConnectionState.done) return const SizedBox();
         if (isGranted.data == PermissionStatus.permanentlyDenied) {

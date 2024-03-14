@@ -104,7 +104,7 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
 
   void _navigatorReturn(String qrCode) {
     if (!mounted) return;
-    Navigator.of(context).pop(qrCode);
+    Navigator.of(context).maybePop(qrCode);
   }
 
   @override
