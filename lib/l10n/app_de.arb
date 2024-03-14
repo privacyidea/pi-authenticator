@@ -573,5 +573,7 @@
   "increaseCounter": "Zähler erhöhen",
   "copyOTPToClipboard": "OTP in die Zwischenablage kopieren",
   "licenses": "Lizenzen",
-  "optionalMessage": "Optionale Nachricht"
+  "optionalMessage": "Optionale Nachricht",
+  "confirmation": "Confirmation",
+  "askLogSendedDescription": "Haben Sie das Protokoll gesendet, und möchten Sie es jetzt löschen?"
 }

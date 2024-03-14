@@ -750,4 +750,10 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get optionalMessage => 'Optioneel bericht';
+
+  @override
+  String get confirmation => 'Bevestiging';
+
+  @override
+  String get askLogSendedDescription => 'Heb je het logboek verzonden en wil je het nu wissen?';
 }

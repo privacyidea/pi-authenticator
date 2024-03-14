@@ -1470,6 +1470,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Optional message'**
   String get optionalMessage;
+
+  /// No description provided for @confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmation'**
+  String get confirmation;
+
+  /// No description provided for @askLogSendedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Did you send the log, and do you want to clear it now?'**
+  String get askLogSendedDescription;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

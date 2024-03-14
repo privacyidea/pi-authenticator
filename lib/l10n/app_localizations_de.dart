@@ -750,4 +750,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get optionalMessage => 'Optionale Nachricht';
+
+  @override
+  String get confirmation => 'Confirmation';
+
+  @override
+  String get askLogSendedDescription => 'Haben Sie das Protokoll gesendet, und möchten Sie es jetzt löschen?';
 }

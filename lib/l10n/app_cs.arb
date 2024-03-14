@@ -594,5 +594,7 @@
   "increaseCounter": "Zvýšit počítadla",
   "copyOTPToClipboard": "Zkopírovat OTP do schránky",
   "licenses": "Licence",
-  "optionalMessage": "Volitelná zpráva"
+  "optionalMessage": "Volitelná zpráva",
+  "confirmation": "Potvrzení",
+  "askLogSendedDescription": "Odeslali jste protokol a chcete jej nyní vymazat?"
 }

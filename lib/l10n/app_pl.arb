@@ -588,5 +588,7 @@
   "increaseCounter": "Zwiększ licznik",
   "copyOTPToClipboard": "Kopiowanie OTP do schowka",
   "licenses": "Licencja",
-  "optionalMessage": "Opcjonalna wiadomość"
+  "optionalMessage": "Opcjonalna wiadomość",
+  "confirmation": "potwierdzenie",
+  "askLogSendedDescription": "Czy wysłałeś dziennik i czy chcesz go teraz wyczyścić?"
 }

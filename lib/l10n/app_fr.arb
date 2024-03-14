@@ -595,5 +595,7 @@
   "increaseCounter": "Augmenter le compteur",
   "copyOTPToClipboard": "Copier l'OTP dans le presse-papiers",
   "licenses": "Licences",
-  "optionalMessage": "Message optionnel"
+  "optionalMessage": "Message optionnel",
+  "confirmation": "Confirmation",
+  "askLogSendedDescription": "Avez-vous envoyé le journal et voulez-vous l'effacer maintenant ?"
 }

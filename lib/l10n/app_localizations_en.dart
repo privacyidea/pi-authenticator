@@ -750,4 +750,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get optionalMessage => 'Optional message';
+
+  @override
+  String get confirmation => 'Confirmation';
+
+  @override
+  String get askLogSendedDescription => 'Did you send the log, and do you want to clear it now?';
 }

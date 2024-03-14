@@ -750,4 +750,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get optionalMessage => 'Opcjonalna wiadomość';
+
+  @override
+  String get confirmation => 'potwierdzenie';
+
+  @override
+  String get askLogSendedDescription => 'Czy wysłałeś dziennik i czy chcesz go teraz wyczyścić?';
 }

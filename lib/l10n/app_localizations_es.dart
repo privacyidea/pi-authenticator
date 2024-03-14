@@ -750,4 +750,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get optionalMessage => 'Mensaje opcional';
+
+  @override
+  String get confirmation => 'confirmación';
+
+  @override
+  String get askLogSendedDescription => '¿Ha enviado el registro y desea borrarlo ahora?';
 }

@@ -585,5 +585,7 @@
   "increaseCounter": "Increase counter",
   "copyOTPToClipboard": "Copy OTP to clipboard",
   "licenses": "Licenses",
-  "optionalMessage": "Optional message"
+  "optionalMessage": "Optional message",
+  "confirmation": "Confirmation",
+  "askLogSendedDescription": "Did you send the log, and do you want to clear it now?"
 }

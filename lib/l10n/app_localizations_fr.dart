@@ -750,4 +750,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get optionalMessage => 'Message optionnel';
+
+  @override
+  String get confirmation => 'Confirmation';
+
+  @override
+  String get askLogSendedDescription => 'Avez-vous envoyé le journal et voulez-vous l\'effacer maintenant ?';
 }

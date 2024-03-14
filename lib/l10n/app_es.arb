@@ -590,5 +590,7 @@
   "increaseCounter": "Incrementar contador",
   "copyOTPToClipboard": "Copiar OTP al portapapeles",
   "licenses": "Licencias",
-  "optionalMessage": "Mensaje opcional"
+  "optionalMessage": "Mensaje opcional",
+  "confirmation": "confirmación",
+  "askLogSendedDescription": "¿Ha enviado el registro y desea borrarlo ahora?"
 }

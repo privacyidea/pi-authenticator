@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/logger.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
+import 'dialogs/ask_log_sended_dialog.dart';
 
 class SendErrorDialog extends StatefulWidget {
   const SendErrorDialog({super.key});
@@ -61,14 +63,20 @@ class _SendErrorDialogState extends State<SendErrorDialog> {
               overflow: TextOverflow.fade,
               softWrap: false,
             ),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => _popDialogs(context),
           ),
           TextButton(
-            onPressed: () => Logger.sendErrorLog(_textController.text),
+            onPressed: () {
+              Logger.sendErrorLog(_textController.text);
+              showDialog(context: context, builder: (context) => const AskLogSendedDialog()).then((value) => value == true ? _popDialogs(context) : null);
+            },
             child: const Icon(Icons.email),
           )
         ],
       );
+  void _popDialogs(BuildContext context) {
+    Navigator.popUntil(context, (route) => SettingsView.routeName == route.settings.name);
+  }
 }
 
 class NoLogDialog extends StatelessWidget {

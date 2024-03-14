@@ -750,4 +750,10 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get optionalMessage => 'Volitelná zpráva';
+
+  @override
+  String get confirmation => 'Potvrzení';
+
+  @override
+  String get askLogSendedDescription => 'Odeslali jste protokol a chcete jej nyní vymazat?';
 }
