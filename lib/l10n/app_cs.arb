@@ -593,5 +593,6 @@
   "closeSearchTokens": "Zavřít vyhledávání",
   "increaseCounter": "Zvýšit počítadla",
   "copyOTPToClipboard": "Zkopírovat OTP do schránky",
-  "licenses": "Licence"
+  "licenses": "Licence",
+  "optionalMessage": "Volitelná zpráva"
 }

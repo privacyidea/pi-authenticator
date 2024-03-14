@@ -594,5 +594,6 @@
   "closeSearchTokens": "Fermer la recherche",
   "increaseCounter": "Augmenter le compteur",
   "copyOTPToClipboard": "Copier l'OTP dans le presse-papiers",
-  "licenses": "Licences"
+  "licenses": "Licences",
+  "optionalMessage": "Message optionnel"
 }

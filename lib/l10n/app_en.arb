@@ -584,5 +584,6 @@
   "closeSearchTokens": "Close search",
   "increaseCounter": "Increase counter",
   "copyOTPToClipboard": "Copy OTP to clipboard",
-  "licenses": "Licenses"
+  "licenses": "Licenses",
+  "optionalMessage": "Optional message"
 }

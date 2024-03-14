@@ -747,4 +747,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get licenses => 'Licence';
+
+  @override
+  String get optionalMessage => 'Volitelná zpráva';
 }

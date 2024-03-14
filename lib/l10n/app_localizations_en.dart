@@ -747,4 +747,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get licenses => 'Licenses';
+
+  @override
+  String get optionalMessage => 'Optional message';
 }

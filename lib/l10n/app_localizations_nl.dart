@@ -747,4 +747,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get licenses => 'Licenties';
+
+  @override
+  String get optionalMessage => 'Optioneel bericht';
 }

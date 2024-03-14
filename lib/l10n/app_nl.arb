@@ -590,5 +590,6 @@
   "closeSearchTokens": "Zoekopdracht sluiten",
   "increaseCounter": "Verhoog teller",
   "copyOTPToClipboard": "Kopieer OTP naar klembord",
-  "licenses": "Licenties"
+  "licenses": "Licenties",
+  "optionalMessage": "Optioneel bericht"
 }

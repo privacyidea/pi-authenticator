@@ -747,4 +747,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get licenses => 'Licencja';
+
+  @override
+  String get optionalMessage => 'Opcjonalna wiadomość';
 }

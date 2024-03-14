@@ -210,7 +210,7 @@ class SecureTokenRepository implements TokenRepository {
                   Logger.info('Sending error report', name: 'secure_token_repository.dart#_decryptErrorDialog');
                   await showDialog(
                     context: context,
-                    builder: (context) => const SendErrorDialog(),
+                    builder: (context) => SendErrorDialog(),
                     useRootNavigator: false,
                   );
                 }),

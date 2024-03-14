@@ -1464,6 +1464,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Licenses'**
   String get licenses;
+
+  /// No description provided for @optionalMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional message'**
+  String get optionalMessage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

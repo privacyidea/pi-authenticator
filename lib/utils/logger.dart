@@ -164,11 +164,11 @@ class Logger {
     _mutexWriteFile.release();
   }
 
-  static void sendErrorLog() {
-    instance._sendErrorLog();
+  static void sendErrorLog([String? message]) {
+    instance._sendErrorLog(message);
   }
 
-  Future<bool> _sendErrorLog() {
+  Future<bool> _sendErrorLog([String? message]) {
     if (_fullPath == null || kIsWeb) return Future.value(false);
     final File file = File(_fullPath!);
     if (!file.existsSync() || file.lengthSync() == 0) {
@@ -176,7 +176,7 @@ class Logger {
     }
     String deviceInfo = AppInfoUtils.deviceInfoString;
 
-    final completeMailBody = """$_mailBody
+    final completeMailBody = """${message ?? _mailBody}
 ---------------------------------------------------------
 
 Device Parameters $deviceInfo""";
@@ -313,7 +313,7 @@ Device Parameters $deviceInfo""";
     if (_context == null) return;
     showDialog(
       context: _context!,
-      builder: (context) => const SendErrorDialog(),
+      builder: (context) => SendErrorDialog(),
       useRootNavigator: false,
     );
   }

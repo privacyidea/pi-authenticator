@@ -572,5 +572,6 @@
   "closeSearchTokens": "Suche schließen",
   "increaseCounter": "Zähler erhöhen",
   "copyOTPToClipboard": "OTP in die Zwischenablage kopieren",
-  "licenses": "Lizenzen"
+  "licenses": "Lizenzen",
+  "optionalMessage": "Optionale Nachricht"
 }

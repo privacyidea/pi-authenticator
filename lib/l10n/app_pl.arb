@@ -587,5 +587,6 @@
   "closeSearchTokens": "Zamknij wyszukiwanie",
   "increaseCounter": "Zwiększ licznik",
   "copyOTPToClipboard": "Kopiowanie OTP do schowka",
-  "licenses": "Licencja"
+  "licenses": "Licencja",
+  "optionalMessage": "Opcjonalna wiadomość"
 }

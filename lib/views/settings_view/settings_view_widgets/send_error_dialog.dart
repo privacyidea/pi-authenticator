@@ -5,8 +5,15 @@ import '../../../l10n/app_localizations.dart';
 import '../../../utils/logger.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 
-class SendErrorDialog extends StatelessWidget {
+class SendErrorDialog extends StatefulWidget {
   const SendErrorDialog({super.key});
+
+  @override
+  State<SendErrorDialog> createState() => _SendErrorDialogState();
+}
+
+class _SendErrorDialogState extends State<SendErrorDialog> {
+  final TextEditingController _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) => DefaultDialog(
@@ -17,24 +24,34 @@ class SendErrorDialog extends StatelessWidget {
         ),
         content: SingleChildScrollView(
           controller: ScrollController(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: Text(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8.0,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
                   AppLocalizations.of(context)!.sendErrorLogDescription,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: TextButton(
+                TextButton(
                     child: Text(
                       AppLocalizations.of(context)!.showPrivacyPolicy,
                     ),
                     onPressed: () => launchUrl(Uri.parse('https://netknights.it/en/privacy-statement/'))),
-              ),
-            ],
+                const SizedBox(height: 8.0),
+                TextField(
+                  controller: _textController,
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
+                    enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
+                    focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
+                    labelText: AppLocalizations.of(context)!.optionalMessage,
+                  ),
+                  maxLines: 5,
+                ),
+              ],
+            ),
           ),
         ),
         actions: [
@@ -47,7 +64,7 @@ class SendErrorDialog extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
           ),
           TextButton(
-            onPressed: () => Logger.sendErrorLog(),
+            onPressed: () => Logger.sendErrorLog(_textController.text),
             child: const Icon(Icons.email),
           )
         ],
