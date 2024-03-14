@@ -25,20 +25,37 @@ import 'package:privacyidea_authenticator/views/view_interface.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog_button.dart';
 
+import '../../utils/logger.dart';
 import 'qr_scanner_view_widgets/qr_scanner_widget.dart';
 
-class QRScannerView extends StatelessView {
-  @override
-  RouteSettings get routeSettings => const RouteSettings(name: routeName);
-
+class QRScannerView extends StatefulView {
   static const routeName = '/qr_scanner';
 
   const QRScannerView({super.key});
 
   @override
+  State<QRScannerView> createState() => _QRScannerViewState();
+
+  @override
+  RouteSettings get routeSettings => const RouteSettings(name: QRScannerView.routeName);
+}
+
+class _QRScannerViewState extends State<QRScannerView> {
+  Future<PermissionStatus?> _requestCameraPermission() async {
+    try {
+      return await Permission.camera.request();
+    } catch (e) {
+      Logger.warning('Error while getting camera permission: $e, name: QRScannerView#_requestCameraPermission');
+    }
+    return null;
+  }
+
+  PermissionStatus? _cameraPermission;
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Permission.camera.request(),
+      future: Future.value(_cameraPermission ?? _requestCameraPermission()),
       builder: (context, isGranted) {
         if (isGranted.connectionState != ConnectionState.done) return const SizedBox();
         if (isGranted.data == PermissionStatus.permanentlyDenied) {
@@ -54,9 +71,14 @@ class QRScannerView extends StatelessView {
             actions: [
               DefaultDialogButton(
                 child: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogButton),
-                onPressed: () {
+                onPressed: () async {
                   //Trigger the permission to request it
-                  Permission.camera.request();
+                  try {
+                    final cameraPermission = await _requestCameraPermission();
+                    setState(() => _cameraPermission = cameraPermission);
+                  } catch (e) {
+                    Logger.warning('Error while getting camera permission: $e', name: 'QRScannerView#onPressed');
+                  }
                 },
               ),
               DefaultDialogButton(
