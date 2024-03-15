@@ -41,7 +41,6 @@ dependencies:
   pi_authenticator_legacy:
     path: local_plugins/pi-authenticator-legacy
   uuid: ^4.0.0
-  zxing2: ^0.2.1
   # Crypto
   mutex: ^3.0.0
   hex: ^0.2.0
@@ -77,8 +76,8 @@ dependencies:
   flutter_slidable: ^3.0.0
   expandable: ^5.0.1
   camera: ^0.10.5+9
-  flutter_zxing: ^1.5.2
   firebase_messaging: ^14.7.19
+  zxing_scanner: ^1.0.0
   
 
 dev_dependencies:

@@ -1,17 +1,11 @@
-// ignore_for_file: prefer_const_constructors
-
-import 'dart:isolate';
-
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as img;
 import 'package:privacyidea_authenticator/model/enums/token_import_type.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/scheme_processor_interface.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
-import 'package:zxing2/qrcode.dart';
-// ignore: implementation_imports
-import 'package:zxing2/src/format_reader_exception.dart';
+
+import 'package:zxing_scanner/zxing_scanner.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/token_import/token_import_origin.dart';
@@ -23,28 +17,6 @@ import '../../qr_scanner_view/qr_scanner_view.dart';
 import '../import_tokens_view.dart';
 import 'import_encrypted_data_page.dart';
 import 'import_plain_tokens_page.dart';
-
-void _decodeQrFileIsolate(List<dynamic> args) async {
-  final sendPort = args[0] as SendPort;
-  final XFile file = args[1] as XFile;
-  final image = img.decodeImage(await file.readAsBytes());
-  if (image == null) {
-    Isolate.exit(sendPort, null);
-  }
-
-  LuminanceSource source = RGBLuminanceSource(
-    image.width,
-    image.height,
-    image.convert(numChannels: 4).getBytes(order: img.ChannelOrder.abgr).buffer.asInt32List(),
-  );
-  var bitmap = BinaryBitmap(GlobalHistogramBinarizer(source));
-  try {
-    final result = QRCodeReader().decode(bitmap);
-    Isolate.exit(sendPort, result);
-  } catch (e) {
-    Isolate.exit(sendPort, e);
-  }
-}
 
 class ImportStartPage extends StatefulWidget {
   final String appName;
@@ -62,9 +34,7 @@ class ImportStartPage extends StatefulWidget {
 
 class _ImportStartPageState extends State<ImportStartPage> {
   final _linkController = TextEditingController();
-
   String? _errorText;
-
   Future? future;
 
   @override
@@ -193,37 +163,17 @@ class _ImportStartPageState extends State<ImportStartPage> {
     return;
   }
 
-  Future<Result> _startDecodeQrFile(XFile file) async {
-    final receivePort = ReceivePort();
-    try {
-      await Isolate.spawn(_decodeQrFileIsolate, [receivePort.sendPort, file]);
-    } catch (_) {
-      receivePort.close();
-      rethrow;
-    }
-    final result = await receivePort.first;
-    if (result is! Result) {
-      throw result;
-    }
-    receivePort.close();
-    return result;
-  }
-
   Future<void> _pickQrFile(TokenImportProcessor? processor) async {
     assert(processor is TokenImportSchemeProcessor);
     final schemeProcessor = processor as SchemeProcessor;
     final XFile? file = await openFile();
     if (file == null) return;
-    Result result;
-    try {
-      result = await _startDecodeQrFile(file);
-    } on FormatReaderException catch (_) {
-      setState(() => _errorText = AppLocalizations.of(context)!.qrFileDecodeError);
-      return;
-    } catch (e) {
+    final results = await scanImage(await file.readAsBytes());
+    if (results == null || results.isEmpty) {
       setState(() => _errorText = AppLocalizations.of(context)!.invalidQrFile(widget.appName));
       return;
     }
+    final result = results.first;
     final Uri uri;
     try {
       uri = Uri.parse(result.text);
