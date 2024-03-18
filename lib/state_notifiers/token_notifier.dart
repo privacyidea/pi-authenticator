@@ -633,7 +633,8 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<List<Token>> _tokensFromUri(Uri uri) async {
     List<Token>? tokens;
     try {
-      tokens = await TokenImportSchemeProcessor.processUriByAny(uri);
+      final results = await TokenImportSchemeProcessor.processUriByAny(uri);
+      tokens = results?.where((element) => element.success && element.data != null).map((e) => e.data!).toList();
     } catch (_) {}
     return tokens ?? [];
   }

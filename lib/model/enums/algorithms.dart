@@ -53,6 +53,6 @@ extension AlgorithmsExtension on Algorithms {
         'SHA1' => Algorithms.SHA1,
         'SHA256' => Algorithms.SHA256,
         'SHA512' => Algorithms.SHA512,
-        _ => throw ArgumentError('Unknown algorithm: $algoAsString'),
+        _ => throw 'The algorithm [$algoAsString] is not supported',
       };
 }

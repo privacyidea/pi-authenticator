@@ -118,24 +118,19 @@ class DayPasswordToken extends OTPToken {
     if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
     if (uriMap[URI_PERIOD] < 1) throw ArgumentError('Period must be greater than 0');
     if (uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
-    DayPasswordToken dayPasswordToken;
-    try {
-      dayPasswordToken = DayPasswordToken(
-        label: uriMap[URI_LABEL] ?? '',
-        issuer: uriMap[URI_ISSUER] ?? '',
-        id: const Uuid().v4(),
-        algorithm: AlgorithmsExtension.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
-        digits: uriMap[URI_DIGITS] ?? 6,
-        secret: Encodings.base32.encode(uriMap[URI_SECRET]),
-        period: Duration(seconds: uriMap[URI_PERIOD]),
-        tokenImage: uriMap[URI_IMAGE],
-        pin: uriMap[URI_PIN],
-        isLocked: uriMap[URI_PIN],
-      );
-    } catch (e) {
-      throw ArgumentError('Invalid URI: $e');
-    }
-    return dayPasswordToken;
+
+    return DayPasswordToken(
+      label: uriMap[URI_LABEL] ?? '',
+      issuer: uriMap[URI_ISSUER] ?? '',
+      id: const Uuid().v4(),
+      algorithm: AlgorithmsExtension.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+      digits: uriMap[URI_DIGITS] ?? 6,
+      secret: Encodings.base32.encode(uriMap[URI_SECRET]),
+      period: Duration(seconds: uriMap[URI_PERIOD]),
+      tokenImage: uriMap[URI_IMAGE],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+    );
   }
 
   factory DayPasswordToken.fromJson(Map<String, dynamic> json) => _$DayPasswordTokenFromJson(json).copyWith(isHidden: true);

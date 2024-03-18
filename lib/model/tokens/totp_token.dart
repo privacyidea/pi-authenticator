@@ -4,7 +4,6 @@ import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
-import '../../utils/utils.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
@@ -109,25 +108,19 @@ class TOTPToken extends OTPToken {
     if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
     if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
     if (uriMap[URI_PERIOD] != null && uriMap[URI_PERIOD] < 1) throw ArgumentError('Period must be greater than 0');
-    TOTPToken totpToken;
-    try {
-      totpToken = TOTPToken(
-        label: uriMap[URI_LABEL] ?? '',
-        issuer: uriMap[URI_ISSUER] ?? '',
-        id: const Uuid().v4(),
-        algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
-        digits: uriMap[URI_DIGITS] ?? 6,
-        tokenImage: uriMap[URI_IMAGE],
-        secret: Encodings.base32.encode(uriMap[URI_SECRET]),
-        period: uriMap[URI_PERIOD] ?? 30,
-        pin: uriMap[URI_PIN],
-        isLocked: uriMap[URI_PIN],
-        origin: uriMap[URI_ORIGIN],
-      );
-    } catch (e) {
-      throw ArgumentError('Invalid URI: $e');
-    }
-    return totpToken;
+    return TOTPToken(
+      label: uriMap[URI_LABEL] ?? '',
+      issuer: uriMap[URI_ISSUER] ?? '',
+      id: const Uuid().v4(),
+      algorithm: AlgorithmsExtension.fromString((uriMap[URI_ALGORITHM] ?? 'SHA1')),
+      digits: uriMap[URI_DIGITS] ?? 6,
+      tokenImage: uriMap[URI_IMAGE],
+      secret: Encodings.base32.encode(uriMap[URI_SECRET]),
+      period: uriMap[URI_PERIOD] ?? 30,
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+    );
   }
 
   factory TOTPToken.fromJson(Map<String, dynamic> json) => _$TOTPTokenFromJson(json).copyWith(isHidden: true);

@@ -7,6 +7,7 @@ import 'dart:typed_data';
 import 'package:base32/base32.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
+import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../proto/generated/GoogleAuthenticatorImport.pb.dart';
 import 'otp_auth_processor.dart';
@@ -19,12 +20,12 @@ class OtpAuthMigrationProcessor extends TokenImportSchemeProcessor {
   @override
   Set<String> get supportedSchemes => {'otpauth-migration'};
   @override
-  Future<List<Token>> processUri(Uri uri, {bool fromInit = false}) async {
+  Future<List<ProcessorResult<Token>>> processUri(Uri uri, {bool fromInit = false}) async {
     if (!supportedSchemes.contains(uri.scheme)) return [];
     final value = uri.toString();
     // check prefix "otpauth-migration://offline?data="
     // extract suffix - Base64 encode
-    List<Token> results = [];
+    List<ProcessorResult<Token>> results = [];
 
     RegExp exp = RegExp(r"otpauth-migration\:\/\/offline\?data=(.*)$");
     final match = exp.firstMatch(value);
@@ -37,7 +38,6 @@ class OtpAuthMigrationProcessor extends TokenImportSchemeProcessor {
     final gai = GoogleAuthenticatorImport.fromBuffer(decoded);
     Logger.warning("${gai.otpParameters.length} tokens found");
     for (var param in gai.otpParameters) {
-      List<Token> tokens;
       try {
         var base32string = base32.encode(Uint8List.fromList(param.secret));
         final name = Uri.encodeFull(param.name);
@@ -93,12 +93,12 @@ class OtpAuthMigrationProcessor extends TokenImportSchemeProcessor {
         }
         Logger.warning("Processing $type token ${param.name}");
         final uri = Uri.parse("otpauth://$type/$name?secret=$base32string&issuer=$issuer$algorithm$digits$period$counter");
-        tokens = await otpAuthProcessor.processUri(uri);
+        results.addAll(await otpAuthProcessor.processUri(uri));
       } catch (e) {
         Logger.warning("Skipping token ${param.name} due to error: $e");
+        results.add(ProcessorResult<Token>(success: false, error: e.toString()));
         continue;
       }
-      results.addAll(tokens);
     }
 
     return results;

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import '../../utils/identifiers.dart';
@@ -40,7 +38,7 @@ abstract class Token with SortableMixin {
     if (TokenTypes.PIPUSH.isString(type)) return PushToken.fromJson(json);
     if (TokenTypes.DAYPASSWORD.isString(type)) return DayPasswordToken.fromJson(json);
     if (TokenTypes.STEAM.isString(type)) return SteamToken.fromJson(json);
-    throw ArgumentError.value(json, 'json', 'Building the token type [$type] is not a supported right now.');
+    throw ArgumentError.value(json, 'Token#fromJson', 'Token type [$type] is not a supported');
   }
   factory Token.fromUriMap(
     Map<String, dynamic> uriMap,
@@ -51,7 +49,7 @@ abstract class Token with SortableMixin {
     if (TokenTypes.PIPUSH.isString(type)) return PushToken.fromUriMap(uriMap);
     if (TokenTypes.DAYPASSWORD.isString(type)) return DayPasswordToken.fromUriMap(uriMap);
     if (TokenTypes.STEAM.isString(type)) return SteamToken.fromUriMap(uriMap);
-    throw ArgumentError.value(uriMap, 'uri', 'Building the token type [$type] is not a supported right now.');
+    throw ArgumentError.value(uriMap, 'Token#fromUriMap', 'Token type [$type] is not a supported');
   }
 
   const Token({
@@ -77,8 +75,7 @@ abstract class Token with SortableMixin {
 
   /// This is used to identify the same token even if the id is different.
   bool isSameTokenAs(Token other) {
-    log('isSameTokenAs: $type == ${other.type} && $origin == ${other.origin}');
-    return other.type == type && other.origin == origin;
+    return other.type == type; // && other.origin?.appName == origin?.appName && other.origin?.data == origin?.data;
   }
 
   @override

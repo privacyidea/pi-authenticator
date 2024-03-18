@@ -14,6 +14,7 @@ import 'package:privacyidea_authenticator/utils/logger.dart';
 import '../../model/encryption/aes_encrypted.dart';
 import '../../model/encryption/uint_8_buffer.dart';
 import '../../model/enums/token_origin_source_type.dart';
+import '../../model/processor_result.dart';
 import 'token_import_file_processor_interface.dart';
 
 class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
@@ -88,7 +89,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<List<Token>> processFile({required XFile file, String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
     try {
       final bytes = await file.readAsBytes();
       Uint8Buffer uint8buffer = Uint8Buffer(data: bytes);
@@ -162,34 +163,38 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
     return decrypted;
   }
 
-  Future<List<Token>> _processPlain({required String fileContent}) async {
+  Future<List<ProcessorResult<Token>>> _processPlain({required String fileContent}) async {
     Logger.info('Processing plain file', name: 'authenticator_pro_import_file_processor#_processPlain');
     final tokensMap = (json.decode(fileContent)['Authenticators'].cast<Map<String, dynamic>>()) as List<Map<String, dynamic>>;
-    final result = <Token>[];
+    final result = <ProcessorResult<Token>>[];
     for (var tokenMap in tokensMap) {
-      final typeInt = tokenMap[_AUTHENTICATOR_PRO_TYPE] as int;
-      final tokenType = typeMap[typeInt];
-      if (tokenType == null) {
-        Logger.warning('Unsupported token type: $typeInt');
-        continue;
-      }
-      final uriMap = {
-        URI_TYPE: tokenType,
-        URI_ISSUER: tokenMap[_AUTHENTICATOR_PRO_ISSUER] as String,
-        URI_LABEL: tokenMap[_AUTHENTICATOR_PRO_LABEL] as String,
-        URI_SECRET: utf8.encode(tokenMap[_AUTHENTICATOR_PRO_SECRET] as String),
-        URI_DIGITS: tokenMap[_AUTHENTICATOR_PRO_DIGITS] as int,
-        URI_PERIOD: tokenMap[_AUTHENTICATOR_PRO_PERIOD] as int,
-        URI_ALGORITHM: algorithmMap[tokenMap[_AUTHENTICATOR_PRO_ALGORITHM] as int],
-        URI_COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER] as int,
-        URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-          appName: 'Authenticator Pro',
-          data: jsonEncode(tokenMap),
-        ),
-      };
+      try {
+        final typeInt = tokenMap[_AUTHENTICATOR_PRO_TYPE] as int;
+        final tokenType = typeMap[typeInt];
+        if (tokenType == null) {
+          Logger.warning('Unsupported token type: $typeInt');
+          continue;
+        }
+        final uriMap = {
+          URI_TYPE: tokenType,
+          URI_ISSUER: tokenMap[_AUTHENTICATOR_PRO_ISSUER] as String,
+          URI_LABEL: tokenMap[_AUTHENTICATOR_PRO_LABEL] as String,
+          URI_SECRET: utf8.encode(tokenMap[_AUTHENTICATOR_PRO_SECRET] as String),
+          URI_DIGITS: tokenMap[_AUTHENTICATOR_PRO_DIGITS] as int,
+          URI_PERIOD: tokenMap[_AUTHENTICATOR_PRO_PERIOD] as int,
+          URI_ALGORITHM: algorithmMap[tokenMap[_AUTHENTICATOR_PRO_ALGORITHM] as int],
+          URI_COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER] as int,
+          URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+            appName: 'Authenticator Pro',
+            data: jsonEncode(tokenMap),
+          ),
+        };
 
-      final token = Token.fromUriMap(uriMap);
-      result.add(token);
+        final token = Token.fromUriMap(uriMap);
+        result.add(ProcessorResult<Token>(success: true, data: token));
+      } catch (e) {
+        result.add(ProcessorResult<Token>(success: false, error: e.toString()));
+      }
     }
     return result;
   }

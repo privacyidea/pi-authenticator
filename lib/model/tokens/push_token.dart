@@ -163,10 +163,7 @@ class PushToken extends Token {
         'publicTokenKey: $publicTokenKey}';
   }
 
-  factory PushToken.fromUriMap(Map<String, dynamic> uriMap) {
-    PushToken pushToken;
-    try {
-      pushToken = PushToken(
+  factory PushToken.fromUriMap(Map<String, dynamic> uriMap) => PushToken(
         serial: uriMap[URI_SERIAL] ?? '',
         label: uriMap[URI_LABEL] ?? '',
         issuer: uriMap[URI_ISSUER] ?? '',
@@ -180,11 +177,6 @@ class PushToken extends Token {
         isLocked: uriMap[URI_PIN],
         origin: uriMap[URI_ORIGIN],
       );
-    } catch (e) {
-      throw ArgumentError('Invalid URI: $e');
-    }
-    return pushToken;
-  }
 
   factory PushToken.fromJson(Map<String, dynamic> json) {
     final newToken = _$PushTokenFromJson(json);

@@ -97,25 +97,19 @@ class HOTPToken extends OTPToken {
   factory HOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
     if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
     if (uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
-    HOTPToken hotpToken;
-    try {
-      hotpToken = HOTPToken(
-        label: uriMap[URI_LABEL] ?? '',
-        issuer: uriMap[URI_ISSUER] ?? '',
-        id: const Uuid().v4(),
-        algorithm: AlgorithmsExtension.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
-        digits: uriMap[URI_DIGITS] ?? 6,
-        secret: Encodings.base32.encode(uriMap[URI_SECRET]),
-        counter: uriMap[URI_COUNTER] ?? 0,
-        tokenImage: uriMap[URI_IMAGE],
-        pin: uriMap[URI_PIN],
-        isLocked: uriMap[URI_PIN],
-        origin: uriMap[URI_ORIGIN],
-      );
-    } catch (e) {
-      throw ArgumentError('Invalid URI: $e');
-    }
-    return hotpToken;
+    return HOTPToken(
+      label: uriMap[URI_LABEL] ?? '',
+      issuer: uriMap[URI_ISSUER] ?? '',
+      id: const Uuid().v4(),
+      algorithm: AlgorithmsExtension.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+      digits: uriMap[URI_DIGITS] ?? 6,
+      secret: Encodings.base32.encode(uriMap[URI_SECRET]),
+      counter: uriMap[URI_COUNTER] ?? 0,
+      tokenImage: uriMap[URI_IMAGE],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+    );
   }
 
   factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json).copyWith(isHidden: true);

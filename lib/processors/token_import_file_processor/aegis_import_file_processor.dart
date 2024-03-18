@@ -14,6 +14,7 @@ import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
+import '../../model/processor_result.dart';
 import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';
 
@@ -90,7 +91,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<List<Token>> processFile({required XFile file, String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
     final String fileContent = await file.readAsString();
     final Map<String, dynamic> json;
     try {
@@ -107,8 +108,8 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
     }
   }
 
-  List<Token> _processPlain(Map<String, dynamic> json) {
-    final List<Token> tokens = [];
+  List<ProcessorResult<Token>> _processPlain(Map<String, dynamic> json) {
+    final results = <ProcessorResult<Token>>[];
     if (json['db']['version'] != 2) {
       throw Exception('Unsupported backup version: ${json['db']['version']}.');
     }
@@ -135,12 +136,13 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             data: jsonEncode(entry),
           ),
         };
-        tokens.add(Token.fromUriMap(entryUriMap));
+        results.add(ProcessorResult<Token>(success: true, data: Token.fromUriMap(entryUriMap)));
       } catch (e) {
+        results.add(ProcessorResult<Token>(success: false, error: e.toString()));
         Logger.warning('Failed to parse token.', name: '_processPlain#OtpAuthImportFileProcessor');
       }
     }
-    return tokens;
+    return results;
   }
 
   Future<Uint8List> runIsolatedKdf(ScryptParameters scryptParameters, String password) async {
@@ -154,7 +156,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
     return keyBytes;
   }
 
-  Future<List<Token>> _processEncrypted(Map<String, dynamic> json, String? password) async {
+  Future<List<ProcessorResult<Token>>> _processEncrypted(Map<String, dynamic> json, String? password) async {
     final String dbEncrypted = json['db'];
     final Map<String, dynamic> header = json['header'];
     final Map<String, dynamic> dbParams = header['params'];

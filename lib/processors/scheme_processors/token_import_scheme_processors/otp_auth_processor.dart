@@ -6,6 +6,7 @@ import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';
 import '../../../model/enums/token_types.dart';
 import '../../../model/extensions/enum_extension.dart';
+import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
@@ -20,8 +21,8 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
   Set<String> get supportedSchemes => {'otpauth'};
 
   @override
-  Future<List<Token>> processUri(Uri uri, {bool fromInit = false}) async {
-    if (!supportedSchemes.contains(uri.scheme)) return [];
+  Future<List<ProcessorResult<Token>>> processUri(Uri uri, {bool fromInit = false}) async {
+    if (!supportedSchemes.contains(uri.scheme)) return [ProcessorResult(success: false, error: 'The scheme [${uri.scheme}] not supported')];
     Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
     Map<String, dynamic> uriMap;
     try {
@@ -31,7 +32,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
       Logger.warning('Malformed QR code:', name: 'token_notifier.dart#_handleOtpAuth', error: e, stackTrace: s);
       //showMessage(message: '${e.message}\n Please inform the creator of this qr code about the problem.', duration: const Duration(seconds: 8));
 
-      return [];
+      return [ProcessorResult(success: false, error: e.message)];
     }
     if (_is2StepURI(uri)) {
       validateMap(uriMap, [URI_SECRET, URI_ITERATIONS, URI_OUTPUT_LENGTH_IN_BYTES, URI_SALT_LENGTH]);
@@ -58,9 +59,9 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     } on FormatException catch (e) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
       showMessage(message: e.message, duration: const Duration(seconds: 3));
-      return [];
+      return [ProcessorResult(success: false, error: e.message)];
     }
-    return [newToken];
+    return [ProcessorResult(success: true, data: newToken)];
   }
 }
 
@@ -72,7 +73,7 @@ Map<String, dynamic> _parseOtpToken(Uri uri) {
     // otpauth://pipush/LABEL?PARAMETERS
     return _parsePiPushToken(uri);
   }
-  if (TokenTypes.HOTP.isString(type) || TokenTypes.TOTP.isString(type) || TokenTypes.DAYPASSWORD.isString(type)) {
+  if (TokenTypes.values.firstWhereOrNull((element) => element.isString(type)) != null) {
     return _parseOtpAuth(uri);
   }
   throw ArgumentError.value(
@@ -328,8 +329,8 @@ Map<String, dynamic> _parsePiPushToken(Uri uri) {
       issuer = split[0];
       label = split[1];
     } else {
-      label = param;
       issuer = _parseIssuer(uri);
+      label = param;
     }
   } on Error {
     label = param;

@@ -6,6 +6,7 @@ import 'dart:typed_data';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
+import 'package:privacyidea_authenticator/model/processor_result.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 
@@ -21,6 +22,8 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
   static const String _FREE_OTP_PLUS_PERIOD = 'period';
   static const String _FREE_OTP_PLUS_SECRET = 'secret'; // Base32 encoded
   static const String _FREE_OTP_PLUS_TYPE = 'type'; // String: "TOTP", "HOTP"
+  static const String _steamTokenIssuer = "Steam";
+  static const String _steamTokenHost = "steam";
 
   const FreeOtpPlusFileProcessor();
 
@@ -51,7 +54,7 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
   Future<bool> fileNeedsPassword({required XFile file}) async => false;
 
   @override
-  Future<List<Token>> processFile({required XFile file, String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
     String content = await file.readAsString();
     try {
       final json = jsonDecode(content) as Map<String, dynamic>;
@@ -63,9 +66,9 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
     return _processOtpAuth(lines);
   }
 
-  Future<List<Token>> _processJson(Map<String, dynamic> json) async {
+  Future<List<ProcessorResult<Token>>> _processJson(Map<String, dynamic> json) async {
     final tokensJson = (json['tokens'] as List<dynamic>?)?.cast<Map<String, dynamic>>();
-    final tokens = <Token>[];
+    final tokens = <ProcessorResult<Token>>[];
     if (tokensJson == null) {
       return [];
     }
@@ -75,7 +78,19 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
     return tokens;
   }
 
-  Future<Token> _processJsonToken(Map<String, dynamic> tokenJson) async => Token.fromUriMap(_jsonToUriMap(tokenJson));
+  Future<ProcessorResult<Token>> _processJsonToken(Map<String, dynamic> tokenJson) async {
+    try {
+      return ProcessorResult<Token>(
+        success: true,
+        data: Token.fromUriMap(_jsonToUriMap(tokenJson)),
+      );
+    } catch (e) {
+      return ProcessorResult<Token>(
+        success: false,
+        error: e.toString(),
+      );
+    }
+  }
 
   Map<String, dynamic> _jsonToUriMap(Map<String, dynamic> tokenJson) {
     return <String, dynamic>{
@@ -95,15 +110,36 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
     };
   }
 
-  Future<List<Token>> _processOtpAuth(List<String> lines) async {
-    final tokens = <Token>[];
+  Future<List<ProcessorResult<Token>>> _processOtpAuth(List<String> lines) async {
+    final results = <ProcessorResult<Token>>[];
     const processor = OtpAuthProcessor();
     for (var line in lines) {
       log('Processing line: $line');
-      final uri = Uri.parse(line);
-      final token = await processor.processUri(uri);
-      tokens.addAll(token);
+      var uri = Uri.parse(line);
+      final issuer = _parseIssuer(uri);
+      if (issuer == _steamTokenIssuer) {
+        uri = uri.replace(host: _steamTokenHost);
+      }
+      log('Processing URI: $uri');
+      final result = await processor.processUri(uri);
+      results.addAll(result);
     }
-    return tokens;
+    return results;
+  }
+
+  /// Parse the label and the issuer (if it exists) from the url.
+  String _parseIssuer(Uri uri) {
+    String param = uri.path.substring(1);
+    param = Uri.decodeFull(param);
+    try {
+      if (param.contains(':')) {
+        List split = param.split(':');
+        return split[0];
+      } else {
+        return _parseIssuer(uri);
+      }
+    } catch (_) {
+      return '';
+    }
   }
 }

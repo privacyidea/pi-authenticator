@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/processor_result.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
@@ -107,10 +108,9 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                                     setState(() {
                                       future = Future<void>(
                                         () async {
-                                          // Future.delayed(const Duration(seconds: 1)).then((value) => null);
-                                          List<Token> tokens;
                                           try {
-                                            tokens = await widget.processor.processTokenMigrate(widget.data, args: _passwordController.text);
+                                            final processorResults = await widget.processor.processTokenMigrate(widget.data, args: _passwordController.text);
+                                            _pushImportPlainTokensPage(processorResults);
                                           } on BadDecryptionPasswordException catch (_) {
                                             setState(() {
                                               wrongPassword = true;
@@ -118,12 +118,8 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                                             });
                                             return;
                                           }
-                                          setState(() {
-                                            future = null;
-                                          });
-                                          _pushImportPlainTokensPage(tokens);
                                         },
-                                      );
+                                      )..then((_) => setState(() => future = null));
                                     });
                                   },
                             child: Text(
@@ -141,12 +137,12 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
         ),
       );
 
-  void _pushImportPlainTokensPage(List<Token> tokens) {
+  void _pushImportPlainTokensPage(List<ProcessorResult<Token>> processorResults) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (context) => ImportPlainTokensPage(
           appName: widget.appName,
-          importedTokens: tokens,
+          processorResults: processorResults,
           selectedType: widget.selectedType,
         ),
       ),

@@ -601,6 +601,18 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String importFailedToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Failed to import $count tokens.',
+      one: 'Failed to import a token.',
+      zero: 'Failed no token to import.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String importExistingToken(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/processor_result.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
@@ -8,13 +11,39 @@ import '../../../utils/riverpod_providers.dart';
 import '../import_tokens_view.dart';
 import '../widgets/conflicted_import_tokens_list.dart';
 import '../widgets/conflicted_import_tokens_tile.dart';
+import '../widgets/failed_imports_list.dart';
 import '../widgets/no_conflict_import_tokens_list.dart';
 
 class ImportPlainTokensPage extends ConsumerStatefulWidget {
   final String appName;
   final TokenImportType selectedType;
   final List<Token> importedTokens;
-  const ImportPlainTokensPage({super.key, required this.importedTokens, required this.appName, required this.selectedType});
+  final List<String> failedImports;
+  factory ImportPlainTokensPage({
+    Key? key,
+    required List<ProcessorResult<Token>> processorResults,
+    required String appName,
+    required TokenImportType selectedType,
+  }) {
+    final importedTokens = processorResults.where((e) => e.success && e.data != null).map((e) => e.data!).toList();
+    final failedImports = processorResults
+        .where((e) {
+          log('Checking import: ${e.error}');
+          if (e.success) return false;
+          log('Failed import: ${e.error}');
+          return !e.success && e.error != null;
+        })
+        .map((e) => e.error!)
+        .toList();
+    return ImportPlainTokensPage._(
+      key: key,
+      importedTokens: importedTokens,
+      failedImports: failedImports,
+      appName: appName,
+      selectedType: selectedType,
+    );
+  }
+  const ImportPlainTokensPage._({super.key, required this.importedTokens, required this.failedImports, required this.appName, required this.selectedType});
 
   @override
   ConsumerState<ImportPlainTokensPage> createState() => _ImportFileNoPwState();
@@ -75,6 +104,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateIsMaxScrollExtent();
     });
+    log('Failed imports: ${widget.failedImports}');
 
     final List<ImportTokenEntry> conflictedImports = [];
     final List<ImportTokenEntry> newImports = [];
@@ -117,6 +147,10 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
                   const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
                   Column(
                     children: [
+                      if (widget.failedImports.isNotEmpty)
+                        FailedImportsList(
+                          failedImports: widget.failedImports,
+                        ),
                       if (conflictedImports.isNotEmpty)
                         ConflictedImportTokensList(
                           title: AppLocalizations.of(context)!.importConflictToken(conflictedImports.length),

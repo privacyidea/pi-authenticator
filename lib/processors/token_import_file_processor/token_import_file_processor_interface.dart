@@ -1,4 +1,5 @@
 import 'package:file_selector/file_selector.dart';
+import 'package:privacyidea_authenticator/model/processor_result.dart';
 
 import '../../model/tokens/token.dart';
 import '../../utils/logger.dart';
@@ -10,19 +11,19 @@ abstract class TokenImportFileProcessor with TokenImportProcessor<XFile, String?
   const TokenImportFileProcessor();
 
   @override
-  Future<List<Token>> processTokenMigrate(XFile data, {String? args}) async {
+  Future<List<ProcessorResult<Token>>> processTokenMigrate(XFile data, {String? args}) async {
     return processFile(file: data, password: args);
   }
 
-  Future<List<Token>> processFile({required XFile file, String? password});
+  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password});
 
   static final List<TokenImportFileProcessor> implementations = [
     const AegisImportFileProcessor(),
     const TwoFasFileImportProcessor(),
   ];
 
-  static Future<List<Token>> processFileByAny({required XFile file, String? password}) async {
-    List<Token> tokens = [];
+  static Future<List<ProcessorResult<Token>>> processFileByAny({required XFile file, String? password}) async {
+    final tokens = <ProcessorResult<Token>>[];
     for (TokenImportFileProcessor processor in implementations) {
       try {
         tokens.addAll(await processor.processFile(file: file, password: password));

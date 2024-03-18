@@ -8,6 +8,7 @@ import 'package:file_selector/file_selector.dart';
 import '../../model/encryption/aes_encrypted.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/enums/token_origin_source_type.dart';
+import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
@@ -23,7 +24,7 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
   static const String TWOFAS_COUNTER = 'counter';
 
   @override
-  Future<List<Token>> processFile({required XFile file, String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
     final String fileContent = await file.readAsString();
     final Map<String, dynamic> json;
     try {
@@ -31,7 +32,7 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
     } catch (e) {
       throw InvalidFileContentException('No valid 2FAS import file');
     }
-    if (password == null) return processPlainFile(jsonString: fileContent, json: json);
+    if (password == null) return _processPlainFile(jsonString: fileContent, json: json);
     return processEncryptedFile(jsonString: fileContent, json: json, password: password);
   }
 
@@ -55,13 +56,13 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
     }
   }
 
-  Future<List<Token>> processEncryptedFile({String? jsonString, Map<String, dynamic>? json, required String password}) async {
+  Future<List<ProcessorResult<Token>>> processEncryptedFile({String? jsonString, Map<String, dynamic>? json, required String password}) async {
     json ??= jsonDecode(jsonString!) as Map<String, dynamic>;
     if (json['servicesEncrypted'] == null) {
       if (json['services'] == null) {
         throw InvalidFileContentException('No valid 2FAS import file');
       } else {
-        return processPlainFile(json: json);
+        return _processPlainFile(json: json);
       }
     }
     final String decryptedTokens;
@@ -91,11 +92,10 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
     } catch (e) {
       throw InvalidFileContentException('No valid 2FAS import file');
     }
-    final List<Token> tokens = await processPlainTokens(decryptedTokensJsonList.cast<Map<String, dynamic>>());
-    return tokens;
+    return await _processPlainTokens(decryptedTokensJsonList.cast<Map<String, dynamic>>());
   }
 
-  Future<List<Token>> processPlainFile({String? jsonString, Map<String, dynamic>? json}) async {
+  Future<List<ProcessorResult<Token>>> _processPlainFile({String? jsonString, Map<String, dynamic>? json}) async {
     try {
       json ??= jsonDecode(jsonString!) as Map<String, dynamic>;
     } catch (e) {
@@ -111,16 +111,20 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
       }
     }
     Logger.info('2FAS import file contains ${tokensJsonList.length} tokens', name: 'two_fas_import_file_processor.dart#processPlainFile');
-    return processPlainTokens(tokensJsonList.cast<Map<String, dynamic>>());
+    return _processPlainTokens(tokensJsonList.cast<Map<String, dynamic>>());
   }
 
-  Future<List<Token>> processPlainTokens(List<Map<String, dynamic>> tokensJsonList) async {
-    final List<Token> tokens = [];
+  Future<List<ProcessorResult<Token>>> _processPlainTokens(List<Map<String, dynamic>> tokensJsonList) async {
+    final results = <ProcessorResult<Token>>[];
     for (Map<String, dynamic> twoFasToken in tokensJsonList) {
-      tokens.add(Token.fromUriMap(_twoFasToUriMap(twoFasToken)));
+      try {
+        results.add(ProcessorResult<Token>(success: true, data: Token.fromUriMap(_twoFasToUriMap(twoFasToken))));
+      } catch (e) {
+        results.add(ProcessorResult<Token>(success: false, error: e.toString()));
+      }
     }
-    Logger.info('successfully imported ${tokens.length} tokens', name: 'two_fas_import_file_processor.dart#processPlainTokens');
-    return tokens;
+    Logger.info('successfully imported ${results.length} tokens', name: 'two_fas_import_file_processor.dart#processPlainTokens');
+    return results;
   }
 
   Map<String, dynamic> _twoFasToUriMap(Map<String, dynamic> twoFasToken) {

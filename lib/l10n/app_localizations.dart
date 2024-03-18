@@ -1231,6 +1231,12 @@ abstract class AppLocalizations {
   /// **'The link entered is not a valid token of {appName}, or it is not supported.'**
   String invalidLink(Object appName);
 
+  /// No description provided for @importFailedToken.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, zero{Failed no token to import.} one{Failed to import a token.} other{Failed to import {count} tokens.}}'**
+  String importFailedToken(num count);
+
   /// No description provided for @importExistingToken.
   ///
   /// In en, this message translates to:
@@ -1240,7 +1246,7 @@ abstract class AppLocalizations {
   /// No description provided for @importConflictToken.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with an existing token.\nPlease choose which one you want to keep.} other{There are conflicts with existing tokens.\nPlease choose which one you want to keep.}}'**
+  /// **'{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with existing tokens.\nPlease select which one you would like to keep.} other{There are conflicts with existing tokens.\nPlease select the tokens you wish to keep.}}'**
   String importConflictToken(num count);
 
   /// No description provided for @importNewToken.

@@ -601,6 +601,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String importFailedToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Failed to import $count tokens.',
+      one: 'Failed to import a token.',
+      zero: 'Failed no token to import.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String importExistingToken(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -617,8 +629,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'There are conflicts with existing tokens.\nPlease choose which one you want to keep.',
-      one: 'There is a conflict with an existing token.\nPlease choose which one you want to keep.',
+      other: 'There are conflicts with existing tokens.\nPlease select the tokens you wish to keep.',
+      one: 'There is a conflict with existing tokens.\nPlease select which one you would like to keep.',
       zero: 'There is no conflict with existing tokens.',
     );
     return '$_temp0';
