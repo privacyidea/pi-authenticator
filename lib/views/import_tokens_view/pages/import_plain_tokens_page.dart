@@ -30,7 +30,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final map = ref.read(tokenProvider).getTokensWithSameSectet(widget.importedTokens);
+      final map = ref.read(tokenProvider).getSameTokens(widget.importedTokens);
       importTokenEntrys = [];
       setState(() {
         map.forEach((key, value) {

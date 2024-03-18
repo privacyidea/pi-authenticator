@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/loading_indicator.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
@@ -9,6 +8,7 @@ import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
+import '../../loading_indicator.dart';
 import '../token_action.dart';
 
 class DefaultDeleteAction extends TokenAction {

@@ -6,7 +6,6 @@ import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
-import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 
 void main() {
   _testTotpToken();
@@ -204,7 +203,7 @@ void _testTotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
           counter: (DateTime.now().millisecondsSinceEpoch / 1000) ~/ period.inSeconds,
         );
         final totpToken = TOTPToken(
@@ -214,7 +213,7 @@ void _testTotpToken() {
           id: '',
           algorithm: Algorithms.SHA1,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
         );
         expect(totpToken.otpValue, hotpToken.otpValue);
       });
@@ -226,7 +225,7 @@ void _testTotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
           counter: (DateTime.now().millisecondsSinceEpoch / 1000) ~/ period.inSeconds,
         );
         final totpToken = TOTPToken(
@@ -236,7 +235,7 @@ void _testTotpToken() {
           id: '',
           algorithm: Algorithms.SHA1,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
         );
         expect(totpToken.otpValue, hotpToken.otpValue);
       });
@@ -251,7 +250,7 @@ void _testTotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
           counter: (DateTime.now().millisecondsSinceEpoch / 1000) ~/ period.inSeconds,
         );
         final totpToken = TOTPToken(
@@ -261,7 +260,7 @@ void _testTotpToken() {
           id: '',
           algorithm: Algorithms.SHA1,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
         );
         expect(totpToken.otpValue, hotpToken.otpValue);
       });
@@ -273,7 +272,7 @@ void _testTotpToken() {
           issuer: '',
           algorithm: Algorithms.SHA1,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
           counter: (DateTime.now().millisecondsSinceEpoch / 1000) ~/ period.inSeconds,
         );
         final totpToken = TOTPToken(
@@ -283,7 +282,7 @@ void _testTotpToken() {
           id: '',
           algorithm: Algorithms.SHA1,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
         );
         expect(totpToken.otpValue, hotpToken.otpValue);
       });
@@ -299,7 +298,7 @@ void _testTotpToken() {
           issuer: '',
           algorithm: algorithm,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
           counter: (DateTime.now().millisecondsSinceEpoch / 1000) ~/ period.inSeconds,
         );
         final totpToken = TOTPToken(
@@ -309,7 +308,7 @@ void _testTotpToken() {
           id: '',
           algorithm: algorithm,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
         );
         expect(totpToken.otpValue, hotpToken.otpValue);
       });
@@ -321,7 +320,7 @@ void _testTotpToken() {
           issuer: '',
           algorithm: algorithm,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
           counter: (DateTime.now().millisecondsSinceEpoch / 1000) ~/ period.inSeconds,
         );
         final totpToken = TOTPToken(
@@ -331,7 +330,7 @@ void _testTotpToken() {
           id: '',
           algorithm: algorithm,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
         );
         expect(totpToken.otpValue, hotpToken.otpValue);
       });
@@ -343,7 +342,7 @@ void _testTotpToken() {
           issuer: '',
           algorithm: algorithm,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
           counter: (DateTime.now().millisecondsSinceEpoch / 1000) ~/ period.inSeconds,
         );
         final totpToken = TOTPToken(
@@ -353,7 +352,7 @@ void _testTotpToken() {
           id: '',
           algorithm: algorithm,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
         );
         expect(totpToken.otpValue, hotpToken.otpValue);
       });
@@ -369,7 +368,7 @@ void _testTotpToken() {
           issuer: '',
           algorithm: algorithm,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
           counter: (DateTime.now().millisecondsSinceEpoch / 1000) ~/ period.inSeconds,
         );
         final totpToken = TOTPToken(
@@ -379,7 +378,7 @@ void _testTotpToken() {
           id: '',
           algorithm: algorithm,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
         );
         expect(totpToken.otpValue, hotpToken.otpValue);
       });
@@ -391,7 +390,7 @@ void _testTotpToken() {
           issuer: '',
           algorithm: algorithm,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
           counter: (DateTime.now().millisecondsSinceEpoch / 1000) ~/ period.inSeconds,
         );
         final totpToken = TOTPToken(
@@ -401,7 +400,7 @@ void _testTotpToken() {
           id: '',
           algorithm: algorithm,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
         );
         expect(totpToken.otpValue, hotpToken.otpValue);
       });
@@ -413,7 +412,7 @@ void _testTotpToken() {
           issuer: '',
           algorithm: algorithm,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
           counter: (DateTime.now().millisecondsSinceEpoch / 1000) ~/ period.inSeconds,
         );
         final totpToken = TOTPToken(
@@ -423,7 +422,7 @@ void _testTotpToken() {
           id: '',
           algorithm: algorithm,
           digits: digits,
-          secret: encodeSecretAs(utf8.encode('secret'), Encodings.base32),
+          secret: Encodings.base32.encode(utf8.encode('secret')),
         );
         expect(totpToken.otpValue, hotpToken.otpValue);
       });

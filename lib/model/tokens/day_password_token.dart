@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:otp/otp.dart' as otp_library;
 import 'package:uuid/uuid.dart';
 
-import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
-import '../../utils/utils.dart';
 import '../enums/algorithms.dart';
 import '../enums/day_passoword_token_view_mode.dart';
 import '../enums/encodings.dart';
@@ -48,8 +45,15 @@ class DayPasswordToken extends OTPToken {
         super(type: TokenTypes.DAYPASSWORD.asString);
 
   @override
+  // Only the viewMode can be changed even if its the same token
   bool sameValuesAs(Token other) {
-    return super.sameValuesAs(other) && other is DayPasswordToken && other.period == period;
+    return super.sameValuesAs(other) && other is DayPasswordToken && other.viewMode == viewMode;
+  }
+
+  @override
+  // If its the same token the the period as to be the same
+  bool isSameTokenAs(Token other) {
+    return super.isSameTokenAs(other) && other is DayPasswordToken && other.period == period;
   }
 
   @override
@@ -90,12 +94,11 @@ class DayPasswordToken extends OTPToken {
       );
 
   @override
-  String get otpValue => otp_library.OTP.generateTOTPCodeString(
-        secret,
-        DateTime.now().millisecondsSinceEpoch,
+  String get otpValue => algorithm.generateTOTPCodeString(
+        secret: secret,
+        time: DateTime.now(),
         length: digits,
-        algorithm: algorithm.otpLibraryAlgorithm,
-        interval: period.inSeconds,
+        interval: period,
         isGoogle: true,
       );
 
@@ -121,9 +124,9 @@ class DayPasswordToken extends OTPToken {
         label: uriMap[URI_LABEL] ?? '',
         issuer: uriMap[URI_ISSUER] ?? '',
         id: const Uuid().v4(),
-        algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+        algorithm: AlgorithmsExtension.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
         digits: uriMap[URI_DIGITS] ?? 6,
-        secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
+        secret: Encodings.base32.encode(uriMap[URI_SECRET]),
         period: Duration(seconds: uriMap[URI_PERIOD]),
         tokenImage: uriMap[URI_IMAGE],
         pin: uriMap[URI_PIN],

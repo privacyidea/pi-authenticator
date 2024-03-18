@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 extension IntExtension on int {
@@ -20,4 +21,6 @@ extension IntExtension on int {
       number ~/= 10;
     } while (number != 0);
   }
+
+  num pow(num exponent) => math.pow(this, exponent);
 }

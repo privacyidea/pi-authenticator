@@ -1,8 +1,8 @@
-import '../utils/version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interfaces/repo/settings_repository.dart';
 import '../model/states/settings_state.dart';
+import '../utils/version.dart';
 
 class PreferenceSettingsRepository extends SettingsRepository {
   static const String _isFirstRunKey = 'KEY_IS_FIRST_RUN';

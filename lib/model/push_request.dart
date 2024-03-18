@@ -1,13 +1,13 @@
 import 'dart:convert';
 
+import 'package:base32/base32.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
-import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
-import 'package:base32/base32.dart';
 
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod_providers.dart';
+import '../utils/rsa_utils.dart';
 import 'tokens/push_token.dart';
 
 part 'push_request.g.dart';

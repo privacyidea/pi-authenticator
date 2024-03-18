@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../../utils/identifiers.dart';
@@ -69,16 +71,14 @@ abstract class Token with SortableMixin {
         isHidden = (pin != null && pin ? true : isLocked ?? false) == false ? false : isHidden ?? false,
         pin = pin ?? false;
 
-  /// If the type and the id are the same the tokens it is the same token (== operator).
-  /// But [sameValuesAs] is used to check if a different token has the same values as this token.
-  /// Id is here ignored because it is only used to identify the same the token.
-  bool sameValuesAs(Token other) {
-    return other.label == label &&
-        other.issuer == issuer &&
-        other.pin == pin &&
-        other.isLocked == isLocked &&
-        other.tokenImage == tokenImage &&
-        other.type == type;
+  /// This is used to compare the changeable values of the token.
+  bool sameValuesAs(Token other) =>
+      other.label == label && other.issuer == issuer && other.pin == pin && other.isLocked == isLocked && other.tokenImage == tokenImage;
+
+  /// This is used to identify the same token even if the id is different.
+  bool isSameTokenAs(Token other) {
+    log('isSameTokenAs: $type == ${other.type} && $origin == ${other.origin}');
+    return other.type == type && other.origin == origin;
   }
 
   @override

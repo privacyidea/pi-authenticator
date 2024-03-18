@@ -9,11 +9,11 @@ import 'package:encrypt/encrypt.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
+import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
-import '../../utils/crypto_utils.dart';
 import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';
 
@@ -124,12 +124,16 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           URI_TYPE: entry[AEGIS_TYPE],
           URI_LABEL: entry[AEGIS_LABEL],
           URI_ISSUER: entry[AEGIS_ISSUER],
-          URI_SECRET: decodeSecretToUint8(info[AEGIS_SECRET] as String, Encodings.none),
+          URI_SECRET: Encodings.none.decode(info[AEGIS_SECRET]),
           URI_ALGORITHM: info[AEGIS_ALGORITHM],
           URI_DIGITS: info[AEGIS_DIGITS],
           URI_PERIOD: info[AEGIS_PERIOD],
           URI_COUNTER: info[AEGIS_COUNTER],
           URI_PIN: info[AEGIS_PIN],
+          URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+            appName: 'Aegis',
+            data: jsonEncode(entry),
+          ),
         };
         tokens.add(Token.fromUriMap(entryUriMap));
       } catch (e) {

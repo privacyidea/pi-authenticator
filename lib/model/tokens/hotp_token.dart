@@ -1,10 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:otp/otp.dart' as otp_library;
 import 'package:uuid/uuid.dart';
 
-import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
-import '../../utils/utils.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
@@ -42,16 +39,17 @@ class HOTPToken extends OTPToken {
   }) : super(type: TokenTypes.HOTP.asString);
 
   @override
-  bool sameValuesAs(Token other) {
-    return super.sameValuesAs(other) && other is HOTPToken && other.counter == counter;
-  }
+  bool sameValuesAs(Token other) => super.sameValuesAs(other) && other is HOTPToken && other.counter == counter;
 
   @override
-  String get otpValue => otp_library.OTP.generateHOTPCodeString(
-        secret,
-        counter,
+  // Counter can be changed even if its the same token
+  bool isSameTokenAs(Token other) => super.isSameTokenAs(other) && other is HOTPToken;
+
+  @override
+  String get otpValue => algorithm.generateHOTPCodeString(
+        secret: secret,
+        counter: counter,
         length: digits,
-        algorithm: algorithm.otpLibraryAlgorithm,
         isGoogle: true,
       );
 
@@ -105,13 +103,14 @@ class HOTPToken extends OTPToken {
         label: uriMap[URI_LABEL] ?? '',
         issuer: uriMap[URI_ISSUER] ?? '',
         id: const Uuid().v4(),
-        algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+        algorithm: AlgorithmsExtension.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
         digits: uriMap[URI_DIGITS] ?? 6,
-        secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
+        secret: Encodings.base32.encode(uriMap[URI_SECRET]),
         counter: uriMap[URI_COUNTER] ?? 0,
         tokenImage: uriMap[URI_IMAGE],
         pin: uriMap[URI_PIN],
         isLocked: uriMap[URI_PIN],
+        origin: uriMap[URI_ORIGIN],
       );
     } catch (e) {
       throw ArgumentError('Invalid URI: $e');

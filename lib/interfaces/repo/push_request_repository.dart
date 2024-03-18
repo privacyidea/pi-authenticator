@@ -1,6 +1,5 @@
-import 'package:privacyidea_authenticator/model/states/push_request_state.dart';
-
-import '../../model/push_request.dart';
+import '../../model/push_request.dart' show PushRequest;
+import '../../model/states/push_request_state.dart' show PushRequestState;
 
 abstract class PushRequestRepository {
   Future<PushRequestState> loadState();

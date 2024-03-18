@@ -11,8 +11,8 @@ import '../../../widgets/deactivateable_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
 import '../../../widgets/introduction_widgets/token_introduction.dart';
 import 'drag_target_divider.dart';
-import 'no_token_screen.dart';
 import 'loading_indicator.dart';
+import 'no_token_screen.dart';
 import 'sortable_widget_builder.dart';
 
 class MainViewTokensList extends ConsumerStatefulWidget {

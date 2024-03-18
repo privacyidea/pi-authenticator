@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/logger.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
+import '../settings_view.dart';
 import 'dialogs/ask_log_sended_dialog.dart';
 
 class SendErrorDialog extends StatefulWidget {

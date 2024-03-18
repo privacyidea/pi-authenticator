@@ -1,14 +1,16 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/model/enums/encodings.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../model/encryption/aes_encrypted.dart';
+import '../../model/enums/encodings.dart';
+import '../../model/enums/token_origin_source_type.dart';
 import '../../model/tokens/token.dart';
-import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
+import '../../utils/logger.dart';
 import 'token_import_file_processor_interface.dart';
 
 class TwoFasFileImportProcessor extends TokenImportFileProcessor {
@@ -126,10 +128,14 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
     return {
       URI_TYPE: twoFasOTP[TWOFAS_TYPE],
       URI_ISSUER: twoFasToken[TWOFAS_ISSUER],
-      URI_SECRET: decodeSecretToUint8(twoFasToken[TWOFAS_SECRET], Encodings.none),
+      URI_SECRET: Encodings.none.decode(twoFasToken[TWOFAS_SECRET]),
       URI_LABEL: twoFasOTP[TWOFAS_LABEL],
       URI_DIGITS: twoFasOTP[TWOFAS_DIGITS],
       URI_COUNTER: twoFasOTP[TWOFAS_COUNTER],
+      URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+        appName: '2FAS',
+        data: jsonEncode(twoFasToken),
+      ),
     };
   }
 }

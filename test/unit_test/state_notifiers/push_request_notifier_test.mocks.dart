@@ -435,6 +435,18 @@ class MockPushProvider extends _i1.Mock implements _i11.PushProvider {
       ) as _i8.Future<void>);
 
   @override
+  _i8.Future<(List<_i9.PushToken>, List<_i9.PushToken>)?> updateFirebaseToken(
+          [String? firebaseToken]) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateFirebaseToken,
+          [firebaseToken],
+        ),
+        returnValue:
+            _i8.Future<(List<_i9.PushToken>, List<_i9.PushToken>)?>.value(),
+      ) as _i8.Future<(List<_i9.PushToken>, List<_i9.PushToken>)?>);
+
+  @override
   void unsubscribe(void Function(_i12.PushRequest)? newRequest) =>
       super.noSuchMethod(
         Invocation.method(

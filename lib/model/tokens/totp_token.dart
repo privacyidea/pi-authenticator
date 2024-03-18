@@ -1,8 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:otp/otp.dart' as otp_library;
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../utils/utils.dart';
@@ -12,7 +11,6 @@ import '../enums/token_types.dart';
 import '../extensions/enum_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
-import 'token.dart';
 
 part 'totp_token.g.dart';
 
@@ -33,12 +31,11 @@ class TOTPToken extends OTPToken {
   final int period;
 
   @override
-  String get otpValue => otp_library.OTP.generateTOTPCodeString(
-        secret,
-        DateTime.now().millisecondsSinceEpoch,
+  String get otpValue => algorithm.generateTOTPCodeString(
+        secret: secret,
+        time: DateTime.now(),
         length: digits,
-        algorithm: algorithm.otpLibraryAlgorithm,
-        interval: period,
+        interval: Duration(seconds: period),
         isGoogle: true,
       );
 
@@ -61,10 +58,12 @@ class TOTPToken extends OTPToken {
   })  : period = period < 1 ? 30 : period, // period must be greater than 0 otherwise IntegerDivisionByZeroException is thrown in OTP.generateTOTPCodeString
         super(type: type ?? tokenType);
 
+  // @override
+  // No changeable value in TOTPToken
+  // bool sameValuesAs(Token other) => super.sameValuesAs(other);
+
   @override
-  bool sameValuesAs(Token other) {
-    return super.sameValuesAs(other) && other is TOTPToken && other.period == period;
-  }
+  bool isSameTokenAs(Token other) => super.isSameTokenAs(other) && other is TOTPToken && other.period == period;
 
   @override
   TOTPToken copyWith({
@@ -119,10 +118,11 @@ class TOTPToken extends OTPToken {
         algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
         digits: uriMap[URI_DIGITS] ?? 6,
         tokenImage: uriMap[URI_IMAGE],
-        secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
+        secret: Encodings.base32.encode(uriMap[URI_SECRET]),
         period: uriMap[URI_PERIOD] ?? 30,
         pin: uriMap[URI_PIN],
         isLocked: uriMap[URI_PIN],
+        origin: uriMap[URI_ORIGIN],
       );
     } catch (e) {
       throw ArgumentError('Invalid URI: $e');

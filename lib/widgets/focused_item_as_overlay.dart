@@ -3,9 +3,9 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import '../utils/logger.dart';
 
+import '../l10n/app_localizations.dart';
+import '../utils/logger.dart';
 import '../utils/utils.dart';
 import 'pulse_icon.dart';
 import 'tooltip_container.dart';

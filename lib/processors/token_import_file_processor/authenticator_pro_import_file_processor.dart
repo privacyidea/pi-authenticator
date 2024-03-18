@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
@@ -5,18 +7,34 @@ import 'package:file_selector/file_selector.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/token_types.dart';
 import 'package:privacyidea_authenticator/model/extensions/enum_extension.dart';
-
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../model/encryption/aes_encrypted.dart';
 import '../../model/encryption/uint_8_buffer.dart';
+import '../../model/enums/token_origin_source_type.dart';
 import 'token_import_file_processor_interface.dart';
 
 class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   static const String header = "AUTHENTICATORPRO";
   static const String headerLegacy = "AuthenticatorPro";
+
+  static const String _AUTHENTICATOR_PRO_TYPE = 'Type';
+  static const String _AUTHENTICATOR_PRO_ISSUER = 'Issuer';
+  static const String _AUTHENTICATOR_PRO_LABEL = 'Username';
+  static const String _AUTHENTICATOR_PRO_SECRET = "Secret";
+  static const String _AUTHENTICATOR_PRO_DIGITS = "Digits";
+  static const String _AUTHENTICATOR_PRO_PERIOD = "Period";
+  static const String _AUTHENTICATOR_PRO_COUNTER = "Counter";
+  static const String _AUTHENTICATOR_PRO_ALGORITHM = "Algorithm";
+
+  /*
+      // final copyCount = tokenMap['CopyCount'] as int;
+      // final ranking = tokenMap['Ranking'] as int;
+      //  final pin = tokenMap['Pin'] as String?;
+      //  final icon = tokenMap['Icon'] as String?;
+   */
 
   static final typeMap = {
     1: TokenTypes.HOTP.asString,
@@ -149,34 +167,25 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
     final tokensMap = (json.decode(fileContent)['Authenticators'].cast<Map<String, dynamic>>()) as List<Map<String, dynamic>>;
     final result = <Token>[];
     for (var tokenMap in tokensMap) {
-      final typeInt = tokenMap['Type'] as int;
+      final typeInt = tokenMap[_AUTHENTICATOR_PRO_TYPE] as int;
       final tokenType = typeMap[typeInt];
-      final issuer = tokenMap['Issuer'] as String;
-      final username = tokenMap['Username'] as String;
-      final secret = tokenMap['Secret'] as String;
-      final secretBytes = utf8.encode(secret);
-      final digits = tokenMap['Digits'] as int;
-      final period = tokenMap['Period'] as int;
-      final counter = tokenMap['Counter'] as int;
-      // final copyCount = tokenMap['CopyCount'] as int;
-      // final ranking = tokenMap['Ranking'] as int;
-      final algorithm = tokenMap['Algorithm'] as int;
-      //  final pin = tokenMap['Pin'] as String?;
-      //  final icon = tokenMap['Icon'] as String?;
       if (tokenType == null) {
         Logger.warning('Unsupported token type: $typeInt');
         continue;
       }
       final uriMap = {
         URI_TYPE: tokenType,
-        URI_ISSUER: issuer,
-        URI_LABEL: username,
-        URI_SECRET: secretBytes,
-        URI_DIGITS: digits,
-        URI_PERIOD: period,
-        URI_ALGORITHM: algorithmMap[algorithm],
-        URI_COUNTER: counter,
-        // URI_PIN: pin,
+        URI_ISSUER: tokenMap[_AUTHENTICATOR_PRO_ISSUER] as String,
+        URI_LABEL: tokenMap[_AUTHENTICATOR_PRO_LABEL] as String,
+        URI_SECRET: utf8.encode(tokenMap[_AUTHENTICATOR_PRO_SECRET] as String),
+        URI_DIGITS: tokenMap[_AUTHENTICATOR_PRO_DIGITS] as int,
+        URI_PERIOD: tokenMap[_AUTHENTICATOR_PRO_PERIOD] as int,
+        URI_ALGORITHM: algorithmMap[tokenMap[_AUTHENTICATOR_PRO_ALGORITHM] as int],
+        URI_COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER] as int,
+        URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+          appName: 'Authenticator Pro',
+          data: jsonEncode(tokenMap),
+        ),
       };
 
       final token = Token.fromUriMap(uriMap);

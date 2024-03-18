@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:isolate';
-import 'package:flutter/material.dart';
+
 import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
 import 'package:image/image.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:zxing2/qrcode.dart';
 
 import '../../../utils/image_converter.dart';
+import '../../../utils/logger.dart';
 import 'qr_code_scanner_overlay.dart';
 
 /// Args: [SendPort] sendPort, [BinaryBitmap] bitmap

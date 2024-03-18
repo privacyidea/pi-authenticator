@@ -76,15 +76,21 @@ class PushToken extends Token {
     return super.sameValuesAs(other) &&
         other is PushToken &&
         other.fbToken == fbToken &&
-        other.serial == serial &&
         other.expirationDate == expirationDate &&
         other.sslVerify == sslVerify &&
         other.enrollmentCredentials == enrollmentCredentials &&
         other.url == url &&
-        other.isRolledOut == isRolledOut &&
-        other.publicServerKey == publicServerKey &&
+        other.isRolledOut == isRolledOut;
+  }
+
+  @override
+  bool isSameTokenAs(Token other) {
+    return super.isSameTokenAs(other) &&
+        other is PushToken &&
+        other.serial == serial &&
+        other.privateTokenKey == privateTokenKey &&
         other.publicTokenKey == publicTokenKey &&
-        other.privateTokenKey == privateTokenKey;
+        other.publicServerKey == publicServerKey;
   }
 
   @override
@@ -172,6 +178,7 @@ class PushToken extends Token {
         tokenImage: uriMap[URI_IMAGE],
         pin: uriMap[URI_PIN],
         isLocked: uriMap[URI_PIN],
+        origin: uriMap[URI_ORIGIN],
       );
     } catch (e) {
       throw ArgumentError('Invalid URI: $e');

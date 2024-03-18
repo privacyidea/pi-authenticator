@@ -11,6 +11,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       label: json['label'] as String? ?? '',
       issuer: json['issuer'] as String? ?? '',
       id: json['id'] as String,
+      fbToken: json['fbToken'] as String?,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
       expirationDate: json['expirationDate'] == null
           ? null
@@ -49,6 +50,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'type': instance.type,
       'expirationDate': instance.expirationDate?.toIso8601String(),
       'serial': instance.serial,
+      'fbToken': instance.fbToken,
       'sslVerify': instance.sslVerify,
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),

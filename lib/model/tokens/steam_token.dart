@@ -1,14 +1,17 @@
 import 'package:base32/base32.dart';
+import 'package:crypto/crypto.dart' show Hmac, sha1;
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/extensions/int_extension.dart';
-import 'package:privacyidea_authenticator/model/extensions/enum_extension.dart';
-import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
+import 'package:uuid/uuid.dart';
 
-import 'package:crypto/crypto.dart';
-
+import '../../extensions/int_extension.dart';
+import '../../utils/identifiers.dart';
 import '../enums/algorithms.dart';
+import '../enums/encodings.dart';
 import '../enums/token_types.dart';
+import '../extensions/enum_extension.dart';
 import '../token_import/token_origin_data.dart';
+import 'token.dart';
+import 'totp_token.dart' show TOTPToken;
 
 part 'steam_token.g.dart';
 
@@ -69,6 +72,13 @@ class SteamToken extends TOTPToken {
     );
   }
 
+  // @override
+  /// No changeable value in SteamToken
+  // bool sameValuesAs(Token other) => super.sameValuesAs(other);
+
+  @override
+  bool isSameTokenAs(Token other) => super.isSameTokenAs(other) && other is SteamToken;
+
   @override
   String get otpValue {
     final counterBytes = (DateTime.now().millisecondsSinceEpoch ~/ 1000 ~/ period).bytes;
@@ -88,20 +98,16 @@ class SteamToken extends TOTPToken {
   }
 
   static SteamToken fromUriMap(Map<String, dynamic> uriMap) => SteamToken(
-        period: uriMap['period'] as int,
-        label: uriMap['label'] as String,
-        issuer: uriMap['issuer'] as String,
-        id: uriMap['id'] as String,
-        algorithm: uriMap['algorithm'] as Algorithms,
-        digits: uriMap['digits'] as int,
-        secret: uriMap['secret'] as String,
-        tokenImage: uriMap['tokenImage'] as String?,
-        sortIndex: uriMap['sortIndex'] as int?,
-        pin: uriMap['pin'] as bool?,
-        isLocked: uriMap['isLocked'] as bool?,
-        isHidden: uriMap['isHidden'] as bool?,
-        folderId: uriMap['folderId'] as int?,
-        origin: uriMap['origin'] == null ? null : TokenOriginData.fromJson(uriMap['origin'] as Map<String, dynamic>),
+        period: uriMap[URI_PERIOD] as int? ?? 30,
+        label: uriMap[URI_LABEL] as String,
+        issuer: uriMap[URI_ISSUER] as String,
+        id: const Uuid().v4(),
+        algorithm: AlgorithmsExtension.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+        digits: uriMap[URI_DIGITS] as int,
+        secret: Encodings.base32.encode(uriMap[URI_SECRET]),
+        tokenImage: uriMap[URI_IMAGE] as String?,
+        pin: uriMap[URI_PIN] as bool?,
+        origin: uriMap[URI_ORIGIN],
       );
   static SteamToken fromJson(Map<String, dynamic> json) => _$SteamTokenFromJson(json);
 }

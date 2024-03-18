@@ -31,24 +31,32 @@ class TokenState {
 
   PushToken? getTokenBySerial(String serial) => pushTokens.firstWhereOrNull((element) => element.serial == serial);
 
-  Map<Token, Token?> getTokensWithSameSectet(List<Token> tokens) {
-    final tokensWithSameSectet = <Token, Token?>{};
+  /// Maps the given tokens to the tokens that are already in the state
+  /// It ignores the id that is usually used to identify the token
+  /// Instead it uses the non-changeable values of the token to identify it
+  /// Like the secret and hash algorithm for OTP tokens, or the serial and public server key for push tokens
+  Map<Token, Token?> getSameTokens(List<Token> tokens) {
+    final sameTokensMap = <Token, Token?>{};
     final stateTokens = this.tokens;
-    List<OTPToken> otpTokens = tokens.whereType<OTPToken>().toList();
-    Map<String, OTPToken> stateOtpTokens = {for (var e in stateTokens.whereType<OTPToken>()) (e).secret: e};
-    List<PushToken> pushTokens = tokens.whereType<PushToken>().toList();
-    Map<(String?, String?, String?), PushToken> statePushTokens = {
-      for (var e in stateTokens.whereType<PushToken>()) (e.publicServerKey, e.privateTokenKey, e.publicTokenKey): e
-    };
 
-    for (var pushToken in pushTokens) {
-      tokensWithSameSectet[pushToken] = statePushTokens[(pushToken.publicServerKey, pushToken.privateTokenKey, pushToken.publicTokenKey)];
+    for (var token in tokens) {
+      sameTokensMap[token] = stateTokens.firstWhereOrNull((element) => element.isSameTokenAs(token));
     }
-    for (var otpToken in otpTokens) {
-      tokensWithSameSectet[otpToken] = stateOtpTokens[otpToken.secret];
-    }
+    // List<OTPToken> otpTokens = tokens.whereType<OTPToken>().toList();
+    // Map<String, OTPToken> stateOtpTokens = {for (var e in stateTokens.whereType<OTPToken>()) (e).secret: e};
+    // List<PushToken> pushTokens = tokens.whereType<PushToken>().toList();
+    // Map<(String?, String?, String?), PushToken> statePushTokens = {
+    //   for (var e in stateTokens.whereType<PushToken>()) (e.publicServerKey, e.privateTokenKey, e.publicTokenKey): e
+    // };
 
-    return tokensWithSameSectet;
+    // for (var pushToken in pushTokens) {
+    //   tokensWithSameSectet[pushToken] = statePushTokens[(pushToken.publicServerKey, pushToken.privateTokenKey, pushToken.publicTokenKey)];
+    // }
+    // for (var otpToken in otpTokens) {
+    //   tokensWithSameSectet[otpToken] = stateOtpTokens[otpToken.secret];
+    // }
+
+    return sameTokensMap;
   }
 
   static void _sort(List<Token> tokens) {

@@ -5,6 +5,7 @@ import '../processors/scheme_processors/token_import_scheme_processors/otp_auth_
 import '../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import '../processors/token_import_file_processor/aegis_import_file_processor.dart';
 import '../processors/token_import_file_processor/authenticator_pro_import_file_processor.dart';
+import '../processors/token_import_file_processor/free_otp_plus_file_processor.dart';
 import '../processors/token_import_file_processor/two_fas_import_file_processor.dart';
 
 class TokenImportOrigins {
@@ -67,5 +68,17 @@ class TokenImportOrigins {
         ),
       ],
     ),
+    TokenImportOrigin(appName: 'Free OTP+', importSources: [
+      TokenImportSource(
+          processor: const OtpAuthProcessor(), // FreeOtpPlusQrProcessor(),
+          type: TokenImportType.qrScan,
+          importHint: (context) => 'Test' // AppLocalizations.of(context)!.importHintFreeOtpPlusQrScan,
+          ),
+      TokenImportSource(
+          processor: const FreeOtpPlusFileProcessor(),
+          type: TokenImportType.backupFile,
+          importHint: (context) => 'Test' // AppLocalizations.of(context)!.importHintFreeOtpPlusFile,
+          ),
+    ]),
   ];
 }

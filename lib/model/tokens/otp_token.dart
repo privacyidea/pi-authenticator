@@ -25,9 +25,13 @@ abstract class OTPToken extends Token {
     super.issuer = '',
   });
 
+  // @override
+  // No changeable value in OTPToken
+  // bool sameValuesAs(Token other) => super.sameValuesAs(other);
+
   @override
-  bool sameValuesAs(Token other) {
-    return super.sameValuesAs(other) && other is OTPToken && other.algorithm == algorithm && other.digits == digits && other.secret == secret;
+  bool isSameTokenAs(Token other) {
+    return super.isSameTokenAs(other) && other is OTPToken && other.algorithm == algorithm && other.digits == digits && other.secret == secret;
   }
 
   @override

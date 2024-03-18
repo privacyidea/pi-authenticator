@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/extensions/color_extension.dart';
 
+import '../../extensions/color_extension.dart';
 import '../../l10n/app_localizations.dart';
 import '../../model/push_request.dart';
 import '../../model/tokens/push_token.dart';

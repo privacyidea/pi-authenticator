@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../utils/token_import_origins.dart';
-import '../view_interface.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/token_import/token_import_origin.dart';
+import '../../utils/token_import_origins.dart';
+import '../view_interface.dart';
 import 'pages/import_start_page.dart';
 import 'pages/select_import_type_page.dart';
 

@@ -11,6 +11,15 @@ class TokenOriginData {
   String data;
   TokenOriginData({required this.source, required this.data, this.appName});
 
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is TokenOriginData && other.source == source && other.appName == appName && other.data == data;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([source, appName, data]);
+
   // toString prints not data because it contains the secret
   @override
   String toString() => 'TokenOrigin{source: $source, app: $appName}';

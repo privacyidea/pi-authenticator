@@ -1,11 +1,12 @@
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
+
 import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';
 import '../../../model/enums/token_types.dart';
 import '../../../model/extensions/enum_extension.dart';
 import '../../../model/tokens/token.dart';
-import '../../../utils/crypto_utils.dart';
 import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/supported_versions.dart';
@@ -116,7 +117,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
 
   String algorithm = uri.queryParameters['algorithm'] ?? Algorithms.SHA1.asString; // Optional parameter
 
-  if (!Algorithms.SHA1.isString(algorithm) && !Algorithms.SHA256.isString(algorithm) && !Algorithms.SHA512.isString(algorithm)) {
+  if (Algorithms.values.firstWhereOrNull((element) => element.asString == algorithm) == null) {
     throw ArgumentError.value(
       uri,
       'uri',
@@ -153,15 +154,14 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
     secretAsString += '=';
   }
   secretAsString = secretAsString.toUpperCase();
-  if (!isValidEncoding(secretAsString, Encodings.base32)) {
+  final secret = Encodings.base32.tryDecode(secretAsString);
+  if (secret == null) {
     throw ArgumentError.value(
       uri,
       'uri',
       '[${Encodings.base32.asString}] is not a valid encoding for [$secretAsString].',
     );
   }
-
-  Uint8List secret = decodeSecretToUint8(secretAsString, Encodings.base32);
 
   uriMap[URI_SECRET] = secret;
 

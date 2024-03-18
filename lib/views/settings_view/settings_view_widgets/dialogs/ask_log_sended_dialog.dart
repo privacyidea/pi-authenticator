@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/logger.dart';
+import '../../../../widgets/dialog_widgets/default_dialog.dart';
 
 /// A dialog that asks the user if they sended the log. Clear logs if he did.
 class AskLogSendedDialog extends StatelessWidget {

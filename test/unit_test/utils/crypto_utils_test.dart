@@ -398,28 +398,28 @@ void _testPbkdf2() {
 void _testDecodeSecretToUint8() {
   group('decodeSecretToUint8', () {
     test('Test non hex secret', () {
-      expect(() => decodeSecretToUint8('oo', Encodings.hex), throwsFormatException);
-      expect(() => decodeSecretToUint8('1Aö', Encodings.hex), throwsFormatException);
+      expect(Encodings.hex.decode('oo'), throwsFormatException);
+      expect(Encodings.hex.decode('1Aö'), throwsFormatException);
     });
 
     test('Test hex secret', () {
-      expect(decodeSecretToUint8('ABCD', Encodings.hex), Uint8List.fromList([171, 205]));
-      expect(decodeSecretToUint8('0FF8', Encodings.hex), Uint8List.fromList([15, 248]));
+      expect(Encodings.hex.decode('ABCD'), Uint8List.fromList([171, 205]));
+      expect(Encodings.hex.decode('0FF8'), Uint8List.fromList([15, 248]));
     });
 
     test('Test non base32 secret', () {
-      expect(() => decodeSecretToUint8('p', Encodings.base32), throwsFormatException);
-      expect(() => decodeSecretToUint8('AAAAAAöA', Encodings.base32), throwsFormatException);
+      expect(Encodings.base32.decode('p'), throwsFormatException);
+      expect(Encodings.base32.decode('AAAAAAöA'), throwsFormatException);
     });
 
     test('Test base32 secret', () {
-      expect(decodeSecretToUint8('OBZGS5TBMN4Q====', Encodings.base32), Uint8List.fromList([112, 114, 105, 118, 97, 99, 121]));
-      expect(decodeSecretToUint8('JFCEKQI=', Encodings.base32), Uint8List.fromList([73, 68, 69, 65]));
+      expect(Encodings.base32.decode('OBZGS5TBMN4Q===='), Uint8List.fromList([112, 114, 105, 118, 97, 99, 121]));
+      expect(Encodings.base32.decode('JFCEKQI='), Uint8List.fromList([73, 68, 69, 65]));
     });
 
     test('Test utf-8 secret', () {
-      expect(decodeSecretToUint8('ABCD', Encodings.none), Uint8List.fromList([65, 66, 67, 68]));
-      expect(decodeSecretToUint8('DEG3', Encodings.none), Uint8List.fromList([68, 69, 71, 51]));
+      expect(Encodings.none.decode('ABCD'), Uint8List.fromList([65, 66, 67, 68]));
+      expect(Encodings.none.decode('DEG3'), Uint8List.fromList([68, 69, 71, 51]));
     });
   });
 }
@@ -427,18 +427,18 @@ void _testDecodeSecretToUint8() {
 void _testEncodeSecretAs() {
   group('encodeSecretAs', () {
     test('Test hex secret', () {
-      expect(encodeSecretAs(Uint8List.fromList([171, 205]), Encodings.hex), 'abcd');
-      expect(encodeSecretAs(Uint8List.fromList([15, 248]), Encodings.hex), '0ff8');
+      expect(Encodings.hex.encode(Uint8List.fromList([171, 205])), 'abcd');
+      expect(Encodings.hex.encode(Uint8List.fromList([15, 248])), '0ff8');
     });
 
     test('Test base32 secret', () {
-      expect(encodeSecretAs(Uint8List.fromList([112, 114, 105, 118, 97, 99, 121]), Encodings.base32), 'OBZGS5TBMN4Q====');
-      expect(encodeSecretAs(Uint8List.fromList([73, 68, 69, 65]), Encodings.base32), 'JFCEKQI=');
+      expect(Encodings.base32.encode(Uint8List.fromList([112, 114, 105, 118, 97, 99, 121])), 'OBZGS5TBMN4Q====');
+      expect(Encodings.base32.encode(Uint8List.fromList([73, 68, 69, 65])), 'JFCEKQI=');
     });
 
     test('Test utf-8 secret', () {
-      expect(encodeSecretAs(Uint8List.fromList([65, 66, 67, 68]), Encodings.none), 'ABCD');
-      expect(encodeSecretAs(Uint8List.fromList([68, 69, 71, 51]), Encodings.none), 'DEG3');
+      expect(Encodings.none.encode(Uint8List.fromList([65, 66, 67, 68])), 'ABCD');
+      expect(Encodings.none.encode(Uint8List.fromList([68, 69, 71, 51])), 'DEG3');
     });
   });
 }
@@ -446,13 +446,13 @@ void _testEncodeSecretAs() {
 void _testIsValidEncoding() {
   group('isValidEncoding', () {
     group('valid encodings', () {
-      test('valid hex', () => expect(isValidEncoding('abcd', Encodings.hex), true));
-      test('valid base32', () => expect(isValidEncoding('OBZGS5TBMN4Q====', Encodings.base32), true));
+      test('valid hex', () => expect(Encodings.hex.isValidEncoding('abcd'), true));
+      test('valid base32', () => expect(Encodings.base32.isValidEncoding('OBZGS5TBMN4Q===='), true));
     });
 
     group('invalid encodings', () {
-      test('invalid hex', () => expect(isValidEncoding('RXYZ', Encodings.hex), false));
-      test('invalid base32', () => expect(isValidEncoding('????', Encodings.base32), false));
+      test('invalid hex', () => expect(Encodings.hex.isValidEncoding('RXYZ'), false));
+      test('invalid base32', () => expect(Encodings.base32.isValidEncoding('????'), false));
     });
   });
 }

@@ -1,8 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/tokens/steam_token.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -13,8 +10,8 @@ import '../../model/enums/token_types.dart';
 import '../../model/tokens/day_password_token.dart';
 import '../../model/tokens/hotp_token.dart';
 import '../../model/tokens/otp_token.dart';
+import '../../model/tokens/steam_token.dart';
 import '../../model/tokens/totp_token.dart';
-import '../../utils/crypto_utils.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import 'add_token_manually_view_widgets/labeled_dropdown_button.dart';
@@ -100,7 +97,8 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
                 validator: (value) {
                   if (value!.isEmpty) {
                     return AppLocalizations.of(context)!.pleaseEnterASecretForThisToken;
-                  } else if (!isValidEncoding(value, _typeNotifier.value != TokenTypes.STEAM ? _encodingNotifier.value : Encodings.base32)) {
+                  } else if ((_typeNotifier.value == TokenTypes.STEAM && Encodings.base32.isValidEncoding(value)) ||
+                      (_typeNotifier.value != TokenTypes.STEAM && _encodingNotifier.value.isValidEncoding(value))) {
                     return AppLocalizations.of(context)!.theSecretDoesNotFitTheCurrentEncoding;
                   }
                   return null;
@@ -199,7 +197,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
       id: const Uuid().v4(),
       algorithm: _algorithmNotifier.value,
       digits: _digitsNotifier.value,
-      secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),
+      secret: _encodingNotifier.value.encodeAs(Encodings.base32, _secretController.text),
       origin: TokenOriginSourceType.manually.toTokenOrigin(),
     );
   }
@@ -210,7 +208,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
         id: const Uuid().v4(),
         algorithm: _algorithmNotifier.value,
         digits: _digitsNotifier.value,
-        secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),
+        secret: _encodingNotifier.value.encodeAs(Encodings.base32, _secretController.text),
         period: _periodNotifier.value,
         origin: TokenOriginSourceType.manually.toTokenOrigin(),
       );
@@ -221,7 +219,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
         id: const Uuid().v4(),
         algorithm: _algorithmNotifier.value,
         digits: _digitsNotifier.value,
-        secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),
+        secret: _encodingNotifier.value.encodeAs(Encodings.base32, _secretController.text),
         period: Duration(hours: _periodDayPasswordNotifier.value),
         origin: TokenOriginSourceType.manually.toTokenOrigin(),
       );
@@ -232,7 +230,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
         id: const Uuid().v4(),
         algorithm: Algorithms.SHA1,
         digits: 5,
-        secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, Encodings.base32), Encodings.base32),
+        secret: _encodingNotifier.value.encodeAs(Encodings.base32, _secretController.text),
         period: 30,
         origin: TokenOriginSourceType.manually.toTokenOrigin(),
       );

@@ -653,6 +653,56 @@ class MockFirebaseUtils extends _i1.Mock implements _i17.FirebaseUtils {
         returnValue: _i7.Future<String?>.value(),
         returnValueForMissingStub: _i7.Future<String?>.value(),
       ) as _i7.Future<String?>);
+
+  @override
+  _i7.Future<bool> deleteFirebaseToken() => (super.noSuchMethod(
+        Invocation.method(
+          #deleteFirebaseToken,
+          [],
+        ),
+        returnValue: _i7.Future<bool>.value(false),
+        returnValueForMissingStub: _i7.Future<bool>.value(false),
+      ) as _i7.Future<bool>);
+
+  @override
+  _i7.Future<void> setCurrentFirebaseToken(String? str) => (super.noSuchMethod(
+        Invocation.method(
+          #setCurrentFirebaseToken,
+          [str],
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
+
+  @override
+  _i7.Future<String?> getCurrentFirebaseToken() => (super.noSuchMethod(
+        Invocation.method(
+          #getCurrentFirebaseToken,
+          [],
+        ),
+        returnValue: _i7.Future<String?>.value(),
+        returnValueForMissingStub: _i7.Future<String?>.value(),
+      ) as _i7.Future<String?>);
+
+  @override
+  _i7.Future<void> setNewFirebaseToken(String? str) => (super.noSuchMethod(
+        Invocation.method(
+          #setNewFirebaseToken,
+          [str],
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
+
+  @override
+  _i7.Future<String?> getNewFirebaseToken() => (super.noSuchMethod(
+        Invocation.method(
+          #getNewFirebaseToken,
+          [],
+        ),
+        returnValue: _i7.Future<String?>.value(),
+        returnValueForMissingStub: _i7.Future<String?>.value(),
+      ) as _i7.Future<String?>);
 }
 
 /// A class which mocks [IntroductionRepository].
