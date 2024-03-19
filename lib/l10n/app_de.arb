@@ -524,6 +524,8 @@
   "importHintGoogleQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.",
   "importHintGoogleQrFile": "Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus dem Google Authenticator exportieren.\n!! Der QR-Code enthält die Token in unverschlüsselter Form. Es ist deshalb nicht sicher, diesen länger als nötig aufzubewahren !!",
   "importHintAuthenticatorProFile": "Um ein Backup der Authenticator Pro-App zu erstellen navigieren Sie zu den Einstellungen und tippen Sie auf \"Automatische Sicherung\". Wählen Sie einen Speicherort und setzen Sie ein Passwort. Anschließend drücken Sie auf \"Jetzt sichern\" um die Token zu exportieren.",
+  "importHintFreeOtpPlusQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie auf die drei Punkte in der Kachel des Tokens drücken, und wählen Sie \"QR-Code teilen\".",
+  "importHintFreeOtpPlusFile": "Um ein Backup der FreeOTP+ App zu erstellen, tippen Sie auf die drei Punkte in der oberen rechten Ecke und wählen Sie \"Exportieren\". Sie können zwischen dem JSON- und dem URI-Format wählen. Wir empfehlen, das Backup nach dem Importieren zu löschen, da es nicht verschlüsselt ist.",
   "qrFileDecodeError": "Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren. Bitte verwenden Sie stattdessen den QR-Code-Scanner.",
   "tokenLink": "Token Link",
   "feedback": "Feedback",

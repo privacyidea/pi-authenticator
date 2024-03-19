@@ -670,6 +670,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importHintAuthenticatorProFile => 'To create a backup of the Authenticator Pro app, navigate to the settings and tap on \"Auto backup\". Select a storage location and set a password. Then press \"Back up now\" to export the tokens.';
 
   @override
+  String get importHintFreeOtpPlusQrScan => 'Scan the QR code you receive when you press the three dots in the tile of the token and select \"Share QR code\".';
+
+  @override
+  String get importHintFreeOtpPlusFile => 'To create a backup of the FreeOTP+ app, tap on the three dots in the upper right corner and select \"Export\". You can choose between JSON and URI format. We recommend to delete the backup after importing it, because it is not encrypted.';
+
+  @override
   String get qrFileDecodeError => 'It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.';
 
   @override

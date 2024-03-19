@@ -670,6 +670,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get importHintAuthenticatorProFile => 'Chcete-li vytvořit zálohu aplikace Authenticator Pro, přejděte do nastavení a klepněte na položku \"Automatické zálohování\". Vyberte umístění úložiště a nastavte heslo. Poté stiskněte \"Zálohovat nyní\" a exportujte tokeny.';
 
   @override
+  String get importHintFreeOtpPlusQrScan => 'Naskenujte QR kód, který obdržíte po stisknutí tří teček na dlaždici tokenu, a vyberte možnost \"Sdílet QR kód\".';
+
+  @override
+  String get importHintFreeOtpPlusFile => 'Chcete-li vytvořit zálohu aplikace FreeOTP+, klepněte na tři tečky v pravém horním rohu a vyberte možnost \"Exportovat\". Můžete si vybrat mezi formátem JSON a URI. Zálohu doporučujeme po importu odstranit, protože není šifrovaná.';
+
+  @override
   String get qrFileDecodeError => 'Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.';
 
   @override

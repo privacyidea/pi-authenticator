@@ -670,6 +670,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get importHintAuthenticatorProFile => 'Aby utworzyć kopię zapasową aplikacji Authenticator Pro, przejdź do ustawień i dotknij \"Automatyczna kopia zapasowa\". Wybierz lokalizację przechowywania i ustaw hasło. Następnie naciśnij \"Utwórz teraz kopię zapasową\", aby wyeksportować tokeny.';
 
   @override
+  String get importHintFreeOtpPlusQrScan => 'Zeskanuj kod QR otrzymany po naciśnięciu trzech kropek na kafelku tokena i wybierz \"Udostępnij kod QR\".';
+
+  @override
+  String get importHintFreeOtpPlusFile => 'Aby utworzyć kopię zapasową aplikacji FreeOTP+, dotknij trzech kropek w prawym górnym rogu i wybierz \"Eksportuj\". Można wybrać format JSON lub URI. Zalecamy usunięcie kopii zapasowej po jej zaimportowaniu, ponieważ nie jest ona szyfrowana.';
+
+  @override
   String get qrFileDecodeError => 'Nie można było zdekodować kodu QR z wybranego obrazu, zamiast tego użyj skanera kodów QR.';
 
   @override

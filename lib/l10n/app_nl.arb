@@ -542,6 +542,8 @@
   "importHintGoogleQrScan": "Scan de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.",
   "importHintGoogleQrFile": "Selecteer een afbeeldingsbestand met de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.\n!! Let op: het is niet veilig om de QR-code op je apparaat op te slaan, omdat de tokens niet versleuteld zijn !!",
   "importHintAuthenticatorProFile": "Om een back-up te maken van de Authenticator Pro app, navigeer je naar de instellingen en tik je op \"Auto back-up\". Selecteer een opslaglocatie en stel een wachtwoord in. Druk vervolgens op \"Nu back-uppen\" om de tokens te exporteren.",
+  "importHintFreeOtpPlusQrScan": "Scan de QR-code die u ontvangt wanneer u op de drie stippen in de tegel van de token drukt en selecteer \"QR-code delen\".",
+  "importHintFreeOtpPlusFile": "Om een back-up van de FreeOTP+ app te maken, tikt u op de drie puntjes in de rechterbovenhoek en selecteert u \"Exporteren\". U kunt kiezen tussen JSON en URI formaat. We raden u aan de back-up te verwijderen na het importeren, omdat deze niet versleuteld is.",
   "qrFileDecodeError": "Het was niet mogelijk om de QR code te decoderen van de geselecteerde afbeelding, gebruik in plaats daarvan de QR code scanner.",
   "tokenLink": "tokenlink",
   "feedback": "Feedback",

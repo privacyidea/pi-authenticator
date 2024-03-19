@@ -71,15 +71,15 @@ class TokenImportOrigins {
     ),
     TokenImportOrigin(appName: 'Free OTP+', importSources: [
       TokenImportSource(
-          processor: const FreeOtpPlusQrProcessor(),
-          type: TokenImportType.qrScan,
-          importHint: (context) => 'Test' // AppLocalizations.of(context)!.importHintFreeOtpPlusQrScan,
-          ),
+        processor: const FreeOtpPlusQrProcessor(),
+        type: TokenImportType.qrScan,
+        importHint: (context) => AppLocalizations.of(context)!.importHintFreeOtpPlusQrScan,
+      ),
       TokenImportSource(
-          processor: const FreeOtpPlusFileProcessor(),
-          type: TokenImportType.backupFile,
-          importHint: (context) => 'Test' // AppLocalizations.of(context)!.importHintFreeOtpPlusFile,
-          ),
+        processor: const FreeOtpPlusFileProcessor(),
+        type: TokenImportType.backupFile,
+        importHint: (context) => AppLocalizations.of(context)!.importHintFreeOtpPlusFile,
+      ),
     ]),
   ];
 }
