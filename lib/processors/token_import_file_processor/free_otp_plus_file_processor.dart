@@ -13,6 +13,7 @@ import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
 
 import '../../utils/identifiers.dart';
+import '../../utils/token_import_origins.dart';
 import '../scheme_processors/token_import_scheme_processors/free_otp_plus_qr_processor.dart';
 import 'token_import_file_processor_interface.dart';
 
@@ -25,6 +26,8 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
   static const String _FREE_OTP_PLUS_PERIOD = 'period';
   static const String _FREE_OTP_PLUS_SECRET = 'secret'; // Base32 encoded
   static const String _FREE_OTP_PLUS_TYPE = 'type'; // String: "TOTP", "HOTP"
+  static const String _steamTokenIssuer = "Steam";
+  static const String _steamTokenType = "steam";
 
   const FreeOtpPlusFileProcessor();
 
@@ -68,8 +71,18 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
     for (final line in lines) {
       try {
         final uri = Uri.parse(line);
-        final result = await const FreeOtpPlusQrProcessor().processUri(uri);
-        results.addAll(result);
+        final uriResults = await const FreeOtpPlusQrProcessor().processUri(uri);
+        for (var result in uriResults) {
+          result = result.copyWith(
+            data: result.data!.copyWith(
+              origin: TokenOriginSourceType.backupFile.toTokenOrigin(
+                appName: TokenImportOrigins.freeOtpPlus.appName,
+                data: uri.toString(),
+              ),
+            ),
+          );
+          results.add(result);
+        }
       } catch (e) {
         results.add(ProcessorResult<Token>(
           success: false,
@@ -109,7 +122,7 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
   Map<String, dynamic> _jsonToUriMap(Map<String, dynamic> tokenJson) {
     return <String, dynamic>{
       /// Steam is a special case, its hardcoded in the original app.
-      URI_TYPE: tokenJson[_FREE_OTP_PLUS_ISSUER] == "Steam" ? 'steam' : tokenJson[_FREE_OTP_PLUS_TYPE].toLowerCase(),
+      URI_TYPE: tokenJson[_FREE_OTP_PLUS_ISSUER] == _steamTokenIssuer ? _steamTokenType : tokenJson[_FREE_OTP_PLUS_TYPE].toLowerCase(),
       URI_LABEL: tokenJson[_FREE_OTP_PLUS_LABEL],
       URI_SECRET: Uint8List.fromList((tokenJson[_FREE_OTP_PLUS_SECRET] as List).cast<int>()),
       URI_ISSUER: tokenJson[_FREE_OTP_PLUS_ISSUER],
@@ -118,7 +131,7 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
       URI_COUNTER: tokenJson[_FREE_OTP_PLUS_COUNTER],
       URI_PERIOD: tokenJson[_FREE_OTP_PLUS_PERIOD],
       URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-        appName: 'FreeOTP+',
+        appName: TokenImportOrigins.freeOtpPlus.appName,
         data: jsonEncode(tokenJson),
       ),
     };

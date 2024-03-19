@@ -67,7 +67,7 @@ class SteamToken extends TOTPToken {
       pin: pin ?? this.pin,
       isLocked: isLocked ?? this.isLocked,
       isHidden: isHidden ?? this.isHidden,
-      folderId: folderId?.call() ?? this.folderId,
+      folderId: folderId != null ? folderId() : this.folderId,
       origin: origin ?? this.origin,
     );
   }
