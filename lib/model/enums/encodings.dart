@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hex/hex.dart';

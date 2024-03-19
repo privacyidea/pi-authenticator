@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/globals.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../utils/globals.dart';
 
 import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';

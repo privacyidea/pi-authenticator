@@ -1,5 +1,5 @@
-import 'package:privacyidea_authenticator/model/processor_result.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import '../../model/processor_result.dart';
+import '../../model/tokens/token.dart';
 
 import '../scheme_processors/token_import_scheme_processors/otp_auth_migration_processor.dart';
 import '../token_import_file_processor/token_import_file_processor_interface.dart';

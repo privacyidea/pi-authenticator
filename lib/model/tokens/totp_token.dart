@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'token.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';

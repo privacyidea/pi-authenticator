@@ -3,12 +3,12 @@ import 'package:crypto/crypto.dart' show Hmac, sha1;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
-import '../extensions/int_extension.dart';
 import '../../utils/identifiers.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
 import '../extensions/enum_extension.dart';
+import '../extensions/int_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'token.dart';
 import 'totp_token.dart' show TOTPToken;

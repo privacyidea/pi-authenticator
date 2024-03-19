@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../model/extensions/color_extension.dart';
 import '../../l10n/app_localizations.dart';
+import '../../model/extensions/color_extension.dart';
 import '../../model/push_request.dart';
 import '../../model/tokens/push_token.dart';
 import '../../utils/globals.dart';

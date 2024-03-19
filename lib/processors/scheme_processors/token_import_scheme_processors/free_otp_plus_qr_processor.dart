@@ -1,4 +1,4 @@
-import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
+import 'otp_auth_processor.dart';
 
 import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';

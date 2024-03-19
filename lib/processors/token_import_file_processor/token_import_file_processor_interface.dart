@@ -1,5 +1,5 @@
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/model/processor_result.dart';
+import '../../model/processor_result.dart';
 
 import '../../model/tokens/token.dart';
 import '../../utils/logger.dart';
