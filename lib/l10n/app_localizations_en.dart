@@ -607,7 +607,7 @@ class AppLocalizationsEn extends AppLocalizations {
       locale: localeName,
       other: 'Failed to import $count tokens.',
       one: 'Failed to import a token.',
-      zero: 'Failed no token to import.',
+      zero: 'No token Failed to import.',
     );
     return '$_temp0';
   }
@@ -768,4 +768,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get askLogSendedDescription => 'Did you send the log, and do you want to clear it now?';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'The algorithm $algorithm is not supported';
+  }
 }

@@ -5,11 +5,14 @@ import 'dart:convert';
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../model/encryption/aes_encrypted.dart';
+import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
+import '../../utils/globals.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import 'token_import_file_processor_interface.dart';
@@ -119,6 +122,11 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
     for (Map<String, dynamic> twoFasToken in tokensJsonList) {
       try {
         results.add(ProcessorResult<Token>(success: true, data: Token.fromUriMap(_twoFasToUriMap(twoFasToken))));
+      } on LocalizedException catch (e) {
+        results.add(ProcessorResult<Token>(
+          success: false,
+          error: e.localizedMessage(AppLocalizations.of(await globalContext)!),
+        ));
       } catch (e) {
         results.add(ProcessorResult<Token>(success: false, error: e.toString()));
       }

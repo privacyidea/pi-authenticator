@@ -605,9 +605,9 @@ class AppLocalizationsCs extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to import $count tokens.',
-      one: 'Failed to import a token.',
-      zero: 'Failed no token to import.',
+      other: 'Nepodařilo se importovat $count tokenů.',
+      one: 'Nepodařilo se importovat token.',
+      zero: 'Žádný token Nepodařilo se importovat.',
     );
     return '$_temp0';
   }
@@ -768,4 +768,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get askLogSendedDescription => 'Odeslali jste protokol a chcete jej nyní vymazat?';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'Algoritmus $algorithm není podporován';
+  }
 }

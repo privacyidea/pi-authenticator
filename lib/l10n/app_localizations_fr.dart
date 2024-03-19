@@ -605,9 +605,9 @@ class AppLocalizationsFr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to import $count tokens.',
-      one: 'Failed to import a token.',
-      zero: 'Failed no token to import.',
+      other: 'Échec de l\'importation des jetons $count.',
+      one: 'Échec de l\'importation d\'un jeton.',
+      zero: 'Pas de jeton Échec de l\'importation.',
     );
     return '$_temp0';
   }
@@ -768,4 +768,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get askLogSendedDescription => 'Avez-vous envoyé le journal et voulez-vous l\'effacer maintenant ?';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'L\'algorithme $algorithm n\'est pas pris en charge';
+  }
 }

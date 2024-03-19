@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/utils/globals.dart';
 
 import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';
@@ -27,12 +29,10 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     Map<String, dynamic> uriMap;
     try {
       uriMap = _parseOtpToken(uri);
-    } on ArgumentError catch (e, s) {
-      // Error while parsing qr code.
-      Logger.warning('Malformed QR code:', name: 'token_notifier.dart#_handleOtpAuth', error: e, stackTrace: s);
-      //showMessage(message: '${e.message}\n Please inform the creator of this qr code about the problem.', duration: const Duration(seconds: 8));
-
-      return [ProcessorResult(success: false, error: e.message)];
+    } on LocalizedException catch (e) {
+      Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
+      final message = e.localizedMessage(AppLocalizations.of(await globalContext)!);
+      return [ProcessorResult(success: false, error: message)];
     }
     if (_is2StepURI(uri)) {
       validateMap(uriMap, [URI_SECRET, URI_ITERATIONS, URI_OUTPUT_LENGTH_IN_BYTES, URI_SALT_LENGTH]);
@@ -58,8 +58,11 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
       newToken = Token.fromUriMap(uriMap);
     } on FormatException catch (e) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
-      showMessage(message: e.message, duration: const Duration(seconds: 3));
       return [ProcessorResult(success: false, error: e.message)];
+    } catch (e, s) {
+      Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e, stackTrace: s);
+      showMessage(message: 'An error occurred while parsing the QR code.', duration: const Duration(seconds: 3));
+      return [const ProcessorResult(success: false, error: 'An error occurred while parsing the QR code.')];
     }
     return [ProcessorResult(success: true, data: newToken)];
   }
@@ -117,14 +120,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
   }
 
   String algorithm = uri.queryParameters['algorithm'] ?? Algorithms.SHA1.asString; // Optional parameter
-
-  if (Algorithms.values.firstWhereOrNull((element) => element.asString == algorithm) == null) {
-    throw ArgumentError.value(
-      uri,
-      'uri',
-      'The algorithm [$algorithm] is not supported',
-    );
-  }
+  algorithm = AlgorithmsExtension.fromString(algorithm).asString; // Validate algorithm, throw error if not supported.
 
   uriMap[URI_ALGORITHM] = algorithm;
 

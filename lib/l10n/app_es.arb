@@ -530,6 +530,7 @@
   "invalidQrScan": "El código QR escaneado no es una copia de seguridad válida de {appName}",
   "invalidQrFile": "El archivo seleccionado no contiene un código QR válido de {appName}",
   "invalidLink": "El enlace introducido no es un token válido de {appName}, o no es compatible",
+  "importFailedToken": "{count, plural, zero{No token Fallo al importar.} one{Error al importar un token.} other{Error al importar {count} tokens.}}",
   "importExistingToken": "{count, plural, zero{No se ha encontrado ningún token que ya esté en la aplicación.} one{Se ha encontrado un token que ya existe en la aplicación.} other{Se han encontrado {count} tokens que ya están en la aplicación.}}",
   "importConflictToken": "{count, plural, zero{No hay conflicto con tokens que ya existen.} one{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.} other{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.}}",
   "importNewToken": "{count, plural, zero{No se ha encontrado un nuevo token.} one{Se ha encontrado un nuevo token que se importará.} other{Se ha encontrado un nuevo token {count} que se importará.}}",
@@ -592,5 +593,13 @@
   "licenses": "Licencias",
   "optionalMessage": "Mensaje opcional",
   "confirmation": "confirmación",
-  "askLogSendedDescription": "¿Ha enviado el registro y desea borrarlo ahora?"
+  "askLogSendedDescription": "¿Ha enviado el registro y desea borrarlo ahora?",
+  "algorithmUnsupported": "El algoritmo {algorithm} no es compatible",
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
+  }
 }

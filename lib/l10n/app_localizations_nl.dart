@@ -605,9 +605,9 @@ class AppLocalizationsNl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to import $count tokens.',
-      one: 'Failed to import a token.',
-      zero: 'Failed no token to import.',
+      other: 'Kan $count tokens niet importeren.',
+      one: 'Kan geen token importeren.',
+      zero: 'Geen token Niet geïmporteerd.',
     );
     return '$_temp0';
   }
@@ -768,4 +768,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get askLogSendedDescription => 'Heb je het logboek verzonden en wil je het nu wissen?';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'Het algoritme $algorithm wordt niet ondersteund';
+  }
 }

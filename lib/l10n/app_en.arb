@@ -524,7 +524,7 @@
   "invalidQrScan": "The scanned QR code is not a valid backup of {appName}.",
   "invalidQrFile": "The selected file does not contain a valid QR code from {appName}.",
   "invalidLink": "The link entered is not a valid token of {appName}, or it is not supported.",
-  "importFailedToken": "{count, plural, zero{Failed no token to import.} one{Failed to import a token.} other{Failed to import {count} tokens.}}",
+  "importFailedToken": "{count, plural, zero{No token Failed to import.} one{Failed to import a token.} other{Failed to import {count} tokens.}}",
   "importExistingToken": "{count, plural, zero{No token was found that is already in the application.} one{A token was found that already exists in the application.} other{{count} tokens was found that are already in the application.}}",
   "importConflictToken": "{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with existing tokens.\nPlease select which one you would like to keep.} other{There are conflicts with existing tokens.\nPlease select the tokens you wish to keep.}}",
   "importNewToken": "{count, plural, zero{No new token has been found.} one{A new token has been found and is being imported.} other{{count} new tokens have been found and will be imported.}}",
@@ -588,5 +588,13 @@
   "licenses": "Licenses",
   "optionalMessage": "Optional message",
   "confirmation": "Confirmation",
-  "askLogSendedDescription": "Did you send the log, and do you want to clear it now?"
+  "askLogSendedDescription": "Did you send the log, and do you want to clear it now?",
+  "algorithmUnsupported": "The algorithm {algorithm} is not supported",
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
+  }
 }

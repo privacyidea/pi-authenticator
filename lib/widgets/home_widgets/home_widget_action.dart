@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../extensions/color_extension.dart';
+import '../../model/extensions/color_extension.dart';
 import '../../utils/home_widget_utils.dart';
 import 'interfaces/flutter_home_widget_base.dart';
 import 'interfaces/flutter_home_widget_builder.dart';

@@ -22,7 +22,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get patchNotesV4_3_0NewFeatures2 => 'Feedback-Option zu den Einstellungen hinzugefügt.';
 
   @override
-  String get patchNotesV4_3_0NewFeatures3 => 'Push-Tokens können jetzt aus der Token-Liste ausgeblendet werden.';
+  String get patchNotesV4_3_0NewFeatures3 => 'Push-Token können jetzt aus der Token-Liste ausgeblendet werden.';
 
   @override
   String get patchNotesV4_3_0NewFeatures4 => 'Es wurden Einführungen hinzugefügt, um neuen Benutzern den Einstieg zu erleichtern.';
@@ -605,9 +605,9 @@ class AppLocalizationsDe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to import $count tokens.',
-      one: 'Failed to import a token.',
-      zero: 'Failed no token to import.',
+      other: 'Der Import von $count Token ist fehlgeschlagen.',
+      one: 'Importieren eines Tokens fehlgeschlagen.',
+      zero: 'Kein Token konnte nicht importiert werden.',
     );
     return '$_temp0';
   }
@@ -734,7 +734,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Bitte synchronisieren Sie die Push Token über die Einstellungen manuell, wenn eine Netzwerkverbindung verfügbar ist.';
 
   @override
-  String get pushTokens => 'Push-Tokens';
+  String get pushTokens => 'Push-Token';
 
   @override
   String get continueButton => 'Weiter';
@@ -768,4 +768,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get askLogSendedDescription => 'Haben Sie das Protokoll gesendet, und möchten Sie es jetzt löschen?';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'Der Algorithmus $algorithm wird nicht unterstützt';
+  }
 }

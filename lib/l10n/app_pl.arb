@@ -528,6 +528,7 @@
   "invalidQrScan": "Zeskanowany kod QR nie jest prawidłową kopią zapasową {appName}.",
   "invalidQrFile": "Wybrany plik nie zawiera prawidłowego kodu QR z {appName}.",
   "invalidLink": "Wprowadzony link nie jest prawidłowym tokenem {appName} lub nie jest obsługiwany.",
+  "importFailedToken": "{count, plural, zero{Nie udało się zaimportować tokenu.} one{Nie udało się zaimportować tokena.} other{Nie udało się zaimportować {count} tokenów.}}",
   "importExistingToken": "{count, plural, zero{Nie znaleziono tokena, który już znajduje się w aplikacji.} one{Znaleziono token, który już istnieje w aplikacji.} other{Znaleziono {count} tokenów, które już znajdują się w aplikacji.}}",
   "importConflictToken": "{count, plural, zero{Nie ma konfliktu z tokenami, które już istnieją.} one{Istnieje konflikt z tokenami, które już istnieją.} other{Istnieje konflikt z tokenami, które już istnieją.}}",
   "importNewToken": "{count, plural, zero{Nie znaleziono nowego tokena.} one{Znaleziono nowy token, który zostanie zaimportowany.} other{Znaleziono nowy token {count}, który zostanie zaimportowany.}}",
@@ -590,5 +591,13 @@
   "licenses": "Licencja",
   "optionalMessage": "Opcjonalna wiadomość",
   "confirmation": "potwierdzenie",
-  "askLogSendedDescription": "Czy wysłałeś dziennik i czy chcesz go teraz wyczyścić?"
+  "askLogSendedDescription": "Czy wysłałeś dziennik i czy chcesz go teraz wyczyścić?",
+  "algorithmUnsupported": "Algorytm {algorithm} nie jest obsługiwany",
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
+  }
 }

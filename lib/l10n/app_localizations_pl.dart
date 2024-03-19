@@ -605,9 +605,9 @@ class AppLocalizationsPl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to import $count tokens.',
-      one: 'Failed to import a token.',
-      zero: 'Failed no token to import.',
+      other: 'Nie udało się zaimportować $count tokenów.',
+      one: 'Nie udało się zaimportować tokena.',
+      zero: 'Nie udało się zaimportować tokenu.',
     );
     return '$_temp0';
   }
@@ -768,4 +768,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get askLogSendedDescription => 'Czy wysłałeś dziennik i czy chcesz go teraz wyczyścić?';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'Algorytm $algorithm nie jest obsługiwany';
+  }
 }

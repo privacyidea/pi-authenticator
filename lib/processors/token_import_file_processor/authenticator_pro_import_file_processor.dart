@@ -11,10 +11,12 @@ import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../model/encryption/aes_encrypted.dart';
 import '../../model/encryption/uint_8_buffer.dart';
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
+import '../../utils/globals.dart';
 import 'token_import_file_processor_interface.dart';
 
 class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
@@ -192,6 +194,11 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
 
         final token = Token.fromUriMap(uriMap);
         result.add(ProcessorResult<Token>(success: true, data: token));
+      } on LocalizedException catch (e) {
+        result.add(ProcessorResult<Token>(
+          success: false,
+          error: e.localizedMessage(AppLocalizations.of(await globalContext)!),
+        ));
       } catch (e) {
         result.add(ProcessorResult<Token>(success: false, error: e.toString()));
       }

@@ -155,7 +155,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
                         ConflictedImportTokensList(
                           title: AppLocalizations.of(context)!.importConflictToken(conflictedImports.length),
                           titlePadding: const EdgeInsets.symmetric(horizontal: 40),
-                          leadingDivider: false,
+                          leadingDivider: widget.failedImports.isNotEmpty,
                           importEntries: conflictedImports,
                           updateImportTokenEntry: _updateImportTokenEntry,
                         ),

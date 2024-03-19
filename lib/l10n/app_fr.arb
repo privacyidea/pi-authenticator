@@ -535,6 +535,7 @@
   "invalidQrScan": "Le code QR scanné n'est pas une sauvegarde valide de {appName}",
   "invalidQrFile": "Le fichier sélectionné ne contient pas de code QR valide de {appName}",
   "invalidLink": "Le lien saisi n'est pas un jeton valide de {appName}, ou il n'est pas pris en charge",
+  "importFailedToken": "{count, plural, zero{Pas de jeton Échec de l'importation.} one{Échec de l'importation d'un jeton.} other{Échec de l'importation des jetons {count}.}}",
   "importExistingToken": "{count, plural, zero{Aucun jeton déjà présent dans l'application n'a été trouvé.} one{Un jeton qui existe déjà dans l'application a été trouvé.} other{Des jetons {count} déjà présents dans l'application ont été trouvés.}}",
   "importConflictToken": "{count, plural, zero{Il n'y a pas de conflit avec des tokens déjà existants.} one{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.} other{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.}}",
   "importNewToken": "{count, plural, zero{Aucun nouveau token n'a été trouvé.} one{Un nouveau token a été trouvé et sera importé.} other{Aucun {count} nouveau token a été trouvé et sera importé.}}",
@@ -597,5 +598,13 @@
   "licenses": "Licences",
   "optionalMessage": "Message optionnel",
   "confirmation": "Confirmation",
-  "askLogSendedDescription": "Avez-vous envoyé le journal et voulez-vous l'effacer maintenant ?"
+  "askLogSendedDescription": "Avez-vous envoyé le journal et voulez-vous l'effacer maintenant ?",
+  "algorithmUnsupported": "L'algorithme {algorithm} n'est pas pris en charge",
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
+  }
 }

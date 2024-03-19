@@ -531,6 +531,7 @@
   "invalidQrScan": "De gescande QR code is geen geldige backup van {appName}.",
   "invalidQrFile": "Het geselecteerde bestand bevat geen geldige QR code van {appName}.",
   "invalidLink": "De ingevoerde link is geen geldig token van {appName}, of wordt niet ondersteund.",
+  "importFailedToken": "{count, plural, zero{Geen token Niet geïmporteerd.} one{Kan geen token importeren.} other{Kan {count} tokens niet importeren.}}",
   "importExistingToken": "{count, plural, zero{Er is geen token gevonden dat al in de toepassing aanwezig is.} one{Er is een token gevonden dat al bestaat in de applicatie.} other{{count} tokens gevonden die al in de applicatie staan.}}",
   "importConflictToken": "{count, plural, zero{Er is geen conflict met tokens die al bestaan.} one{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.} other{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.}}",
   "importNewToken": "{count, plural, zero{Er is geen nieuw token gevonden.} one{Er is een nieuw token gevonden dat zal worden geïmporteerd.} other{Er is een nieuw token {count} gevonden dat zal worden geïmporteerd.}}",
@@ -593,5 +594,13 @@
   "licenses": "Licenties",
   "optionalMessage": "Optioneel bericht",
   "confirmation": "Bevestiging",
-  "askLogSendedDescription": "Heb je het logboek verzonden en wil je het nu wissen?"
+  "askLogSendedDescription": "Heb je het logboek verzonden en wil je het nu wissen?",
+  "algorithmUnsupported": "Het algoritme {algorithm} wordt niet ondersteund",
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
+  }
 }

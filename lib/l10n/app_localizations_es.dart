@@ -605,9 +605,9 @@ class AppLocalizationsEs extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to import $count tokens.',
-      one: 'Failed to import a token.',
-      zero: 'Failed no token to import.',
+      other: 'Error al importar $count tokens.',
+      one: 'Error al importar un token.',
+      zero: 'No token Fallo al importar.',
     );
     return '$_temp0';
   }
@@ -768,4 +768,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get askLogSendedDescription => '¿Ha enviado el registro y desea borrarlo ahora?';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'El algoritmo $algorithm no es compatible';
+  }
 }

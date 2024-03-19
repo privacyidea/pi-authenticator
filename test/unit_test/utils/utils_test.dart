@@ -56,10 +56,10 @@ void _testSplitPeriodically() {
 
 void _testMapStringToAlgorithm() {
   group('mapStringToAlgorithm', () {
-    test('Test SHA1', () => expect(mapStringToAlgorithm('SHA1'), Algorithms.SHA1));
-    test('Test SHA256', () => expect(mapStringToAlgorithm('SHA256'), Algorithms.SHA256));
-    test('Test SHA512', () => expect(mapStringToAlgorithm('SHA512'), Algorithms.SHA512));
-    test('Test invalid', () => expect(() => mapStringToAlgorithm('invalid'), throwsArgumentError));
+    test('Test SHA1', () => expect(AlgorithmsExtension.fromString('SHA1'), Algorithms.SHA1));
+    test('Test SHA256', () => expect(AlgorithmsExtension.fromString('SHA256'), Algorithms.SHA256));
+    test('Test SHA512', () => expect(AlgorithmsExtension.fromString('SHA512'), Algorithms.SHA512));
+    test('Test invalid', () => expect(() => AlgorithmsExtension.fromString('invalid'), throwsArgumentError));
   });
 }
 

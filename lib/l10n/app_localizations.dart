@@ -1234,7 +1234,7 @@ abstract class AppLocalizations {
   /// No description provided for @importFailedToken.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, zero{Failed no token to import.} one{Failed to import a token.} other{Failed to import {count} tokens.}}'**
+  /// **'{count, plural, zero{No token Failed to import.} one{Failed to import a token.} other{Failed to import {count} tokens.}}'**
   String importFailedToken(num count);
 
   /// No description provided for @importExistingToken.
@@ -1488,6 +1488,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Did you send the log, and do you want to clear it now?'**
   String get askLogSendedDescription;
+
+  /// No description provided for @algorithmUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'The algorithm {algorithm} is not supported'**
+  String algorithmUnsupported(Object algorithm);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

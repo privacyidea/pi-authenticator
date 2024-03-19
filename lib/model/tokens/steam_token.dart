@@ -3,7 +3,7 @@ import 'package:crypto/crypto.dart' show Hmac, sha1;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../extensions/int_extension.dart';
+import '../extensions/int_extension.dart';
 import '../../utils/identifiers.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';

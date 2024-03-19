@@ -534,6 +534,7 @@
   "invalidQrScan": "Naskenovaný QR kód není platnou zálohou {appName}.",
   "invalidQrFile": "Vybraný soubor neobsahuje platný QR kód z {appName}.",
   "invalidLink": "Zadaný odkaz není platným tokenem {appName} nebo není podporován.",
+  "importFailedToken": "{count, plural, zero{Žádný token Nepodařilo se importovat.} one{Nepodařilo se importovat token.} other{Nepodařilo se importovat {count} tokenů.}}",
   "importExistingToken": "{count, plural, zero{Nebyl nalezen žádný token, který by se již v aplikaci nacházel.} one{Byl nalezen token, který již v aplikaci existuje.} other{{count} byly nalezeny tokeny, které se již v aplikaci nacházejí.}}",
   "importConflictToken": "{count, plural, zero{Není žádný konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.}}",
   "importNewToken": "{count, plural, zero{Nenalezen žádný nový token.} one{Nalezen nový token, který bude importován.} other{Nalezen nový token {count}, který bude importován.}}",
@@ -596,5 +597,13 @@
   "licenses": "Licence",
   "optionalMessage": "Volitelná zpráva",
   "confirmation": "Potvrzení",
-  "askLogSendedDescription": "Odeslali jste protokol a chcete jej nyní vymazat?"
+  "askLogSendedDescription": "Odeslali jste protokol a chcete jej nyní vymazat?",
+  "algorithmUnsupported": "Algoritmus {algorithm} není podporován",
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
+  }
 }

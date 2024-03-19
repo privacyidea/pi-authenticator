@@ -5,12 +5,15 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:file_selector/file_selector.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/model/processor_result.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
+import 'package:privacyidea_authenticator/utils/globals.dart';
 
 import '../../utils/identifiers.dart';
+import '../scheme_processors/token_import_scheme_processors/free_otp_plus_qr_processor.dart';
 import 'token_import_file_processor_interface.dart';
 
 class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
@@ -22,8 +25,6 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
   static const String _FREE_OTP_PLUS_PERIOD = 'period';
   static const String _FREE_OTP_PLUS_SECRET = 'secret'; // Base32 encoded
   static const String _FREE_OTP_PLUS_TYPE = 'type'; // String: "TOTP", "HOTP"
-  static const String _steamTokenIssuer = "Steam";
-  static const String _steamTokenHost = "steam";
 
   const FreeOtpPlusFileProcessor();
 
@@ -63,7 +64,20 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
       // ignore: empty_catches
     } catch (e) {}
     List<String> lines = content.split('\n')..removeWhere((element) => element.isEmpty);
-    return _processOtpAuth(lines);
+    final results = <ProcessorResult<Token>>[];
+    for (final line in lines) {
+      try {
+        final uri = Uri.parse(line);
+        final result = await const FreeOtpPlusQrProcessor().processUri(uri);
+        results.addAll(result);
+      } catch (e) {
+        results.add(ProcessorResult<Token>(
+          success: false,
+          error: e.toString(),
+        ));
+      }
+    }
+    return results;
   }
 
   Future<List<ProcessorResult<Token>>> _processJson(Map<String, dynamic> json) async {
@@ -84,10 +98,10 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
         success: true,
         data: Token.fromUriMap(_jsonToUriMap(tokenJson)),
       );
-    } catch (e) {
+    } on LocalizedException catch (e) {
       return ProcessorResult<Token>(
         success: false,
-        error: e.toString(),
+        error: e.localizedMessage(AppLocalizations.of(await globalContext)!),
       );
     }
   }
@@ -108,38 +122,5 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
         data: jsonEncode(tokenJson),
       ),
     };
-  }
-
-  Future<List<ProcessorResult<Token>>> _processOtpAuth(List<String> lines) async {
-    final results = <ProcessorResult<Token>>[];
-    const processor = OtpAuthProcessor();
-    for (var line in lines) {
-      log('Processing line: $line');
-      var uri = Uri.parse(line);
-      final issuer = _parseIssuer(uri);
-      if (issuer == _steamTokenIssuer) {
-        uri = uri.replace(host: _steamTokenHost);
-      }
-      log('Processing URI: $uri');
-      final result = await processor.processUri(uri);
-      results.addAll(result);
-    }
-    return results;
-  }
-
-  /// Parse the label and the issuer (if it exists) from the url.
-  String _parseIssuer(Uri uri) {
-    String param = uri.path.substring(1);
-    param = Uri.decodeFull(param);
-    try {
-      if (param.contains(':')) {
-        List split = param.split(':');
-        return split[0];
-      } else {
-        return _parseIssuer(uri);
-      }
-    } catch (_) {
-      return '';
-    }
   }
 }

@@ -14,7 +14,10 @@ import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
+import '../../l10n/app_localizations.dart';
+import '../../model/enums/algorithms.dart';
 import '../../model/processor_result.dart';
+import '../../utils/globals.dart';
 import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';
 
@@ -108,7 +111,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
     }
   }
 
-  List<ProcessorResult<Token>> _processPlain(Map<String, dynamic> json) {
+  Future<List<ProcessorResult<Token>>> _processPlain(Map<String, dynamic> json) async {
     final results = <ProcessorResult<Token>>[];
     if (json['db']['version'] != 2) {
       throw Exception('Unsupported backup version: ${json['db']['version']}.');
@@ -137,6 +140,11 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           ),
         };
         results.add(ProcessorResult<Token>(success: true, data: Token.fromUriMap(entryUriMap)));
+      } on LocalizedException catch (e) {
+        results.add(ProcessorResult<Token>(
+          success: false,
+          error: e.localizedMessage(AppLocalizations.of(await globalContext)!),
+        ));
       } catch (e) {
         results.add(ProcessorResult<Token>(success: false, error: e.toString()));
         Logger.warning('Failed to parse token.', name: '_processPlain#OtpAuthImportFileProcessor');

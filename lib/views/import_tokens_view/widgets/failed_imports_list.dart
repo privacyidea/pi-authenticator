@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../l10n/app_localizations.dart';
 
@@ -12,21 +14,41 @@ class FailedImportsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        children: [
-          Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Text(
             AppLocalizations.of(context)!.importFailedToken(failedImports.length),
+            textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          const SizedBox(height: 8),
-          for (var i = 0; i < failedImports.length; i++)
-            Text(
-              '${i + 1}. ${failedImports[i]}',
+        ),
+        for (var i = 0; i < failedImports.length; i++)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: Text(
+                    '${i + 1}.',
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  flex: 5,
+                  child: Text(
+                    '${failedImports[i]}',
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ],
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
