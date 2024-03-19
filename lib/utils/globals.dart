@@ -53,3 +53,4 @@ Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKey() async {
 }
 
 final policyStatementUri = Uri.parse("https://netknights.it/en/privacy-statement/");
+final piAuthenticatorGitHubUri = Uri.parse("https://github.com/privacyidea/pi-authenticator");

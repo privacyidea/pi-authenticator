@@ -137,6 +137,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get systemTheme => 'Utiliser le thème de l\'appareil';
 
   @override
+  String get someTokensDoNotSupportPolling => 'Certains jetons sont obsolètes et ne supportent pas l\'interrogation due serveur.';
+
+  @override
   String get enablePolling => 'Activer l\'interrogation du serveur.';
 
   @override
@@ -779,4 +782,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String algorithmUnsupported(Object algorithm) {
     return 'L\'algorithme $algorithm n\'est pas pris en charge';
   }
+
+  @override
+  String get thisAppIsOpenSource => 'Cette application est open source\nRendez-nous visite sur GitHub';
 }

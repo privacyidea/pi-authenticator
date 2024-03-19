@@ -137,6 +137,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get systemTheme => 'Použít nastavení systému';
 
   @override
+  String get someTokensDoNotSupportPolling => 'Některé tokeny jsou zastaralé a nepodporují polling';
+
+  @override
   String get enablePolling => 'Povolit polling';
 
   @override
@@ -779,4 +782,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String algorithmUnsupported(Object algorithm) {
     return 'Algoritmus $algorithm není podporován';
   }
+
+  @override
+  String get thisAppIsOpenSource => 'Tato aplikace má otevřený zdrojový kód\nNavštivte nás na GitHub';
 }

@@ -151,6 +151,12 @@
   "@systemTheme": {
     "description": "The systems theme."
   },
+  "someTokensDoNotSupportPolling": "Some of the tokens are outdated and do not support polling",
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
+  },
   "enablePolling": "Enable polling",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
@@ -598,5 +604,6 @@
         "example": "MD5"
       }
     }
-  }
+  },
+  "thisAppIsOpenSource": "This Application is Open Source\nVisit us on GitHub"
 }

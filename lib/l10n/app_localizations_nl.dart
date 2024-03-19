@@ -137,6 +137,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get systemTheme => 'Gebruik thema van het apparaat';
 
   @override
+  String get someTokensDoNotSupportPolling => 'Sommige tokens zijn verouderd en ondersteunen geen actief zoeken';
+
+  @override
   String get enablePolling => 'Zoeken aanzetten';
 
   @override
@@ -779,4 +782,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String algorithmUnsupported(Object algorithm) {
     return 'Het algoritme $algorithm wordt niet ondersteund';
   }
+
+  @override
+  String get thisAppIsOpenSource => 'Deze app is open source\nBezoek ons op GitHub';
 }

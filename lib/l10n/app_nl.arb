@@ -155,6 +155,12 @@
   "@systemTheme": {
     "description": "The systems theme."
   },
+  "someTokensDoNotSupportPolling": "Sommige tokens zijn verouderd en ondersteunen geen actief zoeken",
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
+  },
   "enablePolling": "Zoeken aanzetten",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
@@ -604,5 +610,6 @@
         "example": "MD5"
       }
     }
-  }
+  },
+  "thisAppIsOpenSource": "Deze app is open source\nBezoek ons op GitHub"
 }

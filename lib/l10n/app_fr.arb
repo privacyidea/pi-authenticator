@@ -161,6 +161,12 @@
   "@systemTheme": {
     "description": "The systems theme."
   },
+  "someTokensDoNotSupportPolling": "Certains jetons sont obsolètes et ne supportent pas l'interrogation due serveur.",
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
+  },
   "enablePolling": "Activer l'interrogation du serveur.",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
@@ -608,5 +614,6 @@
         "example": "MD5"
       }
     }
-  }
+  },
+  "thisAppIsOpenSource": "Cette application est open source\nRendez-nous visite sur GitHub"
 }

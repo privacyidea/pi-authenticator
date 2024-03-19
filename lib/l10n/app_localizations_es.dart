@@ -137,6 +137,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get systemTheme => 'Utilizar el tema del teléfono';
 
   @override
+  String get someTokensDoNotSupportPolling => 'Algunos tokens están obsoletos y no admiten la consulta activa para la autenticación mediante mensaje push.';
+
+  @override
   String get enablePolling => 'Activar polling';
 
   @override
@@ -779,4 +782,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String algorithmUnsupported(Object algorithm) {
     return 'El algoritmo $algorithm no es compatible';
   }
+
+  @override
+  String get thisAppIsOpenSource => 'Esta aplicación es de código abierto\nVisítanos en GitHub';
 }

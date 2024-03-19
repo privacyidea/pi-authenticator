@@ -161,6 +161,12 @@
   "@systemTheme": {
     "description": "The systems theme."
   },
+  "someTokensDoNotSupportPolling": "Některé tokeny jsou zastaralé a nepodporují polling",
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
+  },
   "enablePolling": "Povolit polling",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
@@ -607,5 +613,6 @@
         "example": "MD5"
       }
     }
-  }
+  },
+  "thisAppIsOpenSource": "Tato aplikace má otevřený zdrojový kód\nNavštivte nás na GitHub"
 }

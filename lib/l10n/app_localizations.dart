@@ -355,6 +355,12 @@ abstract class AppLocalizations {
   /// **'Use device\'s theme'**
   String get systemTheme;
 
+  /// Tells the user, that the following tokens do not support polling.
+  ///
+  /// In en, this message translates to:
+  /// **'Some of the tokens are outdated and do not support polling'**
+  String get someTokensDoNotSupportPolling;
+
   /// Name of the setting switch that enables polling.
   ///
   /// In en, this message translates to:
@@ -1506,6 +1512,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The algorithm {algorithm} is not supported'**
   String algorithmUnsupported(Object algorithm);
+
+  /// No description provided for @thisAppIsOpenSource.
+  ///
+  /// In en, this message translates to:
+  /// **'This Application is Open Source\nVisit us on GitHub'**
+  String get thisAppIsOpenSource;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

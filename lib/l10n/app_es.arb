@@ -159,6 +159,12 @@
   "@systemTheme": {
     "description": "The systems theme."
   },
+  "someTokensDoNotSupportPolling": "Algunos tokens están obsoletos y no admiten la consulta activa para la autenticación mediante mensaje push.",
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
+  },
   "enablePolling": "Activar polling",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
@@ -603,5 +609,6 @@
         "example": "MD5"
       }
     }
-  }
+  },
+  "thisAppIsOpenSource": "Esta aplicación es de código abierto\nVisítanos en GitHub"
 }

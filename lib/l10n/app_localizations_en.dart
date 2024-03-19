@@ -137,6 +137,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get systemTheme => 'Use device\'s theme';
 
   @override
+  String get someTokensDoNotSupportPolling => 'Some of the tokens are outdated and do not support polling';
+
+  @override
   String get enablePolling => 'Enable polling';
 
   @override
@@ -779,4 +782,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String algorithmUnsupported(Object algorithm) {
     return 'The algorithm $algorithm is not supported';
   }
+
+  @override
+  String get thisAppIsOpenSource => 'This Application is Open Source\nVisit us on GitHub';
 }
