@@ -30,7 +30,6 @@ import 'package:privacyidea_authenticator/views/add_token_manually_view/add_toke
 import 'package:privacyidea_authenticator/views/import_tokens_view/import_tokens_view.dart';
 import 'package:privacyidea_authenticator/views/license_view/license_view.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
-import 'package:privacyidea_authenticator/views/onboarding_view/onboarding_view.dart';
 import 'package:privacyidea_authenticator/views/push_token_view/push_tokens_view.dart';
 import 'package:privacyidea_authenticator/views/qr_scanner_view/qr_scanner_view.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
@@ -93,9 +92,6 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
               ),
           MainView.routeName: (context) => MainView(
                 appIcon: _customization.appIcon,
-                appName: _customization.appName,
-              ),
-          OnboardingView.routeName: (context) => OnboardingView(
                 appName: _customization.appName,
               ),
           PushTokensView.routeName: (context) => const PushTokensView(),

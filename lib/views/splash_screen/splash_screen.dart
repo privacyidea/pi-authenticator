@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../model/enums/introduction.dart';
 import '../../utils/app_info_utils.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import '../main_view/main_view.dart';
-import '../onboarding_view/onboarding_view.dart';
 import '../view_interface.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -65,6 +63,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         eagerError: true,
         cleanUp: (error) {
           Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
+          _navigate();
         },
       ).then((values) => _navigate());
     });
@@ -99,8 +98,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   void _pushReplace() {
-    final isFirstRun = ref.read(introductionProvider).isConditionFulfilled(ref, Introduction.introductionScreen) && ref.read(settingsProvider).isFirstRun;
-    final ViewWidget nextView = isFirstRun ? OnboardingView(appName: widget.appName) : MainView(appName: widget.appName, appIcon: widget.appIcon);
+    final ViewWidget nextView = MainView(appName: widget.appName, appIcon: widget.appIcon);
     final routeBuilder = SplashScreen._initialView == null
         ? PageRouteBuilder(
             pageBuilder: (_, __, ___) => nextView,

@@ -31,7 +31,6 @@ import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view.dart';
 import 'package:privacyidea_authenticator/views/license_view/license_view.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
-import 'package:privacyidea_authenticator/views/onboarding_view/onboarding_view.dart';
 import 'package:privacyidea_authenticator/views/qr_scanner_view/qr_scanner_view.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
 import 'package:privacyidea_authenticator/views/splash_screen/splash_screen.dart';
@@ -81,9 +80,6 @@ class CustomizationAuthenticator extends ConsumerWidget {
             SplashScreen.routeName: (context) => SplashScreen(
                   appIcon: applicationCustomizer.appIcon,
                   appImage: applicationCustomizer.appImage,
-                  appName: applicationCustomizer.appName,
-                ),
-            OnboardingView.routeName: (context) => OnboardingView(
                   appName: applicationCustomizer.appName,
                 ),
             MainView.routeName: (context) => MainView(
