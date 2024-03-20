@@ -1,6 +1,7 @@
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: constant_identifier_names, empty_catches
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
@@ -8,8 +9,10 @@ import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/token_types.dart';
 import 'package:privacyidea_authenticator/model/extensions/enum_extension.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/token_import_origins.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/encryption/aes_encrypted.dart';
@@ -57,41 +60,55 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
 
   @override
   Future<bool> fileIsValid({required XFile file}) async {
+    final contentBytes = await file.readAsBytes();
     try {
-      final content = await file.readAsString();
-      return json.decode(content)['Authenticators'] != null;
+      final contentString = utf8.decode(contentBytes);
+      try {
+        if (json.decode(contentString)['Authenticators'] != null) return true;
+      } catch (e) {}
+      try {
+        if (contentString.startsWith('<!doctype html>')) return true;
+      } catch (e) {}
+      try {
+        if (Uri.tryParse(contentString.split('\n').first) != null) return true;
+        return false;
+      } catch (e) {}
     } catch (e) {
       try {
-        final content = await file.readAsBytes();
         final headerByteLength = utf8.encode(header).length;
-        final importedHeader = content.sublist(0, headerByteLength);
+        final importedHeader = contentBytes.sublist(0, headerByteLength);
         final fileHeader = utf8.decode(importedHeader);
         if (fileHeader == header || fileHeader == headerLegacy) {
           return true;
         }
-        return false;
-      } catch (e) {
-        return false;
-      }
+      } catch (e) {}
     }
+
+    return false;
   }
 
   @override
   Future<bool> fileNeedsPassword({required XFile file}) async {
+    final contentBytes = await file.readAsBytes();
     try {
-      final content = await file.readAsString();
-      json.decode(content);
+      final asd = utf8.decode(contentBytes);
+      log(asd);
+      return false;
     } catch (e) {
-      final content = await file.readAsBytes();
       final headerByteLength = utf8.encode(header).length;
-      content.sublist(0, headerByteLength);
-      return true;
+      final fileHeaderBytes = contentBytes.sublist(0, headerByteLength);
+      final fileHeader = utf8.decode(fileHeaderBytes);
+      log(fileHeader);
+      if (fileHeader == header || fileHeader == headerLegacy) {
+        return true;
+      }
     }
     return false;
   }
 
   @override
   Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
+    var results = <ProcessorResult<Token>>[];
     try {
       final bytes = await file.readAsBytes();
       Uint8Buffer uint8buffer = Uint8Buffer(data: bytes);
@@ -103,10 +120,17 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         headerLegacy => await _processLegacy(uint8buffer: uint8buffer, password: password ?? ''),
         _ => utf8.decode(bytes),
       };
-      return _processPlain(fileContent: plainText);
+      results = await _processPlain(fileContent: plainText);
     } catch (e) {
       return [];
     }
+    return results.map((t) {
+      if (!t.success || t.data?.origin == null) return t;
+      return ProcessorResult<Token>(
+          success: true,
+          data: TokenOriginSourceType.backupFile
+              .addOriginToToken(token: t.data!, data: t.data!.origin!.data, appName: TokenImportOrigins.authenticatorPro.appName));
+    }).toList();
   }
 
   Future<String> _process({required Uint8Buffer uint8buffer, required String password}) async {
@@ -166,8 +190,57 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   }
 
   Future<List<ProcessorResult<Token>>> _processPlain({required String fileContent}) async {
-    Logger.info('Processing plain file', name: 'authenticator_pro_import_file_processor#_processPlain');
-    final tokensMap = (json.decode(fileContent)['Authenticators'].cast<Map<String, dynamic>>()) as List<Map<String, dynamic>>;
+    try {
+      final tokensMap = (json.decode(fileContent)['Authenticators'].cast<Map<String, dynamic>>()) as List<Map<String, dynamic>>;
+      return _processAuthPro(tokensMap: tokensMap);
+    } catch (e) {
+      try {
+        final lines = fileContent.split('\n').where((e) => e.isNotEmpty).map((e) => Uri.parse(e)).toList();
+        return _processUriList(lines: lines);
+      } catch (e) {
+        if (fileContent.startsWith('<!doctype html>')) {
+          return _processHtml(fileContent: fileContent);
+        }
+      }
+    }
+    return [];
+  }
+
+  Future<List<ProcessorResult<Token>>> _processUriList({required List<Uri> lines}) async {
+    final results = <ProcessorResult<Token>>[];
+    for (var uri in lines) {
+      try {
+        final newResults = await const OtpAuthProcessor().processUri(uri);
+        results.addAll(newResults);
+      } on LocalizedException catch (e) {
+        results.add(ProcessorResult<Token>(success: false, error: e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+      } catch (e) {
+        results.add(ProcessorResult<Token>(success: false, error: e.toString()));
+      }
+    }
+    return results;
+  }
+
+  Future<List<ProcessorResult<Token>>> _processHtml({required String fileContent}) async {
+    RegExp exp = RegExp(r'(?<=(\<code\>)).*(?=(\<\/code\>))');
+    final results = <ProcessorResult<Token>>[];
+    try {
+      final matches = exp.allMatches(fileContent);
+      for (var match in matches) {
+        final uri = Uri.parse(match.group(0)!);
+        final newResults = await const OtpAuthProcessor().processUri(uri);
+        results.addAll(newResults);
+      }
+    } on LocalizedException catch (e) {
+      results.add(ProcessorResult<Token>(success: false, error: e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+    } catch (e) {
+      results.add(ProcessorResult<Token>(success: false, error: e.toString()));
+    }
+    return results;
+  }
+
+  Future<List<ProcessorResult<Token>>> _processAuthPro({required List<Map<String, dynamic>> tokensMap}) async {
+    Logger.info('Processing plain file', name: 'authenticator_pro_import_file_processor#_processAuthPro');
     final result = <ProcessorResult<Token>>[];
     for (var tokenMap in tokensMap) {
       try {
@@ -187,7 +260,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
           URI_ALGORITHM: algorithmMap[tokenMap[_AUTHENTICATOR_PRO_ALGORITHM] as int],
           URI_COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER] as int,
           URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-            appName: 'Authenticator Pro',
+            appName: TokenImportOrigins.authenticatorPro.appName,
             data: jsonEncode(tokenMap),
           ),
         };
