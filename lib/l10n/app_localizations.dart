@@ -1518,6 +1518,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This Application is Open Source\nVisit us on GitHub'**
   String get thisAppIsOpenSource;
+
+  /// No description provided for @invalidArgument.
+  ///
+  /// In en, this message translates to:
+  /// **'{argument} is not a valid value for {type}'**
+  String invalidArgument(Object argument, Object type);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

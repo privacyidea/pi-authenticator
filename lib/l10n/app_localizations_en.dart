@@ -785,4 +785,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get thisAppIsOpenSource => 'This Application is Open Source\nVisit us on GitHub';
+
+  @override
+  String invalidArgument(Object argument, Object type) {
+    return '$argument is not a valid value for $type';
+  }
 }

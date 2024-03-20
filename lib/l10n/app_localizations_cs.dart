@@ -785,4 +785,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get thisAppIsOpenSource => 'Tato aplikace má otevřený zdrojový kód\nNavštivte nás na GitHub';
+
+  @override
+  String invalidArgument(Object argument, Object type) {
+    return '$argument is not a valid value for $type';
+  }
 }

@@ -56,37 +56,34 @@ extension AlgorithmsExtension on Algorithms {
         'SHA256' => Algorithms.SHA256,
         'SHA512' => Algorithms.SHA512,
         _ => throw LocalizedArgumentError(
-            message: (l, algo) => l.algorithmUnsupported(algo),
-            invalidValue: algoAsString,
+            localizedMessage: (l, algo, name) => l.algorithmUnsupported(algo),
             unlocalizedMessage: 'The algorithm [$algoAsString] is not supported',
-          ),
+            invalidValue: algoAsString,
+            name: 'Algorithm'),
       };
 }
 
-class LocalizedArgumentError extends LocalizedException implements ArgumentError {
-  final dynamic _invalidValue;
+class LocalizedArgumentError<T> extends LocalizedException implements ArgumentError {
+  final T _invalidValue;
   final String? _name;
   final StackTrace? _stackTrace;
-  final String Function(AppLocalizations localizations, dynamic value) messageGetter;
 
   factory LocalizedArgumentError({
-    required String Function(AppLocalizations localizations, dynamic value) message,
+    required String Function(AppLocalizations localizations, T value, String name) localizedMessage,
     required String unlocalizedMessage,
-    required dynamic invalidValue,
-    String? name,
+    required T invalidValue,
+    required String name,
     StackTrace? stackTrace,
   }) =>
       LocalizedArgumentError._(
-        messageGetter: message,
         unlocalizedMessage: unlocalizedMessage,
-        localizedMessage: (localizations) => message(localizations, invalidValue),
+        localizedMessage: (localizations) => localizedMessage(localizations, invalidValue, name),
         invalidValue: invalidValue,
         name: name,
         stackTrace: stackTrace,
       );
 
   const LocalizedArgumentError._({
-    required this.messageGetter,
     required super.unlocalizedMessage,
     required super.localizedMessage,
     required dynamic invalidValue,

@@ -36,6 +36,7 @@ import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart
 import 'package:privacyidea_authenticator/views/splash_screen/splash_screen.dart';
 import 'package:privacyidea_authenticator/widgets/app_wrapper.dart';
 
+import '../model/enums/app_feature.dart';
 import '../utils/home_widget_utils.dart';
 import '../views/feedback_view/feedback_view.dart';
 
@@ -93,14 +94,11 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
           MainView.routeName: (context) => MainView(
                 appIcon: _customization.appIcon,
                 appName: _customization.appName,
+                disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
               ),
           PushTokensView.routeName: (context) => const PushTokensView(),
           SettingsView.routeName: (context) => const SettingsView(),
-          SplashScreen.routeName: (context) => SplashScreen(
-                appImage: _customization.appImage,
-                appIcon: _customization.appIcon,
-                appName: _customization.appName,
-              ),
+          SplashScreen.routeName: (context) => SplashScreen(customization: _customization),
           QRScannerView.routeName: (context) => const QRScannerView(),
         },
       );

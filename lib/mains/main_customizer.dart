@@ -36,6 +36,8 @@ import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart
 import 'package:privacyidea_authenticator/views/splash_screen/splash_screen.dart';
 import 'package:privacyidea_authenticator/widgets/app_wrapper.dart';
 
+import '../model/enums/app_feature.dart';
+
 void main() async {
   Logger.init(
       navigatorKey: globalNavigatorKey,
@@ -78,13 +80,12 @@ class CustomizationAuthenticator extends ConsumerWidget {
           initialRoute: SplashScreen.routeName,
           routes: {
             SplashScreen.routeName: (context) => SplashScreen(
-                  appIcon: applicationCustomizer.appIcon,
-                  appImage: applicationCustomizer.appImage,
-                  appName: applicationCustomizer.appName,
+                  customization: applicationCustomizer,
                 ),
             MainView.routeName: (context) => MainView(
                   appIcon: applicationCustomizer.appIcon,
                   appName: applicationCustomizer.appName,
+                  disablePatchNotes: applicationCustomizer.disabledFeatures.contains(AppFeature.patchNotes),
                 ),
             SettingsView.routeName: (context) => const SettingsView(),
             AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),

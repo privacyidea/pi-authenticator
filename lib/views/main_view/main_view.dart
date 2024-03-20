@@ -27,8 +27,9 @@ class MainView extends ConsumerStatefulView {
 
   final Widget appIcon;
   final String appName;
+  final bool disablePatchNotes;
 
-  const MainView({required this.appIcon, required this.appName, super.key});
+  const MainView({required this.appIcon, required this.appName, required this.disablePatchNotes, super.key});
 
   @override
   ConsumerState<MainView> createState() => _MainViewState();
@@ -41,7 +42,7 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
   void initState() {
     super.initState();
     final latestStartedVersion = globalRef?.read(settingsProvider).latestStartedVersion;
-    if (latestStartedVersion == null) return;
+    if (latestStartedVersion == null || widget.disablePatchNotes) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       PatchNotesUtils.showPatchNotesIfNeeded(context, latestStartedVersion);
     });
