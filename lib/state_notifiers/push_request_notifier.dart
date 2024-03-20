@@ -24,11 +24,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/push_request_repository.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
+import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
 import '../model/states/push_request_state.dart';
@@ -335,7 +338,19 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     if (pushRequest.accepted! == false) {
       body["decline"] = "1";
     }
-    Response response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
+    Response response;
+    try {
+      response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
+    } catch (e) {
+      Logger.warning('Sending push request response failed. Retrying.', name: 'token_widgets.dart#handleReaction');
+      try {
+        response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
+      } catch (e) {
+        Logger.warning('Sending push request response failed consistently.', name: 'token_widgets.dart#handleReaction', error: e);
+        globalRef?.read(statusMessageProvider.notifier).state = (AppLocalizations.of(await globalContext)!.connectionFailed, null);
+        return false;
+      }
+    }
     if (response.statusCode != 200) {
       Logger.warning('Sending push request response failed.', name: 'token_widgets.dart#handleReaction');
       return false;
