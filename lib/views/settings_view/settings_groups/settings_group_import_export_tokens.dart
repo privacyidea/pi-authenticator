@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:privacyidea_authenticator/model/encryption/token_encryption.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/lock_auth.dart';
@@ -239,7 +241,7 @@ class _ExportTokensDialogState extends ConsumerState<ExportTokensDialog> {
                             final encryptedTokens = await TokenEncryption.encrypt(tokens: tokensToEncrypt, password: textController.text);
                             if (!context.mounted) return;
                             final isExported = await _saveToFile(context, encryptedTokens);
-                            if (context.mounted) Navigator.of(context).pop(isExported);
+                            if (context.mounted && isExported) Navigator.of(context).pop(true);
                           }
                         : null,
                     child: Text(AppLocalizations.of(context)!.export)),
@@ -247,17 +249,15 @@ class _ExportTokensDialogState extends ConsumerState<ExportTokensDialog> {
             : [],
       );
   Future<bool> _saveToFile(BuildContext context, String encryptedTokens) async {
-    // save to downloads folder
+    if (kIsWeb) return false;
+    if (Platform.isAndroid) return _saveToFileAndroid(context, encryptedTokens);
+    if (Platform.isIOS) return _saveToFileIOS(context, encryptedTokens);
+    return false;
+  }
+
+  Future<bool> _saveToFileAndroid(BuildContext context, String encryptedTokens) async {
     try {
-      final time = DateTime.now();
-      final timeString = '${time.year}'
-          '-${time.month}'
-          '-${time.day}'
-          '_${time.hour.toString().padLeft(2, '0')}'
-          '${time.minute.toString().padLeft(2, '0')}'
-          '${time.second.toString().padLeft(2, '0')}';
-      final appName = PrivacyIDEAAuthenticator.currentCustomization!.appName;
-      final path = 'storage/emulated/0/Download/${appName}_backup_$timeString.json'.replaceAll(RegExp(r'\s'), '-');
+      final path = 'storage/emulated/0/Download/${_getFileName()}'.replaceAll(RegExp(r'\s'), '-');
       final file = File(path);
       await file.writeAsString(encryptedTokens);
 
@@ -267,5 +267,28 @@ class _ExportTokensDialogState extends ConsumerState<ExportTokensDialog> {
       if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.errorSavingFile)));
       return false;
     }
+  }
+
+  Future<bool> _saveToFileIOS(BuildContext context, String encryptedTokens) async {
+    final Directory? downloadsDir = await getDownloadsDirectory();
+    if (downloadsDir == null) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.errorSavingFile)));
+      return false;
+    }
+    final file = File('${downloadsDir.path}/${_getFileName()}');
+    try {
+      await file.writeAsString(encryptedTokens);
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedToDownloadsFolder)));
+      return true;
+    } catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.errorSavingFile)));
+      return false;
+    }
+  }
+
+  String _getFileName() {
+    final time = DateTime.now();
+    final appName = PrivacyIDEAAuthenticator.currentCustomization!.appName;
+    return '${appName}_backup_${time.year}-${time.month}-${time.day}_${time.hour.toString().padLeft(2, '0')}${time.minute.toString().padLeft(2, '0')}${time.second.toString().padLeft(2, '0')}.json';
   }
 }
