@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/model/encryption/token_encryption.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/utils/lock_auth.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
@@ -26,11 +27,11 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
   @override
   Widget build(BuildContext context) {
     return SettingsGroup(
-      title: 'Import/Export Tokens',
+      title: AppLocalizations.of(context)!.importExportTokens,
       children: [
         SettingsListTileButton(
           title: Text(
-            'Export non-privacyIDEA tokens to file',
+            AppLocalizations.of(context)!.exportNonPrivacyIDEATokens,
             style: Theme.of(context).textTheme.titleMedium,
             maxLines: 2,
             overflow: TextOverflow.fade,
@@ -83,34 +84,46 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
     final tokens = ref.read(tokenProvider).nonPiTokens;
     final exportEveryToken = tokens.length == _selectedTokens.length && _selectedTokens.containsAll(tokens);
     return DefaultDialog(
-      title: const Text('Select tokens to export'),
+      title: Text(AppLocalizations.of(context)!.selectTokensToExport),
       content: SizedBox(
         width: ref.watch(appConstraintsProvider)!.maxWidth * 0.8,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: (tokens.isEmpty)
-              ? const Text('No tokens available')
+              ? Text(
+                  AppLocalizations.of(context)!.noTokensToExport,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                )
               : Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ...[
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          const Expanded(
-                            flex: 2,
-                            child: Text(
-                              'Export all tokens',
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            if (exportEveryToken) {
+                              _selectedTokens.clear();
+                            } else {
+                              _selectedTokens = tokens.toSet();
+                            }
+                          });
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.exportAllTokens,
                               textAlign: TextAlign.right,
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Checkbox(
-                                value: exportEveryToken,
-                                onChanged: ((value) => setState(() => value == true ? _selectedTokens = tokens.toSet() : _selectedTokens.clear()))),
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Checkbox(
+                                  value: exportEveryToken,
+                                  onChanged: ((value) => setState(() => value == true ? _selectedTokens = tokens.toSet() : _selectedTokens.clear()))),
+                            ),
+                          ],
+                        ),
                       ),
                       Flexible(
                         child: SingleChildScrollView(
@@ -149,14 +162,20 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         TextButton(
-          onPressed: () async {
-            final isExported = await _showExportDialog();
-            if (isExported == true && context.mounted) Navigator.of(context).pop(isExported);
-          },
-          child: const Text('Export'),
+          onPressed: _selectedTokens.isNotEmpty
+              ? () async {
+                  final tokenFolder = ref.read(tokenFolderProvider).folders.where((folder) => folder.isLocked).toList();
+                  final containsLocked = _selectedTokens.any((token) => token.isLocked || tokenFolder.any((folder) => folder.folderId == token.folderId));
+                  final authenticated = (!containsLocked || await lockAuth(localizedReason: AppLocalizations.of(context)!.exportLockedTokenReason));
+                  if (!authenticated) return;
+                  final isExported = await _showExportDialog();
+                  if (isExported == true && context.mounted) Navigator.of(context).pop(isExported);
+                }
+              : null,
+          child: Text(AppLocalizations.of(context)!.export),
         ),
       ],
     );
@@ -178,38 +197,54 @@ class ExportTokensDialog extends ConsumerStatefulWidget {
 
 class _ExportTokensDialogState extends ConsumerState<ExportTokensDialog> {
   final textController = TextEditingController();
+  bool exportPressed = false;
   @override
   Widget build(BuildContext context) => DefaultDialog(
-        title: const Text('Export Tokens'),
+        title: Text(AppLocalizations.of(context)!.exportTokens),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Please choose a Password to encrypt the tokens'),
-            TextField(
-              controller: textController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-              ),
-            ),
-          ],
+          children: (!exportPressed)
+              ? [
+                  Text(AppLocalizations.of(context)!.enterPasswordToEncrypt),
+                  TextField(
+                    controller: textController,
+                    onChanged: (value) => setState(() {}),
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.password,
+                    ),
+                  ),
+                ]
+              : [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(AppLocalizations.of(context)!.exportingTokens),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: LinearProgressIndicator(),
+                  ),
+                ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-              onPressed: textController.text.isNotEmpty
-                  ? () async {
-                      final tokensToEncrypt = widget.tokens ?? ref.read(tokenProvider).tokens;
-                      final encryptedTokens = await TokenEncryption.encrypt(tokens: tokensToEncrypt, password: textController.text);
-                      if (!context.mounted) return;
-                      final isExported = await _saveToFile(context, encryptedTokens);
-                      if (context.mounted) Navigator.of(context).pop(isExported);
-                    }
-                  : null,
-              child: const Text('Export')),
-        ],
+        actions: exportPressed == false
+            ? [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text(AppLocalizations.of(context)!.cancel),
+                ),
+                TextButton(
+                    onPressed: textController.text.isNotEmpty
+                        ? () async {
+                            setState(() => exportPressed = true);
+                            final tokensToEncrypt = widget.tokens ?? ref.read(tokenProvider).tokens;
+                            final encryptedTokens = await TokenEncryption.encrypt(tokens: tokensToEncrypt, password: textController.text);
+                            if (!context.mounted) return;
+                            final isExported = await _saveToFile(context, encryptedTokens);
+                            if (context.mounted) Navigator.of(context).pop(isExported);
+                          }
+                        : null,
+                    child: Text(AppLocalizations.of(context)!.export)),
+              ]
+            : [],
       );
   Future<bool> _saveToFile(BuildContext context, String encryptedTokens) async {
     // save to downloads folder
@@ -226,10 +261,10 @@ class _ExportTokensDialogState extends ConsumerState<ExportTokensDialog> {
       final file = File(path);
       await file.writeAsString(encryptedTokens);
 
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('File saved to downloads folder')));
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedToDownloadsFolder)));
       return true;
     } catch (e) {
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Could not save file:$e')));
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.errorSavingFile)));
       return false;
     }
   }

@@ -5,6 +5,9 @@ import 'package:cryptography/cryptography.dart';
 import 'package:flutter/foundation.dart';
 
 class AesEncrypted {
+  static final defaultMacAlgorithm = Hmac.sha256();
+  static const defaultIterations = 100000;
+  static const defaultBits = 256;
   // Key derivation
   final KdfAlgorithm kdf;
   final Uint8List salt;
@@ -33,9 +36,9 @@ class AesEncrypted {
     final plainBytes = utf8.encode(data);
     final cypher = AesGcm.with256bits();
     final kdf = Pbkdf2(
-      macAlgorithm: Hmac.sha256(),
-      iterations: 10000,
-      bits: 256,
+      macAlgorithm: defaultMacAlgorithm,
+      iterations: defaultIterations,
+      bits: defaultBits,
     );
     final salt = Uint8List.fromList(List.generate(16, (index) => index));
     final iv = Uint8List.fromList(List.generate(16, (index) => index));
@@ -97,9 +100,9 @@ class AesEncrypted {
       iv: base64Decode(json['iv']),
       mac: Mac(base64Decode(json['mac'])),
       kdf: Pbkdf2(
-        macAlgorithm: Hmac.sha256(),
-        iterations: 10000,
-        bits: 256,
+        macAlgorithm: defaultMacAlgorithm,
+        iterations: defaultIterations,
+        bits: defaultBits,
       ),
       cypher: AesGcm.with256bits(),
     );

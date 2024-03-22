@@ -276,10 +276,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// Shows a token and returns the updated token if successful, the old token if not and null if the token does not exist or the user is not authenticated.
   Future<T?> showToken<T extends Token>(T token) async {
     final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
-    if (!authenticated) {
-      updatingTokensMutex.release();
-      return null;
-    }
+    if (!authenticated) return null;
     final updated = await _updateToken(token, (p0) => p0.copyWith(isHidden: false) as T);
     if (updated?.isHidden == false) {
       _hidingTimers[token.id]?.cancel();

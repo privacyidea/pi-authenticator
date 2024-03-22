@@ -616,5 +616,17 @@
         "example": "number"
       }
     }
-  }
+  },
+  "importExportTokens": "Import/Export tokens",
+  "exportNonPrivacyIDEATokens": "Export non-privacyIDEA tokens",
+  "selectTokensToExport": "Select the tokens you want to export",
+  "noTokensToExport": "No tokens to export",
+  "exportAllTokens": "Export all tokens",
+  "export": "Export",
+  "exportingTokens": "Exporting tokens...",
+  "exportTokens": "Export tokens",
+  "enterPasswordToEncrypt": "Enter a password to encrypt the tokens",
+  "exportLockedTokenReason": "Please authenticate to export locked tokens.",
+  "fileSavedToDownloadsFolder": "File saved to Downloads folder",
+  "errorSavingFile": "Saving to file failed"
 }

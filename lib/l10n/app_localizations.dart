@@ -1524,6 +1524,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{argument} is not a valid value for {type}'**
   String invalidArgument(Object argument, Object type);
+
+  /// No description provided for @importExportTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Import/Export tokens'**
+  String get importExportTokens;
+
+  /// No description provided for @exportNonPrivacyIDEATokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Export non-privacyIDEA tokens'**
+  String get exportNonPrivacyIDEATokens;
+
+  /// No description provided for @selectTokensToExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the tokens you want to export'**
+  String get selectTokensToExport;
+
+  /// No description provided for @noTokensToExport.
+  ///
+  /// In en, this message translates to:
+  /// **'No tokens to export'**
+  String get noTokensToExport;
+
+  /// No description provided for @exportAllTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Export all tokens'**
+  String get exportAllTokens;
+
+  /// No description provided for @export.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get export;
+
+  /// No description provided for @exportingTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Exporting tokens...'**
+  String get exportingTokens;
+
+  /// No description provided for @exportTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Export tokens'**
+  String get exportTokens;
+
+  /// No description provided for @enterPasswordToEncrypt.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a password to encrypt the tokens'**
+  String get enterPasswordToEncrypt;
+
+  /// No description provided for @exportLockedTokenReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Please authenticate to export locked tokens.'**
+  String get exportLockedTokenReason;
+
+  /// No description provided for @fileSavedToDownloadsFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'File saved to Downloads folder'**
+  String get fileSavedToDownloadsFolder;
+
+  /// No description provided for @errorSavingFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving to file failed'**
+  String get errorSavingFile;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -790,4 +790,40 @@ class AppLocalizationsEs extends AppLocalizations {
   String invalidArgument(Object argument, Object type) {
     return '$argument is not a valid value for $type';
   }
+
+  @override
+  String get importExportTokens => 'Import/Export tokens';
+
+  @override
+  String get exportNonPrivacyIDEATokens => 'Export non-privacyIDEA tokens';
+
+  @override
+  String get selectTokensToExport => 'Select the tokens you want to export';
+
+  @override
+  String get noTokensToExport => 'No tokens to export';
+
+  @override
+  String get exportAllTokens => 'Export all tokens';
+
+  @override
+  String get export => 'Export';
+
+  @override
+  String get exportingTokens => 'Exporting tokens...';
+
+  @override
+  String get exportTokens => 'Export tokens';
+
+  @override
+  String get enterPasswordToEncrypt => 'Enter a password to encrypt the tokens';
+
+  @override
+  String get exportLockedTokenReason => 'Please authenticate to export locked tokens.';
+
+  @override
+  String get fileSavedToDownloadsFolder => 'File saved to Downloads folder';
+
+  @override
+  String get errorSavingFile => 'Saving to file failed';
 }
