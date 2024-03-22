@@ -17,7 +17,7 @@ extension EncodingsExtension on Encodings {
         Encodings.hex => HEX.encode(data),
       };
 
-  String encodeAs(Encodings encoding, String data) => encoding.encode(decode(data));
+  String encodeStringTo(Encodings encoding, String data) => encoding.encode(decode(data));
 
   Uint8List decode(String string) => switch (this) {
         Encodings.none => utf8.encode(string),
@@ -31,6 +31,15 @@ extension EncodingsExtension on Encodings {
       return true;
     } catch (_) {
       return false;
+    }
+  }
+
+  bool isInvalidEncoding(String string) {
+    try {
+      decode(string);
+      return false;
+    } catch (_) {
+      return true;
     }
   }
 

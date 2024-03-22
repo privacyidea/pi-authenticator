@@ -39,7 +39,7 @@ class DefaultDialog extends StatelessWidget {
           buttonPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
           insetPadding: const EdgeInsets.fromLTRB(16, 32, 16, 12),
           titlePadding: const EdgeInsets.all(12),
-          contentPadding: const EdgeInsets.all(16),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
           elevation: 2,
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.start,

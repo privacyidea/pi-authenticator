@@ -29,6 +29,8 @@ class TokenState {
     _sort(this.tokens);
   }
 
+  List<Token> get nonPiTokens => tokens.where((token) => token.isPrivacyIdeaToken == false).toList();
+
   PushToken? getTokenBySerial(String serial) => pushTokens.firstWhereOrNull((element) => element.serial == serial);
 
   /// Maps the given tokens to the tokens that are already in the state

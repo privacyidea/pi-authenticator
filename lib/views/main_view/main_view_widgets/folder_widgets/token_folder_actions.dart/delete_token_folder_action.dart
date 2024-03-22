@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -61,7 +59,6 @@ class DeleteTokenFolderAction extends StatelessWidget {
             TextButton(
               onPressed: () {
                 final tokens = globalRef?.read(tokenProvider).tokensInFolder(folder);
-                log('Deleting folder: ${folder.label} with ${tokens?.length} tokens', name: 'delete_token_folder_action.dart');
                 if (tokens == null) return;
                 globalRef?.read(tokenProvider.notifier).updateTokens(tokens, (p0) => p0.copyWith(folderId: () => null));
                 globalRef?.read(tokenFolderProvider.notifier).removeFolder(folder);

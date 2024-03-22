@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../model/processor_result.dart';
@@ -25,12 +23,10 @@ class ImportPlainTokensPage extends ConsumerStatefulWidget {
     required String appName,
     required TokenImportType selectedType,
   }) {
-    final importedTokens = processorResults.where((e) => e.success && e.data != null).map((e) => e.data!).toList();
+    final importedTokens = processorResults.where((e) => e.success && e.resultData != null).map((e) => e.resultData!).toList();
     final failedImports = processorResults
         .where((e) {
-          log('Checking import: ${e.error}');
           if (e.success) return false;
-          log('Failed import: ${e.error}');
           return !e.success && e.error != null;
         })
         .map((e) => e.error!)
@@ -104,7 +100,6 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateIsMaxScrollExtent();
     });
-    log('Failed imports: ${widget.failedImports}');
 
     final List<ImportTokenEntry> conflictedImports = [];
     final List<ImportTokenEntry> newImports = [];

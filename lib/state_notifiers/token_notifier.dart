@@ -618,14 +618,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
       return;
     }
     List<Token> tokens = await _tokensFromUri(uri);
-    tokens = tokens.map((e) => TokenOriginSourceType.qrScan.addOriginToToken(token: e, data: qrCode)).toList();
+    tokens = tokens.map((e) => TokenOriginSourceType.qrScan.addOriginToToken(token: e, data: qrCode, isPrivacyIdeaToken: null)).toList();
     await _addOrReplaceTokens(tokens);
     await _handlePushTokensIfExist();
   }
 
   Future<void> handleLink(Uri uri) async {
     List<Token> tokens = await _tokensFromUri(uri);
-    tokens = tokens.map((e) => TokenOriginSourceType.link.addOriginToToken(token: e, data: uri.toString())).toList();
+    tokens = tokens.map((e) => TokenOriginSourceType.link.addOriginToToken(token: e, data: uri.toString(), isPrivacyIdeaToken: null)).toList();
     await _addOrReplaceTokens(tokens);
     await _handlePushTokensIfExist();
   }
@@ -634,7 +634,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     List<Token>? tokens;
     try {
       final results = await TokenImportSchemeProcessor.processUriByAny(uri);
-      tokens = results?.where((element) => element.success && element.data != null).map((e) => e.data!).toList();
+      tokens = results?.where((element) => element.success && element.resultData != null).map((e) => e.resultData!).toList();
     } catch (_) {}
     return tokens ?? [];
   }

@@ -1,17 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uuid/uuid.dart';
+import 'package:privacyidea_authenticator/mains/main_netknights.dart';
+import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
-import '../../model/enums/token_origin_source_type.dart';
 import '../../model/enums/token_types.dart';
-import '../../model/tokens/day_password_token.dart';
-import '../../model/tokens/hotp_token.dart';
-import '../../model/tokens/otp_token.dart';
-import '../../model/tokens/steam_token.dart';
-import '../../model/tokens/totp_token.dart';
+import '../../model/extensions/enum_extension.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import 'add_token_manually_view_widgets/labeled_dropdown_button.dart';
@@ -97,8 +97,8 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
                 validator: (value) {
                   if (value!.isEmpty) {
                     return AppLocalizations.of(context)!.pleaseEnterASecretForThisToken;
-                  } else if ((_typeNotifier.value == TokenTypes.STEAM && Encodings.base32.isValidEncoding(value)) ||
-                      (_typeNotifier.value != TokenTypes.STEAM && _encodingNotifier.value.isValidEncoding(value))) {
+                  } else if ((_typeNotifier.value == TokenTypes.STEAM && Encodings.base32.isInvalidEncoding(value)) ||
+                      (_typeNotifier.value != TokenTypes.STEAM && _encodingNotifier.value.isInvalidEncoding(value))) {
                     return AppLocalizations.of(context)!.theSecretDoesNotFitTheCurrentEncoding;
                   }
                   return null;
@@ -178,62 +178,29 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
     );
   }
 
-  OTPToken? _buildTokenIfValid({required BuildContext context}) {
+  Token? _buildTokenIfValid({required BuildContext context}) {
     if (_inputIsValid(context) == false) return null;
     Logger.info('Input is valid, building token');
-    return switch (_typeNotifier.value) {
-      TokenTypes.HOTP => _buildHOTPToken(),
-      TokenTypes.TOTP => _buildTOTPToken(),
-      TokenTypes.DAYPASSWORD => _buildDayPasswordToken(),
-      TokenTypes.STEAM => _buildSteamToken(),
-      _ => null,
+
+    final uriMap = <String, dynamic>{
+      URI_TYPE: _typeNotifier.value.asString,
+      URI_LABEL: _labelController.text,
+      URI_ISSUER: '',
+      URI_ALGORITHM: _algorithmNotifier.value.asString,
+      URI_DIGITS: _digitsNotifier.value,
+      URI_SECRET: _encodingNotifier.value.decode(_secretController.text),
+      URI_COUNTER: 0,
+      URI_PERIOD: _periodNotifier.value,
     };
+    uriMap.addAll({
+      URI_ORIGIN: TokenOriginSourceType.manually.toTokenOrigin(
+        data: jsonEncode(uriMap),
+        appName: PrivacyIDEAAuthenticator.currentCustomization?.appName,
+        isPrivacyIdeaToken: false,
+      ),
+    });
+    return Token.fromUriMap(uriMap);
   }
-
-  HOTPToken _buildHOTPToken() {
-    return HOTPToken(
-      label: _labelController.text,
-      issuer: '',
-      id: const Uuid().v4(),
-      algorithm: _algorithmNotifier.value,
-      digits: _digitsNotifier.value,
-      secret: _encodingNotifier.value.encodeAs(Encodings.base32, _secretController.text),
-      origin: TokenOriginSourceType.manually.toTokenOrigin(),
-    );
-  }
-
-  TOTPToken _buildTOTPToken() => TOTPToken(
-        label: _labelController.text,
-        issuer: '',
-        id: const Uuid().v4(),
-        algorithm: _algorithmNotifier.value,
-        digits: _digitsNotifier.value,
-        secret: _encodingNotifier.value.encodeAs(Encodings.base32, _secretController.text),
-        period: _periodNotifier.value,
-        origin: TokenOriginSourceType.manually.toTokenOrigin(),
-      );
-
-  DayPasswordToken _buildDayPasswordToken() => DayPasswordToken(
-        label: _labelController.text,
-        issuer: '',
-        id: const Uuid().v4(),
-        algorithm: _algorithmNotifier.value,
-        digits: _digitsNotifier.value,
-        secret: _encodingNotifier.value.encodeAs(Encodings.base32, _secretController.text),
-        period: Duration(hours: _periodDayPasswordNotifier.value),
-        origin: TokenOriginSourceType.manually.toTokenOrigin(),
-      );
-
-  SteamToken _buildSteamToken() => SteamToken(
-        label: _labelController.text,
-        issuer: '',
-        id: const Uuid().v4(),
-        algorithm: Algorithms.SHA1,
-        digits: 5,
-        secret: _encodingNotifier.value.encodeAs(Encodings.base32, _secretController.text),
-        period: 30,
-        origin: TokenOriginSourceType.manually.toTokenOrigin(),
-      );
 
   /// Validates the inputs of the label and secret.
   bool _inputIsValid(BuildContext context) {

@@ -22,6 +22,8 @@ class PushToken extends Token {
 
   @override
   Duration get showDuration => Duration.zero;
+  @override
+  bool? get isPrivacyIdeaToken => true;
 
   // Roll out
   final bool sslVerify;

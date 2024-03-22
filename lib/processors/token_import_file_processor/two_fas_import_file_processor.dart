@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:privacyidea_authenticator/utils/token_import_origins.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/encryption/aes_encrypted.dart';
@@ -121,7 +122,7 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
     final results = <ProcessorResult<Token>>[];
     for (Map<String, dynamic> twoFasToken in tokensJsonList) {
       try {
-        results.add(ProcessorResult<Token>(success: true, data: Token.fromUriMap(_twoFasToUriMap(twoFasToken))));
+        results.add(ProcessorResult<Token>(success: true, resultData: Token.fromUriMap(_twoFasToUriMap(twoFasToken))));
       } on LocalizedException catch (e) {
         results.add(ProcessorResult<Token>(
           success: false,
@@ -145,7 +146,8 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
       URI_DIGITS: twoFasOTP[TWOFAS_DIGITS],
       URI_COUNTER: twoFasOTP[TWOFAS_COUNTER],
       URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-        appName: '2FAS',
+        appName: TokenImportOrigins.twoFasAuthenticator.appName,
+        isPrivacyIdeaToken: false,
         data: jsonEncode(twoFasToken),
       ),
     };

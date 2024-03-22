@@ -64,7 +64,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
       showMessage(message: 'An error occurred while parsing the QR code.', duration: const Duration(seconds: 3));
       return [const ProcessorResult(success: false, error: 'An error occurred while parsing the QR code.')];
     }
-    return [ProcessorResult(success: true, data: newToken)];
+    return [ProcessorResult(success: true, resultData: newToken)];
   }
 }
 

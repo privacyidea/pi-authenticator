@@ -19,8 +19,6 @@
   limitations under the License.
 */
 
-import 'dart:developer';
-
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -59,8 +57,6 @@ class CustomizationAuthenticator extends ConsumerWidget {
     final state = ref.watch(settingsProvider);
     final locale = state.currentLocale;
     final applicationCustomizer = ref.watch(applicationCustomizerProvider);
-    log('applicationCustomizer primaryColor: ${applicationCustomizer.lightTheme.primaryColor}');
-    log('applicationCustomizer primaryColor gen: ${applicationCustomizer.generateLightTheme().primaryColor}');
     return LayoutBuilder(
       builder: (context, constraints) {
         WidgetsBinding.instance.addPostFrameCallback((_) {

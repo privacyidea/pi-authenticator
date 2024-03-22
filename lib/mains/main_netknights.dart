@@ -18,6 +18,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

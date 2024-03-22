@@ -51,10 +51,21 @@ class DayPasswordToken extends OTPToken {
   }
 
   @override
-  // If its the same token the the period as to be the same
+  // It is the same token the the period as to be the same
   bool isSameTokenAs(Token other) {
     return super.isSameTokenAs(other) && other is DayPasswordToken && other.period == period;
   }
+
+  @override
+  bool operator ==(Object other) {
+    return super == other && other is DayPasswordToken && other.period == period && other.viewMode == viewMode;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([super.hashCode, period, viewMode]);
+
+  @override
+  bool get isPrivacyIdeaToken => false;
 
   @override
   DayPasswordToken copyWith({
@@ -134,6 +145,7 @@ class DayPasswordToken extends OTPToken {
   }
 
   factory DayPasswordToken.fromJson(Map<String, dynamic> json) => _$DayPasswordTokenFromJson(json).copyWith(isHidden: true);
+  @override
   Map<String, dynamic> toJson() => _$DayPasswordTokenToJson(this);
 
   @override

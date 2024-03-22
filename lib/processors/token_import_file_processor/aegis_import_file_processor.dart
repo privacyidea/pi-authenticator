@@ -13,6 +13,7 @@ import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.d
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/token_import_origins.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/algorithms.dart';
@@ -135,11 +136,12 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           URI_COUNTER: info[AEGIS_COUNTER],
           URI_PIN: info[AEGIS_PIN],
           URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-            appName: 'Aegis',
+            appName: TokenImportOrigins.aegisAuthenticator.appName,
+            isPrivacyIdeaToken: false,
             data: jsonEncode(entry),
           ),
         };
-        results.add(ProcessorResult<Token>(success: true, data: Token.fromUriMap(entryUriMap)));
+        results.add(ProcessorResult<Token>(success: true, resultData: Token.fromUriMap(entryUriMap)));
       } on LocalizedException catch (e) {
         results.add(ProcessorResult<Token>(
           success: false,

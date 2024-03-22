@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/globals.dart';
 import '../../feedback_view/feedback_view.dart';
-import '../../import_tokens_view/import_tokens_view.dart';
 import '../../license_view/license_view.dart';
 import '../settings_view_widgets/settings_groups.dart';
 import '../settings_view_widgets/settings_list_tile_button.dart';
@@ -65,21 +64,6 @@ class SettingsGroupGeneral extends StatelessWidget {
           ),
           icon: const Icon(FluentIcons.chat_32_regular),
         ),
-        SettingsListTileButton(
-          onPressed: () {
-            Navigator.pushNamed(context, ImportTokensView.routeName);
-          },
-          title: Text(
-            AppLocalizations.of(context)!.importTokens,
-            style: Theme.of(context).textTheme.titleMedium,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-          icon: const RotatedBox(
-            quarterTurns: 1,
-            child: Icon(FluentIcons.arrow_enter_20_filled),
-          ),
-        )
       ],
     );
   }

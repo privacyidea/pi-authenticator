@@ -7,14 +7,16 @@ import 'dart:typed_data';
 import 'package:base32/base32.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
+import '../../../model/enums/token_origin_source_type.dart';
 import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../proto/generated/GoogleAuthenticatorImport.pb.dart';
+import '../../../utils/token_import_origins.dart';
 import 'otp_auth_processor.dart';
 import 'token_import_scheme_processor_interface.dart';
 
-class OtpAuthMigrationProcessor extends TokenImportSchemeProcessor {
-  const OtpAuthMigrationProcessor();
+class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
+  const GoogleAuthenticatorQrProcessor();
   static const OtpAuthProcessor otpAuthProcessor = OtpAuthProcessor();
 
   @override
@@ -101,6 +103,16 @@ class OtpAuthMigrationProcessor extends TokenImportSchemeProcessor {
       }
     }
 
-    return results;
+    return results.map((t) {
+      if (!t.success || t.resultData == null) return t;
+      return ProcessorResult<Token>(
+          success: true,
+          resultData: TokenOriginSourceType.qrScanImport.addOriginToToken(
+            appName: TokenImportOrigins.googleAuthenticator.appName,
+            token: t.resultData!,
+            isPrivacyIdeaToken: false,
+            data: base64.encode(decoded),
+          ));
+    }).toList();
   }
 }

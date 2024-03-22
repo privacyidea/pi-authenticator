@@ -107,3 +107,7 @@ Size textSizeOf(String text, TextStyle style, {int? maxLines = 1, double minWidt
 }
 
 Future<String> getPackageName() async => (await PackageInfo.fromPlatform()).packageName.replaceAll('.debug', '');
+
+String removeIllegalFilenameChars(String filename) {
+  return filename.replaceAll(RegExp(r'[<>:"/\\|?*]'), '');
+}

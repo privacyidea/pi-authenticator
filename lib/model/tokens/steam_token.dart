@@ -17,6 +17,8 @@ part 'steam_token.g.dart';
 
 @JsonSerializable()
 class SteamToken extends TOTPToken {
+  @override
+  bool get isPrivacyIdeaToken => false;
   static String get tokenType => TokenTypes.STEAM.asString;
   static const String steamAlphabet = "23456789BCDFGHJKMNPQRTVWXY";
 

@@ -129,6 +129,17 @@ class EditTOTPTokenAction extends TokenAction {
                   decoration: InputDecoration(labelText: AppLocalizations.of(context)!.period),
                   enabled: false,
                 ),
+                if (token.origin != null)
+                  TextFormField(
+                    initialValue: token.origin!.appName,
+                    decoration: const InputDecoration(labelText: 'Origin'),
+                    enabled: false,
+                  ),
+                TextFormField(
+                  initialValue: token.isPrivacyIdeaToken == false ? 'Yes' : 'No',
+                  decoration: const InputDecoration(labelText: 'Is exportable?'),
+                  enabled: false,
+                ),
               ],
             ),
           ),

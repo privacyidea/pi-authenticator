@@ -8,7 +8,6 @@ import 'package:image/image.dart' as img;
 import 'package:privacyidea_authenticator/model/enums/token_import_type.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/model/processor_result.dart';
-import 'package:privacyidea_authenticator/processors/scheme_processors/scheme_processor_interface.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
 import 'package:zxing2/qrcode.dart';
 
@@ -164,12 +163,33 @@ class _ImportStartPageState extends State<ImportStartPage> {
       _routeEncryptedData<XFile, String?>(data: file, processor: fileProcessor);
       return;
     }
-    final importResults = await fileProcessor.processFile(file: file);
+    var importResults = await fileProcessor.processFile(file: file);
     if (importResults.isEmpty) {
       if (mounted == false) return;
       setState(() => _errorText = AppLocalizations.of(context)!.invalidBackupFile(widget.appName));
       return;
     }
+    String fileString;
+    try {
+      fileString = await file.readAsString();
+      // ignore: empty_catches
+    } catch (e) {
+      fileString = 'No data';
+    }
+
+    importResults = importResults.map<ProcessorResult<Token>>((result) {
+      if (!result.success || result.resultData == null) return result;
+      return ProcessorResult(
+        success: true,
+        resultData: TokenOriginSourceType.backupFile.addOriginToToken(
+          appName: widget.appName,
+          token: result.resultData!,
+          isPrivacyIdeaToken: false,
+          data: result.resultData!.origin?.data ?? fileString,
+        ),
+      );
+    }).toList();
+
     _routeImportPlainTokensPage(importResults: importResults);
   }
 
@@ -190,11 +210,59 @@ class _ImportStartPageState extends State<ImportStartPage> {
     results = results
         .map<ProcessorResult<Token>>((result) => result.success
             ? ProcessorResult<Token>(
-                success: true, data: TokenOriginSourceType.qrScan.addOriginToToken(token: result.data!, data: uri.toString(), appName: widget.appName))
+                success: true,
+                resultData: TokenOriginSourceType.qrScan.addOriginToToken(
+                  appName: widget.appName,
+                  isPrivacyIdeaToken: false,
+                  token: result.resultData!,
+                  data: result.resultData!.origin?.data ?? uri.toString(),
+                ))
             : result)
         .toList();
     _routeImportPlainTokensPage(importResults: results);
     return;
+  }
+
+  Future<void> _pickQrFile(TokenImportProcessor? processor) async {
+    assert(processor is TokenImportSchemeProcessor);
+    final schemeProcessor = processor as TokenImportSchemeProcessor;
+    final XFile? file = await openFile();
+    if (file == null) return;
+    Result qrResult;
+    try {
+      qrResult = await _startDecodeQrFile(file);
+    } on FormatReaderException catch (_) {
+      setState(() => _errorText = AppLocalizations.of(context)!.qrFileDecodeError);
+      return;
+    } catch (e) {
+      setState(() => _errorText = AppLocalizations.of(context)!.invalidQrFile(widget.appName));
+      return;
+    }
+    final Uri uri;
+    try {
+      uri = Uri.parse(qrResult.text);
+    } on FormatException catch (_) {
+      setState(() => _errorText = AppLocalizations.of(context)!.invalidQrFile(widget.appName));
+      return;
+    }
+    var processorResults = await schemeProcessor.processUri(uri);
+    if (processorResults.isEmpty) {
+      setState(() => _errorText = AppLocalizations.of(context)!.invalidQrFile(widget.appName));
+      return;
+    }
+    processorResults = processorResults.map<ProcessorResult<Token>>((result) {
+      if (!result.success || result.resultData == null) return result;
+      return ProcessorResult(
+        success: true,
+        resultData: TokenOriginSourceType.qrFile.addOriginToToken(
+          appName: widget.appName,
+          token: result.resultData!,
+          isPrivacyIdeaToken: false,
+          data: result.resultData!.origin?.data ?? qrResult.text,
+        ),
+      );
+    }).toList();
+    _routeImportPlainTokensPage(importResults: processorResults);
   }
 
   Future<Result> _startDecodeQrFile(XFile file) async {
@@ -211,43 +279,6 @@ class _ImportStartPageState extends State<ImportStartPage> {
     }
     receivePort.close();
     return result;
-  }
-
-  Future<void> _pickQrFile(TokenImportProcessor? processor) async {
-    assert(processor is TokenImportSchemeProcessor);
-    final schemeProcessor = processor as SchemeProcessor;
-    final XFile? file = await openFile();
-    if (file == null) return;
-    Result result;
-    try {
-      result = await _startDecodeQrFile(file);
-    } on FormatReaderException catch (_) {
-      setState(() => _errorText = AppLocalizations.of(context)!.qrFileDecodeError);
-      return;
-    } catch (e) {
-      setState(() => _errorText = AppLocalizations.of(context)!.invalidQrFile(widget.appName));
-      return;
-    }
-    final Uri uri;
-    try {
-      uri = Uri.parse(result.text);
-    } on FormatException catch (_) {
-      setState(() => _errorText = AppLocalizations.of(context)!.invalidQrFile(widget.appName));
-      return;
-    }
-    var results = await schemeProcessor.processUri(uri);
-    if (results.isEmpty) {
-      setState(() => _errorText = AppLocalizations.of(context)!.invalidQrFile(widget.appName));
-      return;
-    }
-    results = results
-        .map<ProcessorResult<Token>>((result) => result.success
-            ? ProcessorResult(
-                success: true, data: TokenOriginSourceType.link.addOriginToToken(token: result.data!, data: _linkController.text, appName: widget.appName))
-            : result)
-        .toList();
-
-    _routeImportPlainTokensPage(importResults: results);
   }
 
   Future<void> _validateLink(TokenImportProcessor? processor) async {
@@ -268,12 +299,17 @@ class _ImportStartPageState extends State<ImportStartPage> {
       setState(() => _errorText = AppLocalizations.of(context)!.invalidLink(widget.appName));
       return;
     }
-    results = results
-        .map<ProcessorResult<Token>>((result) => result.success
-            ? ProcessorResult(
-                success: true, data: TokenOriginSourceType.link.addOriginToToken(token: result.data!, data: _linkController.text, appName: widget.appName))
-            : result)
-        .toList();
+    results = results.map<ProcessorResult<Token>>((result) {
+      if (!result.success || result.resultData == null) return result;
+      return ProcessorResult(
+          success: true,
+          resultData: TokenOriginSourceType.linkImport.addOriginToToken(
+            appName: widget.appName,
+            token: result.resultData!,
+            isPrivacyIdeaToken: false,
+            data: _linkController.text,
+          ));
+    }).toList();
 
     if (mounted == false) return;
     setState(() => FocusScope.of(context).unfocus());

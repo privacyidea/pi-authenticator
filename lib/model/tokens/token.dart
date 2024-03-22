@@ -13,6 +13,7 @@ import 'totp_token.dart';
 
 @immutable
 abstract class Token with SortableMixin {
+  bool? get isPrivacyIdeaToken => origin?.isPrivacyIdeaToken;
   final String tokenVersion = 'v1.0.0'; // The version of this token, this is used for serialization.
   final String label; // the name of the token, it cannot be uses as an identifier
   final String issuer; // The issuer of this token, currently unused.
@@ -114,4 +115,6 @@ abstract class Token with SortableMixin {
         'folderId: $folderId, '
         'origin: $origin, ';
   }
+
+  Map<String, dynamic> toJson();
 }

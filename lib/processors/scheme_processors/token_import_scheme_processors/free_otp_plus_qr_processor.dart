@@ -1,3 +1,5 @@
+import '../../../model/enums/token_origin_source_type.dart';
+import '../../../utils/token_import_origins.dart';
 import 'otp_auth_processor.dart';
 
 import '../../../model/processor_result.dart';
@@ -21,7 +23,17 @@ class FreeOtpPlusQrProcessor extends OtpAuthProcessor {
     final result = await super.processUri(uri);
     results.addAll(result);
 
-    return results;
+    return results.map((t) {
+      if (!t.success || t.resultData == null) return t;
+      return ProcessorResult<Token>(
+          success: true,
+          resultData: TokenOriginSourceType.qrScanImport.addOriginToToken(
+            appName: TokenImportOrigins.freeOtpPlus.appName,
+            token: t.resultData!,
+            isPrivacyIdeaToken: false,
+            data: t.resultData!.origin!.data,
+          ));
+    }).toList();
   }
 
   /// Parse the label and the issuer (if it exists) from the url.

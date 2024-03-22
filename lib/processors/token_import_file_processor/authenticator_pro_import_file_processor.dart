@@ -1,7 +1,6 @@
 // ignore_for_file: constant_identifier_names, empty_catches
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
@@ -91,14 +90,14 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   Future<bool> fileNeedsPassword({required XFile file}) async {
     final contentBytes = await file.readAsBytes();
     try {
-      final asd = utf8.decode(contentBytes);
-      log(asd);
+      utf8.decode(contentBytes);
+
       return false;
     } catch (e) {
       final headerByteLength = utf8.encode(header).length;
       final fileHeaderBytes = contentBytes.sublist(0, headerByteLength);
       final fileHeader = utf8.decode(fileHeaderBytes);
-      log(fileHeader);
+
       if (fileHeader == header || fileHeader == headerLegacy) {
         return true;
       }
@@ -125,11 +124,15 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
       return [];
     }
     return results.map((t) {
-      if (!t.success || t.data?.origin == null) return t;
+      if (!t.success || t.resultData == null) return t;
       return ProcessorResult<Token>(
           success: true,
-          data: TokenOriginSourceType.backupFile
-              .addOriginToToken(token: t.data!, data: t.data!.origin!.data, appName: TokenImportOrigins.authenticatorPro.appName));
+          resultData: TokenOriginSourceType.backupFile.addOriginToToken(
+            appName: TokenImportOrigins.authenticatorPro.appName,
+            token: t.resultData!,
+            isPrivacyIdeaToken: false,
+            data: t.resultData!.origin!.data,
+          ));
     }).toList();
   }
 
@@ -261,12 +264,13 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
           URI_COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER] as int,
           URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
             appName: TokenImportOrigins.authenticatorPro.appName,
+            isPrivacyIdeaToken: false,
             data: jsonEncode(tokenMap),
           ),
         };
 
         final token = Token.fromUriMap(uriMap);
-        result.add(ProcessorResult<Token>(success: true, data: token));
+        result.add(ProcessorResult<Token>(success: true, resultData: token));
       } on LocalizedException catch (e) {
         result.add(ProcessorResult<Token>(
           success: false,

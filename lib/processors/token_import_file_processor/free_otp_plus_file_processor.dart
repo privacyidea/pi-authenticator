@@ -1,7 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
-import 'dart:developer';
+
 import 'dart:typed_data';
 
 import 'package:file_selector/file_selector.dart';
@@ -46,7 +46,6 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
     } catch (e) {}
     List<String> lines = content.split('\n')..removeWhere((element) => element.isEmpty);
     for (var line in lines) {
-      log('Checking line: $line');
       if (line.startsWith('otpauth://') == false) {
         return false;
       }
@@ -62,7 +61,6 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
     String content = await file.readAsString();
     try {
       final json = jsonDecode(content) as Map<String, dynamic>;
-      log('Processing JSON');
       return _processJson(json);
       // ignore: empty_catches
     } catch (e) {}
@@ -71,18 +69,7 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
     for (final line in lines) {
       try {
         final uri = Uri.parse(line);
-        final uriResults = await const FreeOtpPlusQrProcessor().processUri(uri);
-        for (var result in uriResults) {
-          result = result.copyWith(
-            data: result.data!.copyWith(
-              origin: TokenOriginSourceType.backupFile.toTokenOrigin(
-                appName: TokenImportOrigins.freeOtpPlus.appName,
-                data: uri.toString(),
-              ),
-            ),
-          );
-          results.add(result);
-        }
+        results.addAll(await const FreeOtpPlusQrProcessor().processUri(uri));
       } catch (e) {
         results.add(ProcessorResult<Token>(
           success: false,
@@ -90,7 +77,17 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
         ));
       }
     }
-    return results;
+    return results.map((t) {
+      if (!t.success || t.resultData == null) return t;
+      return ProcessorResult<Token>(
+          success: true,
+          resultData: TokenOriginSourceType.backupFile.addOriginToToken(
+            appName: TokenImportOrigins.freeOtpPlus.appName,
+            token: t.resultData!,
+            isPrivacyIdeaToken: false,
+            data: t.resultData!.origin!.data,
+          ));
+    }).toList();
   }
 
   Future<List<ProcessorResult<Token>>> _processJson(Map<String, dynamic> json) async {
@@ -109,7 +106,7 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
     try {
       return ProcessorResult<Token>(
         success: true,
-        data: Token.fromUriMap(_jsonToUriMap(tokenJson)),
+        resultData: Token.fromUriMap(_jsonToUriMap(tokenJson)),
       );
     } on LocalizedException catch (e) {
       return ProcessorResult<Token>(
@@ -132,6 +129,7 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
       URI_PERIOD: tokenJson[_FREE_OTP_PLUS_PERIOD],
       URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
         appName: TokenImportOrigins.freeOtpPlus.appName,
+        isPrivacyIdeaToken: false,
         data: jsonEncode(tokenJson),
       ),
     };

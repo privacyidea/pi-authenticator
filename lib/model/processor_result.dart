@@ -1,17 +1,17 @@
 class ProcessorResult<T> {
-  final T? data;
+  final T? resultData;
   final bool success;
   final String? error;
 
   const ProcessorResult({
-    this.data,
+    this.resultData,
     required this.success,
     this.error,
   });
 
   @override
   String toString() {
-    return 'ProcessorResult(data: $data, success: $success, error: $error)';
+    return 'ProcessorResult(data: $resultData, success: $success, error: $error)';
   }
 
   ProcessorResult<T> copyWith({
@@ -20,7 +20,7 @@ class ProcessorResult<T> {
     String? error,
   }) {
     return ProcessorResult<T>(
-      data: data ?? this.data,
+      resultData: data ?? this.resultData,
       success: success ?? this.success,
       error: error ?? this.error,
     );

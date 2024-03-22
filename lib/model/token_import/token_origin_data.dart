@@ -9,13 +9,21 @@ class TokenOriginData {
   TokenOriginSourceType source;
   String? appName;
   String data;
-  TokenOriginData({required this.source, required this.data, this.appName});
+  bool? isPrivacyIdeaToken;
+  TokenOriginData({required this.source, required this.data, required this.isPrivacyIdeaToken, this.appName});
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is TokenOriginData && other.source == source && other.appName == appName && other.data == data;
   }
+
+  TokenOriginData copyWith({TokenOriginSourceType? source, String? appName, String? data, bool? isPrivacyIdeaToken}) => TokenOriginData(
+        source: source ?? this.source,
+        appName: appName ?? this.appName,
+        data: data ?? this.data,
+        isPrivacyIdeaToken: isPrivacyIdeaToken ?? this.isPrivacyIdeaToken,
+      );
 
   @override
   int get hashCode => Object.hashAll([source, appName, data]);
