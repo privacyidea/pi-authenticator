@@ -23,14 +23,8 @@ class ImportPlainTokensPage extends ConsumerStatefulWidget {
     required String appName,
     required TokenImportType selectedType,
   }) {
-    final importedTokens = processorResults.where((e) => e.success && e.resultData != null).map((e) => e.resultData!).toList();
-    final failedImports = processorResults
-        .where((e) {
-          if (e.success) return false;
-          return !e.success && e.error != null;
-        })
-        .map((e) => e.error!)
-        .toList();
+    final importedTokens = processorResults.whereType<ProcessorResultSuccess<Token>>().map((e) => e.resultData).toList();
+    final failedImports = processorResults.whereType<ProcessorResultError>().map((e) => e.errorMessage).toList();
     return ImportPlainTokensPage._(
       key: key,
       importedTokens: importedTokens,

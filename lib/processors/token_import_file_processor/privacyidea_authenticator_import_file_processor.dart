@@ -1,0 +1,51 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'package:file_selector/file_selector.dart';
+import 'package:privacyidea_authenticator/model/processor_result.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/processors/token_import_file_processor/two_fas_import_file_processor.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
+import '../../model/encryption/token_encryption.dart';
+import 'token_import_file_processor_interface.dart';
+
+class PrivacyIDEAAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
+  const PrivacyIDEAAuthenticatorImportFileProcessor();
+  @override
+  Future<bool> fileIsValid({required XFile file}) async {
+    try {
+      final content = await file.readAsString();
+      final json = jsonDecode(content);
+      if (json['data'] != null && json['salt'] != null && json['iv'] != null && json['mac'] != null) {
+        return true;
+      }
+      log('Invalid file', name: 'PrivacyIDEAAuthenticatorImportFileProcessor#fileIsValid');
+      return false;
+    } catch (e) {
+      log('Failed to validate file', name: 'PrivacyIDEAAuthenticatorImportFileProcessor#fileIsValid', error: e);
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> fileNeedsPassword({required XFile file}) => Future.value(true);
+
+  @override
+  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
+    assert(password != null);
+
+    try {
+      final content = await file.readAsString();
+      List<Token> tokens;
+      try {
+        tokens = await TokenEncryption.decrypt(encryptedTokens: content, password: password!);
+      } catch (e) {
+        throw BadDecryptionPasswordException('Invalid password');
+      }
+      final results = tokens.map((token) => ProcessorResultSuccess(token)).toList();
+      return results;
+    } catch (e) {
+      Logger.error('Failed to process file', name: 'PrivacyIDEAAuthenticatorImportFileProcessor#processFile', error: e, stackTrace: StackTrace.current);
+      return [ProcessorResultError<Token>(e.toString())];
+    }
+  }
+}

@@ -9,6 +9,7 @@ import 'package:privacyidea_authenticator/model/enums/token_types.dart';
 import 'package:privacyidea_authenticator/model/extensions/enum_extension.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
+import 'package:privacyidea_authenticator/processors/token_import_file_processor/two_fas_import_file_processor.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/token_import_origins.dart';
@@ -108,35 +109,31 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   @override
   Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
     var results = <ProcessorResult<Token>>[];
-    try {
-      final bytes = await file.readAsBytes();
-      Uint8Buffer uint8buffer = Uint8Buffer(data: bytes);
-      final headerByteLength = utf8.encode(header).length;
-      final fileHeader = utf8.decode(uint8buffer.readBytes(headerByteLength));
-      Logger.info('File header: $fileHeader', name: 'authenticator_pro_import_file_processor#processFile');
-      final plainText = switch (fileHeader) {
-        header => await _process(uint8buffer: uint8buffer, password: password ?? ''),
-        headerLegacy => await _processLegacy(uint8buffer: uint8buffer, password: password ?? ''),
-        _ => utf8.decode(bytes),
-      };
-      results = await _processPlain(fileContent: plainText);
-    } catch (e) {
-      return [];
-    }
+
+    final bytes = await file.readAsBytes();
+    Uint8Buffer uint8buffer = Uint8Buffer(data: bytes);
+    final headerByteLength = utf8.encode(header).length;
+    final fileHeader = utf8.decode(uint8buffer.readBytes(headerByteLength));
+    Logger.info('File header: $fileHeader', name: 'authenticator_pro_import_file_processor#processFile');
+    final plainText = switch (fileHeader) {
+      header => await _processEncrypted(uint8buffer: uint8buffer, password: password ?? ''),
+      headerLegacy => await _processEncryptedLegacy(uint8buffer: uint8buffer, password: password ?? ''),
+      _ => utf8.decode(bytes),
+    };
+    results = await _processPlain(fileContent: plainText);
+
     return results.map((t) {
-      if (!t.success || t.resultData == null) return t;
-      return ProcessorResult<Token>(
-          success: true,
-          resultData: TokenOriginSourceType.backupFile.addOriginToToken(
-            appName: TokenImportOrigins.authenticatorPro.appName,
-            token: t.resultData!,
-            isPrivacyIdeaToken: false,
-            data: t.resultData!.origin!.data,
-          ));
+      if (t is! ProcessorResultSuccess<Token>) return t;
+      return ProcessorResultSuccess(TokenOriginSourceType.backupFile.addOriginToToken(
+        appName: TokenImportOrigins.authenticatorPro.appName,
+        token: t.resultData,
+        isPrivacyIdeaToken: false,
+        data: t.resultData.origin!.data,
+      ));
     }).toList();
   }
 
-  Future<String> _process({required Uint8Buffer uint8buffer, required String password}) async {
+  Future<String> _processEncrypted({required Uint8Buffer uint8buffer, required String password}) async {
     // Modern version uses Argon2id
     const int keySize = 32; // 32 bytes = 256 bits
     const int memoryCost = 65536; // 2^16 KiB = 64 MiB
@@ -160,11 +157,14 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
       kdf: kdf,
     );
 
-    final decrypted = await aesEncrypted.decryptToString(password);
-    return decrypted;
+    try {
+      return await aesEncrypted.decryptToString(password);
+    } catch (e) {
+      throw BadDecryptionPasswordException('Invalid password');
+    }
   }
 
-  Future<String> _processLegacy({required Uint8Buffer uint8buffer, required String password}) async {
+  Future<String> _processEncryptedLegacy({required Uint8Buffer uint8buffer, required String password}) async {
     // Legacy uses PBKDF2
     const int iterations = 64000;
     // keySize = 256 bits
@@ -188,8 +188,11 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
       data: uint8buffer.readBytesToEnd(),
     );
 
-    final decrypted = await aesEncrypted.decryptToString(password);
-    return decrypted;
+    try {
+      return await aesEncrypted.decryptToString(password);
+    } catch (e) {
+      throw BadDecryptionPasswordException('Invalid password');
+    }
   }
 
   Future<List<ProcessorResult<Token>>> _processPlain({required String fileContent}) async {
@@ -216,9 +219,10 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         final newResults = await const OtpAuthProcessor().processUri(uri);
         results.addAll(newResults);
       } on LocalizedException catch (e) {
-        results.add(ProcessorResult<Token>(success: false, error: e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+        results.add(ProcessorResultError(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
       } catch (e) {
-        results.add(ProcessorResult<Token>(success: false, error: e.toString()));
+        Logger.error('Failed to parse token.', name: 'authenticator_pro_import_file_processor#_processUriList', error: e, stackTrace: StackTrace.current);
+        results.add(ProcessorResultError(e.toString()));
       }
     }
     return results;
@@ -232,12 +236,28 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
       for (var match in matches) {
         final uri = Uri.parse(match.group(0)!);
         final newResults = await const OtpAuthProcessor().processUri(uri);
-        results.addAll(newResults);
+        for (final newResult in newResults) {
+          if (newResult is! ProcessorResultSuccess<Token>) {
+            results.add(newResult);
+            continue;
+          }
+          results.add(
+            ProcessorResultSuccess(
+              TokenOriginSourceType.backupFile.addOriginToToken(
+                appName: TokenImportOrigins.authenticatorPro.appName,
+                isPrivacyIdeaToken: false,
+                token: newResult.resultData,
+                data: uri.toString(),
+              ),
+            ),
+          );
+        }
       }
     } on LocalizedException catch (e) {
-      results.add(ProcessorResult<Token>(success: false, error: e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+      results.add(ProcessorResultError(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
     } catch (e) {
-      results.add(ProcessorResult<Token>(success: false, error: e.toString()));
+      Logger.error('Failed to parse token.', name: 'authenticator_pro_import_file_processor#_processHtml', error: e, stackTrace: StackTrace.current);
+      results.add(ProcessorResultError(e.toString()));
     }
     return results;
   }
@@ -270,14 +290,12 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         };
 
         final token = Token.fromUriMap(uriMap);
-        result.add(ProcessorResult<Token>(success: true, resultData: token));
+        result.add(ProcessorResultSuccess(token));
       } on LocalizedException catch (e) {
-        result.add(ProcessorResult<Token>(
-          success: false,
-          error: e.localizedMessage(AppLocalizations.of(await globalContext)!),
-        ));
+        result.add(ProcessorResultError(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
       } catch (e) {
-        result.add(ProcessorResult<Token>(success: false, error: e.toString()));
+        Logger.error('Failed to parse token.', name: 'authenticator_pro_import_file_processor#_processAuthPro', error: e, stackTrace: StackTrace.current);
+        result.add(ProcessorResultError(e.toString()));
       }
     }
     return result;

@@ -24,7 +24,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
 
   @override
   Future<List<ProcessorResult<Token>>> processUri(Uri uri, {bool fromInit = false}) async {
-    if (!supportedSchemes.contains(uri.scheme)) return [ProcessorResult(success: false, error: 'The scheme [${uri.scheme}] not supported')];
+    if (!supportedSchemes.contains(uri.scheme)) return [ProcessorResultError('The scheme [${uri.scheme}] not supported')];
     Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
     Map<String, dynamic> uriMap;
     try {
@@ -32,7 +32,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     } on LocalizedException catch (e) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
       final message = e.localizedMessage(AppLocalizations.of(await globalContext)!);
-      return [ProcessorResult(success: false, error: message)];
+      return [ProcessorResultError(message)];
     }
     if (_is2StepURI(uri)) {
       validateMap(uriMap, [URI_SECRET, URI_ITERATIONS, URI_OUTPUT_LENGTH_IN_BYTES, URI_SALT_LENGTH]);
@@ -58,13 +58,13 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
       newToken = Token.fromUriMap(uriMap);
     } on FormatException catch (e) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
-      return [ProcessorResult(success: false, error: e.message)];
+      return [ProcessorResultError(e.message)];
     } catch (e, s) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e, stackTrace: s);
       showMessage(message: 'An error occurred while parsing the QR code.', duration: const Duration(seconds: 3));
-      return [const ProcessorResult(success: false, error: 'An error occurred while parsing the QR code.')];
+      return [const ProcessorResultError('An error occurred while parsing the QR code.')];
     }
-    return [ProcessorResult(success: true, resultData: newToken)];
+    return [ProcessorResultSuccess(newToken)];
   }
 }
 

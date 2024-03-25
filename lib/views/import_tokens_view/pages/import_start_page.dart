@@ -177,15 +177,14 @@ class _ImportStartPageState extends State<ImportStartPage> {
       fileString = 'No data';
     }
 
-    importResults = importResults.map<ProcessorResult<Token>>((result) {
-      if (!result.success || result.resultData == null) return result;
-      return ProcessorResult(
-        success: true,
-        resultData: TokenOriginSourceType.backupFile.addOriginToToken(
+    importResults = importResults.map<ProcessorResult<Token>>((t) {
+      if (t is! ProcessorResultSuccess<Token>) return t;
+      return ProcessorResultSuccess(
+        TokenOriginSourceType.backupFile.addOriginToToken(
           appName: widget.appName,
-          token: result.resultData!,
+          token: t.resultData,
           isPrivacyIdeaToken: false,
-          data: result.resultData!.origin?.data ?? fileString,
+          data: t.resultData.origin?.data ?? fileString,
         ),
       );
     }).toList();
@@ -207,18 +206,17 @@ class _ImportStartPageState extends State<ImportStartPage> {
       return;
     }
     var results = await schemeProcessor.processUri(uri);
-    results = results
-        .map<ProcessorResult<Token>>((result) => result.success
-            ? ProcessorResult<Token>(
-                success: true,
-                resultData: TokenOriginSourceType.qrScan.addOriginToToken(
-                  appName: widget.appName,
-                  isPrivacyIdeaToken: false,
-                  token: result.resultData!,
-                  data: result.resultData!.origin?.data ?? uri.toString(),
-                ))
-            : result)
-        .toList();
+    results = results.map<ProcessorResult<Token>>((t) {
+      if (t is! ProcessorResultSuccess<Token>) return t;
+      return ProcessorResultSuccess(
+        TokenOriginSourceType.qrScan.addOriginToToken(
+          appName: widget.appName,
+          isPrivacyIdeaToken: false,
+          token: t.resultData,
+          data: t.resultData.origin?.data ?? uri.toString(),
+        ),
+      );
+    }).toList();
     _routeImportPlainTokensPage(importResults: results);
     return;
   }
@@ -250,15 +248,14 @@ class _ImportStartPageState extends State<ImportStartPage> {
       setState(() => _errorText = AppLocalizations.of(context)!.invalidQrFile(widget.appName));
       return;
     }
-    processorResults = processorResults.map<ProcessorResult<Token>>((result) {
-      if (!result.success || result.resultData == null) return result;
-      return ProcessorResult(
-        success: true,
-        resultData: TokenOriginSourceType.qrFile.addOriginToToken(
+    processorResults = processorResults.map<ProcessorResult<Token>>((t) {
+      if (t is! ProcessorResultSuccess<Token>) return t;
+      return ProcessorResultSuccess(
+        TokenOriginSourceType.qrFile.addOriginToToken(
           appName: widget.appName,
-          token: result.resultData!,
+          token: t.resultData,
           isPrivacyIdeaToken: false,
-          data: result.resultData!.origin?.data ?? qrResult.text,
+          data: t.resultData.origin?.data ?? qrResult.text,
         ),
       );
     }).toList();
@@ -299,16 +296,14 @@ class _ImportStartPageState extends State<ImportStartPage> {
       setState(() => _errorText = AppLocalizations.of(context)!.invalidLink(widget.appName));
       return;
     }
-    results = results.map<ProcessorResult<Token>>((result) {
-      if (!result.success || result.resultData == null) return result;
-      return ProcessorResult(
-          success: true,
-          resultData: TokenOriginSourceType.linkImport.addOriginToToken(
-            appName: widget.appName,
-            token: result.resultData!,
-            isPrivacyIdeaToken: false,
-            data: _linkController.text,
-          ));
+    results = results.map<ProcessorResult<Token>>((t) {
+      if (t is! ProcessorResultSuccess<Token>) return t;
+      return ProcessorResultSuccess(TokenOriginSourceType.linkImport.addOriginToToken(
+        appName: widget.appName,
+        token: t.resultData,
+        isPrivacyIdeaToken: false,
+        data: _linkController.text,
+      ));
     }).toList();
 
     if (mounted == false) return;

@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'version.g.dart';
+
+@JsonSerializable()
 class Version implements Comparable<Version> {
   final int major;
   final int minor;
@@ -83,6 +88,10 @@ class Version implements Comparable<Version> {
 
   @override
   String toString() => '$major.$minor.$patch';
+
+  static Version fromJson(Map<String, dynamic> json) => _$VersionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VersionToJson(this);
 
   @override
   int get hashCode => Object.hash(major, minor, patch);

@@ -24,15 +24,15 @@ class FreeOtpPlusQrProcessor extends OtpAuthProcessor {
     results.addAll(result);
 
     return results.map((t) {
-      if (!t.success || t.resultData == null) return t;
-      return ProcessorResult<Token>(
-          success: true,
-          resultData: TokenOriginSourceType.qrScanImport.addOriginToToken(
-            appName: TokenImportOrigins.freeOtpPlus.appName,
-            token: t.resultData!,
-            isPrivacyIdeaToken: false,
-            data: t.resultData!.origin!.data,
-          ));
+      if (t is! ProcessorResultSuccess<Token>) return t;
+      return ProcessorResultSuccess(
+        TokenOriginSourceType.qrScanImport.addOriginToToken(
+          appName: TokenImportOrigins.freeOtpPlus.appName,
+          token: t.resultData,
+          isPrivacyIdeaToken: false,
+          data: t.resultData.origin!.data,
+        ),
+      );
     }).toList();
   }
 

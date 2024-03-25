@@ -1,28 +1,23 @@
-class ProcessorResult<T> {
-  final T? resultData;
-  final bool success;
-  final String? error;
+abstract class ProcessorResult<T> {
+  const ProcessorResult();
+}
 
-  const ProcessorResult({
-    this.resultData,
-    required this.success,
-    this.error,
-  });
+class ProcessorResultSuccess<T> implements ProcessorResult<T> {
+  final T resultData;
+  const ProcessorResultSuccess(this.resultData);
 
   @override
   String toString() {
-    return 'ProcessorResult(data: $resultData, success: $success, error: $error)';
+    return 'ProcessorResultSuccess(data: $resultData)';
   }
+}
 
-  ProcessorResult<T> copyWith({
-    T? data,
-    bool? success,
-    String? error,
-  }) {
-    return ProcessorResult<T>(
-      resultData: data ?? this.resultData,
-      success: success ?? this.success,
-      error: error ?? this.error,
-    );
+class ProcessorResultError<T> implements ProcessorResult<T> {
+  final String errorMessage;
+  const ProcessorResultError(this.errorMessage);
+
+  @override
+  String toString() {
+    return 'ProcessorResultError(errorMessage: $errorMessage)';
   }
 }

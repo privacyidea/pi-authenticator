@@ -93,26 +93,31 @@ class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
             type = "";
             break;
         }
-        Logger.warning("Processing $type token ${param.name}");
+        Logger.info("Processing $type token ${param.name}");
         final uri = Uri.parse("otpauth://$type/$name?secret=$base32string&issuer=$issuer$algorithm$digits$period$counter");
         results.addAll(await otpAuthProcessor.processUri(uri));
       } catch (e) {
-        Logger.warning("Skipping token ${param.name} due to error: $e");
-        results.add(ProcessorResult<Token>(success: false, error: e.toString()));
+        Logger.error(
+          "Skipping token ${param.name} due to error: $e",
+          name: "GoogleAuthenticatorQrProcessor#processUri",
+          error: e,
+          stackTrace: StackTrace.current,
+        );
+        results.add(ProcessorResultError(e.toString()));
         continue;
       }
     }
 
     return results.map((t) {
-      if (!t.success || t.resultData == null) return t;
-      return ProcessorResult<Token>(
-          success: true,
-          resultData: TokenOriginSourceType.qrScanImport.addOriginToToken(
-            appName: TokenImportOrigins.googleAuthenticator.appName,
-            token: t.resultData!,
-            isPrivacyIdeaToken: false,
-            data: base64.encode(decoded),
-          ));
+      if (t is! ProcessorResultSuccess<Token>) return t;
+      return ProcessorResultSuccess(
+        TokenOriginSourceType.qrScanImport.addOriginToToken(
+          appName: TokenImportOrigins.googleAuthenticator.appName,
+          token: t.resultData,
+          isPrivacyIdeaToken: false,
+          data: base64.encode(decoded),
+        ),
+      );
     }).toList();
   }
 }

@@ -141,15 +141,12 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             data: jsonEncode(entry),
           ),
         };
-        results.add(ProcessorResult<Token>(success: true, resultData: Token.fromUriMap(entryUriMap)));
+        results.add(ProcessorResultSuccess(Token.fromUriMap(entryUriMap)));
       } on LocalizedException catch (e) {
-        results.add(ProcessorResult<Token>(
-          success: false,
-          error: e.localizedMessage(AppLocalizations.of(await globalContext)!),
-        ));
+        results.add(ProcessorResultError(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
       } catch (e) {
-        results.add(ProcessorResult<Token>(success: false, error: e.toString()));
-        Logger.warning('Failed to parse token.', name: '_processPlain#OtpAuthImportFileProcessor');
+        Logger.error('Failed to parse token.', name: 'AegisImportFileProcessor#_processPlain', error: e, stackTrace: StackTrace.current);
+        results.add(ProcessorResultError(e.toString()));
       }
     }
     return results;

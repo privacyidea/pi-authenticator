@@ -1,3 +1,5 @@
+import 'package:privacyidea_authenticator/mains/main_netknights.dart';
+
 import '../l10n/app_localizations.dart';
 import '../model/enums/token_import_type.dart';
 import '../model/token_import/token_import_origin.dart';
@@ -7,10 +9,12 @@ import '../processors/scheme_processors/token_import_scheme_processors/otp_auth_
 import '../processors/token_import_file_processor/aegis_import_file_processor.dart';
 import '../processors/token_import_file_processor/authenticator_pro_import_file_processor.dart';
 import '../processors/token_import_file_processor/free_otp_plus_file_processor.dart';
+import '../processors/token_import_file_processor/privacyidea_authenticator_import_file_processor.dart';
 import '../processors/token_import_file_processor/two_fas_import_file_processor.dart';
 
 class TokenImportOrigins {
   static final List<TokenImportOrigin> appList = [
+    privacyIDEAAuthenticator,
     googleAuthenticator,
     aegisAuthenticator,
     twoFasAuthenticator,
@@ -19,6 +23,18 @@ class TokenImportOrigins {
   ];
 
   static const _importSourceIconFolder = 'assets/images/import_sources/';
+
+  static final privacyIDEAAuthenticator = TokenImportOrigin(
+    appName: PrivacyIDEAAuthenticator.currentCustomization?.appName ?? 'privacyIDEA Authenticator',
+    iconPath: '${_importSourceIconFolder}privacyidea_authenticator.png',
+    importSources: [
+      TokenImportSource(
+          processor: const PrivacyIDEAAuthenticatorImportFileProcessor(),
+          type: TokenImportType.backupFile,
+          importHint: (context) => 'AppLocalizations.of(context)!.importHintPrivacyIDEAFile'),
+    ],
+  );
+
   static final googleAuthenticator = TokenImportOrigin(
     appName: 'Google Authenticator',
     iconPath: '${_importSourceIconFolder}google_authenticator.png',

@@ -273,16 +273,6 @@ class _ExportTokensDialogState extends ConsumerState<ExportTokensDialog> {
   Future<bool> _saveToFileIOS(BuildContext context, String encryptedTokens) async {
     final Directory downloadsDir = await getApplicationDocumentsDirectory();
     final file = File('${downloadsDir.path}/${_getFileName()}');
-    final exists = await file.exists();
-    if (!exists) {
-      try {
-        await file.create();
-      } catch (e) {
-        if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.errorSavingFile, null);
-        setState(() => exportPressed = false);
-        return false;
-      }
-    }
     try {
       await file.writeAsString(encryptedTokens);
       if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedToDownloadsFolder)));

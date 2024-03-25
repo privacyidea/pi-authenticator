@@ -122,14 +122,12 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
     final results = <ProcessorResult<Token>>[];
     for (Map<String, dynamic> twoFasToken in tokensJsonList) {
       try {
-        results.add(ProcessorResult<Token>(success: true, resultData: Token.fromUriMap(_twoFasToUriMap(twoFasToken))));
+        results.add(ProcessorResultSuccess(Token.fromUriMap(_twoFasToUriMap(twoFasToken))));
       } on LocalizedException catch (e) {
-        results.add(ProcessorResult<Token>(
-          success: false,
-          error: e.localizedMessage(AppLocalizations.of(await globalContext)!),
-        ));
+        results.add(ProcessorResultError(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
       } catch (e) {
-        results.add(ProcessorResult<Token>(success: false, error: e.toString()));
+        Logger.error('Failed to parse token.', name: 'two_fas_import_file_processor.dart#_processPlainTokens', error: e, stackTrace: StackTrace.current);
+        results.add(ProcessorResultError(e.toString()));
       }
     }
     Logger.info('successfully imported ${results.length} tokens', name: 'two_fas_import_file_processor.dart#processPlainTokens');

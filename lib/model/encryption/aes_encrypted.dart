@@ -79,11 +79,6 @@ class AesEncrypted {
     return Uint8List.fromList(decrypted);
   }
 
-  Future<String> decryptUtf8(String password) async {
-    final decrypted = await decrypt(password);
-    return utf8.decode(decrypted);
-  }
-
   Future<String> decryptToString(String password) async {
     final decrypted = await decrypt(password);
     return utf8.decode(decrypted);

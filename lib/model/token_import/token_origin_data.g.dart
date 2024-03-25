@@ -12,6 +12,10 @@ TokenOriginData _$TokenOriginDataFromJson(Map<String, dynamic> json) =>
       data: json['data'] as String,
       isPrivacyIdeaToken: json['isPrivacyIdeaToken'] as bool?,
       appName: json['appName'] as String?,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      piServerVersion: json['piServerVersion'] == null
+          ? null
+          : Version.fromJson(json['piServerVersion'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$TokenOriginDataToJson(TokenOriginData instance) =>
@@ -20,6 +24,8 @@ Map<String, dynamic> _$TokenOriginDataToJson(TokenOriginData instance) =>
       'appName': instance.appName,
       'data': instance.data,
       'isPrivacyIdeaToken': instance.isPrivacyIdeaToken,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'piServerVersion': instance.piServerVersion,
     };
 
 const _$TokenOriginSourceTypeEnumMap = {

@@ -11,6 +11,7 @@ import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/processor_result.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
@@ -628,12 +629,12 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<List<Token>> _tokensFromUri(Uri uri) async {
-    List<Token>? tokens;
     try {
       final results = await TokenImportSchemeProcessor.processUriByAny(uri);
-      tokens = results?.where((element) => element.success && element.resultData != null).map((e) => e.resultData!).toList();
-    } catch (_) {}
-    return tokens ?? [];
+      return results?.whereType<ProcessorResultSuccess<Token>>().map((e) => e.resultData).toList() ?? [];
+    } catch (_) {
+      return [];
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////////
