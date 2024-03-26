@@ -210,6 +210,8 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   /// There is no need to use mutexes because the updating functions are always using the latest version of the updating tokens.
   */
 
+  Future<void> pollForChallenges({required bool isManually}) => pushProvider.pollForChallenges(isManually: isManually);
+
   Future<PushRequestState> loadStateFromRepo() => _loadFromRepo();
 
   /// Accepts a push request and returns true if successful, false if not.

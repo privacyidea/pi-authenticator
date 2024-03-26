@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/states/token_filter.dart';
-import '../../utils/logger.dart';
 import '../../utils/patch_notes_utils.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/push_request_listener.dart';
@@ -35,7 +33,7 @@ class MainView extends ConsumerStatefulView {
   ConsumerState<MainView> createState() => _MainViewState();
 }
 
-class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
+class _MainViewState extends ConsumerState<MainView> {
   final globalKey = GlobalKey<NestedScrollViewState>();
 
   @override
@@ -46,18 +44,6 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       PatchNotesUtils.showPatchNotesIfNeeded(context, latestStartedVersion);
     });
-  }
-
-  @override
-  void onAppResume() {
-    Logger.info('MainView Resume', name: 'main_view.dart#onAppResume');
-    globalRef?.read(appStateProvider.notifier).state = AppLifecycleState.resumed;
-  }
-
-  @override
-  void onAppPause() {
-    Logger.info('MainView Pause', name: 'main_view.dart#onAppPause');
-    globalRef?.read(appStateProvider.notifier).state = AppLifecycleState.paused;
   }
 
   @override

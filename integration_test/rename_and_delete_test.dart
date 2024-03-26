@@ -53,7 +53,7 @@ void main() {
         tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
       ],
-      child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
+      child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
     ));
     await _renameToken(tester, 'Renamed Token');
     await _renameToken(tester, 'Renamed Token Again');

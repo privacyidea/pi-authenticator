@@ -48,17 +48,20 @@ void main() async {
         WidgetsFlutterBinding.ensureInitialized();
         await HomeWidgetUtils().registerInteractivityCallback(homeWidgetBackgroundCallback);
         await HomeWidgetUtils().setAppGroupId(appGroupId);
-        runApp(AppWrapper(child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization)));
+        runApp(AppWrapper(child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization)));
       });
 }
 
 class PrivacyIDEAAuthenticator extends ConsumerWidget {
   static ApplicationCustomization? currentCustomization;
   final ApplicationCustomization _customization;
-  PrivacyIDEAAuthenticator({required ApplicationCustomization customization, super.key}) : _customization = customization {
-    // ignore: prefer_initializing_formals
+
+  factory PrivacyIDEAAuthenticator(ApplicationCustomization customization, {Key? key}) {
     PrivacyIDEAAuthenticator.currentCustomization = customization;
+    return PrivacyIDEAAuthenticator._(customization: customization, key: key);
   }
+  const PrivacyIDEAAuthenticator._({required ApplicationCustomization customization, super.key}) : _customization = customization;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     globalRef = ref;

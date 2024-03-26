@@ -214,6 +214,8 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// Updates a token and returns the updated token if successful, the old token if not and null if the token does not exist.
   Future<T?> _updateToken<T extends Token>(T token, T Function(T) updater) async {
     await updatingTokensMutex.acquire();
+    await loadingRepoMutex.acquire();
+    loadingRepoMutex.release();
     final current = state.currentOf<T>(token);
     if (current == null) {
       Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#updateToken');
@@ -279,6 +281,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<T?> showToken<T extends OTPToken>(T token) async {
     final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
     if (!authenticated) return null;
+    await Future.delayed(const Duration(milliseconds: 100));
     final updated = await _updateToken(token, (p0) => p0.copyWith(isHidden: false) as T);
     if (updated?.isHidden == false) {
       _hidingTimers[token.id]?.cancel();

@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../utils/logger.dart';
 import '../enums/introduction.dart';
 
 part 'introduction_state.g.dart';
@@ -31,11 +30,7 @@ class IntroductionState {
     return IntroductionState(completedIntroductions: newCompletedIntroductions);
   }
 
-  bool isConditionFulfilled(WidgetRef ref, Introduction introduction) {
-    final fulfilled = introduction.isConditionFulfilled(ref, this);
-    Logger.info('Introductionrequirements for $introduction fulfilled: $fulfilled');
-    return fulfilled;
-  }
+  bool isConditionFulfilled(WidgetRef ref, Introduction introduction) => introduction.isConditionFulfilled(ref, this);
 
   @override
   String toString() => 'IntroductionState{completedIntroductions: $completedIntroductions}';

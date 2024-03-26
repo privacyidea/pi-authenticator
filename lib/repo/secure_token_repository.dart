@@ -109,7 +109,7 @@ class SecureTokenRepository implements TokenRepository {
 
           // TODO token.version might be deprecated, is there a reason to use it?
           // TODO when the token version (token.version) changed handle this here.
-          Logger.info('Loading token from secure storage: $valueJson');
+          Logger.info('Loading token from secure storage: ${valueJson['id']}', name: 'secure_token_repository.dart#loadTokens', stackTrace: StackTrace.current);
           try {
             tokenList.add(Token.fromJson(valueJson));
           } catch (e, s) {
@@ -136,7 +136,7 @@ class SecureTokenRepository implements TokenRepository {
           Logger.warning('Could not save all tokens to secure storage',
               name: 'secure_token_repository.dart#saveOrReplaceTokens', stackTrace: StackTrace.current);
         } else {
-          Logger.info('Saved all (${tokens.length}) tokens to secure storage');
+          Logger.info('Saved all (${tokens.length}) tokens to secure storage', name: 'secure_token_repository.dart#saveOrReplaceTokens');
         }
         return failedTokens;
       });

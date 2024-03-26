@@ -72,7 +72,7 @@ void main() {
             )),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
       ],
-      child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
+      child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
     ));
 
     await _licensesViewTest(tester);

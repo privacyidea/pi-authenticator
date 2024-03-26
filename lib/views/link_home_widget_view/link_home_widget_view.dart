@@ -44,15 +44,11 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
                 ? () {}
                 : () async {
                     if (alreadyTapped) return;
-                    setState(() {
-                      alreadyTapped = true;
-                    });
+                    setState(() => alreadyTapped = true);
                     await HomeWidgetUtils().link(widget.homeWidgetId, otpToken.id);
                     await FlutterAppMinimizer.minimize();
                     await Future.delayed(const Duration(milliseconds: 500));
-                    if (mounted) {
-                      Navigator.pop(context);
-                    }
+                    if (context.mounted) Navigator.pop(context);
                   },
           );
         },

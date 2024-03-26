@@ -73,7 +73,7 @@ void main() {
           tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
           tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
         ],
-        child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
+        child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
       ));
       await _addTwoStepHotpTokenTest(tester);
       await _addTwoStepTotpTokenTest(tester);

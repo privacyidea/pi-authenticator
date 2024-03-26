@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/extensions/enum_extension.dart';
@@ -22,7 +23,7 @@ class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   ConsumerState<TOTPTokenWidgetTile> createState() => _TOTPTokenWidgetTileState();
 }
 
-class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with SingleTickerProviderStateMixin {
+class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with SingleTickerProviderStateMixin, LifecycleMixin {
   double secondsLeft = 0;
   late AnimationController animation;
   late DateTime lastCount;
@@ -55,19 +56,6 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
     _startCountDown();
   }
 
-  void _onAppStateChange(AppLifecycleState? state) {
-    if (!mounted) return;
-    if (state == AppLifecycleState.resumed) {
-      setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
-      animation.forward(from: 1 - secondsLeft / widget.token.period);
-      return;
-    }
-    if (state == AppLifecycleState.paused) {
-      animation.stop();
-      return;
-    }
-  }
-
   @override
   dispose() {
     animation.dispose();
@@ -91,9 +79,22 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   }
 
   @override
+  void onAppPause() {
+    if (!mounted) return;
+    animation.stop();
+  }
+
+  @override
+  void onAppResume() {
+    if (!mounted) return;
+    setState(() {
+      secondsLeft = widget.token.secondsUntilNextOTP;
+      animation.forward(from: 1 - secondsLeft / widget.token.period);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final appstate = ref.watch(appStateProvider);
-    _onAppStateChange(appstate);
     return TokenWidgetTile(
       isPreview: widget.isPreview,
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
