@@ -11,14 +11,15 @@ import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/model/processor_result.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
 import '../model/enums/push_token_rollout_state.dart';
 import '../model/enums/token_origin_source_type.dart';
+import '../model/processor_result.dart';
 import '../model/states/token_state.dart';
 import '../model/tokens/hotp_token.dart';
+import '../model/tokens/otp_token.dart';
 import '../model/tokens/push_token.dart';
 import '../model/tokens/token.dart';
 import '../processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
@@ -190,7 +191,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       newState = TokenState(tokens: tokens, lastlyUpdatedTokens: tokens);
       state = newState;
     } catch (e) {
-      Logger.warning(
+      Logger.error(
         'Loading tokens from storage failed.',
         name: 'token_notifier.dart#_loadFromRepo',
         error: e,
@@ -275,7 +276,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<T?> hideToken<T extends Token>(T token) => _updateToken(token, (p0) => p0.copyWith(isHidden: true) as T);
 
   /// Shows a token and returns the updated token if successful, the old token if not and null if the token does not exist or the user is not authenticated.
-  Future<T?> showToken<T extends Token>(T token) async {
+  Future<T?> showToken<T extends OTPToken>(T token) async {
     final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
     if (!authenticated) return null;
     final updated = await _updateToken(token, (p0) => p0.copyWith(isHidden: false) as T);
@@ -293,6 +294,10 @@ class TokenNotifier extends StateNotifier<TokenState> {
     final token = getTokenById(tokenId);
     if (token == null) {
       Logger.warning('Tried to show a token that does not exist.', name: 'token_notifier.dart#showTokenById');
+      return Future.value(null);
+    }
+    if (token is! OTPToken) {
+      Logger.warning('Tried to show a token that is not an OTPToken.', name: 'token_notifier.dart#showTokenById');
       return Future.value(null);
     }
     return showToken(token);

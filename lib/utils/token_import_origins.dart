@@ -1,6 +1,5 @@
-import 'package:privacyidea_authenticator/mains/main_netknights.dart';
-
 import '../l10n/app_localizations.dart';
+import '../mains/main_netknights.dart';
 import '../model/enums/token_import_type.dart';
 import '../model/token_import/token_import_origin.dart';
 import '../processors/scheme_processors/token_import_scheme_processors/free_otp_plus_qr_processor.dart';

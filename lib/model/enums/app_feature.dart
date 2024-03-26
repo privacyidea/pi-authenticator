@@ -1,4 +1,4 @@
-import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'algorithms.dart';
 
 enum AppFeature {
   patchNotes,

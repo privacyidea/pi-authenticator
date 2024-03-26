@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/utils/version.dart';
 
+import '../../utils/version.dart';
 import '../enums/token_origin_source_type.dart';
 
 part 'token_origin_data.g.dart';
@@ -11,10 +11,33 @@ class TokenOriginData {
   final String? appName;
   final String data;
   final bool? isPrivacyIdeaToken;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final Version? piServerVersion;
-  const TokenOriginData(
-      {required this.source, required this.data, required this.isPrivacyIdeaToken, this.appName, required this.createdAt, this.piServerVersion});
+  const TokenOriginData._({
+    required this.source,
+    required this.data,
+    this.appName,
+    this.isPrivacyIdeaToken,
+    this.createdAt,
+    this.piServerVersion,
+  });
+
+  factory TokenOriginData({
+    required TokenOriginSourceType source,
+    required String data,
+    String? appName,
+    bool? isPrivacyIdeaToken,
+    DateTime? createdAt,
+    Version? piServerVersion,
+  }) =>
+      TokenOriginData._(
+        source: source,
+        appName: appName,
+        data: data,
+        isPrivacyIdeaToken: isPrivacyIdeaToken,
+        createdAt: createdAt ?? DateTime.now(),
+        piServerVersion: piServerVersion,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -22,12 +45,21 @@ class TokenOriginData {
     return other is TokenOriginData && other.source == source && other.appName == appName && other.data == data;
   }
 
-  TokenOriginData copyWith({TokenOriginSourceType? source, String? appName, String? data, bool? isPrivacyIdeaToken, DateTime? createdAt}) => TokenOriginData(
+  TokenOriginData copyWith({
+    TokenOriginSourceType? source,
+    String? data,
+    String? appName,
+    bool? isPrivacyIdeaToken,
+    DateTime? createdAt,
+    Version? piServerVersion,
+  }) =>
+      TokenOriginData(
         source: source ?? this.source,
         appName: appName ?? this.appName,
         data: data ?? this.data,
         isPrivacyIdeaToken: isPrivacyIdeaToken ?? this.isPrivacyIdeaToken,
         createdAt: createdAt ?? this.createdAt,
+        piServerVersion: piServerVersion ?? this.piServerVersion,
       );
 
   @override

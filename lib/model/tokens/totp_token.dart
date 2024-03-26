@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'token.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
@@ -10,6 +9,7 @@ import '../enums/token_types.dart';
 import '../extensions/enum_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
+import 'token.dart';
 
 part 'totp_token.g.dart';
 
@@ -23,7 +23,7 @@ class TOTPToken extends OTPToken {
   @override
   Duration get showDuration {
     final Duration duration = Duration(milliseconds: (period * 1000 + (secondsUntilNextOTP * 1000).toInt()));
-    Logger.warning('TOTPToken.showDuration: $duration');
+    Logger.info('$runtimeType showDuration: ${duration.inSeconds} seconds');
     return duration;
   }
 
@@ -112,7 +112,7 @@ class TOTPToken extends OTPToken {
       label: uriMap[URI_LABEL] ?? '',
       issuer: uriMap[URI_ISSUER] ?? '',
       id: const Uuid().v4(),
-      algorithm: AlgorithmsExtension.fromString((uriMap[URI_ALGORITHM] ?? 'SHA1')),
+      algorithm: AlgorithmsX.fromString((uriMap[URI_ALGORITHM] ?? 'SHA1')),
       digits: uriMap[URI_DIGITS] ?? 6,
       tokenImage: uriMap[URI_IMAGE],
       secret: Encodings.base32.encode(uriMap[URI_SECRET]),

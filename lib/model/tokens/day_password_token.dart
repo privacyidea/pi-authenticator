@@ -21,9 +21,6 @@ class DayPasswordToken extends OTPToken {
   final DayPasswordTokenViewMode viewMode;
   final Duration period;
 
-  @override
-  Duration get showDuration => const Duration(seconds: 30);
-
   DayPasswordToken({
     required Duration period,
     required super.id,
@@ -63,9 +60,6 @@ class DayPasswordToken extends OTPToken {
 
   @override
   int get hashCode => Object.hashAll([super.hashCode, period, viewMode]);
-
-  @override
-  bool get isPrivacyIdeaToken => false;
 
   @override
   DayPasswordToken copyWith({
@@ -134,13 +128,14 @@ class DayPasswordToken extends OTPToken {
       label: uriMap[URI_LABEL] ?? '',
       issuer: uriMap[URI_ISSUER] ?? '',
       id: const Uuid().v4(),
-      algorithm: AlgorithmsExtension.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+      algorithm: AlgorithmsX.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
       digits: uriMap[URI_DIGITS] ?? 6,
       secret: Encodings.base32.encode(uriMap[URI_SECRET]),
       period: Duration(seconds: uriMap[URI_PERIOD]),
       tokenImage: uriMap[URI_IMAGE],
       pin: uriMap[URI_PIN],
       isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
     );
   }
 

@@ -1,3 +1,4 @@
+import '../../utils/logger.dart';
 import '../enums/algorithms.dart';
 import '../token_import/token_origin_data.dart';
 import 'token.dart';
@@ -7,6 +8,11 @@ abstract class OTPToken extends Token {
   final int digits; // the number of digits the otp value will have
   final String secret; // the secret based on which the otp value is calculated in base32
   String get otpValue; // the current otp value
+  Duration get showDuration {
+    const Duration duration = Duration(seconds: 30);
+    Logger.info('$runtimeType showDuration: ${duration.inSeconds} seconds');
+    return duration;
+  } // the duration the otp value is shown
 
   const OTPToken({
     required this.algorithm,

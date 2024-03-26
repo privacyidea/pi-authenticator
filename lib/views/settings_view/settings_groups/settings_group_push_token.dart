@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../model/tokens/push_token.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../settings_view_widgets/settings_groups.dart';
 import '../settings_view_widgets/update_firebase_token_dialog.dart';

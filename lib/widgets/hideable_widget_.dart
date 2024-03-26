@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_localizations.dart';
-import '../model/tokens/token.dart';
+import '../model/tokens/otp_token.dart';
 import '../utils/riverpod_providers.dart';
 
 class HideableWidget extends ConsumerWidget {
-  final Token token;
+  final OTPToken token;
   final bool isHidden;
   final Widget child;
   const HideableWidget({

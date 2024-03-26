@@ -104,7 +104,7 @@ class SteamToken extends TOTPToken {
         label: uriMap[URI_LABEL] as String,
         issuer: uriMap[URI_ISSUER] as String,
         id: const Uuid().v4(),
-        algorithm: AlgorithmsExtension.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+        algorithm: AlgorithmsX.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
         digits: uriMap[URI_DIGITS] as int,
         secret: Encodings.base32.encode(uriMap[URI_SECRET]),
         tokenImage: uriMap[URI_IMAGE] as String?,

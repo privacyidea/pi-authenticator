@@ -1,7 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
-
 import 'dart:typed_data';
 
 import 'package:file_selector/file_selector.dart';

@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:otp/otp.dart' as otp_library;
+import 'package:privacyidea_authenticator/model/extensions/enum_extension.dart';
 
 import '../../l10n/app_localizations.dart';
 
@@ -10,7 +11,7 @@ enum Algorithms {
   SHA512,
 }
 
-extension AlgorithmsExtension on Algorithms {
+extension AlgorithmsX on Algorithms {
   String generateTOTPCodeString({
     required String secret,
     required DateTime time,
@@ -44,12 +45,6 @@ extension AlgorithmsExtension on Algorithms {
   bool isString(String algoAsString) {
     return algoAsString == asString;
   }
-
-  String get asString => switch (this) {
-        Algorithms.SHA1 => 'SHA1',
-        Algorithms.SHA256 => 'SHA256',
-        Algorithms.SHA512 => 'SHA512',
-      };
 
   static Algorithms fromString(String algoAsString) => switch (algoAsString) {
         'SHA1' => Algorithms.SHA1,

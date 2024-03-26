@@ -2,16 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/mains/main_netknights.dart';
-import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../mains/main_netknights.dart';
 import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
+import '../../model/enums/token_origin_source_type.dart';
 import '../../model/enums/token_types.dart';
 import '../../model/extensions/enum_extension.dart';
+import '../../model/tokens/token.dart';
+import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import 'add_token_manually_view_widgets/labeled_dropdown_button.dart';
@@ -190,7 +190,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
       URI_DIGITS: _digitsNotifier.value,
       URI_SECRET: _encodingNotifier.value.decode(_secretController.text),
       URI_COUNTER: 0,
-      URI_PERIOD: _periodNotifier.value,
+      URI_PERIOD: _typeNotifier.value == TokenTypes.DAYPASSWORD ? _periodDayPasswordNotifier.value * 60 * 60 : _periodNotifier.value,
     };
     uriMap.addAll({
       URI_ORIGIN: TokenOriginSourceType.manually.toTokenOrigin(

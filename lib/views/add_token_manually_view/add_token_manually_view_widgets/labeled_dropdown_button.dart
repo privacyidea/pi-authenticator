@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
+import '../../../model/extensions/enum_extension.dart';
 import '../../../utils/logger.dart';
-import '../../../utils/utils.dart';
 
 class LabeledDropdownButton<T> extends StatefulWidget {
   final String label;
   final List<T> values;
   final ValueNotifier<T?> valueNotifier;
   final String postFix;
+  final Function(T)? onChanged;
 
   const LabeledDropdownButton({
     required this.label,
     required this.values,
     required this.valueNotifier,
     this.postFix = '',
+    this.onChanged,
     super.key,
   });
 
@@ -47,7 +49,7 @@ class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
                 return DropdownMenuItem<T>(
                   value: value,
                   child: Text(
-                    '${value is Enum ? enumAsString(value) : value}'
+                    '${value is Enum ? value.asString : value}'
                     '${widget.postFix}',
                     style: Theme.of(context).textTheme.titleMedium,
                     overflow: TextOverflow.fade,
@@ -59,6 +61,7 @@ class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
                 if (newValue == null) return;
                 setState(() {
                   Logger.info('DropdownButton onChanged: $newValue');
+                  widget.onChanged?.call(newValue);
                   widget.valueNotifier.value = newValue;
                 });
               },

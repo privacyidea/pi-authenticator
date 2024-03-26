@@ -21,7 +21,6 @@ abstract class Token with SortableMixin {
   final bool pin;
   final bool isLocked;
   final bool isHidden;
-  Duration get showDuration;
   final String? tokenImage;
   final int? folderId;
   @override

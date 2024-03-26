@@ -5,16 +5,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:privacyidea_authenticator/model/encryption/token_encryption.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/lock_auth.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../mains/main_netknights.dart';
+import '../../../model/encryption/token_encryption.dart';
+import '../../../model/tokens/token.dart';
+import '../../../utils/lock_auth.dart';
 import '../../../utils/riverpod_providers.dart';
+import '../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../import_tokens_view/import_tokens_view.dart';
+import '../../main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 import '../settings_view_widgets/settings_groups.dart';
 import '../settings_view_widgets/settings_list_tile_button.dart';
 
@@ -237,7 +237,8 @@ class _ExportTokensDialogState extends ConsumerState<ExportTokensDialog> {
                     onPressed: textController.text.isNotEmpty
                         ? () async {
                             setState(() => exportPressed = true);
-                            final tokensToEncrypt = widget.tokens ?? ref.read(tokenProvider).tokens;
+                            var tokensToEncrypt = widget.tokens ?? ref.read(tokenProvider).tokens;
+                            tokensToEncrypt = tokensToEncrypt.map((e) => e.copyWith(folderId: () => null));
                             final encryptedTokens = await TokenEncryption.encrypt(tokens: tokensToEncrypt, password: textController.text);
                             if (!context.mounted) return;
                             final isExported = await _saveToFile(context, encryptedTokens);

@@ -1,15 +1,15 @@
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
-import '../../../l10n/app_localizations.dart';
-import '../../../utils/globals.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';
 import '../../../model/enums/token_types.dart';
 import '../../../model/extensions/enum_extension.dart';
 import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
+import '../../../utils/globals.dart';
 import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/supported_versions.dart';
@@ -120,7 +120,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
   }
 
   String algorithm = uri.queryParameters['algorithm'] ?? Algorithms.SHA1.asString; // Optional parameter
-  algorithm = AlgorithmsExtension.fromString(algorithm).asString; // Validate algorithm, throw error if not supported.
+  algorithm = AlgorithmsX.fromString(algorithm).asString; // Validate algorithm, throw error if not supported.
 
   uriMap[URI_ALGORITHM] = algorithm;
 

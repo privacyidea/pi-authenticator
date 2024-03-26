@@ -10,7 +10,7 @@ enum Encodings {
   hex,
 }
 
-extension EncodingsExtension on Encodings {
+extension EncodingsX on Encodings {
   String encode(Uint8List data) => switch (this) {
         Encodings.none => utf8.decode(data),
         Encodings.base32 => base32.encode(data),

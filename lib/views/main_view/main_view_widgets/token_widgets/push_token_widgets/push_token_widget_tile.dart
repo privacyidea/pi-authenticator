@@ -11,7 +11,8 @@ import '../token_widget_tile.dart';
 
 class PushTokenWidgetTile extends ConsumerWidget {
   final PushToken token;
-  const PushTokenWidgetTile(this.token, {super.key});
+  final bool isPreview;
+  const PushTokenWidgetTile(this.token, {this.isPreview = false, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,6 +20,7 @@ class PushTokenWidgetTile extends ConsumerWidget {
       key: Key('${token.hashCode}TokenWidgetTile'),
       tokenIsLocked: token.isLocked,
       tokenImage: token.tokenImage,
+      isPreview: isPreview,
       title: Text(
         token.label,
         textScaler: const TextScaler.linear(1.9),

@@ -13,7 +13,7 @@ enum PushTokenRollOutState {
   rolloutComplete,
 }
 
-extension PushTokenRollOutStateExtension on PushTokenRollOutState {
+extension PushTokenRollOutStateX on PushTokenRollOutState {
   bool get rollOutInProgress => switch (this) {
         PushTokenRollOutState.rolloutNotStarted => false,
         PushTokenRollOutState.generatingRSAKeyPair => true,

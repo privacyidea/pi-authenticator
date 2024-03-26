@@ -30,10 +30,10 @@ enum Introduction {
   hidePushTokens, // hiding is enabled
 }
 
-extension IntroductionExtension on Introduction {
+extension IntroductionX on Introduction {
   bool isConditionFulfilled(WidgetRef ref, IntroductionState state) => switch (this) {
         Introduction.introductionScreen => state.isUncompleted(Introduction.introductionScreen),
-        Introduction.scanQrCode => state.isCompleted(Introduction.introductionScreen) && state.isUncompleted(Introduction.scanQrCode),
+        Introduction.scanQrCode => state.isUncompleted(Introduction.scanQrCode),
         Introduction.addTokenManually => state.isCompleted(Introduction.scanQrCode) && state.isUncompleted(Introduction.addTokenManually),
         Introduction.tokenSwipe =>
           ref.watch(tokenProvider).tokens.isNotEmpty && state.isCompleted(Introduction.addTokenManually) && state.isUncompleted(Introduction.tokenSwipe),

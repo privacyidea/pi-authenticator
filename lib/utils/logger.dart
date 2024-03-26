@@ -322,7 +322,8 @@ Device Parameters $deviceInfo""";
 
   static String _textFilter(String text) {
     for (var key in filterParameterKeys) {
-      final regex = RegExp(r'(?<=' + key + r':\s).+?(?=[},])');
+      // It searches for the key, ignores following characters until it finds base64 caracters (plus padding and separator) and replaces it with "******"
+      final regex = RegExp(r'(?<=' + key + r'[^A-Z0-9+/=,]*)[A-Z0-9+/=,]+', caseSensitive: false);
       text = text.replaceAll(regex, '******');
     }
     return text;
@@ -347,7 +348,7 @@ Device Parameters $deviceInfo""";
   }
 }
 
-final filterParameterKeys = ['fbtoken', 'new_fb_token'];
+final filterParameterKeys = ['fbtoken', 'new_fb_token', 'secret'];
 
 enum LogLevel {
   INFO,

@@ -1,6 +1,6 @@
 import 'package:file_selector/file_selector.dart';
-import '../../model/processor_result.dart';
 
+import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/logger.dart';
 import '../mixins/token_import_processor.dart';

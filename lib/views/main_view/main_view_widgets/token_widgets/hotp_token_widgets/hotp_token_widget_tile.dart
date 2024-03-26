@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../model/extensions/enum_extension.dart';
 import '../../../../../model/tokens/hotp_token.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/utils.dart';
@@ -90,7 +91,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
                 (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
                     ? '${widget.token.issuer}: ${widget.token.label}'
                     : '${widget.token.issuer}${widget.token.label}',
-                'Algorithm: ${enumAsString(widget.token.algorithm)}',
+                'Algorithm: ${widget.token.algorithm.asString}',
                 'Counter: ${widget.token.counter}',
               ]
             : [
@@ -99,9 +100,9 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
               ],
         trailing: CustomTrailing(
           child: widget.isPreview
-              ? const Icon(
-                  size: 100,
-                  Icons.replay,
+              ? const FittedBox(
+                  fit: BoxFit.contain,
+                  child: Icon(size: 100, Icons.replay),
                 )
               : HideableWidget(
                   token: widget.token,
@@ -112,10 +113,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
                     onPressed: disableTrailingButton ? null : () => _updateOtpValue(),
                     icon: const FittedBox(
                       fit: BoxFit.contain,
-                      child: Icon(
-                        size: 100,
-                        Icons.replay,
-                      ),
+                      child: Icon(size: 100, Icons.replay),
                     ),
                   ),
                 ),

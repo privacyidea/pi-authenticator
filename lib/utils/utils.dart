@@ -58,12 +58,12 @@ String splitPeriodically(String str, int period) {
 // / That library sadly depends on [dart.ui] and thus cannot be used in tests.
 // / Therefore, only using this code enables us to use this library ([utils.dart])
 // / in tests.
-String enumAsString(Enum enumEntry) {
-  final String description = enumEntry.toString();
-  final int indexOfDot = description.indexOf('.');
-  assert(indexOfDot != -1 && indexOfDot < description.length - 1);
-  return description.substring(indexOfDot + 1);
-}
+// String enumAsString(Enum enumEntry) {
+//   final String description = enumEntry.toString();
+//   final int indexOfDot = description.indexOf('.');
+//   assert(indexOfDot != -1 && indexOfDot < description.length - 1);
+//   return description.substring(indexOfDot + 1);
+// }
 
 /// If permission is already given, this function does nothing
 void checkNotificationPermission() async {

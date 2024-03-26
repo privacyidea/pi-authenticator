@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_groups/settings_group_error_log.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_groups/settings_group_language.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_groups/settings_group_theme.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/tokens/push_token.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/push_request_listener.dart';
 import '../view_interface.dart';
-import 'settings_groups/settings_group_import_export_tokens.dart';
+import 'settings_groups/settings_group_error_log.dart';
 import 'settings_groups/settings_group_general.dart';
+import 'settings_groups/settings_group_import_export_tokens.dart';
+import 'settings_groups/settings_group_language.dart';
 import 'settings_groups/settings_group_push_token.dart';
+import 'settings_groups/settings_group_theme.dart';
 
 class SettingsView extends ConsumerView {
   @override

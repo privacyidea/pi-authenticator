@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/app_customizer.dart';
 
 import '../../model/enums/app_feature.dart';
+import '../../utils/app_customizer.dart';
 import '../../utils/app_info_utils.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';

@@ -1,5 +1,4 @@
 import '../../../model/processor_result.dart';
-
 import '../../../model/tokens/token.dart';
 import 'token_import_scheme_processor_interface.dart';
 

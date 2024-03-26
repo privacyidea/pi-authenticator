@@ -6,7 +6,7 @@ enum PatchNoteType {
   bugFix,
 }
 
-extension PatchNoteTypeExtension on PatchNoteType {
+extension PatchNoteTypeX on PatchNoteType {
   String getName(AppLocalizations localizations) => switch (this) {
         PatchNoteType.newFeature => localizations.patchNotesNewFeatures,
         PatchNoteType.improvement => localizations.patchNotesImprovements,

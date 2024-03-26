@@ -165,6 +165,17 @@ class EditPushTokenAction extends TokenAction {
                   )
                 ],
               ),
+              if (token.origin != null)
+                TextFormField(
+                  initialValue: token.origin!.appName,
+                  decoration: const InputDecoration(labelText: 'Origin'),
+                  enabled: false,
+                ),
+              TextFormField(
+                initialValue: token.isPrivacyIdeaToken == false ? 'Yes' : 'No',
+                decoration: const InputDecoration(labelText: 'Is exportable?'),
+                enabled: false,
+              ),
             ],
           ),
         ),

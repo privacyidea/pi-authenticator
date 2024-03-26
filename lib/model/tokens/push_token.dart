@@ -21,8 +21,6 @@ class PushToken extends Token {
   final String? fbToken;
 
   @override
-  Duration get showDuration => Duration.zero;
-  @override
   bool? get isPrivacyIdeaToken => true;
 
   // Roll out

@@ -101,7 +101,7 @@ class HOTPToken extends OTPToken {
       label: uriMap[URI_LABEL] ?? '',
       issuer: uriMap[URI_ISSUER] ?? '',
       id: const Uuid().v4(),
-      algorithm: AlgorithmsExtension.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+      algorithm: AlgorithmsX.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
       digits: uriMap[URI_DIGITS] ?? 6,
       secret: Encodings.base32.encode(uriMap[URI_SECRET]),
       counter: uriMap[URI_COUNTER] ?? 0,

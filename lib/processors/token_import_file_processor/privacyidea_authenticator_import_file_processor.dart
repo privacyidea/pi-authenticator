@@ -1,12 +1,13 @@
 import 'dart:convert';
-import 'dart:developer';
+
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/model/processor_result.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/processors/token_import_file_processor/two_fas_import_file_processor.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
+
 import '../../model/encryption/token_encryption.dart';
+import '../../model/processor_result.dart';
+import '../../model/tokens/token.dart';
+import '../../utils/logger.dart';
 import 'token_import_file_processor_interface.dart';
+import 'two_fas_import_file_processor.dart';
 
 class PrivacyIDEAAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
   const PrivacyIDEAAuthenticatorImportFileProcessor();
@@ -18,10 +19,8 @@ class PrivacyIDEAAuthenticatorImportFileProcessor extends TokenImportFileProcess
       if (json['data'] != null && json['salt'] != null && json['iv'] != null && json['mac'] != null) {
         return true;
       }
-      log('Invalid file', name: 'PrivacyIDEAAuthenticatorImportFileProcessor#fileIsValid');
       return false;
     } catch (e) {
-      log('Failed to validate file', name: 'PrivacyIDEAAuthenticatorImportFileProcessor#fileIsValid', error: e);
       return false;
     }
   }

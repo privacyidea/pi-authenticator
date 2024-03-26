@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../model/processor_result.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
+import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../processors/mixins/token_import_processor.dart';
 import '../../../processors/token_import_file_processor/two_fas_import_file_processor.dart';

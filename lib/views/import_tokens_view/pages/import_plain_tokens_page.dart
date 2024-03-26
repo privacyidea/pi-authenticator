@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../model/processor_result.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
+import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../import_tokens_view.dart';
@@ -43,7 +43,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
   ScrollController scrollController = ScrollController();
   List<Token?>? tokensToKeep;
   List<ImportTokenEntry> importTokenEntrys = [];
-  bool isMaxScrollExtent = true;
+  bool isMaxScrollOffset = true;
 
   @override
   void initState() {
@@ -58,10 +58,8 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
       });
       _setTokensToKeep(importTokenEntrys);
     });
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      scrollController.addListener(_updateIsMaxScrollExtent);
-    });
+    scrollController.addListener(_updateIsMaxScrollExtent);
+    _updateIsMaxScrollExtent();
   }
 
   @override
@@ -75,26 +73,26 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
-  void _updateIsMaxScrollExtent() {
-    if (scrollController.position.maxScrollExtent <= scrollController.offset) {
-      if (isMaxScrollExtent) return;
-      setState(() {
-        isMaxScrollExtent = true;
-      });
-    } else {
-      if (!isMaxScrollExtent) return;
-      setState(() {
-        isMaxScrollExtent = false;
-      });
-    }
+  void _updateIsMaxScrollExtent() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.delayed(const Duration(milliseconds: 100));
+      if (scrollController.position.maxScrollExtent <= scrollController.offset) {
+        if (isMaxScrollOffset || !mounted) return;
+        setState(() {
+          isMaxScrollOffset = true;
+        });
+      } else {
+        if (!isMaxScrollOffset || !mounted) return;
+        setState(() {
+          isMaxScrollOffset = false;
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _updateIsMaxScrollExtent();
-    });
-
+    _updateIsMaxScrollExtent();
     final List<ImportTokenEntry> conflictedImports = [];
     final List<ImportTokenEntry> newImports = [];
     final List<ImportTokenEntry> duplicateImport = [];
@@ -170,7 +168,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
             ),
           ),
           AnimatedOpacity(
-            opacity: isMaxScrollExtent ? 0 : 1,
+            opacity: isMaxScrollOffset ? 0 : 1,
             duration: const Duration(milliseconds: 250),
             child: const Divider(
               thickness: 2,

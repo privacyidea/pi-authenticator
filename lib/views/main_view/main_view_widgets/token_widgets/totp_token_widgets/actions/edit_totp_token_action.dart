@@ -3,12 +3,12 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
+import '../../../../../../model/extensions/enum_extension.dart';
 import '../../../../../../model/tokens/totp_token.dart';
 import '../../../../../../utils/app_customizer.dart';
 import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
-import '../../../../../../utils/utils.dart';
 import '../../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../token_action.dart';
@@ -120,7 +120,7 @@ class EditTOTPTokenAction extends TokenAction {
                   },
                 ),
                 TextFormField(
-                  initialValue: enumAsString(algorithm),
+                  initialValue: algorithm.asString,
                   decoration: InputDecoration(labelText: AppLocalizations.of(context)!.algorithm),
                   enabled: false,
                 ),
