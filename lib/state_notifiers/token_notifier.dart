@@ -67,6 +67,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<void> _init(TokenState? initialState) async {
     initState = initialState != null ? Future.value(initialState) : _loadFromRepo();
     await initState;
+    await hideLockedTokens();
     Logger.info('TokenNotifier initialized.', name: 'token_notifier.dart#_init');
   }
 
@@ -204,6 +205,23 @@ class TokenNotifier extends StateNotifier<TokenState> {
     return newState;
   }
 
+  Future<bool> _saveStateToRepo(TokenState state) async {
+    await loadingRepoMutex.acquire();
+    try {
+      await _repo.saveOrReplaceTokens(state.tokens);
+    } catch (e) {
+      Logger.error(
+        'Saving tokens to storage failed.',
+        name: 'token_notifier.dart#_saveStateToRepo',
+        error: e,
+      );
+      loadingRepoMutex.release();
+      return false;
+    }
+    loadingRepoMutex.release();
+    return true;
+  }
+
   /*
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////// Update Token Methods ///////////////////////////////
@@ -281,7 +299,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<T?> showToken<T extends OTPToken>(T token) async {
     final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
     if (!authenticated) return null;
-    await Future.delayed(const Duration(milliseconds: 100));
     final updated = await _updateToken(token, (p0) => p0.copyWith(isHidden: false) as T);
     if (updated?.isHidden == false) {
       _hidingTimers[token.id]?.cancel();
@@ -317,19 +334,30 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   Future<bool> saveStateToRepo() async {
     try {
-      await _repo.saveOrReplaceTokens(state.tokens);
+      await _saveStateToRepo(state);
       Logger.info('Saved ${state.tokens.length} Tokens to storage.', name: 'token_notifier.dart#saveStateToRepo');
       return true;
     } catch (_) {
-      Logger.warning('Saving tokens to storage failed.', name: 'token_notifier.dart#saveStateToRepo');
+      Logger.error('Saving tokens to storage failed.', name: 'token_notifier.dart#saveStateToRepo');
       return false;
     }
   }
 
   /// Minimizing the app needs to cancel all timers and save the state to the repository.
-  Future<bool> saveStateOnMinimizeApp() {
+  Future<bool> saveStateOnMinimizeApp() async {
     _cancelTimers();
-    return saveStateToRepo();
+    await hideLockedTokens();
+    return _saveStateToRepo(state);
+  }
+
+  Future<List<Token>> hideLockedTokens() async {
+    final hideLockedTokens = <Token>[];
+    for (var token in state.tokens) {
+      if (token.isLocked && !token.isHidden) {
+        hideLockedTokens.add(token);
+      }
+    }
+    return await updateTokens(hideLockedTokens, (p0) => p0.copyWith(isHidden: true));
   }
 
   Future<void> removeToken(Token token) async {

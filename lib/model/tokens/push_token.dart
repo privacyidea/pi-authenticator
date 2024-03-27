@@ -190,5 +190,6 @@ class PushToken extends Token {
     return newToken.copyWith(rolloutState: currentRolloutState, isHidden: true);
   }
 
+  @override
   Map<String, dynamic> toJson() => _$PushTokenToJson(this);
 }

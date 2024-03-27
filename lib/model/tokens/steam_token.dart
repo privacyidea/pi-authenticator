@@ -26,7 +26,6 @@ class SteamToken extends TOTPToken {
     required super.period,
     required super.id,
     required super.algorithm,
-    required super.digits,
     required super.secret,
     super.tokenImage,
     super.sortIndex,
@@ -37,7 +36,10 @@ class SteamToken extends TOTPToken {
     super.origin,
     super.label = '',
     super.issuer = '',
-  }) : super(type: tokenType);
+  }) : super(
+          type: tokenType,
+          digits: 5,
+        );
 
   @override
   SteamToken copyWith({
@@ -52,8 +54,8 @@ class SteamToken extends TOTPToken {
     int? Function()? folderId,
     TokenOriginData? origin,
     int? period,
+    int? digits, // unused steam tokens always have 5 digits
     Algorithms? algorithm,
-    int? digits,
     String? secret,
   }) {
     return SteamToken(
@@ -62,7 +64,6 @@ class SteamToken extends TOTPToken {
       issuer: issuer ?? this.issuer,
       id: id ?? this.id,
       algorithm: algorithm ?? this.algorithm,
-      digits: digits ?? this.digits,
       secret: secret ?? this.secret,
       tokenImage: tokenImage ?? this.tokenImage,
       sortIndex: sortIndex ?? this.sortIndex,
@@ -105,11 +106,12 @@ class SteamToken extends TOTPToken {
         issuer: uriMap[URI_ISSUER] as String,
         id: const Uuid().v4(),
         algorithm: AlgorithmsX.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
-        digits: uriMap[URI_DIGITS] as int,
         secret: Encodings.base32.encode(uriMap[URI_SECRET]),
         tokenImage: uriMap[URI_IMAGE] as String?,
         pin: uriMap[URI_PIN] as bool?,
         origin: uriMap[URI_ORIGIN],
       );
   static SteamToken fromJson(Map<String, dynamic> json) => _$SteamTokenFromJson(json);
+  @override
+  Map<String, dynamic> toJson() => _$SteamTokenToJson(this);
 }

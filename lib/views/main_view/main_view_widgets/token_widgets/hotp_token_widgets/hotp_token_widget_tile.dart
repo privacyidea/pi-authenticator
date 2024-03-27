@@ -80,7 +80,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
               child: HideableText(
                 textScaleFactor: 1.9,
                 isHidden: widget.token.isHidden,
-                text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
+                text: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
                 enabled: widget.token.isLocked,
               ),
             ),

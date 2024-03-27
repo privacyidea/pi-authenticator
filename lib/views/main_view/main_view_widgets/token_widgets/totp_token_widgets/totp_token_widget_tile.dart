@@ -112,7 +112,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
                     : _copyOtpValue,
             child: HideableText(
               key: Key(widget.token.hashCode.toString()),
-              text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
+              text: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
               textScaleFactor: 1.9,
               enabled: widget.token.isLocked,
               isHidden: widget.token.isHidden,

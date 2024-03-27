@@ -39,7 +39,7 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
           final otpString = otpToken.isLocked || folderIsLocked ? veilingCharacter * otpToken.otpValue.length : otpToken.otpValue;
           return ListTile(
             title: Text(otpToken.label),
-            subtitle: Text(splitPeriodically(otpString, otpString.length ~/ 2)),
+            subtitle: Text(insertCharAt(otpString, ' ', (otpString.length / 2).ceil())),
             onTap: alreadyTapped
                 ? () {}
                 : () async {

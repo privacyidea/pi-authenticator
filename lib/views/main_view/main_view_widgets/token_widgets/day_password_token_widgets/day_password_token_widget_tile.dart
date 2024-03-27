@@ -92,7 +92,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                     ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
                     : _copyOtpValue,
             child: HideableText(
-                text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
+                text: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
                 textScaleFactor: 1.9,
                 enabled: widget.token.isLocked,
                 isHidden: widget.token.isHidden),

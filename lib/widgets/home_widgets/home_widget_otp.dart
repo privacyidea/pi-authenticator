@@ -48,7 +48,7 @@ class HomeWidgetOtp extends FlutterHomeWidgetBase {
 
   @override
   Widget build(BuildContext context) {
-    String text = otp.length > 10 ? insertCharAt(otp, '\n', otp.length ~/ 2) : insertCharAt(otp, ' ', otp.length ~/ 2);
+    String text = insertCharAt(otp, otp.length > 10 ? '\n' : ' ', (otp.length / 2).ceil());
     return SizedBox(
       width: logicalSize.width,
       height: logicalSize.height,

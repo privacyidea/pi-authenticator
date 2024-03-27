@@ -10,7 +10,6 @@ SteamToken _$SteamTokenFromJson(Map<String, dynamic> json) => SteamToken(
       period: json['period'] as int,
       id: json['id'] as String,
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
-      digits: json['digits'] as int,
       secret: json['secret'] as String,
       tokenImage: json['tokenImage'] as String?,
       sortIndex: json['sortIndex'] as int?,
@@ -38,7 +37,6 @@ Map<String, dynamic> _$SteamTokenToJson(SteamToken instance) =>
       'sortIndex': instance.sortIndex,
       'origin': instance.origin,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm]!,
-      'digits': instance.digits,
       'secret': instance.secret,
       'period': instance.period,
     };
