@@ -212,10 +212,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<bool> showToken(Token token) async {
+    final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
+    await Future.delayed(const Duration(milliseconds: 200));
     await updatingTokens;
     log('showToken');
     updatingTokens = Future(() async {
-      final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
       log('authenticated: $authenticated');
       if (!authenticated) return null;
       await loadingRepo;
@@ -223,15 +224,15 @@ class TokenNotifier extends StateNotifier<TokenState> {
       log('token: $token');
       return _addOrReplaceTokens([token]);
     });
-    final authenticated = (await updatingTokens)?.isNotEmpty ?? false;
-    log('authenticated_2: $authenticated');
+    final authenticated2 = (await updatingTokens)?.isNotEmpty ?? false;
+    log('authenticated_2: $authenticated2');
     _timers[token.id]?.cancel();
     _timers[token.id] = Timer(token.showDuration, () async {
       log('hideToken');
       await hideToken(token);
       log('hideToken_2');
     });
-    return authenticated;
+    return authenticated2;
   }
 
   Future<bool> showTokenById(String tokenId) async {
