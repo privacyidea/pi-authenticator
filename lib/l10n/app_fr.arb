@@ -615,5 +615,24 @@
       }
     }
   },
-  "thisAppIsOpenSource": "Cette application est open source\nRendez-nous visite sur GitHub"
+  "thisAppIsOpenSource": "Cette application est open source\nRendez-nous visite sur GitHub",
+  "invalidArgument": "{argument} n'est pas une valeur valide pour {type}",
+  "importExportTokens": "Importer/Exporter les jetons",
+  "exportNonPrivacyIDEATokens": "Exporter les jetons non privacyIDEA",
+  "selectTokensToExport": "{count, plural, zero{} one{Sélectionner le jeton à exporter} other{Sélectionner les jetons à exporter}}",
+  "noTokensToExport": "Aucun jeton à exporter",
+  "exportAllTokens": "Exporter tous les jetons",
+  "export": "Exporter",
+  "exportingTokens": "Exportation des jetons en cours...",
+  "exportTokens": "Exporter les jetons",
+  "enterPasswordToEncrypt": "Entrez un mot de passe pour chiffrer les jetons. Ce mot de passe sera requis pour importer les jetons.",
+  "exportLockedTokenReason": "Veuillez vous authentifier pour exporter les jetons verrouillés.",
+  "fileSavedToDownloadsFolder": "Fichier enregistré dans le dossier Téléchargements",
+  "errorSavingFile": "Erreur lors de l'enregistrement du fichier",
+  "toFile": "Vers fichier",
+  "asQrCode": "Sous forme de code QR",
+  "scanThisQrWithNewDevice": "Scannez ce code QR avec votre nouvel appareil pour importer le jeton.",
+  "oneMore": "Encore un",
+  "done": "Terminé",
+  "confirmPassword": "Confirmer le mot de passe"
 }

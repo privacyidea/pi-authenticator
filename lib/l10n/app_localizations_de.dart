@@ -788,69 +788,69 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String invalidArgument(Object argument, Object type) {
-    return '$argument is not a valid value for $type';
+    return '$argument ist kein gültiger Wert für $type';
   }
 
   @override
-  String get importExportTokens => 'Import/Export tokens';
+  String get importExportTokens => 'Token importieren/exportieren';
 
   @override
-  String get exportNonPrivacyIDEATokens => 'Export non-privacyIDEA tokens';
+  String get exportNonPrivacyIDEATokens => 'Nicht-privacyIDEA-Token exportieren';
 
   @override
   String selectTokensToExport(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Select tokens to export',
-      one: 'Select token to export',
+      other: 'Wählen Sie die zu exportierenden Tokens aus',
+      one: 'Wählen Sie das zu exportierende Token aus',
       zero: '',
     );
     return '$_temp0';
   }
 
   @override
-  String get noTokensToExport => 'No tokens to export';
+  String get noTokensToExport => 'Keine Tokens zum Exportieren';
 
   @override
-  String get exportAllTokens => 'Export all tokens';
+  String get exportAllTokens => 'Alle Tokens exportieren';
 
   @override
-  String get export => 'Export';
+  String get export => 'Exportieren';
 
   @override
-  String get exportingTokens => 'Exporting tokens...';
+  String get exportingTokens => 'Tokens werden exportiert...';
 
   @override
-  String get exportTokens => 'Export tokens';
+  String get exportTokens => 'Tokens exportieren';
 
   @override
-  String get enterPasswordToEncrypt => 'Enter a password to encrypt the tokens. This password will be required to import the tokens.';
+  String get enterPasswordToEncrypt => 'Geben Sie ein Passwort ein, um die Tokens zu verschlüsseln. Dieses Passwort wird benötigt, um die Tokens zu importieren.';
 
   @override
-  String get exportLockedTokenReason => 'Please authenticate to export locked tokens.';
+  String get exportLockedTokenReason => 'Bitte authentifizieren Sie sich, um gesperrte Tokens zu exportieren.';
 
   @override
-  String get fileSavedToDownloadsFolder => 'File saved to Downloads folder';
+  String get fileSavedToDownloadsFolder => 'Datei wurde im Download-Ordner gespeichert';
 
   @override
-  String get errorSavingFile => 'Saving to file failed';
+  String get errorSavingFile => 'Fehler beim Speichern der Datei';
 
   @override
-  String get toFile => 'To file';
+  String get toFile => 'In Datei';
 
   @override
-  String get asQrCode => 'As QR code';
+  String get asQrCode => 'Als QR-Code';
 
   @override
-  String get scanThisQrWithNewDevice => 'Scan this QR code with your new device to import the token.';
+  String get scanThisQrWithNewDevice => 'Scannen Sie diesen QR-Code mit Ihrem neuen Gerät, um das Token zu importieren.';
 
   @override
-  String get oneMore => 'One more';
+  String get oneMore => 'Noch eins';
 
   @override
-  String get done => 'Done';
+  String get done => 'Fertig';
 
   @override
-  String get confirmPassword => 'Confirm password';
+  String get confirmPassword => 'Passwort bestätigen';
 }

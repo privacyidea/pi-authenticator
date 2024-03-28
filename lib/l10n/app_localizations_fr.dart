@@ -788,69 +788,69 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String invalidArgument(Object argument, Object type) {
-    return '$argument is not a valid value for $type';
+    return '$argument n\'est pas une valeur valide pour $type';
   }
 
   @override
-  String get importExportTokens => 'Import/Export tokens';
+  String get importExportTokens => 'Importer/Exporter les jetons';
 
   @override
-  String get exportNonPrivacyIDEATokens => 'Export non-privacyIDEA tokens';
+  String get exportNonPrivacyIDEATokens => 'Exporter les jetons non privacyIDEA';
 
   @override
   String selectTokensToExport(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Select tokens to export',
-      one: 'Select token to export',
+      other: 'Sélectionner les jetons à exporter',
+      one: 'Sélectionner le jeton à exporter',
       zero: '',
     );
     return '$_temp0';
   }
 
   @override
-  String get noTokensToExport => 'No tokens to export';
+  String get noTokensToExport => 'Aucun jeton à exporter';
 
   @override
-  String get exportAllTokens => 'Export all tokens';
+  String get exportAllTokens => 'Exporter tous les jetons';
 
   @override
-  String get export => 'Export';
+  String get export => 'Exporter';
 
   @override
-  String get exportingTokens => 'Exporting tokens...';
+  String get exportingTokens => 'Exportation des jetons en cours...';
 
   @override
-  String get exportTokens => 'Export tokens';
+  String get exportTokens => 'Exporter les jetons';
 
   @override
-  String get enterPasswordToEncrypt => 'Enter a password to encrypt the tokens. This password will be required to import the tokens.';
+  String get enterPasswordToEncrypt => 'Entrez un mot de passe pour chiffrer les jetons. Ce mot de passe sera requis pour importer les jetons.';
 
   @override
-  String get exportLockedTokenReason => 'Please authenticate to export locked tokens.';
+  String get exportLockedTokenReason => 'Veuillez vous authentifier pour exporter les jetons verrouillés.';
 
   @override
-  String get fileSavedToDownloadsFolder => 'File saved to Downloads folder';
+  String get fileSavedToDownloadsFolder => 'Fichier enregistré dans le dossier Téléchargements';
 
   @override
-  String get errorSavingFile => 'Saving to file failed';
+  String get errorSavingFile => 'Erreur lors de l\'enregistrement du fichier';
 
   @override
-  String get toFile => 'To file';
+  String get toFile => 'Vers fichier';
 
   @override
-  String get asQrCode => 'As QR code';
+  String get asQrCode => 'Sous forme de code QR';
 
   @override
-  String get scanThisQrWithNewDevice => 'Scan this QR code with your new device to import the token.';
+  String get scanThisQrWithNewDevice => 'Scannez ce code QR avec votre nouvel appareil pour importer le jeton.';
 
   @override
-  String get oneMore => 'One more';
+  String get oneMore => 'Encore un';
 
   @override
-  String get done => 'Done';
+  String get done => 'Terminé';
 
   @override
-  String get confirmPassword => 'Confirm password';
+  String get confirmPassword => 'Confirmer le mot de passe';
 }

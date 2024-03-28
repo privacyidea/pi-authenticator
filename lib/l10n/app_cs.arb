@@ -614,5 +614,24 @@
       }
     }
   },
-  "thisAppIsOpenSource": "Tato aplikace má otevřený zdrojový kód\nNavštivte nás na GitHub"
+  "thisAppIsOpenSource": "Tato aplikace má otevřený zdrojový kód\nNavštivte nás na GitHub",
+  "invalidArgument": "{argument} není platná hodnota pro {type}",
+  "importExportTokens": "Import/Exportovat žetony",
+  "exportNonPrivacyIDEATokens": "Exportovat ne-privacyIDEA žetony",
+  "selectTokensToExport": "{count, plural, zero{} one{Vyberte žeton k exportu} other{Vyberte žetony k exportu}}",
+  "noTokensToExport": "Žádné žetony k exportu",
+  "exportAllTokens": "Exportovat všechny žetony",
+  "export": "Export",
+  "exportingTokens": "Probíhá export žetonů...",
+  "exportTokens": "Exportovat žetony",
+  "enterPasswordToEncrypt": "Zadejte heslo pro šifrování žetonů. Toto heslo bude vyžadováno k importu žetonů.",
+  "exportLockedTokenReason": "Prosím, ověřte se, abyste mohli exportovat uzamčené žetony.",
+  "fileSavedToDownloadsFolder": "Soubor uložen do složky Stažené soubory",
+  "errorSavingFile": "Chyba při ukládání souboru",
+  "toFile": "Do souboru",
+  "asQrCode": "Jako QR kód",
+  "scanThisQrWithNewDevice": "Naskenujte tento QR kód svým novým zařízením pro import žetonu.",
+  "oneMore": "Ještě jeden",
+  "done": "Hotovo",
+  "confirmPassword": "Potvrďte heslo"
 }

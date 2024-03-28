@@ -593,5 +593,24 @@
       }
     }
   },
-  "thisAppIsOpenSource": "Diese App ist Open Source\nBesuchen Sie uns auf GitHub"
+  "thisAppIsOpenSource": "Diese App ist Open Source\nBesuchen Sie uns auf GitHub",
+  "invalidArgument": "{argument} ist kein gültiger Wert für {type}",
+  "importExportTokens": "Token importieren/exportieren",
+  "exportNonPrivacyIDEATokens": "Nicht-privacyIDEA-Token exportieren",
+  "selectTokensToExport": "{count, plural, zero{} one{Wählen Sie das zu exportierende Token aus} other{Wählen Sie die zu exportierenden Tokens aus}}",
+  "noTokensToExport": "Keine Tokens zum Exportieren",
+  "exportAllTokens": "Alle Tokens exportieren",
+  "export": "Exportieren",
+  "exportingTokens": "Tokens werden exportiert...",
+  "exportTokens": "Tokens exportieren",
+  "enterPasswordToEncrypt": "Geben Sie ein Passwort ein, um die Tokens zu verschlüsseln. Dieses Passwort wird benötigt, um die Tokens zu importieren.",
+  "exportLockedTokenReason": "Bitte authentifizieren Sie sich, um gesperrte Tokens zu exportieren.",
+  "fileSavedToDownloadsFolder": "Datei wurde im Download-Ordner gespeichert",
+  "errorSavingFile": "Fehler beim Speichern der Datei",
+  "toFile": "In Datei",
+  "asQrCode": "Als QR-Code",
+  "scanThisQrWithNewDevice": "Scannen Sie diesen QR-Code mit Ihrem neuen Gerät, um das Token zu importieren.",
+  "oneMore": "Noch eins",
+  "done": "Fertig",
+  "confirmPassword": "Passwort bestätigen"
 }

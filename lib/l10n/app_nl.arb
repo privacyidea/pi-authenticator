@@ -611,5 +611,24 @@
       }
     }
   },
-  "thisAppIsOpenSource": "Deze app is open source\nBezoek ons op GitHub"
+  "thisAppIsOpenSource": "Deze app is open source\nBezoek ons op GitHub",
+  "invalidArgument": "{argument} is geen geldige waarde voor {type}",
+  "importExportTokens": "Tokens importeren/exporteren",
+  "exportNonPrivacyIDEATokens": "Niet-privacyIDEA tokens exporteren",
+  "selectTokensToExport": "{count, plural, zero{} one{Selecteer token om te exporteren} other{Selecteer tokens om te exporteren}}",
+  "noTokensToExport": "Geen tokens om te exporteren",
+  "exportAllTokens": "Alle tokens exporteren",
+  "export": "Exporteren",
+  "exportingTokens": "Tokens exporteren...",
+  "exportTokens": "Tokens exporteren",
+  "enterPasswordToEncrypt": "Voer een wachtwoord in om de tokens te versleutelen. Dit wachtwoord is vereist om de tokens te importeren.",
+  "exportLockedTokenReason": "Authenticeer om vergrendelde tokens te exporteren.",
+  "fileSavedToDownloadsFolder": "Bestand opgeslagen in de map Downloads",
+  "errorSavingFile": "Fout bij het opslaan van het bestand",
+  "toFile": "Naar bestand",
+  "asQrCode": "Als QR-code",
+  "scanThisQrWithNewDevice": "Scan deze QR-code met uw nieuwe apparaat om de token te importeren.",
+  "oneMore": "Nog een",
+  "done": "Klaar",
+  "confirmPassword": "Wachtwoord bevestigen"
 }

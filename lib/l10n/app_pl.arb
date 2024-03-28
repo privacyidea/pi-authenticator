@@ -608,5 +608,24 @@
       }
     }
   },
-  "thisAppIsOpenSource": "Ta aplikacja jest open source\nOdwiedź nas na GitHub"
+  "thisAppIsOpenSource": "Ta aplikacja jest open source\nOdwiedź nas na GitHub",
+  "invalidArgument": "{argument} nie jest prawidłową wartością dla {type}",
+  "importExportTokens": "Importuj/Eksportuj tokeny",
+  "exportNonPrivacyIDEATokens": "Eksportuj tokeny niebędące privacyIDEA",
+  "selectTokensToExport": "{count, plural, zero{} one{Wybierz token do wyeksportowania} other{Wybierz tokeny do wyeksportowania}}",
+  "noTokensToExport": "Brak tokenów do wyeksportowania",
+  "exportAllTokens": "Eksportuj wszystkie tokeny",
+  "export": "Eksportuj",
+  "exportingTokens": "Eksportowanie tokenów...",
+  "exportTokens": "Eksportuj tokeny",
+  "enterPasswordToEncrypt": "Wprowadź hasło, aby zaszyfrować tokeny. To hasło będzie wymagane do importu tokenów.",
+  "exportLockedTokenReason": "Proszę uwierzytelnić się, aby wyeksportować zablokowane tokeny.",
+  "fileSavedToDownloadsFolder": "Plik zapisano w folderze Pobrane",
+  "errorSavingFile": "Błąd podczas zapisywania pliku",
+  "toFile": "Do pliku",
+  "asQrCode": "Jako kod QR",
+  "scanThisQrWithNewDevice": "Zeskanuj ten kod QR za pomocą nowego urządzenia, aby zaimportować token.",
+  "oneMore": "Jeszcze jeden",
+  "done": "Gotowe",
+  "confirmPassword": "Potwierdź hasło"
 }

@@ -788,69 +788,69 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String invalidArgument(Object argument, Object type) {
-    return '$argument is not a valid value for $type';
+    return '$argument není platná hodnota pro $type';
   }
 
   @override
-  String get importExportTokens => 'Import/Export tokens';
+  String get importExportTokens => 'Import/Exportovat žetony';
 
   @override
-  String get exportNonPrivacyIDEATokens => 'Export non-privacyIDEA tokens';
+  String get exportNonPrivacyIDEATokens => 'Exportovat ne-privacyIDEA žetony';
 
   @override
   String selectTokensToExport(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Select tokens to export',
-      one: 'Select token to export',
+      other: 'Vyberte žetony k exportu',
+      one: 'Vyberte žeton k exportu',
       zero: '',
     );
     return '$_temp0';
   }
 
   @override
-  String get noTokensToExport => 'No tokens to export';
+  String get noTokensToExport => 'Žádné žetony k exportu';
 
   @override
-  String get exportAllTokens => 'Export all tokens';
+  String get exportAllTokens => 'Exportovat všechny žetony';
 
   @override
   String get export => 'Export';
 
   @override
-  String get exportingTokens => 'Exporting tokens...';
+  String get exportingTokens => 'Probíhá export žetonů...';
 
   @override
-  String get exportTokens => 'Export tokens';
+  String get exportTokens => 'Exportovat žetony';
 
   @override
-  String get enterPasswordToEncrypt => 'Enter a password to encrypt the tokens. This password will be required to import the tokens.';
+  String get enterPasswordToEncrypt => 'Zadejte heslo pro šifrování žetonů. Toto heslo bude vyžadováno k importu žetonů.';
 
   @override
-  String get exportLockedTokenReason => 'Please authenticate to export locked tokens.';
+  String get exportLockedTokenReason => 'Prosím, ověřte se, abyste mohli exportovat uzamčené žetony.';
 
   @override
-  String get fileSavedToDownloadsFolder => 'File saved to Downloads folder';
+  String get fileSavedToDownloadsFolder => 'Soubor uložen do složky Stažené soubory';
 
   @override
-  String get errorSavingFile => 'Saving to file failed';
+  String get errorSavingFile => 'Chyba při ukládání souboru';
 
   @override
-  String get toFile => 'To file';
+  String get toFile => 'Do souboru';
 
   @override
-  String get asQrCode => 'As QR code';
+  String get asQrCode => 'Jako QR kód';
 
   @override
-  String get scanThisQrWithNewDevice => 'Scan this QR code with your new device to import the token.';
+  String get scanThisQrWithNewDevice => 'Naskenujte tento QR kód svým novým zařízením pro import žetonu.';
 
   @override
-  String get oneMore => 'One more';
+  String get oneMore => 'Ještě jeden';
 
   @override
-  String get done => 'Done';
+  String get done => 'Hotovo';
 
   @override
-  String get confirmPassword => 'Confirm password';
+  String get confirmPassword => 'Potvrďte heslo';
 }
