@@ -798,7 +798,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportNonPrivacyIDEATokens => 'Export non-privacyIDEA tokens';
 
   @override
-  String get selectTokensToExport => 'Select the tokens you want to export';
+  String selectTokensToExport(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Select tokens to export',
+      one: 'Select token to export',
+      zero: '',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get noTokensToExport => 'No tokens to export';
@@ -816,7 +825,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportTokens => 'Export tokens';
 
   @override
-  String get enterPasswordToEncrypt => 'Enter a password to encrypt the tokens';
+  String get enterPasswordToEncrypt => 'Enter a password to encrypt the tokens. This password will be required to import the tokens.';
 
   @override
   String get exportLockedTokenReason => 'Please authenticate to export locked tokens.';
@@ -826,4 +835,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorSavingFile => 'Saving to file failed';
+
+  @override
+  String get toFile => 'To file';
+
+  @override
+  String get asQrCode => 'As QR code';
+
+  @override
+  String get scanThisQrWithNewDevice => 'Scan this QR code with your new device to import the token.';
+
+  @override
+  String get oneMore => 'One more';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get confirmPassword => 'Confirm password';
 }

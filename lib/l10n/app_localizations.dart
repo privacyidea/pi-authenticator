@@ -1540,8 +1540,8 @@ abstract class AppLocalizations {
   /// No description provided for @selectTokensToExport.
   ///
   /// In en, this message translates to:
-  /// **'Select the tokens you want to export'**
-  String get selectTokensToExport;
+  /// **'{count, plural, zero{} one{Select token to export} other{Select tokens to export}}'**
+  String selectTokensToExport(num count);
 
   /// No description provided for @noTokensToExport.
   ///
@@ -1576,7 +1576,7 @@ abstract class AppLocalizations {
   /// No description provided for @enterPasswordToEncrypt.
   ///
   /// In en, this message translates to:
-  /// **'Enter a password to encrypt the tokens'**
+  /// **'Enter a password to encrypt the tokens. This password will be required to import the tokens.'**
   String get enterPasswordToEncrypt;
 
   /// No description provided for @exportLockedTokenReason.
@@ -1596,6 +1596,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saving to file failed'**
   String get errorSavingFile;
+
+  /// No description provided for @toFile.
+  ///
+  /// In en, this message translates to:
+  /// **'To file'**
+  String get toFile;
+
+  /// No description provided for @asQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'As QR code'**
+  String get asQrCode;
+
+  /// No description provided for @scanThisQrWithNewDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan this QR code with your new device to import the token.'**
+  String get scanThisQrWithNewDevice;
+
+  /// No description provided for @oneMore.
+  ///
+  /// In en, this message translates to:
+  /// **'One more'**
+  String get oneMore;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPassword;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -619,14 +619,20 @@
   },
   "importExportTokens": "Import/Export tokens",
   "exportNonPrivacyIDEATokens": "Export non-privacyIDEA tokens",
-  "selectTokensToExport": "Select the tokens you want to export",
+  "selectTokensToExport": "{count, plural, zero{} one{Select token to export} other{Select tokens to export}}",
   "noTokensToExport": "No tokens to export",
   "exportAllTokens": "Export all tokens",
   "export": "Export",
   "exportingTokens": "Exporting tokens...",
   "exportTokens": "Export tokens",
-  "enterPasswordToEncrypt": "Enter a password to encrypt the tokens",
+  "enterPasswordToEncrypt": "Enter a password to encrypt the tokens. This password will be required to import the tokens.",
   "exportLockedTokenReason": "Please authenticate to export locked tokens.",
   "fileSavedToDownloadsFolder": "File saved to Downloads folder",
-  "errorSavingFile": "Saving to file failed"
+  "errorSavingFile": "Saving to file failed",
+  "toFile": "To file",
+  "asQrCode": "As QR code",
+  "scanThisQrWithNewDevice": "Scan this QR code with your new device to import the token.",
+  "oneMore": "One more",
+  "done": "Done",
+  "confirmPassword": "Confirm password"
 }
