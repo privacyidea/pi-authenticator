@@ -68,6 +68,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<void> _init() async {
     await _loadFromRepo();
     await loadingRepo;
+    await hideLockedTokens();
     Logger.info('TokenNotifier initialized.', name: 'token_notifier.dart#_init');
   }
 
@@ -281,6 +282,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<bool> saveStateToRepo() async {
     await updatingTokens;
     _cancelTimers();
+    await hideLockedTokens();
     try {
       await _repo.saveOrReplaceTokens(state.tokens);
       Logger.info('Saved ${state.tokens.length} Tokens to storage.', name: 'token_notifier.dart#saveStateToRepo');
@@ -350,6 +352,16 @@ class TokenNotifier extends StateNotifier<TokenState> {
     Logger.info('Added push request ${pr.id} to token ${token.id}', name: 'token_notifier.dart#addPushRequestToToken');
 
     return true;
+  }
+
+  Future<List<Token>> hideLockedTokens() async {
+    final hideLockedTokens = <Token>[];
+    for (var token in state.tokens) {
+      if (token.isLocked && !token.isHidden) {
+        hideLockedTokens.add(token);
+      }
+    }
+    return await updateTokens(hideLockedTokens, (p0) => p0.copyWith(isHidden: true));
   }
 
   Future<bool> removePushRequest(PushRequest pushRequest) async {
