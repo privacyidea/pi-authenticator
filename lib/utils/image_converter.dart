@@ -18,7 +18,8 @@ class ImageConverter {
       {bool isFrontCamera = false, int? chropLeft, int? chropRight, int? chropTop, int? chropBottom}) {
     return switch (image.format.group) {
       ImageFormatGroup.yuv420 => ImageConverter._fromYUV420(image, rotation, isFrontCamera, chropLeft ?? 0, chropRight ?? 0, chropTop ?? 0, chropBottom ?? 0),
-      ImageFormatGroup.bgra8888 => ImageConverter._fromBGRA8888(image),
+      ImageFormatGroup.bgra8888 =>
+        ImageConverter._fromBGRA8888(image, rotation, isFrontCamera, chropLeft ?? 0, chropRight ?? 0, chropTop ?? 0, chropBottom ?? 0),
       ImageFormatGroup.jpeg => ImageConverter._fromJPEG(image),
       ImageFormatGroup.nv21 => ImageConverter._fromNV21(image),
       ImageFormatGroup.unknown => throw ArgumentError('Unknown image format'),
@@ -67,16 +68,23 @@ class ImageConverter {
     return ImageConverter(image: imglib.decodeJpg(image.planes[0].bytes)!);
   }
 
-  factory ImageConverter._fromBGRA8888(CameraImage image) {
+  factory ImageConverter._fromBGRA8888(CameraImage image, int rotation, bool mirror, int cropLeft, int cropRight, int cropTop, int cropBottom) {
     const numChannels = 4; // 1 for alpha, 3 for RGB
+    final img = imglib.Image.fromBytes(
+      width: image.width,
+      height: image.height,
+      rowStride: image.planes[0].bytesPerRow,
+      numChannels: numChannels,
+      bytesOffset: numChannels * 7, // i don't know why 7 pixels, but it works
+      bytes: (image.planes[0].bytes).buffer,
+    );
     return ImageConverter(
-      image: imglib.Image.fromBytes(
-        width: image.width,
-        height: image.height,
-        rowStride: image.planes[0].bytesPerRow,
-        numChannels: numChannels,
-        bytesOffset: numChannels * 7, // i don't know why 7 pixels, but it works
-        bytes: (image.planes[0].bytes).buffer,
+      image: imglib.copyCrop(
+        img,
+        x: cropLeft,
+        y: cropTop,
+        width: img.width - cropLeft - cropRight,
+        height: img.height - cropTop - cropBottom,
       ),
     );
   }
