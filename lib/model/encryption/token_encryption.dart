@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import '../tokens/token.dart';
 import 'aes_encrypted.dart';
@@ -16,13 +15,5 @@ class TokenEncryption {
     final jsonString = await AesEncrypted.fromJsonString(encryptedTokens).decryptToString(password);
     final jsonsList = json.decode(jsonString) as List;
     return jsonsList.map<Token>((e) => Token.fromJson(e)).toList();
-  }
-
-  static Uri generateQrCodeUri({required Token token}) {
-    final tokenJson = token.toJson();
-    final encoded = json.encode(tokenJson);
-    final uri = Uri.parse('pia://json?json=$encoded');
-    log('${uri.toString()}');
-    return uri;
   }
 }

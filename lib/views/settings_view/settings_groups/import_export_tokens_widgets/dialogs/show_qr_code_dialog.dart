@@ -1,12 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'package:zxing2/qrcode.dart';
+import 'package:image/image.dart' as img;
 
 import '../../../../../l10n/app_localizations.dart';
-import '../../../../../model/encryption/token_encryption.dart';
 import '../../../../../model/tokens/token.dart';
+import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
@@ -29,14 +33,7 @@ class ShowQrCodeDialog extends ConsumerWidget {
               constraints: BoxConstraints(maxWidth: qrSize, maxHeight: qrSize, minHeight: qrSize, minWidth: qrSize),
               child: GestureDetector(
                 onTap: () => _showQrMaximized(context, token, qrSize / 0.8),
-                child: QrImageView(
-                  data: TokenEncryption.generateQrCodeUri(token: token).toString(),
-                  backgroundColor: Colors.white,
-                  dataModuleStyle: const QrDataModuleStyle(
-                    dataModuleShape: QrDataModuleShape.square,
-                    color: Colors.black,
-                  ),
-                ),
+                child: Image.memory(_generateQrCodeImage(data: _generateQrCodeUri(token: token).toString())),
               ),
             ),
           ],
@@ -61,21 +58,54 @@ class ShowQrCodeDialog extends ConsumerWidget {
       builder: (context) => GestureDetector(
         onTap: () => Navigator.of(context).pop(),
         child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: qrSize, maxHeight: qrSize, minHeight: 0, minWidth: 0),
-            child: QrImageView(
-              data: TokenEncryption.generateQrCodeUri(token: token).toString(),
-              backgroundColor: Colors.white,
-              padding: const EdgeInsets.all(0),
-              size: qrSize,
-              dataModuleStyle: const QrDataModuleStyle(
-                dataModuleShape: QrDataModuleShape.square,
-                color: Colors.black,
-              ),
-            ),
-          ),
+          child: Image.memory(_generateQrCodeImage(data: _generateQrCodeUri(token: token).toString())),
         ),
       ),
     );
+  }
+
+  static Uri _generateQrCodeUri({required Token token}) {
+    final tokenJson = token.toJson();
+
+    final encoded = json.encode(tokenJson);
+    Logger.warning("json: $encoded");
+    final asd = gzip.encode(utf8.encode(encoded));
+    Logger.warning("gzip: $asd");
+    final base64 = base64Url.encode(asd);
+    Logger.warning("base64: $base64");
+
+    final uri = Uri.parse('pia://jsonBackup?data=$base64');
+    return uri;
+  }
+
+  static Uint8List _generateQrCodeImage({required String data}) {
+    Logger.info('$data');
+    final qrcode = Encoder.encode(data, ErrorCorrectionLevel.m);
+    final matrix = qrcode.matrix!;
+    const scale = 4;
+    const padding = 1;
+
+    var image = img.Image(
+      width: (matrix.width + padding + padding) * scale,
+      height: (matrix.height + padding + padding) * scale,
+      numChannels: 4,
+    );
+    img.fill(image, color: img.ColorRgba8(0xFF, 0xFF, 0xFF, 0xFF));
+
+    for (var x = 0; x < matrix.width; x++) {
+      for (var y = 0; y < matrix.height; y++) {
+        if (matrix.get(x, y) == 1) {
+          img.fillRect(
+            image,
+            x1: (x + padding) * scale,
+            y1: (y + padding) * scale,
+            x2: (x + padding) * scale + scale - 1,
+            y2: (y + padding) * scale + scale - 1,
+            color: img.ColorRgba8(0, 0, 0, 0xFF),
+          );
+        }
+      }
+    }
+    return img.encodePng(image);
   }
 }

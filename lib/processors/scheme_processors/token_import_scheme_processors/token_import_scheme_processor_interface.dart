@@ -5,6 +5,7 @@ import '../scheme_processor_interface.dart';
 import 'google_authenticator_qr_processor.dart';
 import 'otp_auth_processor.dart';
 import 'pia_processor.dart';
+import 'privacyidea_authenticator_qr_processor.dart';
 
 abstract class TokenImportSchemeProcessor with TokenImportProcessor<Uri, bool> implements SchemeProcessor {
   const TokenImportSchemeProcessor();
@@ -12,6 +13,7 @@ abstract class TokenImportSchemeProcessor with TokenImportProcessor<Uri, bool> i
     OtpAuthProcessor(),
     GoogleAuthenticatorQrProcessor(),
     PiaProcessor(),
+    PrivacyIDEAAuthenticatorQrProcessor(),
   };
 
   @override

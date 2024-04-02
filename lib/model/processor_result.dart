@@ -1,5 +1,7 @@
 abstract class ProcessorResult<T> {
   const ProcessorResult();
+  factory ProcessorResult.success(T data) => ProcessorResultSuccess(data);
+  factory ProcessorResult.error(String errorMessage) => ProcessorResultError(errorMessage);
 }
 
 class ProcessorResultSuccess<T> implements ProcessorResult<T> {

@@ -6,11 +6,13 @@ class ScannerOverlayShape extends ShapeBorder {
   final Color borderColor;
   final double borderWidth;
   final Color overlayColor;
+  final double borderPaddingPercent;
 
   const ScannerOverlayShape({
     this.borderColor = Colors.white,
     this.borderWidth = 1.0,
     this.overlayColor = const Color(0x88000000),
+    required this.borderPaddingPercent,
   });
 
   @override
@@ -41,10 +43,10 @@ class ScannerOverlayShape extends ShapeBorder {
     final double borderHeightSize;
 
     if (isPortrait) {
-      borderWidthSize = width * 10 / 100;
+      borderWidthSize = width * borderPaddingPercent / 100;
       borderHeightSize = height - (width - borderWidthSize);
     } else {
-      borderHeightSize = height * 10 / 100;
+      borderHeightSize = height * borderPaddingPercent / 100;
       borderWidthSize = width - (height - borderHeightSize);
     }
 
@@ -155,8 +157,9 @@ class ScannerOverlayShape extends ShapeBorder {
   ShapeBorder scale(double t) {
     return ScannerOverlayShape(
       borderColor: borderColor,
-      borderWidth: borderWidth,
+      borderWidth: borderWidth * t,
       overlayColor: overlayColor,
+      borderPaddingPercent: borderPaddingPercent * t,
     );
   }
 }
