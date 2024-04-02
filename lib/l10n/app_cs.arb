@@ -3,6 +3,8 @@
   "patchNotesNewFeatures": "Nové funkce",
   "patchNotesImprovements": "Improvements",
   "patchNotesBugFixes": "Opravy chyb",
+  "patchNotesV4_3_1BugFix1": "Opraven problém, kdy nebyla zobrazena hodnota otp po ověření na některých zařízeních.",
+  "patchNotesV4_3_1Improvement1": "Skener QR kódů byl vylepšen.",
   "patchNotesV4_3_0NewFeatures1": "Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.",
   "patchNotesV4_3_0NewFeatures2": "Do nastavení byla přidána možnost zpětné vazby.",
   "patchNotesV4_3_0NewFeatures3": "Tokeny Push lze nyní skrýt ze seznamu tokenů.",

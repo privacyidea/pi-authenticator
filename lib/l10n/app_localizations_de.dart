@@ -16,6 +16,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get patchNotesBugFixes => 'Fehlerbehebungen';
 
   @override
+  String get patchNotesV4_3_1BugFix1 => 'Ein Problem wurde behoben, bei dem der otp-Wert nach der Authentifizierung auf einigen Geräten nicht angezeigt wurde.';
+
+  @override
+  String get patchNotesV4_3_1Improvement1 => 'Der QR-Code-Scanner wurde verbessert.';
+
+  @override
   String get patchNotesV4_3_0NewFeatures1 => 'Unterstützung für den Import von Token von Google, Aegis und 2FAS Authenticator hinzugefügt. Weitere Importquellen werden in Zukunft hinzugefügt.';
 
   @override

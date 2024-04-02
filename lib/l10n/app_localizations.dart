@@ -121,6 +121,18 @@ abstract class AppLocalizations {
   /// **'Bug fixes'**
   String get patchNotesBugFixes;
 
+  /// No description provided for @patchNotesV4_3_1BugFix1.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed an issue where the otp value was not displayed after authentication on some devices.'**
+  String get patchNotesV4_3_1BugFix1;
+
+  /// No description provided for @patchNotesV4_3_1Improvement1.
+  ///
+  /// In en, this message translates to:
+  /// **'Improved the qr code scanner.'**
+  String get patchNotesV4_3_1Improvement1;
+
   /// No description provided for @patchNotesV4_3_0NewFeatures1.
   ///
   /// In en, this message translates to:

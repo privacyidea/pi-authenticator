@@ -20,6 +20,7 @@ class PatchNotesDialog extends StatelessWidget {
     final theme = Theme.of(context);
     final screenSize = MediaQuery.of(context).size;
     final height = min(screenSize.width * 2, screenSize.height * 0.8);
+    final sortedKeys = newNotes.keys.toList()..sort((a, b) => b.compareTo(a));
     return SizedBox(
       height: height,
       child: DefaultDialog(
@@ -30,52 +31,56 @@ class PatchNotesDialog extends StatelessWidget {
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: newNotes.keys.map((version) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${localizations.version}: ${version.toString()}',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 16),
-                  ...newNotes[version]!.entries.map((entry) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          entry.key.getName(localizations),
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(color: theme.primaryColor),
-                        ),
-                        const SizedBox(height: 8),
-                        ...entry.value.map(
-                          (note) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 3, right: 4),
-                                  child: Icon(
-                                    Icons.circle,
-                                    size: 12,
-                                    color: theme.primaryColor,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(note, style: Theme.of(context).textTheme.bodyLarge),
-                                ),
-                              ],
+            children: [
+              for (var version in sortedKeys)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${localizations.version}: ${version.toString()}',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 16),
+                    ...newNotes[version]!.entries.map(
+                      (entry) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              entry.key.getName(localizations),
+                              style: Theme.of(context).textTheme.titleSmall?.copyWith(color: theme.primaryColor),
                             ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
-                ],
-              );
-            }).toList(),
+                            const SizedBox(height: 8),
+                            ...entry.value.map(
+                              (note) => Padding(
+                                padding: const EdgeInsets.only(bottom: 8),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 3, right: 4),
+                                      child: Icon(
+                                        Icons.circle,
+                                        size: 12,
+                                        color: theme.primaryColor,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(note, style: Theme.of(context).textTheme.bodyLarge),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    if (sortedKeys.last != version) const Divider()
+                  ],
+                )
+            ],
           ),
         ),
         actions: [

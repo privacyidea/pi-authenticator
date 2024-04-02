@@ -3,6 +3,8 @@
   "patchNotesNewFeatures": "Nieuwe functies",
   "patchNotesImprovements": "Verbeteringen",
   "patchNotesBugFixes": "Bugfixes",
+  "patchNotesV4_3_1BugFix1": "Een probleem is opgelost waarbij de otp-waarde niet werd weergegeven na authenticatie op sommige apparaten.",
+  "patchNotesV4_3_1Improvement1": "De QR-code scanner is verbeterd.",
   "patchNotesV4_3_0NewFeatures1": "Ondersteuning toegevoegd voor het importeren van tokens van Google, Aegis en 2FAS Authenticator. Meer importbronnen zullen in de toekomst worden toegevoegd.",
   "patchNotesV4_3_0NewFeatures2": "Feedbackoptie toegevoegd aan de instellingen.",
   "patchNotesV4_3_0NewFeatures3": "Push tokens kunnen nu verborgen worden in de tokenlijst.",

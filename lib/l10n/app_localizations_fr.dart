@@ -16,6 +16,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get patchNotesBugFixes => 'Bug fixes';
 
   @override
+  String get patchNotesV4_3_1BugFix1 => 'Un problème a été corrigé où la valeur OTP n\'était pas affichée après l\'authentification sur certains appareils.';
+
+  @override
+  String get patchNotesV4_3_1Improvement1 => 'Le scanner de codes QR a été amélioré.';
+
+  @override
   String get patchNotesV4_3_0NewFeatures1 => 'Ajout de la prise en charge de l\'importation de jetons depuis Google, Aegis et 2FAS Authenticator. D\'autres sources d\'importation seront ajoutées à l\'avenir.';
 
   @override

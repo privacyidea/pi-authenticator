@@ -159,7 +159,7 @@ class ScannerOverlayShape extends ShapeBorder {
       borderColor: borderColor,
       borderWidth: borderWidth * t,
       overlayColor: overlayColor,
-      borderPaddingPercent: borderPaddingPercent * t,
+      borderPaddingPercent: borderPaddingPercent,
     );
   }
 }
