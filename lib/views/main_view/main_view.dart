@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
@@ -40,6 +42,7 @@ class _MainViewState extends ConsumerState<MainView> with LifecycleMixin {
   void initState() {
     super.initState();
     final latestStartedVersion = globalRef?.read(settingsProvider).latestStartedVersion;
+    log('Latest started version: $latestStartedVersion', name: 'main_view.dart#initState');
     if (latestStartedVersion == null) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       PatchNotesUtils.showPatchNotesIfNeeded(context, latestStartedVersion);
