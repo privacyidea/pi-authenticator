@@ -15,7 +15,7 @@ class PatchNotesUtils {
     final Map<Version, Map<PatchNoteType, List<String>>> newNotes = {};
     final allNotes = getLocalizedPatchNotes(AppLocalizations.of(context)!);
     for (Version noteVersion in allNotes.keys) {
-      if (noteVersion >= latestStartedVersion) newNotes.addAll({noteVersion: allNotes[noteVersion]!});
+      if (noteVersion > latestStartedVersion) newNotes[noteVersion] = allNotes[noteVersion]!;
     }
     return newNotes;
   }

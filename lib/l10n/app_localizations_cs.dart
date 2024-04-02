@@ -16,6 +16,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get patchNotesBugFixes => 'Opravy chyb';
 
   @override
+  String get patchNotesV4_3_1BugFix1 => 'Opraven problém, kdy nebyla zobrazena hodnota otp po ověření na některých zařízeních.';
+
+  @override
+  String get patchNotesV4_3_1Improvement1 => 'Skener QR kódů byl vylepšen.';
+
+  @override
   String get patchNotesV4_3_0NewFeatures1 => 'Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.';
 
   @override

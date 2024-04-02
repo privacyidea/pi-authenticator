@@ -3,6 +3,8 @@
   "patchNotesNewFeatures": "Nuevas características",
   "patchNotesImprovements": "Mejoras",
   "patchNotesBugFixes": "Corrección de errores",
+  "patchNotesV4_3_1BugFix1": "Se ha corregido un problema donde el valor OTP no se mostraba después de la autenticación en algunos dispositivos.",
+  "patchNotesV4_3_1Improvement1": "Se ha mejorado el escáner de códigos QR.",
   "patchNotesV4_3_0NewFeatures1": "Añadido soporte para importar tokens de Google, Aegis y 2FAS Authenticator. En el futuro se añadirán más fuentes de importación",
   "patchNotesV4_3_0NewFeatures2": "Añadida opción de feedback a los ajustes",
   "patchNotesV4_3_0NewFeatures3": "Los tokens push ahora se pueden ocultar de la lista de tokens",
