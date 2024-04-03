@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -9,6 +7,7 @@ import 'package:zxing2/qrcode.dart';
 import 'package:image/image.dart' as img;
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../model/encryption/token_encryption.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod_providers.dart';
@@ -22,6 +21,7 @@ class ShowQrCodeDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appConstraits = ref.watch(appConstraintsProvider)!;
     final qrSize = min(appConstraits.maxWidth, appConstraits.maxHeight) * 0.8;
+    final qrImage = Image.memory(_generateQrCodeImage(data: TokenEncryption.generateQrCodeUri(token: token).toString()));
     return DefaultDialog(
       title: Text(AppLocalizations.of(context)!.asQrCode),
       content: SingleChildScrollView(
@@ -32,8 +32,8 @@ class ShowQrCodeDialog extends ConsumerWidget {
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: qrSize, maxHeight: qrSize, minHeight: qrSize, minWidth: qrSize),
               child: GestureDetector(
-                onTap: () => _showQrMaximized(context, token, qrSize / 0.8),
-                child: Image.memory(_generateQrCodeImage(data: _generateQrCodeUri(token: token).toString())),
+                onTap: () => _showQrMaximized(context, qrImage),
+                child: Image.memory(_generateQrCodeImage(data: TokenEncryption.generateQrCodeUri(token: token).toString())),
               ),
             ),
           ],
@@ -52,30 +52,14 @@ class ShowQrCodeDialog extends ConsumerWidget {
     );
   }
 
-  void _showQrMaximized(BuildContext context, Token token, double qrSize) {
+  void _showQrMaximized(BuildContext context, Image qrImage) {
     showDialog(
       context: context,
       builder: (context) => GestureDetector(
         onTap: () => Navigator.of(context).pop(),
-        child: Center(
-          child: Image.memory(_generateQrCodeImage(data: _generateQrCodeUri(token: token).toString())),
-        ),
+        child: Center(child: qrImage),
       ),
     );
-  }
-
-  static Uri _generateQrCodeUri({required Token token}) {
-    final tokenJson = token.toJson();
-
-    final encoded = json.encode(tokenJson);
-    Logger.warning("json: $encoded");
-    final asd = gzip.encode(utf8.encode(encoded));
-    Logger.warning("gzip: $asd");
-    final base64 = base64Url.encode(asd);
-    Logger.warning("base64: $base64");
-
-    final uri = Uri.parse('pia://jsonBackup?data=$base64');
-    return uri;
   }
 
   static Uint8List _generateQrCodeImage({required String data}) {

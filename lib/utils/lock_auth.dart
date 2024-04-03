@@ -13,7 +13,7 @@ import 'globals.dart';
 import 'logger.dart';
 import 'view_utils.dart';
 
-bool authenticationInProgress = false;
+bool _authenticationInProgress = false;
 
 /// Sends a request to the OS to authenticate the user. Returns true if the user was authenticated, false otherwise.
 Future<bool> lockAuth({required String localizedReason}) async {
@@ -65,16 +65,16 @@ Future<bool> lockAuth({required String localizedReason}) async {
   );
 
   try {
-    if (!authenticationInProgress) {
-      authenticationInProgress = true;
+    if (!_authenticationInProgress) {
+      _authenticationInProgress = true;
       didAuthenticate = await localAuth.authenticate(localizedReason: localizedReason, authMessages: [
         androidAuthStrings,
         iOSAuthStrings,
       ]);
-      authenticationInProgress = false;
+      _authenticationInProgress = false;
     }
   } on PlatformException catch (e, s) {
-    authenticationInProgress = false;
+    _authenticationInProgress = false;
     Logger.info("Authentication failed", error: e, stackTrace: s);
   }
   return didAuthenticate;

@@ -69,8 +69,9 @@ class ImageConverter {
   }
 
   factory ImageConverter._fromBGRA8888(CameraImage image, int rotation, bool mirror, int cropLeft, int cropRight, int cropTop, int cropBottom) {
+    rotation = 360 - (rotation % 360); // if the image is rotated by 90, we need to rotate by another 270 to get the correct rotation (0/360)
     const numChannels = 4; // 1 for alpha, 3 for RGB
-    final img = imglib.Image.fromBytes(
+    var img = imglib.Image.fromBytes(
       width: image.width,
       height: image.height,
       rowStride: image.planes[0].bytesPerRow,
@@ -78,15 +79,18 @@ class ImageConverter {
       bytesOffset: numChannels * 7, // i don't know why 7 pixels, but it works
       bytes: (image.planes[0].bytes).buffer,
     );
-    return ImageConverter(
-      image: imglib.copyCrop(
-        img,
-        x: cropLeft,
-        y: cropTop,
-        width: img.width - cropLeft - cropRight,
-        height: img.height - cropTop - cropBottom,
-      ),
+    img = imglib.copyRotate(img, angle: rotation);
+    if (mirror) {
+      img = imglib.flip(img, direction: imglib.FlipDirection.horizontal);
+    }
+    img = imglib.copyCrop(
+      img,
+      x: cropLeft,
+      y: cropTop,
+      width: img.width - cropLeft - cropRight,
+      height: img.height - cropTop - cropBottom,
     );
+    return ImageConverter(image: img);
   }
 
   factory ImageConverter._fromYUV420(

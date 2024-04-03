@@ -62,3 +62,6 @@ Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKey() async {
 
 final policyStatementUri = Uri.parse("https://netknights.it/en/privacy-statement/");
 final piAuthenticatorGitHubUri = Uri.parse("https://github.com/privacyidea/pi-authenticator");
+
+// The highest version of the pipush Tokentype that this client supports.
+const maxPushTokenVersion = 1;
