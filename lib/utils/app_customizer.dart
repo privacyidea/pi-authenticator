@@ -469,7 +469,7 @@ class ApplicationCustomization {
     appImageUint8List: defaultImageUint8List,
     lightTheme: ThemeCustomization.defaultLightTheme,
     darkTheme: ThemeCustomization.defaultDarkTheme,
-    disabledFeatures: const {AppFeature.patchNotes},
+    disabledFeatures: const {},
   );
 
   const ApplicationCustomization({
@@ -524,6 +524,7 @@ class ApplicationCustomization {
       'appImageBASE64': base64Encode(appImageUint8List),
       'lightTheme': lightTheme.toJson(),
       'darkTheme': darkTheme.toJson(),
+      'disabledFeatures': disabledFeatures.map((e) => e.name).toList(),
     };
   }
 }
