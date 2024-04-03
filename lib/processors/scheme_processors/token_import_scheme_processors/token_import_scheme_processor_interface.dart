@@ -4,7 +4,6 @@ import '../../mixins/token_import_processor.dart';
 import '../scheme_processor_interface.dart';
 import 'google_authenticator_qr_processor.dart';
 import 'otp_auth_processor.dart';
-import 'pia_processor.dart';
 import 'privacyidea_authenticator_qr_processor.dart';
 
 abstract class TokenImportSchemeProcessor with TokenImportProcessor<Uri, bool> implements SchemeProcessor {
@@ -12,7 +11,6 @@ abstract class TokenImportSchemeProcessor with TokenImportProcessor<Uri, bool> i
   static const Set<TokenImportSchemeProcessor> implementations = {
     OtpAuthProcessor(),
     GoogleAuthenticatorQrProcessor(),
-    PiaProcessor(),
     PrivacyIDEAAuthenticatorQrProcessor(),
   };
 

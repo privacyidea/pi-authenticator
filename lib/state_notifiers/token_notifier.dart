@@ -669,6 +669,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       final results = await TokenImportSchemeProcessor.processUriByAny(uri);
       return results?.whereType<ProcessorResultSuccess<Token>>().map((e) => e.resultData).toList() ?? [];
     } catch (_) {
+      showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
       return [];
     }
   }
