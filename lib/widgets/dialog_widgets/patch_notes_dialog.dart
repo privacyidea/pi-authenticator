@@ -47,7 +47,7 @@ class PatchNotesDialog extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              entry.key.getName(localizations),
+                              entry.key.localizedName(localizations),
                               style: Theme.of(context).textTheme.titleSmall?.copyWith(color: theme.primaryColor),
                             ),
                             const SizedBox(height: 8),

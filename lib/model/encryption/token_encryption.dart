@@ -16,7 +16,7 @@ class TokenEncryption {
   static Future<List<Token>> decrypt({required String encryptedTokens, required String password}) async {
     final json = jsonDecode(encryptedTokens);
     final tokenJsonString = await AesEncrypted.fromJson(json).decryptToString(password);
-    final tokenJsonsList = json.decode(tokenJsonString) as List;
+    final tokenJsonsList = jsonDecode(tokenJsonString) as List;
     return tokenJsonsList.map<Token>((e) => Token.fromJson(e)).toList();
   }
 
@@ -29,7 +29,7 @@ class TokenEncryption {
     return uri;
   }
 
-  static Future<Token> fromQrCodeUri(Uri uri) async {
+  static Token fromQrCodeUri(Uri uri) {
     final base64String = uri.queryParameters['data'];
     final zip = base64Url.decode(base64String!);
     final jsonString = utf8.decode(gzip.decode(zip));

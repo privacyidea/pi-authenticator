@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../utils/riverpod_providers.dart';
@@ -8,35 +7,27 @@ import '../states/introduction_state.dart';
 
 // Do not rename or remove JsonValue values, they are used for serialization. Only add new values.
 enum Introduction {
-  @JsonValue('introductionScreen')
   introductionScreen, // 1st start
-  @JsonValue('scanQrCode')
   scanQrCode, // 1st start && introductionScreen
-  @JsonValue('addManually')
-  addTokenManually, // 1st start && scanQrCode
-  @JsonValue('tokenSwipe')
+  addManually, // 1st start && scanQrCode
   tokenSwipe, // 1st token
-  @JsonValue('editToken')
   editToken, // 1st token && tokenSwipe
-  @JsonValue('lockToken')
   lockToken, // 1st token && editToken
-  @JsonValue('dragToken')
   dragToken, // 2nd token && tokenSwipe
-  @JsonValue('addFolder')
   addFolder, // 3 tokens && 0 groups
-  @JsonValue('pollForChallenges')
   pollForChallenges, // 1st push token && lockToken
-  @JsonValue('hidePushTokens')
   hidePushTokens, // hiding is enabled
 }
 
 extension IntroductionX on Introduction {
+  /// Checks if the condition for the given state is fulfilled.
+  /// Given ref might be watched to acces the state of different providers.
   bool isConditionFulfilled(WidgetRef ref, IntroductionState state) => switch (this) {
         Introduction.introductionScreen => state.isUncompleted(Introduction.introductionScreen),
         Introduction.scanQrCode => state.isUncompleted(Introduction.scanQrCode),
-        Introduction.addTokenManually => state.isCompleted(Introduction.scanQrCode) && state.isUncompleted(Introduction.addTokenManually),
+        Introduction.addManually => state.isCompleted(Introduction.scanQrCode) && state.isUncompleted(Introduction.addManually),
         Introduction.tokenSwipe =>
-          ref.watch(tokenProvider).tokens.isNotEmpty && state.isCompleted(Introduction.addTokenManually) && state.isUncompleted(Introduction.tokenSwipe),
+          ref.watch(tokenProvider).tokens.isNotEmpty && state.isCompleted(Introduction.addManually) && state.isUncompleted(Introduction.tokenSwipe),
         Introduction.editToken => state.isCompleted(Introduction.tokenSwipe) && state.isUncompleted(Introduction.editToken),
         Introduction.lockToken => state.isCompleted(Introduction.editToken) && state.isUncompleted(Introduction.lockToken),
         Introduction.dragToken =>
@@ -57,7 +48,7 @@ extension IntroductionX on Introduction {
   String hintText(BuildContext context) => switch (this) {
         Introduction.introductionScreen => '',
         Introduction.scanQrCode => AppLocalizations.of(context)!.introScanQrCode,
-        Introduction.addTokenManually => AppLocalizations.of(context)!.introAddTokenManually,
+        Introduction.addManually => AppLocalizations.of(context)!.introAddTokenManually,
         Introduction.tokenSwipe => AppLocalizations.of(context)!.introTokenSwipe,
         Introduction.editToken => AppLocalizations.of(context)!.introEditToken,
         Introduction.lockToken => AppLocalizations.of(context)!.introLockToken,

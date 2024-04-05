@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/day_password_token_view_mode.dart';
-import '../../../../../model/extensions/enum_extension.dart';
 import '../../../../../model/tokens/day_password_token.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/utils.dart';
@@ -104,7 +103,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
               (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
                   ? '${widget.token.issuer}: ${widget.token.label}'
                   : widget.token.issuer + widget.token.label,
-              'Algorithm: ${widget.token.algorithm.asString}',
+              'Algorithm: ${widget.token.algorithm.name}',
               'Period: ${widget.token.period.toString().split('.').first}',
             ]
           : [

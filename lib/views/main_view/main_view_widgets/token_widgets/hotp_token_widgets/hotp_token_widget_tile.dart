@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../l10n/app_localizations.dart';
-import '../../../../../model/extensions/enum_extension.dart';
 import '../../../../../model/tokens/hotp_token.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/utils.dart';
@@ -91,7 +90,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
                 (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
                     ? '${widget.token.issuer}: ${widget.token.label}'
                     : '${widget.token.issuer}${widget.token.label}',
-                'Algorithm: ${widget.token.algorithm.asString}',
+                'Algorithm: ${widget.token.algorithm.name}',
                 'Counter: ${widget.token.counter}',
               ]
             : [

@@ -1,4 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/algorithms_extension.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
@@ -6,7 +8,6 @@ import '../../utils/logger.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
-import '../extensions/enum_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
 import 'token.dart';
@@ -15,7 +16,7 @@ part 'totp_token.g.dart';
 
 @JsonSerializable()
 class TOTPToken extends OTPToken {
-  static String get tokenType => TokenTypes.TOTP.asString;
+  static String get tokenType => TokenTypes.TOTP.name;
   // this value is used to calculate the current 'counter' of this token
   // based on the UNIX systemtime), the counter is used to calculate the
   // current otp value
@@ -112,7 +113,7 @@ class TOTPToken extends OTPToken {
       label: uriMap[URI_LABEL] ?? '',
       issuer: uriMap[URI_ISSUER] ?? '',
       id: const Uuid().v4(),
-      algorithm: AlgorithmsX.fromString((uriMap[URI_ALGORITHM] ?? 'SHA1')),
+      algorithm: Algorithms.values.byName((uriMap[URI_ALGORITHM] ?? 'SHA1')),
       digits: uriMap[URI_DIGITS] ?? 6,
       tokenImage: uriMap[URI_IMAGE],
       secret: Encodings.base32.encode(uriMap[URI_SECRET]),

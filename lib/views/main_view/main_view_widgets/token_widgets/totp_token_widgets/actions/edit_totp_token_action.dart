@@ -3,7 +3,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
-import '../../../../../../model/extensions/enum_extension.dart';
 import '../../../../../../model/tokens/totp_token.dart';
 import '../../../../../../utils/app_customizer.dart';
 import '../../../../../../utils/globals.dart';
@@ -120,7 +119,7 @@ class EditTOTPTokenAction extends TokenAction {
                   },
                 ),
                 TextFormField(
-                  initialValue: algorithm.asString,
+                  initialValue: algorithm.name,
                   decoration: InputDecoration(labelText: AppLocalizations.of(context)!.algorithm),
                   enabled: false,
                 ),

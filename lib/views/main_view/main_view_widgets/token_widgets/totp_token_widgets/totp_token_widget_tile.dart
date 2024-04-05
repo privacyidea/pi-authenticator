@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 
 import '../../../../../l10n/app_localizations.dart';
-import '../../../../../model/extensions/enum_extension.dart';
 import '../../../../../model/tokens/totp_token.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/utils.dart';
@@ -125,7 +124,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
               (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
                   ? '${widget.token.issuer}: ${widget.token.label}'
                   : widget.token.issuer + widget.token.label,
-              'Algorithm: ${widget.token.algorithm.asString}',
+              'Algorithm: ${widget.token.algorithm.name}',
               'Period: ${widget.token.period} seconds',
             ]
           : [

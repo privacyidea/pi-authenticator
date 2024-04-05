@@ -1,11 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/algorithms_extension.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
-import '../extensions/enum_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
 import 'token.dart';
@@ -14,7 +15,7 @@ part 'hotp_token.g.dart';
 
 @JsonSerializable()
 class HOTPToken extends OTPToken {
-  static String get tokenType => TokenTypes.HOTP.asString;
+  static String get tokenType => TokenTypes.HOTP.name;
   final int counter; // this value is used to calculate the current otp value
 
   @override
@@ -36,7 +37,7 @@ class HOTPToken extends OTPToken {
     super.origin,
     super.label = '',
     super.issuer = '',
-  }) : super(type: TokenTypes.HOTP.asString);
+  }) : super(type: TokenTypes.HOTP.name);
 
   @override
   bool sameValuesAs(Token other) => super.sameValuesAs(other) && other is HOTPToken && other.counter == counter;
@@ -101,7 +102,7 @@ class HOTPToken extends OTPToken {
       label: uriMap[URI_LABEL] ?? '',
       issuer: uriMap[URI_ISSUER] ?? '',
       id: const Uuid().v4(),
-      algorithm: AlgorithmsX.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+      algorithm: Algorithms.values.byName(uriMap[URI_ALGORITHM] ?? 'SHA1'),
       digits: uriMap[URI_DIGITS] ?? 6,
       secret: Encodings.base32.encode(uriMap[URI_SECRET]),
       counter: uriMap[URI_COUNTER] ?? 0,

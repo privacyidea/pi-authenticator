@@ -74,9 +74,9 @@ class MainViewNavigationBar extends ConsumerWidget {
                               },
                               icon: FocusedItemAsOverlay(
                                 onComplete: () {
-                                  ref.read(introductionProvider.notifier).complete(Introduction.addTokenManually);
+                                  ref.read(introductionProvider.notifier).complete(Introduction.addManually);
                                 },
-                                isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.addTokenManually),
+                                isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.addManually),
                                 tooltipWhenFocused: AppLocalizations.of(context)!.introAddTokenManually,
                                 child: FittedBox(
                                   child: Icon(

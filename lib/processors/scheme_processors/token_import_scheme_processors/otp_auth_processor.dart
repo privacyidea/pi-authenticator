@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/algorithms.dart';
@@ -9,6 +10,7 @@ import '../../../model/enums/token_types.dart';
 import '../../../model/extensions/enum_extension.dart';
 import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
+import '../../../utils/errors.dart';
 import '../../../utils/globals.dart';
 import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
@@ -71,11 +73,11 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
 /// to https://github.com/google/google-authenticator/wiki/Key-Uri-Format.
 Map<String, dynamic> _parseOtpToken(Uri uri) {
   final type = uri.host;
-  if (TokenTypes.PIPUSH.isString(type)) {
+  if (TokenTypes.PIPUSH.isName(type)) {
     // otpauth://pipush/LABEL?PARAMETERS
     return _parsePiPushToken(uri);
   }
-  if (TokenTypes.values.firstWhereOrNull((element) => element.isString(type)) != null) {
+  if (TokenTypes.values.firstWhereOrNull((element) => element.isName(type)) != null) {
     return _parseOtpAuth(uri);
   }
   throw ArgumentError.value(
@@ -118,8 +120,8 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
     uriMap[URI_IMAGE] = uri.queryParameters['image'];
   }
 
-  String algorithm = uri.queryParameters['algorithm'] ?? Algorithms.SHA1.asString; // Optional parameter
-  algorithm = AlgorithmsX.fromString(algorithm).asString; // Validate algorithm, throw error if not supported.
+  String algorithm = uri.queryParameters['algorithm'] ?? Algorithms.SHA1.name; // Optional parameter
+  algorithm = Algorithms.values.byName(algorithm).name; // Validate algorithm, throw error if not supported.
 
   uriMap[URI_ALGORITHM] = algorithm;
 
@@ -155,7 +157,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
     throw ArgumentError.value(
       uri,
       'uri',
-      '[${Encodings.base32.asString}] is not a valid encoding for [$secretAsString].',
+      '[${Encodings.base32.name}] is not a valid encoding for [$secretAsString].',
     );
   }
 

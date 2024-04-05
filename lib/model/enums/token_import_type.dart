@@ -10,7 +10,6 @@ enum TokenImportType {
 }
 
 extension TokenImportTypeExtension on TokenImportType {
-  String get name => toString().split('.').last;
   IconData get icon => switch (this) {
         const (TokenImportType.backupFile) => Icons.file_present,
         const (TokenImportType.qrScan) => Icons.qr_code_scanner,
@@ -18,7 +17,7 @@ extension TokenImportTypeExtension on TokenImportType {
         const (TokenImportType.link) => Icons.link,
       };
 
-  String getButtonText(BuildContext context) => switch (this) {
+  String buttonText(BuildContext context) => switch (this) {
         const (TokenImportType.backupFile) => AppLocalizations.of(context)!.selectFile,
         const (TokenImportType.qrScan) => AppLocalizations.of(context)!.scanQrCode,
         const (TokenImportType.qrFile) => AppLocalizations.of(context)!.selectFile,

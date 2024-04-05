@@ -1,13 +1,13 @@
 import 'package:base32/base32.dart';
 import 'package:crypto/crypto.dart' show Hmac, sha1;
 import 'package:json_annotation/json_annotation.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
-import '../extensions/enum_extension.dart';
 import '../extensions/int_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'token.dart';
@@ -19,7 +19,7 @@ part 'steam_token.g.dart';
 class SteamToken extends TOTPToken {
   @override
   bool get isPrivacyIdeaToken => false;
-  static String get tokenType => TokenTypes.STEAM.asString;
+  static String get tokenType => TokenTypes.STEAM.name;
   static const String steamAlphabet = "23456789BCDFGHJKMNPQRTVWXY";
 
   SteamToken({
@@ -27,6 +27,7 @@ class SteamToken extends TOTPToken {
     required super.id,
     required super.algorithm,
     required super.secret,
+    String? type,
     super.tokenImage,
     super.sortIndex,
     super.pin,
@@ -37,7 +38,7 @@ class SteamToken extends TOTPToken {
     super.label = '',
     super.issuer = '',
   }) : super(
-          type: tokenType,
+          type: type ?? tokenType,
           digits: 5,
         );
 
@@ -105,7 +106,7 @@ class SteamToken extends TOTPToken {
         label: uriMap[URI_LABEL] as String,
         issuer: uriMap[URI_ISSUER] as String,
         id: const Uuid().v4(),
-        algorithm: AlgorithmsX.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+        algorithm: Algorithms.values.byName(uriMap[URI_ALGORITHM] ?? 'SHA1'),
         secret: Encodings.base32.encode(uriMap[URI_SECRET]),
         tokenImage: uriMap[URI_IMAGE] as String?,
         pin: uriMap[URI_PIN] as bool?,

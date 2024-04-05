@@ -25,6 +25,7 @@ import 'dart:math' as math;
 import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 
 import '../model/enums/encodings.dart';
 

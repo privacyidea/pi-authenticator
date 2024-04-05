@@ -10,14 +10,15 @@ import 'package:file_selector/file_selector.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/token_import_origins.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../model/enums/algorithms.dart';
 import '../../model/processor_result.dart';
+import '../../utils/errors.dart';
 import '../../utils/globals.dart';
 import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';

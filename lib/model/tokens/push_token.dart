@@ -7,7 +7,6 @@ import '../../utils/identifiers.dart';
 import '../../utils/rsa_utils.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
-import '../extensions/enum_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'token.dart';
 
@@ -69,7 +68,7 @@ class PushToken extends Token {
   })  : isRolledOut = isRolledOut ?? false,
         sslVerify = sslVerify ?? false,
         rolloutState = rolloutState ?? PushTokenRollOutState.rolloutNotStarted,
-        super(type: TokenTypes.PIPUSH.asString);
+        super(type: TokenTypes.PIPUSH.name);
 
   @override
   bool sameValuesAs(Token other) {

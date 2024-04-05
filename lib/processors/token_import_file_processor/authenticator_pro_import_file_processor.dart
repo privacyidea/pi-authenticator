@@ -6,7 +6,6 @@ import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/token_types.dart';
-import 'package:privacyidea_authenticator/model/extensions/enum_extension.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import 'package:privacyidea_authenticator/processors/token_import_file_processor/two_fas_import_file_processor.dart';
@@ -19,6 +18,7 @@ import '../../model/encryption/aes_encrypted.dart';
 import '../../model/encryption/uint_8_buffer.dart';
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
+import '../../utils/errors.dart';
 import '../../utils/globals.dart';
 import 'token_import_file_processor_interface.dart';
 
@@ -43,17 +43,17 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
    */
 
   static final typeMap = {
-    1: TokenTypes.HOTP.asString,
-    2: TokenTypes.TOTP.asString,
+    1: TokenTypes.HOTP.name,
+    2: TokenTypes.TOTP.name,
     //  3: 'mOTP', // Not supported
-    4: TokenTypes.STEAM.asString,
+    4: TokenTypes.STEAM.name,
     //   5: 'Yandex', // Not supported
   };
 
   static final algorithmMap = {
-    0: Algorithms.SHA1.asString,
-    1: Algorithms.SHA256.asString,
-    2: Algorithms.SHA512.asString,
+    0: Algorithms.SHA1.name,
+    1: Algorithms.SHA256.name,
+    2: Algorithms.SHA512.name,
   };
 
   const AuthenticatorProImportFileProcessor();

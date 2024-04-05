@@ -33,22 +33,22 @@ abstract class Token with SortableMixin {
 
   factory Token.fromJson(Map<String, dynamic> json) {
     String type = json['type'];
-    if (TokenTypes.HOTP.isString(type)) return HOTPToken.fromJson(json);
-    if (TokenTypes.TOTP.isString(type)) return TOTPToken.fromJson(json);
-    if (TokenTypes.PIPUSH.isString(type)) return PushToken.fromJson(json);
-    if (TokenTypes.DAYPASSWORD.isString(type)) return DayPasswordToken.fromJson(json);
-    if (TokenTypes.STEAM.isString(type)) return SteamToken.fromJson(json);
+    if (TokenTypes.HOTP.isName(type)) return HOTPToken.fromJson(json);
+    if (TokenTypes.TOTP.isName(type)) return TOTPToken.fromJson(json);
+    if (TokenTypes.PIPUSH.isName(type)) return PushToken.fromJson(json);
+    if (TokenTypes.DAYPASSWORD.isName(type)) return DayPasswordToken.fromJson(json);
+    if (TokenTypes.STEAM.isName(type)) return SteamToken.fromJson(json);
     throw ArgumentError.value(json, 'Token#fromJson', 'Token type [$type] is not a supported');
   }
   factory Token.fromUriMap(
     Map<String, dynamic> uriMap,
   ) {
     String type = uriMap[URI_TYPE];
-    if (TokenTypes.HOTP.isString(type)) return HOTPToken.fromUriMap(uriMap);
-    if (TokenTypes.TOTP.isString(type)) return TOTPToken.fromUriMap(uriMap);
-    if (TokenTypes.PIPUSH.isString(type)) return PushToken.fromUriMap(uriMap);
-    if (TokenTypes.DAYPASSWORD.isString(type)) return DayPasswordToken.fromUriMap(uriMap);
-    if (TokenTypes.STEAM.isString(type)) return SteamToken.fromUriMap(uriMap);
+    if (TokenTypes.HOTP.isName(type)) return HOTPToken.fromUriMap(uriMap);
+    if (TokenTypes.TOTP.isName(type)) return TOTPToken.fromUriMap(uriMap);
+    if (TokenTypes.PIPUSH.isName(type)) return PushToken.fromUriMap(uriMap);
+    if (TokenTypes.DAYPASSWORD.isName(type)) return DayPasswordToken.fromUriMap(uriMap);
+    if (TokenTypes.STEAM.isName(type)) return SteamToken.fromUriMap(uriMap);
     throw ArgumentError.value(uriMap, 'Token#fromUriMap', 'Token type [$type] is not a supported');
   }
 

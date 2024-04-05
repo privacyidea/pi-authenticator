@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/algorithms_extension.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
@@ -7,7 +9,6 @@ import '../enums/algorithms.dart';
 import '../enums/day_password_token_view_mode.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
-import '../extensions/enum_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
 import 'token.dart';
@@ -17,7 +18,7 @@ part 'day_password_token.g.dart';
 @JsonSerializable()
 @immutable
 class DayPasswordToken extends OTPToken {
-  static String get tokenType => TokenTypes.DAYPASSWORD.asString;
+  static String get tokenType => TokenTypes.DAYPASSWORD.name;
   final DayPasswordTokenViewMode viewMode;
   final Duration period;
 
@@ -39,7 +40,7 @@ class DayPasswordToken extends OTPToken {
     super.label = '',
     super.issuer = '',
   })  : period = period.inSeconds > 0 ? period : const Duration(hours: 24),
-        super(type: TokenTypes.DAYPASSWORD.asString);
+        super(type: TokenTypes.DAYPASSWORD.name);
 
   @override
   // Only the viewMode can be changed even if its the same token
@@ -85,7 +86,7 @@ class DayPasswordToken extends OTPToken {
         label: label ?? this.label,
         issuer: issuer ?? this.issuer,
         id: id ?? this.id,
-        type: TokenTypes.DAYPASSWORD.asString,
+        type: TokenTypes.DAYPASSWORD.name,
         algorithm: algorithm ?? this.algorithm,
         digits: digits ?? this.digits,
         secret: secret ?? this.secret,
@@ -128,7 +129,7 @@ class DayPasswordToken extends OTPToken {
       label: uriMap[URI_LABEL] ?? '',
       issuer: uriMap[URI_ISSUER] ?? '',
       id: const Uuid().v4(),
-      algorithm: AlgorithmsX.fromString(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+      algorithm: Algorithms.values.byName(uriMap[URI_ALGORITHM] ?? 'SHA1'),
       digits: uriMap[URI_DIGITS] ?? 6,
       secret: Encodings.base32.encode(uriMap[URI_SECRET]),
       period: Duration(seconds: uriMap[URI_PERIOD]),

@@ -7,7 +7,7 @@ enum PatchNoteType {
 }
 
 extension PatchNoteTypeX on PatchNoteType {
-  String getName(AppLocalizations localizations) => switch (this) {
+  String localizedName(AppLocalizations localizations) => switch (this) {
         PatchNoteType.newFeature => localizations.patchNotesNewFeatures,
         PatchNoteType.improvement => localizations.patchNotesImprovements,
         PatchNoteType.bugFix => localizations.patchNotesBugFixes,

@@ -4,15 +4,16 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:privacyidea_authenticator/utils/token_import_origins.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/encryption/aes_encrypted.dart';
-import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
+import '../../utils/errors.dart';
 import '../../utils/globals.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';

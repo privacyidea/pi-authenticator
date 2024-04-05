@@ -113,7 +113,7 @@ class _ImportStartPageState extends State<ImportStartPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           child: Text(
-                            widget.selectedSource.type.getButtonText(context),
+                            widget.selectedSource.type.buttonText(context),
                             style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                             overflow: TextOverflow.fade,
                             softWrap: false,

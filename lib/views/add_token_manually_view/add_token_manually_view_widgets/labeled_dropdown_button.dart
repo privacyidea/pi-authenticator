@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import '../../../model/extensions/enum_extension.dart';
 import '../../../utils/logger.dart';
 
 class LabeledDropdownButton<T> extends StatefulWidget {
@@ -49,7 +47,7 @@ class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
                 return DropdownMenuItem<T>(
                   value: value,
                   child: Text(
-                    '${value is Enum ? value.asString : value}'
+                    '${value is Enum ? value.name : value}'
                     '${widget.postFix}',
                     style: Theme.of(context).textTheme.titleMedium,
                     overflow: TextOverflow.fade,
