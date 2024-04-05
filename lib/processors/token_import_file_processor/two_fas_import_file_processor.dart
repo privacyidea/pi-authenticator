@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/utils/token_import_origins.dart';
 
 import '../../l10n/app_localizations.dart';

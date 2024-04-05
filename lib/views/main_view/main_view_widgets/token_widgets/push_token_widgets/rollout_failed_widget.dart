@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/push_token_rollout_state_extension.dart';
 
 import '../../../../../l10n/app_localizations.dart';
-import '../../../../../model/enums/push_token_rollout_state.dart';
 import '../../../../../model/tokens/push_token.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod_providers.dart';
@@ -16,6 +16,7 @@ class RolloutFailedWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final localizations = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -24,7 +25,7 @@ class RolloutFailedWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 6.0),
             child: FittedBox(
               child: Text(
-                token.rolloutState.rolloutMsg(context),
+                token.rolloutState.rolloutMsg(localizations),
                 style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
@@ -38,7 +39,7 @@ class RolloutFailedWidget extends StatelessWidget {
                 child: PressButton(
                   onPressed: () => globalRef?.read(tokenProvider.notifier).rolloutPushToken(token),
                   child: Text(
-                    AppLocalizations.of(context)!.retryRollout,
+                    localizations.retryRollout,
                     style: Theme.of(context).textTheme.bodyMedium,
                     overflow: TextOverflow.fade,
                     softWrap: false,
@@ -52,7 +53,7 @@ class RolloutFailedWidget extends StatelessWidget {
                   style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
                   onPressed: () => _showDialog(),
                   child: Text(
-                    AppLocalizations.of(context)!.delete,
+                    localizations.delete,
                     style: Theme.of(context).textTheme.bodyMedium,
                     overflow: TextOverflow.fade,
                     softWrap: false,
@@ -70,17 +71,18 @@ class RolloutFailedWidget extends StatelessWidget {
       useRootNavigator: false,
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) {
+        final localizations = AppLocalizations.of(context)!;
         return DefaultDialog(
           scrollable: true,
           title: Text(
-            AppLocalizations.of(context)!.confirmDeletion,
+            localizations.confirmDeletion,
           ),
-          content: Text(AppLocalizations.of(context)!.confirmDeletionOf(token.label)),
+          content: Text(localizations.confirmDeletionOf(token.label)),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
-                AppLocalizations.of(context)!.cancel,
+                localizations.cancel,
                 overflow: TextOverflow.fade,
                 softWrap: false,
               ),
@@ -91,7 +93,7 @@ class RolloutFailedWidget extends StatelessWidget {
                 Navigator.of(context).pop();
               },
               child: Text(
-                AppLocalizations.of(context)!.delete,
+                localizations.delete,
                 overflow: TextOverflow.fade,
                 softWrap: false,
               ),

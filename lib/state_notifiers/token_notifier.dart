@@ -11,6 +11,8 @@ import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/push_token_rollout_state_extension.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
@@ -649,6 +651,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       uri = Uri.parse(qrCode);
     } catch (_) {
       showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
+      Logger.warning('Scanned Data: $qrCode', error: 'Scanned QR code is not a valid URI.', name: 'token_notifier.dart#handleQrCode');
       return;
     }
     List<Token> tokens = await _tokensFromUri(uri);
@@ -668,8 +671,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
     try {
       final results = await TokenImportSchemeProcessor.processUriByAny(uri);
       return results?.whereType<ProcessorResultSuccess<Token>>().map((e) => e.resultData).toList() ?? [];
-    } catch (_) {
+    } catch (error, stackTrace) {
       showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
+      Logger.warning('Scanned Data: $uri', error: error, name: 'token_notifier.dart#handleQrCode', stackTrace: stackTrace);
       return [];
     }
   }

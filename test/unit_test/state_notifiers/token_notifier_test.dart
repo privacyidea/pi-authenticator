@@ -9,6 +9,7 @@ import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart'
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/model/states/token_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';

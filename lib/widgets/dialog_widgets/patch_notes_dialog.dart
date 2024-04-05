@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/patch_note_type_extension.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/patch_note_type.dart';

@@ -1,7 +1,4 @@
-import '../../mains/main_netknights.dart';
-import '../token_import/token_origin_data.dart';
-import '../tokens/token.dart';
-
+// Do not rename any value, only add new values at the end of the list. The order of values must not change.
 enum TokenOriginSourceType {
   backupFile,
   qrScan,
@@ -11,17 +8,4 @@ enum TokenOriginSourceType {
   linkImport,
   manually,
   unknown,
-}
-
-extension TokenSourceTypeX on TokenOriginSourceType {
-  TokenOriginData toTokenOrigin({String data = '', String? appName, bool? isPrivacyIdeaToken, DateTime? createdAt}) => TokenOriginData(
-        source: this,
-        data: data,
-        appName: appName ?? PrivacyIDEAAuthenticator.currentCustomization?.appName,
-        isPrivacyIdeaToken: isPrivacyIdeaToken,
-        createdAt: createdAt ?? DateTime.now(),
-      );
-
-  Token addOriginToToken({required Token token, required String data, required bool? isPrivacyIdeaToken, String? appName, DateTime? createdAt}) =>
-      token.copyWith(origin: toTokenOrigin(data: data, appName: appName, isPrivacyIdeaToken: isPrivacyIdeaToken, createdAt: createdAt));
 }

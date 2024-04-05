@@ -2,6 +2,7 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/token_import_type_extension.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
@@ -16,6 +17,7 @@ class SelectImportTypePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(tokenImportOrigin.appName),
@@ -37,7 +39,7 @@ class SelectImportTypePage extends StatelessWidget {
                 ),
                 const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
                 Text(
-                  AppLocalizations.of(context)!.selectImportType,
+                  localizations.selectImportType,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
@@ -51,10 +53,10 @@ class SelectImportTypePage extends StatelessWidget {
                             flex: 8,
                             child: Text(
                               switch (importEntity.type) {
-                                const (TokenImportType.backupFile) => AppLocalizations.of(context)!.selectFile,
-                                const (TokenImportType.qrScan) => AppLocalizations.of(context)!.scanQrCode,
-                                const (TokenImportType.qrFile) => AppLocalizations.of(context)!.selectFile,
-                                const (TokenImportType.link) => AppLocalizations.of(context)!.enterLink,
+                                const (TokenImportType.backupFile) => localizations.selectFile,
+                                const (TokenImportType.qrScan) => localizations.scanQrCode,
+                                const (TokenImportType.qrFile) => localizations.selectFile,
+                                const (TokenImportType.link) => localizations.enterLink,
                               },
                               style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                               overflow: TextOverflow.fade,
