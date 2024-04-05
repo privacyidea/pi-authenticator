@@ -6,7 +6,7 @@ import '../widgets/dialog_widgets/patch_notes_dialog.dart';
 import 'app_info_utils.dart';
 import 'globals.dart';
 import 'logger.dart';
-import 'version.dart';
+import '../model/version.dart';
 
 class PatchNotesUtils {
   static Map<Version, Map<PatchNoteType, List<String>>> _getNewPatchNotes({required BuildContext context, required Version latestStartedVersion}) {

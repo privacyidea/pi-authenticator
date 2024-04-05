@@ -4,7 +4,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
 import '../enums/algorithms.dart';
-import '../enums/day_passoword_token_view_mode.dart';
+import '../enums/day_password_token_view_mode.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
 import '../extensions/enum_extension.dart';

@@ -9,14 +9,15 @@ class TokenEncryption {
   static Future<String> encrypt({required Iterable<Token> tokens, required String password}) async {
     final jsonsList = tokens.map((e) => e.toJson()).toList();
     final encoded = json.encode(jsonsList);
-    final encrypted = (await AesEncrypted.encrypt(data: encoded, password: password)).toJsonString();
-    return encrypted;
+    final encrypted = (await AesEncrypted.encrypt(data: encoded, password: password)).toJson();
+    return jsonEncode(encrypted);
   }
 
   static Future<List<Token>> decrypt({required String encryptedTokens, required String password}) async {
-    final jsonString = await AesEncrypted.fromJsonString(encryptedTokens).decryptToString(password);
-    final jsonsList = json.decode(jsonString) as List;
-    return jsonsList.map<Token>((e) => Token.fromJson(e)).toList();
+    final json = jsonDecode(encryptedTokens);
+    final tokenJsonString = await AesEncrypted.fromJson(json).decryptToString(password);
+    final tokenJsonsList = json.decode(tokenJsonString) as List;
+    return tokenJsonsList.map<Token>((e) => Token.fromJson(e)).toList();
   }
 
   static Uri generateQrCodeUri({required Token token}) {

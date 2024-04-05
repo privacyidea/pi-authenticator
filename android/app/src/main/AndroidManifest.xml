@@ -9,8 +9,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <!-- required from API level 33 -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> <!-- To read images created by other apps -->
     <!-- To read all files until API level 32 -->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE" 

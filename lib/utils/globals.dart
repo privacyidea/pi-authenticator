@@ -24,7 +24,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/enums/patch_note_type.dart';
-import 'version.dart';
+import '../model/version.dart';
 
 Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocalizations localizations) => {
       const Version(4, 3, 0): {

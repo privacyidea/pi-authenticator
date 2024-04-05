@@ -6,7 +6,7 @@ import '../../l10n/app_localizations.dart';
 import '../../model/enums/patch_note_type.dart';
 import '../../utils/app_info_utils.dart';
 import '../../utils/riverpod_providers.dart';
-import '../../utils/version.dart';
+import '../../model/version.dart';
 import 'default_dialog.dart';
 
 class PatchNotesDialog extends StatelessWidget {

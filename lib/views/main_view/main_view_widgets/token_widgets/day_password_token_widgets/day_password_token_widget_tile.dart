@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../l10n/app_localizations.dart';
-import '../../../../../model/enums/day_passoword_token_view_mode.dart';
+import '../../../../../model/enums/day_password_token_view_mode.dart';
 import '../../../../../model/extensions/enum_extension.dart';
 import '../../../../../model/tokens/day_password_token.dart';
 import '../../../../../utils/riverpod_providers.dart';
