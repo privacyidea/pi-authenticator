@@ -1,4 +1,3 @@
 extension EnumExtension on Enum {
-  bool isName(String enumName) => enumName == name;
-  bool isNameInsensitive(String enumName) => enumName.toLowerCase() == name.toLowerCase();
+  bool isName(String enumName, {bool caseSensitive = true}) => caseSensitive ? name == enumName : name.toLowerCase() == enumName.toLowerCase();
 }

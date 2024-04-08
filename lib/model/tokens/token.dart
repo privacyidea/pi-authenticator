@@ -33,22 +33,22 @@ abstract class Token with SortableMixin {
 
   factory Token.fromJson(Map<String, dynamic> json) {
     String type = json['type'];
-    if (TokenTypes.HOTP.isNameInsensitive(type)) return HOTPToken.fromJson(json);
-    if (TokenTypes.TOTP.isNameInsensitive(type)) return TOTPToken.fromJson(json);
-    if (TokenTypes.PIPUSH.isNameInsensitive(type)) return PushToken.fromJson(json);
-    if (TokenTypes.DAYPASSWORD.isNameInsensitive(type)) return DayPasswordToken.fromJson(json);
-    if (TokenTypes.STEAM.isNameInsensitive(type)) return SteamToken.fromJson(json);
+    if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromJson(json);
+    if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromJson(json);
+    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) return PushToken.fromJson(json);
+    if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) return DayPasswordToken.fromJson(json);
+    if (TokenTypes.STEAM.isName(type, caseSensitive: false)) return SteamToken.fromJson(json);
     throw ArgumentError.value(json, 'Token#fromJson', 'Token type [$type] is not a supported');
   }
   factory Token.fromUriMap(
     Map<String, dynamic> uriMap,
   ) {
     String type = uriMap[URI_TYPE];
-    if (TokenTypes.HOTP.isNameInsensitive(type)) return HOTPToken.fromUriMap(uriMap);
-    if (TokenTypes.TOTP.isNameInsensitive(type)) return TOTPToken.fromUriMap(uriMap);
-    if (TokenTypes.PIPUSH.isNameInsensitive(type)) return PushToken.fromUriMap(uriMap);
-    if (TokenTypes.DAYPASSWORD.isNameInsensitive(type)) return DayPasswordToken.fromUriMap(uriMap);
-    if (TokenTypes.STEAM.isNameInsensitive(type)) return SteamToken.fromUriMap(uriMap);
+    if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromUriMap(uriMap);
+    if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromUriMap(uriMap);
+    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) return PushToken.fromUriMap(uriMap);
+    if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) return DayPasswordToken.fromUriMap(uriMap);
+    if (TokenTypes.STEAM.isName(type, caseSensitive: false)) return SteamToken.fromUriMap(uriMap);
     throw ArgumentError.value(uriMap, 'Token#fromUriMap', 'Token type [$type] is not a supported');
   }
 

@@ -73,11 +73,11 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
 /// to https://github.com/google/google-authenticator/wiki/Key-Uri-Format.
 Map<String, dynamic> _parseOtpToken(Uri uri) {
   final type = uri.host;
-  if (TokenTypes.PIPUSH.isNameInsensitive(type)) {
+  if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) {
     // otpauth://pipush/LABEL?PARAMETERS
     return _parsePiPushToken(uri);
   }
-  if (TokenTypes.values.firstWhereOrNull((element) => element.isNameInsensitive(type)) != null) {
+  if (TokenTypes.values.firstWhereOrNull((element) => element.isName(type, caseSensitive: false)) != null) {
     return _parseOtpAuth(uri);
   }
   throw ArgumentError.value(

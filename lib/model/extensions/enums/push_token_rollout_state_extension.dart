@@ -12,6 +12,18 @@ extension PushTokenRollOutStateX on PushTokenRollOutState {
         PushTokenRollOutState.parsingResponseFailed => false,
         PushTokenRollOutState.rolloutComplete => false,
       };
+
+  PushTokenRollOutState getFailed() => switch (this) {
+        PushTokenRollOutState.rolloutNotStarted => PushTokenRollOutState.rolloutNotStarted,
+        PushTokenRollOutState.generatingRSAKeyPair => PushTokenRollOutState.generatingRSAKeyPairFailed,
+        PushTokenRollOutState.generatingRSAKeyPairFailed => PushTokenRollOutState.generatingRSAKeyPairFailed,
+        PushTokenRollOutState.sendRSAPublicKey => PushTokenRollOutState.sendRSAPublicKeyFailed,
+        PushTokenRollOutState.sendRSAPublicKeyFailed => PushTokenRollOutState.sendRSAPublicKeyFailed,
+        PushTokenRollOutState.parsingResponse => PushTokenRollOutState.parsingResponseFailed,
+        PushTokenRollOutState.parsingResponseFailed => PushTokenRollOutState.parsingResponseFailed,
+        PushTokenRollOutState.rolloutComplete => PushTokenRollOutState.rolloutComplete,
+      };
+
   String rolloutMsg(AppLocalizations localizations) => switch (this) {
         PushTokenRollOutState.rolloutNotStarted => localizations.rollingOut,
         PushTokenRollOutState.generatingRSAKeyPair => localizations.generatingRSAKeyPair,

@@ -1,4 +1,4 @@
-// Do not rename any value, only add new values at the end of the list. The order of values must not change.
+// Do not rename or remove values, they are used for serialization. Only add new values.
 enum TokenOriginSourceType {
   backupFile,
   qrScan,

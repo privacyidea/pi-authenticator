@@ -23,7 +23,7 @@ class PrivacyIDEAAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
     }
 
     try {
-      final token = await TokenEncryption.fromQrCodeUri(uri);
+      final token = TokenEncryption.fromQrCodeUri(uri);
 
       return [ProcessorResult.success(token)];
     } catch (e) {

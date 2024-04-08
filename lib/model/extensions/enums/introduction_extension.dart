@@ -32,7 +32,7 @@ extension IntroductionX on Introduction {
       };
 
   String hintText(AppLocalizations localizations) => switch (this) {
-        Introduction.introductionScreen => '',
+        Introduction.introductionScreen => 'Not implemented',
         Introduction.scanQrCode => localizations.introScanQrCode,
         Introduction.addManually => localizations.introAddTokenManually,
         Introduction.tokenSwipe => localizations.introTokenSwipe,
