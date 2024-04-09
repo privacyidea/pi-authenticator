@@ -25,9 +25,7 @@ class TokenState {
 
   TokenState({required List<Token> tokens, List<Token>? lastlyUpdatedTokens})
       : tokens = List<Token>.from(tokens),
-        lastlyUpdatedTokens = List<Token>.from(lastlyUpdatedTokens ?? tokens) {
-    _sort(this.tokens);
-  }
+        lastlyUpdatedTokens = List<Token>.from(lastlyUpdatedTokens ?? tokens);
 
   List<Token> get nonPiTokens => tokens.where((token) => token.isPrivacyIdeaToken == false).toList();
 
@@ -44,25 +42,7 @@ class TokenState {
     for (var token in tokens) {
       sameTokensMap[token] = stateTokens.firstWhereOrNull((element) => element.isSameTokenAs(token));
     }
-    // List<OTPToken> otpTokens = tokens.whereType<OTPToken>().toList();
-    // Map<String, OTPToken> stateOtpTokens = {for (var e in stateTokens.whereType<OTPToken>()) (e).secret: e};
-    // List<PushToken> pushTokens = tokens.whereType<PushToken>().toList();
-    // Map<(String?, String?, String?), PushToken> statePushTokens = {
-    //   for (var e in stateTokens.whereType<PushToken>()) (e.publicServerKey, e.privateTokenKey, e.publicTokenKey): e
-    // };
-
-    // for (var pushToken in pushTokens) {
-    //   tokensWithSameSectet[pushToken] = statePushTokens[(pushToken.publicServerKey, pushToken.privateTokenKey, pushToken.publicTokenKey)];
-    // }
-    // for (var otpToken in otpTokens) {
-    //   tokensWithSameSectet[otpToken] = stateOtpTokens[otpToken.secret];
-    // }
-
     return sameTokensMap;
-  }
-
-  static void _sort(List<Token> tokens) {
-    tokens.sort((a, b) => (a.sortIndex ?? double.infinity).compareTo(b.sortIndex ?? double.infinity));
   }
 
   T? currentOf<T extends Token>(T token) => tokens.firstWhereOrNull((element) => element.id == token.id) as T?;
@@ -156,21 +136,24 @@ class TokenState {
     return (TokenState(tokens: newTokens, lastlyUpdatedTokens: updatedTokens), failedToReplace);
   }
 
-  List<Token> tokensInFolder(TokenFolder folder, {List<Type>? only, List<Type>? exclude}) => tokens.where((token) {
-        if (token.folderId != folder.folderId) {
-          return false;
-        }
-        if (exclude != null && exclude.contains(token.runtimeType)) return false;
-        if (only != null && !only.contains(token.runtimeType)) return false;
+  List<Token> tokensInFolder(TokenFolder folder, {List<Type> only = const [], List<Type> exclude = const []}) =>
+      tokens.inFolder(folder, only: only, exclude: exclude);
+
+  List<Token> tokensWithoutFolder({List<Type> only = const [], List<Type> exclude = const []}) => tokens.withoutFolder(only: only, exclude: exclude);
+}
+
+extension TokenListExtension on List<Token> {
+  List<Token> inFolder(TokenFolder folder, {List<Type> only = const [], List<Type> exclude = const []}) => where((token) {
+        if (token.folderId != folder.folderId) return false;
+        if (exclude.contains(token.runtimeType)) return false;
+        if (only.isNotEmpty && !only.contains(token.runtimeType)) return false;
         return true;
       }).toList();
 
-  List<Token> tokensWithoutFolder({List<Type>? only, List<Type>? exclude}) => tokens.where((token) {
-        if (token.folderId != null) {
-          return false;
-        }
-        if (exclude != null && exclude.contains(token.runtimeType)) return false;
-        if (only != null && !only.contains(token.runtimeType)) return false;
+  List<Token> withoutFolder({List<Type> only = const [], List<Type> exclude = const []}) => where((token) {
+        if (token.folderId != null) return false;
+        if (exclude.contains(token.runtimeType)) return false;
+        if (only.isNotEmpty && !only.contains(token.runtimeType)) return false;
         return true;
       }).toList();
 }

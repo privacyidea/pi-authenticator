@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/model/states/token_state.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
@@ -22,6 +24,28 @@ class MainViewTokensList extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<MainViewTokensList> createState() => _MainViewTokensListState();
+
+  static List<Widget> buildSortableWidgets(List<SortableMixin> sortables, SortableMixin? draggingSortable) {
+    List<Widget> widgets = [];
+    if (sortables.isEmpty) return [];
+    sortables.sort((a, b) => a.compareTo(b));
+    for (var i = 0; i < sortables.length; i++) {
+      final isFirst = i == 0;
+      final isDraggingTheCurrent = draggingSortable == sortables[i];
+      final previousWasExpandedFolder = i > 0 && sortables[i - 1] is TokenFolder && (sortables[i - 1] as TokenFolder).isExpanded;
+      // 1. Add a divider if the current sortable is not the one which is dragged
+      // 2. Dont add a divider if the current sortable is the first
+      // 3. Dont add a divider if the previous sortable was an expanded folder
+      // 4. Ignore 2. and 3. if there is a sortable that is dragged
+      //           1                     2                     3                         4
+      if (!isDraggingTheCurrent && ((!isFirst && !previousWasExpandedFolder) || draggingSortable != null)) {
+        widgets.add(DragTargetDivider(dependingFolder: null, previousSortable: sortables.last, nextSortable: sortables[i]));
+      }
+      widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
+    }
+
+    return widgets;
+  }
 }
 
 class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
@@ -37,10 +61,11 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     final allowToRefresh = tokenState.hasPushTokens;
     final draggingSortable = ref.watch(draggingSortableProvider);
     bool filterPushTokens = ref.watch(settingsProvider).hidePushTokens && tokenState.hasOTPTokens;
+    var allSortables = [...tokenFolders, ...tokenState.tokens];
+    final List<Token> tokens = allSortables.whereType<Token>().toList();
+    final tokensWithNoFolder = tokens.withoutFolder(exclude: filterPushTokens ? [PushToken] : []);
 
-    final tokenStateWithNoFolder = tokenState.tokensWithoutFolder(exclude: filterPushTokens ? [PushToken] : []);
-
-    List<SortableMixin> sortables = [...tokenFolders, ...tokenStateWithNoFolder];
+    List<SortableMixin> sortables = [...tokenFolders, ...tokensWithNoFolder];
     return Stack(
       children: [
         if (sortables.isEmpty) const NoTokenScreen(),
@@ -64,17 +89,24 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
                         TokenIntroduction(
                           child: Column(
                             children: [
-                              ..._buildSortableWidgets(sortables, draggingSortable),
+                              ...MainViewTokensList.buildSortableWidgets(sortables, draggingSortable),
                             ],
                           ),
                         ),
                         ...(draggingSortable != null)
                             ? [
-                                const DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true, bottomPaddingIfLast: 80),
-                                const Expanded(
+                                DragTargetDivider(
+                                    dependingFolder: null, previousSortable: sortables.last, nextSortable: null, isLastDivider: true, bottomPaddingIfLast: 80),
+                                Expanded(
                                   child: Opacity(
                                       opacity: 0,
-                                      child: DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true, bottomPaddingIfLast: 80)),
+                                      child: DragTargetDivider(
+                                        dependingFolder: null,
+                                        previousSortable: sortables.last,
+                                        nextSortable: null,
+                                        isLastDivider: true,
+                                        bottomPaddingIfLast: 0,
+                                      )),
                                 )
                               ]
                             : [const SizedBox(height: 80)]
@@ -88,27 +120,5 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
         ),
       ],
     );
-  }
-
-  List<Widget> _buildSortableWidgets(List<SortableMixin> sortables, SortableMixin? draggingSortable) {
-    List<Widget> widgets = [];
-    if (sortables.isEmpty) return [];
-    sortables.sort((a, b) => a.compareTo(b));
-    for (var i = 0; i < sortables.length; i++) {
-      final isFirst = i == 0;
-      final isDraggingTheCurrent = draggingSortable == sortables[i];
-      final previousWasExpandedFolder = i > 0 && sortables[i - 1] is TokenFolder && (sortables[i - 1] as TokenFolder).isExpanded;
-      // 1. Add a divider if the current sortable is not the one which is dragged
-      // 2. Dont add a divider if the current sortable is the first
-      // 3. Dont add a divider if the previous sortable was an expanded folder
-      // 4. Ignore 2. and 3. if there is a sortable that is dragged
-      //           1                     2                     3                         4
-      if (!isDraggingTheCurrent && ((!isFirst && !previousWasExpandedFolder) || draggingSortable != null)) {
-        widgets.add(DragTargetDivider(dependingFolder: null, nextSortable: sortables[i]));
-      }
-      widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
-    }
-
-    return widgets;
   }
 }

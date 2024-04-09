@@ -90,6 +90,7 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
         listeners: [
           NavigationDeepLinkListener(deeplinkProvider: deeplinkProvider),
           HomeWidgetTokenStateListener(tokenProvider: tokenProvider),
+          // SortableListener(tokenProvider, tokenFolderProvider),
         ],
         child: EasyDynamicThemeWidget(
           child: widget.child,

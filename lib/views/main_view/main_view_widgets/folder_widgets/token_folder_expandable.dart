@@ -71,10 +71,9 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
 
   @override
   ExpandablePanel build(BuildContext context) {
-    List<Token> tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: ref.watch(settingsProvider).hidePushTokens ? [PushToken] : []);
-    tokens = widget.filter?.filterTokens(tokens) ?? tokens;
+    final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: ref.watch(settingsProvider).hidePushTokens ? [PushToken] : []);
+    tokens.sort((a, b) => a.compareTo(b));
     final draggingSortable = ref.watch(draggingSortableProvider);
-
     if (widget.expandOverride == null) {
       if (tokens.isEmpty && expandableController.expanded) {
         expandableController.value = false;
@@ -115,9 +114,9 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: 15, right: 0),
-            child: DragTarget(
-              onWillAccept: (data) {
-                if (data is Token && data.folderId != widget.folder.folderId) {
+            child: DragTarget<Token>(
+              onWillAcceptWithDetails: (details) {
+                if (details.data.folderId != widget.folder.folderId) {
                   if (widget.folder.isLocked) return true;
                   _expandTimer?.cancel();
                   _expandTimer = Timer(const Duration(milliseconds: 500), () {
@@ -129,11 +128,10 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                 return false;
               },
               onLeave: (data) => _expandTimer?.cancel(),
-              onAccept: (data) {
-                if (data is! Token) return;
+              onAcceptWithDetails: (details) {
                 ref.read(tokenProvider.notifier).updateToken(
-                      data,
-                      (p0) => p0.copyWith(folderId: () => widget.folder.folderId),
+                      details.data,
+                      (p0) => p0.copyWith(folderId: () => widget.folder.folderId, sortIndex: (widget.folder.sortIndex!) + 1),
                     );
               },
               builder: (context, willAccept, willReject) => Center(
@@ -247,11 +245,19 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                   children: [
                     for (var i = 0; i < tokens.length; i++) ...[
                       if (draggingSortable != tokens[i] && (i != 0 || draggingSortable is Token))
-                        widget.filter == null ? DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: tokens[i]) : const Divider(),
+                        widget.filter == null
+                            ? DragTargetDivider<Token>(
+                                dependingFolder: widget.folder,
+                                previousSortable: (i - 1) < 0 ? null : tokens[i - 1],
+                                nextSortable: tokens[i],
+                              )
+                            : const Divider(),
                       TokenWidgetBuilder.fromToken(tokens[i]),
                     ],
                     if (tokens.isNotEmpty && draggingSortable is Token)
-                      widget.filter == null ? DragTargetDivider<Token>(dependingFolder: widget.folder, nextSortable: null) : const Divider(),
+                      widget.filter == null
+                          ? DragTargetDivider<Token>(dependingFolder: widget.folder, previousSortable: tokens.last, nextSortable: null)
+                          : const Divider(),
                     if (tokens.isNotEmpty && draggingSortable is! Token) const SizedBox(height: 8),
                   ],
                 ),

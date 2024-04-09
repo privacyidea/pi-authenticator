@@ -9,11 +9,12 @@ import '../state_notifiers/token_notifier.dart';
 import 'home_widget_utils.dart';
 
 abstract class StateNotifierProviderListener<T extends StateNotifier<S>, S> {
-  final StateNotifierProvider<T, S> provider;
-  final void Function(S? previous, S next) onNewState;
-  const StateNotifierProviderListener({required this.provider, required this.onNewState});
+  final StateNotifierProvider<T, S>? provider;
+  final void Function(S? previous, S next)? onNewState;
+  const StateNotifierProviderListener({this.provider, this.onNewState});
   void buildListen(WidgetRef ref) {
-    ref.listen(provider, onNewState);
+    if (provider == null || onNewState == null) return;
+    ref.listen(provider!, onNewState!);
   }
 }
 

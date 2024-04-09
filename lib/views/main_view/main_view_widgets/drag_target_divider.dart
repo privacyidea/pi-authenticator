@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,16 +11,24 @@ import '../../../widgets/drag_item_scroller.dart';
 /// It will accept a Sortable from the type T
 class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget {
   final TokenFolder? dependingFolder;
+  final SortableMixin? previousSortable;
   final SortableMixin? nextSortable;
-  final double? bottomPaddingIfLast;
+  final double dividerBaseHeight;
+  final double dividerExpandedHeight;
+  final double bottomPaddingIfLast;
+  final bool isExpandalbe;
   final bool ignoreFolderId;
   final bool isLastDivider;
 
   const DragTargetDivider({
     super.key,
     required this.dependingFolder,
+    required this.previousSortable,
     required this.nextSortable,
-    this.bottomPaddingIfLast,
+    this.bottomPaddingIfLast = 0,
+    this.dividerBaseHeight = 1.5,
+    this.dividerExpandedHeight = 40,
+    this.isExpandalbe = true,
     this.ignoreFolderId = false,
     this.isLastDivider = false,
   });
@@ -52,10 +59,10 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
   }
 
   @override
-  Widget build(BuildContext context) => DragTarget(
-        onWillAccept: (data) {
-          final willAccept = _onWillAccept<T>(data, ref);
-          if (willAccept) {
+  Widget build(BuildContext context) => DragTarget<T>(
+        onWillAcceptWithDetails: (details) {
+          final willAccept = _onWillAccept(details.data, ref);
+          if (willAccept && widget.isExpandalbe) {
             expansionController.forward();
           }
           return willAccept;
@@ -63,10 +70,11 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
         onLeave: (data) {
           expansionController.reverse();
         },
-        onAccept: (dragedSortable) {
+        onAcceptWithDetails: (details) {
           expansionController.reset();
           _onAccept(
-            dragedSortable: dragedSortable,
+            previousSortable: widget.previousSortable,
+            dragedSortable: details.data,
             nextSortable: widget.nextSortable,
             ignoreFolderId: widget.ignoreFolderId,
             dependingFolder: widget.dependingFolder,
@@ -74,85 +82,51 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
           );
         },
         builder: (context, _, __) {
-          final dividerHeight = expansionController.value * 40 + 1.5;
-          return Container(
-            height: dividerHeight,
-            decoration: BoxDecoration(
-              color: Theme.of(context).dividerColor,
-              borderRadius: BorderRadius.circular(dividerHeight / 4),
+          final dividerHeight = expansionController.value * 40 + 1.5 * (1 - expansionController.value);
+          return Padding(
+            padding: EdgeInsets.only(bottom: widget.isLastDivider ? (widget.bottomPaddingIfLast - dividerHeight + widget.dividerBaseHeight) : 0),
+            child: Container(
+              height: dividerHeight,
+              decoration: BoxDecoration(
+                color: Theme.of(context).dividerColor,
+                borderRadius: BorderRadius.circular(dividerHeight / 4),
+              ),
+              margin: EdgeInsets.only(left: 8 - expansionController.value * 2, right: 8 - expansionController.value * 2, top: 8, bottom: 8),
             ),
-            margin: EdgeInsets.only(left: 8 - expansionController.value * 2, right: 8 - expansionController.value * 2, top: 8, bottom: 8),
           );
         },
       );
 }
 
-bool _onWillAccept<T>(Object? data, WidgetRef ref) {
-  if (data is! T) return false;
+bool _onWillAccept(SortableMixin? data, WidgetRef ref) {
   if (ref.read(dragItemScrollerStateProvider)) return false;
-
   return true;
 }
 
 void _onAccept({
-  required Object? dragedSortable,
-  SortableMixin? nextSortable,
+  required SortableMixin? previousSortable,
+  required SortableMixin dragedSortable,
+  required SortableMixin? nextSortable,
   required bool ignoreFolderId,
   TokenFolder? dependingFolder,
   required WidgetRef ref,
 }) {
-  if (dragedSortable is! SortableMixin) return;
-  // Higher index = lower in the list
   final allTokens = ref.read(tokenProvider).tokens;
   final allFolders = ref.read(tokenFolderProvider).folders;
-  final allSortables = [...allTokens, ...allFolders];
-  allSortables.sort((a, b) => a.compareTo(b));
-  final oldIndex = allSortables.indexOf(dragedSortable);
-  if (oldIndex == -1) return; // If the draged item is not in the list we dont need to do anything
-  int newIndex;
-  if (nextSortable == null) {
-    // If the draged item is moved to the end of the list the nextSortable is null. The newIndex will be set to the last index
-    newIndex = allSortables.length - 1;
+  var allSortables = [...allTokens, ...allFolders];
+
+  if (dragedSortable is TokenFolder) {
+    final tokensInFolder = ref.read(tokenProvider).tokens.where((element) => element.folderId == dragedSortable.folderId).toList();
+    final allMovingItems = [dragedSortable, ...tokensInFolder];
+    allSortables = allSortables.moveAllBetween(moveAfter: previousSortable, movedItems: allMovingItems, moveBefore: nextSortable);
   } else {
-    if (oldIndex < allSortables.indexOf(nextSortable)) {
-      // If the draged item is moved down it dont pass the nextSortable so the newIndex is before the nextSortable
-      newIndex = allSortables.indexOf(nextSortable) - 1;
-    } else {
-      // If the draged item is moved up it pass the nextSortable so the newIndex will be the place of the nextSortable
-      newIndex = allSortables.indexOf(nextSortable);
-    }
+    allSortables = allSortables.moveBetween(moveAfter: previousSortable, movedItem: dragedSortable as Token, moveBefore: nextSortable);
+    allSortables = allSortables.map((e) {
+      return e is Token && e.id == dragedSortable.id ? e.copyWith(folderId: () => dependingFolder?.folderId) : e;
+    }).toList();
   }
-  final dragedItemMovedUp = newIndex < oldIndex;
-
-  final modifiedSortables = [];
-  for (var i = 0; i < allSortables.length; i++) {
-    if (i < oldIndex && i < newIndex) {
-      // This is before dragedSortable and newIndex so no changes needed
-      continue;
-    }
-    if (i > oldIndex && i > newIndex) {
-      // This is after dragedSortable and newIndex so no changes needed
-      continue;
-    }
-    if (i == oldIndex) {
-      // This is dragedSortable so it needs to be moved to newIndex
-      SortableMixin currentSortable = allSortables[i];
-      if (currentSortable is Token && !ignoreFolderId) {
-        // When the draged Sortable is a Token we need to update the folderId so it is in the correct folder
-        final previousFolderId = dependingFolder?.folderId;
-        currentSortable = currentSortable.copyWith(folderId: () => previousFolderId);
-      }
-      modifiedSortables.add(currentSortable.copyWith(sortIndex: newIndex));
-      continue;
-    }
-    modifiedSortables.add(allSortables[i]
-        .copyWith(sortIndex: i + (dragedItemMovedUp ? 1 : -1))); // This is between dragedSortable and newIndex so it needs to be moved up (-1) or down (+1)
-    continue;
-  }
-
-  globalRef?.read(tokenProvider.notifier).updateTokens(allTokens, (p0) {
-    final modifiedToken = modifiedSortables.whereType<Token>().firstWhereOrNull((updated) => updated.id == p0.id);
-    return p0.copyWith(sortIndex: modifiedToken?.sortIndex, folderId: modifiedToken != null ? () => modifiedToken.folderId : null);
-  });
-  globalRef?.read(tokenFolderProvider.notifier).updateFolders(modifiedSortables.whereType<TokenFolder>().toList());
+  final modifiedTokens = allSortables.whereType<Token>().toList();
+  final modifiedFolders = allSortables.whereType<TokenFolder>().toList();
+  ref.read(tokenProvider.notifier).addOrReplaceTokens(modifiedTokens);
+  ref.read(tokenFolderProvider.notifier).updateFolders(modifiedFolders);
 }
