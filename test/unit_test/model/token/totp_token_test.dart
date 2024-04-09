@@ -170,7 +170,7 @@ void _testTotpToken() {
         expect(totpFromJson.algorithm, Algorithms.SHA1);
         expect(totpFromJson.digits, 22);
         expect(totpFromJson.secret, 'secret');
-        expect(totpFromJson.type, 'TOTP');
+        expect(totpFromJson.type, 'totp');
         expect(totpFromJson.pin, true);
         expect(totpFromJson.tokenImage, 'example.png');
         expect(totpFromJson.sortIndex, 33);

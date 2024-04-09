@@ -1,8 +1,6 @@
 mixin SortableMixin {
   int? get sortIndex;
-  int? get dependsOnSortIndex;
-
-  SortableMixin copyWith({int? sortIndex, int? Function() dependsOnSortIndex});
+  SortableMixin copyWith({int? sortIndex});
 
   /// Compares the sortIndex of two SortableMixin objects.
   /// Null values are considered to be the highest index.

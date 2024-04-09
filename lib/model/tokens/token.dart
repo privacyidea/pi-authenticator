@@ -25,9 +25,6 @@ abstract class Token with SortableMixin {
   final int? folderId;
   @override
   final int? sortIndex;
-  @override
-  final int? dependsOnSortIndex;
-
   final TokenOriginData? origin;
 
   // Must be string representation of TokenType enum.
@@ -61,7 +58,6 @@ abstract class Token with SortableMixin {
     required this.type,
     this.tokenImage,
     this.sortIndex,
-    this.dependsOnSortIndex,
     this.folderId,
     this.origin,
     bool? pin,
@@ -92,7 +88,6 @@ abstract class Token with SortableMixin {
     String? tokenImage,
     int? sortIndex,
     int? Function()? folderId,
-    int? Function()? dependsOnSortIndex,
     TokenOriginData? origin,
   });
 

@@ -37,7 +37,7 @@ void _testAesEncrypted() {
         ),
       );
       expect(aesEncrypted.cypher, AesGcm.with256bits());
-      expect(aesEncrypted.mac, Mac.empty);
+      expect(aesEncrypted.mac, const Mac([103, 169, 139, 92, 212, 40, 200, 3, 208, 110, 165, 128, 152, 185, 48, 3]));
     });
     test('encrypt', () async {
       final AesEncrypted aesEncrypted = await AesEncrypted.encrypt(

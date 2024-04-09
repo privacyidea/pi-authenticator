@@ -636,5 +636,6 @@
   "scanThisQrWithNewDevice": "Scan this QR code with your new device to import the token.",
   "oneMore": "One more",
   "done": "Done",
-  "confirmPassword": "Confirm password"
+  "confirmPassword": "Confirm password",
+  "secretIsRequired": "Secret is required"
 }

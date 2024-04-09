@@ -32,7 +32,6 @@ class DayPasswordToken extends OTPToken {
     String? type, // just for @JsonSerializable(): type of DayPasswordToken is always TokenTypes.DAYPASSWORD
     super.tokenImage,
     super.sortIndex,
-    super.dependsOnSortIndex,
     super.folderId,
     super.pin,
     super.isLocked,
@@ -78,7 +77,6 @@ class DayPasswordToken extends OTPToken {
     bool? isLocked,
     bool? isHidden,
     int? sortIndex,
-    int? Function()? dependsOnSortIndex,
     int? Function()? folderId,
     TokenOriginData? origin,
   }) =>
@@ -97,7 +95,6 @@ class DayPasswordToken extends OTPToken {
         pin: pin ?? this.pin,
         isLocked: isLocked ?? this.isLocked,
         isHidden: isHidden ?? this.isHidden,
-        dependsOnSortIndex: dependsOnSortIndex != null ? dependsOnSortIndex() : this.dependsOnSortIndex,
         folderId: folderId != null ? folderId() : this.folderId,
         origin: origin ?? this.origin,
       );

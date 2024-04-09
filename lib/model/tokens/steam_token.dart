@@ -1,7 +1,8 @@
 import 'package:base32/base32.dart';
-import 'package:crypto/crypto.dart' show Hmac, sha1;
+import 'package:crypto/crypto.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
+import 'package:privacyidea_authenticator/utils/errors.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
@@ -11,7 +12,7 @@ import '../enums/token_types.dart';
 import '../extensions/int_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'token.dart';
-import 'totp_token.dart' show TOTPToken;
+import 'totp_token.dart';
 
 part 'steam_token.g.dart';
 
@@ -23,9 +24,7 @@ class SteamToken extends TOTPToken {
   static const String steamAlphabet = "23456789BCDFGHJKMNPQRTVWXY";
 
   SteamToken({
-    required super.period,
     required super.id,
-    required super.algorithm,
     required super.secret,
     String? type,
     super.tokenImage,
@@ -33,14 +32,15 @@ class SteamToken extends TOTPToken {
     super.isLocked,
     super.isHidden,
     super.sortIndex,
-    super.dependsOnSortIndex,
     super.folderId,
     super.origin,
     super.label = '',
     super.issuer = '',
   }) : super(
           type: type ?? tokenType,
+          period: 30,
           digits: 5,
+          algorithm: Algorithms.SHA1,
         );
 
   @override
@@ -53,27 +53,23 @@ class SteamToken extends TOTPToken {
     bool? pin,
     String? tokenImage,
     int? sortIndex,
-    int? Function()? dependsOnSortIndex,
     int? Function()? folderId,
     TokenOriginData? origin,
-    int? period,
+    int? period, // unused steam tokens always have 30 seconds period
     int? digits, // unused steam tokens always have 5 digits
-    Algorithms? algorithm,
+    Algorithms? algorithm, // unused steam tokens always have SHA1 algorithm
     String? secret,
   }) {
     return SteamToken(
-      period: period ?? this.period,
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
       id: id ?? this.id,
-      algorithm: algorithm ?? this.algorithm,
       secret: secret ?? this.secret,
       tokenImage: tokenImage ?? this.tokenImage,
       pin: pin ?? this.pin,
       isLocked: isLocked ?? this.isLocked,
       isHidden: isHidden ?? this.isHidden,
       sortIndex: sortIndex ?? this.sortIndex,
-      dependsOnSortIndex: dependsOnSortIndex != null ? dependsOnSortIndex() : this.dependsOnSortIndex,
       folderId: folderId != null ? folderId() : this.folderId,
       origin: origin ?? this.origin,
     );
@@ -86,9 +82,9 @@ class SteamToken extends TOTPToken {
   @override
   bool isSameTokenAs(Token other) => super.isSameTokenAs(other) && other is SteamToken;
 
-  @override
-  String get otpValue {
-    final counterBytes = (DateTime.now().millisecondsSinceEpoch ~/ 1000 ~/ period).bytes;
+  String otpOfTime(DateTime time) {
+    // Flooring time/counter is TOTP default, but yes, steam uses the rounded time/counter.
+    final counterBytes = (time.millisecondsSinceEpoch / 1000 / period).round().bytes;
     final secretList = base32.decode(secret.toUpperCase());
     final hmac = Hmac(sha1, secretList);
     final digest = hmac.convert(counterBytes).bytes;
@@ -104,17 +100,29 @@ class SteamToken extends TOTPToken {
     return stringBuffer.toString();
   }
 
-  static SteamToken fromUriMap(Map<String, dynamic> uriMap) => SteamToken(
-        period: uriMap[URI_PERIOD] as int? ?? 30,
-        label: uriMap[URI_LABEL] as String,
-        issuer: uriMap[URI_ISSUER] as String,
-        id: const Uuid().v4(),
-        algorithm: Algorithms.values.byName(uriMap[URI_ALGORITHM] ?? 'SHA1'),
-        secret: Encodings.base32.encode(uriMap[URI_SECRET]),
-        tokenImage: uriMap[URI_IMAGE] as String?,
-        pin: uriMap[URI_PIN] as bool?,
-        origin: uriMap[URI_ORIGIN],
+  @override
+  String get otpValue => otpOfTime(DateTime.now());
+
+  static SteamToken fromUriMap(Map<String, dynamic> uriMap) {
+    if (uriMap[URI_SECRET] == null) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, name) => localizations.secretIsRequired,
+        unlocalizedMessage: 'Secret is required',
+        invalidValue: uriMap[URI_SECRET],
+        name: 'SteamToken#fromUriMap',
       );
+    }
+    return SteamToken(
+      label: (uriMap[URI_LABEL] as String?) ?? '',
+      issuer: (uriMap[URI_ISSUER] as String?) ?? '',
+      id: const Uuid().v4(),
+      secret: Encodings.base32.encode(uriMap[URI_SECRET]),
+      tokenImage: uriMap[URI_IMAGE] as String?,
+      pin: uriMap[URI_PIN] as bool?,
+      origin: uriMap[URI_ORIGIN] as TokenOriginData?,
+    );
+  }
+
   static SteamToken fromJson(Map<String, dynamic> json) => _$SteamTokenFromJson(json);
   @override
   Map<String, dynamic> toJson() => _$SteamTokenToJson(this);

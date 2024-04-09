@@ -399,8 +399,8 @@ void _testPbkdf2() {
 void _testDecodeSecretToUint8() {
   group('decodeSecretToUint8', () {
     test('Test non hex secret', () {
-      expect(Encodings.hex.decode('oo'), throwsFormatException);
-      expect(Encodings.hex.decode('1Aö'), throwsFormatException);
+      expect(() => Encodings.hex.decode('oo'), throwsFormatException);
+      expect(() => Encodings.hex.decode('1Aö'), throwsFormatException);
     });
 
     test('Test hex secret', () {
@@ -409,8 +409,8 @@ void _testDecodeSecretToUint8() {
     });
 
     test('Test non base32 secret', () {
-      expect(Encodings.base32.decode('p'), throwsFormatException);
-      expect(Encodings.base32.decode('AAAAAAöA'), throwsFormatException);
+      expect(() => Encodings.base32.decode('p'), throwsFormatException);
+      expect(() => Encodings.base32.decode('AAAAAAöA'), throwsFormatException);
     });
 
     test('Test base32 secret', () {

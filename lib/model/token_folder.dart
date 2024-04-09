@@ -15,15 +15,12 @@ class TokenFolder with SortableMixin {
   @override
   final int? sortIndex;
   @override
-  final int? dependsOnSortIndex;
-
   const TokenFolder({
     required this.label,
     required this.folderId,
     this.isExpanded = true,
     this.isLocked = false,
     this.sortIndex,
-    this.dependsOnSortIndex,
   });
 
   @override
@@ -33,7 +30,6 @@ class TokenFolder with SortableMixin {
     bool? isExpanded,
     bool? isLocked,
     int? sortIndex,
-    int? Function()? dependsOnSortIndex,
   }) {
     return TokenFolder(
       label: label ?? this.label,
@@ -41,7 +37,6 @@ class TokenFolder with SortableMixin {
       sortIndex: sortIndex ?? this.sortIndex,
       isLocked: isLocked ?? this.isLocked,
       isExpanded: isExpanded ?? this.isExpanded,
-      dependsOnSortIndex: dependsOnSortIndex != null ? dependsOnSortIndex() : this.dependsOnSortIndex,
     );
   }
 

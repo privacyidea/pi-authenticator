@@ -859,4 +859,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get confirmPassword => 'Wachtwoord bevestigen';
+
+  @override
+  String get secretIsRequired => 'Secret is required';
 }

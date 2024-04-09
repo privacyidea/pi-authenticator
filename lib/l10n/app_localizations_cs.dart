@@ -859,4 +859,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get confirmPassword => 'Potvrďte heslo';
+
+  @override
+  String get secretIsRequired => 'Secret is required';
 }

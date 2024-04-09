@@ -14,10 +14,10 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
       secret: json['secret'] as String,
       type: json['type'] as String?,
       tokenImage: json['tokenImage'] as String?,
-      sortIndex: json['sortIndex'] as int?,
       pin: json['pin'] as bool?,
       isLocked: json['isLocked'] as bool?,
       isHidden: json['isHidden'] as bool?,
+      sortIndex: json['sortIndex'] as int?,
       folderId: json['folderId'] as int?,
       origin: json['origin'] == null
           ? null

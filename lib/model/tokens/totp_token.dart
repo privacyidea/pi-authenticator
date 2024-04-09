@@ -51,7 +51,6 @@ class TOTPToken extends OTPToken {
     super.isLocked,
     super.isHidden,
     super.sortIndex,
-    super.dependsOnSortIndex,
     super.folderId,
     super.origin,
     super.label = '',
@@ -80,7 +79,6 @@ class TOTPToken extends OTPToken {
     bool? isLocked,
     bool? isHidden,
     int? sortIndex,
-    int? Function()? dependsOnSortIndex,
     int? Function()? folderId,
     TokenOriginData? origin,
   }) {
@@ -97,7 +95,6 @@ class TOTPToken extends OTPToken {
       isLocked: isLocked ?? this.isLocked,
       isHidden: isHidden ?? this.isHidden,
       sortIndex: sortIndex ?? this.sortIndex,
-      dependsOnSortIndex: dependsOnSortIndex != null ? dependsOnSortIndex() : this.dependsOnSortIndex,
       folderId: folderId != null ? folderId() : this.folderId,
       origin: origin ?? this.origin,
     );

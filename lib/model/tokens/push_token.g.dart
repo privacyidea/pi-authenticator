@@ -25,8 +25,8 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       rolloutState: $enumDecodeNullable(
           _$PushTokenRollOutStateEnumMap, json['rolloutState']),
       type: json['type'] as String?,
-      sortIndex: json['sortIndex'] as int?,
       tokenImage: json['tokenImage'] as String?,
+      sortIndex: json['sortIndex'] as int?,
       folderId: json['folderId'] as int?,
       pin: json['pin'] as bool?,
       isLocked: json['isLocked'] as bool?,

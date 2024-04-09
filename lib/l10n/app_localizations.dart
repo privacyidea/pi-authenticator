@@ -1644,6 +1644,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm password'**
   String get confirmPassword;
+
+  /// No description provided for @secretIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret is required'**
+  String get secretIsRequired;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

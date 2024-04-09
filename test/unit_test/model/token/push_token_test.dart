@@ -152,6 +152,7 @@ void _testPushToken() {
         "type": "PIPUSH",
         "expirationDate": "2017-09-07T17:30:00.000",
         "serial": "serial",
+        "fbToken": null,
         "sslVerify": true,
         "enrollmentCredentials": "enrollmentCredentials",
         "url": "http://www.example.com",
@@ -159,7 +160,7 @@ void _testPushToken() {
         "rolloutState": "rolloutNotStarted",
         "publicServerKey": "publicServerKey",
         "privateTokenKey": "privateTokenKey",
-        "publicTokenKey": "publicTokenKey",
+        "publicTokenKey": "publicTokenKey"
       };
       expect(jsonEncode(tokenJson), jsonEncode(json));
     });

@@ -7,16 +7,14 @@ part of 'steam_token.dart';
 // **************************************************************************
 
 SteamToken _$SteamTokenFromJson(Map<String, dynamic> json) => SteamToken(
-      period: json['period'] as int,
       id: json['id'] as String,
-      algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       secret: json['secret'] as String,
       type: json['type'] as String?,
       tokenImage: json['tokenImage'] as String?,
-      sortIndex: json['sortIndex'] as int?,
       pin: json['pin'] as bool?,
       isLocked: json['isLocked'] as bool?,
       isHidden: json['isHidden'] as bool?,
+      sortIndex: json['sortIndex'] as int?,
       folderId: json['folderId'] as int?,
       origin: json['origin'] == null
           ? null
@@ -38,13 +36,5 @@ Map<String, dynamic> _$SteamTokenToJson(SteamToken instance) =>
       'sortIndex': instance.sortIndex,
       'origin': instance.origin,
       'type': instance.type,
-      'algorithm': _$AlgorithmsEnumMap[instance.algorithm]!,
       'secret': instance.secret,
-      'period': instance.period,
     };
-
-const _$AlgorithmsEnumMap = {
-  Algorithms.SHA1: 'SHA1',
-  Algorithms.SHA256: 'SHA256',
-  Algorithms.SHA512: 'SHA512',
-};

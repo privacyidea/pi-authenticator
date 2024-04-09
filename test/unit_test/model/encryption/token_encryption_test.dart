@@ -18,7 +18,7 @@ void _testTokenEncryption() {
       final tokensList = [
         HOTPToken(id: 'id1', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret1'),
         TOTPToken(period: 30, id: 'id2', algorithm: Algorithms.SHA256, digits: 8, secret: 'secret2'),
-        SteamToken(period: 30, id: 'id3', algorithm: Algorithms.SHA512, secret: 'secret3'),
+        SteamToken(id: 'id3', secret: 'secret3'),
         DayPasswordToken(period: const Duration(hours: 24), id: 'id4', algorithm: Algorithms.SHA512, digits: 10, secret: 'secret4'),
         PushToken(serial: 'serial', id: 'id5'),
       ];
@@ -43,14 +43,14 @@ void _testTokenEncryption() {
       final tokensList = [
         HOTPToken(id: 'id1', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret1'),
         TOTPToken(period: 30, id: 'id2', algorithm: Algorithms.SHA256, digits: 8, secret: 'secret2'),
-        SteamToken(period: 30, id: 'id3', algorithm: Algorithms.SHA512, secret: 'secret3'),
+        SteamToken(id: 'id3', secret: 'secret3'),
         DayPasswordToken(period: const Duration(hours: 24), id: 'id4', algorithm: Algorithms.SHA512, digits: 10, secret: 'secret4'),
         PushToken(serial: 'serial', id: 'id5'),
       ];
       const compressedTokensBase64 = [
         'H4sIAAAAAAAACk1PMQ7CMAz8i-cOsDBkY2slJJDgA2nshqhuUiWuBEL8HUelgsnnu7PPfgHbnhgMQAOhlIXyF6PWgHuFc4hgBsuFquWU3Ej4R7QBkX4OSSPFbrKewMSFuYEhMVLucOtLytJFpMdGpBx8zVg7ec46Cu35dtFwy15luU9KXdtjvQfVLQXMQVeRyyQqraCqLi1R6he79wc_WDvI3QAAAA==',
         'H4sIAAAAAAAACk1OzQrCMAx-l5x3kIkivXlbQVDYXqAuWS3L2tF2oIjvbuYcesr3l3x5ApsrMSiAAlxKE8UvRpkOS4Gj86A6w4nmyCm0PeGfUDlE-iVy6MnrwVgC5SfmArrASFHjylOIWXuk-yqE6OzcsbD8GGUVmnNzkXLDVux8G0Sqq2O524uIks8J1EGOURspi7mAz78UXZC27eb1Bgi4xPffAAAA',
-        'H4sIAAAAAAAACk2OsQ7CMAxE_8VzB6BiydYBqZFggh8ItRuiukmVpBII8e84lAom3z2fdX4CmysxKIAKXEozxa9GmQ5rkZPzoHrDiUrkGLqB8A-0DpF-iRwG8no0lkD5mbmCPjBS1Lj6FGLWHum-ghCdLR2Ly49JTuF8OTQnaTdsZZ9vY2Fts9_uBCbqImUhi_h8SdEF6ag3rzcEg5Vm1QAAAA==',
+        'H4sIAAAAAAAACk2NwQrCMBBE_2XPvfWWmwfBgJ70B2J3WkLXbElSsIj_7pZa9LRvHrPMiyTcIeSIGoqlzMhfZruRW8MpJnJ9kIK1ctZuBP-JU2TGr1F1RPKPMIBcmkUa6lUY2fOei-bqE-O5C81xWDe2VJfJXul6Ox4utl7QZVQTG7T0_gDM0h9FtAAAAA==',
         'H4sIAAAAAAAACk1PTQvCMAz9Lznv4GSK7DYY4mAy2UDxOE2cZV072s4PxP9uyhyaS15eXpKXF8j6RBJigACEtQOZL0bOAiOGvVAQX2ppyUtyfW4J_4iNQKSfwumWVNbVDUGsBikDuGiJZDKcaquNyxTSYyK0EY2_MVbu2fMopMlxl1TVoShT9lDLhlXu2nGn2iSLcM4k8pizEIczXkpnQ467I_C-b4LuW41-2T7Js3RdlP4bMkKzl9Uymn3j_QHdQYgrBgEAAA==',
         'H4sIAAAAAAAAClVQwW7CMAz9F5-57tIrO1ANMbSy3VPiIguTVI6DqKb9-5xCOnbK88t7fk_-BnY9MjQAK6CUMsoDe3vJvxgcKUAzOE5YJNt4PKN_IjbkPf4pNJ4xtBd3QmhCZl7BENmjtL7OKYq2weOtElHoVDLuk06jWWHf7j-7jcXjbSRxSjG8Ol2WJhRypfcDWEx_KNGLIPGXfQ3T0gyDROYLBl0LWmU1X6ryLFwhpQ_ToX_PuniLM2btdK5Qx10sjKjdw86Ue6Zjh3JFecOpbhuFrmaauz3Ts_o_-_ML-WVvco4BAAA=',
       ];
@@ -67,7 +67,7 @@ void _testTokenEncryption() {
       final tokensList = [
         HOTPToken(id: 'id1', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret1'),
         TOTPToken(period: 30, id: 'id2', algorithm: Algorithms.SHA256, digits: 8, secret: 'secret2'),
-        SteamToken(period: 30, id: 'id3', algorithm: Algorithms.SHA512, secret: 'secret3'),
+        SteamToken(id: 'id3', secret: 'secret3'),
         DayPasswordToken(period: const Duration(hours: 24), id: 'id4', algorithm: Algorithms.SHA512, digits: 10, secret: 'secret4'),
         PushToken(serial: 'serial', id: 'id5'),
       ];
@@ -87,98 +87,3 @@ void _testTokenEncryption() {
     });
   });
 }
-
-// const asd = [
-//   {
-//     "label": "",
-//     "issuer": "",
-//     "id": "id1",
-//     "pin": false,
-//     "isLocked": false,
-//     "isHidden": false,
-//     "tokenImage": null,
-//     "folderId": null,
-//     "sortIndex": null,
-//     "origin": null,
-//     "type": "HOTP",
-//     "algorithm": "SHA1",
-//     "digits": 6,
-//     "secret": "secret1",
-//     "counter": 0
-//   },
-//   {
-//     "label": "",
-//     "issuer": "",
-//     "id": "id2",
-//     "pin": false,
-//     "isLocked": false,
-//     "isHidden": false,
-//     "tokenImage": null,
-//     "folderId": null,
-//     "sortIndex": null,
-//     "origin": null,
-//     "type": "TOTP",
-//     "algorithm": "SHA256",
-//     "digits": 8,
-//     "secret": "secret2",
-//     "period": 30
-//   },
-//   {
-//     "label": "",
-//     "issuer": "",
-//     "id": "id3",
-//     "pin": false,
-//     "isLocked": false,
-//     "isHidden": false,
-//     "tokenImage": null,
-//     "folderId": null,
-//     "sortIndex": null,
-//     "origin": null,
-//     "type": "STEAM",
-//     "algorithm": "SHA512",
-//     "secret": "secret3",
-//     "period": 30
-//   },
-//   {
-//     "label": "",
-//     "issuer": "",
-//     "id": "id4",
-//     "pin": false,
-//     "isLocked": false,
-//     "isHidden": false,
-//     "tokenImage": null,
-//     "folderId": null,
-//     "sortIndex": null,
-//     "origin": null,
-//     "type": "DAYPASSWORD",
-//     "algorithm": "SHA512",
-//     "digits": 10,
-//     "secret": "secret4",
-//     "viewMode": "VALIDFOR",
-//     "period": 86400000000
-//   },
-//   {
-//     "label": "",
-//     "issuer": "",
-//     "id": "id5",
-//     "pin": false,
-//     "isLocked": false,
-//     "isHidden": false,
-//     "tokenImage": null,
-//     "folderId": null,
-//     "sortIndex": null,
-//     "origin": null,
-//     "type": "PIPUSH",
-//     "expirationDate": null,
-//     "serial": "serial",
-//     "fbToken": null,
-//     "sslVerify": false,
-//     "enrollmentCredentials": null,
-//     "url": null,
-//     "isRolledOut": false,
-//     "rolloutState": "rolloutNotStarted",
-//     "publicServerKey": null,
-//     "privateTokenKey": null,
-//     "publicTokenKey": null
-//   }
-// ];
