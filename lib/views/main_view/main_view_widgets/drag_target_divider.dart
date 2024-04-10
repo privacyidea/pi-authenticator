@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -82,9 +84,9 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
           );
         },
         builder: (context, _, __) {
-          final dividerHeight = expansionController.value * 40 + 1.5 * (1 - expansionController.value);
+          final dividerHeight = expansionController.value * widget.dividerExpandedHeight + (1 - expansionController.value) * widget.dividerBaseHeight;
           return Padding(
-            padding: EdgeInsets.only(bottom: widget.isLastDivider ? (widget.bottomPaddingIfLast - dividerHeight + widget.dividerBaseHeight) : 0),
+            padding: EdgeInsets.only(bottom: widget.isLastDivider ? max(widget.bottomPaddingIfLast - dividerHeight + widget.dividerBaseHeight, 0) : 0),
             child: Container(
               height: dividerHeight,
               decoration: BoxDecoration(
@@ -128,5 +130,5 @@ void _onAccept({
   final modifiedTokens = allSortables.whereType<Token>().toList();
   final modifiedFolders = allSortables.whereType<TokenFolder>().toList();
   ref.read(tokenProvider.notifier).addOrReplaceTokens(modifiedTokens);
-  ref.read(tokenFolderProvider.notifier).updateFolders(modifiedFolders);
+  ref.read(tokenFolderProvider.notifier).addOrReplaceFolders(modifiedFolders);
 }

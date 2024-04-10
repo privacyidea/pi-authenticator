@@ -26,15 +26,15 @@ class PreferenceTokenFolderRepository extends TokenFolderRepository {
   }
 
   @override
-  Future<List<TokenFolder>> saveOrReplaceFolders(List<TokenFolder> folders) async {
+  Future<bool> saveReplaceList(List<TokenFolder> folders) async {
     try {
       final jsons = folders.map((e) => e.toJson()).toList();
       final json = jsonEncode(jsons);
       await _prefs.then((prefs) => prefs.setString(_tokenFoldersKey, json));
-      return [];
+      return true;
     } catch (e, s) {
       Logger.error('Failed to save folders', name: 'PreferenceTokenFolderRepository#saveFolders', error: e, stackTrace: s);
-      return folders;
+      return false;
     }
   }
 }

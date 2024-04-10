@@ -33,16 +33,14 @@ class MockTokenFolderRepository extends _i1.Mock
   }
 
   @override
-  _i3.Future<List<_i4.TokenFolder>> saveOrReplaceFolders(
-          List<_i4.TokenFolder>? folders) =>
+  _i3.Future<bool> saveReplaceList(List<_i4.TokenFolder>? folders) =>
       (super.noSuchMethod(
         Invocation.method(
-          #saveOrReplaceFolders,
+          #saveReplaceList,
           [folders],
         ),
-        returnValue:
-            _i3.Future<List<_i4.TokenFolder>>.value(<_i4.TokenFolder>[]),
-      ) as _i3.Future<List<_i4.TokenFolder>>);
+        returnValue: _i3.Future<bool>.value(false),
+      ) as _i3.Future<bool>);
 
   @override
   _i3.Future<List<_i4.TokenFolder>> loadFolders() => (super.noSuchMethod(

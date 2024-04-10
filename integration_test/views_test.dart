@@ -41,7 +41,7 @@ void main() {
     when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
-    when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
+    when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
     mockRsaUtils = MockRsaUtils();
     when(mockRsaUtils.serializeRSAPublicKeyPKCS8(any)).thenAnswer((_) => 'publicKey');
     when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((_) => const RsaUtils()

@@ -14,7 +14,7 @@ import 'package:privacyidea_authenticator/processors/scheme_processors/token_imp
 import 'package:zxing2/qrcode.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../../../model/token_import/token_import_origin.dart';
+import '../../../model/token_import/token_import_source.dart';
 import '../../../model/tokens/token.dart';
 import '../../../processors/mixins/token_import_processor.dart';
 import '../../../processors/token_import_file_processor/token_import_file_processor_interface.dart';
@@ -100,7 +100,7 @@ class _ImportStartPageState extends State<ImportStartPage> {
                         _errorText!,
                         textAlign: TextAlign.center,
                       )
-                    : Text(widget.selectedSource.importHint(context), textAlign: TextAlign.center),
+                    : Text(widget.selectedSource.importHint(localizations), textAlign: TextAlign.center),
                 if (widget.selectedSource.type == TokenImportType.link) ...[
                   const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
                   TextField(

@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:uni_links/uni_links.dart';
 
 import '../l10n/app_localizations.dart';
@@ -11,6 +14,7 @@ import '../model/states/settings_state.dart';
 import '../model/states/token_filter.dart';
 import '../model/states/token_folder_state.dart';
 import '../model/states/token_state.dart';
+import '../model/token_folder.dart';
 import '../model/tokens/otp_token.dart';
 import '../repo/preference_introduction_repository.dart';
 import '../repo/preference_settings_repository.dart';
@@ -184,6 +188,35 @@ final homeWidgetProvider = StateProvider<Map<String, OTPToken>>(
     return {};
   },
 );
+
+final sortableProvider = StateNotifierProvider<SortableNotifier, List<SortableMixin>>(
+  (ref) {
+    final SortableNotifier notifier = SortableNotifier();
+    Logger.info("New sortableProvider created", name: 'sortableProvider');
+    ref.listen(tokenProvider, (previous, next) => notifier.handleNewList(next.tokens));
+    ref.listen(tokenFolderProvider, (previous, next) => notifier.handleNewList(next.folders));
+    ref.read(tokenProvider.notifier).initState.then((newState) => notifier.handleNewList(newState.tokens));
+    ref.read(tokenFolderProvider.notifier).initState.then((newState) => notifier.handleNewList(newState.folders));
+    return notifier;
+  },
+);
+
+class SortableNotifier extends StateNotifier<List<SortableMixin>> {
+  SortableNotifier({List<SortableMixin> initState = const []}) : super(initState);
+
+  void handleNewList<T extends SortableMixin>(List<T> newList) {
+    log('T type: ${newList.runtimeType}', name: 'SortableNotifier#handleNewList');
+    var newState = List<SortableMixin>.from(state);
+    newState.removeWhere((element) => element is T);
+    newState.addAll(newList);
+    newState = newState.sorted.withCurrentSortIndexSet();
+    state = newState;
+    if (newList.any((element) => element.sortIndex == null)) {
+      globalRef?.read(tokenProvider.notifier).addOrReplaceTokens(newState.whereType<Token>().toList());
+      globalRef?.read(tokenFolderProvider.notifier).addOrReplaceFolders(newState.whereType<TokenFolder>().toList());
+    }
+  }
+}
 
 /// Only used for the app customizer
 final applicationCustomizerProvider = StateProvider<ApplicationCustomization>((ref) => ApplicationCustomization.defaultCustomization);

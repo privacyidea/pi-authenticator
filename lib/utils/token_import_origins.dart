@@ -1,7 +1,7 @@
-import '../l10n/app_localizations.dart';
 import '../mains/main_netknights.dart';
 import '../model/enums/token_import_type.dart';
 import '../model/token_import/token_import_origin.dart';
+import '../model/token_import/token_import_source.dart';
 import '../processors/scheme_processors/token_import_scheme_processors/free_otp_plus_qr_processor.dart';
 import '../processors/scheme_processors/token_import_scheme_processors/google_authenticator_qr_processor.dart';
 import '../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
@@ -31,12 +31,12 @@ class TokenImportOrigins {
       TokenImportSource(
         processor: const PrivacyIDEAAuthenticatorQrProcessor(),
         type: TokenImportType.qrScan,
-        importHint: (context) => 'AppLocalizations.of(context)!.importHintPrivacyIDEAQrScan',
+        importHint: (localizations) => 'localizations.importHintPrivacyIDEAQrScan',
       ),
       TokenImportSource(
           processor: const PrivacyIDEAAuthenticatorImportFileProcessor(),
           type: TokenImportType.backupFile,
-          importHint: (context) => 'AppLocalizations.of(context)!.importHintPrivacyIDEAFile'),
+          importHint: (localizations) => 'localizations.importHintPrivacyIDEAFile'),
     ],
   );
 
@@ -47,12 +47,12 @@ class TokenImportOrigins {
       TokenImportSource(
         processor: const GoogleAuthenticatorQrProcessor(),
         type: TokenImportType.qrScan,
-        importHint: (context) => AppLocalizations.of(context)!.importHintGoogleQrScan,
+        importHint: (localizations) => localizations.importHintGoogleQrScan,
       ),
       TokenImportSource(
         processor: const GoogleAuthenticatorQrProcessor(),
         type: TokenImportType.qrFile,
-        importHint: (context) => AppLocalizations.of(context)!.importHintGoogleQrFile,
+        importHint: (localizations) => localizations.importHintGoogleQrFile,
       ),
     ],
   );
@@ -63,17 +63,17 @@ class TokenImportOrigins {
       TokenImportSource(
         processor: const AegisImportFileProcessor(),
         type: TokenImportType.backupFile,
-        importHint: (context) => AppLocalizations.of(context)!.importHintAegisBackupFile,
+        importHint: (localizations) => localizations.importHintAegisBackupFile,
       ),
       TokenImportSource(
         processor: const OtpAuthProcessor(),
         type: TokenImportType.qrScan,
-        importHint: (context) => AppLocalizations.of(context)!.importHintAegisQrScan,
+        importHint: (localizations) => localizations.importHintAegisQrScan,
       ),
       TokenImportSource(
         processor: const OtpAuthProcessor(),
         type: TokenImportType.link,
-        importHint: (context) => AppLocalizations.of(context)!.importHintAegisLink,
+        importHint: (localizations) => localizations.importHintAegisLink,
       ),
     ],
   );
@@ -84,7 +84,7 @@ class TokenImportOrigins {
       TokenImportSource(
         processor: const TwoFasFileImportProcessor(),
         type: TokenImportType.backupFile,
-        importHint: (context) => AppLocalizations.of(context)!.importHint2FAS,
+        importHint: (localizations) => localizations.importHint2FAS,
       ),
     ],
   );
@@ -95,7 +95,7 @@ class TokenImportOrigins {
       TokenImportSource(
         processor: const AuthenticatorProImportFileProcessor(),
         type: TokenImportType.backupFile,
-        importHint: (context) => AppLocalizations.of(context)!.importHintAuthenticatorProFile,
+        importHint: (localizations) => localizations.importHintAuthenticatorProFile,
       ),
     ],
   );
@@ -106,12 +106,12 @@ class TokenImportOrigins {
       TokenImportSource(
         processor: const FreeOtpPlusQrProcessor(),
         type: TokenImportType.qrScan,
-        importHint: (context) => AppLocalizations.of(context)!.importHintFreeOtpPlusQrScan,
+        importHint: (localizations) => localizations.importHintFreeOtpPlusQrScan,
       ),
       TokenImportSource(
         processor: const FreeOtpPlusFileProcessor(),
         type: TokenImportType.backupFile,
-        importHint: (context) => AppLocalizations.of(context)!.importHintFreeOtpPlusFile,
+        importHint: (localizations) => localizations.importHintFreeOtpPlusFile,
       ),
     ],
   );

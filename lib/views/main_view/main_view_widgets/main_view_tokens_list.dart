@@ -1,7 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/model/states/token_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
@@ -56,16 +57,29 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
 
   @override
   Widget build(BuildContext context) {
-    final tokenFolders = ref.watch(tokenFolderProvider).folders;
-    final tokenState = ref.watch(tokenProvider);
-    final allowToRefresh = tokenState.hasPushTokens;
     final draggingSortable = ref.watch(draggingSortableProvider);
-    bool filterPushTokens = ref.watch(settingsProvider).hidePushTokens && tokenState.hasOTPTokens;
-    var allSortables = [...tokenFolders, ...tokenState.tokens];
-    final List<Token> tokens = allSortables.whereType<Token>().toList();
-    final tokensWithNoFolder = tokens.withoutFolder(exclude: filterPushTokens ? [PushToken] : []);
+    final allSortables = ref.watch(sortableProvider);
+    final allowToRefresh = allSortables.any((element) => element is PushToken);
+    bool filterPushTokens = ref.watch(settingsProvider).hidePushTokens && allowToRefresh;
 
-    List<SortableMixin> sortables = [...tokenFolders, ...tokensWithNoFolder];
+    log('Sortables: ${allSortables.length} ');
+
+    final sortables = <SortableMixin>[];
+
+    for (var element in allSortables) {
+      if (element is! Token) {
+        sortables.add(element);
+        continue;
+      }
+      if (filterPushTokens == false && element.folderId == null) {
+        sortables.add(element);
+        continue;
+      }
+    }
+    // final List<Token> tokens = allSortables.whereType<Token>().toList();
+    // final tokensWithNoFolder = tokens.withoutFolder(exclude: filterPushTokens ? [PushToken] : []);
+
+    // List<SortableMixin> sortables = [...tokenFolders, ...tokensWithNoFolder];
     return Stack(
       children: [
         if (sortables.isEmpty) const NoTokenScreen(),

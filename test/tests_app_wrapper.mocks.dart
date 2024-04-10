@@ -221,18 +221,15 @@ class MockSettingsRepository extends _i1.Mock
 class MockTokenFolderRepository extends _i1.Mock
     implements _i10.TokenFolderRepository {
   @override
-  _i7.Future<List<_i11.TokenFolder>> saveOrReplaceFolders(
-          List<_i11.TokenFolder>? folders) =>
+  _i7.Future<bool> saveReplaceList(List<_i11.TokenFolder>? folders) =>
       (super.noSuchMethod(
         Invocation.method(
-          #saveOrReplaceFolders,
+          #saveReplaceList,
           [folders],
         ),
-        returnValue:
-            _i7.Future<List<_i11.TokenFolder>>.value(<_i11.TokenFolder>[]),
-        returnValueForMissingStub:
-            _i7.Future<List<_i11.TokenFolder>>.value(<_i11.TokenFolder>[]),
-      ) as _i7.Future<List<_i11.TokenFolder>>);
+        returnValue: _i7.Future<bool>.value(false),
+        returnValueForMissingStub: _i7.Future<bool>.value(false),
+      ) as _i7.Future<bool>);
 
   @override
   _i7.Future<List<_i11.TokenFolder>> loadFolders() => (super.noSuchMethod(

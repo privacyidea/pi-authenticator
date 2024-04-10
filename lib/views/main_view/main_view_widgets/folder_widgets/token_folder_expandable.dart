@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
       if (widget.expandOverride != null) return;
       if (widget.folder.isExpanded != expandableController.expanded) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          globalRef?.read(tokenFolderProvider.notifier).updateFolder(widget.folder.copyWith(isExpanded: expandableController.expanded));
+          globalRef?.read(tokenFolderProvider.notifier).updateFolder(widget.folder, (p0) => p0.copyWith(isExpanded: expandableController.expanded));
         });
       }
     });
@@ -129,6 +130,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
               },
               onLeave: (data) => _expandTimer?.cancel(),
               onAcceptWithDetails: (details) {
+                log('Moving token to folder ${widget.folder.label}', name: 'TokenFolderExpandable');
                 ref.read(tokenProvider.notifier).updateToken(
                       details.data,
                       (p0) => p0.copyWith(folderId: () => widget.folder.folderId, sortIndex: (widget.folder.sortIndex!) + 1),

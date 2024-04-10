@@ -41,8 +41,8 @@ import '../utils/view_utils.dart';
 class TokenNotifier extends StateNotifier<TokenState> {
   static final Map<String, Timer> _hidingTimers = {};
   late final Future<TokenState> initState;
-  final loadingRepoMutex = Mutex();
-  final updatingTokensMutex = Mutex();
+  final _loadingRepoMutex = Mutex();
+  final _updatingTokensMutex = Mutex();
   final TokenRepository _repo;
   final RsaUtils _rsaUtils;
   final PrivacyIdeaIOClient _ioClient;
@@ -82,24 +82,24 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   /// Adds a token and returns true if successful, false if not.
   Future<bool> _addOrReplaceToken(Token token) async {
-    await loadingRepoMutex.acquire();
+    await _loadingRepoMutex.acquire();
     final success = await _repo.saveOrReplaceToken(token);
     if (!success) {
       Logger.warning(
         'Saving token failed. Token: ${token.id}',
         name: 'token_notifier.dart#_addOrReplaceToken',
       );
-      loadingRepoMutex.release();
+      _loadingRepoMutex.release();
       return false;
     }
     state = state.addOrReplaceToken(token);
-    loadingRepoMutex.release();
+    _loadingRepoMutex.release();
     return true;
   }
 
   /// Adds a list of tokens and returns the tokens that could not be added or replaced.
   Future<List<Token>> _addOrReplaceTokens(List<Token> tokens) async {
-    await loadingRepoMutex.acquire();
+    await _loadingRepoMutex.acquire();
     final failedTokens = await _repo.saveOrReplaceTokens(tokens);
     if (failedTokens.isNotEmpty) {
       Logger.warning(
@@ -113,17 +113,17 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     // [failedTokens] is empty, so every token was saved successfully and we dont need to filter the tokens
     state = state.addOrReplaceTokens(tokens);
-    loadingRepoMutex.release();
+    _loadingRepoMutex.release();
     return [];
   }
 
   /// Replaces a token if it exists and returns true if successful, false if not.
   Future<bool> _replaceToken(Token token) async {
-    await loadingRepoMutex.acquire();
+    await _loadingRepoMutex.acquire();
     final (newState, replaced) = state.replaceToken(token);
     if (!replaced) {
       Logger.warning('Tried to replace a token that does not exist.', name: 'token_notifier.dart#_replaceToken');
-      loadingRepoMutex.release();
+      _loadingRepoMutex.release();
       return false;
     }
     final saved = await _repo.saveOrReplaceToken(token);
@@ -132,17 +132,17 @@ class TokenNotifier extends StateNotifier<TokenState> {
         'Saving token failed. Token: ${token.id}',
         name: 'token_notifier.dart#_replaceToken',
       );
-      loadingRepoMutex.release();
+      _loadingRepoMutex.release();
       return false;
     }
     state = newState;
-    loadingRepoMutex.release();
+    _loadingRepoMutex.release();
     return true;
   }
 
   /// Returns a list of tokens that could not be replaced
   Future<List<T>> _replaceTokens<T extends Token>(List<T> tokens) async {
-    await loadingRepoMutex.acquire();
+    await _loadingRepoMutex.acquire();
     final oldState = state;
     final (newState, failedToReplace) = state.replaceTokens(tokens);
     state = newState;
@@ -157,16 +157,16 @@ class TokenNotifier extends StateNotifier<TokenState> {
       );
       final recovered = oldState.tokens.whereType<T>().where((oldToken) => failedToSave.contains(oldToken)).toList();
       state = state.addOrReplaceTokens<T>(recovered);
-      loadingRepoMutex.release();
+      _loadingRepoMutex.release();
       return failedToSave;
     }
-    loadingRepoMutex.release();
+    _loadingRepoMutex.release();
     return [];
   }
 
   /// Removes a token and returns true if successful, false if not.
   Future<bool> _removeToken(Token token) async {
-    await loadingRepoMutex.acquire();
+    await _loadingRepoMutex.acquire();
     state = state.withoutToken(token);
 
     final success = await _repo.deleteToken(token);
@@ -176,17 +176,17 @@ class TokenNotifier extends StateNotifier<TokenState> {
         name: 'token_notifier.dart#_deleteTokensRepo',
       );
       state = state.addOrReplaceToken(token);
-      loadingRepoMutex.release();
+      _loadingRepoMutex.release();
       return false;
     }
-    loadingRepoMutex.release();
+    _loadingRepoMutex.release();
     _handlePushTokensIfExist();
     return true;
   }
 
   /// Loads the tokens from the repository sets it as the new state and returns the new state.
   Future<TokenState> _loadFromRepo() async {
-    await loadingRepoMutex.acquire();
+    await _loadingRepoMutex.acquire();
     TokenState newState;
     try {
       List<Token> tokens;
@@ -199,16 +199,16 @@ class TokenNotifier extends StateNotifier<TokenState> {
         name: 'token_notifier.dart#_loadFromRepo',
         error: e,
       );
-      loadingRepoMutex.release();
+      _loadingRepoMutex.release();
       return state;
     }
-    loadingRepoMutex.release();
+    _loadingRepoMutex.release();
     _handlePushTokensIfExist();
     return newState;
   }
 
   Future<bool> _saveStateToRepo(TokenState state) async {
-    await loadingRepoMutex.acquire();
+    await _loadingRepoMutex.acquire();
     try {
       await _repo.saveOrReplaceTokens(state.tokens);
     } catch (e) {
@@ -217,10 +217,10 @@ class TokenNotifier extends StateNotifier<TokenState> {
         name: 'token_notifier.dart#_saveStateToRepo',
         error: e,
       );
-      loadingRepoMutex.release();
+      _loadingRepoMutex.release();
       return false;
     }
-    loadingRepoMutex.release();
+    _loadingRepoMutex.release();
     return true;
   }
 
@@ -233,24 +233,24 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   /// Updates a token and returns the updated token if successful, the old token if not and null if the token does not exist.
   Future<T?> _updateToken<T extends Token>(T token, T Function(T) updater) async {
-    await updatingTokensMutex.acquire();
-    await loadingRepoMutex.acquire();
-    loadingRepoMutex.release();
+    await _updatingTokensMutex.acquire();
+    await _loadingRepoMutex.acquire();
+    _loadingRepoMutex.release();
     final current = state.currentOf<T>(token);
     if (current == null) {
       Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#updateToken');
-      updatingTokensMutex.release();
+      _updatingTokensMutex.release();
       return null;
     }
     final updated = updater(current);
     final replaced = await _replaceToken(updated);
-    updatingTokensMutex.release();
+    _updatingTokensMutex.release();
     return replaced ? updated : current;
   }
 
   /// Updates a list of tokens and returns the updated tokens if successful, the old tokens if not and an empty list if the tokens does not exist.
   Future<List<T>> _updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) async {
-    await updatingTokensMutex.acquire();
+    await _updatingTokensMutex.acquire();
     final oldState = state;
 
     List<T> updatedTokens = [];
@@ -268,7 +268,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
               orElse: () => updated,
             ))
         .toList();
-    updatingTokensMutex.release();
+    _updatingTokensMutex.release();
     return mergedTokens;
   }
 

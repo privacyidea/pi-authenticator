@@ -22,26 +22,6 @@ import 'package:privacyidea_authenticator/widgets/widget_keys.dart';
 import '../test/tests_app_wrapper.dart';
 import '../test/tests_app_wrapper.mocks.dart';
 
-/*
-
-// qr codes:
-const String URI_TYPE = 'URI_TYPE';
-const String URI_LABEL = 'URI_LABEL';
-const String URI_ALGORITHM = 'URI_ALGORITHM';
-const String URI_DIGITS = 'URI_DIGITS';
-const String URI_SECRET = 'URI_SECRET';
-const String URI_COUNTER = 'URI_COUNTER';
-const String URI_PERIOD = 'URI_PERIOD';
-const String URI_ISSUER = 'URI_ISSUER';
-const String URI_PIN = 'URI_PIN';
-const String URI_IMAGE = 'URI_IMAGE';
-
-// 2 step:
-const String URI_SALT_LENGTH = 'URI_SALT_LENGTH';
-const String URI_OUTPUT_LENGTH_IN_BYTES = 'URI_OUTPUT_LENGTH_IN_BYTES';
-const String URI_ITERATIONS = 'URI_ITERATIONS';
-
- */
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   late final MockSettingsRepository mockSettingsRepository;
@@ -59,7 +39,7 @@ void main() {
     when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
-    when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
+    when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
     final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
     when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
