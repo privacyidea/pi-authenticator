@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/extensions/sortable_list.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
@@ -121,8 +122,8 @@ void _onAccept({
     final tokensInFolder = ref.read(tokenProvider).tokens.where((element) => element.folderId == dragedSortable.folderId).toList();
     final allMovingItems = [dragedSortable, ...tokensInFolder];
     allSortables = allSortables.moveAllBetween(moveAfter: previousSortable, movedItems: allMovingItems, moveBefore: nextSortable);
-  } else {
-    allSortables = allSortables.moveBetween(moveAfter: previousSortable, movedItem: dragedSortable as Token, moveBefore: nextSortable);
+  } else if (dragedSortable is Token) {
+    allSortables = allSortables.moveBetween(moveAfter: previousSortable, movedItem: dragedSortable, moveBefore: nextSortable);
     allSortables = allSortables.map((e) {
       return e is Token && e.id == dragedSortable.id ? e.copyWith(folderId: () => dependingFolder?.folderId) : e;
     }).toList();

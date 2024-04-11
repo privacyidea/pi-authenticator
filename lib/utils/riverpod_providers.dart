@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/extensions/sortable_list.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -209,11 +210,10 @@ class SortableNotifier extends StateNotifier<List<SortableMixin>> {
     var newState = List<SortableMixin>.from(state);
     newState.removeWhere((element) => element is T);
     newState.addAll(newList);
-    newState = newState.sorted.withCurrentSortIndexSet();
-    state = newState;
+    state = newState.sorted.fillNullIndices();
     if (newList.any((element) => element.sortIndex == null)) {
-      globalRef?.read(tokenProvider.notifier).addOrReplaceTokens(newState.whereType<Token>().toList());
-      globalRef?.read(tokenFolderProvider.notifier).addOrReplaceFolders(newState.whereType<TokenFolder>().toList());
+      globalRef?.read(tokenProvider.notifier).addOrReplaceTokens(state.whereType<Token>().toList());
+      globalRef?.read(tokenFolderProvider.notifier).addOrReplaceFolders(state.whereType<TokenFolder>().toList());
     }
   }
 }

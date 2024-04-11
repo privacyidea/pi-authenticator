@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -61,8 +59,6 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     final allSortables = ref.watch(sortableProvider);
     final allowToRefresh = allSortables.any((element) => element is PushToken);
     bool filterPushTokens = ref.watch(settingsProvider).hidePushTokens && allowToRefresh;
-
-    log('Sortables: ${allSortables.length} ');
 
     final sortables = <SortableMixin>[];
 
