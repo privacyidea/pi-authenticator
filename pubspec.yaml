@@ -81,6 +81,7 @@ dependencies:
   firebase_messaging: ^14.7.19
   firebase_core: ^2.27.0
   collection: ^1.18.0
+  convert_native_img_stream: ^0.0.1
 
 dev_dependencies:
   flutter_driver:

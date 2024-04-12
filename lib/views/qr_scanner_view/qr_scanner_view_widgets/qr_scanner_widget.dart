@@ -1,65 +1,15 @@
 import 'dart:async';
-import 'dart:isolate';
+import 'dart:io';
 import 'dart:math';
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as img;
+import 'package:image/image.dart' as img_lib;
 import 'package:zxing2/qrcode.dart';
 
 import '../../../utils/image_converter.dart';
 import '../../../utils/logger.dart';
 import 'qr_code_scanner_overlay.dart';
-
-Result? _decodeQRCode(BinaryBitmap bitmap) {
-  try {
-    final result = QRCodeReader().decode(bitmap);
-    return result;
-  } catch (_) {
-    return null;
-  }
-}
-
-/// Args: [SendPort] sendPort, [CameraImage] cameraImage, [int] rotation, [double] borderPaddingPercent
-void _scanQrCodeIsolate(List args) {
-  final SendPort sendPort = args[0] as SendPort;
-  final CameraImage cameraImage = args[1] as CameraImage;
-  final int rotation = args[2] as int;
-  final double borderPaddingPercent = args[3] as double;
-
-  try {
-    final imgSize = min(cameraImage.width, cameraImage.height);
-    final chropPadding = (imgSize * borderPaddingPercent / 100).round();
-    final chropHorizontal = (cameraImage.width - imgSize + chropPadding) ~/ 2;
-    final chropVertical = (cameraImage.height - imgSize + chropPadding) ~/ 2;
-    final image = ImageConverter.fromCameraImage(
-      cameraImage,
-      rotation,
-      chropTop: chropVertical,
-      chropBottom: chropVertical,
-      chropLeft: chropHorizontal,
-      chropRight: chropHorizontal,
-    ).toImage();
-
-    // await showAsyncDialog(builder: (context) => Center(child: Image.memory(Uint8List.fromList(img.encodePng(image)))));
-    LuminanceSource source = RGBLuminanceSource(
-      image.width,
-      image.height,
-      image.convert(numChannels: 4).getBytes(order: img.ChannelOrder.abgr).buffer.asInt32List(),
-    );
-    var bitmap = BinaryBitmap(GlobalHistogramBinarizer(source));
-    Result? result = _decodeQRCode(bitmap);
-    if (result == null) {
-      sendPort.send(null);
-      return;
-    }
-    sendPort.send(result);
-    return;
-  } catch (e) {
-    Logger.error('Error while scanning QR code: $e, name: _QRScannerWidgetState#_scanQrCode');
-    sendPort.send(e);
-    return;
-  }
-}
 
 class QRScannerWidget extends StatefulWidget {
   final borderPaddingPercent = 40.0;
@@ -72,7 +22,7 @@ class QRScannerWidget extends StatefulWidget {
 class _QRScannerWidgetState extends State<QRScannerWidget> {
   late Future<CameraController> _controller;
   bool _alreadyDetected = false;
-  Future<void>? _scanTimer;
+  bool _currentlyScanning = false;
 
   @override
   void initState() {
@@ -89,41 +39,70 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
   Future<CameraController> _initCamera() async {
     final cameras = await availableCameras();
     final backCamera = cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.back);
-    final int rotation = backCamera.sensorOrientation;
-    final controller = CameraController(backCamera, ResolutionPreset.high, enableAudio: false);
+    final rotation = backCamera.sensorOrientation;
+    final controller = CameraController(
+      backCamera,
+      ResolutionPreset.medium,
+      enableAudio: false,
+      imageFormatGroup: Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.bgra8888,
+    );
     await controller.initialize();
     controller.startImageStream((image) {
-      if (_alreadyDetected || _scanTimer != null) return;
-      _scanTimer = _scanQrCode(image, rotation, widget.borderPaddingPercent)..whenComplete(() => _scanTimer = null);
+      if (_alreadyDetected || _currentlyScanning) return;
+      _currentlyScanning = true;
+      _scanQrCode(image, rotation, widget.borderPaddingPercent).whenComplete(() => _currentlyScanning = false);
     });
     return controller;
   }
 
   Future<void> _scanQrCode(CameraImage cameraImage, int rotation, double borderPaddingPercent) async {
+    img_lib.Image? image;
     try {
-      final result = await _startIsolateScanQrCode(cameraImage, rotation, borderPaddingPercent);
-      if (result == null) return;
-      _alreadyDetected = true;
-      return _navigatorReturn(result.text);
+      image = (await _convertImage(cameraImage, rotation, borderPaddingPercent));
     } catch (e, s) {
-      Logger.error('Unexpected error while scanning QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_scanQrCode');
-      // Logger.warning('Error decoding QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_scanQrCode');
-      _alreadyDetected = true;
+      Logger.error('Unexpected error while converting image', name: 'QRScannerWidget#_scanQrCode', error: e, stackTrace: s);
       return _navigatorReturn('');
+    }
+    Result? result;
+    if (image == null) return;
+    try {
+      result = await _analyzeImage(image);
+    } catch (e, s) {
+      Logger.error('Unexpected error while analyzing image', name: 'QRScannerWidget#_scanQrCode', error: e, stackTrace: s);
+      return _navigatorReturn('');
+    }
+    if (result == null) return;
+    _alreadyDetected = true;
+    return _navigatorReturn(result.text);
+  }
+
+  Future<Result?> _analyzeImage(img_lib.Image image) async {
+    LuminanceSource source = RGBLuminanceSource(
+      image.width,
+      image.height,
+      image.convert(numChannels: 4).getBytes(order: img_lib.ChannelOrder.abgr).buffer.asInt32List(),
+    );
+    final bitmap = BinaryBitmap(GlobalHistogramBinarizer(source));
+    try {
+      return await compute((message) => QRCodeReader().decode(bitmap), image);
+    } catch (_) {
+      return null;
     }
   }
 
-  Future<Result?> _startIsolateScanQrCode(CameraImage cameraImage, final int rotation, final double borderPaddingPercent) async {
-    final receivePort = ReceivePort();
-    final isolate = await Isolate.spawn(_scanQrCodeIsolate, [receivePort.sendPort, cameraImage, rotation, borderPaddingPercent]);
-    final result = await receivePort.first;
-    if (result == null) return null;
-    if (result is! Result) {
-      throw result;
-    }
-    receivePort.close();
-    isolate.kill();
-    return result;
+  Future<img_lib.Image?> _convertImage(CameraImage cameraImage, int rotation, double borderPaddingPercent) async {
+    final height = rotation % 180 == 0 ? cameraImage.height : cameraImage.width;
+    final width = rotation % 180 == 0 ? cameraImage.width : cameraImage.height;
+    final squareSize = min(width, height);
+    final chropVertical = (height - squareSize) + (squareSize * borderPaddingPercent / 100).round();
+    final chropHorizontal = (width - squareSize) + (squareSize * borderPaddingPercent / 100).round();
+    return ImageConverter.fromCameraImage(
+      cameraImage,
+      cropTop: chropVertical ~/ 2,
+      cropBottom: chropVertical ~/ 2,
+      cropLeft: chropHorizontal ~/ 2,
+      cropRight: chropHorizontal ~/ 2,
+    );
   }
 
   void _navigatorReturn(String qrCode) {
