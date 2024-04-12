@@ -44,7 +44,7 @@ class PrivacyIDEAAuthenticatorImportFileProcessor extends TokenImportFileProcess
       return results;
     } catch (e) {
       Logger.error('Failed to process file', name: 'PrivacyIDEAAuthenticatorImportFileProcessor#processFile', error: e, stackTrace: StackTrace.current);
-      return [ProcessorResultError<Token>(e.toString())];
+      return [ProcessorResultFailed<Token>(e.toString())];
     }
   }
 }

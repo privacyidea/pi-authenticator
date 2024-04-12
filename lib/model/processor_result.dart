@@ -1,7 +1,7 @@
 abstract class ProcessorResult<T> {
   const ProcessorResult();
   factory ProcessorResult.success(T data) => ProcessorResultSuccess(data);
-  factory ProcessorResult.error(String errorMessage) => ProcessorResultError(errorMessage);
+  factory ProcessorResult.failed(String errorMessage) => ProcessorResultFailed(errorMessage);
 }
 
 class ProcessorResultSuccess<T> implements ProcessorResult<T> {
@@ -14,12 +14,10 @@ class ProcessorResultSuccess<T> implements ProcessorResult<T> {
   }
 }
 
-class ProcessorResultError<T> implements ProcessorResult<T> {
-  final String errorMessage;
-  const ProcessorResultError(this.errorMessage);
+class ProcessorResultFailed<T> implements ProcessorResult<T> {
+  final String message;
+  const ProcessorResultFailed(this.message);
 
   @override
-  String toString() {
-    return 'ProcessorResultError(errorMessage: $errorMessage)';
-  }
+  String toString() => '$runtimeType(message: $message)';
 }

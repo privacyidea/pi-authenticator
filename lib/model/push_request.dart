@@ -65,7 +65,7 @@ class PushRequest {
   }
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is PushRequest && runtimeType == other.runtimeType && id == other.id;
+  bool operator ==(Object other) => other is PushRequest && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => Object.hash(runtimeType, id);

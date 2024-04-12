@@ -27,7 +27,7 @@ class PrivacyIDEAAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
 
       return [ProcessorResult.success(token)];
     } catch (e) {
-      return [ProcessorResult.error('Invalid URI')];
+      return [ProcessorResult.failed('Invalid URI')];
     }
   }
 }

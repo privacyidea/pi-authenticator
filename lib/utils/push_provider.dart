@@ -20,6 +20,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -204,6 +205,8 @@ class PushProvider {
       Logger.warning('No token found for serial ${pushRequest.serial}.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;
     }
+    log('token:' + jsonEncode(pushToken.toJson()));
+    log('pushRequest:' + jsonEncode(pushRequest.toJson()));
     if (!await pushRequest.verifySignature(pushToken, rsaUtils: _rsaUtils, legacyUtils: _legacyUtils)) {
       Logger.warning('Signature verification failed.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;

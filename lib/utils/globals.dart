@@ -50,7 +50,14 @@ Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocaliz
 final globalSnackbarKey = GlobalKey<ScaffoldMessengerState>();
 final globalNavigatorKey = GlobalKey<NavigatorState>();
 final Future<GlobalKey<NavigatorState>> contextedGlobalNavigatorKey = Future(() async => await _getContextedGlobalNavigatorKey());
-BuildContext? globalContextSync = globalNavigatorKey.currentContext;
+BuildContext? get globalContextSync {
+  try {
+    return globalNavigatorKey.currentContext;
+  } catch (e) {
+    return null;
+  }
+}
+
 final Future<BuildContext> globalContext = Future(() async => await _getContextedGlobalNavigatorKey()).then((value) => value.currentContext!);
 Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKey() async {
   if (globalNavigatorKey.currentContext != null) {

@@ -793,11 +793,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get thisAppIsOpenSource => 'Ta aplikacja jest open source\nOdwiedź nas na GitHub';
 
   @override
-  String invalidArgument(Object argument, Object type) {
-    return '$argument nie jest prawidłową wartością dla $type';
-  }
-
-  @override
   String get importExportTokens => 'Importuj/Eksportuj tokeny';
 
   @override
@@ -862,4 +857,17 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get secretIsRequired => 'Secret is required';
+
+  @override
+  String get tokenDataParseError => 'Token data could not be parsed';
+
+  @override
+  String missingRequiredParameter(Object counter) {
+    return 'Value for parameter [$counter] is required and is missing';
+  }
+
+  @override
+  String invalidValueForParameter(Object value, Object parameter) {
+    return '[$value] is not a valid value for uri parameter [parameter].';
+  }
 }

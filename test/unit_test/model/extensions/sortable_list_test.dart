@@ -190,10 +190,5 @@ void _testSortableList() {
         ]);
       });
     });
-/*
-List<T> moveBetween({T? moveAfter, required T movedItem, T? moveBefore}) {
-List<T> moveAllBetween({T? moveAfter, required List<T> movedItems, T? moveBefore}) {
-List<T> withCurrentSortIndexSet() {
-*/
   });
 }

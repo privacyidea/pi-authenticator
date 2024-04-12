@@ -13,9 +13,9 @@ void _testProcessorResult() {
         expect(result.resultData, 'data');
       });
       test('error', () {
-        const result = ProcessorResultError('error');
-        expect(result, isA<ProcessorResultError>());
-        expect(result.errorMessage, 'error');
+        const result = ProcessorResultFailed('error');
+        expect(result, isA<ProcessorResultFailed>());
+        expect(result.message, 'error');
       });
     });
     group('factories', () {
@@ -25,9 +25,9 @@ void _testProcessorResult() {
         expect((result as ProcessorResultSuccess).resultData, 'data');
       });
       test('error', () {
-        final result = ProcessorResult.error('error');
-        expect(result, isA<ProcessorResultError>());
-        expect((result as ProcessorResultError).errorMessage, 'error');
+        final result = ProcessorResult.failed('error');
+        expect(result, isA<ProcessorResultFailed>());
+        expect((result as ProcessorResultFailed).message, 'error');
       });
     });
   });

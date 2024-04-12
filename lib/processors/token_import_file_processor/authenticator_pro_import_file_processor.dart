@@ -220,10 +220,10 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         final newResults = await const OtpAuthProcessor().processUri(uri);
         results.addAll(newResults);
       } on LocalizedException catch (e) {
-        results.add(ProcessorResultError(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+        results.add(ProcessorResultFailed(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
       } catch (e) {
         Logger.error('Failed to parse token.', name: 'authenticator_pro_import_file_processor#_processUriList', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultError(e.toString()));
+        results.add(ProcessorResultFailed(e.toString()));
       }
     }
     return results;
@@ -255,10 +255,10 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         }
       }
     } on LocalizedException catch (e) {
-      results.add(ProcessorResultError(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+      results.add(ProcessorResultFailed(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
     } catch (e) {
       Logger.error('Failed to parse token.', name: 'authenticator_pro_import_file_processor#_processHtml', error: e, stackTrace: StackTrace.current);
-      results.add(ProcessorResultError(e.toString()));
+      results.add(ProcessorResultFailed(e.toString()));
     }
     return results;
   }
@@ -293,10 +293,10 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         final token = Token.fromUriMap(uriMap);
         result.add(ProcessorResultSuccess(token));
       } on LocalizedException catch (e) {
-        result.add(ProcessorResultError(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+        result.add(ProcessorResultFailed(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
       } catch (e) {
         Logger.error('Failed to parse token.', name: 'authenticator_pro_import_file_processor#_processAuthPro', error: e, stackTrace: StackTrace.current);
-        result.add(ProcessorResultError(e.toString()));
+        result.add(ProcessorResultFailed(e.toString()));
       }
     }
     return result;

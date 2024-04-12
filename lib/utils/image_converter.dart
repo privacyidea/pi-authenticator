@@ -5,6 +5,8 @@ import 'dart:ui';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imglib;
+import 'package:image/image.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 class ImageConverter {
   final imglib.Image image;
@@ -27,6 +29,7 @@ class ImageConverter {
   }
 
   factory ImageConverter._fromNV21(CameraImage image) {
+    Logger.info('Converting NV21 image to Image');
     final width = image.width.toInt();
     final height = image.height.toInt();
     Uint8List yuv420sp = image.planes[0].bytes;
@@ -65,10 +68,12 @@ class ImageConverter {
   }
 
   factory ImageConverter._fromJPEG(CameraImage image) {
+    Logger.info('Converting JPEG image to Image');
     return ImageConverter(image: imglib.decodeJpg(image.planes[0].bytes)!);
   }
 
   factory ImageConverter._fromBGRA8888(CameraImage image, int rotation, bool mirror, int cropLeft, int cropRight, int cropTop, int cropBottom) {
+    Logger.info('Converting BGRA8888 image to Image');
     rotation = 360 - (rotation % 360); // if the image is rotated by 90, we need to rotate by another 270 to get the correct rotation (0/360)
     const numChannels = 4; // 1 for alpha, 3 for RGB
     var img = imglib.Image.fromBytes(
@@ -78,6 +83,7 @@ class ImageConverter {
       numChannels: numChannels,
       bytesOffset: numChannels * 7, // i don't know why 7 pixels, but it works
       bytes: (image.planes[0].bytes).buffer,
+      order: ChannelOrder.bgra,
     );
     img = imglib.copyRotate(img, angle: rotation);
     if (mirror) {
@@ -102,6 +108,7 @@ class ImageConverter {
     int chropTop = 0,
     int chropBottom = 0,
   ]) {
+    Logger.info('Converting YUV420 image to Image');
     rotation = 360 - (rotation % 360); // if the rotation is 90, we need to rotate by 270 to get the correct rotation
 
     const alpha = 0xFF;

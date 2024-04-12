@@ -145,10 +145,10 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
         };
         results.add(ProcessorResultSuccess(Token.fromUriMap(entryUriMap)));
       } on LocalizedException catch (e) {
-        results.add(ProcessorResultError(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+        results.add(ProcessorResultFailed(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
       } catch (e) {
         Logger.error('Failed to parse token.', name: 'AegisImportFileProcessor#_processPlain', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultError(e.toString()));
+        results.add(ProcessorResultFailed(e.toString()));
       }
     }
     return results;

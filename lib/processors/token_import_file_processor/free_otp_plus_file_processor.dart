@@ -73,7 +73,7 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
         results.addAll(await const FreeOtpPlusQrProcessor().processUri(uri));
       } catch (e) {
         Logger.error('Failed to process line: $line', name: 'FreeOtpPlusFileProcessor#processFile', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultError(e.toString()));
+        results.add(ProcessorResultFailed(e.toString()));
       }
     }
     return results.map((t) {
@@ -103,10 +103,10 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
     try {
       return ProcessorResultSuccess(Token.fromUriMap(_jsonToUriMap(tokenJson)));
     } on LocalizedException catch (e) {
-      return ProcessorResultError(e.localizedMessage(AppLocalizations.of(await globalContext)!));
+      return ProcessorResultFailed(e.localizedMessage(AppLocalizations.of(await globalContext)!));
     } catch (e) {
       Logger.error('Failed to parse token.', name: 'FreeOtpPlusFileProcessor#_processJsonToken', error: e, stackTrace: StackTrace.current);
-      return ProcessorResultError(e.toString());
+      return ProcessorResultFailed(e.toString());
     }
   }
 

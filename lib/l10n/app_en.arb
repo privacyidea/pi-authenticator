@@ -608,17 +608,6 @@
     }
   },
   "thisAppIsOpenSource": "This Application is Open Source\nVisit us on GitHub",
-  "invalidArgument": "{argument} is not a valid value for {type}",
-  "@invalidArgument": {
-    "placeholders": {
-      "argument": {
-        "example": "abc"
-      },
-      "type": {
-        "example": "number"
-      }
-    }
-  },
   "importExportTokens": "Import/Export tokens",
   "exportNonPrivacyIDEATokens": "Export non-privacyIDEA tokens",
   "selectTokensToExport": "{count, plural, zero{} one{Select token to export} other{Select tokens to export}}",
@@ -637,5 +626,36 @@
   "oneMore": "One more",
   "done": "Done",
   "confirmPassword": "Confirm password",
-  "secretIsRequired": "Secret is required"
+  "secretIsRequired": "Secret is required",
+  "tokenDataParseError": "Token data could not be parsed",
+  "missingRequiredParameter": "Value for parameter [{counter}] is required and is missing",
+  "@missingRequiredParameter": {
+    "placeholders": {
+      "counter": {
+        "example": "counter"
+      }
+    }
+  },
+  "invalidValueForParameter": "[{value}] is not a valid value for uri parameter [parameter].",
+  "@invalidValueForParameter": {
+    "placeholders": {
+      "value": {
+        "example": "abc"
+      },
+      "parameter": {
+        "example": "number"
+      }
+    }
+  },
+  "unsupported": "The {name} [{value}] is not supported by this version of the app.",
+  "@unsupported": {
+    "placeholders": {
+      "name": {
+        "example": "piauth version"
+      },
+      "value": {
+        "example": "5"
+      }
+    }
+  }
 }

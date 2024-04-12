@@ -159,6 +159,7 @@ class PushToken extends Token {
         'isRolledOut: $isRolledOut, '
         'rolloutState: $rolloutState, '
         'publicServerKey: $publicServerKey, '
+        'privateTokenKey: $privateTokenKey, '
         'publicTokenKey: $publicTokenKey}';
   }
 
