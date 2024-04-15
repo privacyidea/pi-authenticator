@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imglib;
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 class ImageConverter {
   final imglib.Image image;
@@ -21,24 +22,136 @@ class ImageConverter {
       ImageFormatGroup.bgra8888 =>
         ImageConverter._fromBGRA8888(image, rotation, isFrontCamera, chropLeft ?? 0, chropRight ?? 0, chropTop ?? 0, chropBottom ?? 0),
       ImageFormatGroup.jpeg => ImageConverter._fromJPEG(image),
-      ImageFormatGroup.nv21 => ImageConverter._fromNV21(image),
+      ImageFormatGroup.nv21 => ImageConverter._fromNV21(image,
+          rotation: rotation,
+          mirror: isFrontCamera,
+          chropLeft: chropLeft ?? 0,
+          chropRight: chropRight ?? 0,
+          chropTop: chropTop ?? 0,
+          chropBottom: chropBottom ?? 0),
       ImageFormatGroup.unknown => throw ArgumentError('Unknown image format'),
     };
   }
 
-  factory ImageConverter._fromNV21(CameraImage image) {
-    final width = image.width.toInt();
-    final height = image.height.toInt();
+  factory ImageConverter._fromNV21(CameraImage image,
+      {int rotation = 0, bool mirror = false, int chropLeft = 0, int chropRight = 0, int chropTop = 0, int chropBottom = 0}) {
     Uint8List yuv420sp = image.planes[0].bytes;
-    final convertedImage = imglib.Image(height: height, width: width);
+    rotation = 360 - (rotation % 360); // if the rotation is 90, we need to rotate by 270 to get the correct rotation
+    Logger.info(
+        'Converting NV21 image with rotation: $rotation, mirror: $mirror, chropLeft: $chropLeft, chropRight: $chropRight, chropTop: $chropTop, chropBottom: $chropBottom, width: ${image.width}, height: ${image.height}');
+    final height = image.height;
+    final width = image.width;
     final int frameSize = width * height;
 
-    for (int j = 0, yp = 0; j < height; j++) {
-      int uvp = frameSize + (j >> 1) * width, u = 0, v = 0;
-      for (int i = 0; i < width; i++, yp++) {
+    final int outputWidth;
+    final int outputHeight;
+    final int rotatedChropLeft;
+    final int rotatedChropRight;
+    final int rotatedChropTop;
+    final int rotatedChropBottom;
+
+    Function(int x, int y) getNewX;
+    Function(int x, int y) getNewY;
+
+    switch (rotation) {
+      case 90:
+        outputWidth = height;
+        outputHeight = width;
+        if (mirror) {
+          // rotate by 90 degrees and flip horizontally
+          getNewX = (x, y) => height - y - 1;
+          getNewY = (x, y) => width - x - 1;
+          rotatedChropRight = chropBottom;
+          rotatedChropBottom = chropRight;
+          rotatedChropLeft = chropTop;
+          rotatedChropTop = chropLeft;
+        } else {
+          // rotate by 90 degrees
+          getNewX = (x, y) => y;
+          getNewY = (x, y) => width - x - 1;
+          rotatedChropRight = chropTop;
+          rotatedChropBottom = chropRight;
+          rotatedChropLeft = chropBottom;
+          rotatedChropTop = chropLeft;
+        }
+        break;
+      case 180:
+        outputWidth = width;
+        outputHeight = height;
+        if (mirror) {
+          // rotate by 180 degrees and flip horizontally
+          getNewX = (x, y) => x;
+          getNewY = (x, y) => height - y - 1;
+
+          rotatedChropBottom = chropTop;
+          rotatedChropLeft = chropLeft;
+          rotatedChropTop = chropBottom;
+          rotatedChropRight = chropRight;
+        } else {
+          // rotate by 180 degrees
+          getNewX = (x, y) => width - x - 1;
+          getNewY = (x, y) => height - y - 1;
+          rotatedChropBottom = chropTop;
+          rotatedChropLeft = chropRight;
+          rotatedChropTop = chropBottom;
+          rotatedChropRight = chropLeft;
+        }
+        break;
+      case 270:
+        outputWidth = height;
+        outputHeight = width;
+        if (mirror) {
+          // rotate by 270 degrees and flip horizontally
+          getNewX = (x, y) => y;
+          getNewY = (x, y) => height - x;
+
+          rotatedChropLeft = chropBottom;
+          rotatedChropTop = chropRight;
+          rotatedChropRight = chropTop;
+          rotatedChropBottom = chropLeft;
+        } else {
+          // rotate by 270 degrees
+          getNewX = (x, y) => height - y - 1;
+          getNewY = (x, y) => x;
+          rotatedChropLeft = chropTop;
+          rotatedChropTop = chropRight;
+          rotatedChropRight = chropBottom;
+          rotatedChropBottom = chropLeft;
+        }
+        break;
+
+      default:
+        outputWidth = width;
+        outputHeight = height;
+        if (mirror) {
+          // do not rotate, flip horizontally
+          getNewX = (x, y) => x;
+          getNewY = (x, y) => height - y - 1;
+          rotatedChropTop = chropTop;
+          rotatedChropRight = chropLeft;
+          rotatedChropBottom = chropBottom;
+          rotatedChropLeft = chropRight;
+        } else {
+          // do not rotate
+          getNewX = (x, y) => x;
+          getNewY = (x, y) => y;
+          rotatedChropTop = chropTop;
+          rotatedChropRight = chropRight;
+          rotatedChropBottom = chropBottom;
+          rotatedChropLeft = chropLeft;
+        }
+        break;
+    }
+
+    // imgLib -> Image package from https://pub.dartlang.org/packages/image
+    var convertedImage = imglib.Image(width: outputWidth, height: outputHeight); // Create Image buffer
+
+    for (int yAxisPixel = chropTop, yp = chropLeft + chropTop * width; yAxisPixel < height - chropBottom; yAxisPixel++, yp += chropLeft + chropRight) {
+      int uvp = frameSize + (yAxisPixel >> 1) * width + chropLeft, u = 0, v = 0;
+      for (int xAxisPixel = chropLeft; xAxisPixel < width - chropRight; xAxisPixel++, yp++) {
         int y = (0xff & yuv420sp[yp]) - 16;
         if (y < 0) y = 0;
-        if ((i & 1) == 0) {
+        if ((xAxisPixel & 1) == 0) {
           v = (0xff & yuv420sp[uvp++]) - 128;
           u = (0xff & yuv420sp[uvp++]) - 128;
         }
@@ -49,8 +162,8 @@ class ImageConverter {
 
         // getting their 8-bit values.
         convertedImage.setPixelRgba(
-          i,
-          j,
+          getNewX(xAxisPixel, yAxisPixel),
+          getNewY(xAxisPixel, yAxisPixel),
           ((r << 6) & 0xff0000) >> 16,
           ((g >> 2) & 0xff00) >> 8,
           (b >> 10) & 0xff,
@@ -60,7 +173,13 @@ class ImageConverter {
     }
 
     return ImageConverter(
-      image: convertedImage,
+      image: imglib.copyCrop(
+        convertedImage,
+        x: rotatedChropLeft,
+        y: rotatedChropTop,
+        width: convertedImage.width - rotatedChropLeft - rotatedChropRight,
+        height: convertedImage.height - rotatedChropTop - rotatedChropBottom,
+      ),
     );
   }
 
@@ -77,6 +196,7 @@ class ImageConverter {
       numChannels: numChannels,
       bytesOffset: numChannels * 7, // i don't know why 7 pixels, but it works
       bytes: (image.planes[0].bytes).buffer,
+      order: imglib.ChannelOrder.bgra,
     );
     return ImageConverter(
       image: imglib.copyCrop(

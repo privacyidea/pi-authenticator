@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:zxing2/qrcode.dart';
@@ -40,7 +42,6 @@ void _scanQrCodeIsolate(List args) {
       chropRight: chropHorizontal,
     ).toImage();
 
-    // await showAsyncDialog(builder: (context) => Center(child: Image.memory(Uint8List.fromList(img.encodePng(image)))));
     LuminanceSource source = RGBLuminanceSource(
       image.width,
       image.height,
@@ -70,19 +71,19 @@ class QRScannerWidget extends StatefulWidget {
 }
 
 class _QRScannerWidgetState extends State<QRScannerWidget> {
-  late Future<CameraController> _controller;
+  late Future<CameraController> _cameraController;
   bool _alreadyDetected = false;
-  Future<void>? _scanTimer;
+  bool _isScanning = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = _initCamera();
+    _cameraController = _initCamera();
   }
 
   @override
   void dispose() {
-    _controller.then((controller) => controller.dispose());
+    _cameraController.then((controller) => controller.dispose());
     super.dispose();
   }
 
@@ -90,13 +91,19 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
     final cameras = await availableCameras();
     final backCamera = cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.back);
     final int rotation = backCamera.sensorOrientation;
-    final controller = CameraController(backCamera, ResolutionPreset.high, enableAudio: false);
-    await controller.initialize();
-    controller.startImageStream((image) {
-      if (_alreadyDetected || _scanTimer != null) return;
-      _scanTimer = _scanQrCode(image, rotation, widget.borderPaddingPercent)..whenComplete(() => _scanTimer = null);
+    final cameraController = CameraController(
+      backCamera,
+      ResolutionPreset.max,
+      imageFormatGroup: !kIsWeb && Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.bgra8888,
+      enableAudio: false,
+    );
+    await cameraController.initialize();
+    cameraController.startImageStream((image) {
+      if (_alreadyDetected || _isScanning) return;
+      _isScanning = true;
+      _scanQrCode(image, rotation, widget.borderPaddingPercent).whenComplete(() => _isScanning = false);
     });
-    return controller;
+    return cameraController;
   }
 
   Future<void> _scanQrCode(CameraImage cameraImage, int rotation, double borderPaddingPercent) async {
@@ -107,7 +114,6 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
       return _navigatorReturn(result.text);
     } catch (e, s) {
       Logger.error('Unexpected error while scanning QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_scanQrCode');
-      // Logger.warning('Error decoding QR Code', error: e, stackTrace: s, name: 'QRScannerWidget#_scanQrCode');
       _alreadyDetected = true;
       return _navigatorReturn('');
     }
@@ -137,7 +143,7 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
           alignment: Alignment.center,
           children: [
             FutureBuilder(
-              future: _controller,
+              future: _cameraController,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   final controller = snapshot.data as CameraController;
@@ -148,7 +154,7 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
             ),
             Container(
               decoration: ShapeDecoration(shape: ScannerOverlayShape(borderPaddingPercent: widget.borderPaddingPercent)),
-            )
+            ),
           ],
         ),
       );
