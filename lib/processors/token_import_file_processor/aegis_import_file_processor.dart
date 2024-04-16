@@ -1,9 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
-import 'dart:developer' as dev;
 import 'dart:isolate';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart' as crypto;
@@ -12,6 +10,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
+import 'package:privacyidea_authenticator/model/enums/token_types.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
@@ -23,6 +22,7 @@ import '../../l10n/app_localizations.dart';
 import '../../model/processor_result.dart';
 import '../../utils/errors.dart';
 import '../../utils/globals.dart';
+import '../../utils/utils.dart';
 import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';
 
@@ -53,6 +53,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
   static const String AEGIS_PERIOD = 'period';
   static const String AEGIS_COUNTER = 'counter';
   static const String AEGIS_PIN = 'pin';
+  static const String AEGIS_ID = 'uuid';
 
   bool _isValidPlain(Map<String, dynamic> json) {
     try {
@@ -77,11 +78,6 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
   @override
   Future<bool> fileIsValid({required XFile file}) async {
     final Map<String, dynamic> json;
-    final bytes = await file.readAsBytes();
-    for (var i = 0; i < bytes.length; i += 100) {
-      final sublist = bytes.sublist(i, min(i + 100, bytes.length)).toString();
-      dev.log('bytes: $sublist');
-    }
     try {
       final String fileContent = await file.readAsString();
       json = jsonDecode(fileContent) as Map<String, dynamic>;
@@ -121,16 +117,34 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
     }
   }
 
-  Future<List<ProcessorResult<Token>>> _processPlain(Map<String, dynamic> json) async {
-    final results = <ProcessorResult<Token>>[];
-    if (json['db']['version'] != 2) {
-      throw Exception('Unsupported backup version: ${json['db']['version']}.');
+  Future<List<ProcessorResult<Token>>> _processPlain(Map<String, dynamic> json) async => switch (json['db']['version'] as int) {
+        2 => _processPlainV2(json),
+        3 => _processPlainV3(json),
+        _ => _processPlainTryLatest(json),
+      };
+
+  Future<List<ProcessorResult<Token>>> _processPlainTryLatest(Map<String, dynamic> json) async {
+    try {
+      return await _processPlainV3(json);
+    } catch (_) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, name) => localizations.unsupported(name, value),
+        unlocalizedMessage: 'Unsupported backup version: ${json['db']['version']}.',
+        invalidValue: json['db']['version'],
+        name: 'aegis backup version',
+      );
     }
+  }
+
+  Future<List<ProcessorResult<Token>>> _processPlainV2(Map<String, dynamic> json) async {
+    final results = <ProcessorResult<Token>>[];
+    final localization = AppLocalizations.of(await globalContext)!;
     for (Map<String, dynamic> entry in json['db']['entries']) {
       try {
         if (entry['type'] != 'totp' && entry['type'] != 'hotp') {
           // TODO: support other token types
           Logger.warning('Unsupported token type: ${entry['type']}', name: '_processPlain#OtpAuthImportFileProcessor');
+          results.add(ProcessorResult.failed(localization.unsupported('token type', entry['type'])));
           continue;
         }
         Map<String, dynamic> info = entry['info'];
@@ -150,14 +164,56 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             data: jsonEncode(entry),
           ),
         };
-        results.add(ProcessorResultSuccess(Token.fromUriMap(entryUriMap)));
+        final token = Token.fromUriMap(entryUriMap);
+        results.add(ProcessorResult.success(token.copyWith(id: entry[AEGIS_ID])));
       } on LocalizedException catch (e) {
-        results.add(ProcessorResultFailed(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+        results.add(ProcessorResult.failed(e.localizedMessage(localization)));
+      } catch (e) {
+        Logger.error('Failed to parse token.', name: 'AegisImportFileProcessor#_processPlain', error: e, stackTrace: StackTrace.current);
+        results.add(ProcessorResult.failed(e.toString()));
+      }
+    }
+    return results;
+  }
+
+  Future<List<ProcessorResult<Token>>> _processPlainV3(Map<String, dynamic> json) async {
+    final results = <ProcessorResult<Token>>[];
+    final localization = AppLocalizations.of(await globalContext)!;
+    final entries = json['db']['entries'] as List;
+    for (Map<String, dynamic> entry in entries) {
+      try {
+        if (doesThrow(() => TokenTypes.values.byName((entry['type'] as String).toUpperCase()))) {
+          // TODO: support other token types
+          Logger.warning('Unsupported token type: ${entry['type']}', name: '_processPlain#OtpAuthImportFileProcessor');
+          results.add(ProcessorResult.failed(localization.unsupported('token type', entry['type'])));
+          continue;
+        }
+        Map<String, dynamic> info = entry['info'];
+        final entryUriMap = {
+          URI_TYPE: entry[AEGIS_TYPE],
+          URI_LABEL: entry[AEGIS_LABEL],
+          URI_ISSUER: entry[AEGIS_ISSUER],
+          URI_SECRET: Encodings.base32.decode(info[AEGIS_SECRET]),
+          URI_ALGORITHM: info[AEGIS_ALGORITHM],
+          URI_DIGITS: info[AEGIS_DIGITS],
+          URI_PERIOD: info[AEGIS_PERIOD],
+          URI_COUNTER: info[AEGIS_COUNTER],
+          URI_PIN: info[AEGIS_PIN],
+          URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+            appName: TokenImportOrigins.aegisAuthenticator.appName,
+            isPrivacyIdeaToken: false,
+            data: jsonEncode(entry),
+          ),
+        };
+        results.add(ProcessorResult.success(Token.fromUriMap(entryUriMap)));
+      } on LocalizedException catch (e) {
+        results.add(ProcessorResultFailed(e.localizedMessage(localization)));
       } catch (e) {
         Logger.error('Failed to parse token.', name: 'AegisImportFileProcessor#_processPlain', error: e, stackTrace: StackTrace.current);
         results.add(ProcessorResultFailed(e.toString()));
       }
     }
+
     return results;
   }
 
