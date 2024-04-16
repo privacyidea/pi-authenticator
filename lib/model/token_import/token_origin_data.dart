@@ -67,7 +67,7 @@ class TokenOriginData {
 
   // toString prints not data because it contains the secret
   @override
-  String toString() => 'TokenOrigin{source: $source, app: $appName, isPrivacyIdeaToken: $isPrivacyIdeaToken, createdAt: $createdAt}';
+  String toString() => 'TokenOrigin{source: $source, app: $appName, isPrivacyIdeaToken: $isPrivacyIdeaToken, createdAt: $createdAt, data: $data';
 
   factory TokenOriginData.fromJson(Map<String, dynamic> json) => _$TokenOriginDataFromJson(json);
 

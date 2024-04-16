@@ -1662,6 +1662,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'[{value}] is not a valid value for uri parameter [parameter].'**
   String invalidValueForParameter(Object value, Object parameter);
+
+  /// No description provided for @unsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'The {name} [{value}] is not supported by this version of the app.'**
+  String unsupported(Object name, Object value);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

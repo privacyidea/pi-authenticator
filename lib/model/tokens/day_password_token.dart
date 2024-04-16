@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/algorithms_extension.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
+import 'package:privacyidea_authenticator/utils/errors.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
@@ -120,10 +121,36 @@ class DayPasswordToken extends OTPToken {
     return DateTime.now().add(durationUntilNextOTP + const Duration(milliseconds: 1));
   }
 
+  /// Throws an Error if the uriMap is invalid
+  static void validateUriMap(Map<String, dynamic> uriMap) {
+    if (uriMap[URI_SECRET] == null) {
+      throw LocalizedArgumentError(
+        localizedMessage: ((localizations, value, name) => localizations.secretIsRequired),
+        unlocalizedMessage: 'Secret is required',
+        invalidValue: uriMap[URI_SECRET],
+        name: URI_SECRET,
+      );
+    }
+    if (uriMap[URI_PERIOD] < 1) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Period must be greater than 0',
+        invalidValue: uriMap[URI_PERIOD],
+        name: URI_PERIOD,
+      );
+    }
+    if (uriMap[URI_DIGITS] < 1) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Digits must be greater than 0',
+        invalidValue: uriMap[URI_DIGITS],
+        name: URI_DIGITS,
+      );
+    }
+  }
+
   factory DayPasswordToken.fromUriMap(Map<String, dynamic> uriMap) {
-    if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
-    if (uriMap[URI_PERIOD] < 1) throw ArgumentError('Period must be greater than 0');
-    if (uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
+    validateUriMap(uriMap);
 
     return DayPasswordToken(
       label: uriMap[URI_LABEL] ?? '',
@@ -132,7 +159,7 @@ class DayPasswordToken extends OTPToken {
       algorithm: Algorithms.values.byName(uriMap[URI_ALGORITHM] ?? 'SHA1'),
       digits: uriMap[URI_DIGITS] ?? 6,
       secret: Encodings.base32.encode(uriMap[URI_SECRET]),
-      period: Duration(seconds: uriMap[URI_PERIOD]),
+      period: Duration(seconds: uriMap[URI_PERIOD] ?? 86400), // default 24 hours
       tokenImage: uriMap[URI_IMAGE],
       pin: uriMap[URI_PIN],
       isLocked: uriMap[URI_PIN],

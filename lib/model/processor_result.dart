@@ -2,9 +2,11 @@ abstract class ProcessorResult<T> {
   const ProcessorResult();
   factory ProcessorResult.success(T data) => ProcessorResultSuccess(data);
   factory ProcessorResult.failed(String errorMessage) => ProcessorResultFailed(errorMessage);
+  ProcessorResultSuccess<T>? get asSuccess => this is ProcessorResultSuccess<T> ? this as ProcessorResultSuccess<T> : null;
+  ProcessorResultFailed<T>? get asFailed => this is ProcessorResultFailed<T> ? this as ProcessorResultFailed<T> : null;
 }
 
-class ProcessorResultSuccess<T> implements ProcessorResult<T> {
+class ProcessorResultSuccess<T> extends ProcessorResult<T> {
   final T resultData;
   const ProcessorResultSuccess(this.resultData);
 
@@ -14,7 +16,7 @@ class ProcessorResultSuccess<T> implements ProcessorResult<T> {
   }
 }
 
-class ProcessorResultFailed<T> implements ProcessorResult<T> {
+class ProcessorResultFailed<T> extends ProcessorResult<T> {
   final String message;
   const ProcessorResultFailed(this.message);
 

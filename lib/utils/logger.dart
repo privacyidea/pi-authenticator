@@ -110,17 +110,20 @@ class Logger {
 
   /*----------- LOGGING METHODS -----------*/
 
-  static void info(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
-    String infoString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.INFO);
+  void logInfo(String message, {String? name, bool verbose = false}) {
+    String infoString = _convertLogToSingleString(message, name: name, logLevel: LogLevel.INFO);
     infoString = _textFilter(infoString);
-    if (instance._verbose || verbose) {
-      instance._logToFile(infoString);
+    if (_verbose || verbose) {
+      _logToFile(infoString);
     }
     _print(infoString);
   }
 
-  static void warning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
-    String warningString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.WARNING);
+  static void info(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
+      instance.logInfo(message, name: name, verbose: verbose);
+
+  void logWarning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
+    String warningString = _convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.WARNING);
     warningString = _textFilter(warningString);
     if (instance._verbose || verbose) {
       instance._logToFile(warningString);
@@ -128,16 +131,19 @@ class Logger {
     _printWarning(warningString);
   }
 
-  static void error(String? message, {dynamic error, dynamic stackTrace, String? name}) {
-    String errorString = instance._convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
+  static void warning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
+      instance.logWarning(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
+
+  void logError(String? message, {dynamic error, dynamic stackTrace, String? name}) {
+    String errorString = _convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
     errorString = _textFilter(errorString);
     if (message != null) {
-      instance._lastError = message.substring(0, min(message.length, 100));
+      _lastError = message.substring(0, min(message.length, 100));
     } else if (error != null) {
-      instance._lastError = error.toString().substring(0, min(error.toString().length, 100));
+      _lastError = error.toString().substring(0, min(error.toString().length, 100));
     }
-    instance._logToFile(errorString);
-    instance._showSnackbar();
+    _logToFile(errorString);
+    _showSnackbar();
     StackTrace? stackTraceObject;
     if (stackTrace is StackTrace) {
       stackTraceObject = stackTrace;
@@ -146,6 +152,9 @@ class Logger {
     }
     _printError(message, error: error, stackTrace: stackTraceObject, name: name);
   }
+
+  static void error(String? message, {dynamic error, dynamic stackTrace, String? name}) =>
+      instance.logError(message, error: error, stackTrace: stackTrace, name: name);
 
   Future<void> _logToFile(String fileMessage) async {
     if (_enableLoggingToFile == false) return;

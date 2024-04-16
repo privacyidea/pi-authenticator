@@ -62,12 +62,8 @@ class GenerateTwoStepDialog extends StatelessWidget {
     }
 
     // 3. Show phone part if this widget is still mounted.
-    Navigator.of(context).pop(generatedSecret);
-    showAsyncDialog(
-        barrierDismissible: false,
-        builder: (context) => TwoStepDialog(
-              phoneChecksum: phoneChecksum,
-            ));
+    if (context.mounted) Navigator.of(context).pop(generatedSecret);
+    showAsyncDialog(barrierDismissible: false, builder: (context) => TwoStepDialog(phoneChecksum: phoneChecksum));
   }
 
   @override
@@ -119,7 +115,9 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                if (context.mounted) Navigator.of(context).pop();
+              },
               child: Text(
                 AppLocalizations.of(context)!.dismiss,
                 overflow: TextOverflow.fade,

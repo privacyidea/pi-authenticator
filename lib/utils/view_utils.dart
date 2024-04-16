@@ -21,12 +21,12 @@ Future<T?> showAsyncDialog<T>({
   required WidgetBuilder builder,
   bool barrierDismissible = true,
 }) {
-  if (globalNavigatorKey.currentContext == null) {
-    Logger.warning('globalNavigatorKey.currentContext is null');
+  if (globalContextSync == null) {
+    Logger.warning('globalContextSync is null');
     return Future.value(null);
   }
   return showDialog(
-    context: globalNavigatorKey.currentContext!,
+    context: globalContextSync!,
     builder: builder,
     useRootNavigator: false,
     barrierDismissible: barrierDismissible,

@@ -39,7 +39,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
       String? message;
       if (e is ArgumentError) {
         Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e.message, stackTrace: s);
-        message = e.message;
+        message = '${e.message} - ${e.name}: ${e.invalidValue}';
       }
       message ??= 'An error occurred while parsing the QR code.';
       return [ProcessorResult.failed(globalContextSync != null ? AppLocalizations.of(globalContextSync!)?.tokenDataParseError ?? message : message)];
@@ -48,18 +48,18 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
       validateMap(uriMap, [URI_SECRET, URI_ITERATIONS, URI_OUTPUT_LENGTH_IN_BYTES, URI_SALT_LENGTH]);
       final secret = uriMap[URI_SECRET] as Uint8List;
       // Calculate the whole secret.
-      Uint8List? twoStepSecret;
-      while (twoStepSecret == null) {
-        twoStepSecret = (await showAsyncDialog<Uint8List>(
-          barrierDismissible: false,
-          builder: (context) => GenerateTwoStepDialog(
-            iterations: uriMap[URI_ITERATIONS],
-            keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
-            saltLength: uriMap[URI_SALT_LENGTH],
-            password: secret,
-          ),
-        ));
-        await Future.delayed(const Duration(milliseconds: 500));
+
+      final twoStepSecret = (await showAsyncDialog<Uint8List>(
+        barrierDismissible: false,
+        builder: (context) => GenerateTwoStepDialog(
+          iterations: uriMap[URI_ITERATIONS],
+          keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
+          saltLength: uriMap[URI_SALT_LENGTH],
+          password: secret,
+        ),
+      ));
+      if (twoStepSecret == null) {
+        return [const ProcessorResultFailed('The two step secret could not be generated, or was canceled.')];
       }
       uriMap[URI_SECRET] = twoStepSecret;
     }
@@ -142,10 +142,11 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
   String digitsAsString = uri.queryParameters['digits'] ?? '6'; // Optional parameter
 
   if (digitsAsString != '6' && digitsAsString != '8') {
-    throw ArgumentError.value(
-      uri,
-      'uri',
-      '[$digitsAsString] is not a valid number of digits',
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, name) => localizations.invalidValueForParameter(value, name),
+      unlocalizedMessage: '[$digitsAsString] is not a valid number of digits.',
+      invalidValue: digitsAsString,
+      name: 'digits',
     );
   }
 

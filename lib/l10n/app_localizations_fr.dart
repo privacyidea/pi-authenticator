@@ -870,4 +870,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String invalidValueForParameter(Object value, Object parameter) {
     return '[$value] is not a valid value for uri parameter [parameter].';
   }
+
+  @override
+  String unsupported(Object name, Object value) {
+    return 'The $name [$value] is not supported by this version of the app.';
+  }
 }

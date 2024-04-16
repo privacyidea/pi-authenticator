@@ -48,15 +48,13 @@ class TokenWidgetBase extends ConsumerWidget {
     return draggingSortable == null
         ? LongPressDraggable(
             maxSimultaneousDrags: 1,
-            onDragStarted: () {
-              ref.read(draggingSortableProvider.notifier).state = token;
-            },
-            onDragCompleted: () {
+            onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = token,
+            onDragCompleted: () async {
+              await Future.delayed(const Duration(milliseconds: 50));
+              // FIXME: The token may appear before reordering the list. (race condition) This results in a flickering effect. Waiting here is a workaround so the list is updated before the token visible again. We should find a better solution.
               globalRef?.read(draggingSortableProvider.notifier).state = null;
             },
-            onDraggableCanceled: (velocity, offset) {
-              globalRef?.read(draggingSortableProvider.notifier).state = null;
-            },
+            onDraggableCanceled: (velocity, offset) => globalRef?.read(draggingSortableProvider.notifier).state = null,
             dragAnchorStrategy: (Draggable<Object> d, BuildContext context, Offset point) {
               final textSize = textSizeOf(token.label, Theme.of(context).textTheme.titleLarge!);
               return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);

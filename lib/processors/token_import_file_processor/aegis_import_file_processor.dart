@@ -1,7 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
+import 'dart:developer' as dev;
 import 'dart:isolate';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart' as crypto;
@@ -75,6 +77,11 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
   @override
   Future<bool> fileIsValid({required XFile file}) async {
     final Map<String, dynamic> json;
+    final bytes = await file.readAsBytes();
+    for (var i = 0; i < bytes.length; i += 100) {
+      final sublist = bytes.sublist(i, min(i + 100, bytes.length)).toString();
+      dev.log('bytes: $sublist');
+    }
     try {
       final String fileContent = await file.readAsString();
       json = jsonDecode(fileContent) as Map<String, dynamic>;
