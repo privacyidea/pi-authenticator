@@ -15,9 +15,6 @@ class SplashScreen extends ConsumerStatefulWidget {
   static Widget? _initialView;
   static bool didNavigated = false;
 
-  // final Widget appImage;
-  // final Widget appIcon;
-  // final String appName;
   final ApplicationCustomization customization;
 
   const SplashScreen({required this.customization, super.key});
