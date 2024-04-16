@@ -1,8 +1,8 @@
 import 'package:base32/base32.dart';
 import 'package:crypto/crypto.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
-import 'package:privacyidea_authenticator/utils/errors.dart';
+import '../extensions/enums/encodings_extension.dart';
+import '../../utils/errors.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';

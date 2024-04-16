@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/push_token_rollout_state_extension.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../model/extensions/enums/push_token_rollout_state_extension.dart';
 import '../../../../../model/tokens/push_token.dart';
 
 class RolloutWidget extends StatelessWidget {

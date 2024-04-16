@@ -1,13 +1,13 @@
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';
 import '../../../model/enums/token_types.dart';
 import '../../../model/extensions/enum_extension.dart';
+import '../../../model/extensions/enums/encodings_extension.dart';
 import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/errors.dart';

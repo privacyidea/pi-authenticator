@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../version.dart';
 import '../enums/token_origin_source_type.dart';
+import '../version.dart';
 
 part 'token_origin_data.g.dart';
 

@@ -1,13 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/patch_note_type_extension.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/patch_note_type.dart';
+import '../../model/extensions/enums/patch_note_type_extension.dart';
+import '../../model/version.dart';
 import '../../utils/app_info_utils.dart';
 import '../../utils/riverpod_providers.dart';
-import '../../model/version.dart';
 import 'default_dialog.dart';
 
 class PatchNotesDialog extends StatelessWidget {
