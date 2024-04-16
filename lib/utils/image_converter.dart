@@ -16,39 +16,33 @@ class ImageConverter {
   }) : size = Size(image.width.toDouble(), image.height.toDouble());
 
   factory ImageConverter.fromCameraImage(CameraImage image, int rotation,
-      {bool isFrontCamera = false, int? chropLeft, int? chropRight, int? chropTop, int? chropBottom}) {
+      {bool isFrontCamera = false, int? cropLeft, int? cropRight, int? cropTop, int? cropBottom}) {
     return switch (image.format.group) {
-      ImageFormatGroup.yuv420 => ImageConverter._fromYUV420(image, rotation, isFrontCamera, chropLeft ?? 0, chropRight ?? 0, chropTop ?? 0, chropBottom ?? 0),
-      ImageFormatGroup.bgra8888 =>
-        ImageConverter._fromBGRA8888(image, rotation, isFrontCamera, chropLeft ?? 0, chropRight ?? 0, chropTop ?? 0, chropBottom ?? 0),
+      ImageFormatGroup.yuv420 => ImageConverter._fromYUV420(image, rotation, isFrontCamera, cropLeft ?? 0, cropRight ?? 0, cropTop ?? 0, cropBottom ?? 0),
+      ImageFormatGroup.bgra8888 => ImageConverter._fromBGRA8888(image, rotation, isFrontCamera, cropLeft ?? 0, cropRight ?? 0, cropTop ?? 0, cropBottom ?? 0),
       ImageFormatGroup.jpeg => ImageConverter._fromJPEG(image),
       ImageFormatGroup.nv21 => ImageConverter._fromNV21(image,
-          rotation: rotation,
-          mirror: isFrontCamera,
-          chropLeft: chropLeft ?? 0,
-          chropRight: chropRight ?? 0,
-          chropTop: chropTop ?? 0,
-          chropBottom: chropBottom ?? 0),
+          rotation: rotation, mirror: isFrontCamera, cropLeft: cropLeft ?? 0, cropRight: cropRight ?? 0, cropTop: cropTop ?? 0, cropBottom: cropBottom ?? 0),
       ImageFormatGroup.unknown => throw ArgumentError('Unknown image format'),
     };
   }
 
   factory ImageConverter._fromNV21(CameraImage image,
-      {int rotation = 0, bool mirror = false, int chropLeft = 0, int chropRight = 0, int chropTop = 0, int chropBottom = 0}) {
+      {int rotation = 0, bool mirror = false, int cropLeft = 0, int cropRight = 0, int cropTop = 0, int cropBottom = 0}) {
     Uint8List yuv420sp = image.planes[0].bytes;
     rotation = 360 - (rotation % 360); // if the rotation is 90, we need to rotate by 270 to get the correct rotation
     Logger.info(
-        'Converting NV21 image with rotation: $rotation, mirror: $mirror, chropLeft: $chropLeft, chropRight: $chropRight, chropTop: $chropTop, chropBottom: $chropBottom, width: ${image.width}, height: ${image.height}');
+        'Converting NV21 image with rotation: $rotation, mirror: $mirror, cropLeft: $cropLeft, cropRight: $cropRight, cropTop: $cropTop, cropBottom: $cropBottom, width: ${image.width}, height: ${image.height}');
     final height = image.height;
     final width = image.width;
     final int frameSize = width * height;
 
     final int outputWidth;
     final int outputHeight;
-    final int rotatedChropLeft;
-    final int rotatedChropRight;
-    final int rotatedChropTop;
-    final int rotatedChropBottom;
+    final int rotatedCropLeft;
+    final int rotatedCropRight;
+    final int rotatedCropTop;
+    final int rotatedCropBottom;
 
     Function(int x, int y) getNewX;
     Function(int x, int y) getNewY;
@@ -61,18 +55,18 @@ class ImageConverter {
           // rotate by 90 degrees and flip horizontally
           getNewX = (x, y) => height - y - 1;
           getNewY = (x, y) => width - x - 1;
-          rotatedChropRight = chropBottom;
-          rotatedChropBottom = chropRight;
-          rotatedChropLeft = chropTop;
-          rotatedChropTop = chropLeft;
+          rotatedCropRight = cropBottom;
+          rotatedCropBottom = cropRight;
+          rotatedCropLeft = cropTop;
+          rotatedCropTop = cropLeft;
         } else {
           // rotate by 90 degrees
           getNewX = (x, y) => y;
           getNewY = (x, y) => width - x - 1;
-          rotatedChropRight = chropTop;
-          rotatedChropBottom = chropRight;
-          rotatedChropLeft = chropBottom;
-          rotatedChropTop = chropLeft;
+          rotatedCropRight = cropTop;
+          rotatedCropBottom = cropRight;
+          rotatedCropLeft = cropBottom;
+          rotatedCropTop = cropLeft;
         }
         break;
       case 180:
@@ -83,18 +77,18 @@ class ImageConverter {
           getNewX = (x, y) => x;
           getNewY = (x, y) => height - y - 1;
 
-          rotatedChropBottom = chropTop;
-          rotatedChropLeft = chropLeft;
-          rotatedChropTop = chropBottom;
-          rotatedChropRight = chropRight;
+          rotatedCropBottom = cropTop;
+          rotatedCropLeft = cropLeft;
+          rotatedCropTop = cropBottom;
+          rotatedCropRight = cropRight;
         } else {
           // rotate by 180 degrees
           getNewX = (x, y) => width - x - 1;
           getNewY = (x, y) => height - y - 1;
-          rotatedChropBottom = chropTop;
-          rotatedChropLeft = chropRight;
-          rotatedChropTop = chropBottom;
-          rotatedChropRight = chropLeft;
+          rotatedCropBottom = cropTop;
+          rotatedCropLeft = cropRight;
+          rotatedCropTop = cropBottom;
+          rotatedCropRight = cropLeft;
         }
         break;
       case 270:
@@ -105,18 +99,18 @@ class ImageConverter {
           getNewX = (x, y) => y;
           getNewY = (x, y) => height - x;
 
-          rotatedChropLeft = chropBottom;
-          rotatedChropTop = chropRight;
-          rotatedChropRight = chropTop;
-          rotatedChropBottom = chropLeft;
+          rotatedCropLeft = cropBottom;
+          rotatedCropTop = cropRight;
+          rotatedCropRight = cropTop;
+          rotatedCropBottom = cropLeft;
         } else {
           // rotate by 270 degrees
           getNewX = (x, y) => height - y - 1;
           getNewY = (x, y) => x;
-          rotatedChropLeft = chropTop;
-          rotatedChropTop = chropRight;
-          rotatedChropRight = chropBottom;
-          rotatedChropBottom = chropLeft;
+          rotatedCropLeft = cropTop;
+          rotatedCropTop = cropRight;
+          rotatedCropRight = cropBottom;
+          rotatedCropBottom = cropLeft;
         }
         break;
 
@@ -127,18 +121,18 @@ class ImageConverter {
           // do not rotate, flip horizontally
           getNewX = (x, y) => x;
           getNewY = (x, y) => height - y - 1;
-          rotatedChropTop = chropTop;
-          rotatedChropRight = chropLeft;
-          rotatedChropBottom = chropBottom;
-          rotatedChropLeft = chropRight;
+          rotatedCropTop = cropTop;
+          rotatedCropRight = cropLeft;
+          rotatedCropBottom = cropBottom;
+          rotatedCropLeft = cropRight;
         } else {
           // do not rotate
           getNewX = (x, y) => x;
           getNewY = (x, y) => y;
-          rotatedChropTop = chropTop;
-          rotatedChropRight = chropRight;
-          rotatedChropBottom = chropBottom;
-          rotatedChropLeft = chropLeft;
+          rotatedCropTop = cropTop;
+          rotatedCropRight = cropRight;
+          rotatedCropBottom = cropBottom;
+          rotatedCropLeft = cropLeft;
         }
         break;
     }
@@ -146,9 +140,9 @@ class ImageConverter {
     // imgLib -> Image package from https://pub.dartlang.org/packages/image
     var convertedImage = imglib.Image(width: outputWidth, height: outputHeight); // Create Image buffer
 
-    for (int yAxisPixel = chropTop, yp = chropLeft + chropTop * width; yAxisPixel < height - chropBottom; yAxisPixel++, yp += chropLeft + chropRight) {
-      int uvp = frameSize + (yAxisPixel >> 1) * width + chropLeft, u = 0, v = 0;
-      for (int xAxisPixel = chropLeft; xAxisPixel < width - chropRight; xAxisPixel++, yp++) {
+    for (int yAxisPixel = cropTop, yp = cropLeft + cropTop * width; yAxisPixel < height - cropBottom; yAxisPixel++, yp += cropLeft + cropRight) {
+      int uvp = frameSize + (yAxisPixel >> 1) * width + cropLeft, u = 0, v = 0;
+      for (int xAxisPixel = cropLeft; xAxisPixel < width - cropRight; xAxisPixel++, yp++) {
         int y = (0xff & yuv420sp[yp]) - 16;
         if (y < 0) y = 0;
         if ((xAxisPixel & 1) == 0) {
@@ -175,10 +169,10 @@ class ImageConverter {
     return ImageConverter(
       image: imglib.copyCrop(
         convertedImage,
-        x: rotatedChropLeft,
-        y: rotatedChropTop,
-        width: convertedImage.width - rotatedChropLeft - rotatedChropRight,
-        height: convertedImage.height - rotatedChropTop - rotatedChropBottom,
+        x: rotatedCropLeft,
+        y: rotatedCropTop,
+        width: convertedImage.width - rotatedCropLeft - rotatedCropRight,
+        height: convertedImage.height - rotatedCropTop - rotatedCropBottom,
       ),
     );
   }
@@ -213,10 +207,10 @@ class ImageConverter {
     CameraImage image,
     int rotation,
     bool mirror, [
-    int chropLeft = 0,
-    int chropRight = 0,
-    int chropTop = 0,
-    int chropBottom = 0,
+    int cropLeft = 0,
+    int cropRight = 0,
+    int cropTop = 0,
+    int cropBottom = 0,
   ]) {
     rotation = 360 - (rotation % 360); // if the rotation is 90, we need to rotate by 270 to get the correct rotation
 
@@ -229,10 +223,10 @@ class ImageConverter {
 
     final int outputWidth;
     final int outputHeight;
-    final int rotatedChropLeft;
-    final int rotatedChropRight;
-    final int rotatedChropTop;
-    final int rotatedChropBottom;
+    final int rotatedCropLeft;
+    final int rotatedCropRight;
+    final int rotatedCropTop;
+    final int rotatedCropBottom;
 
     final int uvRowStride = uPlane.bytesPerRow;
     final int uvPixelStride = uPlane.bytesPerPixel!;
@@ -247,17 +241,17 @@ class ImageConverter {
           // rotate by 90 and flip horizontally
           getNewX = (x, y) => height - y - 1;
           getNewY = (x, y) => width - x - 1;
-          rotatedChropRight = chropBottom;
-          rotatedChropBottom = chropRight;
-          rotatedChropLeft = chropTop;
-          rotatedChropTop = chropLeft;
+          rotatedCropRight = cropBottom;
+          rotatedCropBottom = cropRight;
+          rotatedCropLeft = cropTop;
+          rotatedCropTop = cropLeft;
         } else {
           getNewX = (x, y) => y;
           getNewY = (x, y) => width - x - 1;
-          rotatedChropRight = chropTop;
-          rotatedChropBottom = chropRight;
-          rotatedChropLeft = chropBottom;
-          rotatedChropTop = chropLeft;
+          rotatedCropRight = cropTop;
+          rotatedCropBottom = cropRight;
+          rotatedCropLeft = cropBottom;
+          rotatedCropTop = cropLeft;
         }
         break;
       case 180:
@@ -268,17 +262,17 @@ class ImageConverter {
           getNewX = (x, y) => x;
           getNewY = (x, y) => height - y - 1;
 
-          rotatedChropBottom = chropTop;
-          rotatedChropLeft = chropLeft;
-          rotatedChropTop = chropBottom;
-          rotatedChropRight = chropRight;
+          rotatedCropBottom = cropTop;
+          rotatedCropLeft = cropLeft;
+          rotatedCropTop = cropBottom;
+          rotatedCropRight = cropRight;
         } else {
           getNewX = (x, y) => width - x - 1;
           getNewY = (x, y) => height - y - 1;
-          rotatedChropBottom = chropTop;
-          rotatedChropLeft = chropRight;
-          rotatedChropTop = chropBottom;
-          rotatedChropRight = chropLeft;
+          rotatedCropBottom = cropTop;
+          rotatedCropLeft = cropRight;
+          rotatedCropTop = cropBottom;
+          rotatedCropRight = cropLeft;
         }
         break;
       case 270:
@@ -289,17 +283,17 @@ class ImageConverter {
           getNewX = (x, y) => y;
           getNewY = (x, y) => height - x;
 
-          rotatedChropLeft = chropBottom;
-          rotatedChropTop = chropRight;
-          rotatedChropRight = chropTop;
-          rotatedChropBottom = chropLeft;
+          rotatedCropLeft = cropBottom;
+          rotatedCropTop = cropRight;
+          rotatedCropRight = cropTop;
+          rotatedCropBottom = cropLeft;
         } else {
           getNewX = (x, y) => height - y - 1;
           getNewY = (x, y) => x;
-          rotatedChropLeft = chropTop;
-          rotatedChropTop = chropRight;
-          rotatedChropRight = chropBottom;
-          rotatedChropBottom = chropLeft;
+          rotatedCropLeft = cropTop;
+          rotatedCropTop = cropRight;
+          rotatedCropRight = cropBottom;
+          rotatedCropBottom = cropLeft;
         }
         break;
 
@@ -310,17 +304,17 @@ class ImageConverter {
           // flip horizontally
           getNewX = (x, y) => x;
           getNewY = (x, y) => height - y - 1;
-          rotatedChropTop = chropTop;
-          rotatedChropRight = chropLeft;
-          rotatedChropBottom = chropBottom;
-          rotatedChropLeft = chropRight;
+          rotatedCropTop = cropTop;
+          rotatedCropRight = cropLeft;
+          rotatedCropBottom = cropBottom;
+          rotatedCropLeft = cropRight;
         } else {
           getNewX = (x, y) => x;
           getNewY = (x, y) => y;
-          rotatedChropTop = chropTop;
-          rotatedChropRight = chropRight;
-          rotatedChropBottom = chropBottom;
-          rotatedChropLeft = chropLeft;
+          rotatedCropTop = cropTop;
+          rotatedCropRight = cropRight;
+          rotatedCropBottom = cropBottom;
+          rotatedCropLeft = cropLeft;
         }
         break;
     }
@@ -330,8 +324,8 @@ class ImageConverter {
 
     // Fill image buffer with plane[0] from YUV420_888
 
-    for (int y = chropTop; y < height - chropBottom; y++) {
-      for (int x = chropLeft; x < width - chropRight; x++) {
+    for (int y = cropTop; y < height - cropBottom; y++) {
+      for (int x = cropLeft; x < width - cropRight; x++) {
         // if (x % 100 == 0) log("x: $x, y: $y");
         final int uvIndex = uvPixelStride * (x / 2).floor() + uvRowStride * (y / 2).floor();
         final int index = (y * width + x);
@@ -354,14 +348,14 @@ class ImageConverter {
         }
       }
     }
-    final chropedImg = imglib.copyCrop(
+    final cropedImg = imglib.copyCrop(
       img,
-      x: rotatedChropLeft,
-      y: rotatedChropTop,
-      width: img.width - rotatedChropLeft - rotatedChropRight,
-      height: img.height - rotatedChropTop - rotatedChropBottom,
+      x: rotatedCropLeft,
+      y: rotatedCropTop,
+      width: img.width - rotatedCropLeft - rotatedCropRight,
+      height: img.height - rotatedCropTop - rotatedCropBottom,
     );
-    return ImageConverter(image: chropedImg);
+    return ImageConverter(image: cropedImg);
   }
 
   factory ImageConverter.fromFile(String path) {

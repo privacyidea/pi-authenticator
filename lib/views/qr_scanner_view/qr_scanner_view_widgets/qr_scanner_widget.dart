@@ -30,16 +30,16 @@ void _scanQrCodeIsolate(List args) {
 
   try {
     final imgSize = min(cameraImage.width, cameraImage.height);
-    final chropPadding = (imgSize * borderPaddingPercent / 100).round();
-    final chropHorizontal = (cameraImage.width - imgSize + chropPadding) ~/ 2;
-    final chropVertical = (cameraImage.height - imgSize + chropPadding) ~/ 2;
+    final cropPadding = (imgSize * borderPaddingPercent / 100).round();
+    final cropHorizontal = (cameraImage.width - imgSize + cropPadding) ~/ 2;
+    final cropVertical = (cameraImage.height - imgSize + cropPadding) ~/ 2;
     final image = ImageConverter.fromCameraImage(
       cameraImage,
       rotation,
-      chropTop: chropVertical,
-      chropBottom: chropVertical,
-      chropLeft: chropHorizontal,
-      chropRight: chropHorizontal,
+      cropTop: cropVertical,
+      cropBottom: cropVertical,
+      cropLeft: cropHorizontal,
+      cropRight: cropHorizontal,
     ).toImage();
 
     LuminanceSource source = RGBLuminanceSource(
