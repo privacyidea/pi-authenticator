@@ -278,6 +278,7 @@ void _testTokenNotifier() {
 
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'fbToken');
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((realInvocation) async => AsymmetricKeyPair(publicTokenKey, privateTokenKey));
       when(mockRsaUtils.serializeRSAPublicKeyPKCS8(publicServerKey)).thenReturn(publicServerKeyString);
       when(mockRsaUtils.serializeRSAPublicKeyPKCS8(publicTokenKey)).thenReturn(publicTokenKeyString);
@@ -359,6 +360,7 @@ void _testTokenNotifier() {
         PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true, pushRequests: PushRequestQueue()..add(pr)),
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRepo.saveOrReplaceTokens([after.first])).thenAnswer((_) async => []);
       when(mockRsaUtils.verifyRSASignature(any, any, any)).thenReturn(true);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
@@ -391,6 +393,7 @@ void _testTokenNotifier() {
         PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true, pushRequests: PushRequestQueue()),
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRepo.saveOrReplaceTokens([after.first])).thenAnswer((_) async => []);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(repository: mockRepo),
