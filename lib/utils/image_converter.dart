@@ -193,14 +193,13 @@ class ImageConverter {
       order: imglib.ChannelOrder.bgra,
     );
     return ImageConverter(
-      image: imglib.copyCrop(
-        img,
-        x: cropLeft,
-        y: cropTop,
-        width: img.width - cropLeft - cropRight,
-        height: img.height - cropTop - cropBottom,
-      ),
-    );
+        image: imglib.copyCrop(
+      img,
+      x: cropLeft,
+      y: cropTop,
+      width: img.width - cropLeft - cropRight,
+      height: img.height - cropTop - cropBottom,
+    ));
   }
 
   factory ImageConverter._fromYUV420(
