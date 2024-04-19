@@ -29,15 +29,16 @@ class TOTPToken extends OTPToken {
   }
 
   final int period;
-
-  @override
-  String get otpValue => algorithm.generateTOTPCodeString(
+  String otpFromTime(DateTime time) => algorithm.generateTOTPCodeString(
         secret: secret,
-        time: DateTime.now(),
+        time: time,
         length: digits,
         interval: Duration(seconds: period),
         isGoogle: true,
       );
+
+  @override
+  String get otpValue => otpFromTime(DateTime.now());
 
   TOTPToken({
     required int period,

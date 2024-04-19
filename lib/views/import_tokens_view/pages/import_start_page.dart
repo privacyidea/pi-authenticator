@@ -157,17 +157,17 @@ class _ImportStartPageState extends State<ImportStartPage> {
       Logger.warning("No file selected", name: "_pickAFile#ImportSelectFilePage");
       return;
     }
-    if (await fileProcessor.fileIsValid(file: file) == false) {
+    if (await fileProcessor.fileIsValid(file) == false) {
       if (mounted == false) return;
       setState(() => _errorText = localizations.invalidBackupFile(widget.appName));
       return;
     }
     setState(() => _errorText = null);
-    if (await fileProcessor.fileNeedsPassword(file: file)) {
+    if (await fileProcessor.fileNeedsPassword(file)) {
       _routeEncryptedData<XFile, String?>(data: file, processor: fileProcessor);
       return;
     }
-    var importResults = await fileProcessor.processFile(file: file);
+    var importResults = await fileProcessor.processFile(file);
     if (importResults.isEmpty) {
       if (mounted == false) return;
       setState(() => _errorText = localizations.invalidBackupFile(widget.appName));

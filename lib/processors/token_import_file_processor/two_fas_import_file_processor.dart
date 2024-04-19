@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
@@ -20,17 +21,19 @@ import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import 'token_import_file_processor_interface.dart';
 
-class TwoFasFileImportProcessor extends TokenImportFileProcessor {
-  const TwoFasFileImportProcessor();
+class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
+  const TwoFasAuthenticatorImportFileProcessor();
   static const String TWOFAS_TYPE = 'tokenType';
   static const String TWOFAS_ISSUER = 'name';
   static const String TWOFAS_SECRET = 'secret';
+  static const String TWOFAS_ALGORITHM = 'algorithm';
   static const String TWOFAS_LABEL = 'label';
   static const String TWOFAS_DIGITS = 'digits';
+  static const String TWOFAS_PERIOD = 'period';
   static const String TWOFAS_COUNTER = 'counter';
 
   @override
-  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password}) async {
     final String fileContent = await file.readAsString();
     final Map<String, dynamic> json;
     try {
@@ -43,20 +46,26 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<bool> fileNeedsPassword({required XFile file}) async {
+  Future<bool> fileIsValid(XFile file) async {
     try {
+      final bytes = await file.readAsBytes();
+      for (var i = 0; i < bytes.length; i += 100) {
+        print(bytes.sublist(i, min(i + 100, bytes.length)));
+      }
+      final fileContent = await file.readAsString();
+      print('fileContent: $fileContent');
       final Map<String, dynamic> json = jsonDecode(await file.readAsString()) as Map<String, dynamic>;
-      return json['servicesEncrypted'] != null;
+      return json['servicesEncrypted'] != null || json['services'] != null;
     } catch (e) {
       return false;
     }
   }
 
   @override
-  Future<bool> fileIsValid({required XFile file}) async {
+  Future<bool> fileNeedsPassword(XFile file) async {
     try {
       final Map<String, dynamic> json = jsonDecode(await file.readAsString()) as Map<String, dynamic>;
-      return json['servicesEncrypted'] != null || json['services'] != null;
+      return json['servicesEncrypted'] != null;
     } catch (e) {
       return false;
     }
@@ -141,9 +150,11 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
     return {
       URI_TYPE: twoFasOTP[TWOFAS_TYPE],
       URI_ISSUER: twoFasToken[TWOFAS_ISSUER],
-      URI_SECRET: Encodings.none.decode(twoFasToken[TWOFAS_SECRET]),
+      URI_SECRET: Encodings.base32.decode(twoFasToken[TWOFAS_SECRET]),
+      URI_ALGORITHM: twoFasOTP[TWOFAS_ALGORITHM],
       URI_LABEL: twoFasOTP[TWOFAS_LABEL],
       URI_DIGITS: twoFasOTP[TWOFAS_DIGITS],
+      URI_PERIOD: twoFasOTP[TWOFAS_PERIOD],
       URI_COUNTER: twoFasOTP[TWOFAS_COUNTER],
       URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
         appName: TokenImportOrigins.twoFasAuthenticator.appName,
