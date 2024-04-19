@@ -83,8 +83,6 @@ void _testAesEncrypted() {
         cypher: AesGcm.with256bits(),
       );
       final decrypted = await aesEncrypted.decryptToString("password");
-      final jsonEncoded = jsonEncode(aesEncrypted.toJson());
-      print(jsonEncoded);
       expect(decrypted, "test");
     });
     test('toJson', () {

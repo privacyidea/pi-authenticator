@@ -1,5 +1,4 @@
 import '../../l10n/app_localizations.dart';
-
 import '../../processors/mixins/token_import_processor.dart';
 import '../enums/token_import_type.dart';
 

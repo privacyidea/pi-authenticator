@@ -1,7 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:file_selector/file_selector.dart';
@@ -36,10 +35,6 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
   @override
   Future<bool> fileIsValid(XFile file) async {
     String contentString;
-    final bytes = await file.readAsBytes();
-    for (var i = 0; i < bytes.length; i += 100) {
-      print(bytes.sublist(i, min(i + 100, bytes.length)));
-    }
     try {
       contentString = await file.readAsString();
     } catch (e) {

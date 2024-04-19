@@ -322,7 +322,7 @@ Device Parameters $deviceInfo""";
     if (_context == null) return;
     showDialog(
       context: _context!,
-      builder: (context) => SendErrorDialog(),
+      builder: (context) => const SendErrorDialog(),
       useRootNavigator: false,
     );
   }

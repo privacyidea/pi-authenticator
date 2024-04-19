@@ -20,7 +20,7 @@ void _pressSendErrorLog(BuildContext context) {
     showDialog(
       useRootNavigator: false,
       context: context,
-      builder: (context) => SendErrorDialog(),
+      builder: (context) => const SendErrorDialog(),
     );
   } else {
     showDialog(
