@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:base32/base32.dart';
@@ -137,7 +136,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<TokenState> _loadFromRepo() async {
-    log('_loadFromRepo');
     List<Token> tokens;
     loadingRepo = Future(
       () async {
@@ -212,27 +210,21 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<bool> showToken(Token token) async {
-    final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
+    var authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
     await Future.delayed(const Duration(milliseconds: 200));
     await updatingTokens;
-    log('showToken');
     updatingTokens = Future(() async {
-      log('authenticated: $authenticated');
       if (!authenticated) return null;
       await loadingRepo;
       token = state.currentOf(token)?.copyWith(isHidden: false) ?? token.copyWith(isHidden: false);
-      log('token: $token');
       return _addOrReplaceTokens([token]);
     });
-    final authenticated2 = (await updatingTokens)?.isNotEmpty ?? false;
-    log('authenticated_2: $authenticated2');
+    authenticated = (await updatingTokens)?.isNotEmpty ?? false;
     _timers[token.id]?.cancel();
     _timers[token.id] = Timer(token.showDuration, () async {
-      log('hideToken');
       await hideToken(token);
-      log('hideToken_2');
     });
-    return authenticated2;
+    return authenticated;
   }
 
   Future<bool> showTokenById(String tokenId) async {
@@ -269,9 +261,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// Always waits for updating Functions to use the latest state
 
   Future<TokenState?> loadStateFromRepo() async {
-    log("loadStateFromRepo");
     await updatingTokens;
-    log("loadStateFromRepo_2");
     try {
       return await _loadFromRepo();
     } catch (_) {
