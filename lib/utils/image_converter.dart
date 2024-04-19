@@ -196,7 +196,9 @@ class ImageConverter {
       bytes: (image.planes[0].bytes).buffer,
       order: imglib.ChannelOrder.bgra,
     );
-    img = imglib.copyRotate(img, angle: rotation);
+    if (rotation != 0) {
+      img = imglib.copyRotate(img, angle: rotation);
+    }
     if (mirror) {
       img = imglib.flip(img, direction: imglib.FlipDirection.horizontal);
     }

@@ -94,7 +94,7 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
     final int rotation = backCamera.sensorOrientation;
     final cameraController = CameraController(
       backCamera,
-      ResolutionPreset.max,
+      !kIsWeb && Platform.isAndroid ? ResolutionPreset.max : ResolutionPreset.medium,
       imageFormatGroup: !kIsWeb && Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.bgra8888,
       enableAudio: false,
     );
