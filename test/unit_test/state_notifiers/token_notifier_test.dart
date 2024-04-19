@@ -45,6 +45,7 @@ void _testTokenNotifier() {
         PushToken(label: 'label2', issuer: 'issuer2', id: 'id2', serial: 'serial2', isRolledOut: true)
       ];
       final responses = [before, after];
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRepo.loadTokens()).thenAnswer((_) async => responses.removeAt(0));
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(repository: mockRepo),
@@ -61,6 +62,7 @@ void _testTokenNotifier() {
       final mockRepo = MockTokenRepository();
       final before = [HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret')];
       final after = before;
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(repository: mockRepo),
@@ -186,6 +188,7 @@ void _testTokenNotifier() {
         HOTPToken(label: 'label3', issuer: 'issuer3', id: 'id3', algorithm: Algorithms.SHA512, digits: 8, secret: 'secret3'),
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRepo.saveOrReplaceTokens([...after])).thenAnswer((_) async => []);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(
@@ -210,7 +213,6 @@ void _testTokenNotifier() {
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
-
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(repository: mockRepo),
       );
@@ -271,6 +273,7 @@ void _testTokenNotifier() {
 
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'fbToken');
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((realInvocation) async => AsymmetricKeyPair(publicTokenKey, privateTokenKey));
       when(mockRsaUtils.serializeRSAPublicKeyPKCS8(publicServerKey)).thenReturn(publicServerKeyString);
       when(mockRsaUtils.serializeRSAPublicKeyPKCS8(publicTokenKey)).thenReturn(publicTokenKeyString);
@@ -387,6 +390,7 @@ void _testTokenNotifier() {
       final before = <Token>[
         HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret'),
       ];
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRepo.loadTokens()).thenAnswer((_) => Future.value(before));
       final notifier = TokenNotifier(repository: mockRepo);
       Logger.info('before loadFromRepo');

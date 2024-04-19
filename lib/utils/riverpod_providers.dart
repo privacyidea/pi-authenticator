@@ -161,10 +161,10 @@ final statusMessageProvider = StateProvider<(String, String?)?>(
   },
 );
 
-final introductionProvider = StateNotifierProvider<InrtroductionNotifier, IntroductionState>(
+final introductionProvider = StateNotifierProvider<IntroductionNotifier, IntroductionState>(
   (ref) {
     Logger.info("New introductionProvider created", name: 'introductionProvider');
-    return InrtroductionNotifier(repository: PreferenceIntroductionRepository());
+    return IntroductionNotifier(repository: PreferenceIntroductionRepository());
   },
 );
 
