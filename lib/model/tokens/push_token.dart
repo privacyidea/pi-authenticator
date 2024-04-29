@@ -217,7 +217,7 @@ class PushToken extends Token {
       PushTokenRollOutState.parsingResponse || PushTokenRollOutState.parsingResponseFailed => PushTokenRollOutState.parsingResponseFailed,
       PushTokenRollOutState.rolloutComplete => PushTokenRollOutState.rolloutComplete,
     };
-    return newToken.copyWith(rolloutState: currentRolloutState, isHidden: true);
+    return newToken.copyWith(rolloutState: currentRolloutState);
   }
 
   Map<String, dynamic> toJson() => _$PushTokenToJson(this);

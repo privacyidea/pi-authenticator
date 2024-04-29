@@ -129,8 +129,6 @@ class TOTPToken extends OTPToken {
     return totpToken;
   }
 
-  factory TOTPToken.fromJson(Map<String, dynamic> json) => _$TOTPTokenFromJson(json).copyWith(isHidden: true);
-
   double get currentProgress {
     final secondsSinceEpoch = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
     return (secondsSinceEpoch % (period)) * (1 / period);
@@ -142,4 +140,5 @@ class TOTPToken extends OTPToken {
   }
 
   Map<String, dynamic> toJson() => _$TOTPTokenToJson(this);
+  factory TOTPToken.fromJson(Map<String, dynamic> json) => _$TOTPTokenFromJson(json);
 }

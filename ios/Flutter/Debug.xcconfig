@@ -1,2 +1,3 @@
 #include "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug-netknights.xcconfig"
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug-netknights_debug.xcconfig"
 #include "Generated.xcconfig"

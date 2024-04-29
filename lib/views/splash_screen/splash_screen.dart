@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../model/enums/introduction.dart';
+import '../../model/enums/app_feature.dart';
+import '../../utils/app_customizer.dart';
 import '../../utils/app_info_utils.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import '../main_view/main_view.dart';
-import '../onboarding_view/onboarding_view.dart';
 import '../view_interface.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -15,11 +15,9 @@ class SplashScreen extends ConsumerStatefulWidget {
   static Widget? _initialView;
   static bool didNavigated = false;
 
-  final Widget appImage;
-  final Widget appIcon;
-  final String appName;
+  final ApplicationCustomization customization;
 
-  const SplashScreen({required this.appImage, required this.appIcon, required this.appName, super.key});
+  const SplashScreen({required this.customization, super.key});
 
   @override
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
@@ -41,10 +39,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   var _appIconIsVisible = false;
   final _splashScreenDuration = const Duration(milliseconds: 400);
   final _splashScreenDelay = const Duration(milliseconds: 250);
+  late final ApplicationCustomization _customization;
 
   @override
   void initState() {
     super.initState();
+    _customization = widget.customization;
 
     Logger.info('Starting app.', name: 'main.dart#initState');
     Future.delayed(_splashScreenDelay, () {
@@ -65,6 +65,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         eagerError: true,
         cleanUp: (error) {
           Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
+          _navigate();
         },
       ).then((values) => _navigate());
     });
@@ -99,8 +100,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   void _pushReplace() {
-    final isFirstRun = ref.read(introductionProvider).isConditionFulfilled(ref, Introduction.introductionScreen) && ref.read(settingsProvider).isFirstRun;
-    final ViewWidget nextView = isFirstRun ? OnboardingView(appName: widget.appName) : MainView(appName: widget.appName, appIcon: widget.appIcon);
+    final ViewWidget nextView = MainView(
+      appName: _customization.appName,
+      appIcon: _customization.appIcon,
+      disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
+    );
     final routeBuilder = SplashScreen._initialView == null
         ? PageRouteBuilder(
             pageBuilder: (_, __, ___) => nextView,
@@ -132,7 +136,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           curve: Curves.easeOut,
           child: Padding(
             padding: const EdgeInsets.all(32.0),
-            child: widget.appImage,
+            child: _customization.appImage,
           ),
         ),
       ),

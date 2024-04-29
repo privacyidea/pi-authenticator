@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:base32/base32.dart';
@@ -68,6 +67,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<void> _init() async {
     await _loadFromRepo();
     await loadingRepo;
+    await hideLockedTokens();
     Logger.info('TokenNotifier initialized.', name: 'token_notifier.dart#_init');
   }
 
@@ -136,7 +136,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<TokenState> _loadFromRepo() async {
-    log('_loadFromRepo');
     List<Token> tokens;
     loadingRepo = Future(
       () async {
@@ -211,24 +210,19 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<bool> showToken(Token token) async {
+    var authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
+    await Future.delayed(const Duration(milliseconds: 200));
     await updatingTokens;
-    log('showToken');
     updatingTokens = Future(() async {
-      final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
-      log('authenticated: $authenticated');
       if (!authenticated) return null;
       await loadingRepo;
       token = state.currentOf(token)?.copyWith(isHidden: false) ?? token.copyWith(isHidden: false);
-      log('token: $token');
       return _addOrReplaceTokens([token]);
     });
-    final authenticated = (await updatingTokens)?.isNotEmpty ?? false;
-    log('authenticated_2: $authenticated');
+    authenticated = (await updatingTokens)?.isNotEmpty ?? false;
     _timers[token.id]?.cancel();
     _timers[token.id] = Timer(token.showDuration, () async {
-      log('hideToken');
       await hideToken(token);
-      log('hideToken_2');
     });
     return authenticated;
   }
@@ -267,9 +261,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// Always waits for updating Functions to use the latest state
 
   Future<TokenState?> loadStateFromRepo() async {
-    log("loadStateFromRepo");
     await updatingTokens;
-    log("loadStateFromRepo_2");
     try {
       return await _loadFromRepo();
     } catch (_) {
@@ -281,6 +273,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<bool> saveStateToRepo() async {
     await updatingTokens;
     _cancelTimers();
+    await hideLockedTokens();
     try {
       await _repo.saveOrReplaceTokens(state.tokens);
       Logger.info('Saved ${state.tokens.length} Tokens to storage.', name: 'token_notifier.dart#saveStateToRepo');
@@ -350,6 +343,16 @@ class TokenNotifier extends StateNotifier<TokenState> {
     Logger.info('Added push request ${pr.id} to token ${token.id}', name: 'token_notifier.dart#addPushRequestToToken');
 
     return true;
+  }
+
+  Future<List<Token>> hideLockedTokens() async {
+    final hideLockedTokens = <Token>[];
+    for (var token in state.tokens) {
+      if (token.isLocked && !token.isHidden) {
+        hideLockedTokens.add(token);
+      }
+    }
+    return await updateTokens(hideLockedTokens, (p0) => p0.copyWith(isHidden: true));
   }
 
   Future<bool> removePushRequest(PushRequest pushRequest) async {

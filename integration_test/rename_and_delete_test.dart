@@ -9,6 +9,7 @@ import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
+import 'package:privacyidea_authenticator/state_notifiers/completed_introduction_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
@@ -52,6 +53,7 @@ void main() {
         settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
         tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
+        introductionProvider.overrideWith((ref) => IntroductionNotifier(repository: mockIntroductionRepository)),
       ],
       child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
     ));
@@ -75,6 +77,7 @@ Future<void> _renameToken(WidgetTester tester, String newName) async {
   expect(find.byType(TextFormField), findsNWidgets(3));
   await tester.pumpAndSettle();
   await tester.enterText(find.byType(TextFormField).first, '');
+  await tester.pumpAndSettle();
   await tester.enterText(find.byType(TextFormField).first, newName);
   await pumpUntilFindNWidgets(tester, find.widgetWithText(TextFormField, newName), 1, const Duration(seconds: 2));
   await tester.tap(find.text(AppLocalizationsEn().save));

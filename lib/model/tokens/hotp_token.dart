@@ -119,7 +119,7 @@ class HOTPToken extends OTPToken {
     return hotpToken;
   }
 
-  factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json).copyWith(isHidden: true);
+  factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json);
 
   Map<String, dynamic> toJson() => _$HOTPTokenToJson(this);
 }

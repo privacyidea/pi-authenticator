@@ -135,7 +135,7 @@ class DayPasswordToken extends OTPToken {
     return dayPasswordToken;
   }
 
-  factory DayPasswordToken.fromJson(Map<String, dynamic> json) => _$DayPasswordTokenFromJson(json).copyWith(isHidden: true);
+  factory DayPasswordToken.fromJson(Map<String, dynamic> json) => _$DayPasswordTokenFromJson(json);
   Map<String, dynamic> toJson() => _$DayPasswordTokenToJson(this);
 
   @override

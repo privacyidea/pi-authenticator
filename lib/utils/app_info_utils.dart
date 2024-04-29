@@ -81,13 +81,13 @@ class AppInfoUtils {
           '\ntags: ${androidInfo!.tags}'
           '\ntype: ${androidInfo!.type}'
           '\nisPhysicalDevice: ${androidInfo!.isPhysicalDevice}'
-          '\ndisplaySizeInches: ${((androidInfo!.displayMetrics.sizeInches * 10).roundToDouble() / 10)}'
-          '\ndisplayWidthPixels: ${androidInfo!.displayMetrics.widthPx}'
-          '\ndisplayWidthInches: ${androidInfo!.displayMetrics.widthInches}'
-          '\ndisplayHeightPixels: ${androidInfo!.displayMetrics.heightPx}'
-          '\ndisplayHeightInches: ${androidInfo!.displayMetrics.heightInches}'
-          '\ndisplayXDpi: ${androidInfo!.displayMetrics.xDpi}'
-          '\ndisplayYDpi: ${androidInfo!.displayMetrics.yDpi}'
+          // '\ndisplaySizeInches: ${((androidInfo!.displayMetrics.sizeInches * 10).roundToDouble() / 10)}'
+          // '\ndisplayWidthPixels: ${androidInfo!.displayMetrics.widthPx}'
+          // '\ndisplayWidthInches: ${androidInfo!.displayMetrics.widthInches}'
+          // '\ndisplayHeightPixels: ${androidInfo!.displayMetrics.heightPx}'
+          // '\ndisplayHeightInches: ${androidInfo!.displayMetrics.heightInches}'
+          // '\ndisplayXDpi: ${androidInfo!.displayMetrics.xDpi}'
+          // '\ndisplayYDpi: ${androidInfo!.displayMetrics.yDpi}'
           '\nserialNumber: ${androidInfo!.serialNumber}';
 
   static IosDeviceInfo? get iosInfo => isInitialized ? _iosInfo : throw Exception('AppInfoUtils not initialized');

@@ -4,6 +4,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
+import '../model/enums/app_feature.dart';
+
 class ThemeCustomization {
   static const ThemeCustomization defaultLightTheme = ThemeCustomization.defaultLightWith();
   static const ThemeCustomization defaultDarkTheme = ThemeCustomization.defaultDarkWith();
@@ -458,6 +460,7 @@ class ApplicationCustomization {
   Image get appImage => Image.memory(appImageUint8List);
   final ThemeCustomization lightTheme;
   final ThemeCustomization darkTheme;
+  final Set<AppFeature> disabledFeatures;
 
   static final defaultCustomization = ApplicationCustomization(
     appName: 'privacyIDEA Authenticator',
@@ -466,6 +469,7 @@ class ApplicationCustomization {
     appImageUint8List: defaultImageUint8List,
     lightTheme: ThemeCustomization.defaultLightTheme,
     darkTheme: ThemeCustomization.defaultDarkTheme,
+    disabledFeatures: const {},
   );
 
   const ApplicationCustomization({
@@ -475,6 +479,7 @@ class ApplicationCustomization {
     required this.appImageUint8List,
     required this.lightTheme,
     required this.darkTheme,
+    required this.disabledFeatures,
   });
 
   ApplicationCustomization copyWith({
@@ -485,6 +490,7 @@ class ApplicationCustomization {
     ThemeCustomization? lightTheme,
     ThemeCustomization? darkTheme,
     Color? primaryColor,
+    Set<AppFeature>? disabledFeatures,
   }) =>
       ApplicationCustomization(
         appName: appName ?? this.appName,
@@ -493,6 +499,7 @@ class ApplicationCustomization {
         appImageUint8List: appImageUint8List ?? this.appImageUint8List,
         lightTheme: lightTheme ?? this.lightTheme,
         darkTheme: darkTheme ?? this.darkTheme,
+        disabledFeatures: disabledFeatures ?? this.disabledFeatures,
       );
 
   ThemeData generateLightTheme() => lightTheme.generateTheme();
@@ -506,6 +513,7 @@ class ApplicationCustomization {
         appImageUint8List: json['appImageBASE64'] != null ? base64Decode(json['appImageBASE64'] as String) : null,
         lightTheme: ThemeCustomization.fromJson(json['lightTheme'] as Map<String, dynamic>),
         darkTheme: ThemeCustomization.fromJson(json['darkTheme'] as Map<String, dynamic>),
+        disabledFeatures: (json['disabledFeatures'] as List<dynamic>).map((e) => AppFeatureX.fromName(e as String)).toSet(),
       );
 
   Map<String, dynamic> toJson() {
@@ -516,6 +524,7 @@ class ApplicationCustomization {
       'appImageBASE64': base64Encode(appImageUint8List),
       'lightTheme': lightTheme.toJson(),
       'darkTheme': darkTheme.toJson(),
+      'disabledFeatures': disabledFeatures.map((e) => e.name).toList(),
     };
   }
 }
