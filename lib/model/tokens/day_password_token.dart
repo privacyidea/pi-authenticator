@@ -131,7 +131,7 @@ class DayPasswordToken extends OTPToken {
         name: URI_SECRET,
       );
     }
-    if (uriMap[URI_PERIOD] < 1) {
+    if (uriMap[URI_PERIOD] != null && uriMap[URI_PERIOD] < 1) {
       throw LocalizedArgumentError(
         localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
         unlocalizedMessage: 'Period must be greater than 0',
@@ -139,7 +139,7 @@ class DayPasswordToken extends OTPToken {
         name: URI_PERIOD,
       );
     }
-    if (uriMap[URI_DIGITS] < 1) {
+    if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) {
       throw LocalizedArgumentError(
         localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
         unlocalizedMessage: 'Digits must be greater than 0',
