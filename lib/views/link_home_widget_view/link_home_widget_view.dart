@@ -2,7 +2,7 @@ import 'package:app_minimizer/app_minimizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../utils/app_customizer.dart';
+import '../../utils/customization/extended_text_theme.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../utils/utils.dart';

@@ -26,7 +26,7 @@ import '../state_notifiers/push_request_notifier.dart';
 import '../state_notifiers/settings_notifier.dart';
 import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
-import 'app_customizer.dart';
+import 'customization/application_customization.dart';
 import 'firebase_utils.dart';
 import 'globals.dart';
 import 'home_widget_utils.dart';
