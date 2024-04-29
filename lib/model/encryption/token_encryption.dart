@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import '../../processors/scheme_processors/token_import_scheme_processors/privacyidea_authenticator_qr_processor.dart';
 import '../tokens/token.dart';
@@ -23,16 +22,16 @@ class TokenEncryption {
   static Uri generateQrCodeUri({required Token token}) {
     final tokenJson = token.toJson();
     final encoded = json.encode(tokenJson);
-    final zip = gzip.encode(utf8.encode(encoded));
-    final base64 = base64Url.encode(zip);
+    final bytes = utf8.encode(encoded);
+    final base64 = base64Url.encode(bytes);
     final uri = Uri.parse('${PrivacyIDEAAuthenticatorQrProcessor.scheme}://${PrivacyIDEAAuthenticatorQrProcessor.host}?data=$base64');
     return uri;
   }
 
   static Token fromQrCodeUri(Uri uri) {
     final base64String = uri.queryParameters['data'];
-    final zip = base64Url.decode(base64String!);
-    final jsonString = utf8.decode(gzip.decode(zip));
+    final bytes = base64Url.decode(base64String!);
+    final jsonString = utf8.decode(bytes);
     final tokenJson = json.decode(jsonString) as Map<String, dynamic>;
     return Token.fromJson(tokenJson);
   }
