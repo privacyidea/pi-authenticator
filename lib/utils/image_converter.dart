@@ -5,8 +5,7 @@ import 'dart:ui';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imglib;
-
-import 'logger.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 class ImageConverter {
   final imglib.Image image;

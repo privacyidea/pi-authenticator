@@ -229,7 +229,6 @@ void _testTokenNotifier() {
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
-      when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
