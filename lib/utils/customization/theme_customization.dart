@@ -204,14 +204,14 @@ class ThemeCustomization {
         deleteColor: json['deleteColor'] != null ? Color(json['deleteColor'] as int) : null,
         renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
         lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
-        actionButtonsForegroundColor: json['actionButtonsForegroundColor'] != null ? Color(json['actionButtonsForegroundColor'] as int) : null,
-        tilePrimaryColor: json['tilePrimaryColor'] != null ? Color(json['tilePrimaryColor'] as int) : null,
         tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
-        tileSubtitleColor: json['tileSubtitleColor'] != null ? Color(json['tileSubtitleColor'] as int) : null,
         navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
-        navigationBarIconColor: json['navigationBarIconColor'] != null ? Color(json['navigationBarIconColor'] as int) : null,
-        qrButtonBackgroundColor: json['qrButtonBackgroundColor'] != null ? Color(json['qrButtonBackgroundColor'] as int) : null,
-        qrButtonIconColor: json['qrButtonIconColor'] != null ? Color(json['qrButtonIconColor'] as int) : null,
+        actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? Color(json['_actionButtonsForegroundColor'] as int) : null,
+        tilePrimaryColor: json['_tilePrimaryColor'] != null ? Color(json['_tilePrimaryColor'] as int) : null,
+        tileSubtitleColor: json['_tileSubtitleColor'] != null ? Color(json['_tileSubtitleColor'] as int) : null,
+        navigationBarIconColor: json['_navigationBarIconColor'] != null ? Color(json['_navigationBarIconColor'] as int) : null,
+        qrButtonBackgroundColor: json['_qrButtonBackgroundColor'] != null ? Color(json['_qrButtonBackgroundColor'] as int) : null,
+        qrButtonIconColor: json['_qrButtonIconColor'] != null ? Color(json['_qrButtonIconColor'] as int) : null,
       );
     }
     if (isDarkTheme) {
@@ -225,14 +225,14 @@ class ThemeCustomization {
         deleteColor: json['deleteColor'] != null ? Color(json['deleteColor'] as int) : null,
         renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
         lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
-        actionButtonsForegroundColor: json['actionButtonsForegroundColor'] != null ? Color(json['actionButtonsForegroundColor'] as int) : null,
-        tilePrimaryColor: json['tilePrimaryColor'] != null ? Color(json['tilePrimaryColor'] as int) : null,
         tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
-        tileSubtitleColor: json['tileSubtitleColor'] != null ? Color(json['tileSubtitleColor'] as int) : null,
         navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
-        navigationBarIconColor: json['navigationBarIconColor'] != null ? Color(json['navigationBarIconColor'] as int) : null,
-        qrButtonBackgroundColor: json['qrButtonBackgroundColor'] != null ? Color(json['qrButtonBackgroundColor'] as int) : null,
-        qrButtonIconColor: json['qrButtonIconColor'] != null ? Color(json['qrButtonIconColor'] as int) : null,
+        actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? Color(json['_actionButtonsForegroundColor'] as int) : null,
+        tilePrimaryColor: json['_tilePrimaryColor'] != null ? Color(json['_tilePrimaryColor'] as int) : null,
+        tileSubtitleColor: json['_tileSubtitleColor'] != null ? Color(json['_tileSubtitleColor'] as int) : null,
+        navigationBarIconColor: json['_navigationBarIconColor'] != null ? Color(json['_navigationBarIconColor'] as int) : null,
+        qrButtonBackgroundColor: json['_qrButtonBackgroundColor'] != null ? Color(json['_qrButtonBackgroundColor'] as int) : null,
+        qrButtonIconColor: json['_qrButtonIconColor'] != null ? Color(json['_qrButtonIconColor'] as int) : null,
       );
     }
     throw Exception('Invalid brightness value: ${json['brightness']}');
@@ -256,6 +256,7 @@ class ThemeCustomization {
         '_tileSubtitleColor': _tileSubtitleColor?.value,
         '_navigationBarIconColor': _navigationBarIconColor?.value,
         '_qrButtonBackgroundColor': _qrButtonBackgroundColor?.value,
+        '_qrButtonIconColor': _qrButtonIconColor?.value,
       };
 
   ThemeData generateTheme() => ThemeData(
