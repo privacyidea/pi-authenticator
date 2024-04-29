@@ -5,11 +5,11 @@ import '../model/enums/introduction.dart';
 import '../model/states/introduction_state.dart';
 import '../utils/logger.dart';
 
-class InrtroductionNotifier extends StateNotifier<IntroductionState> {
+class IntroductionNotifier extends StateNotifier<IntroductionState> {
   late Future<IntroductionState> loadingRepo;
 
   final IntroductionRepository _repo;
-  InrtroductionNotifier({required IntroductionRepository repository})
+  IntroductionNotifier({required IntroductionRepository repository})
       : _repo = repository,
         super(const IntroductionState()) {
     _init();

@@ -47,6 +47,7 @@ void _testTokenNotifier() {
         PushToken(label: 'label2', issuer: 'issuer2', id: 'id2', serial: 'serial2', isRolledOut: true)
       ];
       final responses = [before, after];
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRepo.loadTokens()).thenAnswer((_) async => responses.removeAt(0));
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
@@ -66,6 +67,7 @@ void _testTokenNotifier() {
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret')];
       final after = before;
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
@@ -227,7 +229,6 @@ void _testTokenNotifier() {
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
-      when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
@@ -286,6 +287,7 @@ void _testTokenNotifier() {
           'otpauth://pipush/PIPU0006BF18?url=https%3A//192.168.178.30/ttype/push&ttl=10&issuer=privacyIDEA&enrollment_credential=ae60d4744ac5384515574b85f538c6a4e0c7bc82&v=1&serial=PIPU0006BF18&sslverify=0';
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'fbToken');
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((realInvocation) async => AsymmetricKeyPair(publicTokenKey, privateTokenKey));
       when(mockRsaUtils.serializeRSAPublicKeyPKCS8(publicServerKey)).thenReturn(publicServerKeyString);
       when(mockRsaUtils.serializeRSAPublicKeyPKCS8(publicTokenKey)).thenReturn(publicTokenKeyString);
@@ -403,6 +405,7 @@ void _testTokenNotifier() {
       final before = <Token>[
         HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret'),
       ];
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRepo.loadTokens()).thenAnswer((_) => Future.value(before));
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
