@@ -115,14 +115,6 @@ final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, DeepLink?>(
   name: 'deeplinkProvider',
 );
 
-// final appStateProvider = StateProvider<AppLifecycleState?>(
-//   (ref) {
-//     Logger.info("New AppStateNotifier created", name: 'appStateProvider');
-//     return null;
-//   },
-//   name: 'appStateProvider',
-// );
-
 final tokenFolderProvider = StateNotifierProvider<TokenFolderNotifier, TokenFolderState>(
   (ref) {
     Logger.info("New TokenFolderNotifier created", name: 'tokenFolderProvider');
