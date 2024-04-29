@@ -890,3 +890,4 @@ DerivedData/
 .flutter-plugins-dependencies
 lib/l10n/untranslated.txt
 *.jks
+ios/Flutter/flutter_export_environment.sh
