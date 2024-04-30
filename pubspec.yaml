@@ -39,7 +39,7 @@ dependencies:
   logger: ^2.0.0
   permission_handler: ^11.0.0
   pi_authenticator_legacy:
-    path: ./local_plugins/pi-authenticator-legacy
+    path: local_plugins/pi-authenticator-legacy
   uuid: ^4.0.0
   zxing2: ^0.2.1
   # Crypto
