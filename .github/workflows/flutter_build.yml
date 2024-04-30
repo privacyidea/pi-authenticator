@@ -48,8 +48,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17.0.7'
+          distribution: 'OpenJDK'
+          java-version: '8u411'
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
