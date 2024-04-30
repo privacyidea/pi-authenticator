@@ -163,6 +163,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
 
   /// Removes a PushRequest from repo and state. Returns true if successful, false if not.
   Future<bool> _remove(PushRequest pushRequest) async {
+    _cancelTimer(pushRequest);
     await loadingRepoMutex.acquire();
     final newState = state.withoutRequest(pushRequest);
     try {
@@ -174,10 +175,10 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
         error: e,
       );
       loadingRepoMutex.release();
+      _setupTimer(pushRequest);
       return false;
     }
     state = newState;
-    _cancelTimer(pushRequest);
     loadingRepoMutex.release();
     return true;
   }
@@ -219,20 +220,24 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   /// It should be still in the CustomIntBuffer of the state.
   Future<bool> accept(PushToken pushToken, PushRequest pushRequest) async {
     if (pushRequest.accepted != null) {
-      Logger.warning('The push request is already accepted or declined.', name: 'push_request_notifier.dart#decline');
+      Logger.warning('The push request is already accepted or declined.', name: 'push_request_notifier.dart#accept');
 
       return false;
     }
-    Logger.info('Decline push request.', name: 'push_request_notifier.dart#decline');
+    Logger.info('Accept push request.', name: 'push_request_notifier.dart#accept');
     final updated = await _updatePushRequest(pushRequest, (p0) async {
       final updated = p0.copyWith(accepted: true);
       final success = await _handleReaction(pushRequest: updated, token: pushToken);
       if (!success) {
+        Logger.warning('Failed to handle push request reaction.', name: 'push_request_notifier.dart#accept');
         return p0;
       }
       return updated;
     });
-    if (updated == null || updated.accepted != true) return false;
+    if (updated == null || updated.accepted != true) {
+      Logger.warning('Failed to accept push request.', name: 'push_request_notifier.dart#accept');
+      return false;
+    }
     await _remove(updated);
     return true;
   }
@@ -247,11 +252,15 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
       final updated = p0.copyWith(accepted: false);
       final success = await _handleReaction(pushRequest: updated, token: pushToken);
       if (!success) {
+        Logger.warning('Failed to handle push request reaction.', name: 'push_request_notifier.dart#accept');
         return p0;
       }
       return updated;
     });
-    if (updated == null || updated.accepted != false) return false;
+    if (updated == null || updated.accepted != false) {
+      Logger.warning('Failed to decline push request.', name: 'push_request_notifier.dart#decline');
+      return false;
+    }
     await _remove(updated);
     return true;
   }
@@ -283,11 +292,19 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     _setupAllTimers(pushRequests);
   }
 
-  void _cancelTimer(PushRequest pr) => _expirationTimers.remove(pr.id.toString())?.cancel();
+  void _cancelTimer(PushRequest pr) {
+    Logger.info('Canceling timer for push request ${pr.id}', name: 'push_request_notifier.dart#_cancelTimer');
+    final timer = _expirationTimers.remove(pr.id.toString())?..cancel();
+    if (timer == null) {
+      Logger.warning('Timer for push request ${pr.id} not found.', name: 'push_request_notifier.dart#_cancelTimer');
+    }
+  }
 
   void _cancalAllTimers() {
-    for (var i = 0; i < _expirationTimers.length; i++) {
-      _expirationTimers.remove(i.toString())?.cancel();
+    Logger.info('Canceling all timers: [${_expirationTimers.keys}]', name: 'push_request_notifier.dart#_cancelAllTimers');
+    final ids = _expirationTimers.keys.toList();
+    for (var id in ids) {
+      _expirationTimers.remove(id.toString())?.cancel();
     }
   }
 
@@ -298,6 +315,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     _expirationTimers[pr.id.toString()]?.cancel();
     int time = pr.expirationDate.difference(DateTime.now()).inMilliseconds;
     if (time < 1) {
+      if (!mounted) return;
       _remove(pr);
       return;
     }
@@ -342,6 +360,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     }
     Response response;
     try {
+      Logger.info('Sending push request response.', name: 'token_widgets.dart#_handleReaction');
       response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
     } catch (e) {
       Logger.warning('Sending push request response failed. Retrying.', name: 'token_widgets.dart#handleReaction');

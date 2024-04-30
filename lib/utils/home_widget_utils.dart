@@ -60,7 +60,7 @@ class HomeWidgetUtils {
   static const _showDuration = Duration(seconds: 15);
 
   factory HomeWidgetUtils({TokenRepository? tokenRepository, TokenFolderRepository? tokenFolderRepository}) {
-    if (Platform.isIOS) return UnsupportedHomeWidgetUtils(); // Not supported on iOS
+    if (kIsWeb || Platform.isIOS) return UnsupportedHomeWidgetUtils(); // Not supported on iOS
     _instance ??= HomeWidgetUtils._();
     _tokenRepository = tokenRepository ?? const SecureTokenRepository();
     _folderRepository = tokenFolderRepository ?? PreferenceTokenFolderRepository();

@@ -28,7 +28,6 @@ import '../processors/scheme_processors/token_import_scheme_processors/token_imp
 import '../repo/secure_token_repository.dart';
 import '../utils/firebase_utils.dart';
 import '../utils/globals.dart';
-import '../utils/home_widget_utils.dart';
 import '../utils/identifiers.dart';
 import '../utils/lock_auth.dart';
 import '../utils/logger.dart';
@@ -55,7 +54,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
     LegacyUtils? legacy,
     PrivacyIdeaIOClient? ioClient,
     FirebaseUtils? firebaseUtils,
-    HomeWidgetUtils? homeWidgetUtils,
   })  : _rsaUtils = rsaUtils ?? const RsaUtils(),
         _repo = repository ?? const SecureTokenRepository(),
         _ioClient = ioClient ?? const PrivacyIdeaIOClient(),

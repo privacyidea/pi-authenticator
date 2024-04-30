@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'dart:math';
 
 import 'package:camera/camera.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
@@ -72,7 +73,7 @@ class QRScannerWidget extends StatefulWidget {
 }
 
 class _QRScannerWidgetState extends State<QRScannerWidget> {
-  late Future<CameraController> _cameraController;
+  late Future<CameraController?> _cameraController;
   bool _alreadyDetected = false;
   bool _isScanning = false;
 
@@ -80,31 +81,82 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
   void initState() {
     super.initState();
     _cameraController = _initCamera();
+    _startScan();
   }
 
   @override
   void dispose() {
-    _cameraController.then((controller) => controller.dispose());
+    _cameraController.then((controller) {
+      _cameraController = Future.value(null);
+      return controller?.dispose();
+    });
     super.dispose();
   }
 
-  Future<CameraController> _initCamera() async {
+  Future<CameraController?> _initCamera() async {
     final cameras = await availableCameras();
-    final backCamera = cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.back);
-    final int rotation = backCamera.sensorOrientation;
+    var usedCamera = cameras.firstWhereOrNull((camera) => camera.lensDirection == CameraLensDirection.back);
+    usedCamera ??= cameras.firstOrNull;
+    if (usedCamera == null) return null;
     final cameraController = CameraController(
-      backCamera,
+      usedCamera,
       !kIsWeb && Platform.isAndroid ? ResolutionPreset.max : ResolutionPreset.medium,
       imageFormatGroup: !kIsWeb && Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.bgra8888,
       enableAudio: false,
     );
     await cameraController.initialize();
-    cameraController.startImageStream((image) {
+    return cameraController;
+  }
+
+  Future<void> _startScan() async {
+    final controller = await _cameraController;
+    if (controller == null) {
+      Logger.info('No camera available', name: 'QRScannerWidget#_startScan');
+      return;
+    }
+    if (kIsWeb) {
+      Logger.info('Starting qr code scan on web', name: 'QRScannerWidget#_initCamera');
+      _startWebScan();
+      return;
+    }
+    Logger.info('Starting qr code scan', name: 'QRScannerWidget#_initCamera');
+    final int rotation = controller.description.sensorOrientation;
+    controller.startImageStream((image) {
       if (_alreadyDetected || _isScanning) return;
       _isScanning = true;
       _scanQrCode(image, rotation, widget.borderPaddingPercent).whenComplete(() => _isScanning = false);
     });
-    return cameraController;
+  }
+
+  Future<void> _startWebScan() async {
+    while (!_alreadyDetected && mounted) {
+      await _webScan();
+    }
+    if (!mounted) {
+      Logger.info('QR Scanner Widget not mounted anymore', name: 'QRScannerWidget#_startWebScan');
+      return;
+    }
+    Logger.info('QR Scanner Widget already detected', name: 'QRScannerWidget#_startWebScan');
+  }
+
+  Future<void> _webScan() async {
+    final file = await (await _cameraController)?.takePicture();
+    if (file == null) {
+      Logger.info('Could not take picture: Camera not available', name: 'QRScannerWidget#_webScan');
+      return;
+    }
+    final image = img.decodeImage(await file.readAsBytes());
+    if (image == null) return;
+    final source = RGBLuminanceSource(
+      image.width,
+      image.height,
+      image.convert(numChannels: 4).getBytes(order: img.ChannelOrder.abgr).buffer.asInt32List(),
+    );
+    final bitmap = BinaryBitmap(GlobalHistogramBinarizer(source));
+    final result = _decodeQRCode(bitmap);
+    if (result == null) return;
+    _alreadyDetected = true;
+    return _navigatorReturn(result.text);
   }
 
   Future<void> _scanQrCode(CameraImage cameraImage, int rotation, double borderPaddingPercent) async {
@@ -147,7 +199,10 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
               future: _cameraController,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  final controller = snapshot.data as CameraController;
+                  final controller = snapshot.data;
+                  if (controller == null) {
+                    return const Center(child: Material(child: Text('No camera available')));
+                  }
                   return CameraPreview(controller);
                 }
                 return const Center(child: CircularProgressIndicator());

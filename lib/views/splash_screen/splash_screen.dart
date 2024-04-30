@@ -63,11 +63,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           HomeWidgetUtils().homeWidgetInit(),
         ],
         eagerError: true,
-        cleanUp: (error) {
-          Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
+        cleanUp: (_) {
           _navigate();
         },
-      ).then((values) => _navigate());
+      ).catchError((error) async {
+        Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
+        return [];
+      }).then((values) => _navigate());
     });
   }
 

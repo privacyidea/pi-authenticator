@@ -39,7 +39,7 @@ dependencies:
   logger: ^2.0.0
   permission_handler: ^11.0.0
   pi_authenticator_legacy:
-    path: local_plugins/pi-authenticator-legacy
+    path: ./local_plugins/pi-authenticator-legacy
   uuid: ^4.0.0
   zxing2: ^0.2.1
   # Crypto
@@ -80,7 +80,7 @@ dependencies:
   firebase_messaging: ^14.7.19
   collection: ^1.18.0
   crypto: ^3.0.3
-  intl: ^0.18.1
+  intl: ^0.19.0
   protobuf: ^3.1.0
   firebase_core: ^2.27.0
   simple_icons: ^10.1.3

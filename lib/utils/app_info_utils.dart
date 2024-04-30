@@ -12,6 +12,7 @@ class AppInfoUtils {
   static final _packageInfo = PackageInfo.fromPlatform();
 
   static Future<void> init() async {
+    if (isInitialized) return;
     final packageInfo = await _packageInfo;
     _appName = packageInfo.appName;
     _packageName = packageInfo.packageName;
