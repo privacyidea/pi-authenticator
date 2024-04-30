@@ -49,7 +49,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'oracle'
-          java-version: '8u411'
+          java-version: '22'
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
