@@ -85,7 +85,7 @@ dependencies:
   qr_flutter: ^4.1.0
   # file_saver: ^0.2.12
 
-dependencies_override:
+dependency_overrides:
   intl: 0.19.0
 
 dev_dependencies:
