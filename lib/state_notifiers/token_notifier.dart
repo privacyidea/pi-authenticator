@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 
 import '../interfaces/repo/token_repository.dart';
@@ -51,7 +50,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
     TokenState? initialState,
     TokenRepository? repository,
     RsaUtils? rsaUtils,
-    LegacyUtils? legacy,
     PrivacyIdeaIOClient? ioClient,
     FirebaseUtils? firebaseUtils,
   })  : _rsaUtils = rsaUtils ?? const RsaUtils(),
