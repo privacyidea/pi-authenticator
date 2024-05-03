@@ -54,7 +54,7 @@ dependencies:
   shared_preferences: ^2.2.0
   flutter_secure_storage: ^9.0.0
   # Info
-  package_info_plus: ^7.0.0
+  package_info_plus: ^8.0.0
   device_info_plus: ^10.0.1
   # URI
   uni_links: ^0.5.1
