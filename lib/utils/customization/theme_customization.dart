@@ -46,7 +46,7 @@ class ThemeCustomization {
     Color? lockColor,
     Color? tileIconColor,
     Color? navigationBarColor,
-    // From here on the colors have a default value based on another given color
+    // From here on the colors have a default value based on another given color so they can be null
     Color? actionButtonsForegroundColor, // Default: foregroundColor
     Color? tilePrimaryColor, // Default: primaryColor
     Color? tileSubtitleColor, // Default: subtitleColor
@@ -65,7 +65,7 @@ class ThemeCustomization {
         lockColor = lockColor ?? const Color(0xffFFD633),
         tileIconColor = tileIconColor ?? const Color(0xff757575),
         navigationBarColor = navigationBarColor ?? const Color(0xFFFFFFFF),
-        // From here on the colors have a default value based on another given color
+        // From here on the colors have a default value based on another given color so they can be null
         _actionButtonsForegroundColor = actionButtonsForegroundColor,
         _tilePrimaryColor = tilePrimaryColor,
         _tileSubtitleColor = tileSubtitleColor,
@@ -85,7 +85,7 @@ class ThemeCustomization {
     Color? lockColor,
     Color? tileIconColor,
     Color? navigationBarColor,
-    // From here on the colors have a default value based on another given color
+    // From here on the colors have a default value based on another given color so they can be null
     Color? actionButtonsForegroundColor, // Default: foregroundColor
     Color? tilePrimaryColor, // Default: primaryColor
     Color? tileSubtitleColor, // Default: subtitleColor
@@ -104,7 +104,7 @@ class ThemeCustomization {
         lockColor = lockColor ?? const Color(0xffFFCC00),
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
         navigationBarColor = navigationBarColor ?? const Color(0xFF282828),
-        // From here on the colors have a default value based on another given color
+        // From here on the colors have a default value based on another given color so they can be null
         _actionButtonsForegroundColor = actionButtonsForegroundColor,
         _tilePrimaryColor = tilePrimaryColor,
         _tileSubtitleColor = tileSubtitleColor,
@@ -158,7 +158,7 @@ class ThemeCustomization {
     Color? lockColor,
     Color? tileIconColor,
     Color? navigationBarColor,
-    // From here on the colors have a default value based on another given color
+    // From here on the colors have a default value based on another given color so they can be null
     Color? Function()? actionButtonsForegroundColor, // Default: foregroundColor
     Color? Function()? tilePrimaryColor, // Default: primaryColor
     Color? Function()? tileSubtitleColor, // Default: subtitleColor
@@ -177,14 +177,14 @@ class ThemeCustomization {
         deleteColor: deleteColor ?? this.deleteColor,
         renameColor: renameColor ?? this.renameColor,
         lockColor: lockColor ?? this.lockColor,
-        actionButtonsForegroundColor: actionButtonsForegroundColor != null ? actionButtonsForegroundColor() : this.actionButtonsForegroundColor,
-        tilePrimaryColor: tilePrimaryColor != null ? tilePrimaryColor() : this.tilePrimaryColor,
         tileIconColor: tileIconColor ?? this.tileIconColor,
-        tileSubtitleColor: tileSubtitleColor != null ? tileSubtitleColor() : this.tileSubtitleColor,
         navigationBarColor: navigationBarColor ?? this.navigationBarColor,
-        navigationBarIconColor: navigationBarIconColor != null ? navigationBarIconColor() : this.navigationBarIconColor,
-        qrButtonBackgroundColor: qrButtonBackgroundColor != null ? qrButtonBackgroundColor() : this.qrButtonBackgroundColor,
-        qrButtonIconColor: qrButtonIconColor != null ? qrButtonIconColor() : this.qrButtonIconColor,
+        actionButtonsForegroundColor: actionButtonsForegroundColor != null ? actionButtonsForegroundColor() : _actionButtonsForegroundColor,
+        tilePrimaryColor: tilePrimaryColor != null ? tilePrimaryColor() : _tilePrimaryColor,
+        tileSubtitleColor: tileSubtitleColor != null ? tileSubtitleColor() : _tileSubtitleColor,
+        navigationBarIconColor: navigationBarIconColor != null ? navigationBarIconColor() : _navigationBarIconColor,
+        qrButtonBackgroundColor: qrButtonBackgroundColor != null ? qrButtonBackgroundColor() : _qrButtonBackgroundColor,
+        qrButtonIconColor: qrButtonIconColor != null ? qrButtonIconColor() : _qrButtonIconColor,
       );
 
   factory ThemeCustomization.fromJson(Map<String, dynamic> json) {
@@ -432,14 +432,20 @@ class ThemeCustomization {
       'deleteColor: $deleteColor, '
       'renameColor: $renameColor, '
       'lockColor: $lockColor, '
-      'actionButtonsForegroundColor: $actionButtonsForegroundColor, '
-      'tilePrimaryColor: $tilePrimaryColor, '
       'tileIconColor: $tileIconColor, '
-      'tileSubtitleColor: $tileSubtitleColor, '
       'navigationBarColor: $navigationBarColor, '
+      'actionButtonsForegroundColor: $actionButtonsForegroundColor, '
+      '_actionButtonsForegroundColor: $_actionButtonsForegroundColor, '
+      'tilePrimaryColor: $tilePrimaryColor, '
+      '_tilePrimaryColor: $_tilePrimaryColor, '
+      'tileSubtitleColor: $tileSubtitleColor, '
+      '_tileSubtitleColor: $_tileSubtitleColor, '
       'navigationBarIconColor: $navigationBarIconColor, '
+      '_navigationBarIconColor: $_navigationBarIconColor, '
       'qrButtonBackgroundColor: $qrButtonBackgroundColor, '
+      '_qrButtonBackgroundColor: $_qrButtonBackgroundColor, '
       'qrButtonIconColor: $qrButtonIconColor'
+      "_qrButtonIconColor: $_qrButtonIconColor,"
       ')';
 
   @override
