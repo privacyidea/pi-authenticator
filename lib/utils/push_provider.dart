@@ -54,8 +54,11 @@ class PushProvider {
   final List<Function(PushRequest)> _subscribers = [];
 
   FirebaseUtils _firebaseUtils;
+  FirebaseUtils get firebaseUtils => _firebaseUtils;
   PrivacyIdeaIOClient _ioClient;
+  PrivacyIdeaIOClient get ioClient => _ioClient;
   RsaUtils _rsaUtils;
+  RsaUtils get rsaUtils => _rsaUtils;
 
   PushProvider._({
     FirebaseUtils? firebaseUtils,
@@ -401,11 +404,17 @@ class PlaceholderPushProvider implements PushProvider {
   @override
   FirebaseUtils _firebaseUtils = FirebaseUtils();
   @override
+  FirebaseUtils get firebaseUtils => _firebaseUtils;
+  @override
   PrivacyIdeaIOClient _ioClient = const PrivacyIdeaIOClient();
   @override
-  Timer? _pollTimer;
+  PrivacyIdeaIOClient get ioClient => _ioClient;
   @override
   RsaUtils _rsaUtils = const RsaUtils();
+  @override
+  RsaUtils get rsaUtils => _rsaUtils;
+  @override
+  Timer? _pollTimer;
   @override
   bool pollingIsEnabled = false;
   @override
