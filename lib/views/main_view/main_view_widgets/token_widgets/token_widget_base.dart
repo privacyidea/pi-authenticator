@@ -56,7 +56,12 @@ class TokenWidgetBase extends ConsumerWidget {
             },
             onDraggableCanceled: (velocity, offset) => globalRef?.read(draggingSortableProvider.notifier).state = null,
             dragAnchorStrategy: (Draggable<Object> d, BuildContext context, Offset point) {
-              final textSize = textSizeOf(token.label, Theme.of(context).textTheme.titleLarge!);
+              final textSize = textSizeOf(
+                text: token.label,
+                style: Theme.of(context).textTheme.titleLarge!,
+                textScaler: MediaQuery.of(context).textScaler,
+                maxLines: 1,
+              );
               return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
             },
             feedback: Column(
@@ -74,20 +79,24 @@ class TokenWidgetBase extends ConsumerWidget {
               ],
             ),
             data: token,
-            child: TokenWidgetSlideable(
-              token: token,
-              actions: actions,
-              stack: stack,
-              tile: tile,
-            ),
-          )
-        : draggingSortable == token
-            ? const SizedBox()
-            : TokenWidgetSlideable(
+            child: ClipRRect(
+              child: TokenWidgetSlideable(
                 token: token,
                 actions: actions,
                 stack: stack,
                 tile: tile,
+              ),
+            ),
+          )
+        : draggingSortable == token
+            ? const SizedBox()
+            : ClipRRect(
+                child: TokenWidgetSlideable(
+                  token: token,
+                  actions: actions,
+                  stack: stack,
+                  tile: tile,
+                ),
               );
   }
 }

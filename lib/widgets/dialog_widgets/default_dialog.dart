@@ -22,44 +22,46 @@ class DefaultDialog extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: AlertDialog(
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-              color: Theme.of(context).dividerColor,
-              width: 1.5,
+  Widget build(BuildContext context) => ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                color: Theme.of(context).dividerColor,
+                width: 1.5,
+              ),
+              borderRadius: BorderRadius.circular(16),
             ),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          actionsAlignment: actionsAlignment ?? MainAxisAlignment.end,
-          scrollable: scrollable ?? false,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
-          buttonPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-          insetPadding: const EdgeInsets.fromLTRB(16, 32, 16, 12),
-          titlePadding: const EdgeInsets.all(12),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-          elevation: 2,
-          title: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: title ?? const SizedBox()),
-              if (hasCloseButton)
-                SizedBox(
-                  width: closeButtonSize,
-                  height: closeButtonSize,
-                  child: IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: Icon(Icons.close, size: closeButtonSize),
-                    splashRadius: closeButtonSize,
-                    onPressed: () => Navigator.of(context).pop(),
+            actionsAlignment: actionsAlignment ?? MainAxisAlignment.end,
+            scrollable: scrollable ?? false,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
+            buttonPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+            insetPadding: const EdgeInsets.fromLTRB(16, 32, 16, 12),
+            titlePadding: const EdgeInsets.all(12),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            elevation: 2,
+            title: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: title ?? const SizedBox()),
+                if (hasCloseButton)
+                  SizedBox(
+                    width: closeButtonSize,
+                    height: closeButtonSize,
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: Icon(Icons.close, size: closeButtonSize),
+                      splashRadius: closeButtonSize,
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
+            actions: actions,
+            content: content,
           ),
-          actions: actions,
-          content: content,
         ),
       );
 }

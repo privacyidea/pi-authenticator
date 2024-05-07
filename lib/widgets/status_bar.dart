@@ -142,8 +142,11 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with Sing
     final maxWidth = MediaQuery.of(context).size.width - margin * 2 - padding * 2;
     final statusTextStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white) ?? const TextStyle();
     final statusSubTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white) ?? const TextStyle();
-    final statusTextHeight = textSizeOf(widget.statusText, statusTextStyle, maxWidth: maxWidth).height;
-    final statusSubTextHeight = widget.statusSubText != null ? textSizeOf(widget.statusSubText!, statusSubTextStyle, maxWidth: maxWidth).height : 0;
+    final TextScaler textScaler = MediaQuery.of(context).textScaler;
+    final statusTextHeight = textSizeOf(text: widget.statusText, style: statusTextStyle, maxWidth: maxWidth, textScaler: textScaler, maxLines: 1).height;
+    final statusSubTextHeight = widget.statusSubText != null
+        ? textSizeOf(text: widget.statusSubText!, style: statusSubTextStyle, maxWidth: maxWidth, textScaler: textScaler, maxLines: 1).height
+        : 0;
     return AnimatedPositioned(
       onEnd: () {
         if (mounted) {
