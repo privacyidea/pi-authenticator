@@ -73,7 +73,6 @@ class ApplicationCustomization {
     Uint8List? appImageUint8List,
     ThemeCustomization? lightTheme,
     ThemeCustomization? darkTheme,
-    Color? primaryColor,
     Set<AppFeature>? disabledFeatures,
   }) =>
       ApplicationCustomization(

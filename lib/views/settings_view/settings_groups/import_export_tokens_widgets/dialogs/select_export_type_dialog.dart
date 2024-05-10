@@ -11,32 +11,36 @@ class SelectExportTypeDialog extends StatelessWidget {
   const SelectExportTypeDialog({super.key});
 
   @override
-  Widget build(BuildContext context) => DefaultDialog(
-        title: Text(AppLocalizations.of(context)!.exportTokens),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SettingsListTileButton(
-              title: Text(AppLocalizations.of(context)!.toFile, style: Theme.of(context).textTheme.titleMedium),
-              onPressed: () async => _selectTokensDialog(context),
-              icon: const Icon(Icons.file_present, size: 24),
-            ),
-            SettingsListTileButton(
-                title: Text(AppLocalizations.of(context)!.asQrCode, style: Theme.of(context).textTheme.titleMedium),
-                onPressed: () async => _selectTokenDialog(context),
-                icon: const Icon(Icons.qr_code, size: 24)),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(null),
-            child: Text(AppLocalizations.of(context)!.cancel),
+  Widget build(BuildContext context) {
+    final appLocalizations = AppLocalizations.of(context)!;
+    return DefaultDialog(
+      title: Text(appLocalizations.exportTokens),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SettingsListTileButton(
+            title: Text(appLocalizations.toFile, style: Theme.of(context).textTheme.titleMedium),
+            onPressed: () async => _selectTokensDialog(context),
+            icon: const Icon(Icons.file_present, size: 24),
           ),
+          SettingsListTileButton(
+              title: Text(appLocalizations.asQrCode, style: Theme.of(context).textTheme.titleMedium),
+              onPressed: () async => _selectTokenDialog(context),
+              icon: const Icon(Icons.qr_code, size: 24)),
         ],
-      );
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(null),
+          child: Text(appLocalizations.cancel),
+        ),
+      ],
+    );
+  }
 
   void _selectTokensDialog(BuildContext context) async {
     final isExported = await showDialog<bool>(
+      useRootNavigator: false,
       context: context,
       builder: (context) => SelectTokensDialog(
         exportDialogBuilder: (tokens) => ExportTokensToFileDialog(tokens: tokens),
@@ -47,6 +51,7 @@ class SelectExportTypeDialog extends StatelessWidget {
 
   void _selectTokenDialog(BuildContext context) async {
     final isExported = await showDialog<bool>(
+      useRootNavigator: false,
       context: context,
       builder: (context) => SelectTokensDialog(
         multiSelect: false,

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/states/token_filter.dart';
+import '../../utils/logger.dart';
 import '../../utils/patch_notes_utils.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../widgets/push_request_listener.dart';
@@ -40,6 +41,7 @@ class _MainViewState extends ConsumerState<MainView> {
   void initState() {
     super.initState();
     final latestStartedVersion = globalRef?.read(settingsProvider).latestStartedVersion;
+    Logger.warning('Latest started version: $latestStartedVersion', name: 'main_view.dart#initState');
     if (latestStartedVersion == null || widget.disablePatchNotes) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       PatchNotesUtils.showPatchNotesIfNeeded(context, latestStartedVersion);

@@ -27,14 +27,17 @@ import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view.dart';
+import 'package:privacyidea_authenticator/views/feedback_view/feedback_view.dart';
 import 'package:privacyidea_authenticator/views/license_view/license_view.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
+import 'package:privacyidea_authenticator/views/push_token_view/push_tokens_view.dart';
 import 'package:privacyidea_authenticator/views/qr_scanner_view/qr_scanner_view.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
 import 'package:privacyidea_authenticator/views/splash_screen/splash_screen.dart';
 import 'package:privacyidea_authenticator/widgets/app_wrapper.dart';
 
 import '../model/enums/app_feature.dart';
+import '../views/import_tokens_view/import_tokens_view.dart';
 
 void main() async {
   Logger.init(
@@ -75,22 +78,23 @@ class CustomizationAuthenticator extends ConsumerWidget {
           themeMode: EasyDynamicTheme.of(context).themeMode,
           initialRoute: SplashScreen.routeName,
           routes: {
-            SplashScreen.routeName: (context) => SplashScreen(
-                  customization: applicationCustomizer,
+            AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
+            FeedbackView.routeName: (context) => const FeedbackView(),
+            ImportTokensView.routeName: (context) => const ImportTokensView(),
+            LicenseView.routeName: (context) => LicenseView(
+                  appImage: applicationCustomizer.appImage,
+                  appName: applicationCustomizer.appName,
+                  websiteLink: applicationCustomizer.websiteLink,
                 ),
             MainView.routeName: (context) => MainView(
                   appIcon: applicationCustomizer.appIcon,
                   appName: applicationCustomizer.appName,
                   disablePatchNotes: applicationCustomizer.disabledFeatures.contains(AppFeature.patchNotes),
                 ),
+            PushTokensView.routeName: (context) => const PushTokensView(),
             SettingsView.routeName: (context) => const SettingsView(),
-            AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
+            SplashScreen.routeName: (context) => SplashScreen(customization: applicationCustomizer),
             QRScannerView.routeName: (context) => const QRScannerView(),
-            LicenseView.routeName: (context) => LicenseView(
-                  appImage: applicationCustomizer.appImage,
-                  appName: applicationCustomizer.appName,
-                  websiteLink: applicationCustomizer.websiteLink,
-                ),
           },
         );
       },

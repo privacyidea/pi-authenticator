@@ -55,6 +55,7 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
 
   void _selectExportTypeDialog() async {
     final isExported = await showDialog<bool>(
+      useRootNavigator: false,
       context: context,
       builder: (context) => const SelectExportTypeDialog(),
     );

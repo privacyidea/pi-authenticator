@@ -28,94 +28,99 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
 
   bool exportPressed = false;
   @override
-  Widget build(BuildContext context) => DefaultDialog(
-        title: Text(AppLocalizations.of(context)!.exportTokens),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: (!exportPressed)
-              ? [
-                  Text(AppLocalizations.of(context)!.enterPasswordToEncrypt),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: passwordTextController,
-                          obscureText: passwordHidden,
-                          onChanged: (value) => setState(() {}),
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context)!.password,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: GestureDetector(
-                          onTapDown: (_) => setState(() => passwordHidden = false),
-                          onTapUp: (_) => setState(() => passwordHidden = true),
-                          onTapCancel: () => setState(() => passwordHidden = true),
-                          child: const Icon(Icons.visibility),
-                        ),
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: confirmTextController,
-                          obscureText: confirmHidden,
-                          onChanged: (value) => setState(() {}),
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context)!.confirmPassword,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: GestureDetector(
-                          onTapDown: (_) => setState(() => confirmHidden = false),
-                          onTapUp: (_) => setState(() => confirmHidden = true),
-                          onTapCancel: () => setState(() => confirmHidden = true),
-                          child: const Icon(Icons.visibility),
-                        ),
-                      )
-                    ],
-                  ),
-                ]
-              : [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(AppLocalizations.of(context)!.exportingTokens),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: LinearProgressIndicator(),
-                  ),
-                ],
-        ),
-        actions: exportPressed == false
+  Widget build(BuildContext context) {
+    final appLocalizations = AppLocalizations.of(context)!;
+    return DefaultDialog(
+      title: Text(appLocalizations.exportTokens),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: (!exportPressed)
             ? [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: Text(AppLocalizations.of(context)!.cancel),
+                Text(appLocalizations.enterPasswordToEncrypt),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: passwordTextController,
+                        obscureText: passwordHidden,
+                        onChanged: (value) => setState(() {}),
+                        decoration: InputDecoration(
+                          labelText: appLocalizations.password,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: GestureDetector(
+                        onTapDown: (_) => setState(() => passwordHidden = false),
+                        onTapUp: (_) => setState(() => passwordHidden = true),
+                        onTapCancel: () => setState(() => passwordHidden = true),
+                        child: const Icon(Icons.visibility),
+                      ),
+                    )
+                  ],
                 ),
-                TextButton(
-                    onPressed: passwordTextController.text.isNotEmpty && passwordTextController.text == confirmTextController.text
-                        ? () async {
-                            if (passwordTextController.text.isEmpty || passwordTextController.text != confirmTextController.text) {
-                              return;
-                            }
-                            setState(() => exportPressed = true);
-                            final tokensToEncrypt = widget.tokens.map((e) => e.copyWith(folderId: () => null));
-                            _saveToFile(await TokenEncryption.encrypt(tokens: tokensToEncrypt, password: passwordTextController.text));
-                          }
-                        : null,
-                    child: Text(AppLocalizations.of(context)!.export)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: confirmTextController,
+                        obscureText: confirmHidden,
+                        onChanged: (value) => setState(() {}),
+                        decoration: InputDecoration(
+                          labelText: appLocalizations.confirmPassword,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: GestureDetector(
+                        onTapDown: (_) => setState(() => confirmHidden = false),
+                        onTapUp: (_) => setState(() => confirmHidden = true),
+                        onTapCancel: () => setState(() => confirmHidden = true),
+                        child: const Icon(Icons.visibility),
+                      ),
+                    )
+                  ],
+                ),
               ]
-            : [],
-      );
+            : [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(appLocalizations.exportingTokens),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: LinearProgressIndicator(),
+                ),
+              ],
+      ),
+      actions: exportPressed == false
+          ? [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(appLocalizations.cancel),
+              ),
+              TextButton(
+                  onPressed: passwordTextController.text.isNotEmpty && passwordTextController.text == confirmTextController.text
+                      ? () async {
+                          if (passwordTextController.text.isEmpty || passwordTextController.text != confirmTextController.text) {
+                            return;
+                          }
+                          setState(() => exportPressed = true);
+                          final tokensToEncrypt = widget.tokens.map((e) => e.copyWith(folderId: () => null));
+                          if (kIsWeb) return Navigator.of(context).pop(true);
+                          _saveToFile(await TokenEncryption.encrypt(tokens: tokensToEncrypt, password: passwordTextController.text));
+                        }
+                      : null,
+                  child: Text(appLocalizations.export)),
+            ]
+          : [],
+    );
+  }
+
   void _saveToFile(String encryptedTokens) async {
-    if (kIsWeb) return;
+    if (kIsWeb) return Navigator.of(context).pop(true);
     bool isExported = false;
     if (Platform.isAndroid && mounted) isExported = await _saveToFileAndroid(context, encryptedTokens);
     if (Platform.isIOS && mounted) isExported = await _saveToFileIOS(context, encryptedTokens);
@@ -124,29 +129,31 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
   }
 
   Future<bool> _saveToFileAndroid(BuildContext context, String encryptedTokens) async {
+    final appLocalizations = AppLocalizations.of(context)!;
     try {
       final path = 'storage/emulated/0/Download/${_getFileName()}'.replaceAll(RegExp(r'\s'), '-');
       final file = File(path);
       await file.writeAsString(encryptedTokens);
 
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedToDownloadsFolder)));
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(appLocalizations.fileSavedToDownloadsFolder)));
       return true;
     } catch (e) {
-      if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.errorSavingFile, null);
+      if (context.mounted) ref.read(statusMessageProvider.notifier).state = (appLocalizations.errorSavingFile, null);
       setState(() => exportPressed = false);
       return false;
     }
   }
 
   Future<bool> _saveToFileIOS(BuildContext context, String encryptedTokens) async {
+    final appLocalizations = AppLocalizations.of(context)!;
     final Directory downloadsDir = await getApplicationDocumentsDirectory();
     final file = File('${downloadsDir.path}/${_getFileName()}');
     try {
       await file.writeAsString(encryptedTokens);
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedToDownloadsFolder)));
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(appLocalizations.fileSavedToDownloadsFolder)));
       return true;
     } catch (e) {
-      if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.errorSavingFile, null);
+      if (context.mounted) ref.read(statusMessageProvider.notifier).state = (appLocalizations.errorSavingFile, null);
       setState(() => exportPressed = false);
       return false;
     }

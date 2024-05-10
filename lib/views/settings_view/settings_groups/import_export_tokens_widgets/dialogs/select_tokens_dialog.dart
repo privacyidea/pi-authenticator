@@ -23,15 +23,16 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
   Widget build(BuildContext context) {
     final tokens = ref.read(tokenProvider).nonPiTokens;
     final exportEveryToken = tokens.length == _selectedTokens.length && _selectedTokens.containsAll(tokens);
+    final appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
-      title: Text(AppLocalizations.of(context)!.selectTokensToExport(widget.multiSelect ? 2 : 1)),
+      title: Text(appLocalizations.selectTokensToExport(widget.multiSelect ? 2 : 1)),
       content: SizedBox(
         width: ref.watch(appConstraintsProvider)!.maxWidth * 0.8,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: (tokens.isEmpty)
               ? Text(
-                  AppLocalizations.of(context)!.noTokensToExport,
+                  appLocalizations.noTokensToExport,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.secondary),
                 )
@@ -54,7 +55,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Text(
-                                AppLocalizations.of(context)!.exportAllTokens,
+                                appLocalizations.exportAllTokens,
                                 textAlign: TextAlign.right,
                               ),
                               Padding(
@@ -109,7 +110,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text(AppLocalizations.of(context)!.cancel),
+          child: Text(appLocalizations.cancel),
         ),
         if (widget.multiSelect)
           TextButton(
@@ -118,7 +119,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
                     _showExportDialog(_selectedTokens);
                   }
                 : null,
-            child: Text(AppLocalizations.of(context)!.export),
+            child: Text(appLocalizations.export),
           ),
       ],
     );
@@ -131,6 +132,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
     final authenticated = (!containsLocked || await lockAuth(localizedReason: AppLocalizations.of(context)!.exportLockedTokenReason));
     if (!authenticated || !mounted) return;
     final isExported = await showDialog<bool>(
+      useRootNavigator: false,
       context: context,
       builder: (context) => widget.exportDialogBuilder(tokens),
     );
