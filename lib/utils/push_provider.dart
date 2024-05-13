@@ -198,19 +198,30 @@ class PushProvider {
   /// to the token. This should be guarded by a lock.
   Future<void> _handleIncomingRequestForeground(Map<String, dynamic> data) async {
     Logger.info('Incoming push challenge.', name: 'push_provider.dart#_handleIncomingRequestForeground');
+
+    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('MessageData: ${data.toString()}'))));
     PushRequest pushRequest = PushRequest.fromMessageData(data);
+
+    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('pushRequest: $pushRequest'))));
     Logger.info('Parsing data of push request succeeded.', name: 'push_provider.dart#_handleIncomingRequestForeground');
+
+    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('globalRef: $globalRef'))));
     final pushToken = globalRef?.read(tokenProvider).getTokenBySerial(pushRequest.serial);
+    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('pushToken: $pushToken'))));
     if (pushToken == null) {
       Logger.warning('No token found for serial ${pushRequest.serial}.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;
     }
     if (!await pushRequest.verifySignature(pushToken, rsaUtils: _rsaUtils)) {
+      showAsyncDialog(builder: (context) => const Center(child: Material(child: Text('pushRequest.verifySignature: false'))));
       Logger.warning('Signature verification failed.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;
     }
     Logger.info('Signature verification succeeded, notifying ${_subscribers.length} subscribers.', name: 'push_provider.dart#_handleIncomingRequestForeground');
+
+    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('_subscribers.length: ${_subscribers.length}'))));
     for (var subscriber in _subscribers) {
+      showAsyncDialog(builder: (context) => Center(child: Material(child: Text('subscriber: $subscriber'))));
       subscriber(pushRequest);
     }
   }
@@ -347,6 +358,7 @@ class PushProvider {
       case 200:
         try {
           challengeList = _getAndValidateDataFromResponse(response);
+          showAsyncDialog(builder: (context) => Center(child: Material(child: Text('pollForChallenge challengeList: $challengeList'))));
         } catch (_) {
           if (isManually) {
             globalRef?.read(statusMessageProvider.notifier).state = (
@@ -383,6 +395,8 @@ class PushProvider {
         return;
     }
     Logger.info('Received ${challengeList.length} challenge(s) for ${token.label}', name: 'push_provider.dart#pollForChallenge');
+
+    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('Received ${challengeList.length} challenge(s) for ${token.label}'))));
     for (Map<String, dynamic> challengeData in challengeList) {
       _handleIncomingRequestForeground((challengeData));
     }
