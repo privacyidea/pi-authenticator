@@ -49,6 +49,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
     final token = ref.watch(tokenProvider).getTokenBySerial(widget.pushRequest.serial);
     if (token == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
+        showDialog(context: context, builder: (_) => Center(child: Material(child: Text('Token of PushRequest not found!'))));
         if (mounted) {
           ref.read(pushRequestProvider.notifier).remove(widget.pushRequest);
         }
