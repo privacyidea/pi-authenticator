@@ -16,14 +16,7 @@ class QrScannerButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => FloatingActionButton(
         onPressed: () async {
-          await showDialog(
-            context: context,
-            useRootNavigator: false,
-            routeSettings: const RouteSettings(name: QRScannerView.routeName),
-            builder: (_) => const Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
+          await getContextedGlobalNavigatorKeyTest(context);
           if (await Permission.camera.isPermanentlyDenied) {
             showAsyncDialog(
               builder: (_) => DefaultDialog(
