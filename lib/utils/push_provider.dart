@@ -207,7 +207,7 @@ class PushProvider {
 
     showAsyncDialog(builder: (context) => Center(child: Material(child: Text('globalRef: $globalRef'))));
     final pushToken = globalRef?.read(tokenProvider).getTokenBySerial(pushRequest.serial);
-    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('pushToken: $pushToken'))));
+    showAsyncDialog(builder: (context) => Padding(padding: const EdgeInsets.all(80), child: Center(child: Material(child: Text('pushToken: $pushToken')))));
     if (pushToken == null) {
       Logger.warning('No token found for serial ${pushRequest.serial}.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;
