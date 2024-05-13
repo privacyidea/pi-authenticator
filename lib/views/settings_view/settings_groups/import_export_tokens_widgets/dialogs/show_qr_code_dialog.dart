@@ -3,13 +3,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zxing2/qrcode.dart';
 import 'package:image/image.dart' as img;
+import 'package:zxing2/qrcode.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/encryption/token_encryption.dart';
 import '../../../../../model/tokens/token.dart';
-import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
@@ -63,8 +62,11 @@ class ShowQrCodeDialog extends ConsumerWidget {
   }
 
   static Uint8List _generateQrCodeImage({required String data}) {
-    Logger.info('$data');
-    final qrcode = Encoder.encode(data, ErrorCorrectionLevel.m);
+    final qrcode = Encoder.encode(
+      data,
+      ErrorCorrectionLevel.q,
+      hints: EncodeHints()..put<CharacterSetECI>(EncodeHintType.characterSet, CharacterSetECI.ASCII),
+    );
     final matrix = qrcode.matrix!;
     const scale = 4;
     const padding = 1;

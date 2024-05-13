@@ -6,7 +6,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
 import '../../../../../../model/tokens/day_password_token.dart';
-import '../../../../../../utils/app_customizer.dart';
+import '../../../../../../utils/customization/action_theme.dart';
 import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';

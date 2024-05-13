@@ -5,9 +5,9 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
-
 import '../utils/riverpod_providers.dart';
 import '../utils/riverpod_state_listener.dart';
 import 'app_wrappers/single_touch_recognizer.dart';

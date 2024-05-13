@@ -12,7 +12,7 @@ import 'two_fas_import_file_processor.dart';
 class PrivacyIDEAAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
   const PrivacyIDEAAuthenticatorImportFileProcessor();
   @override
-  Future<bool> fileIsValid({required XFile file}) async {
+  Future<bool> fileIsValid(XFile file) async {
     try {
       final content = await file.readAsString();
       final json = jsonDecode(content);
@@ -26,10 +26,10 @@ class PrivacyIDEAAuthenticatorImportFileProcessor extends TokenImportFileProcess
   }
 
   @override
-  Future<bool> fileNeedsPassword({required XFile file}) => Future.value(true);
+  Future<bool> fileNeedsPassword(XFile file) => Future.value(true);
 
   @override
-  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password}) async {
     assert(password != null);
 
     try {

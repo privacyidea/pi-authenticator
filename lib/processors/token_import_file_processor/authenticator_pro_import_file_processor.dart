@@ -5,7 +5,9 @@ import 'dart:convert';
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/enums/encodings.dart';
 import 'package:privacyidea_authenticator/model/enums/token_types.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
@@ -36,13 +38,6 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   static const String _AUTHENTICATOR_PRO_COUNTER = "Counter";
   static const String _AUTHENTICATOR_PRO_ALGORITHM = "Algorithm";
 
-  /*
-      // final copyCount = tokenMap['CopyCount'] as int;
-      // final ranking = tokenMap['Ranking'] as int;
-      //  final pin = tokenMap['Pin'] as String?;
-      //  final icon = tokenMap['Icon'] as String?;
-   */
-
   static final typeMap = {
     1: TokenTypes.HOTP.name,
     2: TokenTypes.TOTP.name,
@@ -60,21 +55,32 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   const AuthenticatorProImportFileProcessor();
 
   @override
-  Future<bool> fileIsValid({required XFile file}) async {
+  Future<bool> fileIsValid(XFile file) async {
     final contentBytes = await file.readAsBytes();
     try {
       final contentString = utf8.decode(contentBytes);
       try {
+        // Check if it's a JSON with plain tokens
         if (json.decode(contentString)['Authenticators'] != null) return true;
       } catch (e) {}
       try {
+        // Check if it's the HTML export
         if (contentString.startsWith('<!doctype html>')) return true;
       } catch (e) {}
       try {
-        if (Uri.tryParse(contentString.split('\n').first) != null) return true;
-        return false;
+        // Check if it's a list of URIs
+        List<String> lines = contentString.split('\n')..removeWhere((element) => element.isEmpty);
+        if (lines.every((line) => line.isEmpty || line.startsWith('otpauth://'))) return true;
       } catch (e) {}
+      // Its utf8 encoded, but not a JSON, HTML or URI list, so it's not valid -> return false
+      Logger.warning(
+        'File is not a valid Authenticator Pro backup file',
+        error: 'Invalid content: $contentString',
+        name: 'authenticator_pro_import_file_processor#fileIsValid',
+      );
+      return false;
     } catch (e) {
+      // When utf8 decoding fails, it's may be encrypted
       try {
         final headerByteLength = utf8.encode(header).length;
         final importedHeader = contentBytes.sublist(0, headerByteLength);
@@ -83,14 +89,20 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
           return true;
         }
       } catch (e) {}
+      Logger.warning(
+        'File is not a valid Authenticator Pro backup file',
+        error: 'Content Bytes: $contentBytes',
+        name: 'authenticator_pro_import_file_processor#fileIsValid',
+      );
     }
-
+    // It's not utf8 encoded and not encrypted, so it's not valid -> return false
     return false;
   }
 
   @override
-  Future<bool> fileNeedsPassword({required XFile file}) async {
+  Future<bool> fileNeedsPassword(XFile file) async {
     final contentBytes = await file.readAsBytes();
+
     try {
       utf8.decode(contentBytes);
 
@@ -108,9 +120,8 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password}) async {
     var results = <ProcessorResult<Token>>[];
-
     final bytes = await file.readAsBytes();
     Uint8Buffer uint8buffer = Uint8Buffer(data: bytes);
     final headerByteLength = utf8.encode(header).length;
@@ -199,7 +210,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   Future<List<ProcessorResult<Token>>> _processPlain({required String fileContent}) async {
     try {
       final tokensMap = (json.decode(fileContent)['Authenticators'].cast<Map<String, dynamic>>()) as List<Map<String, dynamic>>;
-      return _processAuthPro(tokensMap: tokensMap);
+      return _processJson(tokensMap: tokensMap);
     } catch (e) {
       try {
         final lines = fileContent.split('\n').where((e) => e.isNotEmpty).map((e) => Uri.parse(e)).toList();
@@ -263,7 +274,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
     return results;
   }
 
-  Future<List<ProcessorResult<Token>>> _processAuthPro({required List<Map<String, dynamic>> tokensMap}) async {
+  Future<List<ProcessorResult<Token>>> _processJson({required List<Map<String, dynamic>> tokensMap}) async {
     Logger.info('Processing plain file', name: 'authenticator_pro_import_file_processor#_processAuthPro');
     final result = <ProcessorResult<Token>>[];
     for (var tokenMap in tokensMap) {
@@ -278,7 +289,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
           URI_TYPE: tokenType,
           URI_ISSUER: tokenMap[_AUTHENTICATOR_PRO_ISSUER] as String,
           URI_LABEL: tokenMap[_AUTHENTICATOR_PRO_LABEL] as String,
-          URI_SECRET: utf8.encode(tokenMap[_AUTHENTICATOR_PRO_SECRET] as String),
+          URI_SECRET: Encodings.base32.decode(tokenMap[_AUTHENTICATOR_PRO_SECRET] as String),
           URI_DIGITS: tokenMap[_AUTHENTICATOR_PRO_DIGITS] as int,
           URI_PERIOD: tokenMap[_AUTHENTICATOR_PRO_PERIOD] as int,
           URI_ALGORITHM: algorithmMap[tokenMap[_AUTHENTICATOR_PRO_ALGORITHM] as int],

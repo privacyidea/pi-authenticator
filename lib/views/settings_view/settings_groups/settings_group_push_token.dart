@@ -121,14 +121,14 @@ class SettingsGroupPushToken extends ConsumerWidget {
                 shrinkWrap: true,
                 itemCount: unsupported.length,
                 itemBuilder: (context, index) => Text('${unsupported[index].label}'),
-                separatorBuilder: (context, index) => Divider(),
+                separatorBuilder: (context, index) => const Divider(),
               ),
             ),
             actions: <Widget>[
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.dismiss,
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),

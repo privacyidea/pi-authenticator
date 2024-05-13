@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/introduction_extension.dart';
 
 import '../enums/introduction.dart';
+import '../extensions/enums/introduction_extension.dart';
 
 part 'introduction_state.g.dart';
 

@@ -3,11 +3,10 @@ import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/sortable_list.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:uni_links/uni_links.dart';
 
 import '../l10n/app_localizations.dart';
+import '../model/extensions/sortable_list.dart';
 import '../model/mixins/sortable_mixin.dart';
 import '../model/states/introduction_state.dart';
 import '../model/states/push_request_state.dart';
@@ -17,6 +16,7 @@ import '../model/states/token_folder_state.dart';
 import '../model/states/token_state.dart';
 import '../model/token_folder.dart';
 import '../model/tokens/otp_token.dart';
+import '../model/tokens/token.dart';
 import '../repo/preference_introduction_repository.dart';
 import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_folder_repository.dart';
@@ -26,7 +26,7 @@ import '../state_notifiers/push_request_notifier.dart';
 import '../state_notifiers/settings_notifier.dart';
 import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
-import 'app_customizer.dart';
+import 'customization/application_customization.dart';
 import 'firebase_utils.dart';
 import 'globals.dart';
 import 'home_widget_utils.dart';
@@ -114,14 +114,6 @@ final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, DeepLink?>(
   },
   name: 'deeplinkProvider',
 );
-
-// final appStateProvider = StateProvider<AppLifecycleState?>(
-//   (ref) {
-//     Logger.info("New AppStateNotifier created", name: 'appStateProvider');
-//     return null;
-//   },
-//   name: 'appStateProvider',
-// );
 
 final tokenFolderProvider = StateNotifierProvider<TokenFolderNotifier, TokenFolderState>(
   (ref) {
