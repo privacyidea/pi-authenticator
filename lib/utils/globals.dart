@@ -67,6 +67,16 @@ Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKey() async {
   }
 }
 
+Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKeyTest(BuildContext context) async {
+  if (globalNavigatorKey.currentContext != null) {
+    showDialog(context: context, builder: (_) => const Center(child: Material(child: Text('Global Context Found!'))));
+    return globalNavigatorKey;
+  } else {
+    showDialog(context: context, builder: (_) => const Center(child: Material(child: Text('Global Context Not Found.. Retry in 500ms.'))));
+    return await Future.delayed(const Duration(milliseconds: 500), _getContextedGlobalNavigatorKey);
+  }
+}
+
 final policyStatementUri = Uri.parse("https://netknights.it/en/privacy-statement/");
 final piAuthenticatorGitHubUri = Uri.parse("https://github.com/privacyidea/pi-authenticator");
 

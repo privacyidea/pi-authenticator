@@ -39,6 +39,8 @@ import 'package:privacyidea_authenticator/widgets/app_wrapper.dart';
 import '../model/enums/app_feature.dart';
 import '../views/import_tokens_view/import_tokens_view.dart';
 
+int globalCounter = 0;
+
 void main() async {
   Logger.init(
       navigatorKey: globalNavigatorKey,
@@ -49,23 +51,43 @@ void main() async {
 }
 
 class CustomizationAuthenticator extends ConsumerWidget {
-  static WidgetRef? globalAppRef;
-
   const CustomizationAuthenticator({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsFlutterBinding.ensureInitialized();
-    globalAppRef = ref;
     globalRef = ref;
-    final state = ref.watch(settingsProvider);
-    final locale = state.currentLocale;
+    final locale = ref.watch(settingsProvider).currentLocale;
     final applicationCustomizer = ref.watch(applicationCustomizerProvider);
     return LayoutBuilder(
       builder: (context, constraints) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
           ref.read(appConstraintsProvider.notifier).state = constraints;
+          await showDialog(
+              context: context,
+              builder: (context) {
+                // globalCounter++;
+                return const Center(
+                  child: Material(
+                    child: Text('Test'),
+                  ),
+                );
+              });
+          // await showDialog(
+          //     context: context,
+          //     builder: (context) {
+          //       globalCounter++;
+          //       return Center(
+          //         child: Material(
+          //           child: Text('Counter: $globalCounter, globalContextSync: $globalContextSync'),
+          //         ),
+          //       );
+          //     });
         });
         return MaterialApp(
+          scrollBehavior: ScrollConfiguration.of(context).copyWith(
+            physics: const ClampingScrollPhysics(),
+            overscroll: false,
+          ),
           debugShowCheckedModeBanner: true,
           navigatorKey: globalNavigatorKey,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../mains/main_customizer.dart';
 import '../../../../utils/globals.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../utils/view_utils.dart';
@@ -15,6 +16,14 @@ class QrScannerButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => FloatingActionButton(
         onPressed: () async {
+          await showDialog(
+            context: context,
+            useRootNavigator: false,
+            routeSettings: const RouteSettings(name: QRScannerView.routeName),
+            builder: (_) => const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
           if (await Permission.camera.isPermanentlyDenied) {
             showAsyncDialog(
               builder: (_) => DefaultDialog(
@@ -31,7 +40,7 @@ class QrScannerButton extends ConsumerWidget {
             if (qrCode != null) ref.read(tokenProvider.notifier).handleQrCode(qrCode);
           });
         },
-        tooltip: AppLocalizations.of(context)!.scanQrCode,
+        tooltip: '${AppLocalizations.of(context)!.scanQrCode} (Counter: $globalCounter)',
         child: const Icon(Icons.qr_code_scanner_outlined),
       );
 }
