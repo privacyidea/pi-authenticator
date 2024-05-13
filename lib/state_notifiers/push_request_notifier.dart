@@ -126,7 +126,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     try {
       await _pushRepo.saveState(newState);
     } catch (e) {
-      showAsyncDialog(builder: (_) => const Center(child: Material(child: Text('Error saving _pushRepo state...'))));
+      showAsyncDialog(builder: (_) => Center(child: Material(child: Text('Error saving _pushRepo state: ${_pushRepo.runtimeType}'))));
       Logger.warning(
         'Failed to save push request: $pushRequest',
         name: 'push_request_notifier.dart#_addOrReplacePushRequest',
