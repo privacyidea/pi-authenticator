@@ -77,7 +77,6 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
 
   Future<void> _init(PushRequestState? initialState) async {
     initState = initialState != null ? Future.value(initialState) : _loadFromRepo();
-    showAsyncDialog(builder: (_) => const Center(child: Material(child: Text('PushRequestNotifier initializing...'))));
     _pushProvider.subscribe(add);
     await initState;
     Logger.info('PushRequestNotifier initialized', name: 'push_request_notifier.dart#_init');
@@ -116,11 +115,8 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   /// Adds a PushRequest to repo and state. Returns true if successful, false if not.
   /// If the request already exists, it will be replaced.
   Future<bool> _addOrReplacePushRequest(PushRequest pushRequest) async {
-    showAsyncDialog(builder: (_) => const Center(child: Material(child: Text('PushRequestNotifier adding or replacing push request...'))));
     await loadingRepoMutex.acquire();
-    showAsyncDialog(builder: (_) => const Center(child: Material(child: Text('loadingRepoMutex acquired...'))));
     final oldState = state;
-    showAsyncDialog(builder: (_) => Center(child: Material(child: Text('Old state: $oldState'))));
     final newState = oldState.addOrReplace(pushRequest);
     showAsyncDialog(builder: (_) => Center(child: Material(child: Text('New state: $newState'))));
     try {

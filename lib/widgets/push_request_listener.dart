@@ -25,9 +25,6 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
   @override
   Widget build(BuildContext context) {
     final pushRequest = ref.watch(pushRequestProvider).pushRequests.firstOrNull;
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      showDialog(context: context, builder: (_) => Center(child: Material(child: Text('Push Request: ${pushRequest?.serial}'))));
-    });
     return Stack(
       children: [
         widget.child,

@@ -61,7 +61,6 @@ BuildContext? get globalContextSync {
 final Future<BuildContext> globalContext = Future(() async => await _getContextedGlobalNavigatorKey()).then((value) => value.currentContext!);
 Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKey() async {
   if (globalNavigatorKey.currentContext != null) {
-    showDialog(context: globalNavigatorKey.currentContext!, builder: (_) => const Center(child: Material(child: Text('Global Context Found!'))));
     return globalNavigatorKey;
   } else {
     return await Future.delayed(const Duration(milliseconds: 500), _getContextedGlobalNavigatorKey);
@@ -70,10 +69,8 @@ Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKey() async {
 
 Future<GlobalKey<NavigatorState>> getContextedGlobalNavigatorKeyTest(BuildContext context) async {
   if (globalNavigatorKey.currentContext != null) {
-    showDialog(context: context, builder: (_) => const Center(child: Material(child: Text('Global Context Found!'))));
     return globalNavigatorKey;
   } else {
-    showDialog(context: context, builder: (_) => const Center(child: Material(child: Text('Global Context Not Found.. Retry in 500ms.'))));
     return await Future.delayed(const Duration(milliseconds: 500), _getContextedGlobalNavigatorKey);
   }
 }
