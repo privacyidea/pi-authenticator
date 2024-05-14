@@ -20,7 +20,6 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
@@ -34,7 +33,6 @@ import 'package:privacyidea_authenticator/utils/network_utils.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../model/states/push_request_state.dart';
 import '../repo/secure_push_request_repository.dart';
@@ -118,11 +116,9 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     await loadingRepoMutex.acquire();
     final oldState = state;
     final newState = oldState.addOrReplace(pushRequest);
-    showAsyncDialog(builder: (_) => Center(child: Material(child: Text('New state: $newState'))));
     try {
       await _pushRepo.saveState(newState);
     } catch (e) {
-      showAsyncDialog(builder: (_) => Center(child: Material(child: Text('Error saving _pushRepo state: ${_pushRepo.runtimeType}'))));
       Logger.warning(
         'Failed to save push request: $pushRequest',
         name: 'push_request_notifier.dart#_addOrReplacePushRequest',
@@ -131,7 +127,6 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
       loadingRepoMutex.release();
       return false;
     }
-    showAsyncDialog(builder: (_) => const Center(child: Material(child: Text('Saved _pushRepo state...'))));
     state = newState;
     loadingRepoMutex.release();
     return true;
@@ -271,9 +266,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   }
 
   Future<bool> add(PushRequest pr) async {
-    showAsyncDialog(builder: (_) => const Center(child: Material(child: Text('PushRequestNotifier adding push request...'))));
     if (state.knowsRequestId(pr.id)) {
-      showAsyncDialog(builder: (_) => const Center(child: Material(child: Text('PushRequestNotifier push request already exists...'))));
       Logger.info(
         'The push request already exists.',
         name: 'token_notifier.dart#addPushRequestToToken',
@@ -283,9 +276,8 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     // Save the pending request.
     final success = await _addOrReplacePushRequest(pr);
 
-    showAsyncDialog(builder: (_) => Center(child: Material(child: Text('PushRequestNotifier push request added successfully to state: $success'))));
     // Remove the request after it expires.
-    _setupTimer(pr);
+    if (success) _setupTimer(pr);
     Logger.info('Added push request ${pr.id} to state', name: 'token_notifier.dart#addPushRequestToToken');
     return true;
   }

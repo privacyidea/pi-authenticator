@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../mains/main_customizer.dart';
 import '../../../../utils/globals.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../utils/view_utils.dart';
@@ -33,7 +32,7 @@ class QrScannerButton extends ConsumerWidget {
             if (qrCode != null) ref.read(tokenProvider.notifier).handleQrCode(qrCode);
           });
         },
-        tooltip: '${AppLocalizations.of(context)!.scanQrCode} (Counter: $globalCounter)',
+        tooltip: AppLocalizations.of(context)!.scanQrCode,
         child: const Icon(Icons.qr_code_scanner_outlined),
       );
 }

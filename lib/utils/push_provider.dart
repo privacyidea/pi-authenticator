@@ -24,11 +24,9 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/repo/secure_push_request_repository.dart';
 import 'package:privacyidea_authenticator/utils/pi_notifications.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/push_request.dart';
@@ -198,30 +196,19 @@ class PushProvider {
   /// to the token. This should be guarded by a lock.
   Future<void> _handleIncomingRequestForeground(Map<String, dynamic> data) async {
     Logger.info('Incoming push challenge.', name: 'push_provider.dart#_handleIncomingRequestForeground');
-
-    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('MessageData: ${data.toString()}'))));
     PushRequest pushRequest = PushRequest.fromMessageData(data);
-
-    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('pushRequest: $pushRequest'))));
     Logger.info('Parsing data of push request succeeded.', name: 'push_provider.dart#_handleIncomingRequestForeground');
-
-    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('globalRef: $globalRef'))));
     final pushToken = globalRef?.read(tokenProvider).getTokenBySerial(pushRequest.serial);
-    showAsyncDialog(builder: (context) => Padding(padding: const EdgeInsets.all(80), child: Center(child: Material(child: Text('pushToken: $pushToken')))));
     if (pushToken == null) {
       Logger.warning('No token found for serial ${pushRequest.serial}.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;
     }
     if (!await pushRequest.verifySignature(pushToken, rsaUtils: _rsaUtils)) {
-      showAsyncDialog(builder: (context) => const Center(child: Material(child: Text('pushRequest.verifySignature: false'))));
       Logger.warning('Signature verification failed.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;
     }
     Logger.info('Signature verification succeeded, notifying ${_subscribers.length} subscribers.', name: 'push_provider.dart#_handleIncomingRequestForeground');
-
-    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('_subscribers.length: ${_subscribers.length}'))));
     for (var subscriber in _subscribers) {
-      showAsyncDialog(builder: (context) => Center(child: Material(child: Text('subscriber: $subscriber'))));
       subscriber(pushRequest);
     }
   }
@@ -271,12 +258,9 @@ class PushProvider {
   }
 
   Future<void> pollForChallenges({required bool isManually}) async {
-    showAsyncDialog(builder: (context) => const Center(child: Material(child: Text('pollForChallenges: started'))));
     // Get all push tokens
     await globalRef?.read(tokenProvider.notifier).initState;
     List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
-
-    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('pollForChallenges: found ${pushTokens.length} tokens'))));
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
       await globalRef?.read(settingsProvider.notifier).loadingRepo;
@@ -289,7 +273,6 @@ class PushProvider {
 
     final connectivityResult = await (Connectivity().checkConnectivity());
 
-    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('connectivityResult: $connectivityResult'))));
     if (connectivityResult.contains(ConnectivityResult.none)) {
       if (isManually) {
         Logger.info('Tried to poll without any internet connection available.', name: 'push_provider.dart#pollForChallenges');
@@ -312,7 +295,6 @@ class PushProvider {
   }
 
   Future<void> pollForChallenge(PushToken token, {bool isManually = true}) async {
-    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('pollForChallenge: ${token.serial}'))));
     if (instance == null) {
       Logger.warning('Polling push tokens failed. PushProvider is not initialized.', name: 'push_provider.dart#pollForChallenge');
       return;
@@ -353,12 +335,10 @@ class PushProvider {
     }
     final List<Map<String, dynamic>> challengeList;
 
-    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('pollForChallenge response: ${response.body}'))));
     switch (response.statusCode) {
       case 200:
         try {
           challengeList = _getAndValidateDataFromResponse(response);
-          showAsyncDialog(builder: (context) => Center(child: Material(child: Text('pollForChallenge challengeList: $challengeList'))));
         } catch (_) {
           if (isManually) {
             globalRef?.read(statusMessageProvider.notifier).state = (
@@ -396,7 +376,6 @@ class PushProvider {
     }
     Logger.info('Received ${challengeList.length} challenge(s) for ${token.label}', name: 'push_provider.dart#pollForChallenge');
 
-    showAsyncDialog(builder: (context) => Center(child: Material(child: Text('Received ${challengeList.length} challenge(s) for ${token.label}'))));
     for (Map<String, dynamic> challengeData in challengeList) {
       _handleIncomingRequestForeground((challengeData));
     }
