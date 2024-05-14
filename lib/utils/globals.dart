@@ -67,14 +67,6 @@ Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKey() async {
   }
 }
 
-Future<GlobalKey<NavigatorState>> getContextedGlobalNavigatorKeyTest(BuildContext context) async {
-  if (globalNavigatorKey.currentContext != null) {
-    return globalNavigatorKey;
-  } else {
-    return await Future.delayed(const Duration(milliseconds: 500), _getContextedGlobalNavigatorKey);
-  }
-}
-
 final policyStatementUri = Uri.parse("https://netknights.it/en/privacy-statement/");
 final piAuthenticatorGitHubUri = Uri.parse("https://github.com/privacyidea/pi-authenticator");
 

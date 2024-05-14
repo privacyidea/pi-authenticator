@@ -39,8 +39,6 @@ import 'package:privacyidea_authenticator/widgets/app_wrapper.dart';
 import '../model/enums/app_feature.dart';
 import '../views/import_tokens_view/import_tokens_view.dart';
 
-int globalCounter = 0;
-
 void main() async {
   Logger.init(
       navigatorKey: globalNavigatorKey,
@@ -62,26 +60,6 @@ class CustomizationAuthenticator extends ConsumerWidget {
       builder: (context, constraints) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           ref.read(appConstraintsProvider.notifier).state = constraints;
-          await showDialog(
-              context: context,
-              builder: (context) {
-                // globalCounter++;
-                return const Center(
-                  child: Material(
-                    child: Text('Test'),
-                  ),
-                );
-              });
-          // await showDialog(
-          //     context: context,
-          //     builder: (context) {
-          //       globalCounter++;
-          //       return Center(
-          //         child: Material(
-          //           child: Text('Counter: $globalCounter, globalContextSync: $globalContextSync'),
-          //         ),
-          //       );
-          //     });
         });
         return MaterialApp(
           scrollBehavior: ScrollConfiguration.of(context).copyWith(

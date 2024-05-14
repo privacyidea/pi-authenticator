@@ -15,7 +15,6 @@ class QrScannerButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => FloatingActionButton(
         onPressed: () async {
-          await getContextedGlobalNavigatorKeyTest(context);
           if (await Permission.camera.isPermanentlyDenied) {
             showAsyncDialog(
               builder: (_) => DefaultDialog(
