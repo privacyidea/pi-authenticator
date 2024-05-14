@@ -37,7 +37,7 @@ class RolloutFailedWidget extends StatelessWidget {
               SizedBox(
                 width: width * 0.35,
                 child: PressButton(
-                  onPressed: () => globalRef?.read(tokenProvider.notifier).rolloutPushToken(token),
+                  onPressed: () => globalRef?.read(tokenProvider.notifier).rolloutPushToken(token) ?? Future.value(),
                   child: Text(
                     localizations.retryRollout,
                     style: Theme.of(context).textTheme.bodyMedium,
@@ -51,7 +51,7 @@ class RolloutFailedWidget extends StatelessWidget {
                 width: width * 0.35,
                 child: PressButton(
                   style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
-                  onPressed: () => _showDialog(),
+                  onPressed: () async => _showDialog(),
                   child: Text(
                     localizations.delete,
                     style: Theme.of(context).textTheme.bodyMedium,

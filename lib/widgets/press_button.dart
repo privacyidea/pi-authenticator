@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PressButton extends StatefulWidget {
-  final void Function() onPressed;
+  final Future Function() onPressed;
   final Widget child;
   final int delayInMilliseconds;
   final ButtonStyle? style;
@@ -15,19 +15,17 @@ class PressButton extends StatefulWidget {
 class _PressButtonState extends State<PressButton> {
   bool isPressable = true;
 
-  void press() {
+  void press() async {
     if (isPressable) {
       setState(() {
         isPressable = false;
       });
-      widget.onPressed();
-      Future.delayed(Duration(milliseconds: widget.delayInMilliseconds), () {
-        if (mounted) {
-          setState(() {
-            isPressable = true;
-          });
-        }
-      });
+      await Future.wait(
+        [
+          widget.onPressed(),
+          Future.delayed(Duration(milliseconds: widget.delayInMilliseconds)),
+        ],
+      );
     }
   }
 

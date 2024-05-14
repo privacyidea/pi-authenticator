@@ -185,10 +185,12 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                   Expanded(
                     flex: 6,
                     child: PressButton(
-                      onPressed: () {
-                        globalRef?.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest);
-                        Navigator.of(context).pop();
-                        if (mounted) setState(() => isHandled = true);
+                      onPressed: () async {
+                        await globalRef?.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest);
+                        if (context.mounted) {
+                          Navigator.of(context).pop();
+                          setState(() => isHandled = true);
+                        }
                       },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -219,11 +221,13 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                     flex: 6,
                     child: PressButton(
                       style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
-                      onPressed: () {
+                      onPressed: () async {
                         //TODO: Notify issuer
-                        globalRef?.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest);
-                        Navigator.of(context).pop();
-                        if (mounted) setState(() => isHandled = true);
+                        await globalRef?.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest);
+                        if (context.mounted) {
+                          Navigator.of(context).pop();
+                          setState(() => isHandled = true);
+                        }
                       },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
