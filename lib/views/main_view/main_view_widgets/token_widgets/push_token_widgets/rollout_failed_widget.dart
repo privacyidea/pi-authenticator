@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/extensions/enums/push_token_rollout_state_extension.dart';
@@ -8,14 +9,14 @@ import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../widgets/press_button.dart';
 
-class RolloutFailedWidget extends StatelessWidget {
+class RolloutFailedWidget extends ConsumerWidget {
   final PushToken token;
 
   const RolloutFailedWidget({super.key, required this.token});
 
   @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final width = ref.read(appConstraintsProvider)?.maxWidth ?? 0;
     final localizations = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       child: Column(

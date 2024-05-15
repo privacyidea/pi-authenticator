@@ -276,8 +276,22 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// There is no need to use mutexes because the updating functions are always using the latest version of the updating tokens.
   */
 
+  /// Adds a new token and returns true if successful, false if not.
+  Future<bool> addNewToken(Token token) async {
+    final success = await _addOrReplaceToken(token);
+    await _handlePushTokensIfExist();
+    return success;
+  }
+
   /// Adds or replaces a token and returns true if successful, false if not.
   Future<bool> addOrReplaceToken(Token token) => _addOrReplaceToken(token);
+
+  /// Adds new tokens and returns the tokens that could not be added.
+  Future<List<Token>> addTokens(List<Token> tokens) async {
+    final failedTokens = await _addOrReplaceTokens(tokens);
+    await _handlePushTokensIfExist();
+    return failedTokens;
+  }
 
   /// Adds or replaces a list of tokens and returns the tokens that could not be added or replaced.
   Future<List<Token>> addOrReplaceTokens(List<Token> tokens) => _addOrReplaceTokens(tokens);
@@ -583,6 +597,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// as this can not be guaranteed to work. There is a manual option available
   /// through the settings also.
   Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) async {
+    Logger.info('Updating firebase token for all push tokens.', name: 'push_provider.dart#updateFirebaseToken');
     firebaseToken ??= await _firebaseUtils.getFBToken();
     if (firebaseToken == null) {
       Logger.warning('Could not update firebase token because no firebase token is available.', name: 'push_provider.dart#updateFirebaseToken');
@@ -609,7 +624,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       Logger.warning('Updating firebase token for push token "${p.serial}"', name: 'push_provider.dart#updateFirebaseToken');
       String timestamp = DateTime.now().toUtc().toIso8601String();
       String message = '$firebaseToken|${p.serial}|$timestamp';
-      String? signature = await const RsaUtils().trySignWithToken(p, message);
+      String? signature = await _rsaUtils.trySignWithToken(p, message);
       if (signature == null) {
         failedTokens.add(p);
         allUpdated = false;
@@ -693,6 +708,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<void> _handlePushTokensIfExist() async {
+    Logger.info('Handling push tokens if they exist.', name: 'token_notifier.dart#_handlePushTokensIfExist');
     final pushTokens = state.pushTokens;
     if (pushTokens.isNotEmpty || state.hasOTPTokens == false) {
       if (globalRef?.read(settingsProvider).hidePushTokens == true) {
