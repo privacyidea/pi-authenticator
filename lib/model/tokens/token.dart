@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../utils/identifiers.dart';
 import '../enums/token_types.dart';
@@ -31,7 +32,8 @@ abstract class Token with SortableMixin {
   final String type; // Used to identify the token when deserializing.
 
   factory Token.fromJson(Map<String, dynamic> json) {
-    String type = json['type'];
+    String? type = json['type'];
+    if (type == null) throw ArgumentError.value(json, 'Token#fromJson', 'Token type is not defined in the json');
     if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromJson(json);
     if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromJson(json);
     if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) return PushToken.fromJson(json);
@@ -42,7 +44,9 @@ abstract class Token with SortableMixin {
   factory Token.fromUriMap(
     Map<String, dynamic> uriMap,
   ) {
-    String type = uriMap[URI_TYPE];
+    String? type = uriMap[URI_TYPE];
+    if (type == null) throw ArgumentError.value(uriMap, 'Token#fromUriMap', 'Token type is not defined in the uriMap');
+    Logger.info('Token#fromUriMap: type: $type');
     if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromUriMap(uriMap);
     if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromUriMap(uriMap);
     if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) return PushToken.fromUriMap(uriMap);

@@ -217,6 +217,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
           Positioned.fill(
             child: Tooltip(
               message: AppLocalizations.of(context)!.continueButton,
+              triggerMode: TooltipTriggerMode.longPress,
               child: GestureDetector(
                 onTapDown: (details) {
                   widget.onComplete?.call();

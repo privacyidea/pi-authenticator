@@ -26,6 +26,11 @@ class _PressButtonState extends State<PressButton> {
           Future.delayed(Duration(milliseconds: widget.delayInMilliseconds)),
         ],
       );
+      if (mounted) {
+        setState(() {
+          isPressable = true;
+        });
+      }
     }
   }
 
