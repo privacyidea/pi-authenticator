@@ -20,6 +20,7 @@
 */
 
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
@@ -65,6 +66,7 @@ class CustomizationAuthenticator extends ConsumerWidget {
           scrollBehavior: ScrollConfiguration.of(context).copyWith(
             physics: const ClampingScrollPhysics(),
             overscroll: false,
+            dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown},
           ),
           debugShowCheckedModeBanner: true,
           navigatorKey: globalNavigatorKey,
