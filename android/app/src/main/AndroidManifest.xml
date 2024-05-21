@@ -17,7 +17,7 @@
     <!-- To write all files until API level 29. We will MediaStore from API level 30 -->
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE" 
-        android:maxSdkVersion="29" />
+        android:maxSdkVersion="28" />
 
 
     <application

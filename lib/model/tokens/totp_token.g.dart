@@ -7,18 +7,18 @@ part of 'totp_token.dart';
 // **************************************************************************
 
 TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
-      period: json['period'] as int,
+      period: (json['period'] as num).toInt(),
       id: json['id'] as String,
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
-      digits: json['digits'] as int,
+      digits: (json['digits'] as num).toInt(),
       secret: json['secret'] as String,
       type: json['type'] as String?,
       tokenImage: json['tokenImage'] as String?,
       pin: json['pin'] as bool?,
       isLocked: json['isLocked'] as bool?,
       isHidden: json['isHidden'] as bool?,
-      sortIndex: json['sortIndex'] as int?,
-      folderId: json['folderId'] as int?,
+      sortIndex: (json['sortIndex'] as num?)?.toInt(),
+      folderId: (json['folderId'] as num?)?.toInt(),
       origin: json['origin'] == null
           ? null
           : TokenOriginData.fromJson(json['origin'] as Map<String, dynamic>),
