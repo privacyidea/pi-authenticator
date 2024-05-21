@@ -24,6 +24,8 @@ class PushRequest {
   final String serial;
   final String signature;
   final bool? accepted;
+  final List<String>? answers;
+  final int? selectedAnswerIndex;
 
   const PushRequest({
     required this.title,
@@ -36,6 +38,8 @@ class PushRequest {
     this.serial = '',
     this.signature = '',
     this.accepted,
+    this.answers,
+    this.selectedAnswerIndex,
   });
 
   PushRequest copyWith({
@@ -49,6 +53,8 @@ class PushRequest {
     String? serial,
     String? signature,
     bool? accepted,
+    List<String> Function()? answers,
+    int? Function()? selectedAnswerIndex,
   }) {
     return PushRequest(
       title: title ?? this.title,
@@ -61,6 +67,8 @@ class PushRequest {
       serial: serial ?? this.serial,
       signature: signature ?? this.signature,
       accepted: accepted ?? this.accepted,
+      answers: answers != null ? answers() : this.answers,
+      selectedAnswerIndex: selectedAnswerIndex != null ? selectedAnswerIndex() : this.selectedAnswerIndex,
     );
   }
 
@@ -75,7 +83,8 @@ class PushRequest {
     return 'PushRequest{title: $title, question: $question, '
         'id: $id, uri: $uri, _nonce: $nonce, sslVerify: $sslVerify, '
         'expirationDate: $expirationDate, serial: $serial, '
-        'signature: $signature, accepted: $accepted}';
+        'signature: $signature, accepted: $accepted, '
+        'answers: $answers, selectedAnswerIndex: $selectedAnswerIndex}';
   }
 
   factory PushRequest.fromJson(Map<String, dynamic> json) => _$PushRequestFromJson(json);
@@ -98,6 +107,7 @@ class PushRequest {
       serial: data[PUSH_REQUEST_SERIAL],
       expirationDate: DateTime.now().add(const Duration(minutes: 2)),
       signature: data[PUSH_REQUEST_SIGNATURE],
+      answers: data[PUSH_REQUEST_ANSWERS],
     );
   }
 
@@ -136,7 +146,8 @@ class PushRequest {
         '$serial|'
         '$question|'
         '$title|'
-        '${sslVerify ? '1' : '0'}';
+        '${sslVerify ? '1' : '0'}'
+        '${answers != null ? '|require_presence' : ''}';
 
     // Re-add url and sslverify to android legacy tokens:
     if (token.url == null) {

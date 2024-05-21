@@ -217,7 +217,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   /// Accepts a push request and returns true if successful, false if not.
   /// An accepted push request is removed from the state.
   /// It should be still in the CustomIntBuffer of the state.
-  Future<bool> accept(PushToken pushToken, PushRequest pushRequest) async {
+  Future<bool> accept(PushToken pushToken, PushRequest pushRequest, {int? selectedAnswerIndex}) async {
     if (pushRequest.accepted != null) {
       Logger.warning('The push request is already accepted or declined.', name: 'push_request_notifier.dart#decline');
 
@@ -225,7 +225,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     }
     Logger.info('Decline push request.', name: 'push_request_notifier.dart#decline');
     final updated = await _updatePushRequest(pushRequest, (p0) async {
-      final updated = p0.copyWith(accepted: true);
+      final updated = p0.copyWith(accepted: true, selectedAnswerIndex: () => selectedAnswerIndex);
       final success = await _handleReaction(pushRequest: updated, token: pushToken);
       if (!success) {
         return p0;
@@ -244,7 +244,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     }
     Logger.info('Decline push request.', name: 'push_request_notifier.dart#decline');
     final updated = await _updatePushRequest(pushRequest, (p0) async {
-      final updated = p0.copyWith(accepted: false);
+      final updated = p0.copyWith(accepted: false, selectedAnswerIndex: () => null);
       final success = await _handleReaction(pushRequest: updated, token: pushToken);
       if (!success) {
         return p0;
@@ -318,28 +318,35 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   Future<bool> _handleReaction({required PushRequest pushRequest, required PushToken token}) async {
     if (pushRequest.accepted == null) return false;
     Logger.info('Push auth request accepted=${pushRequest.accepted}, sending response to privacyidea', name: 'token_widgets.dart#handleReaction');
-    // signature ::=  {nonce}|{serial}[|decline]
-    String msg = '${pushRequest.nonce}|${token.serial}';
-    if (pushRequest.accepted! == false) {
-      msg += '|decline';
-    }
-    String? signature = await _rsaUtils.trySignWithToken(token, msg);
-    if (signature == null) {
-      return false;
-    }
     //    POST https://privacyideaserver/validate/check
     //    nonce=<nonce_from_request>
     //    serial=<serial>
     //    signature=<signature>
     //    decline=1 (optional)
+    //    answer=<answer> (optional)
     final Map<String, String> body = {
       'nonce': pushRequest.nonce,
       'serial': token.serial,
-      'signature': signature,
     };
+    // signature ::=  {nonce}|{serial}[|decline]
+    String msg = '${pushRequest.nonce}|${token.serial}';
     if (pushRequest.accepted! == false) {
-      body["decline"] = "1";
+      body['decline'] = '1';
+      msg += '|decline';
     }
+    if (pushRequest.answers != null && pushRequest.selectedAnswerIndex != null) {
+      body['answer'] = pushRequest.answers![pushRequest.selectedAnswerIndex!];
+      msg += '|${pushRequest.answers![pushRequest.selectedAnswerIndex!]}';
+    }
+
+    String? signature = await _rsaUtils.trySignWithToken(token, msg);
+    if (signature == null) {
+      Logger.warning('Failed to sign push request response.', name: 'token_widgets.dart#handleReaction');
+      return false;
+    }
+
+    body['signature'] = signature;
+
     Response response;
     try {
       response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);

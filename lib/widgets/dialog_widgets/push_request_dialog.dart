@@ -88,6 +88,29 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                     ),
                     SizedBox(height: lineHeight),
                   ],
+                  if (widget.pushRequest.answers != null)
+                    GridView.builder(
+                      shrinkWrap: true,
+                      itemCount: widget.pushRequest.answers!.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 3,
+                      ),
+                      itemBuilder: (context, index) {
+                        return PressButton(
+                          onPressed: () {
+                            globalRef?.read(pushRequestProvider.notifier).accept(token, widget.pushRequest, selectedAnswerIndex: index);
+                            Navigator.of(context).pop();
+                            if (mounted) setState(() => isHandled = true);
+                          },
+                          child: Text(
+                            widget.pushRequest.answers![index],
+                            style: const TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      },
+                    ),
                   SizedBox(
                     // Accept button
                     height: lineHeight * titleScale * 2 + 16,
