@@ -100,8 +100,10 @@ String? getErrorMessageFromResponse(Response response) {
   return errorMessage;
 }
 
-Size textSizeOf(String text, TextStyle style, {int? maxLines = 1, double minWidth = 0, double maxWidth = double.infinity}) {
-  final TextPainter textPainter = TextPainter(text: TextSpan(text: text, style: style), maxLines: maxLines, textDirection: TextDirection.ltr)
+Size textSizeOf(
+    {required String text, required TextStyle style, required TextScaler? textScaler, int? maxLines, double minWidth = 0, double maxWidth = double.infinity}) {
+  final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style), maxLines: maxLines, textDirection: TextDirection.ltr, textScaler: textScaler ?? TextScaler.noScaling)
     ..layout(minWidth: minWidth, maxWidth: maxWidth);
   return textPainter.size;
 }
