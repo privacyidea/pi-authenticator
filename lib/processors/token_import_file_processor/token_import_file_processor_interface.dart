@@ -12,10 +12,10 @@ abstract class TokenImportFileProcessor with TokenImportProcessor<XFile, String?
 
   @override
   Future<List<ProcessorResult<Token>>> processTokenMigrate(XFile data, {String? args}) async {
-    return processFile(file: data, password: args);
+    return processFile(data, password: args);
   }
 
-  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password});
+  Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password});
 
   static final List<TokenImportFileProcessor> implementations = [
     const AegisImportFileProcessor(),
@@ -26,7 +26,7 @@ abstract class TokenImportFileProcessor with TokenImportProcessor<XFile, String?
     final tokens = <ProcessorResult<Token>>[];
     for (TokenImportFileProcessor processor in implementations) {
       try {
-        tokens.addAll(await processor.processFile(file: file, password: password));
+        tokens.addAll(await processor.processFile(file, password: password));
         return tokens;
       } catch (e) {
         Logger.warning('Failed to process file with processor ${processor.runtimeType}',
@@ -37,8 +37,8 @@ abstract class TokenImportFileProcessor with TokenImportProcessor<XFile, String?
   }
 
   /// This only ensures that the file has the correct format, not that the data itself is correct
-  Future<bool> fileIsValid({required XFile file});
+  Future<bool> fileIsValid(XFile file);
 
   /// Returns true if a password is required to decrypt the Tokens
-  Future<bool> fileNeedsPassword({required XFile file});
+  Future<bool> fileNeedsPassword(XFile file);
 }

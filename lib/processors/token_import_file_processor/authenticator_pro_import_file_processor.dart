@@ -60,7 +60,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   const AuthenticatorProImportFileProcessor();
 
   @override
-  Future<bool> fileIsValid({required XFile file}) async {
+  Future<bool> fileIsValid(XFile file) async {
     final contentBytes = await file.readAsBytes();
     try {
       final contentString = utf8.decode(contentBytes);
@@ -89,7 +89,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<bool> fileNeedsPassword({required XFile file}) async {
+  Future<bool> fileNeedsPassword(XFile file) async {
     final contentBytes = await file.readAsBytes();
     try {
       utf8.decode(contentBytes);
@@ -108,7 +108,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password}) async {
     var results = <ProcessorResult<Token>>[];
 
     final bytes = await file.readAsBytes();

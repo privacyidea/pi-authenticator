@@ -33,7 +33,7 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
   const FreeOtpPlusFileProcessor();
 
   @override
-  Future<bool> fileIsValid({required XFile file}) async {
+  Future<bool> fileIsValid(XFile file) async {
     String content;
     try {
       content = await file.readAsString();
@@ -55,10 +55,10 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<bool> fileNeedsPassword({required XFile file}) async => false;
+  Future<bool> fileNeedsPassword(XFile file) async => false;
 
   @override
-  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password}) async {
     String content = await file.readAsString();
     try {
       final json = jsonDecode(content) as Map<String, dynamic>;

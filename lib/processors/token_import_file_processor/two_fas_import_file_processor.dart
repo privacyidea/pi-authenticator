@@ -30,7 +30,7 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
   static const String TWOFAS_COUNTER = 'counter';
 
   @override
-  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password}) async {
     final String fileContent = await file.readAsString();
     final Map<String, dynamic> json;
     try {
@@ -43,7 +43,7 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<bool> fileNeedsPassword({required XFile file}) async {
+  Future<bool> fileNeedsPassword(XFile file) async {
     try {
       final Map<String, dynamic> json = jsonDecode(await file.readAsString()) as Map<String, dynamic>;
       return json['servicesEncrypted'] != null;
@@ -53,7 +53,7 @@ class TwoFasFileImportProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<bool> fileIsValid({required XFile file}) async {
+  Future<bool> fileIsValid(XFile file) async {
     try {
       final Map<String, dynamic> json = jsonDecode(await file.readAsString()) as Map<String, dynamic>;
       return json['servicesEncrypted'] != null || json['services'] != null;

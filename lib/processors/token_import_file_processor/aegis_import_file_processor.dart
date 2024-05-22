@@ -76,7 +76,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<bool> fileIsValid({required XFile file}) async {
+  Future<bool> fileIsValid(XFile file) async {
     final Map<String, dynamic> json;
     try {
       final String fileContent = await file.readAsString();
@@ -88,7 +88,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<bool> fileNeedsPassword({required XFile file}) async {
+  Future<bool> fileNeedsPassword(XFile file) async {
     Map<String, dynamic> json;
     try {
       final String fileContent = await file.readAsString();
@@ -100,7 +100,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<List<ProcessorResult<Token>>> processFile({required XFile file, String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password}) async {
     final String fileContent = await file.readAsString();
     final Map<String, dynamic> json;
     try {
