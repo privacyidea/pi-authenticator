@@ -163,6 +163,12 @@
   "@systemTheme": {
     "description": "The systems theme."
   },
+  "someTokensDoNotSupportPolling": "Některé tokeny jsou zastaralé a nepodporují polling",
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
+  },
   "enablePolling": "Povolit polling",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
@@ -536,6 +542,7 @@
   "invalidQrScan": "Naskenovaný QR kód není platnou zálohou {appName}.",
   "invalidQrFile": "Vybraný soubor neobsahuje platný QR kód z {appName}.",
   "invalidLink": "Zadaný odkaz není platným tokenem {appName} nebo není podporován.",
+  "importFailedToken": "{count, plural, zero{Žádný token Nepodařilo se importovat.} one{Nepodařilo se importovat token.} other{Nepodařilo se importovat {count} tokenů.}}",
   "importExistingToken": "{count, plural, zero{Nebyl nalezen žádný token, který by se již v aplikaci nacházel.} one{Byl nalezen token, který již v aplikaci existuje.} other{{count} byly nalezeny tokeny, které se již v aplikaci nacházejí.}}",
   "importConflictToken": "{count, plural, zero{Není žádný konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.}}",
   "importNewToken": "{count, plural, zero{Nenalezen žádný nový token.} one{Nalezen nový token, který bude importován.} other{Nalezen nový token {count}, který bude importován.}}",
@@ -545,6 +552,9 @@
   "importHintAegisLink": "Zadejte odkaz, který obdržíte při přenosu záznamů ze systému Aegis.",
   "importHintGoogleQrScan": "Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.",
   "importHintGoogleQrFile": "Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!",
+  "importHintAuthenticatorProFile": "Chcete-li vytvořit zálohu aplikace Authenticator Pro, přejděte do nastavení a klepněte na položku \"Automatické zálohování\". Vyberte umístění úložiště a nastavte heslo. Poté stiskněte \"Zálohovat nyní\" a exportujte tokeny.",
+  "importHintFreeOtpPlusQrScan": "Naskenujte QR kód, který obdržíte po stisknutí tří teček na dlaždici tokenu, a vyberte možnost \"Sdílet QR kód\".",
+  "importHintFreeOtpPlusFile": "Chcete-li vytvořit zálohu aplikace FreeOTP+, klepněte na tři tečky v pravém horním rohu a vyberte možnost \"Exportovat\". Můžete si vybrat mezi formátem JSON a URI. Zálohu doporučujeme po importu odstranit, protože není šifrovaná.",
   "qrFileDecodeError": "Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.",
   "tokenLink": "Token link",
   "feedback": "Zpětná vazba",
@@ -575,5 +585,55 @@
         "example": "GitHub"
       }
     }
-  }
+  },
+  "errorUnlinkingPushToken": "Nepodařilo se odlinkovat push token {label}.",
+  "@errorUnlinkingPushToken": {
+    "description": "Error message when unlinking a push token failed.",
+    "placeholders": {
+      "label": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Synchronizujte prosím push tokeny ručně prostřednictvím nastavení, když je k dispozici síťové připojení.",
+  "pushTokens": "Žetony Push",
+  "continueButton": "Pokračovat",
+  "addTokenManually": "Přidat token ručně",
+  "addFolder": "Přidat složku",
+  "searchTokens": "Hledat tokeny",
+  "closeSearchTokens": "Zavřít vyhledávání",
+  "increaseCounter": "Zvýšit počítadla",
+  "copyOTPToClipboard": "Zkopírovat OTP do schránky",
+  "licenses": "Licence",
+  "optionalMessage": "Volitelná zpráva",
+  "confirmation": "Potvrzení",
+  "askLogSendedDescription": "Odeslali jste protokol a chcete jej nyní vymazat?",
+  "algorithmUnsupported": "Algoritmus {algorithm} není podporován",
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
+  },
+  "thisAppIsOpenSource": "Tato aplikace má otevřený zdrojový kód\nNavštivte nás na GitHub",
+  "invalidArgument": "{argument} není platná hodnota pro {type}",
+  "importExportTokens": "Import/Exportovat žetony",
+  "exportNonPrivacyIDEATokens": "Exportovat ne-privacyIDEA žetony",
+  "selectTokensToExport": "{count, plural, zero{} one{Vyberte žeton k exportu} other{Vyberte žetony k exportu}}",
+  "noTokensToExport": "Žádné žetony k exportu",
+  "exportAllTokens": "Exportovat všechny žetony",
+  "export": "Export",
+  "exportingTokens": "Probíhá export žetonů...",
+  "exportTokens": "Exportovat žetony",
+  "enterPasswordToEncrypt": "Zadejte heslo pro šifrování žetonů. Toto heslo bude vyžadováno k importu žetonů.",
+  "exportLockedTokenReason": "Prosím, ověřte se, abyste mohli exportovat uzamčené žetony.",
+  "fileSavedToDownloadsFolder": "Soubor uložen do složky Stažené soubory",
+  "errorSavingFile": "Chyba při ukládání souboru",
+  "toFile": "Do souboru",
+  "asQrCode": "Jako QR kód",
+  "scanThisQrWithNewDevice": "Naskenujte tento QR kód svým novým zařízením pro import žetonu.",
+  "oneMore": "Ještě jeden",
+  "done": "Hotovo",
+  "confirmPassword": "Potvrďte heslo"
 }

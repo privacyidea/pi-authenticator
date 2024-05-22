@@ -1,14 +1,21 @@
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
+import '../../../model/enums/token_origin_source_type.dart';
+import '../../../model/token_import/token_origin_data.dart';
+
+import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';
 import '../../../model/enums/token_types.dart';
 import '../../../model/extensions/enum_extension.dart';
+import '../../../model/extensions/enums/encodings_extension.dart';
+import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
-import '../../../utils/crypto_utils.dart';
+import '../../../utils/errors.dart';
+import '../../../utils/globals.dart';
 import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
-import '../../../utils/supported_versions.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/dialog_widgets/two_step_dialog.dart';
 import 'token_import_scheme_processor_interface.dart';
@@ -19,47 +26,58 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
   Set<String> get supportedSchemes => {'otpauth'};
 
   @override
-  Future<List<Token>> processUri(Uri uri, {bool fromInit = false}) async {
-    if (!supportedSchemes.contains(uri.scheme)) return [];
+  Future<List<ProcessorResult<Token>>> processUri(Uri uri, {bool fromInit = false}) async {
+    if (!supportedSchemes.contains(uri.scheme)) return [ProcessorResultFailed('The scheme [${uri.scheme}] not supported')];
     Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
     Map<String, dynamic> uriMap;
     try {
       uriMap = _parseOtpToken(uri);
-    } on ArgumentError catch (e, s) {
-      // Error while parsing qr code.
-      Logger.warning('Malformed QR code:', name: 'token_notifier.dart#_handleOtpAuth', error: e, stackTrace: s);
-      //showMessage(message: '${e.message}\n Please inform the creator of this qr code about the problem.', duration: const Duration(seconds: 8));
-
-      return [];
+    } catch (e, s) {
+      if (e is LocalizedException) {
+        Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e.unlocalizedMessage, stackTrace: s);
+        final message = globalContextSync != null ? e.localizedMessage(AppLocalizations.of(globalContextSync!)!) : e.unlocalizedMessage;
+        return [ProcessorResult.failed(message)];
+      }
+      String? message;
+      if (e is ArgumentError) {
+        Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e.message, stackTrace: s);
+        message = '${e.message} - ${e.name}: ${e.invalidValue}';
+      }
+      message ??= 'An error occurred while parsing the QR code.';
+      return [ProcessorResult.failed(globalContextSync != null ? AppLocalizations.of(globalContextSync!)?.tokenDataParseError ?? message : message)];
     }
     if (_is2StepURI(uri)) {
       validateMap(uriMap, [URI_SECRET, URI_ITERATIONS, URI_OUTPUT_LENGTH_IN_BYTES, URI_SALT_LENGTH]);
       final secret = uriMap[URI_SECRET] as Uint8List;
       // Calculate the whole secret.
-      Uint8List? twoStepSecret;
-      while (twoStepSecret == null) {
-        twoStepSecret = (await showAsyncDialog<Uint8List>(
-          barrierDismissible: false,
-          builder: (context) => GenerateTwoStepDialog(
-            iterations: uriMap[URI_ITERATIONS],
-            keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
-            saltLength: uriMap[URI_SALT_LENGTH],
-            password: secret,
-          ),
-        ));
-        await Future.delayed(const Duration(milliseconds: 500));
+
+      final twoStepSecret = (await showAsyncDialog<Uint8List>(
+        barrierDismissible: false,
+        builder: (context) => GenerateTwoStepDialog(
+          iterations: uriMap[URI_ITERATIONS],
+          keyLength: uriMap[URI_OUTPUT_LENGTH_IN_BYTES],
+          saltLength: uriMap[URI_SALT_LENGTH],
+          password: secret,
+        ),
+      ));
+      if (twoStepSecret == null) {
+        return [const ProcessorResultFailed('The two step secret could not be generated, or was canceled.')];
       }
       uriMap[URI_SECRET] = twoStepSecret;
     }
     Token newToken;
     try {
-      newToken = Token.fromUriMap(uriMap);
+      newToken =
+          Token.fromUriMap(uriMap).copyWith(origin: TokenOriginData(source: TokenOriginSourceType.link, data: uri.toString(), createdAt: DateTime.now()));
     } on FormatException catch (e) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
-      showMessage(message: e.message, duration: const Duration(seconds: 3));
-      return [];
+      return [ProcessorResultFailed(e.message)];
+    } catch (e, s) {
+      Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e, stackTrace: s);
+      // showMessage(message: 'An error occurred while parsing the QR code.', duration: const Duration(seconds: 3));
+      return [const ProcessorResultFailed('An error occurred while parsing the QR code.')];
     }
-    return [newToken];
+    return [ProcessorResultSuccess(newToken)];
   }
 }
 
@@ -67,11 +85,11 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
 /// to https://github.com/google/google-authenticator/wiki/Key-Uri-Format.
 Map<String, dynamic> _parseOtpToken(Uri uri) {
   final type = uri.host;
-  if (TokenTypes.PIPUSH.isString(type)) {
+  if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) {
     // otpauth://pipush/LABEL?PARAMETERS
     return _parsePiPushToken(uri);
   }
-  if (TokenTypes.HOTP.isString(type) || TokenTypes.TOTP.isString(type) || TokenTypes.DAYPASSWORD.isString(type)) {
+  if (TokenTypes.values.firstWhereOrNull((element) => element.isName(type, caseSensitive: false)) != null) {
     return _parseOtpAuth(uri);
   }
   throw ArgumentError.value(
@@ -81,6 +99,7 @@ Map<String, dynamic> _parseOtpToken(Uri uri) {
   );
 }
 
+const String _steamTokenIssuer = "Steam";
 Map<String, dynamic> _parseOtpAuth(Uri uri) {
   // otpauth://TYPE/LABEL?PARAMETERS
   Map<String, dynamic> uriMap = {};
@@ -104,6 +123,9 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
   final (label, issuer) = _parseLabelAndIssuer(uri);
   uriMap[URI_LABEL] = label;
   uriMap[URI_ISSUER] = issuer;
+  if (issuer == _steamTokenIssuer) {
+    uriMap[URI_TYPE] = TokenTypes.STEAM.name;
+  }
 
   // parse pin from response 'True'
   if (uri.queryParameters['pin'] == 'True') {
@@ -114,15 +136,8 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
     uriMap[URI_IMAGE] = uri.queryParameters['image'];
   }
 
-  String algorithm = uri.queryParameters['algorithm'] ?? Algorithms.SHA1.asString; // Optional parameter
-
-  if (!Algorithms.SHA1.isString(algorithm) && !Algorithms.SHA256.isString(algorithm) && !Algorithms.SHA512.isString(algorithm)) {
-    throw ArgumentError.value(
-      uri,
-      'uri',
-      'The algorithm [$algorithm] is not supported',
-    );
-  }
+  String algorithm = uri.queryParameters['algorithm'] ?? Algorithms.SHA1.name; // Optional parameter
+  algorithm = Algorithms.values.byName(algorithm).name; // Validate algorithm, throw error if not supported.
 
   uriMap[URI_ALGORITHM] = algorithm;
 
@@ -130,10 +145,11 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
   String digitsAsString = uri.queryParameters['digits'] ?? '6'; // Optional parameter
 
   if (digitsAsString != '6' && digitsAsString != '8') {
-    throw ArgumentError.value(
-      uri,
-      'uri',
-      '[$digitsAsString] is not a valid number of digits',
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, name) => localizations.invalidValueForParameter(value, name),
+      unlocalizedMessage: '[$digitsAsString] is not a valid number of digits.',
+      invalidValue: digitsAsString,
+      name: 'digits',
     );
   }
 
@@ -143,7 +159,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
 
   // Parse secret.
   String? secretAsString = uri.queryParameters['secret'];
-  ArgumentError.checkNotNull(secretAsString);
+  ArgumentError.checkNotNull(secretAsString, 'secret');
 
   // This is a fix for omitted padding in base32 encoded secrets.
   //
@@ -153,87 +169,91 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
     secretAsString += '=';
   }
   secretAsString = secretAsString.toUpperCase();
-  if (!isValidEncoding(secretAsString, Encodings.base32)) {
+  final secret = Encodings.base32.tryDecode(secretAsString);
+  if (secret == null) {
     throw ArgumentError.value(
       uri,
       'uri',
-      '[${Encodings.base32.asString}] is not a valid encoding for [$secretAsString].',
+      '[${Encodings.base32.name}] is not a valid encoding for [$secretAsString].',
     );
   }
 
-  Uint8List secret = decodeSecretToUint8(secretAsString, Encodings.base32);
-
   uriMap[URI_SECRET] = secret;
 
-  if (uriMap[URI_TYPE] == 'hotp') {
-    // Parse counter.
-    String? counterAsString = uri.queryParameters['counter'];
-    try {
-      if (counterAsString == null) {
-        throw ArgumentError.value(
-          uri,
-          'uri',
-          'Value for parameter [counter] is not optional and is missing.',
-        );
-      }
-      uriMap[URI_COUNTER] = int.parse(counterAsString);
-    } on FormatException {
-      throw ArgumentError.value(
-        uri,
-        'uri',
-        '[$counterAsString] is not a valid value for uri parameter [counter].',
+  // Parse counter.
+  String? counterString = uri.queryParameters['counter'];
+  if (counterString != null) {
+    uriMap[URI_COUNTER] = int.tryParse(counterString);
+    if (uriMap[URI_COUNTER] == null) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: '[$counterString] is not a valid value for uri parameter [counter].',
+        invalidValue: counterString,
+        name: 'counter',
       );
     }
   }
 
-  if (uriMap[URI_TYPE] == 'totp' || uriMap[URI_TYPE] == 'daypassword') {
-    // Parse period.
-    String periodAsString = uri.queryParameters['period'] ?? '30';
-
-    int? period = int.tryParse(periodAsString);
-    if (period == null) {
-      throw ArgumentError('Value [$periodAsString] for parameter [period] is invalid.');
+  // Parse period.
+  String? periodString = uri.queryParameters['period'];
+  if (periodString != null) {
+    uriMap[URI_PERIOD] = int.tryParse(periodString);
+    if (uriMap[URI_PERIOD] == null) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Value [$periodString] for parameter [period] is invalid.',
+        invalidValue: periodString,
+        name: 'period',
+      );
     }
-    uriMap[URI_PERIOD] = period;
   }
 
   if (_is2StepURI(uri)) {
-    // Parse for 2 step roll out.
-    String saltLengthAsString = uri.queryParameters['2step_salt'] ?? '10';
-    String outputLengthInByteAsString = uri.queryParameters['2step_output'] ?? '20';
-    String iterationsAsString = uri.queryParameters['2step_difficulty'] ?? '10000';
-
-    // Parse parameters
-    try {
-      uriMap[URI_SALT_LENGTH] = int.parse(saltLengthAsString);
-    } on FormatException {
-      throw ArgumentError.value(
-        uri,
-        'uri',
-        '[$saltLengthAsString] is not a valid value for parameter [2step_salt].',
-      );
-    }
-    try {
-      uriMap[URI_OUTPUT_LENGTH_IN_BYTES] = int.parse(outputLengthInByteAsString);
-    } on FormatException {
-      throw ArgumentError.value(
-        uri,
-        'uri',
-        '[$outputLengthInByteAsString] is not a valid value for parameter [2step_output].',
-      );
-    }
-    try {
-      uriMap[URI_ITERATIONS] = int.parse(iterationsAsString);
-    } on FormatException {
-      throw ArgumentError.value(
-        uri,
-        'uri',
-        '[$iterationsAsString] is not a valid value for parameter [2step_difficulty].',
-      );
-    }
+    uriMap.addAll(_parse2StepURI(uri));
   }
 
   return uriMap;
+}
+
+Map<String, dynamic> _parse2StepURI(Uri uri) {
+  Map<String, dynamic> uriMap2Step = {};
+  // Parse for 2 step roll out.
+  String saltLengthAsString = uri.queryParameters['2step_salt'] ?? '10';
+  String outputLengthInByteAsString = uri.queryParameters['2step_output'] ?? '20';
+  String iterationsAsString = uri.queryParameters['2step_difficulty'] ?? '10000';
+
+  // Parse parameters
+  try {
+    uriMap2Step[URI_SALT_LENGTH] = int.parse(saltLengthAsString);
+  } on FormatException {
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+      unlocalizedMessage: '[$saltLengthAsString] is not a valid value for parameter [2step_salt].',
+      invalidValue: saltLengthAsString,
+      name: '2step_salt',
+    );
+  }
+  try {
+    uriMap2Step[URI_OUTPUT_LENGTH_IN_BYTES] = int.parse(outputLengthInByteAsString);
+  } on FormatException {
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+      unlocalizedMessage: '[$outputLengthInByteAsString] is not a valid value for parameter [2step_output].',
+      invalidValue: outputLengthInByteAsString,
+      name: '2step_output',
+    );
+  }
+  try {
+    uriMap2Step[URI_ITERATIONS] = int.parse(iterationsAsString);
+  } on FormatException {
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+      unlocalizedMessage: '[$iterationsAsString] is not a valid value for parameter [2step_difficulty].',
+      invalidValue: iterationsAsString,
+      name: '2step_difficulty',
+    );
+  }
+  return uriMap2Step;
 }
 
 Map<String, dynamic> _parsePiPushToken(Uri uri) {
@@ -254,7 +274,12 @@ Map<String, dynamic> _parsePiPushToken(Uri uri) {
   String? pushVersionAsString = uri.queryParameters['v'];
 
   if (pushVersionAsString == null) {
-    throw ArgumentError.value(uri, 'uri', 'Parameter [v] is not an optional parameter and is missing.');
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, name) => localizations.missingRequiredParameter(name),
+      unlocalizedMessage: 'Parameter [v] is not an optional parameter and is missing.',
+      invalidValue: pushVersionAsString,
+      name: 'v',
+    );
   }
 
   try {
@@ -263,17 +288,19 @@ Map<String, dynamic> _parsePiPushToken(Uri uri) {
     Logger.info('Parsing push token with version: $pushVersion', name: 'parsing_utils.dart#parsePiAuth');
 
     if (pushVersion > maxPushTokenVersion) {
-      throw ArgumentError.value(
-        'Unsupported version: $pushVersion',
-        'QrParser#_parsePiAuth',
-        'The piauth version [$pushVersionAsString] is not supported by this version of the app.',
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, name) => localizations.unsupported(value, name),
+        unlocalizedMessage: 'The piauth version [$pushVersionAsString] is not supported by this version of the app.',
+        invalidValue: pushVersionAsString,
+        name: 'piauth version',
       );
     }
   } on FormatException {
-    throw ArgumentError.value(
-      'Invalid version: $pushVersionAsString',
-      'QrParser#_parsePiAuth',
-      '[$pushVersionAsString] is not a valid value for parameter [v].',
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+      unlocalizedMessage: '[$pushVersionAsString] is not a valid value for parameter [v].',
+      invalidValue: pushVersionAsString,
+      name: 'v',
     );
   }
 
@@ -287,19 +314,29 @@ Map<String, dynamic> _parsePiPushToken(Uri uri) {
   uriMap[URI_SERIAL] = uri.queryParameters['serial'];
   ArgumentError.checkNotNull(uriMap[URI_SERIAL], 'serial');
 
-  String? url = uri.queryParameters['url'];
+  final String? url = uri.queryParameters['url'];
   ArgumentError.checkNotNull(url, 'url');
   try {
     uriMap[URI_ROLLOUT_URL] = Uri.parse(url!);
   } on FormatException {
-    throw ArgumentError.value(uri, 'uri', '[$url] is not a valid Uri.');
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, name) => localizations.invalidValueForParameter(value, name),
+      unlocalizedMessage: '[$url] is not a valid Uri.',
+      invalidValue: url!,
+      name: 'url',
+    );
   }
 
   String ttlAsString = uri.queryParameters['ttl'] ?? '10';
   try {
     uriMap[URI_TTL] = int.parse(ttlAsString);
   } on FormatException {
-    throw ArgumentError.value('Invalid ttl: $ttlAsString', 'QrParser#_parsePiAuth', '[$ttlAsString] is not a valid value for parameter [ttl].');
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+      unlocalizedMessage: '[$ttlAsString] is not a valid value for parameter [ttl].',
+      invalidValue: ttlAsString,
+      name: 'ttl',
+    );
   }
 
   uriMap[URI_ENROLLMENT_CREDENTIAL] = uri.queryParameters['enrollment_credential'];
@@ -328,8 +365,8 @@ Map<String, dynamic> _parsePiPushToken(Uri uri) {
       issuer = split[0];
       label = split[1];
     } else {
-      label = param;
       issuer = _parseIssuer(uri);
+      label = param;
     }
   } on Error {
     label = param;

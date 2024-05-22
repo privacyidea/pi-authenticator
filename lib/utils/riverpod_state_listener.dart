@@ -9,11 +9,12 @@ import '../state_notifiers/token_notifier.dart';
 import 'home_widget_utils.dart';
 
 abstract class StateNotifierProviderListener<T extends StateNotifier<S>, S> {
-  final StateNotifierProvider<T, S> provider;
-  final void Function(S? previous, S next) onNewState;
-  const StateNotifierProviderListener({required this.provider, required this.onNewState});
+  final StateNotifierProvider<T, S>? provider;
+  final void Function(S? previous, S next)? onNewState;
+  const StateNotifierProviderListener({this.provider, this.onNewState});
   void buildListen(WidgetRef ref) {
-    ref.listen(provider, onNewState);
+    if (provider == null || onNewState == null) return;
+    ref.listen(provider!, onNewState!);
   }
 }
 
@@ -65,11 +66,20 @@ abstract class TokenStateListener extends StateNotifierProviderListener<TokenNot
 class HomeWidgetTokenStateListener extends TokenStateListener {
   const HomeWidgetTokenStateListener({required super.tokenProvider}) : super(onNewState: _onNewState);
 
-  static void _onNewState(TokenState? previous, TokenState next) => HomeWidgetUtils().handleChangedTokenState();
+  static void _onNewState(TokenState? previous, TokenState next) => HomeWidgetUtils().updateTokensIfLinked(next.lastlyUpdatedTokens);
 }
 
 class DeepLink {
   final Uri uri;
   final bool fromInit;
   const DeepLink(this.uri, {this.fromInit = false});
+
+  @override
+  bool operator ==(Object other) => other is DeepLink && other.uri == uri && other.fromInit == fromInit;
+
+  @override
+  int get hashCode => Object.hash(uri, fromInit);
+
+  @override
+  String toString() => 'DeepLink(uri: $uri, fromInit: $fromInit)';
 }

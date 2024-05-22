@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -8,12 +7,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:mutex/mutex.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import '../model/token_folder.dart';
+import 'package:privacyidea_authenticator/utils/customization/theme_customization.dart';
 
 import '../interfaces/repo/token_folder_repository.dart';
 import '../interfaces/repo/token_repository.dart';
 import '../mains/main_netknights.dart';
+import '../model/token_folder.dart';
 import '../model/tokens/day_password_token.dart';
 import '../model/tokens/hotp_token.dart';
 import '../model/tokens/otp_token.dart';
@@ -29,8 +28,8 @@ import '../widgets/home_widgets/home_widget_copied.dart';
 import '../widgets/home_widgets/home_widget_hidden.dart';
 import '../widgets/home_widgets/home_widget_otp.dart';
 import '../widgets/home_widgets/home_widget_unlinked.dart';
-import 'app_customizer.dart';
 import 'logger.dart';
+import 'riverpod_providers.dart';
 
 const appGroupId = 'group.authenticator_home_widget_group';
 
@@ -45,20 +44,20 @@ class HomeWidgetUtils {
   HomeWidgetUtils._();
   static HomeWidgetUtils? _instance;
 
-  /// Check widget_layout.xml for the sizes. Double it for better quality
+  /// Check android/app/src/main/res/layout/widget_layout.xml for the sizes. Double it for better quality
   static const _widgetBackgroundSize = Size(130 * 2, 65 * 2);
 
-  /// Check widget_layout.xml for the sizes. Double it for better quality
+  /// Check android/app/src/main/res/layout/widget_layout.xml for the sizes. Double it for better quality
   static const _widgetOtpSize = Size(98 * 2, 40 * 2);
 
-  /// Check widget_layout.xml for the sizes. Double it for better quality
+  /// Check android/app/src/main/res/layout/widget_layout.xml for the sizes. Double it for better quality
   static const _widgetSettingsSize = Size(14 * 2, 14 * 2);
 
-  /// Check widget_layout.xml for the sizes. Double it for better quality
+  /// Check android/app/src/main/res/layout/widget_layout.xml for the sizes. Double it for better quality
   static const _widgetActionSize = Size(24 * 2, 24 * 2);
 
   /// Default duration for showing the OTP
-  static const _showDuration = Duration(seconds: 30);
+  static const _showDuration = Duration(seconds: 15);
 
   factory HomeWidgetUtils({TokenRepository? tokenRepository, TokenFolderRepository? tokenFolderRepository}) {
     if (Platform.isIOS) return UnsupportedHomeWidgetUtils(); // Not supported on iOS
@@ -80,7 +79,11 @@ class HomeWidgetUtils {
   static TokenRepository? _tokenRepository;
   static TokenFolderRepository? _folderRepository;
   static final Mutex _repoMutex = Mutex();
-  static Future<List<OTPToken>> get _otpTokens async => (await _loadTokensFromRepo()).whereType<OTPToken>().toList();
+  static Future<List<OTPToken>> get _otpTokens async {
+    final tokens = globalRef?.read(tokenProvider).tokens;
+    return tokens?.whereType<OTPToken>().toList() ?? (await _loadTokensFromRepo()).whereType<OTPToken>().toList();
+  }
+
   static Future<OTPToken?> _getTokenOfTokenId(String? tokenId) async {
     await _repoMutex.acquire();
     final token = (await _loadTokensFromRepo()).firstWhereOrNull((token) => token.id == tokenId);
@@ -168,25 +171,18 @@ class HomeWidgetUtils {
     return widgetId == null ? null : _getTokenOfTokenId(await getTokenIdOfWidgetId(widgetId));
   }
 
-  Future<Map<String, OTPToken?>> _getTokensOfWidgetIds(List<String> widgetIds) async {
-    final tokenMap = <String, OTPToken?>{};
-    final allTokens = await _otpTokens;
-    for (String widgetId in widgetIds) {
-      final tokenId = await HomeWidget.getWidgetData<String?>('$keyTokenId$widgetId');
-      final token = allTokens.firstWhereOrNull((element) => element.id == tokenId);
-      tokenMap[widgetId] = token;
-    }
-    return tokenMap;
-  }
-
-  Future<List<String>> _getWidgetIdsOfTokens(List<String> tokenIds) async {
-    final widgetIds = <String>[];
-    for (String widgetId in (await _widgetIds)) {
-      if (tokenIds.contains(await getTokenIdOfWidgetId(widgetId))) {
-        widgetIds.add(widgetId);
+  /// <widgetId, tokenId> a token can be linked to multiple widgets but widgetIs can only be linked to one token
+  Future<Map<String, String>> _getWidgetIdsOfTokens(List<String> tokenIds) async {
+    final tokenWigetPairs = <String, String>{};
+    for (final widgetId in (await _widgetIds)) {
+      for (final tokenId in tokenIds) {
+        if (tokenId == await getTokenIdOfWidgetId(widgetId)) {
+          tokenWigetPairs[widgetId] = tokenId;
+        }
       }
     }
-    return widgetIds;
+    Logger.info('Found ${tokenWigetPairs.length} linked Widgets', name: 'home_widget_utils.dart#_getWidgetIdsOfTokens');
+    return tokenWigetPairs;
   }
 
   ThemeData? _themeDataDark;
@@ -227,6 +223,18 @@ class HomeWidgetUtils {
     await _notifyUpdate(await _widgetIds);
   }
 
+  Future<bool> hideAllOtps() async {
+    final widgetIds = await _widgetIds;
+    final futures = <Future>[];
+    for (String widgetId in widgetIds) {
+      futures.add(HomeWidget.saveWidgetData('$keyShowToken$widgetId', false));
+    }
+    if (futures.isEmpty) return false;
+    await Future.wait(futures);
+    await _notifyUpdate(widgetIds);
+    return true;
+  }
+
   // Call AFTER saving to the repository
   Future<void> updateTokenIfLinked(Token token) async {
     final updatedIds = await _updateTokenIfLinked(token);
@@ -236,23 +244,20 @@ class HomeWidgetUtils {
   // Call AFTER saving to the repository
   Future<void> updateTokensIfLinked(List<Token> tokens) async {
     // Map<widgetId, tokenId>
-    Map<String, OTPToken?> widgetIdTokenIdMap = {};
     final hotpTokens = tokens.whereType<HOTPToken>().toList();
     final hotpTokenIds = hotpTokens.map((e) => e.id).toList();
     final linkedWidgetIds = await _getWidgetIdsOfTokens(hotpTokenIds);
-    for (String widgetId in linkedWidgetIds) {
-      final tokenId = await getTokenIdOfWidgetId(widgetId);
-      final hotpToken = hotpTokens.firstWhereOrNull((element) => element.id == tokenId);
-      if (tokenId != null) {
-        widgetIdTokenIdMap[widgetId] = hotpToken;
-      }
-    }
-    for (String widgetId in widgetIdTokenIdMap.keys) {
-      final hotpToken = widgetIdTokenIdMap[widgetId];
+    final futures = <Future>[];
+    for (String widgetId in linkedWidgetIds.keys) {
+      final hotpToken = hotpTokens.firstWhereOrNull((element) => element.id == linkedWidgetIds[widgetId]);
       if (hotpToken == null) continue;
-      await _updateHomeWidgetHideOtp(hotpToken, widgetId);
+      futures.addAll([
+        _updateHomeWidgetHideOtp(hotpToken, widgetId),
+        _updateHomeWidgetShowOtp(hotpToken, widgetId),
+      ]);
     }
-    await _notifyUpdate(widgetIdTokenIdMap.keys);
+    await Future.wait(futures);
+    await _notifyUpdate(linkedWidgetIds.keys);
   }
 
   Future<void> link(String widgetId, String tokenId) async {
@@ -286,22 +291,22 @@ class HomeWidgetUtils {
     _hideOtpDelayed(widgetId, otpToken.otpValue.length);
   }
 
-  Future<void> handleChangedTokenState() async {
-    final idTokenPairs = await _getTokensOfWidgetIds(await _widgetIds);
-    final homeWidgetChanges = <Future>[];
-    for (String widgetId in idTokenPairs.keys) {
-      final token = idTokenPairs[widgetId];
-      if (token == null) {
-        homeWidgetChanges.add(_unlink(widgetId));
-        continue;
-      }
-      homeWidgetChanges.add(HomeWidget.saveWidgetData('$keyTokenLocked$widgetId', token.isLocked || ((await _folderOf(token))?.isLocked ?? false)));
-      homeWidgetChanges.add(HomeWidget.saveWidgetData('$keyShowToken$widgetId', false));
-      homeWidgetChanges.add(_updateHomeWidgetHideOtp(token, widgetId));
-    }
-    await Future.wait(homeWidgetChanges);
-    await _notifyUpdate(idTokenPairs.keys);
-  }
+  // Future<void> handleChangedTokenState() async {
+  //   final idTokenPairs = await _getTokensOfWidgetIds(await _widgetIds);
+  //   final homeWidgetChanges = <Future>[];
+  //   for (String widgetId in idTokenPairs.keys) {
+  //     final token = idTokenPairs[widgetId];
+  //     if (token == null) {
+  //       homeWidgetChanges.add(_unlink(widgetId));
+  //       continue;
+  //     }
+  //     homeWidgetChanges.add(HomeWidget.saveWidgetData('$keyTokenLocked$widgetId', token.isLocked || ((await _folderOf(token))?.isLocked ?? false)));
+  //     homeWidgetChanges.add(HomeWidget.saveWidgetData('$keyShowToken$widgetId', false));
+  //     homeWidgetChanges.add(_updateHomeWidgetHideOtp(token, widgetId));
+  //   }
+  //   await Future.wait(homeWidgetChanges);
+  //   await _notifyUpdate(idTokenPairs.keys);
+  // }
 
   /// widgetId,Timer
   final Map<String, Timer?> _copyTimers = {};
@@ -348,7 +353,7 @@ class HomeWidgetUtils {
       return;
     }
     HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', true);
-    final widgetIds = await _getWidgetIdsOfTokens([token.id]);
+    final widgetIds = (await _getWidgetIdsOfTokens([token.id])).keys.toList();
     _actionTimers[tokenId] = Timer(const Duration(seconds: 1), () async {
       Logger.info('Unblocked action', name: 'home_widget_utils.dart#performAction');
       await HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', false);
@@ -393,10 +398,12 @@ class HomeWidgetUtils {
   final Map<String, Timer> _hideTimers = {};
   void _hideOtpDelayed(String widgetId, int otpLength) {
     _hideTimers[widgetId]?.cancel();
-    _hideTimers[widgetId] = Timer(_showDuration, () async {
-      await HomeWidget.saveWidgetData('$keyShowToken$widgetId', false);
-      await _notifyUpdate([widgetId]);
-    });
+    _hideTimers[widgetId] = Timer(_showDuration, () => _hideOtp(widgetId, otpLength));
+  }
+
+  Future<void> _hideOtp(String widgetId, int otpLength) async {
+    await HomeWidget.saveWidgetData('$keyShowToken$widgetId', false);
+    await _notifyUpdate([widgetId]);
   }
 
   Future<void> _link(String widgetId, OTPToken token) async {
@@ -445,7 +452,7 @@ class HomeWidgetUtils {
   // Call AFTER saving to the repository
   Future<List<String>> _updateTokenIfLinked(Token token) async {
     if (token is! OTPToken) return [];
-    final widgetIds = await _getWidgetIdsOfTokens([token.id]);
+    final widgetIds = (await _getWidgetIdsOfTokens([token.id])).keys.toList();
     final futures = <Future>[];
     for (String widgetId in widgetIds) {
       futures.add(_updateHomeWidgetHideOtp(token, widgetId));
@@ -587,7 +594,7 @@ class HomeWidgetUtils {
   /// This method has to be called after change to the HomeWidget to notify the HomeWidget to update
   Future<void> _notifyUpdate(Iterable<String> updatedWidgetIds) async {
     if (updatedWidgetIds.isEmpty) return;
-    Logger.info('Update requested for: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate');
+    Logger.info('Update requested for: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate', stackTrace: StackTrace.current);
     if (await _widgetIsRebuilding || _lastUpdate != null && DateTime.now().difference(_lastUpdate!) < _updateDelay) {
       Logger.info('Update delayed: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate');
       _updatedWidgetIds.addAll(updatedWidgetIds);
@@ -624,9 +631,7 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   @override
   Future<ThemeData> _getThemeData({bool dark = false}) => Future.value(ThemeData.light());
   @override
-  Future<Map<String, OTPToken?>> _getTokensOfWidgetIds(List<String> widgetIds) => Future.value({});
-  @override
-  Future<List<String>> _getWidgetIdsOfTokens(List<String> tokenIds) => Future.value([]);
+  Future<Map<String, String>> _getWidgetIdsOfTokens(List<String> tokenIds) => Future.value({});
   @override
   void _hideOtpDelayed(String widgetId, int otpLength) {}
   @override
@@ -690,8 +695,6 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   @override
   Future<OTPToken?> getTokenOfWidgetId(String? widgetId) => Future.value(null);
   @override
-  Future<void> handleChangedTokenState() async {}
-  @override
   Future<void> homeWidgetInit({TokenRepository? repository}) async {}
   @override
   Future<void> link(String widgetId, String tokenId) async {}
@@ -717,4 +720,8 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   Future<bool?> registerInteractivityCallback(void Function(Uri? uri) homeWidgetBackgroundCallback) => Future.value(null);
   @override
   Future<bool?> setAppGroupId(String appGroupId) => Future.value(null);
+  @override
+  Future<void> _hideOtp(String widgetId, int otpLength) async {}
+  @override
+  Future<bool> hideAllOtps() async => false;
 }

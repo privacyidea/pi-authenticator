@@ -23,35 +23,26 @@ class TokenState {
   List<PushToken> get pushTokensToRollOut =>
       pushTokens.where((element) => !element.isRolledOut && element.rolloutState == PushTokenRollOutState.rolloutNotStarted).toList();
 
-  TokenState({List<Token> tokens = const [], List<Token>? lastlyUpdatedTokens})
+  TokenState({required List<Token> tokens, List<Token>? lastlyUpdatedTokens})
       : tokens = List<Token>.from(tokens),
-        lastlyUpdatedTokens = lastlyUpdatedTokens ?? List<Token>.from(tokens) {
-    _sort(this.tokens);
-  }
-  TokenState repaceList({List<Token>? tokens}) => TokenState(tokens: tokens ?? this.tokens);
+        lastlyUpdatedTokens = List<Token>.from(lastlyUpdatedTokens ?? tokens);
 
-  Map<Token, Token?> tokensWithSameSectet(List<Token> tokens) {
-    final tokensWithSameSectet = <Token, Token?>{};
+  List<Token> get nonPiTokens => tokens.where((token) => token.isPrivacyIdeaToken == false).toList();
+
+  PushToken? getTokenBySerial(String serial) => pushTokens.firstWhereOrNull((element) => element.serial == serial);
+
+  /// Maps the given tokens to the tokens that are already in the state
+  /// It ignores the id that is usually used to identify the token
+  /// Instead it uses the non-changeable values of the token to identify it
+  /// Like the secret and hash algorithm for OTP tokens, or the serial and public server key for push tokens
+  Map<Token, Token?> getSameTokens(List<Token> tokens) {
+    final sameTokensMap = <Token, Token?>{};
     final stateTokens = this.tokens;
-    List<OTPToken> otpTokens = tokens.whereType<OTPToken>().toList();
-    Map<String, OTPToken> stateOtpTokens = {for (var e in stateTokens.whereType<OTPToken>()) (e).secret: e};
-    List<PushToken> pushTokens = tokens.whereType<PushToken>().toList();
-    Map<(String?, String?, String?), PushToken> statePushTokens = {
-      for (var e in stateTokens.whereType<PushToken>()) (e.publicServerKey, e.privateTokenKey, e.publicTokenKey): e
-    };
 
-    for (var pushToken in pushTokens) {
-      tokensWithSameSectet[pushToken] = statePushTokens[(pushToken.publicServerKey, pushToken.privateTokenKey, pushToken.publicTokenKey)];
+    for (var token in tokens) {
+      sameTokensMap[token] = stateTokens.firstWhereOrNull((element) => element.isSameTokenAs(token));
     }
-    for (var otpToken in otpTokens) {
-      tokensWithSameSectet[otpToken] = stateOtpTokens[otpToken.secret];
-    }
-
-    return tokensWithSameSectet;
-  }
-
-  static void _sort(List<Token> tokens) {
-    tokens.sort((a, b) => (a.sortIndex ?? double.infinity).compareTo(b.sortIndex ?? double.infinity));
+    return sameTokensMap;
   }
 
   T? currentOf<T extends Token>(T token) => tokens.firstWhereOrNull((element) => element.id == token.id) as T?;
@@ -80,7 +71,7 @@ class TokenState {
   TokenState withoutTokens(List<Token> tokens) {
     final newTokens = List<Token>.from(this.tokens);
     newTokens.removeWhere((element) => tokens.any((token) => token.id == element.id));
-    return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: const []);
   }
 
   // Add a token if it does not exist yet
@@ -98,66 +89,71 @@ class TokenState {
 
   // Replace the token if it does exist
   // Do nothing if it does not exist
-  TokenState replaceToken(Token token) {
-    final newTokens = List<Token>.from(tokens);
+  (TokenState, bool) replaceToken(Token token) {
+    final newTokens = tokens.toList();
     final index = newTokens.indexWhere((element) => element.id == token.id);
     if (index == -1) {
       Logger.warning('Tried to replace a token that does not exist.', name: 'token_state.dart#replaceToken');
-      return this;
+      return (this, false);
     }
     newTokens[index] = token;
-    return TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]);
+    return (TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]), true);
   }
 
   // replace all tokens where the id is the same
   // if the id is none, add it to the list
-  TokenState addOrReplaceTokens(List<Token> tokens) {
+  TokenState addOrReplaceTokens<T extends Token>(List<T> tokens) {
     final newTokens = List<Token>.from(this.tokens);
+    final updatedTokens = <Token>[];
     for (var token in tokens) {
       final index = newTokens.indexWhere((element) => element.id == token.id);
       if (index == -1) {
         newTokens.add(token);
+        updatedTokens.add(token);
         continue;
       }
       newTokens[index] = token;
+      updatedTokens.add(token);
     }
-    return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: updatedTokens);
   }
 
   // Replace the tokens if it does exist
   // Do nothing if it does not exist
-  TokenState replaceTokens(List<Token> tokens) {
+  (TokenState, List<T>) replaceTokens<T extends Token>(List<T> tokens) {
     final newTokens = List<Token>.from(this.tokens);
-    final lastlyUpdatedTokens = <Token>[];
+    final updatedTokens = <T>[];
+    final failedToReplace = <T>[];
     for (var token in tokens) {
       final index = newTokens.indexWhere((element) => element.id == token.id);
       if (index == -1) {
         Logger.warning('Tried to replace a token that does not exist.', name: 'token_state.dart#replaceToken');
+        failedToReplace.add(token);
         continue;
       }
       newTokens[index] = token;
-      lastlyUpdatedTokens.add(token);
     }
-    return TokenState(tokens: newTokens, lastlyUpdatedTokens: lastlyUpdatedTokens);
+    return (TokenState(tokens: newTokens, lastlyUpdatedTokens: updatedTokens), failedToReplace);
   }
 
-  List<Token> tokensInFolder(TokenFolder folder, {List<Type>? only, List<Type>? exclude}) => tokens.where((token) {
-        if (token.folderId != folder.folderId) {
-          return false;
-        }
-        if (exclude != null && exclude.contains(token.runtimeType)) return false;
-        if (only != null && !only.contains(token.runtimeType)) return false;
+  List<Token> tokensInFolder(TokenFolder folder, {List<Type> only = const [], List<Type> exclude = const []}) =>
+      tokens.inFolder(folder, only: only, exclude: exclude);
+
+  List<Token> tokensWithoutFolder({List<Type> only = const [], List<Type> exclude = const []}) => tokens.withoutFolder(only: only, exclude: exclude);
+}
+
+extension TokenListExtension on List<Token> {
+  List<Token> inFolder(TokenFolder folder, {List<Type> only = const [], List<Type> exclude = const []}) => where((token) {
+        if (token.folderId != folder.folderId) return false;
+        if (exclude.contains(token.runtimeType)) return false;
+        if (only.isNotEmpty && !only.contains(token.runtimeType)) return false;
         return true;
       }).toList();
 
-  List<Token> tokensWithoutFolder({List<Type>? only, List<Type>? exclude}) => tokens.where((token) {
-        if (token.folderId != null) {
-          return false;
-        }
-        if (exclude != null && exclude.contains(token.runtimeType)) return false;
-        if (only != null && !only.contains(token.runtimeType)) return false;
+  List<Token> withoutFolder({List<Type> only = const [], List<Type> exclude = const []}) => where((token) {
+        if (token.folderId != null) return false;
+        if (exclude.contains(token.runtimeType)) return false;
+        if (only.isNotEmpty && !only.contains(token.runtimeType)) return false;
         return true;
       }).toList();
-
-  PushToken? tokenWithPushRequest() => tokens.whereType<PushToken>().firstWhereOrNull((token) => token.pushRequests.isNotEmpty);
 }

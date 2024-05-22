@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/patch_note_type.dart';
+import '../../model/extensions/enums/patch_note_type_extension.dart';
+import '../../model/version.dart';
 import '../../utils/app_info_utils.dart';
 import '../../utils/riverpod_providers.dart';
-import '../../utils/version.dart';
 import 'default_dialog.dart';
 
 class PatchNotesDialog extends StatelessWidget {
@@ -47,7 +48,7 @@ class PatchNotesDialog extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              entry.key.getName(localizations),
+                              entry.key.localizedName(localizations),
                               style: Theme.of(context).textTheme.titleSmall?.copyWith(color: theme.primaryColor),
                             ),
                             const SizedBox(height: 8),

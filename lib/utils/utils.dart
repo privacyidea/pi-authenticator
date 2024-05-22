@@ -26,10 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:privacyidea_authenticator/model/extensions/enum_extension.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
-
-import '../model/enums/algorithms.dart';
 
 /// Inserts [char] at the position [pos] in the given String ([str]),
 /// and returns the resulting String.
@@ -56,26 +53,17 @@ String splitPeriodically(String str, int period) {
   return result.trim();
 }
 
-Algorithms mapStringToAlgorithm(String algoAsString) {
-  for (Algorithms alg in Algorithms.values) {
-    if (alg.isString(algoAsString)) {
-      return alg;
-    }
-  }
-  throw ArgumentError.value(algoAsString, 'algorAsString', '$algoAsString cannot be mapped to $Algorithms');
-}
-
 // / This implementation is taken from the library
 // / [foundation](https://api.flutter.dev/flutter/foundation/describeEnum.html).
 // / That library sadly depends on [dart.ui] and thus cannot be used in tests.
 // / Therefore, only using this code enables us to use this library ([utils.dart])
 // / in tests.
-String enumAsString(Enum enumEntry) {
-  final String description = enumEntry.toString();
-  final int indexOfDot = description.indexOf('.');
-  assert(indexOfDot != -1 && indexOfDot < description.length - 1);
-  return description.substring(indexOfDot + 1);
-}
+// String enumAsString(Enum enumEntry) {
+//   final String description = enumEntry.toString();
+//   final int indexOfDot = description.indexOf('.');
+//   assert(indexOfDot != -1 && indexOfDot < description.length - 1);
+//   return description.substring(indexOfDot + 1);
+// }
 
 /// If permission is already given, this function does nothing
 void checkNotificationPermission() async {
@@ -119,3 +107,14 @@ Size textSizeOf(String text, TextStyle style, {int? maxLines = 1, double minWidt
 }
 
 Future<String> getPackageName() async => (await PackageInfo.fromPlatform()).packageName.replaceAll('.debug', '');
+
+String removeIllegalFilenameChars(String filename) => filename.replaceAll(RegExp(r'[<>:"/\\|?*]'), '');
+
+bool doesThrow(Function() f) {
+  try {
+    f();
+    return false;
+  } catch (_) {
+    return true;
+  }
+}

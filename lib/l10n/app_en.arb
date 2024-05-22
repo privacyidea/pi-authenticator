@@ -153,6 +153,12 @@
   "@systemTheme": {
     "description": "The systems theme."
   },
+  "someTokensDoNotSupportPolling": "Some of the tokens are outdated and do not support polling",
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
+  },
   "enablePolling": "Enable polling",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
@@ -526,8 +532,9 @@
   "invalidQrScan": "The scanned QR code is not a valid backup of {appName}.",
   "invalidQrFile": "The selected file does not contain a valid QR code from {appName}.",
   "invalidLink": "The link entered is not a valid token of {appName}, or it is not supported.",
+  "importFailedToken": "{count, plural, zero{No token Failed to import.} one{Failed to import a token.} other{Failed to import {count} tokens.}}",
   "importExistingToken": "{count, plural, zero{No token was found that is already in the application.} one{A token was found that already exists in the application.} other{{count} tokens was found that are already in the application.}}",
-  "importConflictToken": "{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with an existing token.\nPlease choose which one you want to keep.} other{There are conflicts with existing tokens.\nPlease choose which one you want to keep.}}",
+  "importConflictToken": "{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with existing tokens.\nPlease select which one you would like to keep.} other{There are conflicts with existing tokens.\nPlease select the tokens you wish to keep.}}",
   "importNewToken": "{count, plural, zero{No new token has been found.} one{A new token has been found and is being imported.} other{{count} new tokens have been found and will be imported.}}",
   "importHint2FAS": "Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.",
   "importHintAegisBackupFile": "Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.",
@@ -535,6 +542,9 @@
   "importHintAegisLink": "Enter the link you receive when you transfer entries from Aegis.",
   "importHintGoogleQrScan": "Scan the QR code you receive when you export your accounts from Google Authenticator.",
   "importHintGoogleQrFile": "Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!",
+  "importHintAuthenticatorProFile": "To create a backup of the Authenticator Pro app, navigate to the settings and tap on \"Auto backup\". Select a storage location and set a password. Then press \"Back up now\" to export the tokens.",
+  "importHintFreeOtpPlusQrScan": "Scan the QR code you receive when you press the three dots in the tile of the token and select \"Share QR code\".",
+  "importHintFreeOtpPlusFile": "To create a backup of the FreeOTP+ app, tap on the three dots in the upper right corner and select \"Export\". You can choose between JSON and URI format. We recommend to delete the backup after importing it, because it is not encrypted.",
   "qrFileDecodeError": "It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.",
   "tokenLink": "Token link",
   "feedback": "Feedback",
@@ -564,6 +574,87 @@
       },
       "account": {
         "example": "GitHub"
+      }
+    }
+  },
+  "errorUnlinkingPushToken": "Failed to unlink the push token {label}.",
+  "@errorUnlinkingPushToken": {
+    "description": "Error message when unlinking a push token failed.",
+    "placeholders": {
+      "label": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Please synchronize the push tokens manually via the settings when a network connection is available.",
+  "pushTokens": "Push Tokens",
+  "continueButton": "Continue",
+  "addTokenManually": "Add token manually",
+  "addFolder": "Add folder",
+  "searchTokens": "Search tokens",
+  "closeSearchTokens": "Close search",
+  "increaseCounter": "Increase counter",
+  "copyOTPToClipboard": "Copy OTP to clipboard",
+  "licenses": "Licenses",
+  "optionalMessage": "Optional message",
+  "confirmation": "Confirmation",
+  "askLogSendedDescription": "Did you send the log, and do you want to clear it now?",
+  "algorithmUnsupported": "The algorithm {algorithm} is not supported",
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
+  },
+  "thisAppIsOpenSource": "This Application is Open Source\nVisit us on GitHub",
+  "importExportTokens": "Import/Export tokens",
+  "exportNonPrivacyIDEATokens": "Export non-privacyIDEA tokens",
+  "selectTokensToExport": "{count, plural, zero{} one{Select token to export} other{Select tokens to export}}",
+  "noTokensToExport": "No tokens to export",
+  "exportAllTokens": "Export all tokens",
+  "export": "Export",
+  "exportingTokens": "Exporting tokens...",
+  "exportTokens": "Export tokens",
+  "enterPasswordToEncrypt": "Enter a password to encrypt the tokens. This password will be required to import the tokens.",
+  "exportLockedTokenReason": "Please authenticate to export locked tokens.",
+  "fileSavedToDownloadsFolder": "File saved to Downloads folder",
+  "errorSavingFile": "Saving to file failed",
+  "toFile": "To file",
+  "asQrCode": "As QR code",
+  "scanThisQrWithNewDevice": "Scan this QR code with your new device to import the token.",
+  "oneMore": "One more",
+  "done": "Done",
+  "confirmPassword": "Confirm password",
+  "secretIsRequired": "Secret is required",
+  "tokenDataParseError": "Token data could not be parsed",
+  "missingRequiredParameter": "Value for parameter [{counter}] is required and is missing",
+  "@missingRequiredParameter": {
+    "placeholders": {
+      "counter": {
+        "example": "counter"
+      }
+    }
+  },
+  "invalidValueForParameter": "[{value}] is not a valid value for uri parameter [parameter].",
+  "@invalidValueForParameter": {
+    "placeholders": {
+      "value": {
+        "example": "abc"
+      },
+      "parameter": {
+        "example": "number"
+      }
+    }
+  },
+  "unsupported": "The {name} [{value}] is not supported by this version of the app.",
+  "@unsupported": {
+    "placeholders": {
+      "name": {
+        "example": "piauth version"
+      },
+      "value": {
+        "example": "5"
       }
     }
   }

@@ -1,14 +1,4 @@
+// Do not rename or remove values, they are used for serialization. Only add new values.
 enum AppFeature {
   patchNotes,
-}
-
-extension AppFeatureX on AppFeature {
-  String get name => switch (this) {
-        AppFeature.patchNotes => 'patchNotes',
-      };
-
-  static AppFeature fromName(String featureString) => switch (featureString) {
-        'patchNotes' => AppFeature.patchNotes,
-        _ => throw ArgumentError('Invalid feature string: $featureString'),
-      };
 }

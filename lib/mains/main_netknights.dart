@@ -18,11 +18,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/app_customizer.dart';
+import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
@@ -30,7 +31,6 @@ import 'package:privacyidea_authenticator/views/add_token_manually_view/add_toke
 import 'package:privacyidea_authenticator/views/import_tokens_view/import_tokens_view.dart';
 import 'package:privacyidea_authenticator/views/license_view/license_view.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
-import 'package:privacyidea_authenticator/views/onboarding_view/onboarding_view.dart';
 import 'package:privacyidea_authenticator/views/push_token_view/push_tokens_view.dart';
 import 'package:privacyidea_authenticator/views/qr_scanner_view/qr_scanner_view.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
@@ -48,17 +48,20 @@ void main() async {
         WidgetsFlutterBinding.ensureInitialized();
         await HomeWidgetUtils().registerInteractivityCallback(homeWidgetBackgroundCallback);
         await HomeWidgetUtils().setAppGroupId(appGroupId);
-        runApp(AppWrapper(child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization)));
+        runApp(AppWrapper(child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization)));
       });
 }
 
 class PrivacyIDEAAuthenticator extends ConsumerWidget {
   static ApplicationCustomization? currentCustomization;
   final ApplicationCustomization _customization;
-  PrivacyIDEAAuthenticator({required ApplicationCustomization customization, super.key}) : _customization = customization {
-    // ignore: prefer_initializing_formals
+
+  factory PrivacyIDEAAuthenticator(ApplicationCustomization customization, {Key? key}) {
     PrivacyIDEAAuthenticator.currentCustomization = customization;
+    return PrivacyIDEAAuthenticator._(customization: customization, key: key);
   }
+  const PrivacyIDEAAuthenticator._({required ApplicationCustomization customization, super.key}) : _customization = customization;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     globalRef = ref;
@@ -97,14 +100,9 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
                 appName: _customization.appName,
                 disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
               ),
-          OnboardingView.routeName: (context) => OnboardingView(
-                appName: _customization.appName,
-              ),
           PushTokensView.routeName: (context) => const PushTokensView(),
           SettingsView.routeName: (context) => const SettingsView(),
-          SplashScreen.routeName: (context) => SplashScreen(
-                customization: _customization,
-              ),
+          SplashScreen.routeName: (context) => SplashScreen(customization: _customization),
           QRScannerView.routeName: (context) => const QRScannerView(),
         },
       );

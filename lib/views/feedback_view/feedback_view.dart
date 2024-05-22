@@ -1,15 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../../l10n/app_localizations.dart';
-import '../../utils/pi_mailer.dart';
-import '../../utils/view_utils.dart';
-import '../main_view/main_view.dart';
-import '../view_interface.dart';
-import '../../widgets/dialog_widgets/default_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../utils/app_info_utils.dart';
 import '../../utils/globals.dart';
+import '../../utils/pi_mailer.dart';
+import '../../utils/view_utils.dart';
+import '../../widgets/dialog_widgets/default_dialog.dart';
+import '../main_view/main_view.dart';
+import '../view_interface.dart';
 
 class FeedbackView extends StatefulView {
   static const String routeName = '/feedback';

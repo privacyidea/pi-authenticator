@@ -178,12 +178,15 @@ class ImageConverter {
   }
 
   factory ImageConverter._fromJPEG(CameraImage image) {
+    Logger.info('Converting JPEG image to Image');
     return ImageConverter(image: imglib.decodeJpg(image.planes[0].bytes)!);
   }
 
   factory ImageConverter._fromBGRA8888(CameraImage image, int rotation, bool mirror, int cropLeft, int cropRight, int cropTop, int cropBottom) {
+    Logger.info('Converting BGRA8888 image to Image');
+    rotation = 360 - (rotation % 360); // if the image is rotated by 90, we need to rotate by another 270 to get the correct rotation (0/360)
     const numChannels = 4; // 1 for alpha, 3 for RGB
-    final img = imglib.Image.fromBytes(
+    var img = imglib.Image.fromBytes(
       width: image.width,
       height: image.height,
       rowStride: image.planes[0].bytesPerRow,
@@ -192,14 +195,20 @@ class ImageConverter {
       bytes: (image.planes[0].bytes).buffer,
       order: imglib.ChannelOrder.bgra,
     );
-    return ImageConverter(
-        image: imglib.copyCrop(
+    if (rotation != 0) {
+      img = imglib.copyRotate(img, angle: rotation);
+    }
+    if (mirror) {
+      img = imglib.flip(img, direction: imglib.FlipDirection.horizontal);
+    }
+    img = imglib.copyCrop(
       img,
       x: cropLeft,
       y: cropTop,
       width: img.width - cropLeft - cropRight,
       height: img.height - cropTop - cropBottom,
-    ));
+    );
+    return ImageConverter(image: img);
   }
 
   factory ImageConverter._fromYUV420(
@@ -211,6 +220,7 @@ class ImageConverter {
     int cropTop = 0,
     int cropBottom = 0,
   ]) {
+    Logger.info('Converting YUV420 image to Image');
     rotation = 360 - (rotation % 360); // if the rotation is 90, we need to rotate by 270 to get the correct rotation
 
     const alpha = 0xFF;

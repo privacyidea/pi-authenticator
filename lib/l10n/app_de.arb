@@ -7,7 +7,7 @@
   "patchNotesV4_3_1Improvement1": "Der QR-Code-Scanner wurde verbessert.",
   "patchNotesV4_3_0NewFeatures1": "Unterstützung für den Import von Token von Google, Aegis und 2FAS Authenticator hinzugefügt. Weitere Importquellen werden in Zukunft hinzugefügt.",
   "patchNotesV4_3_0NewFeatures2": "Feedback-Option zu den Einstellungen hinzugefügt.",
-  "patchNotesV4_3_0NewFeatures3": "Push-Tokens können jetzt aus der Token-Liste ausgeblendet werden.",
+  "patchNotesV4_3_0NewFeatures3": "Push-Token können jetzt aus der Token-Liste ausgeblendet werden.",
   "patchNotesV4_3_0NewFeatures4": "Es wurden Einführungen hinzugefügt, um neuen Benutzern den Einstieg zu erleichtern.",
   "patchNotesV4_3_0NewFeatures5": "Sie können jetzt nach Token suchen, indem Sie auf die Lupe in der oberen rechten Ecke tippen.",
   "patchNotesV4_3_0NewFeatures6": "Ab Android 12 kann für einen Token ein Widget auf dem Homescreen erstellt werden.",
@@ -160,6 +160,12 @@
   "systemTheme": "Nutze Farbschema des Geräts",
   "@systemTheme": {
     "description": "The systems theme."
+  },
+  "someTokensDoNotSupportPolling": "Einige der Token sind veraltet und unterstützen keine aktiven Anfragen",
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
   },
   "enablePolling": "Aktives Stellen von Push-Anfragen",
   "@enablePolling": {
@@ -515,8 +521,9 @@
   "invalidQrScan": "Der gescannte QR-Code ist kein gültiges Backup von {appName}.",
   "invalidQrFile": "Die ausgewählte Datei enthällt kein gültigen QR-Code von {appName}.",
   "invalidLink": "Der eingegebene Link ist kein gültiger Token von {appName}, oder er wird nicht unterstützt.",
+  "importFailedToken": "{count, plural, zero{Kein Token konnte nicht importiert werden.} one{Importieren eines Tokens fehlgeschlagen.} other{Der Import von {count} Token ist fehlgeschlagen.}}",
   "importExistingToken": "{count, plural, zero{Es wurde kein Token gefunden, das sich bereits in der App befindet.} one{Es wurde ein Token gefunden, das sich bereits in der Anwendung befindet.} other{Es wurden {count} Token gefunden, die sich bereits in der Anwendung befinden.}}",
-  "importConflictToken": "{count, plural, zero{Es besteht kein Konflikt mit bereits existierenden Token.} one{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.} other{Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.}}",
+  "importConflictToken": "{count, plural, zero{Es besteht kein Konflikt mit bereits existierenden Token.} one{Es besteht ein Konflikt mit bereits vorhandenen Token.\nBitte wählen Sie aus, welches Sie behalten möchten.} other{Es bestehen Konflikte mit bereits vorhandenen Token.\nBitte wählen Sie die Token aus, die Sie behalten möchten.}}",
   "importNewToken": "{count, plural, zero{Es wurde kein neues Token gefunden.} one{Es wurde ein neues Token gefunden, das importiert wird.} other{Es wurden {count} neue Token gefunden, die importiert werden.}}",
   "importHint2FAS": "Wählen Sie das 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.",
   "importHintAegisBackupFile": "Wähle dein Aegis-Export (.json) aus.\nWenn Sie keinen Export haben, erstellen Sie bitte eins über das Einstellungen Menu in der Aegis-App. Wir empfehlen die Verwendung eines Passworts.",
@@ -524,6 +531,9 @@
   "importHintAegisLink": "Geben Sie den Link ein, den Sie erhalten, wenn Sie Einträge aus Aegis übertragen.",
   "importHintGoogleQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.",
   "importHintGoogleQrFile": "Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus dem Google Authenticator exportieren.\n!! Der QR-Code enthält die Token in unverschlüsselter Form. Es ist deshalb nicht sicher, diesen länger als nötig aufzubewahren !!",
+  "importHintAuthenticatorProFile": "Um ein Backup der Authenticator Pro-App zu erstellen navigieren Sie zu den Einstellungen und tippen Sie auf \"Automatische Sicherung\". Wählen Sie einen Speicherort und setzen Sie ein Passwort. Anschließend drücken Sie auf \"Jetzt sichern\" um die Token zu exportieren.",
+  "importHintFreeOtpPlusQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie auf die drei Punkte in der Kachel des Tokens drücken, und wählen Sie \"QR-Code teilen\".",
+  "importHintFreeOtpPlusFile": "Um ein Backup der FreeOTP+ App zu erstellen, tippen Sie auf die drei Punkte in der oberen rechten Ecke und wählen Sie \"Exportieren\". Sie können zwischen dem JSON- und dem URI-Format wählen. Wir empfehlen, das Backup nach dem Importieren zu löschen, da es nicht verschlüsselt ist.",
   "qrFileDecodeError": "Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren. Bitte verwenden Sie stattdessen den QR-Code-Scanner.",
   "tokenLink": "Token Link",
   "feedback": "Feedback",
@@ -554,5 +564,55 @@
         "example": "GitHub"
       }
     }
-  }
+  },
+  "errorUnlinkingPushToken": "Entkoppeln des Push Tokens {label} fehlgeschlagen.",
+  "@errorUnlinkingPushToken": {
+    "description": "Error message when unlinking a push token failed.",
+    "placeholders": {
+      "label": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Bitte synchronisieren Sie die Push Token über die Einstellungen manuell, wenn eine Netzwerkverbindung verfügbar ist.",
+  "pushTokens": "Push-Token",
+  "continueButton": "Weiter",
+  "addTokenManually": "Token manuell hinzufügen",
+  "addFolder": "Ordner hinzufügen",
+  "searchTokens": "Token suchen",
+  "closeSearchTokens": "Suche schließen",
+  "increaseCounter": "Zähler erhöhen",
+  "copyOTPToClipboard": "OTP in die Zwischenablage kopieren",
+  "licenses": "Lizenzen",
+  "optionalMessage": "Optionale Nachricht",
+  "confirmation": "Confirmation",
+  "askLogSendedDescription": "Haben Sie das Protokoll gesendet, und möchten Sie es jetzt löschen?",
+  "algorithmUnsupported": "Der Algorithmus {algorithm} wird nicht unterstützt",
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
+  },
+  "thisAppIsOpenSource": "Diese App ist Open Source\nBesuchen Sie uns auf GitHub",
+  "invalidArgument": "{argument} ist kein gültiger Wert für {type}",
+  "importExportTokens": "Token importieren/exportieren",
+  "exportNonPrivacyIDEATokens": "Nicht-privacyIDEA-Token exportieren",
+  "selectTokensToExport": "{count, plural, zero{} one{Wählen Sie das zu exportierende Token aus} other{Wählen Sie die zu exportierenden Tokens aus}}",
+  "noTokensToExport": "Keine Tokens zum Exportieren",
+  "exportAllTokens": "Alle Tokens exportieren",
+  "export": "Exportieren",
+  "exportingTokens": "Tokens werden exportiert...",
+  "exportTokens": "Tokens exportieren",
+  "enterPasswordToEncrypt": "Geben Sie ein Passwort ein, um die Tokens zu verschlüsseln. Dieses Passwort wird benötigt, um die Tokens zu importieren.",
+  "exportLockedTokenReason": "Bitte authentifizieren Sie sich, um gesperrte Tokens zu exportieren.",
+  "fileSavedToDownloadsFolder": "Datei wurde im Download-Ordner gespeichert",
+  "errorSavingFile": "Fehler beim Speichern der Datei",
+  "toFile": "In Datei",
+  "asQrCode": "Als QR-Code",
+  "scanThisQrWithNewDevice": "Scannen Sie diesen QR-Code mit Ihrem neuen Gerät, um das Token zu importieren.",
+  "oneMore": "Noch eins",
+  "done": "Fertig",
+  "confirmPassword": "Passwort bestätigen"
 }

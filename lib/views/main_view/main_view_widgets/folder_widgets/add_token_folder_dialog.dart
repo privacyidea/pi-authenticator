@@ -47,7 +47,7 @@ class AddTokenFolderDialog extends ConsumerWidget {
               if (ref.read(introductionProvider).isCompleted(Introduction.addFolder) == false) {
                 ref.read(introductionProvider.notifier).complete(Introduction.addFolder);
               }
-              ref.read(tokenFolderProvider.notifier).addFolder(textController.text);
+              ref.read(tokenFolderProvider.notifier).addNewFolder(textController.text);
               Navigator.pop(context);
             }),
       ],

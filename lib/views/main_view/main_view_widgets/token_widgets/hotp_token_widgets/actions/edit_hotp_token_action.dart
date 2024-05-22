@@ -7,11 +7,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
 import '../../../../../../model/tokens/hotp_token.dart';
-import '../../../../../../utils/app_customizer.dart';
+import '../../../../../../utils/customization/action_theme.dart';
 import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
-import '../../../../../../utils/utils.dart';
 import '../../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../token_action.dart';
@@ -120,8 +119,19 @@ class EditHOTPTokenAction extends TokenAction {
                     },
                   ),
                   TextFormField(
-                    initialValue: enumAsString(algorithm),
+                    initialValue: algorithm.name,
                     decoration: InputDecoration(labelText: AppLocalizations.of(context)!.algorithm),
+                    enabled: false,
+                  ),
+                  if (token.origin != null)
+                    TextFormField(
+                      initialValue: token.origin!.appName,
+                      decoration: const InputDecoration(labelText: 'Origin'),
+                      enabled: false,
+                    ),
+                  TextFormField(
+                    initialValue: token.isPrivacyIdeaToken == false ? 'Yes' : 'No',
+                    decoration: const InputDecoration(labelText: 'Is exportable?'),
                     enabled: false,
                   ),
                 ],

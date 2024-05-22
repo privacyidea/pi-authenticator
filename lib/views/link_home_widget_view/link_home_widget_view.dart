@@ -2,7 +2,7 @@ import 'package:app_minimizer/app_minimizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../utils/app_customizer.dart';
+import '../../utils/customization/extended_text_theme.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/riverpod_providers.dart';
 import '../../utils/utils.dart';
@@ -35,24 +35,20 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
       body: ListView.builder(
         itemBuilder: (context, index) {
           final otpToken = otpTokens[index];
-          final folderIsLocked = ref.watch(tokenFolderProvider).getFolderById(otpToken.folderId)?.isLocked ?? false;
+          final folderIsLocked = ref.watch(tokenFolderProvider).currentById(otpToken.folderId)?.isLocked ?? false;
           final otpString = otpToken.isLocked || folderIsLocked ? veilingCharacter * otpToken.otpValue.length : otpToken.otpValue;
           return ListTile(
             title: Text(otpToken.label),
-            subtitle: Text(splitPeriodically(otpString, otpString.length ~/ 2)),
+            subtitle: Text(insertCharAt(otpString, ' ', (otpString.length / 2).ceil())),
             onTap: alreadyTapped
                 ? () {}
                 : () async {
                     if (alreadyTapped) return;
-                    setState(() {
-                      alreadyTapped = true;
-                    });
+                    setState(() => alreadyTapped = true);
                     await HomeWidgetUtils().link(widget.homeWidgetId, otpToken.id);
                     await FlutterAppMinimizer.minimize();
                     await Future.delayed(const Duration(milliseconds: 500));
-                    if (mounted) {
-                      Navigator.pop(context);
-                    }
+                    if (context.mounted) Navigator.pop(context);
                   },
           );
         },

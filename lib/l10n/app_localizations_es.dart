@@ -143,6 +143,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get systemTheme => 'Utilizar el tema del teléfono';
 
   @override
+  String get someTokensDoNotSupportPolling => 'Algunos tokens están obsoletos y no admiten la consulta activa para la autenticación mediante mensaje push.';
+
+  @override
   String get enablePolling => 'Activar polling';
 
   @override
@@ -607,6 +610,18 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String importFailedToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Error al importar $count tokens.',
+      one: 'Error al importar un token.',
+      zero: 'No token Fallo al importar.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String importExistingToken(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -659,6 +674,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get importHintGoogleQrFile => 'Selecciona un archivo de imagen con el código QR que recibes al exportar tus cuentas desde Google Authenticator.\n!! Tenga en cuenta que no es seguro guardar el código QR en su dispositivo, ya que los tokens no están cifrados !!';
+
+  @override
+  String get importHintAuthenticatorProFile => 'Para crear una copia de seguridad de la aplicación Authenticator Pro, vaya a la configuración y pulse en \"Copia de seguridad automática\". Seleccione una ubicación de almacenamiento y establezca una contraseña. A continuación, pulse \"Hacer copia de seguridad ahora\" para exportar los tokens.';
+
+  @override
+  String get importHintFreeOtpPlusQrScan => 'Escanea el código QR que recibes al pulsar los tres puntos en el azulejo de la ficha y selecciona \"Compartir código QR\".';
+
+  @override
+  String get importHintFreeOtpPlusFile => 'Para crear una copia de seguridad de la app FreeOTP+, pulse los tres puntos de la esquina superior derecha y seleccione \"Exportar\". Puede elegir entre los formatos JSON y URI. Recomendamos eliminar la copia de seguridad después de importarla, ya que no está cifrada.';
 
   @override
   String get qrFileDecodeError => 'No fue posible decodificar el código QR de la imagen seleccionada, por favor utilice el escáner de código QR en su lugar.';
@@ -714,5 +738,141 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String requestInfo(Object issuer, Object account) {
     return 'Enviado por $issuer para su cuenta: \"$account\"';
+  }
+
+  @override
+  String errorUnlinkingPushToken(Object label) {
+    return 'Error al desvincular el token push $label';
+  }
+
+  @override
+  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Por favor, sincronice los tokens push manualmente a través de los ajustes cuando haya una conexión de red disponible.';
+
+  @override
+  String get pushTokens => 'Push Tokens';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get addTokenManually => 'Añadir token manualmente';
+
+  @override
+  String get addFolder => 'Añadir carpeta';
+
+  @override
+  String get searchTokens => 'Buscar tokens';
+
+  @override
+  String get closeSearchTokens => 'Cerrar búsqueda';
+
+  @override
+  String get increaseCounter => 'Incrementar contador';
+
+  @override
+  String get copyOTPToClipboard => 'Copiar OTP al portapapeles';
+
+  @override
+  String get licenses => 'Licencias';
+
+  @override
+  String get optionalMessage => 'Mensaje opcional';
+
+  @override
+  String get confirmation => 'confirmación';
+
+  @override
+  String get askLogSendedDescription => '¿Ha enviado el registro y desea borrarlo ahora?';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'El algoritmo $algorithm no es compatible';
+  }
+
+  @override
+  String get thisAppIsOpenSource => 'Esta aplicación es de código abierto\nVisítanos en GitHub';
+
+  @override
+  String get importExportTokens => 'Importar/Exportar tokens';
+
+  @override
+  String get exportNonPrivacyIDEATokens => 'Exportar tokens no privacyIDEA';
+
+  @override
+  String selectTokensToExport(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Seleccionar tokens para exportar',
+      one: 'Seleccionar token para exportar',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noTokensToExport => 'No hay tokens para exportar';
+
+  @override
+  String get exportAllTokens => 'Exportar todos los tokens';
+
+  @override
+  String get export => 'Exportar';
+
+  @override
+  String get exportingTokens => 'Exportando tokens...';
+
+  @override
+  String get exportTokens => 'Exportar tokens';
+
+  @override
+  String get enterPasswordToEncrypt => 'Ingrese una contraseña para cifrar los tokens. Esta contraseña será necesaria para importar los tokens.';
+
+  @override
+  String get exportLockedTokenReason => 'Por favor, autentíquese para exportar tokens bloqueados.';
+
+  @override
+  String get fileSavedToDownloadsFolder => 'Archivo guardado en la carpeta de descargas';
+
+  @override
+  String get errorSavingFile => 'Error al guardar el archivo';
+
+  @override
+  String get toFile => 'A archivo';
+
+  @override
+  String get asQrCode => 'Como código QR';
+
+  @override
+  String get scanThisQrWithNewDevice => 'Escanee este código QR con su nuevo dispositivo para importar el token.';
+
+  @override
+  String get oneMore => 'Uno más';
+
+  @override
+  String get done => 'Hecho';
+
+  @override
+  String get confirmPassword => 'Confirmar contraseña';
+
+  @override
+  String get secretIsRequired => 'Secret is required';
+
+  @override
+  String get tokenDataParseError => 'Token data could not be parsed';
+
+  @override
+  String missingRequiredParameter(Object counter) {
+    return 'Value for parameter [$counter] is required and is missing';
+  }
+
+  @override
+  String invalidValueForParameter(Object value, Object parameter) {
+    return '[$value] is not a valid value for uri parameter [parameter].';
+  }
+
+  @override
+  String unsupported(Object name, Object value) {
+    return 'The $name [$value] is not supported by this version of the app.';
   }
 }

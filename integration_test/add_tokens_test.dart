@@ -14,7 +14,7 @@ import 'package:privacyidea_authenticator/state_notifiers/completed_introduction
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
-import 'package:privacyidea_authenticator/utils/app_customizer.dart';
+import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view_widgets/labeled_dropdown_button.dart';
@@ -45,7 +45,7 @@ void main() {
     when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
-    when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
+    when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
     final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
     when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
@@ -60,7 +60,7 @@ void main() {
           tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
           introductionProvider.overrideWith((ref) => IntroductionNotifier(repository: mockIntroductionRepository)),
         ],
-        child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
+        child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
       ));
 
       await _introToMainView(tester);

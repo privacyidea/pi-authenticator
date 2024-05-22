@@ -24,7 +24,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/enums/patch_note_type.dart';
-import 'version.dart';
+import '../model/version.dart';
 
 Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocalizations localizations) => {
       const Version(4, 3, 0): {
@@ -50,7 +50,14 @@ Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocaliz
 final globalSnackbarKey = GlobalKey<ScaffoldMessengerState>();
 final globalNavigatorKey = GlobalKey<NavigatorState>();
 final Future<GlobalKey<NavigatorState>> contextedGlobalNavigatorKey = Future(() async => await _getContextedGlobalNavigatorKey());
-BuildContext? globalContextSync = globalNavigatorKey.currentContext;
+BuildContext? get globalContextSync {
+  try {
+    return globalNavigatorKey.currentContext;
+  } catch (e) {
+    return null;
+  }
+}
+
 final Future<BuildContext> globalContext = Future(() async => await _getContextedGlobalNavigatorKey()).then((value) => value.currentContext!);
 Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKey() async {
   if (globalNavigatorKey.currentContext != null) {
@@ -61,3 +68,7 @@ Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKey() async {
 }
 
 final policyStatementUri = Uri.parse("https://netknights.it/en/privacy-statement/");
+final piAuthenticatorGitHubUri = Uri.parse("https://github.com/privacyidea/pi-authenticator");
+
+// The highest version of the pipush Tokentype that this client supports.
+const maxPushTokenVersion = 1;

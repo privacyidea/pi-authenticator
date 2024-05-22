@@ -1,5 +1,6 @@
+import '../../utils/logger.dart';
 import '../enums/algorithms.dart';
-import '../token_origin.dart';
+import '../token_import/token_origin_data.dart';
 import 'token.dart';
 
 abstract class OTPToken extends Token {
@@ -7,27 +8,36 @@ abstract class OTPToken extends Token {
   final int digits; // the number of digits the otp value will have
   final String secret; // the secret based on which the otp value is calculated in base32
   String get otpValue; // the current otp value
+  Duration get showDuration {
+    const Duration duration = Duration(seconds: 30);
+    Logger.info('$runtimeType showDuration: ${duration.inSeconds} seconds');
+    return duration;
+  } // the duration the otp value is shown
 
   const OTPToken({
     required this.algorithm,
     required this.digits,
     required this.secret,
-    required super.label,
-    required super.issuer,
     required super.id,
     required super.type,
     super.pin,
     super.tokenImage,
-    super.sortIndex,
     super.isLocked,
     super.isHidden,
+    super.sortIndex,
     super.folderId,
     super.origin,
+    super.label = '',
+    super.issuer = '',
   });
 
+  // @override
+  // No changeable value in OTPToken
+  // bool sameValuesAs(Token other) => super.sameValuesAs(other);
+
   @override
-  bool sameValuesAs(Token other) {
-    return super.sameValuesAs(other) && other is OTPToken && other.algorithm == algorithm && other.digits == digits && other.secret == secret;
+  bool isSameTokenAs(Token other) {
+    return super.isSameTokenAs(other) && other is OTPToken && other.algorithm == algorithm && other.digits == digits && other.secret == secret;
   }
 
   @override

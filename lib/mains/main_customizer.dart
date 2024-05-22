@@ -19,8 +19,6 @@
   limitations under the License.
 */
 
-import 'dart:developer';
-
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,7 +29,6 @@ import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view.dart';
 import 'package:privacyidea_authenticator/views/license_view/license_view.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
-import 'package:privacyidea_authenticator/views/onboarding_view/onboarding_view.dart';
 import 'package:privacyidea_authenticator/views/qr_scanner_view/qr_scanner_view.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
 import 'package:privacyidea_authenticator/views/splash_screen/splash_screen.dart';
@@ -60,8 +57,6 @@ class CustomizationAuthenticator extends ConsumerWidget {
     final state = ref.watch(settingsProvider);
     final locale = state.currentLocale;
     final applicationCustomizer = ref.watch(applicationCustomizerProvider);
-    log('applicationCustomizer primaryColor: ${applicationCustomizer.lightTheme.primaryColor}');
-    log('applicationCustomizer primaryColor gen: ${applicationCustomizer.generateLightTheme().primaryColor}');
     return LayoutBuilder(
       builder: (context, constraints) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -82,9 +77,6 @@ class CustomizationAuthenticator extends ConsumerWidget {
           routes: {
             SplashScreen.routeName: (context) => SplashScreen(
                   customization: applicationCustomizer,
-                ),
-            OnboardingView.routeName: (context) => OnboardingView(
-                  appName: applicationCustomizer.appName,
                 ),
             MainView.routeName: (context) => MainView(
                   appIcon: applicationCustomizer.appIcon,

@@ -143,6 +143,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get systemTheme => 'Gebruik thema van het apparaat';
 
   @override
+  String get someTokensDoNotSupportPolling => 'Sommige tokens zijn verouderd en ondersteunen geen actief zoeken';
+
+  @override
   String get enablePolling => 'Zoeken aanzetten';
 
   @override
@@ -607,6 +610,18 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String importFailedToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Kan $count tokens niet importeren.',
+      one: 'Kan geen token importeren.',
+      zero: 'Geen token Niet geïmporteerd.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String importExistingToken(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -659,6 +674,15 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get importHintGoogleQrFile => 'Selecteer een afbeeldingsbestand met de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.\n!! Let op: het is niet veilig om de QR-code op je apparaat op te slaan, omdat de tokens niet versleuteld zijn !!';
+
+  @override
+  String get importHintAuthenticatorProFile => 'Om een back-up te maken van de Authenticator Pro app, navigeer je naar de instellingen en tik je op \"Auto back-up\". Selecteer een opslaglocatie en stel een wachtwoord in. Druk vervolgens op \"Nu back-uppen\" om de tokens te exporteren.';
+
+  @override
+  String get importHintFreeOtpPlusQrScan => 'Scan de QR-code die u ontvangt wanneer u op de drie stippen in de tegel van de token drukt en selecteer \"QR-code delen\".';
+
+  @override
+  String get importHintFreeOtpPlusFile => 'Om een back-up van de FreeOTP+ app te maken, tikt u op de drie puntjes in de rechterbovenhoek en selecteert u \"Exporteren\". U kunt kiezen tussen JSON en URI formaat. We raden u aan de back-up te verwijderen na het importeren, omdat deze niet versleuteld is.';
 
   @override
   String get qrFileDecodeError => 'Het was niet mogelijk om de QR code te decoderen van de geselecteerde afbeelding, gebruik in plaats daarvan de QR code scanner.';
@@ -714,5 +738,141 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String requestInfo(Object issuer, Object account) {
     return 'Verzonden door $issuer voor uw account: \"$account\"';
+  }
+
+  @override
+  String errorUnlinkingPushToken(Object label) {
+    return 'Het is niet gelukt om het push token $label te ontkoppelen.';
+  }
+
+  @override
+  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Synchroniseer de push tokens handmatig via de instellingen als er een netwerkverbinding beschikbaar is.';
+
+  @override
+  String get pushTokens => 'Push Tokens';
+
+  @override
+  String get continueButton => 'Ga verder';
+
+  @override
+  String get addTokenManually => 'Voeg token handmatig toe';
+
+  @override
+  String get addFolder => 'Map toevoegen';
+
+  @override
+  String get searchTokens => 'Zoek tokens';
+
+  @override
+  String get closeSearchTokens => 'Zoekopdracht sluiten';
+
+  @override
+  String get increaseCounter => 'Verhoog teller';
+
+  @override
+  String get copyOTPToClipboard => 'Kopieer OTP naar klembord';
+
+  @override
+  String get licenses => 'Licenties';
+
+  @override
+  String get optionalMessage => 'Optioneel bericht';
+
+  @override
+  String get confirmation => 'Bevestiging';
+
+  @override
+  String get askLogSendedDescription => 'Heb je het logboek verzonden en wil je het nu wissen?';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'Het algoritme $algorithm wordt niet ondersteund';
+  }
+
+  @override
+  String get thisAppIsOpenSource => 'Deze app is open source\nBezoek ons op GitHub';
+
+  @override
+  String get importExportTokens => 'Tokens importeren/exporteren';
+
+  @override
+  String get exportNonPrivacyIDEATokens => 'Niet-privacyIDEA tokens exporteren';
+
+  @override
+  String selectTokensToExport(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Selecteer tokens om te exporteren',
+      one: 'Selecteer token om te exporteren',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noTokensToExport => 'Geen tokens om te exporteren';
+
+  @override
+  String get exportAllTokens => 'Alle tokens exporteren';
+
+  @override
+  String get export => 'Exporteren';
+
+  @override
+  String get exportingTokens => 'Tokens exporteren...';
+
+  @override
+  String get exportTokens => 'Tokens exporteren';
+
+  @override
+  String get enterPasswordToEncrypt => 'Voer een wachtwoord in om de tokens te versleutelen. Dit wachtwoord is vereist om de tokens te importeren.';
+
+  @override
+  String get exportLockedTokenReason => 'Authenticeer om vergrendelde tokens te exporteren.';
+
+  @override
+  String get fileSavedToDownloadsFolder => 'Bestand opgeslagen in de map Downloads';
+
+  @override
+  String get errorSavingFile => 'Fout bij het opslaan van het bestand';
+
+  @override
+  String get toFile => 'Naar bestand';
+
+  @override
+  String get asQrCode => 'Als QR-code';
+
+  @override
+  String get scanThisQrWithNewDevice => 'Scan deze QR-code met uw nieuwe apparaat om de token te importeren.';
+
+  @override
+  String get oneMore => 'Nog een';
+
+  @override
+  String get done => 'Klaar';
+
+  @override
+  String get confirmPassword => 'Wachtwoord bevestigen';
+
+  @override
+  String get secretIsRequired => 'Secret is required';
+
+  @override
+  String get tokenDataParseError => 'Token data could not be parsed';
+
+  @override
+  String missingRequiredParameter(Object counter) {
+    return 'Value for parameter [$counter] is required and is missing';
+  }
+
+  @override
+  String invalidValueForParameter(Object value, Object parameter) {
+    return '[$value] is not a valid value for uri parameter [parameter].';
+  }
+
+  @override
+  String unsupported(Object name, Object value) {
+    return 'The $name [$value] is not supported by this version of the app.';
   }
 }

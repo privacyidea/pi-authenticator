@@ -8,9 +8,10 @@ part of 'push_token.dart';
 
 PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       serial: json['serial'] as String,
-      label: json['label'] as String,
-      issuer: json['issuer'] as String,
+      label: json['label'] as String? ?? '',
+      issuer: json['issuer'] as String? ?? '',
       id: json['id'] as String,
+      fbToken: json['fbToken'] as String?,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
       expirationDate: json['expirationDate'] == null
           ? null
@@ -23,17 +24,9 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       sslVerify: json['sslVerify'] as bool?,
       rolloutState: $enumDecodeNullable(
           _$PushTokenRollOutStateEnumMap, json['rolloutState']),
-      pushRequests: json['pushRequests'] == null
-          ? null
-          : PushRequestQueue.fromJson(
-              json['pushRequests'] as Map<String, dynamic>),
-      knownPushRequests: json['knownPushRequests'] == null
-          ? null
-          : CustomIntBuffer.fromJson(
-              json['knownPushRequests'] as Map<String, dynamic>),
       type: json['type'] as String?,
-      sortIndex: json['sortIndex'] as int?,
       tokenImage: json['tokenImage'] as String?,
+      sortIndex: json['sortIndex'] as int?,
       folderId: json['folderId'] as int?,
       pin: json['pin'] as bool?,
       isLocked: json['isLocked'] as bool?,
@@ -57,6 +50,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'type': instance.type,
       'expirationDate': instance.expirationDate?.toIso8601String(),
       'serial': instance.serial,
+      'fbToken': instance.fbToken,
       'sslVerify': instance.sslVerify,
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
@@ -65,8 +59,6 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'publicServerKey': instance.publicServerKey,
       'privateTokenKey': instance.privateTokenKey,
       'publicTokenKey': instance.publicTokenKey,
-      'pushRequests': instance.pushRequests,
-      'knownPushRequests': instance.knownPushRequests,
     };
 
 const _$PushTokenRollOutStateEnumMap = {

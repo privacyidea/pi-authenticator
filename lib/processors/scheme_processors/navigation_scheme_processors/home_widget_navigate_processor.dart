@@ -77,9 +77,9 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       Logger.warning('Could not find globalRef', name: 'home_widget_processor.dart#_showLockedHomeWidgetProcessor');
       return;
     }
-    final authenticated = await globalRef!.read(tokenProvider.notifier).showTokenById(tokenId);
+    final showedToken = await globalRef!.read(tokenProvider.notifier).showTokenById(tokenId);
 
-    if (authenticated) {
+    if (showedToken?.isHidden == false) {
       final folderId = globalRef!.read(tokenProvider).currentOfId(tokenId)?.folderId;
       if (folderId != null) {
         globalRef!.read(tokenFolderProvider.notifier).expandFolderById(folderId);

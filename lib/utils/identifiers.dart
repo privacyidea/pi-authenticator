@@ -29,12 +29,13 @@ const String URI_TYPE = 'URI_TYPE';
 const String URI_LABEL = 'URI_LABEL';
 const String URI_ALGORITHM = 'URI_ALGORITHM';
 const String URI_DIGITS = 'URI_DIGITS';
-const String URI_SECRET = 'URI_SECRET';
+const String URI_SECRET = 'URI_SECRET'; // Should be base32 encoded
 const String URI_COUNTER = 'URI_COUNTER';
 const String URI_PERIOD = 'URI_PERIOD';
 const String URI_ISSUER = 'URI_ISSUER';
 const String URI_PIN = 'URI_PIN';
 const String URI_IMAGE = 'URI_IMAGE';
+const String URI_ORIGIN = 'URI_ORIGIN';
 
 // 2 step:
 const String URI_SALT_LENGTH = 'URI_SALT_LENGTH';
@@ -62,6 +63,8 @@ const String PUSH_REQUEST_QUESTION = 'question'; // 4.
 const String PUSH_REQUEST_TITLE = 'title'; // 5.
 const String PUSH_REQUEST_SSL_VERIFY = 'sslverify'; // 6.
 const String PUSH_REQUEST_SIGNATURE = 'signature'; // 7.
+
+const String GLOBAL_SECURE_REPO_PREFIX = 'app_v3_';
 
 bool validateMap(Map<String, dynamic> map, List<String> keys) {
   for (String key in keys) {

@@ -11,6 +11,7 @@
         >
         <ImageView
             android:id="@+id/widget_background"
+            android:src="@drawable/hw_background"
             android:layout_width="130dp"
             android:layout_height="65dp"
         />

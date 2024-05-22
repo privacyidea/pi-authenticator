@@ -28,36 +28,33 @@ void main() {
 void verifyCustomStringBufferWorks() {
   group('test custom string buffer', () {
     test('put elements in', () {
-      CustomIntBuffer buffer = CustomIntBuffer();
-      buffer.list = [];
+      const buffer0_30 = CustomIntBuffer(maxSize: 30);
 
-      expect(buffer.maxSize, 30);
-      expect(buffer.length, 0);
+      expect(buffer0_30.maxSize, 30);
+      expect(buffer0_30.length, 0);
 
-      buffer.put(1);
-      buffer.put(2);
-      buffer.put(3);
+      final buffer3_30 = buffer0_30.putList([1, 2, 3]);
 
-      expect(buffer.length, 3);
+      expect(buffer3_30.length, 3);
 
-      expect(buffer.contains(1), true);
-      expect(buffer.contains(2), true);
-      expect(buffer.contains(3), true);
-      expect(buffer.contains(4), false);
+      expect(buffer3_30.contains(1), true);
+      expect(buffer3_30.contains(2), true);
+      expect(buffer3_30.contains(3), true);
+      expect(buffer3_30.contains(4), false);
 
-      for (int i = 3; i < buffer.maxSize; i++) {
-        buffer.put(-1);
-      }
+      final values = List.generate(buffer3_30.maxSize - buffer3_30.length, (index) => 0 - index); // 27 elements
 
-      buffer.put(4);
+      final buffer30_30 = buffer3_30.putList(values); // full buffer 30/30
 
-      expect(buffer.length, 30);
-      expect(buffer.maxSize, 30);
+      final overflowBuffer = buffer30_30.put(4); // 4 is added, 1 is removed
 
-      expect(buffer.contains(1), false);
-      expect(buffer.contains(2), true);
-      expect(buffer.contains(3), true);
-      expect(buffer.contains(4), true);
+      expect(overflowBuffer.length, 30);
+      expect(overflowBuffer.maxSize, 30);
+
+      expect(overflowBuffer.contains(1), false);
+      expect(overflowBuffer.contains(2), true);
+      expect(overflowBuffer.contains(3), true);
+      expect(overflowBuffer.contains(4), true);
     });
   });
 }

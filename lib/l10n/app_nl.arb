@@ -157,6 +157,12 @@
   "@systemTheme": {
     "description": "The systems theme."
   },
+  "someTokensDoNotSupportPolling": "Sommige tokens zijn verouderd en ondersteunen geen actief zoeken",
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
+  },
   "enablePolling": "Zoeken aanzetten",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
@@ -533,6 +539,7 @@
   "invalidQrScan": "De gescande QR code is geen geldige backup van {appName}.",
   "invalidQrFile": "Het geselecteerde bestand bevat geen geldige QR code van {appName}.",
   "invalidLink": "De ingevoerde link is geen geldig token van {appName}, of wordt niet ondersteund.",
+  "importFailedToken": "{count, plural, zero{Geen token Niet geïmporteerd.} one{Kan geen token importeren.} other{Kan {count} tokens niet importeren.}}",
   "importExistingToken": "{count, plural, zero{Er is geen token gevonden dat al in de toepassing aanwezig is.} one{Er is een token gevonden dat al bestaat in de applicatie.} other{{count} tokens gevonden die al in de applicatie staan.}}",
   "importConflictToken": "{count, plural, zero{Er is geen conflict met tokens die al bestaan.} one{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.} other{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.}}",
   "importNewToken": "{count, plural, zero{Er is geen nieuw token gevonden.} one{Er is een nieuw token gevonden dat zal worden geïmporteerd.} other{Er is een nieuw token {count} gevonden dat zal worden geïmporteerd.}}",
@@ -542,6 +549,9 @@
   "importHintAegisLink": "Voer de link in die u ontvangt wanneer u vermeldingen van Aegis overdraagt.",
   "importHintGoogleQrScan": "Scan de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.",
   "importHintGoogleQrFile": "Selecteer een afbeeldingsbestand met de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.\n!! Let op: het is niet veilig om de QR-code op je apparaat op te slaan, omdat de tokens niet versleuteld zijn !!",
+  "importHintAuthenticatorProFile": "Om een back-up te maken van de Authenticator Pro app, navigeer je naar de instellingen en tik je op \"Auto back-up\". Selecteer een opslaglocatie en stel een wachtwoord in. Druk vervolgens op \"Nu back-uppen\" om de tokens te exporteren.",
+  "importHintFreeOtpPlusQrScan": "Scan de QR-code die u ontvangt wanneer u op de drie stippen in de tegel van de token drukt en selecteer \"QR-code delen\".",
+  "importHintFreeOtpPlusFile": "Om een back-up van de FreeOTP+ app te maken, tikt u op de drie puntjes in de rechterbovenhoek en selecteert u \"Exporteren\". U kunt kiezen tussen JSON en URI formaat. We raden u aan de back-up te verwijderen na het importeren, omdat deze niet versleuteld is.",
   "qrFileDecodeError": "Het was niet mogelijk om de QR code te decoderen van de geselecteerde afbeelding, gebruik in plaats daarvan de QR code scanner.",
   "tokenLink": "tokenlink",
   "feedback": "Feedback",
@@ -572,5 +582,55 @@
         "example": "GitHub"
       }
     }
-  }
+  },
+  "errorUnlinkingPushToken": "Het is niet gelukt om het push token {label} te ontkoppelen.",
+  "@errorUnlinkingPushToken": {
+    "description": "Error message when unlinking a push token failed.",
+    "placeholders": {
+      "label": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Synchroniseer de push tokens handmatig via de instellingen als er een netwerkverbinding beschikbaar is.",
+  "pushTokens": "Push Tokens",
+  "continueButton": "Ga verder",
+  "addTokenManually": "Voeg token handmatig toe",
+  "addFolder": "Map toevoegen",
+  "searchTokens": "Zoek tokens",
+  "closeSearchTokens": "Zoekopdracht sluiten",
+  "increaseCounter": "Verhoog teller",
+  "copyOTPToClipboard": "Kopieer OTP naar klembord",
+  "licenses": "Licenties",
+  "optionalMessage": "Optioneel bericht",
+  "confirmation": "Bevestiging",
+  "askLogSendedDescription": "Heb je het logboek verzonden en wil je het nu wissen?",
+  "algorithmUnsupported": "Het algoritme {algorithm} wordt niet ondersteund",
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
+  },
+  "thisAppIsOpenSource": "Deze app is open source\nBezoek ons op GitHub",
+  "invalidArgument": "{argument} is geen geldige waarde voor {type}",
+  "importExportTokens": "Tokens importeren/exporteren",
+  "exportNonPrivacyIDEATokens": "Niet-privacyIDEA tokens exporteren",
+  "selectTokensToExport": "{count, plural, zero{} one{Selecteer token om te exporteren} other{Selecteer tokens om te exporteren}}",
+  "noTokensToExport": "Geen tokens om te exporteren",
+  "exportAllTokens": "Alle tokens exporteren",
+  "export": "Exporteren",
+  "exportingTokens": "Tokens exporteren...",
+  "exportTokens": "Tokens exporteren",
+  "enterPasswordToEncrypt": "Voer een wachtwoord in om de tokens te versleutelen. Dit wachtwoord is vereist om de tokens te importeren.",
+  "exportLockedTokenReason": "Authenticeer om vergrendelde tokens te exporteren.",
+  "fileSavedToDownloadsFolder": "Bestand opgeslagen in de map Downloads",
+  "errorSavingFile": "Fout bij het opslaan van het bestand",
+  "toFile": "Naar bestand",
+  "asQrCode": "Als QR-code",
+  "scanThisQrWithNewDevice": "Scan deze QR-code met uw nieuwe apparaat om de token te importeren.",
+  "oneMore": "Nog een",
+  "done": "Klaar",
+  "confirmPassword": "Wachtwoord bevestigen"
 }

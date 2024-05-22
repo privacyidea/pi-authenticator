@@ -161,6 +161,12 @@
   "@systemTheme": {
     "description": "The systems theme."
   },
+  "someTokensDoNotSupportPolling": "Algunos tokens están obsoletos y no admiten la consulta activa para la autenticación mediante mensaje push.",
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
+  },
   "enablePolling": "Activar polling",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
@@ -532,6 +538,7 @@
   "invalidQrScan": "El código QR escaneado no es una copia de seguridad válida de {appName}",
   "invalidQrFile": "El archivo seleccionado no contiene un código QR válido de {appName}",
   "invalidLink": "El enlace introducido no es un token válido de {appName}, o no es compatible",
+  "importFailedToken": "{count, plural, zero{No token Fallo al importar.} one{Error al importar un token.} other{Error al importar {count} tokens.}}",
   "importExistingToken": "{count, plural, zero{No se ha encontrado ningún token que ya esté en la aplicación.} one{Se ha encontrado un token que ya existe en la aplicación.} other{Se han encontrado {count} tokens que ya están en la aplicación.}}",
   "importConflictToken": "{count, plural, zero{No hay conflicto con tokens que ya existen.} one{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.} other{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.}}",
   "importNewToken": "{count, plural, zero{No se ha encontrado un nuevo token.} one{Se ha encontrado un nuevo token que se importará.} other{Se ha encontrado un nuevo token {count} que se importará.}}",
@@ -541,6 +548,9 @@
   "importHintAegisLink": "Introduzca el enlace que recibe al transferir entradas desde Aegis",
   "importHintGoogleQrScan": "Escanea el código QR que recibes al exportar tus cuentas desde Google Authenticator",
   "importHintGoogleQrFile": "Selecciona un archivo de imagen con el código QR que recibes al exportar tus cuentas desde Google Authenticator.\n!! Tenga en cuenta que no es seguro guardar el código QR en su dispositivo, ya que los tokens no están cifrados !!",
+  "importHintAuthenticatorProFile": "Para crear una copia de seguridad de la aplicación Authenticator Pro, vaya a la configuración y pulse en \"Copia de seguridad automática\". Seleccione una ubicación de almacenamiento y establezca una contraseña. A continuación, pulse \"Hacer copia de seguridad ahora\" para exportar los tokens.",
+  "importHintFreeOtpPlusQrScan": "Escanea el código QR que recibes al pulsar los tres puntos en el azulejo de la ficha y selecciona \"Compartir código QR\".",
+  "importHintFreeOtpPlusFile": "Para crear una copia de seguridad de la app FreeOTP+, pulse los tres puntos de la esquina superior derecha y seleccione \"Exportar\". Puede elegir entre los formatos JSON y URI. Recomendamos eliminar la copia de seguridad después de importarla, ya que no está cifrada.",
   "qrFileDecodeError": "No fue posible decodificar el código QR de la imagen seleccionada, por favor utilice el escáner de código QR en su lugar.",
   "tokenLink": "Enlace token",
   "feedback": "Comentarios",
@@ -571,5 +581,55 @@
         "example": "GitHub"
       }
     }
-  }
+  },
+  "errorUnlinkingPushToken": "Error al desvincular el token push {label}",
+  "@errorUnlinkingPushToken": {
+    "description": "Error message when unlinking a push token failed.",
+    "placeholders": {
+      "label": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Por favor, sincronice los tokens push manualmente a través de los ajustes cuando haya una conexión de red disponible.",
+  "pushTokens": "Push Tokens",
+  "continueButton": "Continue",
+  "addTokenManually": "Añadir token manualmente",
+  "addFolder": "Añadir carpeta",
+  "searchTokens": "Buscar tokens",
+  "closeSearchTokens": "Cerrar búsqueda",
+  "increaseCounter": "Incrementar contador",
+  "copyOTPToClipboard": "Copiar OTP al portapapeles",
+  "licenses": "Licencias",
+  "optionalMessage": "Mensaje opcional",
+  "confirmation": "confirmación",
+  "askLogSendedDescription": "¿Ha enviado el registro y desea borrarlo ahora?",
+  "algorithmUnsupported": "El algoritmo {algorithm} no es compatible",
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
+  },
+  "thisAppIsOpenSource": "Esta aplicación es de código abierto\nVisítanos en GitHub",
+  "invalidArgument": "{argument} no es un valor válido para {type}",
+  "importExportTokens": "Importar/Exportar tokens",
+  "exportNonPrivacyIDEATokens": "Exportar tokens no privacyIDEA",
+  "selectTokensToExport": "{count, plural, zero{} one{Seleccionar token para exportar} other{Seleccionar tokens para exportar}}",
+  "noTokensToExport": "No hay tokens para exportar",
+  "exportAllTokens": "Exportar todos los tokens",
+  "export": "Exportar",
+  "exportingTokens": "Exportando tokens...",
+  "exportTokens": "Exportar tokens",
+  "enterPasswordToEncrypt": "Ingrese una contraseña para cifrar los tokens. Esta contraseña será necesaria para importar los tokens.",
+  "exportLockedTokenReason": "Por favor, autentíquese para exportar tokens bloqueados.",
+  "fileSavedToDownloadsFolder": "Archivo guardado en la carpeta de descargas",
+  "errorSavingFile": "Error al guardar el archivo",
+  "toFile": "A archivo",
+  "asQrCode": "Como código QR",
+  "scanThisQrWithNewDevice": "Escanee este código QR con su nuevo dispositivo para importar el token.",
+  "oneMore": "Uno más",
+  "done": "Hecho",
+  "confirmPassword": "Confirmar contraseña"
 }

@@ -22,11 +22,10 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:math' as math;
 
-import 'package:base32/base32.dart' as base32_converter;
 import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
-import 'package:hex/hex.dart' as hex_converter;
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 
 import '../model/enums/encodings.dart';
 
@@ -42,7 +41,7 @@ Future<Uint8List> pbkdf2({required Uint8List salt, required int iterations, requ
   map['keyLength'] = keyLength;
 
   // Funky converting of password because that is what the server does too.
-  map['password'] = utf8.encode(encodeSecretAs(password, Encodings.hex));
+  map['password'] = utf8.encode(Encodings.hex.encode(password));
 
   return compute(_pbkdfIsolate, map);
 }
@@ -87,25 +86,4 @@ SecureRandom secureRandom() {
   secureRandom.seed(KeyParameter(Uint8List.fromList(seeds)));
 
   return secureRandom;
-}
-
-Uint8List decodeSecretToUint8(String secret, Encodings encoding) => switch (encoding) {
-      Encodings.none => Uint8List.fromList(utf8.encode(secret)),
-      Encodings.hex => Uint8List.fromList(hex_converter.HEX.decode(secret)),
-      Encodings.base32 => base32_converter.base32.decode(secret),
-    };
-
-String encodeSecretAs(Uint8List secret, Encodings encoding) => switch (encoding) {
-      Encodings.none => utf8.decode(secret),
-      Encodings.hex => hex_converter.HEX.encode(secret),
-      Encodings.base32 => base32_converter.base32.encode(secret),
-    };
-
-bool isValidEncoding(String secret, Encodings encoding) {
-  try {
-    decodeSecretToUint8(secret, encoding);
-  } catch (_) {
-    return false;
-  }
-  return true;
 }

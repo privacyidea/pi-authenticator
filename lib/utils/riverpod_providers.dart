@@ -1,20 +1,22 @@
-import 'dart:ui';
+import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uni_links/uni_links.dart';
 
 import '../l10n/app_localizations.dart';
+import '../model/extensions/sortable_list.dart';
 import '../model/mixins/sortable_mixin.dart';
-import '../model/push_request.dart';
 import '../model/states/introduction_state.dart';
+import '../model/states/push_request_state.dart';
 import '../model/states/settings_state.dart';
 import '../model/states/token_filter.dart';
 import '../model/states/token_folder_state.dart';
 import '../model/states/token_state.dart';
+import '../model/token_folder.dart';
 import '../model/tokens/otp_token.dart';
+import '../model/tokens/token.dart';
 import '../repo/preference_introduction_repository.dart';
 import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_folder_repository.dart';
@@ -24,7 +26,8 @@ import '../state_notifiers/push_request_notifier.dart';
 import '../state_notifiers/settings_notifier.dart';
 import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
-import 'app_customizer.dart';
+import 'customization/application_customization.dart';
+import 'firebase_utils.dart';
 import 'globals.dart';
 import 'home_widget_utils.dart';
 import 'logger.dart';
@@ -49,37 +52,6 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
       newTokenNotifier.handleLink(newLink.uri);
     });
 
-    ref.listen(pushRequestProvider, (previous, newPushRequest) {
-      if (newPushRequest == null) {
-        Logger.info("Received null pushRequest", name: 'tokenProvider#pushRequestProvider');
-        return;
-      }
-      if (newPushRequest.accepted == null) {
-        Logger.info("Received new pushRequest", name: 'tokenProvider#pushRequestProvider');
-        newTokenNotifier.addPushRequestToToken(newPushRequest);
-      }
-      if (newPushRequest.accepted != null) {
-        Logger.info("Received pushRequest with accepted=${newPushRequest.accepted}... removing it from state.", name: 'tokenProvider#pushRequestProvider');
-        newTokenNotifier.removePushRequest(newPushRequest);
-        FlutterLocalNotificationsPlugin().cancelAll();
-      }
-    });
-
-    ref.listen(
-      appStateProvider,
-      (previous, next) {
-        Logger.info('tokenProvider reviced new AppState. Changed from $previous to $next');
-        if (previous == AppLifecycleState.paused && next == AppLifecycleState.resumed) {
-          Logger.info('Refreshing tokens on resume', name: 'tokenProvider#appStateProvider');
-          newTokenNotifier.loadStateFromRepo();
-        }
-        if (previous == AppLifecycleState.resumed && next == AppLifecycleState.paused) {
-          Logger.info('Saving tokens and cancelling all notifications on pause', name: 'tokenProvider#appStateProvider');
-          FlutterLocalNotificationsPlugin().cancelAll();
-          newTokenNotifier.saveStateToRepo();
-        }
-      },
-    );
     return newTokenNotifier;
   },
   name: 'tokenProvider',
@@ -93,25 +65,33 @@ final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
   name: 'settingsProvider',
 );
 
-final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequest?>(
+final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushRequestState>(
   (ref) {
     Logger.info("New PushRequestNotifier created", name: 'pushRequestProvider');
-    final pushProvider = PushProvider();
-    ref.listen(settingsProvider, (previous, next) {
-      if (previous?.enablePolling != next.enablePolling) {
-        Logger.info("Polling enabled changed from ${previous?.enablePolling} to ${next.enablePolling}", name: 'pushRequestProvider#settingsProvider');
-        pushProvider.setPollingEnabled(next.enablePolling);
-      }
-    });
-
+    final tokenState = ref.read(tokenProvider);
+    PushProvider pushProvider = tokenState.hasPushTokens ? PushProvider() : PlaceholderPushProvider(); // Until the state is loaded from the repo
     final pushRequestNotifier = PushRequestNotifier(
       pushProvider: pushProvider,
     );
 
-    ref.listen(appStateProvider, (previous, next) {
-      if (previous == AppLifecycleState.paused && next == AppLifecycleState.resumed) {
-        Logger.info('Polling for challenges on resume', name: 'pushRequestProvider#appStateProvider');
-        pushProvider.pollForChallenges(isManually: false);
+    ref.listen(tokenProvider, (previous, next) {
+      if (previous?.hasPushTokens == true && next.hasPushTokens == false) {
+        /// Last push token was deleted
+        Logger.info('Last push token was deleted. Deactivating push provider and deleting firebase token.', name: 'pushRequestProvider#tokenProvider');
+        pushRequestNotifier.swapPushProvider(PlaceholderPushProvider());
+        FirebaseUtils().deleteFirebaseToken();
+      }
+      if (previous?.hasPushTokens != true && next.hasPushTokens == true) {
+        /// First push token was added
+        Logger.info('First push token was added. Activating push provider.', name: 'pushRequestProvider#tokenProvider');
+        pushRequestNotifier.swapPushProvider(PushProvider());
+      }
+    });
+
+    ref.listen(settingsProvider, (previous, next) {
+      if (previous?.enablePolling != next.enablePolling) {
+        Logger.info("Polling enabled changed from ${previous?.enablePolling} to ${next.enablePolling}", name: 'pushRequestProvider#settingsProvider');
+        pushRequestNotifier.pushProvider.setPollingEnabled(next.enablePolling);
       }
     });
 
@@ -135,25 +115,10 @@ final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, DeepLink?>(
   name: 'deeplinkProvider',
 );
 
-final appStateProvider = StateProvider<AppLifecycleState?>(
-  (ref) {
-    Logger.info("New AppStateNotifier created", name: 'appStateProvider');
-    return null;
-  },
-  name: 'appStateProvider',
-);
-
 final tokenFolderProvider = StateNotifierProvider<TokenFolderNotifier, TokenFolderState>(
   (ref) {
     Logger.info("New TokenFolderNotifier created", name: 'tokenFolderProvider');
-    final newTokenFolderNotifier = TokenFolderNotifier(repository: PreferenceTokenFolderRepository());
-    ref.listen(appStateProvider, (previous, next) {
-      if (previous == AppLifecycleState.resumed && next == AppLifecycleState.paused) {
-        Logger.info('Collapsing locked folders on pause', name: 'tokenFolderProvider#appStateProvider');
-        newTokenFolderNotifier.collapseLockedFolders();
-      }
-    });
-    return newTokenFolderNotifier;
+    return TokenFolderNotifier(repository: PreferenceTokenFolderRepository());
   },
   name: 'tokenFolderProvider',
 );
@@ -168,14 +133,14 @@ final draggingSortableProvider = StateProvider<SortableMixin?>(
 
 final tokenFilterProvider = StateProvider<TokenFilter?>((ref) => null);
 
-final connectivityProvider = StreamProvider<ConnectivityResult>(
+final connectivityProvider = StreamProvider<List<ConnectivityResult>>(
   (ref) {
     Logger.info("New connectivityProvider created", name: 'connectivityProvider');
-    ref.read(tokenProvider.notifier).loadingRepo.then(
+    ref.read(tokenProvider.notifier).initState.then(
       (newState) {
         Connectivity().checkConnectivity().then((connectivity) {
           Logger.info("First connectivity check: $connectivity", name: 'connectivityProvider#initialCheck');
-          final hasNoConnection = connectivity == ConnectivityResult.none;
+          final hasNoConnection = connectivity.contains(ConnectivityResult.none);
           if (hasNoConnection && newState.hasPushTokens && globalNavigatorKey.currentContext != null) {
             ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(globalNavigatorKey.currentContext!)!.noNetworkConnection, null);
           }
@@ -216,6 +181,34 @@ final homeWidgetProvider = StateProvider<Map<String, OTPToken>>(
     return {};
   },
 );
+
+final sortableProvider = StateNotifierProvider<SortableNotifier, List<SortableMixin>>(
+  (ref) {
+    final SortableNotifier notifier = SortableNotifier();
+    Logger.info("New sortableProvider created", name: 'sortableProvider');
+    ref.listen(tokenProvider, (previous, next) => notifier.handleNewList(next.tokens));
+    ref.listen(tokenFolderProvider, (previous, next) => notifier.handleNewList(next.folders));
+    ref.read(tokenProvider.notifier).initState.then((newState) => notifier.handleNewList(newState.tokens));
+    ref.read(tokenFolderProvider.notifier).initState.then((newState) => notifier.handleNewList(newState.folders));
+    return notifier;
+  },
+);
+
+class SortableNotifier extends StateNotifier<List<SortableMixin>> {
+  SortableNotifier({List<SortableMixin> initState = const []}) : super(initState);
+
+  void handleNewList<T extends SortableMixin>(List<T> newList) {
+    log('T type: ${newList.runtimeType}', name: 'SortableNotifier#handleNewList');
+    var newState = List<SortableMixin>.from(state);
+    newState.removeWhere((element) => element is T);
+    newState.addAll(newList);
+    state = newState.sorted.fillNullIndices();
+    if (newList.any((element) => element.sortIndex == null)) {
+      globalRef?.read(tokenProvider.notifier).addOrReplaceTokens(state.whereType<Token>().toList());
+      globalRef?.read(tokenFolderProvider.notifier).addOrReplaceFolders(state.whereType<TokenFolder>().toList());
+    }
+  }
+}
 
 /// Only used for the app customizer
 final applicationCustomizerProvider = StateProvider<ApplicationCustomization>((ref) => ApplicationCustomization.defaultCustomization);
