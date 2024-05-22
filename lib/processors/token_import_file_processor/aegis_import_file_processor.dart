@@ -136,15 +136,15 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
     }
   }
 
-  Future<List<ProcessorResult<Token>>> _processPlainV2(Map<String, dynamic> json) async {
+  Future<List<ProcessorResult<Token>>> _processPlainV2(Map<String, dynamic> json) {
     final results = <ProcessorResult<Token>>[];
-    final localization = AppLocalizations.of(await globalContext)!;
+    final localization = globalContextSync != null ? AppLocalizations.of(globalContextSync!)! : null;
     for (Map<String, dynamic> entry in json['db']['entries']) {
       try {
         if (entry['type'] != 'totp' && entry['type'] != 'hotp') {
           // TODO: support other token types
           Logger.warning('Unsupported token type: ${entry['type']}', name: '_processPlain#OtpAuthImportFileProcessor');
-          results.add(ProcessorResult.failed(localization.unsupported('token type', entry['type'])));
+          results.add(ProcessorResult.failed(localization?.unsupported('token type', entry['type']) ?? 'Unsupported token type: ${entry['type']}'));
           continue;
         }
         Map<String, dynamic> info = entry['info'];
@@ -167,25 +167,25 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
         final token = Token.fromUriMap(entryUriMap);
         results.add(ProcessorResult.success(token.copyWith(id: entry[AEGIS_ID])));
       } on LocalizedException catch (e) {
-        results.add(ProcessorResult.failed(e.localizedMessage(localization)));
+        results.add(ProcessorResult.failed(localization != null ? e.localizedMessage(localization) : e.unlocalizedMessage));
       } catch (e) {
         Logger.error('Failed to parse token.', name: 'AegisImportFileProcessor#_processPlain', error: e, stackTrace: StackTrace.current);
         results.add(ProcessorResult.failed(e.toString()));
       }
     }
-    return results;
+    return Future.value(results);
   }
 
-  Future<List<ProcessorResult<Token>>> _processPlainV3(Map<String, dynamic> json) async {
+  Future<List<ProcessorResult<Token>>> _processPlainV3(Map<String, dynamic> json) {
     final results = <ProcessorResult<Token>>[];
-    final localization = AppLocalizations.of(await globalContext)!;
+    final localization = globalContextSync != null ? AppLocalizations.of(globalContextSync!)! : null;
     final entries = json['db']['entries'] as List;
     for (Map<String, dynamic> entry in entries) {
       try {
         if (doesThrow(() => TokenTypes.values.byName((entry['type'] as String).toUpperCase()))) {
           // TODO: support other token types
           Logger.warning('Unsupported token type: ${entry['type']}', name: '_processPlain#OtpAuthImportFileProcessor');
-          results.add(ProcessorResult.failed(localization.unsupported('token type', entry['type'])));
+          results.add(ProcessorResult.failed(localization?.unsupported('token type', entry['type']) ?? 'Unsupported token type: ${entry['type']}'));
           continue;
         }
         Map<String, dynamic> info = entry['info'];
@@ -207,14 +207,14 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
         };
         results.add(ProcessorResult.success(Token.fromUriMap(entryUriMap)));
       } on LocalizedException catch (e) {
-        results.add(ProcessorResultFailed(e.localizedMessage(localization)));
+        results.add(ProcessorResultFailed(localization != null ? e.localizedMessage(localization) : e.unlocalizedMessage));
       } catch (e) {
         Logger.error('Failed to parse token.', name: 'AegisImportFileProcessor#_processPlain', error: e, stackTrace: StackTrace.current);
         results.add(ProcessorResultFailed(e.toString()));
       }
     }
 
-    return results;
+    return Future.value(results);
   }
 
   Future<Uint8List> runIsolatedKdf(ScryptParameters scryptParameters, String password) async {

@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../mains/main_netknights.dart';
@@ -11,6 +9,8 @@ import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/enums/token_types.dart';
+import '../../model/extensions/enums/encodings_extension.dart';
+import '../../model/extensions/enums/token_origin_source_type.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';

@@ -12,7 +12,7 @@ import '../../../../model/states/token_filter.dart';
 import '../../../../model/token_folder.dart';
 import '../../../../model/tokens/push_token.dart';
 import '../../../../model/tokens/token.dart';
-import '../../../../utils/app_customizer.dart';
+import '../../../../utils/customization/action_theme.dart';
 import '../../../../utils/lock_auth.dart';
 import '../../../../utils/riverpod_providers.dart';
 import '../../../../widgets/custom_trailing.dart';

@@ -1,6 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/algorithms_extension.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
@@ -8,6 +6,8 @@ import '../../utils/logger.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
+import '../extensions/enums/algorithms_extension.dart';
+import '../extensions/enums/encodings_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
 import 'token.dart';
@@ -29,15 +29,16 @@ class TOTPToken extends OTPToken {
   }
 
   final int period;
-
-  @override
-  String get otpValue => algorithm.generateTOTPCodeString(
+  String otpFromTime(DateTime time) => algorithm.generateTOTPCodeString(
         secret: secret,
-        time: DateTime.now(),
+        time: time,
         length: digits,
         interval: Duration(seconds: period),
         isGoogle: true,
       );
+
+  @override
+  String get otpValue => otpFromTime(DateTime.now());
 
   TOTPToken({
     required int period,

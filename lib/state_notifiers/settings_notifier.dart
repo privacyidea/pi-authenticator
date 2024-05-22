@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../interfaces/repo/settings_repository.dart';
 import '../model/states/settings_state.dart';
+import '../model/version.dart';
 import '../utils/logger.dart';
 import '../utils/push_provider.dart';
-import '../model/version.dart';
 
 /// This class provies access to the device specific settings.
 /// It also ensures that the settings are saved to the device.

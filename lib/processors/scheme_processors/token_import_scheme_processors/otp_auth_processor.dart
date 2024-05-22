@@ -1,13 +1,15 @@
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
+import '../../../model/enums/token_origin_source_type.dart';
+import '../../../model/token_import/token_origin_data.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';
 import '../../../model/enums/token_types.dart';
 import '../../../model/extensions/enum_extension.dart';
+import '../../../model/extensions/enums/encodings_extension.dart';
 import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/errors.dart';
@@ -33,7 +35,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     } catch (e, s) {
       if (e is LocalizedException) {
         Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e.unlocalizedMessage, stackTrace: s);
-        final message = e.localizedMessage(AppLocalizations.of(await globalContext)!);
+        final message = globalContextSync != null ? e.localizedMessage(AppLocalizations.of(globalContextSync!)!) : e.unlocalizedMessage;
         return [ProcessorResult.failed(message)];
       }
       String? message;
@@ -65,13 +67,14 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     }
     Token newToken;
     try {
-      newToken = Token.fromUriMap(uriMap);
+      newToken =
+          Token.fromUriMap(uriMap).copyWith(origin: TokenOriginData(source: TokenOriginSourceType.link, data: uri.toString(), createdAt: DateTime.now()));
     } on FormatException catch (e) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
       return [ProcessorResultFailed(e.message)];
     } catch (e, s) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e, stackTrace: s);
-      showMessage(message: 'An error occurred while parsing the QR code.', duration: const Duration(seconds: 3));
+      // showMessage(message: 'An error occurred while parsing the QR code.', duration: const Duration(seconds: 3));
       return [const ProcessorResultFailed('An error occurred while parsing the QR code.')];
     }
     return [ProcessorResultSuccess(newToken)];
@@ -177,80 +180,80 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
 
   uriMap[URI_SECRET] = secret;
 
-  if (uriMap[URI_TYPE] == 'hotp') {
-    // Parse counter.
-    String? counterAsString = uri.queryParameters['counter'];
-    if (counterAsString == null) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, name) => localizations.missingRequiredParameter(name),
-        unlocalizedMessage: 'Value for parameter [counter] is required and is missing.',
-        invalidValue: counterAsString,
-        name: 'counter',
-      );
-    }
-    try {
-      uriMap[URI_COUNTER] = int.parse(counterAsString);
-    } on FormatException {
+  // Parse counter.
+  String? counterString = uri.queryParameters['counter'];
+  if (counterString != null) {
+    uriMap[URI_COUNTER] = int.tryParse(counterString);
+    if (uriMap[URI_COUNTER] == null) {
       throw LocalizedArgumentError(
         localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: '[$counterAsString] is not a valid value for uri parameter [counter].',
-        invalidValue: counterAsString,
+        unlocalizedMessage: '[$counterString] is not a valid value for uri parameter [counter].',
+        invalidValue: counterString,
         name: 'counter',
       );
     }
   }
 
-  if (uriMap[URI_TYPE] == 'totp' || uriMap[URI_TYPE] == 'daypassword') {
-    // Parse period.
-    String periodAsString = uri.queryParameters['period'] ?? '30';
-
-    int? period = int.tryParse(periodAsString);
-    if (period == null) {
-      throw ArgumentError('Value [$periodAsString] for parameter [period] is invalid.');
+  // Parse period.
+  String? periodString = uri.queryParameters['period'];
+  if (periodString != null) {
+    uriMap[URI_PERIOD] = int.tryParse(periodString);
+    if (uriMap[URI_PERIOD] == null) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Value [$periodString] for parameter [period] is invalid.',
+        invalidValue: periodString,
+        name: 'period',
+      );
     }
-    uriMap[URI_PERIOD] = period;
   }
 
   if (_is2StepURI(uri)) {
-    // Parse for 2 step roll out.
-    String saltLengthAsString = uri.queryParameters['2step_salt'] ?? '10';
-    String outputLengthInByteAsString = uri.queryParameters['2step_output'] ?? '20';
-    String iterationsAsString = uri.queryParameters['2step_difficulty'] ?? '10000';
-
-    // Parse parameters
-    try {
-      uriMap[URI_SALT_LENGTH] = int.parse(saltLengthAsString);
-    } on FormatException {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: '[$saltLengthAsString] is not a valid value for parameter [2step_salt].',
-        invalidValue: saltLengthAsString,
-        name: '2step_salt',
-      );
-    }
-    try {
-      uriMap[URI_OUTPUT_LENGTH_IN_BYTES] = int.parse(outputLengthInByteAsString);
-    } on FormatException {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: '[$outputLengthInByteAsString] is not a valid value for parameter [2step_output].',
-        invalidValue: outputLengthInByteAsString,
-        name: '2step_output',
-      );
-    }
-    try {
-      uriMap[URI_ITERATIONS] = int.parse(iterationsAsString);
-    } on FormatException {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: '[$iterationsAsString] is not a valid value for parameter [2step_difficulty].',
-        invalidValue: iterationsAsString,
-        name: '2step_difficulty',
-      );
-    }
+    uriMap.addAll(_parse2StepURI(uri));
   }
 
   return uriMap;
+}
+
+Map<String, dynamic> _parse2StepURI(Uri uri) {
+  Map<String, dynamic> uriMap2Step = {};
+  // Parse for 2 step roll out.
+  String saltLengthAsString = uri.queryParameters['2step_salt'] ?? '10';
+  String outputLengthInByteAsString = uri.queryParameters['2step_output'] ?? '20';
+  String iterationsAsString = uri.queryParameters['2step_difficulty'] ?? '10000';
+
+  // Parse parameters
+  try {
+    uriMap2Step[URI_SALT_LENGTH] = int.parse(saltLengthAsString);
+  } on FormatException {
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+      unlocalizedMessage: '[$saltLengthAsString] is not a valid value for parameter [2step_salt].',
+      invalidValue: saltLengthAsString,
+      name: '2step_salt',
+    );
+  }
+  try {
+    uriMap2Step[URI_OUTPUT_LENGTH_IN_BYTES] = int.parse(outputLengthInByteAsString);
+  } on FormatException {
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+      unlocalizedMessage: '[$outputLengthInByteAsString] is not a valid value for parameter [2step_output].',
+      invalidValue: outputLengthInByteAsString,
+      name: '2step_output',
+    );
+  }
+  try {
+    uriMap2Step[URI_ITERATIONS] = int.parse(iterationsAsString);
+  } on FormatException {
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+      unlocalizedMessage: '[$iterationsAsString] is not a valid value for parameter [2step_difficulty].',
+      invalidValue: iterationsAsString,
+      name: '2step_difficulty',
+    );
+  }
+  return uriMap2Step;
 }
 
 Map<String, dynamic> _parsePiPushToken(Uri uri) {

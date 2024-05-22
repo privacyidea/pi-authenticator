@@ -19,7 +19,7 @@ abstract class TokenImportFileProcessor with TokenImportProcessor<XFile, String?
 
   static final List<TokenImportFileProcessor> implementations = [
     const AegisImportFileProcessor(),
-    const TwoFasFileImportProcessor(),
+    const TwoFasAuthenticatorImportFileProcessor(),
   ];
 
   static Future<List<ProcessorResult<Token>>> processFileByAny({required XFile file, String? password}) async {

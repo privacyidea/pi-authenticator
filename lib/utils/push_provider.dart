@@ -20,7 +20,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -205,8 +204,6 @@ class PushProvider {
       Logger.warning('No token found for serial ${pushRequest.serial}.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;
     }
-    log('token:' + jsonEncode(pushToken.toJson()));
-    log('pushRequest:' + jsonEncode(pushRequest.toJson()));
     if (!await pushRequest.verifySignature(pushToken, rsaUtils: _rsaUtils, legacyUtils: _legacyUtils)) {
       Logger.warning('Signature verification failed.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;
@@ -277,7 +274,7 @@ class PushProvider {
     }
 
     final connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.none) {
+    if (connectivityResult.contains(ConnectivityResult.none)) {
       if (isManually) {
         Logger.info('Tried to poll without any internet connection available.', name: 'push_provider.dart#pollForChallenges');
         globalRef?.read(statusMessageProvider.notifier).state = (

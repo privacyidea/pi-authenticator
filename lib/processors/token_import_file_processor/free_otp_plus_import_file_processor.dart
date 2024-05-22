@@ -18,7 +18,7 @@ import '../../utils/token_import_origins.dart';
 import '../scheme_processors/token_import_scheme_processors/free_otp_plus_qr_processor.dart';
 import 'token_import_file_processor_interface.dart';
 
-class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
+class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
   static const String _FREE_OTP_PLUS_ALGORITHM = 'algo'; // String: "MD5", "SHA1", "SHA256", "SHA512"
   static const String _FREE_OTP_PLUS_COUNTER = 'counter';
   static const String _FREE_OTP_PLUS_DIGITS = 'digits';
@@ -30,28 +30,24 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
   static const String _steamTokenIssuer = "Steam";
   static const String _steamTokenType = "steam";
 
-  const FreeOtpPlusFileProcessor();
+  const FreeOtpPlusImportFileProcessor();
 
   @override
   Future<bool> fileIsValid(XFile file) async {
-    String content;
+    String contentString;
     try {
-      content = await file.readAsString();
+      contentString = await file.readAsString();
     } catch (e) {
       return false;
     }
     try {
-      final json = jsonDecode(content) as Map<String, dynamic>;
+      final json = jsonDecode(contentString) as Map<String, dynamic>;
       return json['tokens'] != null;
       // ignore: empty_catches
     } catch (e) {}
-    List<String> lines = content.split('\n')..removeWhere((element) => element.isEmpty);
-    for (var line in lines) {
-      if (line.startsWith('otpauth://') == false) {
-        return false;
-      }
-    }
-    return true;
+    List<String> lines = contentString.split('\n')..removeWhere((element) => element.isEmpty);
+    if (lines.every((line) => line.isEmpty || line.startsWith('otpauth://'))) return true;
+    return false;
   }
 
   @override
@@ -119,7 +115,7 @@ class FreeOtpPlusFileProcessor extends TokenImportFileProcessor {
       URI_ISSUER: tokenJson[_FREE_OTP_PLUS_ISSUER],
       URI_ALGORITHM: tokenJson[_FREE_OTP_PLUS_ALGORITHM],
       URI_DIGITS: tokenJson[_FREE_OTP_PLUS_DIGITS],
-      URI_COUNTER: tokenJson[_FREE_OTP_PLUS_COUNTER],
+      URI_COUNTER: tokenJson[_FREE_OTP_PLUS_COUNTER] + 1, // FreeOTP+ saves only in JSON as 0-based counter
       URI_PERIOD: tokenJson[_FREE_OTP_PLUS_PERIOD],
       URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
         appName: TokenImportOrigins.freeOtpPlus.appName,

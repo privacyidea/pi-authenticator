@@ -54,7 +54,7 @@ class DeeplinkNotifier extends StateNotifier<DeepLink?> {
         if (!mounted) return;
         state = DeepLink(initialUri, fromInit: true);
         Logger.info('Got initial uri from ${source.name}');
-        return; // There can only be one initial uri
+        return; // There should be only one initial uri
       }
     }
   }

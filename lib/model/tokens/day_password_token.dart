@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/algorithms_extension.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
-import 'package:privacyidea_authenticator/utils/errors.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../utils/errors.dart';
 import '../../utils/identifiers.dart';
 import '../enums/algorithms.dart';
 import '../enums/day_password_token_view_mode.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
+import '../extensions/enums/algorithms_extension.dart';
+import '../extensions/enums/encodings_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
 import 'token.dart';
@@ -131,7 +131,7 @@ class DayPasswordToken extends OTPToken {
         name: URI_SECRET,
       );
     }
-    if (uriMap[URI_PERIOD] < 1) {
+    if (uriMap[URI_PERIOD] != null && uriMap[URI_PERIOD] < 1) {
       throw LocalizedArgumentError(
         localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
         unlocalizedMessage: 'Period must be greater than 0',
@@ -139,7 +139,7 @@ class DayPasswordToken extends OTPToken {
         name: URI_PERIOD,
       );
     }
-    if (uriMap[URI_DIGITS] < 1) {
+    if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) {
       throw LocalizedArgumentError(
         localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
         unlocalizedMessage: 'Digits must be greater than 0',
