@@ -26,7 +26,7 @@ class RolloutFailedWidget extends StatelessWidget {
             child: FittedBox(
               child: Text(
                 token.rolloutState.rolloutMsg(localizations),
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
             ),

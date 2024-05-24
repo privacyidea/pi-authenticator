@@ -30,7 +30,7 @@ class LoggingMenu extends ConsumerWidget {
             ListTile(
               title: Text(
                 AppLocalizations.of(context)!.verboseLogging,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
               contentPadding: const EdgeInsets.all(0),

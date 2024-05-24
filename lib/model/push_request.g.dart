@@ -12,11 +12,14 @@ PushRequest _$PushRequestFromJson(Map<String, dynamic> json) => PushRequest(
       uri: Uri.parse(json['uri'] as String),
       nonce: json['nonce'] as String,
       sslVerify: json['sslVerify'] as bool,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       expirationDate: DateTime.parse(json['expirationDate'] as String),
       serial: json['serial'] as String? ?? '',
       signature: json['signature'] as String? ?? '',
       accepted: json['accepted'] as bool?,
+      answers:
+          (json['answers'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      selectedAnswerIndex: (json['selectedAnswerIndex'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$PushRequestToJson(PushRequest instance) =>
@@ -31,4 +34,6 @@ Map<String, dynamic> _$PushRequestToJson(PushRequest instance) =>
       'serial': instance.serial,
       'signature': instance.signature,
       'accepted': instance.accepted,
+      'answers': instance.answers,
+      'selectedAnswerIndex': instance.selectedAnswerIndex,
     };

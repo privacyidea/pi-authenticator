@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,9 +23,14 @@ class PushRequestDialog extends ConsumerStatefulWidget {
 }
 
 class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
-  static const titleScale = 1.35;
-  static const questionScale = 1.1;
   double get lineHeight => Theme.of(context).textTheme.titleLarge?.fontSize ?? 16;
+  double get spacerHeight => lineHeight * 0.5;
+
+  MaterialStateProperty<OutlinedBorder?> get buttonShape => MaterialStateProperty.all(
+        Theme.of(context).elevatedButtonTheme.style?.shape?.resolve({})?.copyWith(
+          side: BorderSide(color: Theme.of(context).colorScheme.onPrimary, width: 2.5),
+        ),
+      );
 
   bool isHandled = false;
   bool dialogIsOpen = false;
@@ -44,83 +51,111 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final lineHeight = this.lineHeight;
+    final spacerHeight = this.spacerHeight;
     final question = widget.pushRequest.question;
     final token = ref.watch(tokenProvider).getTokenBySerial(widget.pushRequest.serial);
+    final localizations = AppLocalizations.of(context)!;
     if (token == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        if (mounted) {
-          ref.read(pushRequestProvider.notifier).remove(widget.pushRequest);
-        }
+        if (mounted) ref.read(pushRequestProvider.notifier).remove(widget.pushRequest);
       });
     }
+    final test = [
+      '42',
+      '0#',
+      '69',
+      '13',
+      '37',
+    ];
     return isHandled || token == null
         ? const SizedBox()
         : Container(
             color: Colors.transparent,
             child: DefaultDialog(
+              scrollable: false,
               title: Text(
-                AppLocalizations.of(context)!.authenticationRequest,
-                style: Theme.of(context).textTheme.titleLarge!,
+                localizations.authenticationRequest,
+                style: Theme.of(context).textTheme.headlineMedium!,
                 textAlign: TextAlign.center,
-                textScaler: const TextScaler.linear(titleScale),
               ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.requestInfo(
+                    localizations.requestInfo(
                       token.issuer,
                       token.label,
                     ),
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: Theme.of(context).textTheme.titleMedium?.fontSize),
-                    textScaler: const TextScaler.linear(questionScale),
+                    style: Theme.of(context).textTheme.bodyLarge!,
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: lineHeight),
+                  SizedBox(height: spacerHeight),
                   ...[
                     Text(
                       question,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: Theme.of(context).textTheme.titleMedium?.fontSize),
-                      textScaler: const TextScaler.linear(questionScale),
+                      style: Theme.of(context).textTheme.bodyLarge!,
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: lineHeight),
+                    SizedBox(height: spacerHeight),
                   ],
-                  if (widget.pushRequest.answers != null)
-                    GridView.builder(
-                      shrinkWrap: true,
-                      itemCount: widget.pushRequest.answers!.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 3,
-                      ),
-                      itemBuilder: (context, index) {
-                        return PressButton(
-                          onPressed: () {
-                            globalRef?.read(pushRequestProvider.notifier).accept(token, widget.pushRequest, selectedAnswerIndex: index);
-                            Navigator.of(context).pop();
+                  widget.pushRequest.answers == null
+                      ? AnswerSelectionWidget(
+                          onAnswerSelected: (p0) {
+                            globalRef?.read(pushRequestProvider.notifier).accept(token, widget.pushRequest, selectedAnswerIndex: p0);
                             if (mounted) setState(() => isHandled = true);
                           },
-                          child: Text(
-                            widget.pushRequest.answers![index],
-                            style: const TextStyle(fontSize: 16),
-                            textAlign: TextAlign.center,
+                          possibleAnswers: test,
+                        )
+                      : SizedBox(
+                          // Accept button
+                          child: PressButton(
+                            style: ButtonStyle(shape: buttonShape),
+                            onPressed: () async {
+                              if (token.isLocked && await lockAuth(localizedReason: localizations.authToAcceptPushRequest) == false) {
+                                return;
+                              }
+                              globalRef?.read(pushRequestProvider.notifier).accept(token, widget.pushRequest);
+                              if (mounted) setState(() => isHandled = true);
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(vertical: spacerHeight),
+                                  child: Text(
+                                    localizations.accept,
+                                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.check_outlined,
+                                  size: Theme.of(context).textTheme.headlineMedium?.fontSize ?? 16,
+                                ),
+                              ],
+                            ),
                           ),
-                        );
-                      },
-                    ),
+                        ),
                   SizedBox(
-                    // Accept button
-                    height: lineHeight * titleScale * 2 + 16,
+                    // Decline button
                     child: PressButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                          Theme.of(context).colorScheme.errorContainer,
+                        ),
+                        shape: buttonShape,
+                      ),
                       onPressed: () async {
-                        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) {
+                        if (token.isLocked && await lockAuth(localizedReason: localizations.authToDeclinePushRequest) == false) {
                           return;
                         }
-                        globalRef?.read(pushRequestProvider.notifier).accept(token, widget.pushRequest);
-                        if (mounted) setState(() => isHandled = true);
+                        dialogIsOpen = true;
+                        await _showConfirmationDialog(token);
+                        dialogIsOpen = false;
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
@@ -128,151 +163,197 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.accept,
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                            textScaler: const TextScaler.linear(titleScale),
+                            localizations.decline,
+                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                             textAlign: TextAlign.center,
-                            maxLines: 1,
                           ),
                           Icon(
-                            Icons.check_outlined,
-                            size: lineHeight * titleScale,
+                            Icons.close_outlined,
+                            size: Theme.of(context).textTheme.headlineMedium?.fontSize ?? 16,
                           ),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(height: lineHeight * 0.5),
-                  SizedBox(
-                    // Decline button
-                    height: lineHeight * titleScale + 16,
-                    child: PressButton(
-                        style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
-                        onPressed: () async {
-                          if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
-                            return;
-                          }
-                          dialogIsOpen = true;
-                          await _showConfirmationDialog(token);
-                          dialogIsOpen = false;
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.decline,
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                              textScaler: const TextScaler.linear(titleScale),
-                              textAlign: TextAlign.center,
-                            ),
-                            Icon(Icons.close_outlined, size: lineHeight * titleScale),
-                          ],
-                        )),
-                  ),
+                  SizedBox(height: spacerHeight),
                 ],
               ),
             ),
           );
   }
 
-  Future<void> _showConfirmationDialog(PushToken pushToken) => showDialog(
-      useRootNavigator: false,
-      context: globalNavigatorKey.currentContext!,
-      builder: (BuildContext context) {
-        final lineHeight = this.lineHeight;
-        return DefaultDialog(
-          title: Text(
-            AppLocalizations.of(context)!.authenticationRequest,
-            style: Theme.of(context).textTheme.titleLarge!,
-            textAlign: TextAlign.center,
-            textScaler: const TextScaler.linear(titleScale),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.requestTriggerdByUserQuestion,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: Theme.of(context).textTheme.titleMedium?.fontSize),
-                textScaler: const TextScaler.linear(questionScale),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: lineHeight),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Expanded(child: SizedBox()),
-                  Expanded(
-                    flex: 6,
-                    child: PressButton(
-                      onPressed: () {
-                        globalRef?.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest);
-                        Navigator.of(context).pop();
-                        if (mounted) setState(() => isHandled = true);
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.yes,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                            textScaler: const TextScaler.linear(titleScale),
-                            textAlign: TextAlign.center,
-                          ),
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              AppLocalizations.of(context)!.butDiscardIt,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Theme.of(context).colorScheme.onPrimary.mixWith(Colors.grey.shade800),
-                                  ),
+  Future<void> _showConfirmationDialog(PushToken pushToken) {
+    final localizations = AppLocalizations.of(context)!;
+    return showDialog(
+        useRootNavigator: false,
+        context: globalNavigatorKey.currentContext!,
+        builder: (BuildContext context) {
+          final spacerHeight = this.spacerHeight;
+          return DefaultDialog(
+            title: Text(
+              localizations.authenticationRequest,
+              style: Theme.of(context).textTheme.titleLarge!,
+              textAlign: TextAlign.center,
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  localizations.requestTriggerdByUserQuestion,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: Theme.of(context).textTheme.titleMedium?.fontSize),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: spacerHeight),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Expanded(child: SizedBox()),
+                    Expanded(
+                      flex: 6,
+                      child: PressButton(
+                        style: ButtonStyle(shape: buttonShape),
+                        onPressed: () {
+                          globalRef?.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest);
+                          Navigator.of(context).pop();
+                          if (mounted) setState(() => isHandled = true);
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              localizations.yes,
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                              textAlign: TextAlign.center,
+                            ),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                localizations.butDiscardIt,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Theme.of(context).colorScheme.onPrimary.mixWith(Colors.grey.shade800),
+                                    ),
+                                textAlign: TextAlign.center,
+                                softWrap: false,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Expanded(flex: 2, child: SizedBox()),
+                    Expanded(
+                      flex: 6,
+                      child: PressButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer),
+                          shape: buttonShape,
+                        ),
+                        onPressed: () {
+                          //TODO: Notify issuer
+                          globalRef?.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest);
+                          Navigator.of(context).pop();
+                          if (mounted) setState(() => isHandled = true);
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              localizations.no,
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              localizations.declineIt,
+                              style:
+                                  Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onPrimary.mixWith(Colors.grey.shade800)),
                               textAlign: TextAlign.center,
                               softWrap: false,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Expanded(child: SizedBox()),
+                  ],
+                ),
+              ],
+            ),
+          );
+        });
+  }
+}
+
+class AnswerSelectionWidget<T> extends StatefulWidget {
+  final List<T> possibleAnswers;
+  final void Function(int) onAnswerSelected;
+  const AnswerSelectionWidget({required this.possibleAnswers, super.key, required this.onAnswerSelected});
+
+  @override
+  State<AnswerSelectionWidget<T>> createState() => _AnswerSelectionWidgetState<T>();
+}
+
+class _AnswerSelectionWidgetState<T> extends State<AnswerSelectionWidget<T>> {
+  double get lineHeight => Theme.of(context).textTheme.titleLarge?.fontSize ?? 16;
+  double get spacerHeight => lineHeight * 0.5;
+  @override
+  Widget build(BuildContext context) {
+    final children = <Widget>[];
+    final possibleAnswers = widget.possibleAnswers.toList();
+    const numPerRow = 3;
+    var answersHandled = 0;
+    var numRow = 0;
+    while (possibleAnswers.length > answersHandled) {
+      final maxThisRow = possibleAnswers.length - answersHandled == numPerRow + 1
+          ? min(possibleAnswers.length - answersHandled, (numPerRow / 2).ceil())
+          : min(possibleAnswers.length - answersHandled, numPerRow);
+      numRow++;
+      print('NumRow: $numRow');
+      print('asd.length: ${possibleAnswers.length}');
+      print('maxThisRow: $maxThisRow');
+      children.add(
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            if (maxThisRow != numPerRow) const Expanded(child: SizedBox()),
+            for (var i = answersHandled; i < answersHandled + maxThisRow; i++, answersHandled++)
+              Expanded(
+                flex: 4,
+                child: PressButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(999),
+                        side: BorderSide(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          width: 2.5,
+                        ),
                       ),
                     ),
                   ),
-                  const Expanded(flex: 2, child: SizedBox()),
-                  Expanded(
-                    flex: 6,
-                    child: PressButton(
-                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
-                      onPressed: () {
-                        //TODO: Notify issuer
-                        globalRef?.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest);
-                        Navigator.of(context).pop();
-                        if (mounted) setState(() => isHandled = true);
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.no,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                            textScaler: const TextScaler.linear(titleScale),
-                            textAlign: TextAlign.center,
-                          ),
-                          Text(
-                            AppLocalizations.of(context)!.declineIt,
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onPrimary.mixWith(Colors.grey.shade800)),
-                            textAlign: TextAlign.center,
-                            softWrap: false,
-                          ),
-                        ],
-                      ),
+                  onPressed: () => widget.onAnswerSelected(i),
+                  child: Padding(
+                    padding: EdgeInsets.all(spacerHeight),
+                    child: Text(
+                      possibleAnswers[i].toString(),
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  const Expanded(child: SizedBox()),
-                ],
+                ),
               ),
-            ],
-          ),
-        );
-      });
+            if (maxThisRow != numPerRow) const Expanded(child: SizedBox()),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: children,
+    );
+  }
 }

@@ -33,7 +33,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
               ? Text(
                   AppLocalizations.of(context)!.noTokensToExport,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.secondary),
                 )
               : Column(
                   mainAxisSize: MainAxisSize.min,

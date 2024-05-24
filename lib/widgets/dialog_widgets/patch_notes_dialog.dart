@@ -39,7 +39,7 @@ class PatchNotesDialog extends StatelessWidget {
                   children: [
                     Text(
                       '${localizations.version}: ${version.toString()}',
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     const SizedBox(height: 16),
                     ...newNotes[version]!.entries.map(
