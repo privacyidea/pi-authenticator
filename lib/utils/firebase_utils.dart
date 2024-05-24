@@ -34,9 +34,7 @@ class FirebaseUtils {
     }
     _initialized = true;
     Logger.info('Initializing Firebase', name: 'firebase_utils.dart#initFirebase');
-    final app = await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    await app.setAutomaticDataCollectionEnabled(false);
-    Logger.warning('Automatic data collection: ${app.isAutomaticDataCollectionEnabled}', name: 'firebase_utils.dart#initFirebase');
+
     try {
       // await FirebaseMessaging.instance.requestPermission();
     } on FirebaseException catch (e, s) {
