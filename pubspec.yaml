@@ -59,7 +59,7 @@ dependencies:
   package_info_plus: ^8.0.0
   device_info_plus: ^10.0.1
   # URI
-  uni_links: ^0.5.1
+  app_links: ^6.1.1
   url_launcher: ^6.0.12
   http: ^1.2.0
   connectivity_plus: ^6.0.1
@@ -86,8 +86,6 @@ dependencies:
   simple_icons: ^10.1.3
   path_provider: ^2.1.2
   qr_flutter: ^4.1.0
-  app_links: ^6.1.1
-  # file_saver: ^0.2.12
   
 
 dev_dependencies:
