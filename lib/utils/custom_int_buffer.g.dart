@@ -8,7 +8,7 @@ part of 'custom_int_buffer.dart';
 
 CustomIntBuffer _$CustomIntBufferFromJson(Map<String, dynamic> json) =>
     CustomIntBuffer(
-      maxSize: json['maxSize'] as int? ?? 100,
+      maxSize: (json['maxSize'] as num?)?.toInt() ?? 100,
     );
 
 Map<String, dynamic> _$CustomIntBufferToJson(CustomIntBuffer instance) =>
