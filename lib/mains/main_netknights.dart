@@ -20,8 +20,10 @@
 */
 
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/firebase_options.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
@@ -48,6 +50,10 @@ void main() async {
         WidgetsFlutterBinding.ensureInitialized();
         await HomeWidgetUtils().registerInteractivityCallback(homeWidgetBackgroundCallback);
         await HomeWidgetUtils().setAppGroupId(appGroupId);
+        final app = await Firebase.initializeApp(options: NetknightsFirebaseOptions.currentPlatform);
+        await app.setAutomaticDataCollectionEnabled(false);
+        Logger.warning('Automatic data collection: ${app.isAutomaticDataCollectionEnabled}', name: 'firebase_utils.dart#initFirebase');
+
         runApp(AppWrapper(child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization)));
       });
 }
