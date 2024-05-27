@@ -22,7 +22,12 @@ class TokenFolderWidget extends ConsumerWidget {
         ? LongPressDraggable(
             maxSimultaneousDrags: 1,
             dragAnchorStrategy: (draggable, context, position) {
-              final textSize = textSizeOf(folder.label, Theme.of(context).textTheme.titleLarge!);
+              final textSize = textSizeOf(
+                text: folder.label,
+                style: Theme.of(context).textTheme.titleLarge!,
+                textScaler: MediaQuery.of(context).textScaler,
+                maxLines: 1,
+              );
               return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
             },
             onDragStarted: () => draggingSortableNotifier.state = folder,

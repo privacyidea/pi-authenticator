@@ -27,9 +27,14 @@ import 'import_plain_tokens_page.dart';
 void _decodeQrFileIsolate(List<dynamic> args) async {
   final sendPort = args[0] as SendPort;
   final XFile file = args[1] as XFile;
-  final image = img.decodeImage(await file.readAsBytes());
+  final bool isSecondTry = args.length > 2 ? args[2] as bool : false;
+  var image = img.decodeImage(await file.readAsBytes());
   if (image == null) {
     Isolate.exit(sendPort, null);
+  }
+  // Rotate image by 90 degrees
+  if (isSecondTry) {
+    image = img.copyRotate(image, angle: 90);
   }
 
   LuminanceSource source = RGBLuminanceSource(
@@ -236,8 +241,12 @@ class _ImportStartPageState extends State<ImportStartPage> {
     try {
       qrResult = await _startDecodeQrFile(file);
     } on FormatReaderException catch (_) {
-      setState(() => _errorText = localizations.qrFileDecodeError);
-      return;
+      try {
+        qrResult = await _startDecodeQrFile(file, isSecondTry: true);
+      } on FormatReaderException catch (_) {
+        setState(() => _errorText = localizations.qrFileDecodeError);
+        return;
+      }
     } catch (e) {
       setState(() => _errorText = localizations.invalidQrFile(widget.appName));
       return;
@@ -268,10 +277,10 @@ class _ImportStartPageState extends State<ImportStartPage> {
     _routeImportPlainTokensPage(importResults: processorResults);
   }
 
-  Future<Result> _startDecodeQrFile(XFile file) async {
+  Future<Result> _startDecodeQrFile(XFile file, {bool isSecondTry = false}) async {
     final receivePort = ReceivePort();
     try {
-      await Isolate.spawn(_decodeQrFileIsolate, [receivePort.sendPort, file]);
+      await Isolate.spawn(_decodeQrFileIsolate, [receivePort.sendPort, file, isSecondTry]);
     } catch (_) {
       receivePort.close();
       rethrow;
