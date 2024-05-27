@@ -52,7 +52,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.19.6'
+          flutter-version: '3.22.0'
       - run: 'flutter clean'
       - run: "flutter --version"
       - run: "flutter pub get"
