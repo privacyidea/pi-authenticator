@@ -28,7 +28,6 @@ jobs:
       with:
         channel: 'stable'
         flutter-version: '3.19.6'
-    - run: "flutter upgrade"
     - run: "flutter --version"
     - run: "flutter pub get"
     - run: "flutter build ios -t 'lib/mains/main_netknights.dart' --debug --flavor netknights --no-codesign"
@@ -55,7 +54,6 @@ jobs:
           channel: 'stable'
           flutter-version: '3.19.6'
       - run: 'flutter clean'
-      - run: "flutter upgrade"
       - run: "flutter --version"
       - run: "flutter pub get"
       - run: "flutter build apk -t 'lib/mains/main_netknights.dart' --debug --flavor netknights"
