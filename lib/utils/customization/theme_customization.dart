@@ -283,7 +283,7 @@ class ThemeCustomization {
           ),
           iconButtonTheme: IconButtonThemeData(
             style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.all(foregroundColor),
+              foregroundColor: WidgetStateProperty.all(foregroundColor),
             ),
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
@@ -326,7 +326,7 @@ class ThemeCustomization {
           navigationBarTheme: const NavigationBarThemeData().copyWith(
             backgroundColor: navigationBarColor,
             shadowColor: shadowColor,
-            iconTheme: MaterialStatePropertyAll(IconThemeData(color: navigationBarIconColor)),
+            iconTheme: WidgetStatePropertyAll(IconThemeData(color: navigationBarIconColor)),
             elevation: 3,
           ),
           floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -363,8 +363,8 @@ class ThemeCustomization {
                   errorContainer: deleteColor,
                 ),
           checkboxTheme: CheckboxThemeData(
-            checkColor: MaterialStateProperty.resolveWith<Color?>((_) => onPrimary),
-            fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            checkColor: WidgetStateProperty.resolveWith<Color?>((_) => onPrimary),
+            fillColor: WidgetStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
               if (states.contains(MaterialState.disabled)) {
                 return null;
               }
@@ -375,7 +375,7 @@ class ThemeCustomization {
             }),
           ),
           radioTheme: RadioThemeData(
-            fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            fillColor: WidgetStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
               if (states.contains(MaterialState.disabled)) {
                 return null;
               }
@@ -386,7 +386,7 @@ class ThemeCustomization {
             }),
           ),
           switchTheme: SwitchThemeData(
-            thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            thumbColor: WidgetStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
               if (states.contains(MaterialState.disabled)) {
                 return null;
               }
@@ -395,7 +395,7 @@ class ThemeCustomization {
               }
               return null;
             }),
-            trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            trackColor: WidgetStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
               if (states.contains(MaterialState.disabled)) {
                 return null;
               }

@@ -217,7 +217,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   /// Accepts a push request and returns true if successful, false if not.
   /// An accepted push request is removed from the state.
   /// It should be still in the CustomIntBuffer of the state.
-  Future<bool> accept(PushToken pushToken, PushRequest pushRequest, {int? selectedAnswerIndex}) async {
+  Future<bool> accept(PushToken pushToken, PushRequest pushRequest, {String? selectedAnswer}) async {
     if (pushRequest.accepted != null) {
       Logger.warning('The push request is already accepted or declined.', name: 'push_request_notifier.dart#decline');
 
@@ -225,7 +225,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     }
     Logger.info('Decline push request.', name: 'push_request_notifier.dart#decline');
     final updated = await _updatePushRequest(pushRequest, (p0) async {
-      final updated = p0.copyWith(accepted: true, selectedAnswerIndex: () => selectedAnswerIndex);
+      final updated = p0.copyWith(accepted: true, selectedAnswer: () => selectedAnswer);
       final success = await _handleReaction(pushRequest: updated, token: pushToken);
       if (!success) {
         return p0;
@@ -244,7 +244,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     }
     Logger.info('Decline push request.', name: 'push_request_notifier.dart#decline');
     final updated = await _updatePushRequest(pushRequest, (p0) async {
-      final updated = p0.copyWith(accepted: false, selectedAnswerIndex: () => null);
+      final updated = p0.copyWith(accepted: false, selectedAnswer: () => null);
       final success = await _handleReaction(pushRequest: updated, token: pushToken);
       if (!success) {
         return p0;
@@ -334,9 +334,9 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
       body['decline'] = '1';
       msg += '|decline';
     }
-    if (pushRequest.answers != null && pushRequest.selectedAnswerIndex != null) {
-      body['answer'] = pushRequest.answers![pushRequest.selectedAnswerIndex!];
-      msg += '|${pushRequest.answers![pushRequest.selectedAnswerIndex!]}';
+    if (pushRequest.possibleAnswers != null && pushRequest.selectedAnswer != null) {
+      body['answer'] = pushRequest.selectedAnswer!;
+      msg += '|${pushRequest.selectedAnswer!}';
     }
 
     String? signature = await _rsaUtils.trySignWithToken(token, msg);

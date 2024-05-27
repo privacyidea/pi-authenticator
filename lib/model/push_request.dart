@@ -24,8 +24,8 @@ class PushRequest {
   final String serial;
   final String signature;
   final bool? accepted;
-  final List<String>? answers;
-  final int? selectedAnswerIndex;
+  final List<String>? possibleAnswers;
+  final String? selectedAnswer;
 
   const PushRequest({
     required this.title,
@@ -38,8 +38,8 @@ class PushRequest {
     this.serial = '',
     this.signature = '',
     this.accepted,
-    this.answers,
-    this.selectedAnswerIndex,
+    this.possibleAnswers,
+    this.selectedAnswer,
   });
 
   PushRequest copyWith({
@@ -54,7 +54,7 @@ class PushRequest {
     String? signature,
     bool? accepted,
     List<String> Function()? answers,
-    int? Function()? selectedAnswerIndex,
+    String? Function()? selectedAnswer,
   }) {
     return PushRequest(
       title: title ?? this.title,
@@ -67,8 +67,8 @@ class PushRequest {
       serial: serial ?? this.serial,
       signature: signature ?? this.signature,
       accepted: accepted ?? this.accepted,
-      answers: answers != null ? answers() : this.answers,
-      selectedAnswerIndex: selectedAnswerIndex != null ? selectedAnswerIndex() : this.selectedAnswerIndex,
+      possibleAnswers: answers != null ? answers() : this.possibleAnswers,
+      selectedAnswer: selectedAnswer != null ? selectedAnswer() : this.selectedAnswer,
     );
   }
 
@@ -84,7 +84,7 @@ class PushRequest {
         'id: $id, uri: $uri, _nonce: $nonce, sslVerify: $sslVerify, '
         'expirationDate: $expirationDate, serial: $serial, '
         'signature: $signature, accepted: $accepted, '
-        'answers: $answers, selectedAnswerIndex: $selectedAnswerIndex}';
+        'answers: $possibleAnswers, selectedAnswer: $selectedAnswer}';
   }
 
   factory PushRequest.fromJson(Map<String, dynamic> json) => _$PushRequestFromJson(json);
@@ -107,7 +107,7 @@ class PushRequest {
       serial: data[PUSH_REQUEST_SERIAL],
       expirationDate: DateTime.now().add(const Duration(minutes: 2)),
       signature: data[PUSH_REQUEST_SIGNATURE],
-      answers: data[PUSH_REQUEST_ANSWERS],
+      possibleAnswers: data[PUSH_REQUEST_ANSWERS],
     );
   }
 
@@ -147,7 +147,7 @@ class PushRequest {
         '$question|'
         '$title|'
         '${sslVerify ? '1' : '0'}'
-        '${answers != null ? '|require_presence' : ''}';
+        '${possibleAnswers != null ? '|require_presence' : ''}';
 
     // Re-add url and sslverify to android legacy tokens:
     if (token.url == null) {

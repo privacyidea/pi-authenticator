@@ -76,7 +76,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
                                   child: TextButton(
                                     style: _selectedTokens.contains(token)
                                         ? ButtonStyle(
-                                            backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary.withAlpha(80)),
+                                            backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.secondary.withAlpha(80)),
                                           )
                                         : null,
                                     onPressed: () async {

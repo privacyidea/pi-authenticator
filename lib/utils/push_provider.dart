@@ -143,6 +143,9 @@ class PushProvider {
     Map<String, dynamic> data;
     try {
       data = _getAndValidateDataFromRemoteMessage(remoteMessage);
+      data.forEach((key, value) {
+        Logger.info('$key: $value', name: 'push_provider.dart#_foregroundHandler');
+      });
     } on ArgumentError catch (_) {
       Logger.info('Try requesting the challenge by polling.', name: 'push_provider.dart#_foregroundHandler');
       await pollForChallenges(isManually: true);

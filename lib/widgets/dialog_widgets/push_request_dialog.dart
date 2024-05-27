@@ -26,7 +26,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
   double get lineHeight => Theme.of(context).textTheme.titleLarge?.fontSize ?? 16;
   double get spacerHeight => lineHeight * 0.5;
 
-  MaterialStateProperty<OutlinedBorder?> get buttonShape => MaterialStateProperty.all(
+  WidgetStateProperty<OutlinedBorder?> get buttonShape => WidgetStateProperty.all(
         Theme.of(context).elevatedButtonTheme.style?.shape?.resolve({})?.copyWith(
           side: BorderSide(color: Theme.of(context).colorScheme.onPrimary, width: 2.5),
         ),
@@ -53,6 +53,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
   Widget build(BuildContext context) {
     final spacerHeight = this.spacerHeight;
     final question = widget.pushRequest.question;
+
     final token = ref.watch(tokenProvider).getTokenBySerial(widget.pushRequest.serial);
     final localizations = AppLocalizations.of(context)!;
     if (token == null) {
@@ -60,13 +61,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
         if (mounted) ref.read(pushRequestProvider.notifier).remove(widget.pushRequest);
       });
     }
-    final test = [
-      '42',
-      '0#',
-      '69',
-      '13',
-      '37',
-    ];
+
     return isHandled || token == null
         ? const SizedBox()
         : Container(
@@ -99,13 +94,13 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                     ),
                     SizedBox(height: spacerHeight),
                   ],
-                  widget.pushRequest.answers == null
+                  widget.pushRequest.possibleAnswers != null
                       ? AnswerSelectionWidget(
-                          onAnswerSelected: (p0) {
-                            globalRef?.read(pushRequestProvider.notifier).accept(token, widget.pushRequest, selectedAnswerIndex: p0);
+                          onAnswerSelected: (selectedAnswer) {
+                            globalRef?.read(pushRequestProvider.notifier).accept(token, widget.pushRequest, selectedAnswer: selectedAnswer);
                             if (mounted) setState(() => isHandled = true);
                           },
-                          possibleAnswers: test,
+                          possibleAnswers: widget.pushRequest.possibleAnswers!,
                         )
                       : SizedBox(
                           // Accept button
@@ -144,7 +139,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                     // Decline button
                     child: PressButton(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
+                        backgroundColor: WidgetStateProperty.all(
                           Theme.of(context).colorScheme.errorContainer,
                         ),
                         shape: buttonShape,
@@ -247,7 +242,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                       flex: 6,
                       child: PressButton(
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer),
+                          backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.errorContainer),
                           shape: buttonShape,
                         ),
                         onPressed: () {
@@ -287,7 +282,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
 
 class AnswerSelectionWidget<T> extends StatefulWidget {
   final List<T> possibleAnswers;
-  final void Function(int) onAnswerSelected;
+  final void Function(T) onAnswerSelected;
   const AnswerSelectionWidget({required this.possibleAnswers, super.key, required this.onAnswerSelected});
 
   @override
@@ -302,15 +297,14 @@ class _AnswerSelectionWidgetState<T> extends State<AnswerSelectionWidget<T>> {
     final children = <Widget>[];
     final possibleAnswers = widget.possibleAnswers.toList();
     const numPerRow = 3;
-    var answersHandled = 0;
     var numRow = 0;
-    while (possibleAnswers.length > answersHandled) {
-      final maxThisRow = possibleAnswers.length - answersHandled == numPerRow + 1
-          ? min(possibleAnswers.length - answersHandled, (numPerRow / 2).ceil())
-          : min(possibleAnswers.length - answersHandled, numPerRow);
+    while (possibleAnswers.isNotEmpty) {
+      final maxThisRow = possibleAnswers.length == numPerRow + 1 ? min(possibleAnswers.length, (numPerRow / 2).ceil()) : min(possibleAnswers.length, numPerRow);
       numRow++;
+      final answersThisRow = possibleAnswers.sublist(0, maxThisRow);
+      possibleAnswers.removeRange(0, maxThisRow);
       print('NumRow: $numRow');
-      print('asd.length: ${possibleAnswers.length}');
+      print('possibleAnswers.length: ${possibleAnswers.length}');
       print('maxThisRow: $maxThisRow');
       children.add(
         Row(
@@ -318,12 +312,12 @@ class _AnswerSelectionWidgetState<T> extends State<AnswerSelectionWidget<T>> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             if (maxThisRow != numPerRow) const Expanded(child: SizedBox()),
-            for (var i = answersHandled; i < answersHandled + maxThisRow; i++, answersHandled++)
+            for (final possibleAnswer in answersThisRow)
               Expanded(
                 flex: 4,
                 child: PressButton(
                   style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
+                    shape: WidgetStateProperty.all(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(999),
                         side: BorderSide(
@@ -333,11 +327,11 @@ class _AnswerSelectionWidgetState<T> extends State<AnswerSelectionWidget<T>> {
                       ),
                     ),
                   ),
-                  onPressed: () => widget.onAnswerSelected(i),
+                  onPressed: () => widget.onAnswerSelected(possibleAnswer),
                   child: Padding(
                     padding: EdgeInsets.all(spacerHeight),
                     child: Text(
-                      possibleAnswers[i].toString(),
+                      possibleAnswer.toString(),
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                       textAlign: TextAlign.center,
                     ),
