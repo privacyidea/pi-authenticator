@@ -632,5 +632,9 @@
   "scanThisQrWithNewDevice": "Scan deze QR-code met uw nieuwe apparaat om de token te importeren.",
   "oneMore": "Nog een",
   "done": "Klaar",
-  "confirmPassword": "Wachtwoord bevestigen"
+  "confirmPassword": "Wachtwoord bevestigen",
+  "sendPushRequestResponseFailed": "Het verzenden van het antwoord is mislukt. ",
+  "@sendPushRequestResponseFailed": {
+    "description": "Error message when the response to a push request could not be sent."
+  }
 }

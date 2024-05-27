@@ -9,6 +9,7 @@ import '../../model/push_request.dart';
 import '../../model/tokens/push_token.dart';
 import '../../utils/globals.dart';
 import '../../utils/lock_auth.dart';
+import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import '../press_button.dart';
 import 'default_dialog.dart';
@@ -96,8 +97,14 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                   ],
                   widget.pushRequest.possibleAnswers != null
                       ? AnswerSelectionWidget(
-                          onAnswerSelected: (selectedAnswer) {
-                            globalRef?.read(pushRequestProvider.notifier).accept(token, widget.pushRequest, selectedAnswer: selectedAnswer);
+                          onAnswerSelected: (selectedAnswer) async {
+                            if (token.isLocked && await lockAuth(localizedReason: localizations.authToAcceptPushRequest) == false) {
+                              return;
+                            }
+                            ref.read(pushRequestProvider.notifier).accept(token, widget.pushRequest, selectedAnswer: selectedAnswer).then((success) {
+                              Logger.info('accept push request success: $success', name: 'push_request_dialog.dart#AnswerSelectionWidget');
+                              if (!success && mounted) setState(() => isHandled = false);
+                            });
                             if (mounted) setState(() => isHandled = true);
                           },
                           possibleAnswers: widget.pushRequest.possibleAnswers!,
@@ -110,7 +117,10 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                               if (token.isLocked && await lockAuth(localizedReason: localizations.authToAcceptPushRequest) == false) {
                                 return;
                               }
-                              globalRef?.read(pushRequestProvider.notifier).accept(token, widget.pushRequest);
+                              ref.read(pushRequestProvider.notifier).accept(token, widget.pushRequest).then((success) {
+                                Logger.info('accept push request success: $success', name: 'push_request_dialog.dart#AnswerSelectionWidget');
+                                if (!success && mounted) setState(() => isHandled = false);
+                              });
                               if (mounted) setState(() => isHandled = true);
                             },
                             child: Row(
@@ -209,9 +219,16 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                       flex: 6,
                       child: PressButton(
                         style: ButtonStyle(shape: buttonShape),
-                        onPressed: () {
-                          globalRef?.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest);
-                          Navigator.of(context).pop();
+                        onPressed: () async {
+                          if (pushToken.isLocked && await lockAuth(localizedReason: localizations.authToDeclinePushRequest) == false) {
+                            return;
+                          }
+
+                          ref.read(pushRequestProvider.notifier).remove(widget.pushRequest).then((success) {
+                            Logger.info('remove push request success: $success', name: 'push_request_dialog.dart#_showConfirmationDialog');
+                            if (!success && mounted) setState(() => isHandled = false);
+                          });
+                          if (context.mounted) Navigator.of(context).pop();
                           if (mounted) setState(() => isHandled = true);
                         },
                         child: Column(
@@ -245,10 +262,17 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                           backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.errorContainer),
                           shape: buttonShape,
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           //TODO: Notify issuer
-                          globalRef?.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest);
-                          Navigator.of(context).pop();
+                          if (pushToken.isLocked && await lockAuth(localizedReason: localizations.authToDeclinePushRequest) == false) {
+                            return;
+                          }
+
+                          ref.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest).then((success) {
+                            Logger.info('decline push request success: $success', name: 'push_request_dialog.dart#_showConfirmationDialog');
+                            if (!success && mounted) setState(() => isHandled = false);
+                          });
+                          if (context.mounted) Navigator.of(context).pop();
                           if (mounted) setState(() => isHandled = true);
                         },
                         child: Column(

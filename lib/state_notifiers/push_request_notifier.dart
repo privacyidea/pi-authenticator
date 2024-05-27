@@ -19,6 +19,7 @@
 */
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
@@ -361,6 +362,11 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
       }
     }
     if (response.statusCode != 200) {
+      final appLocalizations = AppLocalizations.of(await globalContext)!;
+      globalRef?.read(statusMessageProvider.notifier).state = (
+        '${appLocalizations.sendPushRequestResponseFailed}\n${appLocalizations.statusCode(response.statusCode)}',
+        jsonDecode(response.body)?["result"]?["error"]?["message"],
+      );
       Logger.warning('Sending push request response failed.', name: 'token_widgets.dart#handleReaction');
       return false;
     }
