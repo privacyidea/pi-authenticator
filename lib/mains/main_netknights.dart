@@ -23,25 +23,25 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/firebase_options.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
-import 'package:privacyidea_authenticator/utils/globals.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view.dart';
-import 'package:privacyidea_authenticator/views/import_tokens_view/import_tokens_view.dart';
-import 'package:privacyidea_authenticator/views/license_view/license_view.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
-import 'package:privacyidea_authenticator/views/push_token_view/push_tokens_view.dart';
-import 'package:privacyidea_authenticator/views/qr_scanner_view/qr_scanner_view.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
-import 'package:privacyidea_authenticator/views/splash_screen/splash_screen.dart';
-import 'package:privacyidea_authenticator/widgets/app_wrapper.dart';
 
+import '../firebase_options/netknights_firebase_options.dart';
+import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
+import '../utils/customization/application_customization.dart';
+import '../utils/globals.dart';
 import '../utils/home_widget_utils.dart';
+import '../utils/logger.dart';
+import '../utils/riverpod_providers.dart';
+import '../views/add_token_manually_view/add_token_manually_view.dart';
 import '../views/feedback_view/feedback_view.dart';
+import '../views/import_tokens_view/import_tokens_view.dart';
+import '../views/license_view/license_view.dart';
+import '../views/main_view/main_view.dart';
+import '../views/push_token_view/push_tokens_view.dart';
+import '../views/qr_scanner_view/qr_scanner_view.dart';
+import '../views/settings_view/settings_view.dart';
+import '../views/splash_screen/splash_screen.dart';
+import '../widgets/app_wrapper.dart';
 
 void main() async {
   Logger.init(
