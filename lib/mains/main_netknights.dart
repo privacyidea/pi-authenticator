@@ -24,7 +24,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../firebase_options/netknights_firebase_options.dart';
+import '../firebase_options/default_firebase_options.dart';
 import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
 import '../utils/customization/application_customization.dart';
@@ -50,7 +50,10 @@ void main() async {
         WidgetsFlutterBinding.ensureInitialized();
         await HomeWidgetUtils().registerInteractivityCallback(homeWidgetBackgroundCallback);
         await HomeWidgetUtils().setAppGroupId(appGroupId);
-        final app = await Firebase.initializeApp(options: NetknightsFirebaseOptions.currentPlatform);
+        final app = await Firebase.initializeApp(
+          name: 'netknights',
+          options: DefaultFirebaseOptions.currentPlatformOf('netknights'),
+        );
         await app.setAutomaticDataCollectionEnabled(false);
         Logger.warning('Automatic data collection: ${app.isAutomaticDataCollectionEnabled}', name: 'firebase_utils.dart#initFirebase');
 
