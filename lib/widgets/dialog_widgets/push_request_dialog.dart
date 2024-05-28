@@ -27,7 +27,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
   double get lineHeight => Theme.of(context).textTheme.titleLarge?.fontSize ?? 16;
   double get spacerHeight => lineHeight * 0.5;
 
-  WidgetStateProperty<OutlinedBorder?> get buttonShape => WidgetStateProperty.all(
+  static WidgetStateProperty<OutlinedBorder?> buttonShape(BuildContext context) => WidgetStateProperty.all(
         Theme.of(context).elevatedButtonTheme.style?.shape?.resolve({})?.copyWith(
           side: BorderSide(color: Theme.of(context).colorScheme.onPrimary, width: 2.5),
         ),
@@ -116,7 +116,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                       : SizedBox(
                           // Accept button
                           child: PressButton(
-                            style: ButtonStyle(shape: buttonShape),
+                            style: ButtonStyle(shape: buttonShape(context)),
                             onPressed: () async {
                               if (token.isLocked && await lockAuth(localizedReason: localizations.authToAcceptPushRequest) == false) {
                                 return;
@@ -156,7 +156,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                         backgroundColor: WidgetStateProperty.all(
                           Theme.of(context).colorScheme.errorContainer,
                         ),
-                        shape: buttonShape,
+                        shape: buttonShape(context),
                       ),
                       onPressed: () async {
                         if (token.isLocked && await lockAuth(localizedReason: localizations.authToDeclinePushRequest) == false) {
@@ -222,7 +222,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                     Expanded(
                       flex: 6,
                       child: PressButton(
-                        style: ButtonStyle(shape: buttonShape),
+                        style: ButtonStyle(shape: buttonShape(context)),
                         onPressed: () async {
                           if (pushToken.isLocked && await lockAuth(localizedReason: localizations.authToDeclinePushRequest) == false) {
                             return;
@@ -264,7 +264,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                       child: PressButton(
                         style: ButtonStyle(
                           backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.errorContainer),
-                          shape: buttonShape,
+                          shape: buttonShape(context),
                         ),
                         onPressed: () async {
                           //TODO: Notify issuer
@@ -324,32 +324,26 @@ class _AnswerSelectionWidgetState<T> extends State<AnswerSelectionWidget<T>> {
   Widget build(BuildContext context) {
     final children = <Widget>[];
     final possibleAnswers = widget.possibleAnswers.toList();
-    const numPerRow = 4;
+    final totalAnswersNum = possibleAnswers.length;
+    const numPerRow = 3;
     while (possibleAnswers.isNotEmpty) {
       final maxThisRow = possibleAnswers.length == numPerRow + 1 ? min(possibleAnswers.length, (numPerRow / 2).ceil()) : min(possibleAnswers.length, numPerRow);
       final answersThisRow = possibleAnswers.sublist(0, maxThisRow);
       possibleAnswers.removeRange(0, maxThisRow);
+      final spacer = (maxThisRow != numPerRow && totalAnswersNum > maxThisRow)
+          ? Expanded(flex: (numPerRow - answersThisRow.length) * answersThisRow.length, child: const SizedBox())
+          : const SizedBox();
       children.add(
         Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            if (maxThisRow != numPerRow) const Expanded(child: SizedBox()),
+            spacer,
             for (final possibleAnswer in answersThisRow)
               Expanded(
-                flex: 4,
+                flex: answersThisRow.length * 2,
                 child: PressButton(
-                  style: ButtonStyle(
-                    shape: WidgetStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(999),
-                        side: BorderSide(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          width: 2.5,
-                        ),
-                      ),
-                    ),
-                  ),
+                  style: ButtonStyle(shape: _PushRequestDialogState.buttonShape(context)),
                   onPressed: () => widget.onAnswerSelected(possibleAnswer),
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: spacerHeight),
@@ -369,7 +363,7 @@ class _AnswerSelectionWidgetState<T> extends State<AnswerSelectionWidget<T>> {
                   ),
                 ),
               ),
-            if (maxThisRow != numPerRow) const Expanded(child: SizedBox()),
+            spacer,
           ],
         ),
       );
