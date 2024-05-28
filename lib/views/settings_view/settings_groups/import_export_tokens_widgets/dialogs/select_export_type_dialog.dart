@@ -39,7 +39,10 @@ class SelectExportTypeDialog extends StatelessWidget {
     final isExported = await showDialog<bool>(
       context: context,
       builder: (context) => SelectTokensDialog(
-        exportDialogBuilder: (tokens) => ExportTokensToFileDialog(tokens: tokens),
+        exportDialogBuilder: (tokens) {
+          if (tokens.isEmpty) return DefaultDialog(content: Text(AppLocalizations.of(context)!.noTokensToExport));
+          return ExportTokensToFileDialog(tokens: tokens);
+        },
       ),
     );
     if (isExported == true && context.mounted) Navigator.of(context).pop(isExported);
@@ -50,7 +53,11 @@ class SelectExportTypeDialog extends StatelessWidget {
       context: context,
       builder: (context) => SelectTokensDialog(
         multiSelect: false,
-        exportDialogBuilder: (tokens) => ShowQrCodeDialog(token: tokens.first),
+        exportDialogBuilder: (tokens) {
+          if (tokens.isEmpty) return DefaultDialog(content: Text(AppLocalizations.of(context)!.noTokensToExport));
+
+          return ShowQrCodeDialog(token: tokens.first);
+        },
       ),
     );
     if (isExported == true && context.mounted) Navigator.of(context).pop(isExported);
