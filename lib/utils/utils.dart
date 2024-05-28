@@ -26,7 +26,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
+
+import '../utils/logger.dart';
 
 /// Inserts [char] at the position [pos] in the given String ([str]),
 /// and returns the resulting String.
@@ -118,5 +119,13 @@ bool doesThrow(Function() f) {
     return false;
   } catch (_) {
     return true;
+  }
+}
+
+dynamic tryJsonDecode(String json) {
+  try {
+    return jsonDecode(json);
+  } catch (_) {
+    return null;
   }
 }

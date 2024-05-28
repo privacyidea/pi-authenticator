@@ -19,25 +19,25 @@
 */
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
-import 'package:privacyidea_authenticator/interfaces/repo/push_request_repository.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/model/push_request.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
-import 'package:privacyidea_authenticator/utils/globals.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/network_utils.dart';
-import 'package:privacyidea_authenticator/utils/push_provider.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
+import '../interfaces/repo/push_request_repository.dart';
+import '../l10n/app_localizations.dart';
+import '../model/push_request.dart';
 import '../model/states/push_request_state.dart';
+import '../model/tokens/push_token.dart';
 import '../repo/secure_push_request_repository.dart';
 import '../utils/custom_int_buffer.dart';
+import '../utils/globals.dart';
+import '../utils/logger.dart';
+import '../utils/network_utils.dart';
+import '../utils/push_provider.dart';
+import '../utils/riverpod_providers.dart';
+import '../utils/rsa_utils.dart';
+import '../utils/utils.dart';
 
 class PushRequestNotifier extends StateNotifier<PushRequestState> {
   late final Future<PushRequestState> initState;
@@ -365,7 +365,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
       final appLocalizations = AppLocalizations.of(await globalContext)!;
       globalRef?.read(statusMessageProvider.notifier).state = (
         '${appLocalizations.sendPushRequestResponseFailed}\n${appLocalizations.statusCode(response.statusCode)}',
-        jsonDecode(response.body)?["result"]?["error"]?["message"],
+        tryJsonDecode(response.body)?["result"]?["error"]?["message"],
       );
       Logger.warning('Sending push request response failed.', name: 'token_widgets.dart#handleReaction');
       return false;

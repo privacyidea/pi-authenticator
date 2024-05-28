@@ -26,13 +26,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
-import 'package:privacyidea_authenticator/repo/secure_push_request_repository.dart';
-import 'package:privacyidea_authenticator/utils/pi_notifications.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/push_request.dart';
 import '../model/tokens/push_token.dart';
+import '../repo/secure_push_request_repository.dart';
 import '../repo/secure_token_repository.dart';
+import '../utils/pi_notifications.dart';
 import 'firebase_utils.dart';
 import 'globals.dart';
 import 'logger.dart';

@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/customization/action_theme.dart';
-import 'package:privacyidea_authenticator/utils/customization/extended_text_theme.dart';
+
+import '../../../utils/customization/action_theme.dart';
+import '../../../utils/customization/extended_text_theme.dart';
 
 class ThemeCustomization {
   static const ThemeCustomization defaultLightTheme = ThemeCustomization.defaultLightWith();
