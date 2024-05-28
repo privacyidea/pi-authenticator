@@ -107,7 +107,7 @@ class PushRequest {
       serial: data[PUSH_REQUEST_SERIAL],
       expirationDate: DateTime.now().add(const Duration(minutes: 2)),
       signature: data[PUSH_REQUEST_SIGNATURE],
-      possibleAnswers: data[PUSH_REQUEST_ANSWERS],
+      possibleAnswers: data[PUSH_REQUEST_ANSWERS] != null ? (data[PUSH_REQUEST_ANSWERS] as String).split(',') : null,
     );
   }
 
@@ -137,12 +137,13 @@ class PushRequest {
     if (data[PUSH_REQUEST_SIGNATURE] is! String) {
       throw ArgumentError('Push request signature is ${data[PUSH_REQUEST_SIGNATURE].runtimeType}. Expected String.');
     }
-    if (data[PUSH_REQUEST_ANSWERS] is! List<String>?) {
+    if (data[PUSH_REQUEST_ANSWERS] is! String?) {
       throw ArgumentError('Push request answers is ${data[PUSH_REQUEST_ANSWERS].runtimeType}. Expected List<String> or null.');
     }
   }
 
   Future<bool> verifySignature(PushToken token, {LegacyUtils legacyUtils = const LegacyUtils(), RsaUtils rsaUtils = const RsaUtils()}) async {
+    //5NV6KJCFCLNQURT2ZTBRHHGY6FDXOCOR|http://192.168.178.22:5000/ttype/push|PIPU0000E793|Pick a Number!|privacyIDEA|0|["A", "B", "C"]
     Logger.info('Adding push request to token', name: 'push_request_notifier.dart#newRequest');
     String signedData = '$nonce|'
         '$uri|'
@@ -150,7 +151,8 @@ class PushRequest {
         '$question|'
         '$title|'
         '${sslVerify ? '1' : '0'}'
-        '${possibleAnswers != null ? '|require_presence' : ''}';
+        '${possibleAnswers != null ? '|${possibleAnswers!.join(",")}' : ''}';
+    Logger.warning('Signed data: $signedData', name: 'push_request_notifier.dart#newRequest');
 
     // Re-add url and sslverify to android legacy tokens:
     if (token.url == null) {

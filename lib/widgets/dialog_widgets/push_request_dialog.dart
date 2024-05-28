@@ -96,18 +96,22 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                     SizedBox(height: spacerHeight),
                   ],
                   widget.pushRequest.possibleAnswers != null
-                      ? AnswerSelectionWidget(
-                          onAnswerSelected: (selectedAnswer) async {
-                            if (token.isLocked && await lockAuth(localizedReason: localizations.authToAcceptPushRequest) == false) {
-                              return;
-                            }
-                            ref.read(pushRequestProvider.notifier).accept(token, widget.pushRequest, selectedAnswer: selectedAnswer).then((success) {
-                              Logger.info('accept push request success: $success', name: 'push_request_dialog.dart#AnswerSelectionWidget');
-                              if (!success && mounted) setState(() => isHandled = false);
-                            });
-                            if (mounted) setState(() => isHandled = true);
-                          },
-                          possibleAnswers: widget.pushRequest.possibleAnswers!,
+                      ? Flexible(
+                          child: SingleChildScrollView(
+                            child: AnswerSelectionWidget(
+                              onAnswerSelected: (selectedAnswer) async {
+                                if (token.isLocked && await lockAuth(localizedReason: localizations.authToAcceptPushRequest) == false) {
+                                  return;
+                                }
+                                ref.read(pushRequestProvider.notifier).accept(token, widget.pushRequest, selectedAnswer: selectedAnswer).then((success) {
+                                  Logger.info('accept push request success: $success', name: 'push_request_dialog.dart#AnswerSelectionWidget');
+                                  if (!success && mounted) setState(() => isHandled = false);
+                                });
+                                if (mounted) setState(() => isHandled = true);
+                              },
+                              possibleAnswers: widget.pushRequest.possibleAnswers!,
+                            ),
+                          ),
                         )
                       : SizedBox(
                           // Accept button
@@ -320,16 +324,11 @@ class _AnswerSelectionWidgetState<T> extends State<AnswerSelectionWidget<T>> {
   Widget build(BuildContext context) {
     final children = <Widget>[];
     final possibleAnswers = widget.possibleAnswers.toList();
-    const numPerRow = 3;
-    var numRow = 0;
+    const numPerRow = 4;
     while (possibleAnswers.isNotEmpty) {
       final maxThisRow = possibleAnswers.length == numPerRow + 1 ? min(possibleAnswers.length, (numPerRow / 2).ceil()) : min(possibleAnswers.length, numPerRow);
-      numRow++;
       final answersThisRow = possibleAnswers.sublist(0, maxThisRow);
       possibleAnswers.removeRange(0, maxThisRow);
-      print('NumRow: $numRow');
-      print('possibleAnswers.length: ${possibleAnswers.length}');
-      print('maxThisRow: $maxThisRow');
       children.add(
         Row(
           mainAxisSize: MainAxisSize.max,
@@ -353,11 +352,19 @@ class _AnswerSelectionWidgetState<T> extends State<AnswerSelectionWidget<T>> {
                   ),
                   onPressed: () => widget.onAnswerSelected(possibleAnswer),
                   child: Padding(
-                    padding: EdgeInsets.all(spacerHeight),
-                    child: Text(
-                      possibleAnswer.toString(),
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                      textAlign: TextAlign.center,
+                    padding: EdgeInsets.symmetric(vertical: spacerHeight),
+                    child: SizedBox(
+                      height: lineHeight * 2,
+                      child: Center(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            possibleAnswer.toString(),
+                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),

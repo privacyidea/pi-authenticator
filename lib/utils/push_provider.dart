@@ -112,11 +112,6 @@ class PushProvider {
     final Map<String, dynamic> data;
     try {
       data = remoteMessage.data;
-      Logger.info('----------------------- Remote Message Data ------------------------');
-      data.forEach((key, value) {
-        Logger.info('$key: $value', name: 'push_provider.dart#_foregroundHandler');
-      });
-      Logger.info('--------------------- Remote Message Data End -----------------------');
       PushRequest.verifyData(data);
     } on ArgumentError catch (e) {
       Logger.warning('Could not parse push request data.', name: 'push_provider.dart#_getAndValidateDataFromRemoteMessage', error: e, verbose: true);
@@ -207,6 +202,7 @@ class PushProvider {
   Future<void> _handleIncomingRequestForeground(Map<String, dynamic> data) async {
     Logger.info('Incoming push challenge.', name: 'push_provider.dart#_handleIncomingRequestForeground');
     PushRequest pushRequest = PushRequest.fromMessageData(data);
+    Logger.info("PushRequest.possibleAnswers: ${pushRequest.possibleAnswers}", name: 'push_provider.dart#_handleIncomingRequestForeground');
     Logger.info('Parsing data of push request succeeded.', name: 'push_provider.dart#_handleIncomingRequestForeground');
     final pushToken = globalRef?.read(tokenProvider).getTokenBySerial(pushRequest.serial);
     if (pushToken == null) {
