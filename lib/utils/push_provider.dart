@@ -112,6 +112,11 @@ class PushProvider {
     final Map<String, dynamic> data;
     try {
       data = remoteMessage.data;
+      Logger.info('----------------------- Remote Message Data ------------------------');
+      data.forEach((key, value) {
+        Logger.info('$key: $value', name: 'push_provider.dart#_foregroundHandler');
+      });
+      Logger.info('--------------------- Remote Message Data End -----------------------');
       PushRequest.verifyData(data);
     } on ArgumentError catch (e) {
       Logger.warning('Could not parse push request data.', name: 'push_provider.dart#_getAndValidateDataFromRemoteMessage', error: e, verbose: true);
@@ -143,11 +148,8 @@ class PushProvider {
     Map<String, dynamic> data;
     try {
       data = _getAndValidateDataFromRemoteMessage(remoteMessage);
-      data.forEach((key, value) {
-        Logger.info('$key: $value', name: 'push_provider.dart#_foregroundHandler');
-      });
     } on ArgumentError catch (_) {
-      Logger.info('Try requesting the challenge by polling.', name: 'push_provider.dart#_foregroundHandler');
+      Logger.info('Failed to parse push request data. Trying to poll for challenges.', name: 'push_provider.dart#_foregroundHandler');
       await pollForChallenges(isManually: true);
       return;
     }
@@ -155,8 +157,12 @@ class PushProvider {
     try {
       return _handleIncomingRequestForeground(data);
     } catch (e, s) {
-      final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError;
-      Logger.error(errorMessage, name: 'push_provider.dart#_foregroundHandler', error: e, stackTrace: s);
+      Logger.error(
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError,
+        name: 'push_provider.dart#_foregroundHandler',
+        error: e,
+        stackTrace: s,
+      );
     }
   }
 

@@ -137,6 +137,9 @@ class PushRequest {
     if (data[PUSH_REQUEST_SIGNATURE] is! String) {
       throw ArgumentError('Push request signature is ${data[PUSH_REQUEST_SIGNATURE].runtimeType}. Expected String.');
     }
+    if (data[PUSH_REQUEST_ANSWERS] is! List<String>?) {
+      throw ArgumentError('Push request answers is ${data[PUSH_REQUEST_ANSWERS].runtimeType}. Expected List<String> or null.');
+    }
   }
 
   Future<bool> verifySignature(PushToken token, {LegacyUtils legacyUtils = const LegacyUtils(), RsaUtils rsaUtils = const RsaUtils()}) async {
