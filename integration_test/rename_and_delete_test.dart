@@ -44,8 +44,8 @@ void main() {
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
-    final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
-    when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
+    when(mockIntroductionRepository.loadCompletedIntroductions())
+        .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
   });
   testWidgets('Rename and Delete Token', (tester) async {
     await tester.pumpWidget(TestsAppWrapper(

@@ -36,6 +36,8 @@ const String URI_ISSUER = 'URI_ISSUER';
 const String URI_PIN = 'URI_PIN';
 const String URI_IMAGE = 'URI_IMAGE';
 const String URI_ORIGIN = 'URI_ORIGIN';
+const String URI_ORIGIN_NAME = 'URI_ORIGIN_NAME';
+const String URI_CREATOR = 'URI_CREATOR';
 
 // 2 step:
 const String URI_SALT_LENGTH = 'URI_SALT_LENGTH';

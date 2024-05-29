@@ -167,7 +167,7 @@ class EditPushTokenAction extends TokenAction {
               ),
               if (token.origin != null)
                 TextFormField(
-                  initialValue: token.origin!.appName,
+                  initialValue: token.origin!.originName,
                   decoration: const InputDecoration(labelText: 'Origin'),
                   enabled: false,
                 ),

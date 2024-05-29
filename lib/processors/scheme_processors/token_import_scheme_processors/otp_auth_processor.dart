@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
+
 import '../../../model/enums/token_origin_source_type.dart';
 import '../../../model/token_import/token_origin_data.dart';
-
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';
@@ -16,8 +16,10 @@ import '../../../utils/errors.dart';
 import '../../../utils/globals.dart';
 import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
+import '../../../utils/utils.dart' show getCurrentAppName;
 import '../../../utils/view_utils.dart';
 import '../../../widgets/dialog_widgets/two_step_dialog.dart';
+
 import 'token_import_scheme_processor_interface.dart';
 
 class OtpAuthProcessor extends TokenImportSchemeProcessor {
@@ -67,8 +69,15 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     }
     Token newToken;
     try {
-      newToken =
-          Token.fromUriMap(uriMap).copyWith(origin: TokenOriginData(source: TokenOriginSourceType.link, data: uri.toString(), createdAt: DateTime.now()));
+      newToken = Token.fromUriMap(uriMap).copyWith(
+        origin: TokenOriginData(
+          source: TokenOriginSourceType.link,
+          originName: uriMap[URI_ORIGIN_NAME] ?? getCurrentAppName(),
+          data: uri.toString(),
+          creator: uriMap[URI_CREATOR] as String?,
+          createdAt: DateTime.now(),
+        ),
+      );
     } on FormatException catch (e) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
       return [ProcessorResultFailed(e.message)];

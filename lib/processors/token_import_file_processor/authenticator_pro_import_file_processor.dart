@@ -295,7 +295,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
           URI_ALGORITHM: algorithmMap[tokenMap[_AUTHENTICATOR_PRO_ALGORITHM] as int],
           URI_COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER] as int,
           URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-            appName: TokenImportOrigins.authenticatorPro.appName,
+            originName: TokenImportOrigins.authenticatorPro.appName,
             isPrivacyIdeaToken: false,
             data: jsonEncode(tokenMap),
           ),

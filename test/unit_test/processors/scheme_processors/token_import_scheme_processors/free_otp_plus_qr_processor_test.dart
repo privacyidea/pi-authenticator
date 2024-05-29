@@ -25,7 +25,7 @@ void _testFreeOtpPlusQrProcessor() {
       expect(firstResult.resultData.issuer, equals('FreeOTP+'));
       expect(firstResult.resultData.label, equals('alice'));
       expect(firstResult.resultData, isA<TOTPToken>());
-      expect(firstResult.resultData.origin!.appName, equals('FreeOTP+'));
+      expect(firstResult.resultData.origin!.originName, equals('FreeOTP+'));
     });
     test('processUri without secret', () async {
       // Arrange
@@ -51,7 +51,7 @@ void _testFreeOtpPlusQrProcessor() {
       expect(firstResult.resultData.issuer, equals('FreeOTP+'));
       expect(firstResult.resultData.label, equals('alice'));
       expect(firstResult.resultData, isA<HOTPToken>());
-      expect(firstResult.resultData.origin!.appName, equals('FreeOTP+'));
+      expect(firstResult.resultData.origin!.originName, equals('FreeOTP+'));
       final hotpToken = firstResult.resultData as HOTPToken;
       expect(hotpToken.counter, equals(0));
     });

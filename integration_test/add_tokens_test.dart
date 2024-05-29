@@ -10,6 +10,7 @@ import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/model/enums/token_types.dart';
 import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/version.dart';
 import 'package:privacyidea_authenticator/state_notifiers/completed_introduction_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
@@ -37,7 +38,8 @@ void main() {
   late final MockIntroductionRepository mockIntroductionRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
-    when(mockSettingsRepository.loadSettings()).thenAnswer((_) async => SettingsState(useSystemLocale: false, localePreference: const Locale('en')));
+    when(mockSettingsRepository.loadSettings())
+        .thenAnswer((_) async => SettingsState(useSystemLocale: false, localePreference: const Locale('en'), latestVersion: Version.parse('999.999.999')));
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async => []);
@@ -47,8 +49,8 @@ void main() {
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
-    final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
-    when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
+    when(mockIntroductionRepository.loadCompletedIntroductions())
+        .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
   });
   testWidgets(
     'Add Tokens Test',
@@ -62,8 +64,6 @@ void main() {
         ],
         child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
       ));
-
-      await _introToMainView(tester);
       expectMainViewIsEmptyAndCorrect();
       await _addHotpToken(tester);
       expect(find.byType(HOTPTokenWidget), findsOneWidget);
@@ -87,21 +87,6 @@ void main() {
     },
     timeout: const Timeout(Duration(minutes: 20)),
   );
-}
-
-Future<void> _introToMainView(WidgetTester tester) async {
-  var finder = find.byType(FloatingActionButton);
-  await pumpUntilFindNWidgets(tester, finder, 1, const Duration(seconds: 20));
-  await tester.tap(finder);
-  await tester.pump(const Duration(milliseconds: 2000));
-  await tester.tap(finder);
-  await tester.pump(const Duration(milliseconds: 2000));
-  await tester.tap(finder);
-  await tester.pump(const Duration(milliseconds: 2000));
-  finder = find.text(AppLocalizationsEn().ok);
-  await pumpUntilFindNWidgets(tester, finder, 1, const Duration(seconds: 10));
-  await tester.tap(finder);
-  await tester.pump(const Duration(milliseconds: 1000));
 }
 
 Future<void> _addHotpToken(WidgetTester tester) async {

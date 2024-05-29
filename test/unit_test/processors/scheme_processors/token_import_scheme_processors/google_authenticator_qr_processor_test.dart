@@ -30,7 +30,7 @@ void _testGooleAuthenticatorQrProcessor() {
       final tokenOriginData0Matcher = TokenOriginData(
         source: TokenOriginSourceType.qrScanImport,
         data: 'ChkKCpklNznImSU3OcgSBVRlc3QxIAEoATACChsKCpklNznamSU3OdoSBVRlc3QyIAEoATABOAAQARgBIAAo8enF1vr/////AQ==',
-        appName: TokenImportOrigins.googleAuthenticator.appName,
+        originName: TokenImportOrigins.googleAuthenticator.appName,
         isPrivacyIdeaToken: false,
         createdAt: token0.origin!.createdAt,
       );
@@ -44,7 +44,7 @@ void _testGooleAuthenticatorQrProcessor() {
       final tokenOriginData1Matcher = TokenOriginData(
         source: TokenOriginSourceType.qrScanImport,
         data: 'ChkKCpklNznImSU3OcgSBVRlc3QxIAEoATACChsKCpklNznamSU3OdoSBVRlc3QyIAEoATABOAAQARgBIAAo8enF1vr/////AQ==',
-        appName: TokenImportOrigins.googleAuthenticator.appName,
+        originName: TokenImportOrigins.googleAuthenticator.appName,
         isPrivacyIdeaToken: false,
         createdAt: token1.origin!.createdAt,
       );

@@ -26,7 +26,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+
+import 'customization/application_customization.dart' show ApplicationCustomization;
 
 /// Inserts [char] at the position [pos] in the given String ([str]),
 /// and returns the resulting String.
@@ -120,3 +123,5 @@ bool doesThrow(Function() f) {
     return true;
   }
 }
+
+String getCurrentAppName() => PrivacyIDEAAuthenticator.currentCustomization?.appName ?? ApplicationCustomization.defaultCustomization.appName;

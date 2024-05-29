@@ -9,6 +9,7 @@ import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
+import 'package:privacyidea_authenticator/state_notifiers/completed_introduction_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
@@ -56,8 +57,8 @@ void main() {
       sslVerify: anyNamed('sslVerify'),
     )).thenAnswer((_) => Future.value(Response('{"detail": {"public_key": "publicKey"}}', 200)));
     mockIntroductionRepository = MockIntroductionRepository();
-    final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
-    when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
+    when(mockIntroductionRepository.loadCompletedIntroductions())
+        .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
   });
 
   testWidgets('Views Test', (tester) async {
@@ -71,6 +72,7 @@ void main() {
               ioClient: mockIOClient,
             )),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
+        introductionProvider.overrideWith((ref) => IntroductionNotifier(repository: mockIntroductionRepository)),
       ],
       child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
     ));

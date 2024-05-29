@@ -15,19 +15,19 @@ void _testTokenOriginSourceTypeExtension() {
       final TokenOriginData tokenOriginDataMatch = TokenOriginData(
         source: TokenOriginSourceType.qrScan,
         data: 'data',
-        appName: 'appName',
+        originName: 'appName',
         isPrivacyIdeaToken: true,
         createdAt: DateTime.fromMicrosecondsSinceEpoch(1622160000000),
       );
       final TokenOriginData tokenOriginData = TokenOriginSourceType.qrScan.toTokenOrigin(
         data: 'data',
-        appName: 'appName',
+        originName: 'appName',
         isPrivacyIdeaToken: true,
         createdAt: DateTime.fromMicrosecondsSinceEpoch(1622160000000),
       );
       expect(tokenOriginData.source, tokenOriginDataMatch.source);
       expect(tokenOriginData.data, tokenOriginDataMatch.data);
-      expect(tokenOriginData.appName, tokenOriginDataMatch.appName);
+      expect(tokenOriginData.originName, tokenOriginDataMatch.originName);
       expect(tokenOriginData.isPrivacyIdeaToken, tokenOriginDataMatch.isPrivacyIdeaToken);
       expect(tokenOriginData.createdAt, tokenOriginDataMatch.createdAt);
       expect(tokenOriginData, tokenOriginDataMatch);
@@ -37,8 +37,9 @@ void _testTokenOriginSourceTypeExtension() {
       final TokenOriginData tokenOriginDataMatch = TokenOriginData(
         source: TokenOriginSourceType.qrScan,
         data: 'data',
-        appName: 'appName',
+        originName: 'appName',
         isPrivacyIdeaToken: true,
+        creator: 'creator',
         createdAt: DateTime.fromMicrosecondsSinceEpoch(1622160000000),
       );
       final tokenMatch = token.copyWith(origin: tokenOriginDataMatch);
@@ -51,7 +52,7 @@ void _testTokenOriginSourceTypeExtension() {
       );
       expect(tokenWithOrigin.origin!.source, tokenOriginDataMatch.source);
       expect(tokenWithOrigin.origin!.data, tokenOriginDataMatch.data);
-      expect(tokenWithOrigin.origin!.appName, tokenOriginDataMatch.appName);
+      expect(tokenWithOrigin.origin!.originName, tokenOriginDataMatch.originName);
       expect(tokenWithOrigin.origin!.isPrivacyIdeaToken, tokenOriginDataMatch.isPrivacyIdeaToken);
       expect(tokenWithOrigin.origin!.createdAt, tokenOriginDataMatch.createdAt);
       expect(tokenWithOrigin, tokenMatch);

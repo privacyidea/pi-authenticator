@@ -196,7 +196,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
     uriMap.addAll({
       URI_ORIGIN: TokenOriginSourceType.manually.toTokenOrigin(
         data: jsonEncode(uriMap),
-        appName: PrivacyIDEAAuthenticator.currentCustomization?.appName,
+        originName: PrivacyIDEAAuthenticator.currentCustomization?.appName,
         isPrivacyIdeaToken: false,
       ),
     });
