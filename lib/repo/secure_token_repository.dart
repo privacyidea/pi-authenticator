@@ -100,9 +100,6 @@ class SecureTokenRepository implements TokenRepository {
           }
 
           if (valueJson == null || !valueJson.containsKey('type')) {
-            Logger.warning(
-                'Could not deserialize token from secure storage. Value: $value\nserializedToken = $valueJson\ncontainsKey(type) = ${valueJson?.containsKey('type')} ',
-                name: 'secure_token_repository.dart#loadAllTokens');
             // If valueJson is null or does not contain a type, it can't be a token. Skip it.
             continue;
           }
