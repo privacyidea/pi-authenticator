@@ -220,11 +220,11 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   /// It should be still in the CustomIntBuffer of the state.
   Future<bool> accept(PushToken pushToken, PushRequest pushRequest, {String? selectedAnswer}) async {
     if (pushRequest.accepted != null) {
-      Logger.warning('The push request is already accepted or declined.', name: 'push_request_notifier.dart#decline');
+      Logger.warning('The push request is already accepted or declined.', name: 'push_request_notifier.dart#accept');
 
       return false;
     }
-    Logger.info('Decline push request.', name: 'push_request_notifier.dart#decline');
+    Logger.info('Accept push request.', name: 'push_request_notifier.dart#accept');
     final updated = await _updatePushRequest(pushRequest, (p0) async {
       final updated = p0.copyWith(accepted: true, selectedAnswer: () => selectedAnswer);
       final success = await _handleReaction(pushRequest: updated, token: pushToken);
@@ -339,7 +339,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
       body['answer'] = pushRequest.selectedAnswer!;
       msg += '|${pushRequest.selectedAnswer!}';
     }
-
+    Logger.warning('Signature message: $msg', name: 'token_widgets.dart#handleReaction');
     String? signature = await _rsaUtils.trySignWithToken(token, msg);
     if (signature == null) {
       Logger.warning('Failed to sign push request response.', name: 'token_widgets.dart#handleReaction');
