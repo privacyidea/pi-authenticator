@@ -125,6 +125,7 @@ class PrivacyIdeaIOClient {
         'Received unexpected response',
         name: 'utils.dart#doPost',
         error: 'Status code: ${response.statusCode}' '\nPosted body: $body' '\nResponse: ${response.body}\n',
+        stackTrace: StackTrace.current,
       );
     }
     ioClient.close();
