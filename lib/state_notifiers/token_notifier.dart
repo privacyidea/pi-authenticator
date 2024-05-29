@@ -476,19 +476,20 @@ class TokenNotifier extends StateNotifier<TokenState> {
       // TODO What to do with poll only tokens if google-services is used?
 
       Logger.warning('SSLVerify: ${pushToken.sslVerify}', name: 'token_notifier.dart#rolloutPushToken');
+      final fbToken = await _firebaseUtils.getFBToken();
       Response response = await _ioClient.doPost(
         sslVerify: pushToken.sslVerify,
         url: pushToken.url!,
         body: {
           'enrollment_credential': pushToken.enrollmentCredentials,
           'serial': pushToken.serial,
-          'fbtoken': await _firebaseUtils.getFBToken(),
+          'fbtoken': fbToken,
           'pubkey': _rsaUtils.serializeRSAPublicKeyPKCS8(pushToken.rsaPublicTokenKey!),
         },
       );
 
       if (response.statusCode == 200) {
-        pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponse));
+        pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponse, fbToken: fbToken));
         if (pushToken == null) {
           Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
           return false;
@@ -620,7 +621,10 @@ class TokenNotifier extends StateNotifier<TokenState> {
         continue;
       }
       Response response = await _ioClient.doPost(
-          sslVerify: p.sslVerify, url: p.url!, body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
+        url: p.url!,
+        body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature},
+        sslVerify: p.sslVerify,
+      );
       if (response.statusCode == 200) {
         Logger.info('Updating firebase token for push token succeeded!', name: 'push_provider.dart#updateFirebaseToken');
         _updateToken(p, (p0) => p0.copyWith(fbToken: firebaseToken));
