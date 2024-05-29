@@ -10,7 +10,7 @@ jobs:
       timeout-minutes: 60
       strategy:
         matrix:
-          api-level: [21, 30, 34] # [minSdk, most used, newest]
+          api-level: [30] # [ most used ]
       steps:
         - name: Delete unnecessary tools 🔧
           uses: jlumbroso/free-disk-space@v1.3.1
