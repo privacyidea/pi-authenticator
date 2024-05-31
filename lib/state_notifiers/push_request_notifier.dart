@@ -324,7 +324,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     //    serial=<serial>
     //    signature=<signature>
     //    decline=1 (optional)
-    //    answer=<answer> (optional)
+    //    presence_answer=<answer> (optional)
     final Map<String, String> body = {
       'nonce': pushRequest.nonce,
       'serial': token.serial,
@@ -336,7 +336,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
       msg += '|decline';
     }
     if (pushRequest.possibleAnswers != null && pushRequest.selectedAnswer != null) {
-      body['answer'] = pushRequest.selectedAnswer!;
+      body['presence_answer'] = pushRequest.selectedAnswer!;
       msg += '|${pushRequest.selectedAnswer!}';
     }
     Logger.warning('Signature message: $msg', name: 'token_widgets.dart#handleReaction');
