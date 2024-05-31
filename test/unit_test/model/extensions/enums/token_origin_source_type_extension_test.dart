@@ -15,7 +15,7 @@ void _testTokenOriginSourceTypeExtension() {
       final TokenOriginData tokenOriginDataMatch = TokenOriginData(
         source: TokenOriginSourceType.qrScan,
         data: 'data',
-        originName: 'appName',
+        appName: 'appName',
         isPrivacyIdeaToken: true,
         createdAt: DateTime.fromMicrosecondsSinceEpoch(1622160000000),
       );
@@ -27,7 +27,7 @@ void _testTokenOriginSourceTypeExtension() {
       );
       expect(tokenOriginData.source, tokenOriginDataMatch.source);
       expect(tokenOriginData.data, tokenOriginDataMatch.data);
-      expect(tokenOriginData.originName, tokenOriginDataMatch.originName);
+      expect(tokenOriginData.appName, tokenOriginDataMatch.appName);
       expect(tokenOriginData.isPrivacyIdeaToken, tokenOriginDataMatch.isPrivacyIdeaToken);
       expect(tokenOriginData.createdAt, tokenOriginDataMatch.createdAt);
       expect(tokenOriginData, tokenOriginDataMatch);
@@ -37,7 +37,7 @@ void _testTokenOriginSourceTypeExtension() {
       final TokenOriginData tokenOriginDataMatch = TokenOriginData(
         source: TokenOriginSourceType.qrScan,
         data: 'data',
-        originName: 'appName',
+        appName: 'appName',
         isPrivacyIdeaToken: true,
         creator: 'creator',
         createdAt: DateTime.fromMicrosecondsSinceEpoch(1622160000000),
@@ -52,7 +52,7 @@ void _testTokenOriginSourceTypeExtension() {
       );
       expect(tokenWithOrigin.origin!.source, tokenOriginDataMatch.source);
       expect(tokenWithOrigin.origin!.data, tokenOriginDataMatch.data);
-      expect(tokenWithOrigin.origin!.originName, tokenOriginDataMatch.originName);
+      expect(tokenWithOrigin.origin!.appName, tokenOriginDataMatch.appName);
       expect(tokenWithOrigin.origin!.isPrivacyIdeaToken, tokenOriginDataMatch.isPrivacyIdeaToken);
       expect(tokenWithOrigin.origin!.createdAt, tokenOriginDataMatch.createdAt);
       expect(tokenWithOrigin, tokenMatch);

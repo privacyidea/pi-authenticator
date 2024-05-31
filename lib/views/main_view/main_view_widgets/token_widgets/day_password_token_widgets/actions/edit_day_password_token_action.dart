@@ -134,7 +134,7 @@ class EditDayPassowrdTokenAction extends TokenAction {
                   ),
                   if (token.origin != null)
                     TextFormField(
-                      initialValue: token.origin!.originName,
+                      initialValue: token.origin!.appName,
                       decoration: const InputDecoration(labelText: 'Origin'),
                       enabled: false,
                     ),

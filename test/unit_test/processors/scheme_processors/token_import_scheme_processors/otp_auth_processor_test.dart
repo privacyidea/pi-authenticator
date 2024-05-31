@@ -30,7 +30,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type, equals('TOTP'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final totpToken = token0 as TOTPToken;
@@ -54,7 +54,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type, equals('TOTP'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final totpToken = token0 as TOTPToken;
@@ -78,7 +78,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type, equals('TOTP'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final totpToken = token0 as TOTPToken;
@@ -102,7 +102,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type, equals('TOTP'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final totpToken = token0 as TOTPToken;
@@ -140,7 +140,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type, equals('TOTP'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final totpToken = token0 as TOTPToken;
@@ -167,7 +167,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type, equals('HOTP'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final hotpToken = token0 as HOTPToken;
@@ -191,7 +191,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type, equals('HOTP'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final hotpToken = token0 as HOTPToken;
@@ -215,7 +215,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type, equals('HOTP'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final hotpToken = token0 as HOTPToken;
@@ -239,7 +239,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type, equals('HOTP'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final hotpToken = token0 as HOTPToken;
@@ -277,7 +277,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type, equals('HOTP'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final hotpToken = token0 as HOTPToken;
@@ -317,7 +317,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type.toLowerCase(), equals('daypassword'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final dayPasswordToken = token0 as DayPasswordToken;
@@ -342,7 +342,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type.toLowerCase(), equals('daypassword'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final dayPasswordToken = token0 as DayPasswordToken;
@@ -367,7 +367,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type.toLowerCase(), equals('daypassword'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final dayPasswordToken = token0 as DayPasswordToken;
@@ -392,7 +392,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('account'));
         expect(token0.type.toLowerCase(), equals('daypassword'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final dayPasswordToken = token0 as DayPasswordToken;
@@ -434,7 +434,7 @@ void _testOtpAuthProcessor() {
         expect(token0.label, equals('PIPU0000D79E'));
         expect(token0.type.toLowerCase(), equals('pipush'));
         expect(token0.origin, isNotNull);
-        expect(token0.origin!.originName, ApplicationCustomization.defaultCustomization.appName);
+        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
         expect(token0.origin!.isPrivacyIdeaToken, isNull);
         expect(token0.origin!.data, equals(uriString));
         final pushToken = token0 as PushToken;

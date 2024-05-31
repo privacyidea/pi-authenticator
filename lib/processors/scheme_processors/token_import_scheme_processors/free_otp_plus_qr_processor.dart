@@ -12,12 +12,8 @@ class FreeOtpPlusQrProcessor extends OtpAuthProcessor {
   Future<List<ProcessorResult<Token>>> processUri(Uri uri, {bool fromInit = false}) => _processOtpAuth(uri);
 
   Future<List<ProcessorResult<Token>>> _processOtpAuth(Uri uri) async {
-    final results = <ProcessorResult<Token>>[];
-
-    final result = await super.processUri(uri);
-    results.addAll(result);
-
-    return results.map((t) {
+    final results = (await super.processUri(uri)).toList();
+    final resultsWithOrigin = results.map((t) {
       if (t is! ProcessorResultSuccess<Token>) return t;
       return ProcessorResultSuccess(
         TokenOriginSourceType.qrScanImport.addOriginToToken(
@@ -28,6 +24,7 @@ class FreeOtpPlusQrProcessor extends OtpAuthProcessor {
         ),
       );
     }).toList();
+    return resultsWithOrigin;
   }
 
   @override

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:app_links/app_links.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/rendering.dart';
@@ -199,7 +197,6 @@ class SortableNotifier extends StateNotifier<List<SortableMixin>> {
   SortableNotifier({List<SortableMixin> initState = const []}) : super(initState);
 
   void handleNewList<T extends SortableMixin>(List<T> newList) {
-    log('T type: ${newList.runtimeType}', name: 'SortableNotifier#handleNewList');
     var newState = List<SortableMixin>.from(state);
     newState.removeWhere((element) => element is T);
     newState.addAll(newList);

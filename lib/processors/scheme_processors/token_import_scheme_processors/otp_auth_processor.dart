@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
 
 import '../../../model/enums/token_origin_source_type.dart';
-import '../../../model/token_import/token_origin_data.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';
@@ -69,15 +69,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     }
     Token newToken;
     try {
-      newToken = Token.fromUriMap(uriMap).copyWith(
-        origin: TokenOriginData(
-          source: TokenOriginSourceType.link,
-          originName: uriMap[URI_ORIGIN_NAME] ?? getCurrentAppName(),
-          data: uri.toString(),
-          creator: uriMap[URI_CREATOR] as String?,
-          createdAt: DateTime.now(),
-        ),
-      );
+      newToken = Token.fromUriMap(uriMap);
     } on FormatException catch (e) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
       return [ProcessorResultFailed(e.message)];
@@ -111,14 +103,13 @@ Map<String, dynamic> _parseOtpToken(Uri uri) {
 const String _steamTokenIssuer = "Steam";
 Map<String, dynamic> _parseOtpAuth(Uri uri) {
   // otpauth://TYPE/LABEL?PARAMETERS
-  Map<String, dynamic> uriMap = {};
-
+  final Map<String, dynamic> uriMap = {};
   // parse.host -> Type totp or hotp
   uriMap[URI_TYPE] = uri.host;
-
   // parse.path.substring(1) -> Label
-  String infoLog = '\nKey: [..] | Value: [..]';
-  uri.queryParameters.forEach((key, value) {
+  var infoLog = '\nKey: [..] | Value: [..]';
+  final queryParameters = uri.queryParameters;
+  queryParameters.forEach((key, value) {
     if (key == URI_SECRET || key.toLowerCase().contains('secret')) {
       value = '********';
     }
@@ -137,21 +128,21 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
   }
 
   // parse pin from response 'True'
-  if (uri.queryParameters['pin'] == 'True') {
+  if (queryParameters['pin'] == 'True') {
     uriMap[URI_PIN] = true;
   }
 
-  if (uri.queryParameters['image'] != null) {
-    uriMap[URI_IMAGE] = uri.queryParameters['image'];
+  if (queryParameters['image'] != null) {
+    uriMap[URI_IMAGE] = queryParameters['image'];
   }
 
-  String algorithm = uri.queryParameters['algorithm'] ?? Algorithms.SHA1.name; // Optional parameter
+  String algorithm = queryParameters['algorithm'] ?? Algorithms.SHA1.name; // Optional parameter
   algorithm = Algorithms.values.byName(algorithm).name; // Validate algorithm, throw error if not supported.
 
   uriMap[URI_ALGORITHM] = algorithm;
 
   // Parse digits.
-  String digitsAsString = uri.queryParameters['digits'] ?? '6'; // Optional parameter
+  String digitsAsString = queryParameters['digits'] ?? '6'; // Optional parameter
 
   if (digitsAsString != '6' && digitsAsString != '8') {
     throw LocalizedArgumentError(
@@ -167,7 +158,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
   uriMap[URI_DIGITS] = digits;
 
   // Parse secret.
-  String? secretAsString = uri.queryParameters['secret'];
+  String? secretAsString = queryParameters['secret'];
   ArgumentError.checkNotNull(secretAsString, 'secret');
 
   // This is a fix for omitted padding in base32 encoded secrets.
@@ -190,7 +181,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
   uriMap[URI_SECRET] = secret;
 
   // Parse counter.
-  String? counterString = uri.queryParameters['counter'];
+  String? counterString = queryParameters['counter'];
   if (counterString != null) {
     uriMap[URI_COUNTER] = int.tryParse(counterString);
     if (uriMap[URI_COUNTER] == null) {
@@ -204,7 +195,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
   }
 
   // Parse period.
-  String? periodString = uri.queryParameters['period'];
+  String? periodString = queryParameters['period'];
   if (periodString != null) {
     uriMap[URI_PERIOD] = int.tryParse(periodString);
     if (uriMap[URI_PERIOD] == null) {
@@ -221,15 +212,27 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
     uriMap.addAll(_parse2StepURI(uri));
   }
 
+  // Parse creator.
+  final origin = TokenOriginSourceType.unknown.toTokenOrigin(
+    data: uri.toString(),
+    originName: getCurrentAppName(),
+    // If creator is present, it is a privacyIDEA token. If not it could be from an old version of the server too.
+    isPrivacyIdeaToken: queryParameters['creator'] != null ? true : null,
+    creator: queryParameters['creator'],
+    createdAt: DateTime.now(),
+  );
+  uriMap[URI_ORIGIN] = origin;
+
   return uriMap;
 }
 
 Map<String, dynamic> _parse2StepURI(Uri uri) {
-  Map<String, dynamic> uriMap2Step = {};
+  final Map<String, dynamic> uriMap2Step = {};
+  final queryParameters = uri.queryParameters;
   // Parse for 2 step roll out.
-  String saltLengthAsString = uri.queryParameters['2step_salt'] ?? '10';
-  String outputLengthInByteAsString = uri.queryParameters['2step_output'] ?? '20';
-  String iterationsAsString = uri.queryParameters['2step_difficulty'] ?? '10000';
+  final String saltLengthAsString = queryParameters['2step_salt'] ?? '10';
+  final String outputLengthInByteAsString = queryParameters['2step_output'] ?? '20';
+  final String iterationsAsString = queryParameters['2step_difficulty'] ?? '10000';
 
   // Parse parameters
   try {
@@ -275,12 +278,13 @@ Map<String, dynamic> _parsePiPushToken(Uri uri) {
   // &serial=PIPU0006EF87
   // &sslverify=1
 
-  Map<String, dynamic> uriMap = {};
+  final Map<String, dynamic> uriMap = {};
+  final queryParameters = uri.queryParameters;
 
   uriMap[URI_TYPE] = uri.host;
 
   // If we do not support the version of this piauth url, we can stop here.
-  String? pushVersionAsString = uri.queryParameters['v'];
+  String? pushVersionAsString = queryParameters['v'];
 
   if (pushVersionAsString == null) {
     throw LocalizedArgumentError(
@@ -313,17 +317,17 @@ Map<String, dynamic> _parsePiPushToken(Uri uri) {
     );
   }
 
-  if (uri.queryParameters['image'] != null) {
-    uriMap[URI_IMAGE] = uri.queryParameters['image'];
+  if (queryParameters['image'] != null) {
+    uriMap[URI_IMAGE] = queryParameters['image'];
   }
 
   final (label, issuer) = _parseLabelAndIssuer(uri);
   uriMap[URI_LABEL] = label;
   uriMap[URI_ISSUER] = issuer;
-  uriMap[URI_SERIAL] = uri.queryParameters['serial'];
+  uriMap[URI_SERIAL] = queryParameters['serial'];
   ArgumentError.checkNotNull(uriMap[URI_SERIAL], 'serial');
 
-  final String? url = uri.queryParameters['url'];
+  final String? url = queryParameters['url'];
   ArgumentError.checkNotNull(url, 'url');
   try {
     uriMap[URI_ROLLOUT_URL] = Uri.parse(url!);
@@ -336,7 +340,7 @@ Map<String, dynamic> _parsePiPushToken(Uri uri) {
     );
   }
 
-  String ttlAsString = uri.queryParameters['ttl'] ?? '10';
+  String ttlAsString = queryParameters['ttl'] ?? '10';
   try {
     uriMap[URI_TTL] = int.parse(ttlAsString);
   } on FormatException {
@@ -348,13 +352,13 @@ Map<String, dynamic> _parsePiPushToken(Uri uri) {
     );
   }
 
-  uriMap[URI_ENROLLMENT_CREDENTIAL] = uri.queryParameters['enrollment_credential'];
+  uriMap[URI_ENROLLMENT_CREDENTIAL] = queryParameters['enrollment_credential'];
   ArgumentError.checkNotNull(uriMap[URI_ENROLLMENT_CREDENTIAL], 'enrollment_credential');
 
-  uriMap[URI_SSL_VERIFY] = (uri.queryParameters['sslverify'] ?? '1') == '1';
+  uriMap[URI_SSL_VERIFY] = (queryParameters['sslverify'] ?? '1') == '1';
 
   // parse pin from response 'True'
-  if (uri.queryParameters['pin'] == 'True') {
+  if (queryParameters['pin'] == 'True') {
     uriMap[URI_PIN] = true;
   }
 
@@ -398,5 +402,6 @@ String _parseIssuer(Uri uri) {
 }
 
 bool _is2StepURI(Uri uri) {
-  return uri.queryParameters['2step_salt'] != null || uri.queryParameters['2step_output'] != null || uri.queryParameters['2step_difficulty'] != null;
+  final queryParameters = uri.queryParameters;
+  return queryParameters['2step_salt'] != null || queryParameters['2step_output'] != null || queryParameters['2step_difficulty'] != null;
 }

@@ -28,7 +28,7 @@ void _assertSuccessResults(List<ProcessorResult<Token>> results) {
   expect(token0.type, TokenTypes.HOTP.name);
   expect(token0, isA<HOTPToken>());
   expect(token0.origin, isNotNull);
-  expect(token0.origin!.originName, TokenImportOrigins.freeOtpPlus.appName);
+  expect(token0.origin!.appName, TokenImportOrigins.freeOtpPlus.appName);
   expect(token0.origin!.source, TokenOriginSourceType.backupFile);
   final hotpToken = token0 as HOTPToken;
   expect(hotpToken.secret, 'BBBBBBBB');
@@ -44,7 +44,7 @@ void _assertSuccessResults(List<ProcessorResult<Token>> results) {
   expect(token1.type, TokenTypes.TOTP.name);
   expect(token1, isA<TOTPToken>());
   expect(token1.origin, isNotNull);
-  expect(token1.origin!.originName, TokenImportOrigins.freeOtpPlus.appName);
+  expect(token1.origin!.appName, TokenImportOrigins.freeOtpPlus.appName);
   expect(token1.origin!.source, TokenOriginSourceType.backupFile);
   final totpToken = token1 as TOTPToken;
   expect(totpToken.secret, 'AAAAAAAA');

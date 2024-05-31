@@ -29,7 +29,7 @@ void _assertSuccessResults(List<ProcessorResult<Token>> results) {
   expect(token0.type, TokenTypes.TOTP.name);
   expect(token0, isA<TOTPToken>());
   expect(token0.origin, isNotNull);
-  expect(token0.origin!.originName, TokenImportOrigins.twoFasAuthenticator.appName);
+  expect(token0.origin!.appName, TokenImportOrigins.twoFasAuthenticator.appName);
   expect(token0.origin!.source, TokenOriginSourceType.backupFile);
   final totpToken = token0 as TOTPToken;
   expect(totpToken.secret, equals('AAAAAAAA'));
@@ -45,7 +45,7 @@ void _assertSuccessResults(List<ProcessorResult<Token>> results) {
   expect(token1.type, TokenTypes.HOTP.name);
   expect(token1, isA<HOTPToken>());
   expect(token1.origin, isNotNull);
-  expect(token1.origin!.originName, TokenImportOrigins.twoFasAuthenticator.appName);
+  expect(token1.origin!.appName, TokenImportOrigins.twoFasAuthenticator.appName);
   expect(token1.origin!.source, TokenOriginSourceType.backupFile);
   final hotpToken = token1 as HOTPToken;
   expect(hotpToken.secret, equals('BBBBBBBB'));
@@ -61,7 +61,7 @@ void _assertSuccessResults(List<ProcessorResult<Token>> results) {
   expect(token2.type, TokenTypes.STEAM.name);
   expect(token2, isA<SteamToken>());
   expect(token2.origin, isNotNull);
-  expect(token2.origin!.originName, TokenImportOrigins.twoFasAuthenticator.appName);
+  expect(token2.origin!.appName, TokenImportOrigins.twoFasAuthenticator.appName);
   expect(token2.origin!.source, TokenOriginSourceType.backupFile);
   final steamToken = token2 as SteamToken;
   expect(steamToken.secret, equals('CCCCCCCC'));
