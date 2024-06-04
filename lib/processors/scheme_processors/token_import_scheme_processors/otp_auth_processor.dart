@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
+import 'package:privacyidea_authenticator/model/token_import/token_origin_data.dart';
 
 import '../../../model/enums/token_origin_source_type.dart';
 import '../../../l10n/app_localizations.dart';
@@ -213,15 +214,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
   }
 
   // Parse creator.
-  final origin = TokenOriginSourceType.unknown.toTokenOrigin(
-    data: uri.toString(),
-    originName: getCurrentAppName(),
-    // If creator is present, it is a privacyIDEA token. If not it could be from an old version of the server too.
-    isPrivacyIdeaToken: queryParameters['creator'] != null ? true : null,
-    creator: queryParameters['creator'],
-    createdAt: DateTime.now(),
-  );
-  uriMap[URI_ORIGIN] = origin;
+  uriMap[URI_ORIGIN] = _parseCreatorToOrigin(uri);
 
   return uriMap;
 }
@@ -362,7 +355,22 @@ Map<String, dynamic> _parsePiPushToken(Uri uri) {
     uriMap[URI_PIN] = true;
   }
 
+  // Parse creator.
+  uriMap[URI_ORIGIN] = _parseCreatorToOrigin(uri);
+
   return uriMap;
+}
+
+TokenOriginData _parseCreatorToOrigin(Uri uri) {
+  final origin = TokenOriginSourceType.unknown.toTokenOrigin(
+    data: uri.toString(),
+    originName: getCurrentAppName(),
+    // If creator is present, it is a privacyIDEA token. If not it could be from an old version of the server too.
+    isPrivacyIdeaToken: uri.queryParameters['creator'] != null ? true : null,
+    creator: uri.queryParameters['creator'],
+    createdAt: DateTime.now(),
+  );
+  return origin;
 }
 
 /// Parse the label and the issuer (if it exists) from the url.

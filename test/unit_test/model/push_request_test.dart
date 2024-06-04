@@ -183,7 +183,7 @@ void _testPushRequest() {
         "sortIndex": 2,
         "origin": {
           "source": "qrScan",
-          "originName": "privacyIDEA Authenticator",
+          "appName": "privacyIDEA Authenticator",
           "data":
               "otpauth://pipush/PIPU00064CF0?url=https%3A//192.168.56.103/ttype/push&ttl=10&issuer=privacyIDEA&enrollment_credential=9d3100908d3c76a948b6041c8338def8b15ec06a&v=1&serial=PIPU00064CF0&sslverify=0",
           "isPrivacyIdeaToken": null,
@@ -241,7 +241,7 @@ void _testPushRequest() {
         "sortIndex": 2,
         "origin": {
           "source": "qrScan",
-          "originName": "privacyIDEA Authenticator",
+          "appName": "privacyIDEA Authenticator",
           "data":
               "otpauth://pipush/PIPU00064CF0?url=https%3A//192.168.56.103/ttype/push&ttl=10&issuer=privacyIDEA&enrollment_credential=9d3100908d3c76a948b6041c8338def8b15ec06a&v=1&serial=PIPU00064CF0&sslverify=0",
           "isPrivacyIdeaToken": null,
