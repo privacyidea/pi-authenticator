@@ -46,6 +46,4 @@ jobs:
             api-level: ${{ matrix.api-level }}
             arch: x86_64
             profile: Nexus 6
-            disk-size: 6000M
-            heap-size: 600M
-            script: flutter test integration_test --flavor netknights --no-enable-impeller
+            script: flutter test integration_test --flavor netknights
