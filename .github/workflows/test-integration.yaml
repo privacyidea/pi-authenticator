@@ -49,4 +49,4 @@ jobs:
             disable-animations: true
             disk-size: 6000M
             heap-size: 600M
-            script: flutter test integration_test --flavor netknights
+            script: flutter test integration_test --flavor netknights --no-enable-impeller
