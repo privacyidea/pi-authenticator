@@ -645,5 +645,9 @@
         "example": "Name"
       }
     }
+  },
+  "sendPushRequestResponseFailed": "Odpověď se nepodařilo odeslat.",
+  "@sendPushRequestResponseFailed": {
+    "description": "Error message when the response to a push request could not be sent."
   }
 }

@@ -63,6 +63,7 @@ const String PUSH_REQUEST_QUESTION = 'question'; // 4.
 const String PUSH_REQUEST_TITLE = 'title'; // 5.
 const String PUSH_REQUEST_SSL_VERIFY = 'sslverify'; // 6.
 const String PUSH_REQUEST_SIGNATURE = 'signature'; // 7.
+const String PUSH_REQUEST_ANSWERS = 'require_presence'; // 8.
 
 const String GLOBAL_SECURE_REPO_PREFIX = 'app_v3_';
 

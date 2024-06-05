@@ -17,12 +17,12 @@ class SelectExportTypeDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SettingsListTileButton(
-              title: Text(AppLocalizations.of(context)!.toFile, style: Theme.of(context).textTheme.titleMedium),
+              title: Text(AppLocalizations.of(context)!.toFile, style: Theme.of(context).textTheme.bodyMedium),
               onPressed: () async => _selectTokensDialog(context),
               icon: const Icon(Icons.file_present, size: 24),
             ),
             SettingsListTileButton(
-                title: Text(AppLocalizations.of(context)!.asQrCode, style: Theme.of(context).textTheme.titleMedium),
+                title: Text(AppLocalizations.of(context)!.asQrCode, style: Theme.of(context).textTheme.bodyMedium),
                 onPressed: () async => _selectTokenDialog(context),
                 icon: const Icon(Icons.qr_code, size: 24)),
           ],

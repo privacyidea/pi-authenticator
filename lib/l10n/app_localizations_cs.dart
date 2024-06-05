@@ -22,7 +22,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get patchNotesV4_3_1Improvement1 => 'Skener QR kódů byl vylepšen.';
 
   @override
-  String get patchNotesV4_3_0NewFeatures1 => 'Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.';
+  String get patchNotesV4_3_0NewFeatures1 =>
+      'Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.';
 
   @override
   String get patchNotesV4_3_0NewFeatures2 => 'Do nastavení byla přidána možnost zpětné vazby.';
@@ -108,7 +109,8 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get confirmTokenDeletionHint => 'Pokud tento token odstraníte, nebude již možné se přihlásit.\nProsím, ujistěte se, že se můžete přihlásit k přidruženému účtu bez tohoto tokenu.';
+  String get confirmTokenDeletionHint =>
+      'Pokud tento token odstraníte, nebude již možné se přihlásit.\nProsím, ujistěte se, že se můžete přihlásit k přidruženému účtu bez tohoto tokenu.';
 
   @override
   String get confirmFolderDeletionHint => 'Odstranění složky nemá žádný vliv na tokeny v ní.\nTokeny jsou přesunuty do hlavního seznamu.';
@@ -329,7 +331,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get send => 'Odeslat';
 
   @override
-  String get sendErrorLogDescription => 'Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:';
+  String get sendErrorLogDescription =>
+      'Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:';
 
   @override
   String get showPrivacyPolicy => 'Zobrazit zásady ochrany osobních údajů';
@@ -356,7 +359,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get open => 'Otevřít';
 
   @override
-  String get sendErrorDialogBody => 'V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.';
+  String get sendErrorDialogBody =>
+      'V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.';
 
   @override
   String get noFbToken => 'Není k dispozici žádný token Firebase.';
@@ -489,7 +493,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get decryptErrorTitle => 'Chyba dešifrování';
 
   @override
-  String get decryptErrorContent => 'Bohužel se aplikaci nepodařilo dešifrovat vaše tokeny. To znamená, že šifrovací klíč je poškozen. Můžete to zkusit znovu nebo odstranit data aplikace, čímž by došlo k odstranění tokenů v aplikaci.';
+  String get decryptErrorContent =>
+      'Bohužel se aplikaci nepodařilo dešifrovat vaše tokeny. To znamená, že šifrovací klíč je poškozen. Můžete to zkusit znovu nebo odstranit data aplikace, čímž by došlo k odstranění tokenů v aplikaci.';
 
   @override
   String get decryptErrorButtonDelete => 'Odstranit';
@@ -551,7 +556,8 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get legacySigningErrorMessage => 'Token byl vytvořen v zastaralé verzi aplikace, což může vést k problémům při jeho používání.\nPokud problém přetrvává, doporučujeme vytvořit nový push token!';
+  String get legacySigningErrorMessage =>
+      'Token byl vytvořen v zastaralé verzi aplikace, což může vést k problémům při jeho používání.\nPokud problém přetrvává, doporučujeme vytvořit nový push token!';
 
   @override
   String get selectImportSource => 'Vyberte zdroj importu';
@@ -661,7 +667,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get importHint2FAS => 'Vyberte zálohu 2FAS.\nPokud nemáte zálohu, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.';
 
   @override
-  String get importHintAegisBackupFile => 'Vyberte svůj export Aegis (.JSON).\nPokud nemáte export, vytvořte si jej prostřednictvím nabídky nastavení v aplikaci Aegis. Doporučujeme použít heslo.';
+  String get importHintAegisBackupFile =>
+      'Vyberte svůj export Aegis (.JSON).\nPokud nemáte export, vytvořte si jej prostřednictvím nabídky nastavení v aplikaci Aegis. Doporučujeme použít heslo.';
 
   @override
   String get importHintAegisQrScan => 'Naskenujte QR kód, který obdržíte při přenosu záznamů z aplikace Aegis.';
@@ -673,16 +680,19 @@ class AppLocalizationsCs extends AppLocalizations {
   String get importHintGoogleQrScan => 'Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.';
 
   @override
-  String get importHintGoogleQrFile => 'Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!';
+  String get importHintGoogleQrFile =>
+      'Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!';
 
   @override
-  String get importHintAuthenticatorProFile => 'Chcete-li vytvořit zálohu aplikace Authenticator Pro, přejděte do nastavení a klepněte na položku \"Automatické zálohování\". Vyberte umístění úložiště a nastavte heslo. Poté stiskněte \"Zálohovat nyní\" a exportujte tokeny.';
+  String get importHintAuthenticatorProFile =>
+      'Chcete-li vytvořit zálohu aplikace Authenticator Pro, přejděte do nastavení a klepněte na položku \"Automatické zálohování\". Vyberte umístění úložiště a nastavte heslo. Poté stiskněte \"Zálohovat nyní\" a exportujte tokeny.';
 
   @override
   String get importHintFreeOtpPlusQrScan => 'Naskenujte QR kód, který obdržíte po stisknutí tří teček na dlaždici tokenu, a vyberte možnost \"Sdílet QR kód\".';
 
   @override
-  String get importHintFreeOtpPlusFile => 'Chcete-li vytvořit zálohu aplikace FreeOTP+, klepněte na tři tečky v pravém horním rohu a vyberte možnost \"Exportovat\". Můžete si vybrat mezi formátem JSON a URI. Zálohu doporučujeme po importu odstranit, protože není šifrovaná.';
+  String get importHintFreeOtpPlusFile =>
+      'Chcete-li vytvořit zálohu aplikace FreeOTP+, klepněte na tři tečky v pravém horním rohu a vyberte možnost \"Exportovat\". Můžete si vybrat mezi formátem JSON a URI. Zálohu doporučujeme po importu odstranit, protože není šifrovaná.';
 
   @override
   String get qrFileDecodeError => 'Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.';
@@ -700,7 +710,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get feedbackDescription => 'Pokud máte nějaké dotazy, návrhy nebo problémy, dejte nám prosím vědět.';
 
   @override
-  String get feedbackHint => 'Otevře se připravený e-mail, který nám můžete zaslat. V případě potřeby budou doplněny informace o vašem zařízení a verzi aplikace. Před odesláním můžete e-mail zkontrolovat a upravit.';
+  String get feedbackHint =>
+      'Otevře se připravený e-mail, který nám můžete zaslat. V případě potřeby budou doplněny informace o vašem zařízení a verzi aplikace. Před odesláním můžete e-mail zkontrolovat a upravit.';
 
   @override
   String get feedbackPrivacyPolicy1 => 'Odesláním zpětné vazby souhlasíte s našimi ';
@@ -730,7 +741,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get noMailAppTitle => 'Není nainstalována žádná e-mailová aplikace';
 
   @override
-  String get noMailAppDescription => 'There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message.';
+  String get noMailAppDescription =>
+      'There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message.';
 
   @override
   String get authenticationRequest => 'Žádost o ověření';
@@ -746,7 +758,8 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Synchronizujte prosím push tokeny ručně prostřednictvím nastavení, když je k dispozici síťové připojení.';
+  String get pleaseSyncManuallyWhenNetworkIsAvailable =>
+      'Synchronizujte prosím push tokeny ručně prostřednictvím nastavení, když je k dispozici síťové připojení.';
 
   @override
   String get pushTokens => 'Žetony Push';

@@ -125,3 +125,11 @@ bool doesThrow(Function() f) {
 }
 
 String getCurrentAppName() => PrivacyIDEAAuthenticator.currentCustomization?.appName ?? ApplicationCustomization.defaultCustomization.appName;
+
+dynamic tryJsonDecode(String json) {
+  try {
+    return jsonDecode(json);
+  } catch (_) {
+    return null;
+  }
+}

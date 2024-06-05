@@ -26,7 +26,7 @@ class SettingsGroupGeneral extends StatelessWidget {
           },
           title: Text(
             AppLocalizations.of(context)!.privacyPolicy,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.bodyMedium,
             overflow: TextOverflow.fade,
             softWrap: false,
           ),
@@ -37,7 +37,7 @@ class SettingsGroupGeneral extends StatelessWidget {
           },
           title: Text(
             AppLocalizations.of(context)!.licensesAndVersion,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.bodyMedium,
             overflow: TextOverflow.fade,
             softWrap: false,
           ),
@@ -47,7 +47,7 @@ class SettingsGroupGeneral extends StatelessWidget {
           title: Text(
             AppLocalizations.of(context)!.thisAppIsOpenSource,
             //'This Application is a Open Source Project. Visit us on GitHub.',
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.bodyMedium,
             maxLines: 2,
           ),
           icon: const Icon(SimpleIcons.github),
@@ -58,7 +58,7 @@ class SettingsGroupGeneral extends StatelessWidget {
           },
           title: Text(
             'Feedback',
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.bodyMedium,
             overflow: TextOverflow.fade,
             softWrap: false,
           ),
