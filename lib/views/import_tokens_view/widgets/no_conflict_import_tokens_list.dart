@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../model/tokens/token.dart';
 
+import '../../../model/tokens/token.dart';
 import 'no_conflict_import_tokens_tile.dart';
 
 class NoConflictImportTokensList extends StatefulWidget {

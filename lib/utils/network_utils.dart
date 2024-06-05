@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -48,8 +49,20 @@ class PrivacyIdeaIOClient {
     IOClient ioClient = IOClient(httpClient);
 
     try {
-      await ioClient.post(url, body: '');
-    } on SocketException {
+      await ioClient.post(url, body: '').timeout(const Duration(seconds: 15));
+    } on ClientException {
+      Logger.warning('ClientException', name: 'utils.dart#triggerNetworkAccessPermission');
+      ioClient.close();
+      if (globalNavigatorKey.currentState?.context == null) return false;
+      globalRef?.read(statusMessageProvider.notifier).state = (
+        AppLocalizations.of(await globalContext)!.connectionFailed,
+        AppLocalizations.of(await globalContext)!.checkYourNetwork,
+      );
+      return false;
+    } catch (e, _) {
+      if (e is! SocketException && e is! TimeoutException) {
+        rethrow;
+      }
       if (isRetry) {
         Logger.warning('SocketException while retrying', name: 'utils.dart#triggerNetworkAccessPermission');
         if (globalNavigatorKey.currentState?.context != null) {
@@ -66,15 +79,6 @@ class PrivacyIdeaIOClient {
         const Duration(seconds: 10),
         () => triggerNetworkAccessPermission(url: url, sslVerify: sslVerify, isRetry: true),
       );
-    } on ClientException {
-      Logger.warning('ClientException', name: 'utils.dart#triggerNetworkAccessPermission');
-      ioClient.close();
-      if (globalNavigatorKey.currentState?.context == null) return false;
-      globalRef?.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(await globalContext)!.connectionFailed,
-        AppLocalizations.of(await globalContext)!.checkYourNetwork,
-      );
-      return false;
     } finally {
       ioClient.close();
     }
@@ -107,11 +111,12 @@ class PrivacyIdeaIOClient {
 
     Response response;
     try {
-      response = await ioClient.post(url, body: body);
-    } on SocketException catch (e, s) {
-      response = Response('${e.runtimeType} : $s', 404);
+      response = await ioClient.post(url, body: body).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, s) {
       response = Response('${e.runtimeType} : $s', 525);
+    } catch (e, s) {
+      if (e is! TimeoutException && e is! SocketException) rethrow;
+      response = Response('${e.runtimeType} : $s', 404);
     }
 
     if (response.statusCode != 200) {
@@ -157,13 +162,14 @@ class PrivacyIdeaIOClient {
     Response response;
     Uri uri = Uri.parse(buffer.toString());
     try {
-      response = await ioClient.get(uri);
-    } on SocketException catch (e, s) {
-      response = Response('${e.runtimeType} : $s', 404);
+      response = await ioClient.get(uri).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, s) {
       Logger.warning('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doGet', error: e, stackTrace: s);
       showMessage(message: 'Handshake failed, please check the server certificate and try again.');
       rethrow;
+    } catch (e, s) {
+      if (e is! TimeoutException && e is! SocketException) rethrow;
+      response = Response('${e.runtimeType} : $s', 404);
     }
 
     if (response.statusCode != 200) {

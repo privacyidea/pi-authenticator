@@ -163,6 +163,12 @@
   "@systemTheme": {
     "description": "The systems theme."
   },
+  "someTokensDoNotSupportPolling": "Certains jetons sont obsolètes et ne supportent pas l'interrogation due serveur.",
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text",
+    "placeholders": {}
+  },
   "enablePolling": "Activer l'interrogation du serveur.",
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
@@ -537,6 +543,7 @@
   "invalidQrScan": "Le code QR scanné n'est pas une sauvegarde valide de {appName}",
   "invalidQrFile": "Le fichier sélectionné ne contient pas de code QR valide de {appName}",
   "invalidLink": "Le lien saisi n'est pas un jeton valide de {appName}, ou il n'est pas pris en charge",
+  "importFailedToken": "{count, plural, zero{Pas de jeton Échec de l'importation.} one{Échec de l'importation d'un jeton.} other{Échec de l'importation des jetons {count}.}}",
   "importExistingToken": "{count, plural, zero{Aucun jeton déjà présent dans l'application n'a été trouvé.} one{Un jeton qui existe déjà dans l'application a été trouvé.} other{Des jetons {count} déjà présents dans l'application ont été trouvés.}}",
   "importConflictToken": "{count, plural, zero{Il n'y a pas de conflit avec des tokens déjà existants.} one{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.} other{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.}}",
   "importNewToken": "{count, plural, zero{Aucun nouveau token n'a été trouvé.} one{Un nouveau token a été trouvé et sera importé.} other{Aucun {count} nouveau token a été trouvé et sera importé.}}",
@@ -546,6 +553,9 @@
   "importHintAegisLink": "Saisissez le lien que vous recevez lorsque vous transférez des entrées depuis Aegis",
   "importHintGoogleQrScan": "Scannez le code QR que vous recevez lorsque vous exportez vos comptes depuis Google Authenticator",
   "importHintGoogleQrFile": "Sélectionnez un fichier image avec le code QR que vous obtenez lorsque vous exportez vos comptes depuis Google Authenticator.\n!! Notez qu'il n'est pas sûr d'enregistrer le code QR sur votre appareil, car les jetons ne sont pas cryptés !!",
+  "importHintAuthenticatorProFile": "Pour créer une sauvegarde de l'application Authenticator Pro, accédez aux paramètres et appuyez sur \"Sauvegarde automatique\". Sélectionnez un emplacement de stockage et définissez un mot de passe. Puis appuyez sur \"Sauvegarder maintenant\" pour exporter les tokens.",
+  "importHintFreeOtpPlusQrScan": "Scannez le code QR que vous recevez lorsque vous appuyez sur les trois points dans la tuile du jeton et sélectionnez \"Partager le code QR\".",
+  "importHintFreeOtpPlusFile": "Pour créer une sauvegarde de l'application FreeOTP+, appuyez sur les trois points dans le coin supérieur droit et sélectionnez \"Exporter\". Vous pouvez choisir entre les formats JSON et URI. Nous recommandons de supprimer la sauvegarde après l'avoir importée, car elle n'est pas cryptée.",
   "qrFileDecodeError": "Il n'a pas été possible de décoder le code QR à partir de l'image sélectionnée, veuillez utiliser le scanner de code QR à la place",
   "tokenLink": "Lien vers le token",
   "feedback": "Retour d'information",
@@ -576,5 +586,55 @@
         "exemple": "GitHub"
       }
     }
-  }
+  },
+  "errorUnlinkingPushToken": "Echec du découplage du push token {label}",
+  "@errorUnlinkingPushToken": {
+    "description": "Error message when unlinking a push token failed.",
+    "placeholders": {
+      "label": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Veuillez synchroniser manuellement les jetons Push via les paramètres lorsqu'une connexion réseau est disponible",
+  "pushTokens": "Push Tokens",
+  "continueButton": "Continue",
+  "addTokenManually": "Add token manually",
+  "addFolder": "Ajouter un dossier",
+  "searchTokens": "Jetons de recherche",
+  "closeSearchTokens": "Fermer la recherche",
+  "increaseCounter": "Augmenter le compteur",
+  "copyOTPToClipboard": "Copier l'OTP dans le presse-papiers",
+  "licenses": "Licences",
+  "optionalMessage": "Message optionnel",
+  "confirmation": "Confirmation",
+  "askLogSendedDescription": "Avez-vous envoyé le journal et voulez-vous l'effacer maintenant ?",
+  "algorithmUnsupported": "L'algorithme {algorithm} n'est pas pris en charge",
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
+  },
+  "thisAppIsOpenSource": "Cette application est open source\nRendez-nous visite sur GitHub",
+  "invalidArgument": "{argument} n'est pas une valeur valide pour {type}",
+  "importExportTokens": "Importer/Exporter les jetons",
+  "exportNonPrivacyIDEATokens": "Exporter les jetons non privacyIDEA",
+  "selectTokensToExport": "{count, plural, zero{} one{Sélectionner le jeton à exporter} other{Sélectionner les jetons à exporter}}",
+  "noTokensToExport": "Aucun jeton à exporter",
+  "exportAllTokens": "Exporter tous les jetons",
+  "export": "Exporter",
+  "exportingTokens": "Exportation des jetons en cours...",
+  "exportTokens": "Exporter les jetons",
+  "enterPasswordToEncrypt": "Entrez un mot de passe pour chiffrer les jetons. Ce mot de passe sera requis pour importer les jetons.",
+  "exportLockedTokenReason": "Veuillez vous authentifier pour exporter les jetons verrouillés.",
+  "fileSavedToDownloadsFolder": "Fichier enregistré dans le dossier Téléchargements",
+  "errorSavingFile": "Erreur lors de l'enregistrement du fichier",
+  "toFile": "Vers fichier",
+  "asQrCode": "Sous forme de code QR",
+  "scanThisQrWithNewDevice": "Scannez ce code QR avec votre nouvel appareil pour importer le jeton.",
+  "oneMore": "Encore un",
+  "done": "Terminé",
+  "confirmPassword": "Confirmer le mot de passe"
 }

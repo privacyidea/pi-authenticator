@@ -367,6 +367,12 @@ abstract class AppLocalizations {
   /// **'Use device\'s theme'**
   String get systemTheme;
 
+  /// Tells the user, that the following tokens do not support polling.
+  ///
+  /// In en, this message translates to:
+  /// **'Some of the tokens are outdated and do not support polling'**
+  String get someTokensDoNotSupportPolling;
+
   /// Name of the setting switch that enables polling.
   ///
   /// In en, this message translates to:
@@ -1243,6 +1249,12 @@ abstract class AppLocalizations {
   /// **'The link entered is not a valid token of {appName}, or it is not supported.'**
   String invalidLink(Object appName);
 
+  /// No description provided for @importFailedToken.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, zero{No token Failed to import.} one{Failed to import a token.} other{Failed to import {count} tokens.}}'**
+  String importFailedToken(num count);
+
   /// No description provided for @importExistingToken.
   ///
   /// In en, this message translates to:
@@ -1252,7 +1264,7 @@ abstract class AppLocalizations {
   /// No description provided for @importConflictToken.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with an existing token.\nPlease choose which one you want to keep.} other{There are conflicts with existing tokens.\nPlease choose which one you want to keep.}}'**
+  /// **'{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with existing tokens.\nPlease select which one you would like to keep.} other{There are conflicts with existing tokens.\nPlease select the tokens you wish to keep.}}'**
   String importConflictToken(num count);
 
   /// No description provided for @importNewToken.
@@ -1296,6 +1308,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!'**
   String get importHintGoogleQrFile;
+
+  /// No description provided for @importHintAuthenticatorProFile.
+  ///
+  /// In en, this message translates to:
+  /// **'To create a backup of the Authenticator Pro app, navigate to the settings and tap on \"Auto backup\". Select a storage location and set a password. Then press \"Back up now\" to export the tokens.'**
+  String get importHintAuthenticatorProFile;
+
+  /// No description provided for @importHintFreeOtpPlusQrScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the QR code you receive when you press the three dots in the tile of the token and select \"Share QR code\".'**
+  String get importHintFreeOtpPlusQrScan;
+
+  /// No description provided for @importHintFreeOtpPlusFile.
+  ///
+  /// In en, this message translates to:
+  /// **'To create a backup of the FreeOTP+ app, tap on the three dots in the upper right corner and select \"Export\". You can choose between JSON and URI format. We recommend to delete the backup after importing it, because it is not encrypted.'**
+  String get importHintFreeOtpPlusFile;
 
   /// No description provided for @qrFileDecodeError.
   ///
@@ -1404,6 +1434,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sent by {issuer} for your account: \"{account}\"'**
   String requestInfo(Object issuer, Object account);
+
+  /// Error message when unlinking a push token failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to unlink the push token {label}.'**
+  String errorUnlinkingPushToken(Object label);
+
+  /// No description provided for @pleaseSyncManuallyWhenNetworkIsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Please synchronize the push tokens manually via the settings when a network connection is available.'**
+  String get pleaseSyncManuallyWhenNetworkIsAvailable;
+
+  /// No description provided for @pushTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Push Tokens'**
+  String get pushTokens;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueButton;
+
+  /// No description provided for @addTokenManually.
+  ///
+  /// In en, this message translates to:
+  /// **'Add token manually'**
+  String get addTokenManually;
+
+  /// No description provided for @addFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add folder'**
+  String get addFolder;
+
+  /// No description provided for @searchTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Search tokens'**
+  String get searchTokens;
+
+  /// No description provided for @closeSearchTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Close search'**
+  String get closeSearchTokens;
+
+  /// No description provided for @increaseCounter.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase counter'**
+  String get increaseCounter;
+
+  /// No description provided for @copyOTPToClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy OTP to clipboard'**
+  String get copyOTPToClipboard;
+
+  /// No description provided for @licenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Licenses'**
+  String get licenses;
+
+  /// No description provided for @optionalMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional message'**
+  String get optionalMessage;
+
+  /// No description provided for @confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmation'**
+  String get confirmation;
+
+  /// No description provided for @askLogSendedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Did you send the log, and do you want to clear it now?'**
+  String get askLogSendedDescription;
+
+  /// No description provided for @algorithmUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'The algorithm {algorithm} is not supported'**
+  String algorithmUnsupported(Object algorithm);
+
+  /// No description provided for @thisAppIsOpenSource.
+  ///
+  /// In en, this message translates to:
+  /// **'This Application is Open Source\nVisit us on GitHub'**
+  String get thisAppIsOpenSource;
+
+  /// No description provided for @importExportTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Import/Export tokens'**
+  String get importExportTokens;
+
+  /// No description provided for @exportNonPrivacyIDEATokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Export non-privacyIDEA tokens'**
+  String get exportNonPrivacyIDEATokens;
+
+  /// No description provided for @selectTokensToExport.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, zero{} one{Select token to export} other{Select tokens to export}}'**
+  String selectTokensToExport(num count);
+
+  /// No description provided for @noTokensToExport.
+  ///
+  /// In en, this message translates to:
+  /// **'No tokens to export'**
+  String get noTokensToExport;
+
+  /// No description provided for @exportAllTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Export all tokens'**
+  String get exportAllTokens;
+
+  /// No description provided for @export.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get export;
+
+  /// No description provided for @exportingTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Exporting tokens...'**
+  String get exportingTokens;
+
+  /// No description provided for @exportTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'Export tokens'**
+  String get exportTokens;
+
+  /// No description provided for @enterPasswordToEncrypt.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a password to encrypt the tokens. This password will be required to import the tokens.'**
+  String get enterPasswordToEncrypt;
+
+  /// No description provided for @exportLockedTokenReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Please authenticate to export locked tokens.'**
+  String get exportLockedTokenReason;
+
+  /// No description provided for @fileSavedToDownloadsFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'File saved to Downloads folder'**
+  String get fileSavedToDownloadsFolder;
+
+  /// No description provided for @errorSavingFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving to file failed'**
+  String get errorSavingFile;
+
+  /// No description provided for @toFile.
+  ///
+  /// In en, this message translates to:
+  /// **'To file'**
+  String get toFile;
+
+  /// No description provided for @asQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'As QR code'**
+  String get asQrCode;
+
+  /// No description provided for @scanThisQrWithNewDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan this QR code with your new device to import the token.'**
+  String get scanThisQrWithNewDevice;
+
+  /// No description provided for @oneMore.
+  ///
+  /// In en, this message translates to:
+  /// **'One more'**
+  String get oneMore;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPassword;
+
+  /// No description provided for @secretIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret is required'**
+  String get secretIsRequired;
+
+  /// No description provided for @tokenDataParseError.
+  ///
+  /// In en, this message translates to:
+  /// **'Token data could not be parsed'**
+  String get tokenDataParseError;
+
+  /// No description provided for @missingRequiredParameter.
+  ///
+  /// In en, this message translates to:
+  /// **'Value for parameter [{counter}] is required and is missing'**
+  String missingRequiredParameter(Object counter);
+
+  /// No description provided for @invalidValueForParameter.
+  ///
+  /// In en, this message translates to:
+  /// **'[{value}] is not a valid value for uri parameter [parameter].'**
+  String invalidValueForParameter(Object value, Object parameter);
+
+  /// No description provided for @unsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'The {name} [{value}] is not supported by this version of the app.'**
+  String unsupported(Object name, Object value);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

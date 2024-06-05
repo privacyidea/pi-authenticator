@@ -143,6 +143,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get systemTheme => 'Použít nastavení systému';
 
   @override
+  String get someTokensDoNotSupportPolling => 'Některé tokeny jsou zastaralé a nepodporují polling';
+
+  @override
   String get enablePolling => 'Povolit polling';
 
   @override
@@ -607,6 +610,18 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
+  String importFailedToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Nepodařilo se importovat $count tokenů.',
+      one: 'Nepodařilo se importovat token.',
+      zero: 'Žádný token Nepodařilo se importovat.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String importExistingToken(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -659,6 +674,15 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get importHintGoogleQrFile => 'Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!';
+
+  @override
+  String get importHintAuthenticatorProFile => 'Chcete-li vytvořit zálohu aplikace Authenticator Pro, přejděte do nastavení a klepněte na položku \"Automatické zálohování\". Vyberte umístění úložiště a nastavte heslo. Poté stiskněte \"Zálohovat nyní\" a exportujte tokeny.';
+
+  @override
+  String get importHintFreeOtpPlusQrScan => 'Naskenujte QR kód, který obdržíte po stisknutí tří teček na dlaždici tokenu, a vyberte možnost \"Sdílet QR kód\".';
+
+  @override
+  String get importHintFreeOtpPlusFile => 'Chcete-li vytvořit zálohu aplikace FreeOTP+, klepněte na tři tečky v pravém horním rohu a vyberte možnost \"Exportovat\". Můžete si vybrat mezi formátem JSON a URI. Zálohu doporučujeme po importu odstranit, protože není šifrovaná.';
 
   @override
   String get qrFileDecodeError => 'Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.';
@@ -714,5 +738,141 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String requestInfo(Object issuer, Object account) {
     return 'Odesláno $issuer pro váš účet: \"$account\"';
+  }
+
+  @override
+  String errorUnlinkingPushToken(Object label) {
+    return 'Nepodařilo se odlinkovat push token $label.';
+  }
+
+  @override
+  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Synchronizujte prosím push tokeny ručně prostřednictvím nastavení, když je k dispozici síťové připojení.';
+
+  @override
+  String get pushTokens => 'Žetony Push';
+
+  @override
+  String get continueButton => 'Pokračovat';
+
+  @override
+  String get addTokenManually => 'Přidat token ručně';
+
+  @override
+  String get addFolder => 'Přidat složku';
+
+  @override
+  String get searchTokens => 'Hledat tokeny';
+
+  @override
+  String get closeSearchTokens => 'Zavřít vyhledávání';
+
+  @override
+  String get increaseCounter => 'Zvýšit počítadla';
+
+  @override
+  String get copyOTPToClipboard => 'Zkopírovat OTP do schránky';
+
+  @override
+  String get licenses => 'Licence';
+
+  @override
+  String get optionalMessage => 'Volitelná zpráva';
+
+  @override
+  String get confirmation => 'Potvrzení';
+
+  @override
+  String get askLogSendedDescription => 'Odeslali jste protokol a chcete jej nyní vymazat?';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'Algoritmus $algorithm není podporován';
+  }
+
+  @override
+  String get thisAppIsOpenSource => 'Tato aplikace má otevřený zdrojový kód\nNavštivte nás na GitHub';
+
+  @override
+  String get importExportTokens => 'Import/Exportovat žetony';
+
+  @override
+  String get exportNonPrivacyIDEATokens => 'Exportovat ne-privacyIDEA žetony';
+
+  @override
+  String selectTokensToExport(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Vyberte žetony k exportu',
+      one: 'Vyberte žeton k exportu',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noTokensToExport => 'Žádné žetony k exportu';
+
+  @override
+  String get exportAllTokens => 'Exportovat všechny žetony';
+
+  @override
+  String get export => 'Export';
+
+  @override
+  String get exportingTokens => 'Probíhá export žetonů...';
+
+  @override
+  String get exportTokens => 'Exportovat žetony';
+
+  @override
+  String get enterPasswordToEncrypt => 'Zadejte heslo pro šifrování žetonů. Toto heslo bude vyžadováno k importu žetonů.';
+
+  @override
+  String get exportLockedTokenReason => 'Prosím, ověřte se, abyste mohli exportovat uzamčené žetony.';
+
+  @override
+  String get fileSavedToDownloadsFolder => 'Soubor uložen do složky Stažené soubory';
+
+  @override
+  String get errorSavingFile => 'Chyba při ukládání souboru';
+
+  @override
+  String get toFile => 'Do souboru';
+
+  @override
+  String get asQrCode => 'Jako QR kód';
+
+  @override
+  String get scanThisQrWithNewDevice => 'Naskenujte tento QR kód svým novým zařízením pro import žetonu.';
+
+  @override
+  String get oneMore => 'Ještě jeden';
+
+  @override
+  String get done => 'Hotovo';
+
+  @override
+  String get confirmPassword => 'Potvrďte heslo';
+
+  @override
+  String get secretIsRequired => 'Secret is required';
+
+  @override
+  String get tokenDataParseError => 'Token data could not be parsed';
+
+  @override
+  String missingRequiredParameter(Object counter) {
+    return 'Value for parameter [$counter] is required and is missing';
+  }
+
+  @override
+  String invalidValueForParameter(Object value, Object parameter) {
+    return '[$value] is not a valid value for uri parameter [parameter].';
+  }
+
+  @override
+  String unsupported(Object name, Object value) {
+    return 'The $name [$value] is not supported by this version of the app.';
   }
 }

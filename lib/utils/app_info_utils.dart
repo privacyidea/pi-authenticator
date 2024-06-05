@@ -3,18 +3,20 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'version.dart';
+
+import '../model/version.dart';
 
 class AppInfoUtils {
   static bool isInitialized = false;
   static final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
-  static final packageInfo = PackageInfo.fromPlatform();
+  static final _packageInfo = PackageInfo.fromPlatform();
 
   static Future<void> init() async {
-    _appName = (await packageInfo).appName;
-    _packageName = (await packageInfo).packageName;
-    _appVersion = Version.parse((await packageInfo).version);
-    _appBuildNumber = (await packageInfo).buildNumber;
+    final packageInfo = await _packageInfo;
+    _appName = packageInfo.appName;
+    _packageName = packageInfo.packageName;
+    _appVersion = Version.parse(packageInfo.version);
+    _appBuildNumber = packageInfo.buildNumber;
     _androidInfo = !kIsWeb && Platform.isAndroid ? await _deviceInfo.androidInfo : null;
     _iosInfo = !kIsWeb && Platform.isIOS ? await _deviceInfo.iosInfo : null;
 
@@ -80,15 +82,7 @@ class AppInfoUtils {
           '\nsupportedAbis: ${androidInfo!.supportedAbis}'
           '\ntags: ${androidInfo!.tags}'
           '\ntype: ${androidInfo!.type}'
-          '\nisPhysicalDevice: ${androidInfo!.isPhysicalDevice}'
-          // '\ndisplaySizeInches: ${((androidInfo!.displayMetrics.sizeInches * 10).roundToDouble() / 10)}'
-          // '\ndisplayWidthPixels: ${androidInfo!.displayMetrics.widthPx}'
-          // '\ndisplayWidthInches: ${androidInfo!.displayMetrics.widthInches}'
-          // '\ndisplayHeightPixels: ${androidInfo!.displayMetrics.heightPx}'
-          // '\ndisplayHeightInches: ${androidInfo!.displayMetrics.heightInches}'
-          // '\ndisplayXDpi: ${androidInfo!.displayMetrics.xDpi}'
-          // '\ndisplayYDpi: ${androidInfo!.displayMetrics.yDpi}'
-          '\nserialNumber: ${androidInfo!.serialNumber}';
+          '\nisPhysicalDevice: ${androidInfo!.isPhysicalDevice}';
 
   static IosDeviceInfo? get iosInfo => isInitialized ? _iosInfo : throw Exception('AppInfoUtils not initialized');
   static late final IosDeviceInfo? _iosInfo;

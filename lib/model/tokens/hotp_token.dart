@@ -1,15 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:otp/otp.dart' as otp_library;
 import 'package:uuid/uuid.dart';
 
-import '../../utils/crypto_utils.dart';
 import '../../utils/identifiers.dart';
-import '../../utils/utils.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
-import '../extensions/enum_extension.dart';
-import '../token_origin.dart';
+import '../extensions/enums/algorithms_extension.dart';
+import '../extensions/enums/encodings_extension.dart';
+import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
 import 'token.dart';
 
@@ -17,7 +15,7 @@ part 'hotp_token.g.dart';
 
 @JsonSerializable()
 class HOTPToken extends OTPToken {
-  static String get tokenType => TokenTypes.HOTP.asString;
+  static String get tokenType => TokenTypes.HOTP.name;
   final int counter; // this value is used to calculate the current otp value
 
   @override
@@ -25,33 +23,34 @@ class HOTPToken extends OTPToken {
 
   HOTPToken({
     this.counter = 0,
-    required super.label,
-    required super.issuer,
     required super.id,
     required super.algorithm,
     required super.digits,
     required super.secret,
     String? type, // just for @JsonSerializable(): type of HOTPToken is always TokenTypes.HOTP
     super.tokenImage,
-    super.sortIndex,
     super.pin,
     super.isLocked,
     super.isHidden,
+    super.sortIndex,
     super.folderId,
     super.origin,
-  }) : super(type: TokenTypes.HOTP.asString);
+    super.label = '',
+    super.issuer = '',
+  }) : super(type: TokenTypes.HOTP.name);
 
   @override
-  bool sameValuesAs(Token other) {
-    return super.sameValuesAs(other) && other is HOTPToken && other.counter == counter;
-  }
+  bool sameValuesAs(Token other) => super.sameValuesAs(other) && other is HOTPToken && other.counter == counter;
 
   @override
-  String get otpValue => otp_library.OTP.generateHOTPCodeString(
-        secret,
-        counter,
+  // Counter can be changed even if its the same token
+  bool isSameTokenAs(Token other) => super.isSameTokenAs(other) && other is HOTPToken;
+
+  @override
+  String get otpValue => algorithm.generateHOTPCodeString(
+        secret: secret,
+        counter: counter,
         length: digits,
-        algorithm: algorithm.otpLibraryAlgorithm,
         isGoogle: true,
       );
 
@@ -67,10 +66,10 @@ class HOTPToken extends OTPToken {
     int? digits,
     String? secret,
     String? tokenImage,
-    int? sortIndex,
     bool? pin,
     bool? isLocked,
     bool? isHidden,
+    int? sortIndex,
     int? Function()? folderId,
     TokenOriginData? origin,
   }) =>
@@ -83,10 +82,10 @@ class HOTPToken extends OTPToken {
         digits: digits ?? this.digits,
         secret: secret ?? this.secret,
         tokenImage: tokenImage ?? this.tokenImage,
-        sortIndex: sortIndex ?? this.sortIndex,
         pin: pin ?? this.pin,
         isLocked: isLocked ?? this.isLocked,
         isHidden: isHidden ?? this.isHidden,
+        sortIndex: sortIndex ?? this.sortIndex,
         folderId: folderId != null ? folderId() : this.folderId,
         origin: origin ?? this.origin,
       );
@@ -99,27 +98,22 @@ class HOTPToken extends OTPToken {
   factory HOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
     if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
     if (uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
-    HOTPToken hotpToken;
-    try {
-      hotpToken = HOTPToken(
-        label: uriMap[URI_LABEL] ?? '',
-        issuer: uriMap[URI_ISSUER] ?? '',
-        id: const Uuid().v4(),
-        algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
-        digits: uriMap[URI_DIGITS] ?? 6,
-        secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
-        counter: uriMap[URI_COUNTER] ?? 0,
-        tokenImage: uriMap[URI_IMAGE],
-        pin: uriMap[URI_PIN],
-        isLocked: uriMap[URI_PIN],
-      );
-    } catch (e) {
-      throw ArgumentError('Invalid URI: $e');
-    }
-    return hotpToken;
+    return HOTPToken(
+      label: uriMap[URI_LABEL] ?? '',
+      issuer: uriMap[URI_ISSUER] ?? '',
+      id: const Uuid().v4(),
+      algorithm: Algorithms.values.byName(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+      digits: uriMap[URI_DIGITS] ?? 6,
+      secret: Encodings.base32.encode(uriMap[URI_SECRET]),
+      counter: uriMap[URI_COUNTER] ?? 0,
+      tokenImage: uriMap[URI_IMAGE],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+    );
   }
 
-  factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json);
-
+  @override
   Map<String, dynamic> toJson() => _$HOTPTokenToJson(this);
+  factory HOTPToken.fromJson(Map<String, dynamic> json) => _$HOTPTokenFromJson(json);
 }

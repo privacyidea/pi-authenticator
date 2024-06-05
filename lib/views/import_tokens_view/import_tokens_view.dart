@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../view_interface.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../model/token_import_origin.dart';
+import '../../model/token_import/token_import_origin.dart';
+import '../../utils/token_import_origins.dart';
+import '../view_interface.dart';
 import 'pages/import_start_page.dart';
 import 'pages/select_import_type_page.dart';
 
@@ -17,9 +18,9 @@ class ImportTokensView extends ConsumerStatefulView {
   static const double itemSpacingVertical = 10;
   static const double iconSize = 100;
 
-  final TokenImportOrigin? selectedSource;
+  final TokenImportOrigin? selectedOrigin;
 
-  const ImportTokensView({this.selectedSource, super.key});
+  const ImportTokensView({this.selectedOrigin, super.key});
 
   @override
   ConsumerState<ImportTokensView> createState() => _ImportTokensViewState();
@@ -27,18 +28,18 @@ class ImportTokensView extends ConsumerStatefulView {
 
 class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
   void _onPressed(TokenImportOrigin tokenImportOrigin) {
-    if (tokenImportOrigin.importEntitys.length == 1) {
+    if (tokenImportOrigin.importSources.length == 1) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => ImportStartPage(
             appName: tokenImportOrigin.appName,
-            selectedEntity: tokenImportOrigin.importEntitys.first,
+            selectedSource: tokenImportOrigin.importSources.first,
           ),
         ),
       );
       return;
     }
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SelectImportTypePage(tokenImportSource: tokenImportOrigin)));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SelectImportTypePage(tokenImportOrigin: tokenImportOrigin)));
   }
 
   @override
@@ -55,7 +56,7 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              for (final item in TokenImportSourceList.appList)
+              for (final item in TokenImportOrigins.appList)
                 ListTile(
                   // leading: Image.asset(appList[index].iconPath!),
                   title: TextButton(

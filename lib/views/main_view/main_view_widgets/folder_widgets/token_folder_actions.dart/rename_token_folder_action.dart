@@ -3,7 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_folder.dart';
-import '../../../../../utils/app_customizer.dart';
+import '../../../../../utils/customization/action_theme.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
@@ -75,18 +75,24 @@ class RenameTokenFolderAction extends StatelessWidget {
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),
-                onPressed: () {
+                onPressed: () async {
                   final newLabel = nameInputController.text.trim();
                   if (newLabel.isEmpty) return;
-                  globalRef?.read(tokenFolderProvider.notifier).updateFolder(folder.copyWith(label: newLabel));
-
-                  Logger.info(
-                    'Renamed token:',
-                    name: 'token_widget_base.dart#TextButton#renameClicked',
-                    error: '\'${folder.label}\' changed to \'$newLabel\'',
-                  );
-
-                  Navigator.of(context).pop();
+                  final success = await globalRef?.read(tokenFolderProvider.notifier).updateLabel(folder, newLabel);
+                  if (success == true) {
+                    Logger.info(
+                      'Renamed token:',
+                      name: 'token_widget_base.dart#TextButton#renameClicked',
+                      error: '\'${folder.label}\' changed to \'$newLabel\'',
+                    );
+                  } else {
+                    Logger.warning(
+                      'Failed to rename token',
+                      name: 'token_widget_base.dart#TextButton#renameClicked',
+                      error: '\'${folder.label}\' to \'$newLabel\'',
+                    );
+                  }
+                  if (context.mounted) Navigator.of(context).pop();
                 },
               ),
             ],

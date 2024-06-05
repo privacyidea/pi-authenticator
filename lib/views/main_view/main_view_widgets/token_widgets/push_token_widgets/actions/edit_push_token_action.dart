@@ -5,8 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
 import '../../../../../../model/tokens/push_token.dart';
-import '../../../../../../repo/secure_token_repository.dart';
-import '../../../../../../utils/app_customizer.dart';
+import '../../../../../../utils/customization/action_theme.dart';
 import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
@@ -160,24 +159,22 @@ class EditPushTokenAction extends TokenAction {
                   softWrap: false,
                 ),
                 children: [
-                  FutureBuilder(
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Text(
-                          snapshot.data != null ? snapshot.data.toString() : AppLocalizations.of(context)!.noFbToken,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        );
-                      } else {
-                        return const Text(
-                          '',
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                        );
-                      }
-                    },
-                    future: SecureTokenRepository.getCurrentFirebaseToken(),
-                  ),
+                  Text(
+                    token.fbToken != null ? token.fbToken.toString() : AppLocalizations.of(context)!.noFbToken,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  )
                 ],
+              ),
+              if (token.origin != null)
+                TextFormField(
+                  initialValue: token.origin!.appName,
+                  decoration: const InputDecoration(labelText: 'Origin'),
+                  enabled: false,
+                ),
+              TextFormField(
+                initialValue: token.isPrivacyIdeaToken == false ? 'Yes' : 'No',
+                decoration: const InputDecoration(labelText: 'Is exportable?'),
+                enabled: false,
               ),
             ],
           ),

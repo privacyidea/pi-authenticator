@@ -3,8 +3,9 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import '../utils/logger.dart';
 
+import '../l10n/app_localizations.dart';
+import '../utils/logger.dart';
 import '../utils/utils.dart';
 import 'pulse_icon.dart';
 import 'tooltip_container.dart';
@@ -134,11 +135,11 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
     _disposeOverlay();
     if (widget.tooltipWhenFocused != null) {
       final textSize = textSizeOf(
-        widget.tooltipWhenFocused!,
-        Theme.of(context).textTheme.bodyLarge!,
+        text: widget.tooltipWhenFocused!,
+        style: Theme.of(context).textTheme.bodyLarge!,
         maxWidth: MediaQuery.of(context).size.width / 3 * 2 -
             (tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2),
-        maxLines: null,
+        textScaler: MediaQuery.of(context).textScaler,
       );
 
       final overlaySize = Size(
@@ -212,14 +213,17 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
             ),
           ),
           Positioned.fill(
-            child: GestureDetector(
-              onTapDown: (details) {
-                widget.onComplete?.call();
-              },
-              child: Container(
-                height: double.maxFinite,
-                width: double.maxFinite,
-                color: Colors.transparent,
+            child: Tooltip(
+              message: AppLocalizations.of(context)!.continueButton,
+              child: GestureDetector(
+                onTapDown: (details) {
+                  widget.onComplete?.call();
+                },
+                child: Container(
+                  height: double.maxFinite,
+                  width: double.maxFinite,
+                  color: Colors.transparent,
+                ),
               ),
             ),
           ),

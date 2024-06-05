@@ -143,6 +143,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get systemTheme => 'Utiliser le thème de l\'appareil';
 
   @override
+  String get someTokensDoNotSupportPolling => 'Certains jetons sont obsolètes et ne supportent pas l\'interrogation due serveur.';
+
+  @override
   String get enablePolling => 'Activer l\'interrogation du serveur.';
 
   @override
@@ -607,6 +610,18 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String importFailedToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Échec de l\'importation des jetons $count.',
+      one: 'Échec de l\'importation d\'un jeton.',
+      zero: 'Pas de jeton Échec de l\'importation.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String importExistingToken(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -659,6 +674,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get importHintGoogleQrFile => 'Sélectionnez un fichier image avec le code QR que vous obtenez lorsque vous exportez vos comptes depuis Google Authenticator.\n!! Notez qu\'il n\'est pas sûr d\'enregistrer le code QR sur votre appareil, car les jetons ne sont pas cryptés !!';
+
+  @override
+  String get importHintAuthenticatorProFile => 'Pour créer une sauvegarde de l\'application Authenticator Pro, accédez aux paramètres et appuyez sur \"Sauvegarde automatique\". Sélectionnez un emplacement de stockage et définissez un mot de passe. Puis appuyez sur \"Sauvegarder maintenant\" pour exporter les tokens.';
+
+  @override
+  String get importHintFreeOtpPlusQrScan => 'Scannez le code QR que vous recevez lorsque vous appuyez sur les trois points dans la tuile du jeton et sélectionnez \"Partager le code QR\".';
+
+  @override
+  String get importHintFreeOtpPlusFile => 'Pour créer une sauvegarde de l\'application FreeOTP+, appuyez sur les trois points dans le coin supérieur droit et sélectionnez \"Exporter\". Vous pouvez choisir entre les formats JSON et URI. Nous recommandons de supprimer la sauvegarde après l\'avoir importée, car elle n\'est pas cryptée.';
 
   @override
   String get qrFileDecodeError => 'Il n\'a pas été possible de décoder le code QR à partir de l\'image sélectionnée, veuillez utiliser le scanner de code QR à la place';
@@ -714,5 +738,141 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String requestInfo(Object issuer, Object account) {
     return 'Envoyé par $issuer pour votre compte : \"$account\"';
+  }
+
+  @override
+  String errorUnlinkingPushToken(Object label) {
+    return 'Echec du découplage du push token $label';
+  }
+
+  @override
+  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Veuillez synchroniser manuellement les jetons Push via les paramètres lorsqu\'une connexion réseau est disponible';
+
+  @override
+  String get pushTokens => 'Push Tokens';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get addTokenManually => 'Add token manually';
+
+  @override
+  String get addFolder => 'Ajouter un dossier';
+
+  @override
+  String get searchTokens => 'Jetons de recherche';
+
+  @override
+  String get closeSearchTokens => 'Fermer la recherche';
+
+  @override
+  String get increaseCounter => 'Augmenter le compteur';
+
+  @override
+  String get copyOTPToClipboard => 'Copier l\'OTP dans le presse-papiers';
+
+  @override
+  String get licenses => 'Licences';
+
+  @override
+  String get optionalMessage => 'Message optionnel';
+
+  @override
+  String get confirmation => 'Confirmation';
+
+  @override
+  String get askLogSendedDescription => 'Avez-vous envoyé le journal et voulez-vous l\'effacer maintenant ?';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'L\'algorithme $algorithm n\'est pas pris en charge';
+  }
+
+  @override
+  String get thisAppIsOpenSource => 'Cette application est open source\nRendez-nous visite sur GitHub';
+
+  @override
+  String get importExportTokens => 'Importer/Exporter les jetons';
+
+  @override
+  String get exportNonPrivacyIDEATokens => 'Exporter les jetons non privacyIDEA';
+
+  @override
+  String selectTokensToExport(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Sélectionner les jetons à exporter',
+      one: 'Sélectionner le jeton à exporter',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noTokensToExport => 'Aucun jeton à exporter';
+
+  @override
+  String get exportAllTokens => 'Exporter tous les jetons';
+
+  @override
+  String get export => 'Exporter';
+
+  @override
+  String get exportingTokens => 'Exportation des jetons en cours...';
+
+  @override
+  String get exportTokens => 'Exporter les jetons';
+
+  @override
+  String get enterPasswordToEncrypt => 'Entrez un mot de passe pour chiffrer les jetons. Ce mot de passe sera requis pour importer les jetons.';
+
+  @override
+  String get exportLockedTokenReason => 'Veuillez vous authentifier pour exporter les jetons verrouillés.';
+
+  @override
+  String get fileSavedToDownloadsFolder => 'Fichier enregistré dans le dossier Téléchargements';
+
+  @override
+  String get errorSavingFile => 'Erreur lors de l\'enregistrement du fichier';
+
+  @override
+  String get toFile => 'Vers fichier';
+
+  @override
+  String get asQrCode => 'Sous forme de code QR';
+
+  @override
+  String get scanThisQrWithNewDevice => 'Scannez ce code QR avec votre nouvel appareil pour importer le jeton.';
+
+  @override
+  String get oneMore => 'Encore un';
+
+  @override
+  String get done => 'Terminé';
+
+  @override
+  String get confirmPassword => 'Confirmer le mot de passe';
+
+  @override
+  String get secretIsRequired => 'Secret is required';
+
+  @override
+  String get tokenDataParseError => 'Token data could not be parsed';
+
+  @override
+  String missingRequiredParameter(Object counter) {
+    return 'Value for parameter [$counter] is required and is missing';
+  }
+
+  @override
+  String invalidValueForParameter(Object value, Object parameter) {
+    return '[$value] is not a valid value for uri parameter [parameter].';
+  }
+
+  @override
+  String unsupported(Object name, Object value) {
+    return 'The $name [$value] is not supported by this version of the app.';
   }
 }

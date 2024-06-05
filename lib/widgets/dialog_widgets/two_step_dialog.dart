@@ -24,11 +24,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
 import '../../utils/logger.dart';
+import '../../utils/utils.dart';
 import '../widget_keys.dart';
 
 class GenerateTwoStepDialog extends StatelessWidget {
@@ -62,12 +62,8 @@ class GenerateTwoStepDialog extends StatelessWidget {
     }
 
     // 3. Show phone part if this widget is still mounted.
-    Navigator.of(context).pop(generatedSecret);
-    showAsyncDialog(
-        barrierDismissible: false,
-        builder: (context) => TwoStepDialog(
-              phoneChecksum: phoneChecksum,
-            ));
+    if (context.mounted) Navigator.of(context).pop(generatedSecret);
+    showAsyncDialog(barrierDismissible: false, builder: (context) => TwoStepDialog(phoneChecksum: phoneChecksum));
   }
 
   @override
@@ -119,7 +115,9 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                if (context.mounted) Navigator.of(context).pop();
+              },
               child: Text(
                 AppLocalizations.of(context)!.dismiss,
                 overflow: TextOverflow.fade,

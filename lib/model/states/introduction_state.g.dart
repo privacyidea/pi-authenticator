@@ -24,7 +24,7 @@ Map<String, dynamic> _$IntroductionStateToJson(IntroductionState instance) =>
 const _$IntroductionEnumMap = {
   Introduction.introductionScreen: 'introductionScreen',
   Introduction.scanQrCode: 'scanQrCode',
-  Introduction.addTokenManually: 'addManually',
+  Introduction.addManually: 'addManually',
   Introduction.tokenSwipe: 'tokenSwipe',
   Introduction.editToken: 'editToken',
   Introduction.lockToken: 'lockToken',

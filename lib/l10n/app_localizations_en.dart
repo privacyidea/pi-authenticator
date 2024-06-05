@@ -143,6 +143,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get systemTheme => 'Use device\'s theme';
 
   @override
+  String get someTokensDoNotSupportPolling => 'Some of the tokens are outdated and do not support polling';
+
+  @override
   String get enablePolling => 'Enable polling';
 
   @override
@@ -607,6 +610,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String importFailedToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Failed to import $count tokens.',
+      one: 'Failed to import a token.',
+      zero: 'No token Failed to import.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String importExistingToken(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -623,8 +638,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'There are conflicts with existing tokens.\nPlease choose which one you want to keep.',
-      one: 'There is a conflict with an existing token.\nPlease choose which one you want to keep.',
+      other: 'There are conflicts with existing tokens.\nPlease select the tokens you wish to keep.',
+      one: 'There is a conflict with existing tokens.\nPlease select which one you would like to keep.',
       zero: 'There is no conflict with existing tokens.',
     );
     return '$_temp0';
@@ -659,6 +674,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get importHintGoogleQrFile => 'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!';
+
+  @override
+  String get importHintAuthenticatorProFile => 'To create a backup of the Authenticator Pro app, navigate to the settings and tap on \"Auto backup\". Select a storage location and set a password. Then press \"Back up now\" to export the tokens.';
+
+  @override
+  String get importHintFreeOtpPlusQrScan => 'Scan the QR code you receive when you press the three dots in the tile of the token and select \"Share QR code\".';
+
+  @override
+  String get importHintFreeOtpPlusFile => 'To create a backup of the FreeOTP+ app, tap on the three dots in the upper right corner and select \"Export\". You can choose between JSON and URI format. We recommend to delete the backup after importing it, because it is not encrypted.';
 
   @override
   String get qrFileDecodeError => 'It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.';
@@ -714,5 +738,141 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String requestInfo(Object issuer, Object account) {
     return 'Sent by $issuer for your account: \"$account\"';
+  }
+
+  @override
+  String errorUnlinkingPushToken(Object label) {
+    return 'Failed to unlink the push token $label.';
+  }
+
+  @override
+  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Please synchronize the push tokens manually via the settings when a network connection is available.';
+
+  @override
+  String get pushTokens => 'Push Tokens';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get addTokenManually => 'Add token manually';
+
+  @override
+  String get addFolder => 'Add folder';
+
+  @override
+  String get searchTokens => 'Search tokens';
+
+  @override
+  String get closeSearchTokens => 'Close search';
+
+  @override
+  String get increaseCounter => 'Increase counter';
+
+  @override
+  String get copyOTPToClipboard => 'Copy OTP to clipboard';
+
+  @override
+  String get licenses => 'Licenses';
+
+  @override
+  String get optionalMessage => 'Optional message';
+
+  @override
+  String get confirmation => 'Confirmation';
+
+  @override
+  String get askLogSendedDescription => 'Did you send the log, and do you want to clear it now?';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'The algorithm $algorithm is not supported';
+  }
+
+  @override
+  String get thisAppIsOpenSource => 'This Application is Open Source\nVisit us on GitHub';
+
+  @override
+  String get importExportTokens => 'Import/Export tokens';
+
+  @override
+  String get exportNonPrivacyIDEATokens => 'Export non-privacyIDEA tokens';
+
+  @override
+  String selectTokensToExport(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Select tokens to export',
+      one: 'Select token to export',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noTokensToExport => 'No tokens to export';
+
+  @override
+  String get exportAllTokens => 'Export all tokens';
+
+  @override
+  String get export => 'Export';
+
+  @override
+  String get exportingTokens => 'Exporting tokens...';
+
+  @override
+  String get exportTokens => 'Export tokens';
+
+  @override
+  String get enterPasswordToEncrypt => 'Enter a password to encrypt the tokens. This password will be required to import the tokens.';
+
+  @override
+  String get exportLockedTokenReason => 'Please authenticate to export locked tokens.';
+
+  @override
+  String get fileSavedToDownloadsFolder => 'File saved to Downloads folder';
+
+  @override
+  String get errorSavingFile => 'Saving to file failed';
+
+  @override
+  String get toFile => 'To file';
+
+  @override
+  String get asQrCode => 'As QR code';
+
+  @override
+  String get scanThisQrWithNewDevice => 'Scan this QR code with your new device to import the token.';
+
+  @override
+  String get oneMore => 'One more';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get confirmPassword => 'Confirm password';
+
+  @override
+  String get secretIsRequired => 'Secret is required';
+
+  @override
+  String get tokenDataParseError => 'Token data could not be parsed';
+
+  @override
+  String missingRequiredParameter(Object counter) {
+    return 'Value for parameter [$counter] is required and is missing';
+  }
+
+  @override
+  String invalidValueForParameter(Object value, Object parameter) {
+    return '[$value] is not a valid value for uri parameter [parameter].';
+  }
+
+  @override
+  String unsupported(Object name, Object value) {
+    return 'The $name [$value] is not supported by this version of the app.';
   }
 }

@@ -1,17 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../mains/main_netknights.dart';
 import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/enums/token_types.dart';
-import '../../model/tokens/day_password_token.dart';
-import '../../model/tokens/hotp_token.dart';
-import '../../model/tokens/otp_token.dart';
-import '../../model/tokens/totp_token.dart';
-import '../../utils/crypto_utils.dart';
+import '../../model/extensions/enums/encodings_extension.dart';
+import '../../model/extensions/enums/token_origin_source_type.dart';
+import '../../model/tokens/token.dart';
+import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
 import 'add_token_manually_view_widgets/labeled_dropdown_button.dart';
@@ -97,26 +98,36 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
                 validator: (value) {
                   if (value!.isEmpty) {
                     return AppLocalizations.of(context)!.pleaseEnterASecretForThisToken;
-                  } else if (!isValidEncoding(value, _encodingNotifier.value)) {
+                  } else if ((_typeNotifier.value == TokenTypes.STEAM && Encodings.base32.isInvalidEncoding(value)) ||
+                      (_typeNotifier.value != TokenTypes.STEAM && _encodingNotifier.value.isInvalidEncoding(value))) {
                     return AppLocalizations.of(context)!.theSecretDoesNotFitTheCurrentEncoding;
                   }
                   return null;
                 },
               ),
-              LabeledDropdownButton<Encodings>(
-                label: AppLocalizations.of(context)!.encoding,
-                values: Encodings.values,
-                valueNotifier: _encodingNotifier,
+              Visibility(
+                visible: _typeNotifier.value != TokenTypes.STEAM,
+                child: LabeledDropdownButton<Encodings>(
+                  label: AppLocalizations.of(context)!.encoding,
+                  values: Encodings.values,
+                  valueNotifier: _encodingNotifier,
+                ),
               ),
-              LabeledDropdownButton<Algorithms>(
-                label: AppLocalizations.of(context)!.algorithm,
-                values: Algorithms.values.reversed.toList(),
-                valueNotifier: _algorithmNotifier,
+              Visibility(
+                visible: _typeNotifier.value != TokenTypes.STEAM,
+                child: LabeledDropdownButton<Algorithms>(
+                  label: AppLocalizations.of(context)!.algorithm,
+                  values: Algorithms.values.reversed.toList(),
+                  valueNotifier: _algorithmNotifier,
+                ),
               ),
-              LabeledDropdownButton<int>(
-                label: AppLocalizations.of(context)!.digits,
-                values: AddTokenManuallyView.allowedDigits,
-                valueNotifier: _digitsNotifier,
+              Visibility(
+                visible: _typeNotifier.value != TokenTypes.STEAM,
+                child: LabeledDropdownButton<int>(
+                  label: AppLocalizations.of(context)!.digits,
+                  values: AddTokenManuallyView.allowedDigits,
+                  valueNotifier: _digitsNotifier,
+                ),
               ),
               LabeledDropdownButton<TokenTypes>(
                 label: AppLocalizations.of(context)!.type,
@@ -168,50 +179,29 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
     );
   }
 
-  OTPToken? _buildTokenIfValid({required BuildContext context}) {
+  Token? _buildTokenIfValid({required BuildContext context}) {
     if (_inputIsValid(context) == false) return null;
     Logger.info('Input is valid, building token');
-    return switch (_typeNotifier.value) {
-      TokenTypes.HOTP => _buildHOTPToken(),
-      TokenTypes.TOTP => _buildTOTPToken(),
-      TokenTypes.DAYPASSWORD => _buildDayPasswordToken(),
-      _ => null,
+
+    final uriMap = <String, dynamic>{
+      URI_TYPE: _typeNotifier.value.name,
+      URI_LABEL: _labelController.text,
+      URI_ISSUER: '',
+      URI_ALGORITHM: _algorithmNotifier.value.name,
+      URI_DIGITS: _digitsNotifier.value,
+      URI_SECRET: _encodingNotifier.value.decode(_secretController.text),
+      URI_COUNTER: 0,
+      URI_PERIOD: _typeNotifier.value == TokenTypes.DAYPASSWORD ? _periodDayPasswordNotifier.value * 60 * 60 : _periodNotifier.value,
     };
+    uriMap.addAll({
+      URI_ORIGIN: TokenOriginSourceType.manually.toTokenOrigin(
+        data: jsonEncode(uriMap),
+        appName: PrivacyIDEAAuthenticator.currentCustomization?.appName,
+        isPrivacyIdeaToken: false,
+      ),
+    });
+    return Token.fromUriMap(uriMap);
   }
-
-  HOTPToken _buildHOTPToken() {
-    return HOTPToken(
-      label: _labelController.text,
-      issuer: '',
-      id: const Uuid().v4(),
-      algorithm: _algorithmNotifier.value,
-      digits: _digitsNotifier.value,
-      secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),
-      origin: TokenOriginSourceType.manually.toTokenOrigin(),
-    );
-  }
-
-  TOTPToken _buildTOTPToken() => TOTPToken(
-        label: _labelController.text,
-        issuer: '',
-        id: const Uuid().v4(),
-        algorithm: _algorithmNotifier.value,
-        digits: _digitsNotifier.value,
-        secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),
-        period: _periodNotifier.value,
-        origin: TokenOriginSourceType.manually.toTokenOrigin(),
-      );
-
-  DayPasswordToken _buildDayPasswordToken() => DayPasswordToken(
-        label: _labelController.text,
-        issuer: '',
-        id: const Uuid().v4(),
-        algorithm: _algorithmNotifier.value,
-        digits: _digitsNotifier.value,
-        secret: encodeSecretAs(decodeSecretToUint8(_secretController.text, _encodingNotifier.value), Encodings.base32),
-        period: Duration(hours: _periodDayPasswordNotifier.value),
-        origin: TokenOriginSourceType.manually.toTokenOrigin(),
-      );
 
   /// Validates the inputs of the label and secret.
   bool _inputIsValid(BuildContext context) {

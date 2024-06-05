@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:otp/otp.dart' as otp_library;
 import 'package:uuid/uuid.dart';
 
-import '../../utils/crypto_utils.dart';
+import '../../utils/errors.dart';
 import '../../utils/identifiers.dart';
-import '../../utils/utils.dart';
 import '../enums/algorithms.dart';
-import '../enums/day_passoword_token_view_mode.dart';
+import '../enums/day_password_token_view_mode.dart';
 import '../enums/encodings.dart';
 import '../enums/token_types.dart';
-import '../extensions/enum_extension.dart';
-import '../token_origin.dart';
+import '../extensions/enums/algorithms_extension.dart';
+import '../extensions/enums/encodings_extension.dart';
+import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
 import 'token.dart';
 
@@ -20,17 +19,12 @@ part 'day_password_token.g.dart';
 @JsonSerializable()
 @immutable
 class DayPasswordToken extends OTPToken {
-  static String get tokenType => TokenTypes.DAYPASSWORD.asString;
+  static String get tokenType => TokenTypes.DAYPASSWORD.name;
   final DayPasswordTokenViewMode viewMode;
   final Duration period;
 
-  @override
-  Duration get showDuration => const Duration(seconds: 30);
-
   DayPasswordToken({
     required Duration period,
-    required super.label,
-    required super.issuer,
     required super.id,
     required super.algorithm,
     required super.digits,
@@ -44,13 +38,30 @@ class DayPasswordToken extends OTPToken {
     super.isLocked,
     super.isHidden,
     super.origin,
+    super.label = '',
+    super.issuer = '',
   })  : period = period.inSeconds > 0 ? period : const Duration(hours: 24),
-        super(type: TokenTypes.DAYPASSWORD.asString);
+        super(type: TokenTypes.DAYPASSWORD.name);
 
   @override
+  // Only the viewMode can be changed even if its the same token
   bool sameValuesAs(Token other) {
-    return super.sameValuesAs(other) && other is DayPasswordToken && other.period == period;
+    return super.sameValuesAs(other) && other is DayPasswordToken && other.viewMode == viewMode;
   }
+
+  @override
+  // It is the same token the the period as to be the same
+  bool isSameTokenAs(Token other) {
+    return super.isSameTokenAs(other) && other is DayPasswordToken && other.period == period;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return super == other && other is DayPasswordToken && other.period == period && other.viewMode == viewMode;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([super.hashCode, period, viewMode]);
 
   @override
   DayPasswordToken copyWith({
@@ -63,10 +74,10 @@ class DayPasswordToken extends OTPToken {
     int? digits,
     String? secret,
     String? tokenImage,
-    int? sortIndex,
     bool? pin,
     bool? isLocked,
     bool? isHidden,
+    int? sortIndex,
     int? Function()? folderId,
     TokenOriginData? origin,
   }) =>
@@ -76,7 +87,7 @@ class DayPasswordToken extends OTPToken {
         label: label ?? this.label,
         issuer: issuer ?? this.issuer,
         id: id ?? this.id,
-        type: TokenTypes.DAYPASSWORD.asString,
+        type: TokenTypes.DAYPASSWORD.name,
         algorithm: algorithm ?? this.algorithm,
         digits: digits ?? this.digits,
         secret: secret ?? this.secret,
@@ -85,17 +96,16 @@ class DayPasswordToken extends OTPToken {
         pin: pin ?? this.pin,
         isLocked: isLocked ?? this.isLocked,
         isHidden: isHidden ?? this.isHidden,
-        folderId: folderId != null ? folderId.call() : this.folderId,
+        folderId: folderId != null ? folderId() : this.folderId,
         origin: origin ?? this.origin,
       );
 
   @override
-  String get otpValue => otp_library.OTP.generateTOTPCodeString(
-        secret,
-        DateTime.now().millisecondsSinceEpoch,
+  String get otpValue => algorithm.generateTOTPCodeString(
+        secret: secret,
+        time: DateTime.now(),
         length: digits,
-        algorithm: algorithm.otpLibraryAlgorithm,
-        interval: period.inSeconds,
+        interval: period,
         isGoogle: true,
       );
 
@@ -111,35 +121,56 @@ class DayPasswordToken extends OTPToken {
     return DateTime.now().add(durationUntilNextOTP + const Duration(milliseconds: 1));
   }
 
-  factory DayPasswordToken.fromUriMap(Map<String, dynamic> uriMap) {
-    if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
-    if (uriMap[URI_PERIOD] < 1) throw ArgumentError('Period must be greater than 0');
-    if (uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
-    DayPasswordToken dayPasswordToken;
-    try {
-      dayPasswordToken = DayPasswordToken(
-        label: uriMap[URI_LABEL] ?? '',
-        issuer: uriMap[URI_ISSUER] ?? '',
-        id: const Uuid().v4(),
-        algorithm: mapStringToAlgorithm(uriMap[URI_ALGORITHM] ?? 'SHA1'),
-        digits: uriMap[URI_DIGITS] ?? 6,
-        secret: encodeSecretAs(uriMap[URI_SECRET], Encodings.base32),
-        period: Duration(seconds: uriMap[URI_PERIOD]),
-        tokenImage: uriMap[URI_IMAGE],
-        pin: uriMap[URI_PIN],
-        isLocked: uriMap[URI_PIN],
+  /// Throws an Error if the uriMap is invalid
+  static void validateUriMap(Map<String, dynamic> uriMap) {
+    if (uriMap[URI_SECRET] == null) {
+      throw LocalizedArgumentError(
+        localizedMessage: ((localizations, value, name) => localizations.secretIsRequired),
+        unlocalizedMessage: 'Secret is required',
+        invalidValue: uriMap[URI_SECRET],
+        name: URI_SECRET,
       );
-    } catch (e) {
-      throw ArgumentError('Invalid URI: $e');
     }
-    return dayPasswordToken;
+    if (uriMap[URI_PERIOD] != null && uriMap[URI_PERIOD] < 1) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Period must be greater than 0',
+        invalidValue: uriMap[URI_PERIOD],
+        name: URI_PERIOD,
+      );
+    }
+    if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Digits must be greater than 0',
+        invalidValue: uriMap[URI_DIGITS],
+        name: URI_DIGITS,
+      );
+    }
   }
 
-  factory DayPasswordToken.fromJson(Map<String, dynamic> json) => _$DayPasswordTokenFromJson(json);
-  Map<String, dynamic> toJson() => _$DayPasswordTokenToJson(this);
+  factory DayPasswordToken.fromUriMap(Map<String, dynamic> uriMap) {
+    validateUriMap(uriMap);
+
+    return DayPasswordToken(
+      label: uriMap[URI_LABEL] ?? '',
+      issuer: uriMap[URI_ISSUER] ?? '',
+      id: const Uuid().v4(),
+      algorithm: Algorithms.values.byName(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+      digits: uriMap[URI_DIGITS] ?? 6,
+      secret: Encodings.base32.encode(uriMap[URI_SECRET]),
+      period: Duration(seconds: uriMap[URI_PERIOD] ?? 86400), // default 24 hours
+      tokenImage: uriMap[URI_IMAGE],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+    );
+  }
 
   @override
-  String toString() {
-    return 'DayPassword${super.toString()}period: $period';
-  }
+  Map<String, dynamic> toJson() => _$DayPasswordTokenToJson(this);
+  factory DayPasswordToken.fromJson(Map<String, dynamic> json) => _$DayPasswordTokenFromJson(json);
+
+  @override
+  String toString() => 'DayPassword${super.toString()}period: $period';
 }

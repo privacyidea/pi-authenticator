@@ -14,7 +14,7 @@ publish_to: none
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 4.3.1+403107 # TODO Set the right version number 
+version: 4.4.0+404001 # TODO Set the right version number 
 # version: major.minor.build          + 2x major|2x minor|3x build
 # version: version number             + build number (optional)
 # android: build-name                 + versionCode
@@ -30,12 +30,12 @@ dependencies:
     sdk: flutter
   app_minimizer: ^1.0.0+2
   flutter_local_notifications: ^17.0.0
-  home_widget: ^0.4.1
+  home_widget: ^0.6.0
   image: ^4.1.6
   json_annotation: ^4.8.1
   local_auth: ^2.1.6
+  local_auth_android: ^1.0.37
   local_auth_darwin: ^1.2.2
-  local_auth_android: ^1.0.32
   logger: ^2.0.0
   permission_handler: ^11.0.0
   pi_authenticator_legacy:
@@ -56,13 +56,13 @@ dependencies:
   shared_preferences: ^2.2.0
   flutter_secure_storage: ^9.0.0
   # Info
-  package_info_plus: ^5.0.1
-  device_info_plus: ^9.0.3
+  package_info_plus: ^8.0.0
+  device_info_plus: ^10.0.1
   # URI
-  uni_links: ^0.5.1
+  app_links: ^6.1.1
   url_launcher: ^6.0.12
   http: ^1.2.0
-  connectivity_plus: ^5.0.1
+  connectivity_plus: ^6.0.1
   flutter_mailer: ^2.1.1
   # Riverpod
   flutter_riverpod: ^2.3.6
@@ -76,11 +76,17 @@ dependencies:
   easy_dynamic_theme: ^2.2.0
   flutter_slidable: ^3.0.0
   expandable: ^5.0.1
-  camera: ^0.10.5+9
-  flutter_zxing: ^1.5.2
+  camera: ^0.11.0
   firebase_messaging: ^14.7.19
-  firebase_core: ^2.27.0
   collection: ^1.18.0
+  crypto: ^3.0.3
+  intl: ^0.19.0
+  protobuf: ^3.1.0
+  firebase_core: ^2.27.0
+  simple_icons: ^10.1.3
+  path_provider: ^2.1.2
+  qr_flutter: ^4.1.0
+  
 
 dev_dependencies:
   flutter_driver:
@@ -89,10 +95,9 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
   mockito: ^5.4.2
   test: ^1.24.1
-  protobuf: ^3.1.0
 
 
   # dependencies to serialize objects to json

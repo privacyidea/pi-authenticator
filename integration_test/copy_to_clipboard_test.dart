@@ -12,9 +12,9 @@ import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
-import 'package:privacyidea_authenticator/utils/app_customizer.dart';
+import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/version.dart';
+import 'package:privacyidea_authenticator/model/version.dart';
 
 import '../test/tests_app_wrapper.dart';
 import '../test/tests_app_wrapper.mocks.dart';
@@ -38,7 +38,7 @@ void main() {
     when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
-    when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
+    when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
     final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
     when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
@@ -50,7 +50,7 @@ void main() {
         tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
       ],
-      child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
+      child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
     ));
     await tester.pumpAndSettle();
     await pumpUntilFindNWidgets(tester, find.text('356 306'), 1, const Duration(seconds: 10));

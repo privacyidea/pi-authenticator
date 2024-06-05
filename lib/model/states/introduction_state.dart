@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../enums/introduction.dart';
+import '../extensions/enums/introduction_extension.dart';
 
 part 'introduction_state.g.dart';
 

@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
-import '../../utils/version.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../utils/identifiers.dart';
+import '../version.dart';
 
 /// This class contains all device specific settings. E.g., the language used, whether to show the guide on start, etc.
 class SettingsState {

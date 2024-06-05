@@ -14,7 +14,7 @@ class TokenFolder with SortableMixin {
   final bool isLocked;
   @override
   final int? sortIndex;
-
+  @override
   const TokenFolder({
     required this.label,
     required this.folderId,

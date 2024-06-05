@@ -28,7 +28,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get patchNotesV4_3_0NewFeatures2 => 'Feedback-Option zu den Einstellungen hinzugefügt.';
 
   @override
-  String get patchNotesV4_3_0NewFeatures3 => 'Push-Tokens können jetzt aus der Token-Liste ausgeblendet werden.';
+  String get patchNotesV4_3_0NewFeatures3 => 'Push-Token können jetzt aus der Token-Liste ausgeblendet werden.';
 
   @override
   String get patchNotesV4_3_0NewFeatures4 => 'Es wurden Einführungen hinzugefügt, um neuen Benutzern den Einstieg zu erleichtern.';
@@ -141,6 +141,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get systemTheme => 'Nutze Farbschema des Geräts';
+
+  @override
+  String get someTokensDoNotSupportPolling => 'Einige der Token sind veraltet und unterstützen keine aktiven Anfragen';
 
   @override
   String get enablePolling => 'Aktives Stellen von Push-Anfragen';
@@ -607,6 +610,18 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String importFailedToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Der Import von $count Token ist fehlgeschlagen.',
+      one: 'Importieren eines Tokens fehlgeschlagen.',
+      zero: 'Kein Token konnte nicht importiert werden.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String importExistingToken(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -623,8 +638,8 @@ class AppLocalizationsDe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.',
-      one: 'Es besteht ein Konflikt mit bereits existierenden Token.\nBitte wählen Sie aus, welches Sie behalten möchten.',
+      other: 'Es bestehen Konflikte mit bereits vorhandenen Token.\nBitte wählen Sie die Token aus, die Sie behalten möchten.',
+      one: 'Es besteht ein Konflikt mit bereits vorhandenen Token.\nBitte wählen Sie aus, welches Sie behalten möchten.',
       zero: 'Es besteht kein Konflikt mit bereits existierenden Token.',
     );
     return '$_temp0';
@@ -659,6 +674,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get importHintGoogleQrFile => 'Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus dem Google Authenticator exportieren.\n!! Der QR-Code enthält die Token in unverschlüsselter Form. Es ist deshalb nicht sicher, diesen länger als nötig aufzubewahren !!';
+
+  @override
+  String get importHintAuthenticatorProFile => 'Um ein Backup der Authenticator Pro-App zu erstellen navigieren Sie zu den Einstellungen und tippen Sie auf \"Automatische Sicherung\". Wählen Sie einen Speicherort und setzen Sie ein Passwort. Anschließend drücken Sie auf \"Jetzt sichern\" um die Token zu exportieren.';
+
+  @override
+  String get importHintFreeOtpPlusQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie auf die drei Punkte in der Kachel des Tokens drücken, und wählen Sie \"QR-Code teilen\".';
+
+  @override
+  String get importHintFreeOtpPlusFile => 'Um ein Backup der FreeOTP+ App zu erstellen, tippen Sie auf die drei Punkte in der oberen rechten Ecke und wählen Sie \"Exportieren\". Sie können zwischen dem JSON- und dem URI-Format wählen. Wir empfehlen, das Backup nach dem Importieren zu löschen, da es nicht verschlüsselt ist.';
 
   @override
   String get qrFileDecodeError => 'Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren. Bitte verwenden Sie stattdessen den QR-Code-Scanner.';
@@ -714,5 +738,141 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String requestInfo(Object issuer, Object account) {
     return 'Gesendet von $issuer für Ihr Konto: \"$account\"';
+  }
+
+  @override
+  String errorUnlinkingPushToken(Object label) {
+    return 'Entkoppeln des Push Tokens $label fehlgeschlagen.';
+  }
+
+  @override
+  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Bitte synchronisieren Sie die Push Token über die Einstellungen manuell, wenn eine Netzwerkverbindung verfügbar ist.';
+
+  @override
+  String get pushTokens => 'Push-Token';
+
+  @override
+  String get continueButton => 'Weiter';
+
+  @override
+  String get addTokenManually => 'Token manuell hinzufügen';
+
+  @override
+  String get addFolder => 'Ordner hinzufügen';
+
+  @override
+  String get searchTokens => 'Token suchen';
+
+  @override
+  String get closeSearchTokens => 'Suche schließen';
+
+  @override
+  String get increaseCounter => 'Zähler erhöhen';
+
+  @override
+  String get copyOTPToClipboard => 'OTP in die Zwischenablage kopieren';
+
+  @override
+  String get licenses => 'Lizenzen';
+
+  @override
+  String get optionalMessage => 'Optionale Nachricht';
+
+  @override
+  String get confirmation => 'Confirmation';
+
+  @override
+  String get askLogSendedDescription => 'Haben Sie das Protokoll gesendet, und möchten Sie es jetzt löschen?';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'Der Algorithmus $algorithm wird nicht unterstützt';
+  }
+
+  @override
+  String get thisAppIsOpenSource => 'Diese App ist Open Source\nBesuchen Sie uns auf GitHub';
+
+  @override
+  String get importExportTokens => 'Token importieren/exportieren';
+
+  @override
+  String get exportNonPrivacyIDEATokens => 'Nicht-privacyIDEA-Token exportieren';
+
+  @override
+  String selectTokensToExport(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Wählen Sie die zu exportierenden Tokens aus',
+      one: 'Wählen Sie das zu exportierende Token aus',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noTokensToExport => 'Keine Tokens zum Exportieren';
+
+  @override
+  String get exportAllTokens => 'Alle Tokens exportieren';
+
+  @override
+  String get export => 'Exportieren';
+
+  @override
+  String get exportingTokens => 'Tokens werden exportiert...';
+
+  @override
+  String get exportTokens => 'Tokens exportieren';
+
+  @override
+  String get enterPasswordToEncrypt => 'Geben Sie ein Passwort ein, um die Tokens zu verschlüsseln. Dieses Passwort wird benötigt, um die Tokens zu importieren.';
+
+  @override
+  String get exportLockedTokenReason => 'Bitte authentifizieren Sie sich, um gesperrte Tokens zu exportieren.';
+
+  @override
+  String get fileSavedToDownloadsFolder => 'Datei wurde im Download-Ordner gespeichert';
+
+  @override
+  String get errorSavingFile => 'Fehler beim Speichern der Datei';
+
+  @override
+  String get toFile => 'In Datei';
+
+  @override
+  String get asQrCode => 'Als QR-Code';
+
+  @override
+  String get scanThisQrWithNewDevice => 'Scannen Sie diesen QR-Code mit Ihrem neuen Gerät, um das Token zu importieren.';
+
+  @override
+  String get oneMore => 'Noch eins';
+
+  @override
+  String get done => 'Fertig';
+
+  @override
+  String get confirmPassword => 'Passwort bestätigen';
+
+  @override
+  String get secretIsRequired => 'Secret is required';
+
+  @override
+  String get tokenDataParseError => 'Token data could not be parsed';
+
+  @override
+  String missingRequiredParameter(Object counter) {
+    return 'Value for parameter [$counter] is required and is missing';
+  }
+
+  @override
+  String invalidValueForParameter(Object value, Object parameter) {
+    return '[$value] is not a valid value for uri parameter [parameter].';
+  }
+
+  @override
+  String unsupported(Object name, Object value) {
+    return 'The $name [$value] is not supported by this version of the app.';
   }
 }

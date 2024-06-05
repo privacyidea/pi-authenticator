@@ -2,22 +2,23 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:privacyidea_authenticator/widgets/custom_trailing.dart';
 
 import '../../../../../l10n/app_localizations.dart';
-import '../../../../../model/enums/day_passoword_token_view_mode.dart';
+import '../../../../../model/enums/day_password_token_view_mode.dart';
 import '../../../../../model/tokens/day_password_token.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
+import '../../../../../widgets/custom_trailing.dart';
+import '../../../../../widgets/hideable_widget_.dart';
 import '../token_widget_tile.dart';
 
 class DayPasswordTokenWidgetTile extends ConsumerStatefulWidget {
   final DayPasswordToken token;
-  const DayPasswordTokenWidgetTile(this.token, {super.key});
+  final bool isPreview;
+  const DayPasswordTokenWidgetTile(this.token, {this.isPreview = false, super.key});
 
   @override
   ConsumerState<DayPasswordTokenWidgetTile> createState() => _DayPasswordTokenWidgetTileState();
@@ -78,70 +79,95 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
       tokenImage: widget.token.tokenImage,
       tokenIsLocked: widget.token.isLocked,
+      isPreview: widget.isPreview,
       title: Align(
         alignment: Alignment.centerLeft,
-        child: InkWell(
-          onTap: widget.token.isLocked && widget.token.isHidden ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token) : _copyOtpValue,
-          child: HideableText(
-              text: insertCharAt(widget.token.otpValue, ' ', widget.token.digits ~/ 2),
-              textScaleFactor: 1.9,
-              enabled: widget.token.isLocked,
-              isHidden: widget.token.isHidden),
+        child: Tooltip(
+          message: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+          child: InkWell(
+            onTap: widget.isPreview
+                ? null
+                : widget.token.isLocked && widget.token.isHidden
+                    ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
+                    : _copyOtpValue,
+            child: HideableText(
+                text: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
+                textScaleFactor: 1.9,
+                enabled: widget.token.isLocked,
+                isHidden: widget.token.isHidden),
+          ),
         ),
       ),
-      subtitles: [
-        if (widget.token.label.isNotEmpty) widget.token.label,
-        if (widget.token.issuer.isNotEmpty) widget.token.issuer,
-      ],
-      trailing: CustomTrailing(
-        padding: const EdgeInsets.all(0),
-        fit: BoxFit.none,
-        child: GestureDetector(
-          behavior: HitTestBehavior.deferToChild,
-          onTap: () {
-            if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDFOR) {
-              globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
-              return;
-            }
-            if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDUNTIL) {
-              globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
-              return;
-            }
-          },
-          child: SizedBox(
-            height: Theme.of(context).textTheme.bodyLarge!.fontSize! * (Theme.of(context).textTheme.bodyLarge?.height ?? 1.2) * 3.1,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Text(
-                    switch (widget.token.viewMode) {
-                      DayPasswordTokenViewMode.VALIDFOR => '${AppLocalizations.of(context)!.validFor}:',
-                      DayPasswordTokenViewMode.VALIDUNTIL => '${AppLocalizations.of(context)!.validUntil}:',
+      subtitles: widget.isPreview
+          ? [
+              (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
+                  ? '${widget.token.issuer}: ${widget.token.label}'
+                  : widget.token.issuer + widget.token.label,
+              'Algorithm: ${widget.token.algorithm.name}',
+              'Period: ${widget.token.period.toString().split('.').first}',
+            ]
+          : [
+              if (widget.token.label.isNotEmpty) widget.token.label,
+              if (widget.token.issuer.isNotEmpty) widget.token.issuer,
+            ],
+      trailing: SizedBox(
+        height: double.maxFinite,
+        child: CustomTrailing(
+          padding: const EdgeInsets.all(0),
+          fit: BoxFit.contain,
+          child: HideableWidget(
+            isHidden: widget.token.isHidden && !widget.isPreview,
+            token: widget.token,
+            child: GestureDetector(
+              behavior: HitTestBehavior.deferToChild,
+              onTap: widget.isPreview
+                  ? null
+                  : () {
+                      if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDFOR) {
+                        globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
+                        return;
+                      }
+                      if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDUNTIL) {
+                        globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
+                        return;
+                      }
                     },
-                    style: Theme.of(context).listTileTheme.subtitleTextStyle,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      switch (widget.token.viewMode) {
-                        DayPasswordTokenViewMode.VALIDFOR => durationString,
-                        DayPasswordTokenViewMode.VALIDUNTIL => '$yMdString\n$ejmString',
-                      },
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
-                      maxLines: 2,
+              child: SizedBox(
+                height: Theme.of(context).textTheme.bodyLarge!.fontSize! * (Theme.of(context).textTheme.bodyLarge?.height ?? 1.2) * 3.1,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        switch (widget.token.viewMode) {
+                          DayPasswordTokenViewMode.VALIDFOR => '${AppLocalizations.of(context)!.validFor}:',
+                          DayPasswordTokenViewMode.VALIDUNTIL => '${AppLocalizations.of(context)!.validUntil}:',
+                        },
+                        style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                      ),
                     ),
-                  ),
+                    Expanded(
+                      flex: 2,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          switch (widget.token.viewMode) {
+                            DayPasswordTokenViewMode.VALIDFOR => durationString,
+                            DayPasswordTokenViewMode.VALIDUNTIL => '$yMdString\n$ejmString',
+                          },
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                          maxLines: 2,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

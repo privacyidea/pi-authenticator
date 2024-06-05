@@ -16,23 +16,27 @@ class TokenFolderWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final draggingSortable = ref.watch(draggingSortableProvider);
+    final draggingSortableNotifier = ref.read(draggingSortableProvider.notifier);
     final TokenFolder? draggingFolder = draggingSortable is TokenFolder ? draggingSortable : null;
     return draggingSortable == null
         ? LongPressDraggable(
             maxSimultaneousDrags: 1,
             dragAnchorStrategy: (draggable, context, position) {
-              final textSize = textSizeOf(folder.label, Theme.of(context).textTheme.titleLarge!);
+              final textSize = textSizeOf(
+                text: folder.label,
+                style: Theme.of(context).textTheme.titleLarge!,
+                textScaler: MediaQuery.of(context).textScaler,
+                maxLines: 1,
+              );
               return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
             },
-            onDragStarted: () {
-              ref.read(draggingSortableProvider.notifier).state = folder;
+            onDragStarted: () => draggingSortableNotifier.state = folder,
+            onDragCompleted: () async {
+              await Future.delayed(const Duration(milliseconds: 50));
+              // FIXME: The folder may appear before reordering the list. (race condition) This results in a flickering effect. Waiting here is a workaround so the list is updated before the folder visible again. We should find a better solution.
+              draggingSortableNotifier.state = null;
             },
-            onDragCompleted: () {
-              globalRef?.read(draggingSortableProvider.notifier).state = null;
-            },
-            onDraggableCanceled: (velocity, offset) {
-              globalRef?.read(draggingSortableProvider.notifier).state = null;
-            },
+            onDraggableCanceled: (velocity, offset) => draggingSortableNotifier.state = null,
             data: folder,
             childWhenDragging: const SizedBox(),
             feedback: Column(

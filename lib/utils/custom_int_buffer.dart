@@ -1,46 +1,50 @@
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'custom_int_buffer.g.dart';
 
 @JsonSerializable()
 class CustomIntBuffer {
-  final int maxSize = 30;
+  final int maxSize;
+  final List<int> _list;
+  const CustomIntBuffer({this.maxSize = 100, List<int> list = const []}) : _list = list;
 
-  CustomIntBuffer();
-
-  List<int>? _list;
-
-  // The get and set methods are needed for serialization.
-  List<int> get list {
-    _list ??= [];
-    return _list!;
+  CustomIntBuffer copyWith({int? maxSize, List<int>? list}) {
+    return CustomIntBuffer(
+      maxSize: maxSize ?? this.maxSize,
+      list: list ?? _list,
+    );
   }
 
-  set list(List<int> l) {
-    if (_list != null) {
-      throw ArgumentError('Initializing [list] in [CustomStringBuffer] is only allowed once.');
+  List<int> toList() => _list.toList();
+  CustomIntBuffer put(int value) {
+    final newList = _list.toList()..add(value);
+    if (newList.length > maxSize) newList.removeAt(0);
+    return CustomIntBuffer(maxSize: maxSize, list: newList);
+  }
+
+  CustomIntBuffer putList(List<int> values) {
+    final newList = _list.toList()..addAll(values);
+    while (newList.length > maxSize) {
+      newList.removeAt(0);
     }
-
-    if (l.length > maxSize) {
-      throw ArgumentError('The list $l is to long for a buffer of size $maxSize');
-    }
-
-    _list = l;
+    return CustomIntBuffer(maxSize: maxSize, list: newList);
   }
 
-  void put(int value) {
-    if (list.length >= maxSize) list.removeAt(0);
-    list.add(value);
-  }
-
-  int get length => list.length;
+  int get length => _list.length;
+  @override
+  String toString() => 'CustomIntBuffer{maxSize: $maxSize, _list: $_list}';
+  bool contains(int value) => _list.contains(value);
 
   @override
-  String toString() => list.toString();
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is CustomIntBuffer && listEquals(other._list, _list);
+  }
 
-  bool contains(int value) => list.contains(value);
+  @override
+  int get hashCode => Object.hashAll([maxSize, ..._list]);
 
   factory CustomIntBuffer.fromJson(Map<String, dynamic> json) => _$CustomIntBufferFromJson(json);
-
   Map<String, dynamic> toJson() => _$CustomIntBufferToJson(this);
 }

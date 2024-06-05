@@ -7,23 +7,23 @@ part of 'hotp_token.dart';
 // **************************************************************************
 
 HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
-      counter: json['counter'] as int? ?? 0,
-      label: json['label'] as String,
-      issuer: json['issuer'] as String,
+      counter: (json['counter'] as num?)?.toInt() ?? 0,
       id: json['id'] as String,
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
-      digits: json['digits'] as int,
+      digits: (json['digits'] as num).toInt(),
       secret: json['secret'] as String,
       type: json['type'] as String?,
       tokenImage: json['tokenImage'] as String?,
-      sortIndex: json['sortIndex'] as int?,
       pin: json['pin'] as bool?,
       isLocked: json['isLocked'] as bool?,
       isHidden: json['isHidden'] as bool?,
-      folderId: json['folderId'] as int?,
+      sortIndex: (json['sortIndex'] as num?)?.toInt(),
+      folderId: (json['folderId'] as num?)?.toInt(),
       origin: json['origin'] == null
           ? null
           : TokenOriginData.fromJson(json['origin'] as Map<String, dynamic>),
+      label: json['label'] as String? ?? '',
+      issuer: json['issuer'] as String? ?? '',
     );
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{

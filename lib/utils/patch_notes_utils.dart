@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/enums/patch_note_type.dart';
+import '../model/version.dart';
 import '../widgets/dialog_widgets/patch_notes_dialog.dart';
 import 'app_info_utils.dart';
 import 'globals.dart';
 import 'logger.dart';
-import 'version.dart';
 
 class PatchNotesUtils {
   static Map<Version, Map<PatchNoteType, List<String>>> _getNewPatchNotes({required BuildContext context, required Version latestStartedVersion}) {

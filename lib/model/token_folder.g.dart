@@ -8,10 +8,10 @@ part of 'token_folder.dart';
 
 TokenFolder _$TokenFolderFromJson(Map<String, dynamic> json) => TokenFolder(
       label: json['label'] as String,
-      folderId: json['folderId'] as int,
+      folderId: (json['folderId'] as num).toInt(),
       isExpanded: json['isExpanded'] as bool? ?? true,
       isLocked: json['isLocked'] as bool? ?? false,
-      sortIndex: json['sortIndex'] as int?,
+      sortIndex: (json['sortIndex'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$TokenFolderToJson(TokenFolder instance) =>
