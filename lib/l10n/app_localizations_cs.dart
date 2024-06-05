@@ -875,4 +875,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String unsupported(Object name, Object value) {
     return 'The $name [$value] is not supported by this version of the app.';
   }
+
+  @override
+  String get sendPushRequestResponseFailed => 'Odpověď se nepodařilo odeslat.';
 }

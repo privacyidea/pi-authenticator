@@ -24,7 +24,7 @@ class SettingsGroupPushToken extends ConsumerWidget {
           ListTile(
             title: Text(
               AppLocalizations.of(context)!.synchronizePushTokens,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             subtitle: Text(
               AppLocalizations.of(context)!.synchronizesTokensWithServer,
@@ -54,7 +54,7 @@ class SettingsGroupPushToken extends ConsumerWidget {
                 children: [
                   TextSpan(
                     text: AppLocalizations.of(context)!.enablePolling,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   // Add clickable icon to inform user of unsupported push tokens (for polling)
                   WidgetSpan(
@@ -89,7 +89,7 @@ class SettingsGroupPushToken extends ConsumerWidget {
                 children: [
                   TextSpan(
                     text: AppLocalizations.of(context)!.hidePushTokens,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
               ),

@@ -32,7 +32,7 @@ dependencies:
   flutter_local_notifications: ^17.0.0
   home_widget: ^0.6.0
   image: ^4.1.6
-  json_annotation: ^4.8.1
+  json_annotation: ^4.9.0
   local_auth: ^2.1.6
   local_auth_android: ^1.0.37
   local_auth_darwin: ^1.2.2

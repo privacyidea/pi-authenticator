@@ -636,5 +636,9 @@
   "scanThisQrWithNewDevice": "Scannez ce code QR avec votre nouvel appareil pour importer le jeton.",
   "oneMore": "Encore un",
   "done": "Terminé",
-  "confirmPassword": "Confirmer le mot de passe"
+  "confirmPassword": "Confirmer le mot de passe",
+  "sendPushRequestResponseFailed": "Échec de l'envoi de la réponse.",
+  "@sendPushRequestResponseFailed": {
+    "description": "Error message when the response to a push request could not be sent."
+  }
 }

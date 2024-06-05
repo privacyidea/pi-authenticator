@@ -24,7 +24,7 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
         SettingsListTileButton(
           title: Text(
             AppLocalizations.of(context)!.exportNonPrivacyIDEATokens,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.bodyMedium,
             maxLines: 2,
             overflow: TextOverflow.fade,
           ),
@@ -40,7 +40,7 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
           },
           title: Text(
             AppLocalizations.of(context)!.importTokens,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.bodyMedium,
             overflow: TextOverflow.fade,
             softWrap: false,
           ),

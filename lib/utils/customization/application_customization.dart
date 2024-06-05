@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/customization/theme_customization.dart';
+import '../../../utils/customization/theme_customization.dart';
 
 import '../../model/enums/app_feature.dart';
 
