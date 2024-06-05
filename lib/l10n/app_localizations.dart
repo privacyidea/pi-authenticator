@@ -1668,6 +1668,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The {name} [{value}] is not supported by this version of the app.'**
   String unsupported(Object name, Object value);
+
+  /// Error message when the response to a push request could not be sent.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send the response.'**
+  String get sendPushRequestResponseFailed;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

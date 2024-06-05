@@ -14,7 +14,7 @@ class SettingsGroupErrorLog extends StatelessWidget {
           ListTile(
             title: Text(
               AppLocalizations.of(context)!.logMenu,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.bodyMedium,
               overflow: TextOverflow.fade,
               softWrap: false,
             ),

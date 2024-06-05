@@ -33,7 +33,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
               ? Text(
                   AppLocalizations.of(context)!.noTokensToExport,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.secondary),
                 )
               : Column(
                   mainAxisSize: MainAxisSize.min,
@@ -76,7 +76,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
                                   child: TextButton(
                                     style: _selectedTokens.contains(token)
                                         ? ButtonStyle(
-                                            backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary.withAlpha(80)),
+                                            backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.secondary.withAlpha(80)),
                                           )
                                         : null,
                                     onPressed: () async {

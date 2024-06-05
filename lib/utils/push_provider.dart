@@ -26,13 +26,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
-import 'package:privacyidea_authenticator/repo/secure_push_request_repository.dart';
-import 'package:privacyidea_authenticator/utils/pi_notifications.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/push_request.dart';
 import '../model/tokens/push_token.dart';
+import '../repo/secure_push_request_repository.dart';
 import '../repo/secure_token_repository.dart';
+import '../utils/pi_notifications.dart';
 import 'firebase_utils.dart';
 import 'globals.dart';
 import 'logger.dart';
@@ -144,7 +144,7 @@ class PushProvider {
     try {
       data = _getAndValidateDataFromRemoteMessage(remoteMessage);
     } on ArgumentError catch (_) {
-      Logger.info('Try requesting the challenge by polling.', name: 'push_provider.dart#_foregroundHandler');
+      Logger.info('Failed to parse push request data. Trying to poll for challenges.', name: 'push_provider.dart#_foregroundHandler');
       await pollForChallenges(isManually: true);
       return;
     }
@@ -152,8 +152,12 @@ class PushProvider {
     try {
       return _handleIncomingRequestForeground(data);
     } catch (e, s) {
-      final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError;
-      Logger.error(errorMessage, name: 'push_provider.dart#_foregroundHandler', error: e, stackTrace: s);
+      Logger.error(
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError,
+        name: 'push_provider.dart#_foregroundHandler',
+        error: e,
+        stackTrace: s,
+      );
     }
   }
 
@@ -198,6 +202,7 @@ class PushProvider {
   Future<void> _handleIncomingRequestForeground(Map<String, dynamic> data) async {
     Logger.info('Incoming push challenge.', name: 'push_provider.dart#_handleIncomingRequestForeground');
     PushRequest pushRequest = PushRequest.fromMessageData(data);
+    Logger.info("PushRequest.possibleAnswers: ${pushRequest.possibleAnswers}", name: 'push_provider.dart#_handleIncomingRequestForeground');
     Logger.info('Parsing data of push request succeeded.', name: 'push_provider.dart#_handleIncomingRequestForeground');
     final pushToken = globalRef?.read(tokenProvider).getTokenBySerial(pushRequest.serial);
     if (pushToken == null) {

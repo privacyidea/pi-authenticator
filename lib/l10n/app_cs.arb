@@ -635,5 +635,9 @@
   "scanThisQrWithNewDevice": "Naskenujte tento QR kód svým novým zařízením pro import žetonu.",
   "oneMore": "Ještě jeden",
   "done": "Hotovo",
-  "confirmPassword": "Potvrďte heslo"
+  "confirmPassword": "Potvrďte heslo",
+  "sendPushRequestResponseFailed": "Odpověď se nepodařilo odeslat.",
+  "@sendPushRequestResponseFailed": {
+    "description": "Error message when the response to a push request could not be sent."
+  }
 }

@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/customization/action_theme.dart';
-import 'package:privacyidea_authenticator/utils/customization/extended_text_theme.dart';
+
+import '../../../utils/customization/action_theme.dart';
+import '../../../utils/customization/extended_text_theme.dart';
 
 class ThemeCustomization {
   static const ThemeCustomization defaultLightTheme = ThemeCustomization.defaultLightWith();
@@ -265,23 +266,25 @@ class ThemeCustomization {
           primaryColor: primaryColor,
           canvasColor: backgroundColor,
           textTheme: const TextTheme().copyWith(
-            bodyLarge: TextStyle(color: foregroundColor),
-            bodyMedium: TextStyle(color: foregroundColor),
-            titleMedium: TextStyle(color: foregroundColor),
-            titleSmall: TextStyle(color: foregroundColor),
+            bodyLarge: TextStyle(color: foregroundColor, fontSize: 18),
+            bodyMedium: TextStyle(color: foregroundColor, fontSize: 16),
+            bodySmall: TextStyle(color: subtitleColor, fontSize: 14),
+            titleLarge: TextStyle(color: primaryColor),
+            titleMedium: TextStyle(color: primaryColor),
+            titleSmall: TextStyle(color: primaryColor),
             displayLarge: TextStyle(color: foregroundColor),
             displayMedium: TextStyle(color: foregroundColor),
             displaySmall: TextStyle(color: foregroundColor),
-            headlineMedium: TextStyle(color: foregroundColor),
-            headlineSmall: TextStyle(color: foregroundColor),
-            titleLarge: TextStyle(color: primaryColor),
-            bodySmall: TextStyle(color: subtitleColor),
+            headlineMedium: TextStyle(color: primaryColor),
+            headlineLarge: TextStyle(color: primaryColor),
+            headlineSmall: TextStyle(color: primaryColor),
             labelLarge: TextStyle(color: foregroundColor),
+            labelMedium: TextStyle(color: foregroundColor),
             labelSmall: TextStyle(color: foregroundColor),
           ),
           iconButtonTheme: IconButtonThemeData(
             style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.all(foregroundColor),
+              foregroundColor: WidgetStateProperty.all(foregroundColor),
             ),
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
@@ -324,7 +327,7 @@ class ThemeCustomization {
           navigationBarTheme: const NavigationBarThemeData().copyWith(
             backgroundColor: navigationBarColor,
             shadowColor: shadowColor,
-            iconTheme: MaterialStatePropertyAll(IconThemeData(color: navigationBarIconColor)),
+            iconTheme: WidgetStatePropertyAll(IconThemeData(color: navigationBarIconColor)),
             elevation: 3,
           ),
           floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -361,8 +364,8 @@ class ThemeCustomization {
                   errorContainer: deleteColor,
                 ),
           checkboxTheme: CheckboxThemeData(
-            checkColor: MaterialStateProperty.resolveWith<Color?>((_) => onPrimary),
-            fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            checkColor: WidgetStateProperty.resolveWith<Color?>((_) => onPrimary),
+            fillColor: WidgetStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
               if (states.contains(MaterialState.disabled)) {
                 return null;
               }
@@ -373,7 +376,7 @@ class ThemeCustomization {
             }),
           ),
           radioTheme: RadioThemeData(
-            fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            fillColor: WidgetStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
               if (states.contains(MaterialState.disabled)) {
                 return null;
               }
@@ -384,7 +387,7 @@ class ThemeCustomization {
             }),
           ),
           switchTheme: SwitchThemeData(
-            thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            thumbColor: WidgetStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
               if (states.contains(MaterialState.disabled)) {
                 return null;
               }
@@ -393,7 +396,7 @@ class ThemeCustomization {
               }
               return null;
             }),
-            trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            trackColor: WidgetStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
               if (states.contains(MaterialState.disabled)) {
                 return null;
               }

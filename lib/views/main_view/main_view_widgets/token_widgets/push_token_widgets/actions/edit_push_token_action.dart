@@ -139,7 +139,7 @@ class EditPushTokenAction extends TokenAction {
               ExpansionTile(
                 title: Text(
                   AppLocalizations.of(context)!.publicKey,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.bodyMedium,
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),
@@ -154,7 +154,7 @@ class EditPushTokenAction extends TokenAction {
               ExpansionTile(
                 title: Text(
                   AppLocalizations.of(context)!.firebaseToken,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.bodyMedium,
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),

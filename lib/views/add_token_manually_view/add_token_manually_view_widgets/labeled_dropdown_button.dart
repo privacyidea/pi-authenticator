@@ -50,7 +50,7 @@ class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
                   child: Text(
                     '${value is Enum ? value.name : value}'
                     '${widget.postFix}',
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     overflow: TextOverflow.fade,
                     softWrap: false,
                   ),

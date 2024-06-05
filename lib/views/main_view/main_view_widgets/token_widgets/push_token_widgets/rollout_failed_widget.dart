@@ -26,7 +26,7 @@ class RolloutFailedWidget extends StatelessWidget {
             child: FittedBox(
               child: Text(
                 token.rolloutState.rolloutMsg(localizations),
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -50,7 +50,7 @@ class RolloutFailedWidget extends StatelessWidget {
               SizedBox(
                 width: width * 0.35,
                 child: PressButton(
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
+                  style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
                   onPressed: () => _showDialog(),
                   child: Text(
                     localizations.delete,

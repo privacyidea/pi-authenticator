@@ -631,5 +631,9 @@
   "scanThisQrWithNewDevice": "Escanee este código QR con su nuevo dispositivo para importar el token.",
   "oneMore": "Uno más",
   "done": "Hecho",
-  "confirmPassword": "Confirmar contraseña"
+  "confirmPassword": "Confirmar contraseña",
+  "sendPushRequestResponseFailed": "No se ha podido enviar la respuesta.",
+  "@sendPushRequestResponseFailed": {
+    "description": "Error message when the response to a push request could not be sent."
+  }
 }
