@@ -875,4 +875,15 @@ class AppLocalizationsNl extends AppLocalizations {
   String unsupported(Object name, Object value) {
     return 'The $name [$value] is not supported by this version of the app.';
   }
+
+  @override
+  String get pushEndpointUrl => 'Push Endpoint URL';
+
+  @override
+  String get exampleUrl => 'Voer een geldige URL in zoals: \"https://example.com/\"';
+
+  @override
+  String mustNotBeEmpty(Object field) {
+    return '$field mag niet leeg zijn';
+  }
 }

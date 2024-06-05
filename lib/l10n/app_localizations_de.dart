@@ -875,4 +875,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String unsupported(Object name, Object value) {
     return 'The $name [$value] is not supported by this version of the app.';
   }
+
+  @override
+  String get pushEndpointUrl => 'Push-Endpunkt URL';
+
+  @override
+  String get exampleUrl => 'Bitte geben Sie eine gültige URL ein wie: \"https://example.com\"';
+
+  @override
+  String mustNotBeEmpty(Object field) {
+    return '$field darf nicht leer sein';
+  }
 }

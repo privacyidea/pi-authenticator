@@ -1668,6 +1668,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The {name} [{value}] is not supported by this version of the app.'**
   String unsupported(Object name, Object value);
+
+  /// No description provided for @pushEndpointUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Push endpoint URL'**
+  String get pushEndpointUrl;
+
+  /// No description provided for @exampleUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid URL like: \"https://example.com/\"'**
+  String get exampleUrl;
+
+  /// No description provided for @mustNotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'{field} must not be empty'**
+  String mustNotBeEmpty(Object field);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -12,11 +12,15 @@ import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 class DefaultEditActionDialog extends ConsumerStatefulWidget {
   final Token token;
   final List<Widget>? additionalChildren;
+
+  /// Should return false if an input is invalid. Name and image URL are validated regardless of whether the function is set or not.
+  final bool additionalSaveValidation;
   final FutureOr<void> Function({required String newLabel, required String? newImageUrl})? onSaveButtonPressed;
   const DefaultEditActionDialog({
     required this.token,
     this.onSaveButtonPressed,
     this.additionalChildren,
+    this.additionalSaveValidation = true,
     super.key,
   });
 
@@ -25,8 +29,27 @@ class DefaultEditActionDialog extends ConsumerStatefulWidget {
 }
 
 class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialog> {
-  late TextEditingController nameInputController = TextEditingController(text: widget.token.label);
-  late TextEditingController imageUrlController = TextEditingController(text: widget.token.tokenImage);
+  late final TextEditingController nameInputController = TextEditingController(text: widget.token.label);
+  late final TextEditingController imageUrlController = TextEditingController(text: widget.token.tokenImage);
+  bool _nameIsValid = true;
+  bool _imageUrlIsValid = true;
+  late final bool _additionalSaveValidation = widget.additionalSaveValidation;
+  bool get _canSave => _nameIsValid && _imageUrlIsValid && _additionalSaveValidation;
+
+  String? _validateName(String? value) {
+    if (value == null || value.isNotEmpty) return null;
+    return AppLocalizations.of(context)!.mustNotBeEmpty(AppLocalizations.of(context)!.name);
+  }
+
+  String? _validateImageUrl(String? value) {
+    if (value == null) return null;
+    final uri = Uri.tryParse(value);
+    if (value.isNotEmpty && (uri == null || uri.host.isEmpty || uri.scheme.isEmpty || uri.path.isEmpty)) {
+      return AppLocalizations.of(context)!.exampleUrl;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context)!;
@@ -46,27 +69,20 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
+                key: Key('${widget.token.id}_editName'),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: nameInputController,
-                onChanged: (value) {},
+                onChanged: (value) => setState(() => _nameIsValid = _validateName(value) == null),
                 decoration: InputDecoration(labelText: appLocalizations.name),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return appLocalizations.name;
-                  }
-                  return null;
-                },
+                validator: _validateName,
               ),
               TextFormField(
+                key: Key('${widget.token.id}_editImageUrl'),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: imageUrlController,
+                onChanged: (value) => setState(() => _imageUrlIsValid = _validateImageUrl(value) == null),
                 decoration: InputDecoration(labelText: appLocalizations.imageUrl),
-                validator: (value) {
-                  try {
-                    Uri.parse(value!);
-                  } catch (e) {
-                    return 'appLocalizations.invalidUrl';
-                  }
-                  return null;
-                },
+                validator: _validateImageUrl,
               ),
               if (widget.additionalChildren != null) ...widget.additionalChildren!,
               TextFormField(
@@ -94,29 +110,32 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
           onPressed: () => Navigator.of(context).pop(),
         ),
         TextButton(
-          onPressed: widget.onSaveButtonPressed != null
-              ? () {
-                  widget.onSaveButtonPressed!(
-                    newLabel: nameInputController.text,
-                    newImageUrl: imageUrlController.text,
-                  );
-                }
-              : () async {
-                  final newLabel = nameInputController.text;
-                  final newImageUrl = imageUrlController.text;
-                  if (newLabel.isEmpty) return;
-                  final edited =
-                      await globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(label: newLabel, tokenImage: newImageUrl));
-                  if (edited == null) {
-                    Logger.error('Token editing failed', name: 'DefaultEditAction#_showDialog');
-                    return;
-                  }
-                  Logger.info(
-                    'Token edited: ${widget.token.label} -> ${edited.label}, ${widget.token.tokenImage} -> ${edited.tokenImage}',
-                    name: 'DefaultEditAction#_showDialog',
-                  );
-                  if (context.mounted) Navigator.of(context).pop();
-                },
+          onPressed: !_canSave
+              ? null
+              : widget.onSaveButtonPressed != null
+                  ? () {
+                      widget.onSaveButtonPressed!(
+                        newLabel: nameInputController.text,
+                        newImageUrl: imageUrlController.text,
+                      );
+                    }
+                  : () async {
+                      final newLabel = nameInputController.text;
+                      final newImageUrl = imageUrlController.text;
+                      if (newLabel.isEmpty) return;
+                      final edited = await globalRef
+                          ?.read(tokenProvider.notifier)
+                          .updateToken(widget.token, (p0) => p0.copyWith(label: newLabel, tokenImage: newImageUrl));
+                      if (edited == null) {
+                        Logger.error('Token editing failed', name: 'DefaultEditAction#_showDialog');
+                        return;
+                      }
+                      Logger.info(
+                        'Token edited: ${widget.token.label} -> ${edited.label}, ${widget.token.tokenImage} -> ${edited.tokenImage}',
+                        name: 'DefaultEditAction#_showDialog',
+                      );
+                      if (context.mounted) Navigator.of(context).pop();
+                    },
           child: Text(
             appLocalizations.save,
             overflow: TextOverflow.fade,

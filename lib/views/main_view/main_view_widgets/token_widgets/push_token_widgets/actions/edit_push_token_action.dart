@@ -55,6 +55,15 @@ class EditPushTokenAction extends TokenAction {
         ));
   }
 
+  String? _validatePushEndpointUrl(String? value, BuildContext context) {
+    if (value == null || value.isEmpty) return AppLocalizations.of(context)!.mustNotBeEmpty(AppLocalizations.of(context)!.pushEndpointUrl);
+    final uri = Uri.tryParse(value);
+    if (uri == null || uri.host.isEmpty || uri.scheme.isEmpty || uri.path.isEmpty) {
+      return AppLocalizations.of(context)!.exampleUrl;
+    }
+    return null;
+  }
+
   void _showDialog() => showDialog(
         useRootNavigator: false,
         context: globalNavigatorKey.currentContext!,
@@ -85,11 +94,9 @@ class EditPushTokenAction extends TokenAction {
               ),
               EnableTextFormFieldAfterManyTaps(
                 controller: pushUrl,
-                decoration: const InputDecoration(labelText: 'URL'),
-                validator: (value) {
-                  if (value!.isEmpty) return 'URL';
-                  return null;
-                },
+                decoration: InputDecoration(labelText: appLocalizations.pushEndpointUrl),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => _validatePushEndpointUrl(value, context),
               ),
               const SizedBox(height: 10),
               ExpansionTile(

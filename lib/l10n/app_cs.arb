@@ -635,5 +635,15 @@
   "scanThisQrWithNewDevice": "Naskenujte tento QR kód svým novým zařízením pro import žetonu.",
   "oneMore": "Ještě jeden",
   "done": "Hotovo",
-  "confirmPassword": "Potvrďte heslo"
+  "confirmPassword": "Potvrďte heslo",
+  "exampleUrl": "Zadejte prosím platnou adresu URL, například: \"https://example.com/\"",
+  "pushEndpointUrl": "URL koncového bodu push",
+  "mustNotBeEmpty": "{field} nesmí být prázdné",
+  "@mustNotBeEmpty": {
+    "placeholders": {
+      "field": {
+        "example": "Name"
+      }
+    }
+  }
 }

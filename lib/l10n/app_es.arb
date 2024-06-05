@@ -631,5 +631,15 @@
   "scanThisQrWithNewDevice": "Escanee este código QR con su nuevo dispositivo para importar el token.",
   "oneMore": "Uno más",
   "done": "Hecho",
-  "confirmPassword": "Confirmar contraseña"
+  "confirmPassword": "Confirmar contraseña",
+  "exampleUrl": "Por favor, introduzca una URL válida como: \"https://example.com/\"",
+  "pushEndpointUrl": "URL del punto final push",
+  "mustNotBeEmpty": "{field} no debe estar vacío",
+  "@mustNotBeEmpty": {
+    "placeholders": {
+      "field": {
+        "example": "Name"
+      }
+    }
+  }
 }

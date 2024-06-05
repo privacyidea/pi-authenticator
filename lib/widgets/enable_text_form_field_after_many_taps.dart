@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class EnableTextFormFieldAfterManyTaps extends StatefulWidget {
   final TextEditingController controller;
   final InputDecoration decoration;
+  final AutovalidateMode? autovalidateMode;
   final String? Function(String?)? validator;
   final int maxTaps;
 
@@ -11,6 +12,7 @@ class EnableTextFormFieldAfterManyTaps extends StatefulWidget {
     required this.controller,
     required this.decoration,
     this.maxTaps = 6,
+    this.autovalidateMode,
     this.validator,
     super.key,
   });
@@ -44,11 +46,13 @@ class _EnableTextFormFieldAfterManyTapsState extends State<EnableTextFormFieldAf
   Widget build(BuildContext context) => GestureDetector(
         onDoubleTap: !enabled ? () => tapped(2) : null,
         child: TextFormField(
+          key: Key('${widget.controller.hashCode}_enableTextFormFieldAfterManyTaps'),
           readOnly: !enabled,
           onTap: !enabled ? () => tapped(1) : null,
           style: enabled ? null : Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor),
           controller: widget.controller,
           decoration: widget.decoration,
+          autovalidateMode: widget.autovalidateMode,
           validator: widget.validator,
         ),
       );

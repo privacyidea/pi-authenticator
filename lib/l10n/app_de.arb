@@ -614,5 +614,15 @@
   "scanThisQrWithNewDevice": "Scannen Sie diesen QR-Code mit Ihrem neuen Gerät, um das Token zu importieren.",
   "oneMore": "Noch eins",
   "done": "Fertig",
-  "confirmPassword": "Passwort bestätigen"
+  "confirmPassword": "Passwort bestätigen",
+  "exampleUrl": "Bitte geben Sie eine gültige URL ein wie: \"https://example.com\"",
+  "pushEndpointUrl": "Push-Endpunkt URL",
+  "mustNotBeEmpty": "{field} darf nicht leer sein",
+  "@mustNotBeEmpty": {
+    "placeholders": {
+      "field": {
+        "example": "Name"
+      }
+    }
+  }
 }

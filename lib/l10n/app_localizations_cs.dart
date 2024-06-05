@@ -875,4 +875,15 @@ class AppLocalizationsCs extends AppLocalizations {
   String unsupported(Object name, Object value) {
     return 'The $name [$value] is not supported by this version of the app.';
   }
+
+  @override
+  String get pushEndpointUrl => 'URL koncového bodu push';
+
+  @override
+  String get exampleUrl => 'Zadejte prosím platnou adresu URL, například: \"https://example.com/\"';
+
+  @override
+  String mustNotBeEmpty(Object field) {
+    return '$field nesmí být prázdné';
+  }
 }

@@ -657,5 +657,15 @@
         "example": "5"
       }
     }
+  },
+  "pushEndpointUrl": "Push endpoint URL",
+  "exampleUrl": "Please enter a valid URL like: \"https://example.com/\"",
+  "mustNotBeEmpty": "{field} must not be empty",
+  "@mustNotBeEmpty": {
+    "placeholders": {
+      "field": {
+        "example": "Name"
+      }
+    }
   }
 }
