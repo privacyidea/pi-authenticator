@@ -15,7 +15,7 @@ class SettingsGroupTheme extends StatelessWidget {
           RadioListTile(
             title: Text(
               AppLocalizations.of(context)!.lightTheme,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.bodyMedium,
               overflow: TextOverflow.fade,
               softWrap: false,
             ),
@@ -30,7 +30,7 @@ class SettingsGroupTheme extends StatelessWidget {
           RadioListTile(
             title: Text(
               AppLocalizations.of(context)!.darkTheme,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.bodyMedium,
               overflow: TextOverflow.fade,
               softWrap: false,
             ),
@@ -45,7 +45,7 @@ class SettingsGroupTheme extends StatelessWidget {
           RadioListTile(
             title: Text(
               AppLocalizations.of(context)!.systemTheme,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             value: ThemeMode.system,
             groupValue: EasyDynamicTheme.of(context).themeMode,

@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:mutex/mutex.dart';
-import 'package:privacyidea_authenticator/utils/customization/theme_customization.dart';
+import '../utils/customization/theme_customization.dart';
 
 import '../interfaces/repo/token_folder_repository.dart';
 import '../interfaces/repo/token_repository.dart';

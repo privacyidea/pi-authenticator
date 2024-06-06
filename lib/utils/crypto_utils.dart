@@ -25,9 +25,9 @@ import 'dart:math' as math;
 import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pointycastle/export.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 
 import '../model/enums/encodings.dart';
+import '../model/extensions/enums/encodings_extension.dart';
 
 Future<Uint8List> pbkdf2({required Uint8List salt, required int iterations, required int keyLength, required Uint8List password}) async {
   ArgumentError.checkNotNull(salt);

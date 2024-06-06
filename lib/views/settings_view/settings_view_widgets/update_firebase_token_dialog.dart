@@ -20,13 +20,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/globals.dart';
+import '../../../utils/logger.dart';
+import '../../../utils/riverpod_providers.dart';
+import '../../../utils/view_utils.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 
 class UpdateFirebaseTokenDialog extends ConsumerStatefulWidget {

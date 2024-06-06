@@ -614,5 +614,9 @@
   "scanThisQrWithNewDevice": "Scannen Sie diesen QR-Code mit Ihrem neuen Gerät, um das Token zu importieren.",
   "oneMore": "Noch eins",
   "done": "Fertig",
-  "confirmPassword": "Passwort bestätigen"
+  "confirmPassword": "Passwort bestätigen",
+  "sendPushRequestResponseFailed": "Senden der Antwort fehlgeschlagen.",
+  "@sendPushRequestResponseFailed": {
+    "description": "Error message when the response to a push request could not be sent."
+  }
 }

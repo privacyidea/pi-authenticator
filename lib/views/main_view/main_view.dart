@@ -15,7 +15,7 @@ import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
 import 'main_view_widgets/main_view_tokens_list_filtered.dart';
 
-export 'package:privacyidea_authenticator/views/main_view/main_view.dart';
+export '../../views/main_view/main_view.dart';
 
 class MainView extends ConsumerStatefulView {
   static const routeName = '/mainView';
