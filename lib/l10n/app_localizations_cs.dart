@@ -878,4 +878,28 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get sendPushRequestResponseFailed => 'Odpověď se nepodařilo odeslat.';
+
+  @override
+  String get passwordCannotBeEmpty => 'Heslo nesmí být prázdné';
+
+  @override
+  String get passwordMustBeAtLeast8Characters => 'Heslo musí obsahovat alespoň 8 znaků';
+
+  @override
+  String get passwordCannotContainWhitespace => 'Heslo nesmí obsahovat mezery';
+
+  @override
+  String get passwordMustContainLowercaseLetter => 'Heslo musí obsahovat malé písmeno';
+
+  @override
+  String get passwordMustContainUppercaseLetter => 'Heslo musí obsahovat velké písmeno';
+
+  @override
+  String get passwordMustContainNumber => 'Heslo musí obsahovat číslo';
+
+  @override
+  String get passwordMustContainSpecialCharacter => 'Heslo musí obsahovat speciální znak';
+
+  @override
+  String get passwordsDoNotMatch => 'Hesla se neshodují';
 }

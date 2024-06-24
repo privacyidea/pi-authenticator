@@ -1674,6 +1674,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to send the response.'**
   String get sendPushRequestResponseFailed;
+
+  /// No description provided for @passwordCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Password cannot be empty'**
+  String get passwordCannotBeEmpty;
+
+  /// No description provided for @passwordMustBeAtLeast8Characters.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters'**
+  String get passwordMustBeAtLeast8Characters;
+
+  /// No description provided for @passwordCannotContainWhitespace.
+  ///
+  /// In en, this message translates to:
+  /// **'Password cannot contain whitespace'**
+  String get passwordCannotContainWhitespace;
+
+  /// No description provided for @passwordMustContainLowercaseLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain lowercase letter'**
+  String get passwordMustContainLowercaseLetter;
+
+  /// No description provided for @passwordMustContainUppercaseLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain uppercase letter'**
+  String get passwordMustContainUppercaseLetter;
+
+  /// No description provided for @passwordMustContainNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain number'**
+  String get passwordMustContainNumber;
+
+  /// No description provided for @passwordMustContainSpecialCharacter.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain special character'**
+  String get passwordMustContainSpecialCharacter;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

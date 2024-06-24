@@ -661,5 +661,13 @@
   "sendPushRequestResponseFailed": "Failed to send the response.",
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
-  }
+  },
+  "passwordCannotBeEmpty": "Password cannot be empty",
+  "passwordMustBeAtLeast8Characters": "Password must be at least 8 characters",
+  "passwordCannotContainWhitespace": "Password cannot contain whitespace",
+  "passwordMustContainLowercaseLetter": "Password must contain lowercase letter",
+  "passwordMustContainUppercaseLetter": "Password must contain uppercase letter",
+  "passwordMustContainNumber": "Password must contain number",
+  "passwordMustContainSpecialCharacter": "Password must contain special character",
+  "passwordsDoNotMatch": "Passwords do not match"
 }

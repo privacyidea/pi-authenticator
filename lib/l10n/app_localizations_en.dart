@@ -878,4 +878,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sendPushRequestResponseFailed => 'Failed to send the response.';
+
+  @override
+  String get passwordCannotBeEmpty => 'Password cannot be empty';
+
+  @override
+  String get passwordMustBeAtLeast8Characters => 'Password must be at least 8 characters';
+
+  @override
+  String get passwordCannotContainWhitespace => 'Password cannot contain whitespace';
+
+  @override
+  String get passwordMustContainLowercaseLetter => 'Password must contain lowercase letter';
+
+  @override
+  String get passwordMustContainUppercaseLetter => 'Password must contain uppercase letter';
+
+  @override
+  String get passwordMustContainNumber => 'Password must contain number';
+
+  @override
+  String get passwordMustContainSpecialCharacter => 'Password must contain special character';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
 }

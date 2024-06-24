@@ -639,5 +639,13 @@
   "sendPushRequestResponseFailed": "Odpověď se nepodařilo odeslat.",
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
-  }
+  },
+  "passwordCannotBeEmpty": "Heslo nesmí být prázdné",
+  "passwordMustBeAtLeast8Characters": "Heslo musí obsahovat alespoň 8 znaků",
+  "passwordCannotContainWhitespace": "Heslo nesmí obsahovat mezery",
+  "passwordMustContainLowercaseLetter": "Heslo musí obsahovat malé písmeno",
+  "passwordMustContainUppercaseLetter": "Heslo musí obsahovat velké písmeno",
+  "passwordMustContainNumber": "Heslo musí obsahovat číslo",
+  "passwordMustContainSpecialCharacter": "Heslo musí obsahovat speciální znak",
+  "passwordsDoNotMatch": "Hesla se neshodují"
 }

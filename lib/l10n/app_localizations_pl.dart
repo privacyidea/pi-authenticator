@@ -878,4 +878,28 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get sendPushRequestResponseFailed => 'Nie udało się wysłać odpowiedzi.';
+
+  @override
+  String get passwordCannotBeEmpty => 'Hasło nie może być puste';
+
+  @override
+  String get passwordMustBeAtLeast8Characters => 'Hasło musi mieć co najmniej 8 znaków';
+
+  @override
+  String get passwordCannotContainWhitespace => 'Hasło nie może zawierać spacji';
+
+  @override
+  String get passwordMustContainLowercaseLetter => 'Hasło musi zawierać małą literę';
+
+  @override
+  String get passwordMustContainUppercaseLetter => 'Hasło musi zawierać dużą literę';
+
+  @override
+  String get passwordMustContainNumber => 'Hasło musi zawierać cyfrę';
+
+  @override
+  String get passwordMustContainSpecialCharacter => 'Hasło musi zawierać znak specjalny';
+
+  @override
+  String get passwordsDoNotMatch => 'Hasła nie pasują do siebie';
 }

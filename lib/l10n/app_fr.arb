@@ -640,5 +640,13 @@
   "sendPushRequestResponseFailed": "Échec de l'envoi de la réponse.",
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
-  }
+  },
+  "passwordCannotBeEmpty": "Le mot de passe ne peut pas être vide",
+  "passwordMustBeAtLeast8Characters": "Le mot de passe doit contenir au moins 8 caractères",
+  "passwordCannotContainWhitespace": "Le mot de passe ne peut pas contenir d'espaces",
+  "passwordMustContainLowercaseLetter": "Le mot de passe doit contenir une lettre minuscule",
+  "passwordMustContainUppercaseLetter": "Le mot de passe doit contenir une lettre majuscule",
+  "passwordMustContainNumber": "Le mot de passe doit contenir un chiffre",
+  "passwordMustContainSpecialCharacter": "Le mot de passe doit contenir un caractère spécial",
+  "passwordsDoNotMatch": "Les mots de passe ne correspondent pas"
 }

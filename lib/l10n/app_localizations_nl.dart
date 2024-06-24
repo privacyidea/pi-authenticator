@@ -878,4 +878,28 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get sendPushRequestResponseFailed => 'Het verzenden van het antwoord is mislukt. ';
+
+  @override
+  String get passwordCannotBeEmpty => 'Wachtwoord mag niet leeg zijn';
+
+  @override
+  String get passwordMustBeAtLeast8Characters => 'Wachtwoord moet minimaal 8 tekens lang zijn';
+
+  @override
+  String get passwordCannotContainWhitespace => 'Wachtwoord mag geen spaties bevatten';
+
+  @override
+  String get passwordMustContainLowercaseLetter => 'Wachtwoord moet een kleine letter bevatten';
+
+  @override
+  String get passwordMustContainUppercaseLetter => 'Wachtwoord moet een hoofdletter bevatten';
+
+  @override
+  String get passwordMustContainNumber => 'Wachtwoord moet een cijfer bevatten';
+
+  @override
+  String get passwordMustContainSpecialCharacter => 'Wachtwoord moet een speciaal teken bevatten';
+
+  @override
+  String get passwordsDoNotMatch => 'Wachtwoorden komen niet overeen';
 }
