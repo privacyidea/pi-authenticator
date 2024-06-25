@@ -266,7 +266,7 @@ Device Parameters $deviceInfo""";
           error(
             'Uncaught Error: ${isolateError.first.toString()}',
             error: isolateError.first.toString(),
-            stackTrace: isolateError.last.toString(),
+            stackTrace: isolateError.length >= 2 && isolateError[1] != null && isolateError[1].toString() != '' ? isolateError[1] : StackTrace.current,
           );
         }).sendPort,
       );

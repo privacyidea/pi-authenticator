@@ -25,11 +25,11 @@ Result? _decodeQRCode(BinaryBitmap bitmap) {
 /// Args: [SendPort] sendPort, [CameraImage] cameraImage, [int] rotation, [double] borderPaddingPercent
 void _scanQrCodeIsolate(List args) {
   final SendPort sendPort = args[0] as SendPort;
-  final CameraImage cameraImage = args[1] as CameraImage;
-  final int rotation = args[2] as int;
-  final double borderPaddingPercent = args[3] as double;
-
   try {
+    final CameraImage cameraImage = args[1] as CameraImage;
+    final int rotation = args[2] as int;
+    final double borderPaddingPercent = args[3] as double;
+
     final imgSize = min(cameraImage.width, cameraImage.height);
     final cropPadding = (imgSize * borderPaddingPercent / 100).round();
     final cropHorizontal = (cameraImage.width - imgSize + cropPadding) ~/ 2;
@@ -50,14 +50,9 @@ void _scanQrCodeIsolate(List args) {
     );
     var bitmap = BinaryBitmap(GlobalHistogramBinarizer(source));
     Result? result = _decodeQRCode(bitmap);
-    if (result == null) {
-      sendPort.send(null);
-      return;
-    }
     sendPort.send(result);
     return;
   } catch (e) {
-    Logger.error('Error while scanning QR code: $e, name: _QRScannerWidgetState#_scanQrCode');
     sendPort.send(e);
     return;
   }
