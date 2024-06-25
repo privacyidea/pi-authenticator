@@ -9,6 +9,7 @@ import '../../../../../l10n/app_localizations.dart';
 import '../../../../../mains/main_netknights.dart';
 import '../../../../../model/encryption/token_encryption.dart';
 import '../../../../../model/tokens/token.dart';
+import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/validators.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
@@ -38,21 +39,20 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
         mainAxisSize: MainAxisSize.min,
         children: (!_exportPressed)
             ? [
-                Text(
-                  appLocalizations.enterPasswordToEncrypt,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
+                Text(appLocalizations.enterPasswordToEncrypt),
                 Row(
                   children: [
                     Expanded(
                       child: TextFormField(
                         controller: _passwordTextController,
+                        style: Theme.of(context).textTheme.bodyMedium,
                         obscureText: _passwordHidden,
                         onChanged: (value) => setState(() {}),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: Validators(appLocalizations).password,
                         decoration: InputDecoration(
                           labelText: appLocalizations.password,
+                          labelStyle: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
                     ),
@@ -72,12 +72,14 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                     Expanded(
                       child: TextFormField(
                         controller: _confirmTextController,
+                        style: Theme.of(context).textTheme.bodyMedium,
                         obscureText: _confirmHidden,
                         onChanged: (value) => setState(() {}),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) => Validators(appLocalizations).confirmPassword(_passwordTextController.text, value),
                         decoration: InputDecoration(
                           labelText: appLocalizations.confirmPassword,
+                          labelStyle: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
                     ),
@@ -116,6 +118,11 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                           if (_passwordTextController.text.isEmpty || _passwordTextController.text != _confirmTextController.text) {
                             return;
                           }
+                          final authenticated = await lockAuth(
+                            localizedReason: AppLocalizations.of(context)!.exportLockedTokenReason,
+                            autoAuthIfUnsupported: true,
+                          );
+                          if (!authenticated || !mounted) return;
                           setState(() => _exportPressed = true);
                           final tokensToEncrypt = widget.tokens.map((e) => e.copyWith(folderId: () => null));
                           _saveToFile(await TokenEncryption.encrypt(tokens: tokensToEncrypt, password: _passwordTextController.text));
@@ -129,6 +136,7 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
 
   void _saveToFile(String encryptedTokens) async {
     if (kIsWeb) return;
+
     bool isExported = false;
     if (Platform.isAndroid && mounted) isExported = await _saveToFileAndroid(context, encryptedTokens);
     if (Platform.isIOS && mounted) isExported = await _saveToFileIOS(context, encryptedTokens);

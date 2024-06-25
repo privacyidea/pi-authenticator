@@ -18,12 +18,28 @@ class SettingsGroupImportExportTokens extends ConsumerStatefulWidget {
 class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupImportExportTokens> {
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = AppLocalizations.of(context)!;
     return SettingsGroup(
-      title: AppLocalizations.of(context)!.importExportTokens,
+      title: appLocalizations.importExportTokens,
       children: [
         SettingsListTileButton(
+          onPressed: () {
+            Navigator.pushNamed(context, ImportTokensView.routeName);
+          },
           title: Text(
-            AppLocalizations.of(context)!.exportNonPrivacyIDEATokens,
+            appLocalizations.importTokens,
+            style: Theme.of(context).textTheme.bodyMedium,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
+          icon: const RotatedBox(
+            quarterTurns: 1,
+            child: Icon(FluentIcons.arrow_enter_20_filled),
+          ),
+        ),
+        SettingsListTileButton(
+          title: Text(
+            appLocalizations.exportNonPrivacyIDEATokens,
             style: Theme.of(context).textTheme.bodyMedium,
             maxLines: 2,
             overflow: TextOverflow.fade,
@@ -33,21 +49,6 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
             child: Icon(FluentIcons.arrow_exit_20_filled),
           ),
           onPressed: () => _selectExportTypeDialog(),
-        ),
-        SettingsListTileButton(
-          onPressed: () {
-            Navigator.pushNamed(context, ImportTokensView.routeName);
-          },
-          title: Text(
-            AppLocalizations.of(context)!.importTokens,
-            style: Theme.of(context).textTheme.bodyMedium,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-          icon: const RotatedBox(
-            quarterTurns: 1,
-            child: Icon(FluentIcons.arrow_enter_20_filled),
-          ),
         ),
       ],
     );

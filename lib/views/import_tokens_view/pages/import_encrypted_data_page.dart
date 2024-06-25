@@ -64,8 +64,10 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                           flex: 9,
                           child: TextField(
                             controller: _passwordController,
+                            style: Theme.of(context).textTheme.bodyMedium,
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(context)!.password,
+                              labelStyle: Theme.of(context).textTheme.titleMedium,
                               errorText: wrongPassword ? AppLocalizations.of(context)!.wrongPassword : null,
                             ),
                             onChanged: (value) => setState(() {

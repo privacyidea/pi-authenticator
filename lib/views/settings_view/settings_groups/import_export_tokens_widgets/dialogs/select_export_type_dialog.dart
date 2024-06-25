@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/utils/lock_auth.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
@@ -17,7 +18,7 @@ class SelectExportTypeDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SettingsListTileButton(
-              title: Text(AppLocalizations.of(context)!.toFile, style: Theme.of(context).textTheme.bodyMedium),
+              title: Text(AppLocalizations.of(context)!.asFile, style: Theme.of(context).textTheme.bodyMedium),
               onPressed: () async => _selectTokensDialog(context),
               icon: const Icon(Icons.file_present, size: 24),
             ),
@@ -40,7 +41,11 @@ class SelectExportTypeDialog extends StatelessWidget {
       context: context,
       builder: (context) => SelectTokensDialog(
         exportDialogBuilder: (tokens) {
-          if (tokens.isEmpty) return DefaultDialog(content: Text(AppLocalizations.of(context)!.noTokensToExport));
+          if (tokens.isEmpty) {
+            return DefaultDialog(
+              content: Text(AppLocalizations.of(context)!.noTokenToExport),
+            );
+          }
           return ExportTokensToFileDialog(tokens: tokens);
         },
       ),
@@ -49,12 +54,21 @@ class SelectExportTypeDialog extends StatelessWidget {
   }
 
   void _selectTokenDialog(BuildContext context) async {
+    final authenticated = await lockAuth(
+      localizedReason: AppLocalizations.of(context)!.exportLockedTokenReason,
+      autoAuthIfUnsupported: true,
+    );
+    if (!authenticated || !context.mounted) return;
     final isExported = await showDialog<bool>(
       context: context,
       builder: (context) => SelectTokensDialog(
         multiSelect: false,
         exportDialogBuilder: (tokens) {
-          if (tokens.isEmpty) return DefaultDialog(content: Text(AppLocalizations.of(context)!.noTokensToExport));
+          if (tokens.isEmpty) {
+            return DefaultDialog(
+              content: Text(AppLocalizations.of(context)!.noTokenToExport),
+            );
+          }
 
           return ShowQrCodeDialog(token: tokens.first);
         },

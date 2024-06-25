@@ -265,6 +265,9 @@ class ThemeCustomization {
           brightness: brightness,
           primaryColor: primaryColor,
           canvasColor: backgroundColor,
+          dialogTheme: const DialogTheme().copyWith(
+            barrierColor: Colors.black.withOpacity(0.3),
+          ),
           textTheme: const TextTheme().copyWith(
             bodyLarge: TextStyle(color: foregroundColor, fontSize: 18),
             bodyMedium: TextStyle(color: foregroundColor, fontSize: 16),

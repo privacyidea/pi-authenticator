@@ -23,7 +23,7 @@ class DefaultDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
         child: AlertDialog(
           shape: RoundedRectangleBorder(
             side: BorderSide(
@@ -39,7 +39,8 @@ class DefaultDialog extends StatelessWidget {
           buttonPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
           insetPadding: const EdgeInsets.fromLTRB(16, 32, 16, 12),
           titlePadding: const EdgeInsets.all(12),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+          contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          contentTextStyle: Theme.of(context).textTheme.bodyMedium,
           elevation: 2,
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -658,6 +658,12 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get importHintPrivacyIdeaQrScan => 'Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.';
+
+  @override
+  String get importHintPrivacyIdeaFile => 'Um ein Backup zu erstellen, gehen Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie \"Als Datei\" aus, wählen Sie die Token aus, die Sie exportieren möchten. Anschließend tippen Sie auf \"Exportieren\" und setzen Sie ein Passwort. Der Speicherort ist der Download-Ordner auf Ihrem Gerät.';
+
+  @override
   String get importHint2FAS => 'Wählen Sie das 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.';
 
   @override
@@ -811,7 +817,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get noTokensToExport => 'Keine Tokens zum Exportieren';
+  String get noTokenToExport => 'Kein Token zum Exportieren verfügbar';
 
   @override
   String get exportAllTokens => 'Alle Tokens exportieren';
@@ -838,10 +844,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get errorSavingFile => 'Fehler beim Speichern der Datei';
 
   @override
-  String get toFile => 'In Datei';
+  String get asQrCode => 'Als QR-Code';
 
   @override
-  String get asQrCode => 'Als QR-Code';
+  String get asFile => 'Als Datei';
 
   @override
   String get scanThisQrWithNewDevice => 'Scannen Sie diesen QR-Code mit Ihrem neuen Gerät, um das Token zu importieren.';
@@ -902,4 +908,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get passwordsDoNotMatch => 'Die Passwörter stimmen nicht überein';
+
+  @override
+  String get selectTokensToExportHelpTitle => 'Ist Ihr Token nicht aufgelistet?';
+
+  @override
+  String get selectTokensToExportHelpContent => 'Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden.';
 }

@@ -540,6 +540,8 @@
   "importExistingToken": "{count, plural, zero{Nie znaleziono tokena, który już znajduje się w aplikacji.} one{Znaleziono token, który już istnieje w aplikacji.} other{Znaleziono {count} tokenów, które już znajdują się w aplikacji.}}",
   "importConflictToken": "{count, plural, zero{Nie ma konfliktu z tokenami, które już istnieją.} one{Istnieje konflikt z tokenami, które już istnieją.} other{Istnieje konflikt z tokenami, które już istnieją.}}",
   "importNewToken": "{count, plural, zero{Nie znaleziono nowego tokena.} one{Znaleziono nowy token, który zostanie zaimportowany.} other{Znaleziono nowy token {count}, który zostanie zaimportowany.}}",
+  "importHintPrivacyIdeaQrScan": "Aby utworzyć kody QR tokenów, przejdź do ustawień i wybierz opcję \"Eksportuj\". Następnie wybierz opcję \"Jako kod QR\" i dotknij tokenu, który ma zostać wyeksportowany. Ten wariant jest odpowiedni tylko do bezpośredniego przesyłania na inne urządzenie, ponieważ kod QR nie jest szyfrowany.",
+  "importHintPrivacyIdeaFile": "Aby utworzyć kopię zapasową, przejdź do ustawień i wybierz \"Eksportuj\". Wybierz \"Jako plik\", wybierz tokeny, które chcesz wyeksportować. Następnie wybierz \"Eksportuj\" i ustaw hasło. Miejscem przechowywania jest folder pobierania na urządzeniu.",
   "importHint2FAS": "Wybierz kopię zapasową 2FAS. Jeśli nie masz kopii zapasowej, utwórz ją w aplikacji 2FAS. Zalecamy użycie hasła.",
   "importHintAegisBackupFile": "Wybierz swój eksport Aegis (.JSON).\nJeśli nie masz eksportu, utwórz go za pomocą menu ustawień w aplikacji Aegis. Zalecane jest użycie hasła.",
   "importHintAegisQrScan": "Zeskanuj kod QR otrzymany podczas przesyłania wpisów z Aegis",
@@ -615,7 +617,7 @@
   "importExportTokens": "Importuj/Eksportuj tokeny",
   "exportNonPrivacyIDEATokens": "Eksportuj tokeny niebędące privacyIDEA",
   "selectTokensToExport": "{count, plural, zero{} one{Wybierz token do wyeksportowania} other{Wybierz tokeny do wyeksportowania}}",
-  "noTokensToExport": "Brak tokenów do wyeksportowania",
+  "noTokenToExport": "Brak tokena dostępnego do eksportu",
   "exportAllTokens": "Eksportuj wszystkie tokeny",
   "export": "Eksportuj",
   "exportingTokens": "Eksportowanie tokenów...",
@@ -624,8 +626,8 @@
   "exportLockedTokenReason": "Proszę uwierzytelnić się, aby wyeksportować zablokowane tokeny.",
   "fileSavedToDownloadsFolder": "Plik zapisano w folderze Pobrane",
   "errorSavingFile": "Błąd podczas zapisywania pliku",
-  "toFile": "Do pliku",
   "asQrCode": "Jako kod QR",
+  "asFile": "Jako plik",
   "scanThisQrWithNewDevice": "Zeskanuj ten kod QR za pomocą nowego urządzenia, aby zaimportować token.",
   "oneMore": "Jeszcze jeden",
   "done": "Gotowe",
@@ -641,5 +643,7 @@
   "passwordMustContainUppercaseLetter": "Hasło musi zawierać dużą literę",
   "passwordMustContainNumber": "Hasło musi zawierać cyfrę",
   "passwordMustContainSpecialCharacter": "Hasło musi zawierać znak specjalny",
-  "passwordsDoNotMatch": "Hasła nie pasują do siebie"
+  "passwordsDoNotMatch": "Hasła nie pasują do siebie",
+  "selectTokensToExportHelpTitle": "Czy twój token nie znajduje się na liście?",
+  "selectTokensToExportHelpContent": "Jeśli token nie znajduje się na liście, nie ma gwarancji, że nie jest tokenem privacyIDEA.\nObecnie eksportować można tylko tokeny dodane ręcznie i zaimportowane."
 }

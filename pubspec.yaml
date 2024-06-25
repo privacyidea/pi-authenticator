@@ -41,7 +41,8 @@ dependencies:
   pi_authenticator_legacy:
     path: local_plugins/pi-authenticator-legacy
   uuid: ^4.0.0
-  zxing2: ^0.2.1
+  flutter_zxing: ^1.7.0
+  zxing2: ^0.2.3
   # Crypto
   mutex: ^3.0.0
   hex: ^0.2.0

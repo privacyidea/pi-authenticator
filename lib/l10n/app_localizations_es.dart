@@ -658,6 +658,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get importHintPrivacyIdeaQrScan => 'Para crear códigos QR de las fichas, vaya a la configuración y pulse sobre \"Exportar\". A continuación, seleccione \"Como código QR\" y pulse sobre la ficha que desea exportar. Esta variante sólo es adecuada para la transferencia directa a otro dispositivo, ya que el código QR no está cifrado.';
+
+  @override
+  String get importHintPrivacyIdeaFile => 'Para crear una copia de seguridad, vaya a los ajustes y pulse sobre \"Exportar\". Seleccione \"Como archivo\", seleccione los tokens que desea exportar. A continuación, pulse \"Exportar\" y establezca una contraseña. La ubicación de almacenamiento es la carpeta de descargas de su dispositivo.';
+
+  @override
   String get importHint2FAS => 'Seleccione su copia de seguridad de 2FAS. Si no tiene una copia de seguridad, cree una en la aplicación 2FAS. Le recomendamos que utilice una contraseña';
 
   @override
@@ -811,7 +817,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get noTokensToExport => 'No hay tokens para exportar';
+  String get noTokenToExport => 'No hay token disponible para exportar';
 
   @override
   String get exportAllTokens => 'Exportar todos los tokens';
@@ -838,10 +844,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get errorSavingFile => 'Error al guardar el archivo';
 
   @override
-  String get toFile => 'A archivo';
+  String get asQrCode => 'Como código QR';
 
   @override
-  String get asQrCode => 'Como código QR';
+  String get asFile => 'Como archivo';
 
   @override
   String get scanThisQrWithNewDevice => 'Escanee este código QR con su nuevo dispositivo para importar el token.';
@@ -902,4 +908,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get passwordsDoNotMatch => 'Las contraseña no coinciden';
+
+  @override
+  String get selectTokensToExportHelpTitle => '¿Su ficha no figura en la lista?';
+
+  @override
+  String get selectTokensToExportHelpContent => 'Si un token no aparece en la lista, no se garantiza que no sea un token privacyIDEA.\nActualmente sólo se pueden exportar los tokens añadidos manualmente y los importados.';
 }

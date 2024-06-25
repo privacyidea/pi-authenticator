@@ -658,6 +658,12 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get importHintPrivacyIdeaQrScan => 'Aby utworzyć kody QR tokenów, przejdź do ustawień i wybierz opcję \"Eksportuj\". Następnie wybierz opcję \"Jako kod QR\" i dotknij tokenu, który ma zostać wyeksportowany. Ten wariant jest odpowiedni tylko do bezpośredniego przesyłania na inne urządzenie, ponieważ kod QR nie jest szyfrowany.';
+
+  @override
+  String get importHintPrivacyIdeaFile => 'Aby utworzyć kopię zapasową, przejdź do ustawień i wybierz \"Eksportuj\". Wybierz \"Jako plik\", wybierz tokeny, które chcesz wyeksportować. Następnie wybierz \"Eksportuj\" i ustaw hasło. Miejscem przechowywania jest folder pobierania na urządzeniu.';
+
+  @override
   String get importHint2FAS => 'Wybierz kopię zapasową 2FAS. Jeśli nie masz kopii zapasowej, utwórz ją w aplikacji 2FAS. Zalecamy użycie hasła.';
 
   @override
@@ -811,7 +817,7 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get noTokensToExport => 'Brak tokenów do wyeksportowania';
+  String get noTokenToExport => 'Brak tokena dostępnego do eksportu';
 
   @override
   String get exportAllTokens => 'Eksportuj wszystkie tokeny';
@@ -838,10 +844,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get errorSavingFile => 'Błąd podczas zapisywania pliku';
 
   @override
-  String get toFile => 'Do pliku';
+  String get asQrCode => 'Jako kod QR';
 
   @override
-  String get asQrCode => 'Jako kod QR';
+  String get asFile => 'Jako plik';
 
   @override
   String get scanThisQrWithNewDevice => 'Zeskanuj ten kod QR za pomocą nowego urządzenia, aby zaimportować token.';
@@ -902,4 +908,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get passwordsDoNotMatch => 'Hasła nie pasują do siebie';
+
+  @override
+  String get selectTokensToExportHelpTitle => 'Czy twój token nie znajduje się na liście?';
+
+  @override
+  String get selectTokensToExportHelpContent => 'Jeśli token nie znajduje się na liście, nie ma gwarancji, że nie jest tokenem privacyIDEA.\nObecnie eksportować można tylko tokeny dodane ręcznie i zaimportowane.';
 }

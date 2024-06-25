@@ -658,6 +658,12 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
+  String get importHintPrivacyIdeaQrScan => '';
+
+  @override
+  String get importHintPrivacyIdeaFile => '';
+
+  @override
   String get importHint2FAS => 'Vyberte zálohu 2FAS.\nPokud nemáte zálohu, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.';
 
   @override
@@ -811,7 +817,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get noTokensToExport => 'Žádné žetony k exportu';
+  String get noTokenToExport => 'Pro export není k dispozici žádný token';
 
   @override
   String get exportAllTokens => 'Exportovat všechny žetony';
@@ -838,10 +844,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get errorSavingFile => 'Chyba při ukládání souboru';
 
   @override
-  String get toFile => 'Do souboru';
+  String get asQrCode => 'Jako QR kód';
 
   @override
-  String get asQrCode => 'Jako QR kód';
+  String get asFile => 'Jako soubor';
 
   @override
   String get scanThisQrWithNewDevice => 'Naskenujte tento QR kód svým novým zařízením pro import žetonu.';
@@ -902,4 +908,10 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get passwordsDoNotMatch => 'Hesla se neshodují';
+
+  @override
+  String get selectTokensToExportHelpTitle => 'Není váš token uveden?';
+
+  @override
+  String get selectTokensToExportHelpContent => 'Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.\nV současné době lze exportovat pouze ručně přidané a importované tokeny.';
 }

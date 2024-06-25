@@ -1273,6 +1273,18 @@ abstract class AppLocalizations {
   /// **'{count, plural, zero{No new token has been found.} one{A new token has been found and is being imported.} other{{count} new tokens have been found and will be imported.}}'**
   String importNewToken(num count);
 
+  /// No description provided for @importHintPrivacyIdeaQrScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.'**
+  String get importHintPrivacyIdeaQrScan;
+
+  /// No description provided for @importHintPrivacyIdeaFile.
+  ///
+  /// In en, this message translates to:
+  /// **'To create a backup, go to the settings and tap on \"Export\". Select \"As file\", select the tokens you want to export. Then tap on \"Export\" and set a password. The storage location is the download folder on your device.'**
+  String get importHintPrivacyIdeaFile;
+
   /// No description provided for @importHint2FAS.
   ///
   /// In en, this message translates to:
@@ -1549,11 +1561,11 @@ abstract class AppLocalizations {
   /// **'{count, plural, zero{} one{Select token to export} other{Select tokens to export}}'**
   String selectTokensToExport(num count);
 
-  /// No description provided for @noTokensToExport.
+  /// No description provided for @noTokenToExport.
   ///
   /// In en, this message translates to:
-  /// **'No tokens to export'**
-  String get noTokensToExport;
+  /// **'No token available for export'**
+  String get noTokenToExport;
 
   /// No description provided for @exportAllTokens.
   ///
@@ -1603,17 +1615,17 @@ abstract class AppLocalizations {
   /// **'Saving to file failed'**
   String get errorSavingFile;
 
-  /// No description provided for @toFile.
-  ///
-  /// In en, this message translates to:
-  /// **'To file'**
-  String get toFile;
-
   /// No description provided for @asQrCode.
   ///
   /// In en, this message translates to:
   /// **'As QR code'**
   String get asQrCode;
+
+  /// No description provided for @asFile.
+  ///
+  /// In en, this message translates to:
+  /// **'As file'**
+  String get asFile;
 
   /// No description provided for @scanThisQrWithNewDevice.
   ///
@@ -1722,6 +1734,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Passwords do not match'**
   String get passwordsDoNotMatch;
+
+  /// No description provided for @selectTokensToExportHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Is your token not listed?'**
+  String get selectTokensToExportHelpTitle;
+
+  /// No description provided for @selectTokensToExportHelpContent.
+  ///
+  /// In en, this message translates to:
+  /// **'If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.\nCurrently only manually added and imported tokens are exportable.'**
+  String get selectTokensToExportHelpContent;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
