@@ -129,6 +129,7 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
   }
 
   void _navigatorReturn(String qrCode) {
+    Logger.warning('Scanned QR Code: $qrCode', name: 'QRScannerWidget#_navigatorReturn');
     if (!mounted) return;
     Navigator.of(context).maybePop(qrCode);
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/default_token_actions/default_edit_action_dialog.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/introduction.dart';
@@ -10,7 +11,6 @@ import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod_providers.dart';
-import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../widgets/focused_item_as_overlay.dart';
 import '../token_action.dart';
 
@@ -30,7 +30,7 @@ class DefaultEditAction extends TokenAction {
           _showDialog();
         },
         child: FocusedItemAsOverlay(
-          tooltipWhenFocused: AppLocalizations.of(context)!.renameToken,
+          tooltipWhenFocused: AppLocalizations.of(context)!.editToken,
           childIsMoving: true,
           isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.editToken),
           onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
@@ -40,7 +40,7 @@ class DefaultEditAction extends TokenAction {
             children: [
               const Icon(Icons.edit),
               Text(
-                AppLocalizations.of(context)!.rename,
+                AppLocalizations.of(context)!.save,
                 overflow: TextOverflow.fade,
                 softWrap: false,
               ),
@@ -50,61 +50,27 @@ class DefaultEditAction extends TokenAction {
   }
 
   void _showDialog() {
-    TextEditingController nameInputController = TextEditingController(text: token.label);
     showDialog(
-        useRootNavigator: false,
-        context: globalNavigatorKey.currentContext!,
-        builder: (BuildContext context) {
-          return DefaultDialog(
-            scrollable: true,
-            title: Text(
-              AppLocalizations.of(context)!.renameToken,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-            content: TextFormField(
-              autofocus: true,
-              controller: nameInputController,
-              onChanged: (value) {},
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return AppLocalizations.of(context)!.name;
-                }
-                return null;
-              },
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  AppLocalizations.of(context)!.cancel,
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              TextButton(
-                child: Text(
-                  AppLocalizations.of(context)!.rename,
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                ),
-                onPressed: () {
-                  final newLabel = nameInputController.text.trim();
-                  if (newLabel.isEmpty) return;
-                  globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(label: newLabel));
-
-                  Logger.info(
-                    'Renamed token:',
-                    name: 'token_widget_base.dart#TextButton#renameClicked',
-                    error: '\'${token.label}\' changed to \'$newLabel\'',
-                  );
-
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
+      useRootNavigator: false,
+      context: globalNavigatorKey.currentContext!,
+      builder: (BuildContext context) {
+        return DefaultEditActionDialog(
+          token: token,
+          onSaveButtonPressed: ({required newLabel, newImageUrl}) async {
+            if (newLabel.isEmpty) return;
+            final edited = await globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(label: newLabel, tokenImage: newImageUrl));
+            if (edited == null) {
+              Logger.error('Token editing failed', name: 'DefaultEditAction#_showDialog');
+              return;
+            }
+            Logger.info(
+              'Token edited: ${token.label} -> ${edited.label}, ${token.tokenImage} -> ${edited.tokenImage}',
+              name: 'DefaultEditAction#_showDialog',
+            );
+            if (context.mounted) Navigator.of(context).pop();
+          },
+        );
+      },
+    );
   }
 }

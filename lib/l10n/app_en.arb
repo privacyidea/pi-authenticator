@@ -658,6 +658,16 @@
       }
     }
   },
+  "pushEndpointUrl": "Push endpoint URL",
+  "exampleUrl": "Please enter a valid URL like: \"https://example.com/\"",
+  "mustNotBeEmpty": "{field} must not be empty",
+  "@mustNotBeEmpty": {
+    "placeholders": {
+      "field": {
+        "example": "Name"
+      }
+    }
+  },
   "sendPushRequestResponseFailed": "Failed to send the response.",
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."

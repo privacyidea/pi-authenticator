@@ -126,9 +126,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
 
   void _showExportDialog(Iterable<Token> tokens) async {
     if (tokens.isEmpty) return;
-    final tokenFolder = ref.read(tokenFolderProvider).folders.where((folder) => folder.isLocked).toList();
-    final containsLocked = tokens.any((token) => token.isLocked || tokenFolder.any((folder) => folder.folderId == token.folderId));
-    final authenticated = (!containsLocked || await lockAuth(localizedReason: AppLocalizations.of(context)!.exportLockedTokenReason));
+    final authenticated = (await lockAuth(localizedReason: AppLocalizations.of(context)!.exportLockedTokenReason, autoAuthIfUnsupported: true));
     if (!authenticated || !mounted) return;
     final isExported = await showDialog<bool>(
       context: context,

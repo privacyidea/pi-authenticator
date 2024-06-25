@@ -636,6 +636,16 @@
   "oneMore": "Ještě jeden",
   "done": "Hotovo",
   "confirmPassword": "Potvrďte heslo",
+  "exampleUrl": "Zadejte prosím platnou adresu URL, například: \"https://example.com/\"",
+  "pushEndpointUrl": "URL koncového bodu push",
+  "mustNotBeEmpty": "{field} nesmí být prázdné",
+  "@mustNotBeEmpty": {
+    "placeholders": {
+      "field": {
+        "example": "Name"
+      }
+    }
+  },
   "sendPushRequestResponseFailed": "Odpověď se nepodařilo odeslat.",
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."

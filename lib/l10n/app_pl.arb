@@ -630,6 +630,16 @@
   "oneMore": "Jeszcze jeden",
   "done": "Gotowe",
   "confirmPassword": "Potwierdź hasło",
+  "exampleUrl": "Wprowadź prawidłowy adres URL, np: \"https://example.com/\"",
+  "pushEndpointUrl": "Adres URL punktu końcowego push",
+  "mustNotBeEmpty": "{field} nie może być puste",
+  "@mustNotBeEmpty": {
+    "placeholders": {
+      "field": {
+        "example": "Name"
+      }
+    }
+  },
   "sendPushRequestResponseFailed": "Nie udało się wysłać odpowiedzi.",
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."

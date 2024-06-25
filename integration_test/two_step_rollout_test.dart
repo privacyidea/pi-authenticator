@@ -7,6 +7,7 @@ import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
+import 'package:privacyidea_authenticator/state_notifiers/completed_introduction_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
@@ -41,8 +42,8 @@ void main() {
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
-    final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
-    when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
+    when(mockIntroductionRepository.loadCompletedIntroductions())
+        .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
   });
   testWidgets(
     '2step rollout test',
@@ -52,6 +53,7 @@ void main() {
           settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
           tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
           tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
+          introductionProvider.overrideWith((ref) => IntroductionNotifier(repository: mockIntroductionRepository)),
         ],
         child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
       ));

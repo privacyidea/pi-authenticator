@@ -21,7 +21,7 @@ void _testTokenOriginSourceTypeExtension() {
       );
       final TokenOriginData tokenOriginData = TokenOriginSourceType.qrScan.toTokenOrigin(
         data: 'data',
-        appName: 'appName',
+        originName: 'appName',
         isPrivacyIdeaToken: true,
         createdAt: DateTime.fromMicrosecondsSinceEpoch(1622160000000),
       );
@@ -39,6 +39,7 @@ void _testTokenOriginSourceTypeExtension() {
         data: 'data',
         appName: 'appName',
         isPrivacyIdeaToken: true,
+        creator: 'creator',
         createdAt: DateTime.fromMicrosecondsSinceEpoch(1622160000000),
       );
       final tokenMatch = token.copyWith(origin: tokenOriginDataMatch);

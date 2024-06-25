@@ -93,15 +93,7 @@ abstract class AppLocalizations {
   ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('cs'),
-    Locale('de'),
-    Locale('en'),
-    Locale('es'),
-    Locale('fr'),
-    Locale('nl'),
-    Locale('pl')
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('cs'), Locale('de'), Locale('en'), Locale('es'), Locale('fr'), Locale('nl'), Locale('pl')];
 
   /// No description provided for @patchNotesNewFeatures.
   ///
@@ -1669,11 +1661,23 @@ abstract class AppLocalizations {
   /// **'The {name} [{value}] is not supported by this version of the app.'**
   String unsupported(Object name, Object value);
 
-  /// Error message when the response to a push request could not be sent.
+  /// No description provided for @pushEndpointUrl.
   ///
   /// In en, this message translates to:
-  /// **'Failed to send the response.'**
-  String get sendPushRequestResponseFailed;
+  /// **'Push endpoint URL'**
+  String get pushEndpointUrl;
+
+  /// No description provided for @exampleUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid URL like: \"https://example.com/\"'**
+  String get exampleUrl;
+
+  /// No description provided for @mustNotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'{field} must not be empty'**
+  String mustNotBeEmpty(Object field);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -1692,23 +1696,26 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'cs': return AppLocalizationsCs();
-    case 'de': return AppLocalizationsDe();
-    case 'en': return AppLocalizationsEn();
-    case 'es': return AppLocalizationsEs();
-    case 'fr': return AppLocalizationsFr();
-    case 'nl': return AppLocalizationsNl();
-    case 'pl': return AppLocalizationsPl();
+    case 'cs':
+      return AppLocalizationsCs();
+    case 'de':
+      return AppLocalizationsDe();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
+    case 'nl':
+      return AppLocalizationsNl();
+    case 'pl':
+      return AppLocalizationsPl();
   }
 
-  throw FlutterError(
-    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-    'an issue with the localizations generation tool. Please file an issue '
-    'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
-  );
+  throw FlutterError('AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
 }
