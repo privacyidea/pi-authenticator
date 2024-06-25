@@ -22,7 +22,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get patchNotesV4_3_1Improvement1 => 'Der QR-Code-Scanner wurde verbessert.';
 
   @override
-  String get patchNotesV4_3_0NewFeatures1 => 'Unterstützung für den Import von Token von Google, Aegis und 2FAS Authenticator hinzugefügt. Weitere Importquellen werden in Zukunft hinzugefügt.';
+  String get patchNotesV4_3_0NewFeatures1 =>
+      'Unterstützung für den Import von Token von Google, Aegis und 2FAS Authenticator hinzugefügt. Weitere Importquellen werden in Zukunft hinzugefügt.';
 
   @override
   String get patchNotesV4_3_0NewFeatures2 => 'Feedback-Option zu den Einstellungen hinzugefügt.';
@@ -108,10 +109,12 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get confirmTokenDeletionHint => 'Unter Umständen können Sie sich nicht mehr einloggen, wenn Sie diesen Token löschen.\nBitte stellen Sie sicher, dass Sie sich ohne diesen Token in den dazugehörigen Account einloggen können.';
+  String get confirmTokenDeletionHint =>
+      'Unter Umständen können Sie sich nicht mehr einloggen, wenn Sie diesen Token löschen.\nBitte stellen Sie sicher, dass Sie sich ohne diesen Token in den dazugehörigen Account einloggen können.';
 
   @override
-  String get confirmFolderDeletionHint => 'Das Löschen eines Ordners hat keine Auswirkungen auf die Token, die sich darin befinden.\nDie Token werden in die Hauptliste verschoben.';
+  String get confirmFolderDeletionHint =>
+      'Das Löschen eines Ordners hat keine Auswirkungen auf die Token, die sich darin befinden.\nDie Token werden in die Hauptliste verschoben.';
 
   @override
   String get generatingPhonePart => 'Generiere Telefonanteil';
@@ -149,7 +152,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enablePolling => 'Aktives Stellen von Push-Anfragen';
 
   @override
-  String get requestPushChallengesPeriodically => 'Fordert regelmäßig Push-Anfragen vom Server an. Aktivieren Sie diese Funktion, wenn Nachrichten ansonsten nicht erhalten werden.';
+  String get requestPushChallengesPeriodically =>
+      'Fordert regelmäßig Push-Anfragen vom Server an. Aktivieren Sie diese Funktion, wenn Nachrichten ansonsten nicht erhalten werden.';
 
   @override
   String get synchronizePushTokens => 'Synchronisiere Push Token';
@@ -267,7 +271,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get goToSettingsButton => 'Gehe zu Einstellungen';
 
   @override
-  String get goToSettingsDescription => 'Authentifizierung durch Gerätepasswort oder Biometrie ist nicht eingerichtet. Bitte aktivieren Sie dies in den Geräteeinstellungen.';
+  String get goToSettingsDescription =>
+      'Authentifizierung durch Gerätepasswort oder Biometrie ist nicht eingerichtet. Bitte aktivieren Sie dies in den Geräteeinstellungen.';
 
   @override
   String get lockOut => 'Biometrie ist deaktiviert. Bitte sperren und entsperren Sie Ihren Bildschirm um diese zu aktivieren.';
@@ -329,7 +334,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get send => 'Senden';
 
   @override
-  String get sendErrorLogDescription => 'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:';
+  String get sendErrorLogDescription =>
+      'Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:';
 
   @override
   String get showPrivacyPolicy => 'Datenschutzerklärung anzeigen';
@@ -356,7 +362,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get open => 'Öffnen';
 
   @override
-  String get sendErrorDialogBody => 'Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden.';
+  String get sendErrorDialogBody =>
+      'Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden.';
 
   @override
   String get noFbToken => 'Kein Firebase Token vorhanden';
@@ -480,7 +487,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Um QR-Codes zu scannen, benötigt die App Zugriff auf die Kamera.';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied => 'Sie haben die Berechtigung für den Kamerazugriff permanent verweigert. Bitte aktivieren Sie die Berechtigung in den Einstellungen ihres Smartphones.';
+  String get grantCameraPermissionDialogPermanentlyDenied =>
+      'Sie haben die Berechtigung für den Kamerazugriff permanent verweigert. Bitte aktivieren Sie die Berechtigung in den Einstellungen ihres Smartphones.';
 
   @override
   String get grantCameraPermissionDialogButton => 'Berechtigung erteilen';
@@ -489,7 +497,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get decryptErrorTitle => 'Entschlüsselung fehlgeschlagen';
 
   @override
-  String get decryptErrorContent => 'Leider konnten Ihre Token nicht entschlüsselt werden. Das deutet darauf hin, dass der Verschlüsselungsschlüssel nicht mehr verfügbar ist. Sie können es erneut versuchen oder die App Daten löschen. Dabei werden alle Token aus der App geschlöscht.';
+  String get decryptErrorContent =>
+      'Leider konnten Ihre Token nicht entschlüsselt werden. Das deutet darauf hin, dass der Verschlüsselungsschlüssel nicht mehr verfügbar ist. Sie können es erneut versuchen oder die App Daten löschen. Dabei werden alle Token aus der App geschlöscht.';
 
   @override
   String get decryptErrorButtonDelete => 'Löschen.';
@@ -507,7 +516,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get hidePushTokens => 'Push-Token ausblenden';
 
   @override
-  String get hidePushTokensDescription => 'Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.';
+  String get hidePushTokensDescription =>
+      'Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.';
 
   @override
   String get settingsGroupGeneral => 'Allgemeines';
@@ -519,7 +529,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get privacyPolicy => 'Datenschutzerklärung';
 
   @override
-  String get introScanQrCode => 'Sie können QR-Codes scannen, um Token hinzuzufügen.\nWir unterstützen alle gängigen Two-Factor-Authentication Token und auch die privacyIDEA Token.';
+  String get introScanQrCode =>
+      'Sie können QR-Codes scannen, um Token hinzuzufügen.\nWir unterstützen alle gängigen Two-Factor-Authentication Token und auch die privacyIDEA Token.';
 
   @override
   String get introAddTokenManually => 'Wenn Sie keinen QR-Code scannen möchten, können Sie Token auch manuell hinzufügen.';
@@ -531,7 +542,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get introEditToken => 'Hier können Sie den Namen des Tokens bearbeiten und einige Details einsehen.';
 
   @override
-  String get introLockToken => 'Um die Sicherheit noch weiter zu erhöhen, können Sie Token sperren.\nDer Token kann dann erst nach der Authentifizierung verwendet werden.';
+  String get introLockToken =>
+      'Um die Sicherheit noch weiter zu erhöhen, können Sie Token sperren.\nDer Token kann dann erst nach der Authentifizierung verwendet werden.';
 
   @override
   String get introDragToken => 'Reorganisieren Sie Ihre Token, indem Sie sie einige Sekunden lang drücken und dann an die gewünschte Position ziehen.';
@@ -551,7 +563,8 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get legacySigningErrorMessage => 'Der Token wurde in einer veralteten Version der App erstellt, was zu Problemen bei der Verwendung führen kann. Es wird empfohlen, einen neuen Push-Token zu erstellen, wenn das Problem weiterhin besteht!';
+  String get legacySigningErrorMessage =>
+      'Der Token wurde in einer veralteten Version der App erstellt, was zu Problemen bei der Verwendung führen kann. Es wird empfohlen, einen neuen Push-Token zu erstellen, wenn das Problem weiterhin besteht!';
 
   @override
   String get selectImportSource => 'Importquelle auswählen';
@@ -658,16 +671,20 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get importHintPrivacyIdeaQrScan => 'Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.';
+  String get importHintPrivacyIdeaQrScan =>
+      'Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.';
 
   @override
-  String get importHintPrivacyIdeaFile => 'Um ein Backup zu erstellen, gehen Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie \"Als Datei\" aus, wählen Sie die Token aus, die Sie exportieren möchten. Anschließend tippen Sie auf \"Exportieren\" und setzen Sie ein Passwort. Der Speicherort ist der Download-Ordner auf Ihrem Gerät.';
+  String get importHintPrivacyIdeaFile =>
+      'Um ein Backup zu erstellen, gehen Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie \"Als Datei\" aus, wählen Sie die Token aus, die Sie exportieren möchten. Anschließend tippen Sie auf \"Exportieren\" und setzen Sie ein Passwort. Der Speicherort ist der Download-Ordner auf Ihrem Gerät.';
 
   @override
-  String get importHint2FAS => 'Wählen Sie das 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.';
+  String get importHint2FAS =>
+      'Wählen Sie das 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.';
 
   @override
-  String get importHintAegisBackupFile => 'Wähle dein Aegis-Export (.json) aus.\nWenn Sie keinen Export haben, erstellen Sie bitte eins über das Einstellungen Menu in der Aegis-App. Wir empfehlen die Verwendung eines Passworts.';
+  String get importHintAegisBackupFile =>
+      'Wähle dein Aegis-Export (.json) aus.\nWenn Sie keinen Export haben, erstellen Sie bitte eins über das Einstellungen Menu in der Aegis-App. Wir empfehlen die Verwendung eines Passworts.';
 
   @override
   String get importHintAegisQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Einträge aus Aegis übertragen.';
@@ -679,19 +696,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get importHintGoogleQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.';
 
   @override
-  String get importHintGoogleQrFile => 'Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus dem Google Authenticator exportieren.\n!! Der QR-Code enthält die Token in unverschlüsselter Form. Es ist deshalb nicht sicher, diesen länger als nötig aufzubewahren !!';
+  String get importHintGoogleQrFile =>
+      'Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus dem Google Authenticator exportieren.\n!! Der QR-Code enthält die Token in unverschlüsselter Form. Es ist deshalb nicht sicher, diesen länger als nötig aufzubewahren !!';
 
   @override
-  String get importHintAuthenticatorProFile => 'Um ein Backup der Authenticator Pro-App zu erstellen navigieren Sie zu den Einstellungen und tippen Sie auf \"Automatische Sicherung\". Wählen Sie einen Speicherort und setzen Sie ein Passwort. Anschließend drücken Sie auf \"Jetzt sichern\" um die Token zu exportieren.';
+  String get importHintAuthenticatorProFile =>
+      'Um ein Backup der Authenticator Pro-App zu erstellen navigieren Sie zu den Einstellungen und tippen Sie auf \"Automatische Sicherung\". Wählen Sie einen Speicherort und setzen Sie ein Passwort. Anschließend drücken Sie auf \"Jetzt sichern\" um die Token zu exportieren.';
 
   @override
-  String get importHintFreeOtpPlusQrScan => 'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie auf die drei Punkte in der Kachel des Tokens drücken, und wählen Sie \"QR-Code teilen\".';
+  String get importHintFreeOtpPlusQrScan =>
+      'Scannen Sie den QR-Code, den Sie erhalten, wenn Sie auf die drei Punkte in der Kachel des Tokens drücken, und wählen Sie \"QR-Code teilen\".';
 
   @override
-  String get importHintFreeOtpPlusFile => 'Um ein Backup der FreeOTP+ App zu erstellen, tippen Sie auf die drei Punkte in der oberen rechten Ecke und wählen Sie \"Exportieren\". Sie können zwischen dem JSON- und dem URI-Format wählen. Wir empfehlen, das Backup nach dem Importieren zu löschen, da es nicht verschlüsselt ist.';
+  String get importHintFreeOtpPlusFile =>
+      'Um ein Backup der FreeOTP+ App zu erstellen, tippen Sie auf die drei Punkte in der oberen rechten Ecke und wählen Sie \"Exportieren\". Sie können zwischen dem JSON- und dem URI-Format wählen. Wir empfehlen, das Backup nach dem Importieren zu löschen, da es nicht verschlüsselt ist.';
 
   @override
-  String get qrFileDecodeError => 'Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren. Bitte verwenden Sie stattdessen den QR-Code-Scanner.';
+  String get qrFileDecodeError =>
+      'Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren. Bitte verwenden Sie stattdessen den QR-Code-Scanner.';
 
   @override
   String get tokenLink => 'Token Link';
@@ -706,7 +728,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get feedbackDescription => 'Wenn Sie Fragen, Anregungen oder Probleme haben, lassen Sie es uns wissen.';
 
   @override
-  String get feedbackHint => 'Es öffnet sich eine vorgefertigte E-Mail, die Sie an uns senden können. Falls gewünscht, werden Informationen über Ihr Gerät und die Version der Anwendung hinzugefügt. Vor dem Versenden können Sie die E-Mail überprüfen und bearbeiten.';
+  String get feedbackHint =>
+      'Es öffnet sich eine vorgefertigte E-Mail, die Sie an uns senden können. Falls gewünscht, werden Informationen über Ihr Gerät und die Version der Anwendung hinzugefügt. Vor dem Versenden können Sie die E-Mail überprüfen und bearbeiten.';
 
   @override
   String get feedbackPrivacyPolicy1 => 'Mit dem Senden des Feedbacks stimmen Sie unserer ';
@@ -736,7 +759,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noMailAppTitle => 'Keine Mail-App gefunden';
 
   @override
-  String get noMailAppDescription => 'Auf diesem Gerät ist keine E-Mail-App installiert oder initialisiert, bitte versuchen Sie es erneut, wenn Sie eine E-Mail-Nachricht senden können.';
+  String get noMailAppDescription =>
+      'Auf diesem Gerät ist keine E-Mail-App installiert oder initialisiert, bitte versuchen Sie es erneut, wenn Sie eine E-Mail-Nachricht senden können.';
 
   @override
   String get authenticationRequest => 'Authentifizierung';
@@ -752,7 +776,8 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Bitte synchronisieren Sie die Push Token über die Einstellungen manuell, wenn eine Netzwerkverbindung verfügbar ist.';
+  String get pleaseSyncManuallyWhenNetworkIsAvailable =>
+      'Bitte synchronisieren Sie die Push Token über die Einstellungen manuell, wenn eine Netzwerkverbindung verfügbar ist.';
 
   @override
   String get pushTokens => 'Push-Token';
@@ -832,7 +857,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get exportTokens => 'Tokens exportieren';
 
   @override
-  String get enterPasswordToEncrypt => 'Geben Sie ein Passwort ein, um die Tokens zu verschlüsseln. Dieses Passwort wird benötigt, um die Tokens zu importieren.';
+  String get enterPasswordToEncrypt =>
+      'Geben Sie ein Passwort ein, um die Tokens zu verschlüsseln. Dieses Passwort wird benötigt, um die Tokens zu importieren.';
 
   @override
   String get exportLockedTokenReason => 'Bitte authentifizieren Sie sich, um gesperrte Tokens zu exportieren.';
@@ -913,5 +939,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get selectTokensToExportHelpTitle => 'Ist Ihr Token nicht aufgelistet?';
 
   @override
-  String get selectTokensToExportHelpContent => 'Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden.';
+  String get selectTokensToExportHelpContent =>
+      'Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden.';
 }

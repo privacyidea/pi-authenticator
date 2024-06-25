@@ -150,7 +150,7 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
       URI_PERIOD: twoFasOTP[TWOFAS_PERIOD],
       URI_COUNTER: twoFasOTP[TWOFAS_COUNTER],
       URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-        appName: TokenImportOrigins.twoFasAuthenticator.appName,
+        originName: TokenImportOrigins.twoFasAuthenticator.appName,
         isPrivacyIdeaToken: false,
         data: jsonEncode(twoFasToken),
       ),

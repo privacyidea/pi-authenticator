@@ -18,6 +18,7 @@ void _testTokenOriginData() {
           appName: 'appName',
           isPrivacyIdeaToken: true,
           createdAt: DateTime.now(),
+          creator: 'creator',
           piServerVersion: const Version(1, 0, 0),
         );
         expect(tokenOriginData.source, TokenOriginSourceType.manually);
@@ -34,15 +35,16 @@ void _testTokenOriginData() {
           appName: 'appName',
           isPrivacyIdeaToken: true,
           createdAt: DateTime.now(),
+          creator: 'creator',
           piServerVersion: const Version(1, 0, 0),
         );
         final copy = tokenOriginData.copyWith(
           source: TokenOriginSourceType.qrScan,
           data: 'data2',
           appName: 'appName2',
-          isPrivacyIdeaToken: false,
+          isPrivacyIdeaToken: () => false,
           createdAt: DateTime.now().add(const Duration(days: 1)),
-          piServerVersion: const Version(1, 0, 1),
+          piServerVersion: () => const Version(1, 0, 1),
         );
         expect(copy.source, TokenOriginSourceType.qrScan);
         expect(copy.data, 'data2');

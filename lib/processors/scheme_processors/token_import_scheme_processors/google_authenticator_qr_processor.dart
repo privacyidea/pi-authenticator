@@ -109,7 +109,7 @@ class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
       }
     }
 
-    return results.map((t) {
+    final resultsWithOrigin = results.map((t) {
       if (t is! ProcessorResultSuccess<Token>) return t;
       return ProcessorResultSuccess(
         TokenOriginSourceType.qrScanImport.addOriginToToken(
@@ -120,5 +120,6 @@ class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
         ),
       );
     }).toList();
+    return resultsWithOrigin;
   }
 }

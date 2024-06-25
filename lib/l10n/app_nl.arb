@@ -635,6 +635,16 @@
   "oneMore": "Nog een",
   "done": "Klaar",
   "confirmPassword": "Wachtwoord bevestigen",
+  "exampleUrl": "Voer een geldige URL in zoals: \"https://example.com/\"",
+  "pushEndpointUrl": "Push Endpoint URL",
+  "mustNotBeEmpty": "{field} mag niet leeg zijn",
+  "@mustNotBeEmpty": {
+    "placeholders": {
+      "field": {
+        "example": "Name"
+      }
+    }
+  },
   "sendPushRequestResponseFailed": "Het verzenden van het antwoord is mislukt. ",
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."

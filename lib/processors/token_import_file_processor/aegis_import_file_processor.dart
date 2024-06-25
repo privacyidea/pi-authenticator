@@ -159,7 +159,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           URI_COUNTER: info[AEGIS_COUNTER],
           URI_PIN: info[AEGIS_PIN],
           URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-            appName: TokenImportOrigins.aegisAuthenticator.appName,
+            originName: TokenImportOrigins.aegisAuthenticator.appName,
             isPrivacyIdeaToken: false,
             data: jsonEncode(entry),
           ),
@@ -200,7 +200,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           URI_COUNTER: info[AEGIS_COUNTER],
           URI_PIN: info[AEGIS_PIN],
           URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-            appName: TokenImportOrigins.aegisAuthenticator.appName,
+            originName: TokenImportOrigins.aegisAuthenticator.appName,
             isPrivacyIdeaToken: false,
             data: jsonEncode(entry),
           ),

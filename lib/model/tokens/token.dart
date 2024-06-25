@@ -39,9 +39,7 @@ abstract class Token with SortableMixin {
     if (TokenTypes.STEAM.isName(type, caseSensitive: false)) return SteamToken.fromJson(json);
     throw ArgumentError.value(json, 'Token#fromJson', 'Token type [$type] is not a supported');
   }
-  factory Token.fromUriMap(
-    Map<String, dynamic> uriMap,
-  ) {
+  factory Token.fromUriMap(Map<String, dynamic> uriMap) {
     String type = uriMap[URI_TYPE];
     if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromUriMap(uriMap);
     if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromUriMap(uriMap);

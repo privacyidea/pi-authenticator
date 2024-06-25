@@ -118,7 +118,7 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
       URI_COUNTER: tokenJson[_FREE_OTP_PLUS_COUNTER] + 1, // FreeOTP+ saves only in JSON as 0-based counter
       URI_PERIOD: tokenJson[_FREE_OTP_PLUS_PERIOD],
       URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-        appName: TokenImportOrigins.freeOtpPlus.appName,
+        originName: TokenImportOrigins.freeOtpPlus.appName,
         isPrivacyIdeaToken: false,
         data: jsonEncode(tokenJson),
       ),

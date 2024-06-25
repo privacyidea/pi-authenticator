@@ -546,8 +546,8 @@
   "importExistingToken": "{count, plural, zero{Nebyl nalezen žádný token, který by se již v aplikaci nacházel.} one{Byl nalezen token, který již v aplikaci existuje.} other{{count} byly nalezeny tokeny, které se již v aplikaci nacházejí.}}",
   "importConflictToken": "{count, plural, zero{Není žádný konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.}}",
   "importNewToken": "{count, plural, zero{Nenalezen žádný nový token.} one{Nalezen nový token, který bude importován.} other{Nalezen nový token {count}, který bude importován.}}",
-  "importHintPrivacyIdeaQrScan": "",
-  "importHintPrivacyIdeaFile": "",
+  "importHintPrivacyIdeaQrScan": "Chcete-li vytvořit QR kódy žetonů, přejděte do nastavení a klepněte na \"Export\". Poté vyberte \"Jako QR kód\" a klepněte na token, který chcete exportovat. Tato varianta je vhodná pouze pro přímý přenos do jiného zařízení, protože QR kód není šifrovaný.",
+  "importHintPrivacyIdeaFile": "Chcete-li vytvořit zálohu, přejděte do nastavení a klepněte na položku \"Export\". Vyberte \"Jako soubor\" a vyberte tokeny, které chcete exportovat. Potom klepněte na \"Exportovat\" a nastavte heslo. Úložištěm je složka pro stahování ve vašem zařízení.",
   "importHint2FAS": "Vyberte zálohu 2FAS.\nPokud nemáte zálohu, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.",
   "importHintAegisBackupFile": "Vyberte svůj export Aegis (.JSON).\nPokud nemáte export, vytvořte si jej prostřednictvím nabídky nastavení v aplikaci Aegis. Doporučujeme použít heslo.",
   "importHintAegisQrScan": "Naskenujte QR kód, který obdržíte při přenosu záznamů z aplikace Aegis.",
@@ -638,6 +638,16 @@
   "oneMore": "Ještě jeden",
   "done": "Hotovo",
   "confirmPassword": "Potvrďte heslo",
+  "exampleUrl": "Zadejte prosím platnou adresu URL, například: \"https://example.com/\"",
+  "pushEndpointUrl": "URL koncového bodu push",
+  "mustNotBeEmpty": "{field} nesmí být prázdné",
+  "@mustNotBeEmpty": {
+    "placeholders": {
+      "field": {
+        "example": "Name"
+      }
+    }
+  },
   "sendPushRequestResponseFailed": "Odpověď se nepodařilo odeslat.",
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
