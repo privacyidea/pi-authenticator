@@ -116,7 +116,7 @@ class PrivacyIdeaIOClient {
     } on HandshakeException catch (e, s) {
       response = Response('${e.runtimeType} : $s', 525);
     } catch (e, s) {
-      if (e is! TimeoutException && e is! SocketException) rethrow;
+      if (e is! TimeoutException && e is! SocketException && e is! ClientException) rethrow;
       response = Response('${e.runtimeType} : $s', 404);
     }
 

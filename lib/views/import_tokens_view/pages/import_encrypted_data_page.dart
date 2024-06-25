@@ -30,7 +30,8 @@ class ImportEncryptedDataPage<T, V extends String?> extends StatefulWidget {
 
 class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
   final _passwordController = TextEditingController();
-  Future? future;
+  final _passwordFocusNode = FocusNode();
+  Future? processingFuture;
   bool isPasswordVisible = false;
   bool wrongPassword = false;
 
@@ -64,6 +65,8 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                           flex: 9,
                           child: TextField(
                             controller: _passwordController,
+                            focusNode: _passwordFocusNode,
+                            enabled: processingFuture == null,
                             style: Theme.of(context).textTheme.bodyMedium,
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(context)!.password,
@@ -99,7 +102,7 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                     ),
                   ),
                   const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
-                  future != null
+                  processingFuture != null
                       ? const CircularProgressIndicator()
                       : SizedBox(
                           width: double.infinity,
@@ -108,7 +111,7 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                                 ? null
                                 : () async {
                                     setState(() {
-                                      future = Future<void>(
+                                      processingFuture = Future<void>(
                                         () async {
                                           try {
                                             final processorResults = await widget.processor.processTokenMigrate(widget.data, args: _passwordController.text);
@@ -116,12 +119,15 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                                           } on BadDecryptionPasswordException catch (_) {
                                             setState(() {
                                               wrongPassword = true;
-                                              future = null;
+                                              processingFuture = null;
+                                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                _passwordFocusNode.requestFocus();
+                                              });
                                             });
                                             return;
                                           }
                                         },
-                                      )..then((_) => setState(() => future = null));
+                                      )..then((_) => setState(() => processingFuture = null));
                                     });
                                   },
                             child: Text(

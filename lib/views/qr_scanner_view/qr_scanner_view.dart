@@ -19,7 +19,6 @@
 */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -27,6 +26,7 @@ import '../../utils/logger.dart';
 import '../../views/view_interface.dart';
 import '../../widgets/dialog_widgets/default_dialog.dart';
 import '../../widgets/dialog_widgets/default_dialog_button.dart';
+import 'qr_scanner_view_widgets/qr_scanner_widget.dart';
 
 class QRScannerView extends StatefulView {
   static const routeName = '/qr_scanner';
@@ -93,22 +93,7 @@ class _QRScannerViewState extends State<QRScannerView> {
         return SafeArea(
           child: Stack(
             children: [
-              Material(
-                color: Colors.black,
-                child: ReaderWidget(
-                  showScannerOverlay: false,
-                  showFlashlight: false,
-                  showGallery: false,
-                  showToggleCamera: false,
-                  scannerOverlay: const FixedScannerOverlay(
-                    borderColor: Colors.white,
-                  ),
-                  onScan: (result) {
-                    if (result.text == null) return;
-                    Navigator.pop(context, result.text);
-                  },
-                ),
-              ),
+              const QRScannerWidget(),
               Scaffold(
                 resizeToAvoidBottomInset: false,
                 backgroundColor: Colors.transparent,
