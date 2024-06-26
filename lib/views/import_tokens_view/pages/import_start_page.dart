@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:isolate';
+
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:image/image.dart' as img_lib;
+import 'package:zxing2/qrcode.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
@@ -169,6 +171,7 @@ class _ImportStartPageState extends State<ImportStartPage> {
       );
     }).toList();
 
+    Logger.info("Backup file imported successfully", name: "_pickBackupFile#ImportStartPage");
     _routeImportPlainTokensPage(importResults: importResults);
   }
 
@@ -198,6 +201,7 @@ class _ImportStartPageState extends State<ImportStartPage> {
         ),
       );
     }).toList();
+    Logger.info("QR code scanned successfully", name: "_scanQrCode#ImportStartPage");
     _routeImportPlainTokensPage(importResults: results);
     return;
   }
@@ -207,29 +211,40 @@ class _ImportStartPageState extends State<ImportStartPage> {
     final schemeProcessor = processor as TokenImportSchemeProcessor;
     final localizations = AppLocalizations.of(context)!;
     final XFile? file = await openFile();
-    final zx = Zxing();
+
     if (file == null) return;
-    var image = img_lib.decodeImage(await file.readAsBytes());
-    if (image == null) {
+    Result? qrResult;
+    final img_lib.Image? qrImage = img_lib.decodeImage(await file.readAsBytes());
+    if (qrImage == null) {
+      Logger.warning("Error decoding file to image..", name: "_pickQrFile#ImportStartPage");
+      if (!mounted) return;
       setState(() => _errorText = localizations.invalidQrFile(widget.appName));
       return;
     }
-    final qrResult = await zx.readBarcodeImagePath(
-      file,
-      DecodeParams(
-        format: Format.qrCode,
-        width: image.width,
-        height: image.height,
-      ),
-    );
-    final qrText = qrResult.text;
-    if (qrText == null) {
-      setState(() => _errorText = localizations.invalidQrFile(widget.appName));
+    var i = 0;
+    while (i < 100 && qrResult == null && mounted) {
+      try {
+        qrResult = await _decodeQrImage(qrImage, numFails: i);
+        break;
+      } on FormatReaderException catch (_) {
+        Logger.info("Qr-Code detected but not valid: zoom");
+        i = i + 4;
+        continue;
+      } on NotFoundException catch (_) {
+        Logger.info("Qr-Code not detected: rotate by 90°");
+        i++;
+      }
+    }
+    if (qrResult == null) {
+      Logger.warning("Error decoding QR file..", name: "_pickQrFile#ImportStartPage");
+      if (!mounted) return;
+      setState(() => _errorText = localizations.qrFileDecodeError);
       return;
     }
+
     final Uri uri;
     try {
-      uri = Uri.parse(qrText);
+      uri = Uri.parse(qrResult.text);
     } on FormatException catch (_) {
       setState(() => _errorText = localizations.invalidQrFile(widget.appName));
       return;
@@ -246,11 +261,28 @@ class _ImportStartPageState extends State<ImportStartPage> {
           appName: widget.appName,
           token: t.resultData,
           isPrivacyIdeaToken: false,
-          data: t.resultData.origin?.data ?? qrText,
+          data: t.resultData.origin?.data ?? qrResult!.text,
         ),
       );
     }).toList();
+    Logger.info("QR file imported successfully", name: "_pickQrFile#ImportStartPage");
     _routeImportPlainTokensPage(importResults: processorResults);
+  }
+
+  Future<Result> _decodeQrImage(img_lib.Image qrImage, {int numFails = 0}) async {
+    final receivePort = ReceivePort();
+    final args = [receivePort.sendPort, qrImage, numFails];
+    Isolate.spawn(
+      _decodeQrImageIsolate,
+      args,
+      errorsAreFatal: true,
+    );
+    final result = await receivePort.first;
+    receivePort.close();
+    if (result is! Result) {
+      throw result;
+    }
+    return result;
   }
 
   Future<void> _validateLink(TokenImportProcessor? processor) async {
@@ -284,6 +316,7 @@ class _ImportStartPageState extends State<ImportStartPage> {
 
     if (mounted == false) return;
     setState(() => FocusScope.of(context).unfocus());
+    Logger.info("Link imported successfully", name: "_validateLink#ImportStartPage");
     _routeImportPlainTokensPage(importResults: results);
   }
 
@@ -312,5 +345,36 @@ class _ImportStartPageState extends State<ImportStartPage> {
         );
       }),
     );
+  }
+}
+
+void _decodeQrImageIsolate(List<dynamic> args) async {
+  final sendPort = args[0] as SendPort;
+  var image = args[1] as img_lib.Image;
+  final int numFails = args.length > 2 ? args[2] as int : 0;
+
+  if (numFails > 3) {
+    print("ImageSize: ${image.width}x${image.height}");
+    final size = image.width < image.height ? image.width : image.height;
+    final crop = (size * 0.02).floor() * (numFails ~/ 4);
+    print("Crop: $crop");
+    final x = (image.width - size) ~/ 2 + crop;
+    final y = (image.height - size) ~/ 2 + crop;
+    print("ImageSize after crop: ${size - crop - crop}x${size - crop - crop}");
+    image = img_lib.copyCrop(image, x: x, y: y, width: size - crop, height: size - crop);
+  }
+  image = img_lib.copyRotate(image, angle: 90 * numFails % 360);
+
+  LuminanceSource source = RGBLuminanceSource(
+    image.width,
+    image.height,
+    image.convert(numChannels: 4).getBytes(order: img_lib.ChannelOrder.abgr).buffer.asInt32List(),
+  );
+  var bitmap = BinaryBitmap(GlobalHistogramBinarizer(source));
+  try {
+    final result = QRCodeReader().decode(bitmap);
+    Isolate.exit(sendPort, result);
+  } catch (e) {
+    Isolate.exit(sendPort, e);
   }
 }
