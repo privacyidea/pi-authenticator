@@ -77,6 +77,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
   void _updateIsMaxScrollExtent() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(const Duration(milliseconds: 100));
+      if (!mounted) return;
       if (scrollController.position.maxScrollExtent <= scrollController.offset) {
         if (isMaxScrollOffset || !mounted) return;
         setState(() {
@@ -120,7 +121,6 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
         children: [
           Flexible(
             child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
               controller: scrollController,
               child: Column(
                 children: [

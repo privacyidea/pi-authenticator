@@ -31,12 +31,13 @@ class TokenImportOrigins {
       TokenImportSource(
         processor: const PrivacyIDEAAuthenticatorQrProcessor(),
         type: TokenImportType.qrScan,
-        importHint: (localizations) => 'localizations.importHintPrivacyIDEAQrScan',
+        importHint: (localizations) => localizations.importHintPrivacyIdeaQrScan,
       ),
       TokenImportSource(
-          processor: const PrivacyIDEAAuthenticatorImportFileProcessor(),
-          type: TokenImportType.backupFile,
-          importHint: (localizations) => 'localizations.importHintPrivacyIDEAFile'),
+        processor: const PrivacyIDEAAuthenticatorImportFileProcessor(),
+        type: TokenImportType.backupFile,
+        importHint: (localizations) => localizations.importHintPrivacyIdeaFile,
+      ),
     ],
   );
 

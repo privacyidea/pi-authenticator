@@ -43,6 +43,7 @@ class PrivacyIDEAAuthenticatorImportFileProcessor extends TokenImportFileProcess
       final results = tokens.map((token) => ProcessorResultSuccess(token)).toList();
       return results;
     } catch (e) {
+      if (e is BadDecryptionPasswordException) rethrow;
       Logger.error('Failed to process file', name: 'PrivacyIDEAAuthenticatorImportFileProcessor#processFile', error: e, stackTrace: StackTrace.current);
       return [ProcessorResultFailed<Token>(e.toString())];
     }
