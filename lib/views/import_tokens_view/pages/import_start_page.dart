@@ -354,13 +354,10 @@ void _decodeQrImageIsolate(List<dynamic> args) async {
   final int numFails = args.length > 2 ? args[2] as int : 0;
 
   if (numFails > 3) {
-    print("ImageSize: ${image.width}x${image.height}");
     final size = image.width < image.height ? image.width : image.height;
     final crop = (size * 0.02).floor() * (numFails ~/ 4);
-    print("Crop: $crop");
     final x = (image.width - size) ~/ 2 + crop;
     final y = (image.height - size) ~/ 2 + crop;
-    print("ImageSize after crop: ${size - crop - crop}x${size - crop - crop}");
     image = img_lib.copyCrop(image, x: x, y: y, width: size - crop, height: size - crop);
   }
   image = img_lib.copyRotate(image, angle: 90 * numFails % 360);
