@@ -143,7 +143,7 @@ class PushProvider {
     try {
       data = _getAndValidateDataFromRemoteMessage(remoteMessage);
     } on ArgumentError catch (_) {
-      Logger.info('Try requesting the challenge by polling.', name: 'push_provider.dart#_foregroundHandler');
+      Logger.info('Failed to parse push request data. Trying to poll for challenges.', name: 'push_provider.dart#_foregroundHandler');
       await pollForChallenges(isManually: true);
       return;
     }
@@ -151,8 +151,12 @@ class PushProvider {
     try {
       return _handleIncomingRequestForeground(data);
     } catch (e, s) {
-      final errorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError;
-      Logger.error(errorMessage, name: 'push_provider.dart#_foregroundHandler', error: e, stackTrace: s);
+      Logger.error(
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError,
+        name: 'push_provider.dart#_foregroundHandler',
+        error: e,
+        stackTrace: s,
+      );
     }
   }
 
@@ -197,6 +201,7 @@ class PushProvider {
   Future<void> _handleIncomingRequestForeground(Map<String, dynamic> data) async {
     Logger.info('Incoming push challenge.', name: 'push_provider.dart#_handleIncomingRequestForeground');
     PushRequest pushRequest = PushRequest.fromMessageData(data);
+    Logger.info("PushRequest.possibleAnswers: ${pushRequest.possibleAnswers}", name: 'push_provider.dart#_handleIncomingRequestForeground');
     Logger.info('Parsing data of push request succeeded.', name: 'push_provider.dart#_handleIncomingRequestForeground');
     final pushToken = globalRef?.read(tokenProvider).getTokenBySerial(pushRequest.serial);
     if (pushToken == null) {
@@ -272,7 +277,6 @@ class PushProvider {
     }
 
     final connectivityResult = await (Connectivity().checkConnectivity());
-
     if (connectivityResult.contains(ConnectivityResult.none)) {
       if (isManually) {
         Logger.info('Tried to poll without any internet connection available.', name: 'push_provider.dart#pollForChallenges');
@@ -381,19 +385,6 @@ class PushProvider {
     }
     return;
   }
-
-  // /// Checks if the firebase token was changed and updates it if necessary.
-  // static Future<void> updateFbTokenIfChanged() async {
-  //   String? firebaseToken = await instance?._firebaseUtils.getFBToken();
-
-  //   if (firebaseToken != null && (await instance?._firebaseUtils.getCurrentFirebaseToken()) != firebaseToken) {
-  //     try {
-  //       await updateFirebaseToken(firebaseToken);
-  //     } catch (error, stackTrace) {
-  //       Logger.error('Could not update firebase token.', name: 'push_provider.dart#updateFbTokenIfChanged', error: error, stackTrace: stackTrace);
-  //     }
-  //   }
-  // }
 
   Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) async =>
       globalRef?.read(tokenProvider.notifier).updateFirebaseToken(firebaseToken);

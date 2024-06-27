@@ -16,11 +16,14 @@ import 'view_utils.dart';
 bool _authenticationInProgress = false;
 
 /// Sends a request to the OS to authenticate the user. Returns true if the user was authenticated, false otherwise.
-Future<bool> lockAuth({required String localizedReason}) async {
+/// If the device does not support authentication or authentication is not set up, a dialog is shown to the user.
+/// If [autoAuthIfUnsupported] is set to true and the device does not support authentication, the function will return true.
+Future<bool> lockAuth({required String localizedReason, bool autoAuthIfUnsupported = false}) async {
   bool didAuthenticate = false;
   LocalAuthentication localAuth = LocalAuthentication();
-
-  if (kIsWeb || !(await localAuth.isDeviceSupported())) {
+  final isDeviceSupported = await localAuth.isDeviceSupported();
+  if (!isDeviceSupported && autoAuthIfUnsupported) return true;
+  if (kIsWeb || !isDeviceSupported) {
     await showAsyncDialog(
       builder: (context) {
         return DefaultDialog(

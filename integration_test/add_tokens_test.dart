@@ -10,6 +10,8 @@ import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/model/enums/token_types.dart';
 import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/model/version.dart';
 import 'package:privacyidea_authenticator/state_notifiers/completed_introduction_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
@@ -37,18 +39,34 @@ void main() {
   late final MockIntroductionRepository mockIntroductionRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
-    when(mockSettingsRepository.loadSettings()).thenAnswer((_) async => SettingsState(useSystemLocale: false, localePreference: const Locale('en')));
+    when(mockSettingsRepository.loadSettings()).thenAnswer(
+      (_) async => SettingsState(
+        useSystemLocale: false,
+        localePreference: const Locale('en'),
+        latestStartedVersion: Version.parse('999.999.999'),
+      ),
+    );
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
-    when(mockTokenRepository.loadTokens()).thenAnswer((_) async => []);
-    when(mockTokenRepository.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
-    when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
+    var tokens = <Token>[];
+    when(mockTokenRepository.loadTokens()).thenAnswer((_) async => tokens);
+    when(mockTokenRepository.saveOrReplaceToken(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      tokens.removeWhere((element) => element.id == (arguments[0] as Token).id);
+      tokens.add(arguments[0] as Token);
+      return true;
+    });
+    when(mockTokenRepository.deleteToken(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      tokens.removeWhere((element) => element.id == (arguments[0] as Token).id);
+      return true;
+    });
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
-    final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
-    when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
+    when(mockIntroductionRepository.loadCompletedIntroductions())
+        .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
   });
   testWidgets(
     'Add Tokens Test',
@@ -62,9 +80,7 @@ void main() {
         ],
         child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
       ));
-
-      await _introToMainView(tester);
-      expectMainViewIsEmptyAndCorrect();
+      await expectMainViewIsEmptyAndCorrect(tester);
       await _addHotpToken(tester);
       expect(find.byType(HOTPTokenWidget), findsOneWidget);
       await _addTotpToken(tester);
@@ -87,21 +103,6 @@ void main() {
     },
     timeout: const Timeout(Duration(minutes: 20)),
   );
-}
-
-Future<void> _introToMainView(WidgetTester tester) async {
-  var finder = find.byType(FloatingActionButton);
-  await pumpUntilFindNWidgets(tester, finder, 1, const Duration(seconds: 20));
-  await tester.tap(finder);
-  await tester.pump(const Duration(milliseconds: 2000));
-  await tester.tap(finder);
-  await tester.pump(const Duration(milliseconds: 2000));
-  await tester.tap(finder);
-  await tester.pump(const Duration(milliseconds: 2000));
-  finder = find.text(AppLocalizationsEn().ok);
-  await pumpUntilFindNWidgets(tester, finder, 1, const Duration(seconds: 10));
-  await tester.tap(finder);
-  await tester.pump(const Duration(milliseconds: 1000));
 }
 
 Future<void> _addHotpToken(WidgetTester tester) async {
@@ -218,7 +219,8 @@ Future<void> _openFolder(WidgetTester tester) async {
   await tester.pump();
 }
 
-void expectMainViewIsEmptyAndCorrect() {
+Future<void> expectMainViewIsEmptyAndCorrect(WidgetTester tester) async {
+  await pumpUntilFindNWidgets(tester, find.byType(FloatingActionButton), 1, const Duration(seconds: 10));
   expect(find.byType(FloatingActionButton), findsOneWidget);
   expect(find.byType(AppBarItem), findsNWidgets(5)); // 4 at BottomNavigationBar and 1 at AppBar
   expect(find.byType(TokenWidgetBase), findsNothing);

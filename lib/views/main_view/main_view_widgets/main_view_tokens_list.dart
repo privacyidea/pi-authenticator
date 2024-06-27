@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
@@ -60,20 +61,19 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     final allowToRefresh = allSortables.any((element) => element is PushToken);
     bool filterPushTokens = ref.watch(settingsProvider).hidePushTokens && allowToRefresh;
 
-    final sortables = <SortableMixin>[];
-
+    final showSortables = <SortableMixin>[]; // List of sortables that should be shown in the list
     for (var element in allSortables) {
+      Logger.warning('Element: $element', name: 'main_view_tokens_list.dart#build');
       if (element is! Token) {
-        sortables.add(element);
+        showSortables.add(element);
         continue;
       }
-      if (filterPushTokens == false && element.folderId == null) {
-        sortables.add(element);
-        continue;
-      }
+      if (element is PushToken && filterPushTokens == true) continue;
+      if (element.folderId != null) continue;
+      showSortables.add(element);
     }
 
-    if ((sortables.isEmpty)) {
+    if ((showSortables.isEmpty)) {
       return const NoTokenScreen();
     } else {
       return LayoutBuilder(builder: (context, constraints) {
@@ -88,7 +88,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
                         opacity: 0,
                         child: DragTargetDivider(
                           dependingFolder: null,
-                          previousSortable: sortables.last,
+                          previousSortable: showSortables.last,
                           nextSortable: null,
                           isLastDivider: true,
                           bottomPaddingIfLast: 0,
@@ -115,14 +115,14 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
                         TokenIntroduction(
                           child: Column(
                             children: [
-                              ...MainViewTokensList.buildSortableWidgets(sortables, draggingSortable),
+                              ...MainViewTokensList.buildSortableWidgets(showSortables, draggingSortable),
                             ],
                           ),
                         ),
                         (draggingSortable != null)
                             ? DragTargetDivider(
                                 dependingFolder: null,
-                                previousSortable: sortables.last,
+                                previousSortable: showSortables.last,
                                 nextSortable: null,
                                 isLastDivider: true,
                                 bottomPaddingIfLast: 80,

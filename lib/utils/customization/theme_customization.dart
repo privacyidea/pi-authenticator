@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/customization/action_theme.dart';
-import 'package:privacyidea_authenticator/utils/customization/extended_text_theme.dart';
+
+import '../../../utils/customization/action_theme.dart';
+import '../../../utils/customization/extended_text_theme.dart';
 
 class ThemeCustomization {
   static const ThemeCustomization defaultLightTheme = ThemeCustomization.defaultLightWith();
@@ -281,7 +282,7 @@ class ThemeCustomization {
           ),
           iconButtonTheme: IconButtonThemeData(
             style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.all(foregroundColor),
+              foregroundColor: WidgetStateProperty.all(foregroundColor),
             ),
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
@@ -324,7 +325,7 @@ class ThemeCustomization {
           navigationBarTheme: const NavigationBarThemeData().copyWith(
             backgroundColor: navigationBarColor,
             shadowColor: shadowColor,
-            iconTheme: MaterialStatePropertyAll(IconThemeData(color: navigationBarIconColor)),
+            iconTheme: WidgetStatePropertyAll(IconThemeData(color: navigationBarIconColor)),
             elevation: 3,
           ),
           floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -334,7 +335,7 @@ class ThemeCustomization {
           ),
           textButtonTheme: TextButtonThemeData(
             style: ButtonStyle(
-              overlayColor: MaterialStateColor.resolveWith((states) => foregroundColor.withOpacity(0.1)),
+              overlayColor: WidgetStateColor.resolveWith((states) => foregroundColor.withOpacity(0.1)),
             ),
           ),
           listTileTheme: ListTileThemeData(
@@ -361,43 +362,43 @@ class ThemeCustomization {
                   errorContainer: deleteColor,
                 ),
           checkboxTheme: CheckboxThemeData(
-            checkColor: MaterialStateProperty.resolveWith<Color?>((_) => onPrimary),
-            fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-              if (states.contains(MaterialState.disabled)) {
+            checkColor: WidgetStateProperty.resolveWith<Color?>((_) => onPrimary),
+            fillColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
                 return null;
               }
-              if (states.contains(MaterialState.selected)) {
+              if (states.contains(WidgetState.selected)) {
                 return primaryColor;
               }
               return null;
             }),
           ),
           radioTheme: RadioThemeData(
-            fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-              if (states.contains(MaterialState.disabled)) {
+            fillColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
                 return null;
               }
-              if (states.contains(MaterialState.selected)) {
+              if (states.contains(WidgetState.selected)) {
                 return primaryColor;
               }
               return null;
             }),
           ),
           switchTheme: SwitchThemeData(
-            thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-              if (states.contains(MaterialState.disabled)) {
+            thumbColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
                 return null;
               }
-              if (states.contains(MaterialState.selected)) {
+              if (states.contains(WidgetState.selected)) {
                 return primaryColor;
               }
               return null;
             }),
-            trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-              if (states.contains(MaterialState.disabled)) {
+            trackColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
                 return null;
               }
-              if (states.contains(MaterialState.selected)) {
+              if (states.contains(WidgetState.selected)) {
                 return primaryColor;
               }
               return null;

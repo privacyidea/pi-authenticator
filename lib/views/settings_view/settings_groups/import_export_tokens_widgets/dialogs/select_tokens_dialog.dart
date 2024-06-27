@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
-import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
@@ -23,18 +22,30 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
   Widget build(BuildContext context) {
     final tokens = ref.read(tokenProvider).nonPiTokens;
     final exportEveryToken = tokens.length == _selectedTokens.length && _selectedTokens.containsAll(tokens);
+    final theme = Theme.of(context);
     final appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
-      title: Text(appLocalizations.selectTokensToExport(widget.multiSelect ? 2 : 1)),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(child: Text(appLocalizations.selectTokensToExport(widget.multiSelect ? 2 : 1))),
+          GestureDetector(
+            onTap: _showHelpDialog,
+            child: Icon(
+              Icons.help_outline_rounded,
+              color: theme.textTheme.bodyMedium?.color,
+            ),
+          ),
+        ],
+      ),
       content: SizedBox(
         width: ref.watch(appConstraintsProvider)!.maxWidth * 0.8,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: (tokens.isEmpty)
               ? Text(
-                  appLocalizations.noTokensToExport,
+                  appLocalizations.noTokenToExport,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.secondary),
                 )
               : Column(
                   mainAxisSize: MainAxisSize.min,
@@ -77,7 +88,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
                                   child: TextButton(
                                     style: _selectedTokens.contains(token)
                                         ? ButtonStyle(
-                                            backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary.withAlpha(80)),
+                                            backgroundColor: WidgetStateProperty.all(theme.colorScheme.secondary.withAlpha(80)),
                                           )
                                         : null,
                                     onPressed: () async {
@@ -127,10 +138,6 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
 
   void _showExportDialog(Iterable<Token> tokens) async {
     if (tokens.isEmpty) return;
-    final tokenFolder = ref.read(tokenFolderProvider).folders.where((folder) => folder.isLocked).toList();
-    final containsLocked = tokens.any((token) => token.isLocked || tokenFolder.any((folder) => folder.folderId == token.folderId));
-    final authenticated = (!containsLocked || await lockAuth(localizedReason: AppLocalizations.of(context)!.exportLockedTokenReason));
-    if (!authenticated || !mounted) return;
     final isExported = await showDialog<bool>(
       useRootNavigator: false,
       context: context,
@@ -138,4 +145,12 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
     );
     if (isExported == true && mounted) Navigator.of(context).pop(isExported);
   }
+
+  void _showHelpDialog() => showDialog(
+        context: context,
+        builder: (context) => DefaultDialog(
+          title: Text(AppLocalizations.of(context)!.selectTokensToExportHelpTitle),
+          content: Text(AppLocalizations.of(context)!.selectTokensToExportHelpContent),
+        ),
+      );
 }

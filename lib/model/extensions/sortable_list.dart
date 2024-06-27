@@ -1,16 +1,9 @@
-import 'dart:developer';
-
 import '../mixins/sortable_mixin.dart';
 
 extension SortableList<T extends SortableMixin> on List<T> {
   List<T> get sorted {
     var list = List<T>.from(this);
     list.sort((a, b) => a.compareTo(b));
-    log('-----------------------------------');
-    for (var element in list) {
-      log('sorted: ${element.runtimeType} Sortindex: ${element.sortIndex}');
-    }
-    log('-----------------------------------');
     return list;
   }
 
@@ -27,11 +20,6 @@ extension SortableList<T extends SortableMixin> on List<T> {
         list[i] = list[i].copyWith(sortIndex: highestIndex) as T;
       }
     }
-    log('-----------------------------------');
-    for (var element in list) {
-      log('fillNullIndices: ${element.runtimeType} Sortindex: ${element.sortIndex}');
-    }
-    log('-----------------------------------');
     return list;
   }
 
@@ -49,11 +37,6 @@ extension SortableList<T extends SortableMixin> on List<T> {
             : list.length;
     list.insert(newIndex, movedItem);
     list = list.withCurrentSortIndexSet();
-    log('-----------------------------------');
-    for (var element in list) {
-      log('moveBetween: ${element.runtimeType} Sortindex: ${element.sortIndex}');
-    }
-    log('-----------------------------------');
     return list;
   }
 

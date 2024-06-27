@@ -1,9 +1,7 @@
-import 'dart:developer';
-
+import 'package:app_links/app_links.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uni_links/uni_links.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/extensions/sortable_list.dart';
@@ -33,8 +31,9 @@ import 'logger.dart';
 import 'push_provider.dart';
 import 'riverpod_state_listener.dart';
 
-// Never use globalRef to .watch() a provider. only use it to .read() a provider
-// Otherwise the whole app will rebuild on every state change of the provider
+/// Never use globalRef to .watch() a provider. only use it to .read() a provider
+///
+/// Otherwise the whole app will rebuild on every state change of the provider
 WidgetRef? globalRef;
 
 final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
@@ -103,7 +102,7 @@ final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, DeepLink?>(
   (ref) {
     Logger.info("New DeeplinkNotifier created", name: 'deeplinkProvider');
     return DeeplinkNotifier(sources: [
-      DeeplinkSource(name: 'uni_links', stream: uriLinkStream, initialUri: getInitialUri()),
+      DeeplinkSource(name: 'uni_links', stream: AppLinks().uriLinkStream, initialUri: AppLinks().getInitialLink()),
       DeeplinkSource(
         name: 'home_widget',
         stream: HomeWidgetUtils().widgetClicked,
@@ -197,7 +196,6 @@ class SortableNotifier extends StateNotifier<List<SortableMixin>> {
   SortableNotifier({List<SortableMixin> initState = const []}) : super(initState);
 
   void handleNewList<T extends SortableMixin>(List<T> newList) {
-    log('T type: ${newList.runtimeType}', name: 'SortableNotifier#handleNewList');
     var newState = List<SortableMixin>.from(state);
     newState.removeWhere((element) => element is T);
     newState.addAll(newList);

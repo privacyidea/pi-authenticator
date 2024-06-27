@@ -4,20 +4,20 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/utils/token_import_origins.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/encryption/aes_encrypted.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/enums/token_origin_source_type.dart';
+import '../../model/extensions/enums/encodings_extension.dart';
+import '../../model/extensions/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/errors.dart';
 import '../../utils/globals.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
+import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 
 class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
@@ -150,7 +150,7 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
       URI_PERIOD: twoFasOTP[TWOFAS_PERIOD],
       URI_COUNTER: twoFasOTP[TWOFAS_COUNTER],
       URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-        appName: TokenImportOrigins.twoFasAuthenticator.appName,
+        originName: TokenImportOrigins.twoFasAuthenticator.appName,
         isPrivacyIdeaToken: false,
         data: jsonEncode(twoFasToken),
       ),

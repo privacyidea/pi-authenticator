@@ -27,7 +27,7 @@ class RolloutFailedWidget extends ConsumerWidget {
             child: FittedBox(
               child: Text(
                 token.rolloutState.rolloutMsg(localizations),
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -51,8 +51,8 @@ class RolloutFailedWidget extends ConsumerWidget {
               SizedBox(
                 width: width * 0.35,
                 child: PressButton(
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
-                  onPressed: () async => _showDialog(),
+                  style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
+                  onPressed: () => _showDialog(),
                   child: Text(
                     localizations.delete,
                     style: Theme.of(context).textTheme.bodyMedium,
@@ -68,7 +68,7 @@ class RolloutFailedWidget extends ConsumerWidget {
     );
   }
 
-  void _showDialog() => showDialog(
+  Future<void> _showDialog() => showDialog(
       useRootNavigator: false,
       context: globalNavigatorKey.currentContext!,
       builder: (BuildContext context) {

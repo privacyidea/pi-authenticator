@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../utils/identifiers.dart';
 import '../enums/token_types.dart';
@@ -41,12 +40,8 @@ abstract class Token with SortableMixin {
     if (TokenTypes.STEAM.isName(type, caseSensitive: false)) return SteamToken.fromJson(json);
     throw ArgumentError.value(json, 'Token#fromJson', 'Token type [$type] is not a supported');
   }
-  factory Token.fromUriMap(
-    Map<String, dynamic> uriMap,
-  ) {
-    String? type = uriMap[URI_TYPE];
-    if (type == null) throw ArgumentError.value(uriMap, 'Token#fromUriMap', 'Token type is not defined in the uriMap');
-    Logger.info('Token#fromUriMap: type: $type');
+  factory Token.fromUriMap(Map<String, dynamic> uriMap) {
+    String type = uriMap[URI_TYPE];
     if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromUriMap(uriMap);
     if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromUriMap(uriMap);
     if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) return PushToken.fromUriMap(uriMap);

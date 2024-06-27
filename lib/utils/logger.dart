@@ -11,10 +11,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart' as printer;
 import 'package:mutex/mutex.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/app_info_utils.dart';
-import 'package:privacyidea_authenticator/utils/pi_mailer.dart';
 
+import '../l10n/app_localizations.dart';
+import '../utils/app_info_utils.dart';
+import '../utils/pi_mailer.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import 'globals.dart';
 import 'riverpod_providers.dart';
@@ -266,7 +266,7 @@ Device Parameters $deviceInfo""";
           error(
             'Uncaught Error: ${isolateError.first.toString()}',
             error: isolateError.first.toString(),
-            stackTrace: isolateError.last.toString(),
+            stackTrace: isolateError.length >= 2 && isolateError[1] != null && isolateError[1].toString() != '' ? isolateError[1] : StackTrace.current,
           );
         }).sendPort,
       );

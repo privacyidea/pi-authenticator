@@ -658,6 +658,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get importHintPrivacyIdeaQrScan => 'Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.';
+
+  @override
+  String get importHintPrivacyIdeaFile => 'To create a backup, go to the settings and tap on \"Export\". Select \"As file\", select the tokens you want to export. Then tap on \"Export\" and set a password. The storage location is the download folder on your device.';
+
+  @override
   String get importHint2FAS => 'Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.';
 
   @override
@@ -811,7 +817,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get noTokensToExport => 'No tokens to export';
+  String get noTokenToExport => 'No token available for export';
 
   @override
   String get exportAllTokens => 'Export all tokens';
@@ -838,10 +844,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorSavingFile => 'Saving to file failed';
 
   @override
-  String get toFile => 'To file';
+  String get asQrCode => 'As QR code';
 
   @override
-  String get asQrCode => 'As QR code';
+  String get asFile => 'As file';
 
   @override
   String get scanThisQrWithNewDevice => 'Scan this QR code with your new device to import the token.';
@@ -875,4 +881,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String unsupported(Object name, Object value) {
     return 'The $name [$value] is not supported by this version of the app.';
   }
+
+  @override
+  String get pushEndpointUrl => 'Push endpoint URL';
+
+  @override
+  String get exampleUrl => 'Please enter a valid URL like: \"https://example.com/\"';
+
+  @override
+  String mustNotBeEmpty(Object field) {
+    return '$field must not be empty';
+  }
+
+  @override
+  String get sendPushRequestResponseFailed => 'Failed to send the response.';
+
+  @override
+  String get passwordCannotBeEmpty => 'Password cannot be empty';
+
+  @override
+  String get passwordMustBeAtLeast8Characters => 'Password must be at least 8 characters';
+
+  @override
+  String get passwordCannotContainWhitespace => 'Password cannot contain whitespace';
+
+  @override
+  String get passwordMustContainLowercaseLetter => 'Password must contain lowercase letter';
+
+  @override
+  String get passwordMustContainUppercaseLetter => 'Password must contain uppercase letter';
+
+  @override
+  String get passwordMustContainNumber => 'Password must contain number';
+
+  @override
+  String get passwordMustContainSpecialCharacter => 'Password must contain special character';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get selectTokensToExportHelpTitle => 'Is your token not listed?';
+
+  @override
+  String get selectTokensToExportHelpContent => 'If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.\nCurrently only manually added and imported tokens are exportable.';
 }

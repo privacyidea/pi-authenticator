@@ -8,20 +8,20 @@ import 'package:cryptography/cryptography.dart' as crypto;
 import 'package:encrypt/encrypt.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:pointycastle/export.dart';
-import 'package:privacyidea_authenticator/model/enums/encodings.dart';
-import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/model/enums/token_types.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/token_import_origins.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../model/enums/encodings.dart';
+import '../../model/enums/token_origin_source_type.dart';
+import '../../model/enums/token_types.dart';
+import '../../model/extensions/enums/encodings_extension.dart';
+import '../../model/extensions/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
+import '../../model/tokens/token.dart';
 import '../../utils/errors.dart';
 import '../../utils/globals.dart';
+import '../../utils/identifiers.dart';
+import '../../utils/logger.dart';
+import '../../utils/token_import_origins.dart';
 import '../../utils/utils.dart';
 import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';
@@ -159,7 +159,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           URI_COUNTER: info[AEGIS_COUNTER],
           URI_PIN: info[AEGIS_PIN],
           URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-            appName: TokenImportOrigins.aegisAuthenticator.appName,
+            originName: TokenImportOrigins.aegisAuthenticator.appName,
             isPrivacyIdeaToken: false,
             data: jsonEncode(entry),
           ),
@@ -200,7 +200,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           URI_COUNTER: info[AEGIS_COUNTER],
           URI_PIN: info[AEGIS_PIN],
           URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-            appName: TokenImportOrigins.aegisAuthenticator.appName,
+            originName: TokenImportOrigins.aegisAuthenticator.appName,
             isPrivacyIdeaToken: false,
             data: jsonEncode(entry),
           ),

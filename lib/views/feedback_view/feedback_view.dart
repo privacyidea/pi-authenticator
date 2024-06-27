@@ -73,7 +73,7 @@ class _FeedbackViewState extends State<FeedbackView> {
                       children: [
                         Text(
                           AppLocalizations.of(context)!.feedbackDescription,
-                          style: Theme.of(context).textTheme.titleMedium,
+                          style: Theme.of(context).textTheme.bodyMedium,
                           textAlign: TextAlign.justify,
                         ),
                         const SizedBox(height: 16),

@@ -4,17 +4,17 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
-import 'package:privacyidea_authenticator/model/enums/encodings.dart';
-import 'package:privacyidea_authenticator/model/enums/token_types.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
-import 'package:privacyidea_authenticator/processors/token_import_file_processor/two_fas_import_file_processor.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/token_import_origins.dart';
+import '../../model/enums/algorithms.dart';
+import '../../model/enums/encodings.dart';
+import '../../model/enums/token_types.dart';
+import '../../model/extensions/enums/encodings_extension.dart';
+import '../../model/extensions/enums/token_origin_source_type.dart';
+import '../../model/tokens/token.dart';
+import '../../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
+import '../../processors/token_import_file_processor/two_fas_import_file_processor.dart';
+import '../../utils/identifiers.dart';
+import '../../utils/logger.dart';
+import '../../utils/token_import_origins.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/encryption/aes_encrypted.dart';
@@ -295,7 +295,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
           URI_ALGORITHM: algorithmMap[tokenMap[_AUTHENTICATOR_PRO_ALGORITHM] as int],
           URI_COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER] as int,
           URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-            appName: TokenImportOrigins.authenticatorPro.appName,
+            originName: TokenImportOrigins.authenticatorPro.appName,
             isPrivacyIdeaToken: false,
             data: jsonEncode(tokenMap),
           ),

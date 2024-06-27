@@ -1,50 +1,26 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:isolate';
-
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as img;
-import 'package:privacyidea_authenticator/model/enums/token_import_type.dart';
-import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/token_import_type_extension.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/model/processor_result.dart';
-import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
-import 'package:zxing2/qrcode.dart';
+import 'package:flutter_zxing/flutter_zxing.dart';
+import 'package:image/image.dart' as img_lib;
 
 import '../../../l10n/app_localizations.dart';
+import '../../../model/enums/token_import_type.dart';
+import '../../../model/enums/token_origin_source_type.dart';
+import '../../../model/extensions/enums/token_import_type_extension.dart';
+import '../../../model/extensions/enums/token_origin_source_type.dart';
+import '../../../model/processor_result.dart';
 import '../../../model/token_import/token_import_source.dart';
 import '../../../model/tokens/token.dart';
 import '../../../processors/mixins/token_import_processor.dart';
+import '../../../processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
 import '../../../processors/token_import_file_processor/token_import_file_processor_interface.dart';
 import '../../../utils/logger.dart';
 import '../../qr_scanner_view/qr_scanner_view.dart';
 import '../import_tokens_view.dart';
 import 'import_encrypted_data_page.dart';
 import 'import_plain_tokens_page.dart';
-
-void _decodeQrFileIsolate(List<dynamic> args) async {
-  final sendPort = args[0] as SendPort;
-  final XFile file = args[1] as XFile;
-  final image = img.decodeImage(await file.readAsBytes());
-  if (image == null) {
-    Isolate.exit(sendPort, null);
-  }
-
-  LuminanceSource source = RGBLuminanceSource(
-    image.width,
-    image.height,
-    image.convert(numChannels: 4).getBytes(order: img.ChannelOrder.abgr).buffer.asInt32List(),
-  );
-  var bitmap = BinaryBitmap(GlobalHistogramBinarizer(source));
-  try {
-    final result = QRCodeReader().decode(bitmap);
-    Isolate.exit(sendPort, result);
-  } catch (e) {
-    Isolate.exit(sendPort, e);
-  }
-}
 
 class ImportStartPage extends StatefulWidget {
   final String appName;
@@ -231,20 +207,29 @@ class _ImportStartPageState extends State<ImportStartPage> {
     final schemeProcessor = processor as TokenImportSchemeProcessor;
     final localizations = AppLocalizations.of(context)!;
     final XFile? file = await openFile();
+    final zx = Zxing();
     if (file == null) return;
-    Result qrResult;
-    try {
-      qrResult = await _startDecodeQrFile(file);
-    } on FormatReaderException catch (_) {
-      setState(() => _errorText = localizations.qrFileDecodeError);
+    var image = img_lib.decodeImage(await file.readAsBytes());
+    if (image == null) {
+      setState(() => _errorText = localizations.invalidQrFile(widget.appName));
       return;
-    } catch (e) {
+    }
+    final qrResult = await zx.readBarcodeImagePath(
+      file,
+      DecodeParams(
+        format: Format.qrCode,
+        width: image.width,
+        height: image.height,
+      ),
+    );
+    final qrText = qrResult.text;
+    if (qrText == null) {
       setState(() => _errorText = localizations.invalidQrFile(widget.appName));
       return;
     }
     final Uri uri;
     try {
-      uri = Uri.parse(qrResult.text);
+      uri = Uri.parse(qrText);
     } on FormatException catch (_) {
       setState(() => _errorText = localizations.invalidQrFile(widget.appName));
       return;
@@ -261,27 +246,11 @@ class _ImportStartPageState extends State<ImportStartPage> {
           appName: widget.appName,
           token: t.resultData,
           isPrivacyIdeaToken: false,
-          data: t.resultData.origin?.data ?? qrResult.text,
+          data: t.resultData.origin?.data ?? qrText,
         ),
       );
     }).toList();
     _routeImportPlainTokensPage(importResults: processorResults);
-  }
-
-  Future<Result> _startDecodeQrFile(XFile file) async {
-    final receivePort = ReceivePort();
-    try {
-      await Isolate.spawn(_decodeQrFileIsolate, [receivePort.sendPort, file]);
-    } catch (_) {
-      receivePort.close();
-      rethrow;
-    }
-    final result = await receivePort.first;
-    if (result is! Result) {
-      throw result;
-    }
-    receivePort.close();
-    return result;
   }
 
   Future<void> _validateLink(TokenImportProcessor? processor) async {

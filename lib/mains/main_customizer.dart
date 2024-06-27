@@ -23,30 +23,25 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/globals.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view.dart';
-import 'package:privacyidea_authenticator/views/feedback_view/feedback_view.dart';
-import 'package:privacyidea_authenticator/views/license_view/license_view.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
-import 'package:privacyidea_authenticator/views/push_token_view/push_tokens_view.dart';
-import 'package:privacyidea_authenticator/views/qr_scanner_view/qr_scanner_view.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_view.dart';
-import 'package:privacyidea_authenticator/views/splash_screen/splash_screen.dart';
-import 'package:privacyidea_authenticator/widgets/app_wrapper.dart';
 
+import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
+import '../utils/globals.dart';
+import '../utils/riverpod_providers.dart';
+import '../views/add_token_manually_view/add_token_manually_view.dart';
+import '../views/feedback_view/feedback_view.dart';
 import '../views/import_tokens_view/import_tokens_view.dart';
+import '../views/license_view/license_view.dart';
+import '../views/main_view/main_view.dart';
+import '../views/push_token_view/push_tokens_view.dart';
+import '../views/qr_scanner_view/qr_scanner_view.dart';
+import '../views/settings_view/settings_view.dart';
+import '../views/splash_screen/splash_screen.dart';
+import '../widgets/app_wrapper.dart';
 
 void main() async {
-  Logger.init(
-      navigatorKey: globalNavigatorKey,
-      appRunner: () async {
-        WidgetsFlutterBinding.ensureInitialized();
-        runApp(const AppWrapper(child: CustomizationAuthenticator()));
-      });
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const AppWrapper(child: CustomizationAuthenticator()));
 }
 
 class CustomizationAuthenticator extends ConsumerWidget {
@@ -54,7 +49,6 @@ class CustomizationAuthenticator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsFlutterBinding.ensureInitialized();
-    globalRef = ref;
     final locale = ref.watch(settingsProvider).currentLocale;
     final applicationCustomizer = ref.watch(applicationCustomizerProvider);
     return LayoutBuilder(

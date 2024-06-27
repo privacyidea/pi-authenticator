@@ -23,6 +23,8 @@ class PushRequest {
   final String serial;
   final String signature;
   final bool? accepted;
+  final List<String>? possibleAnswers;
+  final String? selectedAnswer;
 
   const PushRequest({
     required this.title,
@@ -35,6 +37,8 @@ class PushRequest {
     this.serial = '',
     this.signature = '',
     this.accepted,
+    this.possibleAnswers,
+    this.selectedAnswer,
   });
 
   PushRequest copyWith({
@@ -48,6 +52,8 @@ class PushRequest {
     String? serial,
     String? signature,
     bool? accepted,
+    List<String> Function()? answers,
+    String? Function()? selectedAnswer,
   }) {
     return PushRequest(
       title: title ?? this.title,
@@ -60,6 +66,8 @@ class PushRequest {
       serial: serial ?? this.serial,
       signature: signature ?? this.signature,
       accepted: accepted ?? this.accepted,
+      possibleAnswers: answers != null ? answers() : this.possibleAnswers,
+      selectedAnswer: selectedAnswer != null ? selectedAnswer() : this.selectedAnswer,
     );
   }
 
@@ -74,7 +82,8 @@ class PushRequest {
     return 'PushRequest{title: $title, question: $question, '
         'id: $id, uri: $uri, _nonce: $nonce, sslVerify: $sslVerify, '
         'expirationDate: $expirationDate, serial: $serial, '
-        'signature: $signature, accepted: $accepted}';
+        'signature: $signature, accepted: $accepted, '
+        'answers: $possibleAnswers, selectedAnswer: $selectedAnswer}';
   }
 
   factory PushRequest.fromJson(Map<String, dynamic> json) => _$PushRequestFromJson(json);
@@ -97,6 +106,7 @@ class PushRequest {
       serial: data[PUSH_REQUEST_SERIAL],
       expirationDate: DateTime.now().add(const Duration(minutes: 2)),
       signature: data[PUSH_REQUEST_SIGNATURE],
+      possibleAnswers: data[PUSH_REQUEST_ANSWERS] != null ? (data[PUSH_REQUEST_ANSWERS] as String).split(',') : null,
     );
   }
 
@@ -126,6 +136,9 @@ class PushRequest {
     if (data[PUSH_REQUEST_SIGNATURE] is! String) {
       throw ArgumentError('Push request signature is ${data[PUSH_REQUEST_SIGNATURE].runtimeType}. Expected String.');
     }
+    if (data[PUSH_REQUEST_ANSWERS] is! String?) {
+      throw ArgumentError('Push request answers is ${data[PUSH_REQUEST_ANSWERS].runtimeType}. Expected List<String> or null.');
+    }
   }
 
   Future<bool> verifySignature(PushToken token, {RsaUtils rsaUtils = const RsaUtils()}) async {
@@ -135,7 +148,9 @@ class PushRequest {
         '$serial|'
         '$question|'
         '$title|'
-        '${sslVerify ? '1' : '0'}';
+        '${sslVerify ? '1' : '0'}'
+        '${possibleAnswers != null ? '|${possibleAnswers!.join(",")}' : ''}';
+    Logger.warning('Signed data: $signedData', name: 'push_request_notifier.dart#newRequest');
 
     // Re-add url and sslverify to android legacy tokens:
     if (token.url == null) {

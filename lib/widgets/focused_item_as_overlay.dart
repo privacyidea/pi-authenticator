@@ -140,7 +140,8 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
       final textSize = textSizeOf(
         text: widget.tooltipWhenFocused!,
         style: Theme.of(context).textTheme.bodyLarge!,
-        maxWidth: screenSize.width / 3 * 2 - (tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2),
+        maxWidth: MediaQuery.of(context).size.width / 3 * 2 -
+            (tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2),
         textScaler: MediaQuery.of(context).textScaler,
       );
 

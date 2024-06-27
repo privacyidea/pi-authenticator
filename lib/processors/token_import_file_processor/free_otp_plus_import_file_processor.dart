@@ -4,16 +4,16 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/model/processor_result.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/globals.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
+import '../../l10n/app_localizations.dart';
+import '../../model/enums/token_origin_source_type.dart';
+import '../../model/extensions/enums/token_origin_source_type.dart';
+import '../../model/processor_result.dart';
+import '../../model/tokens/token.dart';
 import '../../utils/errors.dart';
+import '../../utils/globals.dart';
 import '../../utils/identifiers.dart';
+import '../../utils/logger.dart';
 import '../../utils/token_import_origins.dart';
 import '../scheme_processors/token_import_scheme_processors/free_otp_plus_qr_processor.dart';
 import 'token_import_file_processor_interface.dart';
@@ -118,7 +118,7 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
       URI_COUNTER: tokenJson[_FREE_OTP_PLUS_COUNTER] + 1, // FreeOTP+ saves only in JSON as 0-based counter
       URI_PERIOD: tokenJson[_FREE_OTP_PLUS_PERIOD],
       URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-        appName: TokenImportOrigins.freeOtpPlus.appName,
+        originName: TokenImportOrigins.freeOtpPlus.appName,
         isPrivacyIdeaToken: false,
         data: jsonEncode(tokenJson),
       ),

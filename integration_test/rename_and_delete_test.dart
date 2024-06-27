@@ -9,6 +9,7 @@ import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/state_notifiers/completed_introduction_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
@@ -35,17 +36,28 @@ void main() {
         SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en'), latestStartedVersion: Version.parse('999.999.999')));
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
-    when(mockTokenRepository.loadTokens()).thenAnswer((_) async => [
-          HOTPToken(label: 'test', issuer: 'test', id: 'id', algorithm: Algorithms.SHA256, digits: 6, secret: 'secret', counter: 0),
-        ]);
-    when(mockTokenRepository.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
-    when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
+    var tokens = <Token>[
+      HOTPToken(label: 'test', issuer: 'test', id: 'id', algorithm: Algorithms.SHA256, digits: 6, secret: 'secret', counter: 0),
+    ];
+    when(mockTokenRepository.loadTokens()).thenAnswer((_) async {
+      return tokens;
+    });
+    when(mockTokenRepository.saveOrReplaceToken(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      tokens.removeWhere((element) => element.id == (arguments[0] as Token).id);
+      tokens.add(arguments[0] as Token);
+      return true;
+    });
+    when(mockTokenRepository.deleteToken(tokens.first)).thenAnswer((_) async {
+      tokens.remove(tokens.first);
+      return true;
+    });
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
-    final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
-    when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
+    when(mockIntroductionRepository.loadCompletedIntroductions())
+        .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
   });
   testWidgets('Rename and Delete Token', (tester) async {
     await tester.pumpWidget(TestsAppWrapper(
@@ -74,7 +86,7 @@ Future<void> _renameToken(WidgetTester tester, String newName) async {
   await tester.tap(find.byType(EditHOTPTokenAction));
   await tester.pumpAndSettle();
   expect(find.text(AppLocalizationsEn().editToken), findsOneWidget);
-  expect(find.byType(TextFormField), findsNWidgets(3));
+  expect(find.byType(TextFormField), findsNWidgets(4));
   await tester.pumpAndSettle();
   await tester.enterText(find.byType(TextFormField).first, '');
   await tester.pumpAndSettle();
@@ -97,6 +109,6 @@ Future<void> _deleteToken(WidgetTester tester) async {
   expect(find.text(AppLocalizationsEn().confirmDeletion), findsOneWidget);
   expect(find.text(AppLocalizationsEn().delete), findsOneWidget);
   await tester.tap(find.text(AppLocalizationsEn().delete));
-  await tester.pumpAndSettle();
+  await pumpUntilFindNWidgets(tester, find.byType(HOTPTokenWidget), 0, const Duration(seconds: 2));
   expect(find.byType(HOTPTokenWidget), findsNothing);
 }

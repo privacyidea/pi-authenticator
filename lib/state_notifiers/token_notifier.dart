@@ -486,19 +486,20 @@ class TokenNotifier extends StateNotifier<TokenState> {
       // TODO What to do with poll only tokens if google-services is used?
 
       Logger.warning('SSLVerify: ${pushToken.sslVerify}', name: 'token_notifier.dart#rolloutPushToken');
+      final fbToken = await _firebaseUtils.getFBToken();
       Response response = await _ioClient.doPost(
         sslVerify: pushToken.sslVerify,
         url: pushToken.url!,
         body: {
           'enrollment_credential': pushToken.enrollmentCredentials,
           'serial': pushToken.serial,
-          'fbtoken': await _firebaseUtils.getFBToken(),
+          'fbtoken': fbToken,
           'pubkey': _rsaUtils.serializeRSAPublicKeyPKCS8(pushToken.rsaPublicTokenKey!),
         },
       );
 
       if (response.statusCode == 200) {
-        pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponse));
+        pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponse, fbToken: fbToken));
         if (pushToken == null) {
           Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
           return false;
@@ -631,7 +632,10 @@ class TokenNotifier extends StateNotifier<TokenState> {
         continue;
       }
       Response response = await _ioClient.doPost(
-          sslVerify: p.sslVerify, url: p.url!, body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature});
+        url: p.url!,
+        body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature},
+        sslVerify: p.sslVerify,
+      );
       if (response.statusCode == 200) {
         Logger.info('Updating firebase token for push token succeeded!', name: 'push_provider.dart#updateFirebaseToken');
         _updateToken(p, (p0) => p0.copyWith(fbToken: firebaseToken));
@@ -648,13 +652,13 @@ class TokenNotifier extends StateNotifier<TokenState> {
     return (failedTokens, unsuportedTokens);
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  //////////////////////// Add New Tokens Methods /////////////////////////////
-  /////////////////////////////////////////////////////////////////////////////
-  /// Does not need to wait for updating functions because they doesn't depend on any state
+  /* ////////////////////////////////////////////////////////////////////////////
+  ///////////////////////// Add New Tokens Methods //////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////// 
+  /// Does not need to wait for updating functions because they doesn't depend on any state */
 
-  // The return value of a qrCode could be any object. In this case should be a String that is a valid URI.
-  // If it is not a valid URI, the user will be informed.
+  /// The return value of a qrCode could be any object. In this case should be a String that is a valid URI.
+  /// If it is not a valid URI, the user will be informed.
   Future<void> handleQrCode(Object? qrCode) async {
     Uri uri;
     try {
@@ -666,14 +670,22 @@ class TokenNotifier extends StateNotifier<TokenState> {
       return;
     }
     List<Token> tokens = await _tokensFromUri(uri);
-    tokens = tokens.map((e) => TokenOriginSourceType.qrScan.addOriginToToken(token: e, data: qrCode, isPrivacyIdeaToken: null)).toList();
+    tokens = tokens
+        .map((e) => e.copyWith(
+            origin: e.origin?.copyWith(source: TokenOriginSourceType.qrScan) ??
+                TokenOriginSourceType.qrScan.toTokenOrigin(data: uri.toString(), isPrivacyIdeaToken: null)))
+        .toList();
     await _addOrReplaceTokens(tokens);
     await _handlePushTokensIfExist();
   }
 
   Future<void> handleLink(Uri uri) async {
     List<Token> tokens = await _tokensFromUri(uri);
-    tokens = tokens.map((e) => TokenOriginSourceType.link.addOriginToToken(token: e, data: uri.toString(), isPrivacyIdeaToken: null)).toList();
+    tokens = tokens
+        .map((e) => e.copyWith(
+            origin: e.origin?.copyWith(source: TokenOriginSourceType.link) ??
+                TokenOriginSourceType.link.toTokenOrigin(data: uri.toString(), isPrivacyIdeaToken: null)))
+        .toList();
     await _addOrReplaceTokens(tokens);
     await _handlePushTokensIfExist();
   }
@@ -689,9 +701,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
   }
 
-  //////////////////////////////////////////////////////////////////////////////
-  ///////////////////////// Helper Methods /////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
+  /* /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////// Helper Methods /////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////// */
 
   Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
     Logger.info('Parsing rollout response, try to extract public_key.', name: 'token_notifier.dart#_parseRollOutResponse');

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/state_notifiers/deeplink_notifier.dart';
@@ -54,7 +52,6 @@ void _testDeeplinkNotifier() {
         ]),
       );
       container.listen(deeplinkProvider, (prev, next) {
-        log('prev: $prev, next: $next');
         expect(next?.uri, equals(list.removeAt(0)));
         expect(next?.fromInit, isFalse);
       });

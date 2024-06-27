@@ -20,12 +20,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/views/view_interface.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog_button.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../utils/logger.dart';
+import '../../views/view_interface.dart';
+import '../../widgets/dialog_widgets/default_dialog.dart';
+import '../../widgets/dialog_widgets/default_dialog_button.dart';
 import 'qr_scanner_view_widgets/qr_scanner_widget.dart';
 
 class QRScannerView extends StatefulView {

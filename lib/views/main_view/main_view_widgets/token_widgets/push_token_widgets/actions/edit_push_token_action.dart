@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/default_token_actions/default_edit_action_dialog.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
@@ -9,7 +10,6 @@ import '../../../../../../utils/customization/action_theme.dart';
 import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod_providers.dart';
-import '../../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../../widgets/enable_text_form_field_after_many_taps.dart';
 import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../token_action.dart';
@@ -23,129 +23,92 @@ class EditPushTokenAction extends TokenAction {
   });
 
   @override
-  CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
-      backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
-      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
-      onPressed: (context) async {
-        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
-          return;
-        }
-        _showDialog();
-      },
-      child: FocusedItemAsOverlay(
-        tooltipWhenFocused: AppLocalizations.of(context)!.introEditToken,
-        childIsMoving: true,
-        alignment: Alignment.bottomCenter,
-        isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.editToken),
-        onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Icon(Icons.edit),
-            Text(
-              AppLocalizations.of(context)!.edit,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-          ],
-        ),
-      ));
-
-  void _showDialog() {
-    final tokenLabel = TextEditingController(text: token.label);
-    final pushUrl = TextEditingController(text: token.url.toString());
-    final imageUrl = TextEditingController(text: token.tokenImage);
-    final tokenSersial = token.serial;
-    final publicTokenKey = token.publicTokenKey;
-
-    showDialog(
-      useRootNavigator: false,
-      context: globalNavigatorKey.currentContext!,
-      builder: (BuildContext context) => DefaultDialog(
-        scrollable: true,
-        title: Text(
-          AppLocalizations.of(context)!.editToken,
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        ),
-        actions: [
-          TextButton(
-            child: Text(
-              AppLocalizations.of(context)!.cancel,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-              child: Text(
-                AppLocalizations.of(context)!.save,
+  CustomSlidableAction build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = AppLocalizations.of(context)!;
+    return CustomSlidableAction(
+        backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
+        foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
+        onPressed: (context) async {
+          if (token.isLocked && await lockAuth(localizedReason: appLocalizations.editLockedToken) == false) {
+            return;
+          }
+          _showDialog();
+        },
+        child: FocusedItemAsOverlay(
+          tooltipWhenFocused: appLocalizations.introEditToken,
+          childIsMoving: true,
+          alignment: Alignment.bottomCenter,
+          isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.editToken),
+          onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(Icons.edit),
+              Text(
+                appLocalizations.edit,
                 overflow: TextOverflow.fade,
                 softWrap: false,
               ),
-              onPressed: () async {
-                globalRef?.read(tokenProvider.notifier).updateToken(
-                      token,
-                      (p0) => p0.copyWith(
-                        label: tokenLabel.text,
-                        url: Uri.parse(pushUrl.text),
-                        tokenImage: imageUrl.text,
-                      ),
-                    );
-                Navigator.of(context).pop();
-              }),
-        ],
-        content: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
+            ],
+          ),
+        ));
+  }
+
+  String? _validatePushEndpointUrl(String? value, BuildContext context) {
+    if (value == null || value.isEmpty) return AppLocalizations.of(context)!.mustNotBeEmpty(AppLocalizations.of(context)!.pushEndpointUrl);
+    final uri = Uri.tryParse(value);
+    if (uri == null || uri.host.isEmpty || uri.scheme.isEmpty || uri.path.isEmpty) {
+      return AppLocalizations.of(context)!.exampleUrl;
+    }
+    return null;
+  }
+
+  void _showDialog() => showDialog(
+        useRootNavigator: false,
+        context: globalNavigatorKey.currentContext!,
+        builder: (BuildContext context) {
+          final pushUrl = TextEditingController(text: token.url.toString());
+          final appLocalizations = AppLocalizations.of(context)!;
+          return DefaultEditActionDialog(
+            token: token,
+            onSaveButtonPressed: ({required newLabel, newImageUrl}) async {
+              globalRef?.read(tokenProvider.notifier).updateToken(
+                    token,
+                    (p0) => p0.copyWith(
+                      label: newLabel,
+                      url: Uri.parse(pushUrl.text),
+                      tokenImage: newImageUrl,
+                    ),
+                  );
+              Navigator.of(context).pop();
+            },
+            additionalChildren: [
               TextFormField(
-                initialValue: tokenSersial,
-                decoration: const InputDecoration(labelText: 'Serial'),
-                enabled: false,
+                initialValue: token.serial,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor),
+                decoration: const InputDecoration(
+                  labelText: 'Serial',
+                ),
+                readOnly: true,
               ),
               EnableTextFormFieldAfterManyTaps(
-                  controller: pushUrl,
-                  decoration: const InputDecoration(labelText: 'URL'),
-                  validator: (value) {
-                    if (value!.isEmpty) return 'URL';
-                    return null;
-                  }),
-              TextFormField(
-                controller: tokenLabel,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return AppLocalizations.of(context)!.name;
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: imageUrl,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.imageUrl),
-                validator: (value) {
-                  if (value!.isEmpty) return AppLocalizations.of(context)!.imageUrl;
-                  return null;
-                },
+                controller: pushUrl,
+                decoration: InputDecoration(labelText: appLocalizations.pushEndpointUrl),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => _validatePushEndpointUrl(value, context),
               ),
               const SizedBox(height: 10),
               ExpansionTile(
                 title: Text(
-                  AppLocalizations.of(context)!.publicKey,
+                  appLocalizations.publicKey,
                   style: Theme.of(context).textTheme.titleMedium,
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),
                 children: [
-                  Text(
-                    publicTokenKey ?? AppLocalizations.of(context)!.noPublicKey,
+                  SelectableText(
+                    token.publicTokenKey ?? appLocalizations.noPublicKey,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -153,33 +116,20 @@ class EditPushTokenAction extends TokenAction {
               const Divider(),
               ExpansionTile(
                 title: Text(
-                  AppLocalizations.of(context)!.firebaseToken,
+                  appLocalizations.firebaseToken,
                   style: Theme.of(context).textTheme.titleMedium,
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),
                 children: [
-                  Text(
-                    token.fbToken != null ? token.fbToken.toString() : AppLocalizations.of(context)!.noFbToken,
+                  SelectableText(
+                    token.fbToken != null ? token.fbToken.toString() : appLocalizations.noFbToken,
                     style: Theme.of(context).textTheme.bodyMedium,
                   )
                 ],
               ),
-              if (token.origin != null)
-                TextFormField(
-                  initialValue: token.origin!.appName,
-                  decoration: const InputDecoration(labelText: 'Origin'),
-                  enabled: false,
-                ),
-              TextFormField(
-                initialValue: token.isPrivacyIdeaToken == false ? 'Yes' : 'No',
-                decoration: const InputDecoration(labelText: 'Is exportable?'),
-                enabled: false,
-              ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
+          );
+        },
+      );
 }

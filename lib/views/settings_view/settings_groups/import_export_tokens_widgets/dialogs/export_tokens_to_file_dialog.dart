@@ -9,7 +9,9 @@ import '../../../../../l10n/app_localizations.dart';
 import '../../../../../mains/main_netknights.dart';
 import '../../../../../model/encryption/token_encryption.dart';
 import '../../../../../model/tokens/token.dart';
+import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/validators.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class ExportTokensToFileDialog extends ConsumerStatefulWidget {
@@ -21,12 +23,13 @@ class ExportTokensToFileDialog extends ConsumerStatefulWidget {
 }
 
 class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDialog> {
-  final passwordTextController = TextEditingController();
-  bool passwordHidden = true;
-  final confirmTextController = TextEditingController();
-  bool confirmHidden = true;
+  final _passwordTextController = TextEditingController();
+  bool _passwordHidden = true;
+  final _confirmTextController = TextEditingController();
+  bool _confirmHidden = true;
 
-  bool exportPressed = false;
+  bool _exportPressed = false;
+
   @override
   Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context)!;
@@ -34,27 +37,31 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
       title: Text(appLocalizations.exportTokens),
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        children: (!exportPressed)
+        children: (!_exportPressed)
             ? [
                 Text(appLocalizations.enterPasswordToEncrypt),
                 Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        controller: passwordTextController,
-                        obscureText: passwordHidden,
+                      child: TextFormField(
+                        controller: _passwordTextController,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        obscureText: _passwordHidden,
                         onChanged: (value) => setState(() {}),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: Validators(appLocalizations).password,
                         decoration: InputDecoration(
                           labelText: appLocalizations.password,
+                          labelStyle: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: GestureDetector(
-                        onTapDown: (_) => setState(() => passwordHidden = false),
-                        onTapUp: (_) => setState(() => passwordHidden = true),
-                        onTapCancel: () => setState(() => passwordHidden = true),
+                        onTapDown: (_) => setState(() => _passwordHidden = false),
+                        onTapUp: (_) => setState(() => _passwordHidden = true),
+                        onTapCancel: () => setState(() => _passwordHidden = true),
                         child: const Icon(Icons.visibility),
                       ),
                     )
@@ -63,21 +70,25 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                 Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        controller: confirmTextController,
-                        obscureText: confirmHidden,
+                      child: TextFormField(
+                        controller: _confirmTextController,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        obscureText: _confirmHidden,
                         onChanged: (value) => setState(() {}),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) => Validators(appLocalizations).confirmPassword(_passwordTextController.text, value),
                         decoration: InputDecoration(
                           labelText: appLocalizations.confirmPassword,
+                          labelStyle: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: GestureDetector(
-                        onTapDown: (_) => setState(() => confirmHidden = false),
-                        onTapUp: (_) => setState(() => confirmHidden = true),
-                        onTapCancel: () => setState(() => confirmHidden = true),
+                        onTapDown: (_) => setState(() => _confirmHidden = false),
+                        onTapUp: (_) => setState(() => _confirmHidden = true),
+                        onTapCancel: () => setState(() => _confirmHidden = true),
                         child: const Icon(Icons.visibility),
                       ),
                     )
@@ -95,22 +106,26 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                 ),
               ],
       ),
-      actions: exportPressed == false
+      actions: _exportPressed == false
           ? [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
                 child: Text(appLocalizations.cancel),
               ),
               TextButton(
-                  onPressed: passwordTextController.text.isNotEmpty && passwordTextController.text == confirmTextController.text
+                  onPressed: _passwordTextController.text.isNotEmpty && _passwordTextController.text == _confirmTextController.text
                       ? () async {
-                          if (passwordTextController.text.isEmpty || passwordTextController.text != confirmTextController.text) {
+                          if (_passwordTextController.text.isEmpty || _passwordTextController.text != _confirmTextController.text) {
                             return;
                           }
-                          setState(() => exportPressed = true);
+                          final authenticated = await lockAuth(
+                            localizedReason: AppLocalizations.of(context)!.exportLockedTokenReason,
+                            autoAuthIfUnsupported: true,
+                          );
+                          if (!authenticated || !mounted) return;
+                          setState(() => _exportPressed = true);
                           final tokensToEncrypt = widget.tokens.map((e) => e.copyWith(folderId: () => null));
-                          if (kIsWeb) return Navigator.of(context).pop(true);
-                          _saveToFile(await TokenEncryption.encrypt(tokens: tokensToEncrypt, password: passwordTextController.text));
+                          _saveToFile(await TokenEncryption.encrypt(tokens: tokensToEncrypt, password: _passwordTextController.text));
                         }
                       : null,
                   child: Text(appLocalizations.export)),
@@ -120,7 +135,8 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
   }
 
   void _saveToFile(String encryptedTokens) async {
-    if (kIsWeb) return Navigator.of(context).pop(true);
+    if (kIsWeb) return;
+
     bool isExported = false;
     if (Platform.isAndroid && mounted) isExported = await _saveToFileAndroid(context, encryptedTokens);
     if (Platform.isIOS && mounted) isExported = await _saveToFileIOS(context, encryptedTokens);
@@ -138,8 +154,8 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
       if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(appLocalizations.fileSavedToDownloadsFolder)));
       return true;
     } catch (e) {
-      if (context.mounted) ref.read(statusMessageProvider.notifier).state = (appLocalizations.errorSavingFile, null);
-      setState(() => exportPressed = false);
+      if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.errorSavingFile, null);
+      setState(() => _exportPressed = false);
       return false;
     }
   }
@@ -153,8 +169,8 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
       if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(appLocalizations.fileSavedToDownloadsFolder)));
       return true;
     } catch (e) {
-      if (context.mounted) ref.read(statusMessageProvider.notifier).state = (appLocalizations.errorSavingFile, null);
-      setState(() => exportPressed = false);
+      if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.errorSavingFile, null);
+      setState(() => _exportPressed = false);
       return false;
     }
   }

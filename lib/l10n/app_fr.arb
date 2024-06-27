@@ -547,6 +547,8 @@
   "importExistingToken": "{count, plural, zero{Aucun jeton déjà présent dans l'application n'a été trouvé.} one{Un jeton qui existe déjà dans l'application a été trouvé.} other{Des jetons {count} déjà présents dans l'application ont été trouvés.}}",
   "importConflictToken": "{count, plural, zero{Il n'y a pas de conflit avec des tokens déjà existants.} one{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.} other{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.}}",
   "importNewToken": "{count, plural, zero{Aucun nouveau token n'a été trouvé.} one{Un nouveau token a été trouvé et sera importé.} other{Aucun {count} nouveau token a été trouvé et sera importé.}}",
+  "importHintPrivacyIdeaQrScan": "Pour créer des codes QR des jetons, accédez aux paramètres et appuyez sur \"Exporter\". Sélectionnez ensuite \"En tant que code QR\" et tapez sur le jeton à exporter. Cette variante ne convient que pour un transfert direct vers un autre appareil, car le code QR n'est pas crypté.",
+  "importHintPrivacyIdeaFile": "Pour créer une sauvegarde, allez dans les paramètres et tapez sur \"Exporter\". Choisissez \"En tant que fichier\", sélectionnez les jetons que vous souhaitez exporter. Ensuite, appuyez sur \"Exporter\" et définissez un mot de passe. L'emplacement de stockage est le dossier de téléchargement sur votre appareil.",
   "importHint2FAS": "Choisissez votre sauvegarde 2FAS.\nSi vous n'avez pas de sauvegarde, créez-en une dans l'application 2FAS. Nous vous recommandons d'utiliser un mot de passe",
   "importHintAegisBackupFile": "Choisissez votre exportation Aegis (.JSON).\nSi vous n'avez pas d'exportation, veuillez en créer une via le menu Paramètres dans l'application Aegis. Il est recommandé d'utiliser un mot de passe",
   "importHintAegisQrScan": "Scannez le code QR que vous recevez lorsque vous transférez des entrées depuis Aegis",
@@ -622,7 +624,7 @@
   "importExportTokens": "Importer/Exporter les jetons",
   "exportNonPrivacyIDEATokens": "Exporter les jetons non privacyIDEA",
   "selectTokensToExport": "{count, plural, zero{} one{Sélectionner le jeton à exporter} other{Sélectionner les jetons à exporter}}",
-  "noTokensToExport": "Aucun jeton à exporter",
+  "noTokenToExport": "Pas de jeton disponible pour l'exportation",
   "exportAllTokens": "Exporter tous les jetons",
   "export": "Exporter",
   "exportingTokens": "Exportation des jetons en cours...",
@@ -631,10 +633,34 @@
   "exportLockedTokenReason": "Veuillez vous authentifier pour exporter les jetons verrouillés.",
   "fileSavedToDownloadsFolder": "Fichier enregistré dans le dossier Téléchargements",
   "errorSavingFile": "Erreur lors de l'enregistrement du fichier",
-  "toFile": "Vers fichier",
   "asQrCode": "Sous forme de code QR",
+  "asFile": "En tant que fichier",
   "scanThisQrWithNewDevice": "Scannez ce code QR avec votre nouvel appareil pour importer le jeton.",
   "oneMore": "Encore un",
   "done": "Terminé",
-  "confirmPassword": "Confirmer le mot de passe"
+  "confirmPassword": "Confirmer le mot de passe",
+  "exampleUrl": "Veuillez saisir une URL valide comme : \"https://example.com/\"",
+  "pushEndpointUrl": "URL de l'endpoint Push",
+  "mustNotBeEmpty": "{field} ne doit pas être vide",
+  "@mustNotBeEmpty": {
+    "placeholders": {
+      "field": {
+        "example": "Name"
+      }
+    }
+  },
+  "sendPushRequestResponseFailed": "Échec de l'envoi de la réponse.",
+  "@sendPushRequestResponseFailed": {
+    "description": "Error message when the response to a push request could not be sent."
+  },
+  "passwordCannotBeEmpty": "Le mot de passe ne peut pas être vide",
+  "passwordMustBeAtLeast8Characters": "Le mot de passe doit contenir au moins 8 caractères",
+  "passwordCannotContainWhitespace": "Le mot de passe ne peut pas contenir d'espaces",
+  "passwordMustContainLowercaseLetter": "Le mot de passe doit contenir une lettre minuscule",
+  "passwordMustContainUppercaseLetter": "Le mot de passe doit contenir une lettre majuscule",
+  "passwordMustContainNumber": "Le mot de passe doit contenir un chiffre",
+  "passwordMustContainSpecialCharacter": "Le mot de passe doit contenir un caractère spécial",
+  "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+  "selectTokensToExportHelpTitle": "Votre jeton ne figure pas dans la liste ?",
+  "selectTokensToExportHelpContent": "Si un jeton n'est pas répertorié, il n'est pas garanti qu'il ne s'agisse pas d'un jeton privacyIDEA.\nActuellement, seuls les jetons ajoutés manuellement et importés sont exportables."
 }

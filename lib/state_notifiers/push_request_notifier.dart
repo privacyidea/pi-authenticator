@@ -23,20 +23,21 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
-import 'package:privacyidea_authenticator/interfaces/repo/push_request_repository.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/model/push_request.dart';
-import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
-import 'package:privacyidea_authenticator/utils/globals.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/network_utils.dart';
-import 'package:privacyidea_authenticator/utils/push_provider.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
+import '../interfaces/repo/push_request_repository.dart';
+import '../l10n/app_localizations.dart';
+import '../model/push_request.dart';
 import '../model/states/push_request_state.dart';
+import '../model/tokens/push_token.dart';
 import '../repo/secure_push_request_repository.dart';
 import '../utils/custom_int_buffer.dart';
+import '../utils/globals.dart';
+import '../utils/logger.dart';
+import '../utils/network_utils.dart';
+import '../utils/push_provider.dart';
+import '../utils/riverpod_providers.dart';
+import '../utils/rsa_utils.dart';
+import '../utils/utils.dart';
 
 class PushRequestNotifier extends StateNotifier<PushRequestState> {
   late final Future<PushRequestState> initState;
@@ -218,7 +219,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   /// Accepts a push request and returns true if successful, false if not.
   /// An accepted push request is removed from the state.
   /// It should be still in the CustomIntBuffer of the state.
-  Future<bool> accept(PushToken pushToken, PushRequest pushRequest) async {
+  Future<bool> accept(PushToken pushToken, PushRequest pushRequest, {String? selectedAnswer}) async {
     if (pushRequest.accepted != null) {
       Logger.warning('The push request is already accepted or declined.', name: 'push_request_notifier.dart#accept');
 
@@ -226,7 +227,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     }
     Logger.info('Accept push request.', name: 'push_request_notifier.dart#accept');
     final updated = await _updatePushRequest(pushRequest, (p0) async {
-      final updated = p0.copyWith(accepted: true);
+      final updated = p0.copyWith(accepted: true, selectedAnswer: () => selectedAnswer);
       final success = await _handleReaction(pushRequest: updated, token: pushToken);
       if (!success) {
         Logger.warning('Failed to handle push request reaction.', name: 'push_request_notifier.dart#accept');
@@ -249,7 +250,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     }
     Logger.info('Decline push request.', name: 'push_request_notifier.dart#decline');
     final updated = await _updatePushRequest(pushRequest, (p0) async {
-      final updated = p0.copyWith(accepted: false);
+      final updated = p0.copyWith(accepted: false, selectedAnswer: () => null);
       final success = await _handleReaction(pushRequest: updated, token: pushToken);
       if (!success) {
         Logger.warning('Failed to handle push request reaction.', name: 'push_request_notifier.dart#accept');
@@ -337,28 +338,35 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   Future<bool> _handleReaction({required PushRequest pushRequest, required PushToken token}) async {
     if (pushRequest.accepted == null) return false;
     Logger.info('Push auth request accepted=${pushRequest.accepted}, sending response to privacyidea', name: 'token_widgets.dart#handleReaction');
-    // signature ::=  {nonce}|{serial}[|decline]
-    String msg = '${pushRequest.nonce}|${token.serial}';
-    if (pushRequest.accepted! == false) {
-      msg += '|decline';
-    }
-    String? signature = await _rsaUtils.trySignWithToken(token, msg);
-    if (signature == null) {
-      return false;
-    }
     //    POST https://privacyideaserver/validate/check
     //    nonce=<nonce_from_request>
     //    serial=<serial>
     //    signature=<signature>
     //    decline=1 (optional)
+    //    presence_answer=<answer> (optional)
     final Map<String, String> body = {
       'nonce': pushRequest.nonce,
       'serial': token.serial,
-      'signature': signature,
     };
+    // signature ::=  {nonce}|{serial}[|decline]
+    String msg = '${pushRequest.nonce}|${token.serial}';
     if (pushRequest.accepted! == false) {
-      body["decline"] = "1";
+      body['decline'] = '1';
+      msg += '|decline';
     }
+    if (pushRequest.possibleAnswers != null && pushRequest.selectedAnswer != null) {
+      body['presence_answer'] = pushRequest.selectedAnswer!;
+      msg += '|${pushRequest.selectedAnswer!}';
+    }
+    Logger.warning('Signature message: $msg', name: 'token_widgets.dart#handleReaction');
+    String? signature = await _rsaUtils.trySignWithToken(token, msg);
+    if (signature == null) {
+      Logger.warning('Failed to sign push request response.', name: 'token_widgets.dart#handleReaction');
+      return false;
+    }
+
+    body['signature'] = signature;
+
     Response response;
     try {
       Logger.info('Sending push request response.', name: 'token_widgets.dart#_handleReaction');
@@ -374,6 +382,11 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
       }
     }
     if (response.statusCode != 200) {
+      final appLocalizations = AppLocalizations.of(await globalContext)!;
+      globalRef?.read(statusMessageProvider.notifier).state = (
+        '${appLocalizations.sendPushRequestResponseFailed}\n${appLocalizations.statusCode(response.statusCode)}',
+        tryJsonDecode(response.body)?["result"]?["error"]?["message"],
+      );
       Logger.warning('Sending push request response failed.', name: 'token_widgets.dart#handleReaction');
       return false;
     }

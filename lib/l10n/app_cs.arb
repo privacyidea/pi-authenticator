@@ -546,6 +546,8 @@
   "importExistingToken": "{count, plural, zero{Nebyl nalezen žádný token, který by se již v aplikaci nacházel.} one{Byl nalezen token, který již v aplikaci existuje.} other{{count} byly nalezeny tokeny, které se již v aplikaci nacházejí.}}",
   "importConflictToken": "{count, plural, zero{Není žádný konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.}}",
   "importNewToken": "{count, plural, zero{Nenalezen žádný nový token.} one{Nalezen nový token, který bude importován.} other{Nalezen nový token {count}, který bude importován.}}",
+  "importHintPrivacyIdeaQrScan": "Chcete-li vytvořit QR kódy žetonů, přejděte do nastavení a klepněte na \"Export\". Poté vyberte \"Jako QR kód\" a klepněte na token, který chcete exportovat. Tato varianta je vhodná pouze pro přímý přenos do jiného zařízení, protože QR kód není šifrovaný.",
+  "importHintPrivacyIdeaFile": "Chcete-li vytvořit zálohu, přejděte do nastavení a klepněte na položku \"Export\". Vyberte \"Jako soubor\" a vyberte tokeny, které chcete exportovat. Potom klepněte na \"Exportovat\" a nastavte heslo. Úložištěm je složka pro stahování ve vašem zařízení.",
   "importHint2FAS": "Vyberte zálohu 2FAS.\nPokud nemáte zálohu, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.",
   "importHintAegisBackupFile": "Vyberte svůj export Aegis (.JSON).\nPokud nemáte export, vytvořte si jej prostřednictvím nabídky nastavení v aplikaci Aegis. Doporučujeme použít heslo.",
   "importHintAegisQrScan": "Naskenujte QR kód, který obdržíte při přenosu záznamů z aplikace Aegis.",
@@ -621,7 +623,7 @@
   "importExportTokens": "Import/Exportovat žetony",
   "exportNonPrivacyIDEATokens": "Exportovat ne-privacyIDEA žetony",
   "selectTokensToExport": "{count, plural, zero{} one{Vyberte žeton k exportu} other{Vyberte žetony k exportu}}",
-  "noTokensToExport": "Žádné žetony k exportu",
+  "noTokenToExport": "Pro export není k dispozici žádný token",
   "exportAllTokens": "Exportovat všechny žetony",
   "export": "Export",
   "exportingTokens": "Probíhá export žetonů...",
@@ -630,10 +632,34 @@
   "exportLockedTokenReason": "Prosím, ověřte se, abyste mohli exportovat uzamčené žetony.",
   "fileSavedToDownloadsFolder": "Soubor uložen do složky Stažené soubory",
   "errorSavingFile": "Chyba při ukládání souboru",
-  "toFile": "Do souboru",
   "asQrCode": "Jako QR kód",
+  "asFile": "Jako soubor",
   "scanThisQrWithNewDevice": "Naskenujte tento QR kód svým novým zařízením pro import žetonu.",
   "oneMore": "Ještě jeden",
   "done": "Hotovo",
-  "confirmPassword": "Potvrďte heslo"
+  "confirmPassword": "Potvrďte heslo",
+  "exampleUrl": "Zadejte prosím platnou adresu URL, například: \"https://example.com/\"",
+  "pushEndpointUrl": "URL koncového bodu push",
+  "mustNotBeEmpty": "{field} nesmí být prázdné",
+  "@mustNotBeEmpty": {
+    "placeholders": {
+      "field": {
+        "example": "Name"
+      }
+    }
+  },
+  "sendPushRequestResponseFailed": "Odpověď se nepodařilo odeslat.",
+  "@sendPushRequestResponseFailed": {
+    "description": "Error message when the response to a push request could not be sent."
+  },
+  "passwordCannotBeEmpty": "Heslo nesmí být prázdné",
+  "passwordMustBeAtLeast8Characters": "Heslo musí obsahovat alespoň 8 znaků",
+  "passwordCannotContainWhitespace": "Heslo nesmí obsahovat mezery",
+  "passwordMustContainLowercaseLetter": "Heslo musí obsahovat malé písmeno",
+  "passwordMustContainUppercaseLetter": "Heslo musí obsahovat velké písmeno",
+  "passwordMustContainNumber": "Heslo musí obsahovat číslo",
+  "passwordMustContainSpecialCharacter": "Heslo musí obsahovat speciální znak",
+  "passwordsDoNotMatch": "Hesla se neshodují",
+  "selectTokensToExportHelpTitle": "Není váš token uveden?",
+  "selectTokensToExportHelpContent": "Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.\nV současné době lze exportovat pouze ručně přidané a importované tokeny."
 }

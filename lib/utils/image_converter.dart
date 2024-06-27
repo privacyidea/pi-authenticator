@@ -5,7 +5,8 @@ import 'dart:ui';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imglib;
-import 'package:privacyidea_authenticator/utils/logger.dart';
+
+import '../utils/logger.dart';
 
 class ImageConverter {
   final imglib.Image image;
@@ -23,7 +24,7 @@ class ImageConverter {
       ImageFormatGroup.jpeg => ImageConverter._fromJPEG(image),
       ImageFormatGroup.nv21 => ImageConverter._fromNV21(image,
           rotation: rotation, mirror: isFrontCamera, cropLeft: cropLeft ?? 0, cropRight: cropRight ?? 0, cropTop: cropTop ?? 0, cropBottom: cropBottom ?? 0),
-      ImageFormatGroup.unknown => throw ArgumentError('Unknown image format'),
+      ImageFormatGroup.unknown => throw ArgumentError('Unknown image format', 'image.format.group'),
     };
   }
 

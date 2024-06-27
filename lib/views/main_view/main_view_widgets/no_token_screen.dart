@@ -22,7 +22,7 @@ class NoTokenScreen extends StatelessWidget {
             ),
             Text(
               AppLocalizations.of(context)!.noResultText1,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.bodyMedium,
               overflow: TextOverflow.fade,
               softWrap: false,
             ),
@@ -33,7 +33,7 @@ class NoTokenScreen extends StatelessWidget {
             ),
             Text(
               AppLocalizations.of(context)!.noResultText2,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.bodyMedium,
               overflow: TextOverflow.fade,
               softWrap: false,
             )
