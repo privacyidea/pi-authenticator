@@ -20,49 +20,48 @@
 */
 
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
 import '../utils/globals.dart';
-import '../utils/logger.dart';
 import '../utils/riverpod_providers.dart';
 import '../views/add_token_manually_view/add_token_manually_view.dart';
+import '../views/feedback_view/feedback_view.dart';
+import '../views/import_tokens_view/import_tokens_view.dart';
 import '../views/license_view/license_view.dart';
 import '../views/main_view/main_view.dart';
+import '../views/push_token_view/push_tokens_view.dart';
 import '../views/qr_scanner_view/qr_scanner_view.dart';
 import '../views/settings_view/settings_view.dart';
 import '../views/splash_screen/splash_screen.dart';
 import '../widgets/app_wrapper.dart';
 
 void main() async {
-  Logger.init(
-      navigatorKey: globalNavigatorKey,
-      appRunner: () async {
-        WidgetsFlutterBinding.ensureInitialized();
-        runApp(const AppWrapper(child: CustomizationAuthenticator()));
-      });
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const AppWrapper(child: CustomizationAuthenticator()));
 }
 
 class CustomizationAuthenticator extends ConsumerWidget {
-  static WidgetRef? globalAppRef;
-
   const CustomizationAuthenticator({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsFlutterBinding.ensureInitialized();
-    globalAppRef = ref;
-    globalRef = ref;
-    final state = ref.watch(settingsProvider);
-    final locale = state.currentLocale;
+    final locale = ref.watch(settingsProvider).currentLocale;
     final applicationCustomizer = ref.watch(applicationCustomizerProvider);
     return LayoutBuilder(
       builder: (context, constraints) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
           ref.read(appConstraintsProvider.notifier).state = constraints;
         });
         return MaterialApp(
+          scrollBehavior: ScrollConfiguration.of(context).copyWith(
+            physics: const ClampingScrollPhysics(),
+            overscroll: false,
+            dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown},
+          ),
           debugShowCheckedModeBanner: true,
           navigatorKey: globalNavigatorKey,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -75,22 +74,23 @@ class CustomizationAuthenticator extends ConsumerWidget {
           themeMode: EasyDynamicTheme.of(context).themeMode,
           initialRoute: SplashScreen.routeName,
           routes: {
-            SplashScreen.routeName: (context) => SplashScreen(
-                  customization: applicationCustomizer,
+            AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
+            FeedbackView.routeName: (context) => const FeedbackView(),
+            ImportTokensView.routeName: (context) => const ImportTokensView(),
+            LicenseView.routeName: (context) => LicenseView(
+                  appImage: applicationCustomizer.appImage,
+                  appName: applicationCustomizer.appName,
+                  websiteLink: applicationCustomizer.websiteLink,
                 ),
             MainView.routeName: (context) => MainView(
                   appIcon: applicationCustomizer.appIcon,
                   appName: applicationCustomizer.appName,
                   disablePatchNotes: applicationCustomizer.disabledFeatures.contains(AppFeature.patchNotes),
                 ),
+            PushTokensView.routeName: (context) => const PushTokensView(),
             SettingsView.routeName: (context) => const SettingsView(),
-            AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
+            SplashScreen.routeName: (context) => SplashScreen(customization: applicationCustomizer),
             QRScannerView.routeName: (context) => const QRScannerView(),
-            LicenseView.routeName: (context) => LicenseView(
-                  appImage: applicationCustomizer.appImage,
-                  appName: applicationCustomizer.appName,
-                  websiteLink: applicationCustomizer.websiteLink,
-                ),
           },
         );
       },

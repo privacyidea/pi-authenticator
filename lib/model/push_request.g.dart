@@ -17,11 +17,14 @@ PushRequest _$PushRequestFromJson(Map<String, dynamic> json) => PushRequest(
       serial: json['serial'] as String? ?? '',
       signature: json['signature'] as String? ?? '',
       accepted: json['accepted'] as bool?,
-      possibleAnswers: (json['answers'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      selectedAnswer: (json['selectedAnswer'] as String?),
+      possibleAnswers: (json['possibleAnswers'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      selectedAnswer: json['selectedAnswer'] as String?,
     );
 
-Map<String, dynamic> _$PushRequestToJson(PushRequest instance) => <String, dynamic>{
+Map<String, dynamic> _$PushRequestToJson(PushRequest instance) =>
+    <String, dynamic>{
       'title': instance.title,
       'question': instance.question,
       'id': instance.id,
@@ -32,6 +35,6 @@ Map<String, dynamic> _$PushRequestToJson(PushRequest instance) => <String, dynam
       'serial': instance.serial,
       'signature': instance.signature,
       'accepted': instance.accepted,
-      'answers': instance.possibleAnswers,
+      'possibleAnswers': instance.possibleAnswers,
       'selectedAnswer': instance.selectedAnswer,
     };

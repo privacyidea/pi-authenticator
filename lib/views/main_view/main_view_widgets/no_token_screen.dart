@@ -28,6 +28,7 @@ class NoTokenScreen extends StatelessWidget {
             ),
             Tooltip(
               message: AppLocalizations.of(context)!.scanQrCode,
+              triggerMode: TooltipTriggerMode.longPress,
               child: const Icon(Icons.qr_code_scanner_outlined),
             ),
             Text(

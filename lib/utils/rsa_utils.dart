@@ -25,14 +25,13 @@ import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/utils/globals.dart';
 import '../l10n/app_localizations.dart';
 import '../model/tokens/push_token.dart';
 import '../utils/crypto_utils.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod_providers.dart';
-
-import 'globals.dart';
+import 'riverpod_providers.dart';
 
 class RsaUtils {
   const RsaUtils();

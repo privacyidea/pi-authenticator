@@ -58,4 +58,9 @@ class IntroductionNotifier extends StateNotifier<IntroductionState> {
 
   bool isCompleted(Introduction introduction) => state.isCompleted(introduction);
   bool isUncompleted(Introduction introduction) => state.isUncompleted(introduction);
+
+  Future<void> completeAll() async {
+    state = state.withAllCompleted();
+    await _saveToRepo();
+  }
 }

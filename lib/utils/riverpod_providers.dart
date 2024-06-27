@@ -25,7 +25,6 @@ import '../state_notifiers/settings_notifier.dart';
 import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
 import 'customization/application_customization.dart';
-import 'firebase_utils.dart';
 import 'globals.dart';
 import 'home_widget_utils.dart';
 import 'logger.dart';
@@ -78,7 +77,7 @@ final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushReque
         /// Last push token was deleted
         Logger.info('Last push token was deleted. Deactivating push provider and deleting firebase token.', name: 'pushRequestProvider#tokenProvider');
         pushRequestNotifier.swapPushProvider(PlaceholderPushProvider());
-        FirebaseUtils().deleteFirebaseToken();
+        pushProvider.firebaseUtils.deleteFirebaseToken();
       }
       if (previous?.hasPushTokens != true && next.hasPushTokens == true) {
         /// First push token was added

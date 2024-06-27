@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:mutex/mutex.dart';
 import '../utils/customization/theme_customization.dart';
-
 import '../interfaces/repo/token_folder_repository.dart';
 import '../interfaces/repo/token_repository.dart';
 import '../mains/main_netknights.dart';
@@ -60,7 +59,7 @@ class HomeWidgetUtils {
   static const _showDuration = Duration(seconds: 15);
 
   factory HomeWidgetUtils({TokenRepository? tokenRepository, TokenFolderRepository? tokenFolderRepository}) {
-    if (Platform.isIOS) return UnsupportedHomeWidgetUtils(); // Not supported on iOS
+    if (kIsWeb || Platform.isIOS) return UnsupportedHomeWidgetUtils(); // Not supported on iOS
     _instance ??= HomeWidgetUtils._();
     _tokenRepository = tokenRepository ?? const SecureTokenRepository();
     _folderRepository = tokenFolderRepository ?? PreferenceTokenFolderRepository();

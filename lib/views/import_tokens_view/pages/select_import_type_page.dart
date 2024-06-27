@@ -43,7 +43,8 @@ class SelectImportTypePage extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
-                for (final importEntity in tokenImportOrigin.importSources)
+                for (final importEntity in tokenImportOrigin.importSources) ...[
+                  if (importEntity != tokenImportOrigin.importSources.first) const SizedBox(height: ImportTokensView.itemSpacingHorizontal / 2),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -73,6 +74,7 @@ class SelectImportTypePage extends StatelessWidget {
                       onPressed: () => _routeStartPage(context: context, importSource: importEntity),
                     ),
                   ),
+                ],
                 const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
               ],
             ),
