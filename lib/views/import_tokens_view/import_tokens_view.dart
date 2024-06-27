@@ -3,11 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/token_import/token_import_origin.dart';
+import '../../model/tokens/token.dart';
+import '../../utils/riverpod_providers.dart';
 import '../../utils/token_import_origins.dart';
 import '../view_interface.dart';
 import 'pages/import_start_page.dart';
 import 'pages/select_import_type_page.dart';
 
+/// The view to import tokens from different sources.
+/// The user can select the source from which the tokens should be imported.
+/// Pops with `true` if the tokens were imported successfully.
 class ImportTokensView extends ConsumerStatefulView {
   @override
   RouteSettings get routeSettings => const RouteSettings(name: routeName);
@@ -27,9 +32,10 @@ class ImportTokensView extends ConsumerStatefulView {
 }
 
 class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
-  void _onPressed(TokenImportOrigin tokenImportOrigin) {
+  Future<void> _onPressed(TokenImportOrigin tokenImportOrigin) async {
+    List<Token>? tokensToImport;
     if (tokenImportOrigin.importSources.length == 1) {
-      Navigator.of(context).push(
+      tokensToImport = await Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => ImportStartPage(
             appName: tokenImportOrigin.appName,
@@ -38,8 +44,18 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
         ),
       );
       return;
+    } else {
+      tokensToImport = await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => SelectImportTypePage(tokenImportOrigin: tokenImportOrigin),
+        ),
+      );
     }
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SelectImportTypePage(tokenImportOrigin: tokenImportOrigin)));
+    if (tokensToImport != null) {
+      ref.read(tokenProvider.notifier).addOrReplaceTokens(tokensToImport);
+      if (!mounted) return;
+      Navigator.of(context).pop(true);
+    }
   }
 
   @override

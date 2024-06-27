@@ -1,8 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:isolate';
-
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img_lib;
 import 'package:zxing2/qrcode.dart';
@@ -42,8 +41,9 @@ class _ImportStartPageState extends State<ImportStartPage> {
   final _linkController = TextEditingController();
 
   String? _errorText;
-
   Future? future;
+  int? _progressMax;
+  int? _progressValue;
 
   @override
   void dispose() {
@@ -108,15 +108,15 @@ class _ImportStartPageState extends State<ImportStartPage> {
                                     const (TokenImportType.qrFile) => _pickQrFile(widget.selectedSource.processor),
                                     const (TokenImportType.link) => _validateLink(widget.selectedSource.processor),
                                   });
-                              future!.then((value) {
-                                if (mounted == false) return;
+                              future?.then((value) {
+                                if (!mounted) return;
                                 setState(() => future = null);
                               });
                             });
                           },
                         ),
                       )
-                    : const CircularProgressIndicator(),
+                    : LinearProgressIndicator(value: (_progressValue != null && _progressMax != null) ? _progressValue! / _progressMax! : null),
               ],
             ),
           ),
@@ -221,18 +221,27 @@ class _ImportStartPageState extends State<ImportStartPage> {
       setState(() => _errorText = localizations.invalidQrFile(widget.appName));
       return;
     }
-    var i = 0;
-    while (i < 100 && qrResult == null && mounted) {
-      try {
-        qrResult = await _decodeQrImage(qrImage, numFails: i);
-        break;
-      } on FormatReaderException catch (_) {
-        Logger.info("Qr-Code detected but not valid: zoom");
-        i = i + 4;
-        continue;
-      } on NotFoundException catch (_) {
-        Logger.info("Qr-Code not detected: rotate by 90°");
-        i++;
+    const maxZoomLevel = 10;
+    if (!mounted) return;
+    setState(() {
+      _progressMax = maxZoomLevel * 360;
+      _progressValue = 0;
+    });
+    for (var zoomLevel = 0; zoomLevel <= maxZoomLevel && qrResult == null && mounted; zoomLevel++) {
+      for (var rotation = 0; rotation < 360; rotation += 90) {
+        if (!mounted) return;
+        setState(() => _progressValue = zoomLevel * 360 + rotation);
+        try {
+          qrResult = await compute(_decodeQrImageIsolate, [qrImage, rotation, zoomLevel]);
+          // await _decodeQrImage(qrImage, rotation: rotation, zoomLevel: zoomLevel);
+
+          break;
+        } on FormatReaderException catch (_) {
+          Logger.info("Qr-Code detected but not valid. Zoom level: $zoomLevel|rotation: $rotation");
+          if (zoomLevel != maxZoomLevel) break;
+        } on NotFoundException catch (_) {
+          Logger.info("Qr-Code not detected. Zoom level: $zoomLevel|rotation: $rotation");
+        }
       }
     }
     if (qrResult == null) {
@@ -246,11 +255,13 @@ class _ImportStartPageState extends State<ImportStartPage> {
     try {
       uri = Uri.parse(qrResult.text);
     } on FormatException catch (_) {
+      if (!mounted) return;
       setState(() => _errorText = localizations.invalidQrFile(widget.appName));
       return;
     }
     var processorResults = await schemeProcessor.processUri(uri);
     if (processorResults.isEmpty) {
+      if (!mounted) return;
       setState(() => _errorText = localizations.invalidQrFile(widget.appName));
       return;
     }
@@ -269,22 +280,6 @@ class _ImportStartPageState extends State<ImportStartPage> {
     _routeImportPlainTokensPage(importResults: processorResults);
   }
 
-  Future<Result> _decodeQrImage(img_lib.Image qrImage, {int numFails = 0}) async {
-    final receivePort = ReceivePort();
-    final args = [receivePort.sendPort, qrImage, numFails];
-    Isolate.spawn(
-      _decodeQrImageIsolate,
-      args,
-      errorsAreFatal: true,
-    );
-    final result = await receivePort.first;
-    receivePort.close();
-    if (result is! Result) {
-      throw result;
-    }
-    return result;
-  }
-
   Future<void> _validateLink(TokenImportProcessor? processor) async {
     if (_linkController.text.isEmpty) {
       return;
@@ -296,11 +291,13 @@ class _ImportStartPageState extends State<ImportStartPage> {
     try {
       uri = Uri.parse(_linkController.text);
     } on FormatException catch (_) {
+      if (!mounted) return;
       setState(() => _errorText = localizations.invalidLink(widget.appName));
       return;
     }
     var results = await schemeProcessor.processUri(uri);
     if (results.isEmpty) {
+      if (!mounted) return;
       setState(() => _errorText = localizations.invalidLink(widget.appName));
       return;
     }
@@ -313,24 +310,27 @@ class _ImportStartPageState extends State<ImportStartPage> {
         data: _linkController.text,
       ));
     }).toList();
-
-    if (mounted == false) return;
+    if (!mounted) return;
     setState(() => FocusScope.of(context).unfocus());
     Logger.info("Link imported successfully", name: "_validateLink#ImportStartPage");
     _routeImportPlainTokensPage(importResults: results);
   }
 
-  void _routeImportPlainTokensPage({required List<ProcessorResult<Token>> importResults}) {
+  Future<void> _routeImportPlainTokensPage({required List<ProcessorResult<Token>> importResults}) async {
     if (mounted == false) return;
-    Navigator.of(context).push(
+    final tokensToImport = await Navigator.of(context).push<List<Token>>(
       MaterialPageRoute(builder: (context) {
         return ImportPlainTokensPage(
-          appName: widget.appName,
+          titleName: widget.appName,
           processorResults: importResults,
           selectedType: widget.selectedSource.type,
         );
       }),
     );
+    if (tokensToImport != null) {
+      if (!mounted) return;
+      Navigator.of(context).pop(tokensToImport);
+    }
   }
 
   void _routeEncryptedData<T, V extends String?>({required T data, required TokenImportProcessor<T, V> processor}) {
@@ -348,30 +348,31 @@ class _ImportStartPageState extends State<ImportStartPage> {
   }
 }
 
-void _decodeQrImageIsolate(List<dynamic> args) async {
-  final sendPort = args[0] as SendPort;
-  var image = args[1] as img_lib.Image;
-  final int numFails = args.length > 2 ? args[2] as int : 0;
-
-  if (numFails > 3) {
+Future<Result?> _decodeQrImageIsolate(List<dynamic> args) async {
+  var image = args[0] as img_lib.Image;
+  final int rotation = args[1] as int;
+  final int zoomLevel = args[2] as int;
+  if (zoomLevel > 0) {
     final size = image.width < image.height ? image.width : image.height;
-    final crop = (size * 0.02).floor() * (numFails ~/ 4);
+    final crop = (size * 0.02).floor() * zoomLevel;
     final x = (image.width - size) ~/ 2 + crop;
     final y = (image.height - size) ~/ 2 + crop;
     image = img_lib.copyCrop(image, x: x, y: y, width: size - crop, height: size - crop);
   }
-  image = img_lib.copyRotate(image, angle: 90 * numFails % 360);
+  if (rotation > 0) {
+    image = img_lib.copyRotate(image, angle: rotation);
+  }
 
   LuminanceSource source = RGBLuminanceSource(
     image.width,
     image.height,
     image.convert(numChannels: 4).getBytes(order: img_lib.ChannelOrder.abgr).buffer.asInt32List(),
   );
-  var bitmap = BinaryBitmap(GlobalHistogramBinarizer(source));
-  try {
-    final result = QRCodeReader().decode(bitmap);
-    Isolate.exit(sendPort, result);
-  } catch (e) {
-    Isolate.exit(sendPort, e);
-  }
+
+  return QRCodeReader().decode(
+    BinaryBitmap(GlobalHistogramBinarizer(source)),
+    hints: DecodeHints()
+      ..put(DecodeHintType.tryHarder)
+      ..put(DecodeHintType.possibleFormats, [BarcodeFormat.qrCode]),
+  );
 }

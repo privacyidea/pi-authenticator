@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../../model/token_import/token_import_entry.dart';
 import '../../../model/tokens/token.dart';
 import 'no_conflict_import_tokens_tile.dart';
 
 class ConflictedImportTokensTile extends StatefulWidget {
-  final ImportTokenEntry importTokenEntry;
-  final void Function(ImportTokenEntry) selectTokenCallback;
+  final TokenImportEntry importTokenEntry;
+  final void Function(TokenImportEntry) selectTokenCallback;
   // Cannot use MediaQuery.of(context).size in initState
   final Size initialScreenSize;
   ConflictedImportTokensTile({
@@ -152,14 +153,4 @@ class _ConflictedImportTokensTileState extends State<ConflictedImportTokensTile>
             ),
     );
   }
-}
-
-class ImportTokenEntry {
-  final Token newToken;
-  final Token? oldToken;
-  Token? selectedToken;
-  ImportTokenEntry({
-    required this.newToken,
-    this.oldToken,
-  }) : selectedToken = oldToken == null ? newToken : null;
 }

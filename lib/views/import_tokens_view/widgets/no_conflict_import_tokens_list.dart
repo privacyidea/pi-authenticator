@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../../model/tokens/token.dart';
+import '../../../model/token_import/token_import_entry.dart';
 import 'no_conflict_import_tokens_tile.dart';
 
 class NoConflictImportTokensList extends StatefulWidget {
   const NoConflictImportTokensList({
-    required this.importTokens,
+    required this.importEntries,
     this.title,
     this.titlePadding = const EdgeInsets.all(0),
     this.borderColor = Colors.green,
     this.leadingDivider = false,
+    this.onTap,
     super.key,
   });
 
@@ -17,8 +18,9 @@ class NoConflictImportTokensList extends StatefulWidget {
   final EdgeInsetsGeometry titlePadding;
   final Color? borderColor;
   final bool leadingDivider;
+  final void Function(TokenImportEntry oldEntry, TokenImportEntry newEntry)? onTap;
 
-  final List<Token> importTokens;
+  final List<TokenImportEntry> importEntries;
 
   @override
   State<NoConflictImportTokensList> createState() => _NoConflictImportTokensListState();
@@ -51,11 +53,19 @@ class _NoConflictImportTokensListState extends State<NoConflictImportTokensList>
           ),
           const SizedBox(height: 8),
         ],
-        for (final token in widget.importTokens)
-          NoConflictImportTokensTile(
-            token: token,
-            selected: token,
-            borderColor: widget.borderColor,
+        for (final tokenEntry in widget.importEntries)
+          GestureDetector(
+            onTap: widget.onTap != null
+                ? () {
+                    final newTokenEntry = tokenEntry.copySelect(tokenEntry.selectedToken == null ? tokenEntry.newToken : null);
+                    widget.onTap!(tokenEntry, newTokenEntry);
+                  }
+                : null,
+            child: NoConflictImportTokensTile(
+              token: tokenEntry.newToken,
+              selected: tokenEntry.selectedToken,
+              borderColor: widget.borderColor,
+            ),
           )
       ],
     );

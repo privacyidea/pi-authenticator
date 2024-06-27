@@ -5,12 +5,14 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import '../model/enums/token_import_type.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
@@ -37,6 +39,7 @@ import '../utils/riverpod_providers.dart';
 import '../utils/rsa_utils.dart';
 import '../utils/utils.dart';
 import '../utils/view_utils.dart';
+import '../views/import_tokens_view/pages/import_plain_tokens_page.dart';
 
 class TokenNotifier extends StateNotifier<TokenState> {
   static final Map<String, Timer> _hidingTimers = {};
@@ -660,10 +663,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     List<Token> tokens = await _tokensFromUri(uri);
     tokens = tokens
-        .map((e) => e.copyWith(
+        .map(
+          (e) => e.copyWith(
             origin: e.origin?.copyWith(source: TokenOriginSourceType.qrScan) ??
-                TokenOriginSourceType.qrScan.toTokenOrigin(data: uri.toString(), isPrivacyIdeaToken: null)))
+                TokenOriginSourceType.qrScan.toTokenOrigin(data: uri.toString(), isPrivacyIdeaToken: null),
+          ),
+        )
         .toList();
+
     await _addOrReplaceTokens(tokens);
     await _handlePushTokensIfExist();
   }
@@ -682,6 +689,19 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<List<Token>> _tokensFromUri(Uri uri) async {
     try {
       final results = await TokenImportSchemeProcessor.processUriByAny(uri);
+      //  final anyConflict = tokens.any((newToken) => state.tokens.any((stateToken) => stateToken.sameValuesAs(newToken)));
+      if (results != null && results.length > 1) {
+        final tokensToKeep = await Navigator.of(globalNavigatorKey.currentContext!).push<List<Token>>(
+          MaterialPageRoute<List<Token>>(
+            builder: (context) => ImportPlainTokensPage(
+              titleName: AppLocalizations.of(context)!.importTokens,
+              processorResults: results,
+              selectedType: TokenImportType.qrScan,
+            ),
+          ),
+        );
+        return tokensToKeep ?? [];
+      }
       return results?.whereType<ProcessorResultSuccess<Token>>().map((e) => e.resultData).toList() ?? [];
     } catch (error, stackTrace) {
       showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));

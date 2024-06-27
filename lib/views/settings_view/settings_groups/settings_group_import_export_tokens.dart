@@ -23,9 +23,7 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
       title: appLocalizations.importExportTokens,
       children: [
         SettingsListTileButton(
-          onPressed: () {
-            Navigator.pushNamed(context, ImportTokensView.routeName);
-          },
+          onPressed: _selectImportTypeDialog,
           title: Text(
             appLocalizations.importTokens,
             style: Theme.of(context).textTheme.bodyMedium,
@@ -48,7 +46,7 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
             quarterTurns: 3,
             child: Icon(FluentIcons.arrow_exit_20_filled),
           ),
-          onPressed: () => _selectExportTypeDialog(),
+          onPressed: _selectExportTypeDialog,
         ),
       ],
     );
@@ -60,5 +58,13 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
       builder: (context) => const SelectExportTypeDialog(),
     );
     if (isExported == true && mounted) Navigator.of(context).pop(isExported);
+  }
+
+  void _selectImportTypeDialog() async {
+    final isImported = await Navigator.pushNamed(
+      context,
+      ImportTokensView.routeName,
+    );
+    if (isImported == true && mounted) Navigator.of(context).pop(isImported);
   }
 }

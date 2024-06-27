@@ -1,5 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import '../../../model/tokens/token.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
@@ -81,6 +82,15 @@ class SelectImportTypePage extends StatelessWidget {
     );
   }
 
-  void _routeStartPage({required TokenImportSource importSource, required BuildContext context}) =>
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ImportStartPage(appName: tokenImportOrigin.appName, selectedSource: importSource)));
+  Future<void> _routeStartPage({required TokenImportSource importSource, required BuildContext context}) async {
+    final tokensToImport = await Navigator.of(context).push<List<Token>>(
+      MaterialPageRoute(
+        builder: (context) => ImportStartPage(appName: tokenImportOrigin.appName, selectedSource: importSource),
+      ),
+    );
+    if (tokensToImport != null) {
+      if (!context.mounted) return;
+      Navigator.of(context).pop(tokensToImport);
+    }
+  }
 }

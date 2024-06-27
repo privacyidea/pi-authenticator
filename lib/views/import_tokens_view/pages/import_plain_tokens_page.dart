@@ -5,23 +5,23 @@ import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
 import '../../../model/extensions/enums/token_import_type_extension.dart';
 import '../../../model/processor_result.dart';
+import '../../../model/token_import/token_import_entry.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../import_tokens_view.dart';
 import '../widgets/conflicted_import_tokens_list.dart';
-import '../widgets/conflicted_import_tokens_tile.dart';
 import '../widgets/failed_imports_list.dart';
 import '../widgets/no_conflict_import_tokens_list.dart';
 
 class ImportPlainTokensPage extends ConsumerStatefulWidget {
-  final String appName;
+  final String titleName;
   final TokenImportType selectedType;
   final List<Token> importedTokens;
   final List<String> failedImports;
   factory ImportPlainTokensPage({
     Key? key,
     required List<ProcessorResult<Token>> processorResults,
-    required String appName,
+    required String titleName,
     required TokenImportType selectedType,
   }) {
     final importedTokens = processorResults.whereType<ProcessorResultSuccess<Token>>().map((e) => e.resultData).toList();
@@ -30,11 +30,11 @@ class ImportPlainTokensPage extends ConsumerStatefulWidget {
       key: key,
       importedTokens: importedTokens,
       failedImports: failedImports,
-      appName: appName,
+      titleName: titleName,
       selectedType: selectedType,
     );
   }
-  const ImportPlainTokensPage._({super.key, required this.importedTokens, required this.failedImports, required this.appName, required this.selectedType});
+  const ImportPlainTokensPage._({super.key, required this.importedTokens, required this.failedImports, required this.titleName, required this.selectedType});
 
   @override
   ConsumerState<ImportPlainTokensPage> createState() => _ImportFileNoPwState();
@@ -43,7 +43,7 @@ class ImportPlainTokensPage extends ConsumerStatefulWidget {
 class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
   ScrollController scrollController = ScrollController();
   List<Token?>? tokensToKeep;
-  List<ImportTokenEntry> importTokenEntrys = [];
+  List<TokenImportEntry> importTokenEntrys = [];
   bool isMaxScrollOffset = true;
 
   @override
@@ -54,7 +54,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
       importTokenEntrys = [];
       setState(() {
         map.forEach((key, value) {
-          importTokenEntrys.add(ImportTokenEntry(newToken: key, oldToken: value));
+          importTokenEntrys.add(TokenImportEntry(newToken: key, oldToken: value));
         });
       });
       _setTokensToKeep(importTokenEntrys);
@@ -68,10 +68,6 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
     scrollController.removeListener(_updateIsMaxScrollExtent);
     scrollController.dispose();
     super.dispose();
-  }
-
-  void _popAll() {
-    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   void _updateIsMaxScrollExtent() async {
@@ -95,9 +91,9 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
   @override
   Widget build(BuildContext context) {
     _updateIsMaxScrollExtent();
-    final List<ImportTokenEntry> conflictedImports = [];
-    final List<ImportTokenEntry> newImports = [];
-    final List<ImportTokenEntry> duplicateImport = [];
+    final List<TokenImportEntry> conflictedImports = [];
+    final List<TokenImportEntry> newImports = [];
+    final List<TokenImportEntry> duplicateImport = [];
     for (final importTokenEntry in importTokenEntrys) {
       if (importTokenEntry.oldToken == null) {
         newImports.add(importTokenEntry);
@@ -112,7 +108,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.appName),
+        title: Text(widget.titleName),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.max,
@@ -145,22 +141,23 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
                           titlePadding: const EdgeInsets.symmetric(horizontal: 40),
                           leadingDivider: widget.failedImports.isNotEmpty,
                           importEntries: conflictedImports,
-                          updateImportTokenEntry: _updateImportTokenEntry,
+                          onTap: _updateImportTokenEntry,
                         ),
                       if (newImports.isNotEmpty)
                         NoConflictImportTokensList(
                           title: AppLocalizations.of(context)!.importNewToken(newImports.length),
                           titlePadding: const EdgeInsets.symmetric(horizontal: 40),
                           leadingDivider: conflictedImports.isNotEmpty,
-                          importTokens: newImports.map((e) => e.newToken).toList(),
+                          importEntries: newImports,
+                          onTap: _updateImportTokenEntry,
                         ),
                       if (duplicateImport.isNotEmpty)
                         NoConflictImportTokensList(
                           title: AppLocalizations.of(context)!.importExistingToken(duplicateImport.length),
                           titlePadding: const EdgeInsets.symmetric(horizontal: 40),
                           leadingDivider: newImports.isNotEmpty || conflictedImports.isNotEmpty,
-                          importTokens: duplicateImport.map((e) => e.oldToken!).toList(),
-                          borderColor: null,
+                          importEntries: duplicateImport,
+                          // borderColor: null,
                         ),
                     ],
                   ),
@@ -189,9 +186,9 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
               child: ElevatedButton(
                 onPressed: tokensToKeep == null || tokensToKeep!.contains(null)
                     ? null
-                    : () => ref.read(tokenProvider.notifier).addOrReplaceTokens(tokensToKeep!.cast<Token>()).then((_) => _popAll()),
+                    : () => Navigator.of(context).pop<List<Token>>(tokensToKeep!.whereType<Token>().toList()),
                 child: Text(
-                  tokensToKeep?.isEmpty == false ? AppLocalizations.of(context)!.importTokens : AppLocalizations.of(context)!.ok,
+                  tokensToKeep != null ? AppLocalizations.of(context)!.importNTokens(tokensToKeep!.length) : AppLocalizations.of(context)!.ok,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                   overflow: TextOverflow.fade,
                   softWrap: false,
@@ -204,24 +201,22 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
     );
   }
 
-  void _updateImportTokenEntry(ImportTokenEntry oldEntry, ImportTokenEntry newEntry) {
+  void _updateImportTokenEntry(TokenImportEntry oldEntry, TokenImportEntry newEntry) {
     setState(() {
       importTokenEntrys[importTokenEntrys.indexOf(oldEntry)] = newEntry;
+      _setTokensToKeep(importTokenEntrys);
     });
-    _setTokensToKeep(importTokenEntrys);
   }
 
-  void _setTokensToKeep(List<ImportTokenEntry> tokens) {
-    setState(() {
-      tokensToKeep = [];
-      for (final importTokenEntry in importTokenEntrys) {
-        if (importTokenEntry.oldToken == null) {
-          tokensToKeep!.add(importTokenEntry.newToken);
-          continue;
-        }
+  void _setTokensToKeep(List<TokenImportEntry> tokens) {
+    tokensToKeep = [];
+    for (final importTokenEntry in importTokenEntrys) {
+      if (importTokenEntry.oldToken != null) {
         if (importTokenEntry.newToken.sameValuesAs(importTokenEntry.oldToken!)) continue;
-        tokensToKeep!.add(importTokenEntry.selectedToken?.copyWith(id: importTokenEntry.oldToken!.id));
+        tokensToKeep!.add(importTokenEntry.selectedToken?.copyWith(id: importTokenEntry.oldToken?.id));
+      } else {
+        if (importTokenEntry.selectedToken != null) tokensToKeep!.add(importTokenEntry.selectedToken);
       }
-    });
+    }
   }
 }
