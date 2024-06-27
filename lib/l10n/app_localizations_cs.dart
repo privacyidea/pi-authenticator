@@ -664,6 +664,12 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
+  String get importHintPrivacyIdeaQrScan => '';
+
+  @override
+  String get importHintPrivacyIdeaFile => '';
+
+  @override
   String get importHint2FAS => 'Vyberte zálohu 2FAS.\nPokud nemáte zálohu, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.';
 
   @override
@@ -824,7 +830,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get noTokensToExport => 'Žádné žetony k exportu';
+  String get noTokenToExport => 'Pro export není k dispozici žádný token';
 
   @override
   String get exportAllTokens => 'Exportovat všechny žetony';
@@ -851,10 +857,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get errorSavingFile => 'Chyba při ukládání souboru';
 
   @override
-  String get toFile => 'Do souboru';
+  String get asQrCode => 'Jako QR kód';
 
   @override
-  String get asQrCode => 'Jako QR kód';
+  String get asFile => 'Jako soubor';
 
   @override
   String get scanThisQrWithNewDevice => 'Naskenujte tento QR kód svým novým zařízením pro import žetonu.';
@@ -890,13 +896,36 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get pushEndpointUrl => 'URL koncového bodu push';
+  String get sendPushRequestResponseFailed => 'Odpověď se nepodařilo odeslat.';
 
   @override
-  String get exampleUrl => 'Zadejte prosím platnou adresu URL, například: \"https://example.com/\"';
+  String get passwordCannotBeEmpty => 'Heslo nesmí být prázdné';
 
   @override
-  String mustNotBeEmpty(Object field) {
-    return '$field nesmí být prázdné';
-  }
+  String get passwordMustBeAtLeast8Characters => 'Heslo musí obsahovat alespoň 8 znaků';
+
+  @override
+  String get passwordCannotContainWhitespace => 'Heslo nesmí obsahovat mezery';
+
+  @override
+  String get passwordMustContainLowercaseLetter => 'Heslo musí obsahovat malé písmeno';
+
+  @override
+  String get passwordMustContainUppercaseLetter => 'Heslo musí obsahovat velké písmeno';
+
+  @override
+  String get passwordMustContainNumber => 'Heslo musí obsahovat číslo';
+
+  @override
+  String get passwordMustContainSpecialCharacter => 'Heslo musí obsahovat speciální znak';
+
+  @override
+  String get passwordsDoNotMatch => 'Hesla se neshodují';
+
+  @override
+  String get selectTokensToExportHelpTitle => 'Není váš token uveden?';
+
+  @override
+  String get selectTokensToExportHelpContent =>
+      'Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.\nV současné době lze exportovat pouze ručně přidané a importované tokeny.';
 }

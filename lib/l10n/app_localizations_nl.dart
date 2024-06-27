@@ -669,6 +669,14 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String get importHintPrivacyIdeaQrScan =>
+      'Om QR-codes van de tokens te maken, navigeer je naar de instellingen en tik je op \"Exporteren\". Selecteer vervolgens \"Als QR-code\" en tik op het muntje dat geëxporteerd moet worden. Deze variant is alleen geschikt voor directe overdracht naar een ander apparaat, omdat de QR-code niet versleuteld is.';
+
+  @override
+  String get importHintPrivacyIdeaFile =>
+      'Om een back-up te maken, ga je naar de instellingen en tik je op \"Exporteren\". Selecteer \"Als bestand\" en selecteer de tokens die je wilt exporteren. Tik dan op \"Exporteren\" en stel een wachtwoord in. De opslaglocatie is de downloadmap op je apparaat.';
+
+  @override
   String get importHint2FAS =>
       'Selecteer uw 2FAS-back-up. Als u geen back-up hebt, maak er dan een aan in de 2FAS-app. Wij raden u aan een wachtwoord te gebruiken.';
 
@@ -832,7 +840,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get noTokensToExport => 'Geen tokens om te exporteren';
+  String get noTokenToExport => 'Geen token beschikbaar voor export';
 
   @override
   String get exportAllTokens => 'Alle tokens exporteren';
@@ -859,10 +867,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get errorSavingFile => 'Fout bij het opslaan van het bestand';
 
   @override
-  String get toFile => 'Naar bestand';
+  String get asQrCode => 'Als QR-code';
 
   @override
-  String get asQrCode => 'Als QR-code';
+  String get asFile => 'Als bestand';
 
   @override
   String get scanThisQrWithNewDevice => 'Scan deze QR-code met uw nieuwe apparaat om de token te importeren.';
@@ -898,13 +906,36 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get pushEndpointUrl => 'Push Endpoint URL';
+  String get sendPushRequestResponseFailed => 'Het verzenden van het antwoord is mislukt. ';
 
   @override
-  String get exampleUrl => 'Voer een geldige URL in zoals: \"https://example.com/\"';
+  String get passwordCannotBeEmpty => 'Wachtwoord mag niet leeg zijn';
 
   @override
-  String mustNotBeEmpty(Object field) {
-    return '$field mag niet leeg zijn';
-  }
+  String get passwordMustBeAtLeast8Characters => 'Wachtwoord moet minimaal 8 tekens lang zijn';
+
+  @override
+  String get passwordCannotContainWhitespace => 'Wachtwoord mag geen spaties bevatten';
+
+  @override
+  String get passwordMustContainLowercaseLetter => 'Wachtwoord moet een kleine letter bevatten';
+
+  @override
+  String get passwordMustContainUppercaseLetter => 'Wachtwoord moet een hoofdletter bevatten';
+
+  @override
+  String get passwordMustContainNumber => 'Wachtwoord moet een cijfer bevatten';
+
+  @override
+  String get passwordMustContainSpecialCharacter => 'Wachtwoord moet een speciaal teken bevatten';
+
+  @override
+  String get passwordsDoNotMatch => 'Wachtwoorden komen niet overeen';
+
+  @override
+  String get selectTokensToExportHelpTitle => 'Staat jouw token er niet bij?';
+
+  @override
+  String get selectTokensToExportHelpContent =>
+      'Als een token niet in de lijst staat, is het niet gegarandeerd dat het geen privacyIDEA token is.\nMomenteel kunnen alleen handmatig toegevoegde en geïmporteerde tokens worden geëxporteerd.';
 }

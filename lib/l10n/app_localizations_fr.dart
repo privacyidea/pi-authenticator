@@ -672,6 +672,14 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get importHintPrivacyIdeaQrScan =>
+      'Pour créer des codes QR des jetons, accédez aux paramètres et appuyez sur \"Exporter\". Sélectionnez ensuite \"En tant que code QR\" et tapez sur le jeton à exporter. Cette variante ne convient que pour un transfert direct vers un autre appareil, car le code QR n\'est pas crypté.';
+
+  @override
+  String get importHintPrivacyIdeaFile =>
+      'Pour créer une sauvegarde, allez dans les paramètres et tapez sur \"Exporter\". Choisissez \"En tant que fichier\", sélectionnez les jetons que vous souhaitez exporter. Ensuite, appuyez sur \"Exporter\" et définissez un mot de passe. L\'emplacement de stockage est le dossier de téléchargement sur votre appareil.';
+
+  @override
   String get importHint2FAS =>
       'Choisissez votre sauvegarde 2FAS.\nSi vous n\'avez pas de sauvegarde, créez-en une dans l\'application 2FAS. Nous vous recommandons d\'utiliser un mot de passe';
 
@@ -835,7 +843,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get noTokensToExport => 'Aucun jeton à exporter';
+  String get noTokenToExport => 'Pas de jeton disponible pour l\'exportation';
 
   @override
   String get exportAllTokens => 'Exporter tous les jetons';
@@ -862,10 +870,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get errorSavingFile => 'Erreur lors de l\'enregistrement du fichier';
 
   @override
-  String get toFile => 'Vers fichier';
+  String get asQrCode => 'Sous forme de code QR';
 
   @override
-  String get asQrCode => 'Sous forme de code QR';
+  String get asFile => 'En tant que fichier';
 
   @override
   String get scanThisQrWithNewDevice => 'Scannez ce code QR avec votre nouvel appareil pour importer le jeton.';
@@ -901,13 +909,36 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get pushEndpointUrl => 'URL de l\'endpoint Push';
+  String get sendPushRequestResponseFailed => 'Échec de l\'envoi de la réponse.';
 
   @override
-  String get exampleUrl => 'Veuillez saisir une URL valide comme : \"https://example.com/\"';
+  String get passwordCannotBeEmpty => 'Le mot de passe ne peut pas être vide';
 
   @override
-  String mustNotBeEmpty(Object field) {
-    return '$field ne doit pas être vide';
-  }
+  String get passwordMustBeAtLeast8Characters => 'Le mot de passe doit contenir au moins 8 caractères';
+
+  @override
+  String get passwordCannotContainWhitespace => 'Le mot de passe ne peut pas contenir d\'espaces';
+
+  @override
+  String get passwordMustContainLowercaseLetter => 'Le mot de passe doit contenir une lettre minuscule';
+
+  @override
+  String get passwordMustContainUppercaseLetter => 'Le mot de passe doit contenir une lettre majuscule';
+
+  @override
+  String get passwordMustContainNumber => 'Le mot de passe doit contenir un chiffre';
+
+  @override
+  String get passwordMustContainSpecialCharacter => 'Le mot de passe doit contenir un caractère spécial';
+
+  @override
+  String get passwordsDoNotMatch => 'Les mots de passe ne correspondent pas';
+
+  @override
+  String get selectTokensToExportHelpTitle => 'Votre jeton ne figure pas dans la liste ?';
+
+  @override
+  String get selectTokensToExportHelpContent =>
+      'Si un jeton n\'est pas répertorié, il n\'est pas garanti qu\'il ne s\'agisse pas d\'un jeton privacyIDEA.\nActuellement, seuls les jetons ajoutés manuellement et importés sont exportables.';
 }

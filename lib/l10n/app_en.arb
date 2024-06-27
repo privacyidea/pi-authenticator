@@ -536,6 +536,8 @@
   "importExistingToken": "{count, plural, zero{No token was found that is already in the application.} one{A token was found that already exists in the application.} other{{count} tokens was found that are already in the application.}}",
   "importConflictToken": "{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with existing tokens.\nPlease select which one you would like to keep.} other{There are conflicts with existing tokens.\nPlease select the tokens you wish to keep.}}",
   "importNewToken": "{count, plural, zero{No new token has been found.} one{A new token has been found and is being imported.} other{{count} new tokens have been found and will be imported.}}",
+  "importHintPrivacyIdeaQrScan": "Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.",
+  "importHintPrivacyIdeaFile": "To create a backup, go to the settings and tap on \"Export\". Select \"As file\", select the tokens you want to export. Then tap on \"Export\" and set a password. The storage location is the download folder on your device.",
   "importHint2FAS": "Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.",
   "importHintAegisBackupFile": "Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.",
   "importHintAegisQrScan": "Scan the QR code you receive when you transfer entries from Aegis.",
@@ -611,7 +613,7 @@
   "importExportTokens": "Import/Export tokens",
   "exportNonPrivacyIDEATokens": "Export non-privacyIDEA tokens",
   "selectTokensToExport": "{count, plural, zero{} one{Select token to export} other{Select tokens to export}}",
-  "noTokensToExport": "No tokens to export",
+  "noTokenToExport": "No token available for export",
   "exportAllTokens": "Export all tokens",
   "export": "Export",
   "exportingTokens": "Exporting tokens...",
@@ -620,8 +622,8 @@
   "exportLockedTokenReason": "Please authenticate to export locked tokens.",
   "fileSavedToDownloadsFolder": "File saved to Downloads folder",
   "errorSavingFile": "Saving to file failed",
-  "toFile": "To file",
   "asQrCode": "As QR code",
+  "asFile": "As file",
   "scanThisQrWithNewDevice": "Scan this QR code with your new device to import the token.",
   "oneMore": "One more",
   "done": "Done",
@@ -671,5 +673,15 @@
   "sendPushRequestResponseFailed": "Failed to send the response.",
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
-  }
+  },
+  "passwordCannotBeEmpty": "Password cannot be empty",
+  "passwordMustBeAtLeast8Characters": "Password must be at least 8 characters",
+  "passwordCannotContainWhitespace": "Password cannot contain whitespace",
+  "passwordMustContainLowercaseLetter": "Password must contain lowercase letter",
+  "passwordMustContainUppercaseLetter": "Password must contain uppercase letter",
+  "passwordMustContainNumber": "Password must contain number",
+  "passwordMustContainSpecialCharacter": "Password must contain special character",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "selectTokensToExportHelpTitle": "Is your token not listed?",
+  "selectTokensToExportHelpContent": "If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.\nCurrently only manually added and imported tokens are exportable."
 }

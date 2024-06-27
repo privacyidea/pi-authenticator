@@ -525,6 +525,8 @@
   "importExistingToken": "{count, plural, zero{Es wurde kein Token gefunden, das sich bereits in der App befindet.} one{Es wurde ein Token gefunden, das sich bereits in der Anwendung befindet.} other{Es wurden {count} Token gefunden, die sich bereits in der Anwendung befinden.}}",
   "importConflictToken": "{count, plural, zero{Es besteht kein Konflikt mit bereits existierenden Token.} one{Es besteht ein Konflikt mit bereits vorhandenen Token.\nBitte wählen Sie aus, welches Sie behalten möchten.} other{Es bestehen Konflikte mit bereits vorhandenen Token.\nBitte wählen Sie die Token aus, die Sie behalten möchten.}}",
   "importNewToken": "{count, plural, zero{Es wurde kein neues Token gefunden.} one{Es wurde ein neues Token gefunden, das importiert wird.} other{Es wurden {count} neue Token gefunden, die importiert werden.}}",
+  "importHintPrivacyIdeaQrScan": "Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.",
+  "importHintPrivacyIdeaFile": "Um ein Backup zu erstellen, gehen Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie \"Als Datei\" aus, wählen Sie die Token aus, die Sie exportieren möchten. Anschließend tippen Sie auf \"Exportieren\" und setzen Sie ein Passwort. Der Speicherort ist der Download-Ordner auf Ihrem Gerät.",
   "importHint2FAS": "Wählen Sie das 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.",
   "importHintAegisBackupFile": "Wähle dein Aegis-Export (.json) aus.\nWenn Sie keinen Export haben, erstellen Sie bitte eins über das Einstellungen Menu in der Aegis-App. Wir empfehlen die Verwendung eines Passworts.",
   "importHintAegisQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Einträge aus Aegis übertragen.",
@@ -600,7 +602,7 @@
   "importExportTokens": "Token importieren/exportieren",
   "exportNonPrivacyIDEATokens": "Nicht-privacyIDEA-Token exportieren",
   "selectTokensToExport": "{count, plural, zero{} one{Wählen Sie das zu exportierende Token aus} other{Wählen Sie die zu exportierenden Tokens aus}}",
-  "noTokensToExport": "Keine Tokens zum Exportieren",
+  "noTokenToExport": "Kein Token zum Exportieren verfügbar",
   "exportAllTokens": "Alle Tokens exportieren",
   "export": "Exportieren",
   "exportingTokens": "Tokens werden exportiert...",
@@ -609,8 +611,8 @@
   "exportLockedTokenReason": "Bitte authentifizieren Sie sich, um gesperrte Tokens zu exportieren.",
   "fileSavedToDownloadsFolder": "Datei wurde im Download-Ordner gespeichert",
   "errorSavingFile": "Fehler beim Speichern der Datei",
-  "toFile": "In Datei",
   "asQrCode": "Als QR-Code",
+  "asFile": "Als Datei",
   "scanThisQrWithNewDevice": "Scannen Sie diesen QR-Code mit Ihrem neuen Gerät, um das Token zu importieren.",
   "oneMore": "Noch eins",
   "done": "Fertig",
@@ -628,5 +630,15 @@
   "sendPushRequestResponseFailed": "Senden der Antwort fehlgeschlagen.",
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
-  }
+  },
+  "passwordCannotBeEmpty": "Das Passwort darf nicht leer sein",
+  "passwordMustBeAtLeast8Characters": "Das Passwort muss mindestens 8 Zeichen lang sein",
+  "passwordCannotContainWhitespace": "Das Passwort darf keine Leerzeichen enthalten",
+  "passwordMustContainLowercaseLetter": "Das Passwort muss einen Kleinbuchstaben enthalten",
+  "passwordMustContainUppercaseLetter": "Das Passwort muss einen Großbuchstaben enthalten",
+  "passwordMustContainNumber": "Das Passwort muss eine Zahl enthalten",
+  "passwordMustContainSpecialCharacter": "Das Passwort muss ein Sonderzeichen enthalten",
+  "passwordsDoNotMatch": "Die Passwörter stimmen nicht überein",
+  "selectTokensToExportHelpTitle": "Ist Ihr Token nicht aufgelistet?",
+  "selectTokensToExportHelpContent": "Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden."
 }
