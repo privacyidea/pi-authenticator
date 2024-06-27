@@ -25,7 +25,6 @@ import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/repo/secure_push_request_repository.dart';
 import 'package:privacyidea_authenticator/utils/pi_notifications.dart';
 
@@ -60,17 +59,14 @@ class PushProvider {
   PrivacyIdeaIOClient get ioClient => _ioClient;
   RsaUtils _rsaUtils;
   RsaUtils get rsaUtils => _rsaUtils;
-  LegacyUtils _legacyUtils;
 
   PushProvider._({
     FirebaseUtils? firebaseUtils,
     PrivacyIdeaIOClient? ioClient,
     RsaUtils? rsaUtils,
-    LegacyUtils? legacyUtils,
   })  : _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
         _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
-        _rsaUtils = rsaUtils ?? const RsaUtils(),
-        _legacyUtils = legacyUtils ?? const LegacyUtils() {
+        _rsaUtils = rsaUtils ?? const RsaUtils() {
     _firebaseUtils.initFirebase(
       foregroundHandler: _foregroundHandler,
       backgroundHandler: _backgroundHandler,
@@ -212,7 +208,7 @@ class PushProvider {
       Logger.warning('No token found for serial ${pushRequest.serial}.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;
     }
-    if (!await pushRequest.verifySignature(pushToken, rsaUtils: _rsaUtils, legacyUtils: _legacyUtils)) {
+    if (!await pushRequest.verifySignature(pushToken, rsaUtils: _rsaUtils)) {
       Logger.warning('Signature verification failed.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;
     }
@@ -406,8 +402,6 @@ class PlaceholderPushProvider implements PushProvider {
   PrivacyIdeaIOClient _ioClient = const PrivacyIdeaIOClient();
   @override
   PrivacyIdeaIOClient get ioClient => _ioClient;
-  @override
-  LegacyUtils _legacyUtils = const LegacyUtils();
   @override
   RsaUtils _rsaUtils = const RsaUtils();
   @override

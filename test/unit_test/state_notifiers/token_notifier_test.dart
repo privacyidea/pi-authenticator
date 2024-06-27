@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
@@ -28,7 +27,6 @@ import 'token_notifier_test.mocks.dart';
     RsaUtils,
     PrivacyIdeaIOClient,
     FirebaseUtils,
-    LegacyUtils,
   ],
 )
 void main() {

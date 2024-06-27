@@ -23,15 +23,11 @@ import 'dart:convert';
 import 'package:asn1lib/asn1lib.dart';
 import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
-import 'package:privacyidea_authenticator/utils/globals.dart';
-import '../l10n/app_localizations.dart';
 import '../model/tokens/push_token.dart';
 import '../utils/crypto_utils.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
-import 'riverpod_providers.dart';
 
 class RsaUtils {
   const RsaUtils();
@@ -219,16 +215,7 @@ class RsaUtils {
     if (token.privateTokenKey != null) {
       return createBase32Signature(token.rsaPrivateTokenKey!, utf8.encode(message));
     }
-    // It is a legacy token so the operation could cause an exception
-    try {
-      return await const LegacyUtils().sign(token.serial, message);
-    } catch (error) {
-      final legacySigningErrorTitle = AppLocalizations.of(globalNavigatorKey.currentContext!)!.legacySigningErrorTitle(token.label);
-      final legacySigningErrorMessage = AppLocalizations.of(globalNavigatorKey.currentContext!)!.legacySigningErrorMessage;
-      globalRef?.read(statusMessageProvider.notifier).state = (legacySigningErrorTitle, legacySigningErrorMessage);
-
-      return null;
-    }
+    return null;
   }
 
   Future<AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>> generateRSAKeyPair() async {
