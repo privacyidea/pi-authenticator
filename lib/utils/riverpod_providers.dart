@@ -192,6 +192,47 @@ final sortableProvider = StateNotifierProvider<SortableNotifier, List<SortableMi
   },
 );
 
+final progressStateProvider = StateNotifierProvider<ProgressStateNotifier, ProgressState?>((ref) => ProgressStateNotifier());
+
+class ProgressStateNotifier extends StateNotifier<ProgressState?> {
+  ProgressStateNotifier() : super(null);
+
+  double? get progress => state?.progress;
+
+  void initProgress(int max, int value) {
+    state = ProgressState(max, value);
+  }
+
+  void resetProgress() {
+    state = null;
+  }
+
+  void setProgressMax(int max) {
+    if (state == null) return;
+    state = state!.copyWith(max: max);
+  }
+
+  void setProgressValue(int value) {
+    if (state == null) return;
+    state = state!.copyWith(value: value);
+  }
+}
+
+class ProgressState {
+  final int max;
+  final int value;
+
+  double get progress => value / max;
+
+  ProgressState(
+    this.max,
+    this.value,
+  )   : assert(max >= 0),
+        assert(value >= 0);
+
+  ProgressState copyWith({int? max, int? value, bool? inProgress}) => ProgressState(max ?? this.max, value ?? this.value);
+}
+
 class SortableNotifier extends StateNotifier<List<SortableMixin>> {
   SortableNotifier({List<SortableMixin> initState = const []}) : super(initState);
 
