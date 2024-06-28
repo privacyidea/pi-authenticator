@@ -44,7 +44,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
   void dispose() {
     _linkController.dispose();
     future?.ignore();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       globalRef?.read(progressStateProvider.notifier).resetProgress();
     });
     super.dispose();

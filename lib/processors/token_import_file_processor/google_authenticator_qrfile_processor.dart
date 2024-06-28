@@ -49,6 +49,11 @@ class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
       Logger.info("Cropping image to square: from ${qrImage.width}x${qrImage.height} to ${size}x$size");
       qrImage = img_lib.copyCrop(qrImage, x: (qrImage.width - size) ~/ 2, y: (qrImage.height - size) ~/ 2, width: size, height: size);
       Logger.info("Cropped image to square: ${qrImage.width}x${qrImage.height}");
+    } else if (!kIsWeb && Platform.isIOS) {
+      final size = min(qrImage.width, qrImage.height);
+      Logger.info("Cropping image to square: from ${qrImage.width}x${qrImage.height} to ${size}x${qrImage.height * 0.78}");
+      qrImage = img_lib.copyCrop(qrImage, x: 0, y: (qrImage.height * 0.22).floor(), width: size, height: size);
+      Logger.info("Cropped image to square: ${qrImage.width}x${qrImage.height}");
     }
     const maxZoomLevel = 10;
     globalRef?.read(progressStateProvider.notifier).initProgress(maxZoomLevel * 360, 0);
