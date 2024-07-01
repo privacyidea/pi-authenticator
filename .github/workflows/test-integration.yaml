@@ -38,6 +38,9 @@ jobs:
             flutter-version: '3.22.0'
             channel: 'stable'
         - run: flutter pub get
+
+        - name: Run flutter doctor
+        - run: flutter doctor -v
         
         # Run integration test
         - name: Run Integration Tests
