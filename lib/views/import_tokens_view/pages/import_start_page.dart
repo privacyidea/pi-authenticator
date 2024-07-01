@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:privacyidea_authenticator/views/import_tokens_view/widgets/dialogs/qr_not_found_dialog.dart';
+import 'package:zxing2/zxing2.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
@@ -36,16 +41,20 @@ class ImportStartPage extends ConsumerStatefulWidget {
 
 class _ImportStartPageState extends ConsumerState<ImportStartPage> {
   final _linkController = TextEditingController();
+  bool _copyShouldExist = false;
 
+  String? _progessLabel;
+  // Widget? _buttonWhileProcessing;
   String? _errorText;
   Future? future;
 
   @override
   void dispose() {
     _linkController.dispose();
+    _deleteCopyOfXFile();
     future?.ignore();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      globalRef?.read(progressStateProvider.notifier).resetProgress();
+      globalRef?.read(progressStateProvider.notifier).deleteProgress();
     });
     super.dispose();
   }
@@ -115,7 +124,43 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
                           },
                         ),
                       )
-                    : LinearProgressIndicator(value: currentLoadingProgress),
+                    : Column(
+                        children: [
+                          Stack(
+                            children: [
+                              LinearProgressIndicator(
+                                minHeight: _progessLabel != null ? 16 : null,
+                                value: currentLoadingProgress,
+                                semanticsLabel: _progessLabel,
+                              ),
+                              if (_progessLabel != null)
+                                Positioned.fill(
+                                  child: Center(
+                                    child: FittedBox(
+                                      fit: BoxFit.fitHeight,
+                                      child: Text(
+                                        _progessLabel!,
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          shadows: <Shadow>[
+                                            Shadow(
+                                              color: Theme.of(context).colorScheme.onPrimary,
+                                              blurRadius: 5,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          //    if (_buttonWhileProcessing != null)
+                          //      Padding(
+                          //        padding: const EdgeInsets.only(top: 8.0),
+                          //        child: _buttonWhileProcessing!,
+                          //      ),
+                        ],
+                      ),
               ],
             ),
           ),
@@ -205,22 +250,89 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     return;
   }
 
+  Future<XFile> _saveCopyOfXFile(XFile xFile) async {
+    Logger.warning("Saving copy of file", name: "_saveCopyOfXFile#ImportStartPage");
+    final path = '${(await getApplicationCacheDirectory()).path}/copy_of_xFile';
+    await xFile.saveTo(path);
+    _copyShouldExist = true;
+    return XFile(path);
+  }
+
+  Future<void> _deleteCopyOfXFile() async {
+    if (_copyShouldExist == false) return;
+    File('${(await getApplicationCacheDirectory()).path}/copy_of_xFile').delete();
+    _copyShouldExist = false;
+  }
+
   Future<void> _pickQrFile(TokenImportProcessor? processor) async {
     assert(processor is TokenImportFileProcessor);
     final schemeProcessor = processor as TokenImportFileProcessor;
     final localizations = AppLocalizations.of(context)!;
-    final XFile? file = await openFile();
+    List<ProcessorResult<Token>>? processorResults;
+    var xFile = await openFile();
+    if (xFile == null) return;
+    xFile = await _saveCopyOfXFile(xFile);
 
-    if (file == null) return;
-    if (await schemeProcessor.fileIsValid(file) == false) {
-      if (mounted == false) return;
+    if (!mounted) return;
+    setState(() => _progessLabel = localizations.findingQrCodeInImage);
+    //   _buttonWhileProcessing = ElevatedButton(
+    //     onPressed: () async {
+    //       if (xFile == null) return;
+    //       await xFile.readAsBytes();
+    //       if (!mounted) return;
+    //       CroppedFile? croppedFile = await ImageCropper().cropImage(
+    //         sourcePath: xFile.path,
+    //         uiSettings: [
+    //           AndroidUiSettings(aspectRatioPresets: [CropAspectRatioPreset.square]),
+    //           IOSUiSettings(aspectRatioPresets: [CropAspectRatioPreset.square]),
+    //           WebUiSettings(context: context),
+    //         ],
+    //       );
+    //       if (!mounted) return;
+    //       if (croppedFile == null) {
+    //         Logger.warning("No croppedFile", name: "_pickAFile#ImportSelectFilePage");
+    //         return;
+    //       }
+    //       Logger.warning("Cropped file: ${croppedFile.path}", name: "_pickAFile#ImportSelectFilePage");
+    //       WidgetsBinding.instance.addPostFrameCallback((_) {
+    //         globalRef?.read(progressStateProvider.notifier).deleteProgress();
+    //       });
+    //       if (processorResults == null) {
+    //         processorResults = await schemeProcessor.processFile(XFile(croppedFile.path));
+    //         _routeImportPlainTokensPage(importResults: processorResults!);
+    //       }
+    //     },
+    //     child: Text(localizations.markQrCode),
+    //   );
+    // });
+    if (await schemeProcessor.fileIsValid(xFile) == false) {
+      if (!mounted) return;
       setState(() => _errorText = localizations.invalidQrFile(widget.appName));
       return;
     }
-    List<ProcessorResult<Token>> processorResults = [];
     try {
-      processorResults = await schemeProcessor.processFile(file);
-    } catch (e) {}
+      try {
+        processorResults = await schemeProcessor.processFile(xFile);
+      } on NotFoundException catch (_) {
+        if (!mounted) return;
+        xFile = await QrNotFoundDialog(xFile: xFile).show(context);
+        Logger.warning('Got cropped file: $xFile', name: '_pickQrFile#ImportStartPage');
+        if (xFile != null) processorResults = await schemeProcessor.processFile(xFile);
+        if (processorResults == null) {
+          if (!mounted) return;
+          setState(() => _errorText = localizations.qrNotFound);
+          return;
+        }
+      }
+    } on FormatReaderException catch (_) {
+      if (!mounted) return;
+      setState(() => _errorText = localizations.invalidQrFile(widget.appName));
+      return;
+    } on NotFoundException catch (_) {
+      if (!mounted) return;
+      setState(() => _errorText = localizations.qrNotFound);
+      return;
+    }
 
     Logger.info("QR file imported successfully", name: "_pickQrFile#ImportStartPage");
     _routeImportPlainTokensPage(importResults: processorResults);

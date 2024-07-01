@@ -87,6 +87,7 @@ dependencies:
   simple_icons: ^10.1.3
   path_provider: ^2.1.2
   qr_flutter: ^4.1.0
+  image_cropper: ^7.1.0
   
 
 dev_dependencies:

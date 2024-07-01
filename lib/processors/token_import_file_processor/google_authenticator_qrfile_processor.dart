@@ -44,19 +44,17 @@ class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
       Logger.warning("Error decoding file to image..", name: "_pickQrFile#ImportStartPage");
       throw Exception("Error decoding file to image.."); //TODO: Better error handling
     }
-    if (!kIsWeb && Platform.isIOS) {
-      Logger.info("Cropping image: from ${qrImage.width}x${qrImage.height} to ${qrImage.width}x${qrImage.height * 0.78}");
-      qrImage = img_lib.copyCrop(qrImage, x: 0, y: (qrImage.height * 0.22).floor(), width: qrImage.width, height: qrImage.height);
-      Logger.info("Cropped image : ${qrImage.width}x${qrImage.height}");
+    int maxZoomLevel = 10;
+    if (!kIsWeb && Platform.isAndroid) {
+      final size = min(qrImage.width, qrImage.height);
+      Logger.info("Cropping image to square: from ${qrImage.width}x${qrImage.height} to ${size}x$size");
+      qrImage = img_lib.copyCrop(qrImage, x: (qrImage.width - size) ~/ 2, y: (qrImage.height - size) ~/ 2, width: size, height: size);
+      Logger.info("Cropped image to square: ${qrImage.width}x${qrImage.height}");
     }
-    final size = min(qrImage.width, qrImage.height);
-    Logger.info("Cropping image to square: from ${qrImage.width}x${qrImage.height} to ${size}x$size");
-    qrImage = img_lib.copyCrop(qrImage, x: (qrImage.width - size) ~/ 2, y: (qrImage.height - size) ~/ 2, width: size, height: size);
-    Logger.info("Cropped image to square: ${qrImage.width}x${qrImage.height}");
-    const maxZoomLevel = 10;
-    globalRef?.read(progressStateProvider.notifier).initProgress(maxZoomLevel * 360, 0);
-    for (var zoomLevel = 0; zoomLevel <= maxZoomLevel && qrResult == null && globalRef?.read(progressStateProvider) != null; zoomLevel++) {
-      for (var rotation = 0; rotation < 360; rotation += 90) {
+
+    var progress = globalRef?.read(progressStateProvider.notifier).initProgress(maxZoomLevel * 360, 0).progress;
+    for (var zoomLevel = 0; zoomLevel <= maxZoomLevel && qrResult == null && progress != null; zoomLevel++) {
+      for (var rotation = 0; rotation < 360 && progress != null; rotation += 90) {
         globalRef?.read(progressStateProvider.notifier).setProgressValue(zoomLevel * 360 + rotation);
         try {
           qrResult = await compute(_decodeQrImageIsolate, [qrImage, rotation, zoomLevel]);
@@ -68,11 +66,12 @@ class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
         } on NotFoundException catch (_) {
           Logger.info("Qr-Code not detected. Zoom level: $zoomLevel|rotation: $rotation");
         }
+        progress = globalRef?.read(progressStateProvider)?.progress;
       }
     }
-    if (qrResult == null) {
+    if (qrResult == null || progress == null) {
       Logger.warning("Error decoding QR file..", name: "_pickQrFile#ImportStartPage");
-      throw Exception("Error decoding QR file.."); //TODO: Better error handling
+      throw NotFoundException();
     }
 
     final Uri uri;
@@ -80,12 +79,12 @@ class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
       uri = Uri.parse(qrResult.text);
     } on FormatException catch (_) {
       Logger.warning("Error parsing QR file content..", name: "_pickQrFile#ImportStartPage");
-      throw Exception("Error parsing QR file content.."); //TODO: Better error handling
+      throw FormatReaderException();
     }
     var processorResults = await const GoogleAuthenticatorQrProcessor().processUri(uri);
     if (processorResults.isEmpty) {
       Logger.warning("Error processing QR file content..", name: "_pickQrFile#ImportStartPage");
-      throw Exception("Error processing QR file content.."); //TODO: Better error handling
+      throw FormatReaderException();
     }
     processorResults = processorResults.map<ProcessorResult<Token>>((t) {
       if (t is! ProcessorResultSuccess<Token>) return t;
@@ -114,6 +113,7 @@ Future<Result?> _decodeQrImageIsolate(List<dynamic> args) async {
   if (rotation > 0) {
     image = img_lib.copyRotate(image, angle: rotation);
   }
+  print("Image: ${image.width}x${image.height} Rotation: $rotation Zoom: $zoomLevel");
 
   LuminanceSource source = RGBLuminanceSource(
     image.width,

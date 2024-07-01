@@ -122,10 +122,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
     }
     infoLog += '\n${key.padLeft(9)} | $value';
   });
-  Logger.info(
-    infoLog,
-    name: 'parsing_utils.dart#_parseOtpAuth',
-  );
+  Logger.info(infoLog, name: 'parsing_utils.dart#_parseOtpAuth');
 
   final (label, issuer) = _parseLabelAndIssuer(uri);
   uriMap[URI_LABEL] = label;

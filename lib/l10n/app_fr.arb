@@ -663,5 +663,11 @@
   "passwordMustContainSpecialCharacter": "Le mot de passe doit contenir un caractère spécial",
   "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
   "selectTokensToExportHelpTitle": "Votre jeton ne figure pas dans la liste ?",
-  "selectTokensToExportHelpContent": "Si un jeton n'est pas répertorié, il n'est pas garanti qu'il ne s'agisse pas d'un jeton privacyIDEA.\nActuellement, seuls les jetons ajoutés manuellement et importés sont exportables."
+  "selectTokensToExportHelpContent": "Si un jeton n'est pas répertorié, il n'est pas garanti qu'il ne s'agisse pas d'un jeton privacyIDEA.\nActuellement, seuls les jetons ajoutés manuellement et importés sont exportables.",
+  "findingQrCodeInImage": "Recherche d'un code QR dans une image...",
+  "qrNotFound": "Aucun code QR trouvé !",
+  "qrInFileNotFound": "Aucun code QR n'a été trouvé dans l'image sélectionnée.",
+  "qrInFileNotFound2": "Vous pouvez me montrer où se trouve le code QR.",
+  "qrInFileNotFound3": "Je pense que je trouverai le code s'il se trouve au milieu de la zone marquée.",
+  "markQrCode": "Marquer le code QR"
 }

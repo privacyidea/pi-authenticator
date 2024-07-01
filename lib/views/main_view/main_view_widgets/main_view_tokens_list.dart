@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
@@ -63,7 +62,6 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
 
     final showSortables = <SortableMixin>[]; // List of sortables that should be shown in the list
     for (var element in allSortables) {
-      Logger.warning('Element: $element', name: 'main_view_tokens_list.dart#build');
       if (element is! Token) {
         showSortables.add(element);
         continue;

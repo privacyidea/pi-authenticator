@@ -199,22 +199,36 @@ class ProgressStateNotifier extends StateNotifier<ProgressState?> {
 
   double? get progress => state?.progress;
 
-  void initProgress(int max, int value) {
-    state = ProgressState(max, value);
+  ProgressState initProgress(int max, int value) {
+    final newState = ProgressState(max, value);
+    state = newState;
+    return newState;
   }
 
-  void resetProgress() {
+  void deleteProgress() {
     state = null;
+    Logger.warning('Deleting progress state', name: 'ProgressStateNotifier#deleteProgress');
   }
 
-  void setProgressMax(int max) {
-    if (state == null) return;
-    state = state!.copyWith(max: max);
+  ProgressState? resetProgress() {
+    if (state == null) return state;
+    final newState = state!.copyWith(value: 0);
+    state = newState;
+    return newState;
   }
 
-  void setProgressValue(int value) {
-    if (state == null) return;
-    state = state!.copyWith(value: value);
+  ProgressState? setProgressMax(int max) {
+    if (state == null) return state;
+    final newState = state!.copyWith(max: max);
+    state = newState;
+    return newState;
+  }
+
+  ProgressState? setProgressValue(int value) {
+    if (state == null) return state;
+    final newState = state!.copyWith(value: value);
+    state = newState;
+    return newState;
   }
 }
 

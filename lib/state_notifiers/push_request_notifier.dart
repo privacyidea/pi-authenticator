@@ -303,7 +303,9 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   }
 
   void _cancalAllTimers() {
-    Logger.info('Canceling all timers: [${_expirationTimers.keys}]', name: 'push_request_notifier.dart#_cancelAllTimers');
+    if (_expirationTimers.keys.isNotEmpty) {
+      Logger.info('Canceling all timers: [${_expirationTimers.keys}]', name: 'push_request_notifier.dart#_cancelAllTimers');
+    }
     final ids = _expirationTimers.keys.toList();
     for (var id in ids) {
       _expirationTimers.remove(id.toString())?.cancel();

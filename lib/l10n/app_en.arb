@@ -684,5 +684,11 @@
   "passwordMustContainSpecialCharacter": "Password must contain special character",
   "passwordsDoNotMatch": "Passwords do not match",
   "selectTokensToExportHelpTitle": "Is your token not listed?",
-  "selectTokensToExportHelpContent": "If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.\nCurrently only manually added and imported tokens are exportable."
+  "selectTokensToExportHelpContent": "If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.\nCurrently only manually added and imported tokens are exportable.",
+  "findingQrCodeInImage": "Looking for QR code in image...",
+  "qrNotFound": "No QR code found!",
+  "qrInFileNotFound": "No QR code was found in the selected image.",
+  "qrInFileNotFound2": "You can show me where the QR code is located.",
+  "qrInFileNotFound3": "I expect i will find the code if it is in the middle of the marked area.",
+  "markQrCode": "Mark QR Code"
 }

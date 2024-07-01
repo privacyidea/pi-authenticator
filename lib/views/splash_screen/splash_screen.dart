@@ -110,7 +110,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   void _pushReplace() {
-    Logger.warning('Disabling patch notes: ${_customization.disabledFeatures.contains(AppFeature.patchNotes)}', name: 'main.dart#_pushReplace');
+    if (_customization.disabledFeatures.isNotEmpty) {
+      Logger.info('Disabled features: ${_customization.disabledFeatures}', name: 'main.dart#_pushReplace');
+    }
     final ViewWidget nextView = MainView(
       appName: _customization.appName,
       appIcon: _customization.appIcon,

@@ -662,5 +662,11 @@
   "passwordMustContainSpecialCharacter": "Heslo musí obsahovat speciální znak",
   "passwordsDoNotMatch": "Hesla se neshodují",
   "selectTokensToExportHelpTitle": "Není váš token uveden?",
-  "selectTokensToExportHelpContent": "Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.\nV současné době lze exportovat pouze ručně přidané a importované tokeny."
+  "selectTokensToExportHelpContent": "Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.\nV současné době lze exportovat pouze ručně přidané a importované tokeny.",
+  "findingQrCodeInImage": "Hledání QR kódu v obrázku...",
+  "qrNotFound": "Žádný QR kód nebyl nalezen!",
+  "qrInFileNotFound": "Ve vybraném obrázku nebyl nalezen žádný QR kód.",
+  "qrInFileNotFound2": "Můžete mi ukázat, kde se QR kód nachází.",
+  "qrInFileNotFound3": "Předpokládám, že kód najdu, pokud se nachází uprostřed označené oblasti.",
+  "markQrCode": "Označte QR kód"
 }

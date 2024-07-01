@@ -659,5 +659,11 @@
   "passwordMustContainSpecialCharacter": "Wachtwoord moet een speciaal teken bevatten",
   "passwordsDoNotMatch": "Wachtwoorden komen niet overeen",
   "selectTokensToExportHelpTitle": "Staat jouw token er niet bij?",
-  "selectTokensToExportHelpContent": "Als een token niet in de lijst staat, is het niet gegarandeerd dat het geen privacyIDEA token is.\nMomenteel kunnen alleen handmatig toegevoegde en geïmporteerde tokens worden geëxporteerd."
+  "selectTokensToExportHelpContent": "Als een token niet in de lijst staat, is het niet gegarandeerd dat het geen privacyIDEA token is.\nMomenteel kunnen alleen handmatig toegevoegde en geïmporteerde tokens worden geëxporteerd.",
+  "findingQrCodeInImage": "Op zoek naar QR code in afbeelding...",
+  "qrNotFound": "Geen QR code gevonden!",
+  "qrInFileNotFound": "Er is geen QR code gevonden in de geselecteerde afbeelding.",
+  "qrInFileNotFound2": "U kunt mij laten zien waar de QR code is.",
+  "qrInFileNotFound3": "Ik verwacht dat ik de code zal vinden als het in het midden van het gemarkeerde gebied is.",
+  "markQrCode": "Markeer QR Code"
 }

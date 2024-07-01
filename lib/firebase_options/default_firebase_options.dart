@@ -3,7 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-// import 'netknights_firebase_options.dart';
+import 'netknights_firebase_options.dart';
 
 /// Netknights [DefaultFirebaseOptions] for use with your Firebase apps.
 ///
@@ -17,7 +17,7 @@ import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, Tar
 /// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions currentPlatformOf(String? app) => switch (app) {
-        // 'netknights' => NetknightsFirebaseOptions.currentPlatform,
+        'netknights' => NetknightsFirebaseOptions.currentPlatform,
         _ => defaultCurrentPlatform,
       };
   static FirebaseOptions get defaultCurrentPlatform {

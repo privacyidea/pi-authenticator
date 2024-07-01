@@ -641,5 +641,11 @@
   "passwordMustContainSpecialCharacter": "Das Passwort muss ein Sonderzeichen enthalten",
   "passwordsDoNotMatch": "Die Passwörter stimmen nicht überein",
   "selectTokensToExportHelpTitle": "Ist Ihr Token nicht aufgelistet?",
-  "selectTokensToExportHelpContent": "Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden."
+  "selectTokensToExportHelpContent": "Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden.",
+  "findingQrCodeInImage": "Suche nach QR-Code im Bild...",
+  "qrNotFound": "Kein QR-Code gefunden!",
+  "qrInFileNotFound": "Es wurde kein QR-Code in dem ausgewählten Bild gefunden.",
+  "qrInFileNotFound2": "Sie können mir zeigen, wo sich der QR-Code befindet.",
+  "qrInFileNotFound3": "Ich erwarte, dass ich den Code finde, wenn er sich in der Mitte des markierten Bereichs befindet.",
+  "markQrCode": "QR-Code markieren"
 }
