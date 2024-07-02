@@ -20,6 +20,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -56,6 +57,7 @@ class PushProvider {
 
   FirebaseUtils _firebaseUtils;
   FirebaseUtils get firebaseUtils => _firebaseUtils;
+  bool _firebaseInitialized = false;
   PrivacyIdeaIOClient _ioClient;
   PrivacyIdeaIOClient get ioClient => _ioClient;
   RsaUtils _rsaUtils;
@@ -71,11 +73,26 @@ class PushProvider {
         _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
         _rsaUtils = rsaUtils ?? const RsaUtils(),
         _legacyUtils = legacyUtils ?? const LegacyUtils() {
-    _firebaseUtils.initFirebase(
-      foregroundHandler: _foregroundHandler,
-      backgroundHandler: _backgroundHandler,
-      updateFirebaseToken: updateFirebaseToken,
-    );
+    _initFirebase();
+  }
+
+  void _initFirebase() async {
+    if (_firebaseInitialized) return;
+    try {
+      await _firebaseUtils.initFirebase(
+        foregroundHandler: _foregroundHandler,
+        backgroundHandler: _backgroundHandler,
+        updateFirebaseToken: updateFirebaseToken,
+      );
+      _firebaseInitialized = true;
+      Logger.info('Firebase initialized.', name: 'push_provider.dart#_init');
+    } on IOException catch (e, s) {
+      if (e.toString().contains('SERVICE_NOT_AVAILABLE')) {
+        Logger.warning('Could not initialize Firebase.', name: 'push_provider.dart#_init', error: e, stackTrace: s);
+      } else {
+        rethrow;
+      }
+    }
   }
 
   void setPollingEnabled(bool? enablePolling) {
@@ -104,7 +121,12 @@ class PushProvider {
         instance!._rsaUtils = rsaUtils;
       }
       if (firebaseUtils != null) {
-        instance!._firebaseUtils = firebaseUtils;
+        if (!instance!._firebaseInitialized) {
+          instance!._firebaseUtils = firebaseUtils;
+          instance!._initFirebase();
+        } else {
+          Logger.warning('Firebase is already initialized.', name: 'push_provider.dart#PushProvider');
+        }
       }
     }
     instance!.setPollingEnabled(pollingEnabled);
@@ -358,7 +380,6 @@ class PushProvider {
           }
           return;
         }
-
         // Everything is fine, we can just continue
         break;
 
@@ -399,6 +420,8 @@ class PushProvider {
   void subscribe(void Function(PushRequest pushRequest) newRequest) => _subscribers.add(newRequest);
 }
 
+/// This class is a placeholder for the [PushProvider] class. It does not do anything.
+/// It is used to prevent the app from crashing when the features of the [PushProvider] are not available (e.g., on web).
 class PlaceholderPushProvider implements PushProvider {
   @override
   FirebaseUtils _firebaseUtils = FirebaseUtils();
@@ -438,7 +461,10 @@ class PlaceholderPushProvider implements PushProvider {
   void subscribe(void Function(PushRequest pushRequest) newRequest) {}
   @override
   void unsubscribe(void Function(PushRequest pushRequest) newRequest) {}
-
   @override
   Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) => Future.value(null);
+  @override
+  bool _firebaseInitialized = false;
+  @override
+  void _initFirebase() {}
 }
