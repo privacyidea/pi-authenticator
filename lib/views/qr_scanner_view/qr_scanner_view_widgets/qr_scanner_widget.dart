@@ -16,6 +16,8 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
           showFlashlight: false,
           showGallery: false,
           showToggleCamera: false,
+          codeFormat: Format.qrCode,
+          cropPercent: 0.70,
           scannerOverlay: const FixedScannerOverlay(
             borderColor: Colors.white,
             borderWidth: 2.2,

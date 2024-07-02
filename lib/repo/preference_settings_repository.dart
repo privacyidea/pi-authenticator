@@ -36,7 +36,7 @@ class PreferenceSettingsRepository extends SettingsRepository {
       useSystemLocale: prefs.getBool(_useSystemLocaleKey),
       verboseLogging: prefs.getBool(_enableLoggingKey),
       hidePushTokens: prefs.getBool(_hidePushTokensKey),
-      latestVersion: prefs.getString(_latestVersionKey) != null ? Version.parse(prefs.getString(_latestVersionKey)!) : null,
+      latestStartedVersion: prefs.getString(_latestVersionKey) != null ? Version.parse(prefs.getString(_latestVersionKey)!) : null,
     );
     _lastState = newState;
     return newState;

@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
@@ -63,7 +62,6 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
 
     final showSortables = <SortableMixin>[]; // List of sortables that should be shown in the list
     for (var element in allSortables) {
-      Logger.warning('Element: $element', name: 'main_view_tokens_list.dart#build');
       if (element is! Token) {
         showSortables.add(element);
         continue;
@@ -72,25 +70,45 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
       if (element.folderId != null) continue;
       showSortables.add(element);
     }
-    return Stack(
-      children: [
-        if (showSortables.isEmpty) const NoTokenScreen(),
-        DeactivateableRefreshIndicator(
-          allowToRefresh: allowToRefresh,
-          onRefresh: () async => LoadingIndicator.show(context, () async => PushProvider.instance?.pollForChallenges(isManually: true)),
-          child: SlidableAutoCloseBehavior(
-            child: DragItemScroller(
-              listViewKey: listViewKey,
-              itemIsDragged: draggingSortable != null,
-              scrollController: scrollController,
-              child: CustomScrollView(
-                key: listViewKey,
-                physics: allowToRefresh ? const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()) : const BouncingScrollPhysics(),
-                controller: scrollController,
-                slivers: [
-                  SliverFillRemaining(
-                    hasScrollBody: false,
+
+    if ((showSortables.isEmpty)) {
+      return const NoTokenScreen();
+    } else {
+      return LayoutBuilder(builder: (context, constraints) {
+        return Stack(
+          children: [
+            Column(
+              children: [
+                Flexible(
+                  child: SizedBox(
+                    height: 9999,
+                    child: Opacity(
+                        opacity: 0,
+                        child: DragTargetDivider(
+                          dependingFolder: null,
+                          previousSortable: showSortables.last,
+                          nextSortable: null,
+                          isLastDivider: true,
+                          bottomPaddingIfLast: 0,
+                        )),
+                  ),
+                ),
+              ],
+            ),
+            DeactivateableRefreshIndicator(
+              allowToRefresh: allowToRefresh,
+              onRefresh: () async => LoadingIndicator.show(context, () async => PushProvider.instance?.pollForChallenges(isManually: true)),
+              child: SlidableAutoCloseBehavior(
+                child: DragItemScroller(
+                  listViewKey: listViewKey,
+                  itemIsDragged: draggingSortable != null,
+                  scrollController: scrollController,
+                  child: SingleChildScrollView(
+                    key: listViewKey,
+                    physics: allowToRefresh ? const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()) : const BouncingScrollPhysics(),
+                    controller: scrollController,
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         TokenIntroduction(
                           child: Column(
@@ -99,36 +117,24 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
                             ],
                           ),
                         ),
-                        ...(draggingSortable != null)
-                            ? [
-                                DragTargetDivider(
-                                    dependingFolder: null,
-                                    previousSortable: showSortables.last,
-                                    nextSortable: null,
-                                    isLastDivider: true,
-                                    bottomPaddingIfLast: 80),
-                                Expanded(
-                                  child: Opacity(
-                                      opacity: 0,
-                                      child: DragTargetDivider(
-                                        dependingFolder: null,
-                                        previousSortable: showSortables.last,
-                                        nextSortable: null,
-                                        isLastDivider: true,
-                                        bottomPaddingIfLast: 0,
-                                      )),
-                                )
-                              ]
-                            : [const SizedBox(height: 80)]
+                        (draggingSortable != null)
+                            ? DragTargetDivider(
+                                dependingFolder: null,
+                                previousSortable: showSortables.last,
+                                nextSortable: null,
+                                isLastDivider: true,
+                                bottomPaddingIfLast: 80,
+                              )
+                            : const SizedBox(height: 80)
                       ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-      ],
-    );
+          ],
+        );
+      });
+    }
   }
 }

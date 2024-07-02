@@ -22,7 +22,7 @@ Future<T?> showAsyncDialog<T>({
   bool barrierDismissible = true,
 }) {
   if (globalContextSync == null) {
-    Logger.warning('globalContextSync is null');
+    Logger.error('globalContextSync is null');
     return Future.value(null);
   }
   return showDialog(

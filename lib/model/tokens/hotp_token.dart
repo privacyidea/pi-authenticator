@@ -97,7 +97,7 @@ class HOTPToken extends OTPToken {
 
   factory HOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
     if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
-    if (uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
+    if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
     return HOTPToken(
       label: uriMap[URI_LABEL] ?? '',
       issuer: uriMap[URI_ISSUER] ?? '',

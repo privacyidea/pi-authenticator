@@ -70,6 +70,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
           alignment: Alignment.centerLeft,
           child: Tooltip(
             message: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+            triggerMode: TooltipTriggerMode.longPress,
             child: InkWell(
               onTap: widget.isPreview
                   ? null

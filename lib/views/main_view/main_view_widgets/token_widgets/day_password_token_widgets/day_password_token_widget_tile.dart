@@ -83,6 +83,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
       title: Align(
         alignment: Alignment.centerLeft,
         child: Tooltip(
+          triggerMode: TooltipTriggerMode.longPress,
           message: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
           child: InkWell(
             onTap: widget.isPreview

@@ -47,7 +47,7 @@ class ThemeCustomization {
     Color? lockColor,
     Color? tileIconColor,
     Color? navigationBarColor,
-    // From here on the colors have a default value based on another given color
+    // From here on the colors have a default value based on another given color so they can be null
     Color? actionButtonsForegroundColor, // Default: foregroundColor
     Color? tilePrimaryColor, // Default: primaryColor
     Color? tileSubtitleColor, // Default: subtitleColor
@@ -66,7 +66,7 @@ class ThemeCustomization {
         lockColor = lockColor ?? const Color(0xffFFD633),
         tileIconColor = tileIconColor ?? const Color(0xff757575),
         navigationBarColor = navigationBarColor ?? const Color(0xFFFFFFFF),
-        // From here on the colors have a default value based on another given color
+        // From here on the colors have a default value based on another given color so they can be null
         _actionButtonsForegroundColor = actionButtonsForegroundColor,
         _tilePrimaryColor = tilePrimaryColor,
         _tileSubtitleColor = tileSubtitleColor,
@@ -86,7 +86,7 @@ class ThemeCustomization {
     Color? lockColor,
     Color? tileIconColor,
     Color? navigationBarColor,
-    // From here on the colors have a default value based on another given color
+    // From here on the colors have a default value based on another given color so they can be null
     Color? actionButtonsForegroundColor, // Default: foregroundColor
     Color? tilePrimaryColor, // Default: primaryColor
     Color? tileSubtitleColor, // Default: subtitleColor
@@ -105,7 +105,7 @@ class ThemeCustomization {
         lockColor = lockColor ?? const Color(0xffFFCC00),
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
         navigationBarColor = navigationBarColor ?? const Color(0xFF282828),
-        // From here on the colors have a default value based on another given color
+        // From here on the colors have a default value based on another given color so they can be null
         _actionButtonsForegroundColor = actionButtonsForegroundColor,
         _tilePrimaryColor = tilePrimaryColor,
         _tileSubtitleColor = tileSubtitleColor,
@@ -159,7 +159,7 @@ class ThemeCustomization {
     Color? lockColor,
     Color? tileIconColor,
     Color? navigationBarColor,
-    // From here on the colors have a default value based on another given color
+    // From here on the colors have a default value based on another given color so they can be null
     Color? Function()? actionButtonsForegroundColor, // Default: foregroundColor
     Color? Function()? tilePrimaryColor, // Default: primaryColor
     Color? Function()? tileSubtitleColor, // Default: subtitleColor
@@ -178,14 +178,14 @@ class ThemeCustomization {
         deleteColor: deleteColor ?? this.deleteColor,
         renameColor: renameColor ?? this.renameColor,
         lockColor: lockColor ?? this.lockColor,
-        actionButtonsForegroundColor: actionButtonsForegroundColor != null ? actionButtonsForegroundColor() : this.actionButtonsForegroundColor,
-        tilePrimaryColor: tilePrimaryColor != null ? tilePrimaryColor() : this.tilePrimaryColor,
         tileIconColor: tileIconColor ?? this.tileIconColor,
-        tileSubtitleColor: tileSubtitleColor != null ? tileSubtitleColor() : this.tileSubtitleColor,
         navigationBarColor: navigationBarColor ?? this.navigationBarColor,
-        navigationBarIconColor: navigationBarIconColor != null ? navigationBarIconColor() : this.navigationBarIconColor,
-        qrButtonBackgroundColor: qrButtonBackgroundColor != null ? qrButtonBackgroundColor() : this.qrButtonBackgroundColor,
-        qrButtonIconColor: qrButtonIconColor != null ? qrButtonIconColor() : this.qrButtonIconColor,
+        actionButtonsForegroundColor: actionButtonsForegroundColor != null ? actionButtonsForegroundColor() : _actionButtonsForegroundColor,
+        tilePrimaryColor: tilePrimaryColor != null ? tilePrimaryColor() : _tilePrimaryColor,
+        tileSubtitleColor: tileSubtitleColor != null ? tileSubtitleColor() : _tileSubtitleColor,
+        navigationBarIconColor: navigationBarIconColor != null ? navigationBarIconColor() : _navigationBarIconColor,
+        qrButtonBackgroundColor: qrButtonBackgroundColor != null ? qrButtonBackgroundColor() : _qrButtonBackgroundColor,
+        qrButtonIconColor: qrButtonIconColor != null ? qrButtonIconColor() : _qrButtonIconColor,
       );
 
   factory ThemeCustomization.fromJson(Map<String, dynamic> json) {
@@ -265,24 +265,19 @@ class ThemeCustomization {
           brightness: brightness,
           primaryColor: primaryColor,
           canvasColor: backgroundColor,
-          dialogTheme: const DialogTheme().copyWith(
-            barrierColor: Colors.black.withOpacity(0.3),
-          ),
           textTheme: const TextTheme().copyWith(
-            bodyLarge: TextStyle(color: foregroundColor, fontSize: 18),
-            bodyMedium: TextStyle(color: foregroundColor, fontSize: 16),
-            bodySmall: TextStyle(color: subtitleColor, fontSize: 14),
-            titleLarge: TextStyle(color: primaryColor),
-            titleMedium: TextStyle(color: primaryColor),
-            titleSmall: TextStyle(color: primaryColor),
+            bodyLarge: TextStyle(color: foregroundColor),
+            bodyMedium: TextStyle(color: foregroundColor),
+            titleMedium: TextStyle(color: foregroundColor),
+            titleSmall: TextStyle(color: foregroundColor),
             displayLarge: TextStyle(color: foregroundColor),
             displayMedium: TextStyle(color: foregroundColor),
             displaySmall: TextStyle(color: foregroundColor),
-            headlineMedium: TextStyle(color: primaryColor),
-            headlineLarge: TextStyle(color: primaryColor),
-            headlineSmall: TextStyle(color: primaryColor),
+            headlineMedium: TextStyle(color: foregroundColor),
+            headlineSmall: TextStyle(color: foregroundColor),
+            titleLarge: TextStyle(color: primaryColor),
+            bodySmall: TextStyle(color: subtitleColor),
             labelLarge: TextStyle(color: foregroundColor),
-            labelMedium: TextStyle(color: foregroundColor),
             labelSmall: TextStyle(color: foregroundColor),
           ),
           iconButtonTheme: IconButtonThemeData(
@@ -340,7 +335,7 @@ class ThemeCustomization {
           ),
           textButtonTheme: TextButtonThemeData(
             style: ButtonStyle(
-              overlayColor: MaterialStateColor.resolveWith((states) => foregroundColor.withOpacity(0.1)),
+              overlayColor: WidgetStateColor.resolveWith((states) => foregroundColor.withOpacity(0.1)),
             ),
           ),
           listTileTheme: ListTileThemeData(
@@ -368,42 +363,42 @@ class ThemeCustomization {
                 ),
           checkboxTheme: CheckboxThemeData(
             checkColor: WidgetStateProperty.resolveWith<Color?>((_) => onPrimary),
-            fillColor: WidgetStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-              if (states.contains(MaterialState.disabled)) {
+            fillColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
                 return null;
               }
-              if (states.contains(MaterialState.selected)) {
+              if (states.contains(WidgetState.selected)) {
                 return primaryColor;
               }
               return null;
             }),
           ),
           radioTheme: RadioThemeData(
-            fillColor: WidgetStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-              if (states.contains(MaterialState.disabled)) {
+            fillColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
                 return null;
               }
-              if (states.contains(MaterialState.selected)) {
+              if (states.contains(WidgetState.selected)) {
                 return primaryColor;
               }
               return null;
             }),
           ),
           switchTheme: SwitchThemeData(
-            thumbColor: WidgetStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-              if (states.contains(MaterialState.disabled)) {
+            thumbColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
                 return null;
               }
-              if (states.contains(MaterialState.selected)) {
+              if (states.contains(WidgetState.selected)) {
                 return primaryColor;
               }
               return null;
             }),
-            trackColor: WidgetStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-              if (states.contains(MaterialState.disabled)) {
+            trackColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
                 return null;
               }
-              if (states.contains(MaterialState.selected)) {
+              if (states.contains(WidgetState.selected)) {
                 return primaryColor;
               }
               return null;
@@ -438,14 +433,20 @@ class ThemeCustomization {
       'deleteColor: $deleteColor, '
       'renameColor: $renameColor, '
       'lockColor: $lockColor, '
-      'actionButtonsForegroundColor: $actionButtonsForegroundColor, '
-      'tilePrimaryColor: $tilePrimaryColor, '
       'tileIconColor: $tileIconColor, '
-      'tileSubtitleColor: $tileSubtitleColor, '
       'navigationBarColor: $navigationBarColor, '
+      'actionButtonsForegroundColor: $actionButtonsForegroundColor, '
+      '_actionButtonsForegroundColor: $_actionButtonsForegroundColor, '
+      'tilePrimaryColor: $tilePrimaryColor, '
+      '_tilePrimaryColor: $_tilePrimaryColor, '
+      'tileSubtitleColor: $tileSubtitleColor, '
+      '_tileSubtitleColor: $_tileSubtitleColor, '
       'navigationBarIconColor: $navigationBarIconColor, '
+      '_navigationBarIconColor: $_navigationBarIconColor, '
       'qrButtonBackgroundColor: $qrButtonBackgroundColor, '
+      '_qrButtonBackgroundColor: $_qrButtonBackgroundColor, '
       'qrButtonIconColor: $qrButtonIconColor'
+      "_qrButtonIconColor: $_qrButtonIconColor,"
       ')';
 
   @override

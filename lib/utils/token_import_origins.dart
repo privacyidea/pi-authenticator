@@ -9,6 +9,7 @@ import '../processors/scheme_processors/token_import_scheme_processors/privacyid
 import '../processors/token_import_file_processor/aegis_import_file_processor.dart';
 import '../processors/token_import_file_processor/authenticator_pro_import_file_processor.dart';
 import '../processors/token_import_file_processor/free_otp_plus_import_file_processor.dart';
+import '../processors/token_import_file_processor/google_authenticator_qrfile_processor.dart';
 import '../processors/token_import_file_processor/privacyidea_authenticator_import_file_processor.dart';
 import '../processors/token_import_file_processor/two_fas_import_file_processor.dart';
 
@@ -51,7 +52,7 @@ class TokenImportOrigins {
         importHint: (localizations) => localizations.importHintGoogleQrScan,
       ),
       TokenImportSource(
-        processor: const GoogleAuthenticatorQrProcessor(),
+        processor: const GoogleAuthenticatorQrfileProcessor(),
         type: TokenImportType.qrFile,
         importHint: (localizations) => localizations.importHintGoogleQrFile,
       ),

@@ -139,6 +139,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
   void _showExportDialog(Iterable<Token> tokens) async {
     if (tokens.isEmpty) return;
     final isExported = await showDialog<bool>(
+      useRootNavigator: false,
       context: context,
       builder: (context) => widget.exportDialogBuilder(tokens),
     );

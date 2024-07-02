@@ -41,23 +41,28 @@ class QRScannerView extends StatefulView {
 }
 
 class _QRScannerViewState extends State<QRScannerView> {
-  Future<PermissionStatus?> _requestCameraPermission() async {
-    try {
-      return await Permission.camera.request();
-    } catch (e) {
-      Logger.warning('Error while getting camera permission: $e, name: QRScannerView#_requestCameraPermission');
-    }
-    return null;
-  }
+  Future<PermissionStatus> _requestCameraPermission() => Permission.camera.request().then(
+        (value) => _cameraPermission = value,
+        onError: (e) {
+          Logger.warning('.then(): Error while getting camera permission: $e, name: QRScannerView#_requestCameraPermission');
+          return _cameraPermission = PermissionStatus.permanentlyDenied;
+        },
+      ).onError((e, stackTrace) {
+        Logger.warning('.onError(): Error while getting camera permission: $e, name: QRScannerView#_requestCameraPermission');
+        return _cameraPermission = PermissionStatus.permanentlyDenied;
+      }).catchError((e) {
+        Logger.warning('.catchError(): Error while getting camera permission: $e, name: QRScannerView#_requestCameraPermission');
+        return _cameraPermission = PermissionStatus.permanentlyDenied;
+      });
 
   PermissionStatus? _cameraPermission;
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Future<PermissionStatus?>(() async => _cameraPermission ?? await _requestCameraPermission()),
+    return FutureBuilder<PermissionStatus>(
+      future: Future<PermissionStatus>(() async => _cameraPermission ?? await _requestCameraPermission()),
       builder: (context, isGranted) {
-        if (isGranted.connectionState != ConnectionState.done) return const SizedBox();
+        if (isGranted.connectionState != ConnectionState.done) return const Center(child: CircularProgressIndicator());
         if (isGranted.data == PermissionStatus.permanentlyDenied) {
           return DefaultDialog(
             title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
@@ -73,12 +78,8 @@ class _QRScannerViewState extends State<QRScannerView> {
                 child: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogButton),
                 onPressed: () async {
                   //Trigger the permission to request it
-                  try {
-                    final cameraPermission = await _requestCameraPermission();
-                    setState(() => _cameraPermission = cameraPermission);
-                  } catch (e) {
-                    Logger.warning('Error while getting camera permission: $e', name: 'QRScannerView#onPressed');
-                  }
+                  final cameraPermission = await _requestCameraPermission();
+                  setState(() => _cameraPermission = cameraPermission);
                 },
               ),
               DefaultDialogButton(

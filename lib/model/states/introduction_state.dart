@@ -31,6 +31,8 @@ class IntroductionState {
     return IntroductionState(completedIntroductions: newCompletedIntroductions);
   }
 
+  IntroductionState withAllCompleted() => IntroductionState(completedIntroductions: Introduction.values.toSet());
+
   bool isConditionFulfilled(WidgetRef ref, Introduction introduction) => introduction.isConditionFulfilled(ref, this);
 
   @override

@@ -310,7 +310,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
 
 class AnswerSelectionWidget<T> extends StatefulWidget {
   final List<T> possibleAnswers;
-  final void Function(T) onAnswerSelected;
+  final Future<void> Function(T) onAnswerSelected;
   const AnswerSelectionWidget({required this.possibleAnswers, super.key, required this.onAnswerSelected});
 
   @override

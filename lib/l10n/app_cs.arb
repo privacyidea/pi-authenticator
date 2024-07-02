@@ -530,6 +530,7 @@
   "selectImportSource": "Vyberte zdroj importu",
   "selectImportType": "Jak chcete importovat žetony?",
   "importTokens": "Importní token",
+  "importNTokens": "{count, plural, zero{Neimportujte žádné tokeny} one{Importovat jeden token} other{Importovat {count} tokenů}}",
   "selectFile": "Vybrat soubor",
   "decrypt": "Dešifrovat",
   "tokensAreEncrypted": "Tokeny jsou zašifrované. Please enter the password to decrypt them.",
@@ -546,7 +547,7 @@
   "importFailedToken": "{count, plural, zero{Žádný token Nepodařilo se importovat.} one{Nepodařilo se importovat token.} other{Nepodařilo se importovat {count} tokenů.}}",
   "importExistingToken": "{count, plural, zero{Nebyl nalezen žádný token, který by se již v aplikaci nacházel.} one{Byl nalezen token, který již v aplikaci existuje.} other{{count} byly nalezeny tokeny, které se již v aplikaci nacházejí.}}",
   "importConflictToken": "{count, plural, zero{Není žádný konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.}}",
-  "importNewToken": "{count, plural, zero{Nenalezen žádný nový token.} one{Nalezen nový token, který bude importován.} other{Nalezen nový token {count}, který bude importován.}}",
+  "importNewToken": "{count, plural, zero{Nebyl nalezen žádný nový token.} one{Byl nalezen nový token, který lze importovat.} other{Bylo nalezeno {count} nových tokenů, které lze importovat.}}",
   "importHintPrivacyIdeaQrScan": "Chcete-li vytvořit QR kódy žetonů, přejděte do nastavení a klepněte na \"Export\". Poté vyberte \"Jako QR kód\" a klepněte na token, který chcete exportovat. Tato varianta je vhodná pouze pro přímý přenos do jiného zařízení, protože QR kód není šifrovaný.",
   "importHintPrivacyIdeaFile": "Chcete-li vytvořit zálohu, přejděte do nastavení a klepněte na položku \"Export\". Vyberte \"Jako soubor\" a vyberte tokeny, které chcete exportovat. Potom klepněte na \"Exportovat\" a nastavte heslo. Úložištěm je složka pro stahování ve vašem zařízení.",
   "importHint2FAS": "Vyberte zálohu 2FAS.\nPokud nemáte zálohu, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.",
@@ -662,5 +663,11 @@
   "passwordMustContainSpecialCharacter": "Heslo musí obsahovat speciální znak",
   "passwordsDoNotMatch": "Hesla se neshodují",
   "selectTokensToExportHelpTitle": "Není váš token uveden?",
-  "selectTokensToExportHelpContent": "Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.\nV současné době lze exportovat pouze ručně přidané a importované tokeny."
+  "selectTokensToExportHelpContent": "Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.\nV současné době lze exportovat pouze ručně přidané a importované tokeny.",
+  "findingQrCodeInImage": "Hledání QR kódu v obrázku...",
+  "qrNotFound": "Žádný QR kód nebyl nalezen!",
+  "qrInFileNotFound": "Ve vybraném obrázku nebyl nalezen žádný QR kód.",
+  "qrInFileNotFound2": "Můžete mi ukázat, kde se QR kód nachází.",
+  "qrInFileNotFound3": "Předpokládám, že kód najdu, pokud se nachází uprostřed označené oblasti.",
+  "markQrCode": "Označte QR kód"
 }

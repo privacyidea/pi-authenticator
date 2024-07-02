@@ -145,15 +145,19 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
         ),
       );
 
-  void _pushImportPlainTokensPage(List<ProcessorResult<Token>> processorResults) {
-    Navigator.of(context).pushReplacement(
+  void _pushImportPlainTokensPage(List<ProcessorResult<Token>> processorResults) async {
+    final tokensToImport = await Navigator.of(context).pushReplacement<List<Token>, void>(
       MaterialPageRoute(
         builder: (context) => ImportPlainTokensPage(
-          appName: widget.appName,
+          titleName: widget.appName,
           processorResults: processorResults,
           selectedType: widget.selectedType,
         ),
       ),
     );
+    if (tokensToImport != null) {
+      if (!mounted) return;
+      Navigator.of(context).pop(tokensToImport);
+    }
   }
 }

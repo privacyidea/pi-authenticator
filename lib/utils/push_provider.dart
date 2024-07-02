@@ -26,13 +26,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
+import 'package:privacyidea_authenticator/repo/secure_push_request_repository.dart';
+import 'package:privacyidea_authenticator/utils/pi_notifications.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/push_request.dart';
 import '../model/tokens/push_token.dart';
-import '../repo/secure_push_request_repository.dart';
 import '../repo/secure_token_repository.dart';
-import '../utils/pi_notifications.dart';
 import 'firebase_utils.dart';
 import 'globals.dart';
 import 'logger.dart';
@@ -55,8 +55,11 @@ class PushProvider {
   final List<Function(PushRequest)> _subscribers = [];
 
   FirebaseUtils _firebaseUtils;
+  FirebaseUtils get firebaseUtils => _firebaseUtils;
   PrivacyIdeaIOClient _ioClient;
+  PrivacyIdeaIOClient get ioClient => _ioClient;
   RsaUtils _rsaUtils;
+  RsaUtils get rsaUtils => _rsaUtils;
   LegacyUtils _legacyUtils;
 
   PushProvider._({
@@ -267,7 +270,6 @@ class PushProvider {
     // Get all push tokens
     await globalRef?.read(tokenProvider.notifier).initState;
     List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
-
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
       await globalRef?.read(settingsProvider.notifier).loadingRepo;
@@ -342,6 +344,7 @@ class PushProvider {
       return;
     }
     final List<Map<String, dynamic>> challengeList;
+
     switch (response.statusCode) {
       case 200:
         try {
@@ -382,24 +385,12 @@ class PushProvider {
         return;
     }
     Logger.info('Received ${challengeList.length} challenge(s) for ${token.label}', name: 'push_provider.dart#pollForChallenge');
+
     for (Map<String, dynamic> challengeData in challengeList) {
       _handleIncomingRequestForeground((challengeData));
     }
     return;
   }
-
-  // /// Checks if the firebase token was changed and updates it if necessary.
-  // static Future<void> updateFbTokenIfChanged() async {
-  //   String? firebaseToken = await instance?._firebaseUtils.getFBToken();
-
-  //   if (firebaseToken != null && (await instance?._firebaseUtils.getCurrentFirebaseToken()) != firebaseToken) {
-  //     try {
-  //       await updateFirebaseToken(firebaseToken);
-  //     } catch (error, stackTrace) {
-  //       Logger.error('Could not update firebase token.', name: 'push_provider.dart#updateFbTokenIfChanged', error: error, stackTrace: stackTrace);
-  //     }
-  //   }
-  // }
 
   Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) async =>
       globalRef?.read(tokenProvider.notifier).updateFirebaseToken(firebaseToken);
@@ -412,13 +403,19 @@ class PlaceholderPushProvider implements PushProvider {
   @override
   FirebaseUtils _firebaseUtils = FirebaseUtils();
   @override
+  FirebaseUtils get firebaseUtils => _firebaseUtils;
+  @override
   PrivacyIdeaIOClient _ioClient = const PrivacyIdeaIOClient();
+  @override
+  PrivacyIdeaIOClient get ioClient => _ioClient;
   @override
   LegacyUtils _legacyUtils = const LegacyUtils();
   @override
-  Timer? _pollTimer;
-  @override
   RsaUtils _rsaUtils = const RsaUtils();
+  @override
+  RsaUtils get rsaUtils => _rsaUtils;
+  @override
+  Timer? _pollTimer;
   @override
   bool pollingIsEnabled = false;
   @override
