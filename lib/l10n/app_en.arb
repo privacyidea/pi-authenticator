@@ -465,6 +465,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "Could not connect to server",
   "errorRollOutNotPossibleAnymore": "Rolling out this Token is not possible anymore.",
   "errorTokenExpired": "The token {name} has expired.",
   "@errorTokenExpired": {

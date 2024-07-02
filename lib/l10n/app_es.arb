@@ -471,6 +471,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "No se ha podido conectar con el servidor.",
   "errorRollOutNotPossibleAnymore": "El despliegue de este token ya no es posible.",
   "errorTokenExpired": "El token {name} ha caducado.",
   "@errorTokenExpired": {
