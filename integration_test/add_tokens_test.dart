@@ -39,8 +39,13 @@ void main() {
   late final MockIntroductionRepository mockIntroductionRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
-    when(mockSettingsRepository.loadSettings())
-        .thenAnswer((_) async => SettingsState(useSystemLocale: false, localePreference: const Locale('en'), latestVersion: Version.parse('999.999.999')));
+    when(mockSettingsRepository.loadSettings()).thenAnswer(
+      (_) async => SettingsState(
+        useSystemLocale: false,
+        localePreference: const Locale('en'),
+        latestStartedVersion: Version.parse('999.999.999'),
+      ),
+    );
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
     var tokens = <Token>[];

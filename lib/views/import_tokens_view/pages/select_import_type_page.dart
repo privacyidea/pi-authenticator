@@ -1,5 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import '../../../model/tokens/token.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
@@ -42,7 +43,8 @@ class SelectImportTypePage extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
-                for (final importEntity in tokenImportOrigin.importSources)
+                for (final importEntity in tokenImportOrigin.importSources) ...[
+                  if (importEntity != tokenImportOrigin.importSources.first) const SizedBox(height: ImportTokensView.itemSpacingHorizontal / 2),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -72,6 +74,7 @@ class SelectImportTypePage extends StatelessWidget {
                       onPressed: () => _routeStartPage(context: context, importSource: importEntity),
                     ),
                   ),
+                ],
                 const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
               ],
             ),
@@ -81,6 +84,15 @@ class SelectImportTypePage extends StatelessWidget {
     );
   }
 
-  void _routeStartPage({required TokenImportSource importSource, required BuildContext context}) =>
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ImportStartPage(appName: tokenImportOrigin.appName, selectedSource: importSource)));
+  Future<void> _routeStartPage({required TokenImportSource importSource, required BuildContext context}) async {
+    final tokensToImport = await Navigator.of(context).push<List<Token>>(
+      MaterialPageRoute(
+        builder: (context) => ImportStartPage(appName: tokenImportOrigin.appName, selectedSource: importSource),
+      ),
+    );
+    if (tokensToImport != null) {
+      if (!context.mounted) return;
+      Navigator.of(context).pop(tokensToImport);
+    }
+  }
 }

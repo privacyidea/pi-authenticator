@@ -22,4 +22,5 @@ jobs:
           flutter-version: '3.22.0'
       - run: "flutter --version"
       - run: flutter pub get
+      - run: flutter gen-l10n
       - run: flutter test

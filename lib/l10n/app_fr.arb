@@ -530,6 +530,7 @@
   "selectImportSource": "Sélectionner la source d'importation",
   "selectImportType": "Comment voulez-vous importer les jetons ?",
   "importTokens": "Importer un jeton",
+  "importNTokens": "{count, plural, zero{N'importer aucun jeton} one{Importer un jeton} other{Importer {count} tokens}}",
   "selectFile": "Sélectionner un fichier",
   "decrypt": "Décrypter",
   "tokensAreEncrypted": "Les jetons sont cryptés. Veuillez saisir le mot de passe pour les décrypter",
@@ -546,7 +547,7 @@
   "importFailedToken": "{count, plural, zero{Pas de jeton Échec de l'importation.} one{Échec de l'importation d'un jeton.} other{Échec de l'importation des jetons {count}.}}",
   "importExistingToken": "{count, plural, zero{Aucun jeton déjà présent dans l'application n'a été trouvé.} one{Un jeton qui existe déjà dans l'application a été trouvé.} other{Des jetons {count} déjà présents dans l'application ont été trouvés.}}",
   "importConflictToken": "{count, plural, zero{Il n'y a pas de conflit avec des tokens déjà existants.} one{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.} other{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.}}",
-  "importNewToken": "{count, plural, zero{Aucun nouveau token n'a été trouvé.} one{Un nouveau token a été trouvé et sera importé.} other{Aucun {count} nouveau token a été trouvé et sera importé.}}",
+  "importNewToken": "{count, plural, zero{Aucun nouveau jeton n'a été trouvé.} one{Un nouveau token a été trouvé et peut être importé.} other{{count} nouveaux tokens ont été trouvés et peuvent être importés.}}",
   "importHintPrivacyIdeaQrScan": "Pour créer des codes QR des jetons, accédez aux paramètres et appuyez sur \"Exporter\". Sélectionnez ensuite \"En tant que code QR\" et tapez sur le jeton à exporter. Cette variante ne convient que pour un transfert direct vers un autre appareil, car le code QR n'est pas crypté.",
   "importHintPrivacyIdeaFile": "Pour créer une sauvegarde, allez dans les paramètres et tapez sur \"Exporter\". Choisissez \"En tant que fichier\", sélectionnez les jetons que vous souhaitez exporter. Ensuite, appuyez sur \"Exporter\" et définissez un mot de passe. L'emplacement de stockage est le dossier de téléchargement sur votre appareil.",
   "importHint2FAS": "Choisissez votre sauvegarde 2FAS.\nSi vous n'avez pas de sauvegarde, créez-en une dans l'application 2FAS. Nous vous recommandons d'utiliser un mot de passe",
@@ -662,5 +663,11 @@
   "passwordMustContainSpecialCharacter": "Le mot de passe doit contenir un caractère spécial",
   "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
   "selectTokensToExportHelpTitle": "Votre jeton ne figure pas dans la liste ?",
-  "selectTokensToExportHelpContent": "Si un jeton n'est pas répertorié, il n'est pas garanti qu'il ne s'agisse pas d'un jeton privacyIDEA.\nActuellement, seuls les jetons ajoutés manuellement et importés sont exportables."
+  "selectTokensToExportHelpContent": "Si un jeton n'est pas répertorié, il n'est pas garanti qu'il ne s'agisse pas d'un jeton privacyIDEA.\nActuellement, seuls les jetons ajoutés manuellement et importés sont exportables.",
+  "findingQrCodeInImage": "Recherche d'un code QR dans une image...",
+  "qrNotFound": "Aucun code QR trouvé !",
+  "qrInFileNotFound": "Aucun code QR n'a été trouvé dans l'image sélectionnée.",
+  "qrInFileNotFound2": "Vous pouvez me montrer où se trouve le code QR.",
+  "qrInFileNotFound3": "Je pense que je trouverai le code s'il se trouve au milieu de la zone marquée.",
+  "markQrCode": "Marquer le code QR"
 }

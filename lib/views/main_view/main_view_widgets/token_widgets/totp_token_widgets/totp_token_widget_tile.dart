@@ -103,6 +103,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
         alignment: Alignment.centerLeft,
         child: Tooltip(
           message: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+          triggerMode: TooltipTriggerMode.longPress,
           child: InkWell(
             onTap: widget.isPreview
                 ? null

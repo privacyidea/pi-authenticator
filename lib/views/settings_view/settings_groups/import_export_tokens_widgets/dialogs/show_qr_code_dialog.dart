@@ -56,6 +56,7 @@ class ShowQrCodeDialog extends ConsumerWidget {
 
   void _showQrMaximized(BuildContext context, Image qrImage) {
     showDialog(
+      useRootNavigator: false,
       context: context,
       builder: (context) => GestureDetector(
         onTap: () => Navigator.of(context).pop(),

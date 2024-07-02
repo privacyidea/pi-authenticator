@@ -525,6 +525,7 @@
   "selectImportSource": "Seleccionar fuente de importación",
   "selectImportType": "Jak chcete importovat žetony?",
   "importTokens": "Importar token",
+  "importNTokens": "{count, plural, zero{No importar tokens} one{Importar un token} other{Importar {count} tokens}}",
   "selectFile": "Seleccionar archivo",
   "decrypt": "Descifrar",
   "tokensAreEncrypted": "Los tokens están encriptados. Por favor, introduce la contraseña para descifrarlos",
@@ -541,7 +542,7 @@
   "importFailedToken": "{count, plural, zero{No token Fallo al importar.} one{Error al importar un token.} other{Error al importar {count} tokens.}}",
   "importExistingToken": "{count, plural, zero{No se ha encontrado ningún token que ya esté en la aplicación.} one{Se ha encontrado un token que ya existe en la aplicación.} other{Se han encontrado {count} tokens que ya están en la aplicación.}}",
   "importConflictToken": "{count, plural, zero{No hay conflicto con tokens que ya existen.} one{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.} other{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.}}",
-  "importNewToken": "{count, plural, zero{No se ha encontrado un nuevo token.} one{Se ha encontrado un nuevo token que se importará.} other{Se ha encontrado un nuevo token {count} que se importará.}}",
+  "importNewToken": "{count, plural, zero{No se ha encontrado ningún token nuevo.} one{Se ha encontrado un nuevo token que se puede importar.} other{Se han encontrado {count} nuevos tokens que se pueden importar.}}",
   "importHintPrivacyIdeaQrScan": "Para crear códigos QR de las fichas, vaya a la configuración y pulse sobre \"Exportar\". A continuación, seleccione \"Como código QR\" y pulse sobre la ficha que desea exportar. Esta variante sólo es adecuada para la transferencia directa a otro dispositivo, ya que el código QR no está cifrado.",
   "importHintPrivacyIdeaFile": "Para crear una copia de seguridad, vaya a los ajustes y pulse sobre \"Exportar\". Seleccione \"Como archivo\", seleccione los tokens que desea exportar. A continuación, pulse \"Exportar\" y establezca una contraseña. La ubicación de almacenamiento es la carpeta de descargas de su dispositivo.",
   "importHint2FAS": "Seleccione su copia de seguridad de 2FAS. Si no tiene una copia de seguridad, cree una en la aplicación 2FAS. Le recomendamos que utilice una contraseña",
@@ -657,5 +658,11 @@
   "passwordMustContainSpecialCharacter": "La contraseña debe contener un carácter especial",
   "passwordsDoNotMatch": "Las contraseña no coinciden",
   "selectTokensToExportHelpTitle": "¿Su ficha no figura en la lista?",
-  "selectTokensToExportHelpContent": "Si un token no aparece en la lista, no se garantiza que no sea un token privacyIDEA.\nActualmente sólo se pueden exportar los tokens añadidos manualmente y los importados."
+  "selectTokensToExportHelpContent": "Si un token no aparece en la lista, no se garantiza que no sea un token privacyIDEA.\nActualmente sólo se pueden exportar los tokens añadidos manualmente y los importados.",
+  "findingQrCodeInImage": "Buscando código QR en imagen...",
+  "qrNotFound": "No se ha encontrado ningún código QR.",
+  "qrInFileNotFound": "No se ha encontrado ningún código QR en la imagen seleccionada.",
+  "qrInFileNotFound2": "Puedes mostrarme dónde está el código QR.",
+  "qrInFileNotFound3": "Espero encontrar el código si está en el centro del área marcada.",
+  "markQrCode": "Marcar código QR"
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../../model/token_import/token_import_entry.dart';
 import 'conflicted_import_tokens_tile.dart';
 
 class ConflictedImportTokensList extends StatelessWidget {
   const ConflictedImportTokensList({
     required this.importEntries,
-    required this.updateImportTokenEntry,
+    required this.onTap,
     this.title,
     this.titlePadding = const EdgeInsets.all(0),
     this.leadingDivider = false,
@@ -16,8 +17,8 @@ class ConflictedImportTokensList extends StatelessWidget {
   final EdgeInsetsGeometry titlePadding;
   final bool leadingDivider;
 
-  final List<ImportTokenEntry> importEntries;
-  final void Function(ImportTokenEntry oldEntry, ImportTokenEntry newEntry) updateImportTokenEntry;
+  final List<TokenImportEntry> importEntries;
+  final void Function(TokenImportEntry oldEntry, TokenImportEntry newEntry) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +48,7 @@ class ConflictedImportTokensList extends StatelessWidget {
         ],
         for (final entry in importEntries)
           ConflictedImportTokensTile(
-            selectTokenCallback: (newEntry) => updateImportTokenEntry(entry, newEntry),
+            selectTokenCallback: (newEntry) => onTap(entry, newEntry),
             importTokenEntry: entry,
             initialScreenSize: MediaQuery.of(context).size,
             key: Key(

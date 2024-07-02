@@ -25,7 +25,6 @@ import '../state_notifiers/settings_notifier.dart';
 import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
 import 'customization/application_customization.dart';
-import 'firebase_utils.dart';
 import 'globals.dart';
 import 'home_widget_utils.dart';
 import 'logger.dart';
@@ -78,7 +77,7 @@ final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushReque
         /// Last push token was deleted
         Logger.info('Last push token was deleted. Deactivating push provider and deleting firebase token.', name: 'pushRequestProvider#tokenProvider');
         pushRequestNotifier.swapPushProvider(PlaceholderPushProvider());
-        FirebaseUtils().deleteFirebaseToken();
+        pushProvider.firebaseUtils.deleteFirebaseToken();
       }
       if (previous?.hasPushTokens != true && next.hasPushTokens == true) {
         /// First push token was added
@@ -192,6 +191,61 @@ final sortableProvider = StateNotifierProvider<SortableNotifier, List<SortableMi
     return notifier;
   },
 );
+
+final progressStateProvider = StateNotifierProvider<ProgressStateNotifier, ProgressState?>((ref) => ProgressStateNotifier());
+
+class ProgressStateNotifier extends StateNotifier<ProgressState?> {
+  ProgressStateNotifier() : super(null);
+
+  double? get progress => state?.progress;
+
+  ProgressState initProgress(int max, int value) {
+    final newState = ProgressState(max, value);
+    state = newState;
+    return newState;
+  }
+
+  void deleteProgress() {
+    state = null;
+    Logger.warning('Deleting progress state', name: 'ProgressStateNotifier#deleteProgress');
+  }
+
+  ProgressState? resetProgress() {
+    if (state == null) return state;
+    final newState = state!.copyWith(value: 0);
+    state = newState;
+    return newState;
+  }
+
+  ProgressState? setProgressMax(int max) {
+    if (state == null) return state;
+    final newState = state!.copyWith(max: max);
+    state = newState;
+    return newState;
+  }
+
+  ProgressState? setProgressValue(int value) {
+    if (state == null) return state;
+    final newState = state!.copyWith(value: value);
+    state = newState;
+    return newState;
+  }
+}
+
+class ProgressState {
+  final int max;
+  final int value;
+
+  double get progress => value / max;
+
+  ProgressState(
+    this.max,
+    this.value,
+  )   : assert(max >= 0),
+        assert(value >= 0);
+
+  ProgressState copyWith({int? max, int? value, bool? inProgress}) => ProgressState(max ?? this.max, value ?? this.value);
+}
 
 class SortableNotifier extends StateNotifier<List<SortableMixin>> {
   SortableNotifier({List<SortableMixin> initState = const []}) : super(initState);

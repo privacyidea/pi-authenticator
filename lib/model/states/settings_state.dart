@@ -20,7 +20,7 @@ class SettingsState {
   static bool get _useSystemLocaleDefault => true;
   static bool get _enableLoggingDefault => false;
   static bool get _hidePushTokensDefault => false;
-  static Version get _latestVersionDefault => Version.parse('0.0.0');
+  static Version get _latestStartedVersionDefault => Version.parse('0.0.0');
 
   final bool isFirstRun;
   final bool showGuideOnStart;
@@ -47,7 +47,7 @@ class SettingsState {
     bool? useSystemLocale,
     bool? verboseLogging,
     bool? hidePushTokens,
-    Version? latestVersion,
+    Version? latestStartedVersion,
   })  : isFirstRun = isFirstRun ?? _isFirstRunDefault,
         showGuideOnStart = showGuideOnStart ?? _showGuideOnStartDefault,
         hideOpts = hideOpts ?? _hideOtpsDefault,
@@ -57,7 +57,7 @@ class SettingsState {
         useSystemLocale = useSystemLocale ?? _useSystemLocaleDefault,
         verboseLogging = verboseLogging ?? _enableLoggingDefault,
         hidePushTokens = hidePushTokens ?? _hidePushTokensDefault,
-        latestStartedVersion = latestVersion ?? _latestVersionDefault;
+        latestStartedVersion = latestStartedVersion ?? _latestStartedVersionDefault;
 
   SettingsState copyWith({
     bool? isFirstRun,
@@ -81,7 +81,7 @@ class SettingsState {
       useSystemLocale: useSystemLocale ?? this.useSystemLocale,
       verboseLogging: verboseLogging ?? this.verboseLogging,
       hidePushTokens: hidePushTokens ?? this.hidePushTokens,
-      latestVersion: latestStartedVersion ?? this.latestStartedVersion,
+      latestStartedVersion: latestStartedVersion ?? this.latestStartedVersion,
     );
   }
 

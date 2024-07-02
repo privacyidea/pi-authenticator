@@ -22,7 +22,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         super(initialState ?? SettingsState()) {
     loadFromRepo();
   }
-  void loadFromRepo() async {
+  Future<void> loadFromRepo() async {
     loadingRepo = Future(() async {
       final newState = await _repo.loadSettings();
       PushProvider.instance?.setPollingEnabled(state.enablePolling);
@@ -30,6 +30,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       Logger.info('Loading settings from repo: $newState', name: 'settings_notifier.dart#_loadFromRepo');
       return newState;
     });
+    await loadingRepo;
   }
 
   void _saveToRepo() async {
@@ -127,6 +128,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   void setLatestStartedVersion(Version version) {
+    if (state.latestStartedVersion >= version) return;
     Logger.info('Latest started version set to $version', name: 'settings_notifier.dart#setLatestStartedVersion');
     state = state.copyWith(latestStartedVersion: version);
     _saveToRepo();
