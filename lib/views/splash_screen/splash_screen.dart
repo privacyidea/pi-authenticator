@@ -12,27 +12,10 @@ import '../view_interface.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   static const routeName = '/';
-  static Widget? _initialView;
-  static bool didNavigated = false;
-
   final ApplicationCustomization customization;
-
   const SplashScreen({required this.customization, super.key});
-
   @override
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
-
-  static void setInitialView(Widget initialView) {
-    if (_initialView != null) {
-      Logger.warning('Initial view is already set. Ignoring new initial view: $initialView', name: 'splash_screen.dart#setInitialView');
-      return;
-    }
-    if (didNavigated) {
-      Logger.warning('Splashscreen already navigated. Ignoring new initial view: $initialView', name: 'splash_screen.dart#setInitialView');
-      return;
-    }
-    _initialView = initialView;
-  }
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
@@ -53,11 +36,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     Logger.info('Starting app.', name: 'main.dart#initState');
     Future.delayed(_splashScreenDelay, () {
-      if (mounted) {
-        setState(() {
-          _appIconIsVisible = true;
-        });
-      }
+      if (mounted) setState(() => _appIconIsVisible = true);
+
       Future.wait(
         <Future>[
           Future.delayed(_splashScreenDuration),
@@ -87,29 +67,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     super.dispose();
   }
 
-  Future<void> _navigate() async {
-    SplashScreen.didNavigated = true;
-    if (SplashScreen._initialView != null) {
-      await Navigator.push<bool>(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => SplashScreen._initialView!,
-          transitionDuration: _splashScreenDuration,
-          transitionsBuilder: (_, a, __, view) => FadeTransition(
-            opacity: CurvedAnimation(
-              curve: const Interval(0, 1, curve: Curves.easeOut),
-              parent: a,
-            ),
-            child: view,
-          ),
-        ),
-      );
-    }
-    if (!mounted) return;
-    _pushReplace();
-  }
-
-  void _pushReplace() {
+  void _navigate() async {
     if (_customization.disabledFeatures.isNotEmpty) {
       Logger.info('Disabled features: ${_customization.disabledFeatures}', name: 'main.dart#_pushReplace');
     }
@@ -118,22 +76,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       appIcon: _customization.appIcon,
       disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
     );
-    final routeBuilder = SplashScreen._initialView == null
-        ? PageRouteBuilder(
-            pageBuilder: (_, __, ___) => nextView,
-            transitionDuration: _splashScreenDuration,
-            settings: nextView.routeSettings,
-            transitionsBuilder: (_, a, __, view) => FadeTransition(
-              opacity: CurvedAnimation(
-                curve: const Interval(0, 1, curve: Curves.easeOut),
-                parent: a,
-              ),
-              child: view,
-            ),
-          )
-        : PageRouteBuilder(
-            pageBuilder: (_, __, ___) => nextView,
-          );
+    final routeBuilder = PageRouteBuilder(pageBuilder: (_, __, ___) => nextView);
+    // Idle until the splash screen is the top route.
+    // By default it is the top route, but it can be overridden by pushing a new route before initializing the app, e.g. by a deep link.
+    await Future.doWhile(() async {
+      await Future.delayed(const Duration(milliseconds: 100));
+      if (!mounted) return false;
+      return (ModalRoute.of(context)?.isCurrent == false);
+    });
+    if (!mounted) return;
     Navigator.of(context).popUntil((route) => route.isFirst);
     Navigator.pushReplacement(context, routeBuilder);
   }

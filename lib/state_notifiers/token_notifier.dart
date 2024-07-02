@@ -701,8 +701,8 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<List<Token>> _tokensFromUri(Uri uri) async {
     try {
       final results = await TokenImportSchemeProcessor.processUriByAny(uri);
-      //  final anyConflict = tokens.any((newToken) => state.tokens.any((stateToken) => stateToken.sameValuesAs(newToken)));
-      if (results != null && results.length > 1) {
+      if (results != null && (results.length > 1 || state.tokens.any((e) => results.first.asSuccess?.resultData.isSameTokenAs(e) == true))) {
+        Navigator.of(globalNavigatorKey.currentContext!).popUntil((route) => route.isFirst);
         final tokensToKeep = await Navigator.of(globalNavigatorKey.currentContext!).push<List<Token>>(
           MaterialPageRoute<List<Token>>(
             builder: (context) => ImportPlainTokensPage(

@@ -4,7 +4,6 @@ import '../../../utils/home_widget_utils.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/riverpod_providers.dart';
 import '../../../views/link_home_widget_view/link_home_widget_view.dart';
-import '../../../views/splash_screen/splash_screen.dart';
 import 'navigation_scheme_processor_interface.dart';
 
 class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
@@ -42,15 +41,13 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       return;
     }
     if (fromInit) {
-      SplashScreen.setInitialView(
-        LinkHomeWidgetView(homeWidgetId: uri.queryParameters['id']!),
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => LinkHomeWidgetView(homeWidgetId: uri.queryParameters['id']!)),
       );
     } else {
       Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => LinkHomeWidgetView(homeWidgetId: uri.queryParameters['id']!),
-        ),
+        MaterialPageRoute(builder: (context) => LinkHomeWidgetView(homeWidgetId: uri.queryParameters['id']!)),
       );
     }
   }
