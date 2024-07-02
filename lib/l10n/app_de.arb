@@ -449,6 +449,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "Konnte keine Verbindung zum Server herstellen.",
   "errorRollOutNoConnectionToServer": "Der Rollout von Token {name} ist fehlgeschlagen, der Server konnte nicht erreicht werden.",
   "authToAcceptPushRequest": "Bitte authentifizieren Sie sich, um die Anfrage anzunehmen.",
   "authToDeclinePushRequest": "Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.",

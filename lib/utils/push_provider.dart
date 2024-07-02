@@ -335,10 +335,12 @@ class PushProvider {
           ? await instance!._ioClient.doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify)
           : await const PrivacyIdeaIOClient().doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify);
     } catch (e) {
-      globalRef?.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial),
-        null,
-      );
+      if (isManually) {
+        globalRef?.read(statusMessageProvider.notifier).state = (
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial),
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.couldNotConnectToServer,
+        );
+      }
       return;
     }
     final List<Map<String, dynamic>> challengeList;

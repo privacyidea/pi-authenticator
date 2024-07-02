@@ -472,6 +472,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "Kan geen verbinding maken met de server.",
   "errorRollOutNotPossibleAnymore": "Het uitrollen van dit token is niet meer mogelijk.",
   "errorTokenExpired": "Het token {name} is verlopen.",
   "@errorTokenExpired": {

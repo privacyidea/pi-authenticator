@@ -475,6 +475,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "Nepodařilo se připojit k serveru.",
   "errorRollOutNotPossibleAnymore": "Roll-out tohoto tokenu již není možný.",
   "errorTokenExpired": "Platnost tokenu {name} vypršela.",
   "@errorTokenExpired": {
