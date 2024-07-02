@@ -29,6 +29,7 @@ class MainViewTokensList extends ConsumerStatefulWidget {
     List<Widget> widgets = [];
     if (sortables.isEmpty) return [];
     sortables.sort((a, b) => a.compareTo(b));
+    bool introductionAdded = false;
     for (var i = 0; i < sortables.length; i++) {
       final isFirst = i == 0;
       final isDraggingTheCurrent = draggingSortable == sortables[i];
@@ -41,7 +42,12 @@ class MainViewTokensList extends ConsumerStatefulWidget {
       if (!isDraggingTheCurrent && ((!isFirst && !previousWasExpandedFolder) || draggingSortable != null)) {
         widgets.add(DragTargetDivider(dependingFolder: null, previousSortable: sortables.last, nextSortable: sortables[i]));
       }
-      widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
+      if (introductionAdded == false && sortables[i] is Token) {
+        widgets.add(TokenIntroduction(child: SortableWidgetBuilder.fromSortable(sortables[i])));
+        introductionAdded = true;
+      } else {
+        widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
+      }
     }
 
     return widgets;
@@ -92,12 +98,10 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
                     hasScrollBody: false,
                     child: Column(
                       children: [
-                        TokenIntroduction(
-                          child: Column(
-                            children: [
-                              ...MainViewTokensList.buildSortableWidgets(showSortables, draggingSortable),
-                            ],
-                          ),
+                        Column(
+                          children: [
+                            ...MainViewTokensList.buildSortableWidgets(showSortables, draggingSortable),
+                          ],
                         ),
                         ...(draggingSortable != null)
                             ? [
