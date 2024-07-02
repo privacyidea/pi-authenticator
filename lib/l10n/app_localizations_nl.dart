@@ -22,8 +22,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get patchNotesV4_3_1Improvement1 => 'De QR-code scanner is verbeterd.';
 
   @override
-  String get patchNotesV4_3_0NewFeatures1 =>
-      'Ondersteuning toegevoegd voor het importeren van tokens van Google, Aegis en 2FAS Authenticator. Meer importbronnen zullen in de toekomst worden toegevoegd.';
+  String get patchNotesV4_3_0NewFeatures1 => 'Ondersteuning toegevoegd voor het importeren van tokens van Google, Aegis en 2FAS Authenticator. Meer importbronnen zullen in de toekomst worden toegevoegd.';
 
   @override
   String get patchNotesV4_3_0NewFeatures2 => 'Feedbackoptie toegevoegd aan de instellingen.';
@@ -109,12 +108,10 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get confirmTokenDeletionHint =>
-      'U kunt mogelijk niet meer inloggen als u dit token verwijdert. Controleer of u zonder dit token kunt inloggen op het gekoppelde account.';
+  String get confirmTokenDeletionHint => 'U kunt mogelijk niet meer inloggen als u dit token verwijdert. Controleer of u zonder dit token kunt inloggen op het gekoppelde account.';
 
   @override
-  String get confirmFolderDeletionHint =>
-      'Het verwijderen van een map heeft geen effect op de tokens in de map. De tokens worden verplaatst naar de hoofdlijst.';
+  String get confirmFolderDeletionHint => 'Het verwijderen van een map heeft geen effect op de tokens in de map. De tokens worden verplaatst naar de hoofdlijst.';
 
   @override
   String get generatingPhonePart => 'Genereren telefoon gedeelte';
@@ -332,8 +329,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get send => 'verzenden';
 
   @override
-  String get sendErrorLogDescription =>
-      'Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:';
+  String get sendErrorLogDescription => 'Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:';
 
   @override
   String get showPrivacyPolicy => 'Privacybeleid tonen';
@@ -360,8 +356,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get open => 'Openen';
 
   @override
-  String get sendErrorDialogBody =>
-      'Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.';
+  String get sendErrorDialogBody => 'Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.';
 
   @override
   String get noFbToken => 'Geen Firebase Token beschikbaar';
@@ -456,6 +451,9 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String get couldNotConnectToServer => 'Kan geen verbinding maken met de server.';
+
+  @override
   String get errorRollOutNotPossibleAnymore => 'Het uitrollen van dit token is niet meer mogelijk.';
 
   @override
@@ -485,8 +483,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get grantCameraPermissionDialogContent => 'Geef de camera toestemming om QR-codes te scannen.';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied =>
-      'Cameratoestemming is permanent geweigerd. Geef de camera toestemming in de instellingen van uw telefoon.';
+  String get grantCameraPermissionDialogPermanentlyDenied => 'Cameratoestemming is permanent geweigerd. Geef de camera toestemming in de instellingen van uw telefoon.';
 
   @override
   String get grantCameraPermissionDialogButton => 'Toestemming verlenen';
@@ -495,8 +492,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get decryptErrorTitle => 'Fout bij decoderen';
 
   @override
-  String get decryptErrorContent =>
-      'Helaas heeft de app je tokens niet kunnen decoderen. Dit geeft aan dat de coderingssleutel is verbroken. U kunt het opnieuw proberen of de app-gegevens verwijderen, waardoor de tokens in de app worden verwijderd.';
+  String get decryptErrorContent => 'Helaas heeft de app je tokens niet kunnen decoderen. Dit geeft aan dat de coderingssleutel is verbroken. U kunt het opnieuw proberen of de app-gegevens verwijderen, waardoor de tokens in de app worden verwijderd.';
 
   @override
   String get decryptErrorButtonDelete => 'Verwijderen';
@@ -514,8 +510,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get hidePushTokens => 'Verberg push tokens';
 
   @override
-  String get hidePushTokensDescription =>
-      'Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.';
+  String get hidePushTokensDescription => 'Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.';
 
   @override
   String get settingsGroupGeneral => 'Algemene informatie';
@@ -527,8 +522,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get privacyPolicy => 'Privacybeleid';
 
   @override
-  String get introScanQrCode =>
-      'Je kunt QR-codes scannen om tokens toe te voegen.We ondersteunen alle gangbare Two-Factor-Authenticatie tokens en ook de privacyIDEA tokens.';
+  String get introScanQrCode => 'Je kunt QR-codes scannen om tokens toe te voegen.We ondersteunen alle gangbare Two-Factor-Authenticatie tokens en ook de privacyIDEA tokens.';
 
   @override
   String get introAddTokenManually => 'Als je geen QR-code wilt scannen, kun je tokens ook handmatig toevoegen.';
@@ -540,8 +534,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get introEditToken => 'Hier kun je de naam van het token bewerken en enkele details bekijken.';
 
   @override
-  String get introLockToken =>
-      'Om de beveiliging nog meer te verbeteren, kun je tokens vergrendelen.¨Dan kan het token alleen gebruikt worden na authenticatie.';
+  String get introLockToken => 'Om de beveiliging nog meer te verbeteren, kun je tokens vergrendelen.¨Dan kan het token alleen gebruikt worden na authenticatie.';
 
   @override
   String get introDragToken => 'Reorganiseer je tokens door er een paar seconden op te drukken en het dan naar de gewenste positie te slepen.';
@@ -561,8 +554,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get legacySigningErrorMessage =>
-      'Het token is aangemaakt in een verouderde versie van de app, wat kan leiden tot problemen bij het gebruik ervan.\nHet wordt aanbevolen om een nieuw push token aan te maken als het probleem zich blijft voordoen!';
+  String get legacySigningErrorMessage => 'Het token is aangemaakt in een verouderde versie van de app, wat kan leiden tot problemen bij het gebruik ervan.\nHet wordt aanbevolen om een nieuw push token aan te maken als het probleem zich blijft voordoen!';
 
   @override
   String get selectImportSource => 'Selecteer importbron';
@@ -669,20 +661,16 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get importHintPrivacyIdeaQrScan =>
-      'Om QR-codes van de tokens te maken, navigeer je naar de instellingen en tik je op \"Exporteren\". Selecteer vervolgens \"Als QR-code\" en tik op het muntje dat geëxporteerd moet worden. Deze variant is alleen geschikt voor directe overdracht naar een ander apparaat, omdat de QR-code niet versleuteld is.';
+  String get importHintPrivacyIdeaQrScan => 'Om QR-codes van de tokens te maken, navigeer je naar de instellingen en tik je op \"Exporteren\". Selecteer vervolgens \"Als QR-code\" en tik op het muntje dat geëxporteerd moet worden. Deze variant is alleen geschikt voor directe overdracht naar een ander apparaat, omdat de QR-code niet versleuteld is.';
 
   @override
-  String get importHintPrivacyIdeaFile =>
-      'Om een back-up te maken, ga je naar de instellingen en tik je op \"Exporteren\". Selecteer \"Als bestand\" en selecteer de tokens die je wilt exporteren. Tik dan op \"Exporteren\" en stel een wachtwoord in. De opslaglocatie is de downloadmap op je apparaat.';
+  String get importHintPrivacyIdeaFile => 'Om een back-up te maken, ga je naar de instellingen en tik je op \"Exporteren\". Selecteer \"Als bestand\" en selecteer de tokens die je wilt exporteren. Tik dan op \"Exporteren\" en stel een wachtwoord in. De opslaglocatie is de downloadmap op je apparaat.';
 
   @override
-  String get importHint2FAS =>
-      'Selecteer uw 2FAS-back-up. Als u geen back-up hebt, maak er dan een aan in de 2FAS-app. Wij raden u aan een wachtwoord te gebruiken.';
+  String get importHint2FAS => 'Selecteer uw 2FAS-back-up. Als u geen back-up hebt, maak er dan een aan in de 2FAS-app. Wij raden u aan een wachtwoord te gebruiken.';
 
   @override
-  String get importHintAegisBackupFile =>
-      'Selecteer uw Aegis-export (.JSON).Als u geen export hebt, maak er dan een aan via het instellingenmenu in de Aegis-app. Het gebruik van een wachtwoord wordt aanbevolen.';
+  String get importHintAegisBackupFile => 'Selecteer uw Aegis-export (.JSON).Als u geen export hebt, maak er dan een aan via het instellingenmenu in de Aegis-app. Het gebruik van een wachtwoord wordt aanbevolen.';
 
   @override
   String get importHintAegisQrScan => 'Scan de QR-code die u ontvangt bij het overbrengen van items uit Aegis.';
@@ -694,24 +682,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get importHintGoogleQrScan => 'Scan de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.';
 
   @override
-  String get importHintGoogleQrFile =>
-      'Selecteer een afbeeldingsbestand met de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.\n!! Let op: het is niet veilig om de QR-code op je apparaat op te slaan, omdat de tokens niet versleuteld zijn !!';
+  String get importHintGoogleQrFile => 'Selecteer een afbeeldingsbestand met de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.\n!! Let op: het is niet veilig om de QR-code op je apparaat op te slaan, omdat de tokens niet versleuteld zijn !!';
 
   @override
-  String get importHintAuthenticatorProFile =>
-      'Om een back-up te maken van de Authenticator Pro app, navigeer je naar de instellingen en tik je op \"Auto back-up\". Selecteer een opslaglocatie en stel een wachtwoord in. Druk vervolgens op \"Nu back-uppen\" om de tokens te exporteren.';
+  String get importHintAuthenticatorProFile => 'Om een back-up te maken van de Authenticator Pro app, navigeer je naar de instellingen en tik je op \"Auto back-up\". Selecteer een opslaglocatie en stel een wachtwoord in. Druk vervolgens op \"Nu back-uppen\" om de tokens te exporteren.';
 
   @override
-  String get importHintFreeOtpPlusQrScan =>
-      'Scan de QR-code die u ontvangt wanneer u op de drie stippen in de tegel van de token drukt en selecteer \"QR-code delen\".';
+  String get importHintFreeOtpPlusQrScan => 'Scan de QR-code die u ontvangt wanneer u op de drie stippen in de tegel van de token drukt en selecteer \"QR-code delen\".';
 
   @override
-  String get importHintFreeOtpPlusFile =>
-      'Om een back-up van de FreeOTP+ app te maken, tikt u op de drie puntjes in de rechterbovenhoek en selecteert u \"Exporteren\". U kunt kiezen tussen JSON en URI formaat. We raden u aan de back-up te verwijderen na het importeren, omdat deze niet versleuteld is.';
+  String get importHintFreeOtpPlusFile => 'Om een back-up van de FreeOTP+ app te maken, tikt u op de drie puntjes in de rechterbovenhoek en selecteert u \"Exporteren\". U kunt kiezen tussen JSON en URI formaat. We raden u aan de back-up te verwijderen na het importeren, omdat deze niet versleuteld is.';
 
   @override
-  String get qrFileDecodeError =>
-      'Het was niet mogelijk om de QR code te decoderen van de geselecteerde afbeelding, gebruik in plaats daarvan de QR code scanner.';
+  String get qrFileDecodeError => 'Het was niet mogelijk om de QR code te decoderen van de geselecteerde afbeelding, gebruik in plaats daarvan de QR code scanner.';
 
   @override
   String get tokenLink => 'tokenlink';
@@ -726,8 +709,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get feedbackDescription => 'Als je vragen, suggesties of problemen hebt, laat het ons dan weten.';
 
   @override
-  String get feedbackHint =>
-      'Er wordt een kant-en-klare e-mail geopend die je naar ons kunt sturen. Indien gewenst wordt informatie over je apparaat en de versie van de applicatie toegevoegd. U kunt de e-mail controleren en bewerken voordat u deze verzendt.';
+  String get feedbackHint => 'Er wordt een kant-en-klare e-mail geopend die je naar ons kunt sturen. Indien gewenst wordt informatie over je apparaat en de versie van de applicatie toegevoegd. U kunt de e-mail controleren en bewerken voordat u deze verzendt.';
 
   @override
   String get feedbackPrivacyPolicy1 => 'Door feedback te sturen ga je akkoord met ons ';
@@ -757,8 +739,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noMailAppTitle => 'Geen mail app gevonden';
 
   @override
-  String get noMailAppDescription =>
-      'Er is geen e-mail app geïnstalleerd of geïnitialiseerd op dit apparaat, probeer het opnieuw wanneer u in staat bent om een e-mailbericht te verzenden.';
+  String get noMailAppDescription => 'Er is geen e-mail app geïnstalleerd of geïnitialiseerd op dit apparaat, probeer het opnieuw wanneer u in staat bent om een e-mailbericht te verzenden.';
 
   @override
   String get authenticationRequest => 'Verificatieverzoek';
@@ -774,8 +755,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get pleaseSyncManuallyWhenNetworkIsAvailable =>
-      'Synchroniseer de push tokens handmatig via de instellingen als er een netwerkverbinding beschikbaar is.';
+  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Synchroniseer de push tokens handmatig via de instellingen als er een netwerkverbinding beschikbaar is.';
 
   @override
   String get pushTokens => 'Push Tokens';
@@ -906,6 +886,17 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String get pushEndpointUrl => 'Push Endpoint URL';
+
+  @override
+  String get exampleUrl => 'Voer een geldige URL in zoals: \"https://example.com/\"';
+
+  @override
+  String mustNotBeEmpty(Object field) {
+    return '$field mag niet leeg zijn';
+  }
+
+  @override
   String get sendPushRequestResponseFailed => 'Het verzenden van het antwoord is mislukt. ';
 
   @override
@@ -936,6 +927,5 @@ class AppLocalizationsNl extends AppLocalizations {
   String get selectTokensToExportHelpTitle => 'Staat jouw token er niet bij?';
 
   @override
-  String get selectTokensToExportHelpContent =>
-      'Als een token niet in de lijst staat, is het niet gegarandeerd dat het geen privacyIDEA token is.\nMomenteel kunnen alleen handmatig toegevoegde en geïmporteerde tokens worden geëxporteerd.';
+  String get selectTokensToExportHelpContent => 'Als een token niet in de lijst staat, is het niet gegarandeerd dat het geen privacyIDEA token is.\nMomenteel kunnen alleen handmatig toegevoegde en geïmporteerde tokens worden geëxporteerd.';
 }
