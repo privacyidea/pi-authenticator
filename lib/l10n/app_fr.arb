@@ -476,6 +476,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "Impossible de se connecter au serveur.",
   "errorRollOutNotPossibleAnymore": "Le déploiement de ce jeton n'est plus possible.",
   "errorTokenExpired": "Le jeton {name} a expiré.",
   "@errorTokenExpired": {

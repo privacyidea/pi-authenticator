@@ -469,6 +469,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "Nie można połączyć się z serwerem.",
   "errorRollOutNotPossibleAnymore": "Wstać z łóżka tego tokena nie jest już możliwe.",
   "errorTokenExpired": "Token {name} wygasł.",
   "@errorTokenExpired": {
