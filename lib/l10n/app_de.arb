@@ -449,6 +449,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "Konnte keine Verbindung zum Server herstellen.",
   "errorRollOutNoConnectionToServer": "Der Rollout von Token {name} ist fehlgeschlagen, der Server konnte nicht erreicht werden.",
   "authToAcceptPushRequest": "Bitte authentifizieren Sie sich, um die Anfrage anzunehmen.",
   "authToDeclinePushRequest": "Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.",
@@ -508,6 +509,7 @@
   "selectImportSource": "Importquelle auswählen",
   "selectImportType": "Wie wollen Sie die Token importieren?",
   "importTokens": "Token importieren",
+  "importNTokens": "{count, plural, zero{Keine Token importieren} one{Ein Token importieren} other{{count} Token importieren}}",
   "selectFile": "Datei auswählen",
   "decrypt": "Entschlüsseln",
   "tokensAreEncrypted": "Die Token sind verschlüsselt. Bitte gib das Passwort ein, um sie zu entschlüsseln.",
@@ -524,7 +526,7 @@
   "importFailedToken": "{count, plural, zero{Kein Token konnte nicht importiert werden.} one{Importieren eines Tokens fehlgeschlagen.} other{Der Import von {count} Token ist fehlgeschlagen.}}",
   "importExistingToken": "{count, plural, zero{Es wurde kein Token gefunden, das sich bereits in der App befindet.} one{Es wurde ein Token gefunden, das sich bereits in der Anwendung befindet.} other{Es wurden {count} Token gefunden, die sich bereits in der Anwendung befinden.}}",
   "importConflictToken": "{count, plural, zero{Es besteht kein Konflikt mit bereits existierenden Token.} one{Es besteht ein Konflikt mit bereits vorhandenen Token.\nBitte wählen Sie aus, welches Sie behalten möchten.} other{Es bestehen Konflikte mit bereits vorhandenen Token.\nBitte wählen Sie die Token aus, die Sie behalten möchten.}}",
-  "importNewToken": "{count, plural, zero{Es wurde kein neues Token gefunden.} one{Es wurde ein neues Token gefunden, das importiert wird.} other{Es wurden {count} neue Token gefunden, die importiert werden.}}",
+  "importNewToken": "{count, plural, zero{Es wurde kein neues Token gefunden.} one{Es wurde ein neues Token gefunden, das importiert werden kann} other{Es wurden {count} neue Token gefunden, die importiert werden können.}}",
   "importHintPrivacyIdeaQrScan": "Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.",
   "importHintPrivacyIdeaFile": "Um ein Backup zu erstellen, gehen Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie \"Als Datei\" aus, wählen Sie die Token aus, die Sie exportieren möchten. Anschließend tippen Sie auf \"Exportieren\" und setzen Sie ein Passwort. Der Speicherort ist der Download-Ordner auf Ihrem Gerät.",
   "importHint2FAS": "Wählen Sie das 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.",
@@ -640,5 +642,11 @@
   "passwordMustContainSpecialCharacter": "Das Passwort muss ein Sonderzeichen enthalten",
   "passwordsDoNotMatch": "Die Passwörter stimmen nicht überein",
   "selectTokensToExportHelpTitle": "Ist Ihr Token nicht aufgelistet?",
-  "selectTokensToExportHelpContent": "Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden."
+  "selectTokensToExportHelpContent": "Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden.",
+  "findingQrCodeInImage": "Suche nach QR-Code im Bild...",
+  "qrNotFound": "Kein QR-Code gefunden!",
+  "qrInFileNotFound": "Es wurde kein QR-Code in dem ausgewählten Bild gefunden.",
+  "qrInFileNotFound2": "Sie können mir zeigen, wo sich der QR-Code befindet.",
+  "qrInFileNotFound3": "Ich erwarte, dass ich den Code finde, wenn er sich in der Mitte des markierten Bereichs befindet.",
+  "markQrCode": "QR-Code markieren"
 }

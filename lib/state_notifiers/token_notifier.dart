@@ -5,12 +5,13 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import '../model/enums/token_import_type.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
@@ -28,7 +29,6 @@ import '../processors/scheme_processors/token_import_scheme_processors/token_imp
 import '../repo/secure_token_repository.dart';
 import '../utils/firebase_utils.dart';
 import '../utils/globals.dart';
-import '../utils/home_widget_utils.dart';
 import '../utils/identifiers.dart';
 import '../utils/lock_auth.dart';
 import '../utils/logger.dart';
@@ -37,6 +37,7 @@ import '../utils/riverpod_providers.dart';
 import '../utils/rsa_utils.dart';
 import '../utils/utils.dart';
 import '../utils/view_utils.dart';
+import '../views/import_tokens_view/pages/import_plain_tokens_page.dart';
 
 class TokenNotifier extends StateNotifier<TokenState> {
   static final Map<String, Timer> _hidingTimers = {};
@@ -52,10 +53,8 @@ class TokenNotifier extends StateNotifier<TokenState> {
     TokenState? initialState,
     TokenRepository? repository,
     RsaUtils? rsaUtils,
-    LegacyUtils? legacy,
     PrivacyIdeaIOClient? ioClient,
     FirebaseUtils? firebaseUtils,
-    HomeWidgetUtils? homeWidgetUtils,
   })  : _rsaUtils = rsaUtils ?? const RsaUtils(),
         _repo = repository ?? const SecureTokenRepository(),
         _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
@@ -280,8 +279,22 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// There is no need to use mutexes because the updating functions are always using the latest version of the updating tokens.
   */
 
+  /// Adds a new token and returns true if successful, false if not.
+  Future<bool> addNewToken(Token token) async {
+    final success = await _addOrReplaceToken(token);
+    await _handlePushTokensIfExist();
+    return success;
+  }
+
   /// Adds or replaces a token and returns true if successful, false if not.
   Future<bool> addOrReplaceToken(Token token) => _addOrReplaceToken(token);
+
+  /// Adds new tokens and returns the tokens that could not be added.
+  Future<List<Token>> addTokens(List<Token> tokens) async {
+    final failedTokens = await _addOrReplaceTokens(tokens);
+    await _handlePushTokensIfExist();
+    return failedTokens;
+  }
 
   /// Adds or replaces a list of tokens and returns the tokens that could not be added or replaced.
   Future<List<Token>> addOrReplaceTokens(List<Token> tokens) => _addOrReplaceTokens(tokens);
@@ -405,6 +418,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       Logger.warning('Tried to rollout a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
       return false;
     }
+
     assert(pushToken.url != null, 'Token url is null. Cannot rollout token without url.');
     Logger.info('Rolling out token "${pushToken.id}"', name: 'token_notifier.dart#rolloutPushToken');
     if (pushToken.isRolledOut) {
@@ -588,6 +602,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// as this can not be guaranteed to work. There is a manual option available
   /// through the settings also.
   Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) async {
+    Logger.info('Updating firebase token for all push tokens.', name: 'push_provider.dart#updateFirebaseToken');
     firebaseToken ??= await _firebaseUtils.getFBToken();
     if (firebaseToken == null) {
       Logger.warning('Could not update firebase token because no firebase token is available.', name: 'push_provider.dart#updateFirebaseToken');
@@ -614,7 +629,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       Logger.warning('Updating firebase token for push token "${p.serial}"', name: 'push_provider.dart#updateFirebaseToken');
       String timestamp = DateTime.now().toUtc().toIso8601String();
       String message = '$firebaseToken|${p.serial}|$timestamp';
-      String? signature = await const RsaUtils().trySignWithToken(p, message);
+      String? signature = await _rsaUtils.trySignWithToken(p, message);
       if (signature == null) {
         failedTokens.add(p);
         allUpdated = false;
@@ -660,10 +675,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     List<Token> tokens = await _tokensFromUri(uri);
     tokens = tokens
-        .map((e) => e.copyWith(
+        .map(
+          (e) => e.copyWith(
             origin: e.origin?.copyWith(source: TokenOriginSourceType.qrScan) ??
-                TokenOriginSourceType.qrScan.toTokenOrigin(data: uri.toString(), isPrivacyIdeaToken: null)))
+                TokenOriginSourceType.qrScan.toTokenOrigin(data: uri.toString(), isPrivacyIdeaToken: null),
+          ),
+        )
         .toList();
+
     await _addOrReplaceTokens(tokens);
     await _handlePushTokensIfExist();
   }
@@ -682,6 +701,19 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<List<Token>> _tokensFromUri(Uri uri) async {
     try {
       final results = await TokenImportSchemeProcessor.processUriByAny(uri);
+      //  final anyConflict = tokens.any((newToken) => state.tokens.any((stateToken) => stateToken.sameValuesAs(newToken)));
+      if (results != null && results.length > 1) {
+        final tokensToKeep = await Navigator.of(globalNavigatorKey.currentContext!).push<List<Token>>(
+          MaterialPageRoute<List<Token>>(
+            builder: (context) => ImportPlainTokensPage(
+              titleName: AppLocalizations.of(context)!.importTokens,
+              processorResults: results,
+              selectedType: TokenImportType.qrScan,
+            ),
+          ),
+        );
+        return tokensToKeep ?? [];
+      }
       return results?.whereType<ProcessorResultSuccess<Token>>().map((e) => e.resultData).toList() ?? [];
     } catch (error, stackTrace) {
       showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
@@ -709,6 +741,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<void> _handlePushTokensIfExist() async {
+    Logger.info('Handling push tokens if they exist.', name: 'token_notifier.dart#_handlePushTokensIfExist');
     final pushTokens = state.pushTokens;
     if (pushTokens.isNotEmpty || state.hasOTPTokens == false) {
       if (globalRef?.read(settingsProvider).hidePushTokens == true) {

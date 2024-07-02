@@ -79,20 +79,24 @@ class TokenWidgetBase extends ConsumerWidget {
               ],
             ),
             data: token,
-            child: TokenWidgetSlideable(
-              token: token,
-              actions: actions,
-              stack: stack,
-              tile: tile,
-            ),
-          )
-        : draggingSortable == token
-            ? const SizedBox()
-            : TokenWidgetSlideable(
+            child: ClipRRect(
+              child: TokenWidgetSlideable(
                 token: token,
                 actions: actions,
                 stack: stack,
                 tile: tile,
+              ),
+            ),
+          )
+        : draggingSortable == token
+            ? const SizedBox()
+            : ClipRRect(
+                child: TokenWidgetSlideable(
+                  token: token,
+                  actions: actions,
+                  stack: stack,
+                  tile: tile,
+                ),
               );
   }
 }

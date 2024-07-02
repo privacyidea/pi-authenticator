@@ -2,9 +2,8 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/model/token_import/token_origin_data.dart';
-
 import '../../../model/enums/token_origin_source_type.dart';
+import '../../../model/token_import/token_origin_data.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';
@@ -70,7 +69,14 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     }
     Token newToken;
     try {
-      newToken = Token.fromUriMap(uriMap);
+      newToken = Token.fromUriMap(uriMap).copyWith(
+        origin: TokenOriginData(
+          appName: getCurrentAppName(),
+          source: TokenOriginSourceType.link,
+          data: uri.toString(),
+          createdAt: DateTime.now(),
+        ),
+      );
     } on FormatException catch (e) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
       return [ProcessorResultFailed(e.message)];
@@ -116,10 +122,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
     }
     infoLog += '\n${key.padLeft(9)} | $value';
   });
-  Logger.info(
-    infoLog,
-    name: 'parsing_utils.dart#_parseOtpAuth',
-  );
+  Logger.info(infoLog, name: 'parsing_utils.dart#_parseOtpAuth');
 
   final (label, issuer) = _parseLabelAndIssuer(uri);
   uriMap[URI_LABEL] = label;

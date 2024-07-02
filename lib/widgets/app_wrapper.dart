@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
@@ -42,36 +41,30 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
       onResume: () async {
         await ref.read(tokenProvider.notifier).loadStateFromRepo();
         Logger.info('Refreshed tokens on resume', name: 'tokenProvider#appStateProvider');
-
         final prProvider = ref.read(pushRequestProvider.notifier);
         await prProvider.loadStateFromRepo();
         await prProvider.pollForChallenges(isManually: false);
         Logger.info('Polled for challenges on resume', name: 'pushRequestProvider#appStateProvider');
-
         final hidden = await HomeWidgetUtils().hideAllOtps();
         if (hidden) Logger.info('Hid all HomeWidget OTPs on resume', name: 'tokenProvider#appStateProvider');
-
-        log('App resumed');
       },
-      onInactive: () => log('App inactive'),
+      // onInactive: () => log('App inactive'),
       onHide: () async {
-        await ref.read(tokenProvider.notifier).saveStateOnMinimizeApp();
-        Logger.info('Saved tokens on Hide', name: 'tokenProvider#appStateProvider');
-
+        if (await ref.read(tokenProvider.notifier).saveStateOnMinimizeApp() == false) {
+          Logger.error('Failed to save tokens on Hide', name: 'tokenProvider#appStateProvider');
+        }
+        if (ref.read(tokenFolderProvider.notifier).collapseLockedFolders() == false) {
+          Logger.error('Failed to collapse locked folders on Hide', name: 'tokenFolderProvider#appStateProvider');
+        }
         await FlutterLocalNotificationsPlugin().cancelAll();
-        Logger.info('Cancelled all notifications on Hide', name: 'tokenProvider#appStateProvider');
-
-        ref.read(tokenFolderProvider.notifier).collapseLockedFolders();
         Logger.info('Collapsed locked folders on Hide', name: 'tokenFolderProvider#appStateProvider');
-
-        log('App hidden');
       },
-      onShow: () => log('App shown'),
-      onPause: () => log('App paused'),
-      onRestart: () => log('App restarted'),
-      onDetach: () => log('App detached'),
+      //     onShow: () => log('App shown'),
+      //     onPause: () => log('App paused'),
+      //     onRestart: () => log('App restarted'),
+      //     onDetach: () => log('App detached'),
       onExitRequested: () async {
-        log('App exit requested');
+        Logger.info('Exit requested', name: 'onExitRequested#AppWrapper');
         return AppExitResponse.exit;
       },
     );
@@ -90,7 +83,6 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
         listeners: [
           NavigationDeepLinkListener(deeplinkProvider: deeplinkProvider),
           HomeWidgetTokenStateListener(tokenProvider: tokenProvider),
-          // SortableListener(tokenProvider, tokenFolderProvider),
         ],
         child: EasyDynamicThemeWidget(
           child: widget.child,

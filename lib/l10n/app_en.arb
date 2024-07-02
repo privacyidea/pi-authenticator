@@ -465,6 +465,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "Could not connect to server",
   "errorRollOutNotPossibleAnymore": "Rolling out this Token is not possible anymore.",
   "errorTokenExpired": "The token {name} has expired.",
   "@errorTokenExpired": {
@@ -519,6 +520,7 @@
   "selectImportSource": "Select import source",
   "selectImportType": "How do you want to import the tokens?",
   "importTokens": "Import token",
+  "importNTokens": "{count, plural, zero{Import no tokens} one{Import one token} other{Import {count} tokens}}",
   "selectFile": "Select file",
   "decrypt": "Decrypt",
   "tokensAreEncrypted": "The tokens are encrypted. Please enter the password to decrypt them.",
@@ -535,7 +537,7 @@
   "importFailedToken": "{count, plural, zero{No token Failed to import.} one{Failed to import a token.} other{Failed to import {count} tokens.}}",
   "importExistingToken": "{count, plural, zero{No token was found that is already in the application.} one{A token was found that already exists in the application.} other{{count} tokens was found that are already in the application.}}",
   "importConflictToken": "{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with existing tokens.\nPlease select which one you would like to keep.} other{There are conflicts with existing tokens.\nPlease select the tokens you wish to keep.}}",
-  "importNewToken": "{count, plural, zero{No new token has been found.} one{A new token has been found and is being imported.} other{{count} new tokens have been found and will be imported.}}",
+  "importNewToken": "{count, plural, zero{No new token was found.} one{A new token was found that can be imported.} other{{count} new tokens were found that can be imported.}}",
   "importHintPrivacyIdeaQrScan": "Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.",
   "importHintPrivacyIdeaFile": "To create a backup, go to the settings and tap on \"Export\". Select \"As file\", select the tokens you want to export. Then tap on \"Export\" and set a password. The storage location is the download folder on your device.",
   "importHint2FAS": "Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.",
@@ -683,5 +685,11 @@
   "passwordMustContainSpecialCharacter": "Password must contain special character",
   "passwordsDoNotMatch": "Passwords do not match",
   "selectTokensToExportHelpTitle": "Is your token not listed?",
-  "selectTokensToExportHelpContent": "If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.\nCurrently only manually added and imported tokens are exportable."
+  "selectTokensToExportHelpContent": "If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.\nCurrently only manually added and imported tokens are exportable.",
+  "findingQrCodeInImage": "Looking for QR code in image...",
+  "qrNotFound": "No QR code found!",
+  "qrInFileNotFound": "No QR code was found in the selected image.",
+  "qrInFileNotFound2": "You can show me where the QR code is located.",
+  "qrInFileNotFound3": "I expect i will find the code if it is in the middle of the marked area.",
+  "markQrCode": "Mark QR Code"
 }

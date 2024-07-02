@@ -145,12 +145,13 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
   }
 
   Future<bool> _saveToFileAndroid(BuildContext context, String encryptedTokens) async {
+    final appLocalizations = AppLocalizations.of(context)!;
     try {
       final path = 'storage/emulated/0/Download/${_getFileName()}'.replaceAll(RegExp(r'\s'), '-');
       final file = File(path);
       await file.writeAsString(encryptedTokens);
 
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedToDownloadsFolder)));
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(appLocalizations.fileSavedToDownloadsFolder)));
       return true;
     } catch (e) {
       if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.errorSavingFile, null);
@@ -160,11 +161,12 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
   }
 
   Future<bool> _saveToFileIOS(BuildContext context, String encryptedTokens) async {
+    final appLocalizations = AppLocalizations.of(context)!;
     final Directory downloadsDir = await getApplicationDocumentsDirectory();
     final file = File('${downloadsDir.path}/${_getFileName()}');
     try {
       await file.writeAsString(encryptedTokens);
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.fileSavedToDownloadsFolder)));
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(appLocalizations.fileSavedToDownloadsFolder)));
       return true;
     } catch (e) {
       if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.errorSavingFile, null);

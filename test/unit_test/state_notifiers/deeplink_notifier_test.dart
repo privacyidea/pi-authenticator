@@ -52,7 +52,6 @@ void _testDeeplinkNotifier() {
         ]),
       );
       container.listen(deeplinkProvider, (prev, next) {
-        print('prev: $prev, next: $next');
         expect(next?.uri, equals(list.removeAt(0)));
         expect(next?.fromInit, isFalse);
       });
