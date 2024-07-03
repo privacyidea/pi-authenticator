@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/widgets/countdownbutton.dart';
+import 'package:privacyidea_authenticator/widgets/countdown_button.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
@@ -69,7 +69,7 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(AppLocalizations.of(context)!.cancel),
           ),
-          Countdownbutton(
+          CountdownButton(
             onPressed: () => Navigator.of(context).pop(true),
             countdownSeconds: 5,
             child: Text(AppLocalizations.of(context)!.ok),

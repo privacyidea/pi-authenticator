@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/extensions/color_extension.dart';
 
-class Countdownbutton extends StatefulWidget {
+class CountdownButton extends StatefulWidget {
   final int countdownSeconds;
   final void Function() onPressed;
   final Widget child;
   final Color? color1;
   final Color? color2;
-  const Countdownbutton({required this.countdownSeconds, required this.onPressed, super.key, required this.child, this.color1, this.color2});
+  const CountdownButton({required this.countdownSeconds, required this.onPressed, super.key, required this.child, this.color1, this.color2});
 
   @override
-  State<Countdownbutton> createState() => _CountdownbuttonState();
+  State<CountdownButton> createState() => _CountdownButtonState();
 }
 
-class _CountdownbuttonState extends State<Countdownbutton> with SingleTickerProviderStateMixin {
+class _CountdownButtonState extends State<CountdownButton> with SingleTickerProviderStateMixin {
   late int currentCount;
   late AnimationController animation;
   late DateTime lastCountDateTime;
@@ -27,9 +28,13 @@ class _CountdownbuttonState extends State<Countdownbutton> with SingleTickerProv
       vsync: this,
       duration: const Duration(seconds: 1),
     );
-
-    if (widget.color1 != null) color1 = widget.color1!;
-    if (widget.color2 != null) color2 = widget.color2!;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() {
+        color1 = widget.color1 ?? Theme.of(context).colorScheme.primary;
+        color2 = widget.color2 ?? Theme.of(context).colorScheme.primary.mixWith(Colors.grey.shade700);
+      });
+    });
     _resetCount();
   }
 
