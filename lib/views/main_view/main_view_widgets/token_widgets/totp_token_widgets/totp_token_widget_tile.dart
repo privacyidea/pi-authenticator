@@ -71,7 +71,7 @@ class TOTPTokenWidgetTile extends ConsumerWidget {
         child: HideableWidget(
           token: token,
           isHidden: token.isHidden && !isPreview,
-          child: TotpTokenWidgetTileCountdown(token),
+          child: TotpTokenWidgetTileCountdown(token.period),
         ),
       ),
     );

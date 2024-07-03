@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../model/tokens/totp_token.dart';
-
 class TotpTokenWidgetTileCountdown extends StatefulWidget {
-  final TOTPToken token;
-  const TotpTokenWidgetTileCountdown(this.token, {super.key});
+  final int period;
+  const TotpTokenWidgetTileCountdown(this.period, {super.key});
   @override
   State<TotpTokenWidgetTileCountdown> createState() => _TotpTokenWidgetTileCountdownState();
 }
 
 class _TotpTokenWidgetTileCountdownState extends State<TotpTokenWidgetTileCountdown> with SingleTickerProviderStateMixin {
-  double secondsLeft = 0;
+  double secondsUntilNextOTP = 0;
   late AnimationController animation;
   late DateTime lastCount;
   @override
@@ -18,11 +16,11 @@ class _TotpTokenWidgetTileCountdownState extends State<TotpTokenWidgetTileCountd
     super.initState();
     animation = AnimationController(
       vsync: this,
-      duration: Duration(seconds: widget.token.period),
+      duration: Duration(seconds: widget.period),
     );
-    animation.forward(from: 1 - widget.token.secondsUntilNextOTP / widget.token.period);
-    secondsLeft = widget.token.secondsUntilNextOTP;
     lastCount = DateTime.now();
+    secondsUntilNextOTP = widget.period - (lastCount.millisecondsSinceEpoch % (widget.period * 1000)) / 1000;
+    animation.forward(from: 1 - secondsUntilNextOTP / widget.period);
     _startCountDown();
   }
 
@@ -37,15 +35,19 @@ class _TotpTokenWidgetTileCountdownState extends State<TotpTokenWidgetTileCountd
     final msSinceLastCount = now.difference(lastCount).inMilliseconds;
     lastCount = now;
     if (!mounted) return;
-    if (secondsLeft - (msSinceLastCount / 1000) > 0) {
-      setState(() => secondsLeft -= msSinceLastCount / 1000);
-      if (msSinceLastCount > 1100) animation.forward(from: 1 - secondsLeft / widget.token.period);
+    if (secondsUntilNextOTP - (msSinceLastCount / 1000) > 0) {
+      setState(() {
+        secondsUntilNextOTP -= msSinceLastCount / 1000;
+        animation.forward(from: 1 - secondsUntilNextOTP / widget.period);
+      });
     } else {
-      setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
-      animation.forward(from: 1 - secondsLeft / widget.token.period);
+      setState(() {
+        secondsUntilNextOTP = widget.period - (lastCount.millisecondsSinceEpoch % (widget.period * 1000)) / 1000;
+        animation.forward(from: 1 - secondsUntilNextOTP / widget.period);
+      });
     }
 
-    final msUntilNextSecond = (secondsLeft * 1000).toInt() % 1000 + 1; // +1 to avoid 0
+    final msUntilNextSecond = (secondsUntilNextOTP * 1000).toInt() % 1000 + 1; // +1 to avoid 0
     Future.delayed(Duration(milliseconds: msUntilNextSecond), () => _startCountDown());
   }
 
@@ -54,7 +56,7 @@ class _TotpTokenWidgetTileCountdownState extends State<TotpTokenWidgetTileCountd
         alignment: Alignment.center,
         children: [
           Text(
-            '${secondsLeft.round()}',
+            '${secondsUntilNextOTP.round()}',
             overflow: TextOverflow.fade,
             softWrap: false,
           ),
