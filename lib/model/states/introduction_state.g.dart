@@ -32,4 +32,5 @@ const _$IntroductionEnumMap = {
   Introduction.addFolder: 'addFolder',
   Introduction.pollForChallenges: 'pollForChallenges',
   Introduction.hidePushTokens: 'hidePushTokens',
+  Introduction.exportTokens: 'exportTokens',
 };
