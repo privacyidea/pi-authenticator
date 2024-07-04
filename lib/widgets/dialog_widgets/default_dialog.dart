@@ -35,7 +35,7 @@ class DefaultDialog extends StatelessWidget {
           actionsAlignment: actionsAlignment ?? MainAxisAlignment.end,
           scrollable: scrollable ?? false,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
+          actionsPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
           buttonPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
           insetPadding: const EdgeInsets.fromLTRB(16, 32, 16, 12),
           titlePadding: const EdgeInsets.all(12),

@@ -29,6 +29,7 @@ extension IntroductionX on Introduction {
             Introduction.addFolder.isConditionFulfilled(ref, state) == false,
         Introduction.hidePushTokens =>
           ref.watch(settingsProvider).hidePushTokens && state.isCompleted(Introduction.pollForChallenges) && state.isUncompleted(Introduction.hidePushTokens),
+        Introduction.exportTokens => state.isUncompleted(Introduction.exportTokens),
       };
 
   String hintText(AppLocalizations localizations) => switch (this) {
@@ -42,5 +43,6 @@ extension IntroductionX on Introduction {
         Introduction.addFolder => localizations.introAddFolder,
         Introduction.pollForChallenges => localizations.introPollForChallenges,
         Introduction.hidePushTokens => localizations.introHidePushTokens,
+        Introduction.exportTokens => 'Not implemented',
       };
 }
