@@ -18,11 +18,28 @@ class TokenFolderNotifier extends StateNotifier<TokenFolderState> {
     _init();
   }
 
-  void _init() async {
+  void _init() {
+    initState = _loadFromRepo();
+  }
+
+  Future<TokenFolderState> _loadFromRepo() async {
     _loadingRepoMutex.acquire();
-    initState = Future(() async => state = TokenFolderState(folders: await _repo.loadFolders()));
-    await initState;
-    _loadingRepoMutex.release();
+    try {
+      final folders = await _repo.loadFolders();
+      _loadingRepoMutex.release();
+      final newState = TokenFolderState(folders: folders);
+      state = newState;
+      return newState;
+    } catch (e, s) {
+      Logger.error(
+        'Failed to load folders',
+        name: 'TokenFolderNotifier#_loadFromRepo',
+        error: e,
+        stackTrace: s,
+      );
+      _loadingRepoMutex.release();
+      return state;
+    }
   }
 
   Future<bool> _addOrReplaceFolders(List<TokenFolder> folders) async {
@@ -89,7 +106,6 @@ class TokenFolderNotifier extends StateNotifier<TokenFolderState> {
   }
 
   Future<bool> addNewFolder(String name) => _addNewFolder(name);
-
   Future<bool> removeFolder(TokenFolder folder) => _removeFolder(folder);
 
   /// Search for the current version of the given folder and update it with the updater function.
