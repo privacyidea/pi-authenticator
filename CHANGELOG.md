@@ -6,7 +6,7 @@
    The differentiation will be improved in future versions.
  - Added support for privacyIDEA's "require presence".
  - Further import sources have been added.
- - Improved recognition of QR codes from images.
+ - Improved recognition of QR codes from image files.
 
 ## [4.3.0] - 2024-04-18
  - Support for importing tokens from Google, Aegis and 2FAS Authenticator has been added. More import sources will be added in the future.
