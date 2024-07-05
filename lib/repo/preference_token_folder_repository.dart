@@ -28,6 +28,8 @@ class PreferenceTokenFolderRepository extends TokenFolderRepository {
 
   @override
   Future<bool> saveReplaceList(List<TokenFolder> folders) async {
+    
+      Logger.info('Saving ${folders.length} folders to preferences...', name: 'PreferenceTokenFolderRepository#saveReplaceList', stackTrace: StackTrace.current);
     try {
       final jsons = folders.map((e) => e.toJson()).toList();
       final json = jsonEncode(jsons);
