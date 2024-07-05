@@ -130,10 +130,13 @@ class SecureTokenRepository implements TokenRepository {
           }
         }
         if (failedTokens.isNotEmpty) {
-          Logger.warning('Could not save all tokens to secure storage',
-              name: 'secure_token_repository.dart#saveOrReplaceTokens', stackTrace: StackTrace.current);
+          Logger.error(
+            'Could not save all tokens (${tokens.length - failedTokens.length}/${tokens.length}) to secure storage',
+            name: 'secure_token_repository.dart#saveOrReplaceTokens',
+            stackTrace: StackTrace.current,
+          );
         } else {
-          Logger.info('Saved all (${tokens.length}) tokens to secure storage', name: 'secure_token_repository.dart#saveOrReplaceTokens');
+          Logger.info('Saved ${tokens.length}/${tokens.length} tokens to secure storage', name: 'secure_token_repository.dart#saveOrReplaceTokens');
         }
         return failedTokens;
       });

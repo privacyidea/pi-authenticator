@@ -249,6 +249,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   /// Updates a list of tokens and returns the updated tokens if successful, the old tokens if not and an empty list if the tokens does not exist.
   Future<List<T>> _updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) async {
+    if (tokens.isEmpty) return [];
     await _updatingTokensMutex.acquire();
     final oldState = state;
 

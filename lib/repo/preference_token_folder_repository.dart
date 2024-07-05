@@ -18,6 +18,7 @@ class PreferenceTokenFolderRepository extends TokenFolderRepository {
       if (foldersString == null) return [];
       final jsons = jsonDecode(foldersString) as List<dynamic>;
       final folders = jsons.map((e) => TokenFolder.fromJson(e)).toList();
+      Logger.info('Loaded ${folders.length} folders from preferences', name: 'PreferenceTokenFolderRepository#loadFolders', stackTrace: StackTrace.current);
       return folders;
     } catch (e, s) {
       Logger.error('Failed to load folders', name: 'PreferenceTokenFolderRepository#loadFolders', error: e, stackTrace: s);
@@ -31,6 +32,7 @@ class PreferenceTokenFolderRepository extends TokenFolderRepository {
       final jsons = folders.map((e) => e.toJson()).toList();
       final json = jsonEncode(jsons);
       await _prefs.then((prefs) => prefs.setString(_tokenFoldersKey, json));
+      Logger.info('Saved ${folders.length} folders to preferences', name: 'PreferenceTokenFolderRepository#saveFolders', stackTrace: StackTrace.current);
       return true;
     } catch (e, s) {
       Logger.error('Failed to save folders', name: 'PreferenceTokenFolderRepository#saveFolders', error: e, stackTrace: s);
