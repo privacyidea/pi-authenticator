@@ -1,6 +1,14 @@
 # Changelog
 
-## [4.3.0] - 
+## [4.4.0] - 
+ - It is now possible to export tokens where it can be ensured that they are not privacyIDEA tokens.
+   Currently, it cannot be ruled out that tokens added via the QR code scanner originate from privacyIDEA.
+   The differentiation will be improved in future versions.
+ - Added support for privacyIDEA's "require presence".
+ - Further import sources have been added.
+ - Improved recognition of QR codes from images.
+
+## [4.3.0] - 2024-04-18
  - Support for importing tokens from Google, Aegis and 2FAS Authenticator has been added. More import sources will be added in the future.
  - Added feedback option to the settings.
  - Push tokens can now be moved to a separate list to not clutter the main list, because there is no interaction with them like with other token types.
@@ -45,7 +53,6 @@
 ## [4.1.0] - 2022-11-25
 
 ### Added
-
 - Push token can be locked
 - Polish translation
 - 'appimage' field in QR codes will be read and the image will be shown on the left side of the row
