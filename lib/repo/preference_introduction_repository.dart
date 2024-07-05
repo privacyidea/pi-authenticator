@@ -23,9 +23,7 @@ class PreferenceIntroductionRepository implements IntroductionRepository {
       final encodedIntroductions = (await _prefs).getString(_completedIntroductionsKey);
       if (encodedIntroductions == null) return const IntroductionState();
       final decodedIntroductions = jsonDecode(encodedIntroductions);
-      final introductionsState = IntroductionState.fromJson(decodedIntroductions);
-      _m.release();
-      return introductionsState;
+      return IntroductionState.fromJson(decodedIntroductions);
     } catch (e, s) {
       Logger.warning(
         'Failed to load completed introductions',
@@ -44,7 +42,6 @@ class PreferenceIntroductionRepository implements IntroductionRepository {
     try {
       final encodedIntroductions = jsonEncode(introductions);
       await (await _prefs).setString(_completedIntroductionsKey, encodedIntroductions);
-      _m.release();
       return true;
     } catch (e, s) {
       Logger.warning(
