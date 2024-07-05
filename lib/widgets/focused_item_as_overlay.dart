@@ -85,7 +85,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
 
   @override
   void initState() {
-    Logger.warning("FocusedItemOverlay: initState");
+    Logger.info("FocusedItemOverlay: initState");
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _updateOverlay();
 
