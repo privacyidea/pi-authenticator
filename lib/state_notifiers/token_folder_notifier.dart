@@ -18,8 +18,11 @@ class TokenFolderNotifier extends StateNotifier<TokenFolderState> {
     _init();
   }
 
-  void _init() {
+  void _init() async {
+    _loadingRepoMutex.acquire();
     initState = Future(() async => state = TokenFolderState(folders: await _repo.loadFolders()));
+    await initState;
+    _loadingRepoMutex.release();
   }
 
   Future<bool> _addOrReplaceFolders(List<TokenFolder> folders) async {
