@@ -5,19 +5,23 @@ import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
+import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/model/states/token_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/network_utils.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
 import 'token_notifier_test.mocks.dart';
@@ -25,6 +29,7 @@ import 'token_notifier_test.mocks.dart';
 @GenerateMocks(
   [
     TokenRepository,
+    SettingsRepository,
     RsaUtils,
     PrivacyIdeaIOClient,
     FirebaseUtils,
@@ -348,7 +353,11 @@ void _testTokenNotifier() {
       expect(pushToken.sslVerify, pushTokenShouldBe.sslVerify);
     });
     test('rolloutPushToken', () async {
-      final container = ProviderContainer();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
       final mockRepo = MockTokenRepository();
       final mockIOClient = MockPrivacyIdeaIOClient();
       final mockFirebaseUtils = MockFirebaseUtils();
