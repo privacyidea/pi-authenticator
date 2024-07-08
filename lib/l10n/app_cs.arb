@@ -6,7 +6,7 @@
   "patchNotesV4_4_0NewFeatures1": "Nyní je možné exportovat tokeny, u kterých lze zajistit, že se nejedná o tokeny privacyIDEA. V současné době nelze vyloučit, že tokeny přidané prostřednictvím čtečky QR kódů pocházejí z aplikace privacyIDEA. Rozlišování bude v budoucích verzích vylepšeno.",
   "patchNotesV4_4_0NewFeatures2": "Přidána podpora pro \"require presence\" aplikace privacyIDEA.",
   "patchNotesV4_4_0Improvement1": "Byly přidány další dovozní zdroje.",
-  "patchNotesV4_4_0Improvement2": "Vylepšeno rozpoznávání QR kódů z obrázků.",
+  "patchNotesV4_4_0Improvement2": "Bylo vylepšeno rozpoznávání QR kódů z obrazových souborů.",
   "patchNotesV4_3_1BugFix1": "Opraven problém, kdy nebyla zobrazena hodnota otp po ověření na některých zařízeních.",
   "patchNotesV4_3_1Improvement1": "Skener QR kódů byl vylepšen.",
   "patchNotesV4_3_0NewFeatures1": "Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.",

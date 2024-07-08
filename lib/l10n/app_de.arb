@@ -6,7 +6,7 @@
   "patchNotesV4_4_0NewFeatures1": "Es ist nun möglich, Token zu exportieren, bei denen sichergestellt werden kann, dass es sich nicht um privacyIDEA Token handelt. Derzeit kann nicht ausgeschlossen werden, dass über den QR-Code-Scanner hinzugefügte Token von privacyIDEA stammen. Die Differenzierung wird in zukünftigen Versionen verbessert.",
   "patchNotesV4_4_0NewFeatures2": "Unterstützung für privacyIDEA's \"require presence\" hinzugefügt.",
   "patchNotesV4_4_0Improvement1": "Es wurden weitere Importquellen hinzugefügt.",
-  "patchNotesV4_4_0Improvement2": "Die erkennung von QR-Codes aus Bildern wurde verbessert.",
+  "patchNotesV4_4_0Improvement2": "Die erkennung von QR-Codes aus Bilddateien wurde verbessert.",
   "patchNotesV4_3_1BugFix1": "Ein Problem wurde behoben, bei dem der otp-Wert nach der Authentifizierung auf einigen Geräten nicht angezeigt wurde.",
   "patchNotesV4_3_1Improvement1": "Der QR-Code-Scanner wurde verbessert.",
   "patchNotesV4_3_0NewFeatures1": "Unterstützung für den Import von Token von Google, Aegis und 2FAS Authenticator hinzugefügt. Weitere Importquellen werden in Zukunft hinzugefügt.",
