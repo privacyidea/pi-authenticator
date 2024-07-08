@@ -29,6 +29,7 @@ void _testPushRequestNotifier() {
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
       final provider = StateNotifierProvider<PushRequestNotifier, PushRequestState>((ref) => PushRequestNotifier(
+            ref: ref,
             ioClient: mockIoClient,
             pushProvider: mockPushProvider,
             rsaUtils: mockRsaUtils,
@@ -86,6 +87,7 @@ void _testPushRequestNotifier() {
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
       final provider = StateNotifierProvider<PushRequestNotifier, PushRequestState>((ref) => PushRequestNotifier(
+            ref: ref,
             ioClient: mockIoClient,
             pushProvider: mockPushProvider,
             rsaUtils: mockRsaUtils,
@@ -142,6 +144,7 @@ void _testPushRequestNotifier() {
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
       final provider = StateNotifierProvider<PushRequestNotifier, PushRequestState>((ref) => PushRequestNotifier(
+            ref: ref,
             ioClient: mockIoClient,
             pushProvider: mockPushProvider,
             rsaUtils: mockRsaUtils,
@@ -177,6 +180,7 @@ void _testPushRequestNotifier() {
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
       final provider = StateNotifierProvider<PushRequestNotifier, PushRequestState>((ref) => PushRequestNotifier(
+            ref: ref,
             ioClient: mockIoClient,
             pushProvider: mockPushProvider,
             rsaUtils: mockRsaUtils,

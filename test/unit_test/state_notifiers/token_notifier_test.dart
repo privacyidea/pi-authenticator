@@ -52,7 +52,7 @@ void _testTokenNotifier() {
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+        (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
       final notifier = container.read(testProvider.notifier);
       expect((await notifier.loadStateFromRepo())?.tokens, after);
@@ -72,7 +72,7 @@ void _testTokenNotifier() {
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+        (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
       final notifier = container.read(testProvider.notifier);
       await notifier.initState;
@@ -96,7 +96,7 @@ void _testTokenNotifier() {
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+        (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
       final notifier = container.read(testProvider.notifier);
       final initState = await notifier.initState;
@@ -123,7 +123,7 @@ void _testTokenNotifier() {
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+        (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
       final notifier = container.read(testProvider.notifier);
       final initState = await notifier.initState;
@@ -151,7 +151,7 @@ void _testTokenNotifier() {
         when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
         when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
         final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-          (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+          (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
         );
         final notifier = container.read(testProvider.notifier);
         final initState = await notifier.initState;
@@ -179,7 +179,7 @@ void _testTokenNotifier() {
         when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
         when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
         final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-          (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+          (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
         );
         final notifier = container.read(testProvider.notifier);
         final initState = await notifier.initState;
@@ -208,7 +208,7 @@ void _testTokenNotifier() {
       when(mockRepo.saveOrReplaceTokens([...after])).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+        (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
       final notifier = container.read(testProvider.notifier);
       await notifier.addOrReplaceTokens([...after]);
@@ -230,7 +230,7 @@ void _testTokenNotifier() {
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+        (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
       final notifier = container.read(testProvider.notifier);
       await notifier.handleQrCode('otpauth://totp/issuer2:label2?secret=secret2&issuer=issuer2&algorithm=SHA256&digits=6&period=30');
@@ -310,6 +310,7 @@ void _testTokenNotifier() {
         ),
       );
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) => TokenNotifier(
+            ref: ref,
             repository: mockRepo,
             rsaUtils: mockRsaUtils,
             ioClient: mockIOClient,
@@ -374,6 +375,7 @@ void _testTokenNotifier() {
       )).thenAnswer((_) => Future.value(Response('{"detail": {"public_key": "publicKey"}}', 200)));
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(
+          ref: ref,
           repository: mockRepo,
           rsaUtils: mockRsaUtils,
           ioClient: mockIOClient,
@@ -400,6 +402,7 @@ void _testTokenNotifier() {
       )).called(greaterThan(0));
     });
     test('loadFromRepo', () async {
+      final container = ProviderContainer();
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
@@ -409,7 +412,8 @@ void _testTokenNotifier() {
       when(mockRepo.loadTokens()).thenAnswer((_) => Future.value(before));
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
-      final notifier = TokenNotifier(repository: mockRepo);
+      final testProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) => TokenNotifier(ref: ref, repository: mockRepo));
+      final notifier = container.read(testProvider.notifier);
       Logger.info('before loadFromRepo');
       final newState = await notifier.loadStateFromRepo();
       Logger.info('after loadFromRepo');
