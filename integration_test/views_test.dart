@@ -83,10 +83,12 @@ void main() {
               rsaUtils: mockRsaUtils,
               firebaseUtils: mockFirebaseUtils,
               ioClient: mockIOClient,
+              ref: ref,
             )),
         pushRequestProvider.overrideWith(
           (ref) => PushRequestNotifier(
             rsaUtils: mockRsaUtils,
+            ref: ref,
             pushProvider: PushProvider(
               rsaUtils: mockRsaUtils,
               ioClient: mockIOClient,

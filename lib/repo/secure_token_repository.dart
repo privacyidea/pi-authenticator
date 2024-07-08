@@ -108,7 +108,7 @@ class SecureTokenRepository implements TokenRepository {
 
       // TODO token.version might be deprecated, is there a reason to use it?
       // TODO when the token version (token.version) changed handle this here.
-      Logger.info('Loading token from secure storage: ${valueJson['id']}', name: 'secure_token_repository.dart#loadTokens', stackTrace: StackTrace.current);
+      Logger.info('Loading token from secure storage: ${valueJson['id']}', name: 'secure_token_repository.dart#loadTokens');
       try {
         tokenList.add(Token.fromJson(valueJson));
       } catch (e, s) {

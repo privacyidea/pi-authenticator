@@ -17,7 +17,7 @@ import '../../utils/logger.dart';
 import '../../utils/token_import_origins.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../model/encryption/aes_encrypted.dart';
+import '../../utils/encryption/aes_encrypted.dart';
 import '../../model/encryption/uint_8_buffer.dart';
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';

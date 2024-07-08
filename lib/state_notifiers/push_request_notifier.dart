@@ -41,6 +41,7 @@ import '../utils/utils.dart';
 
 class PushRequestNotifier extends StateNotifier<PushRequestState> {
   late final Future<PushRequestState> initState;
+  final StateNotifierProviderRef ref;
   final loadingRepoMutex = Mutex();
   final updatingRequestMutex = Mutex();
   final PushRequestRepository _pushRepo;
@@ -56,6 +57,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
     PushRequestState? initState,
     PrivacyIdeaIOClient? ioClient,
     required PushProvider pushProvider,
+    required this.ref,
     RsaUtils? rsaUtils,
     PushRequestRepository? pushRepo,
   })  : _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
@@ -379,13 +381,13 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
         response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
       } catch (e) {
         Logger.warning('Sending push request response failed consistently.', name: 'token_widgets.dart#handleReaction', error: e);
-        globalRef?.read(statusMessageProvider.notifier).state = (AppLocalizations.of(await globalContext)!.connectionFailed, null);
+        ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(await globalContext)!.connectionFailed, null);
         return false;
       }
     }
     if (response.statusCode != 200) {
       final appLocalizations = AppLocalizations.of(await globalContext)!;
-      globalRef?.read(statusMessageProvider.notifier).state = (
+      ref.read(statusMessageProvider.notifier).state = (
         '${appLocalizations.sendPushRequestResponseFailed}\n${appLocalizations.statusCode(response.statusCode)}',
         tryJsonDecode(response.body)?["result"]?["error"]?["message"],
       );

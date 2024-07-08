@@ -7,8 +7,8 @@ import 'package:image/image.dart' as img;
 import 'package:zxing2/qrcode.dart';
 
 import '../../../../../l10n/app_localizations.dart';
-import '../../../../../model/encryption/token_encryption.dart';
 import '../../../../../model/tokens/token.dart';
+import '../../../../../utils/encryption/token_encryption.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
@@ -20,7 +20,7 @@ class ShowQrCodeDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appConstraits = ref.watch(appConstraintsProvider)!;
     final qrSize = min(appConstraits.maxWidth, appConstraits.maxHeight) * 0.85;
-    final qrImage = Image.memory(_generateQrCodeImage(data: TokenEncryption.generateQrCodeUri(token: token).toString()));
+    final qrImage = Image.memory(_generateQrCodeImage(data: TokenEncryption.generateExportUri(token: token).toString()));
     return DefaultDialog(
       title: Text(AppLocalizations.of(context)!.asQrCode),
       content: SingleChildScrollView(
@@ -34,7 +34,7 @@ class ShowQrCodeDialog extends ConsumerWidget {
                 constraints: BoxConstraints(maxWidth: qrSize, maxHeight: qrSize, minHeight: qrSize, minWidth: qrSize),
                 child: GestureDetector(
                   onTap: () => _showQrMaximized(context, qrImage),
-                  child: Image.memory(_generateQrCodeImage(data: TokenEncryption.generateQrCodeUri(token: token).toString())),
+                  child: Image.memory(_generateQrCodeImage(data: TokenEncryption.generateExportUri(token: token).toString())),
                 ),
               ),
             ),
@@ -68,7 +68,7 @@ class ShowQrCodeDialog extends ConsumerWidget {
   static Uint8List _generateQrCodeImage({required String data}) {
     final qrcode = Encoder.encode(
       data,
-      ErrorCorrectionLevel.q,
+      ErrorCorrectionLevel.l,
       hints: EncodeHints()..put<CharacterSetECI>(EncodeHintType.characterSet, CharacterSetECI.ASCII),
     );
     final matrix = qrcode.matrix!;

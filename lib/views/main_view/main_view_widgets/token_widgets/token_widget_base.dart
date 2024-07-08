@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../../../model/mixins/sortable_mixin.dart';
 import '../../../../model/tokens/token.dart';
@@ -49,12 +50,14 @@ class TokenWidgetBase extends ConsumerWidget {
         ? LongPressDraggable(
             maxSimultaneousDrags: 1,
             onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = token,
-            onDragCompleted: () async {
-              await Future.delayed(const Duration(milliseconds: 50));
-              // FIXME: The token may appear before reordering the list. (race condition) This results in a flickering effect. Waiting here is a workaround so the list is updated before the token visible again. We should find a better solution.
+            onDragCompleted: () {
+              Logger.info('Draggable completed', name: 'TokenWidgetBase#build');
+              // Will be handled by the sortableNotifier
+            },
+            onDraggableCanceled: (velocity, offset) {
+              Logger.info('Draggable canceled', name: 'TokenWidgetBase#build');
               globalRef?.read(draggingSortableProvider.notifier).state = null;
             },
-            onDraggableCanceled: (velocity, offset) => globalRef?.read(draggingSortableProvider.notifier).state = null,
             dragAnchorStrategy: (Draggable<Object> d, BuildContext context, Offset point) {
               final textSize = textSizeOf(
                 text: token.label,

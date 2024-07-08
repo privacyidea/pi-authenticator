@@ -6,7 +6,7 @@ import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../model/encryption/aes_encrypted.dart';
+import '../../utils/encryption/aes_encrypted.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/extensions/enums/encodings_extension.dart';

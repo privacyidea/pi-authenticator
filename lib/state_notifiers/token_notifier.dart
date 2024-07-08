@@ -42,6 +42,7 @@ import '../views/import_tokens_view/pages/import_plain_tokens_page.dart';
 class TokenNotifier extends StateNotifier<TokenState> {
   static final Map<String, Timer> _hidingTimers = {};
   late final Future<TokenState> initState;
+  final StateNotifierProviderRef ref;
   final _loadingRepoMutex = Mutex();
   final _updatingTokensMutex = Mutex();
   final TokenRepository _repo;
@@ -50,6 +51,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   final FirebaseUtils _firebaseUtils;
 
   TokenNotifier({
+    required this.ref,
     TokenState? initialState,
     TokenRepository? repository,
     RsaUtils? rsaUtils,
@@ -389,7 +391,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       await _firebaseUtils.deleteFirebaseToken();
     } on SocketException {
       Logger.warning('Could not delete firebase token.', name: 'token_notifier.dart#_removePushToken');
-      globalRef?.read(statusMessageProvider.notifier).state = (
+      ref.read(statusMessageProvider.notifier).state = (
         AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorUnlinkingPushToken(token.label),
         AppLocalizations.of(globalNavigatorKey.currentContext!)!.checkYourNetwork,
       );
@@ -399,7 +401,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       if (fbToken == null) {
         await _updateTokens(state.pushTokens, (p0) => p0.copyWith(fbToken: null));
         Logger.warning('Could not update firebase token because no firebase token is available.', name: 'token_notifier.dart#_removePushToken');
-        globalRef?.read(statusMessageProvider.notifier).state = (
+        ref.read(statusMessageProvider.notifier).state = (
           AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
           AppLocalizations.of(globalNavigatorKey.currentContext!)!.pleaseSyncManuallyWhenNetworkIsAvailable,
         );
@@ -435,7 +437,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       Logger.info('Ignoring rollout request: Token "${pushToken.id}" is expired. ', name: 'token_notifier.dart#rolloutPushToken');
 
       if (globalNavigatorKey.currentContext != null) {
-        globalRef?.read(statusMessageProvider.notifier).state = (
+        ref.read(statusMessageProvider.notifier).state = (
           AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNotPossibleAnymore,
           AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorTokenExpired(pushToken.label),
         );
@@ -539,14 +541,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
         try {
           final message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : '';
-          globalRef?.read(statusMessageProvider.notifier).state = (
+          ref.read(statusMessageProvider.notifier).state = (
             AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(pushToken.label),
             message,
           );
         } on FormatException {
           // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.
 
-          globalRef?.read(statusMessageProvider.notifier).state = (
+          ref.read(statusMessageProvider.notifier).state = (
             AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(pushToken.label),
             AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode)
           );
@@ -745,8 +747,8 @@ class TokenNotifier extends StateNotifier<TokenState> {
     Logger.info('Handling push tokens if they exist.', name: 'token_notifier.dart#_handlePushTokensIfExist');
     final pushTokens = state.pushTokens;
     if (pushTokens.isNotEmpty || state.hasOTPTokens == false) {
-      if (globalRef?.read(settingsProvider).hidePushTokens == true) {
-        globalRef!.read(settingsProvider.notifier).setHidePushTokens(false);
+      if (ref.read(settingsProvider).hidePushTokens == true) {
+        ref.read(settingsProvider.notifier).setHidePushTokens(false);
       }
     }
     if (pushTokens.firstWhereOrNull((element) => element.isRolledOut && element.fbToken == null) != null) {
