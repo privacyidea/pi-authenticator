@@ -254,8 +254,12 @@ void _testTokenNotifier() {
       verify(mockRepo.saveOrReplaceTokens(any)).called(greaterThan(0));
     });
     test('addTokenFromOtpAuth: rolloutPushToken', () async {
-      final container = ProviderContainer();
-      final mockRepo = MockTokenRepository();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
+      final mockTokenRepo = MockTokenRepository();
       final mockRsaUtils = MockRsaUtils();
       final mockIOClient = MockPrivacyIdeaIOClient();
       final mockFirebaseUtils = MockFirebaseUtils();
@@ -299,17 +303,17 @@ void _testTokenNotifier() {
       const otpAuth =
           'otpauth://pipush/PIPU0006BF18?url=https%3A//192.168.178.30/ttype/push&ttl=10&issuer=privacyIDEA&enrollment_credential=ae60d4744ac5384515574b85f538c6a4e0c7bc82&v=1&serial=PIPU0006BF18&sslverify=0';
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'fbToken');
-      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
-      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
+      when(mockTokenRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockTokenRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((realInvocation) async => AsymmetricKeyPair(publicTokenKey, privateTokenKey));
       when(mockRsaUtils.serializeRSAPublicKeyPKCS8(publicServerKey)).thenReturn(publicServerKeyString);
       when(mockRsaUtils.serializeRSAPublicKeyPKCS8(publicTokenKey)).thenReturn(publicTokenKeyString);
       when(mockRsaUtils.deserializeRSAPublicKeyPKCS1(publicServerKeyString)).thenReturn(publicServerKey);
       when(mockRsaUtils.deserializeRSAPublicKeyPKCS1(publicTokenKeyString)).thenReturn(publicTokenKey);
       when(mockRsaUtils.deserializeRSAPrivateKeyPKCS1(privateTokenKeyString)).thenReturn(privateTokenKey);
-      when(mockRepo.saveOrReplaceTokens([after.last])).thenAnswer((_) async => []); // QrCode can contain multiple tokens
-      when(mockRepo.saveOrReplaceToken(after.last)).thenAnswer((_) async => true); // Rollout one by one
-      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
+      when(mockTokenRepo.saveOrReplaceTokens([after.last])).thenAnswer((_) async => []); // QrCode can contain multiple tokens
+      when(mockTokenRepo.saveOrReplaceToken(after.last)).thenAnswer((_) async => true); // Rollout one by one
+      when(mockTokenRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockIOClient.doPost(
         url: anyNamed('url'),
         body: anyNamed('body'),
@@ -324,7 +328,7 @@ void _testTokenNotifier() {
       );
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) => TokenNotifier(
             ref: ref,
-            repository: mockRepo,
+            repository: mockTokenRepo,
             rsaUtils: mockRsaUtils,
             ioClient: mockIOClient,
             firebaseUtils: mockFirebaseUtils,
