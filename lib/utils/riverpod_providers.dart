@@ -185,8 +185,8 @@ final sortableProvider = StateNotifierProvider<SortableNotifier, List<SortableMi
   (ref) {
     final SortableNotifier notifier = SortableNotifier(ref);
     Logger.info("New sortableProvider created", name: 'sortableProvider');
-    ref.listen(tokenProvider, (previous, next) => notifier.handleNewList(next.tokens));
-    ref.listen(tokenFolderProvider, (previous, next) => notifier.handleNewList(next.folders));
+    ref.listen(tokenProvider, (previous, next) => notifier.handleNewStateList(next.tokens));
+    ref.listen(tokenFolderProvider, (previous, next) => notifier.handleNewStateList(next.folders));
     Future.wait(
       [ref.read(tokenProvider.notifier).initState, ref.read(tokenFolderProvider.notifier).initState],
     ).then((values) {
@@ -198,7 +198,7 @@ final sortableProvider = StateNotifierProvider<SortableNotifier, List<SortableMi
           sortables.addAll(v.folders);
         }
       }
-      notifier.handleNewList(sortables);
+      notifier.handleNewStateList(sortables);
     });
     return notifier;
   },
