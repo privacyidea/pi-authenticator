@@ -74,7 +74,7 @@ void main() {
       await tester.pumpWidget(TestsAppWrapper(
         overrides: [
           settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
-          tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
+          tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository, ref: ref)),
           tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
           introductionProvider.overrideWith((ref) => IntroductionNotifier(repository: mockIntroductionRepository)),
         ],

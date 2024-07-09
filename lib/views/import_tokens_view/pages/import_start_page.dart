@@ -154,11 +154,6 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
                                 ),
                             ],
                           ),
-                          //    if (_buttonWhileProcessing != null)
-                          //      Padding(
-                          //        padding: const EdgeInsets.only(top: 8.0),
-                          //        child: _buttonWhileProcessing!,
-                          //      ),
                         ],
                       ),
               ],
@@ -186,7 +181,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     }
     setState(() => _errorText = null);
     if (await fileProcessor.fileNeedsPassword(file)) {
-      _routeEncryptedData<XFile, String?>(data: file, processor: fileProcessor);
+      await _routeEncryptedData<XFile, String?>(data: file, processor: fileProcessor);
       return;
     }
     var importResults = await fileProcessor.processFile(file);
@@ -216,7 +211,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     }).toList();
 
     Logger.info("Backup file imported successfully", name: "_pickBackupFile#ImportStartPage");
-    _routeImportPlainTokensPage(importResults: importResults);
+    await _routeImportPlainTokensPage(importResults: importResults);
   }
 
   Future<void> _scanQrCode(TokenImportProcessor? processor) async {
@@ -275,36 +270,6 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
 
     if (!mounted) return;
     setState(() => _progessLabel = localizations.findingQrCodeInImage);
-    //   _buttonWhileProcessing = ElevatedButton(
-    //     onPressed: () async {
-    //       if (xFile == null) return;
-    //       await xFile.readAsBytes();
-    //       if (!mounted) return;
-    //       CroppedFile? croppedFile = await ImageCropper().cropImage(
-    //         sourcePath: xFile.path,
-    //         uiSettings: [
-    //           AndroidUiSettings(aspectRatioPresets: [CropAspectRatioPreset.square]),
-    //           IOSUiSettings(aspectRatioPresets: [CropAspectRatioPreset.square]),
-    //           WebUiSettings(context: context),
-    //         ],
-    //       );
-    //       if (!mounted) return;
-    //       if (croppedFile == null) {
-    //         Logger.warning("No croppedFile", name: "_pickAFile#ImportSelectFilePage");
-    //         return;
-    //       }
-    //       Logger.warning("Cropped file: ${croppedFile.path}", name: "_pickAFile#ImportSelectFilePage");
-    //       WidgetsBinding.instance.addPostFrameCallback((_) {
-    //         globalRef?.read(progressStateProvider.notifier).deleteProgress();
-    //       });
-    //       if (processorResults == null) {
-    //         processorResults = await schemeProcessor.processFile(XFile(croppedFile.path));
-    //         _routeImportPlainTokensPage(importResults: processorResults!);
-    //       }
-    //     },
-    //     child: Text(localizations.markQrCode),
-    //   );
-    // });
     if (await schemeProcessor.fileIsValid(xFile) == false) {
       if (!mounted) return;
       setState(() => _errorText = localizations.invalidQrFile(widget.appName));
@@ -385,15 +350,16 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
         );
       }),
     );
+    Logger.info('Imported tokens: ${tokensToImport?.length}', name: '_routeImportPlainTokensPage#ImportStartPage');
     if (tokensToImport != null) {
       if (!mounted) return;
       Navigator.of(context).pop(tokensToImport);
     }
   }
 
-  void _routeEncryptedData<T, V extends String?>({required T data, required TokenImportProcessor<T, V> processor}) {
+  Future<void> _routeEncryptedData<T, V extends String?>({required T data, required TokenImportProcessor<T, V> processor}) async {
     if (mounted == false) return;
-    Navigator.of(context).push(
+    final tokensToImport = await Navigator.of(context).push(
       MaterialPageRoute(builder: (context) {
         return ImportEncryptedDataPage<T, V>(
           appName: widget.appName,
@@ -403,5 +369,10 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
         );
       }),
     );
+    Logger.info('Imported encrypted tokens: ${tokensToImport?.length}', name: '_routeEncryptedData#ImportStartPage');
+    if (tokensToImport != null) {
+      if (!mounted) return;
+      Navigator.of(context).pop(tokensToImport);
+    }
   }
 }

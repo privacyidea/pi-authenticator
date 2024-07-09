@@ -44,6 +44,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           ref.read(settingsProvider.notifier).loadingRepo,
           ref.read(tokenProvider.notifier).initState,
           ref.read(introductionProvider.notifier).loadingRepo,
+          ref.read(tokenFolderProvider.notifier).initState,
           AppInfoUtils.init(),
           HomeWidgetUtils().homeWidgetInit(),
         ],

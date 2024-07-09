@@ -24,7 +24,7 @@ class AesEncrypted {
   // Encryption
   final Uint8List data;
   final Uint8List iv;
-  final Mac? mac;
+  final Mac mac;
   // final String? padding;
 
   final Cipher cypher;
@@ -34,7 +34,7 @@ class AesEncrypted {
     required this.salt,
     required this.data,
     required this.iv,
-    this.mac,
+    required this.mac,
     required this.cypher,
   });
 
@@ -92,7 +92,7 @@ class AesEncrypted {
 
   Future<Uint8List> decrypt(String password) async {
     final SecretKey secretKey = await _deriveKey(password);
-    final SecretBox secretBox = SecretBox(data, nonce: iv, mac: mac ?? Mac.empty);
+    final SecretBox secretBox = SecretBox(data, nonce: iv, mac: mac);
     final decrypted = await cypher.decrypt(secretBox, secretKey: secretKey);
     return Uint8List.fromList(decrypted);
   }
@@ -122,7 +122,7 @@ class AesEncrypted {
       'data': base64Encode(data),
       'salt': base64Encode(salt),
       'iv': base64Encode(iv),
-      'mac': base64Encode(mac?.bytes ?? Uint8List(0)),
+      'mac': base64Encode(mac.bytes),
       'kdf': kdf.toJson(),
       'cypher': cypher.toJson(),
     };

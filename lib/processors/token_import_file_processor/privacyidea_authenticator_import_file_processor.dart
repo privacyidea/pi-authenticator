@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:file_selector/file_selector.dart';
 
-import '../../model/encryption/token_encryption.dart';
 import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
+import '../../utils/encryption/token_encryption.dart';
 import '../../utils/logger.dart';
 import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';

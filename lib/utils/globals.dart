@@ -44,7 +44,17 @@ Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocaliz
         PatchNoteType.improvement: [
           localizations.patchNotesV4_3_1Improvement1,
         ]
-      }
+      },
+      const Version(4, 4, 0): {
+        PatchNoteType.newFeature: [
+          localizations.patchNotesV4_4_0NewFeatures1,
+          localizations.patchNotesV4_4_0NewFeatures2,
+        ],
+        PatchNoteType.improvement: [
+          localizations.patchNotesV4_4_0Improvement1,
+          localizations.patchNotesV4_4_0Improvement2,
+        ]
+      },
     };
 
 final globalSnackbarKey = GlobalKey<ScaffoldMessengerState>();

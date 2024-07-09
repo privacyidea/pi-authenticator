@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -77,18 +78,21 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
       showSortables.add(element);
     }
 
-    if ((showSortables.isEmpty)) {
-      return const NoTokenScreen();
-    } else {
-      return LayoutBuilder(builder: (context, constraints) {
-        return Stack(
+    if ((showSortables.isEmpty)) return const NoTokenScreen();
+    return Stack(
+      children: [
+        Column(
           children: [
-            Column(
-              children: [
-                Flexible(
-                  child: SizedBox(
-                    height: 9999,
-                    child: Opacity(
+            Flexible(
+              child: DeactivateableRefreshIndicator(
+                allowToRefresh: allowToRefresh,
+                onRefresh: () async => LoadingIndicator.show(context, () async => PushProvider.instance?.pollForChallenges(isManually: true)),
+                child: LayoutBuilder(
+                  builder: (context, constraints) => SingleChildScrollView(
+                    physics: _getScrollPhysics(allowToRefresh),
+                    child: SizedBox(
+                      height: constraints.maxHeight,
+                      child: Opacity(
                         opacity: 0,
                         child: DragTargetDivider(
                           dependingFolder: null,
@@ -96,49 +100,54 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
                           nextSortable: null,
                           isLastDivider: true,
                           bottomPaddingIfLast: 0,
-                        )),
-                  ),
-                ),
-              ],
-            ),
-            DeactivateableRefreshIndicator(
-              allowToRefresh: allowToRefresh,
-              onRefresh: () async => LoadingIndicator.show(context, () async => PushProvider.instance?.pollForChallenges(isManually: true)),
-              child: SlidableAutoCloseBehavior(
-                child: DragItemScroller(
-                  listViewKey: listViewKey,
-                  itemIsDragged: draggingSortable != null,
-                  scrollController: scrollController,
-                  child: SingleChildScrollView(
-                    key: listViewKey,
-                    physics: allowToRefresh ? const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()) : const BouncingScrollPhysics(),
-                    controller: scrollController,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Column(
-                          children: [
-                            ...MainViewTokensList.buildSortableWidgets(showSortables, draggingSortable),
-                          ],
                         ),
-                        (draggingSortable != null)
-                            ? DragTargetDivider(
-                                dependingFolder: null,
-                                previousSortable: showSortables.last,
-                                nextSortable: null,
-                                isLastDivider: true,
-                                bottomPaddingIfLast: 80,
-                              )
-                            : const SizedBox(height: 80)
-                      ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ],
-        );
-      });
-    }
+        ),
+        DeactivateableRefreshIndicator(
+          allowToRefresh: allowToRefresh,
+          onRefresh: () async => LoadingIndicator.show(context, () async => PushProvider.instance?.pollForChallenges(isManually: true)),
+          child: SlidableAutoCloseBehavior(
+            child: DragItemScroller(
+              listViewKey: listViewKey,
+              itemIsDragged: draggingSortable != null,
+              scrollController: scrollController,
+              child: SingleChildScrollView(
+                key: listViewKey,
+                physics: _getScrollPhysics(allowToRefresh),
+                controller: scrollController,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Column(
+                      children: [
+                        ...MainViewTokensList.buildSortableWidgets(showSortables, draggingSortable),
+                      ],
+                    ),
+                    (draggingSortable != null)
+                        ? DragTargetDivider(
+                            dependingFolder: null,
+                            previousSortable: showSortables.last,
+                            nextSortable: null,
+                            isLastDivider: true,
+                            bottomPaddingIfLast: 80,
+                          )
+                        : const SizedBox(height: 80)
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
+
+  ScrollPhysics _getScrollPhysics(bool allowToRefresh) =>
+      allowToRefresh ? const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()) : const BouncingScrollPhysics();
 }

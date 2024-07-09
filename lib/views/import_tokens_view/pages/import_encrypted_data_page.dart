@@ -146,7 +146,7 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
       );
 
   void _pushImportPlainTokensPage(List<ProcessorResult<Token>> processorResults) async {
-    final tokensToImport = await Navigator.of(context).pushReplacement<List<Token>, void>(
+    final tokensToImport = await Navigator.of(context).push<List<Token>>(
       MaterialPageRoute(
         builder: (context) => ImportPlainTokensPage(
           titleName: widget.appName,
