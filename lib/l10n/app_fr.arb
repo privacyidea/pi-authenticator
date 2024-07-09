@@ -674,5 +674,6 @@
   "qrInFileNotFound": "Aucun code QR n'a été trouvé dans l'image sélectionnée.",
   "qrInFileNotFound2": "Vous pouvez me montrer où se trouve le code QR.",
   "qrInFileNotFound3": "Je pense que je trouverai le code s'il se trouve au milieu de la zone marquée.",
-  "markQrCode": "Marquer le code QR"
+  "markQrCode": "Marquer le code QR",
+  "malformedData": "Les données ne sont pas valides"
 }

@@ -673,5 +673,6 @@
   "qrInFileNotFound": "Ve vybraném obrázku nebyl nalezen žádný QR kód.",
   "qrInFileNotFound2": "Můžete mi ukázat, kde se QR kód nachází.",
   "qrInFileNotFound3": "Předpokládám, že kód najdu, pokud se nachází uprostřed označené oblasti.",
-  "markQrCode": "Označte QR kód"
+  "markQrCode": "Označte QR kód",
+  "malformedData": "Data nejsou ve správném formátu"
 }
