@@ -704,7 +704,20 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<List<Token>> _tokensFromUri(Uri uri) async {
     try {
       final results = await TokenImportSchemeProcessor.processUriByAny(uri);
-      if (results != null && (results.length > 1 || state.tokens.any((e) => results.first.asSuccess?.resultData.isSameTokenAs(e) == true))) {
+      if (results == null || results.isEmpty) {
+        showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
+        Logger.warning('Scanned Data: $uri', error: 'Scanned QR code is not a valid URI.', name: 'token_notifier.dart#handleQrCode');
+        return [];
+      }
+      final failedResults = results.whereType<ProcessorResultFailed>().toList();
+      for (var failedResult in failedResults) {
+        ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of((await globalContext))!.malformedData, failedResult.message);
+      }
+      final successResults = results.whereType<ProcessorResultSuccess<Token>>().toList();
+      if (successResults.isEmpty) {
+        return [];
+      }
+      if (successResults.length > 1 || state.tokens.any((e) => successResults.first.resultData.isSameTokenAs(e) == true)) {
         Navigator.of(globalNavigatorKey.currentContext!).popUntil((route) => route.isFirst);
         final tokensToKeep = await Navigator.of(globalNavigatorKey.currentContext!).push<List<Token>>(
           MaterialPageRoute<List<Token>>(
@@ -717,10 +730,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
         );
         return tokensToKeep ?? [];
       }
-      return results?.whereType<ProcessorResultSuccess<Token>>().map((e) => e.resultData).toList() ?? [];
+      return successResults.map((e) => e.resultData).toList();
     } catch (error, stackTrace) {
-      showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
-      Logger.warning('Scanned Data: $uri', error: error, name: 'token_notifier.dart#handleQrCode', stackTrace: stackTrace);
+      Logger.error('Error while processing QR code.', name: 'token_notifier.dart#handleQrCode', error: error, stackTrace: stackTrace);
       return [];
     }
   }

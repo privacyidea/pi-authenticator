@@ -12,66 +12,80 @@ import '../../../../../widgets/hideable_widget_.dart';
 import '../token_widget_tile.dart';
 import 'totp_token_widget_tile_countdown.dart';
 
-class TOTPTokenWidgetTile extends ConsumerWidget {
+class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   final TOTPToken token;
   final bool isPreview;
 
   const TOTPTokenWidgetTile(this.token, {super.key, this.isPreview = false});
 
+  @override
+  ConsumerState<TOTPTokenWidgetTile> createState() => _TOTPTokenWidgetTileState();
+}
+
+class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> {
   void _copyOtpValue(BuildContext context) {
     if (globalRef?.read(disableCopyOtpProvider) ?? false) return;
 
     globalRef?.read(disableCopyOtpProvider.notifier).state = true;
-    Clipboard.setData(ClipboardData(text: token.otpValue));
+    Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(token.otpValue))),
+      SnackBar(content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue))),
     );
     Future.delayed(const Duration(seconds: 5), () => globalRef?.read(disableCopyOtpProvider.notifier).state = false);
   }
 
+  late String currentOtpValue = widget.token.otpValue;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return TokenWidgetTile(
-      isPreview: isPreview,
-      key: Key('${token.hashCode}TokenWidgetTile'),
-      tokenImage: token.tokenImage,
-      tokenIsLocked: token.isLocked,
+      isPreview: widget.isPreview,
+      key: Key('${widget.token.hashCode}TokenWidgetTile'),
+      tokenImage: widget.token.tokenImage,
+      tokenIsLocked: widget.token.isLocked,
       title: Align(
         alignment: Alignment.centerLeft,
         child: Tooltip(
-          message: token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+          message: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
           triggerMode: TooltipTriggerMode.longPress,
           child: InkWell(
-            onTap: isPreview
+            onTap: widget.isPreview
                 ? null
-                : token.isLocked && token.isHidden
-                    ? () async => await ref.read(tokenProvider.notifier).showToken(token)
+                : widget.token.isLocked && widget.token.isHidden
+                    ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
                     : () => _copyOtpValue(context),
             child: HideableText(
-              key: Key(token.hashCode.toString()),
-              text: insertCharAt(token.otpValue, ' ', (token.digits / 2).ceil()),
+              key: Key(widget.token.hashCode.toString()),
+              text: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
               textScaleFactor: 1.9,
-              enabled: token.isLocked,
-              isHidden: token.isHidden,
+              enabled: widget.token.isLocked,
+              isHidden: widget.token.isHidden,
             ),
           ),
         ),
       ),
-      subtitles: isPreview
+      subtitles: widget.isPreview
           ? [
-              (token.label.isNotEmpty && token.issuer.isNotEmpty) ? '${token.issuer}: ${token.label}' : token.issuer + token.label,
-              'Algorithm: ${token.algorithm.name}',
-              'Period: ${token.period} seconds',
+              (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
+                  ? '${widget.token.issuer}: ${widget.token.label}'
+                  : widget.token.issuer + widget.token.label,
+              'Algorithm: ${widget.token.algorithm.name}',
+              'Period: ${widget.token.period} seconds',
             ]
           : [
-              if (token.label.isNotEmpty) token.label,
-              if (token.issuer.isNotEmpty) token.issuer,
+              if (widget.token.label.isNotEmpty) widget.token.label,
+              if (widget.token.issuer.isNotEmpty) widget.token.issuer,
             ],
       trailing: CustomTrailing(
         child: HideableWidget(
-          token: token,
-          isHidden: token.isHidden && !isPreview,
-          child: TotpTokenWidgetTileCountdown(token.period),
+          token: widget.token,
+          isHidden: widget.token.isHidden && !widget.isPreview,
+          child: TotpTokenWidgetTileCountdown(
+            period: widget.token.period,
+            onPeriodEnd: () => setState(
+              () => currentOtpValue = widget.token.otpValue,
+            ),
+          ),
         ),
       ),
     );
