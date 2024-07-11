@@ -75,7 +75,7 @@ class _SendErrorDialogState extends State<SendErrorDialog> {
         ],
       );
   void _popDialogs(BuildContext context) {
-    Navigator.popUntil(context, (route) => SettingsView.routeName == route.settings.name);
+    Navigator.of(context).popUntil((route) => SettingsView.routeName == route.settings.name || route.isFirst);
   }
 }
 
@@ -96,7 +96,7 @@ class NoLogDialog extends StatelessWidget {
             overflow: TextOverflow.fade,
             softWrap: false,
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.of(context).maybePop(),
         ),
       ],
     );
