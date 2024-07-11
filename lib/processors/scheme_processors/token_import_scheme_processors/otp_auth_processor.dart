@@ -140,7 +140,7 @@ Map<String, dynamic> _parseOtpAuth(Uri uri) {
     uriMap[URI_IMAGE] = queryParameters['image'];
   }
 
-  String algorithm = queryParameters['algorithm'] ?? Algorithms.SHA1.name; // Optional parameter
+  String algorithm = (queryParameters['algorithm'] ?? Algorithms.SHA1.name).toUpperCase(); // Optional parameter
   algorithm = Algorithms.values.byName(algorithm).name; // Validate algorithm, throw error if not supported.
 
   uriMap[URI_ALGORITHM] = algorithm;

@@ -121,7 +121,24 @@ class DayPasswordToken extends OTPToken {
     return DateTime.now().add(durationUntilNextOTP + const Duration(milliseconds: 1));
   }
 
-  /// Throws an Error if the uriMap is invalid
+  factory DayPasswordToken.fromUriMap(Map<String, dynamic> uriMap) {
+    validateUriMap(uriMap);
+    return DayPasswordToken(
+      label: uriMap[URI_LABEL] ?? '',
+      issuer: uriMap[URI_ISSUER] ?? '',
+      id: const Uuid().v4(),
+      algorithm: Algorithms.values.byName((uriMap[URI_ALGORITHM] as String? ?? 'SHA1').toUpperCase()),
+      digits: uriMap[URI_DIGITS] ?? 6,
+      secret: Encodings.base32.encode(uriMap[URI_SECRET]),
+      period: Duration(seconds: uriMap[URI_PERIOD] ?? 86400), // default 24 hours
+      tokenImage: uriMap[URI_IMAGE],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+    );
+  }
+
+  /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
   static void validateUriMap(Map<String, dynamic> uriMap) {
     if (uriMap[URI_SECRET] == null) {
       throw LocalizedArgumentError(
@@ -147,24 +164,13 @@ class DayPasswordToken extends OTPToken {
         name: URI_DIGITS,
       );
     }
-  }
-
-  factory DayPasswordToken.fromUriMap(Map<String, dynamic> uriMap) {
-    validateUriMap(uriMap);
-
-    return DayPasswordToken(
-      label: uriMap[URI_LABEL] ?? '',
-      issuer: uriMap[URI_ISSUER] ?? '',
-      id: const Uuid().v4(),
-      algorithm: Algorithms.values.byName(uriMap[URI_ALGORITHM] ?? 'SHA1'),
-      digits: uriMap[URI_DIGITS] ?? 6,
-      secret: Encodings.base32.encode(uriMap[URI_SECRET]),
-      period: Duration(seconds: uriMap[URI_PERIOD] ?? 86400), // default 24 hours
-      tokenImage: uriMap[URI_IMAGE],
-      pin: uriMap[URI_PIN],
-      isLocked: uriMap[URI_PIN],
-      origin: uriMap[URI_ORIGIN],
-    );
+    if (uriMap[URI_ALGORITHM] != null) {
+      try {
+        Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase());
+      } catch (e) {
+        throw ArgumentError('Algorithm ${uriMap[URI_ALGORITHM]} is not supported');
+      }
+    }
   }
 
   @override
