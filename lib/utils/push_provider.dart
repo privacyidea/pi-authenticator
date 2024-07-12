@@ -37,7 +37,7 @@ import '../repo/secure_token_repository.dart';
 import 'firebase_utils.dart';
 import 'globals.dart';
 import 'logger.dart';
-import 'network_utils.dart';
+import 'privacyidea_io_client.dart';
 import 'riverpod_providers.dart';
 import 'rsa_utils.dart';
 import 'utils.dart';
@@ -58,19 +58,19 @@ class PushProvider {
   FirebaseUtils _firebaseUtils;
   FirebaseUtils get firebaseUtils => _firebaseUtils;
   bool _firebaseInitialized = false;
-  PrivacyIdeaIOClient _ioClient;
-  PrivacyIdeaIOClient get ioClient => _ioClient;
+  PrivacyideaIOClient _ioClient;
+  PrivacyideaIOClient get ioClient => _ioClient;
   RsaUtils _rsaUtils;
   RsaUtils get rsaUtils => _rsaUtils;
   LegacyUtils _legacyUtils;
 
   PushProvider._({
     FirebaseUtils? firebaseUtils,
-    PrivacyIdeaIOClient? ioClient,
+    PrivacyideaIOClient? ioClient,
     RsaUtils? rsaUtils,
     LegacyUtils? legacyUtils,
   })  : _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
-        _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
+        _ioClient = ioClient ?? const PrivacyideaIOClient(),
         _rsaUtils = rsaUtils ?? const RsaUtils(),
         _legacyUtils = legacyUtils ?? const LegacyUtils() {
     _initFirebase();
@@ -103,7 +103,7 @@ class PushProvider {
 
   factory PushProvider({
     bool? pollingEnabled,
-    PrivacyIdeaIOClient? ioClient,
+    PrivacyideaIOClient? ioClient,
     RsaUtils? rsaUtils,
     FirebaseUtils? firebaseUtils,
   }) {
@@ -355,7 +355,7 @@ class PushProvider {
     try {
       response = instance != null
           ? await instance!._ioClient.doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify)
-          : await const PrivacyIdeaIOClient().doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify);
+          : await const PrivacyideaIOClient().doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify);
     } catch (e) {
       if (isManually) {
         globalRef?.read(statusMessageProvider.notifier).state = (
@@ -428,9 +428,9 @@ class PlaceholderPushProvider implements PushProvider {
   @override
   FirebaseUtils get firebaseUtils => _firebaseUtils;
   @override
-  PrivacyIdeaIOClient _ioClient = const PrivacyIdeaIOClient();
+  PrivacyideaIOClient _ioClient = const PrivacyideaIOClient();
   @override
-  PrivacyIdeaIOClient get ioClient => _ioClient;
+  PrivacyideaIOClient get ioClient => _ioClient;
   @override
   LegacyUtils _legacyUtils = const LegacyUtils();
   @override

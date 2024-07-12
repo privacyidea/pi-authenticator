@@ -17,7 +17,8 @@ import 'package:privacyidea_authenticator/model/states/push_request_state.dart'
     as _i7;
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i11;
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i4;
-import 'package:privacyidea_authenticator/utils/network_utils.dart' as _i5;
+import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart'
+    as _i5;
 import 'package:privacyidea_authenticator/utils/push_provider.dart' as _i12;
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i6;
 
@@ -86,9 +87,9 @@ class _FakeFirebaseUtils_4 extends _i1.SmartFake implements _i4.FirebaseUtils {
         );
 }
 
-class _FakePrivacyIdeaIOClient_5 extends _i1.SmartFake
-    implements _i5.PrivacyIdeaIOClient {
-  _FakePrivacyIdeaIOClient_5(
+class _FakePrivacyideaIOClient_5 extends _i1.SmartFake
+    implements _i5.PrivacyideaIOClient {
+  _FakePrivacyideaIOClient_5(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -318,12 +319,12 @@ class MockRsaUtils extends _i1.Mock implements _i6.RsaUtils {
       ) as _i9.Uint8List);
 }
 
-/// A class which mocks [PrivacyIdeaIOClient].
+/// A class which mocks [PrivacyideaIOClient].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPrivacyIdeaIOClient extends _i1.Mock
-    implements _i5.PrivacyIdeaIOClient {
-  MockPrivacyIdeaIOClient() {
+class MockPrivacyideaIOClient extends _i1.Mock
+    implements _i5.PrivacyideaIOClient {
+  MockPrivacyideaIOClient() {
     _i1.throwOnMissingStub(this);
   }
 
@@ -440,13 +441,13 @@ class MockPushProvider extends _i1.Mock implements _i12.PushProvider {
       ) as _i4.FirebaseUtils);
 
   @override
-  _i5.PrivacyIdeaIOClient get ioClient => (super.noSuchMethod(
+  _i5.PrivacyideaIOClient get ioClient => (super.noSuchMethod(
         Invocation.getter(#ioClient),
-        returnValue: _FakePrivacyIdeaIOClient_5(
+        returnValue: _FakePrivacyideaIOClient_5(
           this,
           Invocation.getter(#ioClient),
         ),
-      ) as _i5.PrivacyIdeaIOClient);
+      ) as _i5.PrivacyideaIOClient);
 
   @override
   _i6.RsaUtils get rsaUtils => (super.noSuchMethod(

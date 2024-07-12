@@ -2,10 +2,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/model/token_folder.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
+import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/sortable_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
@@ -20,6 +22,8 @@ void main() {
 void _testSortableNotifier() {
   group('SortableNotifier test', () {
     test('handleNewList', () async {
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
       final MockTokenFolderRepository mockTokenFolderRepository = MockTokenFolderRepository();
       final MockTokenRepository mockTokenRepository = MockTokenRepository();
       List<TokenFolder> tokenFolderState = [
@@ -51,6 +55,7 @@ void _testSortableNotifier() {
       });
 
       final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
         tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository, ref: ref)),
       ]);
@@ -63,8 +68,6 @@ void _testSortableNotifier() {
       final newState = await sortableNotifier.handleNewStateList(newTokenState);
 
       final newSortableState = container.read(sortableProvider);
-      print('newSortableState: $newSortableState');
-      print('newState: $newState');
       expect(newState.length, 6);
       expect(newSortableState.length, 6);
       expect(newSortableState[0], isA<Token>());

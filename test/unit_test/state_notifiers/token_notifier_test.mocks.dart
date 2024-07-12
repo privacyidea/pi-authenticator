@@ -21,7 +21,8 @@ import 'package:privacyidea_authenticator/model/states/settings_state.dart'
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i12;
 import 'package:privacyidea_authenticator/model/tokens/token.dart' as _i7;
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i14;
-import 'package:privacyidea_authenticator/utils/network_utils.dart' as _i13;
+import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart'
+    as _i13;
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i9;
 
 // ignore_for_file: type=lint
@@ -390,12 +391,12 @@ class MockRsaUtils extends _i1.Mock implements _i9.RsaUtils {
       ) as _i11.Uint8List);
 }
 
-/// A class which mocks [PrivacyIdeaIOClient].
+/// A class which mocks [PrivacyideaIOClient].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPrivacyIdeaIOClient extends _i1.Mock
-    implements _i13.PrivacyIdeaIOClient {
-  MockPrivacyIdeaIOClient() {
+class MockPrivacyideaIOClient extends _i1.Mock
+    implements _i13.PrivacyideaIOClient {
+  MockPrivacyideaIOClient() {
     _i1.throwOnMissingStub(this);
   }
 

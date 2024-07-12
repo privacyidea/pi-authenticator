@@ -32,8 +32,8 @@ import '../utils/logger.dart';
 import '../utils/riverpod_providers.dart';
 import '../utils/view_utils.dart';
 
-class PrivacyIdeaIOClient {
-  const PrivacyIdeaIOClient();
+class PrivacyideaIOClient {
+  const PrivacyideaIOClient();
 
   /// Dummy network request can be used to trigger the network access permission
   /// on iOS devices. Doing this at an appropriate place in the code can prevent
@@ -113,11 +113,19 @@ class PrivacyIdeaIOClient {
     Response response;
     try {
       response = await ioClient.post(url, body: body).timeout(const Duration(seconds: 15));
-    } on HandshakeException catch (e, s) {
-      response = Response('${e.runtimeType} : $s', 525);
-    } catch (e, s) {
-      if (e is! TimeoutException && e is! SocketException && e is! ClientException) rethrow;
-      response = Response('${e.runtimeType} : $s', 404);
+    } on HandshakeException catch (e, _) {
+      Logger.info('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doPost');
+      showMessage(message: 'Handshake failed, please check the server certificate and try again.');
+      response = Response('${e.runtimeType}', 525);
+    } on TimeoutException catch (e, _) {
+      Logger.info('TimeoutException', name: 'utils.dart#doPost');
+      response = Response('${e.runtimeType}', 408);
+    } on SocketException catch (e, _) {
+      Logger.info('SocketException', name: 'utils.dart#doPost');
+      response = Response('${e.runtimeType}', 404);
+    } catch (e, _) {
+      Logger.info('Unknown exception', name: 'utils.dart#doPost');
+      response = Response('${e.runtimeType}', 404);
     }
 
     if (response.statusCode != 200) {
@@ -165,13 +173,19 @@ class PrivacyIdeaIOClient {
     Uri uri = Uri.parse(buffer.toString());
     try {
       response = await ioClient.get(uri).timeout(const Duration(seconds: 15));
-    } on HandshakeException catch (e, s) {
-      Logger.warning('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doGet', error: e, stackTrace: s);
+    } on HandshakeException catch (e, _) {
+      Logger.info('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doGet');
       showMessage(message: 'Handshake failed, please check the server certificate and try again.');
-      rethrow;
-    } catch (e, s) {
-      if (e is! TimeoutException && e is! SocketException) rethrow;
-      response = Response('${e.runtimeType} : $s', 404);
+      response = Response('${e.runtimeType}', 525);
+    } on TimeoutException catch (e, _) {
+      Logger.info('TimeoutException', name: 'utils.dart#doGet');
+      response = Response('${e.runtimeType}', 408);
+    } on SocketException catch (e, _) {
+      Logger.info('SocketException', name: 'utils.dart#doGet');
+      response = Response('${e.runtimeType}', 404);
+    } catch (e, _) {
+      Logger.info('Unknown exception', name: 'utils.dart#doGet');
+      response = Response('${e.runtimeType}', 404);
     }
 
     if (response.statusCode != 200) {

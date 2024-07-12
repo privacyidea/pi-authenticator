@@ -8,14 +8,14 @@ import 'package:privacyidea_authenticator/model/states/push_request_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/state_notifiers/push_request_notifier.dart';
 import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
-import 'package:privacyidea_authenticator/utils/network_utils.dart';
+import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:mockito/annotations.dart';
 
 import 'push_request_notifier_test.mocks.dart';
 
-@GenerateMocks([RsaUtils, PrivacyIdeaIOClient, PushProvider, PushRequestRepository])
+@GenerateMocks([RsaUtils, PrivacyideaIOClient, PushProvider, PushRequestRepository])
 void main() {
   _testPushRequestNotifier();
 }
@@ -24,7 +24,7 @@ void _testPushRequestNotifier() {
   group('PushRequestNotifier', () {
     test('accept', () async {
       final container = ProviderContainer();
-      final mockIoClient = MockPrivacyIdeaIOClient();
+      final mockIoClient = MockPrivacyideaIOClient();
       final mockPushProvider = MockPushProvider();
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
@@ -82,7 +82,7 @@ void _testPushRequestNotifier() {
     });
     test('decline', () async {
       final container = ProviderContainer();
-      final mockIoClient = MockPrivacyIdeaIOClient();
+      final mockIoClient = MockPrivacyideaIOClient();
       final mockPushProvider = MockPushProvider();
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
@@ -139,7 +139,7 @@ void _testPushRequestNotifier() {
 
     test('add', () async {
       final container = ProviderContainer();
-      final mockIoClient = MockPrivacyIdeaIOClient();
+      final mockIoClient = MockPrivacyideaIOClient();
       final mockPushProvider = MockPushProvider();
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
@@ -175,7 +175,7 @@ void _testPushRequestNotifier() {
     });
     test('remove', () async {
       final container = ProviderContainer();
-      final mockIoClient = MockPrivacyIdeaIOClient();
+      final mockIoClient = MockPrivacyideaIOClient();
       final mockPushProvider = MockPushProvider();
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
