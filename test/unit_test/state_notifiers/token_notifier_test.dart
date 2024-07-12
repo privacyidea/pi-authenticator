@@ -188,7 +188,11 @@ void _testTokenNotifier() {
         verify(mockRepo.saveOrReplaceToken(after.last)).called(1);
       });
       test('replace Token', () async {
-        final container = ProviderContainer();
+        final mockSettingsRepo = MockSettingsRepository();
+        when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+        final container = ProviderContainer(overrides: [
+          settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+        ]);
         final mockRepo = MockTokenRepository();
         final mockFirebaseUtils = MockFirebaseUtils();
         final before = <Token>[
