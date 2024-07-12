@@ -71,7 +71,11 @@ void _testTokenNotifier() {
       verify(mockRepo.loadTokens()).called(2);
     });
     test('getTokenFromId', () async {
-      final container = ProviderContainer();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret')];
@@ -91,7 +95,11 @@ void _testTokenNotifier() {
       expect(state.tokens, after);
     });
     test('incrementCounter', () async {
-      final container = ProviderContainer();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [
@@ -117,7 +125,11 @@ void _testTokenNotifier() {
       verify(mockRepo.saveOrReplaceToken(after.first)).called(1);
     });
     test('removeToken', () async {
-      final container = ProviderContainer();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
@@ -145,7 +157,11 @@ void _testTokenNotifier() {
     });
     group('addOrReplaceToken', () {
       test('add Token', () async {
-        final container = ProviderContainer();
+        final mockSettingsRepo = MockSettingsRepository();
+        when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+        final container = ProviderContainer(overrides: [
+          settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+        ]);
         final mockRepo = MockTokenRepository();
         final mockFirebaseUtils = MockFirebaseUtils();
         final before = <Token>[
@@ -201,7 +217,11 @@ void _testTokenNotifier() {
       });
     });
     test('addOrReplaceTokens', () async {
-      final container = ProviderContainer();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
