@@ -32,7 +32,7 @@ import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/lock_auth.dart';
 import '../utils/logger.dart';
-import '../utils/network_utils.dart';
+import '../utils/privacyidea_io_client.dart';
 import '../utils/riverpod_providers.dart';
 import '../utils/rsa_utils.dart';
 import '../utils/utils.dart';
@@ -47,7 +47,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   final _updatingTokensMutex = Mutex();
   final TokenRepository _repo;
   final RsaUtils _rsaUtils;
-  final PrivacyIdeaIOClient _ioClient;
+  final PrivacyideaIOClient _ioClient;
   final FirebaseUtils _firebaseUtils;
 
   TokenNotifier({
@@ -55,11 +55,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
     TokenState? initialState,
     TokenRepository? repository,
     RsaUtils? rsaUtils,
-    PrivacyIdeaIOClient? ioClient,
+    PrivacyideaIOClient? ioClient,
     FirebaseUtils? firebaseUtils,
   })  : _rsaUtils = rsaUtils ?? const RsaUtils(),
         _repo = repository ?? const SecureTokenRepository(),
-        _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
+        _ioClient = ioClient ?? const PrivacyideaIOClient(),
         _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
         super(
           initialState ?? TokenState(tokens: const [], lastlyUpdatedTokens: const []),
@@ -282,22 +282,8 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// There is no need to use mutexes because the updating functions are always using the latest version of the updating tokens.
   */
 
-  /// Adds a new token and returns true if successful, false if not.
-  Future<bool> addNewToken(Token token) async {
-    final success = await _addOrReplaceToken(token);
-    await _handlePushTokensIfExist();
-    return success;
-  }
-
   /// Adds or replaces a token and returns true if successful, false if not.
   Future<bool> addOrReplaceToken(Token token) => _addOrReplaceToken(token);
-
-  /// Adds new tokens and returns the tokens that could not be added.
-  Future<List<Token>> addTokens(List<Token> tokens) async {
-    final failedTokens = await _addOrReplaceTokens(tokens);
-    await _handlePushTokensIfExist();
-    return failedTokens;
-  }
 
   /// Adds or replaces a list of tokens and returns the tokens that could not be added or replaced.
   Future<List<Token>> addOrReplaceTokens(List<Token> tokens) => _addOrReplaceTokens(tokens);
@@ -758,7 +744,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<void> _handlePushTokensIfExist() async {
     Logger.info('Handling push tokens if they exist.', name: 'token_notifier.dart#_handlePushTokensIfExist');
     final pushTokens = state.pushTokens;
-    if (pushTokens.isNotEmpty || state.hasOTPTokens == false) {
+    if (pushTokens.isEmpty || state.pushTokens.isEmpty) {
       if (ref.read(settingsProvider).hidePushTokens == true) {
         ref.read(settingsProvider.notifier).setHidePushTokens(false);
       }

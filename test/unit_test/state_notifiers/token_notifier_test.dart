@@ -20,7 +20,7 @@ import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/network_utils.dart';
+import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
@@ -31,7 +31,7 @@ import 'token_notifier_test.mocks.dart';
     TokenRepository,
     SettingsRepository,
     RsaUtils,
-    PrivacyIdeaIOClient,
+    PrivacyideaIOClient,
     FirebaseUtils,
     LegacyUtils,
   ],
@@ -261,7 +261,7 @@ void _testTokenNotifier() {
       ]);
       final mockTokenRepo = MockTokenRepository();
       final mockRsaUtils = MockRsaUtils();
-      final mockIOClient = MockPrivacyIdeaIOClient();
+      final mockIOClient = MockPrivacyideaIOClient();
       final mockFirebaseUtils = MockFirebaseUtils();
       const rsaUtils = RsaUtils();
       const publicServerKeyString =
@@ -371,7 +371,7 @@ void _testTokenNotifier() {
         settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
       ]);
       final mockRepo = MockTokenRepository();
-      final mockIOClient = MockPrivacyIdeaIOClient();
+      final mockIOClient = MockPrivacyideaIOClient();
       final mockFirebaseUtils = MockFirebaseUtils();
       final mockRsaUtils = MockRsaUtils();
       final uri = Uri.parse('https://example.com');

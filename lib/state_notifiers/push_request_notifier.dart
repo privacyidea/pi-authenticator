@@ -33,7 +33,7 @@ import '../repo/secure_push_request_repository.dart';
 import '../utils/custom_int_buffer.dart';
 import '../utils/globals.dart';
 import '../utils/logger.dart';
-import '../utils/network_utils.dart';
+import '../utils/privacyidea_io_client.dart';
 import '../utils/push_provider.dart';
 import '../utils/riverpod_providers.dart';
 import '../utils/rsa_utils.dart';
@@ -48,19 +48,19 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
 
   PushProvider _pushProvider;
   PushProvider get pushProvider => _pushProvider;
-  final PrivacyIdeaIOClient _ioClient;
+  final PrivacyideaIOClient _ioClient;
   final RsaUtils _rsaUtils;
 
   final Map<String, Timer> _expirationTimers = {};
 
   PushRequestNotifier({
     PushRequestState? initState,
-    PrivacyIdeaIOClient? ioClient,
+    PrivacyideaIOClient? ioClient,
     required PushProvider pushProvider,
     required this.ref,
     RsaUtils? rsaUtils,
     PushRequestRepository? pushRepo,
-  })  : _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
+  })  : _ioClient = ioClient ?? const PrivacyideaIOClient(),
         _pushProvider = pushProvider,
         _rsaUtils = rsaUtils ?? const RsaUtils(),
         _pushRepo = pushRepo ?? const SecurePushRequestRepository(),
