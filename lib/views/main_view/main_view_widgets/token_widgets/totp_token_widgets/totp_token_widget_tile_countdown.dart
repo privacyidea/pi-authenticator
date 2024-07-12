@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class TotpTokenWidgetTileCountdown extends StatefulWidget {
   final int period;
-  const TotpTokenWidgetTileCountdown(this.period, {super.key});
+  final Function onPeriodEnd;
+  const TotpTokenWidgetTileCountdown({required this.period, required this.onPeriodEnd, super.key});
   @override
   State<TotpTokenWidgetTileCountdown> createState() => _TotpTokenWidgetTileCountdownState();
 }
@@ -45,6 +46,7 @@ class _TotpTokenWidgetTileCountdownState extends State<TotpTokenWidgetTileCountd
         secondsUntilNextOTP = widget.period - (lastCount.millisecondsSinceEpoch % (widget.period * 1000)) / 1000;
         animation.forward(from: 1 - secondsUntilNextOTP / widget.period);
       });
+      widget.onPeriodEnd.call();
     }
 
     final msUntilNextSecond = (secondsUntilNextOTP * 1000).toInt() % 1000 + 1; // +1 to avoid 0

@@ -644,7 +644,7 @@
       }
     }
   },
-  "invalidValueForParameter": "[{value}] is not a valid value for uri parameter [parameter].",
+  "invalidValueForParameter": "\"{value}\" is not a valid value for the parameter \"{parameter}\".",
   "@invalidValueForParameter": {
     "placeholders": {
       "value": {
@@ -695,5 +695,6 @@
   "qrInFileNotFound": "No QR code was found in the selected image.",
   "qrInFileNotFound2": "You can show me where the QR code is located.",
   "qrInFileNotFound3": "I expect i will find the code if it is in the middle of the marked area.",
-  "markQrCode": "Mark QR Code"
+  "markQrCode": "Mark QR Code",
+  "malformedData": "Malformed data"
 }

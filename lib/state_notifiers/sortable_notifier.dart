@@ -9,9 +9,7 @@ import '../utils/riverpod_providers.dart';
 class SortableNotifier extends StateNotifier<List<SortableMixin>> {
   final StateNotifierProviderRef ref;
   Future<List<SortableMixin>>? initState;
-
   SortableNotifier(this.ref, {List<SortableMixin> initState = const []}) : super(initState);
-
   Future<void> _waitInit<List>() async {
     if (initState != null) {
       await initState;
@@ -32,11 +30,8 @@ class SortableNotifier extends StateNotifier<List<SortableMixin>> {
   Future<List<SortableMixin>> handleNewStateList<T extends SortableMixin>(List<T> newList) async {
     await _waitInit();
     var newState = List<SortableMixin>.from(state);
-    print('newState 1: ${newState.length}');
     newState.removeWhere((element) => element is T);
-    print('newState 2: ${newState.length}');
     newState.addAll(newList);
-    print('newState 3: ${newState.length}');
     newState = newState.sorted.fillNullIndices();
     state = newState;
     await Future.wait([

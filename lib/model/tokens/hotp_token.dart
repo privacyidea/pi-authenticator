@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../utils/errors.dart';
 import '../../utils/identifiers.dart';
 import '../enums/algorithms.dart';
 import '../enums/encodings.dart';
@@ -96,13 +97,12 @@ class HOTPToken extends OTPToken {
   }
 
   factory HOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
-    if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
-    if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
+    validateUriMap(uriMap);
     return HOTPToken(
       label: uriMap[URI_LABEL] ?? '',
       issuer: uriMap[URI_ISSUER] ?? '',
       id: const Uuid().v4(),
-      algorithm: Algorithms.values.byName(uriMap[URI_ALGORITHM] ?? 'SHA1'),
+      algorithm: Algorithms.values.byName((uriMap[URI_ALGORITHM] as String? ?? 'SHA1').toUpperCase()),
       digits: uriMap[URI_DIGITS] ?? 6,
       secret: Encodings.base32.encode(uriMap[URI_SECRET]),
       counter: uriMap[URI_COUNTER] ?? 0,
@@ -111,6 +111,35 @@ class HOTPToken extends OTPToken {
       isLocked: uriMap[URI_PIN],
       origin: uriMap[URI_ORIGIN],
     );
+  }
+
+  /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
+  static void validateUriMap(Map<String, dynamic> uriMap) {
+    if (uriMap[URI_SECRET] == null) {
+      throw LocalizedArgumentError(
+          invalidValue: uriMap[URI_SECRET],
+          name: URI_SECRET,
+          unlocalizedMessage: 'Secret is required',
+          localizedMessage: ((localizations, value, name) => localizations.secretIsRequired));
+    }
+    if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) {
+      throw LocalizedArgumentError(
+          invalidValue: uriMap[URI_DIGITS],
+          name: URI_DIGITS,
+          unlocalizedMessage: 'Digits must be greater than 0',
+          localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter));
+    }
+    if (uriMap[URI_ALGORITHM] != null) {
+      try {
+        Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase());
+      } catch (e) {
+        throw LocalizedArgumentError(
+            invalidValue: uriMap[URI_ALGORITHM],
+            name: URI_ALGORITHM,
+            unlocalizedMessage: 'Algorithm ${uriMap[URI_ALGORITHM]} is not supported',
+            localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter));
+      }
+    }
   }
 
   @override
