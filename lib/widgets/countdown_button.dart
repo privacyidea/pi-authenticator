@@ -58,8 +58,6 @@ class _CountdownButtonState extends State<CountdownButton> with SingleTickerProv
       color2 = color1;
       color1 = temp;
     });
-    print(currentCount);
-    print(currentCount > 0);
     return currentCount > 0;
   }
 
