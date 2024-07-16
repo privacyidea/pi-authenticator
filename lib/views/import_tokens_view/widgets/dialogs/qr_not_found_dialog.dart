@@ -54,7 +54,7 @@ class QrNotFoundDialog extends StatelessWidget {
             } catch (e) {
               if (!context.mounted) return;
               Navigator.of(context).pop();
-              globalSnackbarKey.currentState?.showSnackBar(const SnackBar(content: const Text("File not currently available! Please try again.")));
+              globalSnackbarKey.currentState?.showSnackBar(const SnackBar(content: Text("File not currently available! Please try again.")));
               return;
             }
             if (!context.mounted) return;

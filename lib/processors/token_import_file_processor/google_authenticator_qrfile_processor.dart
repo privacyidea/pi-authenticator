@@ -114,7 +114,6 @@ Future<Result?> _decodeQrImageIsolate(List<dynamic> args) async {
   if (rotation > 0) {
     image = img_lib.copyRotate(image, angle: rotation);
   }
-  print("Image: ${image.width}x${image.height} Rotation: $rotation Zoom: $zoomLevel");
 
   LuminanceSource source = RGBLuminanceSource(
     image.width,
