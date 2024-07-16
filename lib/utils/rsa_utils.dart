@@ -26,12 +26,13 @@ import 'package:flutter/foundation.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
+
 import '../l10n/app_localizations.dart';
 import '../model/tokens/push_token.dart';
 import '../utils/crypto_utils.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
-import 'riverpod_providers.dart';
+import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 
 class RsaUtils {
   const RsaUtils();

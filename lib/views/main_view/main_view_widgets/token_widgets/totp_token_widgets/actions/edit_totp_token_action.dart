@@ -7,7 +7,7 @@ import '../../../../../../model/tokens/totp_token.dart';
 import '../../../../../../utils/customization/action_theme.dart';
 import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
-import '../../../../../../utils/riverpod_providers.dart';
+import '../../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
 import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../default_token_actions/default_edit_action_dialog.dart';
 import '../../token_action.dart';

@@ -21,6 +21,7 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/enums/patch_note_type.dart';
@@ -82,3 +83,5 @@ final piAuthenticatorGitHubUri = Uri.parse("https://github.com/privacyidea/pi-au
 
 // The highest version of the pipush Tokentype that this client supports.
 const maxPushTokenVersion = 1;
+
+WidgetRef? globalRef;

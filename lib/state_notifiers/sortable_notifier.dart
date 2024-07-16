@@ -1,15 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/sortable_list.dart';
 
+import '../model/extensions/sortable_list.dart';
 import '../model/mixins/sortable_mixin.dart';
 import '../model/token_folder.dart';
 import '../model/tokens/token.dart';
-import '../utils/riverpod_providers.dart';
+import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
+import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import '../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 
 class SortableNotifier extends StateNotifier<List<SortableMixin>> {
-  final StateNotifierProviderRef ref;
+  final StateNotifierProviderRef _ref;
   Future<List<SortableMixin>>? initState;
-  SortableNotifier(this.ref, {List<SortableMixin> initState = const []}) : super(initState);
+  SortableNotifier({
+    required StateNotifierProviderRef ref,
+    List<SortableMixin> initState = const [],
+  })  : _ref = ref,
+        super(initState);
   Future<void> _waitInit<List>() async {
     if (initState != null) {
       await initState;
@@ -17,8 +23,8 @@ class SortableNotifier extends StateNotifier<List<SortableMixin>> {
     }
     initState = Future(() async {
       final newSortables = <SortableMixin>[];
-      newSortables.addAll((await ref.read(tokenProvider.notifier).initState).tokens.cast<SortableMixin>());
-      newSortables.addAll((await ref.read(tokenFolderProvider.notifier).initState).folders.cast<SortableMixin>());
+      newSortables.addAll((await _ref.read(tokenProvider.notifier).initState).tokens.cast<SortableMixin>());
+      newSortables.addAll((await _ref.read(tokenFolderProvider.notifier).initState).folders.cast<SortableMixin>());
       state = newSortables.sorted.fillNullIndices();
       return state;
     });
@@ -37,12 +43,12 @@ class SortableNotifier extends StateNotifier<List<SortableMixin>> {
     await Future.wait([
       Future.delayed(const Duration(milliseconds: 50)),
       if (newList.any((e) => e is Token) && newList.any((element) => element.sortIndex == null))
-        ref.read(tokenProvider.notifier).addOrReplaceTokens(state.whereType<Token>().toList()),
+        _ref.read(tokenProvider.notifier).addOrReplaceTokens(state.whereType<Token>().toList()),
       if (newList.any((e) => e is TokenFolder) && newList.any((element) => element.sortIndex == null))
-        ref.read(tokenFolderProvider.notifier).addOrReplaceFolders(state.whereType<TokenFolder>().toList()),
+        _ref.read(tokenFolderProvider.notifier).addOrReplaceFolders(state.whereType<TokenFolder>().toList()),
     ]);
 
-    ref.read(draggingSortableProvider.notifier).state = null;
+    _ref.read(draggingSortableProvider.notifier).state = null;
     return newState;
   }
 }

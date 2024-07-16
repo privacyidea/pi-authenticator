@@ -6,7 +6,10 @@ import '../../utils/app_info_utils.dart';
 import '../../utils/customization/application_customization.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
-import '../../utils/riverpod_providers.dart';
+import '../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
+import '../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
+import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
+import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../main_view/main_view.dart';
 import '../view_interface.dart';
 

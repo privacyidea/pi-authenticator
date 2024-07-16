@@ -14,7 +14,7 @@ import '../../model/extensions/enums/token_origin_source_type.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
-import '../../utils/riverpod_providers.dart';
+import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import 'add_token_manually_view_widgets/labeled_dropdown_button.dart';
 
 class AddTokenManuallyView extends ConsumerStatefulWidget {

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/introduction.dart';
 import '../../../../../model/tokens/push_token.dart';
-import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
 import '../../../../../widgets/custom_trailing.dart';
 import '../../../../../widgets/focused_item_as_overlay.dart';
 import '../token_widget_tile.dart';

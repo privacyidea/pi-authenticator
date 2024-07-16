@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../utils/riverpod_providers.dart';
 import '../utils/push_provider.dart';
+import '../utils/riverpod/riverpod_providers/state_notifier_providers/push_request_provider.dart';
 import 'dialog_widgets/push_request_dialog.dart';
 
 class PushRequestListener extends ConsumerStatefulWidget {

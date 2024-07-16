@@ -4,9 +4,10 @@ import 'package:base32/base32.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 
+import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod_providers.dart';
+import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../utils/rsa_utils.dart';
 import 'tokens/push_token.dart';
 
@@ -53,7 +54,7 @@ class PushRequest {
     String? serial,
     String? signature,
     bool? accepted,
-    List<String> Function()? answers,
+    List<String> Function()? possibleAnswers,
     String? Function()? selectedAnswer,
   }) {
     return PushRequest(
@@ -67,7 +68,7 @@ class PushRequest {
       serial: serial ?? this.serial,
       signature: signature ?? this.signature,
       accepted: accepted ?? this.accepted,
-      possibleAnswers: answers != null ? answers() : this.possibleAnswers,
+      possibleAnswers: possibleAnswers != null ? possibleAnswers() : this.possibleAnswers,
       selectedAnswer: selectedAnswer != null ? selectedAnswer() : this.selectedAnswer,
     );
   }

@@ -1,4 +1,4 @@
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 class Validators {
   final AppLocalizations appLocalizations;

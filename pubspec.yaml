@@ -14,7 +14,7 @@ publish_to: none
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 4.4.0+404008 # TODO Set the right version number 
+version: 4.4.0+404008 # TODO Set the right version number
 
 # version: major.minor.build          + 2x major|2x minor|3x build
 # version: version number             + build number (optional)
@@ -49,7 +49,7 @@ dependencies:
   hex: ^0.2.0
   base32: ^2.1.1
   pointycastle: ^3.7.3
-  asn1lib: ^1.5.0 
+  asn1lib: ^1.5.0
   encrypt: ^5.0.3
   cryptography: ^2.7.0
   otp: ^3.0.1
@@ -89,7 +89,7 @@ dependencies:
   path_provider: ^2.1.2
   qr_flutter: ^4.1.0
   image_cropper: ^7.1.0
-  
+
 
 dev_dependencies:
   flutter_driver:
@@ -104,8 +104,8 @@ dev_dependencies:
 
 
   # dependencies to serialize objects to json
-  build_runner: ^2.4.6
-  json_serializable: ^6.0.1
+  build_runner: ^2.4.11
+  json_serializable: ^6.8.0
 
 
 # For information on the generic Dart part of this file, see the

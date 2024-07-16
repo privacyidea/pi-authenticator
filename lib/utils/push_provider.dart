@@ -38,7 +38,9 @@ import 'firebase_utils.dart';
 import 'globals.dart';
 import 'logger.dart';
 import 'privacyidea_io_client.dart';
-import 'riverpod_providers.dart';
+import 'riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
+import 'riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import 'rsa_utils.dart';
 import 'utils.dart';
 

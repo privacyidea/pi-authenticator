@@ -31,9 +31,10 @@ import 'package:mutex/mutex.dart';
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
 import '../model/tokens/token.dart';
+import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod_providers.dart';
+import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../utils/view_utils.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
@@ -133,7 +134,7 @@ class SecureTokenRepository implements TokenRepository {
       }
     }
     if (failedTokens.isNotEmpty) {
-      Logger.error(
+      Logger.warning(
         'Could not save all tokens (${tokens.length - failedTokens.length}/${tokens.length}) to secure storage',
         name: 'secure_token_repository.dart#saveOrReplaceTokens',
         stackTrace: StackTrace.current,
@@ -149,7 +150,8 @@ class SecureTokenRepository implements TokenRepository {
   Future<bool> _saveOrReplaceToken(Token token) async {
     try {
       await _storage.write(key: _TOKEN_PREFIX + token.id, value: jsonEncode(token));
-    } catch (_) {
+    } catch (e, s) {
+      Logger.error('Could not save token to secure storage', name: 'secure_token_repository.dart#saveOrReplaceToken', error: e, stackTrace: s);
       return false;
     }
     return true;

@@ -4,18 +4,19 @@ import 'dart:math';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/model/processor_result.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/processors/token_import_file_processor/token_import_file_processor_interface.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:zxing2/qrcode.dart';
 import 'package:image/image.dart' as img_lib;
+import 'package:zxing2/qrcode.dart';
 
 import '../../model/enums/token_origin_source_type.dart';
+import '../../model/extensions/enums/token_origin_source_type.dart';
+import '../../model/processor_result.dart';
+import '../../model/tokens/token.dart';
+import '../../utils/globals.dart';
 import '../../utils/logger.dart';
+import '../../utils/riverpod/riverpod_providers/state_notifier_providers/progress_state_provider.dart';
 import '../../utils/token_import_origins.dart';
 import '../scheme_processors/token_import_scheme_processors/google_authenticator_qr_processor.dart';
+import 'token_import_file_processor_interface.dart';
 
 class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
   const GoogleAuthenticatorQrfileProcessor();

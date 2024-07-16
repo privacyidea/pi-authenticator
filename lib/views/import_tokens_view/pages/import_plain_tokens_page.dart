@@ -7,7 +7,7 @@ import '../../../model/extensions/enums/token_import_type_extension.dart';
 import '../../../model/processor_result.dart';
 import '../../../model/token_import/token_import_entry.dart';
 import '../../../model/tokens/token.dart';
-import '../../../utils/riverpod_providers.dart';
+import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../import_tokens_view.dart';
 import '../widgets/conflicted_import_tokens_list.dart';
 import '../widgets/failed_imports_list.dart';

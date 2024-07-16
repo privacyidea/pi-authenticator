@@ -1,10 +1,11 @@
 import 'dart:convert';
+
 import 'package:zxing2/qrcode.dart';
 
 import '../../model/tokens/token.dart';
 import '../../processors/scheme_processors/token_import_scheme_processors/privacyidea_authenticator_qr_processor.dart';
-import '../../utils/logger.dart';
 import '../../utils/encryption/aes_encrypted.dart';
+import '../../utils/logger.dart';
 
 class TokenEncryption {
   static Future<String> encrypt({required Iterable<Token> tokens, required String password}) async {

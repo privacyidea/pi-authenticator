@@ -7,7 +7,8 @@ import '../../model/enums/patch_note_type.dart';
 import '../../model/extensions/enums/patch_note_type_extension.dart';
 import '../../model/version.dart';
 import '../../utils/app_info_utils.dart';
-import '../../utils/riverpod_providers.dart';
+import '../../utils/globals.dart';
+import '../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import 'default_dialog.dart';
 
 class PatchNotesDialog extends StatelessWidget {

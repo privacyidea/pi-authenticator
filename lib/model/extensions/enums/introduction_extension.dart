@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../../../utils/riverpod_providers.dart';
+import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
+import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../../enums/introduction.dart';
 import '../../states/introduction_state.dart';
 

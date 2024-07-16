@@ -1,12 +1,12 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import '../../../model/tokens/token.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
 import '../../../model/extensions/enums/token_import_type_extension.dart';
 import '../../../model/token_import/token_import_origin.dart';
 import '../../../model/token_import/token_import_source.dart';
+import '../../../model/tokens/token.dart';
 import '../import_tokens_view.dart';
 import 'import_start_page.dart';
 

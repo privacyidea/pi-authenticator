@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../utils/customization/extended_text_theme.dart';
 import '../../utils/home_widget_utils.dart';
-import '../../utils/riverpod_providers.dart';
+import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
+import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../../utils/utils.dart';
 import '../view_interface.dart';
 

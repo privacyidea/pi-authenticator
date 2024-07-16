@@ -5,9 +5,11 @@ import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/introduction.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/customization/action_theme.dart';
+import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
-import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../../../../../widgets/focused_item_as_overlay.dart';
 import '../token_action.dart';
 
