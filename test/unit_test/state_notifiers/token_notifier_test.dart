@@ -20,7 +20,7 @@ import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
 import 'token_notifier_test.mocks.dart';

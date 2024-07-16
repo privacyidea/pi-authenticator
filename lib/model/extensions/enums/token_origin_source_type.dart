@@ -1,5 +1,4 @@
-import 'package:privacyidea_authenticator/utils/utils.dart';
-
+import '../../../utils/utils.dart';
 import '../../enums/token_origin_source_type.dart';
 import '../../token_import/token_origin_data.dart';
 import '../../tokens/token.dart';

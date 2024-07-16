@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../../../utils/riverpod_providers.dart';
+import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import '../settings_view_widgets/settings_groups.dart';
 
 class SettingsGroupLanguage extends ConsumerWidget {

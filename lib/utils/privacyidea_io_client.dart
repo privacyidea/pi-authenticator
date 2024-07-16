@@ -29,8 +29,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/globals.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod_providers.dart';
 import '../utils/view_utils.dart';
+import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 
 class PrivacyideaIOClient {
   const PrivacyideaIOClient();

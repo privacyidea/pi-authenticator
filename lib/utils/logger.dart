@@ -17,7 +17,7 @@ import '../utils/app_info_utils.dart';
 import '../utils/pi_mailer.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import 'globals.dart';
-import 'riverpod_providers.dart';
+import 'riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 
 final provider = Provider<int>((ref) => 0);
 

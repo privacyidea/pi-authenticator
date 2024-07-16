@@ -1,16 +1,17 @@
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
-import '../../../model/enums/token_origin_source_type.dart';
-import '../../../model/token_import/token_origin_data.dart';
+
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/algorithms.dart';
 import '../../../model/enums/encodings.dart';
+import '../../../model/enums/token_origin_source_type.dart';
 import '../../../model/enums/token_types.dart';
 import '../../../model/extensions/enum_extension.dart';
 import '../../../model/extensions/enums/encodings_extension.dart';
+import '../../../model/extensions/enums/token_origin_source_type.dart';
 import '../../../model/processor_result.dart';
+import '../../../model/token_import/token_origin_data.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/errors.dart';
 import '../../../utils/globals.dart';
@@ -19,7 +20,6 @@ import '../../../utils/logger.dart';
 import '../../../utils/utils.dart' show getCurrentAppName;
 import '../../../utils/view_utils.dart';
 import '../../../widgets/dialog_widgets/two_step_dialog.dart';
-
 import 'token_import_scheme_processor_interface.dart';
 
 class OtpAuthProcessor extends TokenImportSchemeProcessor {

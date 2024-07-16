@@ -28,8 +28,9 @@ import 'package:privacyidea_authenticator/utils/customization/application_custom
 import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
 import '../utils/globals.dart';
+import '../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
+import '../utils/riverpod/riverpod_providers/state_providers/app_constraints_provider.dart';
 import '../utils/riverpod/riverpod_providers/state_providers/application_customizer_provider.dart';
-import '../utils/riverpod_providers.dart';
 import '../views/add_token_manually_view/add_token_manually_view.dart';
 import '../views/feedback_view/feedback_view.dart';
 import '../views/import_tokens_view/import_tokens_view.dart';

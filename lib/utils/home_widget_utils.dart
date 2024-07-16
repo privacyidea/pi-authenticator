@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:mutex/mutex.dart';
-import '../utils/customization/theme_customization.dart';
+
 import '../interfaces/repo/token_folder_repository.dart';
 import '../interfaces/repo/token_repository.dart';
 import '../mains/main_netknights.dart';
@@ -20,6 +20,7 @@ import '../model/tokens/totp_token.dart';
 import '../processors/scheme_processors/home_widget_processor.dart';
 import '../repo/preference_token_folder_repository.dart';
 import '../repo/secure_token_repository.dart';
+import '../utils/customization/theme_customization.dart';
 import '../widgets/home_widgets/home_widget_action.dart';
 import '../widgets/home_widgets/home_widget_background.dart';
 import '../widgets/home_widgets/home_widget_configure.dart';
@@ -27,8 +28,10 @@ import '../widgets/home_widgets/home_widget_copied.dart';
 import '../widgets/home_widgets/home_widget_hidden.dart';
 import '../widgets/home_widgets/home_widget_otp.dart';
 import '../widgets/home_widgets/home_widget_unlinked.dart';
+import 'globals.dart';
 import 'logger.dart';
-import 'riverpod_providers.dart';
+import 'riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import 'riverpod/riverpod_providers/state_providers/home_widget_provider.dart';
 
 const appGroupId = 'group.authenticator_home_widget_group';
 

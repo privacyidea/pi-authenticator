@@ -1,9 +1,9 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/globals.dart';
 
+import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/globals.dart';
 import '../../../../utils/logger.dart';
 import '../../../../widgets/dialog_widgets/default_dialog.dart';
 

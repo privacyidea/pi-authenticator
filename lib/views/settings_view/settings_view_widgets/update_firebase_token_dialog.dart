@@ -25,7 +25,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/globals.dart';
 import '../../../utils/logger.dart';
-import '../../../utils/riverpod_providers.dart';
+import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 

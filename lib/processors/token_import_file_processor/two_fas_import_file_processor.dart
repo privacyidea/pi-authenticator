@@ -6,13 +6,13 @@ import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../utils/encryption/aes_encrypted.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/extensions/enums/encodings_extension.dart';
 import '../../model/extensions/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
+import '../../utils/encryption/aes_encrypted.dart';
 import '../../utils/errors.dart';
 import '../../utils/globals.dart';
 import '../../utils/identifiers.dart';

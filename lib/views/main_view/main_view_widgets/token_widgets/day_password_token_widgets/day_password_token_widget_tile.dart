@@ -8,7 +8,8 @@ import 'package:intl/intl.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/day_password_token_view_mode.dart';
 import '../../../../../model/tokens/day_password_token.dart';
-import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
 import '../../../../../widgets/custom_trailing.dart';
@@ -51,9 +52,9 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
   }
 
   void _copyOtpValue() {
-    if (globalRef?.read(disableCopyOtpProvider) ?? false) return;
+    if (ref.read(disableCopyOtpProvider) ?? false) return;
 
-    globalRef?.read(disableCopyOtpProvider.notifier).state = true;
+    ref.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -61,7 +62,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
       ),
     );
     Future.delayed(const Duration(seconds: 5), () {
-      globalRef?.read(disableCopyOtpProvider.notifier).state = false;
+      ref.read(disableCopyOtpProvider.notifier).state = false;
     });
   }
 
@@ -125,11 +126,11 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                   ? null
                   : () {
                       if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDFOR) {
-                        globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
+                        ref.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
                         return;
                       }
                       if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDUNTIL) {
-                        globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
+                        ref.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
                         return;
                       }
                     },

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/lock_auth.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../utils/lock_auth.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../settings_view_widgets/settings_list_tile_button.dart';
 import 'export_tokens_to_file_dialog.dart';

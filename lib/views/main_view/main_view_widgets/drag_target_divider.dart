@@ -7,7 +7,8 @@ import '../../../model/extensions/sortable_list.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/token.dart';
-import '../../../utils/riverpod_providers.dart';
+import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
+import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../../../widgets/drag_item_scroller.dart';
 
 /// DragTargetDivider is used to create a divider that can be used to move a sortable up or down in the list

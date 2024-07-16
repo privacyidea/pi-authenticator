@@ -7,8 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod_providers.dart';
-import '../utils/riverpod_state_listener.dart';
+import '../utils/riverpod/riverpod_providers/state_notifier_providers/deeplink_provider.dart';
+import '../utils/riverpod/riverpod_providers/state_notifier_providers/push_request_provider.dart';
+import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
+import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import '../utils/riverpod/state_listeners/home_widget_deep_link_listener.dart';
+import '../utils/riverpod/state_listeners/home_widget_token_state_listener.dart';
+import '../utils/riverpod/state_listeners/navigation_deep_link_listener.dart';
+import '../utils/riverpod/state_listeners/token_container_token_state_listener.dart';
 import 'app_wrappers/single_touch_recognizer.dart';
 import 'app_wrappers/state_observer.dart';
 
@@ -82,7 +88,9 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
       child: StateObserver(
         listeners: [
           NavigationDeepLinkListener(deeplinkProvider: deeplinkProvider),
+          HomeWidgetDeepLinkListener(deeplinkProvider: deeplinkProvider), // TODO: Nochmal anschauen
           HomeWidgetTokenStateListener(tokenProvider: tokenProvider),
+          TokenContainerTokenStateListener(tokenProvider: tokenProvider, ref: ref),
         ],
         child: EasyDynamicThemeWidget(
           child: widget.child,

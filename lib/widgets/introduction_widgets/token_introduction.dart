@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/introduction.dart';
-import '../../utils/riverpod_providers.dart';
+import '../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
 import '../focused_item_as_overlay.dart';
 
 class TokenIntroduction extends ConsumerWidget {

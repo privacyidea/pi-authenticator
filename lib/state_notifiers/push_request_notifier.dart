@@ -35,7 +35,7 @@ import '../utils/globals.dart';
 import '../utils/logger.dart';
 import '../utils/privacyidea_io_client.dart';
 import '../utils/push_provider.dart';
-import '../utils/riverpod_providers.dart';
+import '../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../utils/rsa_utils.dart';
 import '../utils/utils.dart';
 

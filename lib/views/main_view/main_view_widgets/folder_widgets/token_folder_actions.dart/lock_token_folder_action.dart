@@ -5,7 +5,7 @@ import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_folder.dart';
 import '../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../utils/lock_auth.dart';
-import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
 
 class LockTokenFolderAction extends StatelessWidget {
   final TokenFolder folder;

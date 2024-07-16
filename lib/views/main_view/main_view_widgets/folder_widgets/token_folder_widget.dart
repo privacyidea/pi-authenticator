@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../../../model/token_folder.dart';
-import '../../../../utils/riverpod_providers.dart';
+import '../../../../utils/logger.dart';
+import '../../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../../utils/utils.dart';
 import 'token_folder_expandable.dart';
 

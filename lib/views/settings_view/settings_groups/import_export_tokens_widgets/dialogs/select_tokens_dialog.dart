@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
-import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_providers/app_constraints_provider.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 
