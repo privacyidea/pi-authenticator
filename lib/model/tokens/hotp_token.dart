@@ -113,6 +113,32 @@ class HOTPToken extends OTPToken {
     );
   }
 
+  /// ```dart
+  /// URI_TYPE: tokenType,
+  /// URI_COUNTER: counter,
+  /// ```
+  /// ------ OTPTOKEN ------
+  /// ```dart
+  /// URI_SECRET: Encodings.base32.decode(secret),
+  /// URI_ALGORITHM: algorithm.name,
+  /// URI_DIGITS: digits,
+  /// ```
+  /// ------- TOKEN ---------
+  /// ```dart
+  /// URI_LABEL: label,
+  /// URI_ISSUER: issuer,
+  /// URI_PIN: pin,
+  /// URI_IMAGE: tokenImage,
+  /// URI_ORIGIN: jsonEncode(origin!.toJson()),
+  /// ```
+  @override
+  Map<String, dynamic> toUriMap() {
+    return super.toUriMap()
+      ..addAll({
+        URI_COUNTER: counter,
+      });
+  }
+
   /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
   static void validateUriMap(Map<String, dynamic> uriMap) {
     if (uriMap[URI_SECRET] == null) {

@@ -5,5 +5,7 @@ import '../../home_widget_utils.dart';
 class HomeWidgetTokenStateListener extends TokenStateListener {
   const HomeWidgetTokenStateListener({required super.tokenProvider}) : super(onNewState: _onNewState);
 
-  static void _onNewState(TokenState? previous, TokenState next) => HomeWidgetUtils().updateTokensIfLinked(next.lastlyUpdatedTokens);
+  static void _onNewState(TokenState? previous, TokenState next) {
+    HomeWidgetUtils().updateTokensIfLinked(next.lastlyUpdatedTokens);
+  }
 }

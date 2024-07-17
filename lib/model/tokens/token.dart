@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import '../../utils/identifiers.dart';
@@ -114,4 +116,23 @@ abstract class Token with SortableMixin {
   }
 
   Map<String, dynamic> toJson();
+
+  /// ```dart
+  /// URI_LABEL: label,
+  /// URI_ISSUER: issuer,
+  /// URI_PIN: pin,
+  /// URI_IMAGE: tokenImage,
+  /// URI_ORIGIN: jsonEncode(origin!.toJson()),
+  /// ```
+  Map<String, dynamic> toUriMap() {
+    return {
+      TOKEN_ID: id,
+      URI_TYPE: type,
+      URI_LABEL: label,
+      URI_ISSUER: issuer,
+      URI_PIN: pin,
+      if (tokenImage != null) URI_IMAGE: tokenImage,
+      if (origin != null) URI_ORIGIN: jsonEncode(origin!.toJson())
+    };
+  }
 }

@@ -65,6 +65,9 @@ const String PUSH_REQUEST_SSL_VERIFY = 'sslverify'; // 6.
 const String PUSH_REQUEST_SIGNATURE = 'signature'; // 7.
 const String PUSH_REQUEST_ANSWERS = 'require_presence'; // 8.
 
+// TokenContainer:
+const String TOKEN_ID = 'id';
+
 const String GLOBAL_SECURE_REPO_PREFIX = 'app_v3_';
 
 bool validateMap(Map<String, dynamic> map, List<String> keys) {

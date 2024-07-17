@@ -21,6 +21,7 @@ class TOTPToken extends OTPToken {
   // this value is used to calculate the current 'counter' of this token
   // based on the UNIX systemtime), the counter is used to calculate the
   // current otp value
+  final int period;
 
   @override
   Duration get showDuration {
@@ -29,7 +30,6 @@ class TOTPToken extends OTPToken {
     return duration;
   }
 
-  final int period;
   String otpFromTime(DateTime time) => algorithm.generateTOTPCodeString(
         secret: secret,
         time: time,
@@ -122,6 +122,32 @@ class TOTPToken extends OTPToken {
       isLocked: uriMap[URI_PIN],
       origin: uriMap[URI_ORIGIN],
     );
+  }
+  /// ----- TOTP TOKEN -----
+  /// ```dart
+  /// URI_TYPE: tokenType,
+  /// URI_PERIOD: period,
+  /// ```
+  /// ------ OTP TOKEN ------
+  /// ```dart
+  /// URI_SECRET: Encodings.base32.decode(secret),
+  /// URI_ALGORITHM: algorithm.name,
+  /// URI_DIGITS: digits,
+  /// ```
+  /// ------- TOKEN ---------
+  /// ```dart
+  /// URI_LABEL: label,
+  /// URI_ISSUER: issuer,
+  /// URI_PIN: pin,
+  /// URI_IMAGE: tokenImage,
+  /// URI_ORIGIN: jsonEncode(origin!.toJson()),
+  /// ```
+  @override
+  Map<String, dynamic> toUriMap() {
+    return super.toUriMap()
+      ..addAll({
+        URI_PERIOD: period,
+      });
   }
 
   /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.

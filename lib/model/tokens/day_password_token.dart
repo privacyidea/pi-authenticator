@@ -138,6 +138,14 @@ class DayPasswordToken extends OTPToken {
     );
   }
 
+  @override
+  Map<String, dynamic> toUriMap() {
+    return super.toUriMap()
+      ..addAll({
+        URI_PERIOD: period.inSeconds,
+      });
+  }
+
   /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
   static void validateUriMap(Map<String, dynamic> uriMap) {
     if (uriMap[URI_SECRET] == null) {
