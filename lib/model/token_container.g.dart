@@ -11,8 +11,8 @@ TokenContainer _$TokenContainerFromJson(Map<String, dynamic> json) =>
       containerId: json['containerId'] as String,
       description: json['description'] as String,
       type: json['type'] as String,
-      tokens: (json['tokens'] as List<dynamic>)
-          .map((e) => Token.fromJson(e as Map<String, dynamic>))
+      tokenTemplates: (json['tokenTemplates'] as List<dynamic>)
+          .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
@@ -21,5 +21,19 @@ Map<String, dynamic> _$TokenContainerToJson(TokenContainer instance) =>
       'containerId': instance.containerId,
       'description': instance.description,
       'type': instance.type,
-      'tokens': instance.tokens,
+      'tokenTemplates': instance.tokenTemplates,
+    };
+
+TokenTemplate _$TokenTemplateFromJson(Map<String, dynamic> json) =>
+    TokenTemplate(
+      data: json['data'] as Map<String, dynamic>,
+      modifiedAt: DateTime.parse(json['modifiedAt'] as String),
+      highPriority: json['highPriority'] as bool? ?? false,
+    );
+
+Map<String, dynamic> _$TokenTemplateToJson(TokenTemplate instance) =>
+    <String, dynamic>{
+      'modifiedAt': instance.modifiedAt.toIso8601String(),
+      'highPriority': instance.highPriority,
+      'data': instance.data,
     };

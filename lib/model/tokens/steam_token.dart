@@ -123,6 +123,28 @@ class SteamToken extends TOTPToken {
     );
   }
 
+  /// ----- TOTP TOKEN -----
+  /// ```dart
+  /// URI_TYPE: tokenType,
+  /// URI_PERIOD: period,
+  /// ```
+  /// ------ OTP TOKEN ------
+  /// ```dart
+  /// URI_SECRET: Encodings.base32.decode(secret),
+  /// URI_ALGORITHM: algorithm.name,
+  /// URI_DIGITS: digits,
+  /// ```
+  /// ------- TOKEN ---------
+  /// ```dart
+  /// URI_LABEL: label,
+  /// URI_ISSUER: issuer,
+  /// URI_PIN: pin,
+  /// URI_IMAGE: tokenImage,
+  /// URI_ORIGIN: jsonEncode(origin!.toJson()),
+  /// ```
+  @override
+  Map<String, dynamic> toUriMap() => super.toUriMap();
+
   static SteamToken fromJson(Map<String, dynamic> json) => _$SteamTokenFromJson(json);
   @override
   Map<String, dynamic> toJson() => _$SteamTokenToJson(this);

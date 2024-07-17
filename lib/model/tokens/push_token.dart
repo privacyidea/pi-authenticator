@@ -178,6 +178,18 @@ class PushToken extends Token {
         origin: uriMap[URI_ORIGIN],
       );
 
+  @override
+  Map<String, dynamic> toUriMap() {
+    return super.toUriMap()
+      ..addAll({
+        URI_SERIAL: serial,
+        URI_SSL_VERIFY: sslVerify,
+        if (expirationDate != null) URI_TTL: expirationDate!.difference(DateTime.now()).inMinutes,
+        if (enrollmentCredentials != null) URI_ENROLLMENT_CREDENTIAL: enrollmentCredentials,
+        if (url != null) URI_ROLLOUT_URL: url.toString(),
+      });
+  }
+
   factory PushToken.fromJson(Map<String, dynamic> json) {
     final newToken = _$PushTokenFromJson(json);
     final currentRolloutState = switch (newToken.rolloutState) {

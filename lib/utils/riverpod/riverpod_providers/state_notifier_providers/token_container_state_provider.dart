@@ -11,9 +11,10 @@ import '../../../logger.dart';
 final tokenContainerStateProvider = StateNotifierProvider<TokenContainerNotifier, TokenContainerState>((ref) {
   Logger.info("New tokenContainerStateProvider created", name: 'tokenContainerStateProvider');
   return TokenContainerNotifier(
-    ref: ref,
+    // ref: ref,
     repository: HybridTokenContainerStateRepository(
-      localRepository: PreferenceTokenContainerStateRepository('placeholder'), // TODO: Implement containerId
+      localRepository: SecureTokenContainerStateRepository('placeholder'), // TODO: Implement containerId
+      syncedRepository: SecureTokenContainerStateRepository('placeholder'), // TODO: Implement containerId
       remoteRepository: RemoteTokenContainerStateRepository(
         apiEndpoint: TokenContainerApiEndpoint(), // TODO: Nochmal anschauen
         containerId: 'placeholder', // TODO: Implement containerId

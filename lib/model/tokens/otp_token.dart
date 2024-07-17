@@ -1,5 +1,9 @@
+import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
+
 import '../../utils/logger.dart';
 import '../enums/algorithms.dart';
+import '../enums/encodings.dart';
 import '../token_import/token_origin_data.dart';
 import 'token.dart';
 
@@ -60,5 +64,28 @@ abstract class OTPToken extends Token {
   @override
   String toString() {
     return 'OTP${super.toString()}algorithm: $algorithm, digits: $digits, pin: $pin, ';
+  }
+
+  /// ```dart
+  /// URI_SECRET: Encodings.base32.decode(secret),
+  /// URI_ALGORITHM: algorithm.name,
+  /// URI_DIGITS: digits,
+  /// ```
+  /// ------- TOKEN ---------
+  /// ```dart
+  /// URI_LABEL: label,
+  /// URI_ISSUER: issuer,
+  /// URI_PIN: pin,
+  /// URI_IMAGE: tokenImage,
+  /// URI_ORIGIN: jsonEncode(origin!.toJson()),
+  /// ```
+  @override
+  Map<String, dynamic> toUriMap() {
+    return super.toUriMap()
+      ..addAll({
+        URI_SECRET: Encodings.base32.decode(secret),
+        URI_ALGORITHM: algorithm.name,
+        URI_DIGITS: digits,
+      });
   }
 }
