@@ -27,13 +27,9 @@ Map<String, dynamic> _$TokenContainerToJson(TokenContainer instance) =>
 TokenTemplate _$TokenTemplateFromJson(Map<String, dynamic> json) =>
     TokenTemplate(
       data: json['data'] as Map<String, dynamic>,
-      modifiedAt: DateTime.parse(json['modifiedAt'] as String),
-      highPriority: json['highPriority'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$TokenTemplateToJson(TokenTemplate instance) =>
     <String, dynamic>{
-      'modifiedAt': instance.modifiedAt.toIso8601String(),
-      'highPriority': instance.highPriority,
       'data': instance.data,
     };

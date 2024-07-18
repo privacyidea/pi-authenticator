@@ -9,7 +9,7 @@ abstract class TokenContainerStateRepository {
 
   /// Load the container state from the repository
   /// Returns the loaded state
-  Future<TokenContainerState> loadContainer();
+  Future<TokenContainerState> loadContainerState();
 
   /// Save a token template to the repository
   /// Returns the template that was actually written
@@ -17,5 +17,5 @@ abstract class TokenContainerStateRepository {
 
   /// Load a token template from the repository
   /// Returns the loaded template
-  Future<TokenTemplate> loadTokenTemplate(String tokenTemplateId);
+  Future<TokenTemplate?> loadTokenTemplate(String tokenTemplateId);
 }

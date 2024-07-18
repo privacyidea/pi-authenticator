@@ -8,25 +8,28 @@ import '../../utils/logger.dart';
 
 class HybridTokenContainerStateRepository<LocalRepo extends TokenContainerStateRepository, RemoteRepo extends TokenContainerStateRepository>
     implements TokenContainerStateRepository {
-  final RemoteRepo _remoteRepository;
   final LocalRepo _localRepository;
   final LocalRepo _syncedRepository;
+  final RemoteRepo? _remoteRepository;
 
   HybridTokenContainerStateRepository({
-    required RemoteRepo remoteRepository,
     required LocalRepo localRepository,
     required LocalRepo syncedRepository,
-  })  : _remoteRepository = remoteRepository,
+    required RemoteRepo? remoteRepository,
+  })  :
         _localRepository = localRepository,
-        _syncedRepository = syncedRepository;
+        _syncedRepository = syncedRepository,
+        _remoteRepository = remoteRepository;
 
   @override
-  Future<TokenContainerState> loadContainer({bool isInitial = false}) async {
+  Future<TokenContainerState> loadContainerState({bool isInitial = false}) async {
     TokenContainerState? remoteState;
+    TokenContainerState lastSyncedState;
     TokenContainerState localState;
     TokenContainerState newState;
+
     try {
-      localState = await _localRepository.loadContainer();
+      localState = await _localRepository.loadContainerState();
     } catch (e) {
       return TokenContainerStateError(
         error: LocalizedException(
@@ -41,12 +44,17 @@ class HybridTokenContainerStateRepository<LocalRepo extends TokenContainerStateR
       );
     }
     try {
-      remoteState = await _remoteRepository.loadContainer();
+      remoteState = await _remoteRepository?.loadContainerState();
+      lastSyncedState = await _syncedRepository.loadContainerState();
     } catch (e) {
       newState = localState.copyTransformInto<TokenContainerStateUnsynced>();
       return newState;
     }
-    newState = _merge(localState, remoteState);
+    newState = await _merge(
+      localState: localState,
+      remoteState: remoteState,
+      lastSyncedState: lastSyncedState,
+    );
     if (newState is TokenContainerStateSynced) {
       try {
         await _syncedRepository.saveContainerState(newState);
@@ -58,68 +66,147 @@ class HybridTokenContainerStateRepository<LocalRepo extends TokenContainerStateR
   }
 
   @override
-  Future<TokenContainerState> saveContainerState(TokenContainerState containerState) async {
-    if (containerState is TokenContainerStateError) {
+  Future<TokenContainerState> saveContainerState(TokenContainerState newLocalState) async {
+    if (newLocalState is TokenContainerStateError) {
       Logger.warning('Cannot save error state to repository');
-      return containerState;
+      return newLocalState;
     }
-    TokenContainerState remoteState;
+    TokenContainerState? remoteState;
+    TokenContainerState lastSyncedState;
     TokenContainerState newState;
+
     try {
-      remoteState = await _remoteRepository.loadContainer();
+      remoteState = await _remoteRepository?.loadContainerState();
+      lastSyncedState = await _syncedRepository.loadContainerState();
     } catch (e) {
-      newState = containerState.copyTransformInto<TokenContainerStateUnsynced>();
+      newState = newLocalState.copyTransformInto<TokenContainerStateUnsynced>();
       return _localRepository.saveContainerState(newState);
     }
-    newState = _merge(containerState, remoteState);
+    newState = await _merge(
+      localState: newLocalState,
+      remoteState: remoteState,
+      lastSyncedState: lastSyncedState,
+    );
     try {
-      await _remoteRepository.saveContainerState(newState);
+      await _remoteRepository?.saveContainerState(newState);
     } catch (e) {
       newState = newState.copyTransformInto<TokenContainerStateUnsynced>();
+      await _localRepository.saveContainerState(newState);
+      return newState;
     }
+    await _syncedRepository.saveContainerState(newState);
     await _localRepository.saveContainerState(newState);
     return newState;
   }
 
-  TokenContainerState _merge(TokenContainerState localState, TokenContainerState remoteState) {
+  Future<TokenContainerState> _merge({
+    required TokenContainerState localState,
+    required TokenContainerState? remoteState,
+    required TokenContainerState lastSyncedState,
+  }) async {
+    List<TokenTemplate> localTemplates;
+    List<TokenTemplate> remoteTemplates;
+    List<TokenTemplate> syncedTemplates;
     if (localState is TokenContainerStateUninitialized) {
-      // Uninitialized state is always overwritten by the other state
-      return remoteState;
+      // Uninitialized state is always overwritten by other states
+      localTemplates = [];
+    } else {
+      localTemplates = localState.tokenTemplates;
     }
     if (remoteState is TokenContainerStateUninitialized) {
-      // Uninitialized state is always overwritten by the other state
-      return localState;
+      // Uninitialized state is always overwritten by other states
+      remoteTemplates = [];
+    } else {
+      remoteTemplates = remoteState?.tokenTemplates ?? [];
     }
-    for (var localTemplate in localState.tokenTemplates) {
-      final remoteTemplate = remoteState.tokenTemplates.firstWhere((template) => template.id == localTemplate.id, orElse: () => localTemplate);
-      if (remoteTemplate != localTemplate) {
-        localTemplate.merge(remoteTemplate);
-      }
+    if (lastSyncedState is TokenContainerStateUninitialized) {
+      // Uninitialized state is always overwritten by other states
+      syncedTemplates = [];
+    } else {
+      syncedTemplates = lastSyncedState.tokenTemplates;
     }
+
+    final mergedTemplates = await _mergeTemplateLists(
+      localTemplates: localTemplates,
+      remoteTemplates: remoteTemplates,
+      syncedTemplates: syncedTemplates,
+    );
+
+    final newSyncedState = TokenContainerStateSynced(
+      lastSyncedAt: DateTime.now(),
+      containerId: localState.containerId,
+      description: localState.description,
+      type: '', // TODO: Implement type
+      tokenTemplates: mergedTemplates,
+    );
+    return newSyncedState;
+  }
+
+  Future<List<TokenTemplate>> _mergeTemplateLists({
+    required List<TokenTemplate> localTemplates,
+    required List<TokenTemplate> remoteTemplates,
+    required List<TokenTemplate> syncedTemplates,
+  }) async {
+    final mergedTemplates = <TokenTemplate>[];
+
+    // Add all templates that are in the synced state
+    for (var syncedTemplate in syncedTemplates) {
+      final localTemplateIndex = localTemplates.indexWhere((template) => template.id == syncedTemplate.id);
+      final localTemplate = localTemplateIndex != -1 ? localTemplates.removeAt(localTemplateIndex) : null;
+      final remoteTemplateIndex = remoteTemplates.indexWhere((template) => template.id == syncedTemplate.id);
+      final remoteTemplate = remoteTemplateIndex != -1 ? remoteTemplates.removeAt(remoteTemplateIndex) : null;
+
+      mergedTemplates.add(await _mergeTemplates(localTemplate, remoteTemplate, syncedTemplate));
+    }
+
+    // Add all remaining local templates
+    for (var localTemplate in localTemplates) {
+      final remoteTemplateIndex = remoteTemplates.indexWhere((template) => template.id == localTemplate.id);
+      final remoteTemplate = remoteTemplateIndex != -1 ? remoteTemplates.removeAt(remoteTemplateIndex) : null;
+
+      mergedTemplates.add(await _mergeTemplates(localTemplate, remoteTemplate, null));
+    }
+
+    // Add all remaining remote templates
+    mergedTemplates.addAll(remoteTemplates);
+
+    return mergedTemplates;
   }
 
   /// Merges local and remote token templates with the last synced state
   /// If both local and remote templates have changed, the remote changes are prioritized
-  Future<TokenTemplate> _mergeTemplates(TokenTemplate local, TokenTemplate remote) async {
-    assert(local.id == remote.id);
-    final id = local.id;
-    final syncedTemplates = (await _syncedRepository.loadContainer()).tokenTemplates;
-    final synced = syncedTemplates.firstWhere((template) => template.id == id, orElse: () => TokenTemplate(data: {}));
-    final remoteDifferences = _getTemplateDifferences(synced.data, remote.data);
-    final localDifferences = _getTemplateDifferences(synced.data, local.data);
-    final mergedData = synced.data
-      ..addAll(localDifferences)
-      ..addAll(remoteDifferences);
+  Future<TokenTemplate> _mergeTemplates(TokenTemplate? local, TokenTemplate? remote, TokenTemplate? lastSynced) async {
+    final id = local?.id ?? remote?.id ?? lastSynced?.id;
+    assert(id != null, 'At least one template must be provided');
+    assert((local == null || local.id == id) && (remote == null || remote.id == id) && (lastSynced == null || lastSynced.id == id),
+        'All templates must have the same id');
+    final mergedData = <String, dynamic>{};
+
+    final lastSyncedData = lastSynced?.data ?? {};
+    mergedData.addAll(lastSyncedData);
+    final localData = local?.data ?? {};
+    mergedData.addAll(localData);
+    final remoteData = remote?.data ?? {};
+    mergedData.addAll(remoteData);
+
     return TokenTemplate(data: mergedData);
   }
 
-  Map<String, dynamic> _getTemplateDifferences(Map<String, dynamic> snyced, Map<String, dynamic> newState) {
-    final differences = <String, dynamic>{};
-    for (var key in newState.keys) {
-      if (snyced[key] != newState[key]) {
-        differences[key] = newState[key];
-      }
-    }
-    return differences;
+  @override
+  Future<TokenTemplate?> loadTokenTemplate(String tokenTemplateId) async {
+    final state = await loadContainerState();
+    final template = state.tokenTemplates.firstWhereOrNull((template) => template.id == tokenTemplateId);
+    return template;
+  }
+
+  @override
+  Future<TokenTemplate> saveTokenTemplate(TokenTemplate tokenTemplate) async {
+    final state = await loadContainerState();
+    final templates = state.tokenTemplates;
+    templates.removeWhere((template) => template.id == tokenTemplate.id);
+    templates.add(tokenTemplate);
+    final newState = state.copyWith(tokenTemplates: templates);
+    final savedState = await saveContainerState(newState);
+    return savedState.tokenTemplates.firstWhere((template) => template.id == tokenTemplate.id);
   }
 }

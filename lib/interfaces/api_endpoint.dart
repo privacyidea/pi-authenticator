@@ -1,4 +1,6 @@
 abstract class ApiEndpioint<Data, Ref> {
-  Future<Data> fetch(Ref ref);
+  Ref get credentials;
+
+  Future<Data> fetch();
   Future<void> save(Data data);
 }
