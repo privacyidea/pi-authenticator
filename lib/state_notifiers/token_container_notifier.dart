@@ -33,7 +33,7 @@ class TokenContainerNotifier extends StateNotifier<TokenContainerState> {
 
   Future<TokenContainerState> _loadFromRepo() async {
     await _repoMutex.acquire();
-    final containerState = await _repository.loadContainer();
+    final containerState = await _repository.loadContainerState();
     _repoMutex.release();
     return containerState;
   }

@@ -30,48 +30,78 @@ sealed class TokenContainerState extends TokenContainer {
         _ => throw UnimplementedError(json['type']),
       };
 
-  @override
-  Map<String, dynamic> toJson() {
-    final json = switch (this) {
-      TokenContainerStateUninitialized() => _$TokenContainerStateUninitializedToJson(this as TokenContainerStateUninitialized),
-      TokenContainerStateModified() => _$TokenContainerStateModifiedToJson(this as TokenContainerStateModified),
-      TokenContainerStateSynced() => _$TokenContainerStateSyncedToJson(this as TokenContainerStateSynced),
-      TokenContainerStateSyncing() => _$TokenContainerStateSyncingToJson(this as TokenContainerStateSyncing),
-      TokenContainerStateUnsynced() => _$TokenContainerStateUnsyncedToJson(this as TokenContainerStateUnsynced),
-      TokenContainerStateError() => _$TokenContainerStateErrorToJson(this as TokenContainerStateError),
-      TokenContainerStateDeactivated() => _$TokenContainerStateDeactivatedToJson(this as TokenContainerStateDeactivated),
-      TokenContainerStateDeleted() => _$TokenContainerStateDeletedToJson(this as TokenContainerStateDeleted),
-    };
-    json['type'] = runtimeType.toString();
-    return json;
-  }
-
-  @override
-  TokenContainerState copyWith({
-    String? containerId,
-    String? description,
-    String? type,
-    List<TokenTemplate>? tokenTemplates,
-    DateTime? lastSyncedAt,
-  });
-
-  T copyTransformInto<T extends TokenContainerState>({
+  factory TokenContainerState.fromTypeString({
+    required String stateType,
     dynamic data,
     DateTime? dateTime,
-    DateTime? lastSyncedAt,
     String? containerId,
     String? description,
     String? type,
-    List<TokenTemplate>? tokenTemplates,
-  }) {
-    final copied = copyWith(
-      containerId: containerId,
-      description: description,
-      type: type,
-      tokenTemplates: tokenTemplates,
-    );
-    return copied.as<T>(data: data, dateTime: dateTime);
-  }
+    List<TokenTemplate> tokenTemplates = const [],
+    DateTime? lastSyncedAt,
+  }) =>
+      switch (stateType) {
+        'TokenContainerStateUninitialized' => const TokenContainerStateUninitialized(),
+        'TokenContainerStateModified' => TokenContainerStateModified(
+            lastModifiedAt: dateTime ?? DateTime.now(),
+            highPriority: data ?? false,
+            lastSyncedAt: lastSyncedAt ?? DateTime.now(),
+            containerId: containerId ?? '',
+            description: description ?? '',
+            type: type ?? '',
+            tokenTemplates: tokenTemplates,
+          ),
+        'TokenContainerStateSynced' => TokenContainerStateSynced(
+            lastSyncedAt: lastSyncedAt ?? DateTime.now(),
+            containerId: containerId ?? '',
+            description: description ?? '',
+            type: type ?? '',
+            tokenTemplates: tokenTemplates,
+          ),
+        'TokenContainerStateSyncing' => TokenContainerStateSyncing(
+            syncStartedAt: dateTime ?? DateTime.now(),
+            lastSyncedAt: lastSyncedAt,
+            containerId: containerId ?? '',
+            description: description ?? '',
+            type: type ?? '',
+            tokenTemplates: tokenTemplates,
+          ),
+        'TokenContainerStateUnsynced' => TokenContainerStateUnsynced(
+            syncAttempts: data is num ? data.floor() : 1,
+            lastSyncedAt: lastSyncedAt,
+            containerId: containerId ?? '',
+            description: description ?? '',
+            type: type ?? '',
+            tokenTemplates: tokenTemplates,
+          ),
+        'TokenContainerStateError' => TokenContainerStateError(
+            error: data,
+            lastSyncedAt: lastSyncedAt,
+            containerId: containerId ?? '',
+            description: description ?? '',
+            type: type ?? '',
+            tokenTemplates: tokenTemplates,
+          ),
+        'TokenContainerStateDeactivated' => TokenContainerStateDeactivated(
+            reason: data,
+            deactivatedAt: dateTime ?? DateTime.now(),
+            lastSyncedAt: lastSyncedAt,
+            containerId: containerId ?? '',
+            description: description ?? '',
+            type: type ?? '',
+            tokenTemplates: tokenTemplates,
+          ),
+        'TokenContainerStateDeleted' => TokenContainerStateDeleted(
+            reason: data,
+            deletedAt: dateTime ?? DateTime.now(),
+            lastSyncedAt: lastSyncedAt,
+            containerId: containerId ?? '',
+            description: description ?? '',
+            type: type ?? '',
+            tokenTemplates: tokenTemplates,
+          ),
+        _ => throw UnimplementedError(stateType),
+      };
 
   T as<T extends TokenContainerState>({dynamic data, DateTime? dateTime}) => switch (T) {
         const (TokenContainerStateUninitialized) => const TokenContainerStateUninitialized() as T,
@@ -128,6 +158,51 @@ sealed class TokenContainerState extends TokenContainer {
           ) as T,
         _ => throw UnimplementedError(),
       };
+
+  @override
+  Map<String, dynamic> toJson() {
+    final json = switch (this) {
+      TokenContainerStateUninitialized() => _$TokenContainerStateUninitializedToJson(this as TokenContainerStateUninitialized),
+      TokenContainerStateModified() => _$TokenContainerStateModifiedToJson(this as TokenContainerStateModified),
+      TokenContainerStateSynced() => _$TokenContainerStateSyncedToJson(this as TokenContainerStateSynced),
+      TokenContainerStateSyncing() => _$TokenContainerStateSyncingToJson(this as TokenContainerStateSyncing),
+      TokenContainerStateUnsynced() => _$TokenContainerStateUnsyncedToJson(this as TokenContainerStateUnsynced),
+      TokenContainerStateError() => _$TokenContainerStateErrorToJson(this as TokenContainerStateError),
+      TokenContainerStateDeactivated() => _$TokenContainerStateDeactivatedToJson(this as TokenContainerStateDeactivated),
+      TokenContainerStateDeleted() => _$TokenContainerStateDeletedToJson(this as TokenContainerStateDeleted),
+    };
+    json['type'] = runtimeType.toString();
+    return json;
+  }
+
+  @override
+  TokenContainerState copyWith({
+    String? containerId,
+    String? description,
+    String? type,
+    List<TokenTemplate>? tokenTemplates,
+    DateTime? lastSyncedAt,
+  });
+
+  T copyTransformInto<T extends TokenContainerState>({
+    dynamic data,
+    DateTime? dateTime,
+    DateTime? lastSyncedAt,
+    String? containerId,
+    String? description,
+    String? type,
+    List<TokenTemplate>? tokenTemplates,
+  }) {
+    final copied = copyWith(
+      containerId: containerId,
+      description: description,
+      type: type,
+      tokenTemplates: tokenTemplates,
+    );
+    return copied.as<T>(data: data, dateTime: dateTime);
+  }
+
+
 }
 
 /// ContainerState is not initialized
@@ -196,6 +271,7 @@ class TokenContainerStateModified extends TokenContainerState {
     );
   }
 }
+
 /// ContainerState is successfully synced with repo
 @JsonSerializable()
 class TokenContainerStateSynced extends TokenContainerState {
@@ -262,7 +338,6 @@ class TokenContainerStateSyncing extends TokenContainerState {
       tokenTemplates: tokenTemplates ?? this.tokenTemplates,
     );
   }
-
 }
 
 /// ContainerState is failed last sync attempt
@@ -309,7 +384,6 @@ class TokenContainerStateUnsynced extends TokenContainerState {
       tokenTemplates: tokenTemplates ?? this.tokenTemplates,
     );
   }
-
 }
 
 /// ContainerState is in error state
@@ -343,7 +417,6 @@ class TokenContainerStateError extends TokenContainerState {
       tokenTemplates: tokenTemplates ?? this.tokenTemplates,
     );
   }
-
 }
 
 /// ContainerState is deactivated
@@ -381,7 +454,6 @@ class TokenContainerStateDeactivated extends TokenContainerState {
       tokenTemplates: tokenTemplates ?? this.tokenTemplates,
     );
   }
-
 }
 
 /// ContainerState is deleted repo-side
@@ -419,5 +491,4 @@ class TokenContainerStateDeleted extends TokenContainerState {
       tokenTemplates: tokenTemplates ?? this.tokenTemplates,
     );
   }
-
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
@@ -10,8 +11,7 @@ import '../../model/states/token_container_state.dart';
 
 class SecureTokenContainerStateRepository implements TokenContainerStateRepository {
   static String prefix = 'token_container_state_';
-  String get containerIdKey => _keyOf('containerId');
-  String _keyOf(String id) => prefix + repoName + id;
+  String get _containerStateKey => '$prefix${repoName}_container_state';
 
   final Mutex _m = Mutex();
   Future<void> _protect(Future<void> Function() f) => _m.protect(f);
@@ -37,54 +37,39 @@ class SecureTokenContainerStateRepository implements TokenContainerStateReposito
   }
 
   @override
-
-
   Future<TokenContainerState> saveContainerState(TokenContainerState containerState) async {
-    for (var template in containerState.tokenTemplates) {
-      if (template.id == null) {
-        Logger.warning('Cannot save token template without id');
-        continue;
-      }
-      _write(_keyOf(template.id!), jsonEncode(template.toJson()));
-    }
-    _write(containerIdKey, containerState.containerId);
+    await _write(_containerStateKey, jsonEncode(containerState));
     return containerState;
   }
 
   @override
 
   /// Load the container state from the shared preferences
-  Future<TokenContainerState> loadContainer() async {
-    final keys = await _storage.readAll();
-    final templates = <TokenTemplate>[];
-    for (var key in keys.keys) {
-      if (key.startsWith(prefix + repoName)) {
-        final templateJson = await _storage.read(key: key);
-        if (templateJson == null) {
-          Logger.warning('Failed to read token template from shared preferences');
-          continue;
-        }
-        final templateMap = jsonDecode(templateJson);
-        templates.add(TokenTemplate.fromJson(templateMap));
-      }
+  Future<TokenContainerState> loadContainerState() async {
+    String? containerStateJsonString = await _read(_containerStateKey);
+    if (containerStateJsonString == null) {
+      Logger.info('No container state found in secure storage', name: 'SecureTokenContainerStateRepository');
+      return TokenContainerState.uninitialized();
     }
-    return TokenContainerState(
-      containerId: '',
-      description: '',
-      type: '',
-      tokenTemplates: templates,
-    );
+    final json = jsonDecode(containerStateJsonString);
+    return TokenContainerState.fromJson(json);
   }
 
   @override
-  Future<TokenTemplate> loadTokenTemplate(String tokenTemplateId) {
-    // TODO: implement loadTokenTemplate
-    throw UnimplementedError();
+  Future<TokenTemplate?> loadTokenTemplate(String tokenTemplateId) async {
+    final state = await loadContainerState();
+    final template = state.tokenTemplates.firstWhereOrNull((template) => template.id == tokenTemplateId);
+    return template;
   }
 
   @override
-  Future<TokenTemplate> saveTokenTemplate(TokenTemplate tokenTemplate) {
-    // TODO: implement saveTokenTemplate
-    throw UnimplementedError();
+  Future<TokenTemplate> saveTokenTemplate(TokenTemplate tokenTemplate) async {
+    TokenContainerState state = await loadContainerState();
+    final templates = state.tokenTemplates;
+    templates.removeWhere((template) => template.id == tokenTemplate.id);
+    templates.add(tokenTemplate);
+    state = state.copyWith(tokenTemplates: templates);
+    await saveContainerState(state);
+    return tokenTemplate;
   }
 }
