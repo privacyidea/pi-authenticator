@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/errors.dart';
@@ -119,6 +120,24 @@ class DayPasswordToken extends OTPToken {
   DateTime get nextOTPTimeStart {
     // Sometimes there is an rounding error. For example it showes sometomes 23:59:59 instead of 00:00:00 so we add 1ms to be sure
     return DateTime.now().add(durationUntilNextOTP + const Duration(milliseconds: 1));
+  }
+
+  @override
+  DayPasswordToken copyWithFromTemplate(TokenTemplate template) {
+    final uriMap = template.data;
+    return copyWith(
+      label: uriMap[URI_LABEL],
+      issuer: uriMap[URI_ISSUER],
+      id: uriMap[TOKEN_ID],
+      algorithm: uriMap[URI_ALGORITHM] != null ? Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase()) : null,
+      digits: uriMap[URI_DIGITS],
+      secret: uriMap[URI_SECRET] != null ? Encodings.base32.encode(uriMap[URI_SECRET]) : null,
+      period: uriMap[URI_PERIOD] != null ? Duration(seconds: uriMap[URI_PERIOD]) : null,
+      tokenImage: uriMap[URI_IMAGE],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+    );
   }
 
   factory DayPasswordToken.fromUriMap(Map<String, dynamic> uriMap) {

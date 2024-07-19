@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../utils/logger.dart';
 import '../enums/push_token_rollout_state.dart';
+import '../enums/token_origin_source_type.dart';
+import '../token_container.dart';
 import '../token_folder.dart';
 import '../tokens/otp_token.dart';
 import '../tokens/push_token.dart';
@@ -156,4 +158,11 @@ extension TokenListExtension on List<Token> {
         if (only.isNotEmpty && !only.contains(token.runtimeType)) return false;
         return true;
       }).toList();
+
+  List<Token> get fromContainer => where((token) => token.origin?.source == TokenOriginSourceType.container).toList();
+
+  List<TokenTemplate> toTemplates() {
+    if (isEmpty) return [];
+    return map((token) => TokenTemplate(data: token.toUriMap())).toList();
+  }
 }

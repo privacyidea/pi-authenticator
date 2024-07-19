@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
+import 'tokens/token.dart';
+
 part 'token_container.g.dart';
 
 @JsonSerializable()
@@ -52,4 +54,6 @@ class TokenTemplate {
 
   factory TokenTemplate.fromJson(Map<String, dynamic> json) => _$TokenTemplateFromJson(json);
   Map<String, dynamic> toJson() => _$TokenTemplateToJson(this);
+
+  Token toToken() => Token.fromUriMap(data);
 }
