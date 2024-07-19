@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/errors.dart';
@@ -103,6 +104,24 @@ class TOTPToken extends OTPToken {
   }
 
   @override
+  TOTPToken copyWithFromTemplate(TokenTemplate template) {
+    final uriMap = template.data;
+    return copyWith(
+      label: uriMap[URI_LABEL],
+      issuer: uriMap[URI_ISSUER],
+      id: uriMap[TOKEN_ID],
+      algorithm: uriMap[URI_ALGORITHM] != null ? Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase()) : null,
+      digits: uriMap[URI_DIGITS],
+      tokenImage: uriMap[URI_IMAGE],
+      secret: uriMap[URI_SECRET] != null ? Encodings.base32.encode(uriMap[URI_SECRET]) : null,
+      period: uriMap[URI_PERIOD],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+    );
+  }
+
+  @override
   String toString() {
     return 'T${super.toString()}period: $period';
   }
@@ -123,25 +142,7 @@ class TOTPToken extends OTPToken {
       origin: uriMap[URI_ORIGIN],
     );
   }
-  /// ----- TOTP TOKEN -----
-  /// ```dart
-  /// URI_TYPE: tokenType,
-  /// URI_PERIOD: period,
-  /// ```
-  /// ------ OTP TOKEN ------
-  /// ```dart
-  /// URI_SECRET: Encodings.base32.decode(secret),
-  /// URI_ALGORITHM: algorithm.name,
-  /// URI_DIGITS: digits,
-  /// ```
-  /// ------- TOKEN ---------
-  /// ```dart
-  /// URI_LABEL: label,
-  /// URI_ISSUER: issuer,
-  /// URI_PIN: pin,
-  /// URI_IMAGE: tokenImage,
-  /// URI_ORIGIN: jsonEncode(origin!.toJson()),
-  /// ```
+
   @override
   Map<String, dynamic> toUriMap() {
     return super.toUriMap()

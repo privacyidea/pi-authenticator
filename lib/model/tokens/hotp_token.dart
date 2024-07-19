@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/errors.dart';
@@ -94,6 +95,24 @@ class HOTPToken extends OTPToken {
   @override
   String toString() {
     return 'H${super.toString()}counter: $counter}';
+  }
+
+  @override
+  HOTPToken copyWithFromTemplate(TokenTemplate template) {
+    final uriMap = template.data;
+    return copyWith(
+      label: uriMap[URI_LABEL],
+      issuer: uriMap[URI_ISSUER],
+      id: uriMap[TOKEN_ID],
+      algorithm: uriMap[URI_ALGORITHM] != null ? Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase()) : null,
+      digits: uriMap[URI_DIGITS],
+      secret: uriMap[URI_SECRET] != null ? Encodings.base32.encode(uriMap[URI_SECRET]) : null,
+      counter: uriMap[URI_COUNTER],
+      tokenImage: uriMap[URI_IMAGE],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+    );
   }
 
   factory HOTPToken.fromUriMap(Map<String, dynamic> uriMap) {

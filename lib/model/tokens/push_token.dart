@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/custom_int_buffer.dart';
@@ -161,6 +162,25 @@ class PushToken extends Token {
         'publicServerKey: $publicServerKey, '
         'privateTokenKey: $privateTokenKey, '
         'publicTokenKey: $publicTokenKey}';
+  }
+
+  @override
+  PushToken copyWithFromTemplate(TokenTemplate template) {
+    final uriMap = template.data;
+    return copyWith(
+      serial: uriMap[URI_SERIAL],
+      label: uriMap[URI_LABEL],
+      issuer: uriMap[URI_ISSUER],
+      id: uriMap[TOKEN_ID],
+      sslVerify: uriMap[URI_SSL_VERIFY],
+      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
+      url: uriMap[URI_ROLLOUT_URL],
+      tokenImage: uriMap[URI_IMAGE],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+      // do not update expirationDate
+    );
   }
 
   factory PushToken.fromUriMap(Map<String, dynamic> uriMap) => PushToken(

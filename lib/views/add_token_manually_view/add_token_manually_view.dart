@@ -21,7 +21,7 @@ class AddTokenManuallyView extends ConsumerStatefulWidget {
   static const routeName = '/add_token_manually';
   static final List<int> allowedDigits = [6, 8];
   static final List<int> allowedPeriodsTOTP = [30, 60];
-  static final List<int> allowedPeriodsDayPassword = [24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+  static final List<int> allowedPeriodsDayPassword = List.generate(24, (i) => 24 - i, growable: false);
 
   const AddTokenManuallyView({super.key});
 

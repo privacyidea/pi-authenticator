@@ -10,7 +10,7 @@ import '../../../../repo/token_container_state_repositorys/remote_token_containe
 import '../../../../state_notifiers/token_container_notifier.dart';
 import '../../../logger.dart';
 
-final tokenContainerStateProvider = StateNotifierProvider<TokenContainerNotifier, TokenContainerState>((ref) {
+final tokenContainerProvider = StateNotifierProvider<TokenContainerNotifier, TokenContainerState>((ref) {
   Logger.info("New tokenContainerStateProvider created", name: 'tokenContainerStateProvider');
   final c = ref.watch(credentialsProvider);
   return TokenContainerNotifier(

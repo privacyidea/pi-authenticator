@@ -61,6 +61,7 @@ class SecureTokenRepository implements TokenRepository {
   Future<Token?> loadToken(String id) => _protect(() => _loadToken(id));
   Future<Token?> _loadToken(String id) async {
     final token = await _storage.read(key: _TOKEN_PREFIX + id);
+    Logger.info('Loading token from secure storage: $id', name: 'secure_token_repository.dart#loadToken');
     if (token == null) {
       Logger.warning('Token not found in secure storage', name: 'secure_token_repository.dart#loadToken');
       return null;

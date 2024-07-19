@@ -8,6 +8,13 @@ import 'privacyidea_authenticator_qr_processor.dart';
 
 abstract class TokenImportSchemeProcessor with TokenImportProcessor<Uri, bool> implements SchemeProcessor {
   const TokenImportSchemeProcessor();
+
+  static Set<String> get allSupportedSchemes => {
+        ...const OtpAuthProcessor().supportedSchemes,
+        ...const GoogleAuthenticatorQrProcessor().supportedSchemes,
+        ...const PrivacyIDEAAuthenticatorQrProcessor().supportedSchemes,
+      };
+
   static const Set<TokenImportSchemeProcessor> implementations = {
     OtpAuthProcessor(),
     GoogleAuthenticatorQrProcessor(),

@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/states/token_container_state.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
@@ -21,6 +22,7 @@ import '../model/extensions/enums/push_token_rollout_state_extension.dart';
 import '../model/extensions/enums/token_origin_source_type.dart';
 import '../model/processor_result.dart';
 import '../model/states/token_state.dart';
+import '../model/token_container.dart';
 import '../model/tokens/hotp_token.dart';
 import '../model/tokens/otp_token.dart';
 import '../model/tokens/push_token.dart';
@@ -186,6 +188,28 @@ class TokenNotifier extends StateNotifier<TokenState> {
     return true;
   }
 
+  /// Removes a list of tokens and returns the tokens that could not be removed.
+  Future<List<Token>> _removeTokens(List<Token> tokens) async {
+    await _loadingRepoMutex.acquire();
+    final oldState = state;
+    state = state.withoutTokens(tokens);
+
+    final failedTokens = await _repo.deleteTokens(tokens);
+    if (failedTokens.isNotEmpty) {
+      Logger.warning(
+        'Deleting tokens failed. Failed Tokens: ${failedTokens.length}',
+        name: 'token_notifier.dart#_deleteTokensRepo',
+      );
+      final recoveredTokens = oldState.tokens.where((oldToken) => failedTokens.contains(oldToken)).toList();
+      state = state.addOrReplaceTokens(recoveredTokens);
+      _loadingRepoMutex.release();
+      return failedTokens;
+    }
+    _loadingRepoMutex.release();
+    _handlePushTokensIfExist();
+    return [];
+  }
+
   /// Loads the tokens from the repository sets it as the new state and returns the new state.
   Future<TokenState> _loadFromRepo() async {
     await _loadingRepoMutex.acquire();
@@ -292,7 +316,64 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// Updates a token and returns the updated token if successful, the old token if not and null if the token does not exist.
   Future<T?> updateToken<T extends Token>(T token, T Function(T) updater) async => _updateToken(token, updater);
 
+  /// Updates a list of tokens and returns the updated tokens if successful, the old tokens if not and an empty list if the tokens does not exist.
   Future<List<T>> updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) async => _updateTokens(tokens, updater);
+
+  /// Adds, Updates or Removes tokens based on the [TokenContainerState] and returns the updated tokens.
+  void updateContainerTokens(TokenContainer container) async {
+    final templatesToAdd = <TokenTemplate>[];
+    final templatesToUpdate = <TokenTemplate>[];
+    final templatesToRemove = <TokenTemplate>[];
+
+    final containerTokens = state.tokens.fromContainer;
+    final tokenTemplatesContainer = container.tokenTemplates;
+    final tokenTemplatesApp = containerTokens.toTemplates();
+    for (var i = 0; i < tokenTemplatesContainer.length && tokenTemplatesApp.isNotEmpty; i++) {
+      // Searches for tokens that are in the container but not in the app to add them.
+      // If the token is already in the app, it will be updated.
+      // Reduces the [tokenTemplatesApp] list to only the tokens that are in the app but not in the container. These tokens will be removed.
+      final templateContainer = tokenTemplatesContainer[i];
+      final tokenToUpdate = tokenTemplatesApp.firstWhereOrNull((templateApp) => templateApp.id == templateContainer.id);
+      if (tokenToUpdate == null) {
+        templatesToAdd.add(templateContainer);
+      } else {
+        templatesToUpdate.add(tokenToUpdate);
+        tokenTemplatesApp.remove(tokenToUpdate);
+      }
+    }
+    templatesToRemove.addAll(tokenTemplatesApp);
+
+    final tokensToAdd = templatesToAdd.map((e) => e.toToken()).toList();
+    final tokensToUpdate = <Token>[];
+    for (var template in templatesToUpdate) {
+      final token = containerTokens.firstWhereOrNull((token) => token.id == template.id);
+      if (token == null) continue;
+      final needsUpdate = !token.doesMatchTemplate(template);
+      if (needsUpdate) {
+        tokensToUpdate.add(token);
+      }
+    }
+    final tokensToRemove = <Token>[];
+    for (var template in templatesToRemove) {
+      final token = containerTokens.firstWhereOrNull((token) => token.id == template.id);
+      if (token == null) continue;
+      tokensToRemove.add(token);
+    }
+
+    if (tokensToAdd.isNotEmpty) {
+      await addOrReplaceTokens(tokensToAdd);
+    }
+    if (tokensToUpdate.isNotEmpty) {
+      await updateTokens(tokensToUpdate, (p0) {
+        final template = templatesToUpdate.firstWhereOrNull((element) => element.id == p0.id);
+        if (template == null) return p0;
+        return p0.copyWithFromTemplate(template);
+      });
+    }
+    if (tokensToRemove.isNotEmpty) {
+      await removeTokens(tokensToRemove);
+    }
+  }
 
   /// Increments the counter of a HOTPToken and returns the updated token if successful, the old token if not and null if the token does not exist.
   Future<HOTPToken?> incrementCounter(HOTPToken token) => _updateToken(token, (p0) => p0.copyWith(counter: token.counter + 1));
@@ -365,12 +446,23 @@ class TokenNotifier extends StateNotifier<TokenState> {
     return await updateTokens(hideLockedTokens, (p0) => p0.copyWith(isHidden: true));
   }
 
+  /// Removes a token from the state and the repository.
   Future<void> removeToken(Token token) async {
     if (token is PushToken) {
       await _removePushToken(token);
       return;
     }
     await _removeToken(token);
+  }
+
+  /// Removes a list of tokens from the state and the repository.
+  Future<void> removeTokens(List<Token> tokens) async {
+    final pushTokens = tokens.whereType<PushToken>().toList();
+    final otherTokens = tokens.whereType<Token>().toList();
+    await _removeTokens(otherTokens);
+    for (var token in pushTokens) {
+      await _removePushToken(token);
+    }
   }
 
   Future<void> _removePushToken(PushToken token) async {
@@ -689,6 +781,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
   }
 
   Future<List<Token>> _tokensFromUri(Uri uri) async {
+    if (!TokenImportSchemeProcessor.allSupportedSchemes.contains(uri.scheme)) {
+      return Future.value([]);
+    }
     try {
       final results = await TokenImportSchemeProcessor.processUriByAny(uri);
       if (results == null || results.isEmpty) {

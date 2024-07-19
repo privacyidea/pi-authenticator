@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:mutex/mutex.dart';
 
@@ -86,9 +87,9 @@ class HomeWidgetUtils {
     return tokens?.whereType<OTPToken>().toList() ?? (await _loadTokensFromRepo()).whereType<OTPToken>().toList();
   }
 
-  static Future<OTPToken?> _getTokenOfTokenId(String? tokenId) async {
+  static Future<OTPToken?> _getTokenOfTokenId(String tokenId) async {
     await _repoMutex.acquire();
-    final token = (await _loadTokensFromRepo()).firstWhereOrNull((token) => token.id == tokenId);
+    final token = (await _loadTokenFromRepo(tokenId));
     _repoMutex.release();
     return token;
   }
@@ -159,6 +160,7 @@ class HomeWidgetUtils {
   // _packageId must be the exact id of the package variable in "AndroidManifest.xml" !! NOT the applicationId of the flavor !!
   static const String _packageId = "it.netknights.piauthenticator";
   static Future<List<OTPToken>> _loadTokensFromRepo() async => (await _tokenRepository?.loadTokens())?.whereType<OTPToken>().toList() ?? [];
+  static Future<OTPToken> _loadTokenFromRepo(String tokenId) async => (await _tokenRepository?.loadToken(tokenId)) as OTPToken;
   static Future<void>? _saveTokensToRepo(List<OTPToken> tokens) => _tokenRepository?.saveOrReplaceTokens(tokens);
 
   static Future<List<TokenFolder>> _loadFoldersFromRepo() async {
@@ -169,8 +171,10 @@ class HomeWidgetUtils {
     return await HomeWidget.getWidgetData<String?>('$keyTokenId$widgetId');
   }
 
-  Future<OTPToken?> getTokenOfWidgetId(String? widgetId) async {
-    return widgetId == null ? null : _getTokenOfTokenId(await getTokenIdOfWidgetId(widgetId));
+  Future<OTPToken?> getTokenOfWidgetId(String widgetId) async {
+    final tokenId = await getTokenIdOfWidgetId(widgetId);
+    if (tokenId == null) return null;
+    return _getTokenOfTokenId(tokenId);
   }
 
   /// <widgetId, tokenId> a token can be linked to multiple widgets but widgetIs can only be linked to one token
@@ -246,6 +250,7 @@ class HomeWidgetUtils {
   // Call AFTER saving to the repository
   Future<void> updateTokensIfLinked(List<Token> tokens) async {
     // Map<widgetId, tokenId>
+    if (tokens.isEmpty) return;
     final hotpTokens = tokens.whereType<HOTPToken>().toList();
     final hotpTokenIds = hotpTokens.map((e) => e.id).toList();
     final linkedWidgetIds = await _getWidgetIdsOfTokens(hotpTokenIds);
@@ -400,7 +405,16 @@ class HomeWidgetUtils {
   final Map<String, Timer> _hideTimers = {};
   void _hideOtpDelayed(String widgetId, int otpLength) {
     _hideTimers[widgetId]?.cancel();
-    _hideTimers[widgetId] = Timer(_showDuration, () => _hideOtp(widgetId, otpLength));
+    _hideTimers[widgetId] = Timer(_showDuration, () async {
+      await _hideOtp(widgetId, otpLength);
+      if (_hideTimers.length == 1 && _hideTimers.containsKey(widgetId)) {
+        _closeApp();
+      }
+    });
+  }
+
+  static Future<void> _closeApp() async {
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
   }
 
   Future<void> _hideOtp(String widgetId, int otpLength) async {
@@ -596,7 +610,7 @@ class HomeWidgetUtils {
   /// This method has to be called after change to the HomeWidget to notify the HomeWidget to update
   Future<void> _notifyUpdate(Iterable<String> updatedWidgetIds) async {
     if (updatedWidgetIds.isEmpty) return;
-    Logger.info('Update requested for: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate', stackTrace: StackTrace.current);
+    Logger.info('Update requested for: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate');
     if (await _widgetIsRebuilding || _lastUpdate != null && DateTime.now().difference(_lastUpdate!) < _updateDelay) {
       Logger.info('Update delayed: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate');
       _updatedWidgetIds.addAll(updatedWidgetIds);
