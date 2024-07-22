@@ -125,6 +125,15 @@ abstract class Token with SortableMixin {
   Map<String, dynamic> toJson();
 
   /// This is used to create a map that typically was created from a uri.
+  /// ```dart
+  ///  ------------------------------- [Token] ---------------------------------
+  /// URI_LABEL: name of the token (String),
+  /// URI_ISSUER: name of the issuer (String),
+  /// URI_PIN: is the user forced to have a pin (bool),
+  /// URI_IMAGE: url to an image e.g. "https://example.com/image.png" (String),
+  /// URI_ORIGIN: json string of the origin class (String),
+  /// -------------------------------------------------------------------------
+  /// ```
   Map<String, dynamic> toUriMap() {
     return {
       TOKEN_ID: id,

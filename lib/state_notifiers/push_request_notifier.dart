@@ -65,7 +65,7 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
         _rsaUtils = rsaUtils ?? const RsaUtils(),
         _pushRepo = pushRepo ?? const SecurePushRequestRepository(),
         super(
-          initState ?? const PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: [])),
+          initState ?? PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: [])),
         ) {
     _init(initState);
   }

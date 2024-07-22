@@ -10,7 +10,7 @@ import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
 import '../../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
-import '../../../../../../widgets/enable_text_form_field_after_many_taps.dart';
+import '../../../../../../widgets/enable_text_edit_after_many_taps.dart';
 import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../default_token_actions/default_edit_action_dialog.dart';
 import '../../token_action.dart';
@@ -93,7 +93,7 @@ class EditPushTokenAction extends TokenAction {
                 ),
                 readOnly: true,
               ),
-              EnableTextFormFieldAfterManyTaps(
+              EnableTextEditAfterManyTaps(
                 controller: pushUrl,
                 decoration: InputDecoration(labelText: appLocalizations.pushEndpointUrl),
                 autovalidateMode: AutovalidateMode.onUserInteraction,

@@ -7,7 +7,8 @@ part 'custom_int_buffer.g.dart';
 class CustomIntBuffer {
   final int maxSize;
   final List<int> _list;
-  const CustomIntBuffer({this.maxSize = 100, List<int> list = const []}) : _list = list;
+  List<int> get list => _list;
+  CustomIntBuffer({this.maxSize = 100, List<int> list = const []}) : _list = list.length > maxSize ? list.sublist(list.length - maxSize) : list;
 
   CustomIntBuffer copyWith({int? maxSize, List<int>? list}) {
     return CustomIntBuffer(

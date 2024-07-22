@@ -18,7 +18,6 @@ TokenContainerStateModified _$TokenContainerStateModifiedFromJson(
         Map<String, dynamic> json) =>
     TokenContainerStateModified(
       lastModifiedAt: DateTime.parse(json['lastModifiedAt'] as String),
-      highPriority: json['highPriority'] as bool,
       lastSyncedAt: DateTime.parse(json['lastSyncedAt'] as String),
       containerId: json['containerId'] as String,
       description: json['description'] as String,
@@ -37,7 +36,6 @@ Map<String, dynamic> _$TokenContainerStateModifiedToJson(
       'tokenTemplates': instance.tokenTemplates,
       'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
       'lastModifiedAt': instance.lastModifiedAt.toIso8601String(),
-      'highPriority': instance.highPriority,
     };
 
 TokenContainerStateSynced _$TokenContainerStateSyncedFromJson(
@@ -59,7 +57,7 @@ Map<String, dynamic> _$TokenContainerStateSyncedToJson(
       'description': instance.description,
       'type': instance.type,
       'tokenTemplates': instance.tokenTemplates,
-      'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
+      'lastSyncedAt': instance.lastSyncedAt.toIso8601String(),
     };
 
 TokenContainerStateSyncing _$TokenContainerStateSyncingFromJson(

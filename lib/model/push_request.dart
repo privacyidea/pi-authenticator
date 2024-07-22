@@ -129,6 +129,7 @@ class PushRequest {
     if (data[PUSH_REQUEST_NONCE] is! String) {
       throw ArgumentError('Push request nonce is ${data[PUSH_REQUEST_NONCE].runtimeType}. Expected String.');
     }
+    print('Nonce: ${data[PUSH_REQUEST_NONCE]}');
     if (data[PUSH_REQUEST_SSL_VERIFY] is! String) {
       throw ArgumentError('Push request sslVerify is ${data[PUSH_REQUEST_SSL_VERIFY].runtimeType}. Expected String.');
     }

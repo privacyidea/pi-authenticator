@@ -143,6 +143,22 @@ class TOTPToken extends OTPToken {
     );
   }
 
+  /// This is used to create a map that typically was created from a uri.
+  /// ```dart
+  /// ----------------------------- [TOTPToken] ------------------------------
+  /// URI_PERIOD: period of otp generation in seconds (int),
+  /// ------------------------------ [OTPToken] ------------------------------
+  /// URI_SECRET: base32 encoded string (String),
+  /// URI_ALGORITHM: algorithm name e.g. SHA1 (String),
+  /// URI_DIGITS: number of digits (int),
+  /// ------------------------------- [Token] ---------------------------------
+  /// URI_LABEL: name of the token (String),
+  /// URI_ISSUER: name of the issuer (String),
+  /// URI_PIN: is the user forced to have a pin (bool),
+  /// URI_IMAGE: url to an image e.g. "https://example.com/image.png" (String),
+  /// URI_ORIGIN: json string of the origin class (String),
+  /// -------------------------------------------------------------------------
+  /// ```
   @override
   Map<String, dynamic> toUriMap() {
     return super.toUriMap()

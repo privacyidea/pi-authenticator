@@ -12,12 +12,13 @@ class HybridTokenContainerStateRepository<LocalRepo extends TokenContainerStateR
   final LocalRepo _syncedRepository;
   final RemoteRepo? _remoteRepository;
 
+
+  ///
   HybridTokenContainerStateRepository({
     required LocalRepo localRepository,
     required LocalRepo syncedRepository,
     required RemoteRepo? remoteRepository,
-  })  :
-        _localRepository = localRepository,
+  })  : _localRepository = localRepository,
         _syncedRepository = syncedRepository,
         _remoteRepository = remoteRepository;
 
@@ -182,12 +183,22 @@ class HybridTokenContainerStateRepository<LocalRepo extends TokenContainerStateR
         'All templates must have the same id');
     final mergedData = <String, dynamic>{};
 
+    print('------------------------------------------------------------------');
+    print('LastSynced: ${lastSynced?.data}');
     final lastSyncedData = lastSynced?.data ?? {};
     mergedData.addAll(lastSyncedData);
+    print('MergedData: $mergedData');
+    print('------------------------------------------------------------------');
+    print('Local: ${local?.data}');
     final localData = local?.data ?? {};
     mergedData.addAll(localData);
+    print('MergedData: $mergedData');
+    print('------------------------------------------------------------------');
+    print('Remote: ${remote?.data}');
     final remoteData = remote?.data ?? {};
     mergedData.addAll(remoteData);
+    print('MergedData: $mergedData');
+    print('------------------------------------------------------------------');
 
     return TokenTemplate(data: mergedData);
   }
