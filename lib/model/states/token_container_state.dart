@@ -44,7 +44,6 @@ sealed class TokenContainerState extends TokenContainer {
         'TokenContainerStateUninitialized' => const TokenContainerStateUninitialized(),
         'TokenContainerStateModified' => TokenContainerStateModified(
             lastModifiedAt: dateTime ?? DateTime.now(),
-            highPriority: data ?? false,
             lastSyncedAt: lastSyncedAt ?? DateTime.now(),
             containerId: containerId ?? '',
             description: description ?? '',
@@ -201,8 +200,6 @@ sealed class TokenContainerState extends TokenContainer {
     );
     return copied.as<T>(data: data, dateTime: dateTime);
   }
-
-
 }
 
 /// ContainerState is not initialized
@@ -239,10 +236,8 @@ class TokenContainerStateUninitialized extends TokenContainerState {
 @JsonSerializable()
 class TokenContainerStateModified extends TokenContainerState {
   DateTime lastModifiedAt;
-  bool highPriority;
   TokenContainerStateModified({
     required this.lastModifiedAt,
-    required this.highPriority,
     required DateTime lastSyncedAt,
     required super.containerId,
     required super.description,
@@ -262,7 +257,6 @@ class TokenContainerStateModified extends TokenContainerState {
   }) {
     return TokenContainerStateModified(
       lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
-      highPriority: highPriority ?? this.highPriority,
       lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt ?? DateTime.now(),
       containerId: containerId ?? this.containerId,
       description: description ?? this.description,
@@ -275,6 +269,11 @@ class TokenContainerStateModified extends TokenContainerState {
 /// ContainerState is successfully synced with repo
 @JsonSerializable()
 class TokenContainerStateSynced extends TokenContainerState {
+  @override
+  DateTime get lastSyncedAt {
+    assert(super.lastSyncedAt != null, 'In a synced state, lastSyncedAt must not be null.');
+    return super.lastSyncedAt!;
+  }
   TokenContainerStateSynced({
     required DateTime lastSyncedAt,
     required super.containerId,
@@ -292,7 +291,7 @@ class TokenContainerStateSynced extends TokenContainerState {
     DateTime? lastSyncedAt,
   }) {
     return TokenContainerStateSynced(
-      lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt ?? DateTime.now(),
+      lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
       containerId: containerId ?? this.containerId,
       description: description ?? this.description,
       type: type ?? this.type,

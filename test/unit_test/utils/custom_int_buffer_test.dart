@@ -56,5 +56,25 @@ void verifyCustomStringBufferWorks() {
       expect(overflowBuffer.contains(3), true);
       expect(overflowBuffer.contains(4), true);
     });
+    test('toJson', () {
+      final buffer = CustomIntBuffer(maxSize: 30, list: [1, 2, 3]);
+      final json = buffer.toJson();
+      expect(json, {
+        'maxSize': 30,
+        'list': [1, 2, 3]
+      });
+    });
+
+    test('fromJson', () {
+      final buffer = CustomIntBuffer.fromJson({
+        'maxSize': 30,
+        'list': [1, 2, 3]
+      });
+      expect(buffer.maxSize, 30);
+      expect(buffer.length, 3);
+      expect(buffer.contains(1), true);
+      expect(buffer.contains(2), true);
+      expect(buffer.contains(3), true);
+    });
   });
 }

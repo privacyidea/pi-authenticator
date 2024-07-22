@@ -64,7 +64,7 @@ class PushRequestState {
   }
 
   @override
-  int get hashCode => pushRequests.hashCode * 31 + knownPushRequests.hashCode;
+  int get hashCode => Object.hashAll([pushRequests.hashCode, knownPushRequests.hashCode]);
 
   @override
   String toString() => 'PushRequestState(pushRequests: $pushRequests, knownPushRequests: $knownPushRequests)';

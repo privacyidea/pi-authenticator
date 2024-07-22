@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-class EnableTextFormFieldAfterManyTaps extends StatefulWidget {
+class EnableTextEditAfterManyTaps extends StatefulWidget {
   final TextEditingController controller;
   final InputDecoration decoration;
   final AutovalidateMode? autovalidateMode;
   final String? Function(String?)? validator;
   final int maxTaps;
 
-  const EnableTextFormFieldAfterManyTaps({
+  const EnableTextEditAfterManyTaps({
     required this.controller,
     required this.decoration,
     this.maxTaps = 6,
@@ -19,10 +19,10 @@ class EnableTextFormFieldAfterManyTaps extends StatefulWidget {
   });
 
   @override
-  State<EnableTextFormFieldAfterManyTaps> createState() => _EnableTextFormFieldAfterManyTapsState();
+  State<EnableTextEditAfterManyTaps> createState() => _EnableTextEditAfterManyTapsState();
 }
 
-class _EnableTextFormFieldAfterManyTapsState extends State<EnableTextFormFieldAfterManyTaps> {
+class _EnableTextEditAfterManyTapsState extends State<EnableTextEditAfterManyTaps> {
   bool enabled = false;
   int counter = 0;
   Timer? timer;
@@ -47,7 +47,7 @@ class _EnableTextFormFieldAfterManyTapsState extends State<EnableTextFormFieldAf
   Widget build(BuildContext context) => GestureDetector(
         onDoubleTap: !enabled ? () => tapped(2) : null,
         child: TextFormField(
-          key: Key('${widget.controller.hashCode}_enableTextFormFieldAfterManyTaps'),
+          key: Key('${widget.controller.hashCode}_enableTextEditAfterManyTaps'),
           readOnly: !enabled,
           onTap: !enabled ? () => tapped(1) : null,
           style: enabled ? null : Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor),

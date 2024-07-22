@@ -10,23 +10,28 @@ class RemoteTokenContainerStateRepository implements TokenContainerStateReposito
   final TokenContainerApiEndpoint apiEndpoint;
   final Mutex _m = Mutex();
 
-  Future<void> _protect(Future<void> Function() f) => _m.protect(f);
+  Future<TokenContainerState> _protect(Future<TokenContainerState> Function() f) async => _m.protect(f);
 
   RemoteTokenContainerStateRepository({required this.apiEndpoint});
 
   @override
-  Future<TokenContainerState> saveContainerState(TokenContainerState containerState) {
-    throw UnimplementedError();
+  Future<TokenContainerState> saveContainerState(TokenContainerState containerState) async => await _saveContainerState(containerState);
+
+  Future<TokenContainerState> _saveContainerState(TokenContainerState containerState) async {
+    try {
+      return await _protect(() async {
+        await apiEndpoint.save(containerState);
+        return containerState;
+      });
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
   Future<TokenContainerState> loadContainerState() => _fetchContainerState();
 
-  Future<TokenContainerState> _fetchContainerState() async {
-    TokenContainerState? state;
-    await _protect(() async => state = await apiEndpoint.fetch());
-    return state!;
-  }
+  Future<TokenContainerState> _fetchContainerState() async => await _protect(() async => await apiEndpoint.fetch());
 
   @override
   Future<TokenTemplate?> loadTokenTemplate(String tokenTemplateId) async {

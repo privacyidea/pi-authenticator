@@ -40,6 +40,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
   @override
   Future<void> saveState(PushRequestState pushRequestState) async {
     final stateJson = jsonEncode(pushRequestState.toJson());
+    print('Saving state: $stateJson');
     await _storage.write(key: _securePushRequestKey, value: stateJson);
   }
 
@@ -49,6 +50,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
   @override
   Future<PushRequestState> loadState() async {
     final String? stateJson = await _storage.read(key: _securePushRequestKey);
+    print('Loaded state: $stateJson');
     if (stateJson == null) {
       return PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: []));
     }
