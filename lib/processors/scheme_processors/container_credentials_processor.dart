@@ -2,6 +2,8 @@ import 'package:privacyidea_authenticator/processors/scheme_processors/scheme_pr
 import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_container_state_provider.dart';
 
+import '../../model/tokens/container_credentials.dart';
+
 class ContainerCredentialsProcessor extends SchemeProcessor {
   @override
   Set<String> get supportedSchemes => {'container'}; // TODO: edit supportedSchemes to the real supported schemes
@@ -13,7 +15,7 @@ class ContainerCredentialsProcessor extends SchemeProcessor {
     if (!supportedHosts.contains(uri.host) || !supportedSchemes.contains(uri.scheme)) {
       return null;
     }
-    final credentials = Credentials.fromUriMap(uri.queryParameters);
+    final credentials = ContainerCredentials.fromUriMap(uri.queryParameters);
     globalRef?.read(credentialsProvider.notifier).setCredentials(credentials);
   }
 }

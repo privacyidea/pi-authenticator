@@ -30,6 +30,7 @@ class DayPasswordToken extends OTPToken {
     required super.algorithm,
     required super.digits,
     required super.secret,
+    super.serial,
     this.viewMode = DayPasswordTokenViewMode.VALIDFOR,
     String? type, // just for @JsonSerializable(): type of DayPasswordToken is always TokenTypes.DAYPASSWORD
     super.tokenImage,
@@ -66,6 +67,7 @@ class DayPasswordToken extends OTPToken {
 
   @override
   DayPasswordToken copyWith({
+    String? serial,
     Duration? period,
     DayPasswordTokenViewMode? viewMode,
     String? label,
@@ -83,6 +85,7 @@ class DayPasswordToken extends OTPToken {
     TokenOriginData? origin,
   }) =>
       DayPasswordToken(
+        serial: serial ?? this.serial,
         period: period ?? this.period,
         viewMode: viewMode ?? this.viewMode,
         label: label ?? this.label,

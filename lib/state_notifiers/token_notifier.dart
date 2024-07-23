@@ -339,28 +339,32 @@ class TokenNotifier extends StateNotifier<TokenState> {
     final templatesToUpdate = <TokenTemplate>[];
     final templatesToRemove = <TokenTemplate>[];
 
-    final containerTokens = state.tokens.fromContainer;
-    final tokenTemplatesContainer = container.tokenTemplates;
-    final tokenTemplatesApp = containerTokens.toTemplates();
-    for (var i = 0; i < tokenTemplatesContainer.length && tokenTemplatesApp.isNotEmpty; i++) {
+    final knownContainerTokens = state.tokens.fromContainer(container.serial);
+    final syncedTokenTemplates = container.syncedTokenTemplates;
+    final knownContainerTemplates = knownContainerTokens.toTemplates();
+    for (var i = 0; i < syncedTokenTemplates.length && knownContainerTemplates.isNotEmpty; i++) {
       // Searches for tokens that are in the container but not in the app to add them.
       // If the token is already in the app, it will be updated.
       // Reduces the [tokenTemplatesApp] list to only the tokens that are in the app but not in the container. These tokens will be removed.
-      final templateContainer = tokenTemplatesContainer[i];
-      final tokenToUpdate = tokenTemplatesApp.firstWhereOrNull((templateApp) => templateApp.id == templateContainer.id);
-      if (tokenToUpdate == null) {
+      final templateContainer = syncedTokenTemplates[i];
+      final tokenToKeep = knownContainerTemplates.firstWhereOrNull((templateApp) => templateApp.id == templateContainer.id);
+      if (tokenToKeep == null) {
         templatesToAdd.add(templateContainer);
       } else {
-        templatesToUpdate.add(tokenToUpdate);
-        tokenTemplatesApp.remove(tokenToUpdate);
+        if (tokenToKeep != templateContainer) {
+          // Only update the token if the template is different
+          templatesToUpdate.add(tokenToKeep);
+        }
+        knownContainerTemplates.remove(tokenToKeep);
       }
     }
-    templatesToRemove.addAll(tokenTemplatesApp);
+    // Removes all tokens that are in the app but not in the container.
+    templatesToRemove.addAll(knownContainerTemplates);
 
     final tokensToAdd = templatesToAdd.map((e) => e.toToken()).toList();
     final tokensToUpdate = <Token>[];
     for (var template in templatesToUpdate) {
-      final token = containerTokens.firstWhereOrNull((token) => token.id == template.id);
+      final token = knownContainerTokens.firstWhereOrNull((token) => token.id == template.id);
       if (token == null) continue;
       final needsUpdate = !token.doesMatchTemplate(template);
       if (needsUpdate) {
@@ -369,7 +373,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     final tokensToRemove = <Token>[];
     for (var template in templatesToRemove) {
-      final token = containerTokens.firstWhereOrNull((token) => token.id == template.id);
+      final token = knownContainerTokens.firstWhereOrNull((token) => token.id == template.id);
       if (token == null) continue;
       tokensToRemove.add(token);
     }

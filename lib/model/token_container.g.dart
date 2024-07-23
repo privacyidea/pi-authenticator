@@ -8,20 +8,24 @@ part of 'token_container.dart';
 
 TokenContainer _$TokenContainerFromJson(Map<String, dynamic> json) =>
     TokenContainer(
-      containerId: json['containerId'] as String,
+      serial: json['serial'] as String,
       description: json['description'] as String,
       type: json['type'] as String,
-      tokenTemplates: (json['tokenTemplates'] as List<dynamic>)
+      syncedTokenTemplates: (json['syncedTokenTemplates'] as List<dynamic>)
+          .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      localTokenTemplates: (json['localTokenTemplates'] as List<dynamic>)
           .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$TokenContainerToJson(TokenContainer instance) =>
     <String, dynamic>{
-      'containerId': instance.containerId,
+      'serial': instance.serial,
       'description': instance.description,
       'type': instance.type,
-      'tokenTemplates': instance.tokenTemplates,
+      'syncedTokenTemplates': instance.syncedTokenTemplates,
+      'localTokenTemplates': instance.localTokenTemplates,
     };
 
 TokenTemplate _$TokenTemplateFromJson(Map<String, dynamic> json) =>

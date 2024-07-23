@@ -1,4 +1,4 @@
-import 'package:collection/collection.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/container_repository.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
@@ -10,7 +10,7 @@ import 'package:privacyidea_authenticator/repo/token_container_state_repositorys
 class MockTokenContainerStateRepository implements TokenContainerStateRepository {
   TokenContainerState savedState;
   bool _doesThrow = false;
-  MockTokenContainerStateRepository({TokenContainerState? initialState}) : savedState = initialState ?? TokenContainerState.uninitialized();
+  MockTokenContainerStateRepository({TokenContainerState? initialState}) : savedState = initialState ?? TokenContainerState.uninitialized([]);
 
   void setThrow(bool value) {
     _doesThrow = value;
@@ -23,30 +23,12 @@ class MockTokenContainerStateRepository implements TokenContainerStateRepository
   }
 
   @override
-  Future<TokenTemplate?> loadTokenTemplate(String tokenTemplateId) {
-    if (_doesThrow) throw Exception('Test exception');
-    final template = savedState.tokenTemplates.firstWhereOrNull((element) => element.id == tokenTemplateId);
-    return Future.value(template);
-  }
-
-  @override
   Future<TokenContainerState> saveContainerState(TokenContainerState containerState) {
     if (_doesThrow) throw Exception('Test exception');
     savedState = containerState;
     return Future.value(savedState);
   }
 
-  @override
-  Future<TokenTemplate> saveTokenTemplate(TokenTemplate tokenTemplate) {
-    if (_doesThrow) throw Exception('Test exception');
-    final index = savedState.tokenTemplates.indexWhere((element) => element.id == tokenTemplate.id);
-    if (index == -1) {
-      savedState.tokenTemplates.add(tokenTemplate);
-    } else {
-      savedState.tokenTemplates[index] = tokenTemplate;
-    }
-    return Future.value(tokenTemplate);
-  }
 }
 
 void main() {
@@ -64,29 +46,26 @@ void _testHybridTokenContainerStateRepository() {
         secret: 'SECRET',
         issuer: 'issuer',
       );
-      TokenContainerState? remoteState = TokenContainerStateModified(
-        lastModifiedAt: DateTime.now(),
-        lastSyncedAt: DateTime.now().subtract(const Duration(days: 1)),
-        containerId: 'containerId',
+      TokenContainerState? remoteState = TokenContainerStateSynced(
+        serial: 'containerSerial',
         description: 'description',
         type: 'type',
-        tokenTemplates: [TokenTemplate(data: token.toUriMap())],
+        syncedTokenTemplates: [TokenTemplate(data: token.toUriMap())],
       );
       TokenContainerState? localState = TokenContainerStateModified(
         lastModifiedAt: DateTime.now(),
         lastSyncedAt: DateTime.now().subtract(const Duration(days: 1)),
-        containerId: 'containerId',
+        serial: 'containerSerial',
         description: 'description',
         type: 'type',
-        tokenTemplates: [TokenTemplate(data: token.copyWith(issuer: 'issuer2').toUriMap())],
+        syncedTokenTemplates: [],
+        localTokenTemplates: [TokenTemplate(data: token.toUriMap())],
       );
 
-      final syncedRepo = MockTokenContainerStateRepository();
       final localRepo = MockTokenContainerStateRepository(initialState: localState);
       final remoteRepo = MockTokenContainerStateRepository(initialState: remoteState);
 
       final hybridRepo = HybridTokenContainerStateRepository(
-        syncedRepository: syncedRepo,
         localRepository: localRepo,
         remoteRepository: remoteRepo,
       );
@@ -96,10 +75,10 @@ void _testHybridTokenContainerStateRepository() {
       final dateTimeAfter = DateTime.now();
       expect(state, isA<TokenContainerStateSynced>());
       state as TokenContainerStateSynced;
-      expect(state.lastSyncedAt.isAfter(dateTimeBefore), isTrue);
-      expect(state.lastSyncedAt.isBefore(dateTimeAfter), isTrue);
-      expect(state.tokenTemplates.length, 1);
-      final template = state.tokenTemplates.first;
+      expect(state.lastSyncedAt?.isAfter(dateTimeBefore), isTrue);
+      expect(state.lastSyncedAt?.isBefore(dateTimeAfter), isTrue);
+      expect(state.syncedTokenTemplates.length, 1);
+      final template = state.syncedTokenTemplates.first;
       expect(template.data, token.toUriMap(), reason: 'Should be the remote state if both are changed since last sync');
     });
   });

@@ -8,21 +8,32 @@ part of 'token_container_state.dart';
 
 TokenContainerStateUninitialized _$TokenContainerStateUninitializedFromJson(
         Map<String, dynamic> json) =>
-    TokenContainerStateUninitialized();
+    TokenContainerStateUninitialized(
+      localTokenTemplates: (json['localTokenTemplates'] as List<dynamic>)
+          .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
 
 Map<String, dynamic> _$TokenContainerStateUninitializedToJson(
         TokenContainerStateUninitialized instance) =>
-    <String, dynamic>{};
+    <String, dynamic>{
+      'localTokenTemplates': instance.localTokenTemplates,
+    };
 
 TokenContainerStateModified _$TokenContainerStateModifiedFromJson(
         Map<String, dynamic> json) =>
     TokenContainerStateModified(
       lastModifiedAt: DateTime.parse(json['lastModifiedAt'] as String),
-      lastSyncedAt: DateTime.parse(json['lastSyncedAt'] as String),
-      containerId: json['containerId'] as String,
+      lastSyncedAt: json['lastSyncedAt'] == null
+          ? null
+          : DateTime.parse(json['lastSyncedAt'] as String),
+      serial: json['serial'] as String,
       description: json['description'] as String,
       type: json['type'] as String,
-      tokenTemplates: (json['tokenTemplates'] as List<dynamic>)
+      syncedTokenTemplates: (json['syncedTokenTemplates'] as List<dynamic>)
+          .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      localTokenTemplates: (json['localTokenTemplates'] as List<dynamic>)
           .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
@@ -30,10 +41,11 @@ TokenContainerStateModified _$TokenContainerStateModifiedFromJson(
 Map<String, dynamic> _$TokenContainerStateModifiedToJson(
         TokenContainerStateModified instance) =>
     <String, dynamic>{
-      'containerId': instance.containerId,
+      'serial': instance.serial,
       'description': instance.description,
       'type': instance.type,
-      'tokenTemplates': instance.tokenTemplates,
+      'syncedTokenTemplates': instance.syncedTokenTemplates,
+      'localTokenTemplates': instance.localTokenTemplates,
       'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
       'lastModifiedAt': instance.lastModifiedAt.toIso8601String(),
     };
@@ -41,53 +53,25 @@ Map<String, dynamic> _$TokenContainerStateModifiedToJson(
 TokenContainerStateSynced _$TokenContainerStateSyncedFromJson(
         Map<String, dynamic> json) =>
     TokenContainerStateSynced(
-      lastSyncedAt: DateTime.parse(json['lastSyncedAt'] as String),
-      containerId: json['containerId'] as String,
+      serial: json['serial'] as String,
       description: json['description'] as String,
       type: json['type'] as String,
-      tokenTemplates: (json['tokenTemplates'] as List<dynamic>)
+      syncedTokenTemplates: (json['syncedTokenTemplates'] as List<dynamic>)
           .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
           .toList(),
+      lastSyncedAt: json['lastSyncedAt'] == null
+          ? null
+          : DateTime.parse(json['lastSyncedAt'] as String),
     );
 
 Map<String, dynamic> _$TokenContainerStateSyncedToJson(
         TokenContainerStateSynced instance) =>
     <String, dynamic>{
-      'containerId': instance.containerId,
+      'serial': instance.serial,
       'description': instance.description,
       'type': instance.type,
-      'tokenTemplates': instance.tokenTemplates,
-      'lastSyncedAt': instance.lastSyncedAt.toIso8601String(),
-    };
-
-TokenContainerStateSyncing _$TokenContainerStateSyncingFromJson(
-        Map<String, dynamic> json) =>
-    TokenContainerStateSyncing(
-      syncStartedAt: DateTime.parse(json['syncStartedAt'] as String),
-      timeOut: json['timeOut'] == null
-          ? const Duration(seconds: 30)
-          : Duration(microseconds: (json['timeOut'] as num).toInt()),
-      lastSyncedAt: json['lastSyncedAt'] == null
-          ? null
-          : DateTime.parse(json['lastSyncedAt'] as String),
-      containerId: json['containerId'] as String,
-      description: json['description'] as String,
-      type: json['type'] as String,
-      tokenTemplates: (json['tokenTemplates'] as List<dynamic>)
-          .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-
-Map<String, dynamic> _$TokenContainerStateSyncingToJson(
-        TokenContainerStateSyncing instance) =>
-    <String, dynamic>{
-      'containerId': instance.containerId,
-      'description': instance.description,
-      'type': instance.type,
-      'tokenTemplates': instance.tokenTemplates,
+      'syncedTokenTemplates': instance.syncedTokenTemplates,
       'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
-      'syncStartedAt': instance.syncStartedAt.toIso8601String(),
-      'timeOut': instance.timeOut.inMicroseconds,
     };
 
 TokenContainerStateUnsynced _$TokenContainerStateUnsyncedFromJson(
@@ -98,10 +82,13 @@ TokenContainerStateUnsynced _$TokenContainerStateUnsyncedFromJson(
       lastSyncedAt: json['lastSyncedAt'] == null
           ? null
           : DateTime.parse(json['lastSyncedAt'] as String),
-      containerId: json['containerId'] as String,
+      serial: json['serial'] as String,
       description: json['description'] as String,
       type: json['type'] as String,
-      tokenTemplates: (json['tokenTemplates'] as List<dynamic>)
+      syncedTokenTemplates: (json['syncedTokenTemplates'] as List<dynamic>)
+          .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      localTokenTemplates: (json['localTokenTemplates'] as List<dynamic>)
           .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
@@ -109,10 +96,11 @@ TokenContainerStateUnsynced _$TokenContainerStateUnsyncedFromJson(
 Map<String, dynamic> _$TokenContainerStateUnsyncedToJson(
         TokenContainerStateUnsynced instance) =>
     <String, dynamic>{
-      'containerId': instance.containerId,
+      'serial': instance.serial,
       'description': instance.description,
       'type': instance.type,
-      'tokenTemplates': instance.tokenTemplates,
+      'syncedTokenTemplates': instance.syncedTokenTemplates,
+      'localTokenTemplates': instance.localTokenTemplates,
       'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
       'syncAttempts': instance.syncAttempts,
       'lastError': instance.lastError,
@@ -125,21 +113,27 @@ TokenContainerStateError _$TokenContainerStateErrorFromJson(
       lastSyncedAt: json['lastSyncedAt'] == null
           ? null
           : DateTime.parse(json['lastSyncedAt'] as String),
-      containerId: json['containerId'] as String,
-      description: json['description'] as String,
-      type: json['type'] as String,
-      tokenTemplates: (json['tokenTemplates'] as List<dynamic>)
-          .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      serial: json['serial'] as String? ?? 'Error',
+      description: json['description'] as String?,
+      type: json['type'] as String? ?? 'Error',
+      syncedTokenTemplates: (json['syncedTokenTemplates'] as List<dynamic>?)
+              ?.map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      localTokenTemplates: (json['localTokenTemplates'] as List<dynamic>?)
+              ?.map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$TokenContainerStateErrorToJson(
         TokenContainerStateError instance) =>
     <String, dynamic>{
-      'containerId': instance.containerId,
+      'serial': instance.serial,
       'description': instance.description,
       'type': instance.type,
-      'tokenTemplates': instance.tokenTemplates,
+      'syncedTokenTemplates': instance.syncedTokenTemplates,
+      'localTokenTemplates': instance.localTokenTemplates,
       'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
       'error': instance.error,
     };
@@ -152,10 +146,13 @@ TokenContainerStateDeactivated _$TokenContainerStateDeactivatedFromJson(
       lastSyncedAt: json['lastSyncedAt'] == null
           ? null
           : DateTime.parse(json['lastSyncedAt'] as String),
-      containerId: json['containerId'] as String,
+      serial: json['serial'] as String,
       description: json['description'] as String,
       type: json['type'] as String,
-      tokenTemplates: (json['tokenTemplates'] as List<dynamic>)
+      syncedTokenTemplates: (json['syncedTokenTemplates'] as List<dynamic>)
+          .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      localTokenTemplates: (json['localTokenTemplates'] as List<dynamic>)
           .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
@@ -163,10 +160,11 @@ TokenContainerStateDeactivated _$TokenContainerStateDeactivatedFromJson(
 Map<String, dynamic> _$TokenContainerStateDeactivatedToJson(
         TokenContainerStateDeactivated instance) =>
     <String, dynamic>{
-      'containerId': instance.containerId,
+      'serial': instance.serial,
       'description': instance.description,
       'type': instance.type,
-      'tokenTemplates': instance.tokenTemplates,
+      'syncedTokenTemplates': instance.syncedTokenTemplates,
+      'localTokenTemplates': instance.localTokenTemplates,
       'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
       'deactivatedAt': instance.deactivatedAt.toIso8601String(),
       'reason': instance.reason,
@@ -180,10 +178,13 @@ TokenContainerStateDeleted _$TokenContainerStateDeletedFromJson(
       lastSyncedAt: json['lastSyncedAt'] == null
           ? null
           : DateTime.parse(json['lastSyncedAt'] as String),
-      containerId: json['containerId'] as String,
+      serial: json['serial'] as String,
       description: json['description'] as String,
       type: json['type'] as String,
-      tokenTemplates: (json['tokenTemplates'] as List<dynamic>)
+      syncedTokenTemplates: (json['syncedTokenTemplates'] as List<dynamic>)
+          .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      localTokenTemplates: (json['localTokenTemplates'] as List<dynamic>)
           .map((e) => TokenTemplate.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
@@ -191,10 +192,11 @@ TokenContainerStateDeleted _$TokenContainerStateDeletedFromJson(
 Map<String, dynamic> _$TokenContainerStateDeletedToJson(
         TokenContainerStateDeleted instance) =>
     <String, dynamic>{
-      'containerId': instance.containerId,
+      'serial': instance.serial,
       'description': instance.description,
       'type': instance.type,
-      'tokenTemplates': instance.tokenTemplates,
+      'syncedTokenTemplates': instance.syncedTokenTemplates,
+      'localTokenTemplates': instance.localTokenTemplates,
       'lastSyncedAt': instance.lastSyncedAt?.toIso8601String(),
       'deletedAt': instance.deletedAt.toIso8601String(),
       'reason': instance.reason,

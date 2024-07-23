@@ -48,6 +48,7 @@ class TOTPToken extends OTPToken {
     required super.algorithm,
     required super.digits,
     required super.secret,
+    super.serial,
     String? type,
     super.tokenImage,
     super.pin,
@@ -70,6 +71,7 @@ class TOTPToken extends OTPToken {
 
   @override
   TOTPToken copyWith({
+    String? serial,
     String? label,
     String? issuer,
     String? id,
@@ -86,6 +88,7 @@ class TOTPToken extends OTPToken {
     TokenOriginData? origin,
   }) {
     return TOTPToken(
+      serial: serial ?? this.serial,
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
       id: id ?? this.id,
