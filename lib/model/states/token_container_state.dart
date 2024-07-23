@@ -10,19 +10,21 @@ sealed class TokenContainerState extends TokenContainer {
   const TokenContainerState({
     required this.lastSyncedAt,
     // TokenContainer
-    required super.containerId,
+    required super.serial,
     required super.description,
     required super.type,
-    required super.tokenTemplates,
+    required super.syncedTokenTemplates,
+    required super.localTokenTemplates,
   });
 
-  factory TokenContainerState.uninitialized() => const TokenContainerStateUninitialized();
+  factory TokenContainerState.uninitialized(List<TokenTemplate> localTokenTemplates) =>
+      TokenContainerStateUninitialized(localTokenTemplates: localTokenTemplates);
 
   factory TokenContainerState.fromJson(Map<String, dynamic> json) => switch (json['type']) {
         const ('TokenContainerStateUninitialized') => _$TokenContainerStateUninitializedFromJson(json),
         const ('TokenContainerStateModified') => _$TokenContainerStateModifiedFromJson(json),
         const ('TokenContainerStateSynced') => _$TokenContainerStateSyncedFromJson(json),
-        const ('TokenContainerStateSyncing') => _$TokenContainerStateSyncingFromJson(json),
+        // const ('TokenContainerStateSyncing') => _$TokenContainerStateSyncingFromJson(json),
         const ('TokenContainerStateUnsynced') => _$TokenContainerStateUnsyncedFromJson(json),
         const ('TokenContainerStateError') => _$TokenContainerStateErrorFromJson(json),
         const ('TokenContainerStateDeactivated') => _$TokenContainerStateDeactivatedFromJson(json),
@@ -34,126 +36,136 @@ sealed class TokenContainerState extends TokenContainer {
     required String stateType,
     dynamic data,
     DateTime? dateTime,
-    String? containerId,
+    String? serial,
     String? description,
     String? type,
-    List<TokenTemplate> tokenTemplates = const [],
+    List<TokenTemplate> syncedTokenTemplates = const [],
+    List<TokenTemplate> localTokenTemplates = const [],
     DateTime? lastSyncedAt,
   }) =>
       switch (stateType) {
-        'TokenContainerStateUninitialized' => const TokenContainerStateUninitialized(),
+        'TokenContainerStateUninitialized' => TokenContainerStateUninitialized(localTokenTemplates: localTokenTemplates),
         'TokenContainerStateModified' => TokenContainerStateModified(
             lastModifiedAt: dateTime ?? DateTime.now(),
             lastSyncedAt: lastSyncedAt ?? DateTime.now(),
-            containerId: containerId ?? '',
+            serial: serial ?? '',
             description: description ?? '',
             type: type ?? '',
-            tokenTemplates: tokenTemplates,
+            syncedTokenTemplates: syncedTokenTemplates,
+            localTokenTemplates: localTokenTemplates,
           ),
         'TokenContainerStateSynced' => TokenContainerStateSynced(
             lastSyncedAt: lastSyncedAt ?? DateTime.now(),
-            containerId: containerId ?? '',
+            serial: serial ?? '',
             description: description ?? '',
             type: type ?? '',
-            tokenTemplates: tokenTemplates,
+            syncedTokenTemplates: syncedTokenTemplates,
           ),
-        'TokenContainerStateSyncing' => TokenContainerStateSyncing(
-            syncStartedAt: dateTime ?? DateTime.now(),
-            lastSyncedAt: lastSyncedAt,
-            containerId: containerId ?? '',
-            description: description ?? '',
-            type: type ?? '',
-            tokenTemplates: tokenTemplates,
-          ),
+        // 'TokenContainerStateSyncing' => TokenContainerStateSyncing(
+        //     syncStartedAt: dateTime ?? DateTime.now(),
+        //     lastSyncedAt: lastSyncedAt,
+        //     serial: serial ?? '',
+        //     description: description ?? '',
+        //     type: type ?? '',
+        //     syncedTokenTemplates: tokenTemplates,
+        //   ),
         'TokenContainerStateUnsynced' => TokenContainerStateUnsynced(
             syncAttempts: data is num ? data.floor() : 1,
             lastSyncedAt: lastSyncedAt,
-            containerId: containerId ?? '',
+            serial: serial ?? '',
             description: description ?? '',
             type: type ?? '',
-            tokenTemplates: tokenTemplates,
+            syncedTokenTemplates: syncedTokenTemplates,
+            localTokenTemplates: localTokenTemplates,
           ),
         'TokenContainerStateError' => TokenContainerStateError(
             error: data,
             lastSyncedAt: lastSyncedAt,
-            containerId: containerId ?? '',
+            serial: serial ?? '',
             description: description ?? '',
             type: type ?? '',
-            tokenTemplates: tokenTemplates,
+            syncedTokenTemplates: syncedTokenTemplates,
+            localTokenTemplates: localTokenTemplates,
           ),
         'TokenContainerStateDeactivated' => TokenContainerStateDeactivated(
             reason: data,
             deactivatedAt: dateTime ?? DateTime.now(),
             lastSyncedAt: lastSyncedAt,
-            containerId: containerId ?? '',
+            serial: serial ?? '',
             description: description ?? '',
             type: type ?? '',
-            tokenTemplates: tokenTemplates,
+            syncedTokenTemplates: syncedTokenTemplates,
+            localTokenTemplates: localTokenTemplates,
           ),
         'TokenContainerStateDeleted' => TokenContainerStateDeleted(
             reason: data,
             deletedAt: dateTime ?? DateTime.now(),
             lastSyncedAt: lastSyncedAt,
-            containerId: containerId ?? '',
+            serial: serial ?? '',
             description: description ?? '',
             type: type ?? '',
-            tokenTemplates: tokenTemplates,
+            syncedTokenTemplates: syncedTokenTemplates,
+            localTokenTemplates: localTokenTemplates,
           ),
         _ => throw UnimplementedError(stateType),
       };
 
   T as<T extends TokenContainerState>({dynamic data, DateTime? dateTime}) => switch (T) {
-        const (TokenContainerStateUninitialized) => const TokenContainerStateUninitialized() as T,
+        const (TokenContainerStateUninitialized) => TokenContainerStateUninitialized(localTokenTemplates: localTokenTemplates) as T,
         const (TokenContainerStateSynced) => TokenContainerStateSynced(
             lastSyncedAt: lastSyncedAt ?? lastSyncedAt ?? DateTime.now(),
-            containerId: containerId,
+            serial: serial,
             description: description,
             type: type,
-            tokenTemplates: tokenTemplates,
+            syncedTokenTemplates: syncedTokenTemplates,
           ) as T,
-        const (TokenContainerStateSyncing) => TokenContainerStateSyncing(
-            lastSyncedAt: lastSyncedAt,
-            syncStartedAt: dateTime ?? lastSyncedAt ?? DateTime.now(),
-            containerId: containerId,
-            description: description,
-            type: type,
-            tokenTemplates: tokenTemplates,
-          ) as T,
+        // const (TokenContainerStateSyncing) => TokenContainerStateSyncing(
+        //     lastSyncedAt: lastSyncedAt,
+        //     syncStartedAt: dateTime ?? lastSyncedAt ?? DateTime.now(),
+        //     serial: serial,
+        //     description: description,
+        //     type: type,
+        //     tokenTemplates: syncedTokenTemplates,
+        //   ) as T,
         const (TokenContainerStateUnsynced) => this is TokenContainerStateUnsynced
             ? (this as TokenContainerStateUnsynced).withIncrementedSyncAttempts() as T
             : TokenContainerStateUnsynced(
                 lastSyncedAt: lastSyncedAt,
                 syncAttempts: data is num ? data.floor() : 1,
-                containerId: containerId,
+                serial: serial,
                 description: description,
                 type: type,
-                tokenTemplates: tokenTemplates,
+                syncedTokenTemplates: syncedTokenTemplates,
+                localTokenTemplates: localTokenTemplates,
               ) as T,
         const (TokenContainerStateError) => TokenContainerStateError(
             error: data,
             lastSyncedAt: lastSyncedAt,
-            containerId: containerId,
+            serial: serial,
             description: description,
             type: type,
-            tokenTemplates: tokenTemplates,
+            syncedTokenTemplates: syncedTokenTemplates,
+            localTokenTemplates: localTokenTemplates,
           ) as T,
         const (TokenContainerStateDeactivated) => TokenContainerStateDeactivated(
             reason: data,
             deactivatedAt: dateTime ?? lastSyncedAt ?? DateTime.now(),
             lastSyncedAt: lastSyncedAt,
-            containerId: containerId,
+            serial: serial,
             description: description,
             type: type,
-            tokenTemplates: tokenTemplates,
+            syncedTokenTemplates: syncedTokenTemplates,
+            localTokenTemplates: localTokenTemplates,
           ) as T,
         const (TokenContainerStateDeleted) => TokenContainerStateDeleted(
             reason: data,
             deletedAt: dateTime ?? lastSyncedAt ?? DateTime.now(),
             lastSyncedAt: lastSyncedAt,
-            containerId: containerId,
+            serial: serial,
             description: description,
             type: type,
-            tokenTemplates: tokenTemplates,
+            syncedTokenTemplates: syncedTokenTemplates,
+            localTokenTemplates: localTokenTemplates,
           ) as T,
         _ => throw UnimplementedError(),
       };
@@ -164,7 +176,7 @@ sealed class TokenContainerState extends TokenContainer {
       TokenContainerStateUninitialized() => _$TokenContainerStateUninitializedToJson(this as TokenContainerStateUninitialized),
       TokenContainerStateModified() => _$TokenContainerStateModifiedToJson(this as TokenContainerStateModified),
       TokenContainerStateSynced() => _$TokenContainerStateSyncedToJson(this as TokenContainerStateSynced),
-      TokenContainerStateSyncing() => _$TokenContainerStateSyncingToJson(this as TokenContainerStateSyncing),
+      // 'TokenContainerStateSyncing() => _$TokenContainerStateSyncingToJson(this as TokenContainerStateSyncing),
       TokenContainerStateUnsynced() => _$TokenContainerStateUnsyncedToJson(this as TokenContainerStateUnsynced),
       TokenContainerStateError() => _$TokenContainerStateErrorToJson(this as TokenContainerStateError),
       TokenContainerStateDeactivated() => _$TokenContainerStateDeactivatedToJson(this as TokenContainerStateDeactivated),
@@ -175,11 +187,12 @@ sealed class TokenContainerState extends TokenContainer {
   }
 
   @override
-  TokenContainerState copyWith({
-    String? containerId,
+  TokenContainerStateModified copyWith({
+    String? serial,
     String? description,
     String? type,
-    List<TokenTemplate>? tokenTemplates,
+    List<TokenTemplate>? syncedTokenTemplates,
+    List<TokenTemplate>? localTokenTemplates,
     DateTime? lastSyncedAt,
   });
 
@@ -187,16 +200,16 @@ sealed class TokenContainerState extends TokenContainer {
     dynamic data,
     DateTime? dateTime,
     DateTime? lastSyncedAt,
-    String? containerId,
+    String? serial,
     String? description,
     String? type,
     List<TokenTemplate>? tokenTemplates,
   }) {
     final copied = copyWith(
-      containerId: containerId,
+      serial: serial,
       description: description,
       type: type,
-      tokenTemplates: tokenTemplates,
+      syncedTokenTemplates: tokenTemplates,
     );
     return copied.as<T>(data: data, dateTime: dateTime);
   }
@@ -205,29 +218,32 @@ sealed class TokenContainerState extends TokenContainer {
 /// ContainerState is not initialized
 @JsonSerializable()
 class TokenContainerStateUninitialized extends TokenContainerState {
-  const TokenContainerStateUninitialized()
+  const TokenContainerStateUninitialized({required super.localTokenTemplates})
       : super(
           lastSyncedAt: null,
-          containerId: '',
+          serial: '',
           description: '',
           type: '',
-          tokenTemplates: const [],
+          syncedTokenTemplates: const [],
         );
 
   @override
-  TokenContainerStateUnsynced copyWith({
-    String? containerId,
+  TokenContainerStateModified copyWith({
+    String? serial,
     String? description,
     String? type,
-    List<TokenTemplate>? tokenTemplates,
+    List<TokenTemplate>? syncedTokenTemplates,
+    List<TokenTemplate>? localTokenTemplates,
     DateTime? lastSyncedAt,
   }) {
-    return TokenContainerStateUnsynced(
-      lastSyncedAt: lastSyncedAt ?? lastSyncedAt,
-      containerId: containerId ?? this.containerId,
+    return TokenContainerStateModified(
+      lastModifiedAt: DateTime.now(),
+      lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
+      serial: serial ?? this.serial,
       description: description ?? this.description,
       type: type ?? this.type,
-      tokenTemplates: tokenTemplates ?? this.tokenTemplates,
+      syncedTokenTemplates: syncedTokenTemplates ?? this.syncedTokenTemplates,
+      localTokenTemplates: localTokenTemplates ?? this.localTokenTemplates,
     );
   }
 }
@@ -238,30 +254,32 @@ class TokenContainerStateModified extends TokenContainerState {
   DateTime lastModifiedAt;
   TokenContainerStateModified({
     required this.lastModifiedAt,
-    required DateTime lastSyncedAt,
-    required super.containerId,
+    required super.lastSyncedAt,
+    required super.serial,
     required super.description,
     required super.type,
-    required super.tokenTemplates,
-  }) : super(lastSyncedAt: lastSyncedAt);
+    required super.syncedTokenTemplates,
+    required super.localTokenTemplates,
+  });
 
   @override
   TokenContainerStateModified copyWith({
-    String? containerId,
+    String? serial,
     String? description,
     String? type,
-    List<TokenTemplate>? tokenTemplates,
+    List<TokenTemplate>? syncedTokenTemplates,
+    List<TokenTemplate>? localTokenTemplates,
     DateTime? lastSyncedAt,
     DateTime? lastModifiedAt,
-    bool? highPriority,
   }) {
     return TokenContainerStateModified(
       lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
       lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt ?? DateTime.now(),
-      containerId: containerId ?? this.containerId,
+      serial: serial ?? this.serial,
       description: description ?? this.description,
       type: type ?? this.type,
-      tokenTemplates: tokenTemplates ?? this.tokenTemplates,
+      syncedTokenTemplates: syncedTokenTemplates ?? this.syncedTokenTemplates,
+      localTokenTemplates: localTokenTemplates ?? this.localTokenTemplates,
     );
   }
 }
@@ -269,75 +287,74 @@ class TokenContainerStateModified extends TokenContainerState {
 /// ContainerState is successfully synced with repo
 @JsonSerializable()
 class TokenContainerStateSynced extends TokenContainerState {
-  @override
-  DateTime get lastSyncedAt {
-    assert(super.lastSyncedAt != null, 'In a synced state, lastSyncedAt must not be null.');
-    return super.lastSyncedAt!;
-  }
   TokenContainerStateSynced({
-    required DateTime lastSyncedAt,
-    required super.containerId,
+    required super.serial,
     required super.description,
     required super.type,
-    required super.tokenTemplates,
-  }) : super(lastSyncedAt: lastSyncedAt);
+    required super.syncedTokenTemplates,
+    DateTime? lastSyncedAt,
+  }) : super(lastSyncedAt: lastSyncedAt ?? DateTime.now(), localTokenTemplates: const []);
 
   @override
-  TokenContainerStateSynced copyWith({
-    String? containerId,
+  TokenContainerStateModified copyWith({
+    String? serial,
     String? description,
     String? type,
-    List<TokenTemplate>? tokenTemplates,
+    List<TokenTemplate>? syncedTokenTemplates,
+    List<TokenTemplate>? localTokenTemplates,
     DateTime? lastSyncedAt,
+    DateTime? lastModifiedAt,
   }) {
-    return TokenContainerStateSynced(
+    return TokenContainerStateModified(
       lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
-      containerId: containerId ?? this.containerId,
+      serial: serial ?? this.serial,
       description: description ?? this.description,
       type: type ?? this.type,
-      tokenTemplates: tokenTemplates ?? this.tokenTemplates,
+      syncedTokenTemplates: syncedTokenTemplates ?? this.syncedTokenTemplates,
+      localTokenTemplates: const [],
+      lastModifiedAt: lastModifiedAt ?? DateTime.now(),
     );
   }
 }
 
-/// ContainerState is currently syncing
-@JsonSerializable()
-class TokenContainerStateSyncing extends TokenContainerState {
-  final DateTime syncStartedAt;
-  final Duration timeOut;
-  get isSyncing => DateTime.now().difference(syncStartedAt) < timeOut;
-  get isTimedOut => DateTime.now().difference(syncStartedAt) > timeOut;
-  const TokenContainerStateSyncing({
-    required this.syncStartedAt,
-    this.timeOut = const Duration(seconds: 30),
-    required super.lastSyncedAt,
-    required super.containerId,
-    required super.description,
-    required super.type,
-    required super.tokenTemplates,
-  });
+// /// ContainerState is currently syncing
+// @JsonSerializable()
+// class TokenContainerStateSyncing extends TokenContainerState {
+//   final DateTime syncStartedAt;
+//   final Duration timeOut;
+//   get isSyncing => DateTime.now().difference(syncStartedAt) < timeOut;
+//   get isTimedOut => DateTime.now().difference(syncStartedAt) > timeOut;
+//   const TokenContainerStateSyncing({
+//     required this.syncStartedAt,
+//     this.timeOut = const Duration(seconds: 30),
+//     required super.lastSyncedAt,
+//     required super.serial,
+//     required super.description,
+//     required super.type,
+//     required super.tokenTemplates,
+//   });
 
-  @override
-  TokenContainerStateSyncing copyWith({
-    String? containerId,
-    String? description,
-    String? type,
-    List<TokenTemplate>? tokenTemplates,
-    DateTime? lastSyncedAt,
-    DateTime? syncStartedAt,
-    Duration? timeOut,
-  }) {
-    return TokenContainerStateSyncing(
-      syncStartedAt: syncStartedAt ?? this.syncStartedAt,
-      timeOut: timeOut ?? this.timeOut,
-      lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
-      containerId: containerId ?? this.containerId,
-      description: description ?? this.description,
-      type: type ?? this.type,
-      tokenTemplates: tokenTemplates ?? this.tokenTemplates,
-    );
-  }
-}
+//   @override
+//   TokenContainerStateSyncing copyWith({
+//     String? serial,
+//     String? description,
+//     String? type,
+//     List<TokenTemplate>? syncedTokenTemplates,
+//     DateTime? lastSyncedAt,
+//     DateTime? syncStartedAt,
+//     Duration? timeOut,
+//   }) {
+//     return TokenContainerStateSyncing(
+//       syncStartedAt: syncStartedAt ?? this.syncStartedAt,
+//       timeOut: timeOut ?? this.timeOut,
+//       lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
+//       serial: serial ?? this.serial,
+//       description: description ?? this.description,
+//       type: type ?? this.type,
+//       tokenTemplates: syncedTokenTemplates ?? this.syncedTokenTemplates,
+//     );
+//   }
+// }
 
 /// ContainerState is failed last sync attempt
 @JsonSerializable()
@@ -349,38 +366,43 @@ class TokenContainerStateUnsynced extends TokenContainerState {
     this.syncAttempts = 1,
     this.lastError,
     required super.lastSyncedAt,
-    required super.containerId,
+    required super.serial,
     required super.description,
     required super.type,
-    required super.tokenTemplates,
+    required super.syncedTokenTemplates,
+    required super.localTokenTemplates,
   });
 
   TokenContainerStateUnsynced withIncrementedSyncAttempts() => withSyncAttempts(syncAttempts + 1);
   TokenContainerStateUnsynced withSyncAttempts(int syncAttempts) => TokenContainerStateUnsynced(
         syncAttempts: syncAttempts,
         lastSyncedAt: lastSyncedAt,
-        containerId: containerId,
+        serial: serial,
         description: description,
         type: type,
-        tokenTemplates: tokenTemplates,
+        syncedTokenTemplates: syncedTokenTemplates,
+        localTokenTemplates: localTokenTemplates,
       );
 
   @override
-  TokenContainerStateUnsynced copyWith({
-    String? containerId,
+  TokenContainerStateModified copyWith({
+    String? serial,
     String? description,
     String? type,
-    List<TokenTemplate>? tokenTemplates,
+    List<TokenTemplate>? syncedTokenTemplates,
+    List<TokenTemplate>? localTokenTemplates,
     DateTime? lastSyncedAt,
+    DateTime? lastModifiedAt,
     int? syncAttempts,
   }) {
-    return TokenContainerStateUnsynced(
-      syncAttempts: syncAttempts ?? this.syncAttempts,
+    return TokenContainerStateModified(
+      lastModifiedAt: lastModifiedAt ?? DateTime.now(),
       lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
-      containerId: containerId ?? this.containerId,
+      serial: serial ?? this.serial,
       description: description ?? this.description,
       type: type ?? this.type,
-      tokenTemplates: tokenTemplates ?? this.tokenTemplates,
+      syncedTokenTemplates: syncedTokenTemplates ?? this.syncedTokenTemplates,
+      localTokenTemplates: this.localTokenTemplates,
     );
   }
 }
@@ -391,29 +413,32 @@ class TokenContainerStateError extends TokenContainerState {
   final dynamic error;
   TokenContainerStateError({
     required this.error,
-    required super.lastSyncedAt,
-    required super.containerId,
-    required super.description,
-    required super.type,
-    required super.tokenTemplates,
-  });
+    super.lastSyncedAt,
+    super.serial = 'Error',
+    String? description,
+    super.type = 'Error',
+    super.syncedTokenTemplates = const [],
+    super.localTokenTemplates = const [],
+  }) : super(description: description ?? error.toString());
 
   @override
-  TokenContainerStateError copyWith({
-    String? containerId,
+  TokenContainerStateModified copyWith({
+    String? serial,
     String? description,
     String? type,
-    List<TokenTemplate>? tokenTemplates,
+    List<TokenTemplate>? syncedTokenTemplates,
+    List<TokenTemplate>? localTokenTemplates,
     DateTime? lastSyncedAt,
-    dynamic error,
+    DateTime? lastModifiedAt,
   }) {
-    return TokenContainerStateError(
-      error: error ?? this.error,
+    return TokenContainerStateModified(
+      lastModifiedAt: lastModifiedAt ?? DateTime.now(),
       lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
-      containerId: containerId ?? this.containerId,
+      serial: serial ?? this.serial,
       description: description ?? this.description,
       type: type ?? this.type,
-      tokenTemplates: tokenTemplates ?? this.tokenTemplates,
+      syncedTokenTemplates: syncedTokenTemplates ?? this.syncedTokenTemplates,
+      localTokenTemplates: this.localTokenTemplates,
     );
   }
 }
@@ -427,35 +452,36 @@ class TokenContainerStateDeactivated extends TokenContainerState {
     required this.reason,
     required this.deactivatedAt,
     required super.lastSyncedAt,
-    required super.containerId,
+    required super.serial,
     required super.description,
     required super.type,
-    required super.tokenTemplates,
+    required super.syncedTokenTemplates,
+    required super.localTokenTemplates,
   });
 
   @override
-  TokenContainerStateDeactivated copyWith({
-    String? containerId,
+  TokenContainerStateModified copyWith({
+    String? serial,
     String? description,
     String? type,
-    List<TokenTemplate>? tokenTemplates,
+    List<TokenTemplate>? syncedTokenTemplates,
+    List<TokenTemplate>? localTokenTemplates,
     DateTime? lastSyncedAt,
-    DateTime? deactivatedAt,
-    dynamic reason,
+    DateTime? lastModifiedAt,
   }) {
-    return TokenContainerStateDeactivated(
-      reason: reason ?? this.reason,
-      deactivatedAt: deactivatedAt ?? deactivatedAt ?? DateTime.now(),
+    return TokenContainerStateModified(
+      lastModifiedAt: lastModifiedAt ?? DateTime.now(),
       lastSyncedAt: lastSyncedAt ?? lastSyncedAt,
-      containerId: containerId ?? this.containerId,
+      serial: serial ?? this.serial,
       description: description ?? this.description,
       type: type ?? this.type,
-      tokenTemplates: tokenTemplates ?? this.tokenTemplates,
+      syncedTokenTemplates: syncedTokenTemplates ?? this.syncedTokenTemplates,
+      localTokenTemplates: this.localTokenTemplates,
     );
   }
 }
 
-/// ContainerState is deleted repo-side
+/// ContainerState is deleted repo-sseriale
 @JsonSerializable()
 class TokenContainerStateDeleted extends TokenContainerState {
   final DateTime deletedAt;
@@ -464,30 +490,32 @@ class TokenContainerStateDeleted extends TokenContainerState {
     required this.reason,
     required this.deletedAt,
     required super.lastSyncedAt,
-    required super.containerId,
+    required super.serial,
     required super.description,
     required super.type,
-    required super.tokenTemplates,
+    required super.syncedTokenTemplates,
+    required super.localTokenTemplates,
   });
 
   @override
-  TokenContainerStateDeleted copyWith({
-    String? containerId,
+  TokenContainerStateModified copyWith({
+    String? serial,
     String? description,
     String? type,
-    List<TokenTemplate>? tokenTemplates,
+    List<TokenTemplate>? syncedTokenTemplates,
+    List<TokenTemplate>? localTokenTemplates,
     DateTime? lastSyncedAt,
-    DateTime? deletedAt,
-    dynamic reason,
+    DateTime? lastModifiedAt,
+
   }) {
-    return TokenContainerStateDeleted(
-      reason: reason ?? this.reason,
-      deletedAt: deletedAt ?? this.deletedAt,
+    return TokenContainerStateModified(
+      lastModifiedAt: lastModifiedAt ?? DateTime.now(),
       lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
-      containerId: containerId ?? this.containerId,
+      serial: serial ?? this.serial,
       description: description ?? this.description,
       type: type ?? this.type,
-      tokenTemplates: tokenTemplates ?? this.tokenTemplates,
+      syncedTokenTemplates: syncedTokenTemplates ?? this.syncedTokenTemplates,
+      localTokenTemplates: this.localTokenTemplates,
     );
   }
 }

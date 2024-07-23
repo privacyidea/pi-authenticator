@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/states/token_state.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
@@ -21,7 +22,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
   Set<Token> _selectedTokens = {};
   @override
   Widget build(BuildContext context) {
-    final tokens = ref.read(tokenProvider).nonPiTokens;
+    final tokens = ref.read(tokenProvider).tokens.nonPiTokens;
     final exportEveryToken = tokens.length == _selectedTokens.length && _selectedTokens.containsAll(tokens);
     final theme = Theme.of(context);
     final appLocalizations = AppLocalizations.of(context)!;

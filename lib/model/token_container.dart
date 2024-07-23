@@ -8,32 +8,36 @@ part 'token_container.g.dart';
 
 @JsonSerializable()
 class TokenContainer {
-  final String containerId;
+  final String serial;
   final String description;
   final String type;
-  final List<TokenTemplate> tokenTemplates;
+  final List<TokenTemplate> syncedTokenTemplates;
+  final List<TokenTemplate> localTokenTemplates;
 
   const TokenContainer({
-    required this.containerId,
+    required this.serial,
     required this.description,
     required this.type,
-    required this.tokenTemplates,
+    required this.syncedTokenTemplates,
+    required this.localTokenTemplates,
   });
 
   factory TokenContainer.fromJson(Map<String, dynamic> json) => _$TokenContainerFromJson(json);
   Map<String, dynamic> toJson() => _$TokenContainerToJson(this);
 
   TokenContainer copyWith({
-    String? containerId,
+    String? serial,
     String? description,
     String? type,
-    List<TokenTemplate>? tokenTemplates,
+    List<TokenTemplate>? syncedTokenTemplates,
+    List<TokenTemplate>? localTokenTemplates,
   }) {
     return TokenContainer(
-      containerId: containerId ?? this.containerId,
+      serial: serial ?? this.serial,
       description: description ?? this.description,
       type: type ?? this.type,
-      tokenTemplates: tokenTemplates ?? this.tokenTemplates,
+      syncedTokenTemplates: syncedTokenTemplates ?? this.syncedTokenTemplates,
+      localTokenTemplates: localTokenTemplates ?? this.localTokenTemplates,
     );
   }
 }
@@ -52,8 +56,26 @@ class TokenTemplate {
 
   TokenTemplate({required this.data});
 
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TokenTemplate && other.data == data;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([data, runtimeType]);
+
   factory TokenTemplate.fromJson(Map<String, dynamic> json) => _$TokenTemplateFromJson(json);
   Map<String, dynamic> toJson() => _$TokenTemplateToJson(this);
 
   Token toToken() => Token.fromUriMap(data);
+
+  TokenTemplate copyWith(Map<String, dynamic> replace) {
+    return TokenTemplate(
+      data: Map<String, dynamic>.from(data)..addAll(replace),
+    );
+  }
+
+
 }

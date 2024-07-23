@@ -1,6 +1,4 @@
-import 'package:collection/collection.dart';
 import 'package:mutex/mutex.dart';
-import 'package:privacyidea_authenticator/model/token_container.dart';
 
 import '../../api/token_container_api_endpoint.dart';
 import '../../interfaces/repo/container_repository.dart';
@@ -20,8 +18,8 @@ class RemoteTokenContainerStateRepository implements TokenContainerStateReposito
   Future<TokenContainerState> _saveContainerState(TokenContainerState containerState) async {
     try {
       return await _protect(() async {
-        await apiEndpoint.save(containerState);
-        return containerState;
+        var synced = await apiEndpoint.sync(containerState);
+        return synced;
       });
     } catch (e) {
       rethrow;
@@ -33,23 +31,22 @@ class RemoteTokenContainerStateRepository implements TokenContainerStateReposito
 
   Future<TokenContainerState> _fetchContainerState() async => await _protect(() async => await apiEndpoint.fetch());
 
-  @override
-  Future<TokenTemplate?> loadTokenTemplate(String tokenTemplateId) async {
-    final state = await loadContainerState();
-    final template = state.tokenTemplates.firstWhereOrNull((element) => element.id == tokenTemplateId);
-    return template;
-  }
+  // @override
+  // Future<TokenTemplate?> loadTokenTemplate(String tokenTemplateId) async {
+  //   final state = await loadContainerState();
+  //   final template = state.tokenTemplates.firstWhereOrNull((element) => element.id == tokenTemplateId);
+  //   return template;
+  // }
 
-  @override
-  Future<TokenTemplate> saveTokenTemplate(TokenTemplate tokenTemplate) async {
-    final state = await loadContainerState();
-    final templateIndex = state.tokenTemplates.indexWhere((element) => element.id == tokenTemplate.id);
-    if (templateIndex == -1) {
-      state.tokenTemplates.add(tokenTemplate);
-    } else {
-      state.tokenTemplates[templateIndex] = tokenTemplate;
-    }
-    await saveContainerState(state);
-    return tokenTemplate;
-  }
+  // @override
+  // Future<TokenTemplate> saveTokenTemplate(TokenTemplate tokenTemplate) async {
+  //   final state = await loadContainerState();
+  //   if (templateIndex == -1) {
+  //     state.tokenTemplates.add(tokenTemplate);
+  //   } else {
+  //     state.tokenTemplates[templateIndex] = tokenTemplate;
+  //   }
+  //   await saveContainerState(state);
+  //   return tokenTemplate;
+  // }
 }

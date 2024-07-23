@@ -26,6 +26,7 @@ class SteamToken extends TOTPToken {
   SteamToken({
     required super.id,
     required super.secret,
+    super.serial,
     String? type,
     super.tokenImage,
     super.pin,
@@ -45,6 +46,7 @@ class SteamToken extends TOTPToken {
 
   @override
   SteamToken copyWith({
+    String? serial,
     String? label,
     String? issuer,
     String? id,
@@ -61,6 +63,7 @@ class SteamToken extends TOTPToken {
     String? secret,
   }) {
     return SteamToken(
+      serial: serial ?? this.serial,
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
       id: id ?? this.id,

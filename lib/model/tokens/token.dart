@@ -22,6 +22,7 @@ abstract class Token with SortableMixin {
   final String label; // the name of the token, it cannot be uses as an identifier
   final String issuer; // The issuer of this token, currently unused.
   final String id; // this is the identifier of the token
+  final String? serial; // The serial of the token, this is used to identify the token in the privacyIDEA server.
   final bool pin;
   final bool isLocked;
   final bool isHidden;
@@ -58,6 +59,7 @@ abstract class Token with SortableMixin {
   }
 
   const Token({
+    this.serial,
     this.label = '',
     this.issuer = '',
     this.containerId,
@@ -86,6 +88,7 @@ abstract class Token with SortableMixin {
 
   @override
   Token copyWith({
+    String? serial,
     String? label,
     String? issuer,
     String? id,
@@ -136,7 +139,7 @@ abstract class Token with SortableMixin {
   /// ```
   Map<String, dynamic> toUriMap() {
     return {
-      TOKEN_ID: id,
+      URI_SERIAL: id,
       URI_TYPE: type,
       URI_LABEL: label,
       URI_ISSUER: issuer,
@@ -156,4 +159,6 @@ abstract class Token with SortableMixin {
   }
 
   Token copyWithFromTemplate(TokenTemplate template);
+
+  TokenTemplate toTemplate() => TokenTemplate(data: toUriMap());
 }

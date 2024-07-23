@@ -29,6 +29,7 @@ class HOTPToken extends OTPToken {
     required super.algorithm,
     required super.digits,
     required super.secret,
+    super.serial,
     String? type, // just for @JsonSerializable(): type of HOTPToken is always TokenTypes.HOTP
     super.tokenImage,
     super.pin,
@@ -60,6 +61,7 @@ class HOTPToken extends OTPToken {
 
   @override
   HOTPToken copyWith({
+    String? serial,
     int? counter,
     String? label,
     String? issuer,
@@ -76,6 +78,7 @@ class HOTPToken extends OTPToken {
     TokenOriginData? origin,
   }) =>
       HOTPToken(
+        serial: serial ?? this.serial,
         counter: counter ?? this.counter,
         label: label ?? this.label,
         issuer: issuer ?? this.issuer,

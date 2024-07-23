@@ -15,9 +15,9 @@ class TokenContainerTokenStateListener extends TokenStateListener {
           });
         });
 
-  static Future<void> _onNewState(TokenState? previous, TokenState next, WidgetRef ref) async {
-    final templates = next.lastlyUpdatedTokens.fromContainer.toTemplates();
-    if (templates.isEmpty) return;
-    ref.read(tokenContainerProvider.notifier).updateTemplates(templates);
+  static Future<void> _onNewState(TokenState? previousState, TokenState nextState, WidgetRef ref) async {
+    final maybePiTokenTemplates = nextState.lastlyUpdatedTokens.maybePiTokens.toTemplates();
+    if (maybePiTokenTemplates.isEmpty) return;
+    ref.read(tokenContainerProvider.notifier).addLocalTemplates(maybePiTokenTemplates);
   }
 }

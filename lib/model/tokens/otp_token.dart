@@ -24,6 +24,7 @@ abstract class OTPToken extends Token {
     required this.secret,
     required super.id,
     required super.type,
+    super.serial,
     super.pin,
     super.tokenImage,
     super.isLocked,
@@ -46,6 +47,7 @@ abstract class OTPToken extends Token {
 
   @override
   OTPToken copyWith({
+    String? serial,
     String? label,
     String? issuer,
     String? id,

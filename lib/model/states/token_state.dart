@@ -29,7 +29,9 @@ class TokenState {
       : tokens = List<Token>.from(tokens),
         lastlyUpdatedTokens = List<Token>.from(lastlyUpdatedTokens ?? tokens);
 
-  List<Token> get nonPiTokens => tokens.where((token) => token.isPrivacyIdeaToken == false).toList();
+
+
+  List<Token> get tokensNotInContainer => tokens.maybePiTokens.where((token) => token.containerId != null).toList();
 
   PushToken? getTokenBySerial(String serial) => pushTokens.firstWhereOrNull((element) => element.serial == serial);
 
@@ -142,9 +144,14 @@ class TokenState {
       tokens.inFolder(folder, only: only, exclude: exclude);
 
   List<Token> tokensWithoutFolder({List<Type> only = const [], List<Type> exclude = const []}) => tokens.withoutFolder(only: only, exclude: exclude);
+
+  List<Token> containerTokens(String containerId) => tokens.piTokens.fromContainer(containerId);
 }
 
 extension TokenListExtension on List<Token> {
+  List<Token> get nonPiTokens => where((token) => token.isPrivacyIdeaToken == false).toList();
+  List<Token> get maybePiTokens => where((token) => token.isPrivacyIdeaToken == null).toList();
+  List<Token> get piTokens => where((token) => token.isPrivacyIdeaToken == true).toList();
   List<Token> inFolder(TokenFolder folder, {List<Type> only = const [], List<Type> exclude = const []}) => where((token) {
         if (token.folderId != folder.folderId) return false;
         if (exclude.contains(token.runtimeType)) return false;
@@ -159,10 +166,11 @@ extension TokenListExtension on List<Token> {
         return true;
       }).toList();
 
-  List<Token> get fromContainer => where((token) => token.origin?.source == TokenOriginSourceType.container).toList();
+  List<Token> fromContainer(String containerId) =>
+      where((token) => token.origin?.source == TokenOriginSourceType.container && token.containerId == containerId).toList();
 
   List<TokenTemplate> toTemplates() {
     if (isEmpty) return [];
-    return map((token) => TokenTemplate(data: token.toUriMap())).toList();
+    return map((token) => token.toTemplate()).toList();
   }
 }
