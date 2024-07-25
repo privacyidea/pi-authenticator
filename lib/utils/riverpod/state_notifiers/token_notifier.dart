@@ -11,36 +11,35 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/model/states/token_container_state.dart';
 
-import '../interfaces/repo/token_repository.dart';
-import '../l10n/app_localizations.dart';
-import '../model/enums/push_token_rollout_state.dart';
-import '../model/enums/token_import_type.dart';
-import '../model/enums/token_origin_source_type.dart';
-import '../model/extensions/enums/push_token_rollout_state_extension.dart';
-import '../model/extensions/enums/token_origin_source_type.dart';
-import '../model/processor_result.dart';
-import '../model/states/token_state.dart';
-import '../model/token_container.dart';
-import '../model/tokens/hotp_token.dart';
-import '../model/tokens/otp_token.dart';
-import '../model/tokens/push_token.dart';
-import '../model/tokens/token.dart';
-import '../processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
-import '../repo/secure_token_repository.dart';
-import '../utils/firebase_utils.dart';
-import '../utils/globals.dart';
-import '../utils/identifiers.dart';
-import '../utils/lock_auth.dart';
-import '../utils/logger.dart';
-import '../utils/privacyidea_io_client.dart';
-import '../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
-import '../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
-import '../utils/rsa_utils.dart';
-import '../utils/utils.dart';
-import '../utils/view_utils.dart';
-import '../views/import_tokens_view/pages/import_plain_tokens_page.dart';
+import '../../../interfaces/repo/token_repository.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../model/enums/push_token_rollout_state.dart';
+import '../../../model/enums/token_import_type.dart';
+import '../../../model/enums/token_origin_source_type.dart';
+import '../../../model/extensions/enums/push_token_rollout_state_extension.dart';
+import '../../../model/extensions/enums/token_origin_source_type.dart';
+import '../../../model/processor_result.dart';
+import '../../../model/states/token_state.dart';
+import '../../../model/token_container.dart';
+import '../../../model/tokens/hotp_token.dart';
+import '../../../model/tokens/otp_token.dart';
+import '../../../model/tokens/push_token.dart';
+import '../../../model/tokens/token.dart';
+import '../../../processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
+import '../../../repo/secure_token_repository.dart';
+import '../../firebase_utils.dart';
+import '../../globals.dart';
+import '../../identifiers.dart';
+import '../../lock_auth.dart';
+import '../../logger.dart';
+import '../../privacyidea_io_client.dart';
+import '../riverpod_providers/state_notifier_providers/settings_provider.dart';
+import '../riverpod_providers/state_providers/status_message_provider.dart';
+import '../../rsa_utils.dart';
+import '../../utils.dart';
+import '../../view_utils.dart';
+import '../../../views/import_tokens_view/pages/import_plain_tokens_page.dart';
 
 class TokenNotifier extends StateNotifier<TokenState> {
   static final Map<String, Timer> _hidingTimers = {};
@@ -116,6 +115,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       return failedTokens;
     }
     // [failedTokens] is empty, so every token was saved successfully and we dont need to filter the tokens
+    Logger.warning('State Updated', name: 'token_notifier.dart#_saveOrReplaceTokens', stackTrace: StackTrace.current);
     state = state.addOrReplaceTokens(tokens);
     _loadingRepoMutex.release();
     return [];
@@ -319,16 +319,20 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// Updates a list of tokens and returns the updated tokens if successful, the old tokens if not and an empty list if the tokens does not exist.
   Future<List<T>> updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) async => _updateTokens(tokens, updater);
 
-  /// Adds, Updates or Removes tokens based on the [TokenContainerState] and returns the updated tokens.
+  /// Adds, Updates or Removes tokens based on the [TokenContainer] and returns the updated tokens.
   void updateContainerTokens(TokenContainer container) async {
+    await initState;
+    Logger.warning('Updating tokens from container.', name: 'token_notifier.dart#updateContainerTokens');
     final templatesToAdd = <TokenTemplate>[];
     final templatesToUpdate = <TokenTemplate>[];
     final templatesToRemove = <TokenTemplate>[];
 
     final knownContainerTokens = state.tokens.fromContainer(container.serial);
+    Logger.warning('Known tokens: ${knownContainerTokens.length}', name: 'token_notifier.dart#updateContainerTokens');
     final syncedTokenTemplates = container.syncedTokenTemplates;
+    Logger.warning('Synced tokens: ${syncedTokenTemplates.length}', name: 'token_notifier.dart#updateContainerTokens');
     final knownContainerTemplates = knownContainerTokens.toTemplates();
-    for (var i = 0; i < syncedTokenTemplates.length && knownContainerTemplates.isNotEmpty; i++) {
+    for (var i = 0; i < syncedTokenTemplates.length; i++) {
       // Searches for tokens that are in the container but not in the app to add them.
       // If the token is already in the app, it will be updated.
       // Reduces the [tokenTemplatesApp] list to only the tokens that are in the app but not in the container. These tokens will be removed.
@@ -347,7 +351,12 @@ class TokenNotifier extends StateNotifier<TokenState> {
     // Removes all tokens that are in the app but not in the container.
     templatesToRemove.addAll(knownContainerTemplates);
 
-    final tokensToAdd = templatesToAdd.map((e) => e.toToken()).toList();
+    Logger.warning('Templates to add: ${templatesToAdd.length}', name: 'token_notifier.dart#updateContainerTokens');
+    Logger.warning('Templates to update: ${templatesToUpdate.length}', name: 'token_notifier.dart#updateContainerTokens');
+    Logger.warning('Templates to remove: ${templatesToRemove.length}', name: 'token_notifier.dart#updateContainerTokens');
+
+    final tokensToAdd = templatesToAdd.map((e) => e.toToken(container)).toList();
+    Logger.warning('Tokens to add: ${tokensToAdd.firstOrNull?.containerId}', name: 'token_notifier.dart#updateContainerTokens');
     final tokensToUpdate = <Token>[];
     for (var template in templatesToUpdate) {
       final token = knownContainerTokens.firstWhereOrNull((token) => token.id == template.id);
@@ -364,9 +373,11 @@ class TokenNotifier extends StateNotifier<TokenState> {
       tokensToRemove.add(token);
     }
 
+    Logger.warning('Tokens to add: ${tokensToAdd.length}', name: 'token_notifier.dart#updateContainerTokens');
     if (tokensToAdd.isNotEmpty) {
       await addOrReplaceTokens(tokensToAdd);
     }
+    Logger.warning('Tokens to update: ${tokensToUpdate.length}', name: 'token_notifier.dart#updateContainerTokens');
     if (tokensToUpdate.isNotEmpty) {
       await updateTokens(tokensToUpdate, (p0) {
         final template = templatesToUpdate.firstWhereOrNull((element) => element.id == p0.id);
@@ -374,6 +385,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
         return p0.copyWithFromTemplate(template);
       });
     }
+    Logger.warning('Tokens to remove: ${tokensToRemove.length}', name: 'token_notifier.dart#updateContainerTokens');
     if (tokensToRemove.isNotEmpty) {
       await removeTokens(tokensToRemove);
     }

@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.dart';
 import 'package:privacyidea_authenticator/model/states/settings_state.dart';
-import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/settings_notifier.dart';
 import 'package:mockito/annotations.dart';
 
 import 'settings_notifier_test.mocks.dart';

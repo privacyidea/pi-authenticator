@@ -166,8 +166,12 @@ extension TokenListExtension on List<Token> {
         return true;
       }).toList();
 
-  List<Token> fromContainer(String containerId) =>
-      where((token) => token.origin?.source == TokenOriginSourceType.container && token.containerId == containerId).toList();
+  List<Token> fromContainer(String containerId) {
+    return where((token) {
+      Logger.warning('token.origin?.source: ${token.origin?.source} && token.containerId: ${token.containerId}', name: 'token_state.dart#fromContainer');
+      return token.origin?.source == TokenOriginSourceType.container && token.containerId == containerId;
+    }).toList();
+  }
 
   List<TokenTemplate> toTemplates() {
     if (isEmpty) return [];

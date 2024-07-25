@@ -91,6 +91,7 @@ abstract class Token with SortableMixin {
     String? serial,
     String? label,
     String? issuer,
+    String? Function()? containerId,
     String? id,
     bool? isLocked,
     bool? isHidden,

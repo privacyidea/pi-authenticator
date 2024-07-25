@@ -2,7 +2,7 @@ import 'package:app_links/app_links.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../model/deeplink.dart';
-import '../../../../state_notifiers/deeplink_notifier.dart';
+import '../../state_notifiers/deeplink_notifier.dart';
 import '../../../home_widget_utils.dart';
 import '../../../logger.dart';
 

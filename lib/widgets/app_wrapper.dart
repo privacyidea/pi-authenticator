@@ -4,11 +4,11 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/interfaces/riverpod/state_listeners/state_notifier_provider_listener.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_container_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_container_state_provider.dart';
 
-import '../model/states/token_container_state.dart';
+import '../interfaces/riverpod/state_listeners/notifier_provider_listener.dart';
+
+import '../model/token_container.dart';
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod/riverpod_providers/state_notifier_providers/deeplink_provider.dart';
@@ -88,14 +88,22 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
 
   @override
   Widget build(BuildContext context) {
+    final credentials = ref.read(credentialsProvider).value?.credentials ?? [];
     return SingleTouchRecognizer(
       child: StateObserver(
-        listeners: [
+        stateNotifierProviderListeners: [
           NavigationDeepLinkListener(deeplinkProvider: deeplinkProvider),
           HomeWidgetDeepLinkListener(deeplinkProvider: deeplinkProvider), // TODO: Nochmal anschauen
           HomeWidgetTokenStateListener(tokenProvider: tokenProvider),
-          TokenContainerTokenStateListener(tokenProvider: tokenProvider, ref: ref),
-          TokenStateTokenContainerListener(tokenContainerProvider: tokenContainerProvider, ref: ref),
+          ContainerListensToTokenState(tokenProvider: tokenProvider, ref: ref),
+        ],
+        asyncNotifierProviderListeners: [
+          ...credentials.map(
+            (credential) => TokenStateListensToContainer(
+              containerProvider: tokenContainerProviderOf(containerSerial: credential.serial),
+              ref: ref,
+            ),
+          ),
         ],
         child: EasyDynamicThemeWidget(
           child: widget.child,
@@ -105,23 +113,26 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
   }
 }
 
-class TokenStateTokenContainerListener extends TokenContainerListener {
+class TokenStateListensToContainer extends AsyncContainerListener {
   final WidgetRef ref;
-  TokenStateTokenContainerListener({
-    required super.tokenContainerProvider,
+  TokenStateListensToContainer({
+    required super.containerProvider,
     required this.ref,
   }) : super(onNewState: (previous, next) => _onNewState(previous, next, ref));
 
-  static Future<void> _onNewState(TokenContainerState? previous, TokenContainerState? next, WidgetRef ref) async {
-    if (next == null) return;
+  static Future<void> _onNewState(AsyncValue<TokenContainer?>? previous, AsyncValue<TokenContainer?> next, WidgetRef ref) async {
+    Logger.warning('New TokenContainer', name: 'TokenStateTokenContainerListener');
+    final value = next.value;
+    if (value == null) return;
     final provider = ref.read(tokenProvider.notifier);
-    provider.updateContainerTokens(next);
+    provider.updateContainerTokens(value);
   }
 }
 
-class TokenContainerListener extends StateNotifierProviderListener<TokenContainerNotifier, TokenContainerState?> {
-  const TokenContainerListener({
-    required StateNotifierProvider<TokenContainerNotifier, TokenContainerState?> tokenContainerProvider,
+
+abstract class AsyncContainerListener extends AsyncNotifierProviderListener<TokenContainerProvider, TokenContainer?> {
+  const AsyncContainerListener({
+    required TokenContainerProviderProvider containerProvider,
     required super.onNewState,
-  }) : super(provider: tokenContainerProvider);
+  }) : super(provider: containerProvider);
 }

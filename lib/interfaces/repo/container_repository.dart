@@ -1,14 +1,14 @@
 
-import '../../model/states/token_container_state.dart';
+import '../../model/token_container.dart';
 
-abstract class TokenContainerStateRepository {
+abstract class TokenContainerRepository {
   /// Save the container state to the repository
   /// Returns the state that was actually written
-  Future<TokenContainerState> saveContainerState(TokenContainerState containerState);
+  Future<TokenContainer> saveContainerState(TokenContainer containerState);
 
   /// Load the container state from the repository
   /// Returns the loaded state
-  Future<TokenContainerState> loadContainerState();
+  Future<TokenContainer> loadContainerState();
 
   // /// Save a token template to the repository
   // /// Returns the template that was actually written

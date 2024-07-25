@@ -1,65 +1,68 @@
 import 'package:privacyidea_authenticator/utils/errors.dart';
 
 import '../../interfaces/repo/container_repository.dart';
-import '../../model/states/token_container_state.dart';
+import '../../model/token_container.dart';
 import '../../utils/logger.dart';
 
-class HybridTokenContainerStateRepository<LocalRepo extends TokenContainerStateRepository, RemoteRepo extends TokenContainerStateRepository>
-    implements TokenContainerStateRepository {
+class HybridTokenContainerRepository<LocalRepo extends TokenContainerRepository, RemoteRepo extends TokenContainerRepository>
+    implements TokenContainerRepository {
   final LocalRepo _localRepository;
   final RemoteRepo _remoteRepository;
 
-  ///
-  HybridTokenContainerStateRepository({
+
+  HybridTokenContainerRepository({
     required LocalRepo localRepository,
     required RemoteRepo remoteRepository,
   })  : _localRepository = localRepository,
         _remoteRepository = remoteRepository;
 
   @override
-  Future<TokenContainerState> loadContainerState({bool isInitial = false}) async {
-    TokenContainerState localState;
-    TokenContainerState newState;
+  Future<TokenContainer> loadContainerState({bool isInitial = false}) async {
+    Logger.warning('Loading container state', name: 'HybridTokenContainerRepository');
+    TokenContainer localState;
+    TokenContainer newState;
 
     try {
       localState = await _localRepository.loadContainerState();
     } catch (e) {
-      return TokenContainerStateError(
+      Logger.warning('Failed to load local container state');
+      return TokenContainer.error(
         error: LocalizedException(
           unlocalizedMessage: 'Failed to load local container state',
           localizedMessage: (localization) => localization.failedToLoad('local container state'),
         ),
+
       );
     }
     try {
       newState = await _remoteRepository.saveContainerState(localState);
     } catch (e) {
-      newState = localState.copyTransformInto<TokenContainerStateUnsynced>();
+      newState = localState.copyTransformInto<TokenContainerUnsynced>();
     }
 
 
     try {
       await _localRepository.saveContainerState(newState);
     } catch (e) {
-      Logger.error('Failed to save synced state to local repository');
+      Logger.error('Failed to save synced state to local repository', name: 'HybridTokenContainerRepository', error: e);
     }
 
     return newState;
   }
 
   @override
-  Future<TokenContainerState> saveContainerState(TokenContainerState currentState) async {
-    if (currentState is TokenContainerStateError) {
+  Future<TokenContainer> saveContainerState(TokenContainer currentState) async {
+    if (currentState is TokenContainerError) {
       Logger.warning('Cannot save error state to repository');
       return currentState;
     }
-    TokenContainerState newState;
+    TokenContainer newState;
 
     try {
       newState = await _remoteRepository.saveContainerState(currentState);
     } catch (e) {
       Logger.warning('Failed to save state to remote repository: Changed to unsynced state');
-      newState = currentState.copyTransformInto<TokenContainerStateUnsynced>();
+      newState = currentState.copyTransformInto<TokenContainerUnsynced>();
       return _localRepository.saveContainerState(newState);
     }
 
@@ -72,19 +75,19 @@ class HybridTokenContainerStateRepository<LocalRepo extends TokenContainerStateR
     return newState;
   }
 
-  // Future<TokenContainerState> _merge({
-  //   required TokenContainerState localState,
-  //   required TokenContainerState remoteState,
+  // Future<TokenContainer> _merge({
+  //   required TokenContainer localState,
+  //   required TokenContainer remoteState,
   // }) async {
   //   List<TokenTemplate> localTemplates;
   //   List<TokenTemplate> remoteTemplates;
-  //   if (localState is TokenContainerStateUninitialized) {
+  //   if (localState is TokenContainerUninitialized) {
   //     // Uninitialized state is always overwritten by other states
   //     localTemplates = [];
   //   } else {
   //     localTemplates = localState.tokenTemplates;
   //   }
-  //   if (remoteState is TokenContainerStateUninitialized) {
+  //   if (remoteState is TokenContainerUninitialized) {
   //     // Uninitialized state is always overwritten by other states
   //     remoteTemplates = [];
   //   } else {
@@ -96,7 +99,7 @@ class HybridTokenContainerStateRepository<LocalRepo extends TokenContainerStateR
   //     remoteTemplates: remoteTemplates,
   //   );
 
-  //   final newSyncedState = TokenContainerStateSynced(
+  //   final newSyncedState = TokenContainerSynced(
   //     lastSyncedAt: DateTime.now(),
   //     containerId: localState.containerId,
   //     description: localState.description,

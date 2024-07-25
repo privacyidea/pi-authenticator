@@ -67,8 +67,8 @@ dependencies:
   connectivity_plus: ^6.0.1
   flutter_mailer: ^2.1.1
   # Riverpod
-  flutter_riverpod: ^2.3.6
-  flutterlifecyclehooks: ^4.0.0
+  flutter_riverpod: ^2.5.1
+  flutterlifecyclehooks: ^5.0.0
   # Icons
   lottie: ^3.0.0
   cupertino_icons: ^1.0.4
@@ -89,6 +89,9 @@ dependencies:
   path_provider: ^2.1.2
   qr_flutter: ^4.1.0
   image_cropper: ^7.1.0
+  riverpod_generator: ^2.4.0
+  riverpod_annotation: ^2.3.5
+  freezed_annotation: ^2.4.4
 
 
 dev_dependencies:
@@ -106,6 +109,9 @@ dev_dependencies:
   # dependencies to serialize objects to json
   build_runner: ^2.4.11
   json_serializable: ^6.8.0
+  custom_lint: ^0.6.4
+  riverpod_lint: ^2.3.10
+  freezed: ^2.5.2
 
 
 # For information on the generic Dart part of this file, see the

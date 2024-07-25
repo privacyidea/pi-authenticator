@@ -42,7 +42,6 @@ class SecurePushRequestRepository implements PushRequestRepository {
   Future<PushRequestState> loadState() => protect<PushRequestState>(_loadState);
   Future<PushRequestState> _loadState() async {
     final String? stateJson = await _storage.read(key: _securePushRequestKey);
-    print('Loaded state: $stateJson');
     if (stateJson == null) {
       return PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: []));
     }

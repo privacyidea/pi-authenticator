@@ -24,20 +24,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 
-import '../interfaces/repo/push_request_repository.dart';
-import '../l10n/app_localizations.dart';
-import '../model/push_request.dart';
-import '../model/states/push_request_state.dart';
-import '../model/tokens/push_token.dart';
-import '../repo/secure_push_request_repository.dart';
-import '../utils/custom_int_buffer.dart';
-import '../utils/globals.dart';
-import '../utils/logger.dart';
-import '../utils/privacyidea_io_client.dart';
-import '../utils/push_provider.dart';
-import '../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
-import '../utils/rsa_utils.dart';
-import '../utils/utils.dart';
+import '../../../interfaces/repo/push_request_repository.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../model/push_request.dart';
+import '../../../model/states/push_request_state.dart';
+import '../../../model/tokens/push_token.dart';
+import '../../../repo/secure_push_request_repository.dart';
+import '../../custom_int_buffer.dart';
+import '../../globals.dart';
+import '../../logger.dart';
+import '../../privacyidea_io_client.dart';
+import '../../push_provider.dart';
+import '../riverpod_providers/state_providers/status_message_provider.dart';
+import '../../rsa_utils.dart';
+import '../../utils.dart';
 
 class PushRequestNotifier extends StateNotifier<PushRequestState> {
   late final Future<PushRequestState> initState;
