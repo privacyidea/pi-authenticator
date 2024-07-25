@@ -15,7 +15,7 @@ class ContainerCredentialsProcessor extends SchemeProcessor {
     if (!supportedHosts.contains(uri.host) || !supportedSchemes.contains(uri.scheme)) {
       return null;
     }
-    final credentials = ContainerCredentials.fromUriMap(uri.queryParameters);
-    globalRef?.read(credentialsProvider.notifier).setCredentials(credentials);
+    final credential = ContainerCredential.fromUriMap(uri.queryParameters);
+    globalRef?.read(credentialsProvider.notifier).addCredential(credential);
   }
 }

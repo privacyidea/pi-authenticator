@@ -6,7 +6,7 @@ import 'package:privacyidea_authenticator/interfaces/repo/push_request_repositor
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/states/push_request_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
-import 'package:privacyidea_authenticator/state_notifiers/push_request_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/push_request_notifier.dart';
 import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';

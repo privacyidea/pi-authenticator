@@ -17,7 +17,8 @@ part 'push_token.g.dart';
 class PushToken extends Token {
   static RsaUtils rsaParser = const RsaUtils();
   final DateTime? expirationDate;
-  final String serial;
+  @override
+  String get serial => super.serial!;
   final String? fbToken;
 
   @override
@@ -44,9 +45,10 @@ class PushToken extends Token {
   PushToken withPrivateTokenKey(RSAPrivateKey key) => copyWith(privateTokenKey: rsaParser.serializeRSAPrivateKeyPKCS1(key));
 
   PushToken({
-    required this.serial,
+    required String serial,
     super.label,
     super.issuer,
+    super.containerId,
     required super.id,
     this.fbToken,
     this.url,
@@ -69,7 +71,7 @@ class PushToken extends Token {
   })  : isRolledOut = isRolledOut ?? false,
         sslVerify = sslVerify ?? false,
         rolloutState = rolloutState ?? PushTokenRollOutState.rolloutNotStarted,
-        super(type: TokenTypes.PIPUSH.name);
+        super(type: TokenTypes.PIPUSH.name, serial: serial);
 
   @override
   bool sameValuesAs(Token other) {
@@ -98,6 +100,7 @@ class PushToken extends Token {
     String? label,
     String? serial,
     String? issuer,
+    String? Function()? containerId,
     String? id,
     String? tokenImage,
     String? fbToken,
@@ -124,6 +127,7 @@ class PushToken extends Token {
       issuer: issuer ?? this.issuer,
       tokenImage: tokenImage ?? this.tokenImage,
       fbToken: fbToken ?? this.fbToken,
+      containerId: containerId != null ? containerId() : this.containerId,
       id: id ?? this.id,
       pin: pin ?? this.pin,
       isLocked: isLocked ?? this.isLocked,

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../model/states/token_state.dart';
-import '../../../../state_notifiers/token_notifier.dart';
+import '../../state_notifiers/token_notifier.dart';
 import '../../../logger.dart';
 import 'deeplink_provider.dart';
 

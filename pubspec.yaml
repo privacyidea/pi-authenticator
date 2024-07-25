@@ -111,6 +111,9 @@ dev_dependencies:
   # dependencies to serialize objects to json
   build_runner: ^2.4.11
   json_serializable: ^6.8.0
+  custom_lint: ^0.6.4
+  riverpod_lint: ^2.3.10
+  freezed: ^2.5.2
 
 
 # For information on the generic Dart part of this file, see the

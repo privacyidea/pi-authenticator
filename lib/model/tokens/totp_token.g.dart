@@ -12,6 +12,7 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       digits: (json['digits'] as num).toInt(),
       secret: json['secret'] as String,
+      containerId: json['containerId'] as String?,
       serial: json['serial'] as String?,
       type: json['type'] as String?,
       tokenImage: json['tokenImage'] as String?,
@@ -28,6 +29,7 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
     );
 
 Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
+      'containerId': instance.containerId,
       'label': instance.label,
       'issuer': instance.issuer,
       'id': instance.id,

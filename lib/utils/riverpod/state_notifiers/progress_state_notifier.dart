@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../model/states/progress_state.dart';
-import '../utils/logger.dart';
+import '../../../model/states/progress_state.dart';
+import '../../logger.dart';
 
 class ProgressStateNotifier extends StateNotifier<ProgressState?> {
   ProgressStateNotifier() : super(null);

@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../model/extensions/sortable_list.dart';
-import '../model/mixins/sortable_mixin.dart';
-import '../model/token_folder.dart';
-import '../model/tokens/token.dart';
-import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
-import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
-import '../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
+import '../../../model/extensions/sortable_list.dart';
+import '../../../model/mixins/sortable_mixin.dart';
+import '../../../model/token_folder.dart';
+import '../../../model/tokens/token.dart';
+import '../riverpod_providers/state_notifier_providers/token_folder_provider.dart';
+import '../riverpod_providers/state_notifier_providers/token_provider.dart';
+import '../riverpod_providers/state_providers/dragging_sortable_provider.dart';
 
 class SortableNotifier extends StateNotifier<List<SortableMixin>> {
   final StateNotifierProviderRef _ref;
@@ -38,13 +38,14 @@ class SortableNotifier extends StateNotifier<List<SortableMixin>> {
     var newState = List<SortableMixin>.from(state);
     newState.removeWhere((element) => element is T);
     newState.addAll(newList);
+    final listWithNulls = newState.toList();
     newState = newState.sorted.fillNullIndices();
     state = newState;
     await Future.wait([
       Future.delayed(const Duration(milliseconds: 50)),
-      if (newList.any((e) => e is Token) && newList.any((element) => element.sortIndex == null))
+      if (listWithNulls.any((e) => e is Token) && listWithNulls.any((element) => element.sortIndex == null))
         _ref.read(tokenProvider.notifier).addOrReplaceTokens(state.whereType<Token>().toList()),
-      if (newList.any((e) => e is TokenFolder) && newList.any((element) => element.sortIndex == null))
+      if (listWithNulls.any((e) => e is TokenFolder) && listWithNulls.any((element) => element.sortIndex == null))
         _ref.read(tokenFolderProvider.notifier).addOrReplaceFolders(state.whereType<TokenFolder>().toList()),
     ]);
 

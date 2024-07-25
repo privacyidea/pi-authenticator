@@ -1,43 +1,62 @@
+import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
+import 'package:privacyidea_authenticator/model/tokens/container_credentials.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../interfaces/api_endpoint.dart';
-import '../model/states/token_container_state.dart';
-import '../model/tokens/container_credentials.dart';
+import '../model/enums/encodings.dart';
+import '../model/enums/token_types.dart';
+import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_container_state_provider.dart';
 
-class TokenContainerApiEndpoint implements ApiEndpioint<TokenContainerState, ContainerCredentials> {
-  final Map<String, Map<String, TokenTemplate>> _data = {};
+final Map<String, Map<String, TokenTemplate>> _data = {
+  '123': {
+    'tokenID65381723659': TokenTemplate(
+      data: {
+        URI_LABEL: '123 container token 1',
+        URI_SECRET: Encodings.base32.decode('SECRET'),
+        URI_TYPE: TokenTypes.TOTP.name,
+      },
+    )
+  }
+};
+
+class TokenContainerApiEndpoint implements ApiEndpioint<TokenContainer, CredentialsState> {
+  @override
+  final ContainerCredential credential;
+  TokenContainerApiEndpoint({required this.credential});
 
   @override
-  final ContainerCredentials credentials;
-
-  TokenContainerApiEndpoint({required this.credentials});
-
-  @override
-  Future<TokenContainerState> fetch() {
+  Future<TokenContainer> fetch() {
     throw UnimplementedError();
   }
 
   @override
-  Future<TokenContainerState> sync(TokenContainerState containerState) async {
+  Future<TokenContainer> sync(TokenContainer containerState) async {
+    Logger.warning('Syncing container with server', name: 'TokenContainerApiEndpoint');
     if (_data.containsKey(containerState.serial) == false) {
-      return containerState.copyTransformInto<TokenContainerStateDeleted>(data: 'Container not found');
+      return containerState.copyTransformInto<TokenContainerNotFound>(args: {'message': 'Container not found'});
     }
+    Logger.warning('Container found', name: 'TokenContainerApiEndpoint');
     final localTemplates = containerState.localTokenTemplates;
     for (var localTemplate in localTemplates) {
-      if (localTemplate.id?.startsWith(containerState.serial) == true) {
-        final merged = localTemplate.copyWith({
-          URI_LABEL: (localTemplate.data[URI_LABEL] as String).replaceFirst(r'.', '😀'),
+      final oldLabel = localTemplate.data[URI_LABEL] as String;
+      if (oldLabel.startsWith(containerState.serial) == true) {
+        final merged = localTemplate.copyAddAll({
+          URI_LABEL: oldLabel.replaceRange(oldLabel.length - 2, oldLabel.length - 1, '😀'),
         });
         _data[containerState.serial]![localTemplate.id!] = merged;
       }
     }
     final serverTemplatesMerged = _data[containerState.serial]!.values.toList();
-    return TokenContainerStateSynced(
+    return TokenContainerSynced(
+      lastSyncAt: DateTime.now(),
       serial: containerState.serial,
       description: 'Synced with server',
-      type: 'synced',
       syncedTokenTemplates: serverTemplatesMerged,
+      localTokenTemplates: [],
     );
   }
+
+
 }

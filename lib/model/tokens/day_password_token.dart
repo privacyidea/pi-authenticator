@@ -30,6 +30,7 @@ class DayPasswordToken extends OTPToken {
     required super.algorithm,
     required super.digits,
     required super.secret,
+    super.containerId,
     super.serial,
     this.viewMode = DayPasswordTokenViewMode.VALIDFOR,
     String? type, // just for @JsonSerializable(): type of DayPasswordToken is always TokenTypes.DAYPASSWORD
@@ -72,6 +73,7 @@ class DayPasswordToken extends OTPToken {
     DayPasswordTokenViewMode? viewMode,
     String? label,
     String? issuer,
+    String? Function()? containerId,
     String? id,
     Algorithms? algorithm,
     int? digits,
@@ -90,6 +92,7 @@ class DayPasswordToken extends OTPToken {
         viewMode: viewMode ?? this.viewMode,
         label: label ?? this.label,
         issuer: issuer ?? this.issuer,
+        containerId: containerId != null ? containerId() : this.containerId,
         id: id ?? this.id,
         type: TokenTypes.DAYPASSWORD.name,
         algorithm: algorithm ?? this.algorithm,

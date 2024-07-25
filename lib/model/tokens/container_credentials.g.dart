@@ -6,15 +6,14 @@ part of 'container_credentials.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ContainerCredentials _$ContainerCredentialsFromJson(
-        Map<String, dynamic> json) =>
-    ContainerCredentials(
+ContainerCredential _$ContainerCredentialFromJson(Map<String, dynamic> json) =>
+    ContainerCredential(
       serial: json['serial'] as String,
       id: json['id'] as String,
     );
 
-Map<String, dynamic> _$ContainerCredentialsToJson(
-        ContainerCredentials instance) =>
+Map<String, dynamic> _$ContainerCredentialToJson(
+        ContainerCredential instance) =>
     <String, dynamic>{
       'id': instance.id,
       'serial': instance.serial,

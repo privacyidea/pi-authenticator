@@ -26,6 +26,7 @@ class SteamToken extends TOTPToken {
   SteamToken({
     required super.id,
     required super.secret,
+    super.containerId,
     super.serial,
     String? type,
     super.tokenImage,
@@ -49,6 +50,7 @@ class SteamToken extends TOTPToken {
     String? serial,
     String? label,
     String? issuer,
+    String? Function()? containerId,
     String? id,
     bool? isLocked,
     bool? isHidden,
@@ -66,6 +68,7 @@ class SteamToken extends TOTPToken {
       serial: serial ?? this.serial,
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
+      containerId: containerId != null ? containerId() : this.containerId,
       id: id ?? this.id,
       secret: secret ?? this.secret,
       tokenImage: tokenImage ?? this.tokenImage,

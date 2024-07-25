@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/deeplink.dart';
-import 'package:privacyidea_authenticator/state_notifiers/deeplink_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/deeplink_notifier.dart';
 void main() {
   _testDeeplinkNotifier();
 }

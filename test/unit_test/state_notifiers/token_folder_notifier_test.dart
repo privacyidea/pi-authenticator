@@ -5,7 +5,7 @@ import 'package:mockito/annotations.dart';
 import 'package:privacyidea_authenticator/model/states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/model/token_folder.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repository.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_folder_notifier.dart';
 
 import 'token_folder_notifier_test.mocks.dart';
 

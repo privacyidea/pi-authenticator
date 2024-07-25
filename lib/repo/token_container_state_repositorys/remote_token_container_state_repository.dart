@@ -1,21 +1,23 @@
 import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../api/token_container_api_endpoint.dart';
 import '../../interfaces/repo/container_repository.dart';
-import '../../model/states/token_container_state.dart';
+import '../../model/token_container.dart';
 
-class RemoteTokenContainerStateRepository implements TokenContainerStateRepository {
+class RemoteTokenContainerRepository implements TokenContainerRepository {
   final TokenContainerApiEndpoint apiEndpoint;
   final Mutex _m = Mutex();
 
-  Future<TokenContainerState> _protect(Future<TokenContainerState> Function() f) async => _m.protect(f);
+  Future<TokenContainer> _protect(Future<TokenContainer> Function() f) async => _m.protect(f);
 
-  RemoteTokenContainerStateRepository({required this.apiEndpoint});
+  RemoteTokenContainerRepository({required this.apiEndpoint});
 
   @override
-  Future<TokenContainerState> saveContainerState(TokenContainerState containerState) async => await _saveContainerState(containerState);
+  Future<TokenContainer> saveContainerState(TokenContainer containerState) async => await _saveContainerState(containerState);
 
-  Future<TokenContainerState> _saveContainerState(TokenContainerState containerState) async {
+  Future<TokenContainer> _saveContainerState(TokenContainer containerState) async {
+    Logger.warning('Saving container state', name: 'RemoteTokenContainerRepository');
     try {
       return await _protect(() async {
         var synced = await apiEndpoint.sync(containerState);
@@ -27,9 +29,12 @@ class RemoteTokenContainerStateRepository implements TokenContainerStateReposito
   }
 
   @override
-  Future<TokenContainerState> loadContainerState() => _fetchContainerState();
+  Future<TokenContainer> loadContainerState() {
+    Logger.warning('Loading container state', name: 'RemoteTokenContainerRepository');
+    return _fetchContainerState();
+  }
 
-  Future<TokenContainerState> _fetchContainerState() async => await _protect(() async => await apiEndpoint.fetch());
+  Future<TokenContainer> _fetchContainerState() async => await _protect(() async => await apiEndpoint.fetch());
 
   // @override
   // Future<TokenTemplate?> loadTokenTemplate(String tokenTemplateId) async {
