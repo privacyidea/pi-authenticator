@@ -11,6 +11,7 @@ class NavigationDeepLinkListener extends DeepLinkListener {
           onNewState: (DeepLink? previous, DeepLink? next) {
             _onNewState(previous, next);
           },
+          listenerName: 'NavigationSchemeProcessor.processUriByAny',
         ) {
     _context = context;
   }

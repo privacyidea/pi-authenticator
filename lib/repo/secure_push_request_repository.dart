@@ -9,6 +9,7 @@ import '../interfaces/repo/push_request_repository.dart';
 import '../model/push_request.dart';
 import '../model/states/push_request_state.dart';
 import '../utils/custom_int_buffer.dart';
+import '../utils/logger.dart';
 
 class SecurePushRequestRepository implements PushRequestRepository {
   const SecurePushRequestRepository();
@@ -30,7 +31,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
   Future<void> saveState(PushRequestState pushRequestState) => protect(() => _saveState(pushRequestState));
   Future<void> _saveState(PushRequestState pushRequestState) async {
     final stateJson = jsonEncode(pushRequestState.toJson());
-    print('Saving state: $stateJson');
+    Logger.debug('Saving state: $stateJson', name: 'SecurePushRequestRepository');
     await _storage.write(key: _securePushRequestKey, value: stateJson);
   }
 

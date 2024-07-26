@@ -115,7 +115,7 @@ class TOTPToken extends OTPToken {
     return copyWith(
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
-      id: uriMap[TOKEN_ID],
+      id: uriMap[TOKEN_SERIAL],
       algorithm: uriMap[URI_ALGORITHM] != null ? Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase()) : null,
       digits: uriMap[URI_DIGITS],
       tokenImage: uriMap[URI_IMAGE],
@@ -135,6 +135,7 @@ class TOTPToken extends OTPToken {
   factory TOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
     validateUriMap(uriMap);
     return TOTPToken(
+      serial: uriMap[URI_SERIAL],
       label: uriMap[URI_LABEL] ?? '',
       issuer: uriMap[URI_ISSUER] ?? '',
       id: const Uuid().v4(),
@@ -175,6 +176,14 @@ class TOTPToken extends OTPToken {
 
   /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
   static void validateUriMap(Map<String, dynamic> uriMap) {
+    if (uriMap[URI_SERIAL] is! String?) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Serial must be a string',
+        invalidValue: uriMap[URI_SERIAL],
+        name: URI_SERIAL,
+      );
+    }
     if (uriMap[URI_SECRET] == null) {
       throw LocalizedArgumentError(
         localizedMessage: ((localizations, value, name) => localizations.secretIsRequired),

@@ -114,17 +114,17 @@ class PrivacyideaIOClient {
     try {
       response = await ioClient.post(url, body: body).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
-      Logger.info('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doPost');
+      Logger.warning('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doPost');
       showMessage(message: 'Handshake failed, please check the server certificate and try again.');
       response = Response('${e.runtimeType}', 525);
     } on TimeoutException catch (e, _) {
-      Logger.info('TimeoutException', name: 'utils.dart#doPost');
+      Logger.info('Post request timed out', name: 'utils.dart#doPost');
       response = Response('${e.runtimeType}', 408);
     } on SocketException catch (e, _) {
-      Logger.info('SocketException', name: 'utils.dart#doPost');
+      Logger.info('Post request failed', name: 'utils.dart#doPost');
       response = Response('${e.runtimeType}', 404);
     } catch (e, _) {
-      Logger.info('Unknown exception', name: 'utils.dart#doPost');
+      Logger.warning('Something unexpected happened', name: 'utils.dart#doPost');
       response = Response('${e.runtimeType}', 404);
     }
 
@@ -174,17 +174,17 @@ class PrivacyideaIOClient {
     try {
       response = await ioClient.get(uri).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
-      Logger.info('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doGet');
+      Logger.warning('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doGet');
       showMessage(message: 'Handshake failed, please check the server certificate and try again.');
       response = Response('${e.runtimeType}', 525);
     } on TimeoutException catch (e, _) {
-      Logger.info('TimeoutException', name: 'utils.dart#doGet');
+      Logger.info('Get request timed out', name: 'utils.dart#doGet');
       response = Response('${e.runtimeType}', 408);
     } on SocketException catch (e, _) {
-      Logger.info('SocketException', name: 'utils.dart#doGet');
+      Logger.info('Get request failed', name: 'utils.dart#doGet');
       response = Response('${e.runtimeType}', 404);
     } catch (e, _) {
-      Logger.info('Unknown exception', name: 'utils.dart#doGet');
+      Logger.warning('Something unexpected happened', name: 'utils.dart#doGet');
       response = Response('${e.runtimeType}', 404);
     }
 

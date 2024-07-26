@@ -4,8 +4,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mutex/mutex.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/container_repository.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../api/token_container_api_endpoint.dart';
@@ -26,20 +26,17 @@ class TokenContainerProvider extends _$TokenContainerProvider {
   final Mutex _repoMutex = Mutex(); // Mutex to protect the repository from being accessed while still waiting for the newest state to be delivered
 
   @override
-  Future<TokenContainer?> build({
-    required String containerSerial,
+  Future<TokenContainer> build({
+    required ContainerCredential credential,
   }) async {
+    Logger.info('New tokenContainerStateProvider created', name: 'TokenContainerProvider#build');
     await _stateMutex.acquire();
-    final credential = ref.read(credentialsProvider).value?.credentialsOf(containerSerial);
-    if (credential == null) {
-      _stateMutex.release();
-      return null;
-    }
     _repository = HybridTokenContainerRepository(
-      localRepository: SecureTokenContainerRepository(containerId: containerSerial),
+      localRepository: SecureTokenContainerRepository(containerId: credential.serial),
       remoteRepository: RemoteTokenContainerRepository(apiEndpoint: TokenContainerApiEndpoint(credential: credential)),
     );
     final initialState = _repository.loadContainerState();
+    Logger.debug('Initial state: $initialState', name: 'TokenContainerProvider#build');
     _stateMutex.release();
     return initialState;
   }
@@ -67,24 +64,32 @@ class TokenContainerProvider extends _$TokenContainerProvider {
     return savedState;
   }
 
-  void addLocalTemplates(List<TokenTemplate> maybePiTokenTemplates) {
-    throw UnimplementedError();
+  /// Adds the given [maybePiTokenTemplates] to the localTokenTemplates of the container
+  /// and saves the new state to the repository. The rpository decides waht to do with the new state.
+  /// The saved state from the repo can contain the maybePiTokenTemplates or not.
+  Future<TokenContainer> tryAddLocalTemplates(List<TokenTemplate> maybePiTokenTemplates) async {
+    Logger.info(
+      'Trying to add (${maybePiTokenTemplates.length}) local templates to container (${credential.serial}).',
+      name: 'TokenContainerProvider#tryAddLocalTemplates',
+    );
+    Logger.debug('Local templates (${maybePiTokenTemplates.length})', name: 'TokenContainerProvider#tryAddLocalTemplates');
+    await _stateMutex.acquire();
+    final oldState = (await future);
+    final newLocalTokenTemplates = [...maybePiTokenTemplates];
+    final newState = oldState.copyWith(localTokenTemplates: newLocalTokenTemplates);
+    final savedState = await _saveToRepo(newState);
+    Logger.debug(
+      'Saved TokenContainer: Synced(${savedState.syncedTokenTemplates.length}) | Local(${savedState.localTokenTemplates.length})',
+      name: 'TokenContainerProvider#tryAddLocalTemplates',
+    );
+    ref.read(tokenProvider.notifier).updateContainerTokens(savedState);
+    state = AsyncValue.data(savedState);
+    _stateMutex.release();
+    return savedState;
   }
 }
 
-// final tokenContainerProvider = StateNotifierProvider.family<TokenContainerNotifier, TokenContainer, String>((ref, containerId) {
-//   Logger.info("New tokenContainerStateProvider created", name: 'tokenContainerStateProvider');
-//   final credentialsState = ref.watch(credentialsProvider);
-//   Logger.warning("credentialsState: $credentialsState", name: 'tokenContainerStateProvider');
-//   return TokenContainerNotifier(
-//     ref: ref,
-//     repository: HybridTokenContainerRepository(
-//         localRepository: SecureTokenContainerRepository(containerId: 'local'),
-//         remoteRepository: RemoteTokenContainerRepository(apiEndpoint: TokenContainerApiEndpoint(credentialsState: credentialsState))),
-//   );
-// });
-
-@riverpod
+@Riverpod(keepAlive: true)
 class CredentialsProvider extends _$CredentialsProvider {
   final _stateMutex = Mutex();
   final _repoMutex = Mutex();
@@ -93,7 +98,17 @@ class CredentialsProvider extends _$CredentialsProvider {
   @override
   Future<CredentialsState> build() async {
     _repo = SecureContainerCredentialsRepository();
+    Logger.warning('Building credentialsProvider', name: 'CredentialsProvider');
     return _repo.loadCredentialsState();
+  }
+
+  @override
+  Future<CredentialsState> update(
+    FutureOr<CredentialsState> Function(CredentialsState state) cb, {
+    FutureOr<CredentialsState> Function(Object, StackTrace)? onError,
+  }) async {
+    Logger.warning('Updating credentialsProvider', name: 'CredentialsProvider');
+    return super.update(cb, onError: onError);
   }
 
   Future<CredentialsState> addCredential(ContainerCredential credential) async {
@@ -108,11 +123,6 @@ class CredentialsProvider extends _$CredentialsProvider {
     return await _repoMutex.protect(() async => await _repo.saveCredential(credential));
   }
 }
-
-// final credentialsProvider = StateNotifierProvider<CredentialsNotifier, CredentialsState>((ref) {
-//   Logger.info("New credentialsProvider created", name: 'credentialsProvider');
-//   return CredentialsNotifier(repo: MockContainerCredentialsRepository());
-// });
 
 class MockContainerCredentialsRepository extends ContainerCredentialsRepository {
   final state = CredentialsState(credentials: [
@@ -164,44 +174,6 @@ class CredentialsState {
   ContainerCredential? credentialsOf(String containerSerial) => credentials.firstWhereOrNull((credential) => credential.serial == containerSerial);
 }
 
-class CredentialsNotifier extends StateNotifier<CredentialsState> {
-  final Mutex _repoMutex = Mutex();
-  final ContainerCredentialsRepository _repo;
-  late Future<CredentialsState> initState = _initState();
-
-  Future<CredentialsState> _initState() async {
-    final credentials = await _repo.loadCredentialsState();
-    state = credentials;
-    return credentials;
-  }
-
-  CredentialsNotifier({required ContainerCredentialsRepository repo, CredentialsState? initialState})
-      : _repo = repo,
-        super(initialState ?? const CredentialsState(credentials: [])) {
-    _initState();
-  }
-
-  Future<CredentialsState> addCredentials(ContainerCredential credentials) async {
-    final newState = await _saveCredentialsToRepo(credentials);
-    state = newState;
-    return newState;
-  }
-
-  Future<CredentialsState> deleteCredentials(ContainerCredential credentials) async {
-    final newState = await _deleteCredentialsFromRepo(credentials);
-    state = newState;
-    return newState;
-  }
-
-  Future<CredentialsState> _saveCredentialsToRepo(ContainerCredential credentials) async {
-    return await _repoMutex.protect(() async => await _repo.saveCredential(credentials));
-  }
-
-  Future<CredentialsState> _deleteCredentialsFromRepo(ContainerCredential credentials) async {
-    return await _repoMutex.protect(() async => await _repo.deleteCredential(credentials.id));
-  }
-}
-
 class SecureContainerCredentialsRepository extends ContainerCredentialsRepository {
   String get containerCredentialsKey => 'containerCredentials';
   String _keyOfId(String id) => '$containerCredentialsKey.$id';
@@ -211,18 +183,30 @@ class SecureContainerCredentialsRepository extends ContainerCredentialsRepositor
 
   Future<void> _write(String key, String value) => _protect(() => _storage.write(key: key, value: value));
   Future<String?> _read(String key) async => await _protect(() async => await _storage.read(key: key));
-  Future<Map<String, String>> _readAll() async => await _protect(() async => await _storage.readAll());
+  Future<Map<String, String>> _readAll() async =>
+      await _protect(() async => (await _storage.readAll())..removeWhere((key, value) => !key.startsWith(containerCredentialsKey)));
   Future<void> _delete(String key) => _protect(() => _storage.delete(key: key));
 
   @override
   Future<CredentialsState> loadCredentialsState() async {
     final credentialsJsonString = await _readAll();
-    if (credentialsJsonString.isEmpty) return const CredentialsState(credentials: []);
+    Logger.warning('Loaded credentials: $credentialsJsonString', name: 'SecureContainerCredentialsRepository');
+    if (credentialsJsonString.isEmpty) {
+      final credentialState = CredentialsState(credentials: [
+        ContainerCredential(
+          id: '123',
+          serial: '123',
+        ),
+      ]);
+      Logger.warning('Returning default credentials: $credentialState', name: 'SecureContainerCredentialsRepository');
+      return credentialState;
+    }
     return CredentialsState.fromJsonStringList(credentialsJsonString.values.toList());
   }
 
   @override
   Future<CredentialsState> saveCredentialsState(CredentialsState credentialsState) async {
+    Logger.warning('Saving credentials: $credentialsState', name: 'SecureContainerCredentialsRepository');
     final futures = <Future>[];
     for (var credential in credentialsState.credentials) {
       futures.add(saveCredential(credential));

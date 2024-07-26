@@ -109,7 +109,7 @@ class HOTPToken extends OTPToken {
     return copyWith(
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
-      id: uriMap[TOKEN_ID],
+      id: uriMap[TOKEN_SERIAL],
       algorithm: uriMap[URI_ALGORITHM] != null ? Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase()) : null,
       digits: uriMap[URI_DIGITS],
       secret: uriMap[URI_SECRET] != null ? Encodings.base32.encode(uriMap[URI_SECRET]) : null,

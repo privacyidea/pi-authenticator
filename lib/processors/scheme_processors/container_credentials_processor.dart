@@ -1,5 +1,6 @@
 import 'package:privacyidea_authenticator/processors/scheme_processors/scheme_processor_interface.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_container_state_provider.dart';
 
 import '../../model/tokens/container_credentials.dart';
@@ -16,6 +17,7 @@ class ContainerCredentialsProcessor extends SchemeProcessor {
       return null;
     }
     final credential = ContainerCredential.fromUriMap(uri.queryParameters);
+    Logger.warning('Adding credential to container', name: 'ContainerCredentialsProcessor');
     globalRef?.read(credentialsProvider.notifier).addCredential(credential);
   }
 }

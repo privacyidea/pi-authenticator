@@ -7,6 +7,7 @@ class HomeWidgetDeepLinkListener extends DeepLinkListener {
     required super.deeplinkProvider,
   }) : super(
           onNewState: _onNewState,
+          listenerName: 'HomeWidgetProcessor().processUri',
         );
 
   static void _onNewState(DeepLink? previous, DeepLink? next) {

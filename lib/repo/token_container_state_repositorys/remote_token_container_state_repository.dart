@@ -17,41 +17,17 @@ class RemoteTokenContainerRepository implements TokenContainerRepository {
   Future<TokenContainer> saveContainerState(TokenContainer containerState) async => await _saveContainerState(containerState);
 
   Future<TokenContainer> _saveContainerState(TokenContainer containerState) async {
-    Logger.warning('Saving container state', name: 'RemoteTokenContainerRepository');
-    try {
-      return await _protect(() async {
-        var synced = await apiEndpoint.sync(containerState);
-        return synced;
-      });
-    } catch (e) {
-      rethrow;
-    }
+    Logger.info('Saving container state', name: 'RemoteTokenContainerRepository');
+    return await _protect(() async => await apiEndpoint.sync(containerState));
   }
 
   @override
   Future<TokenContainer> loadContainerState() {
-    Logger.warning('Loading container state', name: 'RemoteTokenContainerRepository');
+    Logger.info('Loading container state', name: 'RemoteTokenContainerRepository');
     return _fetchContainerState();
   }
 
   Future<TokenContainer> _fetchContainerState() async => await _protect(() async => await apiEndpoint.fetch());
 
-  // @override
-  // Future<TokenTemplate?> loadTokenTemplate(String tokenTemplateId) async {
-  //   final state = await loadContainerState();
-  //   final template = state.tokenTemplates.firstWhereOrNull((element) => element.id == tokenTemplateId);
-  //   return template;
-  // }
 
-  // @override
-  // Future<TokenTemplate> saveTokenTemplate(TokenTemplate tokenTemplate) async {
-  //   final state = await loadContainerState();
-  //   if (templateIndex == -1) {
-  //     state.tokenTemplates.add(tokenTemplate);
-  //   } else {
-  //     state.tokenTemplates[templateIndex] = tokenTemplate;
-  //   }
-  //   await saveContainerState(state);
-  //   return tokenTemplate;
-  // }
 }

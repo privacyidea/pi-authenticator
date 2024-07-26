@@ -60,8 +60,13 @@ class HybridTokenContainerRepository<LocalRepo extends TokenContainerRepository,
 
     try {
       newState = await _remoteRepository.saveContainerState(currentState);
-    } catch (e) {
-      Logger.warning('Failed to save state to remote repository: Changed to unsynced state');
+    } catch (e, s) {
+      Logger.warning(
+        'Failed to save state to remote repository: Changed to unsynced state',
+        name: 'HybridTokenContainerRepository#saveContainerState',
+        error: e,
+        stackTrace: s,
+      );
       newState = currentState.copyTransformInto<TokenContainerUnsynced>();
       return _localRepository.saveContainerState(newState);
     }

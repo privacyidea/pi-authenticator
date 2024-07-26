@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../../model/extensions/sortable_list.dart';
 import '../../../model/mixins/sortable_mixin.dart';
@@ -34,6 +35,7 @@ class SortableNotifier extends StateNotifier<List<SortableMixin>> {
   /// Handles a new list of [T].
   /// First removes all elements of type [T] from the current state and then adds the new list.
   Future<List<SortableMixin>> handleNewStateList<T extends SortableMixin>(List<T> newList) async {
+    Logger.info('Handling new state list of type $T', name: 'SortableNotifier#handleNewStateList');
     await _waitInit();
     var newState = List<SortableMixin>.from(state);
     newState.removeWhere((element) => element is T);

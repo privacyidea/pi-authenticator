@@ -10,19 +10,25 @@ class ContainerListensToTokenState extends TokenStateListener {
   ContainerListensToTokenState({
     required super.tokenProvider,
     required WidgetRef ref,
-  }) : super(onNewState: (TokenState? previous, TokenState next) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+  }) : super(
+          onNewState: (TokenState? previous, TokenState next) => WidgetsBinding.instance.addPostFrameCallback((_) {
             _onNewState(previous, next, ref);
-          });
-        });
+          }),
+          listenerName: 'Container',
+        );
 
   static Future<void> _onNewState(TokenState? previousState, TokenState nextState, WidgetRef ref) async {
     Logger.warning('New token state', name: 'TokenContainerTokenStateListener');
     final maybePiTokenTemplates = nextState.lastlyUpdatedTokens.maybePiTokens.toTemplates();
-    final credentials = ref.read(credentialsProvider).value?.credentials ?? [];
+    Logger.warning(('Read credentials from credentialsProvider'), name: 'TokenContainerTokenStateListener');
+    final credentials = (await ref.read(credentialsProvider.future)).credentials;
+    Logger.warning('Readed: $credentials', name: 'TokenContainerTokenStateListener');
+    Logger.warning('maybePiTokenTemplates: $maybePiTokenTemplates', name: 'TokenContainerTokenStateListener');
     if (maybePiTokenTemplates.isEmpty) return;
     for (var credential in credentials) {
-      ref.read(tokenContainerProviderOf(containerSerial: credential.serial).notifier).addLocalTemplates(maybePiTokenTemplates);
+      Logger.warning('Adding maybePiTokenTemplates (${maybePiTokenTemplates.length}) to container ${credential.serial}',
+          name: 'TokenContainerTokenStateListener');
+      ref.read(tokenContainerProviderOf(credential: credential).notifier).tryAddLocalTemplates(maybePiTokenTemplates);
     }
   }
 }

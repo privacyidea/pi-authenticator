@@ -3127,19 +3127,6 @@ class _$TokenTemplateImpl extends _TokenTemplate with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('data', data));
   }
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$TokenTemplateImpl &&
-            const DeepCollectionEquality().equals(other._data, _data));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
