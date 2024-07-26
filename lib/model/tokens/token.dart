@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
 
@@ -140,13 +138,13 @@ abstract class Token with SortableMixin {
   /// ```
   Map<String, dynamic> toUriMap() {
     return {
-      URI_SERIAL: id,
+      URI_SERIAL: serial,
       URI_TYPE: type,
       URI_LABEL: label,
       URI_ISSUER: issuer,
       URI_PIN: pin,
       if (tokenImage != null) URI_IMAGE: tokenImage,
-      if (origin != null) URI_ORIGIN: jsonEncode(origin!.toJson())
+      if (origin != null) URI_ORIGIN: origin!,
     };
   }
 

@@ -8,5 +8,6 @@ abstract class TokenStateListener extends StateNotifierProviderListener<TokenNot
   const TokenStateListener({
     required StateNotifierProvider<TokenNotifier, TokenState> tokenProvider,
     required super.onNewState,
+    required super.listenerName,
   }) : super(provider: tokenProvider);
 }

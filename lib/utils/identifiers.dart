@@ -66,7 +66,7 @@ const String PUSH_REQUEST_SIGNATURE = 'signature'; // 7.
 const String PUSH_REQUEST_ANSWERS = 'require_presence'; // 8.
 
 // TokenContainer:
-const String TOKEN_ID = 'id';
+const String TOKEN_SERIAL = 'serial';
 
 const String GLOBAL_SECURE_REPO_PREFIX = 'app_v3_';
 

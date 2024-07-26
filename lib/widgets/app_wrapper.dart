@@ -88,7 +88,8 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final credentials = ref.read(credentialsProvider).value?.credentials ?? [];
+    final credentials = ref.watch(credentialsProvider).value?.credentials ?? [];
+    Logger.debug('Credentials: $credentials', name: 'AppWrapper#build');
     return SingleTouchRecognizer(
       child: StateObserver(
         stateNotifierProviderListeners: [
@@ -99,10 +100,12 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
         ],
         asyncNotifierProviderListeners: [
           ...credentials.map(
-            (credential) => TokenStateListensToContainer(
-              containerProvider: tokenContainerProviderOf(containerSerial: credential.serial),
+            (credential) {
+              return TokenStateListensToContainer(
+              containerProvider: tokenContainerProviderOf(credential: credential),
               ref: ref,
-            ),
+              );
+            },
           ),
         ],
         child: EasyDynamicThemeWidget(
@@ -113,6 +116,8 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
   }
 }
 
+
+
 class TokenStateListensToContainer extends AsyncContainerListener {
   final WidgetRef ref;
   TokenStateListensToContainer({
@@ -121,7 +126,7 @@ class TokenStateListensToContainer extends AsyncContainerListener {
   }) : super(onNewState: (previous, next) => _onNewState(previous, next, ref));
 
   static Future<void> _onNewState(AsyncValue<TokenContainer?>? previous, AsyncValue<TokenContainer?> next, WidgetRef ref) async {
-    Logger.warning('New TokenContainer', name: 'TokenStateTokenContainerListener');
+    Logger.info('TokenState got new container state', name: 'TokenStateListensToContainer');
     final value = next.value;
     if (value == null) return;
     final provider = ref.read(tokenProvider.notifier);

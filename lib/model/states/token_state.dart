@@ -29,9 +29,11 @@ class TokenState {
       : tokens = List<Token>.from(tokens),
         lastlyUpdatedTokens = List<Token>.from(lastlyUpdatedTokens ?? tokens);
 
-
-
-  List<Token> get tokensNotInContainer => tokens.maybePiTokens.where((token) => token.containerId != null).toList();
+  List<Token> get tokensNotInContainer {
+    final tokensNotInContainer = tokens.maybePiTokens.where((token) => token.containerId != null).toList();
+    Logger.debug('${tokensNotInContainer.length}/${tokens.length} tokens not in container', name: 'token_state.dart#tokensNotInContainer');
+    return tokensNotInContainer;
+  }
 
   PushToken? getTokenBySerial(String serial) => pushTokens.firstWhereOrNull((element) => element.serial == serial);
 
@@ -150,7 +152,12 @@ class TokenState {
 
 extension TokenListExtension on List<Token> {
   List<Token> get nonPiTokens => where((token) => token.isPrivacyIdeaToken == false).toList();
-  List<Token> get maybePiTokens => where((token) => token.isPrivacyIdeaToken == null).toList();
+  List<Token> get maybePiTokens {
+    final maybePiTokens = where((token) => token.isPrivacyIdeaToken == null).toList();
+    Logger.debug('${maybePiTokens.length}/$length tokens with "isPrivacyIdeaToken" == null', name: 'token_state.dart#maybePiTokens');
+    return maybePiTokens;
+  }
+
   List<Token> get piTokens => where((token) => token.isPrivacyIdeaToken == true).toList();
   List<Token> inFolder(TokenFolder folder, {List<Type> only = const [], List<Type> exclude = const []}) => where((token) {
         if (token.folderId != folder.folderId) return false;
@@ -167,10 +174,11 @@ extension TokenListExtension on List<Token> {
       }).toList();
 
   List<Token> fromContainer(String containerId) {
-    return where((token) {
-      Logger.warning('token.origin?.source: ${token.origin?.source} && token.containerId: ${token.containerId}', name: 'token_state.dart#fromContainer');
+    final filtered = where((token) {
       return token.origin?.source == TokenOriginSourceType.container && token.containerId == containerId;
     }).toList();
+    Logger.debug('${filtered.length}/$length tokens with containerId: $containerId', name: 'token_state.dart#fromContainer');
+    return filtered;
   }
 
   List<TokenTemplate> toTemplates() {

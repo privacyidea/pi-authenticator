@@ -175,7 +175,7 @@ class PushToken extends Token {
       serial: uriMap[URI_SERIAL],
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
-      id: uriMap[TOKEN_ID],
+      id: uriMap[TOKEN_SERIAL],
       sslVerify: uriMap[URI_SSL_VERIFY],
       enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
       url: uriMap[URI_ROLLOUT_URL],

@@ -8,5 +8,6 @@ abstract class DeepLinkListener extends StateNotifierProviderListener<DeeplinkNo
   const DeepLinkListener({
     required StateNotifierProvider<DeeplinkNotifier, DeepLink?> deeplinkProvider,
     required super.onNewState,
+    required super.listenerName,
   }) : super(provider: deeplinkProvider);
 }

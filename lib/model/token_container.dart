@@ -158,15 +158,39 @@ class TokenTemplate with _$TokenTemplate {
     required Map<String, dynamic> data,
   }) = _TokenTemplate;
 
-  String? get id {
-    final id = data[TOKEN_ID];
-    if (id is! String?) {
+  String? get serial {
+    final serial = data[URI_SERIAL];
+    if (serial is! String?) {
       Logger.error('TokenTemplate id is not a string');
     }
-    return id;
+    return serial;
   }
 
+  @override
+  operator ==(Object other) {
+    if (other is! TokenTemplate) {
+      print('other is not TokenTemplate');
+      return false;
+    }
+    if (data.length != other.data.length) {
+      print('data length is not equal');
+      return false;
+    }
+    for (var key in data.keys) {
+      if (data[key].toString() != other.data[key].toString()) {
+        print('data[$key] (${data[key]}) is not equal to other.data[$key] (${other.data[key]})');
+        return false;
+      }
+    }
+    print('TokenTemplate is equal');
+    return true;
+  }
+
+
+
   factory TokenTemplate.fromJson(Map<String, dynamic> json) => _$TokenTemplateFromJson(json);
+
+  String get label => data[URI_LABEL] ?? 'No label';
 
   Token toToken(TokenContainer container) => Token.fromUriMap(data).copyWith(
         containerId: () => container.serial,
@@ -174,7 +198,28 @@ class TokenTemplate with _$TokenTemplate {
           appName: '${container.serverName} ${container.serial}',
           data: data.toString(),
           source: TokenOriginSourceType.container,
+          isPrivacyIdeaToken: true,
         ),
       );
-  TokenTemplate copyAddAll(Map<String, dynamic> data) => TokenTemplate(data: this.data..addAll(data));
+
+  /// Adds all key/value pairs of [other] to this map.
+  ///
+  /// If a key of [other] is already in this map, its value is overwritten.
+  ///
+  /// The operation is equivalent to doing `this[key] = value` for each key
+  /// and associated value in other. It iterates over [other], which must
+  /// therefore not change during the iteration.
+  /// ```dart
+  /// final planets = <int, String>{1: 'Mercury', 2: 'Earth'};
+  /// planets.addAll({5: 'Jupiter', 6: 'Saturn'});
+  /// print(planets); // {1: Mercury, 2: Earth, 5: Jupiter, 6: Saturn}
+  /// ```
+  TokenTemplate copyAddAll(Map<String, dynamic> addData) {
+    final newData = Map<String, dynamic>.from(data)..addAll(addData);
+    return TokenTemplate(data: newData);
+  }
+
+  @override
+  int get hashCode => Object.hashAllUnordered(data.keys.map((key) => '$key:${data[key]}'));
+
 }

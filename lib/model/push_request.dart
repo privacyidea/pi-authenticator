@@ -128,7 +128,6 @@ class PushRequest {
     if (data[PUSH_REQUEST_NONCE] is! String) {
       throw ArgumentError('Push request nonce is ${data[PUSH_REQUEST_NONCE].runtimeType}. Expected String.');
     }
-    print('Nonce: ${data[PUSH_REQUEST_NONCE]}');
     if (data[PUSH_REQUEST_SSL_VERIFY] is! String) {
       throw ArgumentError('Push request sslVerify is ${data[PUSH_REQUEST_SSL_VERIFY].runtimeType}. Expected String.');
     }
@@ -141,6 +140,7 @@ class PushRequest {
     if (data[PUSH_REQUEST_ANSWERS] is! String?) {
       throw ArgumentError('Push request answers is ${data[PUSH_REQUEST_ANSWERS].runtimeType}. Expected List<String> or null.');
     }
+    Logger.debug('Push request data ($data) is valid.', name: 'push_request.dart#verifyData');
   }
 
   Future<bool> verifySignature(PushToken token, {RsaUtils rsaUtils = const RsaUtils()}) async {

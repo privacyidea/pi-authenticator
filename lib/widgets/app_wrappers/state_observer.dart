@@ -17,6 +17,9 @@ class StateObserver extends ConsumerWidget {
     for (final listener in stateNotifierProviderListeners) {
       listener.buildListen(ref);
     }
+    for (final listener in asyncNotifierProviderListeners) {
+      listener.buildListen(ref);
+    }
     return child;
   }
 }

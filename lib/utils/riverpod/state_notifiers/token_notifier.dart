@@ -115,8 +115,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
       return failedTokens;
     }
     // [failedTokens] is empty, so every token was saved successfully and we dont need to filter the tokens
-    Logger.warning('State Updated', name: 'token_notifier.dart#_saveOrReplaceTokens', stackTrace: StackTrace.current);
+    Logger.info('Saved ${tokens.length} Tokens to storage.', name: 'token_notifier.dart#_saveOrReplaceTokens');
     state = state.addOrReplaceTokens(tokens);
+    Logger.debug('New State: ${state.tokens.length} Tokens', name: 'token_notifier.dart#_saveOrReplaceTokens');
     _loadingRepoMutex.release();
     return [];
   }
@@ -336,44 +337,45 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// Adds, Updates or Removes tokens based on the [TokenContainer] and returns the updated tokens.
   void updateContainerTokens(TokenContainer container) async {
     await initState;
-    Logger.warning('Updating tokens from container.', name: 'token_notifier.dart#updateContainerTokens');
+    Logger.info('Updating tokens from container.', name: 'token_notifier.dart#updateContainerTokens');
     final templatesToAdd = <TokenTemplate>[];
     final templatesToUpdate = <TokenTemplate>[];
     final templatesToRemove = <TokenTemplate>[];
 
     final knownContainerTokens = state.tokens.fromContainer(container.serial);
-    Logger.warning('Known tokens: ${knownContainerTokens.length}', name: 'token_notifier.dart#updateContainerTokens');
     final syncedTokenTemplates = container.syncedTokenTemplates;
-    Logger.warning('Synced tokens: ${syncedTokenTemplates.length}', name: 'token_notifier.dart#updateContainerTokens');
+    Logger.debug('App knows server tokens: ${knownContainerTokens.length}/${syncedTokenTemplates.length}', name: 'token_notifier.dart#updateContainerTokens');
     final knownContainerTemplates = knownContainerTokens.toTemplates();
     for (var i = 0; i < syncedTokenTemplates.length; i++) {
       // Searches for tokens that are in the container but not in the app to add them.
       // If the token is already in the app, it will be updated.
       // Reduces the [tokenTemplatesApp] list to only the tokens that are in the app but not in the container. These tokens will be removed.
       final templateContainer = syncedTokenTemplates[i];
-      final tokenToKeep = knownContainerTemplates.firstWhereOrNull((templateApp) => templateApp.id == templateContainer.id);
-      if (tokenToKeep == null) {
+      Logger.debug('Checking serial ${templateContainer.serial}', name: 'token_notifier.dart#updateContainerTokens');
+      final templateToKeep = knownContainerTemplates.firstWhereOrNull((templateApp) => templateApp.serial == templateContainer.serial);
+      if (templateToKeep == null) {
         templatesToAdd.add(templateContainer);
       } else {
-        if (tokenToKeep != templateContainer) {
+        Logger.warning('templateToKeep != templateContainer => ${templateToKeep != templateContainer}', name: 'token_notifier.dart#updateContainerTokens');
+        if (templateToKeep != templateContainer) {
           // Only update the token if the template is different
-          templatesToUpdate.add(tokenToKeep);
+          templatesToUpdate.add(templateToKeep);
         }
-        knownContainerTemplates.remove(tokenToKeep);
+        knownContainerTemplates.remove(templateToKeep);
       }
     }
     // Removes all tokens that are in the app but not in the container.
     templatesToRemove.addAll(knownContainerTemplates);
 
-    Logger.warning('Templates to add: ${templatesToAdd.length}', name: 'token_notifier.dart#updateContainerTokens');
-    Logger.warning('Templates to update: ${templatesToUpdate.length}', name: 'token_notifier.dart#updateContainerTokens');
-    Logger.warning('Templates to remove: ${templatesToRemove.length}', name: 'token_notifier.dart#updateContainerTokens');
+    Logger.debug(
+      'Add(${templatesToAdd.length}) | Check update(${templatesToUpdate.length}) | Remove(${templatesToRemove.length})',
+      name: 'token_notifier.dart#updateContainerTokens',
+    );
 
     final tokensToAdd = templatesToAdd.map((e) => e.toToken(container)).toList();
-    Logger.warning('Tokens to add: ${tokensToAdd.firstOrNull?.containerId}', name: 'token_notifier.dart#updateContainerTokens');
     final tokensToUpdate = <Token>[];
     for (var template in templatesToUpdate) {
-      final token = knownContainerTokens.firstWhereOrNull((token) => token.id == template.id);
+      final token = knownContainerTokens.firstWhereOrNull((token) => token.id == template.serial);
       if (token == null) continue;
       final needsUpdate = !token.doesMatchTemplate(template);
       if (needsUpdate) {
@@ -382,24 +384,27 @@ class TokenNotifier extends StateNotifier<TokenState> {
     }
     final tokensToRemove = <Token>[];
     for (var template in templatesToRemove) {
-      final token = knownContainerTokens.firstWhereOrNull((token) => token.id == template.id);
+      final token = knownContainerTokens.firstWhereOrNull((token) => token.id == template.serial);
       if (token == null) continue;
       tokensToRemove.add(token);
     }
 
-    Logger.warning('Tokens to add: ${tokensToAdd.length}', name: 'token_notifier.dart#updateContainerTokens');
+
+    Logger.debug(
+      'Add(${tokensToAdd.length}) | Update(${tokensToUpdate.length}) | Remove(${tokensToRemove.length})',
+      name: 'token_notifier.dart#updateContainerTokens',
+    );
+
     if (tokensToAdd.isNotEmpty) {
       await addOrReplaceTokens(tokensToAdd);
     }
-    Logger.warning('Tokens to update: ${tokensToUpdate.length}', name: 'token_notifier.dart#updateContainerTokens');
     if (tokensToUpdate.isNotEmpty) {
       await updateTokens(tokensToUpdate, (p0) {
-        final template = templatesToUpdate.firstWhereOrNull((element) => element.id == p0.id);
+        final template = templatesToUpdate.firstWhereOrNull((element) => element.serial == p0.id);
         if (template == null) return p0;
         return p0.copyWithFromTemplate(template);
       });
     }
-    Logger.warning('Tokens to remove: ${tokensToRemove.length}', name: 'token_notifier.dart#updateContainerTokens');
     if (tokensToRemove.isNotEmpty) {
       await removeTokens(tokensToRemove);
     }

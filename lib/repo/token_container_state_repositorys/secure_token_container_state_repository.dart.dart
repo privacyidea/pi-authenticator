@@ -20,11 +20,13 @@ class SecureTokenContainerRepository implements TokenContainerRepository {
   });
 
   Future<void> _write(String key, String value) => _protect(() {
-        Logger.warning('Writing to secure storage: $key, $value', name: 'SecureTokenContainerRepository');
+        Logger.debug('Writing key: $key, value: $value', name: 'secure_token_container_state_repository.dart.dart#_write');
         return _storage.write(key: key, value: value);
       });
   Future<String?> _read(String key) async {
-    return await _protect(() async => await _storage.read(key: key));
+    final value = await _protect(() async => await _storage.read(key: key));
+    Logger.debug('Reading key: $key, value: $value', name: 'secure_token_container_state_repository.dart.dart#_read');
+    return value;
   }
 
   Future<void> _delete(String key) => _protect(() => _storage.delete(key: key));
@@ -37,17 +39,15 @@ class SecureTokenContainerRepository implements TokenContainerRepository {
 
   @override
   Future<TokenContainer> saveContainerState(TokenContainer containerState) async {
+    Logger.info('Saving container state', name: 'secure_token_container_state_repository.dart.dart#saveContainerState');
     if (TokenContainer is TokenContainerError) {
-      Logger.error('Cannot save error state to repository', name: 'SecureTokenContainerRepository');
+      Logger.error('Cannot save error state to repository', name: 'secure_token_container_state_repository.dart.dart#saveContainerState');
       return containerState;
     }
-    Logger.warning('Saving container state', name: 'SecureTokenContainerRepository');
     final json = containerState.toJson();
-    Logger.warning('Encoded container state: $json', name: 'SecureTokenContainerRepository');
     final jsonString = jsonEncode(json);
-    Logger.warning('Encoded container state string: $jsonString', name: 'SecureTokenContainerRepository');
     await _write(_containerStateKey, jsonString);
-    Logger.warning('Saved container state: $jsonString', name: 'SecureTokenContainerRepository');
+    Logger.debug('Saved container state: $jsonString', name: 'secure_token_container_state_repository.dart.dart#saveContainerState');
     return containerState;
   }
 
@@ -55,24 +55,26 @@ class SecureTokenContainerRepository implements TokenContainerRepository {
 
   /// Load the container state from the shared preferences
   Future<TokenContainer> loadContainerState() async {
-    Logger.warning('Loading container state', name: 'SecureTokenContainerRepository');
+    Logger.info('Loading container state', name: 'secure_token_container_state_repository.dart.dart#loadContainerState');
     String? containerStateJsonString = await _read(_containerStateKey);
-    Logger.warning('Loaded container state: $containerStateJsonString', name: 'SecureTokenContainerRepository');
+    Logger.debug('Loaded jsonString: $containerStateJsonString', name: 'secure_token_container_state_repository.dart.dart#loadContainerState');
     if (containerStateJsonString == null) {
-      Logger.info('No container state found in secure storage', name: 'SecureTokenContainerRepository');
       return const TokenContainer.uninitialized(serial: '123');
     }
     final json = jsonDecode(containerStateJsonString);
-    Logger.warning('Decoded container state: $json', name: 'SecureTokenContainerRepository');
     try {
       final state = TokenContainer.fromJson(json);
+      Logger.debug('Loaded container state: $containerStateJsonString', name: 'secure_token_container_state_repository.dart.dart#loadContainerState');
       return state;
     } catch (e) {
-      Logger.error('Failed to decode container state', name: 'SecureTokenContainerRepository');
+      Logger.error(
+        'Failed to decode container state',
+        name: 'secure_token_container_state_repository.dart.dart#loadContainerState',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       await _delete(_containerStateKey);
       return const TokenContainer.uninitialized(serial: '123');
     }
   }
-
-
 }

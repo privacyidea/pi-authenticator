@@ -33,30 +33,47 @@ class TokenContainerApiEndpoint implements ApiEndpioint<TokenContainer, Credenti
 
   @override
   Future<TokenContainer> sync(TokenContainer containerState) async {
-    Logger.warning('Syncing container with server', name: 'TokenContainerApiEndpoint');
-    if (_data.containsKey(containerState.serial) == false) {
+    Logger.info('Syncing container with server', name: 'TokenContainerApiEndpoint#sync');
+    final serverTemplates = _data[containerState.serial];
+    if (serverTemplates == null) {
       return containerState.copyTransformInto<TokenContainerNotFound>(args: {'message': 'Container not found'});
     }
-    Logger.warning('Container found', name: 'TokenContainerApiEndpoint');
-    final localTemplates = containerState.localTokenTemplates;
-    for (var localTemplate in localTemplates) {
-      final oldLabel = localTemplate.data[URI_LABEL] as String;
-      if (oldLabel.startsWith(containerState.serial) == true) {
-        final merged = localTemplate.copyAddAll({
-          URI_LABEL: oldLabel.replaceRange(oldLabel.length - 2, oldLabel.length - 1, '😀'),
-        });
-        _data[containerState.serial]![localTemplate.id!] = merged;
+    for (var serial in serverTemplates.keys) {
+      final template = serverTemplates[serial];
+      if (template?.serial == null) {
+        // Add serial(key of map) to template
+        serverTemplates[serial] = template!.copyAddAll({TOKEN_SERIAL: serial});
       }
     }
+    final localTemplates = containerState.localTokenTemplates;
+    Logger.debug('Local templates: ${localTemplates.length}', name: 'TokenContainerApiEndpoint#sync');
+    for (var localTemplate in localTemplates) {
+      final oldLabel = localTemplate.data[URI_LABEL] as String;
+      Logger.debug('Old label: "$oldLabel" starts with "${containerState.serial}" ?', name: 'TokenContainerApiEndpoint#sync');
+      if (oldLabel.startsWith(containerState.serial) == true) {
+        var merged = localTemplate.copyAddAll({
+          URI_LABEL: oldLabel.replaceRange(oldLabel.length - 2, oldLabel.length, '😀'),
+        });
+        Logger.debug('New label: "${merged.data[URI_LABEL]}"', name: 'TokenContainerApiEndpoint#sync');
+        if (merged.serial == null) {
+          merged = merged.copyWith(data: merged.copyAddAll({TOKEN_SERIAL: 'tokenID${DateTime.now().millisecondsSinceEpoch}'}).data);
+        }
+        final localTemplateSerial = merged.serial!;
+        serverTemplates[localTemplateSerial] = merged;
+      }
+    }
+    Logger.debug('Server templates: ${serverTemplates}', name: 'TokenContainerApiEndpoint#sync');
+    _data[containerState.serial] = serverTemplates;
+    Logger.debug('_data: $_data', name: 'TokenContainerApiEndpoint#sync');
     final serverTemplatesMerged = _data[containerState.serial]!.values.toList();
-    return TokenContainerSynced(
+    final newContainerState = TokenContainerSynced(
       lastSyncAt: DateTime.now(),
       serial: containerState.serial,
       description: 'Synced with server',
       syncedTokenTemplates: serverTemplatesMerged,
       localTokenTemplates: [],
     );
+    Logger.debug('Synced container: $newContainerState', name: 'TokenContainerApiEndpoint#sync');
+    return newContainerState;
   }
-
-
 }

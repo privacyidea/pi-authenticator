@@ -21,6 +21,7 @@ import 'riverpod/riverpod_providers/state_notifier_providers/settings_provider.d
 
 final provider = Provider<int>((ref) => 0);
 
+
 class Logger {
   /*----------- STATIC FIELDS & GETTER -----------*/
   static final Mutex _mutexWriteFile = Mutex();
@@ -30,6 +31,9 @@ class Logger {
   static printer.Logger print = printer.Logger(
     printer: printer.PrettyPrinter(
       methodCount: 0,
+      levelColors: {
+        printer.Level.debug: const printer.AnsiColor.fg(040),
+      },
       colors: true,
       printEmojis: true,
       printTime: false,
@@ -131,6 +135,18 @@ class Logger {
     _printWarning(warningString);
   }
 
+  /// Does nothing if in production/release mode
+  static void debug(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
+    if (!kDebugMode) return;
+    String debugString = instance._convertLogToSingleString(
+      message,
+      stackTrace: stackTrace ?? (instance._verbose || verbose) ? StackTrace.current : null,
+      name: name,
+      logLevel: LogLevel.DEBUG,
+    );
+    _printDebug(debugString);
+  }
+
   static void warning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
       instance.logWarning(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
 
@@ -167,8 +183,6 @@ class Logger {
       await file.writeAsString('\n$fileMessage', mode: FileMode.append);
     } catch (e) {
       _printError(e.toString());
-    } finally {
-      _print('Message logged into file');
     }
     _mutexWriteFile.release();
   }
@@ -281,6 +295,11 @@ Device Parameters $deviceInfo""";
     print.i(message);
   }
 
+  static void _printDebug(String message) {
+    if (!kDebugMode) return;
+    print.d(message);
+  }
+
   static void _printWarning(String message) {
     if (!kDebugMode) return;
     print.w(message);
@@ -361,6 +380,7 @@ final filterParameterKeys = ['fbtoken', 'new_fb_token', 'secret'];
 
 enum LogLevel {
   INFO,
+  DEBUG,
   WARNING,
   ERROR,
 }

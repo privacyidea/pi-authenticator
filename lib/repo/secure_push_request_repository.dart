@@ -40,7 +40,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
   @override
   Future<void> saveState(PushRequestState pushRequestState) async {
     final stateJson = jsonEncode(pushRequestState.toJson());
-    print('Saving state: $stateJson');
+    Logger.debug('Saving state: $stateJson', name: 'SecurePushRequestRepository');
     await _storage.write(key: _securePushRequestKey, value: stateJson);
   }
 
