@@ -4,19 +4,23 @@ import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
+import 'package:privacyidea_authenticator/model/states/settings_state.dart';
 import 'package:privacyidea_authenticator/model/states/token_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/network_utils.dart';
+import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
+import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
 import 'token_notifier_test.mocks.dart';
@@ -24,8 +28,9 @@ import 'token_notifier_test.mocks.dart';
 @GenerateMocks(
   [
     TokenRepository,
+    SettingsRepository,
     RsaUtils,
-    PrivacyIdeaIOClient,
+    PrivacyideaIOClient,
     FirebaseUtils,
   ],
 )
@@ -36,7 +41,11 @@ void main() {
 void _testTokenNotifier() {
   group('TokenNotifier', () {
     test('loadStateFromRepo', () async {
-      final container = ProviderContainer();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true)];
@@ -50,7 +59,7 @@ void _testTokenNotifier() {
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+        (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
       final notifier = container.read(testProvider.notifier);
       expect((await notifier.loadStateFromRepo())?.tokens, after);
@@ -60,7 +69,11 @@ void _testTokenNotifier() {
       verify(mockRepo.loadTokens()).called(2);
     });
     test('getTokenFromId', () async {
-      final container = ProviderContainer();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret')];
@@ -70,7 +83,7 @@ void _testTokenNotifier() {
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+        (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
       final notifier = container.read(testProvider.notifier);
       await notifier.initState;
@@ -80,7 +93,11 @@ void _testTokenNotifier() {
       expect(state.tokens, after);
     });
     test('incrementCounter', () async {
-      final container = ProviderContainer();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [
@@ -94,7 +111,7 @@ void _testTokenNotifier() {
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+        (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
       final notifier = container.read(testProvider.notifier);
       final initState = await notifier.initState;
@@ -106,7 +123,11 @@ void _testTokenNotifier() {
       verify(mockRepo.saveOrReplaceToken(after.first)).called(1);
     });
     test('removeToken', () async {
-      final container = ProviderContainer();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
@@ -121,7 +142,7 @@ void _testTokenNotifier() {
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+        (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
       final notifier = container.read(testProvider.notifier);
       final initState = await notifier.initState;
@@ -134,7 +155,11 @@ void _testTokenNotifier() {
     });
     group('addOrReplaceToken', () {
       test('add Token', () async {
-        final container = ProviderContainer();
+        final mockSettingsRepo = MockSettingsRepository();
+        when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+        final container = ProviderContainer(overrides: [
+          settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+        ]);
         final mockRepo = MockTokenRepository();
         final mockFirebaseUtils = MockFirebaseUtils();
         final before = <Token>[
@@ -149,7 +174,7 @@ void _testTokenNotifier() {
         when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
         when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
         final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-          (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+          (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
         );
         final notifier = container.read(testProvider.notifier);
         final initState = await notifier.initState;
@@ -161,7 +186,11 @@ void _testTokenNotifier() {
         verify(mockRepo.saveOrReplaceToken(after.last)).called(1);
       });
       test('replace Token', () async {
-        final container = ProviderContainer();
+        final mockSettingsRepo = MockSettingsRepository();
+        when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+        final container = ProviderContainer(overrides: [
+          settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+        ]);
         final mockRepo = MockTokenRepository();
         final mockFirebaseUtils = MockFirebaseUtils();
         final before = <Token>[
@@ -177,7 +206,7 @@ void _testTokenNotifier() {
         when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
         when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
         final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-          (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+          (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
         );
         final notifier = container.read(testProvider.notifier);
         final initState = await notifier.initState;
@@ -190,7 +219,11 @@ void _testTokenNotifier() {
       });
     });
     test('addOrReplaceTokens', () async {
-      final container = ProviderContainer();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
@@ -206,7 +239,7 @@ void _testTokenNotifier() {
       when(mockRepo.saveOrReplaceTokens([...after])).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+        (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
       final notifier = container.read(testProvider.notifier);
       await notifier.addOrReplaceTokens([...after]);
@@ -215,7 +248,11 @@ void _testTokenNotifier() {
       expect(state.tokens, after);
     });
     test('addTokenFromOtpAuth', () async {
-      final container = ProviderContainer();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
@@ -228,7 +265,7 @@ void _testTokenNotifier() {
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
-        (ref) => TokenNotifier(repository: mockRepo, firebaseUtils: mockFirebaseUtils),
+        (ref) => TokenNotifier(ref: ref, repository: mockRepo, firebaseUtils: mockFirebaseUtils),
       );
       final notifier = container.read(testProvider.notifier);
       await notifier.handleQrCode('otpauth://totp/issuer2:label2?secret=secret2&issuer=issuer2&algorithm=SHA256&digits=6&period=30');
@@ -239,10 +276,14 @@ void _testTokenNotifier() {
       verify(mockRepo.saveOrReplaceTokens(any)).called(greaterThan(0));
     });
     test('addTokenFromOtpAuth: rolloutPushToken', () async {
-      final container = ProviderContainer();
-      final mockRepo = MockTokenRepository();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
+      final mockTokenRepo = MockTokenRepository();
       final mockRsaUtils = MockRsaUtils();
-      final mockIOClient = MockPrivacyIdeaIOClient();
+      final mockIOClient = MockPrivacyideaIOClient();
       final mockFirebaseUtils = MockFirebaseUtils();
       const rsaUtils = RsaUtils();
       const publicServerKeyString =
@@ -284,17 +325,17 @@ void _testTokenNotifier() {
       const otpAuth =
           'otpauth://pipush/PIPU0006BF18?url=https%3A//192.168.178.30/ttype/push&ttl=10&issuer=privacyIDEA&enrollment_credential=ae60d4744ac5384515574b85f538c6a4e0c7bc82&v=1&serial=PIPU0006BF18&sslverify=0';
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'fbToken');
-      when(mockRepo.loadTokens()).thenAnswer((_) async => before);
-      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
+      when(mockTokenRepo.loadTokens()).thenAnswer((_) async => before);
+      when(mockTokenRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((realInvocation) async => AsymmetricKeyPair(publicTokenKey, privateTokenKey));
       when(mockRsaUtils.serializeRSAPublicKeyPKCS8(publicServerKey)).thenReturn(publicServerKeyString);
       when(mockRsaUtils.serializeRSAPublicKeyPKCS8(publicTokenKey)).thenReturn(publicTokenKeyString);
       when(mockRsaUtils.deserializeRSAPublicKeyPKCS1(publicServerKeyString)).thenReturn(publicServerKey);
       when(mockRsaUtils.deserializeRSAPublicKeyPKCS1(publicTokenKeyString)).thenReturn(publicTokenKey);
       when(mockRsaUtils.deserializeRSAPrivateKeyPKCS1(privateTokenKeyString)).thenReturn(privateTokenKey);
-      when(mockRepo.saveOrReplaceTokens([after.last])).thenAnswer((_) async => []); // QrCode can contain multiple tokens
-      when(mockRepo.saveOrReplaceToken(after.last)).thenAnswer((_) async => true); // Rollout one by one
-      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
+      when(mockTokenRepo.saveOrReplaceTokens([after.last])).thenAnswer((_) async => []); // QrCode can contain multiple tokens
+      when(mockTokenRepo.saveOrReplaceToken(after.last)).thenAnswer((_) async => true); // Rollout one by one
+      when(mockTokenRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockIOClient.doPost(
         url: anyNamed('url'),
         body: anyNamed('body'),
@@ -308,7 +349,8 @@ void _testTokenNotifier() {
         ),
       );
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) => TokenNotifier(
-            repository: mockRepo,
+            ref: ref,
+            repository: mockTokenRepo,
             rsaUtils: mockRsaUtils,
             ioClient: mockIOClient,
             firebaseUtils: mockFirebaseUtils,
@@ -345,9 +387,13 @@ void _testTokenNotifier() {
       expect(pushToken.sslVerify, pushTokenShouldBe.sslVerify);
     });
     test('rolloutPushToken', () async {
-      final container = ProviderContainer();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
+      ]);
       final mockRepo = MockTokenRepository();
-      final mockIOClient = MockPrivacyIdeaIOClient();
+      final mockIOClient = MockPrivacyideaIOClient();
       final mockFirebaseUtils = MockFirebaseUtils();
       final mockRsaUtils = MockRsaUtils();
       final uri = Uri.parse('https://example.com');
@@ -372,6 +418,7 @@ void _testTokenNotifier() {
       )).thenAnswer((_) => Future.value(Response('{"detail": {"public_key": "publicKey"}}', 200)));
       final testProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         (ref) => TokenNotifier(
+          ref: ref,
           repository: mockRepo,
           rsaUtils: mockRsaUtils,
           ioClient: mockIOClient,
@@ -398,6 +445,7 @@ void _testTokenNotifier() {
       )).called(greaterThan(0));
     });
     test('loadFromRepo', () async {
+      final container = ProviderContainer();
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
@@ -407,7 +455,8 @@ void _testTokenNotifier() {
       when(mockRepo.loadTokens()).thenAnswer((_) => Future.value(before));
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
-      final notifier = TokenNotifier(repository: mockRepo);
+      final testProvider = StateNotifierProvider<TokenNotifier, TokenState>((ref) => TokenNotifier(ref: ref, repository: mockRepo));
+      final notifier = container.read(testProvider.notifier);
       Logger.info('before loadFromRepo');
       final newState = await notifier.loadStateFromRepo();
       Logger.info('after loadFromRepo');

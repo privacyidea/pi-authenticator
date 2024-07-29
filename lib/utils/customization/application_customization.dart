@@ -96,7 +96,8 @@ class ApplicationCustomization {
         appImageUint8List: json['appImageBASE64'] != null ? base64Decode(json['appImageBASE64'] as String) : null,
         lightTheme: ThemeCustomization.fromJson(json['lightTheme'] as Map<String, dynamic>),
         darkTheme: ThemeCustomization.fromJson(json['darkTheme'] as Map<String, dynamic>),
-        disabledFeatures: (json['disabledFeatures'] as List<dynamic>).map((e) => AppFeature.values.byName(e as String)).toSet(),
+        disabledFeatures:
+            json['disabledFeatures'] != null ? (json['disabledFeatures'] as List<dynamic>).map((e) => AppFeature.values.byName(e as String)).toSet() : const {},
       );
 
   Map<String, dynamic> toJson() {

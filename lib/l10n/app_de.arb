@@ -3,6 +3,10 @@
   "patchNotesNewFeatures": "Neue Funktionen",
   "patchNotesImprovements": "Verbesserungen",
   "patchNotesBugFixes": "Fehlerbehebungen",
+  "patchNotesV4_4_0NewFeatures1": "Es ist nun möglich, Token zu exportieren, bei denen sichergestellt werden kann, dass es sich nicht um privacyIDEA Token handelt. Derzeit kann nicht ausgeschlossen werden, dass über den QR-Code-Scanner hinzugefügte Token von privacyIDEA stammen. Die Differenzierung wird in zukünftigen Versionen verbessert.",
+  "patchNotesV4_4_0NewFeatures2": "Unterstützung für privacyIDEA's \"require presence\" hinzugefügt.",
+  "patchNotesV4_4_0Improvement1": "Es wurden weitere Importquellen hinzugefügt.",
+  "patchNotesV4_4_0Improvement2": "Die erkennung von QR-Codes aus Bilddateien wurde verbessert.",
   "patchNotesV4_3_1BugFix1": "Ein Problem wurde behoben, bei dem der otp-Wert nach der Authentifizierung auf einigen Geräten nicht angezeigt wurde.",
   "patchNotesV4_3_1Improvement1": "Der QR-Code-Scanner wurde verbessert.",
   "patchNotesV4_3_0NewFeatures1": "Unterstützung für den Import von Token von Google, Aegis und 2FAS Authenticator hinzugefügt. Weitere Importquellen werden in Zukunft hinzugefügt.",
@@ -449,6 +453,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "Konnte keine Verbindung zum Server herstellen.",
   "errorRollOutNoConnectionToServer": "Der Rollout von Token {name} ist fehlgeschlagen, der Server konnte nicht erreicht werden.",
   "authToAcceptPushRequest": "Bitte authentifizieren Sie sich, um die Anfrage anzunehmen.",
   "authToDeclinePushRequest": "Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.",
@@ -641,5 +646,12 @@
   "passwordMustContainSpecialCharacter": "Das Passwort muss ein Sonderzeichen enthalten",
   "passwordsDoNotMatch": "Die Passwörter stimmen nicht überein",
   "selectTokensToExportHelpTitle": "Ist Ihr Token nicht aufgelistet?",
-  "selectTokensToExportHelpContent": "Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden."
+  "selectTokensToExportHelpContent": "Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden.",
+  "findingQrCodeInImage": "Suche nach QR-Code im Bild...",
+  "qrNotFound": "Kein QR-Code gefunden!",
+  "qrInFileNotFound": "Es wurde kein QR-Code in dem ausgewählten Bild gefunden.",
+  "qrInFileNotFound2": "Sie können mir zeigen, wo sich der QR-Code befindet.",
+  "qrInFileNotFound3": "Ich erwarte, dass ich den Code finde, wenn er sich in der Mitte des markierten Bereichs befindet.",
+  "markQrCode": "QR-Code markieren",
+  "malformedData": "Fehlerhafte Daten"
 }

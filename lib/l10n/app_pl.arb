@@ -3,6 +3,10 @@
   "patchNotesNewFeatures": "Nowe funkcje",
   "patchNotesImprovements": "Ulepszenia",
   "patchNotesBugFixes": "Poprawki błędów",
+  "patchNotesV4_4_0NewFeatures1": "Możliwe jest teraz eksportowanie tokenów, w przypadku których można upewnić się, że nie są to tokeny privacyIDEA. Obecnie nie można wykluczyć, że tokeny dodane za pomocą skanera kodów QR pochodzą z privacyIDEA. Rozróżnienie to zostanie poprawione w przyszłych wersjach",
+  "patchNotesV4_4_0NewFeatures2": "Dodano obsługę funkcji privacyIDEA \"require presence\".",
+  "patchNotesV4_4_0Improvement1": "Dodano kolejne źródła importu.",
+  "patchNotesV4_4_0Improvement2": "Ulepszono rozpoznawanie kodów QR z plików graficznych.",
   "patchNotesV4_3_1BugFix1": "Został naprawiony problem, w którym wartość OTP nie była wyświetlana po uwierzytelnieniu na niektórych urządzeniach.",
   "patchNotesV4_3_1Improvement1": "Został poprawiony skaner kodów QR.",
   "patchNotesV4_3_0NewFeatures1": "Dodano obsługę importowania tokenów z Google, Aegis i 2FAS Authenticator. Więcej źródeł importu zostanie dodanych w przyszłości",
@@ -469,6 +473,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "Nie można połączyć się z serwerem.",
   "errorRollOutNotPossibleAnymore": "Wstać z łóżka tego tokena nie jest już możliwe.",
   "errorTokenExpired": "Token {name} wygasł.",
   "@errorTokenExpired": {
@@ -656,5 +661,12 @@
   "passwordMustContainSpecialCharacter": "Hasło musi zawierać znak specjalny",
   "passwordsDoNotMatch": "Hasła nie pasują do siebie",
   "selectTokensToExportHelpTitle": "Czy twój token nie znajduje się na liście?",
-  "selectTokensToExportHelpContent": "Jeśli token nie znajduje się na liście, nie ma gwarancji, że nie jest tokenem privacyIDEA.\nObecnie eksportować można tylko tokeny dodane ręcznie i zaimportowane."
+  "selectTokensToExportHelpContent": "Jeśli token nie znajduje się na liście, nie ma gwarancji, że nie jest tokenem privacyIDEA.\nObecnie eksportować można tylko tokeny dodane ręcznie i zaimportowane.",
+  "findingQrCodeInImage": "Szukanie kodu QR na obrazku...",
+  "qrNotFound": "Nie znaleziono kodu QR!",
+  "qrInFileNotFound": "Nie znaleziono kodu QR na wybranym obrazie.",
+  "qrInFileNotFound2": "Możesz pokazać mi, gdzie znajduje się kod QR.",
+  "qrInFileNotFound3": "Oczekuję, że znajdę kod, jeśli znajduje się w środku zaznaczonego obszaru.",
+  "markQrCode": "Zaznacz kod QR",
+  "malformedData": "Nieprawidłowe dane"
 }

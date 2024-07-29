@@ -1,3 +1,4 @@
+import 'package:mutex/mutex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interfaces/repo/settings_repository.dart';
@@ -16,15 +17,16 @@ class PreferenceSettingsRepository extends SettingsRepository {
   static const String _hidePushTokensKey = 'KEY_HIDE_PUSH_TOKENS';
   static const String _latestVersionKey = 'KEY_LATEST_VERSION';
 
-  late final Future<SharedPreferences> _preferences;
-  SettingsState? _lastState;
+  static final Future<SharedPreferences> _preferences = SharedPreferences.getInstance();
+  static SettingsState? _lastState;
 
-  PreferenceSettingsRepository() {
-    _preferences = SharedPreferences.getInstance();
-  }
-
+  /// Function [f] is executed, protected by Mutex [_m].
+  /// That means, that calls of this method will always be executed serial.
+  static final Mutex _m = Mutex();
+  static Future<T> _protect<T>(Future<T> Function() f) => _m.protect<T>(f);
   @override
-  Future<SettingsState> loadSettings() async {
+  Future<SettingsState> loadSettings() => _protect(_loadSettings);
+  Future<SettingsState> _loadSettings() async {
     final prefs = await _preferences;
     final newState = SettingsState(
       isFirstRun: prefs.getBool(_isFirstRunKey),
@@ -43,7 +45,8 @@ class PreferenceSettingsRepository extends SettingsRepository {
   }
 
   @override
-  Future<bool> saveSettings(SettingsState settings) async {
+  Future<bool> saveSettings(SettingsState settings) => _protect(() => _saveSettings(settings));
+  Future<bool> _saveSettings(SettingsState settings) async {
     final prefs = await _preferences;
     final futures = <Future>[
       if (_lastState?.isFirstRun != settings.isFirstRun) prefs.setBool(_isFirstRunKey, settings.isFirstRun),
@@ -61,6 +64,7 @@ class PreferenceSettingsRepository extends SettingsRepository {
     ];
     await Future.wait(futures);
     _lastState = settings;
+
     return true;
   }
 }

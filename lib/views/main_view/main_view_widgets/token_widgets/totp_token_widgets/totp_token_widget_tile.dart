@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutterlifecyclehooks/flutterlifecyclehooks.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/totp_token.dart';
@@ -11,6 +10,7 @@ import '../../../../../widgets/custom_texts.dart';
 import '../../../../../widgets/custom_trailing.dart';
 import '../../../../../widgets/hideable_widget_.dart';
 import '../token_widget_tile.dart';
+import 'totp_token_widget_tile_countdown.dart';
 
 class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   final TOTPToken token;
@@ -22,75 +22,19 @@ class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   ConsumerState<TOTPTokenWidgetTile> createState() => _TOTPTokenWidgetTileState();
 }
 
-class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with SingleTickerProviderStateMixin, LifecycleMixin {
-  double secondsLeft = 0;
-  late AnimationController animation;
-  late DateTime lastCount;
-
-  void _copyOtpValue() {
+class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> {
+  void _copyOtpValue(BuildContext context) {
     if (globalRef?.read(disableCopyOtpProvider) ?? false) return;
 
     globalRef?.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue)),
-      ),
+      SnackBar(content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue))),
     );
-    Future.delayed(const Duration(seconds: 5), () {
-      globalRef?.read(disableCopyOtpProvider.notifier).state = false;
-    });
+    Future.delayed(const Duration(seconds: 5), () => globalRef?.read(disableCopyOtpProvider.notifier).state = false);
   }
 
-  @override
-  void initState() {
-    super.initState();
-    animation = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: widget.token.period),
-    );
-    animation.forward(from: 1 - widget.token.secondsUntilNextOTP / widget.token.period);
-    secondsLeft = widget.token.secondsUntilNextOTP;
-    lastCount = DateTime.now();
-    _startCountDown();
-  }
-
-  @override
-  dispose() {
-    animation.dispose();
-    super.dispose();
-  }
-
-  void _startCountDown() {
-    final now = DateTime.now();
-    final msSinceLastCount = now.difference(lastCount).inMilliseconds;
-    lastCount = now;
-    if (!mounted) return;
-    if (secondsLeft - (msSinceLastCount / 1000) > 0) {
-      setState(() => secondsLeft -= msSinceLastCount / 1000);
-    } else {
-      setState(() => secondsLeft = widget.token.secondsUntilNextOTP);
-      animation.forward(from: 1 - secondsLeft / widget.token.period);
-    }
-
-    final msUntilNextSecond = (secondsLeft * 1000).toInt() % 1000 + 1; // +1 to avoid 0
-    Future.delayed(Duration(milliseconds: msUntilNextSecond), () => _startCountDown());
-  }
-
-  @override
-  void onAppPause() {
-    if (!mounted) return;
-    animation.stop();
-  }
-
-  @override
-  void onAppResume() {
-    if (!mounted) return;
-    setState(() {
-      secondsLeft = widget.token.secondsUntilNextOTP;
-      animation.forward(from: 1 - secondsLeft / widget.token.period);
-    });
-  }
+  late String currentOtpValue = widget.token.otpValue;
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +53,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
                 ? null
                 : widget.token.isLocked && widget.token.isHidden
                     ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
-                    : _copyOtpValue,
+                    : () => _copyOtpValue(context),
             child: HideableText(
               key: Key(widget.token.hashCode.toString()),
               text: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
@@ -136,23 +80,11 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
         child: HideableWidget(
           token: widget.token,
           isHidden: widget.token.isHidden && !widget.isPreview,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Text(
-                '${secondsLeft.round()}',
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-              AnimatedBuilder(
-                animation: animation,
-                builder: (context, child) {
-                  return CircularProgressIndicator(
-                    value: animation.value,
-                  );
-                },
-              ),
-            ],
+          child: TotpTokenWidgetTileCountdown(
+            period: widget.token.period,
+            onPeriodEnd: () => setState(
+              () => currentOtpValue = widget.token.otpValue,
+            ),
           ),
         ),
       ),

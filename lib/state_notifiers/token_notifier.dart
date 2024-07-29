@@ -32,7 +32,7 @@ import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/lock_auth.dart';
 import '../utils/logger.dart';
-import '../utils/network_utils.dart';
+import '../utils/privacyidea_io_client.dart';
 import '../utils/riverpod_providers.dart';
 import '../utils/rsa_utils.dart';
 import '../utils/utils.dart';
@@ -42,22 +42,24 @@ import '../views/import_tokens_view/pages/import_plain_tokens_page.dart';
 class TokenNotifier extends StateNotifier<TokenState> {
   static final Map<String, Timer> _hidingTimers = {};
   late final Future<TokenState> initState;
+  final StateNotifierProviderRef ref;
   final _loadingRepoMutex = Mutex();
   final _updatingTokensMutex = Mutex();
   final TokenRepository _repo;
   final RsaUtils _rsaUtils;
-  final PrivacyIdeaIOClient _ioClient;
+  final PrivacyideaIOClient _ioClient;
   final FirebaseUtils _firebaseUtils;
 
   TokenNotifier({
+    required this.ref,
     TokenState? initialState,
     TokenRepository? repository,
     RsaUtils? rsaUtils,
-    PrivacyIdeaIOClient? ioClient,
+    PrivacyideaIOClient? ioClient,
     FirebaseUtils? firebaseUtils,
   })  : _rsaUtils = rsaUtils ?? const RsaUtils(),
         _repo = repository ?? const SecureTokenRepository(),
-        _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
+        _ioClient = ioClient ?? const PrivacyideaIOClient(),
         _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
         super(
           initialState ?? TokenState(tokens: const [], lastlyUpdatedTokens: const []),
@@ -249,6 +251,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   /// Updates a list of tokens and returns the updated tokens if successful, the old tokens if not and an empty list if the tokens does not exist.
   Future<List<T>> _updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) async {
+    if (tokens.isEmpty) return [];
     await _updatingTokensMutex.acquire();
     final oldState = state;
 
@@ -388,7 +391,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       await _firebaseUtils.deleteFirebaseToken();
     } on SocketException {
       Logger.warning('Could not delete firebase token.', name: 'token_notifier.dart#_removePushToken');
-      globalRef?.read(statusMessageProvider.notifier).state = (
+      ref.read(statusMessageProvider.notifier).state = (
         AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorUnlinkingPushToken(token.label),
         AppLocalizations.of(globalNavigatorKey.currentContext!)!.checkYourNetwork,
       );
@@ -398,7 +401,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       if (fbToken == null) {
         await _updateTokens(state.pushTokens, (p0) => p0.copyWith(fbToken: null));
         Logger.warning('Could not update firebase token because no firebase token is available.', name: 'token_notifier.dart#_removePushToken');
-        globalRef?.read(statusMessageProvider.notifier).state = (
+        ref.read(statusMessageProvider.notifier).state = (
           AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
           AppLocalizations.of(globalNavigatorKey.currentContext!)!.pleaseSyncManuallyWhenNetworkIsAvailable,
         );
@@ -434,7 +437,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
       Logger.info('Ignoring rollout request: Token "${pushToken.id}" is expired. ', name: 'token_notifier.dart#rolloutPushToken');
 
       if (globalNavigatorKey.currentContext != null) {
-        globalRef?.read(statusMessageProvider.notifier).state = (
+        ref.read(statusMessageProvider.notifier).state = (
           AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNotPossibleAnymore,
           AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorTokenExpired(pushToken.label),
         );
@@ -538,14 +541,14 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
         try {
           final message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : '';
-          globalRef?.read(statusMessageProvider.notifier).state = (
+          ref.read(statusMessageProvider.notifier).state = (
             AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(pushToken.label),
             message,
           );
         } on FormatException {
           // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.
 
-          globalRef?.read(statusMessageProvider.notifier).state = (
+          ref.read(statusMessageProvider.notifier).state = (
             AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(pushToken.label),
             AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode)
           );
@@ -658,7 +661,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
 
   /* ////////////////////////////////////////////////////////////////////////////
   ///////////////////////// Add New Tokens Methods //////////////////////////////
-  /////////////////////////////////////////////////////////////////////////////// 
+  ///////////////////////////////////////////////////////////////////////////////
   /// Does not need to wait for updating functions because they doesn't depend on any state */
 
   /// The return value of a qrCode could be any object. In this case should be a String that is a valid URI.
@@ -701,8 +704,21 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<List<Token>> _tokensFromUri(Uri uri) async {
     try {
       final results = await TokenImportSchemeProcessor.processUriByAny(uri);
-      //  final anyConflict = tokens.any((newToken) => state.tokens.any((stateToken) => stateToken.sameValuesAs(newToken)));
-      if (results != null && results.length > 1) {
+      if (results == null || results.isEmpty) {
+        showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
+        Logger.warning('Scanned Data: $uri', error: 'Scanned QR code is not a valid URI.', name: 'token_notifier.dart#handleQrCode');
+        return [];
+      }
+      final failedResults = results.whereType<ProcessorResultFailed>().toList();
+      for (var failedResult in failedResults) {
+        ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of((await globalContext))!.malformedData, failedResult.message);
+      }
+      final successResults = results.whereType<ProcessorResultSuccess<Token>>().toList();
+      if (successResults.isEmpty) {
+        return [];
+      }
+      if (successResults.length > 1 || state.tokens.any((e) => successResults.first.resultData.isSameTokenAs(e) == true)) {
+        Navigator.of(globalNavigatorKey.currentContext!).popUntil((route) => route.isFirst);
         final tokensToKeep = await Navigator.of(globalNavigatorKey.currentContext!).push<List<Token>>(
           MaterialPageRoute<List<Token>>(
             builder: (context) => ImportPlainTokensPage(
@@ -714,10 +730,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
         );
         return tokensToKeep ?? [];
       }
-      return results?.whereType<ProcessorResultSuccess<Token>>().map((e) => e.resultData).toList() ?? [];
+      return successResults.map((e) => e.resultData).toList();
     } catch (error, stackTrace) {
-      showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
-      Logger.warning('Scanned Data: $uri', error: error, name: 'token_notifier.dart#handleQrCode', stackTrace: stackTrace);
+      Logger.error('Error while processing QR code.', name: 'token_notifier.dart#handleQrCode', error: error, stackTrace: stackTrace);
       return [];
     }
   }
@@ -743,9 +758,9 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<void> _handlePushTokensIfExist() async {
     Logger.info('Handling push tokens if they exist.', name: 'token_notifier.dart#_handlePushTokensIfExist');
     final pushTokens = state.pushTokens;
-    if (pushTokens.isNotEmpty || state.hasOTPTokens == false) {
-      if (globalRef?.read(settingsProvider).hidePushTokens == true) {
-        globalRef!.read(settingsProvider.notifier).setHidePushTokens(false);
+    if (pushTokens.isEmpty || state.pushTokens.isEmpty) {
+      if (ref.read(settingsProvider).hidePushTokens == true) {
+        ref.read(settingsProvider.notifier).setHidePushTokens(false);
       }
     }
     if (pushTokens.firstWhereOrNull((element) => element.isRolledOut && element.fbToken == null) != null) {

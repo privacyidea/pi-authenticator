@@ -3,6 +3,10 @@
   "patchNotesNewFeatures": "Nuevas características",
   "patchNotesImprovements": "Mejoras",
   "patchNotesBugFixes": "Corrección de errores",
+  "patchNotesV4_4_0NewFeatures1": "Ahora es posible exportar tokens cuando se puede garantizar que no son tokens de privacyIDEA. Actualmente, no se puede descartar que los tokens añadidos a través del escáner de código QR procedan de privacyIDEA. La diferenciación se mejorará en futuras versiones.",
+  "patchNotesV4_4_0NewFeatures2": "Añadido soporte para privacyIDEA's \"require presence\".",
+  "patchNotesV4_4_0Improvement1": "Se han añadido más fuentes de importación.",
+  "patchNotesV4_4_0Improvement2": "Se ha mejorado el reconocimiento de códigos QR a partir de archivos de imagen.",
   "patchNotesV4_3_1BugFix1": "Se ha corregido un problema donde el valor OTP no se mostraba después de la autenticación en algunos dispositivos.",
   "patchNotesV4_3_1Improvement1": "Se ha mejorado el escáner de códigos QR.",
   "patchNotesV4_3_0NewFeatures1": "Añadido soporte para importar tokens de Google, Aegis y 2FAS Authenticator. En el futuro se añadirán más fuentes de importación",
@@ -471,6 +475,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "No se ha podido conectar con el servidor.",
   "errorRollOutNotPossibleAnymore": "El despliegue de este token ya no es posible.",
   "errorTokenExpired": "El token {name} ha caducado.",
   "@errorTokenExpired": {
@@ -658,5 +663,12 @@
   "passwordMustContainSpecialCharacter": "La contraseña debe contener un carácter especial",
   "passwordsDoNotMatch": "Las contraseña no coinciden",
   "selectTokensToExportHelpTitle": "¿Su ficha no figura en la lista?",
-  "selectTokensToExportHelpContent": "Si un token no aparece en la lista, no se garantiza que no sea un token privacyIDEA.\nActualmente sólo se pueden exportar los tokens añadidos manualmente y los importados."
+  "selectTokensToExportHelpContent": "Si un token no aparece en la lista, no se garantiza que no sea un token privacyIDEA.\nActualmente sólo se pueden exportar los tokens añadidos manualmente y los importados.",
+  "findingQrCodeInImage": "Buscando código QR en imagen...",
+  "qrNotFound": "No se ha encontrado ningún código QR.",
+  "qrInFileNotFound": "No se ha encontrado ningún código QR en la imagen seleccionada.",
+  "qrInFileNotFound2": "Puedes mostrarme dónde está el código QR.",
+  "qrInFileNotFound3": "Espero encontrar el código si está en el centro del área marcada.",
+  "markQrCode": "Marcar código QR",
+  "malformedData": "Datos mal formados"
 }

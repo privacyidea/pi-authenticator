@@ -19,16 +19,6 @@ class SecurePushRequestRepository implements PushRequestRepository {
   /// Function [f] is executed, protected by Mutex [_m].
   /// That means, that calls of this method will always be executed serial.
   static Future<T> protect<T>(Future<T> Function() f) => _m.protect<T>(f);
-  Future<Map<String, String>> readAllPushRequests() async {
-    final value = await _storage.readAll();
-    final result = <String, String>{};
-    for (var key in value.keys) {
-      if (key.startsWith(_securePushRequestKey)) {
-        result[key] = value[key]!;
-      }
-    }
-    return result;
-  }
 
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
   static const String _securePushRequestKey = 'app_v3_pr_state';
@@ -37,7 +27,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
 
   /// Save the state to the secure storage.
   /// This is a critical section, so it is protected by Mutex.
-  Future<void> saveState(PushRequestState pushRequestState) => protect<void>(() => _saveState(pushRequestState));
+  Future<void> saveState(PushRequestState pushRequestState) => protect(() => _saveState(pushRequestState));
   Future<void> _saveState(PushRequestState pushRequestState) async {
     final stateJson = jsonEncode(pushRequestState.toJson());
     await _storage.write(key: _securePushRequestKey, value: stateJson);
@@ -89,6 +79,6 @@ class SecurePushRequestRepository implements PushRequestRepository {
   /// Removes all push requests from the repository.
   /// If no state is saved, nothing will happen.
   /// This is a critical section, so it is protected by Mutex.
-  Future<void> clearState() => protect<void>(() => _clearState());
+  Future<void> clearState() => protect<void>(_clearState);
   Future<void> _clearState() => _storage.delete(key: _securePushRequestKey);
 }

@@ -16,6 +16,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get patchNotesBugFixes => 'Corrección de errores';
 
   @override
+  String get patchNotesV4_4_0NewFeatures1 => 'Ahora es posible exportar tokens cuando se puede garantizar que no son tokens de privacyIDEA. Actualmente, no se puede descartar que los tokens añadidos a través del escáner de código QR procedan de privacyIDEA. La diferenciación se mejorará en futuras versiones.';
+
+  @override
+  String get patchNotesV4_4_0NewFeatures2 => 'Añadido soporte para privacyIDEA\'s \"require presence\".';
+
+  @override
+  String get patchNotesV4_4_0Improvement1 => 'Se han añadido más fuentes de importación.';
+
+  @override
+  String get patchNotesV4_4_0Improvement2 => 'Se ha mejorado el reconocimiento de códigos QR a partir de archivos de imagen.';
+
+  @override
   String get patchNotesV4_3_1BugFix1 => 'Se ha corregido un problema donde el valor OTP no se mostraba después de la autenticación en algunos dispositivos.';
 
   @override
@@ -449,6 +461,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String errorWhenPullingChallenges(Object name) {
     return 'Se ha producido un error al buscar retos de $name';
   }
+
+  @override
+  String get couldNotConnectToServer => 'No se ha podido conectar con el servidor.';
 
   @override
   String get errorRollOutNotPossibleAnymore => 'El despliegue de este token ya no es posible.';
@@ -886,7 +901,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String invalidValueForParameter(Object value, Object parameter) {
-    return '[$value] is not a valid value for uri parameter [parameter].';
+    return '\"$value\" is not a valid value for the parameter \"$parameter\".';
   }
 
   @override
@@ -937,4 +952,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get selectTokensToExportHelpContent => 'Si un token no aparece en la lista, no se garantiza que no sea un token privacyIDEA.\nActualmente sólo se pueden exportar los tokens añadidos manualmente y los importados.';
+
+  @override
+  String get findingQrCodeInImage => 'Buscando código QR en imagen...';
+
+  @override
+  String get qrNotFound => 'No se ha encontrado ningún código QR.';
+
+  @override
+  String get qrInFileNotFound => 'No se ha encontrado ningún código QR en la imagen seleccionada.';
+
+  @override
+  String get qrInFileNotFound2 => 'Puedes mostrarme dónde está el código QR.';
+
+  @override
+  String get qrInFileNotFound3 => 'Espero encontrar el código si está en el centro del área marcada.';
+
+  @override
+  String get markQrCode => 'Marcar código QR';
+
+  @override
+  String get malformedData => 'Datos mal formados';
 }

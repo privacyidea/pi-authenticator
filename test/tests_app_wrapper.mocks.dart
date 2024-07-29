@@ -27,7 +27,8 @@ import 'package:privacyidea_authenticator/model/token_folder.dart' as _i11;
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i16;
 import 'package:privacyidea_authenticator/model/tokens/token.dart' as _i8;
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i17;
-import 'package:privacyidea_authenticator/utils/network_utils.dart' as _i12;
+import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart'
+    as _i12;
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i13;
 
 // ignore_for_file: type=lint
@@ -244,11 +245,11 @@ class MockTokenFolderRepository extends _i1.Mock
       ) as _i7.Future<List<_i11.TokenFolder>>);
 }
 
-/// A class which mocks [PrivacyIdeaIOClient].
+/// A class which mocks [PrivacyideaIOClient].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPrivacyIdeaIOClient extends _i1.Mock
-    implements _i12.PrivacyIdeaIOClient {
+class MockPrivacyideaIOClient extends _i1.Mock
+    implements _i12.PrivacyideaIOClient {
   @override
   _i7.Future<bool> triggerNetworkAccessPermission({
     required Uri? url,

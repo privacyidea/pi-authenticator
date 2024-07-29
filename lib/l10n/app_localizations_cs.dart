@@ -16,6 +16,18 @@ class AppLocalizationsCs extends AppLocalizations {
   String get patchNotesBugFixes => 'Opravy chyb';
 
   @override
+  String get patchNotesV4_4_0NewFeatures1 => 'Nyní je možné exportovat tokeny, u kterých lze zajistit, že se nejedná o tokeny privacyIDEA. V současné době nelze vyloučit, že tokeny přidané prostřednictvím čtečky QR kódů pocházejí z aplikace privacyIDEA. Rozlišování bude v budoucích verzích vylepšeno.';
+
+  @override
+  String get patchNotesV4_4_0NewFeatures2 => 'Přidána podpora pro \"require presence\" aplikace privacyIDEA.';
+
+  @override
+  String get patchNotesV4_4_0Improvement1 => 'Byly přidány další dovozní zdroje.';
+
+  @override
+  String get patchNotesV4_4_0Improvement2 => 'Bylo vylepšeno rozpoznávání QR kódů z obrazových souborů.';
+
+  @override
   String get patchNotesV4_3_1BugFix1 => 'Opraven problém, kdy nebyla zobrazena hodnota otp po ověření na některých zařízeních.';
 
   @override
@@ -449,6 +461,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String errorWhenPullingChallenges(Object name) {
     return 'Při dotazování na výzvy $name došlo k chybě.';
   }
+
+  @override
+  String get couldNotConnectToServer => 'Nepodařilo se připojit k serveru.';
 
   @override
   String get errorRollOutNotPossibleAnymore => 'Roll-out tohoto tokenu již není možný.';
@@ -886,7 +901,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String invalidValueForParameter(Object value, Object parameter) {
-    return '[$value] is not a valid value for uri parameter [parameter].';
+    return '\"$value\" is not a valid value for the parameter \"$parameter\".';
   }
 
   @override
@@ -937,4 +952,25 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get selectTokensToExportHelpContent => 'Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.\nV současné době lze exportovat pouze ručně přidané a importované tokeny.';
+
+  @override
+  String get findingQrCodeInImage => 'Hledání QR kódu v obrázku...';
+
+  @override
+  String get qrNotFound => 'Žádný QR kód nebyl nalezen!';
+
+  @override
+  String get qrInFileNotFound => 'Ve vybraném obrázku nebyl nalezen žádný QR kód.';
+
+  @override
+  String get qrInFileNotFound2 => 'Můžete mi ukázat, kde se QR kód nachází.';
+
+  @override
+  String get qrInFileNotFound3 => 'Předpokládám, že kód najdu, pokud se nachází uprostřed označené oblasti.';
+
+  @override
+  String get markQrCode => 'Označte QR kód';
+
+  @override
+  String get malformedData => 'Data nejsou ve správném formátu';
 }

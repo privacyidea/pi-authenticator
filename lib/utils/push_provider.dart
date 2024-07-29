@@ -20,6 +20,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -35,7 +36,7 @@ import '../repo/secure_token_repository.dart';
 import 'firebase_utils.dart';
 import 'globals.dart';
 import 'logger.dart';
-import 'network_utils.dart';
+import 'privacyidea_io_client.dart';
 import 'riverpod_providers.dart';
 import 'rsa_utils.dart';
 import 'utils.dart';
@@ -55,23 +56,40 @@ class PushProvider {
 
   FirebaseUtils _firebaseUtils;
   FirebaseUtils get firebaseUtils => _firebaseUtils;
-  PrivacyIdeaIOClient _ioClient;
-  PrivacyIdeaIOClient get ioClient => _ioClient;
+  bool _firebaseInitialized = false;
+  PrivacyideaIOClient _ioClient;
+  PrivacyideaIOClient get ioClient => _ioClient;
   RsaUtils _rsaUtils;
   RsaUtils get rsaUtils => _rsaUtils;
 
+
   PushProvider._({
     FirebaseUtils? firebaseUtils,
-    PrivacyIdeaIOClient? ioClient,
+    PrivacyideaIOClient? ioClient,
     RsaUtils? rsaUtils,
   })  : _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
-        _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
+        _ioClient = ioClient ?? const PrivacyideaIOClient(),
         _rsaUtils = rsaUtils ?? const RsaUtils() {
-    _firebaseUtils.initFirebase(
-      foregroundHandler: _foregroundHandler,
-      backgroundHandler: _backgroundHandler,
-      updateFirebaseToken: updateFirebaseToken,
-    );
+    _initFirebase();
+  }
+
+  void _initFirebase() async {
+    if (_firebaseInitialized) return;
+    try {
+      await _firebaseUtils.initFirebase(
+        foregroundHandler: _foregroundHandler,
+        backgroundHandler: _backgroundHandler,
+        updateFirebaseToken: updateFirebaseToken,
+      );
+      _firebaseInitialized = true;
+      Logger.info('Firebase initialized.', name: 'push_provider.dart#_init');
+    } on IOException catch (e, s) {
+      if (e.toString().contains('SERVICE_NOT_AVAILABLE')) {
+        Logger.warning('Could not initialize Firebase.', name: 'push_provider.dart#_init', error: e, stackTrace: s);
+      } else {
+        rethrow;
+      }
+    }
   }
 
   void setPollingEnabled(bool? enablePolling) {
@@ -82,7 +100,7 @@ class PushProvider {
 
   factory PushProvider({
     bool? pollingEnabled,
-    PrivacyIdeaIOClient? ioClient,
+    PrivacyideaIOClient? ioClient,
     RsaUtils? rsaUtils,
     FirebaseUtils? firebaseUtils,
   }) {
@@ -100,7 +118,12 @@ class PushProvider {
         instance!._rsaUtils = rsaUtils;
       }
       if (firebaseUtils != null) {
-        instance!._firebaseUtils = firebaseUtils;
+        if (!instance!._firebaseInitialized) {
+          instance!._firebaseUtils = firebaseUtils;
+          instance!._initFirebase();
+        } else {
+          Logger.warning('Firebase is already initialized.', name: 'push_provider.dart#PushProvider');
+        }
       }
     }
     instance!.setPollingEnabled(pollingEnabled);
@@ -329,12 +352,14 @@ class PushProvider {
     try {
       response = instance != null
           ? await instance!._ioClient.doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify)
-          : await const PrivacyIdeaIOClient().doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify);
+          : await const PrivacyideaIOClient().doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify);
     } catch (e) {
-      globalRef?.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial),
-        null,
-      );
+      if (isManually) {
+        globalRef?.read(statusMessageProvider.notifier).state = (
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial),
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.couldNotConnectToServer,
+        );
+      }
       return;
     }
     final List<Map<String, dynamic>> challengeList;
@@ -352,7 +377,6 @@ class PushProvider {
           }
           return;
         }
-
         // Everything is fine, we can just continue
         break;
 
@@ -393,15 +417,17 @@ class PushProvider {
   void subscribe(void Function(PushRequest pushRequest) newRequest) => _subscribers.add(newRequest);
 }
 
+/// This class is a placeholder for the [PushProvider] class. It does not do anything.
+/// It is used to prevent the app from crashing when the features of the [PushProvider] are not available (e.g., on web).
 class PlaceholderPushProvider implements PushProvider {
   @override
   FirebaseUtils _firebaseUtils = FirebaseUtils();
   @override
   FirebaseUtils get firebaseUtils => _firebaseUtils;
   @override
-  PrivacyIdeaIOClient _ioClient = const PrivacyIdeaIOClient();
+  PrivacyideaIOClient _ioClient = const PrivacyideaIOClient();
   @override
-  PrivacyIdeaIOClient get ioClient => _ioClient;
+  PrivacyideaIOClient get ioClient => _ioClient;
   @override
   RsaUtils _rsaUtils = const RsaUtils();
   @override
@@ -430,7 +456,10 @@ class PlaceholderPushProvider implements PushProvider {
   void subscribe(void Function(PushRequest pushRequest) newRequest) {}
   @override
   void unsubscribe(void Function(PushRequest pushRequest) newRequest) {}
-
   @override
   Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) => Future.value(null);
+  @override
+  bool _firebaseInitialized = false;
+  @override
+  void _initFirebase() {}
 }

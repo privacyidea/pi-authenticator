@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../../../model/token_folder.dart';
 import '../../../../utils/riverpod_providers.dart';
@@ -31,12 +32,14 @@ class TokenFolderWidget extends ConsumerWidget {
               return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
             },
             onDragStarted: () => draggingSortableNotifier.state = folder,
-            onDragCompleted: () async {
-              await Future.delayed(const Duration(milliseconds: 50));
-              // FIXME: The folder may appear before reordering the list. (race condition) This results in a flickering effect. Waiting here is a workaround so the list is updated before the folder visible again. We should find a better solution.
+            onDragCompleted: () {
+              Logger.info('Draggable completed', name: 'TokenFolderWidget#build');
+              // Will be handled by the sortableNotifier
+            },
+            onDraggableCanceled: (velocity, offset) {
+              Logger.info('Draggable canceled', name: 'TokenFolderWidget#build');
               draggingSortableNotifier.state = null;
             },
-            onDraggableCanceled: (velocity, offset) => draggingSortableNotifier.state = null,
             data: folder,
             childWhenDragging: const SizedBox(),
             feedback: Column(

@@ -3,6 +3,10 @@
   "patchNotesNewFeatures": "Nouvelles caractéristiques",
   "patchNotesImprovements": "Améliorations",
   "patchNotesBugFixes": "Bug fixes",
+  "patchNotesV4_4_0NewFeatures1": "Il est désormais possible d'exporter des jetons dont on peut s'assurer qu'il ne s'agit pas de jetons privacyIDEA. Actuellement, il n'est pas possible d'exclure que des jetons ajoutés via le lecteur de code QR proviennent de privacyIDEA. La différenciation sera améliorée dans les versions futures.",
+  "patchNotesV4_4_0NewFeatures2": "Ajout du support pour privacyIDEA's \"require presence\".",
+  "patchNotesV4_4_0Improvement1": "D'autres sources d'importation ont été ajoutées.",
+  "patchNotesV4_4_0Improvement2": "La reconnaissance des codes QR à partir des fichiers image a été améliorée.",
   "patchNotesV4_3_1BugFix1": "Un problème a été corrigé où la valeur OTP n'était pas affichée après l'authentification sur certains appareils.",
   "patchNotesV4_3_1Improvement1": "Le scanner de codes QR a été amélioré.",
   "patchNotesV4_3_0NewFeatures1": "Ajout de la prise en charge de l'importation de jetons depuis Google, Aegis et 2FAS Authenticator. D'autres sources d'importation seront ajoutées à l'avenir.",
@@ -476,6 +480,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "Impossible de se connecter au serveur.",
   "errorRollOutNotPossibleAnymore": "Le déploiement de ce jeton n'est plus possible.",
   "errorTokenExpired": "Le jeton {name} a expiré.",
   "@errorTokenExpired": {
@@ -663,5 +668,12 @@
   "passwordMustContainSpecialCharacter": "Le mot de passe doit contenir un caractère spécial",
   "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
   "selectTokensToExportHelpTitle": "Votre jeton ne figure pas dans la liste ?",
-  "selectTokensToExportHelpContent": "Si un jeton n'est pas répertorié, il n'est pas garanti qu'il ne s'agisse pas d'un jeton privacyIDEA.\nActuellement, seuls les jetons ajoutés manuellement et importés sont exportables."
+  "selectTokensToExportHelpContent": "Si un jeton n'est pas répertorié, il n'est pas garanti qu'il ne s'agisse pas d'un jeton privacyIDEA.\nActuellement, seuls les jetons ajoutés manuellement et importés sont exportables.",
+  "findingQrCodeInImage": "Recherche d'un code QR dans une image...",
+  "qrNotFound": "Aucun code QR trouvé !",
+  "qrInFileNotFound": "Aucun code QR n'a été trouvé dans l'image sélectionnée.",
+  "qrInFileNotFound2": "Vous pouvez me montrer où se trouve le code QR.",
+  "qrInFileNotFound3": "Je pense que je trouverai le code s'il se trouve au milieu de la zone marquée.",
+  "markQrCode": "Marquer le code QR",
+  "malformedData": "Les données ne sont pas valides"
 }

@@ -3,6 +3,10 @@
   "patchNotesNewFeatures": "Nové funkce",
   "patchNotesImprovements": "Improvements",
   "patchNotesBugFixes": "Opravy chyb",
+  "patchNotesV4_4_0NewFeatures1": "Nyní je možné exportovat tokeny, u kterých lze zajistit, že se nejedná o tokeny privacyIDEA. V současné době nelze vyloučit, že tokeny přidané prostřednictvím čtečky QR kódů pocházejí z aplikace privacyIDEA. Rozlišování bude v budoucích verzích vylepšeno.",
+  "patchNotesV4_4_0NewFeatures2": "Přidána podpora pro \"require presence\" aplikace privacyIDEA.",
+  "patchNotesV4_4_0Improvement1": "Byly přidány další dovozní zdroje.",
+  "patchNotesV4_4_0Improvement2": "Bylo vylepšeno rozpoznávání QR kódů z obrazových souborů.",
   "patchNotesV4_3_1BugFix1": "Opraven problém, kdy nebyla zobrazena hodnota otp po ověření na některých zařízeních.",
   "patchNotesV4_3_1Improvement1": "Skener QR kódů byl vylepšen.",
   "patchNotesV4_3_0NewFeatures1": "Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.",
@@ -475,6 +479,7 @@
       }
     }
   },
+  "couldNotConnectToServer": "Nepodařilo se připojit k serveru.",
   "errorRollOutNotPossibleAnymore": "Roll-out tohoto tokenu již není možný.",
   "errorTokenExpired": "Platnost tokenu {name} vypršela.",
   "@errorTokenExpired": {
@@ -662,5 +667,12 @@
   "passwordMustContainSpecialCharacter": "Heslo musí obsahovat speciální znak",
   "passwordsDoNotMatch": "Hesla se neshodují",
   "selectTokensToExportHelpTitle": "Není váš token uveden?",
-  "selectTokensToExportHelpContent": "Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.\nV současné době lze exportovat pouze ručně přidané a importované tokeny."
+  "selectTokensToExportHelpContent": "Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.\nV současné době lze exportovat pouze ručně přidané a importované tokeny.",
+  "findingQrCodeInImage": "Hledání QR kódu v obrázku...",
+  "qrNotFound": "Žádný QR kód nebyl nalezen!",
+  "qrInFileNotFound": "Ve vybraném obrázku nebyl nalezen žádný QR kód.",
+  "qrInFileNotFound2": "Můžete mi ukázat, kde se QR kód nachází.",
+  "qrInFileNotFound3": "Předpokládám, že kód najdu, pokud se nachází uprostřed označené oblasti.",
+  "markQrCode": "Označte QR kód",
+  "malformedData": "Data nejsou ve správném formátu"
 }

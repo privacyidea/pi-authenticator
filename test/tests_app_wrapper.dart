@@ -8,14 +8,14 @@ import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.da
 import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
-import 'package:privacyidea_authenticator/utils/network_utils.dart';
+import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
 @GenerateNiceMocks([
   MockSpec<TokenRepository>(),
   MockSpec<SettingsRepository>(),
   MockSpec<TokenFolderRepository>(),
-  MockSpec<PrivacyIdeaIOClient>(),
+  MockSpec<PrivacyideaIOClient>(),
   MockSpec<RsaUtils>(),
   MockSpec<FirebaseUtils>(),
   MockSpec<IntroductionRepository>(),

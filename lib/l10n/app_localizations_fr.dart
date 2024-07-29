@@ -16,6 +16,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get patchNotesBugFixes => 'Bug fixes';
 
   @override
+  String get patchNotesV4_4_0NewFeatures1 => 'Il est désormais possible d\'exporter des jetons dont on peut s\'assurer qu\'il ne s\'agit pas de jetons privacyIDEA. Actuellement, il n\'est pas possible d\'exclure que des jetons ajoutés via le lecteur de code QR proviennent de privacyIDEA. La différenciation sera améliorée dans les versions futures.';
+
+  @override
+  String get patchNotesV4_4_0NewFeatures2 => 'Ajout du support pour privacyIDEA\'s \"require presence\".';
+
+  @override
+  String get patchNotesV4_4_0Improvement1 => 'D\'autres sources d\'importation ont été ajoutées.';
+
+  @override
+  String get patchNotesV4_4_0Improvement2 => 'La reconnaissance des codes QR à partir des fichiers image a été améliorée.';
+
+  @override
   String get patchNotesV4_3_1BugFix1 => 'Un problème a été corrigé où la valeur OTP n\'était pas affichée après l\'authentification sur certains appareils.';
 
   @override
@@ -449,6 +461,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String errorWhenPullingChallenges(Object name) {
     return 'Une erreur s\'est produite lors de l\'interrogation des défis de $name';
   }
+
+  @override
+  String get couldNotConnectToServer => 'Impossible de se connecter au serveur.';
 
   @override
   String get errorRollOutNotPossibleAnymore => 'Le déploiement de ce jeton n\'est plus possible.';
@@ -886,7 +901,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String invalidValueForParameter(Object value, Object parameter) {
-    return '[$value] is not a valid value for uri parameter [parameter].';
+    return '\"$value\" is not a valid value for the parameter \"$parameter\".';
   }
 
   @override
@@ -937,4 +952,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get selectTokensToExportHelpContent => 'Si un jeton n\'est pas répertorié, il n\'est pas garanti qu\'il ne s\'agisse pas d\'un jeton privacyIDEA.\nActuellement, seuls les jetons ajoutés manuellement et importés sont exportables.';
+
+  @override
+  String get findingQrCodeInImage => 'Recherche d\'un code QR dans une image...';
+
+  @override
+  String get qrNotFound => 'Aucun code QR trouvé !';
+
+  @override
+  String get qrInFileNotFound => 'Aucun code QR n\'a été trouvé dans l\'image sélectionnée.';
+
+  @override
+  String get qrInFileNotFound2 => 'Vous pouvez me montrer où se trouve le code QR.';
+
+  @override
+  String get qrInFileNotFound3 => 'Je pense que je trouverai le code s\'il se trouve au milieu de la zone marquée.';
+
+  @override
+  String get markQrCode => 'Marquer le code QR';
+
+  @override
+  String get malformedData => 'Les données ne sont pas valides';
 }

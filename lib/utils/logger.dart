@@ -110,8 +110,8 @@ class Logger {
 
   /*----------- LOGGING METHODS -----------*/
 
-  void logInfo(String message, {String? name, bool verbose = false}) {
-    String infoString = _convertLogToSingleString(message, name: name, logLevel: LogLevel.INFO);
+  void logInfo(String message, {dynamic stackTrace, String? name, bool verbose = false}) {
+    String infoString = _convertLogToSingleString(message, stackTrace: stackTrace, name: name, logLevel: LogLevel.INFO);
     infoString = _textFilter(infoString);
     if (_verbose || verbose) {
       _logToFile(infoString);
@@ -120,7 +120,7 @@ class Logger {
   }
 
   static void info(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
-      instance.logInfo(message, name: name, verbose: verbose);
+      instance.logInfo(message, stackTrace: stackTrace, name: name, verbose: verbose);
 
   void logWarning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
     String warningString = _convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.WARNING);

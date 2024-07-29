@@ -80,77 +80,47 @@ class _ConflictedImportTokensTileState extends State<ConflictedImportTokensTile>
       scrollDirection: Axis.horizontal,
       controller: scrollController,
       physics: const NeverScrollableScrollPhysics(),
-      child: MediaQuery.of(context).orientation == Orientation.landscape
-          ? SizedBox(
-              width: quarterScreenWidth * 3,
-              child: Row(
-                children: [
-                  Flexible(
-                    child: Container(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      child: NoConflictImportTokensTile(
-                        token: widget.importTokenEntry.newToken,
-                        selected: widget.importTokenEntry.selectedToken,
-                        alignment: Alignment.centerRight,
-                        onTap: widget.importTokenEntry.oldToken != null ? () => _setSelectedToken(widget.importTokenEntry.newToken) : null,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    child: Flexible(
-                      child: NoConflictImportTokensTile(
-                        token: widget.importTokenEntry.oldToken!,
-                        selected: widget.importTokenEntry.selectedToken,
-                        alignment: Alignment.centerLeft,
-                        onTap: () => _setSelectedToken(widget.importTokenEntry.oldToken!),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : GestureDetector(
-              onHorizontalDragEnd: (details) {
-                if (details.primaryVelocity!.abs() < 100) return;
-                if (details.primaryVelocity! < 0) {
-                  if (widget.importTokenEntry.selectedToken != widget.importTokenEntry.oldToken) {
-                    _setSelectedToken(widget.importTokenEntry.oldToken!);
-                  }
-                } else {
-                  if (widget.importTokenEntry.selectedToken != widget.importTokenEntry.newToken) {
-                    _setSelectedToken(widget.importTokenEntry.newToken);
-                  }
-                }
-              },
-              child: SizedBox(
-                width: quarterScreenWidth * 6,
-                child: Row(
-                  children: [
-                    if (widget.importTokenEntry.newToken != widget.importTokenEntry.selectedToken)
-                      SizedBox(
-                        width: quarterScreenWidth,
-                      ),
-                    NoConflictImportTokensTile(
-                      width: widget.importTokenEntry.newToken == widget.importTokenEntry.selectedToken ? quarterScreenWidth * 3 : quarterScreenWidth * 2,
-                      token: widget.importTokenEntry.newToken,
-                      selected: widget.importTokenEntry.selectedToken,
-                      alignment: Alignment.centerRight,
-                      onTap: widget.importTokenEntry.oldToken != null ? () => _setSelectedToken(widget.importTokenEntry.newToken) : null,
-                    ),
-                    NoConflictImportTokensTile(
-                      width: widget.importTokenEntry.oldToken == widget.importTokenEntry.selectedToken ? quarterScreenWidth * 3 : quarterScreenWidth * 2,
-                      token: widget.importTokenEntry.oldToken!,
-                      selected: widget.importTokenEntry.selectedToken,
-                      alignment: Alignment.centerLeft,
-                      onTap: () => _setSelectedToken(widget.importTokenEntry.oldToken!),
-                    ),
-                    if (widget.importTokenEntry.oldToken != null && widget.importTokenEntry.oldToken != widget.importTokenEntry.selectedToken)
-                      SizedBox(width: quarterScreenWidth),
-                  ],
+      child: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          if (details.primaryVelocity!.abs() < 100) return;
+          if (details.primaryVelocity! < 0) {
+            if (widget.importTokenEntry.selectedToken != widget.importTokenEntry.oldToken) {
+              _setSelectedToken(widget.importTokenEntry.oldToken!);
+            }
+          } else {
+            if (widget.importTokenEntry.selectedToken != widget.importTokenEntry.newToken) {
+              _setSelectedToken(widget.importTokenEntry.newToken);
+            }
+          }
+        },
+        child: SizedBox(
+          width: quarterScreenWidth * 6,
+          child: Row(
+            children: [
+              if (widget.importTokenEntry.newToken != widget.importTokenEntry.selectedToken)
+                SizedBox(
+                  width: quarterScreenWidth,
                 ),
+              NoConflictImportTokensTile(
+                width: widget.importTokenEntry.newToken == widget.importTokenEntry.selectedToken ? quarterScreenWidth * 3 : quarterScreenWidth * 2,
+                token: widget.importTokenEntry.newToken,
+                selected: widget.importTokenEntry.selectedToken,
+                alignment: Alignment.centerRight,
+                onTap: widget.importTokenEntry.oldToken != null ? () => _setSelectedToken(widget.importTokenEntry.newToken) : null,
               ),
-            ),
+              NoConflictImportTokensTile(
+                width: widget.importTokenEntry.oldToken == widget.importTokenEntry.selectedToken ? quarterScreenWidth * 3 : quarterScreenWidth * 2,
+                token: widget.importTokenEntry.oldToken!,
+                selected: widget.importTokenEntry.selectedToken,
+                alignment: Alignment.centerLeft,
+                onTap: () => _setSelectedToken(widget.importTokenEntry.oldToken!),
+              ),
+              if (widget.importTokenEntry.oldToken != null && widget.importTokenEntry.oldToken != widget.importTokenEntry.selectedToken)
+                SizedBox(width: quarterScreenWidth),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../utils/errors.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../enums/algorithms.dart';
@@ -107,14 +108,12 @@ class TOTPToken extends OTPToken {
   }
 
   factory TOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
-    if (uriMap[URI_SECRET] == null) throw ArgumentError('Secret is required');
-    if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) throw ArgumentError('Digits must be greater than 0');
-    if (uriMap[URI_PERIOD] != null && uriMap[URI_PERIOD] < 1) throw ArgumentError('Period must be greater than 0');
+    validateUriMap(uriMap);
     return TOTPToken(
       label: uriMap[URI_LABEL] ?? '',
       issuer: uriMap[URI_ISSUER] ?? '',
       id: const Uuid().v4(),
-      algorithm: Algorithms.values.byName((uriMap[URI_ALGORITHM] ?? 'SHA1')),
+      algorithm: Algorithms.values.byName((uriMap[URI_ALGORITHM] as String? ?? 'SHA1').toUpperCase()),
       digits: uriMap[URI_DIGITS] ?? 6,
       tokenImage: uriMap[URI_IMAGE],
       secret: Encodings.base32.encode(uriMap[URI_SECRET]),
@@ -123,6 +122,46 @@ class TOTPToken extends OTPToken {
       isLocked: uriMap[URI_PIN],
       origin: uriMap[URI_ORIGIN],
     );
+  }
+
+  /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
+  static void validateUriMap(Map<String, dynamic> uriMap) {
+    if (uriMap[URI_SECRET] == null) {
+      throw LocalizedArgumentError(
+        localizedMessage: ((localizations, value, name) => localizations.secretIsRequired),
+        unlocalizedMessage: 'Secret is required',
+        invalidValue: uriMap[URI_SECRET],
+        name: URI_SECRET,
+      );
+    }
+    if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Digits must be greater than 0',
+        invalidValue: uriMap[URI_DIGITS],
+        name: URI_DIGITS,
+      );
+    }
+    if (uriMap[URI_PERIOD] != null && uriMap[URI_PERIOD] < 1) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Period must be greater than 0',
+        invalidValue: uriMap[URI_PERIOD],
+        name: URI_PERIOD,
+      );
+    }
+    if (uriMap[URI_ALGORITHM] != null) {
+      try {
+        Algorithms.values.byName(uriMap[URI_ALGORITHM].toUpperCase());
+      } catch (e) {
+        throw LocalizedArgumentError(
+          localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+          unlocalizedMessage: 'Algorithm ${uriMap[URI_ALGORITHM]} is not supported',
+          invalidValue: uriMap[URI_ALGORITHM],
+          name: URI_ALGORITHM,
+        );
+      }
+    }
   }
 
   double get currentProgress {

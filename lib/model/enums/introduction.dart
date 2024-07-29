@@ -10,4 +10,5 @@ enum Introduction {
   addFolder, // 3 tokens && 0 groups
   pollForChallenges, // 1st push token && lockToken
   hidePushTokens, // hiding is enabled
+  exportTokens, // has to be accepted to export tokens
 }

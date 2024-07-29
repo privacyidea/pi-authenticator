@@ -33,7 +33,7 @@ import '../repo/secure_push_request_repository.dart';
 import '../utils/custom_int_buffer.dart';
 import '../utils/globals.dart';
 import '../utils/logger.dart';
-import '../utils/network_utils.dart';
+import '../utils/privacyidea_io_client.dart';
 import '../utils/push_provider.dart';
 import '../utils/riverpod_providers.dart';
 import '../utils/rsa_utils.dart';
@@ -41,24 +41,26 @@ import '../utils/utils.dart';
 
 class PushRequestNotifier extends StateNotifier<PushRequestState> {
   late final Future<PushRequestState> initState;
+  final StateNotifierProviderRef ref;
   final loadingRepoMutex = Mutex();
   final updatingRequestMutex = Mutex();
   final PushRequestRepository _pushRepo;
 
   PushProvider _pushProvider;
   PushProvider get pushProvider => _pushProvider;
-  final PrivacyIdeaIOClient _ioClient;
+  final PrivacyideaIOClient _ioClient;
   final RsaUtils _rsaUtils;
 
   final Map<String, Timer> _expirationTimers = {};
 
   PushRequestNotifier({
     PushRequestState? initState,
-    PrivacyIdeaIOClient? ioClient,
+    PrivacyideaIOClient? ioClient,
     required PushProvider pushProvider,
+    required this.ref,
     RsaUtils? rsaUtils,
     PushRequestRepository? pushRepo,
-  })  : _ioClient = ioClient ?? const PrivacyIdeaIOClient(),
+  })  : _ioClient = ioClient ?? const PrivacyideaIOClient(),
         _pushProvider = pushProvider,
         _rsaUtils = rsaUtils ?? const RsaUtils(),
         _pushRepo = pushRepo ?? const SecurePushRequestRepository(),
@@ -303,7 +305,9 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
   }
 
   void _cancalAllTimers() {
-    Logger.info('Canceling all timers: [${_expirationTimers.keys}]', name: 'push_request_notifier.dart#_cancelAllTimers');
+    if (_expirationTimers.keys.isNotEmpty) {
+      Logger.info('Canceling all timers: [${_expirationTimers.keys}]', name: 'push_request_notifier.dart#_cancelAllTimers');
+    }
     final ids = _expirationTimers.keys.toList();
     for (var id in ids) {
       _expirationTimers.remove(id.toString())?.cancel();
@@ -377,13 +381,13 @@ class PushRequestNotifier extends StateNotifier<PushRequestState> {
         response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
       } catch (e) {
         Logger.warning('Sending push request response failed consistently.', name: 'token_widgets.dart#handleReaction', error: e);
-        globalRef?.read(statusMessageProvider.notifier).state = (AppLocalizations.of(await globalContext)!.connectionFailed, null);
+        ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(await globalContext)!.connectionFailed, null);
         return false;
       }
     }
     if (response.statusCode != 200) {
       final appLocalizations = AppLocalizations.of(await globalContext)!;
-      globalRef?.read(statusMessageProvider.notifier).state = (
+      ref.read(statusMessageProvider.notifier).state = (
         '${appLocalizations.sendPushRequestResponseFailed}\n${appLocalizations.statusCode(response.statusCode)}',
         tryJsonDecode(response.body)?["result"]?["error"]?["message"],
       );

@@ -55,7 +55,9 @@ void main() async {
           options: DefaultFirebaseOptions.currentPlatformOf('netknights'),
         );
         await app.setAutomaticDataCollectionEnabled(false);
-        Logger.warning('Automatic data collection: ${app.isAutomaticDataCollectionEnabled}', name: 'firebase_utils.dart#initFirebase');
+        if (app.isAutomaticDataCollectionEnabled) {
+          Logger.error('Automatic data collection should not be enabled', name: 'main.dart#main');
+        }
 
         runApp(AppWrapper(child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization)));
       });

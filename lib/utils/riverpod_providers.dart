@@ -4,24 +4,24 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_localizations.dart';
-import '../model/extensions/sortable_list.dart';
 import '../model/mixins/sortable_mixin.dart';
 import '../model/states/introduction_state.dart';
+import '../model/states/progress_state.dart';
 import '../model/states/push_request_state.dart';
 import '../model/states/settings_state.dart';
 import '../model/states/token_filter.dart';
 import '../model/states/token_folder_state.dart';
 import '../model/states/token_state.dart';
-import '../model/token_folder.dart';
 import '../model/tokens/otp_token.dart';
-import '../model/tokens/token.dart';
 import '../repo/preference_introduction_repository.dart';
 import '../repo/preference_settings_repository.dart';
 import '../repo/preference_token_folder_repository.dart';
 import '../state_notifiers/completed_introduction_notifier.dart';
 import '../state_notifiers/deeplink_notifier.dart';
+import '../state_notifiers/progress_state_notifier.dart';
 import '../state_notifiers/push_request_notifier.dart';
 import '../state_notifiers/settings_notifier.dart';
+import '../state_notifiers/sortable_notifier.dart';
 import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
 import 'customization/application_customization.dart';
@@ -39,7 +39,7 @@ WidgetRef? globalRef;
 final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
   (ref) {
     Logger.info("New TokenNotifier created");
-    final newTokenNotifier = TokenNotifier();
+    final newTokenNotifier = TokenNotifier(ref: ref);
 
     ref.listen(deeplinkProvider, (previous, newLink) {
       if (newLink == null) {
@@ -69,6 +69,7 @@ final pushRequestProvider = StateNotifierProvider<PushRequestNotifier, PushReque
     final tokenState = ref.read(tokenProvider);
     PushProvider pushProvider = tokenState.hasPushTokens ? PushProvider() : PlaceholderPushProvider(); // Until the state is loaded from the repo
     final pushRequestNotifier = PushRequestNotifier(
+      ref: ref,
       pushProvider: pushProvider,
     );
 
@@ -182,30 +183,28 @@ final homeWidgetProvider = StateProvider<Map<String, OTPToken>>(
 
 final sortableProvider = StateNotifierProvider<SortableNotifier, List<SortableMixin>>(
   (ref) {
-    final SortableNotifier notifier = SortableNotifier();
+    final SortableNotifier notifier = SortableNotifier(ref);
     Logger.info("New sortableProvider created", name: 'sortableProvider');
-    ref.listen(tokenProvider, (previous, next) => notifier.handleNewList(next.tokens));
-    ref.listen(tokenFolderProvider, (previous, next) => notifier.handleNewList(next.folders));
-    ref.read(tokenProvider.notifier).initState.then((newState) => notifier.handleNewList(newState.tokens));
-    ref.read(tokenFolderProvider.notifier).initState.then((newState) => notifier.handleNewList(newState.folders));
+    ref.listen(tokenProvider, (previous, next) => notifier.handleNewStateList(next.tokens));
+    ref.listen(tokenFolderProvider, (previous, next) => notifier.handleNewStateList(next.folders));
+    Future.wait(
+      [ref.read(tokenProvider.notifier).initState, ref.read(tokenFolderProvider.notifier).initState],
+    ).then((values) {
+      final sortables = <SortableMixin>[];
+      for (final v in values) {
+        if (v is TokenState) {
+          sortables.addAll(v.tokens);
+        } else if (v is TokenFolderState) {
+          sortables.addAll(v.folders);
+        }
+      }
+      notifier.handleNewStateList(sortables);
+    });
     return notifier;
   },
 );
 
-class SortableNotifier extends StateNotifier<List<SortableMixin>> {
-  SortableNotifier({List<SortableMixin> initState = const []}) : super(initState);
-
-  void handleNewList<T extends SortableMixin>(List<T> newList) {
-    var newState = List<SortableMixin>.from(state);
-    newState.removeWhere((element) => element is T);
-    newState.addAll(newList);
-    state = newState.sorted.fillNullIndices();
-    if (newList.any((element) => element.sortIndex == null)) {
-      globalRef?.read(tokenProvider.notifier).addOrReplaceTokens(state.whereType<Token>().toList());
-      globalRef?.read(tokenFolderProvider.notifier).addOrReplaceFolders(state.whereType<TokenFolder>().toList());
-    }
-  }
-}
+final progressStateProvider = StateNotifierProvider<ProgressStateNotifier, ProgressState?>((ref) => ProgressStateNotifier());
 
 /// Only used for the app customizer
 final applicationCustomizerProvider = StateProvider<ApplicationCustomization>((ref) => ApplicationCustomization.defaultCustomization);

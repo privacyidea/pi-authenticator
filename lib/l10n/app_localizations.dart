@@ -121,6 +121,30 @@ abstract class AppLocalizations {
   /// **'Bug fixes'**
   String get patchNotesBugFixes;
 
+  /// No description provided for @patchNotesV4_4_0NewFeatures1.
+  ///
+  /// In en, this message translates to:
+  /// **'It is now possible to export tokens where it can be ensured that they are not privacyIDEA tokens. Currently, it cannot be ruled out that tokens added via the QR code scanner originate from privacyIDEA. The differentiation will be improved in future versions.'**
+  String get patchNotesV4_4_0NewFeatures1;
+
+  /// No description provided for @patchNotesV4_4_0NewFeatures2.
+  ///
+  /// In en, this message translates to:
+  /// **'Added support for privacyIDEA\'s \"require presence\"'**
+  String get patchNotesV4_4_0NewFeatures2;
+
+  /// No description provided for @patchNotesV4_4_0Improvement1.
+  ///
+  /// In en, this message translates to:
+  /// **'Further import sources have been added.'**
+  String get patchNotesV4_4_0Improvement1;
+
+  /// No description provided for @patchNotesV4_4_0Improvement2.
+  ///
+  /// In en, this message translates to:
+  /// **'Improved recognition of QR codes from image files.'**
+  String get patchNotesV4_4_0Improvement2;
+
   /// No description provided for @patchNotesV4_3_1BugFix1.
   ///
   /// In en, this message translates to:
@@ -955,6 +979,12 @@ abstract class AppLocalizations {
   /// **'An error occured when polling for challenges of {name}'**
   String errorWhenPullingChallenges(Object name);
 
+  /// No description provided for @couldNotConnectToServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not connect to server'**
+  String get couldNotConnectToServer;
+
   /// No description provided for @errorRollOutNotPossibleAnymore.
   ///
   /// In en, this message translates to:
@@ -1678,7 +1708,7 @@ abstract class AppLocalizations {
   /// No description provided for @invalidValueForParameter.
   ///
   /// In en, this message translates to:
-  /// **'[{value}] is not a valid value for uri parameter [parameter].'**
+  /// **'\"{value}\" is not a valid value for the parameter \"{parameter}\".'**
   String invalidValueForParameter(Object value, Object parameter);
 
   /// No description provided for @unsupported.
@@ -1770,6 +1800,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.\nCurrently only manually added and imported tokens are exportable.'**
   String get selectTokensToExportHelpContent;
+
+  /// No description provided for @findingQrCodeInImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for QR code in image...'**
+  String get findingQrCodeInImage;
+
+  /// No description provided for @qrNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No QR code found!'**
+  String get qrNotFound;
+
+  /// No description provided for @qrInFileNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No QR code was found in the selected image.'**
+  String get qrInFileNotFound;
+
+  /// No description provided for @qrInFileNotFound2.
+  ///
+  /// In en, this message translates to:
+  /// **'You can show me where the QR code is located.'**
+  String get qrInFileNotFound2;
+
+  /// No description provided for @qrInFileNotFound3.
+  ///
+  /// In en, this message translates to:
+  /// **'I expect i will find the code if it is in the middle of the marked area.'**
+  String get qrInFileNotFound3;
+
+  /// No description provided for @markQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark QR Code'**
+  String get markQrCode;
+
+  /// No description provided for @malformedData.
+  ///
+  /// In en, this message translates to:
+  /// **'Malformed data'**
+  String get malformedData;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

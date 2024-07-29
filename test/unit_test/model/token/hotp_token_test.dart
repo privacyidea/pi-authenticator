@@ -127,6 +127,30 @@ void _testHotpToken() {
         };
         expect(() => HOTPToken.fromUriMap(uriMap), throwsArgumentError);
       });
+      test('with lowercase algorithm', () {
+        final uriMap = {
+          'URI_COUNTER': 10,
+          'URI_LABEL': 'label',
+          'URI_ISSUER': 'issuer',
+          'URI_ALGORITHM': 'sha1',
+          'URI_SECRET': Uint8List.fromList(utf8.encode('secret')),
+          'URI_DIGITS': 6,
+          'URI_TYPE': 'HOTP',
+          'URI_PIN': true,
+          'URI_IMAGE': 'example.png',
+        };
+        final hotpFromUriMap = HOTPToken.fromUriMap(uriMap);
+        expect(hotpFromUriMap.counter, 10);
+        expect(hotpFromUriMap.label, 'label');
+        expect(hotpFromUriMap.issuer, 'issuer');
+        expect(hotpFromUriMap.algorithm, Algorithms.SHA1);
+        expect(hotpFromUriMap.secret, 'ONSWG4TFOQ======');
+        expect(hotpFromUriMap.digits, 6);
+        expect(hotpFromUriMap.type, 'HOTP');
+        expect(hotpFromUriMap.pin, true);
+        expect(hotpFromUriMap.tokenImage, 'example.png');
+      });
+
       test('with empty map', () {
         final uriMap = <String, dynamic>{};
         expect(() => HOTPToken.fromUriMap(uriMap), throwsArgumentError);

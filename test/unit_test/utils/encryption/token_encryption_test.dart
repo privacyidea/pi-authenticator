@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:privacyidea_authenticator/model/encryption/token_encryption.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
@@ -7,6 +6,8 @@ import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/steam_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/privacyidea_authenticator_qr_processor.dart';
+import 'package:privacyidea_authenticator/utils/encryption/token_encryption.dart';
+import 'package:zxing2/qrcode.dart';
 
 void main() {
   _testTokenEncryption();
@@ -39,7 +40,7 @@ void _testTokenEncryption() {
       expect(decrypted.whereType<DayPasswordToken>().length, 1);
       expect(decrypted.whereType<PushToken>().length, 1);
     });
-    test('generateQrCodeUri', () {
+    test('generateExportUri', () {
       final tokensList = [
         HOTPToken(id: 'id1', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret1'),
         TOTPToken(period: 30, id: 'id2', algorithm: Algorithms.SHA256, digits: 8, secret: 'secret2'),
@@ -57,10 +58,30 @@ void _testTokenEncryption() {
       for (var i = 0; tokensList.length > i; i++) {
         final token = tokensList[i];
         final compressed = compressedTokensBase64[i];
-        final qrCodeUri = TokenEncryption.generateQrCodeUri(token: token);
+        final qrCodeUri = TokenEncryption.generateExportUri(token: token);
         final uriString = qrCodeUri.toString();
         expect(uriString.isNotEmpty, true);
         expect(uriString, '${PrivacyIDEAAuthenticatorQrProcessor.scheme}://${PrivacyIDEAAuthenticatorQrProcessor.host}?data=$compressed');
+      }
+    });
+
+    test('toQrCode', () {
+      final tokensList = [
+        HOTPToken(id: 'id1', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret1'),
+        TOTPToken(period: 30, id: 'id2', algorithm: Algorithms.SHA256, digits: 8, secret: 'secret2'),
+        SteamToken(id: 'id3', secret: 'secret3'),
+        DayPasswordToken(period: const Duration(hours: 24), id: 'id4', algorithm: Algorithms.SHA512, digits: 10, secret: 'secret4'),
+        PushToken(serial: 'serial', id: 'id5'),
+      ];
+      for (var i = 0; tokensList.length > i; i++) {
+        final token = tokensList[i];
+        QRCode? qrCode;
+        try {
+          qrCode = TokenEncryption.toQrCode(token);
+        } catch (e) {
+          qrCode = null;
+        }
+        expect(qrCode, isNotNull);
       }
     });
     test('fromQrCodeUri', () {
@@ -81,7 +102,7 @@ void _testTokenEncryption() {
       for (var i = 0; uriStrings.length > i; i++) {
         final uri = Uri.parse(uriStrings[i]);
         final token = tokensList[i];
-        final decrypted = TokenEncryption.fromQrCodeUri(uri);
+        final decrypted = TokenEncryption.fromExportUri(uri);
         expect(decrypted, token);
       }
     });

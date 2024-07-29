@@ -128,6 +128,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   void setLatestStartedVersion(Version version) {
+    if (state.latestStartedVersion >= version) return;
     Logger.info('Latest started version set to $version', name: 'settings_notifier.dart#setLatestStartedVersion');
     state = state.copyWith(latestStartedVersion: version);
     _saveToRepo();

@@ -7,8 +7,8 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../mains/main_netknights.dart';
-import '../../../../../model/encryption/token_encryption.dart';
 import '../../../../../model/tokens/token.dart';
+import '../../../../../utils/encryption/token_encryption.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod_providers.dart';
 import '../../../../../utils/validators.dart';

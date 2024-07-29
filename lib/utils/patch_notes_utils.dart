@@ -17,6 +17,9 @@ class PatchNotesUtils {
     for (Version noteVersion in allNotes.keys) {
       if (noteVersion > latestStartedVersion) newNotes[noteVersion] = allNotes[noteVersion]!;
     }
+    while (newNotes.length > 2) {
+      newNotes.remove(newNotes.keys.fold(null, (oldest, e) => e > oldest ? oldest : e));
+    }
     return newNotes;
   }
 

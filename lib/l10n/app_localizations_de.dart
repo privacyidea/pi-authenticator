@@ -16,6 +16,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get patchNotesBugFixes => 'Fehlerbehebungen';
 
   @override
+  String get patchNotesV4_4_0NewFeatures1 => 'Es ist nun möglich, Token zu exportieren, bei denen sichergestellt werden kann, dass es sich nicht um privacyIDEA Token handelt. Derzeit kann nicht ausgeschlossen werden, dass über den QR-Code-Scanner hinzugefügte Token von privacyIDEA stammen. Die Differenzierung wird in zukünftigen Versionen verbessert.';
+
+  @override
+  String get patchNotesV4_4_0NewFeatures2 => 'Unterstützung für privacyIDEA\'s \"require presence\" hinzugefügt.';
+
+  @override
+  String get patchNotesV4_4_0Improvement1 => 'Es wurden weitere Importquellen hinzugefügt.';
+
+  @override
+  String get patchNotesV4_4_0Improvement2 => 'Die erkennung von QR-Codes aus Bilddateien wurde verbessert.';
+
+  @override
   String get patchNotesV4_3_1BugFix1 => 'Ein Problem wurde behoben, bei dem der otp-Wert nach der Authentifizierung auf einigen Geräten nicht angezeigt wurde.';
 
   @override
@@ -449,6 +461,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String errorWhenPullingChallenges(Object name) {
     return 'Fehler beim Abrufen der Authentifizierungsanfragen von $name';
   }
+
+  @override
+  String get couldNotConnectToServer => 'Konnte keine Verbindung zum Server herstellen.';
 
   @override
   String get errorRollOutNotPossibleAnymore => 'Das Ausrollen dieses Tokens ist nicht mehr möglich.';
@@ -886,7 +901,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String invalidValueForParameter(Object value, Object parameter) {
-    return '[$value] is not a valid value for uri parameter [parameter].';
+    return '\"$value\" is not a valid value for the parameter \"$parameter\".';
   }
 
   @override
@@ -937,4 +952,25 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get selectTokensToExportHelpContent => 'Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden.';
+
+  @override
+  String get findingQrCodeInImage => 'Suche nach QR-Code im Bild...';
+
+  @override
+  String get qrNotFound => 'Kein QR-Code gefunden!';
+
+  @override
+  String get qrInFileNotFound => 'Es wurde kein QR-Code in dem ausgewählten Bild gefunden.';
+
+  @override
+  String get qrInFileNotFound2 => 'Sie können mir zeigen, wo sich der QR-Code befindet.';
+
+  @override
+  String get qrInFileNotFound3 => 'Ich erwarte, dass ich den Code finde, wenn er sich in der Mitte des markierten Bereichs befindet.';
+
+  @override
+  String get markQrCode => 'QR-Code markieren';
+
+  @override
+  String get malformedData => 'Fehlerhafte Daten';
 }

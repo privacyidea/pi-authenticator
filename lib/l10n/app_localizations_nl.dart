@@ -16,6 +16,18 @@ class AppLocalizationsNl extends AppLocalizations {
   String get patchNotesBugFixes => 'Bugfixes';
 
   @override
+  String get patchNotesV4_4_0NewFeatures1 => 'Het is nu mogelijk om tokens te exporteren waarvan kan worden gegarandeerd dat het geen privacyIDEA tokens zijn. Op dit moment kan niet worden uitgesloten dat tokens die zijn toegevoegd via de QR-code scanner afkomstig zijn van privacyIDEA. De differentiatie zal in toekomstige versies worden verbeterd.';
+
+  @override
+  String get patchNotesV4_4_0NewFeatures2 => 'Ondersteuning toegevoegd voor privacyIDEA\'s \"require presence\".';
+
+  @override
+  String get patchNotesV4_4_0Improvement1 => 'Er zijn meer invoerbronnen toegevoegd.';
+
+  @override
+  String get patchNotesV4_4_0Improvement2 => 'De herkenning van QR-codes uit afbeeldingsbestanden is verbeterd.';
+
+  @override
   String get patchNotesV4_3_1BugFix1 => 'Een probleem is opgelost waarbij de otp-waarde niet werd weergegeven na authenticatie op sommige apparaten.';
 
   @override
@@ -449,6 +461,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String errorWhenPullingChallenges(Object name) {
     return 'Er is een fout opgetreden bij het zoeken naar uitdagingen van $name';
   }
+
+  @override
+  String get couldNotConnectToServer => 'Kan geen verbinding maken met de server.';
 
   @override
   String get errorRollOutNotPossibleAnymore => 'Het uitrollen van dit token is niet meer mogelijk.';
@@ -886,7 +901,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String invalidValueForParameter(Object value, Object parameter) {
-    return '[$value] is not a valid value for uri parameter [parameter].';
+    return '\"$value\" is not a valid value for the parameter \"$parameter\".';
   }
 
   @override
@@ -937,4 +952,25 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get selectTokensToExportHelpContent => 'Als een token niet in de lijst staat, is het niet gegarandeerd dat het geen privacyIDEA token is.\nMomenteel kunnen alleen handmatig toegevoegde en geïmporteerde tokens worden geëxporteerd.';
+
+  @override
+  String get findingQrCodeInImage => 'Op zoek naar QR code in afbeelding...';
+
+  @override
+  String get qrNotFound => 'Geen QR code gevonden!';
+
+  @override
+  String get qrInFileNotFound => 'Er is geen QR code gevonden in de geselecteerde afbeelding.';
+
+  @override
+  String get qrInFileNotFound2 => 'U kunt mij laten zien waar de QR code is.';
+
+  @override
+  String get qrInFileNotFound3 => 'Ik verwacht dat ik de code zal vinden als het in het midden van het gemarkeerde gebied is.';
+
+  @override
+  String get markQrCode => 'Markeer QR Code';
+
+  @override
+  String get malformedData => 'De QR code bevat onjuiste gegevens.';
 }
