@@ -136,13 +136,14 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
     }
     _disposeOverlay();
     final screenSize = (globalRef?.read(appConstraintsProvider) ?? const BoxConstraints()).biggest;
+    final textScaler = MediaQuery.of(context).textScaler;
     if (widget.tooltipWhenFocused != null) {
       final textSize = textSizeOf(
         text: widget.tooltipWhenFocused!,
         style: Theme.of(context).textTheme.bodyLarge!,
-        maxWidth: MediaQuery.of(context).size.width / 3 * 2 -
+        maxWidth: screenSize.width / 3 * 2 -
             (tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2),
-        textScaler: MediaQuery.of(context).textScaler,
+        textScaler: textScaler,
       );
 
       final overlaySize = Size(
