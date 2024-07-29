@@ -168,6 +168,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
             margin: tooltipMargin,
             border: tooltipBorderWidth,
             textStyle: Theme.of(context).textTheme.bodyLarge!,
+            onComplete: widget.onComplete,
           ),
         ),
       );
@@ -217,20 +218,18 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
             ),
           ),
           Positioned.fill(
-            child: Tooltip(
-              message: AppLocalizations.of(context)!.continueButton,
-              triggerMode: TooltipTriggerMode.longPress,
+
               child: GestureDetector(
+
                 onTapDown: (details) {
                   widget.onComplete?.call();
                 },
-                child: Container(
-                  height: double.maxFinite,
-                  width: double.maxFinite,
-                  color: Colors.transparent,
-                ),
+              child: Text(
+                AppLocalizations.of(context)!.continueButton,
+                style: const TextStyle(fontSize: 0),
               ),
             ),
+
           ),
         ],
       ),
