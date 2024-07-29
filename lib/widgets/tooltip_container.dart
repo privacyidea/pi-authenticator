@@ -6,6 +6,7 @@ class TooltipContainer extends StatelessWidget {
   final EdgeInsets margin;
   final double border;
   final TextStyle textStyle;
+  final void Function()? onComplete;
   const TooltipContainer(
     this.tooltip, {
     super.key,
@@ -13,6 +14,7 @@ class TooltipContainer extends StatelessWidget {
     required this.margin,
     required this.border,
     required this.textStyle,
+    required this.onComplete,
   });
 
   @override
@@ -31,10 +33,16 @@ class TooltipContainer extends StatelessWidget {
             ),
           ],
         ),
-        child: Text(
-          tooltip,
-          style: textStyle,
-          textAlign: TextAlign.center,
+        child: GestureDetector(
+          onTapDown: (details) {
+            onComplete?.call();
+          },
+          child: Text(
+            tooltip,
+            style: textStyle,
+            textAlign: TextAlign.center,
+          ),
         ),
+
       );
 }

@@ -146,9 +146,11 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
             ),
           ),
         ),
-      ],
-    );
+          ],
+        );
+
   }
+
 
   ScrollPhysics _getScrollPhysics(bool allowToRefresh) =>
       allowToRefresh ? const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()) : const BouncingScrollPhysics();

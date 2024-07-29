@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:base32/base32.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 
 import '../utils/globals.dart';
 import '../utils/identifiers.dart';
@@ -144,7 +143,7 @@ class PushRequest {
     Logger.debug('Push request data ($data) is valid.', name: 'push_request.dart#verifyData');
   }
 
-  Future<bool> verifySignature(PushToken token, {LegacyUtils legacyUtils = const LegacyUtils(), RsaUtils rsaUtils = const RsaUtils()}) async {
+  Future<bool> verifySignature(PushToken token, {RsaUtils rsaUtils = const RsaUtils()}) async {
     //5NV6KJCFCLNQURT2ZTBRHHGY6FDXOCOR|http://192.168.178.22:5000/ttype/push|PIPU0000E793|Pick a Number!|privacyIDEA|0|["A", "B", "C"]
     Logger.info('Adding push request to token', name: 'push_request_notifier.dart#newRequest');
     String signedData = '$nonce|'
@@ -161,9 +160,7 @@ class PushRequest {
       globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(url: uri, sslVerify: sslVerify));
     }
 
-    bool isVerified = token.privateTokenKey == null
-        ? await legacyUtils.verify(token.serial, signedData, signature)
-        : rsaUtils.verifyRSASignature(token.rsaPublicServerKey!, utf8.encode(signedData), base32.decode(signature));
+    bool isVerified = rsaUtils.verifyRSASignature(token.rsaPublicServerKey!, utf8.encode(signedData), base32.decode(signature));
 
     if (!isVerified) {
       Logger.warning(

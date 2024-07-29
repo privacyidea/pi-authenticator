@@ -308,8 +308,22 @@ class TokenNotifier extends StateNotifier<TokenState> {
   /// There is no need to use mutexes because the updating functions are always using the latest version of the updating tokens.
   */
 
+  /// Adds a new token and returns true if successful, false if not.
+  Future<bool> addNewToken(Token token) async {
+    final success = await _addOrReplaceToken(token);
+    await _handlePushTokensIfExist();
+    return success;
+  }
+
   /// Adds or replaces a token and returns true if successful, false if not.
   Future<bool> addOrReplaceToken(Token token) => _addOrReplaceToken(token);
+
+  /// Adds new tokens and returns the tokens that could not be added.
+  Future<List<Token>> addTokens(List<Token> tokens) async {
+    final failedTokens = await _addOrReplaceTokens(tokens);
+    await _handlePushTokensIfExist();
+    return failedTokens;
+  }
 
   /// Adds or replaces a list of tokens and returns the tokens that could not be added or replaced.
   Future<List<Token>> addOrReplaceTokens(List<Token> tokens) => _addOrReplaceTokens(tokens);
