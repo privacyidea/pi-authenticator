@@ -193,7 +193,7 @@ class TokenTemplate with _$TokenTemplate {
   String get label => data[URI_LABEL] ?? 'No label';
 
   Token toToken(TokenContainer container) => Token.fromUriMap(data).copyWith(
-        containerId: () => container.serial,
+        containerSerial: () => container.serial,
         origin: TokenOriginData(
           appName: '${container.serverName} ${container.serial}',
           data: data.toString(),

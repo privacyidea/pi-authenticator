@@ -30,7 +30,7 @@ class TokenState {
         lastlyUpdatedTokens = List<Token>.from(lastlyUpdatedTokens ?? tokens);
 
   List<Token> get tokensNotInContainer {
-    final tokensNotInContainer = tokens.maybePiTokens.where((token) => token.containerId != null).toList();
+    final tokensNotInContainer = tokens.maybePiTokens.where((token) => token.containerSerial != null).toList();
     Logger.debug('${tokensNotInContainer.length}/${tokens.length} tokens not in container', name: 'token_state.dart#tokensNotInContainer');
     return tokensNotInContainer;
   }
@@ -175,7 +175,7 @@ extension TokenListExtension on List<Token> {
 
   List<Token> fromContainer(String containerId) {
     final filtered = where((token) {
-      return token.origin?.source == TokenOriginSourceType.container && token.containerId == containerId;
+      return token.origin?.source == TokenOriginSourceType.container && token.containerSerial == containerId;
     }).toList();
     Logger.debug('${filtered.length}/$length tokens with containerId: $containerId', name: 'token_state.dart#fromContainer');
     return filtered;

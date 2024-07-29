@@ -9,7 +9,7 @@ part of 'steam_token.dart';
 SteamToken _$SteamTokenFromJson(Map<String, dynamic> json) => SteamToken(
       id: json['id'] as String,
       secret: json['secret'] as String,
-      containerId: json['containerId'] as String?,
+      containerSerial: json['containerSerial'] as String?,
       serial: json['serial'] as String?,
       type: json['type'] as String?,
       tokenImage: json['tokenImage'] as String?,
@@ -27,7 +27,7 @@ SteamToken _$SteamTokenFromJson(Map<String, dynamic> json) => SteamToken(
 
 Map<String, dynamic> _$SteamTokenToJson(SteamToken instance) =>
     <String, dynamic>{
-      'containerId': instance.containerId,
+      'containerSerial': instance.containerSerial,
       'label': instance.label,
       'issuer': instance.issuer,
       'id': instance.id,

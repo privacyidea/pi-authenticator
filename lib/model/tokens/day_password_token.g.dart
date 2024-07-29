@@ -13,7 +13,7 @@ DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) =>
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       digits: (json['digits'] as num).toInt(),
       secret: json['secret'] as String,
-      containerId: json['containerId'] as String?,
+      containerSerial: json['containerSerial'] as String?,
       serial: json['serial'] as String?,
       viewMode: $enumDecodeNullable(
               _$DayPasswordTokenViewModeEnumMap, json['viewMode']) ??
@@ -34,7 +34,7 @@ DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$DayPasswordTokenToJson(DayPasswordToken instance) =>
     <String, dynamic>{
-      'containerId': instance.containerId,
+      'containerSerial': instance.containerSerial,
       'label': instance.label,
       'issuer': instance.issuer,
       'id': instance.id,
