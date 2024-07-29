@@ -25,7 +25,7 @@ class HOTPToken extends OTPToken {
 
   HOTPToken({
     this.counter = 0,
-    super.containerId,
+    super.containerSerial,
     required super.id,
     required super.algorithm,
     required super.digits,
@@ -66,7 +66,7 @@ class HOTPToken extends OTPToken {
     int? counter,
     String? label,
     String? issuer,
-    String? Function()? containerId,
+    String? Function()? containerSerial,
     String? id,
     Algorithms? algorithm,
     int? digits,
@@ -84,7 +84,7 @@ class HOTPToken extends OTPToken {
         counter: counter ?? this.counter,
         label: label ?? this.label,
         issuer: issuer ?? this.issuer,
-        containerId: containerId != null ? containerId() : this.containerId,
+        containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
         id: id ?? this.id,
         algorithm: algorithm ?? this.algorithm,
         digits: digits ?? this.digits,

@@ -23,7 +23,7 @@ Map<String, dynamic> _$CredentialsStateToJson(CredentialsState instance) =>
 // **************************************************************************
 
 String _$tokenContainerProviderHash() =>
-    r'c9d4677c538e4a3abe2574515fccbdb9b78bccee';
+    r'88f3953135b40aa4478987e3c41069ec94bc2a37';
 
 /// Copied from Dart SDK
 class _SystemHash {

@@ -16,7 +16,7 @@ import 'totp_token.dart';
 abstract class Token with SortableMixin {
   bool? get isPrivacyIdeaToken => origin?.isPrivacyIdeaToken;
   final String tokenVersion = 'v1.0.0'; // The version of this token, this is used for serialization.
-  final String? containerId; // The id of the container this token belongs to.
+  final String? containerSerial; // The serial of the container this token belongs to.
   final String label; // the name of the token, it cannot be uses as an identifier
   final String issuer; // The issuer of this token, currently unused.
   final String id; // this is the identifier of the token
@@ -60,7 +60,7 @@ abstract class Token with SortableMixin {
     this.serial,
     this.label = '',
     this.issuer = '',
-    this.containerId,
+    this.containerSerial,
     required this.id,
     required this.type,
     this.tokenImage,
@@ -89,7 +89,7 @@ abstract class Token with SortableMixin {
     String? serial,
     String? label,
     String? issuer,
-    String? Function()? containerId,
+    String? Function()? containerSerial,
     String? id,
     bool? isLocked,
     bool? isHidden,
