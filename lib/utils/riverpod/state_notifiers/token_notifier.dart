@@ -339,29 +339,23 @@ class TokenNotifier extends StateNotifier<TokenState> {
   Future<void> updateContainerTokens(TokenContainer container) async {
     await initState;
     Logger.info('Updating tokens from container.', name: 'token_notifier.dart#updateContainerTokens');
-    await Future.delayed(const Duration(milliseconds: 2000));
     final templatesToAdd = <TokenTemplate>[];
     final templatesToUpdate = <TokenTemplate>[];
     final templatesToRemove = <TokenTemplate>[];
 
     final knownContainerTokens = state.tokens.fromContainer(container.serial)..addAll(state.maybePiTokens);
     final serverTokenTemplates = container.syncedTokenTemplates;
-    await Future.delayed(const Duration(milliseconds: 2000));
     Logger.debug(
       'App knows  ${knownContainerTokens.length} of ${serverTokenTemplates.length} server tokens',
       name: 'token_notifier.dart#updateContainerTokens',
     );
-    await Future.delayed(const Duration(milliseconds: 2000));
     final appTokenTemplates = knownContainerTokens.toTemplates();
-
     Logger.debug('All server templates: ${serverTokenTemplates.join('\n')}', name: 'token_notifier.dart#updateContainerTokens');
-    await Future.delayed(const Duration(milliseconds: 2000));
     for (var serverTokenTemplate in serverTokenTemplates) {
       Logger.debug(
         'Checking server token template: $serverTokenTemplate',
         name: 'token_notifier.dart#updateContainerTokens',
       );
-      await Future.delayed(const Duration(milliseconds: 2000));
       // Searches for tokens that are in the container but not in the app to add them.
       // If the token is already in the app, it will be updated.
       // Reduces the [tokenTemplatesApp] list to only the tokens that are in the app but not in the container. These tokens will be removed.
@@ -373,21 +367,18 @@ class TokenNotifier extends StateNotifier<TokenState> {
           'Token with serial ${serverTokenTemplate.serial} or id ${serverTokenTemplate.id} not found in app. Adding them.',
           name: 'token_notifier.dart#updateContainerTokens',
         );
-        await Future.delayed(const Duration(milliseconds: 1000));
         templatesToAdd.add(serverTokenTemplate);
       } else {
         Logger.debug(
           'Token with serial ${serverTokenTemplate.serial} or id ${serverTokenTemplate.id} found in app. Checking for update.',
           name: 'token_notifier.dart#updateContainerTokens',
         );
-        await Future.delayed(const Duration(milliseconds: 2000));
         appTokenTemplates.remove(appTemplate);
         if (!appTemplate.hasSameValuesAs(serverTokenTemplate)) {
           Logger.debug(
             'Token with serial ${serverTokenTemplate.serial} or id ${serverTokenTemplate.id} found in app the Template but is different. Check update.',
             name: 'token_notifier.dart#updateContainerTokens',
           );
-          await Future.delayed(const Duration(milliseconds: 1000));
           // Only update the token if the template is different
           templatesToUpdate.add(serverTokenTemplate);
         } else {
@@ -395,7 +386,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
             'Token with serial ${serverTokenTemplate.serial} or id ${serverTokenTemplate.id} found in app. And is the same. Skipping.',
             name: 'token_notifier.dart#updateContainerTokens',
           );
-          await Future.delayed(const Duration(milliseconds: 1000));
         }
       }
     }
@@ -408,7 +398,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
       name: 'token_notifier.dart#updateContainerTokens',
     );
 
-    await Future.delayed(const Duration(milliseconds: 2000));
     final tokensToAdd = templatesToAdd.map((e) => e.toToken(container)).toList();
     final tokensToUpdate = <Token>[];
     for (var template in templatesToUpdate) {
@@ -431,7 +420,6 @@ class TokenNotifier extends StateNotifier<TokenState> {
       name: 'token_notifier.dart#updateContainerTokens',
     );
 
-    await Future.delayed(const Duration(milliseconds: 2000));
     if (tokensToAdd.isNotEmpty) {
       await addOrReplaceTokens(tokensToAdd);
     }

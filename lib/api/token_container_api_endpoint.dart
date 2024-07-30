@@ -52,7 +52,7 @@ class TokenContainerApiEndpoint implements ApiEndpioint<TokenContainer, Credenti
       Logger.debug('Old label: "$oldLabel" starts with "${containerState.serial}" ?', name: 'TokenContainerApiEndpoint#sync');
       if (oldLabel.startsWith(containerState.serial) == true) {
         var merged = localTemplate.copyAddAll({
-          URI_LABEL: oldLabel.replaceRange(oldLabel.length - 1, oldLabel.length, '😀'),
+          URI_LABEL: '123 😀',
         });
         Logger.debug('New label: "${merged.data[URI_LABEL]}"', name: 'TokenContainerApiEndpoint#sync');
         if (merged.serial == null) {
