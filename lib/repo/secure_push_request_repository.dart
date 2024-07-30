@@ -42,7 +42,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
   Future<PushRequestState> _loadState() async {
     final String? stateJson = await _storage.read(key: _securePushRequestKey);
     if (stateJson == null) {
-      return const PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: []));
+      return PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: []));
     }
     return PushRequestState.fromJson(jsonDecode(stateJson));
   }

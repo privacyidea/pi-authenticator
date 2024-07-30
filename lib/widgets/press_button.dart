@@ -35,9 +35,12 @@ class _PressButtonState extends State<PressButton> {
   }
 
   @override
-  Widget build(BuildContext context) => ElevatedButton(
-        onPressed: isPressable ? press : null,
-        style: widget.style?.merge(Theme.of(context).elevatedButtonTheme.style) ?? Theme.of(context).elevatedButtonTheme.style,
-        child: widget.child,
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(3),
+        child: ElevatedButton(
+          onPressed: isPressable ? press : null,
+          style: widget.style?.merge(Theme.of(context).elevatedButtonTheme.style) ?? Theme.of(context).elevatedButtonTheme.style,
+          child: widget.child,
+        ),
       );
 }
