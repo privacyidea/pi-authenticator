@@ -14,6 +14,7 @@ import '../tokens/token.dart';
 class TokenState {
   final List<Token> tokens;
   final List<Token> lastlyUpdatedTokens;
+  final List<Token> lastlyDeletedTokens;
 
   List<OTPToken> get otpTokens => tokens.whereType<OTPToken>().toList();
   bool get hasOTPTokens => otpTokens.isNotEmpty;
@@ -25,9 +26,16 @@ class TokenState {
   List<PushToken> get pushTokensToRollOut =>
       pushTokens.where((element) => !element.isRolledOut && element.rolloutState == PushTokenRollOutState.rolloutNotStarted).toList();
 
-  TokenState({required List<Token> tokens, List<Token>? lastlyUpdatedTokens})
+  List<Token> get maybePiTokens => tokens.maybePiTokens;
+
+  TokenState({
+    required List<Token> tokens,
+    List<Token>? lastlyUpdatedTokens,
+    List<Token>? lastlyDeletedTokens,
+  })
       : tokens = List<Token>.from(tokens),
-        lastlyUpdatedTokens = List<Token>.from(lastlyUpdatedTokens ?? tokens);
+        lastlyUpdatedTokens = List<Token>.from(lastlyUpdatedTokens ?? tokens),
+        lastlyDeletedTokens = List<Token>.from(lastlyDeletedTokens ?? []);
 
   List<Token> get tokensNotInContainer {
     final tokensNotInContainer = tokens.maybePiTokens.where((token) => token.containerSerial != null).toList();
@@ -71,13 +79,16 @@ class TokenState {
   TokenState withoutToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     newTokens.removeWhere((element) => element.id == token.id);
-    return TokenState(tokens: newTokens, lastlyUpdatedTokens: const []);
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: const [], lastlyDeletedTokens: [token]);
   }
 
   TokenState withoutTokens(List<Token> tokens) {
     final newTokens = List<Token>.from(this.tokens);
-    newTokens.removeWhere((element) => tokens.any((token) => token.id == element.id));
-    return TokenState(tokens: newTokens, lastlyUpdatedTokens: const []);
+    newTokens.removeWhere((element) => tokens.any((token) {
+          Logger.debug('token.id ${token.id} == element.id ${element.id}', name: 'token_state.dart#withoutTokens');
+          return token.id == element.id;
+        }));
+    return TokenState(tokens: newTokens, lastlyUpdatedTokens: const [], lastlyDeletedTokens: tokens);
   }
 
   // Add a token if it does not exist yet
@@ -95,6 +106,8 @@ class TokenState {
 
   // Replace the token if it does exist
   // Do nothing if it does not exist
+  // Return the new state and a boolean = true if the token was replaced
+  // Return the old state and a boolean = false if the token was not replaced
   (TokenState, bool) replaceToken(Token token) {
     final newTokens = tokens.toList();
     final index = newTokens.indexWhere((element) => element.id == token.id);
@@ -173,11 +186,11 @@ extension TokenListExtension on List<Token> {
         return true;
       }).toList();
 
-  List<Token> fromContainer(String containerId) {
+  List<Token> fromContainer(String containerSerial) {
     final filtered = where((token) {
-      return token.origin?.source == TokenOriginSourceType.container && token.containerSerial == containerId;
+      return token.origin?.source == TokenOriginSourceType.container && token.containerSerial == containerSerial;
     }).toList();
-    Logger.debug('${filtered.length}/$length tokens with containerId: $containerId', name: 'token_state.dart#fromContainer');
+    Logger.debug('${filtered.length}/$length tokens with containerSerial: $containerSerial', name: 'token_state.dart#fromContainer');
     return filtered;
   }
 

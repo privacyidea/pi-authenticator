@@ -138,7 +138,9 @@ abstract class Token with SortableMixin {
   /// ```
   Map<String, dynamic> toUriMap() {
     return {
+      URI_ID: id,
       URI_SERIAL: serial,
+      URI_CONTAINER_SERIAL: containerSerial,
       URI_TYPE: type,
       URI_LABEL: label,
       URI_ISSUER: issuer,
@@ -146,15 +148,6 @@ abstract class Token with SortableMixin {
       if (tokenImage != null) URI_IMAGE: tokenImage,
       if (origin != null) URI_ORIGIN: origin!,
     };
-  }
-
-  bool doesMatchTemplate(TokenTemplate matchingTemplate) {
-    final uriMap = toUriMap();
-    final templateData = matchingTemplate.data;
-    for (var key in templateData.keys) {
-      if (uriMap[key] != templateData[key]) return false;
-    }
-    return true;
   }
 
   Token copyWithFromTemplate(TokenTemplate template);

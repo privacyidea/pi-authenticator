@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:uuid/uuid.dart';
@@ -112,10 +114,12 @@ class TOTPToken extends OTPToken {
   @override
   TOTPToken copyWithFromTemplate(TokenTemplate template) {
     final uriMap = template.data;
-    return copyWith(
+
+    final newToken = copyWith(
+      id: uriMap[URI_ID],
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
-      id: uriMap[TOKEN_SERIAL],
+      serial: uriMap[URI_SERIAL],
       algorithm: uriMap[URI_ALGORITHM] != null ? Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase()) : null,
       digits: uriMap[URI_DIGITS],
       tokenImage: uriMap[URI_IMAGE],
@@ -125,20 +129,23 @@ class TOTPToken extends OTPToken {
       isLocked: uriMap[URI_PIN],
       origin: uriMap[URI_ORIGIN],
     );
+    Logger.debug('TOTPToken.copyWithFromTemplate old token: $this');
+    Logger.debug('TOTPToken.copyWithFromTemplate new token: $newToken');
+    return newToken;
   }
 
   @override
   String toString() {
-    return 'T${super.toString()}period: $period';
+    return 'T${super.toString()}period: $period}';
   }
 
   factory TOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
     validateUriMap(uriMap);
     return TOTPToken(
-      serial: uriMap[URI_SERIAL],
       label: uriMap[URI_LABEL] ?? '',
       issuer: uriMap[URI_ISSUER] ?? '',
-      id: const Uuid().v4(),
+      id: uriMap[URI_ID] == String ? uriMap[URI_ID] : const Uuid().v4(),
+      serial: uriMap[URI_SERIAL],
       algorithm: Algorithms.values.byName((uriMap[URI_ALGORITHM] as String? ?? 'SHA1').toUpperCase()),
       digits: uriMap[URI_DIGITS] ?? 6,
       tokenImage: uriMap[URI_IMAGE],
@@ -176,20 +183,20 @@ class TOTPToken extends OTPToken {
 
   /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
   static void validateUriMap(Map<String, dynamic> uriMap) {
+    if (uriMap[URI_SECRET] is! Uint8List) {
+      throw LocalizedArgumentError(
+        localizedMessage: ((localizations, value, name) => localizations.secretIsRequired),
+        unlocalizedMessage: 'Secret is required and must be a Uint8List',
+        invalidValue: uriMap[URI_SECRET],
+        name: URI_SECRET,
+      );
+    }
     if (uriMap[URI_SERIAL] is! String?) {
       throw LocalizedArgumentError(
         localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
         unlocalizedMessage: 'Serial must be a string',
         invalidValue: uriMap[URI_SERIAL],
         name: URI_SERIAL,
-      );
-    }
-    if (uriMap[URI_SECRET] == null) {
-      throw LocalizedArgumentError(
-        localizedMessage: ((localizations, value, name) => localizations.secretIsRequired),
-        unlocalizedMessage: 'Secret is required',
-        invalidValue: uriMap[URI_SECRET],
-        name: URI_SECRET,
       );
     }
     if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) {

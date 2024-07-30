@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
@@ -134,7 +136,8 @@ class DayPasswordToken extends OTPToken {
     return copyWith(
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
-      id: uriMap[TOKEN_SERIAL],
+      id: uriMap[URI_ID] == String ? uriMap[URI_ID] : const Uuid().v4(),
+      serial: uriMap[URI_SERIAL],
       algorithm: uriMap[URI_ALGORITHM] != null ? Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase()) : null,
       digits: uriMap[URI_DIGITS],
       secret: uriMap[URI_SECRET] != null ? Encodings.base32.encode(uriMap[URI_SECRET]) : null,
@@ -173,10 +176,10 @@ class DayPasswordToken extends OTPToken {
 
   /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
   static void validateUriMap(Map<String, dynamic> uriMap) {
-    if (uriMap[URI_SECRET] == null) {
+    if (uriMap[URI_SECRET] is! Uint8List) {
       throw LocalizedArgumentError(
         localizedMessage: ((localizations, value, name) => localizations.secretIsRequired),
-        unlocalizedMessage: 'Secret is required',
+        unlocalizedMessage: 'Secret is required and must be a Uint8List',
         invalidValue: uriMap[URI_SECRET],
         name: URI_SECRET,
       );
