@@ -1,6 +1,7 @@
 // We need some unnecessary_overrides to force to add the fields in factory constructors
 // ignore_for_file: unnecessary_overrides
 
+import 'package:collection/equality.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
@@ -150,7 +151,6 @@ sealed class TokenContainer with _$TokenContainer {
   factory TokenContainer.fromJson(Map<String, dynamic> json) => _$TokenContainerFromJson(json);
 }
 
-
 @freezed
 class TokenTemplate with _$TokenTemplate {
   TokenTemplate._();
@@ -158,12 +158,47 @@ class TokenTemplate with _$TokenTemplate {
     required Map<String, dynamic> data,
   }) = _TokenTemplate;
 
+  List<String> get keys => data.keys.toList();
+  List<dynamic> get values => data.values.toList();
+
+  String? get id {
+    final id = data[URI_ID];
+    if (id is! String?) {
+      Logger.error('TokenTemplate id is not a string');
+    }
+    return id;
+  }
+
+  Uint8List? get secret {
+    final secret = data[URI_SECRET];
+    if (secret is! Uint8List?) {
+      Logger.error('TokenTemplate secret is not a string');
+    }
+    return secret;
+  }
+
   String? get serial {
     final serial = data[URI_SERIAL];
     if (serial is! String?) {
       Logger.error('TokenTemplate id is not a string');
     }
     return serial;
+  }
+
+  String? get type {
+    final type = data[URI_TYPE];
+    if (type is! String?) {
+      Logger.error('TokenTemplate type is not a string');
+    }
+    return type;
+  }
+
+  String? get containerSerial {
+    final containerSerial = data[URI_CONTAINER_SERIAL];
+    if (containerSerial is! String?) {
+      Logger.error('TokenTemplate containerSerial is not a string');
+    }
+    return containerSerial;
   }
 
   @override
@@ -185,8 +220,6 @@ class TokenTemplate with _$TokenTemplate {
     print('TokenTemplate is equal');
     return true;
   }
-
-
 
   factory TokenTemplate.fromJson(Map<String, dynamic> json) => _$TokenTemplateFromJson(json);
 
@@ -222,4 +255,46 @@ class TokenTemplate with _$TokenTemplate {
   @override
   int get hashCode => Object.hashAllUnordered(data.keys.map((key) => '$key:${data[key]}'));
 
+  bool isSameTokenAs(TokenTemplate other) => id == other.id || serial == other.serial || const IterableEquality().equals(secret, other.secret);
+
+  bool hasSameValuesAs(TokenTemplate serverTokenTemplate) {
+    Logger.debug('serverTokenTemplate.keys: ${serverTokenTemplate.keys}', name: 'TokenTemplate#hasSameValuesAs');
+    for (var key in serverTokenTemplate.keys) {
+      if (data[key] is Iterable && serverTokenTemplate.data[key] is Iterable) {
+        if (!const IterableEquality().equals(data[key], serverTokenTemplate.data[key])) {
+          Logger.debug(
+            'TokenTemplate has different values for key "$key": ${data[key]} != ${serverTokenTemplate.data[key]}',
+            name: 'TokenTemplate#hasSameValuesAs',
+          );
+          return false;
+        }
+        Logger.debug(
+          '$key is iterable and has same values as serverTokenTemplate $key',
+          name: 'TokenTemplate#hasSameValuesAs',
+        );
+        continue;
+      }
+      if (data[key] != serverTokenTemplate.data[key]) {
+        Logger.debug('TokenTemplate has different values for key "$key": ${data[key]} != ${serverTokenTemplate.data[key]}',
+            name: 'TokenTemplate#hasSameValuesAs');
+        return false;
+      }
+      Logger.debug(
+        'TokenTemplate has same values for key "$key": ${data[key]} == ${serverTokenTemplate.data[key]}',
+        name: 'TokenTemplate#hasSameValuesAs',
+      );
+    }
+    Logger.debug(
+      'AppTokenTemplate serial $serial/id $id has same values as serverTokenTemplate serial ${serverTokenTemplate.serial}/id ${serverTokenTemplate.id}',
+      name: 'TokenTemplate#hasSameValuesAs',
+    );
+    return true;
+  }
+
+  bool tokenWouldBeUpdated(Token token) {
+    Logger.debug('Checking if token would be updated', name: 'TokenTemplate#tokenWouldBeUpdated');
+    final tokenTemplate = token.toTemplate();
+    Logger.debug('TokenTemplate: \n$tokenTemplate\n has same values as \n$this\n ?', name: 'TokenTemplate#tokenWouldBeUpdated');
+    return !tokenTemplate.hasSameValuesAs(this);
+  }
 }

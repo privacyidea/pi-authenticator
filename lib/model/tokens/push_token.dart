@@ -172,10 +172,10 @@ class PushToken extends Token {
   PushToken copyWithFromTemplate(TokenTemplate template) {
     final uriMap = template.data;
     return copyWith(
-      serial: uriMap[URI_SERIAL],
       label: uriMap[URI_LABEL],
       issuer: uriMap[URI_ISSUER],
-      id: uriMap[TOKEN_SERIAL],
+      id: uriMap[URI_ID],
+      serial: uriMap[URI_SERIAL],
       sslVerify: uriMap[URI_SSL_VERIFY],
       enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
       url: uriMap[URI_ROLLOUT_URL],
@@ -188,10 +188,10 @@ class PushToken extends Token {
   }
 
   factory PushToken.fromUriMap(Map<String, dynamic> uriMap) => PushToken(
-        serial: uriMap[URI_SERIAL] ?? '',
         label: uriMap[URI_LABEL] ?? '',
         issuer: uriMap[URI_ISSUER] ?? '',
-        id: const Uuid().v4(),
+        id: uriMap[URI_ID] == String ? uriMap[URI_ID] : const Uuid().v4(),
+        serial: uriMap[URI_SERIAL],
         sslVerify: uriMap[URI_SSL_VERIFY],
         expirationDate: uriMap[URI_TTL] != null ? DateTime.now().add(Duration(minutes: uriMap[URI_TTL])) : null,
         enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],

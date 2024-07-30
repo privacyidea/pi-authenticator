@@ -1,3 +1,5 @@
+import 'package:privacyidea_authenticator/model/enums/encodings.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 import '../../utils/logger.dart';
@@ -73,7 +75,7 @@ abstract class OTPToken extends Token {
   Map<String, dynamic> toUriMap() {
     return super.toUriMap()
       ..addAll({
-        URI_SECRET: secret,
+        URI_SECRET: Encodings.base32.decode(secret),
         URI_ALGORITHM: algorithm.name,
         URI_DIGITS: digits,
       });

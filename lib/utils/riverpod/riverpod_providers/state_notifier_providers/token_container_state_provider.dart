@@ -58,7 +58,11 @@ class TokenContainerProvider extends _$TokenContainerProvider {
     final containerTokenTemplates = containerTokens.toTemplates();
     final newState = oldState.copyWith(localTokenTemplates: localTokenTemplates, syncedTokenTemplates: containerTokenTemplates);
     final savedState = await _saveToRepo(newState);
-    ref.read(tokenProvider.notifier).updateContainerTokens(savedState);
+    if (savedState is! TokenContainerSynced) {
+      Logger.error('Failed to save state to repo', name: 'TokenContainerProvider#handleTokenState');
+      return savedState;
+    }
+    await ref.read(tokenProvider.notifier).updateContainerTokens(savedState);
     state = AsyncValue.data(savedState);
     _stateMutex.release();
     return savedState;
@@ -82,7 +86,28 @@ class TokenContainerProvider extends _$TokenContainerProvider {
       'Saved TokenContainer: Synced(${savedState.syncedTokenTemplates.length}) | Local(${savedState.localTokenTemplates.length})',
       name: 'TokenContainerProvider#tryAddLocalTemplates',
     );
-    ref.read(tokenProvider.notifier).updateContainerTokens(savedState);
+    await ref.read(tokenProvider.notifier).updateContainerTokens(savedState);
+    state = AsyncValue.data(savedState);
+    _stateMutex.release();
+    return savedState;
+  }
+
+  Future<TokenContainer> handleDeletedTokenTemplates(List<TokenTemplate> deletedPiTokenTemplates) async {
+    Logger.info(
+      'Removing (${deletedPiTokenTemplates.length}) deleted token templates from container (${credential.serial}).',
+      name: 'TokenContainerProvider#handleDeletedTokenTemplates',
+    );
+    Logger.debug('Deleted token templates (${deletedPiTokenTemplates.length})', name: 'TokenContainerProvider#handleDeletedTokenTemplates');
+    await _stateMutex.acquire();
+    final oldState = (await future);
+    final newLocalTokenTemplates = oldState.localTokenTemplates.where((template) => !deletedPiTokenTemplates.contains(template)).toList();
+    final newState = oldState.copyWith(localTokenTemplates: newLocalTokenTemplates);
+    final savedState = await _saveToRepo(newState);
+    Logger.debug(
+      'Saved TokenContainer: Synced(${savedState.syncedTokenTemplates.length}) | Local(${savedState.localTokenTemplates.length})',
+      name: 'TokenContainerProvider#handleDeletedTokenTemplates',
+    );
+    await ref.read(tokenProvider.notifier).updateContainerTokens(savedState);
     state = AsyncValue.data(savedState);
     _stateMutex.release();
     return savedState;

@@ -25,11 +25,14 @@
 const defaultCrashReportRecipient = 'app-crash@netknights.it';
 
 // qr codes:
+const String URI_ID = 'URI_ID';
+const String URI_SERIAL = 'URI_SERIAL';
+const String URI_CONTAINER_SERIAL = 'URI_CONTAINER_SERIAL';
 const String URI_TYPE = 'URI_TYPE';
 const String URI_LABEL = 'URI_LABEL';
 const String URI_ALGORITHM = 'URI_ALGORITHM';
 const String URI_DIGITS = 'URI_DIGITS';
-const String URI_SECRET = 'URI_SECRET'; // Should be base32 encoded
+const String URI_SECRET = 'URI_SECRET'; // Should be Uint8List
 const String URI_COUNTER = 'URI_COUNTER';
 const String URI_PERIOD = 'URI_PERIOD';
 const String URI_ISSUER = 'URI_ISSUER';
@@ -43,7 +46,6 @@ const String URI_OUTPUT_LENGTH_IN_BYTES = 'URI_OUTPUT_LENGTH_IN_BYTES';
 const String URI_ITERATIONS = 'URI_ITERATIONS';
 
 // push token:
-const String URI_SERIAL = 'URI_SERIAL';
 const String URI_ROLLOUT_URL = 'URI_ROLLOUT_URL';
 const String URI_TTL = 'URI_TTL';
 const String URI_ENROLLMENT_CREDENTIAL = 'URI_ENROLLMENT_CREDENTIAL';
@@ -64,9 +66,6 @@ const String PUSH_REQUEST_TITLE = 'title'; // 5.
 const String PUSH_REQUEST_SSL_VERIFY = 'sslverify'; // 6.
 const String PUSH_REQUEST_SIGNATURE = 'signature'; // 7.
 const String PUSH_REQUEST_ANSWERS = 'require_presence'; // 8.
-
-// TokenContainer:
-const String TOKEN_SERIAL = 'serial';
 
 const String GLOBAL_SECURE_REPO_PREFIX = 'app_v3_';
 

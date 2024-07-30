@@ -20,15 +20,26 @@ class ContainerListensToTokenState extends TokenStateListener {
   static Future<void> _onNewState(TokenState? previousState, TokenState nextState, WidgetRef ref) async {
     Logger.warning('New token state', name: 'TokenContainerTokenStateListener');
     final maybePiTokenTemplates = nextState.lastlyUpdatedTokens.maybePiTokens.toTemplates();
-    Logger.warning(('Read credentials from credentialsProvider'), name: 'TokenContainerTokenStateListener');
     final credentials = (await ref.read(credentialsProvider.future)).credentials;
     Logger.warning('Readed: $credentials', name: 'TokenContainerTokenStateListener');
-    Logger.warning('maybePiTokenTemplates: $maybePiTokenTemplates', name: 'TokenContainerTokenStateListener');
-    if (maybePiTokenTemplates.isEmpty) return;
+    // if (maybePiTokenTemplates.isEmpty) return;
     for (var credential in credentials) {
-      Logger.warning('Adding maybePiTokenTemplates (${maybePiTokenTemplates.length}) to container ${credential.serial}',
-          name: 'TokenContainerTokenStateListener');
-      ref.read(tokenContainerProviderOf(credential: credential).notifier).tryAddLocalTemplates(maybePiTokenTemplates);
+
+      final deletedPiTokenTemplates = nextState.lastlyDeletedTokens.fromContainer(credential.serial).toTemplates();
+      if (deletedPiTokenTemplates.isNotEmpty) {
+        Logger.warning(
+          'Deleted (${deletedPiTokenTemplates.length}) tokens from container "${credential.serial}"',
+          name: 'TokenContainerTokenStateListener',
+        );
+        await ref.read(tokenContainerProviderOf(credential: credential).notifier).handleDeletedTokenTemplates(deletedPiTokenTemplates);
+      }
+      if (maybePiTokenTemplates.isNotEmpty) {
+        Logger.warning(
+          'Adding maybePiTokenTemplates (${maybePiTokenTemplates.length}) to container ${credential.serial}',
+          name: 'TokenContainerTokenStateListener',
+        );
+        await ref.read(tokenContainerProviderOf(credential: credential).notifier).tryAddLocalTemplates(maybePiTokenTemplates);
+      }
     }
   }
 }

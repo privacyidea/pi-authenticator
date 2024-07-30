@@ -291,17 +291,21 @@ Device Parameters $deviceInfo""";
   /*----------- PRINTS -----------*/
 
   static void _print(String message) {
-    if (!kDebugMode) return;
+    if (!kDebugMode) return; // add \n every 1000 characters only if the line is longer than 1000 characters
+    message = message.replaceAllMapped(RegExp(r'.{1000}'), (match) => '${match.group(0)}\n');
     print.i(message);
   }
 
   static void _printDebug(String message) {
     if (!kDebugMode) return;
+    // add \n every 1000 characters only if the line is longer than 1000 characters
+    message = message.replaceAllMapped(RegExp(r'.{1000}'), (match) => '${match.group(0)}\n');
     print.d(message);
   }
 
   static void _printWarning(String message) {
-    if (!kDebugMode) return;
+    if (!kDebugMode) return; // add \n every 1000 characters only if the line is longer than 1000 characters
+    message = message.replaceAllMapped(RegExp(r'.{1000}'), (match) => '${match.group(0)}\n');
     print.w(message);
   }
 
@@ -309,6 +313,8 @@ Device Parameters $deviceInfo""";
     if (!kDebugMode) return;
     var message0 = DateTime.now().toString();
     message0 += name != null ? ' [$name]\n' : '\n';
+    message = message?.replaceAllMapped(RegExp(r'.{1000}'), (match) => '${match.group(0)}\n');
+    // add \n every 1000 characters only if the line is longer than 1000 characters
     message0 += message ?? '';
     print.e(message0, error: error, stackTrace: stackTrace);
   }

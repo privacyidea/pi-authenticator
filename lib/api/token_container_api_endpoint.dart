@@ -38,11 +38,11 @@ class TokenContainerApiEndpoint implements ApiEndpioint<TokenContainer, Credenti
     if (serverTemplates == null) {
       return containerState.copyTransformInto<TokenContainerNotFound>(args: {'message': 'Container not found'});
     }
-    for (var serial in serverTemplates.keys) {
-      final template = serverTemplates[serial];
+    for (var templateSerial in serverTemplates.keys) {
+      final template = serverTemplates[templateSerial];
       if (template?.serial == null) {
         // Add serial(key of map) to template
-        serverTemplates[serial] = template!.copyAddAll({TOKEN_SERIAL: serial});
+        serverTemplates[templateSerial] = template!.copyAddAll({URI_SERIAL: templateSerial});
       }
     }
     final localTemplates = containerState.localTokenTemplates;
@@ -52,17 +52,18 @@ class TokenContainerApiEndpoint implements ApiEndpioint<TokenContainer, Credenti
       Logger.debug('Old label: "$oldLabel" starts with "${containerState.serial}" ?', name: 'TokenContainerApiEndpoint#sync');
       if (oldLabel.startsWith(containerState.serial) == true) {
         var merged = localTemplate.copyAddAll({
-          URI_LABEL: oldLabel.replaceRange(oldLabel.length - 2, oldLabel.length, '😀'),
+          URI_LABEL: oldLabel.replaceRange(oldLabel.length - 1, oldLabel.length, '😀'),
         });
         Logger.debug('New label: "${merged.data[URI_LABEL]}"', name: 'TokenContainerApiEndpoint#sync');
         if (merged.serial == null) {
-          merged = merged.copyWith(data: merged.copyAddAll({TOKEN_SERIAL: 'tokenID${DateTime.now().millisecondsSinceEpoch}'}).data);
+          merged = merged.copyWith(data: merged.copyAddAll({URI_SERIAL: 'tokenID${DateTime.now().millisecondsSinceEpoch}'}).data);
         }
+        Logger.debug('MergedData: ${merged.data}', name: 'TokenContainerApiEndpoint#sync');
         final localTemplateSerial = merged.serial!;
         serverTemplates[localTemplateSerial] = merged;
       }
     }
-    Logger.debug('Server templates: ${serverTemplates}', name: 'TokenContainerApiEndpoint#sync');
+    Logger.debug('Server templates: $serverTemplates', name: 'TokenContainerApiEndpoint#sync');
     _data[containerState.serial] = serverTemplates;
     Logger.debug('_data: $_data', name: 'TokenContainerApiEndpoint#sync');
     final serverTemplatesMerged = _data[containerState.serial]!.values.toList();
