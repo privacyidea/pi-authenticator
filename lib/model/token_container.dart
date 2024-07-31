@@ -204,20 +204,20 @@ class TokenTemplate with _$TokenTemplate {
   @override
   operator ==(Object other) {
     if (other is! TokenTemplate) {
-      print('other is not TokenTemplate');
       return false;
     }
     if (data.length != other.data.length) {
-      print('data length is not equal');
       return false;
     }
     for (var key in data.keys) {
-      if (data[key].toString() != other.data[key].toString()) {
-        print('data[$key] (${data[key]}) is not equal to other.data[$key] (${other.data[key]})');
+      if (data[key] is Iterable) {
+        if (!const IterableEquality().equals(data[key], other.data[key])) {
+          return false;
+        }
+      } else if (data[key].toString() != other.data[key].toString()) {
         return false;
       }
     }
-    print('TokenTemplate is equal');
     return true;
   }
 
@@ -268,10 +268,6 @@ class TokenTemplate with _$TokenTemplate {
           );
           return false;
         }
-        Logger.debug(
-          '$key is iterable and has same values as serverTokenTemplate $key',
-          name: 'TokenTemplate#hasSameValuesAs',
-        );
         continue;
       }
       if (data[key] != serverTokenTemplate.data[key]) {
@@ -279,10 +275,6 @@ class TokenTemplate with _$TokenTemplate {
             name: 'TokenTemplate#hasSameValuesAs');
         return false;
       }
-      Logger.debug(
-        'TokenTemplate has same values for key "$key": ${data[key]} == ${serverTokenTemplate.data[key]}',
-        name: 'TokenTemplate#hasSameValuesAs',
-      );
     }
     Logger.debug(
       'AppTokenTemplate serial $serial/id $id has same values as serverTokenTemplate serial ${serverTokenTemplate.serial}/id ${serverTokenTemplate.id}',

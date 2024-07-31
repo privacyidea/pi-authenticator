@@ -48,6 +48,13 @@ class TokenContainerProvider extends _$TokenContainerProvider {
     return newState;
   }
 
+  Future<TokenContainer> _fetchFromRepo() async {
+    await _repoMutex.acquire();
+    final newState = await _repository.loadContainerState();
+    _repoMutex.release();
+    return newState;
+  }
+
   Future<TokenContainer> handleTokenState(TokenState tokenState) async {
     await _stateMutex.acquire();
     final localTokens = tokenState.tokens.maybePiTokens;
@@ -106,6 +113,32 @@ class TokenContainerProvider extends _$TokenContainerProvider {
     Logger.debug(
       'Saved TokenContainer: Synced(${savedState.syncedTokenTemplates.length}) | Local(${savedState.localTokenTemplates.length})',
       name: 'TokenContainerProvider#handleDeletedTokenTemplates',
+    );
+    await ref.read(tokenProvider.notifier).updateContainerTokens(savedState);
+    state = AsyncValue.data(savedState);
+    _stateMutex.release();
+    return savedState;
+  }
+
+  Future<TokenContainer> fetchTokens() async {
+    await _stateMutex.acquire();
+    final savedState = await _fetchFromRepo();
+    Logger.debug(
+      'Fetched TokenContainer: Synced(${savedState.syncedTokenTemplates.length}) | Local(${savedState.localTokenTemplates.length})',
+      name: 'TokenContainerProvider#tryAddLocalTemplates',
+    );
+    await ref.read(tokenProvider.notifier).updateContainerTokens(savedState);
+    state = AsyncValue.data(savedState);
+    _stateMutex.release();
+    return savedState;
+  }
+
+  Future<TokenContainer> sync() async {
+    await _stateMutex.acquire();
+    final savedState = await _fetchFromRepo();
+    Logger.debug(
+      'Fetched TokenContainer: Synced(${savedState.syncedTokenTemplates.length}) | Local(${savedState.localTokenTemplates.length})',
+      name: 'TokenContainerProvider#tryAddLocalTemplates',
     );
     await ref.read(tokenProvider.notifier).updateContainerTokens(savedState);
     state = AsyncValue.data(savedState);
