@@ -7,15 +7,13 @@ import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../model/tokens/token.dart';
-import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/sortable_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
-import '../../../widgets/deactivateable_refresh_indicator.dart';
+import '../../../widgets/default_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
 import '../../../widgets/introduction_widgets/token_introduction.dart';
 import 'drag_target_divider.dart';
-import 'loading_indicator.dart';
 import 'no_token_screen.dart';
 import 'sortable_widget_builder.dart';
 
@@ -85,9 +83,8 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
         Column(
           children: [
             Flexible(
-              child: DeactivateableRefreshIndicator(
+              child: DefaultRefreshIndicator(
                 allowToRefresh: allowToRefresh,
-                onRefresh: () async => LoadingIndicator.show(context, () async => PushProvider.instance?.pollForChallenges(isManually: true)),
                 child: LayoutBuilder(
                   builder: (context, constraints) => SingleChildScrollView(
                     physics: _getScrollPhysics(allowToRefresh),
@@ -110,9 +107,8 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
             ),
           ],
         ),
-        DeactivateableRefreshIndicator(
+        DefaultRefreshIndicator(
           allowToRefresh: allowToRefresh,
-          onRefresh: () async => LoadingIndicator.show(context, () async => PushProvider.instance?.pollForChallenges(isManually: true)),
           child: SlidableAutoCloseBehavior(
             child: DragItemScroller(
               listViewKey: listViewKey,

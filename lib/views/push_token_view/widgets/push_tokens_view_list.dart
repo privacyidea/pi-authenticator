@@ -3,12 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
-import '../../../utils/push_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
-import '../../../widgets/deactivateable_refresh_indicator.dart';
+import '../../../widgets/default_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
-import '../../main_view/main_view_widgets/loading_indicator.dart';
 import '../../main_view/main_view_widgets/main_view_tokens_list.dart';
 
 class PushTokensViwList extends ConsumerStatefulWidget {
@@ -34,9 +32,8 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
     List<SortableMixin> sortables = [...pushTokens];
     return Stack(
       children: [
-        DeactivateableRefreshIndicator(
+        DefaultRefreshIndicator(
           allowToRefresh: allowToRefresh,
-          onRefresh: () async => LoadingIndicator.show(context, () async => PushProvider.instance?.pollForChallenges(isManually: true)),
           child: SlidableAutoCloseBehavior(
             child: DragItemScroller(
               listViewKey: listViewKey,
