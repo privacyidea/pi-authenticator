@@ -116,8 +116,11 @@ sealed class TokenContainer with _$TokenContainer {
             lastSyncAt: lastSyncAt ?? this.lastSyncAt!,
             serial: serial ?? this.serial,
             description: description ?? this.description,
-            syncedTokenTemplates: syncedTokenTemplates ?? this.syncedTokenTemplates,
-            localTokenTemplates: localTokenTemplates ?? this.localTokenTemplates,
+            syncedTokenTemplates: [
+              ...(syncedTokenTemplates ?? this.syncedTokenTemplates),
+              ...(localTokenTemplates ?? this.localTokenTemplates),
+            ],
+            localTokenTemplates: [],
           ) as T,
         const (TokenContainerUnsynced) => TokenContainerUnsynced(
             serverName: serverName ?? this.serverName,

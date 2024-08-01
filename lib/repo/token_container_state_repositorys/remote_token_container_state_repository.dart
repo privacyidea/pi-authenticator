@@ -18,7 +18,7 @@ class RemoteTokenContainerRepository implements TokenContainerRepository {
 
   Future<TokenContainer> _saveContainerState(TokenContainer containerState) async {
     Logger.info('Saving container state', name: 'RemoteTokenContainerRepository');
-    return await _protect(() async => await apiEndpoint.sync(containerState));
+    return await _protect(() async => (await apiEndpoint.sync(containerState)).copyTransformInto<TokenContainerSynced>());
   }
 
   @override

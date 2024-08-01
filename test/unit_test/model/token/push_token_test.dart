@@ -139,6 +139,7 @@ void _testPushToken() {
     test('toJson', () {
       final tokenJson = pushToken.toJson();
       final json = <String, dynamic>{
+        "containerSerial": null,
         "label": "label",
         "issuer": "issuer",
         "id": "id",
@@ -187,7 +188,7 @@ void _testPushToken() {
       });
       test('with empty map', () {
         final uriMap = <String, dynamic>{};
-        expect(PushToken.fromUriMap(uriMap), isA<PushToken>());
+        expect(() => PushToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
       });
     });
   });
