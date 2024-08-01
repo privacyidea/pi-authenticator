@@ -1,10 +1,12 @@
-
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/api/token_container_api_endpoint.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/container_repository.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
+import 'package:privacyidea_authenticator/model/tokens/container_credentials.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/repo/token_container_state_repositorys/hybrid_token_container_state_repository.dart';
+import 'package:privacyidea_authenticator/repo/token_container_state_repositorys/remote_token_container_state_repository.dart';
 
 class MockTokenContainerRepository implements TokenContainerRepository {
   TokenContainer savedState;
@@ -27,7 +29,25 @@ class MockTokenContainerRepository implements TokenContainerRepository {
     savedState = containerState;
     return Future.value(savedState);
   }
+}
 
+class MockTokenContainerApiEndpoint implements TokenContainerApiEndpoint {
+  TokenContainer state;
+  MockTokenContainerApiEndpoint({required TokenContainer initialState}) : state = initialState;
+
+  @override
+  Future<TokenContainer> fetch() {
+    return Future.value(state);
+  }
+
+  @override
+  Future<TokenContainer> sync(TokenContainer containerState) {
+    state = containerState.copyTransformInto<TokenContainerSynced>(lastSyncAt: DateTime.now());
+    return Future.value(state);
+  }
+
+  @override
+  ContainerCredential get credential => throw UnimplementedError();
 }
 
 void main() {
@@ -48,8 +68,7 @@ void _testHybridTokenContainerRepository() {
       TokenContainer? remoteState = TokenContainer.synced(
         serial: 'containerSerial',
         description: 'description',
-
-        syncedTokenTemplates: [TokenTemplate(data: token.toUriMap())],
+        syncedTokenTemplates: [token.toTemplate()],
         lastSyncAt: DateTime.now(),
         localTokenTemplates: [],
       );
@@ -59,11 +78,11 @@ void _testHybridTokenContainerRepository() {
         serial: 'containerSerial',
         description: 'description',
         syncedTokenTemplates: [],
-        localTokenTemplates: [TokenTemplate(data: token.toUriMap())],
+        localTokenTemplates: [token.toTemplate()],
       );
 
       final localRepo = MockTokenContainerRepository(initialState: localState);
-      final remoteRepo = MockTokenContainerRepository(initialState: remoteState);
+      final remoteRepo = RemoteTokenContainerRepository(apiEndpoint: MockTokenContainerApiEndpoint(initialState: remoteState));
 
       final hybridRepo = HybridTokenContainerRepository(
         localRepository: localRepo,

@@ -1,10 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
+import 'package:privacyidea_authenticator/utils/errors.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/custom_int_buffer.dart';
 import '../../utils/identifiers.dart';
+import '../../utils/logger.dart';
 import '../../utils/rsa_utils.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
@@ -187,20 +189,143 @@ class PushToken extends Token {
     );
   }
 
-  factory PushToken.fromUriMap(Map<String, dynamic> uriMap) => PushToken(
-        label: uriMap[URI_LABEL] ?? '',
-        issuer: uriMap[URI_ISSUER] ?? '',
-        id: uriMap[URI_ID] == String ? uriMap[URI_ID] : const Uuid().v4(),
-        serial: uriMap[URI_SERIAL],
-        sslVerify: uriMap[URI_SSL_VERIFY],
-        expirationDate: uriMap[URI_TTL] != null ? DateTime.now().add(Duration(minutes: uriMap[URI_TTL])) : null,
-        enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-        url: uriMap[URI_ROLLOUT_URL],
-        tokenImage: uriMap[URI_IMAGE],
-        pin: uriMap[URI_PIN],
-        isLocked: uriMap[URI_PIN],
-        origin: uriMap[URI_ORIGIN],
+  factory PushToken.fromUriMap(Map<String, dynamic> uriMap) {
+    validateUriMap(uriMap);
+    return PushToken(
+      label: uriMap[URI_LABEL] ?? '',
+      issuer: uriMap[URI_ISSUER] ?? '',
+      id: uriMap[URI_ID] == String ? uriMap[URI_ID] : const Uuid().v4(),
+      serial: uriMap[URI_SERIAL],
+      sslVerify: uriMap[URI_SSL_VERIFY],
+      expirationDate: uriMap[URI_TTL] != null ? DateTime.now().add(Duration(minutes: uriMap[URI_TTL])) : null,
+      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
+      url: uriMap[URI_ROLLOUT_URL],
+      tokenImage: uriMap[URI_IMAGE],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+    );
+  }
+
+  static void validateUriMap(Map<String, dynamic> uriMap) {
+    uriMap = Map<String, dynamic>.from(uriMap);
+    if (uriMap[URI_TYPE]?.toUpperCase() != TokenTypes.PIPUSH.name.toUpperCase()) {
+      throw ArgumentError('Invalid type: ${uriMap[URI_TYPE]}');
+    }
+    uriMap.remove(URI_TYPE);
+    if (uriMap[URI_LABEL] is! String?) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Invalid value ${uriMap[URI_LABEL]} for parameter $URI_LABEL',
+        invalidValue: uriMap[URI_LABEL],
+        name: URI_LABEL,
       );
+    }
+    uriMap.remove(URI_LABEL);
+    if (uriMap[URI_ISSUER] is! String?) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Invalid value ${uriMap[URI_ISSUER]} for parameter $URI_ISSUER',
+        invalidValue: uriMap[URI_ISSUER],
+        name: URI_ISSUER,
+      );
+    }
+    uriMap.remove(URI_ISSUER);
+    if (uriMap[URI_ID] is! String?) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Invalid value ${uriMap[URI_ID]} for parameter $URI_ID',
+        invalidValue: uriMap[URI_ID],
+        name: URI_ID,
+      );
+    }
+    uriMap.remove(URI_ID);
+    if (uriMap[URI_SERIAL] is! String) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Invalid value ${uriMap[URI_SERIAL]} for parameter $URI_SERIAL',
+        invalidValue: uriMap[URI_SERIAL],
+        name: URI_SERIAL,
+      );
+    }
+    uriMap.remove(URI_SERIAL);
+    if (uriMap[URI_SSL_VERIFY] is! bool) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Invalid value ${uriMap[URI_SSL_VERIFY]} for parameter $URI_SSL_VERIFY',
+        invalidValue: uriMap[URI_SSL_VERIFY],
+        name: URI_SSL_VERIFY,
+      );
+    }
+    uriMap.remove(URI_SSL_VERIFY);
+    /**
+
+      expirationDate: uriMap[URI_TTL] != null ? DateTime.now().add(Duration(minutes: uriMap[URI_TTL])) : null,
+      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
+      url: uriMap[URI_ROLLOUT_URL],
+      tokenImage: uriMap[URI_IMAGE],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+     */
+    if (uriMap[URI_TTL] is! int?) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Invalid value ${uriMap[URI_TTL]} for parameter $URI_TTL',
+        invalidValue: uriMap[URI_TTL],
+        name: URI_TTL,
+      );
+    }
+    uriMap.remove(URI_TTL);
+    if (uriMap[URI_ENROLLMENT_CREDENTIAL] is! String?) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Invalid value ${uriMap[URI_ENROLLMENT_CREDENTIAL]} for parameter $URI_ENROLLMENT_CREDENTIAL',
+        invalidValue: uriMap[URI_ENROLLMENT_CREDENTIAL],
+        name: URI_ENROLLMENT_CREDENTIAL,
+      );
+    }
+    uriMap.remove(URI_ENROLLMENT_CREDENTIAL);
+    if (uriMap[URI_ROLLOUT_URL] is! Uri?) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Invalid value ${uriMap[URI_ROLLOUT_URL]} for parameter $URI_ROLLOUT_URL',
+        invalidValue: uriMap[URI_ROLLOUT_URL],
+        name: URI_ROLLOUT_URL,
+      );
+    }
+    uriMap.remove(URI_ROLLOUT_URL);
+    if (uriMap[URI_IMAGE] is! String?) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Invalid value ${uriMap[URI_IMAGE]} for parameter $URI_IMAGE',
+        invalidValue: uriMap[URI_IMAGE],
+        name: URI_IMAGE,
+      );
+    }
+    uriMap.remove(URI_IMAGE);
+    if (uriMap[URI_PIN] is! bool?) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Invalid value ${uriMap[URI_PIN]} for parameter $URI_PIN',
+        invalidValue: uriMap[URI_PIN],
+        name: URI_PIN,
+      );
+    }
+    uriMap.remove(URI_PIN);
+    if (uriMap[URI_ORIGIN] is! TokenOriginData?) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Invalid value ${uriMap[URI_ORIGIN]} for parameter $URI_ORIGIN',
+        invalidValue: uriMap[URI_ORIGIN],
+        name: URI_ORIGIN,
+      );
+    }
+    uriMap.remove(URI_ORIGIN);
+    if (uriMap.isNotEmpty) {
+      Logger.warning('Unknown parameters in uriMap: $uriMap');
+    }
+  }
 
   @override
   Map<String, dynamic> toUriMap() {

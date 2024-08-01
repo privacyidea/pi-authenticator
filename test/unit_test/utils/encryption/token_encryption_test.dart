@@ -4,8 +4,8 @@ import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/steam_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
-import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/privacyidea_authenticator_qr_processor.dart';
 import 'package:privacyidea_authenticator/utils/encryption/token_encryption.dart';
 import 'package:zxing2/qrcode.dart';
 
@@ -48,20 +48,15 @@ void _testTokenEncryption() {
         DayPasswordToken(period: const Duration(hours: 24), id: 'id4', algorithm: Algorithms.SHA512, digits: 10, secret: 'secret4'),
         PushToken(serial: 'serial', id: 'id5'),
       ];
-      const compressedTokensBase64 = [
-        'eyJsYWJlbCI6IiIsImlzc3VlciI6IiIsImlkIjoiaWQxIiwicGluIjpmYWxzZSwiaXNMb2NrZWQiOmZhbHNlLCJpc0hpZGRlbiI6ZmFsc2UsInRva2VuSW1hZ2UiOm51bGwsImZvbGRlcklkIjpudWxsLCJzb3J0SW5kZXgiOm51bGwsIm9yaWdpbiI6bnVsbCwidHlwZSI6IkhPVFAiLCJhbGdvcml0aG0iOiJTSEExIiwiZGlnaXRzIjo2LCJzZWNyZXQiOiJzZWNyZXQxIiwiY291bnRlciI6MH0=',
-        'eyJsYWJlbCI6IiIsImlzc3VlciI6IiIsImlkIjoiaWQyIiwicGluIjpmYWxzZSwiaXNMb2NrZWQiOmZhbHNlLCJpc0hpZGRlbiI6ZmFsc2UsInRva2VuSW1hZ2UiOm51bGwsImZvbGRlcklkIjpudWxsLCJzb3J0SW5kZXgiOm51bGwsIm9yaWdpbiI6bnVsbCwidHlwZSI6IlRPVFAiLCJhbGdvcml0aG0iOiJTSEEyNTYiLCJkaWdpdHMiOjgsInNlY3JldCI6InNlY3JldDIiLCJwZXJpb2QiOjMwfQ==',
-        'eyJsYWJlbCI6IiIsImlzc3VlciI6IiIsImlkIjoiaWQzIiwicGluIjpmYWxzZSwiaXNMb2NrZWQiOmZhbHNlLCJpc0hpZGRlbiI6ZmFsc2UsInRva2VuSW1hZ2UiOm51bGwsImZvbGRlcklkIjpudWxsLCJzb3J0SW5kZXgiOm51bGwsIm9yaWdpbiI6bnVsbCwidHlwZSI6IlNURUFNIiwic2VjcmV0Ijoic2VjcmV0MyJ9',
-        'eyJsYWJlbCI6IiIsImlzc3VlciI6IiIsImlkIjoiaWQ0IiwicGluIjpmYWxzZSwiaXNMb2NrZWQiOmZhbHNlLCJpc0hpZGRlbiI6ZmFsc2UsInRva2VuSW1hZ2UiOm51bGwsImZvbGRlcklkIjpudWxsLCJzb3J0SW5kZXgiOm51bGwsIm9yaWdpbiI6bnVsbCwidHlwZSI6IkRBWVBBU1NXT1JEIiwiYWxnb3JpdGhtIjoiU0hBNTEyIiwiZGlnaXRzIjoxMCwic2VjcmV0Ijoic2VjcmV0NCIsInZpZXdNb2RlIjoiVkFMSURGT1IiLCJwZXJpb2QiOjg2NDAwMDAwMDAwfQ==',
-        'eyJsYWJlbCI6IiIsImlzc3VlciI6IiIsImlkIjoiaWQ1IiwicGluIjpmYWxzZSwiaXNMb2NrZWQiOmZhbHNlLCJpc0hpZGRlbiI6ZmFsc2UsInRva2VuSW1hZ2UiOm51bGwsImZvbGRlcklkIjpudWxsLCJzb3J0SW5kZXgiOm51bGwsIm9yaWdpbiI6bnVsbCwidHlwZSI6IlBJUFVTSCIsImV4cGlyYXRpb25EYXRlIjpudWxsLCJzZXJpYWwiOiJzZXJpYWwiLCJmYlRva2VuIjpudWxsLCJzc2xWZXJpZnkiOmZhbHNlLCJlbnJvbGxtZW50Q3JlZGVudGlhbHMiOm51bGwsInVybCI6bnVsbCwiaXNSb2xsZWRPdXQiOmZhbHNlLCJyb2xsb3V0U3RhdGUiOiJyb2xsb3V0Tm90U3RhcnRlZCIsInB1YmxpY1NlcnZlcktleSI6bnVsbCwicHJpdmF0ZVRva2VuS2V5IjpudWxsLCJwdWJsaWNUb2tlbktleSI6bnVsbH0=',
-      ];
+
       for (var i = 0; tokensList.length > i; i++) {
         final token = tokensList[i];
-        final compressed = compressedTokensBase64[i];
         final qrCodeUri = TokenEncryption.generateExportUri(token: token);
         final uriString = qrCodeUri.toString();
+        Token? decoded;
         expect(uriString.isNotEmpty, true);
-        expect(uriString, '${PrivacyIDEAAuthenticatorQrProcessor.scheme}://${PrivacyIDEAAuthenticatorQrProcessor.host}?data=$compressed');
+        expect(() => decoded = TokenEncryption.fromExportUri(qrCodeUri), returnsNormally);
+        expect(decoded.runtimeType, tokensList[i].runtimeType);
       }
     });
 
