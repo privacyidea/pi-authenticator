@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
-import 'package:privacyidea_authenticator/widgets/deactivateable_refresh_indicator.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
+import 'deactivateable_refresh_indicator.dart';
 
 import '../utils/logger.dart';
 import '../utils/push_provider.dart';
