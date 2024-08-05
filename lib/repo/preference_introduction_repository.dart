@@ -4,7 +4,7 @@ import 'package:mutex/mutex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interfaces/repo/introduction_repository.dart';
-import '../model/states/introduction_state.dart';
+import '../model/riverpod_states/introduction_state.dart';
 import '../utils/logger.dart';
 
 class PreferenceIntroductionRepository implements IntroductionRepository {

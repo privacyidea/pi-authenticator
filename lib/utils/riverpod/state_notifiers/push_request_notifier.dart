@@ -27,7 +27,7 @@ import 'package:mutex/mutex.dart';
 import '../../../interfaces/repo/push_request_repository.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/push_request.dart';
-import '../../../model/states/push_request_state.dart';
+import '../../../model/riverpod_states/push_request_state.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../repo/secure_push_request_repository.dart';
 import '../../custom_int_buffer.dart';

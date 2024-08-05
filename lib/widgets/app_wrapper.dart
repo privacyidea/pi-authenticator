@@ -4,14 +4,15 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_provider.dart';
 
 import '../interfaces/riverpod/state_listeners/notifier_provider_listener.dart';
 
 import '../model/token_container.dart';
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod/riverpod_providers/generated_providers/deeplink_provider.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/credential_nofitier.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/deeplink_notifier.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../utils/riverpod/riverpod_providers/state_notifier_providers/push_request_provider.dart';
 import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
 import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
@@ -88,7 +89,7 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final credentials = ref.watch(credentialsProvider).value?.credentials ?? [];
+    final credentials = ref.watch(credentialsNotifierProvider).value?.credentials ?? [];
     Logger.debug('Credentials: $credentials', name: 'AppWrapper#build');
     return SingleTouchRecognizer(
       child: StateObserver(
@@ -98,14 +99,14 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
           ContainerListensToTokenState(tokenProvider: tokenProvider, ref: ref),
         ],
         streamNotifierProviderListeners: [
-          NavigationDeepLinkListener(deeplinkProvider: deeplinkProvider),
-          HomeWidgetDeepLinkListener(deeplinkProvider: deeplinkProvider), // TODO: Nochmal anschauen
+          NavigationDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
+          HomeWidgetDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider), // TODO: Nochmal anschauen
         ],
         asyncNotifierProviderListeners: [
           ...credentials.map(
             (credential) {
               return TokenStateListensToContainer(
-              containerProvider: tokenContainerProviderOf(credential: credential),
+                containerProvider: tokenContainerNotifierProviderOf(credential: credential),
               ref: ref,
               );
             },
@@ -138,9 +139,9 @@ class TokenStateListensToContainer extends AsyncContainerListener {
 }
 
 
-abstract class AsyncContainerListener extends AsyncNotifierProviderListener<TokenContainerProvider, TokenContainer?> {
+abstract class AsyncContainerListener extends AsyncNotifierProviderListener<TokenContainerNotifier, TokenContainer?> {
   const AsyncContainerListener({
-    required TokenContainerProviderProvider containerProvider,
+    required TokenContainerNotifierProvider containerProvider,
     required super.onNewState,
   }) : super(provider: containerProvider);
 }

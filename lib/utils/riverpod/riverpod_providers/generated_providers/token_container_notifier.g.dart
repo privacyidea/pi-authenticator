@@ -1,29 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'token_container_provider.dart';
-
-// **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
-
-CredentialsState _$CredentialsStateFromJson(Map<String, dynamic> json) =>
-    CredentialsState(
-      credentials: (json['credentials'] as List<dynamic>)
-          .map((e) => ContainerCredential.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-
-Map<String, dynamic> _$CredentialsStateToJson(CredentialsState instance) =>
-    <String, dynamic>{
-      'credentials': instance.credentials,
-    };
+part of 'token_container_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tokenContainerProviderHash() =>
-    r'ec9832ed16a556f269ac27705af2a3cb27dd5fd1';
+String _$tokenContainerNotifierHash() =>
+    r'fa7e50e1970516f60df6ba4b2ccf19dad3ab5736';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -46,7 +30,7 @@ class _SystemHash {
   }
 }
 
-abstract class _$TokenContainerProvider
+abstract class _$TokenContainerNotifier
     extends BuildlessAutoDisposeAsyncNotifier<TokenContainer> {
   late final ContainerCredential credential;
 
@@ -55,27 +39,27 @@ abstract class _$TokenContainerProvider
   });
 }
 
-/// See also [TokenContainerProvider].
-@ProviderFor(TokenContainerProvider)
-const tokenContainerProviderOf = TokenContainerProviderFamily();
+/// See also [TokenContainerNotifier].
+@ProviderFor(TokenContainerNotifier)
+const tokenContainerNotifierProviderOf = TokenContainerNotifierFamily();
 
-/// See also [TokenContainerProvider].
-class TokenContainerProviderFamily extends Family<AsyncValue<TokenContainer>> {
-  /// See also [TokenContainerProvider].
-  const TokenContainerProviderFamily();
+/// See also [TokenContainerNotifier].
+class TokenContainerNotifierFamily extends Family<AsyncValue<TokenContainer>> {
+  /// See also [TokenContainerNotifier].
+  const TokenContainerNotifierFamily();
 
-  /// See also [TokenContainerProvider].
-  TokenContainerProviderProvider call({
+  /// See also [TokenContainerNotifier].
+  TokenContainerNotifierProvider call({
     required ContainerCredential credential,
   }) {
-    return TokenContainerProviderProvider(
+    return TokenContainerNotifierProvider(
       credential: credential,
     );
   }
 
   @override
-  TokenContainerProviderProvider getProviderOverride(
-    covariant TokenContainerProviderProvider provider,
+  TokenContainerNotifierProvider getProviderOverride(
+    covariant TokenContainerNotifierProvider provider,
   ) {
     return call(
       credential: provider.credential,
@@ -94,31 +78,31 @@ class TokenContainerProviderFamily extends Family<AsyncValue<TokenContainer>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'tokenContainerProviderOf';
+  String? get name => r'tokenContainerNotifierProviderOf';
 }
 
-/// See also [TokenContainerProvider].
-class TokenContainerProviderProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<TokenContainerProvider,
+/// See also [TokenContainerNotifier].
+class TokenContainerNotifierProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<TokenContainerNotifier,
         TokenContainer> {
-  /// See also [TokenContainerProvider].
-  TokenContainerProviderProvider({
+  /// See also [TokenContainerNotifier].
+  TokenContainerNotifierProvider({
     required ContainerCredential credential,
   }) : this._internal(
-          () => TokenContainerProvider()..credential = credential,
-          from: tokenContainerProviderOf,
-          name: r'tokenContainerProviderOf',
+          () => TokenContainerNotifier()..credential = credential,
+          from: tokenContainerNotifierProviderOf,
+          name: r'tokenContainerNotifierProviderOf',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$tokenContainerProviderHash,
-          dependencies: TokenContainerProviderFamily._dependencies,
+                  : _$tokenContainerNotifierHash,
+          dependencies: TokenContainerNotifierFamily._dependencies,
           allTransitiveDependencies:
-              TokenContainerProviderFamily._allTransitiveDependencies,
+              TokenContainerNotifierFamily._allTransitiveDependencies,
           credential: credential,
         );
 
-  TokenContainerProviderProvider._internal(
+  TokenContainerNotifierProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -132,7 +116,7 @@ class TokenContainerProviderProvider
 
   @override
   FutureOr<TokenContainer> runNotifierBuild(
-    covariant TokenContainerProvider notifier,
+    covariant TokenContainerNotifier notifier,
   ) {
     return notifier.build(
       credential: credential,
@@ -140,10 +124,10 @@ class TokenContainerProviderProvider
   }
 
   @override
-  Override overrideWith(TokenContainerProvider Function() create) {
+  Override overrideWith(TokenContainerNotifier Function() create) {
     return ProviderOverride(
       origin: this,
-      override: TokenContainerProviderProvider._internal(
+      override: TokenContainerNotifierProvider._internal(
         () => create()..credential = credential,
         from: from,
         name: null,
@@ -156,14 +140,14 @@ class TokenContainerProviderProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<TokenContainerProvider,
+  AutoDisposeAsyncNotifierProviderElement<TokenContainerNotifier,
       TokenContainer> createElement() {
-    return _TokenContainerProviderProviderElement(this);
+    return _TokenContainerNotifierProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is TokenContainerProviderProvider &&
+    return other is TokenContainerNotifierProvider &&
         other.credential == credential;
   }
 
@@ -176,38 +160,20 @@ class TokenContainerProviderProvider
   }
 }
 
-mixin TokenContainerProviderRef
+mixin TokenContainerNotifierRef
     on AutoDisposeAsyncNotifierProviderRef<TokenContainer> {
   /// The parameter `credential` of this provider.
   ContainerCredential get credential;
 }
 
-class _TokenContainerProviderProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<TokenContainerProvider,
-        TokenContainer> with TokenContainerProviderRef {
-  _TokenContainerProviderProviderElement(super.provider);
+class _TokenContainerNotifierProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<TokenContainerNotifier,
+        TokenContainer> with TokenContainerNotifierRef {
+  _TokenContainerNotifierProviderElement(super.provider);
 
   @override
   ContainerCredential get credential =>
-      (origin as TokenContainerProviderProvider).credential;
+      (origin as TokenContainerNotifierProvider).credential;
 }
-
-String _$credentialsProviderHash() =>
-    r'1cd835b458424a6ab8e1d60850ce455de9d0efa6';
-
-/// See also [CredentialsProvider].
-@ProviderFor(CredentialsProvider)
-final credentialsProvider =
-    AsyncNotifierProvider<CredentialsProvider, CredentialsState>.internal(
-  CredentialsProvider.new,
-  name: r'credentialsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$credentialsProviderHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$CredentialsProvider = AsyncNotifier<CredentialsState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

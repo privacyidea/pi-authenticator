@@ -10,7 +10,7 @@ import '../../state_notifiers/deeplink_notifier.dart';
 import '../../../home_widget_utils.dart';
 import '../../../logger.dart';
 
-part 'deeplink_provider.g.dart';
+part 'deeplink_notifier.g.dart';
 
 final sources = [
   DeeplinkSource(
@@ -26,10 +26,10 @@ final sources = [
 ];
 
 @Riverpod(keepAlive: true)
-class DeeplinkProvider extends _$DeeplinkProvider {
+class DeeplinkNotifier extends _$DeeplinkNotifier {
   @override
   Stream<DeepLink> build() async* {
-    Logger.info('New DeeplinkProvider created', name: 'DeeplinkProvider#build');
+    Logger.info('New DeeplinkNotifier created', name: 'DeeplinkNotifier#build');
     final initial = await _handleInitialUri(sources);
     if (initial != null) yield initial;
     await for (var dl in _handleIncomingLinks(sources)) {
@@ -43,7 +43,7 @@ class DeeplinkProvider extends _$DeeplinkProvider {
     if (kIsWeb) return;
     final groupedStream = StreamGroup.merge(sources.map((source) => source.stream));
     await for (var uri in groupedStream) {
-      Logger.info('DeeplinkProvider got new uri');
+      Logger.info('DeeplinkNotifier got new uri');
       if (uri == null) return;
       yield DeepLink(uri);
     }

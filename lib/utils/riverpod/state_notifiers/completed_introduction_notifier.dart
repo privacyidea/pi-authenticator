@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../interfaces/repo/introduction_repository.dart';
 import '../../../model/enums/introduction.dart';
-import '../../../model/states/introduction_state.dart';
+import '../../../model/riverpod_states/introduction_state.dart';
 import '../../logger.dart';
 
 class IntroductionNotifier extends StateNotifier<IntroductionState> {

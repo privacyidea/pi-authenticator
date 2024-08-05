@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../interfaces/repo/settings_repository.dart';
-import '../../../model/states/settings_state.dart';
+import '../../../model/riverpod_states/settings_state.dart';
 import '../../../model/version.dart';
 import '../../logger.dart';
 import '../../push_provider.dart';

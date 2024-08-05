@@ -1,5 +1,5 @@
 import '../../model/push_request.dart' show PushRequest;
-import '../../model/states/push_request_state.dart' show PushRequestState;
+import '../../model/riverpod_states/push_request_state.dart' show PushRequestState;
 
 abstract class PushRequestRepository {
   /// Load the [PushRequestState] from the repository

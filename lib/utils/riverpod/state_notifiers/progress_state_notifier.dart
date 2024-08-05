@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../model/states/progress_state.dart';
+import '../../../model/riverpod_states/progress_state.dart';
 import '../../logger.dart';
 
 class ProgressStateNotifier extends StateNotifier<ProgressState?> {

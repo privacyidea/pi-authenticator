@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../model/mixins/sortable_mixin.dart';
-import '../../../../model/states/token_folder_state.dart';
-import '../../../../model/states/token_state.dart';
+import '../../../../model/riverpod_states/token_folder_state.dart';
+import '../../../../model/riverpod_states/token_state.dart';
 import '../../state_notifiers/sortable_notifier.dart';
 import '../../../logger.dart';
 import 'token_folder_provider.dart';

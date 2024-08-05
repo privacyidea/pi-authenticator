@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../model/states/token_filter.dart';
+import '../../../model/riverpod_states/token_filter.dart';
 import '../../../utils/globals.dart';
 import '../../../utils/riverpod/riverpod_providers/state_providers/token_filter_provider.dart';
 

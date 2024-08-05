@@ -7,7 +7,7 @@ import 'package:mutex/mutex.dart';
 
 import '../interfaces/repo/push_request_repository.dart';
 import '../model/push_request.dart';
-import '../model/states/push_request_state.dart';
+import '../model/riverpod_states/push_request_state.dart';
 import '../utils/custom_int_buffer.dart';
 import '../utils/logger.dart';
 

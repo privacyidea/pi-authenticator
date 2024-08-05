@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../model/deeplink.dart';
 import '../../../../utils/logger.dart';
-import '../../../../utils/riverpod/riverpod_providers/generated_providers/deeplink_provider.dart';
+import '../../../../utils/riverpod/riverpod_providers/generated_providers/deeplink_notifier.dart';
 
-abstract class DeepLinkListener extends StreamNotifierProviderListener<DeeplinkProvider, DeepLink> {
+abstract class DeepLinkListener extends StreamNotifierProviderListener<DeeplinkNotifier, DeepLink> {
   const DeepLinkListener({
-    required StreamNotifierProvider<DeeplinkProvider, DeepLink> deeplinkProvider,
+    required StreamNotifierProvider<DeeplinkNotifier, DeepLink> deeplinkProvider,
     required super.onNewState,
     required super.listenerName,
   }) : super(provider: deeplinkProvider);

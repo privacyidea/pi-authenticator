@@ -2,7 +2,7 @@ import 'package:mutex/mutex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interfaces/repo/settings_repository.dart';
-import '../model/states/settings_state.dart';
+import '../model/riverpod_states/settings_state.dart';
 import '../model/version.dart';
 
 class PreferenceSettingsRepository extends SettingsRepository {
