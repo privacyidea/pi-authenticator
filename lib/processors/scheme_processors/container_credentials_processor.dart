@@ -1,7 +1,7 @@
 import 'package:privacyidea_authenticator/processors/scheme_processors/scheme_processor_interface.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_container_state_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_provider.dart';
 
 import '../../model/tokens/container_credentials.dart';
 

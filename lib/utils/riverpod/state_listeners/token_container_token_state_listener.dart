@@ -4,7 +4,7 @@ import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/token_state_listener.dart';
 import '../../../model/states/token_state.dart';
-import '../riverpod_providers/state_notifier_providers/token_container_state_provider.dart';
+import '../riverpod_providers/generated_providers/token_container_provider.dart';
 
 class ContainerListensToTokenState extends TokenStateListener {
   ContainerListensToTokenState({

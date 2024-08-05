@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'token_container_state_provider.dart';
+part of 'token_container_provider.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -23,7 +23,7 @@ Map<String, dynamic> _$CredentialsStateToJson(CredentialsState instance) =>
 // **************************************************************************
 
 String _$tokenContainerProviderHash() =>
-    r'88f3953135b40aa4478987e3c41069ec94bc2a37';
+    r'ec9832ed16a556f269ac27705af2a3cb27dd5fd1';
 
 /// Copied from Dart SDK
 class _SystemHash {

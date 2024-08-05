@@ -2,10 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
 import 'package:pointycastle/export.dart';
-import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.dart';
-import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
@@ -17,23 +14,13 @@ import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_notifier.dart';
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
-import 'token_notifier_test.mocks.dart';
+import '../../tests_app_wrapper.mocks.dart';
 
-@GenerateMocks(
-  [
-    TokenRepository,
-    SettingsRepository,
-    RsaUtils,
-    PrivacyideaIOClient,
-    FirebaseUtils,
-  ],
-)
+
 void main() {
   _testTokenNotifier();
 }

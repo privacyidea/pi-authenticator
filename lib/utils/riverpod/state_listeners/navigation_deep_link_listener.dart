@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/deep_link_listener.dart';
 import '../../../model/deeplink.dart';
@@ -8,7 +9,7 @@ class NavigationDeepLinkListener extends DeepLinkListener {
   static BuildContext? _context;
   NavigationDeepLinkListener({required super.deeplinkProvider, BuildContext? context})
       : super(
-          onNewState: (DeepLink? previous, DeepLink? next) {
+          onNewState: (AsyncValue<DeepLink>? previous, AsyncValue<DeepLink> next) {
             _onNewState(previous, next);
           },
           listenerName: 'NavigationSchemeProcessor.processUriByAny',
@@ -16,8 +17,9 @@ class NavigationDeepLinkListener extends DeepLinkListener {
     _context = context;
   }
 
-  static void _onNewState(DeepLink? previous, DeepLink? next) {
-    if (next == null) return;
+  static void _onNewState(AsyncValue<DeepLink>? previous, AsyncValue<DeepLink> next) {
+    next.whenData((next) {
     NavigationSchemeProcessor.processUriByAny(next.uri, context: _context, fromInit: next.fromInit);
+    });
   }
 }
