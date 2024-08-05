@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
-import 'package:privacyidea_authenticator/interfaces/repo/container_credentials_repository.dart';
+import '../interfaces/repo/container_credentials_repository.dart';
 
 import '../model/riverpod_states/credentials_state.dart';
 import '../model/tokens/container_credentials.dart';
