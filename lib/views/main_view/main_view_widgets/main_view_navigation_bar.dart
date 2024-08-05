@@ -19,10 +19,11 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/introduction.dart';
-import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/state_providers/app_constraints_provider.dart';
 import '../../../widgets/focused_item_as_overlay.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
@@ -64,9 +65,13 @@ class MainViewNavigationBar extends ConsumerWidget {
                   heightFactor: 0.6,
                   child: FocusedItemAsOverlay(
                       onComplete: () {
-                        ref.read(introductionProvider.notifier).complete(Introduction.scanQrCode);
+                        ref.read(introductionNotifierProvider.notifier).complete(Introduction.scanQrCode);
                       },
-                      isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.scanQrCode),
+                      isFocused: ref.watch(introductionNotifierProvider).when(
+                            data: (data) => data.isConditionFulfilled(ref, Introduction.scanQrCode),
+                            error: (_, __) => false,
+                            loading: () => false,
+                          ),
                       tooltipWhenFocused: AppLocalizations.of(context)!.introScanQrCode,
                       child: const QrScannerButton()),
                 ),
@@ -93,10 +98,12 @@ class MainViewNavigationBar extends ConsumerWidget {
                                 Navigator.pushNamed(context, AddTokenManuallyView.routeName);
                               },
                               icon: FocusedItemAsOverlay(
-                                onComplete: () {
-                                  ref.read(introductionProvider.notifier).complete(Introduction.addManually);
-                                },
-                                isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.addManually),
+                                onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.addManually),
+                                isFocused: ref.watch(introductionNotifierProvider).when(
+                                      data: (data) => data.isConditionFulfilled(ref, Introduction.addManually),
+                                      error: (_, __) => false,
+                                      loading: () => false,
+                                    ),
                                 tooltipWhenFocused: AppLocalizations.of(context)!.introAddTokenManually,
                                 child: FittedBox(
                                   child: Icon(
@@ -115,9 +122,16 @@ class MainViewNavigationBar extends ConsumerWidget {
                           child: Padding(
                             padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
                             child: FocusedItemAsOverlay(
-                              isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.addFolder),
+                              isFocused: ref.watch(introductionNotifierProvider).when(
+                                    data: (data) {
+                                      Logger.info('IntroductionNotifier isConditionFulfilled: ${data.isConditionFulfilled(ref, Introduction.addFolder)}');
+                                      return data.isConditionFulfilled(ref, Introduction.addFolder);
+                                    },
+                                    error: (_, __) => false,
+                                    loading: () => false,
+                                  ),
                               tooltipWhenFocused: AppLocalizations.of(context)!.introAddFolder,
-                              onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.addFolder),
+                              onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.addFolder),
                               child: AppBarItem(
                                 tooltip: AppLocalizations.of(context)!.addFolder,
                                 onPressed: () {

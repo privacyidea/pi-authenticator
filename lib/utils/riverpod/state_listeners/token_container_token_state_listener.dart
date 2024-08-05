@@ -23,7 +23,7 @@ import '../../logger.dart';
 
 import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/token_state_listener.dart';
 import '../../../model/riverpod_states/token_state.dart';
-import '../riverpod_providers/generated_providers/credential_nofitier.dart';
+import '../riverpod_providers/generated_providers/credential_notifier.dart';
 import '../riverpod_providers/generated_providers/token_container_notifier.dart';
 
 class ContainerListensToTokenState extends TokenStateListener {

@@ -22,7 +22,7 @@ import '../../utils/globals.dart';
 import '../../utils/logger.dart';
 
 import '../../model/tokens/container_credentials.dart';
-import '../../utils/riverpod/riverpod_providers/generated_providers/credential_nofitier.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
 
 class ContainerCredentialsProcessor extends SchemeProcessor {
   @override

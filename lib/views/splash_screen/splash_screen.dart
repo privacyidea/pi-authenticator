@@ -25,7 +25,7 @@ import '../../utils/app_info_utils.dart';
 import '../../utils/customization/application_customization.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
-import '../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
 import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
@@ -52,7 +52,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     _customization = widget.customization;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_customization.disabledFeatures.contains(AppFeature.introductions)) {
-        ref.read(introductionProvider.notifier).completeAll();
+        ref.read(introductionNotifierProvider.notifier).completeAll();
       }
     });
 
@@ -65,7 +65,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           Future.delayed(_splashScreenDuration),
           ref.read(settingsProvider.notifier).loadingRepo,
           ref.read(tokenProvider.notifier).initState,
-          ref.read(introductionProvider.notifier).loadingRepo,
           ref.read(tokenFolderProvider.notifier).initState,
           AppInfoUtils.init(),
           HomeWidgetUtils().homeWidgetInit(),

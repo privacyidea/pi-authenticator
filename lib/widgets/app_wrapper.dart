@@ -10,7 +10,7 @@ import '../interfaces/riverpod/state_listeners/notifier_provider_listener.dart';
 import '../model/token_container.dart';
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod/riverpod_providers/generated_providers/credential_nofitier.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/deeplink_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../utils/riverpod/riverpod_providers/state_notifier_providers/push_request_provider.dart';
@@ -94,7 +94,6 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
     return SingleTouchRecognizer(
       child: StateObserver(
         stateNotifierProviderListeners: [
-
           HomeWidgetTokenStateListener(tokenProvider: tokenProvider),
           ContainerListensToTokenState(tokenProvider: tokenProvider, ref: ref),
         ],
@@ -107,7 +106,7 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
             (credential) {
               return TokenStateListensToContainer(
                 containerProvider: tokenContainerNotifierProviderOf(credential: credential),
-              ref: ref,
+                ref: ref,
               );
             },
           ),
@@ -119,8 +118,6 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
     );
   }
 }
-
-
 
 class TokenStateListensToContainer extends AsyncContainerListener {
   final WidgetRef ref;
@@ -137,7 +134,6 @@ class TokenStateListensToContainer extends AsyncContainerListener {
     provider.updateContainerTokens(value);
   }
 }
-
 
 abstract class AsyncContainerListener extends AsyncNotifierProviderListener<TokenContainerNotifier, TokenContainer?> {
   const AsyncContainerListener({

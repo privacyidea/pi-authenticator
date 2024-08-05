@@ -23,7 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/introduction.dart';
 import '../../../../../model/tokens/push_token.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../../../../widgets/custom_trailing.dart';
 import '../../../../../widgets/focused_item_as_overlay.dart';
 import '../token_widget_tile.dart';
@@ -52,9 +52,13 @@ class PushTokenWidgetTile extends ConsumerWidget {
       trailing: FocusedItemAsOverlay(
         tooltipWhenFocused: AppLocalizations.of(context)!.introPollForChallenges,
         alignment: Alignment.centerLeft,
-        isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.pollForChallenges),
+        isFocused: ref.watch(introductionNotifierProvider).when(
+              data: (value) => value.isConditionFulfilled(ref, Introduction.pollForChallenges),
+              error: (Object error, StackTrace stackTrace) => false,
+              loading: () => false,
+            ),
         onComplete: () {
-          ref.read(introductionProvider.notifier).complete(Introduction.pollForChallenges);
+          ref.read(introductionNotifierProvider.notifier).complete(Introduction.pollForChallenges);
         },
         child: const CustomTrailing(
           child: FittedBox(
