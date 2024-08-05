@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../model/states/push_request_state.dart';
+import '../../../../model/riverpod_states/push_request_state.dart';
 import '../../state_notifiers/push_request_notifier.dart';
 import '../../../logger.dart';
 import '../../../push_provider.dart';

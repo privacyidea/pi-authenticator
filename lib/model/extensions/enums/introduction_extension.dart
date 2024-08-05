@@ -4,7 +4,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../../enums/introduction.dart';
-import '../../states/introduction_state.dart';
+import '../../riverpod_states/introduction_state.dart';
 
 extension IntroductionX on Introduction {
   /// Checks if the condition for the given state is fulfilled.

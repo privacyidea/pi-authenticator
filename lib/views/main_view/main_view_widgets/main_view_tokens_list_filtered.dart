@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
-import '../../../model/states/token_filter.dart';
+import '../../../model/riverpod_states/token_filter.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/logger.dart';

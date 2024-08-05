@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../model/states/settings_state.dart';
+import '../../../../model/riverpod_states/settings_state.dart';
 import '../../../../repo/preference_settings_repository.dart';
 import '../../state_notifiers/settings_notifier.dart';
 

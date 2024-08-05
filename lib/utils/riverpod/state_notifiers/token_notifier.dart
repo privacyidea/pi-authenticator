@@ -20,7 +20,7 @@ import '../../../model/enums/token_origin_source_type.dart';
 import '../../../model/extensions/enums/push_token_rollout_state_extension.dart';
 import '../../../model/extensions/enums/token_origin_source_type.dart';
 import '../../../model/processor_result.dart';
-import '../../../model/states/token_state.dart';
+import '../../../model/riverpod_states/token_state.dart';
 import '../../../model/token_container.dart';
 import '../../../model/tokens/hotp_token.dart';
 import '../../../model/tokens/otp_token.dart';

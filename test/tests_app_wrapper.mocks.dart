@@ -22,11 +22,11 @@ import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repositor
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart'
     as _i10;
 import 'package:privacyidea_authenticator/model/push_request.dart' as _i22;
-import 'package:privacyidea_authenticator/model/states/introduction_state.dart'
+import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart'
     as _i5;
-import 'package:privacyidea_authenticator/model/states/push_request_state.dart'
+import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart'
     as _i9;
-import 'package:privacyidea_authenticator/model/states/settings_state.dart'
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart'
     as _i2;
 import 'package:privacyidea_authenticator/model/token_folder.dart' as _i15;
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i18;
@@ -799,14 +799,11 @@ class MockIntroductionRepository extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockPushProvider extends _i1.Mock implements _i21.PushProvider {
-  MockPushProvider() {
-    _i1.throwOnMissingStub(this);
-  }
-
   @override
   bool get pollingIsEnabled => (super.noSuchMethod(
         Invocation.getter(#pollingIsEnabled),
         returnValue: false,
+        returnValueForMissingStub: false,
       ) as bool);
 
   @override
@@ -825,6 +822,10 @@ class MockPushProvider extends _i1.Mock implements _i21.PushProvider {
           this,
           Invocation.getter(#firebaseUtils),
         ),
+        returnValueForMissingStub: _FakeFirebaseUtils_6(
+          this,
+          Invocation.getter(#firebaseUtils),
+        ),
       ) as _i6.FirebaseUtils);
 
   @override
@@ -834,12 +835,20 @@ class MockPushProvider extends _i1.Mock implements _i21.PushProvider {
           this,
           Invocation.getter(#ioClient),
         ),
+        returnValueForMissingStub: _FakePrivacyideaIOClient_7(
+          this,
+          Invocation.getter(#ioClient),
+        ),
       ) as _i7.PrivacyideaIOClient);
 
   @override
   _i8.RsaUtils get rsaUtils => (super.noSuchMethod(
         Invocation.getter(#rsaUtils),
         returnValue: _FakeRsaUtils_8(
+          this,
+          Invocation.getter(#rsaUtils),
+        ),
+        returnValueForMissingStub: _FakeRsaUtils_8(
           this,
           Invocation.getter(#rsaUtils),
         ),
@@ -892,6 +901,8 @@ class MockPushProvider extends _i1.Mock implements _i21.PushProvider {
         ),
         returnValue:
             _i11.Future<(List<_i18.PushToken>, List<_i18.PushToken>)?>.value(),
+        returnValueForMissingStub:
+            _i11.Future<(List<_i18.PushToken>, List<_i18.PushToken>)?>.value(),
       ) as _i11.Future<(List<_i18.PushToken>, List<_i18.PushToken>)?>);
 
   @override
@@ -920,10 +931,6 @@ class MockPushProvider extends _i1.Mock implements _i21.PushProvider {
 /// See the documentation for Mockito's code generation for more information.
 class MockPushRequestRepository extends _i1.Mock
     implements _i23.PushRequestRepository {
-  MockPushRequestRepository() {
-    _i1.throwOnMissingStub(this);
-  }
-
   @override
   _i11.Future<_i9.PushRequestState> loadState() => (super.noSuchMethod(
         Invocation.method(
@@ -931,6 +938,14 @@ class MockPushRequestRepository extends _i1.Mock
           [],
         ),
         returnValue:
+            _i11.Future<_i9.PushRequestState>.value(_FakePushRequestState_9(
+          this,
+          Invocation.method(
+            #loadState,
+            [],
+          ),
+        )),
+        returnValueForMissingStub:
             _i11.Future<_i9.PushRequestState>.value(_FakePushRequestState_9(
           this,
           Invocation.method(
@@ -981,6 +996,15 @@ class MockPushRequestRepository extends _i1.Mock
             {#state: state},
           ),
         )),
+        returnValueForMissingStub:
+            _i11.Future<_i9.PushRequestState>.value(_FakePushRequestState_9(
+          this,
+          Invocation.method(
+            #add,
+            [pushRequest],
+            {#state: state},
+          ),
+        )),
       ) as _i11.Future<_i9.PushRequestState>);
 
   @override
@@ -995,6 +1019,15 @@ class MockPushRequestRepository extends _i1.Mock
           {#state: state},
         ),
         returnValue:
+            _i11.Future<_i9.PushRequestState>.value(_FakePushRequestState_9(
+          this,
+          Invocation.method(
+            #remove,
+            [pushRequest],
+            {#state: state},
+          ),
+        )),
+        returnValueForMissingStub:
             _i11.Future<_i9.PushRequestState>.value(_FakePushRequestState_9(
           this,
           Invocation.method(

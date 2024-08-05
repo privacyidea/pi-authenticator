@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 
 import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/token_state_listener.dart';
-import '../../../model/states/token_state.dart';
+import '../../../model/riverpod_states/token_state.dart';
 import '../../../model/tokens/token.dart';
 import '../../home_widget_utils.dart';
 

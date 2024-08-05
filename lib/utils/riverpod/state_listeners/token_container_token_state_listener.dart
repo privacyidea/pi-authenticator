@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/token_state_listener.dart';
-import '../../../model/states/token_state.dart';
-import '../riverpod_providers/generated_providers/token_container_provider.dart';
+import '../../../model/riverpod_states/token_state.dart';
+import '../riverpod_providers/generated_providers/credential_nofitier.dart';
+import '../riverpod_providers/generated_providers/token_container_notifier.dart';
 
 class ContainerListensToTokenState extends TokenStateListener {
   ContainerListensToTokenState({
@@ -20,7 +21,7 @@ class ContainerListensToTokenState extends TokenStateListener {
   static Future<void> _onNewState(TokenState? previousState, TokenState nextState, WidgetRef ref) async {
     Logger.warning('New token state', name: 'TokenContainerTokenStateListener');
     final maybePiTokenTemplates = nextState.lastlyUpdatedTokens.maybePiTokens.toTemplates();
-    final credentials = (await ref.read(credentialsProvider.future)).credentials;
+    final credentials = (await ref.read(credentialsNotifierProvider.future)).credentials;
     Logger.warning('Readed: $credentials', name: 'TokenContainerTokenStateListener');
     // if (maybePiTokenTemplates.isEmpty) return;
     for (var credential in credentials) {
@@ -31,14 +32,14 @@ class ContainerListensToTokenState extends TokenStateListener {
           'Deleted (${deletedPiTokenTemplates.length}) tokens from container "${credential.serial}"',
           name: 'TokenContainerTokenStateListener',
         );
-        await ref.read(tokenContainerProviderOf(credential: credential).notifier).handleDeletedTokenTemplates(deletedPiTokenTemplates);
+        await ref.read(tokenContainerNotifierProviderOf(credential: credential).notifier).handleDeletedTokenTemplates(deletedPiTokenTemplates);
       }
       if (maybePiTokenTemplates.isNotEmpty) {
         Logger.warning(
           'Adding maybePiTokenTemplates (${maybePiTokenTemplates.length}) to container ${credential.serial}',
           name: 'TokenContainerTokenStateListener',
         );
-        await ref.read(tokenContainerProviderOf(credential: credential).notifier).tryAddLocalTemplates(maybePiTokenTemplates);
+        await ref.read(tokenContainerNotifierProviderOf(credential: credential).notifier).tryAddLocalTemplates(maybePiTokenTemplates);
       }
     }
   }
