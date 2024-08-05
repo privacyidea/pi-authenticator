@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_container_state_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_provider.dart';
 import 'package:privacyidea_authenticator/widgets/deactivateable_refresh_indicator.dart';
 
+import '../utils/logger.dart';
 import '../utils/push_provider.dart';
 import '../views/main_view/main_view_widgets/loading_indicator.dart';
 
@@ -31,7 +32,7 @@ class _DefaultRefreshIndicatorState extends ConsumerState<DefaultRefreshIndicato
           final future = LoadingIndicator.show(context, () async {
             final pushProviderInstance = PushProvider.instance;
             final credentials = (await ref.read(credentialsProvider.future)).credentials;
-
+            Logger.debug('Refreshing container with ${credentials.length} credentials');
             await Future.wait([
               if (pushProviderInstance != null) pushProviderInstance.pollForChallenges(isManually: true),
               for (var credential in credentials) (ref.read(tokenContainerProviderOf(credential: credential).notifier).sync()),

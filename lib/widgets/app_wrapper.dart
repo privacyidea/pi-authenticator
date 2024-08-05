@@ -4,14 +4,14 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_container_state_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_provider.dart';
 
 import '../interfaces/riverpod/state_listeners/notifier_provider_listener.dart';
 
 import '../model/token_container.dart';
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod/riverpod_providers/state_notifier_providers/deeplink_provider.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/deeplink_provider.dart';
 import '../utils/riverpod/riverpod_providers/state_notifier_providers/push_request_provider.dart';
 import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
 import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
@@ -93,10 +93,13 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
     return SingleTouchRecognizer(
       child: StateObserver(
         stateNotifierProviderListeners: [
-          NavigationDeepLinkListener(deeplinkProvider: deeplinkProvider),
-          HomeWidgetDeepLinkListener(deeplinkProvider: deeplinkProvider), // TODO: Nochmal anschauen
+
           HomeWidgetTokenStateListener(tokenProvider: tokenProvider),
           ContainerListensToTokenState(tokenProvider: tokenProvider, ref: ref),
+        ],
+        streamNotifierProviderListeners: [
+          NavigationDeepLinkListener(deeplinkProvider: deeplinkProvider),
+          HomeWidgetDeepLinkListener(deeplinkProvider: deeplinkProvider), // TODO: Nochmal anschauen
         ],
         asyncNotifierProviderListeners: [
           ...credentials.map(

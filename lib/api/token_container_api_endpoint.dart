@@ -7,7 +7,7 @@ import 'package:privacyidea_authenticator/utils/logger.dart';
 import '../interfaces/api_endpoint.dart';
 import '../model/enums/encodings.dart';
 import '../model/enums/token_types.dart';
-import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_container_state_provider.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/token_container_provider.dart';
 
 final Map<String, Map<String, TokenTemplate>> _data = {
   '123': {

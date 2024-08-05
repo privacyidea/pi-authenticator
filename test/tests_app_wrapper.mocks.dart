@@ -3,33 +3,39 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i7;
-import 'dart:typed_data' as _i15;
+import 'dart:async' as _i11;
+import 'dart:typed_data' as _i17;
 
-import 'package:firebase_messaging/firebase_messaging.dart' as _i18;
+import 'package:firebase_messaging/firebase_messaging.dart' as _i19;
 import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i14;
+import 'package:mockito/src/dummies.dart' as _i16;
 import 'package:pointycastle/export.dart' as _i4;
 import 'package:privacyidea_authenticator/interfaces/repo/introduction_repository.dart'
-    as _i19;
+    as _i20;
+import 'package:privacyidea_authenticator/interfaces/repo/push_request_repository.dart'
+    as _i23;
 import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.dart'
-    as _i9;
+    as _i13;
 import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repository.dart'
-    as _i10;
+    as _i14;
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart'
-    as _i6;
+    as _i10;
+import 'package:privacyidea_authenticator/model/push_request.dart' as _i22;
 import 'package:privacyidea_authenticator/model/states/introduction_state.dart'
     as _i5;
+import 'package:privacyidea_authenticator/model/states/push_request_state.dart'
+    as _i9;
 import 'package:privacyidea_authenticator/model/states/settings_state.dart'
     as _i2;
-import 'package:privacyidea_authenticator/model/token_folder.dart' as _i11;
-import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i16;
-import 'package:privacyidea_authenticator/model/tokens/token.dart' as _i8;
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i17;
+import 'package:privacyidea_authenticator/model/token_folder.dart' as _i15;
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i18;
+import 'package:privacyidea_authenticator/model/tokens/token.dart' as _i12;
+import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i6;
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart'
-    as _i12;
-import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i13;
+    as _i7;
+import 'package:privacyidea_authenticator/utils/push_provider.dart' as _i21;
+import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i8;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -107,98 +113,141 @@ class _FakeIntroductionState_5 extends _i1.SmartFake
         );
 }
 
+class _FakeFirebaseUtils_6 extends _i1.SmartFake implements _i6.FirebaseUtils {
+  _FakeFirebaseUtils_6(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakePrivacyideaIOClient_7 extends _i1.SmartFake
+    implements _i7.PrivacyideaIOClient {
+  _FakePrivacyideaIOClient_7(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeRsaUtils_8 extends _i1.SmartFake implements _i8.RsaUtils {
+  _FakeRsaUtils_8(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakePushRequestState_9 extends _i1.SmartFake
+    implements _i9.PushRequestState {
+  _FakePushRequestState_9(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [TokenRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockTokenRepository extends _i1.Mock implements _i6.TokenRepository {
+class MockTokenRepository extends _i1.Mock implements _i10.TokenRepository {
   @override
-  _i7.Future<_i8.Token?> loadToken(String? id) => (super.noSuchMethod(
+  _i11.Future<_i12.Token?> loadToken(String? id) => (super.noSuchMethod(
         Invocation.method(
           #loadToken,
           [id],
         ),
-        returnValue: _i7.Future<_i8.Token?>.value(),
-        returnValueForMissingStub: _i7.Future<_i8.Token?>.value(),
-      ) as _i7.Future<_i8.Token?>);
+        returnValue: _i11.Future<_i12.Token?>.value(),
+        returnValueForMissingStub: _i11.Future<_i12.Token?>.value(),
+      ) as _i11.Future<_i12.Token?>);
 
   @override
-  _i7.Future<List<_i8.Token>> loadTokens() => (super.noSuchMethod(
+  _i11.Future<List<_i12.Token>> loadTokens() => (super.noSuchMethod(
         Invocation.method(
           #loadTokens,
           [],
         ),
-        returnValue: _i7.Future<List<_i8.Token>>.value(<_i8.Token>[]),
+        returnValue: _i11.Future<List<_i12.Token>>.value(<_i12.Token>[]),
         returnValueForMissingStub:
-            _i7.Future<List<_i8.Token>>.value(<_i8.Token>[]),
-      ) as _i7.Future<List<_i8.Token>>);
+            _i11.Future<List<_i12.Token>>.value(<_i12.Token>[]),
+      ) as _i11.Future<List<_i12.Token>>);
 
   @override
-  _i7.Future<bool> saveOrReplaceToken(_i8.Token? token) => (super.noSuchMethod(
+  _i11.Future<bool> saveOrReplaceToken(_i12.Token? token) =>
+      (super.noSuchMethod(
         Invocation.method(
           #saveOrReplaceToken,
           [token],
         ),
-        returnValue: _i7.Future<bool>.value(false),
-        returnValueForMissingStub: _i7.Future<bool>.value(false),
-      ) as _i7.Future<bool>);
+        returnValue: _i11.Future<bool>.value(false),
+        returnValueForMissingStub: _i11.Future<bool>.value(false),
+      ) as _i11.Future<bool>);
 
   @override
-  _i7.Future<List<T>> saveOrReplaceTokens<T extends _i8.Token>(
+  _i11.Future<List<T>> saveOrReplaceTokens<T extends _i12.Token>(
           List<T>? tokens) =>
       (super.noSuchMethod(
         Invocation.method(
           #saveOrReplaceTokens,
           [tokens],
         ),
-        returnValue: _i7.Future<List<T>>.value(<T>[]),
-        returnValueForMissingStub: _i7.Future<List<T>>.value(<T>[]),
-      ) as _i7.Future<List<T>>);
+        returnValue: _i11.Future<List<T>>.value(<T>[]),
+        returnValueForMissingStub: _i11.Future<List<T>>.value(<T>[]),
+      ) as _i11.Future<List<T>>);
 
   @override
-  _i7.Future<bool> deleteToken(_i8.Token? token) => (super.noSuchMethod(
+  _i11.Future<bool> deleteToken(_i12.Token? token) => (super.noSuchMethod(
         Invocation.method(
           #deleteToken,
           [token],
         ),
-        returnValue: _i7.Future<bool>.value(false),
-        returnValueForMissingStub: _i7.Future<bool>.value(false),
-      ) as _i7.Future<bool>);
+        returnValue: _i11.Future<bool>.value(false),
+        returnValueForMissingStub: _i11.Future<bool>.value(false),
+      ) as _i11.Future<bool>);
 
   @override
-  _i7.Future<List<T>> deleteTokens<T extends _i8.Token>(List<T>? tokens) =>
+  _i11.Future<List<T>> deleteTokens<T extends _i12.Token>(List<T>? tokens) =>
       (super.noSuchMethod(
         Invocation.method(
           #deleteTokens,
           [tokens],
         ),
-        returnValue: _i7.Future<List<T>>.value(<T>[]),
-        returnValueForMissingStub: _i7.Future<List<T>>.value(<T>[]),
-      ) as _i7.Future<List<T>>);
+        returnValue: _i11.Future<List<T>>.value(<T>[]),
+        returnValueForMissingStub: _i11.Future<List<T>>.value(<T>[]),
+      ) as _i11.Future<List<T>>);
 }
 
 /// A class which mocks [SettingsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockSettingsRepository extends _i1.Mock
-    implements _i9.SettingsRepository {
+    implements _i13.SettingsRepository {
   @override
-  _i7.Future<bool> saveSettings(_i2.SettingsState? settings) =>
+  _i11.Future<bool> saveSettings(_i2.SettingsState? settings) =>
       (super.noSuchMethod(
         Invocation.method(
           #saveSettings,
           [settings],
         ),
-        returnValue: _i7.Future<bool>.value(false),
-        returnValueForMissingStub: _i7.Future<bool>.value(false),
-      ) as _i7.Future<bool>);
+        returnValue: _i11.Future<bool>.value(false),
+        returnValueForMissingStub: _i11.Future<bool>.value(false),
+      ) as _i11.Future<bool>);
 
   @override
-  _i7.Future<_i2.SettingsState> loadSettings() => (super.noSuchMethod(
+  _i11.Future<_i2.SettingsState> loadSettings() => (super.noSuchMethod(
         Invocation.method(
           #loadSettings,
           [],
         ),
-        returnValue: _i7.Future<_i2.SettingsState>.value(_FakeSettingsState_0(
+        returnValue: _i11.Future<_i2.SettingsState>.value(_FakeSettingsState_0(
           this,
           Invocation.method(
             #loadSettings,
@@ -206,52 +255,52 @@ class MockSettingsRepository extends _i1.Mock
           ),
         )),
         returnValueForMissingStub:
-            _i7.Future<_i2.SettingsState>.value(_FakeSettingsState_0(
+            _i11.Future<_i2.SettingsState>.value(_FakeSettingsState_0(
           this,
           Invocation.method(
             #loadSettings,
             [],
           ),
         )),
-      ) as _i7.Future<_i2.SettingsState>);
+      ) as _i11.Future<_i2.SettingsState>);
 }
 
 /// A class which mocks [TokenFolderRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTokenFolderRepository extends _i1.Mock
-    implements _i10.TokenFolderRepository {
+    implements _i14.TokenFolderRepository {
   @override
-  _i7.Future<bool> saveReplaceList(List<_i11.TokenFolder>? folders) =>
+  _i11.Future<bool> saveReplaceList(List<_i15.TokenFolder>? folders) =>
       (super.noSuchMethod(
         Invocation.method(
           #saveReplaceList,
           [folders],
         ),
-        returnValue: _i7.Future<bool>.value(false),
-        returnValueForMissingStub: _i7.Future<bool>.value(false),
-      ) as _i7.Future<bool>);
+        returnValue: _i11.Future<bool>.value(false),
+        returnValueForMissingStub: _i11.Future<bool>.value(false),
+      ) as _i11.Future<bool>);
 
   @override
-  _i7.Future<List<_i11.TokenFolder>> loadFolders() => (super.noSuchMethod(
+  _i11.Future<List<_i15.TokenFolder>> loadFolders() => (super.noSuchMethod(
         Invocation.method(
           #loadFolders,
           [],
         ),
         returnValue:
-            _i7.Future<List<_i11.TokenFolder>>.value(<_i11.TokenFolder>[]),
+            _i11.Future<List<_i15.TokenFolder>>.value(<_i15.TokenFolder>[]),
         returnValueForMissingStub:
-            _i7.Future<List<_i11.TokenFolder>>.value(<_i11.TokenFolder>[]),
-      ) as _i7.Future<List<_i11.TokenFolder>>);
+            _i11.Future<List<_i15.TokenFolder>>.value(<_i15.TokenFolder>[]),
+      ) as _i11.Future<List<_i15.TokenFolder>>);
 }
 
 /// A class which mocks [PrivacyideaIOClient].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockPrivacyideaIOClient extends _i1.Mock
-    implements _i12.PrivacyideaIOClient {
+    implements _i7.PrivacyideaIOClient {
   @override
-  _i7.Future<bool> triggerNetworkAccessPermission({
+  _i11.Future<bool> triggerNetworkAccessPermission({
     required Uri? url,
     bool? sslVerify = true,
     bool? isRetry = false,
@@ -266,12 +315,12 @@ class MockPrivacyideaIOClient extends _i1.Mock
             #isRetry: isRetry,
           },
         ),
-        returnValue: _i7.Future<bool>.value(false),
-        returnValueForMissingStub: _i7.Future<bool>.value(false),
-      ) as _i7.Future<bool>);
+        returnValue: _i11.Future<bool>.value(false),
+        returnValueForMissingStub: _i11.Future<bool>.value(false),
+      ) as _i11.Future<bool>);
 
   @override
-  _i7.Future<_i3.Response> doPost({
+  _i11.Future<_i3.Response> doPost({
     required Uri? url,
     required Map<String, String?>? body,
     bool? sslVerify = true,
@@ -286,7 +335,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
             #sslVerify: sslVerify,
           },
         ),
-        returnValue: _i7.Future<_i3.Response>.value(_FakeResponse_1(
+        returnValue: _i11.Future<_i3.Response>.value(_FakeResponse_1(
           this,
           Invocation.method(
             #doPost,
@@ -299,7 +348,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
           ),
         )),
         returnValueForMissingStub:
-            _i7.Future<_i3.Response>.value(_FakeResponse_1(
+            _i11.Future<_i3.Response>.value(_FakeResponse_1(
           this,
           Invocation.method(
             #doPost,
@@ -311,10 +360,10 @@ class MockPrivacyideaIOClient extends _i1.Mock
             },
           ),
         )),
-      ) as _i7.Future<_i3.Response>);
+      ) as _i11.Future<_i3.Response>);
 
   @override
-  _i7.Future<_i3.Response> doGet({
+  _i11.Future<_i3.Response> doGet({
     required Uri? url,
     required Map<String, String?>? parameters,
     bool? sslVerify = true,
@@ -329,7 +378,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
             #sslVerify: sslVerify,
           },
         ),
-        returnValue: _i7.Future<_i3.Response>.value(_FakeResponse_1(
+        returnValue: _i11.Future<_i3.Response>.value(_FakeResponse_1(
           this,
           Invocation.method(
             #doGet,
@@ -342,7 +391,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
           ),
         )),
         returnValueForMissingStub:
-            _i7.Future<_i3.Response>.value(_FakeResponse_1(
+            _i11.Future<_i3.Response>.value(_FakeResponse_1(
           this,
           Invocation.method(
             #doGet,
@@ -354,13 +403,13 @@ class MockPrivacyideaIOClient extends _i1.Mock
             },
           ),
         )),
-      ) as _i7.Future<_i3.Response>);
+      ) as _i11.Future<_i3.Response>);
 }
 
 /// A class which mocks [RsaUtils].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
+class MockRsaUtils extends _i1.Mock implements _i8.RsaUtils {
   @override
   _i4.RSAPublicKey deserializeRSAPublicKeyPKCS1(String? keyStr) =>
       (super.noSuchMethod(
@@ -391,14 +440,14 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
           #serializeRSAPublicKeyPKCS1,
           [publicKey],
         ),
-        returnValue: _i14.dummyValue<String>(
+        returnValue: _i16.dummyValue<String>(
           this,
           Invocation.method(
             #serializeRSAPublicKeyPKCS1,
             [publicKey],
           ),
         ),
-        returnValueForMissingStub: _i14.dummyValue<String>(
+        returnValueForMissingStub: _i16.dummyValue<String>(
           this,
           Invocation.method(
             #serializeRSAPublicKeyPKCS1,
@@ -437,14 +486,14 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
           #serializeRSAPublicKeyPKCS8,
           [key],
         ),
-        returnValue: _i14.dummyValue<String>(
+        returnValue: _i16.dummyValue<String>(
           this,
           Invocation.method(
             #serializeRSAPublicKeyPKCS8,
             [key],
           ),
         ),
-        returnValueForMissingStub: _i14.dummyValue<String>(
+        returnValueForMissingStub: _i16.dummyValue<String>(
           this,
           Invocation.method(
             #serializeRSAPublicKeyPKCS8,
@@ -460,14 +509,14 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
           #serializeRSAPrivateKeyPKCS1,
           [key],
         ),
-        returnValue: _i14.dummyValue<String>(
+        returnValue: _i16.dummyValue<String>(
           this,
           Invocation.method(
             #serializeRSAPrivateKeyPKCS1,
             [key],
           ),
         ),
-        returnValueForMissingStub: _i14.dummyValue<String>(
+        returnValueForMissingStub: _i16.dummyValue<String>(
           this,
           Invocation.method(
             #serializeRSAPrivateKeyPKCS1,
@@ -502,8 +551,8 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
   @override
   bool verifyRSASignature(
     _i4.RSAPublicKey? publicKey,
-    _i15.Uint8List? signedMessage,
-    _i15.Uint8List? signature,
+    _i17.Uint8List? signedMessage,
+    _i17.Uint8List? signature,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -519,8 +568,8 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
       ) as bool);
 
   @override
-  _i7.Future<String?> trySignWithToken(
-    _i16.PushToken? token,
+  _i11.Future<String?> trySignWithToken(
+    _i18.PushToken? token,
     String? message,
   ) =>
       (super.noSuchMethod(
@@ -531,18 +580,18 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
             message,
           ],
         ),
-        returnValue: _i7.Future<String?>.value(),
-        returnValueForMissingStub: _i7.Future<String?>.value(),
-      ) as _i7.Future<String?>);
+        returnValue: _i11.Future<String?>.value(),
+        returnValueForMissingStub: _i11.Future<String?>.value(),
+      ) as _i11.Future<String?>);
 
   @override
-  _i7.Future<_i4.AsymmetricKeyPair<_i4.RSAPublicKey, _i4.RSAPrivateKey>>
+  _i11.Future<_i4.AsymmetricKeyPair<_i4.RSAPublicKey, _i4.RSAPrivateKey>>
       generateRSAKeyPair() => (super.noSuchMethod(
             Invocation.method(
               #generateRSAKeyPair,
               [],
             ),
-            returnValue: _i7.Future<
+            returnValue: _i11.Future<
                     _i4.AsymmetricKeyPair<_i4.RSAPublicKey,
                         _i4.RSAPrivateKey>>.value(
                 _FakeAsymmetricKeyPair_4<_i4.RSAPublicKey, _i4.RSAPrivateKey>(
@@ -552,7 +601,7 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
                 [],
               ),
             )),
-            returnValueForMissingStub: _i7.Future<
+            returnValueForMissingStub: _i11.Future<
                     _i4.AsymmetricKeyPair<_i4.RSAPublicKey,
                         _i4.RSAPrivateKey>>.value(
                 _FakeAsymmetricKeyPair_4<_i4.RSAPublicKey, _i4.RSAPrivateKey>(
@@ -562,13 +611,13 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
                 [],
               ),
             )),
-          ) as _i7.Future<
+          ) as _i11.Future<
               _i4.AsymmetricKeyPair<_i4.RSAPublicKey, _i4.RSAPrivateKey>>);
 
   @override
   String createBase32Signature(
     _i4.RSAPrivateKey? privateKey,
-    _i15.Uint8List? dataToSign,
+    _i17.Uint8List? dataToSign,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -578,7 +627,7 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
             dataToSign,
           ],
         ),
-        returnValue: _i14.dummyValue<String>(
+        returnValue: _i16.dummyValue<String>(
           this,
           Invocation.method(
             #createBase32Signature,
@@ -588,7 +637,7 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
             ],
           ),
         ),
-        returnValueForMissingStub: _i14.dummyValue<String>(
+        returnValueForMissingStub: _i16.dummyValue<String>(
           this,
           Invocation.method(
             #createBase32Signature,
@@ -601,9 +650,9 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
       ) as String);
 
   @override
-  _i15.Uint8List createRSASignature(
+  _i17.Uint8List createRSASignature(
     _i4.RSAPrivateKey? privateKey,
-    _i15.Uint8List? dataToSign,
+    _i17.Uint8List? dataToSign,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -613,19 +662,19 @@ class MockRsaUtils extends _i1.Mock implements _i13.RsaUtils {
             dataToSign,
           ],
         ),
-        returnValue: _i15.Uint8List(0),
-        returnValueForMissingStub: _i15.Uint8List(0),
-      ) as _i15.Uint8List);
+        returnValue: _i17.Uint8List(0),
+        returnValueForMissingStub: _i17.Uint8List(0),
+      ) as _i17.Uint8List);
 }
 
 /// A class which mocks [FirebaseUtils].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockFirebaseUtils extends _i1.Mock implements _i17.FirebaseUtils {
+class MockFirebaseUtils extends _i1.Mock implements _i6.FirebaseUtils {
   @override
-  _i7.Future<void> initFirebase({
-    required _i7.Future<void> Function(_i18.RemoteMessage)? foregroundHandler,
-    required _i7.Future<void> Function(_i18.RemoteMessage)? backgroundHandler,
+  _i11.Future<void> initFirebase({
+    required _i11.Future<void> Function(_i19.RemoteMessage)? foregroundHandler,
+    required _i11.Future<void> Function(_i19.RemoteMessage)? backgroundHandler,
     required dynamic Function(String?)? updateFirebaseToken,
   }) =>
       (super.noSuchMethod(
@@ -638,97 +687,97 @@ class MockFirebaseUtils extends _i1.Mock implements _i17.FirebaseUtils {
             #updateFirebaseToken: updateFirebaseToken,
           },
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i7.Future<String?> getFBToken() => (super.noSuchMethod(
+  _i11.Future<String?> getFBToken() => (super.noSuchMethod(
         Invocation.method(
           #getFBToken,
           [],
         ),
-        returnValue: _i7.Future<String?>.value(),
-        returnValueForMissingStub: _i7.Future<String?>.value(),
-      ) as _i7.Future<String?>);
+        returnValue: _i11.Future<String?>.value(),
+        returnValueForMissingStub: _i11.Future<String?>.value(),
+      ) as _i11.Future<String?>);
 
   @override
-  _i7.Future<bool> deleteFirebaseToken() => (super.noSuchMethod(
+  _i11.Future<bool> deleteFirebaseToken() => (super.noSuchMethod(
         Invocation.method(
           #deleteFirebaseToken,
           [],
         ),
-        returnValue: _i7.Future<bool>.value(false),
-        returnValueForMissingStub: _i7.Future<bool>.value(false),
-      ) as _i7.Future<bool>);
+        returnValue: _i11.Future<bool>.value(false),
+        returnValueForMissingStub: _i11.Future<bool>.value(false),
+      ) as _i11.Future<bool>);
 
   @override
-  _i7.Future<void> setCurrentFirebaseToken(String? str) => (super.noSuchMethod(
+  _i11.Future<void> setCurrentFirebaseToken(String? str) => (super.noSuchMethod(
         Invocation.method(
           #setCurrentFirebaseToken,
           [str],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i7.Future<String?> getCurrentFirebaseToken() => (super.noSuchMethod(
+  _i11.Future<String?> getCurrentFirebaseToken() => (super.noSuchMethod(
         Invocation.method(
           #getCurrentFirebaseToken,
           [],
         ),
-        returnValue: _i7.Future<String?>.value(),
-        returnValueForMissingStub: _i7.Future<String?>.value(),
-      ) as _i7.Future<String?>);
+        returnValue: _i11.Future<String?>.value(),
+        returnValueForMissingStub: _i11.Future<String?>.value(),
+      ) as _i11.Future<String?>);
 
   @override
-  _i7.Future<void> setNewFirebaseToken(String? str) => (super.noSuchMethod(
+  _i11.Future<void> setNewFirebaseToken(String? str) => (super.noSuchMethod(
         Invocation.method(
           #setNewFirebaseToken,
           [str],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i7.Future<String?> getNewFirebaseToken() => (super.noSuchMethod(
+  _i11.Future<String?> getNewFirebaseToken() => (super.noSuchMethod(
         Invocation.method(
           #getNewFirebaseToken,
           [],
         ),
-        returnValue: _i7.Future<String?>.value(),
-        returnValueForMissingStub: _i7.Future<String?>.value(),
-      ) as _i7.Future<String?>);
+        returnValue: _i11.Future<String?>.value(),
+        returnValueForMissingStub: _i11.Future<String?>.value(),
+      ) as _i11.Future<String?>);
 }
 
 /// A class which mocks [IntroductionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockIntroductionRepository extends _i1.Mock
-    implements _i19.IntroductionRepository {
+    implements _i20.IntroductionRepository {
   @override
-  _i7.Future<bool> saveCompletedIntroductions(
+  _i11.Future<bool> saveCompletedIntroductions(
           _i5.IntroductionState? introductions) =>
       (super.noSuchMethod(
         Invocation.method(
           #saveCompletedIntroductions,
           [introductions],
         ),
-        returnValue: _i7.Future<bool>.value(false),
-        returnValueForMissingStub: _i7.Future<bool>.value(false),
-      ) as _i7.Future<bool>);
+        returnValue: _i11.Future<bool>.value(false),
+        returnValueForMissingStub: _i11.Future<bool>.value(false),
+      ) as _i11.Future<bool>);
 
   @override
-  _i7.Future<_i5.IntroductionState> loadCompletedIntroductions() =>
+  _i11.Future<_i5.IntroductionState> loadCompletedIntroductions() =>
       (super.noSuchMethod(
         Invocation.method(
           #loadCompletedIntroductions,
           [],
         ),
         returnValue:
-            _i7.Future<_i5.IntroductionState>.value(_FakeIntroductionState_5(
+            _i11.Future<_i5.IntroductionState>.value(_FakeIntroductionState_5(
           this,
           Invocation.method(
             #loadCompletedIntroductions,
@@ -736,12 +785,223 @@ class MockIntroductionRepository extends _i1.Mock
           ),
         )),
         returnValueForMissingStub:
-            _i7.Future<_i5.IntroductionState>.value(_FakeIntroductionState_5(
+            _i11.Future<_i5.IntroductionState>.value(_FakeIntroductionState_5(
           this,
           Invocation.method(
             #loadCompletedIntroductions,
             [],
           ),
         )),
-      ) as _i7.Future<_i5.IntroductionState>);
+      ) as _i11.Future<_i5.IntroductionState>);
+}
+
+/// A class which mocks [PushProvider].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPushProvider extends _i1.Mock implements _i21.PushProvider {
+  MockPushProvider() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  bool get pollingIsEnabled => (super.noSuchMethod(
+        Invocation.getter(#pollingIsEnabled),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  set pollingIsEnabled(bool? _pollingIsEnabled) => super.noSuchMethod(
+        Invocation.setter(
+          #pollingIsEnabled,
+          _pollingIsEnabled,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i6.FirebaseUtils get firebaseUtils => (super.noSuchMethod(
+        Invocation.getter(#firebaseUtils),
+        returnValue: _FakeFirebaseUtils_6(
+          this,
+          Invocation.getter(#firebaseUtils),
+        ),
+      ) as _i6.FirebaseUtils);
+
+  @override
+  _i7.PrivacyideaIOClient get ioClient => (super.noSuchMethod(
+        Invocation.getter(#ioClient),
+        returnValue: _FakePrivacyideaIOClient_7(
+          this,
+          Invocation.getter(#ioClient),
+        ),
+      ) as _i7.PrivacyideaIOClient);
+
+  @override
+  _i8.RsaUtils get rsaUtils => (super.noSuchMethod(
+        Invocation.getter(#rsaUtils),
+        returnValue: _FakeRsaUtils_8(
+          this,
+          Invocation.getter(#rsaUtils),
+        ),
+      ) as _i8.RsaUtils);
+
+  @override
+  void setPollingEnabled(bool? enablePolling) => super.noSuchMethod(
+        Invocation.method(
+          #setPollingEnabled,
+          [enablePolling],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i11.Future<void> pollForChallenges({required bool? isManually}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #pollForChallenges,
+          [],
+          {#isManually: isManually},
+        ),
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> pollForChallenge(
+    _i18.PushToken? token, {
+    bool? isManually = true,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #pollForChallenge,
+          [token],
+          {#isManually: isManually},
+        ),
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
+
+  @override
+  _i11.Future<
+      (List<_i18.PushToken>, List<_i18.PushToken>)?> updateFirebaseToken(
+          [String? firebaseToken]) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateFirebaseToken,
+          [firebaseToken],
+        ),
+        returnValue:
+            _i11.Future<(List<_i18.PushToken>, List<_i18.PushToken>)?>.value(),
+      ) as _i11.Future<(List<_i18.PushToken>, List<_i18.PushToken>)?>);
+
+  @override
+  void unsubscribe(void Function(_i22.PushRequest)? newRequest) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #unsubscribe,
+          [newRequest],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void subscribe(void Function(_i22.PushRequest)? newRequest) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #subscribe,
+          [newRequest],
+        ),
+        returnValueForMissingStub: null,
+      );
+}
+
+/// A class which mocks [PushRequestRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPushRequestRepository extends _i1.Mock
+    implements _i23.PushRequestRepository {
+  MockPushRequestRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i11.Future<_i9.PushRequestState> loadState() => (super.noSuchMethod(
+        Invocation.method(
+          #loadState,
+          [],
+        ),
+        returnValue:
+            _i11.Future<_i9.PushRequestState>.value(_FakePushRequestState_9(
+          this,
+          Invocation.method(
+            #loadState,
+            [],
+          ),
+        )),
+      ) as _i11.Future<_i9.PushRequestState>);
+
+  @override
+  _i11.Future<void> saveState(_i9.PushRequestState? pushRequestState) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #saveState,
+          [pushRequestState],
+        ),
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> clearState() => (super.noSuchMethod(
+        Invocation.method(
+          #clearState,
+          [],
+        ),
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
+
+  @override
+  _i11.Future<_i9.PushRequestState> add(
+    _i22.PushRequest? pushRequest, {
+    _i9.PushRequestState? state,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #add,
+          [pushRequest],
+          {#state: state},
+        ),
+        returnValue:
+            _i11.Future<_i9.PushRequestState>.value(_FakePushRequestState_9(
+          this,
+          Invocation.method(
+            #add,
+            [pushRequest],
+            {#state: state},
+          ),
+        )),
+      ) as _i11.Future<_i9.PushRequestState>);
+
+  @override
+  _i11.Future<_i9.PushRequestState> remove(
+    _i22.PushRequest? pushRequest, {
+    _i9.PushRequestState? state,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #remove,
+          [pushRequest],
+          {#state: state},
+        ),
+        returnValue:
+            _i11.Future<_i9.PushRequestState>.value(_FakePushRequestState_9(
+          this,
+          Invocation.method(
+            #remove,
+            [pushRequest],
+            {#state: state},
+          ),
+        )),
+      ) as _i11.Future<_i9.PushRequestState>);
 }

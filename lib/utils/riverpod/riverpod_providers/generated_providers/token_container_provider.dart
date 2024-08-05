@@ -15,9 +15,9 @@ import '../../../../repo/token_container_state_repositorys/hybrid_token_containe
 import '../../../../repo/token_container_state_repositorys/remote_token_container_state_repository.dart';
 import '../../../../repo/token_container_state_repositorys/secure_token_container_state_repository.dart.dart';
 import '../../../../model/tokens/container_credentials.dart';
-import 'token_provider.dart';
+import '../state_notifier_providers/token_provider.dart';
 
-part 'token_container_state_provider.g.dart';
+part 'token_container_provider.g.dart';
 
 @riverpod
 class TokenContainerProvider extends _$TokenContainerProvider {
@@ -35,7 +35,7 @@ class TokenContainerProvider extends _$TokenContainerProvider {
       localRepository: SecureTokenContainerRepository(containerId: credential.serial),
       remoteRepository: RemoteTokenContainerRepository(apiEndpoint: TokenContainerApiEndpoint(credential: credential)),
     );
-    final initialState = _repository.loadContainerState();
+    final initialState = await _repository.loadContainerState();
     Logger.debug('Initial state: $initialState', name: 'TokenContainerProvider#build');
     _stateMutex.release();
     return initialState;
