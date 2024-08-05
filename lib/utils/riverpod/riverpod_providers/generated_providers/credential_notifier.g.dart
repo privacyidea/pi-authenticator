@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'credential_nofitier.dart';
+part of 'credential_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator

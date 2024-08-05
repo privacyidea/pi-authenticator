@@ -22,7 +22,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/enums/introduction.dart';
-import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
+import '../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
 import '../../../../widgets/dialog_widgets/default_dialog.dart';
 
@@ -63,11 +63,12 @@ class AddTokenFolderDialog extends ConsumerWidget {
               overflow: TextOverflow.fade,
               softWrap: false,
             ),
-            onPressed: () {
-              if (ref.read(introductionProvider).isCompleted(Introduction.addFolder) == false) {
-                ref.read(introductionProvider.notifier).complete(Introduction.addFolder);
+            onPressed: () async {
+              if ((await ref.read(introductionNotifierProvider.future)).isCompleted(Introduction.addFolder) == false) {
+                ref.read(introductionNotifierProvider.notifier).complete(Introduction.addFolder);
               }
               ref.read(tokenFolderProvider.notifier).addNewFolder(textController.text);
+              if (!context.mounted) return;
               Navigator.pop(context);
             }),
       ],

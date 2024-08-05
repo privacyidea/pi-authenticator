@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../l10n/app_localizations.dart';
@@ -26,7 +27,7 @@ import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../../../../../widgets/focused_item_as_overlay.dart';
 import '../token_action.dart';
@@ -51,8 +52,12 @@ class DefaultLockAction extends TokenAction {
         tooltipWhenFocused: AppLocalizations.of(context)!.introLockToken,
         childIsMoving: true,
         alignment: Alignment.bottomCenter,
-        isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.lockToken),
-        onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.lockToken),
+        isFocused: ref.watch(introductionNotifierProvider).when(
+              data: (value) => value.isConditionFulfilled(ref, Introduction.lockToken),
+              error: (Object error, StackTrace stackTrace) => false,
+              loading: () => false,
+            ),
+        onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.lockToken),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

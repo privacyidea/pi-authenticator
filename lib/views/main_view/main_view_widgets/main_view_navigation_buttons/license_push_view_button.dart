@@ -22,7 +22,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/enums/introduction.dart';
-import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
+import '../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import '../../../../widgets/focused_item_as_overlay.dart';
 import '../../../license_view/license_view.dart';
@@ -37,9 +37,13 @@ class LicensePushViewButton extends ConsumerWidget {
     final hidePushTokens = ref.watch(settingsProvider).hidePushTokens;
     return hidePushTokens
         ? FocusedItemAsOverlay(
-            isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.hidePushTokens),
+            isFocused: ref.watch(introductionNotifierProvider).when(
+                  data: (value) => value.isConditionFulfilled(ref, Introduction.hidePushTokens),
+                  error: (Object error, StackTrace stackTrace) => false,
+                  loading: () => false,
+                ),
             tooltipWhenFocused: AppLocalizations.of(context)!.introHidePushTokens,
-            onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.hidePushTokens),
+            onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.hidePushTokens),
             child: AppBarItem(
               tooltip: AppLocalizations.of(context)!.pushTokens,
               onPressed: () => Navigator.pushNamed(context, PushTokensView.routeName),

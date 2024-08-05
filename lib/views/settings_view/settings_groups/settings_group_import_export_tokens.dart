@@ -23,7 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/introduction.dart';
-import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../../widgets/countdown_button.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../import_tokens_view/import_tokens_view.dart';
@@ -76,7 +76,8 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
   }
 
   void _exportDialog() async {
-    bool? isAccepted = ref.read(introductionProvider).isCompleted(Introduction.exportTokens) ? true : null;
+    bool? isAccepted = (await ref.read(introductionNotifierProvider.future)).isCompleted(Introduction.exportTokens) ? true : null;
+    if (!mounted) return;
     isAccepted ??= await showDialog<bool>(
       useRootNavigator: false,
       context: context,
@@ -96,7 +97,7 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
         ],
       ),
     );
-    if (isAccepted == true) await ref.read(introductionProvider.notifier).complete(Introduction.exportTokens);
+    if (isAccepted == true) await ref.read(introductionNotifierProvider.notifier).complete(Introduction.exportTokens);
     if (isAccepted != true || !mounted) return;
     final isExported = await showDialog<bool>(
       useRootNavigator: false,

@@ -5,7 +5,7 @@ import 'deactivateable_refresh_indicator.dart';
 
 import '../utils/logger.dart';
 import '../utils/push_provider.dart';
-import '../utils/riverpod/riverpod_providers/generated_providers/credential_nofitier.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
 import '../views/main_view/main_view_widgets/loading_indicator.dart';
 
 class DefaultRefreshIndicator extends ConsumerStatefulWidget {

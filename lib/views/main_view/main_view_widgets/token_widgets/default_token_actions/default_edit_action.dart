@@ -28,7 +28,7 @@ import '../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../../../../../widgets/focused_item_as_overlay.dart';
 import '../token_action.dart';
@@ -52,8 +52,12 @@ class DefaultEditAction extends TokenAction {
         child: FocusedItemAsOverlay(
           tooltipWhenFocused: AppLocalizations.of(context)!.editToken,
           childIsMoving: true,
-          isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.editToken),
-          onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
+          isFocused: ref.watch(introductionNotifierProvider).when(
+                data: (value) => value.isConditionFulfilled(ref, Introduction.editToken),
+                error: (Object error, StackTrace stackTrace) => false,
+                loading: () => false,
+              ),
+          onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.editToken),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

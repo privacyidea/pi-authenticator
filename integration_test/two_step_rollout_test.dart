@@ -7,7 +7,6 @@ import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/completed_introduction_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_notifier.dart';
@@ -15,7 +14,7 @@ import 'package:privacyidea_authenticator/utils/customization/application_custom
 import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/model/version.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/introduction_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
@@ -57,7 +56,7 @@ void main() {
           settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
           tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository, ref: ref)),
           tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
-          introductionProvider.overrideWith((ref) => IntroductionNotifier(repository: mockIntroductionRepository)),
+          introductionNotifierProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),
         ],
         child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
       ));

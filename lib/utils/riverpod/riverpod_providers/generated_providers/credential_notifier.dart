@@ -26,7 +26,7 @@ import '../../../../model/tokens/container_credentials.dart';
 import '../../../../repo/secure_container_credentials_repository.dart';
 import '../../../logger.dart';
 
-part 'credential_nofitier.g.dart';
+part 'credential_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class CredentialsNotifier extends _$CredentialsNotifier {
