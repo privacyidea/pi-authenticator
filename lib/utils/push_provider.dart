@@ -259,7 +259,7 @@ class PushProvider {
     }
 
     try {
-      await _defaultPushRequestRepo.add(pushRequest);
+      await _defaultPushRequestRepo.addRequest(pushRequest);
     } catch (e) {
       Logger.error('Could not save push request state.', name: 'push_provider.dart#_handleIncomingRequestBackground', error: e);
       return false;
@@ -292,8 +292,7 @@ class PushProvider {
     List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
-      await globalRef?.read(settingsProvider.notifier).loadingRepo;
-      if (globalRef?.read(settingsProvider).enablePolling == true) {
+      if ((await globalRef?.read(settingsProvider.future))?.enablePolling == true) {
         Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
         globalRef?.read(settingsProvider.notifier).setPolling(false);
       }

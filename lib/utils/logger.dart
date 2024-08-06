@@ -36,7 +36,6 @@ import '../utils/app_info_utils.dart';
 import '../utils/pi_mailer.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import 'globals.dart';
-import 'riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 
 final provider = Provider<int>((ref) => 0);
 
@@ -94,8 +93,9 @@ class Logger {
   String get _filename => 'logfile.txt';
   String? get _fullPath => _logPath != null ? '$_logPath/$_filename' : null;
   bool get _verbose {
-    if (globalRef == null) return false;
-    return globalRef!.read(settingsProvider).verboseLogging;
+    // if (globalRef == null) return false;
+    return false;
+    // return globalRef!.read(settingsProvider).whenOrNull(data: (data) => data.verboseLogging) ?? SettingsState.verboseLoggingDefault; //TODO: fix it
   }
 
   bool get logfileHasContent {

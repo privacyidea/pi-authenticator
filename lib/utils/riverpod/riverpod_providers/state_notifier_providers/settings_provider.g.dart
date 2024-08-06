@@ -1,13 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'introduction_provider.dart';
+part of 'settings_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$introductionNotifierHash() =>
-    r'2c84c088bf01feb395c187f1671a4c822edf1b42';
+String _$settingsNotifierHash() => r'83f54c5fafceae7ace984ef06ac564bee445771f';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,36 +29,36 @@ class _SystemHash {
   }
 }
 
-abstract class _$IntroductionNotifier
-    extends BuildlessAsyncNotifier<IntroductionState> {
-  late final IntroductionRepository repo;
+abstract class _$SettingsNotifier
+    extends BuildlessAsyncNotifier<SettingsState> {
+  late final SettingsRepository repo;
 
-  FutureOr<IntroductionState> build({
-    required IntroductionRepository repo,
+  FutureOr<SettingsState> build({
+    required SettingsRepository repo,
   });
 }
 
-/// See also [IntroductionNotifier].
-@ProviderFor(IntroductionNotifier)
-const introductionNotifierProviderOf = IntroductionNotifierFamily();
+/// See also [SettingsNotifier].
+@ProviderFor(SettingsNotifier)
+const settingsNotifierProviderOf = SettingsNotifierFamily();
 
-/// See also [IntroductionNotifier].
-class IntroductionNotifierFamily extends Family<AsyncValue<IntroductionState>> {
-  /// See also [IntroductionNotifier].
-  const IntroductionNotifierFamily();
+/// See also [SettingsNotifier].
+class SettingsNotifierFamily extends Family<AsyncValue<SettingsState>> {
+  /// See also [SettingsNotifier].
+  const SettingsNotifierFamily();
 
-  /// See also [IntroductionNotifier].
-  IntroductionNotifierProvider call({
-    required IntroductionRepository repo,
+  /// See also [SettingsNotifier].
+  SettingsNotifierProvider call({
+    required SettingsRepository repo,
   }) {
-    return IntroductionNotifierProvider(
+    return SettingsNotifierProvider(
       repo: repo,
     );
   }
 
   @override
-  IntroductionNotifierProvider getProviderOverride(
-    covariant IntroductionNotifierProvider provider,
+  SettingsNotifierProvider getProviderOverride(
+    covariant SettingsNotifierProvider provider,
   ) {
     return call(
       repo: provider.repo,
@@ -78,30 +77,30 @@ class IntroductionNotifierFamily extends Family<AsyncValue<IntroductionState>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'introductionNotifierProviderOf';
+  String? get name => r'settingsNotifierProviderOf';
 }
 
-/// See also [IntroductionNotifier].
-class IntroductionNotifierProvider
-    extends AsyncNotifierProviderImpl<IntroductionNotifier, IntroductionState> {
-  /// See also [IntroductionNotifier].
-  IntroductionNotifierProvider({
-    required IntroductionRepository repo,
+/// See also [SettingsNotifier].
+class SettingsNotifierProvider
+    extends AsyncNotifierProviderImpl<SettingsNotifier, SettingsState> {
+  /// See also [SettingsNotifier].
+  SettingsNotifierProvider({
+    required SettingsRepository repo,
   }) : this._internal(
-          () => IntroductionNotifier()..repo = repo,
-          from: introductionNotifierProviderOf,
-          name: r'introductionNotifierProviderOf',
+          () => SettingsNotifier()..repo = repo,
+          from: settingsNotifierProviderOf,
+          name: r'settingsNotifierProviderOf',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$introductionNotifierHash,
-          dependencies: IntroductionNotifierFamily._dependencies,
+                  : _$settingsNotifierHash,
+          dependencies: SettingsNotifierFamily._dependencies,
           allTransitiveDependencies:
-              IntroductionNotifierFamily._allTransitiveDependencies,
+              SettingsNotifierFamily._allTransitiveDependencies,
           repo: repo,
         );
 
-  IntroductionNotifierProvider._internal(
+  SettingsNotifierProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -111,11 +110,11 @@ class IntroductionNotifierProvider
     required this.repo,
   }) : super.internal();
 
-  final IntroductionRepository repo;
+  final SettingsRepository repo;
 
   @override
-  FutureOr<IntroductionState> runNotifierBuild(
-    covariant IntroductionNotifier notifier,
+  FutureOr<SettingsState> runNotifierBuild(
+    covariant SettingsNotifier notifier,
   ) {
     return notifier.build(
       repo: repo,
@@ -123,10 +122,10 @@ class IntroductionNotifierProvider
   }
 
   @override
-  Override overrideWith(IntroductionNotifier Function() create) {
+  Override overrideWith(SettingsNotifier Function() create) {
     return ProviderOverride(
       origin: this,
-      override: IntroductionNotifierProvider._internal(
+      override: SettingsNotifierProvider._internal(
         () => create()..repo = repo,
         from: from,
         name: null,
@@ -139,14 +138,14 @@ class IntroductionNotifierProvider
   }
 
   @override
-  AsyncNotifierProviderElement<IntroductionNotifier, IntroductionState>
+  AsyncNotifierProviderElement<SettingsNotifier, SettingsState>
       createElement() {
-    return _IntroductionNotifierProviderElement(this);
+    return _SettingsNotifierProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is IntroductionNotifierProvider && other.repo == repo;
+    return other is SettingsNotifierProvider && other.repo == repo;
   }
 
   @override
@@ -158,18 +157,18 @@ class IntroductionNotifierProvider
   }
 }
 
-mixin IntroductionNotifierRef on AsyncNotifierProviderRef<IntroductionState> {
+mixin SettingsNotifierRef on AsyncNotifierProviderRef<SettingsState> {
   /// The parameter `repo` of this provider.
-  IntroductionRepository get repo;
+  SettingsRepository get repo;
 }
 
-class _IntroductionNotifierProviderElement extends AsyncNotifierProviderElement<
-    IntroductionNotifier, IntroductionState> with IntroductionNotifierRef {
-  _IntroductionNotifierProviderElement(super.provider);
+class _SettingsNotifierProviderElement
+    extends AsyncNotifierProviderElement<SettingsNotifier, SettingsState>
+    with SettingsNotifierRef {
+  _SettingsNotifierProviderElement(super.provider);
 
   @override
-  IntroductionRepository get repo =>
-      (origin as IntroductionNotifierProvider).repo;
+  SettingsRepository get repo => (origin as SettingsNotifierProvider).repo;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

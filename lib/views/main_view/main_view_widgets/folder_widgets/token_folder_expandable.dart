@@ -27,6 +27,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../model/riverpod_states/settings_state.dart';
 import '../../../../model/riverpod_states/token_filter.dart';
 import '../../../../model/token_folder.dart';
 import '../../../../model/tokens/push_token.dart';
@@ -94,7 +95,8 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
 
   @override
   ExpandablePanel build(BuildContext context) {
-    final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: ref.watch(settingsProvider).hidePushTokens ? [PushToken] : []);
+    final hitePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
+    final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: hitePushTokens ? [PushToken] : []);
     tokens.sort((a, b) => a.compareTo(b));
     final draggingSortable = ref.watch(draggingSortableProvider);
     if (widget.expandOverride == null) {

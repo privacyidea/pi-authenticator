@@ -31,8 +31,8 @@ abstract class PushRequestRepository {
   Future<void> clearState();
 
   /// Add a [PushRequest] to the [PushRequestState]
-  Future<PushRequestState> add(PushRequest pushRequest, {PushRequestState? state});
+  Future<PushRequestState> addRequest(PushRequest pushRequest, {PushRequestState? state});
 
   /// Remove a [PushRequest] from the [PushRequestState]
-  Future<PushRequestState> remove(PushRequest pushRequest, {PushRequestState? state});
+  Future<PushRequestState> removeRequest(PushRequest pushRequest, {PushRequestState? state});
 }

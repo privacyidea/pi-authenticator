@@ -7,7 +7,6 @@ import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
@@ -53,7 +52,7 @@ void main() {
     (tester) async {
       await tester.pumpWidget(TestsAppWrapper(
         overrides: [
-          settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
+          settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepository)),
           tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository, ref: ref)),
           tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
           introductionNotifierProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),

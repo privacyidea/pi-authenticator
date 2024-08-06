@@ -12,14 +12,12 @@ import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
-
 
 void main() {
   _testTokenNotifier();
@@ -30,9 +28,7 @@ void _testTokenNotifier() {
     test('loadStateFromRepo', () async {
       final mockSettingsRepo = MockSettingsRepository();
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
-      final container = ProviderContainer(overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
-      ]);
+      final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [PushToken(label: 'label', issuer: 'issuer', id: 'id', serial: 'serial', isRolledOut: true)];
@@ -58,9 +54,7 @@ void _testTokenNotifier() {
     test('getTokenFromId', () async {
       final mockSettingsRepo = MockSettingsRepository();
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
-      final container = ProviderContainer(overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
-      ]);
+      final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret')];
@@ -82,9 +76,7 @@ void _testTokenNotifier() {
     test('incrementCounter', () async {
       final mockSettingsRepo = MockSettingsRepository();
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
-      final container = ProviderContainer(overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
-      ]);
+      final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [
@@ -112,9 +104,7 @@ void _testTokenNotifier() {
     test('removeToken', () async {
       final mockSettingsRepo = MockSettingsRepository();
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
-      final container = ProviderContainer(overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
-      ]);
+      final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
@@ -144,9 +134,7 @@ void _testTokenNotifier() {
       test('add Token', () async {
         final mockSettingsRepo = MockSettingsRepository();
         when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
-        final container = ProviderContainer(overrides: [
-          settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
-        ]);
+        final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
         final mockRepo = MockTokenRepository();
         final mockFirebaseUtils = MockFirebaseUtils();
         final before = <Token>[
@@ -175,9 +163,7 @@ void _testTokenNotifier() {
       test('replace Token', () async {
         final mockSettingsRepo = MockSettingsRepository();
         when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
-        final container = ProviderContainer(overrides: [
-          settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
-        ]);
+        final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
         final mockRepo = MockTokenRepository();
         final mockFirebaseUtils = MockFirebaseUtils();
         final before = <Token>[
@@ -208,9 +194,7 @@ void _testTokenNotifier() {
     test('addOrReplaceTokens', () async {
       final mockSettingsRepo = MockSettingsRepository();
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
-      final container = ProviderContainer(overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
-      ]);
+      final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
@@ -237,9 +221,7 @@ void _testTokenNotifier() {
     test('addTokenFromOtpAuth', () async {
       final mockSettingsRepo = MockSettingsRepository();
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
-      final container = ProviderContainer(overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
-      ]);
+      final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
@@ -265,9 +247,7 @@ void _testTokenNotifier() {
     test('addTokenFromOtpAuth: rolloutPushToken', () async {
       final mockSettingsRepo = MockSettingsRepository();
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
-      final container = ProviderContainer(overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
-      ]);
+      final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
       final mockTokenRepo = MockTokenRepository();
       final mockRsaUtils = MockRsaUtils();
       final mockIOClient = MockPrivacyideaIOClient();
@@ -376,9 +356,7 @@ void _testTokenNotifier() {
     test('rolloutPushToken', () async {
       final mockSettingsRepo = MockSettingsRepository();
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
-      final container = ProviderContainer(overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
-      ]);
+      final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
       final mockRepo = MockTokenRepository();
       final mockIOClient = MockPrivacyideaIOClient();
       final mockFirebaseUtils = MockFirebaseUtils();

@@ -23,6 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
+import '../../../model/riverpod_states/settings_state.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../model/tokens/token.dart';
@@ -84,7 +85,8 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     final draggingSortable = ref.watch(draggingSortableProvider);
     final allSortables = [...ref.watch(tokenProvider).tokens, ...ref.watch(tokenFolderProvider).folders];
     final allowToRefresh = allSortables.any((element) => element is PushToken);
-    bool filterPushTokens = ref.watch(settingsProvider).hidePushTokens && allowToRefresh;
+    final hidePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
+    final filterPushTokens = hidePushTokens && allowToRefresh;
 
     final showSortables = <SortableMixin>[]; // List of sortables that should be shown in the list
     for (var element in allSortables) {

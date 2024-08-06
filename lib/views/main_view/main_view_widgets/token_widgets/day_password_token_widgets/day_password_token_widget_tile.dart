@@ -26,6 +26,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/day_password_token_view_mode.dart';
+import '../../../../../model/riverpod_states/settings_state.dart';
 import '../../../../../model/tokens/day_password_token.dart';
 import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
@@ -87,7 +88,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
 
   @override
   Widget build(BuildContext context) {
-    final currentLocale = ref.watch(settingsProvider).currentLocale;
+    final currentLocale = ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault;
     final dateTimeTokenEnd = widget.token.nextOTPTimeStart;
     final yMdFormat = DateFormat.yMMMd(currentLocale.languageCode);
     final yMdString = yMdFormat.format(dateTimeTokenEnd);

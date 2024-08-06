@@ -26,6 +26,7 @@ import 'package:privacyidea_authenticator/utils/customization/application_custom
 
 import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
+import '../model/riverpod_states/settings_state.dart';
 import '../utils/globals.dart';
 import '../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import '../utils/riverpod/riverpod_providers/state_providers/app_constraints_provider.dart';
@@ -72,7 +73,7 @@ class CustomizationAuthenticator extends ConsumerWidget {
           navigatorKey: globalNavigatorKey,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          locale: locale,
+          locale: ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault,
           title: applicationCustomizer.appName,
           theme: applicationCustomizer.generateLightTheme(),
           darkTheme: applicationCustomizer.generateDarkTheme(),

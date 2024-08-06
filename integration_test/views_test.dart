@@ -7,18 +7,19 @@ import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
+import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/push_request_notifier.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/settings_notifier.dart';
+import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/push_request_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
@@ -38,11 +39,13 @@ void main() {
   late final MockFirebaseUtils mockFirebaseUtils;
   late final MockPrivacyideaIOClient mockIOClient;
   late final MockIntroductionRepository mockIntroductionRepository;
+  late final MockPushRequestRepository mockPushRequestRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
     when(mockSettingsRepository.loadSettings()).thenAnswer((_) async =>
         SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en'), latestStartedVersion: Version.parse('999.999.999')));
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
+
     mockTokenRepository = MockTokenRepository();
     var tokens = <Token>[];
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async => tokens);
@@ -57,6 +60,7 @@ void main() {
       tokens.removeWhere((element) => element.id == (arguments[0] as Token).id);
       return true;
     });
+
     mockTokenFolderRepository = MockTokenFolderRepository();
     when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
     when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
@@ -67,6 +71,7 @@ void main() {
     mockFirebaseUtils = MockFirebaseUtils();
     when(mockFirebaseUtils.getFBToken()).thenAnswer((_) => Future.value('fbToken'));
     when(mockRsaUtils.deserializeRSAPublicKeyPKCS1('publicKey')).thenAnswer((_) => RSAPublicKey(BigInt.one, BigInt.one));
+
     mockIOClient = MockPrivacyideaIOClient();
     when(mockIOClient.doPost(
       url: anyNamed('url'),
@@ -76,12 +81,33 @@ void main() {
     mockIntroductionRepository = MockIntroductionRepository();
     when(mockIntroductionRepository.loadCompletedIntroductions())
         .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
+
+    mockPushRequestRepository = MockPushRequestRepository();
+    var state = PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: []));
+    when(mockPushRequestRepository.saveState(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      state = arguments[0] as PushRequestState;
+    });
+    when(mockPushRequestRepository.loadState()).thenAnswer((_) async => state);
+    when(mockPushRequestRepository.addRequest(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      state = state.withRequest(arguments[0] as PushRequest);
+      return state;
+    });
+    when(mockPushRequestRepository.removeRequest(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      state = state.withoutRequest(arguments[0] as PushRequest);
+      return state;
+    });
+    when(mockPushRequestRepository.clearState()).thenAnswer((_) async {
+      state = PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: []));
+    });
   });
 
   testWidgets('Views Test', (tester) async {
     await tester.pumpWidget(TestsAppWrapper(
       overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
+        settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepository)),
         tokenProvider.overrideWith((ref) => TokenNotifier(
               repository: mockTokenRepository,
               rsaUtils: mockRsaUtils,
@@ -90,15 +116,15 @@ void main() {
               ref: ref,
             )),
         pushRequestProvider.overrideWith(
-          (ref) => PushRequestNotifier(
-            rsaUtils: mockRsaUtils,
-            ref: ref,
-            pushProvider: PushProvider(
+          () => PushRequestNotifier(
+            rsaUtilsOverride: mockRsaUtils,
+            ioClientOverride: mockIOClient,
+            pushRepoOverride: mockPushRequestRepository,
+            pushProviderOverride: PushProvider(
               rsaUtils: mockRsaUtils,
               ioClient: mockIOClient,
               firebaseUtils: mockFirebaseUtils,
             ),
-            ioClient: mockIOClient,
           ),
         ),
         tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),

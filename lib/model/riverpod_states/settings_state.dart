@@ -28,18 +28,18 @@ import '../version.dart';
 
 /// This class contains all device specific settings. E.g., the language used, whether to show the guide on start, etc.
 class SettingsState {
-  static bool get _isFirstRunDefault => true;
-  static bool get _showGuideOnStartDefault => true;
-  static bool get _hideOtpsDefault => false;
-  static bool get _enablePollDefault => false;
-  static Set<String> get _crashReportRecipientsDefault => {defaultCrashReportRecipient};
-  static Locale get _localePreferenceDefault => AppLocalizations.supportedLocales
+  static bool get isFirstRunDefault => true;
+  static bool get showGuideOnStartDefault => true;
+  static bool get hideOtpsDefault => false;
+  static bool get enablePollingDefault => false;
+  static Set<String> get crashReportRecipientsDefault => {defaultCrashReportRecipient};
+  static Locale get localeDefault => AppLocalizations.supportedLocales
       .firstWhere((locale) => locale.languageCode == (!kIsWeb ? Platform.localeName.substring(0, 2) : 'en'), orElse: () => const Locale('en'));
 
-  static bool get _useSystemLocaleDefault => true;
-  static bool get _enableLoggingDefault => false;
-  static bool get _hidePushTokensDefault => false;
-  static Version get _latestStartedVersionDefault => Version.parse('0.0.0');
+  static bool get useSystemLocaleDefault => true;
+  static bool get verboseLoggingDefault => false;
+  static bool get hidePushTokensDefault => false;
+  static Version get latestStartedVersionDefault => Version.parse('0.0.0');
 
   final bool isFirstRun;
   final bool showGuideOnStart;
@@ -67,16 +67,16 @@ class SettingsState {
     bool? verboseLogging,
     bool? hidePushTokens,
     Version? latestStartedVersion,
-  })  : isFirstRun = isFirstRun ?? _isFirstRunDefault,
-        showGuideOnStart = showGuideOnStart ?? _showGuideOnStartDefault,
-        hideOpts = hideOpts ?? _hideOtpsDefault,
-        enablePolling = enablePolling ?? _enablePollDefault,
-        crashReportRecipients = crashReportRecipients ?? _crashReportRecipientsDefault,
-        localePreference = localePreference ?? _localePreferenceDefault,
-        useSystemLocale = useSystemLocale ?? _useSystemLocaleDefault,
-        verboseLogging = verboseLogging ?? _enableLoggingDefault,
-        hidePushTokens = hidePushTokens ?? _hidePushTokensDefault,
-        latestStartedVersion = latestStartedVersion ?? _latestStartedVersionDefault;
+  })  : isFirstRun = isFirstRun ?? isFirstRunDefault,
+        showGuideOnStart = showGuideOnStart ?? showGuideOnStartDefault,
+        hideOpts = hideOpts ?? hideOtpsDefault,
+        enablePolling = enablePolling ?? enablePollingDefault,
+        crashReportRecipients = crashReportRecipients ?? crashReportRecipientsDefault,
+        localePreference = localePreference ?? localeDefault,
+        useSystemLocale = useSystemLocale ?? useSystemLocaleDefault,
+        verboseLogging = verboseLogging ?? verboseLoggingDefault,
+        hidePushTokens = hidePushTokens ?? hidePushTokensDefault,
+        latestStartedVersion = latestStartedVersion ?? latestStartedVersionDefault;
 
   SettingsState copyWith({
     bool? isFirstRun,
