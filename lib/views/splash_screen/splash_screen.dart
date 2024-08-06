@@ -26,7 +26,6 @@ import '../../utils/customization/application_customization.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
-import '../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
 import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../main_view/main_view.dart';
@@ -63,7 +62,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       Future.wait(
         <Future>[
           Future.delayed(_splashScreenDuration),
-          ref.read(settingsProvider.notifier).loadingRepo,
+          // ref.read(settingsProvider.future),
           ref.read(tokenProvider.notifier).initState,
           ref.read(tokenFolderProvider.notifier).initState,
           AppInfoUtils.init(),
@@ -74,7 +73,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           _navigate();
         },
       ).catchError((error) async {
-        Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
+        if (error is Error) {
+          Logger.error('Error while loading the app.', error: error, stackTrace: error.stackTrace, name: 'main.dart#initState');
+          return [];
+        }
+        if (error is Exception) {
+          Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
+          return [];
+        }
         return [];
       }).then((values) async {
         if (!mounted) return;

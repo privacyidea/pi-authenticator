@@ -47,16 +47,16 @@ class IntroductionNotifier extends _$IntroductionNotifier {
   Future<IntroductionState> _loadFromRepo() async {
     final newState = await _repo.loadCompletedIntroductions();
 
-    Logger.info('Loading completed introductions from repo: $newState', name: 'settings_notifier.dart#_loadFromRepo');
+    Logger.info('Loading completed introductions from repo: $newState', name: 'introduction_provider.dart#_loadFromRepo');
     return newState;
   }
 
   Future<void> _saveToRepo(IntroductionState state) async {
     final success = await _repo.saveCompletedIntroductions(state);
     if (success) {
-      Logger.info('Saving completed introductions to repo: $state', name: 'settings_notifier.dart#_saveToRepo');
+      Logger.info('Saving completed introductions to repo: $state', name: 'introduction_provider.dart#_saveToRepo');
     } else {
-      Logger.warning('Failed to save completed introductions to repo: $state', name: 'settings_notifier.dart#_saveToRepo');
+      Logger.warning('Failed to save completed introductions to repo: $state', name: 'introduction_provider.dart#_saveToRepo');
     }
   }
 

@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
@@ -31,49 +32,48 @@ class LoggingMenu extends ConsumerWidget {
   const LoggingMenu({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
-    final verboseLogging = settings.verboseLogging;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: DefaultDialog(
-        scrollable: true,
-        title: Text(
-          AppLocalizations.of(context)!.logMenu,
-          style: Theme.of(context).listTileTheme.titleTextStyle,
-        ),
-        content: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text(
-                AppLocalizations.of(context)!.verboseLogging,
-                style: Theme.of(context).textTheme.bodyMedium,
-                textAlign: TextAlign.center,
+  Widget build(BuildContext context, WidgetRef ref) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: DefaultDialog(
+          scrollable: true,
+          title: Text(
+            AppLocalizations.of(context)!.logMenu,
+            style: Theme.of(context).listTileTheme.titleTextStyle,
+          ),
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text(
+                  AppLocalizations.of(context)!.verboseLogging,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                contentPadding: const EdgeInsets.all(0),
+                trailing: Switch(
+                  value: ref.watch(settingsProvider).whenOrNull(data: (data) => data.verboseLogging) ?? SettingsState.verboseLoggingDefault,
+                  onChanged: (value) => ref.read(settingsProvider.notifier).setVerboseLogging(value),
+                ),
+                style: ListTileStyle.list,
+                onTap: () => ref.read(settingsProvider.notifier).toggleVerboseLogging(),
               ),
-              contentPadding: const EdgeInsets.all(0),
-              trailing: Switch(value: verboseLogging, onChanged: (value) => ref.read(settingsProvider.notifier).setVerboseLogging(value)),
-              style: ListTileStyle.list,
-              onTap: () => ref.read(settingsProvider.notifier).toggleVerboseLogging(),
+              const Divider(),
+              const ShowErrorLogButton(),
+              const DeleteErrorlogButton(),
+              const SendErrorLogButton(),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: Text(
+                AppLocalizations.of(context)!.dismiss,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
+              onPressed: () => Navigator.pop(context),
             ),
-            const Divider(),
-            const ShowErrorLogButton(),
-            const DeleteErrorlogButton(),
-            const SendErrorLogButton(),
           ],
         ),
-        actions: [
-          TextButton(
-            child: Text(
-              AppLocalizations.of(context)!.dismiss,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
-      ),
-    );
-  }
+      );
 }

@@ -61,7 +61,7 @@ class _MainViewState extends ConsumerState<MainView> {
   @override
   void initState() {
     super.initState();
-    final latestStartedVersion = globalRef?.read(settingsProvider).latestStartedVersion;
+    final latestStartedVersion = globalRef?.read(settingsProvider).whenOrNull(data: (data) => data)?.latestStartedVersion;
     Logger.info('Latest started version: $latestStartedVersion', name: 'main_view.dart#initState');
     if (latestStartedVersion == null || widget.disablePatchNotes) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {

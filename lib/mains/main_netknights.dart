@@ -23,6 +23,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 
 import '../firebase_options/default_firebase_options.dart';
 import '../l10n/app_localizations.dart';
@@ -77,7 +78,6 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     globalRef = ref;
-    final locale = ref.watch(settingsProvider).currentLocale;
     return LayoutBuilder(builder: (context, constraints) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(appConstraintsProvider.notifier).state = constraints;
@@ -91,7 +91,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
         navigatorKey: globalNavigatorKey,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        locale: locale,
+        locale: ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault,
         title: _customization.appName,
         theme: _customization.generateLightTheme(),
         darkTheme: _customization.generateDarkTheme(),

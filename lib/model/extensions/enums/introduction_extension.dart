@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
@@ -28,8 +29,8 @@ extension IntroductionX on Introduction {
             state.isUncompleted(Introduction.pollForChallenges) &&
             Introduction.dragToken.isConditionFulfilled(ref, state) == false &&
             Introduction.addFolder.isConditionFulfilled(ref, state) == false,
-        Introduction.hidePushTokens =>
-          ref.watch(settingsProvider).hidePushTokens && state.isCompleted(Introduction.pollForChallenges) && state.isUncompleted(Introduction.hidePushTokens),
+        Introduction.hidePushTokens => ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ??
+            SettingsState.hidePushTokensDefault && state.isCompleted(Introduction.pollForChallenges) && state.isUncompleted(Introduction.hidePushTokens),
         Introduction.exportTokens => state.isUncompleted(Introduction.exportTokens),
       };
 

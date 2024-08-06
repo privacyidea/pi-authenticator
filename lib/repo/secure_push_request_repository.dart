@@ -73,7 +73,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
   /// Adds a push request in the given state if it is not already known.
   /// If no state is given, the current state is loaded from the secure storage.
   /// This is a critical section, so it is protected by Mutex.
-  Future<PushRequestState> add(PushRequest pushRequest, {PushRequestState? state}) => protect<PushRequestState>(() async {
+  Future<PushRequestState> addRequest(PushRequest pushRequest, {PushRequestState? state}) => protect<PushRequestState>(() async {
         state ??= await _loadState();
         if (state!.knowsRequest(pushRequest)) {
           return state!;
@@ -88,7 +88,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
   /// Remove a push request from the state.
   /// If no state is given, the current state is loaded from the secure storage.
   /// This is a critical section, so it is protected by Mutex.
-  Future<PushRequestState> remove(PushRequest pushRequest, {PushRequestState? state}) => protect<PushRequestState>(() async {
+  Future<PushRequestState> removeRequest(PushRequest pushRequest, {PushRequestState? state}) => protect<PushRequestState>(() async {
         state ??= await _loadState();
         final newState = state!.withoutRequest(pushRequest);
         await _saveState(newState);

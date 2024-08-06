@@ -977,13 +977,13 @@ class MockPushRequestRepository extends _i1.Mock
       ) as _i11.Future<void>);
 
   @override
-  _i11.Future<_i9.PushRequestState> add(
+  _i11.Future<_i9.PushRequestState> addRequest(
     _i22.PushRequest? pushRequest, {
     _i9.PushRequestState? state,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
-          #add,
+          #addRequest,
           [pushRequest],
           {#state: state},
         ),
@@ -991,7 +991,7 @@ class MockPushRequestRepository extends _i1.Mock
             _i11.Future<_i9.PushRequestState>.value(_FakePushRequestState_9(
           this,
           Invocation.method(
-            #add,
+            #addRequest,
             [pushRequest],
             {#state: state},
           ),
@@ -1000,7 +1000,7 @@ class MockPushRequestRepository extends _i1.Mock
             _i11.Future<_i9.PushRequestState>.value(_FakePushRequestState_9(
           this,
           Invocation.method(
-            #add,
+            #addRequest,
             [pushRequest],
             {#state: state},
           ),
@@ -1008,13 +1008,13 @@ class MockPushRequestRepository extends _i1.Mock
       ) as _i11.Future<_i9.PushRequestState>);
 
   @override
-  _i11.Future<_i9.PushRequestState> remove(
+  _i11.Future<_i9.PushRequestState> removeRequest(
     _i22.PushRequest? pushRequest, {
     _i9.PushRequestState? state,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
-          #remove,
+          #removeRequest,
           [pushRequest],
           {#state: state},
         ),
@@ -1022,7 +1022,7 @@ class MockPushRequestRepository extends _i1.Mock
             _i11.Future<_i9.PushRequestState>.value(_FakePushRequestState_9(
           this,
           Invocation.method(
-            #remove,
+            #removeRequest,
             [pushRequest],
             {#state: state},
           ),
@@ -1031,7 +1031,7 @@ class MockPushRequestRepository extends _i1.Mock
             _i11.Future<_i9.PushRequestState>.value(_FakePushRequestState_9(
           this,
           Invocation.method(
-            #remove,
+            #removeRequest,
             [pushRequest],
             {#state: state},
           ),

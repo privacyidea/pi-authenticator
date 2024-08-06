@@ -931,7 +931,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
     Logger.info('Handling push tokens if they exist.', name: 'token_notifier.dart#_handlePushTokensIfExist');
     final pushTokens = state.pushTokens;
     if (pushTokens.isEmpty || state.pushTokens.isEmpty) {
-      if (ref.read(settingsProvider).hidePushTokens == true) {
+      if ((await ref.read(settingsProvider.future)).hidePushTokens == true) {
         ref.read(settingsProvider.notifier).setHidePushTokens(false);
       }
     }

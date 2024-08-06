@@ -25,6 +25,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
+import '../model/riverpod_states/settings_state.dart';
 import '../utils/globals.dart';
 import '../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
 import '../utils/riverpod/riverpod_providers/state_providers/app_constraints_provider.dart';
@@ -50,7 +51,6 @@ class CustomizationAuthenticator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsFlutterBinding.ensureInitialized();
-    final locale = ref.watch(settingsProvider).currentLocale;
     final applicationCustomizer = ref.watch(applicationCustomizerProvider);
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -67,7 +67,7 @@ class CustomizationAuthenticator extends ConsumerWidget {
           navigatorKey: globalNavigatorKey,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          locale: locale,
+          locale: ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault,
           title: applicationCustomizer.appName,
           theme: applicationCustomizer.generateLightTheme(),
           darkTheme: applicationCustomizer.generateDarkTheme(),
