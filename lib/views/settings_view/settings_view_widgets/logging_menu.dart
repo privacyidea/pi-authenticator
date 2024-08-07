@@ -22,7 +22,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 import 'errorlog_buttons/delete_errorlog_button.dart';
 import 'errorlog_buttons/send_errorlog_button.dart';

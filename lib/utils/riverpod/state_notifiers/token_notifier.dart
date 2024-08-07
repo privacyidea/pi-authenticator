@@ -53,7 +53,7 @@ import '../../identifiers.dart';
 import '../../lock_auth.dart';
 import '../../logger.dart';
 import '../../privacyidea_io_client.dart';
-import '../riverpod_providers/state_notifier_providers/settings_provider.dart';
+import '../riverpod_providers/generated_providers/settings_notifier.dart';
 import '../riverpod_providers/state_providers/status_message_provider.dart';
 import '../../rsa_utils.dart';
 import '../../utils.dart';

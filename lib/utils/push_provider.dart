@@ -37,7 +37,7 @@ import 'firebase_utils.dart';
 import 'globals.dart';
 import 'logger.dart';
 import 'privacyidea_io_client.dart';
-import 'riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
+import 'riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import 'rsa_utils.dart';
@@ -301,6 +301,8 @@ class PushProvider {
 
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult.contains(ConnectivityResult.none)) {
+
+
       if (isManually) {
         Logger.info('Tried to poll without any internet connection available.', name: 'push_provider.dart#pollForChallenges');
         globalRef?.read(statusMessageProvider.notifier).state = (
