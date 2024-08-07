@@ -29,7 +29,7 @@ import '../../../../model/riverpod_states/settings_state.dart';
 import '../../../../model/version.dart';
 import '../../../logger.dart';
 
-part 'settings_provider.g.dart';
+part 'settings_notifier.g.dart';
 
 final settingsProvider = settingsNotifierProviderOf(repo: PreferenceSettingsRepository());
 

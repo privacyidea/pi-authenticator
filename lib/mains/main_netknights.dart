@@ -32,7 +32,7 @@ import '../utils/customization/application_customization.dart';
 import '../utils/globals.dart';
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../utils/riverpod/riverpod_providers/state_providers/app_constraints_provider.dart';
 import '../views/add_token_manually_view/add_token_manually_view.dart';
 import '../views/feedback_view/feedback_view.dart';
@@ -89,6 +89,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
         ),
         debugShowCheckedModeBanner: true,
         navigatorKey: globalNavigatorKey,
+        
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault,

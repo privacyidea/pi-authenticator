@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 

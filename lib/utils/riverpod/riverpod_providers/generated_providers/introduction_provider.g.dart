@@ -7,7 +7,7 @@ part of 'introduction_provider.dart';
 // **************************************************************************
 
 String _$introductionNotifierHash() =>
-    r'2c84c088bf01feb395c187f1671a4c822edf1b42';
+    r'ef2eb16345e9723dd63a1c4d4bed72872a447af0';
 
 /// Copied from Dart SDK
 class _SystemHash {

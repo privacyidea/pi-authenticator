@@ -7,11 +7,10 @@ import 'package:privacyidea_authenticator/model/token_folder.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/sortable_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_notifier.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/sortable_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 
@@ -62,15 +61,10 @@ void _testSortableNotifier() {
         tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository, ref: ref)),
       ]);
 
-      final SortableNotifier sortableNotifier = container.read(sortableProvider.notifier);
-
       final newToken = TOTPToken(period: 30, id: 'Token 4', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret4', folderId: 1, sortIndex: 1);
+      await container.read(tokenProvider.notifier).addNewToken(newToken);
+      final newSortableState = container.read(sortablesProvider);
 
-      final newTokenState = tokenState.toList()..add(newToken);
-      final newState = await sortableNotifier.handleNewStateList(newTokenState);
-
-      final newSortableState = container.read(sortableProvider);
-      expect(newState.length, 6);
       expect(newSortableState.length, 6);
       expect(newSortableState[0], isA<Token>());
       expect((newSortableState[0] as Token).id, 'Token 3');

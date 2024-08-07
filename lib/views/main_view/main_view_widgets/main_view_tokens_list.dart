@@ -27,8 +27,8 @@ import '../../../model/riverpod_states/settings_state.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../model/tokens/token.dart';
-import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
-import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/sortable_provider.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../widgets/default_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
@@ -83,7 +83,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
   @override
   Widget build(BuildContext context) {
     final draggingSortable = ref.watch(draggingSortableProvider);
-    final allSortables = ref.watch(sortableProvider);
+    final allSortables = ref.watch(sortablesProvider);
     final allowToRefresh = allSortables.any((element) => element is PushToken);
     final hidePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
     final filterPushTokens = hidePushTokens && allowToRefresh;

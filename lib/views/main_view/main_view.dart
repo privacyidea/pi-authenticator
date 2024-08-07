@@ -25,7 +25,7 @@ import '../../model/riverpod_states/token_filter.dart';
 import '../../utils/globals.dart';
 import '../../utils/logger.dart';
 import '../../utils/patch_notes_utils.dart';
-import '../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../utils/riverpod/riverpod_providers/state_providers/token_filter_provider.dart';
 import '../../widgets/push_request_listener.dart';
 import '../../widgets/status_bar.dart';

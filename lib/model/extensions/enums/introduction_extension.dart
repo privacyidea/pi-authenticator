@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/settings_provider.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../../enums/introduction.dart';
 import '../../riverpod_states/introduction_state.dart';
