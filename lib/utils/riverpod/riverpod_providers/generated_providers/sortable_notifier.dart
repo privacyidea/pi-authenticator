@@ -25,7 +25,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../model/mixins/sortable_mixin.dart';
 import '../../../../model/token_folder.dart';
 import '../../../../model/tokens/token.dart';
-import '../state_providers/dragging_sortable_provider.dart';
 import '../state_notifier_providers/token_folder_provider.dart';
 import '../state_notifier_providers/token_provider.dart';
 
@@ -47,8 +46,6 @@ List<SortableMixin> sortables(SortablesRef ref) {
     if (sortablesWithNulls.any((e) => e is TokenFolder) && sortablesWithNulls.any((element) => element.sortIndex == null)) {
       ref.read(tokenFolderProvider.notifier).addOrReplaceFolders(sortedSortables.whereType<TokenFolder>().toList());
     }
-
-    ref.read(draggingSortableProvider.notifier).state = null;
   });
 
   return sortedSortables;

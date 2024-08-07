@@ -23,13 +23,22 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:privacyidea_authenticator/mains/main_netknights.dart';
+import 'package:privacyidea_authenticator/model/extensions/sortable_list.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
 
+import '../model/mixins/sortable_mixin.dart';
+import '../model/token_folder.dart';
+import '../model/tokens/token.dart';
 import 'customization/application_customization.dart' show ApplicationCustomization;
+import 'riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
+import 'riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import 'riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 
 /// Inserts [char] at the position [pos] in the given String ([str]),
 /// and returns the resulting String.
@@ -132,4 +141,37 @@ dynamic tryJsonDecode(String json) {
   } catch (_) {
     return null;
   }
+}
+
+void dragSortableOnAccept({
+  required SortableMixin? previousSortable,
+  required SortableMixin dragedSortable,
+  required SortableMixin? nextSortable,
+  TokenFolder? dependingFolder,
+  required WidgetRef ref,
+}) {
+  var allSortables = ref.read(sortablesProvider);
+
+  if (dragedSortable is TokenFolder) {
+    final tokensInFolder = ref.read(tokenProvider).tokens.where((element) => element.folderId == dragedSortable.folderId).toList();
+    final allMovingItems = [dragedSortable, ...tokensInFolder];
+    allSortables = allSortables.moveAllBetween(moveAfter: previousSortable, movedItems: allMovingItems, moveBefore: nextSortable);
+  } else if (dragedSortable is Token) {
+    allSortables = allSortables.moveBetween(moveAfter: previousSortable, movedItem: dragedSortable, moveBefore: nextSortable);
+    allSortables = allSortables.map((e) {
+      return e is Token && e.id == dragedSortable.id ? e.copyWith(folderId: () => dependingFolder?.folderId) : e;
+    }).toList();
+  }
+  final modifiedTokens = allSortables.whereType<Token>().toList();
+  final modifiedFolders = allSortables.whereType<TokenFolder>().toList();
+  final futures = [
+    ref.read(tokenProvider.notifier).addOrReplaceTokens(modifiedTokens),
+    ref.read(tokenFolderProvider.notifier).addOrReplaceFolders(modifiedFolders),
+  ];
+  final draggingSortableProviderNotifier = ref.read(draggingSortableProvider.notifier);
+  Future.wait(futures).then((_) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      draggingSortableProviderNotifier.state = null;
+    });
+  });
 }
