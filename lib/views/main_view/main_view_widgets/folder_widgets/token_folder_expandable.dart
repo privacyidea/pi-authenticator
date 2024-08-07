@@ -39,6 +39,7 @@ import '../../../../utils/riverpod/riverpod_providers/generated_providers/settin
 import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
 import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
 import '../../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
+import '../../../../utils/utils.dart';
 import '../../../../widgets/custom_trailing.dart';
 import '../drag_target_divider.dart';
 import '../token_widgets/token_widget_builder.dart';
@@ -96,8 +97,9 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
 
   @override
   ExpandablePanel build(BuildContext context) {
-    final hitePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
-    final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: hitePushTokens ? [PushToken] : []);
+    final hidePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
+    final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: hidePushTokens ? [PushToken] : []);
+
     tokens.sort((a, b) => a.compareTo(b));
     final draggingSortable = ref.watch(draggingSortableProvider);
     if (widget.expandOverride == null) {
@@ -143,7 +145,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
             child: DragTarget<Token>(
               onWillAcceptWithDetails: (details) {
                 if (details.data.folderId != widget.folder.folderId) {
-                  if (widget.folder.isLocked) return true;
+                  if (widget.folder.isLocked || tokens.isEmpty) return true;
                   _expandTimer?.cancel();
                   _expandTimer = Timer(const Duration(milliseconds: 500), () {
                     if (!mounted) return;
@@ -156,10 +158,13 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
               onLeave: (data) => _expandTimer?.cancel(),
               onAcceptWithDetails: (details) {
                 log('Moving token to folder ${widget.folder.label}', name: 'TokenFolderExpandable');
-                ref.read(tokenProvider.notifier).updateToken(
-                      details.data,
-                      (p0) => p0.copyWith(folderId: () => widget.folder.folderId, sortIndex: (widget.folder.sortIndex!) + 1),
-                    );
+                dragSortableOnAccept(
+                  previousSortable: widget.folder,
+                  dragedSortable: details.data,
+                  nextSortable: null,
+                  dependingFolder: widget.folder,
+                  ref: ref,
+                );
               },
               builder: (context, willAccept, willReject) => Center(
                 child: Container(

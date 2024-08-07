@@ -22,12 +22,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../model/extensions/sortable_list.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
-import '../../../model/tokens/token.dart';
-import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
-import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import '../../../utils/utils.dart';
 import '../../../widgets/drag_item_scroller.dart';
 
 /// DragTargetDivider is used to create a divider that can be used to move a sortable up or down in the list
@@ -40,7 +37,6 @@ class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget 
   final double dividerExpandedHeight;
   final double bottomPaddingIfLast;
   final bool isExpandalbe;
-  final bool ignoreFolderId;
   final bool isLastDivider;
 
   const DragTargetDivider({
@@ -52,7 +48,6 @@ class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget 
     this.dividerBaseHeight = 1.5,
     this.dividerExpandedHeight = 40,
     this.isExpandalbe = true,
-    this.ignoreFolderId = false,
     this.isLastDivider = false,
   });
 
@@ -95,11 +90,10 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
         },
         onAcceptWithDetails: (details) {
           expansionController.reset();
-          _onAccept(
+          dragSortableOnAccept(
             previousSortable: widget.previousSortable,
             dragedSortable: details.data,
             nextSortable: widget.nextSortable,
-            ignoreFolderId: widget.ignoreFolderId,
             dependingFolder: widget.dependingFolder,
             ref: ref,
           );
@@ -124,32 +118,4 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
 bool _onWillAccept(SortableMixin? data, WidgetRef ref) {
   if (ref.read(dragItemScrollerStateProvider)) return false;
   return true;
-}
-
-void _onAccept({
-  required SortableMixin? previousSortable,
-  required SortableMixin dragedSortable,
-  required SortableMixin? nextSortable,
-  required bool ignoreFolderId,
-  TokenFolder? dependingFolder,
-  required WidgetRef ref,
-}) {
-  final allTokens = ref.read(tokenProvider).tokens;
-  final allFolders = ref.read(tokenFolderProvider).folders;
-  var allSortables = [...allTokens, ...allFolders];
-
-  if (dragedSortable is TokenFolder) {
-    final tokensInFolder = ref.read(tokenProvider).tokens.where((element) => element.folderId == dragedSortable.folderId).toList();
-    final allMovingItems = [dragedSortable, ...tokensInFolder];
-    allSortables = allSortables.moveAllBetween(moveAfter: previousSortable, movedItems: allMovingItems, moveBefore: nextSortable);
-  } else if (dragedSortable is Token) {
-    allSortables = allSortables.moveBetween(moveAfter: previousSortable, movedItem: dragedSortable, moveBefore: nextSortable);
-    allSortables = allSortables.map((e) {
-      return e is Token && e.id == dragedSortable.id ? e.copyWith(folderId: () => dependingFolder?.folderId) : e;
-    }).toList();
-  }
-  final modifiedTokens = allSortables.whereType<Token>().toList();
-  final modifiedFolders = allSortables.whereType<TokenFolder>().toList();
-  ref.read(tokenProvider.notifier).addOrReplaceTokens(modifiedTokens);
-  ref.read(tokenFolderProvider.notifier).addOrReplaceFolders(modifiedFolders);
 }
