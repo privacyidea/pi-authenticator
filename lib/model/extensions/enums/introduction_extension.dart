@@ -29,8 +29,9 @@ extension IntroductionX on Introduction {
             state.isUncompleted(Introduction.pollForChallenges) &&
             Introduction.dragToken.isConditionFulfilled(ref, state) == false &&
             Introduction.addFolder.isConditionFulfilled(ref, state) == false,
-        Introduction.hidePushTokens => ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ??
-            SettingsState.hidePushTokensDefault && state.isCompleted(Introduction.pollForChallenges) && state.isUncompleted(Introduction.hidePushTokens),
+        Introduction.hidePushTokens => (ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault) &&
+            state.isCompleted(Introduction.pollForChallenges) &&
+            state.isUncompleted(Introduction.hidePushTokens),
         Introduction.exportTokens => state.isUncompleted(Introduction.exportTokens),
       };
 

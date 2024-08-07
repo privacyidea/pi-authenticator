@@ -81,7 +81,7 @@ class Logger {
     return file.readAsString();
   }
 
-  /*----------- INSTANCE MEMBER & GETTER -----------*/
+  /*----------- INSTANCE MEMBER & GETTER/SETTER -----------*/
   Function? _appRunner;
   Widget? _app;
   String _lastError = 'No error Message';
@@ -92,11 +92,9 @@ class Logger {
 
   String get _filename => 'logfile.txt';
   String? get _fullPath => _logPath != null ? '$_logPath/$_filename' : null;
-  bool get _verbose {
-    // if (globalRef == null) return false;
-    return false;
-    // return globalRef!.read(settingsProvider).whenOrNull(data: (data) => data.verboseLogging) ?? SettingsState.verboseLoggingDefault; //TODO: fix it
-  }
+  static bool _verboseLogging = false;
+
+  static void setVerboseLogging(bool value) => _verboseLogging = value;
 
   bool get logfileHasContent {
     if (_fullPath == null) return false;
@@ -135,7 +133,7 @@ class Logger {
   void logInfo(String message, {dynamic stackTrace, String? name, bool verbose = false}) {
     String infoString = _convertLogToSingleString(message, stackTrace: stackTrace, name: name, logLevel: LogLevel.INFO);
     infoString = _textFilter(infoString);
-    if (_verbose || verbose) {
+    if (_verboseLogging || verbose) {
       _logToFile(infoString);
     }
     _print(infoString);
@@ -147,7 +145,7 @@ class Logger {
   void logWarning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
     String warningString = _convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.WARNING);
     warningString = _textFilter(warningString);
-    if (instance._verbose || verbose) {
+    if (_verboseLogging || verbose) {
       instance._logToFile(warningString);
     }
     _printWarning(warningString);
@@ -158,7 +156,7 @@ class Logger {
     if (!kDebugMode) return;
     String debugString = instance._convertLogToSingleString(
       message,
-      stackTrace: stackTrace ?? (instance._verbose || verbose) ? StackTrace.current : null,
+      stackTrace: stackTrace ?? (_verboseLogging || verbose) ? StackTrace.current : null,
       name: name,
       logLevel: LogLevel.DEBUG,
     );

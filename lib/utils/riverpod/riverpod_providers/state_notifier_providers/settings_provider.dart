@@ -49,7 +49,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   Future<SettingsState> build({
     required SettingsRepository repo,
   }) async {
-    Logger.info('New settings notifier created', name: 'settings_notifier.dart#build');
+    // Logger.info('New settings notifier created', name: 'settings_notifier.dart#build');
     _repo = _repoOverride ?? repo;
     final newState = await _loadFromRepo();
     return newState;
@@ -147,9 +147,11 @@ class SettingsNotifier extends _$SettingsNotifier {
     return updateState((oldState) => oldState.copyWith(localePreference: locale));
   }
 
-  Future<SettingsState> setVerboseLogging(bool value) {
+  Future<SettingsState> setVerboseLogging(bool value) async {
     Logger.info('Verbose logging set to $value', name: 'settings_notifier.dart#setVerboseLogging');
-    return updateState((oldState) => oldState.copyWith(verboseLogging: value));
+    final updatedState = await updateState((oldState) => oldState.copyWith(verboseLogging: value));
+    Logger.setVerboseLogging(updatedState.verboseLogging);
+    return updatedState;
   }
 
   Future<SettingsState> toggleVerboseLogging() {

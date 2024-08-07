@@ -61,18 +61,22 @@ class IntroductionNotifier extends _$IntroductionNotifier {
   }
 
   Future<void> complete(Introduction introduction) async {
+    Logger.info('Completing introduction: $introduction', name: 'introduction_provider.dart#complete');
     final newState = (await future).withCompletedIntroduction(introduction);
     await _saveToRepo(newState);
     state = AsyncValue.data(newState);
+    Logger.debug('New saved state after completion: ${await future}');
   }
 
   Future<void> uncomplete(Introduction introduction) async {
+    Logger.info('Uncompleting introduction: $introduction', name: 'introduction_provider.dart#uncomplete');
     final newState = (await future).withoutCompletedIntroduction(introduction);
     await _saveToRepo(newState);
     state = AsyncValue.data(newState);
   }
 
   Future<void> completeAll() async {
+    Logger.info('Completing all introductions', name: 'introduction_provider.dart#completeAll');
     final newState = (await future).withAllCompleted();
     await _saveToRepo(newState);
     state = AsyncValue.data(newState);
