@@ -23,7 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../globals.dart';
 import '../../../logger.dart';
-import '../state_notifier_providers/token_provider.dart';
+import '../state_notifier_providers/token_notifier.dart';
 import '../state_providers/status_message_provider.dart';
 
 final connectivityProvider = StreamProvider<List<ConnectivityResult>>(

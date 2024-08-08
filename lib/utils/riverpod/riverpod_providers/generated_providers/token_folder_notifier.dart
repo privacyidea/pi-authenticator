@@ -26,7 +26,7 @@ import '../../../../model/riverpod_states/token_folder_state.dart';
 import '../../../../model/token_folder.dart';
 import '../../../logger.dart';
 
-part 'token_folder_provider.g.dart';
+part 'token_folder_notifier.g.dart';
 
 final tokenFolderProvider = tokenFolderNotifierProviderOf(repo: PreferenceTokenFolderRepository());
 
@@ -74,38 +74,6 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     _repoMutex.release();
     return true;
   }
-
-  // Future<bool> _addOrReplaceFolder(TokenFolder folder) async {
-  //   await _repoMutex.acquire();
-  //   final newState = (state).addOrReplaceFolder(folder);
-  //   final success = await _repo.saveReplaceList(newState.folders);
-  //   if (!success) {
-  //     Logger.warning(
-  //       'Failed to add or replace folder',
-  //       name: 'TokenFolderNotifier#_addOrReplaceFolder',
-  //     );
-  //     return false;
-  //   }
-  //   // state = newState;
-  //   _repoMutex.release();
-  //   return true;
-  // }
-
-  // Future<bool> _addNewFolder(String name) async {
-  //   await _repoMutex.acquire();
-  //   final newState = (state).addNewFolder(name);
-  //   final success = await _repo.saveReplaceList(newState.folders);
-  //   if (!success) {
-  //     Logger.warning(
-  //       'Failed to add new folder',
-  //       name: 'TokenFolderNotifier#_addNewFolder',
-  //     );
-  //     return false;
-  //   }
-  //   // state = newState;
-  //   _repoMutex.release();
-  //   return true;
-  // }
 
   Future<TokenFolderState> addNewFolder(String name) async {
     await _stateMutex.acquire();

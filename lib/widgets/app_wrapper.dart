@@ -14,8 +14,8 @@ import '../utils/riverpod/riverpod_providers/generated_providers/credential_noti
 import '../utils/riverpod/riverpod_providers/generated_providers/deeplink_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
-import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
-import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
 import '../utils/riverpod/state_listeners/home_widget_deep_link_listener.dart';
 import '../utils/riverpod/state_listeners/home_widget_token_state_listener.dart';
 import '../utils/riverpod/state_listeners/navigation_deep_link_listener.dart';
@@ -91,9 +91,10 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
     Logger.debug('Credentials: $credentials', name: 'AppWrapper#build');
     return SingleTouchRecognizer(
       child: StateObserver(
-        stateNotifierProviderListeners: [
-          HomeWidgetTokenStateListener(tokenProvider: tokenProvider),
-          ContainerListensToTokenState(tokenProvider: tokenProvider, ref: ref),
+        stateNotifierProviderListeners: [],
+        buildlessProviderListener: [
+          HomeWidgetTokenStateListener(provider: tokenProvider),
+          ContainerListensToTokenState(provider: tokenProvider, ref: ref),
         ],
         streamNotifierProviderListeners: [
           NavigationDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),

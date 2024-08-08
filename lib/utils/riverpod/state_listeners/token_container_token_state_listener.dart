@@ -28,7 +28,7 @@ import '../riverpod_providers/generated_providers/token_container_notifier.dart'
 
 class ContainerListensToTokenState extends TokenStateListener {
   ContainerListensToTokenState({
-    required super.tokenProvider,
+    required super.provider,
     required WidgetRef ref,
   }) : super(
           onNewState: (TokenState? previous, TokenState next) => WidgetsBinding.instance.addPostFrameCallback((_) {

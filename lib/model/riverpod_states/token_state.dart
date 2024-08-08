@@ -47,13 +47,12 @@ class TokenState {
 
   List<Token> get maybePiTokens => tokens.maybePiTokens;
 
-  TokenState({
-    required List<Token> tokens,
+  const TokenState({
+    required this.tokens,
     List<Token>? lastlyUpdatedTokens,
     List<Token>? lastlyDeletedTokens,
-  })  : tokens = List<Token>.from(tokens),
-        lastlyUpdatedTokens = List<Token>.from(lastlyUpdatedTokens ?? tokens),
-        lastlyDeletedTokens = List<Token>.from(lastlyDeletedTokens ?? []);
+  })  : lastlyUpdatedTokens = lastlyUpdatedTokens ?? tokens,
+        lastlyDeletedTokens = lastlyDeletedTokens ?? const [];
 
   List<Token> get tokensNotInContainer {
     final tokensNotInContainer = tokens.maybePiTokens.where((token) => token.containerSerial != null).toList();

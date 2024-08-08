@@ -23,7 +23,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/globals.dart';
-import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
 import '../../../../utils/view_utils.dart';
 import '../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../qr_scanner_view/qr_scanner_view.dart';

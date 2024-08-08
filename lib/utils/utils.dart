@@ -36,8 +36,8 @@ import '../model/mixins/sortable_mixin.dart';
 import '../model/token_folder.dart';
 import '../model/tokens/token.dart';
 import 'customization/application_customization.dart' show ApplicationCustomization;
-import 'riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
-import 'riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import 'riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import 'riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
 import 'riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 
 /// Inserts [char] at the position [pos] in the given String ([str]),

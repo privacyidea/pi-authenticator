@@ -26,7 +26,7 @@ import '../../../model/tokens/token.dart';
 import '../../home_widget_utils.dart';
 
 class HomeWidgetTokenStateListener extends TokenStateListener {
-  const HomeWidgetTokenStateListener({required super.tokenProvider})
+  const HomeWidgetTokenStateListener({required super.provider})
       : super(
           onNewState: _onNewState,
           listenerName: 'HomeWidgetUtils().updateTokensIfLinked',
