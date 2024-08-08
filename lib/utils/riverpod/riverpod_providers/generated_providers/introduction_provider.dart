@@ -77,7 +77,7 @@ class IntroductionNotifier extends _$IntroductionNotifier {
 
   Future<void> completeAll() async {
     Logger.info('Completing all introductions', name: 'introduction_provider.dart#completeAll');
-    final newState = (await future).withAllCompleted();
+    final newState = IntroductionState.withAllCompleted();
     await _saveToRepo(newState);
     state = AsyncValue.data(newState);
   }

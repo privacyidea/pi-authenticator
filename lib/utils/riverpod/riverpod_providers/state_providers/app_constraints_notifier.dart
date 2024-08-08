@@ -18,13 +18,22 @@
  * limitations under the License.
  */
 import 'package:flutter/rendering.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../logger.dart';
 
-final appConstraintsProvider = StateProvider<BoxConstraints?>(
-  (ref) {
-    Logger.info("New constraintsProvider created", name: 'appConstraintsProvider');
+part 'app_constraints_notifier.g.dart';
+
+@riverpod
+class AppConstraintsNotifier extends _$AppConstraintsNotifier {
+  @override
+  BoxConstraints? build() {
+    Logger.info("New AppConstraints created", name: 'AppConstraintsNotifier#build');
     return null;
-  },
-);
+  }
+
+  void update(BoxConstraints constraints) {
+    Logger.info("AppConstraints updated", name: 'AppConstraintsNotifier#update');
+    state = constraints;
+  }
+}

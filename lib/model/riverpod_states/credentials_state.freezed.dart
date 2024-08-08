@@ -14,11 +14,16 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+CredentialsState _$CredentialsStateFromJson(Map<String, dynamic> json) {
+  return _CredentialsState.fromJson(json);
+}
+
 /// @nodoc
 mixin _$CredentialsState {
   List<ContainerCredential> get credentials =>
       throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $CredentialsStateCopyWith<CredentialsState> get copyWith =>
       throw _privateConstructorUsedError;
@@ -91,12 +96,15 @@ class __$$CredentialsStateImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$CredentialsStateImpl extends _CredentialsState {
   const _$CredentialsStateImpl(
       {required final List<ContainerCredential> credentials})
       : _credentials = credentials,
         super._();
+
+  factory _$CredentialsStateImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CredentialsStateImplFromJson(json);
 
   final List<ContainerCredential> _credentials;
   @override
@@ -115,6 +123,7 @@ class _$CredentialsStateImpl extends _CredentialsState {
                 .equals(other._credentials, _credentials));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(_credentials));
@@ -125,6 +134,13 @@ class _$CredentialsStateImpl extends _CredentialsState {
   _$$CredentialsStateImplCopyWith<_$CredentialsStateImpl> get copyWith =>
       __$$CredentialsStateImplCopyWithImpl<_$CredentialsStateImpl>(
           this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$CredentialsStateImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _CredentialsState extends CredentialsState {
@@ -132,6 +148,9 @@ abstract class _CredentialsState extends CredentialsState {
           {required final List<ContainerCredential> credentials}) =
       _$CredentialsStateImpl;
   const _CredentialsState._() : super._();
+
+  factory _CredentialsState.fromJson(Map<String, dynamic> json) =
+      _$CredentialsStateImpl.fromJson;
 
   @override
   List<ContainerCredential> get credentials;
