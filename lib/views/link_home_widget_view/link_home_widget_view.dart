@@ -55,7 +55,7 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
       body: ListView.builder(
         itemBuilder: (context, index) {
           final otpToken = otpTokens[index];
-          final folderIsLocked = ref.watch(tokenFolderProvider).currentById(otpToken.folderId)?.isLocked ?? false;
+          final folderIsLocked = ref.watch(tokenFolderProvider).currentOfId(otpToken.folderId)?.isLocked ?? false;
           final otpString = otpToken.isLocked || folderIsLocked ? veilingCharacter * otpToken.otpValue.length : otpToken.otpValue;
           return ListTile(
             title: Text(otpToken.label),

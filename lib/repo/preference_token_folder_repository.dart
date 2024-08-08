@@ -23,6 +23,7 @@ import 'package:mutex/mutex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interfaces/repo/token_folder_repository.dart';
+import '../model/riverpod_states/token_folder_state.dart';
 import '../model/token_folder.dart';
 import '../utils/logger.dart';
 
@@ -36,26 +37,26 @@ class PreferenceTokenFolderRepository extends TokenFolderRepository {
   static Future<T> _protect<T>(Future<T> Function() f) => _m.protect<T>(f);
 
   @override
-  Future<List<TokenFolder>> loadFolders() async => _protect(_loadFolders);
-  Future<List<TokenFolder>> _loadFolders() async {
+  Future<TokenFolderState> loadState() async => _protect(_loadFolders);
+  Future<TokenFolderState> _loadFolders() async {
     try {
       final foldersString = await _prefs.then((prefs) => prefs.getString(_tokenFoldersKey));
-      if (foldersString == null) return [];
+      if (foldersString == null) return const TokenFolderState(folders: []);
       final jsons = jsonDecode(foldersString) as List<dynamic>;
       final folders = jsons.map((e) => TokenFolder.fromJson(e)).toList();
       Logger.info('Loaded ${folders.length} folders from preferences', name: 'PreferenceTokenFolderRepository#loadFolders');
 
-      return folders;
+      return TokenFolderState(folders: folders);
     } catch (e, s) {
       Logger.error('Failed to load folders', name: 'PreferenceTokenFolderRepository#loadFolders', error: e, stackTrace: s);
-
-      return [];
+      return const TokenFolderState(folders: []);
     }
   }
 
   @override
-  Future<bool> saveReplaceList(List<TokenFolder> folders) => _protect(() => _saveReplaceList(folders));
-  Future<bool> _saveReplaceList(List<TokenFolder> folders) async {
+  Future<bool> saveState(TokenFolderState state) => _protect(() => _saveReplaceList(state));
+  Future<bool> _saveReplaceList(TokenFolderState state) async {
+    final folders = state.folders;
     Logger.info('Saving ${folders.length} folders to preferences...', name: 'PreferenceTokenFolderRepository#saveReplaceList');
     try {
       final jsons = folders.map((e) => e.toJson()).toList();

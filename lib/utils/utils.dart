@@ -151,7 +151,6 @@ void dragSortableOnAccept({
   required WidgetRef ref,
 }) {
   var allSortables = ref.read(sortablesProvider);
-
   if (dragedSortable is TokenFolder) {
     final tokensInFolder = ref.read(tokenProvider).tokens.where((element) => element.folderId == dragedSortable.folderId).toList();
     final allMovingItems = [dragedSortable, ...tokensInFolder];

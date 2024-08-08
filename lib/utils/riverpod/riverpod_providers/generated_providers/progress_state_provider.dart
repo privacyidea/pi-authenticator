@@ -17,15 +17,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../model/riverpod_states/progress_state.dart';
-import '../../logger.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class ProgressStateNotifier extends StateNotifier<ProgressState?> {
-  ProgressStateNotifier() : super(null);
+import '../../../../model/riverpod_states/progress_state.dart';
+import '../../../logger.dart';
 
-  double? get progress => state?.progress;
+part 'progress_state_provider.g.dart';
+
+final progressStateProvider = progressStateNotifierProviderOf(Null);
+
+@riverpod
+class ProgressStateNotifier extends _$ProgressStateNotifier {
+  @override
+  ProgressState build(Type type) {
+    Logger.info('Initializing progress state', name: 'ProgressStateNotifier#initProgress');
+    return const ProgressState.uninitialized();
+  }
+
+  double? get progress => state.progress;
 
   ProgressState initProgress(int max, int value) {
     Logger.info('Initializing progress state', name: 'ProgressStateNotifier#initProgress');
@@ -36,29 +46,32 @@ class ProgressStateNotifier extends StateNotifier<ProgressState?> {
 
   void deleteProgress() {
     Logger.info('Deleting progress state', name: 'ProgressStateNotifier#deleteProgress');
-    state = null;
+    state = const ProgressState.uninitialized();
   }
 
   ProgressState? resetProgress() {
-    if (state == null) return state;
+    if (state is ProgressStateUninitialized) return state;
     Logger.info('Resetting progress state', name: 'ProgressStateNotifier#resetProgress');
-    final newState = state!.copyWith(value: 0);
+    final newState = state.copyWith(value: 0);
     state = newState;
     return newState;
   }
 
   ProgressState? setProgressMax(int max) {
-    if (state == null) return state;
+    assert(state is! ProgressStateUninitialized, 'Progress state is uninitialized');
+    assert(max > 0, 'Max value must be greater than 0');
     Logger.info('Setting progress max to $max', name: 'ProgressStateNotifier#setProgressMax');
-    final newState = state!.copyWith(max: max);
+    final newState = state.copyWith(max: max);
     state = newState;
     return newState;
   }
 
   ProgressState? setProgressValue(int value) {
-    if (state == null) return state;
-    Logger.info('Setting progress value to $value/${state!.max}', name: 'ProgressStateNotifier#setProgressValue');
-    final newState = state!.copyWith(value: value);
+    assert(state is! ProgressStateUninitialized, 'Progress state is uninitialized');
+    assert(value >= 0, 'Value must be greater than or equal to 0');
+    assert(value <= state.max, 'Value must be less than or equal to max value');
+    Logger.info('Setting progress value to $value/${state.max}', name: 'ProgressStateNotifier#setProgressValue');
+    final newState = state.copyWith(value: value);
     state = newState;
     return newState;
   }

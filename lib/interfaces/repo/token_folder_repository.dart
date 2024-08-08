@@ -17,11 +17,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../model/token_folder.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 
 abstract class TokenFolderRepository {
   /// Overwrite the current state with the new folders
   /// Returns true if the operation is successful, false otherwise
-  Future<bool> saveReplaceList(List<TokenFolder> folders);
-  Future<List<TokenFolder>> loadFolders();
+  Future<bool> saveState(TokenFolderState state);
+  Future<TokenFolderState> loadState();
 }

@@ -93,8 +93,17 @@ class TokenFolderState {
   get newFolderId => folders.fold(0, (previousValue, element) => max(previousValue, element.folderId)) + 1;
 
   /// Get the folder by the given id, or null if the folder does not exist
-  TokenFolder? currentById(int? id) => id == null ? null : folders.firstWhereOrNull((element) => element.folderId == id);
+  TokenFolder? currentOfId(int? id) => id == null ? null : folders.firstWhereOrNull((element) => element.folderId == id);
 
   /// Returns the current folder of the given folder, or null if the folder does not exist
   TokenFolder? currentOf(TokenFolder folder) => folders.firstWhereOrNull((element) => element.folderId == folder.folderId);
+
+  TokenFolderState update(TokenFolder folder, TokenFolder Function(TokenFolder) updater) {
+    final newFolders = List<TokenFolder>.from(folders);
+    final index = newFolders.indexWhere((element) => element.folderId == folder.folderId);
+    if (index != -1) {
+      newFolders[index] = updater(newFolders[index]);
+    }
+    return TokenFolderState(folders: newFolders);
+  }
 }

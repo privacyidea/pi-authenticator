@@ -3,12 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/model/token_folder.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
@@ -27,13 +27,13 @@ void _testSortableNotifier() {
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
       final MockTokenFolderRepository mockTokenFolderRepository = MockTokenFolderRepository();
       final MockTokenRepository mockTokenRepository = MockTokenRepository();
-      List<TokenFolder> tokenFolderState = [
-        const TokenFolder(label: 'Folder 1', folderId: 1, sortIndex: null),
-        const TokenFolder(label: 'Folder 2', folderId: 2, sortIndex: 2),
-      ];
-      when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => tokenFolderState);
-      when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((newState) async {
-        tokenFolderState = newState.positionalArguments.first as List<TokenFolder>;
+      TokenFolderState tokenFolderState = const TokenFolderState(folders: [
+        TokenFolder(label: 'Folder 1', folderId: 1, sortIndex: null),
+        TokenFolder(label: 'Folder 2', folderId: 2, sortIndex: 2),
+      ]);
+      when(mockTokenFolderRepository.loadState()).thenAnswer((_) async => tokenFolderState);
+      when(mockTokenFolderRepository.saveState(any)).thenAnswer((newState) async {
+        tokenFolderState = newState.positionalArguments.first as TokenFolderState;
         return true;
       });
       List<Token> tokenState = [
@@ -57,7 +57,7 @@ void _testSortableNotifier() {
 
       final container = ProviderContainer(overrides: [
         settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo)),
-        tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
+        tokenFolderProvider.overrideWith(() => TokenFolderNotifier(repoOverride: mockTokenFolderRepository)),
         tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository, ref: ref)),
       ]);
 
