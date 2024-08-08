@@ -22,8 +22,8 @@ import 'package:flutter/material.dart';
 import '../../../utils/globals.dart';
 import '../../../utils/home_widget_utils.dart';
 import '../../../utils/logger.dart';
-import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
-import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
 import '../../../views/link_home_widget_view/link_home_widget_view.dart';
 import 'navigation_scheme_processor_interface.dart';
 

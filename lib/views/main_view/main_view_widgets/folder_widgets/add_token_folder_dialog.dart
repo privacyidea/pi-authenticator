@@ -23,7 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/enums/introduction.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
-import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
+import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class AddTokenFolderDialog extends ConsumerWidget {

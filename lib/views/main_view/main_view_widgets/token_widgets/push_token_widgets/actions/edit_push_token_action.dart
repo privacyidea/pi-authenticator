@@ -28,7 +28,7 @@ import '../../../../../../utils/customization/theme_extentions/action_theme.dart
 import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
-import '../../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import '../../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
 import '../../../../../../widgets/enable_text_edit_after_many_taps.dart';
 import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../default_token_actions/default_edit_action_dialog.dart';

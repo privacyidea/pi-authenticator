@@ -26,7 +26,7 @@ import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/logger.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class DefaultEditActionDialog extends ConsumerStatefulWidget {

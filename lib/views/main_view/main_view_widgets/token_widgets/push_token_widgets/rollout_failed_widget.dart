@@ -24,7 +24,7 @@ import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/extensions/enums/push_token_rollout_state_extension.dart';
 import '../../../../../model/tokens/push_token.dart';
 import '../../../../../utils/globals.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_provider.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
 import '../../../../../utils/riverpod/riverpod_providers/state_providers/app_constraints_provider.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../widgets/press_button.dart';

@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../interfaces/riverpod/buildless_listener.dart';
 import '../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/deep_link_listener.dart';
 
 import '../../interfaces/riverpod/state_listeners/notifier_provider_listener.dart';
@@ -26,6 +27,7 @@ import '../../interfaces/riverpod/state_listeners/state_notifier_provider_listen
 
 class StateObserver extends ConsumerWidget {
   final List<StateNotifierProviderListener> stateNotifierProviderListeners;
+  final List<BuildlessListener> buildlessProviderListener;
   final List<AsyncNotifierProviderListener> asyncNotifierProviderListeners;
   final List<StreamNotifierProviderListener> streamNotifierProviderListeners;
   final Widget child;
@@ -33,6 +35,7 @@ class StateObserver extends ConsumerWidget {
   const StateObserver({
     super.key,
     this.asyncNotifierProviderListeners = const [],
+    this.buildlessProviderListener = const [],
     this.stateNotifierProviderListeners = const [],
     this.streamNotifierProviderListeners = const [],
     required this.child,
@@ -41,6 +44,9 @@ class StateObserver extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     for (final listener in stateNotifierProviderListeners) {
+      listener.buildListen(ref);
+    }
+    for (final listener in buildlessProviderListener) {
       listener.buildListen(ref);
     }
     for (final listener in asyncNotifierProviderListeners) {

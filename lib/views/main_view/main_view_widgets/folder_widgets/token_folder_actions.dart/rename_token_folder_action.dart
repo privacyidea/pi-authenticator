@@ -26,7 +26,7 @@ import '../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_folder_provider.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class RenameTokenFolderAction extends StatelessWidget {
