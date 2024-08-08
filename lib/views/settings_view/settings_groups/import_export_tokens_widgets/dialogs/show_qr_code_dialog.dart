@@ -28,7 +28,7 @@ import 'package:zxing2/qrcode.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/encryption/token_encryption.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_providers/app_constraints_provider.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_providers/app_constraints_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class ShowQrCodeDialog extends ConsumerWidget {
@@ -37,7 +37,7 @@ class ShowQrCodeDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appConstraits = ref.watch(appConstraintsProvider)!;
+    final appConstraits = ref.watch(appConstraintsNotifierProvider)!;
     final qrSize = min(appConstraits.maxWidth, appConstraits.maxHeight) * 0.85;
     final qrImage = Image.memory(_generateQrCodeImage(data: TokenEncryption.generateExportUri(token: token).toString()));
     return DefaultDialog(

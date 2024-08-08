@@ -18,25 +18,27 @@
  * limitations under the License.
  */
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../enums/introduction.dart';
 import '../extensions/enums/introduction_extension.dart';
 
+part 'introduction_state.freezed.dart';
 part 'introduction_state.g.dart';
 
-@JsonSerializable()
-class IntroductionState {
-  final Set<Introduction> completedIntroductions;
+@Freezed()
+class IntroductionState with _$IntroductionState {
+  const IntroductionState._();
   Set<Introduction> get uncompletedIntroductions => Introduction.values.toSet().difference(completedIntroductions);
+
+  const factory IntroductionState({
+    @Default({}) Set<Introduction> completedIntroductions,
+  }) = _IntroductionState;
+  static IntroductionState withAllCompleted() => IntroductionState(completedIntroductions: Introduction.values.toSet());
 
   bool isCompleted(Introduction introduction) => completedIntroductions.contains(introduction);
   bool isUncompleted(Introduction introduction) => !isCompleted(introduction);
-
-  const IntroductionState({this.completedIntroductions = const {}});
-
-  factory IntroductionState.fromJson(Map<String, dynamic> json) => _$IntroductionStateFromJson(json);
-  Map<String, dynamic> toJson() => _$IntroductionStateToJson(this);
+  bool isConditionFulfilled(WidgetRef ref, Introduction introduction) => introduction.isConditionFulfilled(ref, this);
 
   IntroductionState withCompletedIntroduction(Introduction introduction) {
     final newCompletedIntroductions = {...completedIntroductions};
@@ -50,10 +52,5 @@ class IntroductionState {
     return IntroductionState(completedIntroductions: newCompletedIntroductions);
   }
 
-  IntroductionState withAllCompleted() => IntroductionState(completedIntroductions: Introduction.values.toSet());
-
-  bool isConditionFulfilled(WidgetRef ref, Introduction introduction) => introduction.isConditionFulfilled(ref, this);
-
-  @override
-  String toString() => 'IntroductionState{completedIntroductions: $completedIntroductions}';
+  factory IntroductionState.fromJson(Map<String, dynamic> json) => _$IntroductionStateFromJson(json);
 }

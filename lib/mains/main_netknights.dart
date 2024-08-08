@@ -33,7 +33,7 @@ import '../utils/globals.dart';
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
-import '../utils/riverpod/riverpod_providers/state_providers/app_constraints_provider.dart';
+import '../utils/riverpod/riverpod_providers/state_providers/app_constraints_notifier.dart';
 import '../views/add_token_manually_view/add_token_manually_view.dart';
 import '../views/feedback_view/feedback_view.dart';
 import '../views/import_tokens_view/import_tokens_view.dart';
@@ -79,9 +79,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     globalRef = ref;
     return LayoutBuilder(builder: (context, constraints) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(appConstraintsProvider.notifier).state = constraints;
-      });
+      WidgetsBinding.instance.addPostFrameCallback((_) => ref.read(appConstraintsNotifierProvider.notifier).update(constraints));
       return MaterialApp(
         scrollBehavior: ScrollConfiguration.of(context).copyWith(
           physics: const ClampingScrollPhysics(),
@@ -89,7 +87,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
         ),
         debugShowCheckedModeBanner: true,
         navigatorKey: globalNavigatorKey,
-        
+
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault,

@@ -11,11 +11,11 @@ import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_folder_notifier.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_notifier.dart';
+
 import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
@@ -62,8 +62,8 @@ void main() {
     });
 
     mockTokenFolderRepository = MockTokenFolderRepository();
-    when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
-    when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
+    when(mockTokenFolderRepository.loadState()).thenAnswer((_) async => const TokenFolderState(folders: []));
+    when(mockTokenFolderRepository.saveState(any)).thenAnswer((_) async => true);
     mockRsaUtils = MockRsaUtils();
     when(mockRsaUtils.serializeRSAPublicKeyPKCS8(any)).thenAnswer((_) => 'publicKey');
     when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((_) => const RsaUtils()
@@ -108,12 +108,11 @@ void main() {
     await tester.pumpWidget(TestsAppWrapper(
       overrides: [
         settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepository)),
-        tokenProvider.overrideWith((ref) => TokenNotifier(
-              repository: mockTokenRepository,
-              rsaUtils: mockRsaUtils,
-              firebaseUtils: mockFirebaseUtils,
-              ioClient: mockIOClient,
-              ref: ref,
+        tokenProvider.overrideWith(() => TokenNotifier(
+              repoOverride: mockTokenRepository,
+              rsaUtilsOverride: mockRsaUtils,
+              firebaseUtilsOverride: mockFirebaseUtils,
+              ioClientOverride: mockIOClient,
             )),
         pushRequestProvider.overrideWith(
           () => PushRequestNotifier(
@@ -127,7 +126,7 @@ void main() {
             ),
           ),
         ),
-        tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
+        tokenFolderProvider.overrideWith(() => TokenFolderNotifier(repoOverride: mockTokenFolderRepository)),
         introductionNotifierProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),
       ],
       child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),

@@ -8,10 +8,9 @@ import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_folder_notifier.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 import 'package:privacyidea_authenticator/model/version.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
@@ -54,8 +53,8 @@ void main() {
       return true;
     });
     mockTokenFolderRepository = MockTokenFolderRepository();
-    when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
-    when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
+    when(mockTokenFolderRepository.loadState()).thenAnswer((_) async => const TokenFolderState(folders: []));
+    when(mockTokenFolderRepository.saveState(any)).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
     when(mockIntroductionRepository.loadCompletedIntroductions())
         .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
@@ -64,8 +63,8 @@ void main() {
     await tester.pumpWidget(TestsAppWrapper(
       overrides: [
         settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepository)),
-        tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository, ref: ref)),
-        tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
+        tokenProvider.overrideWith(() => TokenNotifier(repoOverride: mockTokenRepository)),
+        tokenFolderProvider.overrideWith(() => TokenFolderNotifier(repoOverride: mockTokenFolderRepository)),
         introductionNotifierProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),
       ],
       child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),

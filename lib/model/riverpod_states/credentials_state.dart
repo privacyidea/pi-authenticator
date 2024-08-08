@@ -28,7 +28,6 @@ part 'credentials_state.freezed.dart';
 part 'credentials_state.g.dart';
 
 @Freezed()
-@JsonSerializable(explicitToJson: true)
 class CredentialsState with _$CredentialsState {
   const CredentialsState._();
   const factory CredentialsState({
@@ -45,4 +44,6 @@ class CredentialsState with _$CredentialsState {
     final credentials = jsonStrings.map((jsonString) => ContainerCredential.fromJson(jsonDecode(jsonString))).toList();
     return CredentialsState(credentials: credentials);
   }
+
+  factory CredentialsState.fromJson(Map<String, dynamic> json) => _$CredentialsStateFromJson(json);
 }
