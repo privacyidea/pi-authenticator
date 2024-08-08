@@ -29,9 +29,7 @@ class AppWrapper extends StatelessWidget {
   const AppWrapper({required this.child, super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ProviderScope(child: _AppWrapper(key: key, child: child));
-  }
+  Widget build(BuildContext context) => ProviderScope(child: _AppWrapper(key: key, child: child));
 }
 
 class _AppWrapper extends ConsumerStatefulWidget {

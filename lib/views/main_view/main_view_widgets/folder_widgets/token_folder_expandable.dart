@@ -18,7 +18,6 @@
  * limitations under the License.
  */
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -146,6 +145,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
               onWillAcceptWithDetails: (details) {
                 if (details.data.folderId != widget.folder.folderId) {
                   if (widget.folder.isLocked || tokens.isEmpty) return true;
+                  if (expandableController.value) return true;
                   _expandTimer?.cancel();
                   _expandTimer = Timer(const Duration(milliseconds: 500), () {
                     if (!mounted) return;
@@ -156,16 +156,13 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                 return false;
               },
               onLeave: (data) => _expandTimer?.cancel(),
-              onAcceptWithDetails: (details) {
-                log('Moving token to folder ${widget.folder.label}', name: 'TokenFolderExpandable');
-                dragSortableOnAccept(
-                  previousSortable: widget.folder,
-                  dragedSortable: details.data,
-                  nextSortable: null,
-                  dependingFolder: widget.folder,
-                  ref: ref,
-                );
-              },
+              onAcceptWithDetails: (details) => dragSortableOnAccept(
+                previousSortable: widget.folder,
+                dragedSortable: details.data,
+                nextSortable: null,
+                dependingFolder: widget.folder,
+                ref: ref,
+              ),
               builder: (context, willAccept, willReject) => Center(
                 child: Container(
                   margin: widget.folder.isExpanded ? null : const EdgeInsets.only(right: 8),

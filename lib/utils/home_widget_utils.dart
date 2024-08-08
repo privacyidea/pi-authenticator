@@ -183,7 +183,7 @@ class HomeWidgetUtils {
   static Future<void>? _saveTokensToRepo(List<OTPToken> tokens) => _tokenRepository?.saveOrReplaceTokens(tokens);
 
   static Future<List<TokenFolder>> _loadFoldersFromRepo() async {
-    return (await _folderRepository?.loadFolders()) ?? [];
+    return (await _folderRepository?.loadState())?.folders ?? [];
   }
 
   Future<String?> getTokenIdOfWidgetId(String widgetId) async {

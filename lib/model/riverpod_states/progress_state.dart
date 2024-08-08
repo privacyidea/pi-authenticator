@@ -17,17 +17,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ProgressState {
-  final int max;
-  final int value;
 
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'progress_state.freezed.dart';
+
+@freezed
+class ProgressState with _$ProgressState {
   double get progress => value / max;
 
-  ProgressState(
-    this.max,
-    this.value,
-  )   : assert(max >= 0),
-        assert(value >= 0);
+  const ProgressState._();
 
-  ProgressState copyWith({int? max, int? value, bool? inProgress}) => ProgressState(max ?? this.max, value ?? this.value);
+  const factory ProgressState.uninitialized({
+    @Default(0) int max,
+    @Default(0) int value,
+  }) = ProgressStateUninitialized;
+
+  @Assert('max >= 0', 'max must be greater than or equal to 0')
+  @Assert('value >= max', 'value must be less than or equal to max')
+  const factory ProgressState({
+    required int max,
+    required int value,
+  }) = _ProgressState;
 }

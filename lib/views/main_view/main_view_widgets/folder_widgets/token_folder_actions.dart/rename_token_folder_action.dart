@@ -98,7 +98,7 @@ class RenameTokenFolderAction extends StatelessWidget {
                   final newLabel = nameInputController.text.trim();
                   if (newLabel.isEmpty) return;
                   final success = await globalRef?.read(tokenFolderProvider.notifier).updateLabel(folder, newLabel);
-                  if (success == true) {
+                  if (success != null) {
                     Logger.info(
                       'Renamed token:',
                       name: 'token_widget_base.dart#TextButton#renameClicked',

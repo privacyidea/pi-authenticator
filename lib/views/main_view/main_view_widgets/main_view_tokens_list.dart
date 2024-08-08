@@ -63,10 +63,15 @@ class MainViewTokensList extends ConsumerStatefulWidget {
         widgets.add(DragTargetDivider(dependingFolder: null, previousSortable: sortables.last, nextSortable: sortables[i]));
       }
       if (introductionAdded == false && sortables[i] is Token) {
-        widgets.add(TokenIntroduction(child: SortableWidgetBuilder.fromSortable(sortables[i])));
+        widgets.add(
+          TokenIntroduction(
+            key: Key('mainview_introduction_${sortables[i].runtimeType}${sortables[i].sortIndex}'),
+            child: SortableWidgetBuilder.fromSortable(sortables[i]),
+          ),
+        );
         introductionAdded = true;
       } else {
-        widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
+        widgets.add(SortableWidgetBuilder.fromSortable(sortables[i], key: Key('mainview_${sortables[i].runtimeType}${sortables[i].sortIndex}')));
       }
     }
 
@@ -77,7 +82,6 @@ class MainViewTokensList extends ConsumerStatefulWidget {
 class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
   final listViewKey = GlobalKey();
   final scrollController = ScrollController();
-
   Duration? lastTimeStamp;
 
   @override
@@ -87,8 +91,8 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     final allowToRefresh = allSortables.any((element) => element is PushToken);
     final hidePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
     final filterPushTokens = hidePushTokens && allowToRefresh;
-
     final showSortables = <SortableMixin>[]; // List of sortables that should be shown in the list
+
     for (var element in allSortables) {
       if (element is! Token) {
         showSortables.add(element);

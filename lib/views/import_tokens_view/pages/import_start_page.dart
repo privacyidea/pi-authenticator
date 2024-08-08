@@ -39,7 +39,7 @@ import '../../../processors/scheme_processors/token_import_scheme_processors/tok
 import '../../../processors/token_import_file_processor/token_import_file_processor_interface.dart';
 import '../../../utils/globals.dart';
 import '../../../utils/logger.dart';
-import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/progress_state_provider.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/progress_state_provider.dart';
 import '../../qr_scanner_view/qr_scanner_view.dart';
 import '../import_tokens_view.dart';
 import '../widgets/dialogs/qr_not_found_dialog.dart';
@@ -83,7 +83,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    final currentLoadingProgress = ref.watch(progressStateProvider)?.progress;
+    final currentLoadingProgress = ref.watch(progressStateProvider).progress;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.appName),

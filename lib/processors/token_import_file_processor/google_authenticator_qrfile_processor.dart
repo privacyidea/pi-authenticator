@@ -32,7 +32,7 @@ import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/globals.dart';
 import '../../utils/logger.dart';
-import '../../utils/riverpod/riverpod_providers/state_notifier_providers/progress_state_provider.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/progress_state_provider.dart';
 import '../../utils/token_import_origins.dart';
 import '../scheme_processors/token_import_scheme_processors/google_authenticator_qr_processor.dart';
 import 'token_import_file_processor_interface.dart';
@@ -86,7 +86,7 @@ class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
         } on NotFoundException catch (_) {
           Logger.info("Qr-Code not detected. Zoom level: $zoomLevel|rotation: $rotation");
         }
-        progress = globalRef?.read(progressStateProvider)?.progress;
+        progress = globalRef?.read(progressStateProvider).progress;
       }
     }
     if (qrResult == null || progress == null) {
