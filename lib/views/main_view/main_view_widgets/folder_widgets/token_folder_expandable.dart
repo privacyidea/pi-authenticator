@@ -1,5 +1,23 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -8,13 +26,19 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../model/states/token_filter.dart';
+import '../../../../model/riverpod_states/settings_state.dart';
+import '../../../../model/riverpod_states/token_filter.dart';
 import '../../../../model/token_folder.dart';
 import '../../../../model/tokens/push_token.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/customization/action_theme.dart';
+import '../../../../utils/globals.dart';
 import '../../../../utils/lock_auth.dart';
-import '../../../../utils/riverpod_providers.dart';
+import '../../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
+import '../../../../utils/utils.dart';
 import '../../../../widgets/custom_trailing.dart';
 import '../drag_target_divider.dart';
 import '../token_widgets/token_widget_builder.dart';
@@ -72,7 +96,9 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
 
   @override
   ExpandablePanel build(BuildContext context) {
-    final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: ref.watch(settingsProvider).hidePushTokens ? [PushToken] : []);
+    final hidePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
+    final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: hidePushTokens ? [PushToken] : []);
+
     tokens.sort((a, b) => a.compareTo(b));
     final draggingSortable = ref.watch(draggingSortableProvider);
     if (widget.expandOverride == null) {
@@ -118,7 +144,8 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
             child: DragTarget<Token>(
               onWillAcceptWithDetails: (details) {
                 if (details.data.folderId != widget.folder.folderId) {
-                  if (widget.folder.isLocked) return true;
+                  if (widget.folder.isLocked || tokens.isEmpty) return true;
+                  if (expandableController.value) return true;
                   _expandTimer?.cancel();
                   _expandTimer = Timer(const Duration(milliseconds: 500), () {
                     if (!mounted) return;
@@ -129,13 +156,13 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                 return false;
               },
               onLeave: (data) => _expandTimer?.cancel(),
-              onAcceptWithDetails: (details) {
-                log('Moving token to folder ${widget.folder.label}', name: 'TokenFolderExpandable');
-                ref.read(tokenProvider.notifier).updateToken(
-                      details.data,
-                      (p0) => p0.copyWith(folderId: () => widget.folder.folderId, sortIndex: (widget.folder.sortIndex!) + 1),
-                    );
-              },
+              onAcceptWithDetails: (details) => dragSortableOnAccept(
+                previousSortable: widget.folder,
+                dragedSortable: details.data,
+                nextSortable: null,
+                dependingFolder: widget.folder,
+                ref: ref,
+              ),
               builder: (context, willAccept, willReject) => Center(
                 child: Container(
                   margin: widget.folder.isExpanded ? null : const EdgeInsets.only(right: 8),

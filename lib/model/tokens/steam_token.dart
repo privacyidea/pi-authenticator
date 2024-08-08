@@ -1,3 +1,22 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:base32/base32.dart';
 import 'package:crypto/crypto.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -26,6 +45,8 @@ class SteamToken extends TOTPToken {
   SteamToken({
     required super.id,
     required super.secret,
+    super.containerSerial,
+    super.serial,
     String? type,
     super.tokenImage,
     super.pin,
@@ -45,8 +66,10 @@ class SteamToken extends TOTPToken {
 
   @override
   SteamToken copyWith({
+    String? serial,
     String? label,
     String? issuer,
+    String? Function()? containerSerial,
     String? id,
     bool? isLocked,
     bool? isHidden,
@@ -61,8 +84,10 @@ class SteamToken extends TOTPToken {
     String? secret,
   }) {
     return SteamToken(
+      serial: serial ?? this.serial,
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
+      containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
       id: id ?? this.id,
       secret: secret ?? this.secret,
       tokenImage: tokenImage ?? this.tokenImage,
@@ -122,6 +147,28 @@ class SteamToken extends TOTPToken {
       origin: uriMap[URI_ORIGIN] as TokenOriginData?,
     );
   }
+
+  /// ----- TOTP TOKEN -----
+  /// ```dart
+  /// URI_TYPE: tokenType,
+  /// URI_PERIOD: period,
+  /// ```
+  /// ------ OTP TOKEN ------
+  /// ```dart
+  /// URI_SECRET: Encodings.base32.decode(secret),
+  /// URI_ALGORITHM: algorithm.name,
+  /// URI_DIGITS: digits,
+  /// ```
+  /// ------- TOKEN ---------
+  /// ```dart
+  /// URI_LABEL: label,
+  /// URI_ISSUER: issuer,
+  /// URI_PIN: pin,
+  /// URI_IMAGE: tokenImage,
+  /// URI_ORIGIN: jsonEncode(origin!.toJson()),
+  /// ```
+  @override
+  Map<String, dynamic> toUriMap() => super.toUriMap();
 
   static SteamToken fromJson(Map<String, dynamic> json) => _$SteamTokenFromJson(json);
   @override

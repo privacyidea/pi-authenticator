@@ -1,4 +1,24 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
+import '../token_container.dart';
 
 import '../../utils/identifiers.dart';
 import '../enums/token_types.dart';
@@ -15,9 +35,11 @@ import 'totp_token.dart';
 abstract class Token with SortableMixin {
   bool? get isPrivacyIdeaToken => origin?.isPrivacyIdeaToken;
   final String tokenVersion = 'v1.0.0'; // The version of this token, this is used for serialization.
+  final String? containerSerial; // The serial of the container this token belongs to.
   final String label; // the name of the token, it cannot be uses as an identifier
   final String issuer; // The issuer of this token, currently unused.
   final String id; // this is the identifier of the token
+  final String? serial; // The serial of the token, this is used to identify the token in the privacyIDEA server.
   final bool pin;
   final bool isLocked;
   final bool isHidden;
@@ -27,9 +49,10 @@ abstract class Token with SortableMixin {
   final int? sortIndex;
   final TokenOriginData? origin;
 
-  // Must be string representation of TokenType enum.
+  /// Must be string representation of TokenType enum.
   final String type; // Used to identify the token when deserializing.
 
+  /// Creates a token from a json map.
   factory Token.fromJson(Map<String, dynamic> json) {
     String? type = json['type'];
     if (type == null) throw ArgumentError.value(json, 'Token#fromJson', 'Token type is not defined in the json');
@@ -40,6 +63,8 @@ abstract class Token with SortableMixin {
     if (TokenTypes.STEAM.isName(type, caseSensitive: false)) return SteamToken.fromJson(json);
     throw ArgumentError.value(json, 'Token#fromJson', 'Token type [$type] is not a supported');
   }
+
+  /// Creates a token from a uri map.
   factory Token.fromUriMap(Map<String, dynamic> uriMap) {
     String type = uriMap[URI_TYPE];
     if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromUriMap(uriMap);
@@ -51,8 +76,10 @@ abstract class Token with SortableMixin {
   }
 
   const Token({
+    this.serial,
     this.label = '',
     this.issuer = '',
+    this.containerSerial,
     required this.id,
     required this.type,
     this.tokenImage,
@@ -78,8 +105,10 @@ abstract class Token with SortableMixin {
 
   @override
   Token copyWith({
+    String? serial,
     String? label,
     String? issuer,
+    String? Function()? containerSerial,
     String? id,
     bool? isLocked,
     bool? isHidden,
@@ -113,5 +142,34 @@ abstract class Token with SortableMixin {
         'origin: $origin, ';
   }
 
+  /// This is used to create a map that can be used to serialize the token.
   Map<String, dynamic> toJson();
+
+  /// This is used to create a map that typically was created from a uri.
+  /// ```dart
+  ///  ------------------------------- [Token] ---------------------------------
+  /// URI_LABEL: name of the token (String),
+  /// URI_ISSUER: name of the issuer (String),
+  /// URI_PIN: is the user forced to have a pin (bool),
+  /// URI_IMAGE: url to an image e.g. "https://example.com/image.png" (String),
+  /// URI_ORIGIN: json string of the origin class (String),
+  /// -------------------------------------------------------------------------
+  /// ```
+  Map<String, dynamic> toUriMap() {
+    return {
+      URI_ID: id,
+      URI_SERIAL: serial,
+      URI_CONTAINER_SERIAL: containerSerial,
+      URI_TYPE: type,
+      URI_LABEL: label,
+      URI_ISSUER: issuer,
+      URI_PIN: pin,
+      if (tokenImage != null) URI_IMAGE: tokenImage,
+      if (origin != null) URI_ORIGIN: origin!,
+    };
+  }
+
+  Token copyWithFromTemplate(TokenTemplate template);
+
+  TokenTemplate toTemplate() => TokenTemplate(data: toUriMap());
 }

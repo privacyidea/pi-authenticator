@@ -3,12 +3,10 @@ import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.dart';
-import 'package:privacyidea_authenticator/model/states/settings_state.dart';
-import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
-import 'package:mockito/annotations.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 
-import 'settings_notifier_test.mocks.dart';
+import '../../tests_app_wrapper.mocks.dart';
 
 final _state = SettingsState(
   isFirstRun: false,
@@ -21,7 +19,6 @@ final _state = SettingsState(
   crashReportRecipients: {'someone'},
 );
 
-@GenerateMocks([SettingsRepository])
 void main() {
   _testSettingsNotifier();
 }
@@ -32,25 +29,12 @@ void _testSettingsNotifier() {
     test('load state from repo on creation', () async {
       final container = ProviderContainer();
       when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
-      final testProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) => SettingsNotifier(
-            initialState: SettingsState(
-              isFirstRun: true,
-              hideOpts: true,
-              showGuideOnStart: false,
-              localePreference: const Locale('de'),
-              useSystemLocale: false,
-              enablePolling: false,
-              verboseLogging: true,
-              crashReportRecipients: {'someone'},
-            ),
-            repository: MockSettingsRepository(),
-          ));
-      Future.delayed(const Duration(milliseconds: 1000)).then((value) {
-        final state = container.read(testProvider);
-        expect(state, isNotNull);
-        expect(state, _state);
-        verify(mockRepo.loadSettings()).called(1);
-      });
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
+
+      final state = await container.read(testProvider.future);
+      expect(state, isNotNull);
+      expect(state, _state);
+      verify(mockRepo.loadSettings()).called(1);
     });
 
     test('addCrashReportRecipient', () {
@@ -60,10 +44,8 @@ void _testSettingsNotifier() {
       );
       when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
       when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
-      final testProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) => SettingsNotifier(
-            initialState: _state,
-            repository: mockRepo,
-          ));
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
       final notifier = container.read(testProvider.notifier);
       notifier.addCrashReportRecipient('anotherOne');
       Future.delayed(const Duration(milliseconds: 1000)).then((value) {
@@ -80,10 +62,8 @@ void _testSettingsNotifier() {
       );
       when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
       when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
-      final testProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) => SettingsNotifier(
-            initialState: _state,
-            repository: mockRepo,
-          ));
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
       final notifier = container.read(testProvider.notifier);
       notifier.setLocalePreference(const Locale('en'));
       Future.delayed(const Duration(milliseconds: 1000)).then((value) {
@@ -100,10 +80,8 @@ void _testSettingsNotifier() {
       );
       when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
       when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
-      final testProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) => SettingsNotifier(
-            initialState: _state,
-            repository: mockRepo,
-          ));
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
       final notifier = container.read(testProvider.notifier);
       notifier.setUseSystemLocale(!_state.useSystemLocale);
       Future.delayed(const Duration(milliseconds: 1000)).then((value) {
@@ -120,10 +98,8 @@ void _testSettingsNotifier() {
       );
       when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
       when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
-      final testProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) => SettingsNotifier(
-            initialState: _state,
-            repository: mockRepo,
-          ));
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
       final notifier = container.read(testProvider.notifier);
       notifier.setPolling(!_state.enablePolling);
       Future.delayed(const Duration(milliseconds: 1000)).then((value) {
@@ -140,10 +116,8 @@ void _testSettingsNotifier() {
       );
       when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
       when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
-      final testProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) => SettingsNotifier(
-            initialState: _state,
-            repository: mockRepo,
-          ));
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
       final notifier = container.read(testProvider.notifier);
       notifier.setVerboseLogging(!_state.verboseLogging);
       Future.delayed(const Duration(milliseconds: 1000)).then((value) {
@@ -160,10 +134,8 @@ void _testSettingsNotifier() {
       );
       when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
       when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
-      final testProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) => SettingsNotifier(
-            initialState: _state,
-            repository: mockRepo,
-          ));
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
       final notifier = container.read(testProvider.notifier);
       notifier.toggleVerboseLogging();
       Future.delayed(const Duration(milliseconds: 1000)).then((value) {
@@ -180,10 +152,8 @@ void _testSettingsNotifier() {
       );
       when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
       when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
-      final testProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) => SettingsNotifier(
-            initialState: _state,
-            repository: mockRepo,
-          ));
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
       final notifier = container.read(testProvider.notifier);
       notifier.setFirstRun(!_state.isFirstRun);
       Future.delayed(const Duration(milliseconds: 1000)).then((value) {

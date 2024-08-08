@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/globals.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod_providers.dart';
+import '../utils/riverpod/riverpod_providers/state_providers/app_constraints_notifier.dart';
 import '../utils/utils.dart';
 import 'pulse_icon.dart';
 import 'tooltip_container.dart';
@@ -135,14 +135,14 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
       return;
     }
     _disposeOverlay();
-    final screenSize = (globalRef?.read(appConstraintsProvider) ?? const BoxConstraints()).biggest;
+    final screenSize = (globalRef?.read(appConstraintsNotifierProvider) ?? const BoxConstraints()).biggest;
+    final textScaler = MediaQuery.of(context).textScaler;
     if (widget.tooltipWhenFocused != null) {
       final textSize = textSizeOf(
         text: widget.tooltipWhenFocused!,
         style: Theme.of(context).textTheme.bodyLarge!,
-        maxWidth: MediaQuery.of(context).size.width / 3 * 2 -
-            (tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2),
-        textScaler: MediaQuery.of(context).textScaler,
+        maxWidth: screenSize.width / 3 * 2 - (tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2),
+        textScaler: textScaler,
       );
 
       final overlaySize = Size(
@@ -167,6 +167,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
             margin: tooltipMargin,
             border: tooltipBorderWidth,
             textStyle: Theme.of(context).textTheme.bodyLarge!,
+            onComplete: widget.onComplete,
           ),
         ),
       );
@@ -216,18 +217,13 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
             ),
           ),
           Positioned.fill(
-            child: Tooltip(
-              message: AppLocalizations.of(context)!.continueButton,
-              triggerMode: TooltipTriggerMode.longPress,
-              child: GestureDetector(
-                onTapDown: (details) {
-                  widget.onComplete?.call();
-                },
-                child: Container(
-                  height: double.maxFinite,
-                  width: double.maxFinite,
-                  color: Colors.transparent,
-                ),
+            child: GestureDetector(
+              onTapDown: (details) {
+                widget.onComplete?.call();
+              },
+              child: Text(
+                AppLocalizations.of(context)!.continueButton,
+                style: const TextStyle(fontSize: 0),
               ),
             ),
           ),

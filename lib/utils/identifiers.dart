@@ -5,7 +5,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2024 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -25,11 +25,14 @@
 const defaultCrashReportRecipient = 'app-crash@netknights.it';
 
 // qr codes:
+const String URI_ID = 'URI_ID';
+const String URI_SERIAL = 'URI_SERIAL';
+const String URI_CONTAINER_SERIAL = 'URI_CONTAINER_SERIAL';
 const String URI_TYPE = 'URI_TYPE';
 const String URI_LABEL = 'URI_LABEL';
 const String URI_ALGORITHM = 'URI_ALGORITHM';
 const String URI_DIGITS = 'URI_DIGITS';
-const String URI_SECRET = 'URI_SECRET'; // Should be base32 encoded
+const String URI_SECRET = 'URI_SECRET'; // Should be Uint8List
 const String URI_COUNTER = 'URI_COUNTER';
 const String URI_PERIOD = 'URI_PERIOD';
 const String URI_ISSUER = 'URI_ISSUER';
@@ -43,7 +46,6 @@ const String URI_OUTPUT_LENGTH_IN_BYTES = 'URI_OUTPUT_LENGTH_IN_BYTES';
 const String URI_ITERATIONS = 'URI_ITERATIONS';
 
 // push token:
-const String URI_SERIAL = 'URI_SERIAL';
 const String URI_ROLLOUT_URL = 'URI_ROLLOUT_URL';
 const String URI_TTL = 'URI_TTL';
 const String URI_ENROLLMENT_CREDENTIAL = 'URI_ENROLLMENT_CREDENTIAL';

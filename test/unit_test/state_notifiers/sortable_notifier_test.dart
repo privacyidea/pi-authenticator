@@ -2,16 +2,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
-import 'package:privacyidea_authenticator/model/states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/model/token_folder.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
-import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/sortable_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 
@@ -26,13 +26,13 @@ void _testSortableNotifier() {
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
       final MockTokenFolderRepository mockTokenFolderRepository = MockTokenFolderRepository();
       final MockTokenRepository mockTokenRepository = MockTokenRepository();
-      List<TokenFolder> tokenFolderState = [
-        const TokenFolder(label: 'Folder 1', folderId: 1, sortIndex: null),
-        const TokenFolder(label: 'Folder 2', folderId: 2, sortIndex: 2),
-      ];
-      when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => tokenFolderState);
-      when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((newState) async {
-        tokenFolderState = newState.positionalArguments.first as List<TokenFolder>;
+      TokenFolderState tokenFolderState = const TokenFolderState(folders: [
+        TokenFolder(label: 'Folder 1', folderId: 1, sortIndex: null),
+        TokenFolder(label: 'Folder 2', folderId: 2, sortIndex: 2),
+      ]);
+      when(mockTokenFolderRepository.loadState()).thenAnswer((_) async => tokenFolderState);
+      when(mockTokenFolderRepository.saveState(any)).thenAnswer((newState) async {
+        tokenFolderState = newState.positionalArguments.first as TokenFolderState;
         return true;
       });
       List<Token> tokenState = [
@@ -55,20 +55,15 @@ void _testSortableNotifier() {
       });
 
       final container = ProviderContainer(overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepo)),
-        tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
-        tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository, ref: ref)),
+        settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo)),
+        tokenFolderProvider.overrideWith(() => TokenFolderNotifier(repoOverride: mockTokenFolderRepository)),
+        tokenProvider.overrideWith(() => TokenNotifier(repoOverride: mockTokenRepository)),
       ]);
 
-      final SortableNotifier sortableNotifier = container.read(sortableProvider.notifier);
-
       final newToken = TOTPToken(period: 30, id: 'Token 4', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret4', folderId: 1, sortIndex: 1);
+      await container.read(tokenProvider.notifier).addNewToken(newToken);
+      final newSortableState = container.read(sortablesProvider);
 
-      final newTokenState = tokenState.toList()..add(newToken);
-      final newState = await sortableNotifier.handleNewStateList(newTokenState);
-
-      final newSortableState = container.read(sortableProvider);
-      expect(newState.length, 6);
       expect(newSortableState.length, 6);
       expect(newSortableState[0], isA<Token>());
       expect((newSortableState[0] as Token).id, 'Token 3');

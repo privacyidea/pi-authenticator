@@ -1,9 +1,30 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../../model/riverpod_states/token_state.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
-import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_providers/app_constraints_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 
@@ -20,7 +41,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
   Set<Token> _selectedTokens = {};
   @override
   Widget build(BuildContext context) {
-    final tokens = ref.read(tokenProvider).nonPiTokens;
+    final tokens = ref.read(tokenProvider).tokens.nonPiTokens;
     final exportEveryToken = tokens.length == _selectedTokens.length && _selectedTokens.containsAll(tokens);
     final theme = Theme.of(context);
     final appLocalizations = AppLocalizations.of(context)!;
@@ -39,7 +60,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
         ],
       ),
       content: SizedBox(
-        width: ref.watch(appConstraintsProvider)!.maxWidth * 0.8,
+        width: ref.watch(appConstraintsNotifierProvider)!.maxWidth * 0.8,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: (tokens.isEmpty)

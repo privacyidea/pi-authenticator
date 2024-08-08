@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/extensions/color_extension.dart';
+
+import '../model/extensions/color_extension.dart';
 
 class CountdownButton extends StatefulWidget {
   final int countdownSeconds;
@@ -57,8 +58,6 @@ class _CountdownButtonState extends State<CountdownButton> with SingleTickerProv
       color2 = color1;
       color1 = temp;
     });
-    print(currentCount);
-    print(currentCount > 0);
     return currentCount > 0;
   }
 

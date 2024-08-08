@@ -1,10 +1,29 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:privacyidea_authenticator/views/import_tokens_view/widgets/dialogs/qr_not_found_dialog.dart';
+import 'package:zxing2/qrcode.dart';
 import 'package:zxing2/zxing2.dart';
 
 import '../../../l10n/app_localizations.dart';
@@ -18,10 +37,12 @@ import '../../../model/tokens/token.dart';
 import '../../../processors/mixins/token_import_processor.dart';
 import '../../../processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
 import '../../../processors/token_import_file_processor/token_import_file_processor_interface.dart';
+import '../../../utils/globals.dart';
 import '../../../utils/logger.dart';
-import '../../../utils/riverpod_providers.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/progress_state_provider.dart';
 import '../../qr_scanner_view/qr_scanner_view.dart';
 import '../import_tokens_view.dart';
+import '../widgets/dialogs/qr_not_found_dialog.dart';
 import 'import_encrypted_data_page.dart';
 import 'import_plain_tokens_page.dart';
 
@@ -62,7 +83,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    final currentLoadingProgress = ref.watch(progressStateProvider)?.progress;
+    final currentLoadingProgress = ref.watch(progressStateProvider).progress;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.appName),

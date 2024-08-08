@@ -1,4 +1,26 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import 'dart:typed_data';
+
 import 'package:json_annotation/json_annotation.dart';
+import '../token_container.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/errors.dart';
@@ -21,6 +43,7 @@ class TOTPToken extends OTPToken {
   // this value is used to calculate the current 'counter' of this token
   // based on the UNIX systemtime), the counter is used to calculate the
   // current otp value
+  final int period;
 
   @override
   Duration get showDuration {
@@ -29,7 +52,6 @@ class TOTPToken extends OTPToken {
     return duration;
   }
 
-  final int period;
   String otpFromTime(DateTime time) => algorithm.generateTOTPCodeString(
         secret: secret,
         time: time,
@@ -47,6 +69,8 @@ class TOTPToken extends OTPToken {
     required super.algorithm,
     required super.digits,
     required super.secret,
+    super.containerSerial,
+    super.serial,
     String? type,
     super.tokenImage,
     super.pin,
@@ -69,8 +93,10 @@ class TOTPToken extends OTPToken {
 
   @override
   TOTPToken copyWith({
+    String? serial,
     String? label,
     String? issuer,
+    String? Function()? containerSerial,
     String? id,
     Algorithms? algorithm,
     int? digits,
@@ -85,8 +111,10 @@ class TOTPToken extends OTPToken {
     TokenOriginData? origin,
   }) {
     return TOTPToken(
+      serial: serial ?? this.serial,
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
+      containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
       id: id ?? this.id,
       algorithm: algorithm ?? this.algorithm,
       digits: digits ?? this.digits,
@@ -103,8 +131,31 @@ class TOTPToken extends OTPToken {
   }
 
   @override
+  TOTPToken copyWithFromTemplate(TokenTemplate template) {
+    final uriMap = template.data;
+
+    final newToken = copyWith(
+      id: uriMap[URI_ID],
+      label: uriMap[URI_LABEL],
+      issuer: uriMap[URI_ISSUER],
+      serial: uriMap[URI_SERIAL],
+      algorithm: uriMap[URI_ALGORITHM] != null ? Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase()) : null,
+      digits: uriMap[URI_DIGITS],
+      tokenImage: uriMap[URI_IMAGE],
+      secret: uriMap[URI_SECRET] != null ? Encodings.base32.encode(uriMap[URI_SECRET]) : null,
+      period: uriMap[URI_PERIOD],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+    );
+    Logger.debug('TOTPToken.copyWithFromTemplate old token: $this');
+    Logger.debug('TOTPToken.copyWithFromTemplate new token: $newToken');
+    return newToken;
+  }
+
+  @override
   String toString() {
-    return 'T${super.toString()}period: $period';
+    return 'T${super.toString()}period: $period}';
   }
 
   factory TOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
@@ -112,7 +163,8 @@ class TOTPToken extends OTPToken {
     return TOTPToken(
       label: uriMap[URI_LABEL] ?? '',
       issuer: uriMap[URI_ISSUER] ?? '',
-      id: const Uuid().v4(),
+      id: uriMap[URI_ID] == String ? uriMap[URI_ID] : const Uuid().v4(),
+      serial: uriMap[URI_SERIAL],
       algorithm: Algorithms.values.byName((uriMap[URI_ALGORITHM] as String? ?? 'SHA1').toUpperCase()),
       digits: uriMap[URI_DIGITS] ?? 6,
       tokenImage: uriMap[URI_IMAGE],
@@ -124,14 +176,46 @@ class TOTPToken extends OTPToken {
     );
   }
 
+  /// This is used to create a map that typically was created from a uri.
+  /// ```dart
+  /// ----------------------------- [TOTPToken] ------------------------------
+  /// URI_PERIOD: period of otp generation in seconds (int),
+  /// ------------------------------ [OTPToken] ------------------------------
+  /// URI_SECRET: base32 encoded string (String),
+  /// URI_ALGORITHM: algorithm name e.g. SHA1 (String),
+  /// URI_DIGITS: number of digits (int),
+  /// ------------------------------- [Token] ---------------------------------
+  /// URI_LABEL: name of the token (String),
+  /// URI_ISSUER: name of the issuer (String),
+  /// URI_PIN: is the user forced to have a pin (bool),
+  /// URI_IMAGE: url to an image e.g. "https://example.com/image.png" (String),
+  /// URI_ORIGIN: json string of the origin class (String),
+  /// -------------------------------------------------------------------------
+  /// ```
+  @override
+  Map<String, dynamic> toUriMap() {
+    return super.toUriMap()
+      ..addAll({
+        URI_PERIOD: period,
+      });
+  }
+
   /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
   static void validateUriMap(Map<String, dynamic> uriMap) {
-    if (uriMap[URI_SECRET] == null) {
+    if (uriMap[URI_SECRET] is! Uint8List) {
       throw LocalizedArgumentError(
         localizedMessage: ((localizations, value, name) => localizations.secretIsRequired),
-        unlocalizedMessage: 'Secret is required',
+        unlocalizedMessage: 'Secret is required and must be a Uint8List',
         invalidValue: uriMap[URI_SECRET],
         name: URI_SECRET,
+      );
+    }
+    if (uriMap[URI_SERIAL] is! String?) {
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
+        unlocalizedMessage: 'Serial must be a string',
+        invalidValue: uriMap[URI_SERIAL],
+        name: URI_SERIAL,
       );
     }
     if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) {

@@ -1,5 +1,27 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import '../token_container.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/errors.dart';
@@ -29,6 +51,8 @@ class DayPasswordToken extends OTPToken {
     required super.algorithm,
     required super.digits,
     required super.secret,
+    super.containerSerial,
+    super.serial,
     this.viewMode = DayPasswordTokenViewMode.VALIDFOR,
     String? type, // just for @JsonSerializable(): type of DayPasswordToken is always TokenTypes.DAYPASSWORD
     super.tokenImage,
@@ -65,10 +89,12 @@ class DayPasswordToken extends OTPToken {
 
   @override
   DayPasswordToken copyWith({
+    String? serial,
     Duration? period,
     DayPasswordTokenViewMode? viewMode,
     String? label,
     String? issuer,
+    String? Function()? containerSerial,
     String? id,
     Algorithms? algorithm,
     int? digits,
@@ -82,10 +108,12 @@ class DayPasswordToken extends OTPToken {
     TokenOriginData? origin,
   }) =>
       DayPasswordToken(
+        serial: serial ?? this.serial,
         period: period ?? this.period,
         viewMode: viewMode ?? this.viewMode,
         label: label ?? this.label,
         issuer: issuer ?? this.issuer,
+        containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
         id: id ?? this.id,
         type: TokenTypes.DAYPASSWORD.name,
         algorithm: algorithm ?? this.algorithm,
@@ -121,6 +149,25 @@ class DayPasswordToken extends OTPToken {
     return DateTime.now().add(durationUntilNextOTP + const Duration(milliseconds: 1));
   }
 
+  @override
+  DayPasswordToken copyWithFromTemplate(TokenTemplate template) {
+    final uriMap = template.data;
+    return copyWith(
+      label: uriMap[URI_LABEL],
+      issuer: uriMap[URI_ISSUER],
+      id: uriMap[URI_ID] == String ? uriMap[URI_ID] : const Uuid().v4(),
+      serial: uriMap[URI_SERIAL],
+      algorithm: uriMap[URI_ALGORITHM] != null ? Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase()) : null,
+      digits: uriMap[URI_DIGITS],
+      secret: uriMap[URI_SECRET] != null ? Encodings.base32.encode(uriMap[URI_SECRET]) : null,
+      period: uriMap[URI_PERIOD] != null ? Duration(seconds: uriMap[URI_PERIOD]) : null,
+      tokenImage: uriMap[URI_IMAGE],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+    );
+  }
+
   factory DayPasswordToken.fromUriMap(Map<String, dynamic> uriMap) {
     validateUriMap(uriMap);
     return DayPasswordToken(
@@ -138,12 +185,20 @@ class DayPasswordToken extends OTPToken {
     );
   }
 
+  @override
+  Map<String, dynamic> toUriMap() {
+    return super.toUriMap()
+      ..addAll({
+        URI_PERIOD: period.inSeconds,
+      });
+  }
+
   /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
   static void validateUriMap(Map<String, dynamic> uriMap) {
-    if (uriMap[URI_SECRET] == null) {
+    if (uriMap[URI_SECRET] is! Uint8List) {
       throw LocalizedArgumentError(
         localizedMessage: ((localizations, value, name) => localizations.secretIsRequired),
-        unlocalizedMessage: 'Secret is required',
+        unlocalizedMessage: 'Secret is required and must be a Uint8List',
         invalidValue: uriMap[URI_SECRET],
         name: URI_SECRET,
       );

@@ -3,7 +3,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2024 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/globals.dart';
 import '../../../utils/logger.dart';
-import '../../../utils/riverpod_providers.dart';
+import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 

@@ -3,7 +3,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2024 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart';
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart';
 import 'package:privacyidea_authenticator/repo/secure_push_request_repository.dart';
 import 'package:privacyidea_authenticator/utils/pi_notifications.dart';
 
@@ -38,7 +37,9 @@ import 'firebase_utils.dart';
 import 'globals.dart';
 import 'logger.dart';
 import 'privacyidea_io_client.dart';
-import 'riverpod_providers.dart';
+import 'riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import 'riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import 'rsa_utils.dart';
 import 'utils.dart';
 
@@ -62,17 +63,14 @@ class PushProvider {
   PrivacyideaIOClient get ioClient => _ioClient;
   RsaUtils _rsaUtils;
   RsaUtils get rsaUtils => _rsaUtils;
-  LegacyUtils _legacyUtils;
 
   PushProvider._({
     FirebaseUtils? firebaseUtils,
     PrivacyideaIOClient? ioClient,
     RsaUtils? rsaUtils,
-    LegacyUtils? legacyUtils,
   })  : _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
         _ioClient = ioClient ?? const PrivacyideaIOClient(),
-        _rsaUtils = rsaUtils ?? const RsaUtils(),
-        _legacyUtils = legacyUtils ?? const LegacyUtils() {
+        _rsaUtils = rsaUtils ?? const RsaUtils() {
     _initFirebase();
   }
 
@@ -234,7 +232,7 @@ class PushProvider {
       Logger.warning('No token found for serial ${pushRequest.serial}.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;
     }
-    if (!await pushRequest.verifySignature(pushToken, rsaUtils: _rsaUtils, legacyUtils: _legacyUtils)) {
+    if (!await pushRequest.verifySignature(pushToken, rsaUtils: _rsaUtils)) {
       Logger.warning('Signature verification failed.', name: 'push_provider.dart#_handleIncomingRequestForeground');
       return;
     }
@@ -261,7 +259,7 @@ class PushProvider {
     }
 
     try {
-      await _defaultPushRequestRepo.add(pushRequest);
+      await _defaultPushRequestRepo.addRequest(pushRequest);
     } catch (e) {
       Logger.error('Could not save push request state.', name: 'push_provider.dart#_handleIncomingRequestBackground', error: e);
       return false;
@@ -294,8 +292,7 @@ class PushProvider {
     List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
     // Disable polling if no push tokens exist
     if (pushTokens.isEmpty) {
-      await globalRef?.read(settingsProvider.notifier).loadingRepo;
-      if (globalRef?.read(settingsProvider).enablePolling == true) {
+      if ((await globalRef?.read(settingsProvider.future))?.enablePolling == true) {
         Logger.info('No push token is available for polling, polling is disabled.', name: 'push_provider.dart#pollForChallenges');
         globalRef?.read(settingsProvider.notifier).setPolling(false);
       }
@@ -431,8 +428,6 @@ class PlaceholderPushProvider implements PushProvider {
   PrivacyideaIOClient _ioClient = const PrivacyideaIOClient();
   @override
   PrivacyideaIOClient get ioClient => _ioClient;
-  @override
-  LegacyUtils _legacyUtils = const LegacyUtils();
   @override
   RsaUtils _rsaUtils = const RsaUtils();
   @override

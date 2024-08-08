@@ -1,19 +1,39 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
+import '../../../model/riverpod_states/settings_state.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../model/tokens/token.dart';
-import '../../../utils/push_provider.dart';
-import '../../../utils/riverpod_providers.dart';
-import '../../../widgets/deactivateable_refresh_indicator.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
+import '../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
+import '../../../widgets/default_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
 import '../../../widgets/introduction_widgets/token_introduction.dart';
 import 'drag_target_divider.dart';
-import 'loading_indicator.dart';
 import 'no_token_screen.dart';
 import 'sortable_widget_builder.dart';
 
@@ -43,10 +63,15 @@ class MainViewTokensList extends ConsumerStatefulWidget {
         widgets.add(DragTargetDivider(dependingFolder: null, previousSortable: sortables.last, nextSortable: sortables[i]));
       }
       if (introductionAdded == false && sortables[i] is Token) {
-        widgets.add(TokenIntroduction(child: SortableWidgetBuilder.fromSortable(sortables[i])));
+        widgets.add(
+          TokenIntroduction(
+            key: Key('mainview_introduction_${sortables[i].runtimeType}${sortables[i].sortIndex}'),
+            child: SortableWidgetBuilder.fromSortable(sortables[i]),
+          ),
+        );
         introductionAdded = true;
       } else {
-        widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
+        widgets.add(SortableWidgetBuilder.fromSortable(sortables[i], key: Key('mainview_${sortables[i].runtimeType}${sortables[i].sortIndex}')));
       }
     }
 
@@ -57,17 +82,17 @@ class MainViewTokensList extends ConsumerStatefulWidget {
 class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
   final listViewKey = GlobalKey();
   final scrollController = ScrollController();
-
   Duration? lastTimeStamp;
 
   @override
   Widget build(BuildContext context) {
     final draggingSortable = ref.watch(draggingSortableProvider);
-    final allSortables = ref.watch(sortableProvider);
+    final allSortables = ref.watch(sortablesProvider);
     final allowToRefresh = allSortables.any((element) => element is PushToken);
-    bool filterPushTokens = ref.watch(settingsProvider).hidePushTokens && allowToRefresh;
-
+    final hidePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
+    final filterPushTokens = hidePushTokens && allowToRefresh;
     final showSortables = <SortableMixin>[]; // List of sortables that should be shown in the list
+
     for (var element in allSortables) {
       if (element is! Token) {
         showSortables.add(element);
@@ -84,9 +109,8 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
         Column(
           children: [
             Flexible(
-              child: DeactivateableRefreshIndicator(
+              child: DefaultRefreshIndicator(
                 allowToRefresh: allowToRefresh,
-                onRefresh: () async => LoadingIndicator.show(context, () async => PushProvider.instance?.pollForChallenges(isManually: true)),
                 child: LayoutBuilder(
                   builder: (context, constraints) => SingleChildScrollView(
                     physics: _getScrollPhysics(allowToRefresh),
@@ -109,9 +133,8 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
             ),
           ],
         ),
-        DeactivateableRefreshIndicator(
+        DefaultRefreshIndicator(
           allowToRefresh: allowToRefresh,
-          onRefresh: () async => LoadingIndicator.show(context, () async => PushProvider.instance?.pollForChallenges(isManually: true)),
           child: SlidableAutoCloseBehavior(
             child: DragItemScroller(
               listViewKey: listViewKey,

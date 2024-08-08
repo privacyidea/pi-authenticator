@@ -1,3 +1,26 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import '../enums/encodings.dart';
+import '../extensions/enums/encodings_extension.dart';
+import '../../utils/identifiers.dart';
+
 import '../../utils/logger.dart';
 import '../enums/algorithms.dart';
 import '../token_import/token_origin_data.dart';
@@ -20,6 +43,8 @@ abstract class OTPToken extends Token {
     required this.secret,
     required super.id,
     required super.type,
+    super.containerSerial,
+    super.serial,
     super.pin,
     super.tokenImage,
     super.isLocked,
@@ -42,8 +67,10 @@ abstract class OTPToken extends Token {
 
   @override
   OTPToken copyWith({
+    String? serial,
     String? label,
     String? issuer,
+    String? Function()? containerSerial,
     String? id,
     Algorithms? algorithm,
     int? digits,
@@ -60,5 +87,15 @@ abstract class OTPToken extends Token {
   @override
   String toString() {
     return 'OTP${super.toString()}algorithm: $algorithm, digits: $digits, pin: $pin, ';
+  }
+
+  @override
+  Map<String, dynamic> toUriMap() {
+    return super.toUriMap()
+      ..addAll({
+        URI_SECRET: Encodings.base32.decode(secret),
+        URI_ALGORITHM: algorithm.name,
+        URI_DIGITS: digits,
+      });
   }
 }

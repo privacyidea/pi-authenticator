@@ -1,3 +1,22 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,7 +25,8 @@ import '../../utils/app_info_utils.dart';
 import '../../utils/customization/application_customization.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
-import '../../utils/riverpod_providers.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
 import '../main_view/main_view.dart';
 import '../view_interface.dart';
 
@@ -30,7 +50,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     _customization = widget.customization;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_customization.disabledFeatures.contains(AppFeature.introductions)) {
-        ref.read(introductionProvider.notifier).completeAll();
+        ref.read(introductionNotifierProvider.notifier).completeAll();
       }
     });
 
@@ -41,10 +61,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       Future.wait(
         <Future>[
           Future.delayed(_splashScreenDuration),
-          ref.read(settingsProvider.notifier).loadingRepo,
           ref.read(tokenProvider.notifier).initState,
-          ref.read(introductionProvider.notifier).loadingRepo,
-          ref.read(tokenFolderProvider.notifier).initState,
           AppInfoUtils.init(),
           HomeWidgetUtils().homeWidgetInit(),
         ],
@@ -53,7 +70,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           _navigate();
         },
       ).catchError((error) async {
-        Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
+        if (error is Error) {
+          Logger.error('Error while loading the app.', error: error, stackTrace: error.stackTrace, name: 'main.dart#initState');
+          return [];
+        }
+        if (error is Exception) {
+          Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
+          return [];
+        }
         return [];
       }).then((values) async {
         if (!mounted) return;

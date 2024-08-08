@@ -1,3 +1,22 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -7,8 +26,10 @@ import 'package:intl/intl.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/day_password_token_view_mode.dart';
+import '../../../../../model/riverpod_states/settings_state.dart';
 import '../../../../../model/tokens/day_password_token.dart';
-import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
 import '../../../../../widgets/custom_trailing.dart';
@@ -51,9 +72,9 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
   }
 
   void _copyOtpValue() {
-    if (globalRef?.read(disableCopyOtpProvider) ?? false) return;
+    if (ref.read(disableCopyOtpProvider) ?? false) return;
 
-    globalRef?.read(disableCopyOtpProvider.notifier).state = true;
+    ref.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -61,13 +82,13 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
       ),
     );
     Future.delayed(const Duration(seconds: 5), () {
-      globalRef?.read(disableCopyOtpProvider.notifier).state = false;
+      ref.read(disableCopyOtpProvider.notifier).state = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentLocale = ref.watch(settingsProvider).currentLocale;
+    final currentLocale = ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault;
     final dateTimeTokenEnd = widget.token.nextOTPTimeStart;
     final yMdFormat = DateFormat.yMMMd(currentLocale.languageCode);
     final yMdString = yMdFormat.format(dateTimeTokenEnd);
@@ -125,11 +146,11 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                   ? null
                   : () {
                       if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDFOR) {
-                        globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
+                        ref.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
                         return;
                       }
                       if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDUNTIL) {
-                        globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
+                        ref.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
                         return;
                       }
                     },

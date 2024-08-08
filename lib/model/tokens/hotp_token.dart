@@ -1,4 +1,26 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import 'dart:typed_data';
+
 import 'package:json_annotation/json_annotation.dart';
+import '../token_container.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/errors.dart';
@@ -24,10 +46,12 @@ class HOTPToken extends OTPToken {
 
   HOTPToken({
     this.counter = 0,
+    super.containerSerial,
     required super.id,
     required super.algorithm,
     required super.digits,
     required super.secret,
+    super.serial,
     String? type, // just for @JsonSerializable(): type of HOTPToken is always TokenTypes.HOTP
     super.tokenImage,
     super.pin,
@@ -59,9 +83,11 @@ class HOTPToken extends OTPToken {
 
   @override
   HOTPToken copyWith({
+    String? serial,
     int? counter,
     String? label,
     String? issuer,
+    String? Function()? containerSerial,
     String? id,
     Algorithms? algorithm,
     int? digits,
@@ -75,9 +101,11 @@ class HOTPToken extends OTPToken {
     TokenOriginData? origin,
   }) =>
       HOTPToken(
+        serial: serial ?? this.serial,
         counter: counter ?? this.counter,
         label: label ?? this.label,
         issuer: issuer ?? this.issuer,
+        containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
         id: id ?? this.id,
         algorithm: algorithm ?? this.algorithm,
         digits: digits ?? this.digits,
@@ -96,12 +124,32 @@ class HOTPToken extends OTPToken {
     return 'H${super.toString()}counter: $counter}';
   }
 
+  @override
+  HOTPToken copyWithFromTemplate(TokenTemplate template) {
+    final uriMap = template.data;
+    return copyWith(
+      label: uriMap[URI_LABEL],
+      issuer: uriMap[URI_ISSUER],
+      id: uriMap[URI_ID],
+      serial: uriMap[URI_SERIAL],
+      algorithm: uriMap[URI_ALGORITHM] != null ? Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase()) : null,
+      digits: uriMap[URI_DIGITS],
+      secret: uriMap[URI_SECRET] != null ? Encodings.base32.encode(uriMap[URI_SECRET]) : null,
+      counter: uriMap[URI_COUNTER],
+      tokenImage: uriMap[URI_IMAGE],
+      pin: uriMap[URI_PIN],
+      isLocked: uriMap[URI_PIN],
+      origin: uriMap[URI_ORIGIN],
+    );
+  }
+
   factory HOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
     validateUriMap(uriMap);
     return HOTPToken(
       label: uriMap[URI_LABEL] ?? '',
       issuer: uriMap[URI_ISSUER] ?? '',
-      id: const Uuid().v4(),
+      id: uriMap[URI_ID] == String ? uriMap[URI_ID] : const Uuid().v4(),
+      serial: uriMap[URI_SERIAL],
       algorithm: Algorithms.values.byName((uriMap[URI_ALGORITHM] as String? ?? 'SHA1').toUpperCase()),
       digits: uriMap[URI_DIGITS] ?? 6,
       secret: Encodings.base32.encode(uriMap[URI_SECRET]),
@@ -113,14 +161,41 @@ class HOTPToken extends OTPToken {
     );
   }
 
+  /// ```dart
+  /// URI_TYPE: tokenType,
+  /// URI_COUNTER: counter,
+  /// ```
+  /// ------ OTPTOKEN ------
+  /// ```dart
+  /// URI_SECRET: Encodings.base32.decode(secret),
+  /// URI_ALGORITHM: algorithm.name,
+  /// URI_DIGITS: digits,
+  /// ```
+  /// ------- TOKEN ---------
+  /// ```dart
+  /// URI_LABEL: label,
+  /// URI_ISSUER: issuer,
+  /// URI_PIN: pin,
+  /// URI_IMAGE: tokenImage,
+  /// URI_ORIGIN: jsonEncode(origin!.toJson()),
+  /// ```
+  @override
+  Map<String, dynamic> toUriMap() {
+    return super.toUriMap()
+      ..addAll({
+        URI_COUNTER: counter,
+      });
+  }
+
   /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
   static void validateUriMap(Map<String, dynamic> uriMap) {
-    if (uriMap[URI_SECRET] == null) {
+    if (uriMap[URI_SECRET] is! Uint8List) {
       throw LocalizedArgumentError(
-          invalidValue: uriMap[URI_SECRET],
-          name: URI_SECRET,
-          unlocalizedMessage: 'Secret is required',
-          localizedMessage: ((localizations, value, name) => localizations.secretIsRequired));
+        localizedMessage: ((localizations, value, name) => localizations.secretIsRequired),
+        unlocalizedMessage: 'Secret is required and must be a Uint8List',
+        invalidValue: uriMap[URI_SECRET],
+        name: URI_SECRET,
+      );
     }
     if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) {
       throw LocalizedArgumentError(

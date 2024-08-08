@@ -1,21 +1,41 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/model/processor_result.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/processors/token_import_file_processor/token_import_file_processor_interface.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:zxing2/qrcode.dart';
 import 'package:image/image.dart' as img_lib;
+import 'package:zxing2/qrcode.dart';
 
 import '../../model/enums/token_origin_source_type.dart';
+import '../../model/extensions/enums/token_origin_source_type.dart';
+import '../../model/processor_result.dart';
+import '../../model/tokens/token.dart';
+import '../../utils/globals.dart';
 import '../../utils/logger.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/progress_state_provider.dart';
 import '../../utils/token_import_origins.dart';
 import '../scheme_processors/token_import_scheme_processors/google_authenticator_qr_processor.dart';
+import 'token_import_file_processor_interface.dart';
 
 class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
   const GoogleAuthenticatorQrfileProcessor();
@@ -66,7 +86,7 @@ class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
         } on NotFoundException catch (_) {
           Logger.info("Qr-Code not detected. Zoom level: $zoomLevel|rotation: $rotation");
         }
-        progress = globalRef?.read(progressStateProvider)?.progress;
+        progress = globalRef?.read(progressStateProvider).progress;
       }
     }
     if (qrResult == null || progress == null) {
@@ -113,7 +133,6 @@ Future<Result?> _decodeQrImageIsolate(List<dynamic> args) async {
   if (rotation > 0) {
     image = img_lib.copyRotate(image, angle: rotation);
   }
-  print("Image: ${image.width}x${image.height} Rotation: $rotation Zoom: $zoomLevel");
 
   LuminanceSource source = RGBLuminanceSource(
     image.width,

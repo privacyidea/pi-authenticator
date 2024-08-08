@@ -696,5 +696,13 @@
   "qrInFileNotFound2": "You can show me where the QR code is located.",
   "qrInFileNotFound3": "I expect i will find the code if it is in the middle of the marked area.",
   "markQrCode": "Mark QR Code",
-  "malformedData": "Malformed data"
+  "malformedData": "Malformed data",
+  "failedToLoad": "Failed to load: \"{name}\"",
+  "@failedToLoad": {
+    "placeholders": {
+      "name": {
+        "example": "token data"
+      }
+    }
+  }
 }
