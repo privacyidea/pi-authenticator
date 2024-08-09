@@ -2,7 +2,6 @@ import 'package:app_links/app_links.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/enums/app_feature.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/mixins/sortable_mixin.dart';
@@ -25,7 +24,6 @@ import '../state_notifiers/settings_notifier.dart';
 import '../state_notifiers/sortable_notifier.dart';
 import '../state_notifiers/token_folder_notifier.dart';
 import '../state_notifiers/token_notifier.dart';
-import 'customization/application_customization.dart';
 import 'globals.dart';
 import 'home_widget_utils.dart';
 import 'logger.dart';

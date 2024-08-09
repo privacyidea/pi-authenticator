@@ -119,8 +119,32 @@ class ApplicationCustomization {
   ThemeData generateLightTheme() => lightTheme.generateTheme();
   ThemeData generateDarkTheme() => darkTheme.generateTheme();
 
-  Map<String, dynamic> toJson() => _$ApplicationCustomizationToJson(this);
-  factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => _$ApplicationCustomizationFromJson(json);
+  factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => defaultCustomization.copyWith(
+        appName: json['appName'] as String,
+        websiteLink: json['websiteLink'] as String,
+        appIconUint8List: json['appIconBASE64'] != null ? base64Decode(json['appIconBASE64']! as String) : null,
+        appIconSvgUint8List: json['appIconSvgBASE64'] != null ? base64Decode(json['appIconSvgBASE64']! as String) : null,
+        appImageUint8List: json['appImageBASE64'] != null ? base64Decode(json['appImageBASE64'] as String) : null,
+        appImageSvgUint8List: json['appImageSvgBASE64'] != null ? base64Decode(json['appImageSvgBASE64'] as String) : null,
+        lightTheme: ThemeCustomization.fromJson(json['lightTheme'] as Map<String, dynamic>),
+        darkTheme: ThemeCustomization.fromJson(json['darkTheme'] as Map<String, dynamic>),
+        disabledFeatures:
+            json['disabledFeatures'] != null ? (json['disabledFeatures'] as List<dynamic>).map((e) => AppFeature.values.byName(e as String)).toSet() : const {},
+      );
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'appName': appName,
+      'websiteLink': websiteLink,
+      if (appIconUint8List != null) 'appIconBASE64': base64Encode(appIconUint8List!),
+      if (appIconSvgUint8List != null) 'appIconSvgBASE64': base64Encode(appIconSvgUint8List!),
+      if (appImageUint8List != null) 'appImageBASE64': base64Encode(appImageUint8List!),
+      if (appImageSvgUint8List != null) 'appImageSvgBASE64': base64Encode(appImageSvgUint8List!),
+      'lightTheme': lightTheme.toJson(),
+      'darkTheme': darkTheme.toJson(),
+      'disabledFeatures': disabledFeatures.map((e) => e.name).toList(),
+    };
+  }
 }
 
 final Uint8List defaultIconUint8List = base64Decode(
