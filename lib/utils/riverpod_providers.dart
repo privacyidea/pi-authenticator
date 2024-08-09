@@ -206,7 +206,3 @@ final sortableProvider = StateNotifierProvider<SortableNotifier, List<SortableMi
 );
 
 final progressStateProvider = StateNotifierProvider<ProgressStateNotifier, ProgressState?>((ref) => ProgressStateNotifier());
-
-/// Only used for the app customizer
-final applicationCustomizerProvider =
-    StateProvider<ApplicationCustomization>((ref) => ApplicationCustomization.defaultCustomization.copyWith(disabledFeatures: AppFeature.values.toSet()));

@@ -89,6 +89,8 @@ dependencies:
   path_provider: ^2.1.2
   qr_flutter: ^4.1.0
   image_cropper: ^7.1.0
+  flutter_svg: ^2.0.10+1
+  riverpod_generator: ^2.4.0
 
 
 dev_dependencies:

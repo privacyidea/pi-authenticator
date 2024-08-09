@@ -10,7 +10,6 @@ import 'package:firebase_messaging/firebase_messaging.dart' as _i15;
 import 'package:http/http.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i10;
-import 'package:pi_authenticator_legacy/pi_authenticator_legacy.dart' as _i16;
 import 'package:pointycastle/export.dart' as _i3;
 import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.dart'
     as _i8;
@@ -563,56 +562,4 @@ class MockFirebaseUtils extends _i1.Mock implements _i14.FirebaseUtils {
         ),
         returnValue: _i6.Future<String?>.value(),
       ) as _i6.Future<String?>);
-}
-
-/// A class which mocks [LegacyUtils].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockLegacyUtils extends _i1.Mock implements _i16.LegacyUtils {
-  MockLegacyUtils() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i6.Future<String> sign(
-    String? serial,
-    String? message,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #sign,
-          [
-            serial,
-            message,
-          ],
-        ),
-        returnValue: _i6.Future<String>.value(_i10.dummyValue<String>(
-          this,
-          Invocation.method(
-            #sign,
-            [
-              serial,
-              message,
-            ],
-          ),
-        )),
-      ) as _i6.Future<String>);
-
-  @override
-  _i6.Future<bool> verify(
-    String? serial,
-    String? signedData,
-    String? signature,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #verify,
-          [
-            serial,
-            signedData,
-            signature,
-          ],
-        ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
 }

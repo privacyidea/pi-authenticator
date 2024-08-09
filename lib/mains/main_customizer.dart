@@ -23,10 +23,12 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
 import '../utils/globals.dart';
+import '../utils/riverpod/riverpod_providers/state_providers/application_customizer_provider.dart';
 import '../utils/riverpod_providers.dart';
 import '../views/add_token_manually_view/add_token_manually_view.dart';
 import '../views/feedback_view/feedback_view.dart';
@@ -50,7 +52,7 @@ class CustomizationAuthenticator extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsFlutterBinding.ensureInitialized();
     final locale = ref.watch(settingsProvider).currentLocale;
-    final applicationCustomizer = ref.watch(applicationCustomizerProvider);
+    final applicationCustomizer = ref.watch(applicationCustomizerProvider).maybeWhen(orElse: () => ApplicationCustomization.defaultCustomization);
     return LayoutBuilder(
       builder: (context, constraints) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
