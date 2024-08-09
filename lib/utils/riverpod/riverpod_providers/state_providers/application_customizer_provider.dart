@@ -32,4 +32,6 @@ class ApplicationCustomizer extends _$ApplicationCustomizer {
     final customization = ApplicationCustomization.defaultCustomization.copyWith(disabledFeatures: AppFeature.values.toSet());
     return customization;
   }
+
+  void setState(ApplicationCustomization newState) => state = AsyncValue.data(newState);
 }

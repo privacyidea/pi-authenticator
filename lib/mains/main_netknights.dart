@@ -103,12 +103,12 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
           FeedbackView.routeName: (context) => const FeedbackView(),
           ImportTokensView.routeName: (context) => const ImportTokensView(),
           LicenseView.routeName: (context) => LicenseView(
-                appImage: _customization.appImage,
+                appImage: _customization.appImage.getWidget,
                 appName: _customization.appName,
                 websiteLink: _customization.websiteLink,
               ),
           MainView.routeName: (context) => MainView(
-                appIcon: _customization.appIcon,
+                appIcon: _customization.appIcon.getWidget,
                 appName: _customization.appName,
                 disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
               ),

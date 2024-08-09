@@ -2,24 +2,15 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../utils/customization/theme_customization.dart';
 
 import '../../model/enums/app_feature.dart';
+import '../../model/widget_image.dart';
 
 part 'application_customization.g.dart';
 
-class Uint8ListJsonConverter extends JsonConverter<Uint8List, List<int>> {
-  const Uint8ListJsonConverter();
-  @override
-  Uint8List fromJson(List<int> json) => Uint8List.fromList(json);
-  @override
-  List<int> toJson(Uint8List object) => object.toList();
-}
-
 @JsonSerializable()
-@Uint8ListJsonConverter()
 class ApplicationCustomization {
   // Edit in android/app/src/main/AndroidManifest.xml file
   // <application android:label="app name">
@@ -52,14 +43,8 @@ class ApplicationCustomization {
 
   final String appName;
   final String websiteLink;
-  final Uint8List? appIconUint8List;
-  late final Image appIcon = appIconUint8List != null ? Image.memory(appIconUint8List!) : Image.memory(defaultIconUint8List);
-  final Uint8List? appIconSvgUint8List;
-  late final SvgPicture? appIconSvg = appIconSvgUint8List != null ? SvgPicture.memory(appIconSvgUint8List!) : null;
-  final Uint8List? appImageUint8List;
-  late final Image appImage = appImageUint8List != null ? Image.memory(appImageUint8List!) : Image.memory(defaultImageUint8List);
-  final Uint8List? appImageSvgUint8List;
-  late final SvgPicture? appImageSvg = appImageSvgUint8List != null ? SvgPicture.memory(appImageSvgUint8List!) : null;
+  final WidgetImage appIcon;
+  final WidgetImage appImage;
   final ThemeCustomization lightTheme;
   final ThemeCustomization darkTheme;
   final Set<AppFeature> disabledFeatures;
@@ -67,10 +52,8 @@ class ApplicationCustomization {
   static final defaultCustomization = ApplicationCustomization(
     appName: 'privacyIDEA Authenticator',
     websiteLink: 'https://netknights.it/',
-    appIconUint8List: defaultIconUint8List,
-    appIconSvgUint8List: defaultIconUint8List,
-    appImageUint8List: defaultImageUint8List,
-    appImageSvgUint8List: defaultImageUint8List,
+    appIcon: WidgetImage(fileType: 'png', imageData: defaultIconUint8List),
+    appImage: WidgetImage(fileType: 'png', imageData: defaultImageUint8List),
     lightTheme: ThemeCustomization.defaultLightTheme,
     darkTheme: ThemeCustomization.defaultDarkTheme,
     disabledFeatures: const {},
@@ -79,10 +62,8 @@ class ApplicationCustomization {
   ApplicationCustomization({
     required this.appName,
     required this.websiteLink,
-    required this.appIconUint8List,
-    required this.appIconSvgUint8List,
-    required this.appImageUint8List,
-    required this.appImageSvgUint8List,
+    required this.appIcon,
+    required this.appImage,
     required this.lightTheme,
     required this.darkTheme,
     required this.disabledFeatures,
@@ -91,10 +72,8 @@ class ApplicationCustomization {
   ApplicationCustomization copyWith({
     String? appName,
     String? websiteLink,
-    Uint8List? appIconUint8List,
-    Uint8List? appIconSvgUint8List,
-    Uint8List? appImageUint8List,
-    Uint8List? appImageSvgUint8List,
+    WidgetImage? appIcon,
+    WidgetImage? appImage,
     ThemeCustomization? lightTheme,
     ThemeCustomization? darkTheme,
     Set<AppFeature>? disabledFeatures,
@@ -102,10 +81,8 @@ class ApplicationCustomization {
       ApplicationCustomization(
         appName: appName ?? this.appName,
         websiteLink: websiteLink ?? this.websiteLink,
-        appIconUint8List: appIconUint8List ?? this.appIconUint8List,
-        appIconSvgUint8List: appIconSvgUint8List ?? this.appIconSvgUint8List,
-        appImageUint8List: appImageUint8List ?? this.appImageUint8List,
-        appImageSvgUint8List: appImageSvgUint8List ?? this.appImageSvgUint8List,
+        appIcon: appIcon ?? this.appIcon,
+        appImage: appImage ?? this.appImage,
         lightTheme: lightTheme ?? this.lightTheme,
         darkTheme: darkTheme ?? this.darkTheme,
         disabledFeatures: disabledFeatures ?? this.disabledFeatures,
@@ -119,32 +96,8 @@ class ApplicationCustomization {
   ThemeData generateLightTheme() => lightTheme.generateTheme();
   ThemeData generateDarkTheme() => darkTheme.generateTheme();
 
-  factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => defaultCustomization.copyWith(
-        appName: json['appName'] as String,
-        websiteLink: json['websiteLink'] as String,
-        appIconUint8List: json['appIconBASE64'] != null ? base64Decode(json['appIconBASE64']! as String) : null,
-        appIconSvgUint8List: json['appIconSvgBASE64'] != null ? base64Decode(json['appIconSvgBASE64']! as String) : null,
-        appImageUint8List: json['appImageBASE64'] != null ? base64Decode(json['appImageBASE64'] as String) : null,
-        appImageSvgUint8List: json['appImageSvgBASE64'] != null ? base64Decode(json['appImageSvgBASE64'] as String) : null,
-        lightTheme: ThemeCustomization.fromJson(json['lightTheme'] as Map<String, dynamic>),
-        darkTheme: ThemeCustomization.fromJson(json['darkTheme'] as Map<String, dynamic>),
-        disabledFeatures:
-            json['disabledFeatures'] != null ? (json['disabledFeatures'] as List<dynamic>).map((e) => AppFeature.values.byName(e as String)).toSet() : const {},
-      );
-
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'appName': appName,
-      'websiteLink': websiteLink,
-      if (appIconUint8List != null) 'appIconBASE64': base64Encode(appIconUint8List!),
-      if (appIconSvgUint8List != null) 'appIconSvgBASE64': base64Encode(appIconSvgUint8List!),
-      if (appImageUint8List != null) 'appImageBASE64': base64Encode(appImageUint8List!),
-      if (appImageSvgUint8List != null) 'appImageSvgBASE64': base64Encode(appImageSvgUint8List!),
-      'lightTheme': lightTheme.toJson(),
-      'darkTheme': darkTheme.toJson(),
-      'disabledFeatures': disabledFeatures.map((e) => e.name).toList(),
-    };
-  }
+  factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => _$ApplicationCustomizationFromJson(json);
+  Map<String, dynamic> toJson() => _$ApplicationCustomizationToJson(this);
 }
 
 final Uint8List defaultIconUint8List = base64Decode(

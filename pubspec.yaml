@@ -33,7 +33,6 @@ dependencies:
   flutter_local_notifications: ^17.0.0
   home_widget: ^0.6.0
   image: ^4.1.6
-  json_annotation: ^4.9.0
   local_auth: ^2.1.6
   local_auth_android: ^1.0.37
   local_auth_darwin: ^1.2.2
@@ -44,6 +43,11 @@ dependencies:
   uuid: ^4.0.0
   flutter_zxing: ^1.7.0
   zxing2: ^0.2.3
+  flutter_svg: ^2.0.10+1
+  riverpod_generator: ^2.4.0
+  freezed: ^2.5.7
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
   # Crypto
   mutex: ^3.0.0
   hex: ^0.2.0
@@ -89,8 +93,7 @@ dependencies:
   path_provider: ^2.1.2
   qr_flutter: ^4.1.0
   image_cropper: ^7.1.0
-  flutter_svg: ^2.0.10+1
-  riverpod_generator: ^2.4.0
+
 
 
 dev_dependencies:
