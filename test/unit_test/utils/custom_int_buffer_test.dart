@@ -28,7 +28,7 @@ void main() {
 void verifyCustomStringBufferWorks() {
   group('test custom string buffer', () {
     test('put elements in', () {
-      const buffer0_30 = CustomIntBuffer(maxSize: 30);
+      final buffer0_30 = CustomIntBuffer(maxSize: 30);
 
       expect(buffer0_30.maxSize, 30);
       expect(buffer0_30.length, 0);
