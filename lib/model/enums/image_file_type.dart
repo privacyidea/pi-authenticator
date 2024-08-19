@@ -26,4 +26,6 @@ enum ImageFileType {
   jpg,
   jpeg,
   gif,
+  bmp,
+  webp,
 }

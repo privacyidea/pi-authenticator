@@ -25,4 +25,6 @@ const _$ImageFileTypeEnumMap = {
   ImageFileType.jpg: 'jpg',
   ImageFileType.jpeg: 'jpeg',
   ImageFileType.gif: 'gif',
+  ImageFileType.bmp: 'bmp',
+  ImageFileType.webp: 'webp',
 };

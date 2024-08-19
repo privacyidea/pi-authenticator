@@ -22,23 +22,17 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../../utils/logger.dart';
 import '../../enums/image_file_type.dart';
 
 extension ImageFileTypeX on ImageFileType {
-  Widget buildImageWidget(Uint8List imageData) {
-    try {
-      return switch (this) {
+  Widget buildImageWidget(Uint8List imageData) => switch (this) {
         ImageFileType.svg => SvgPicture.memory(imageData),
         ImageFileType.svgz => SvgPicture.memory(imageData),
         ImageFileType.png => Image.memory(imageData),
         ImageFileType.jpg => Image.memory(imageData),
         ImageFileType.jpeg => Image.memory(imageData),
         ImageFileType.gif => Image.memory(imageData),
+        ImageFileType.bmp => Image.memory(imageData),
+        ImageFileType.webp => Image.memory(imageData),
       };
-    } catch (e) {
-      Logger.error('File type $this is not supported or does not match the image data.', name: 'ImageFileTypeX#buildImageWidget');
-      return const SizedBox();
-    }
-  }
 }

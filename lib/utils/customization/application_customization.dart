@@ -2,16 +2,12 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../utils/customization/theme_customization.dart';
 
 import '../../model/enums/app_feature.dart';
 import '../../model/enums/image_file_type.dart';
 import '../../model/widget_image.dart';
 
-part 'application_customization.g.dart';
-
-@JsonSerializable()
 class ApplicationCustomization {
   // Edit in android/app/src/main/AndroidManifest.xml file
   // <application android:label="app name">
@@ -45,36 +41,25 @@ class ApplicationCustomization {
   final String appName;
   final String websiteLink;
   final WidgetImage appIcon;
+
   final WidgetImage appImage;
+
   final ThemeCustomization lightTheme;
   final ThemeCustomization darkTheme;
   final Set<AppFeature> disabledFeatures;
 
-  static final defaultCustomization = ApplicationCustomization(
-    appName: 'privacyIDEA Authenticator',
-    websiteLink: 'https://netknights.it/',
-    appIcon: WidgetImage(
-      fileType: ImageFileType.png,
-      imageData: defaultIconUint8List,
-    ),
-    appImage: WidgetImage(
-      fileType: ImageFileType.png,
-      imageData: defaultImageUint8List,
-    ),
-    lightTheme: ThemeCustomization.defaultLightTheme,
-    darkTheme: ThemeCustomization.defaultDarkTheme,
-    disabledFeatures: const {},
-  );
+  static final defaultCustomization = ApplicationCustomization();
 
   ApplicationCustomization({
-    required this.appName,
-    required this.websiteLink,
-    required this.appIcon,
-    required this.appImage,
-    required this.lightTheme,
-    required this.darkTheme,
-    required this.disabledFeatures,
-  });
+    this.appName = 'privacyIDEA Authenticator',
+    this.websiteLink = 'https://netknights.it/',
+    WidgetImage? appIcon,
+    WidgetImage? appImage,
+    this.lightTheme = ThemeCustomization.defaultLightTheme,
+    this.darkTheme = ThemeCustomization.defaultDarkTheme,
+    this.disabledFeatures = const {},
+  })  : appIcon = appIcon ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List),
+        appImage = appImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List);
 
   ApplicationCustomization copyWith({
     String? appName,
@@ -103,8 +88,26 @@ class ApplicationCustomization {
   ThemeData generateLightTheme() => lightTheme.generateTheme();
   ThemeData generateDarkTheme() => darkTheme.generateTheme();
 
-  factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => _$ApplicationCustomizationFromJson(json);
-  Map<String, dynamic> toJson() => _$ApplicationCustomizationToJson(this);
+  factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => ApplicationCustomization(
+        appName: json['appName'] as String? ?? 'privacyIDEA Authenticator',
+        websiteLink: json['websiteLink'] as String? ?? 'https://netknights.it/',
+        appIcon: json['appIcon'] == null ? null : WidgetImage.fromJson(json['appIcon'] as Map<String, dynamic>),
+        appImage: json['appImage'] == null ? null : WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>),
+        lightTheme: json['lightTheme'] != null ? ThemeCustomization.fromJson(json['lightTheme'] as Map<String, dynamic>) : ThemeCustomization.defaultLightTheme,
+        darkTheme: json['darkTheme'] != null ? ThemeCustomization.fromJson(json['darkTheme'] as Map<String, dynamic>) : ThemeCustomization.defaultDarkTheme,
+        disabledFeatures:
+            json['disabledFeatures'] != null ? (json['disabledFeatures'] as List<dynamic>).map((e) => AppFeature.values.byName(e as String)).toSet() : {},
+      );
+
+  Map<String, dynamic> toJson() => {
+        'appName': appName,
+        'websiteLink': websiteLink,
+        'appIcon': appIcon.toJson(),
+        'appImage': appImage.toJson(),
+        'lightTheme': lightTheme.toJson(),
+        'darkTheme': darkTheme.toJson(),
+        'disabledFeatures': disabledFeatures.map((e) => e.name).toList(),
+      };
 }
 
 final Uint8List defaultIconUint8List = base64Decode(

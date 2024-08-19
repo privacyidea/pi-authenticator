@@ -63,7 +63,7 @@ class WidgetImage {
       return fileType.buildImageWidget(imageData);
     } catch (e) {
       Logger.error('File type $fileType is not supported or does not match the image data.', name: 'WidgetImage#_buildImageWidget');
-      return const SizedBox();
+      rethrow;
     }
   }
 
