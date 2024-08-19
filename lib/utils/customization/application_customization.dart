@@ -6,6 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../utils/customization/theme_customization.dart';
 
 import '../../model/enums/app_feature.dart';
+import '../../model/enums/image_file_type.dart';
 import '../../model/widget_image.dart';
 
 part 'application_customization.g.dart';
@@ -52,8 +53,14 @@ class ApplicationCustomization {
   static final defaultCustomization = ApplicationCustomization(
     appName: 'privacyIDEA Authenticator',
     websiteLink: 'https://netknights.it/',
-    appIcon: WidgetImage(fileType: 'png', imageData: defaultIconUint8List),
-    appImage: WidgetImage(fileType: 'png', imageData: defaultImageUint8List),
+    appIcon: WidgetImage(
+      fileType: ImageFileType.png,
+      imageData: defaultIconUint8List,
+    ),
+    appImage: WidgetImage(
+      fileType: ImageFileType.png,
+      imageData: defaultImageUint8List,
+    ),
     lightTheme: ThemeCustomization.defaultLightTheme,
     darkTheme: ThemeCustomization.defaultDarkTheme,
     disabledFeatures: const {},

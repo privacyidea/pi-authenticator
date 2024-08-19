@@ -22,10 +22,11 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/image_file_type_extension.dart';
 
 import '../utils/logger.dart';
+import 'enums/image_file_type.dart';
 
 part 'widget_image.g.dart';
 
@@ -42,7 +43,7 @@ class Uint8ListConverter implements JsonConverter<Uint8List, String> {
 @JsonSerializable()
 @Uint8ListConverter()
 class WidgetImage {
-  final String fileType;
+  final ImageFileType fileType;
   final Uint8List imageData;
 
   WidgetImage({
@@ -59,11 +60,7 @@ class WidgetImage {
 
   Widget _buildImageWidget() {
     try {
-      if (['svg', 'svgz'].contains(fileType)) {
-        return SvgPicture.memory(imageData);
-      } else {
-        return Image.memory(imageData);
-      }
+      return fileType.buildImageWidget(imageData);
     } catch (e) {
       Logger.error('File type $fileType is not supported or does not match the image data.', name: 'WidgetImage#_buildImageWidget');
       return const SizedBox();
