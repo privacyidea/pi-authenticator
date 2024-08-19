@@ -62,7 +62,6 @@ class PushProvider {
   RsaUtils _rsaUtils;
   RsaUtils get rsaUtils => _rsaUtils;
 
-
   PushProvider._({
     FirebaseUtils? firebaseUtils,
     PrivacyideaIOClient? ioClient,
