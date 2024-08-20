@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../model/extensions/color_extension.dart';
 import '../../model/push_request.dart';
 import '../../model/tokens/push_token.dart';
+import '../../utils/customization/theme_extentions/push_request_theme.dart';
 import '../../utils/globals.dart';
 import '../../utils/lock_auth.dart';
 import '../../utils/logger.dart';
@@ -62,6 +63,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
         if (mounted) ref.read(pushRequestProvider.notifier).remove(widget.pushRequest);
       });
     }
+    final pushRequestTheme = (Theme.of(context).extensions[PushRequestTheme] as PushRequestTheme);
 
     return isHandled || token == null
         ? const SizedBox()
@@ -116,7 +118,10 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                       : SizedBox(
                           // Accept button
                           child: PressButton(
-                            style: ButtonStyle(shape: buttonShape(context)),
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.all(pushRequestTheme.acceptColor),
+                              shape: buttonShape(context),
+                            ),
                             onPressed: () async {
                               if (token.isLocked && await lockAuth(localizedReason: localizations.authToAcceptPushRequest) == false) {
                                 return;
@@ -153,9 +158,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                     // Decline button
                     child: PressButton(
                       style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                          Theme.of(context).colorScheme.errorContainer,
-                        ),
+                        backgroundColor: WidgetStateProperty.all(pushRequestTheme.declineColor),
                         shape: buttonShape(context),
                       ),
                       onPressed: () async {

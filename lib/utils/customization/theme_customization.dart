@@ -2,8 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../../utils/customization/action_theme.dart';
-import '../../../utils/customization/extended_text_theme.dart';
+import 'theme_extentions/action_theme.dart';
+import 'theme_extentions/extended_text_theme.dart';
+import 'theme_extentions/push_request_theme.dart';
 
 class ThemeCustomization {
   static const ThemeCustomization defaultLightTheme = ThemeCustomization.defaultLightWith();
@@ -22,13 +23,17 @@ class ThemeCustomization {
     required this.lockColor,
     required this.tileIconColor,
     required this.navigationBarColor,
+    Color? pushAuthRequestAcceptColor,
+    Color? pushAuthRequestDeclineColor,
     Color? actionButtonsForegroundColor,
     Color? tilePrimaryColor,
     Color? tileSubtitleColor,
     Color? navigationBarIconColor,
     Color? qrButtonBackgroundColor,
     Color? qrButtonIconColor,
-  })  : _actionButtonsForegroundColor = actionButtonsForegroundColor,
+  })  : _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
+        _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
+        _actionButtonsForegroundColor = actionButtonsForegroundColor,
         _tilePrimaryColor = tilePrimaryColor,
         _tileSubtitleColor = tileSubtitleColor,
         _navigationBarIconColor = navigationBarIconColor,
@@ -48,6 +53,8 @@ class ThemeCustomization {
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
+    Color? pushAuthRequestAcceptColor, // Default: primaryColor
+    Color? pushAuthRequestDeclineColor, // Default: deleteColor
     Color? actionButtonsForegroundColor, // Default: foregroundColor
     Color? tilePrimaryColor, // Default: primaryColor
     Color? tileSubtitleColor, // Default: subtitleColor
@@ -67,6 +74,8 @@ class ThemeCustomization {
         tileIconColor = tileIconColor ?? const Color(0xff757575),
         navigationBarColor = navigationBarColor ?? const Color(0xFFFFFFFF),
         // From here on the colors have a default value based on another given color so they can be null
+        _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
+        _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
         _actionButtonsForegroundColor = actionButtonsForegroundColor,
         _tilePrimaryColor = tilePrimaryColor,
         _tileSubtitleColor = tileSubtitleColor,
@@ -87,6 +96,8 @@ class ThemeCustomization {
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
+    Color? pushAuthRequestAcceptColor, // Default: primaryColor
+    Color? pushAuthRequestDeclineColor, // Default: deleteColor
     Color? actionButtonsForegroundColor, // Default: foregroundColor
     Color? tilePrimaryColor, // Default: primaryColor
     Color? tileSubtitleColor, // Default: subtitleColor
@@ -106,6 +117,8 @@ class ThemeCustomization {
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
         navigationBarColor = navigationBarColor ?? const Color(0xFF282828),
         // From here on the colors have a default value based on another given color so they can be null
+        _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
+        _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
         _actionButtonsForegroundColor = actionButtonsForegroundColor,
         _tilePrimaryColor = tilePrimaryColor,
         _tileSubtitleColor = tileSubtitleColor,
@@ -122,6 +135,12 @@ class ThemeCustomization {
   final Color backgroundColor;
   final Color foregroundColor;
   final Color shadowColor;
+
+  // Push Request colors
+  final Color? _pushAuthRequestAcceptColor;
+  Color get pushAuthRequestAcceptColor => _pushAuthRequestAcceptColor ?? primaryColor;
+  final Color? _pushAuthRequestDeclineColor;
+  Color get pushAuthRequestDeclineColor => _pushAuthRequestDeclineColor ?? deleteColor;
 
   // Slide action
   final Color deleteColor;
@@ -160,6 +179,8 @@ class ThemeCustomization {
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
+    Color? Function()? pushAuthRequestAcceptColor, // Default: primaryColor
+    Color? Function()? pushAuthRequestDeclineColor, // Default: deleteColor
     Color? Function()? actionButtonsForegroundColor, // Default: foregroundColor
     Color? Function()? tilePrimaryColor, // Default: primaryColor
     Color? Function()? tileSubtitleColor, // Default: subtitleColor
@@ -180,6 +201,9 @@ class ThemeCustomization {
         lockColor: lockColor ?? this.lockColor,
         tileIconColor: tileIconColor ?? this.tileIconColor,
         navigationBarColor: navigationBarColor ?? this.navigationBarColor,
+        // From here on the colors have a default value based on another given color so they can be null
+        pushAuthRequestAcceptColor: pushAuthRequestAcceptColor != null ? pushAuthRequestAcceptColor() : _pushAuthRequestAcceptColor,
+        pushAuthRequestDeclineColor: pushAuthRequestDeclineColor != null ? pushAuthRequestDeclineColor() : _pushAuthRequestDeclineColor,
         actionButtonsForegroundColor: actionButtonsForegroundColor != null ? actionButtonsForegroundColor() : _actionButtonsForegroundColor,
         tilePrimaryColor: tilePrimaryColor != null ? tilePrimaryColor() : _tilePrimaryColor,
         tileSubtitleColor: tileSubtitleColor != null ? tileSubtitleColor() : _tileSubtitleColor,
@@ -418,6 +442,10 @@ class ThemeCustomization {
               tokenTileSubtitle: TextStyle(
                 color: tileSubtitleColor,
               ),
+            ),
+            PushRequestTheme(
+              acceptColor: pushAuthRequestAcceptColor,
+              declineColor: pushAuthRequestDeclineColor,
             ),
           ]);
 
