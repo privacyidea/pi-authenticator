@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../utils/customization/theme_customization.dart';
 
 import '../../model/enums/app_feature.dart';
@@ -9,6 +9,9 @@ import '../../model/enums/image_file_type.dart';
 import '../../model/widget_image.dart';
 
 class ApplicationCustomization {
+  static const String _defaultFontName = 'defaultFont';
+  final String fontFamilyName;
+  final Uint8List? customFontBytes;
   // Edit in android/app/src/main/AndroidManifest.xml file
   // <application android:label="app name">
 
@@ -53,6 +56,8 @@ class ApplicationCustomization {
   ApplicationCustomization({
     this.appName = 'privacyIDEA Authenticator',
     this.websiteLink = 'https://netknights.it/',
+    this.fontFamilyName = _defaultFontName,
+    this.customFontBytes,
     WidgetImage? appIcon,
     WidgetImage? appImage,
     this.lightTheme = ThemeCustomization.defaultLightTheme,
@@ -80,17 +85,38 @@ class ApplicationCustomization {
         disabledFeatures: disabledFeatures ?? this.disabledFeatures,
       );
 
-  Future<void> loadCustomFonts() async {
-    await lightTheme.loadCustomFonts();
-    await darkTheme.loadCustomFonts();
+  Future<ApplicationCustomization> updateFont(Uint8List fontBytes, String fontName) async {
+    final newState = ApplicationCustomization(
+      appName: appName,
+      websiteLink: websiteLink,
+      customFontBytes: fontBytes,
+      fontFamilyName: fontName,
+      appIcon: appIcon,
+      appImage: appImage,
+      lightTheme: lightTheme,
+      darkTheme: darkTheme,
+      disabledFeatures: disabledFeatures,
+    );
+    await newState.loadCustomFonts(fontBytes);
+    return newState;
   }
 
-  ThemeData generateLightTheme() => lightTheme.generateTheme();
-  ThemeData generateDarkTheme() => darkTheme.generateTheme();
+  Future<void> loadCustomFonts(fontBytes) async {
+    if (customFontBytes == null) return;
+    var fontLoader = FontLoader(fontFamilyName);
+    final byteData = ByteData.view(customFontBytes!.buffer);
+    fontLoader.addFont(Future.value(byteData));
+    await fontLoader.load();
+  }
+
+  ThemeData generateLightTheme() => lightTheme.generateTheme(fontFamily: customFontBytes != null ? fontFamilyName : null);
+  ThemeData generateDarkTheme() => darkTheme.generateTheme(fontFamily: customFontBytes != null ? fontFamilyName : null);
 
   factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => ApplicationCustomization(
         appName: json['appName'] as String? ?? 'privacyIDEA Authenticator',
         websiteLink: json['websiteLink'] as String? ?? 'https://netknights.it/',
+        customFontBytes: json['customFontBytes'] != null ? base64Decode(json['customFontBytes'] as String) : null,
+        fontFamilyName: json['fontFamilyName'] as String? ?? _defaultFontName,
         appIcon: json['appIcon'] == null ? null : WidgetImage.fromJson(json['appIcon'] as Map<String, dynamic>),
         appImage: json['appImage'] == null ? null : WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>),
         lightTheme: json['lightTheme'] != null ? ThemeCustomization.fromJson(json['lightTheme'] as Map<String, dynamic>) : ThemeCustomization.defaultLightTheme,
@@ -102,6 +128,8 @@ class ApplicationCustomization {
   Map<String, dynamic> toJson() => {
         'appName': appName,
         'websiteLink': websiteLink,
+        'customFontBytes': customFontBytes != null ? base64Encode(customFontBytes!) : null,
+        'fontFamilyName': fontFamilyName,
         'appIcon': appIcon.toJson(),
         'appImage': appImage.toJson(),
         'lightTheme': lightTheme.toJson(),

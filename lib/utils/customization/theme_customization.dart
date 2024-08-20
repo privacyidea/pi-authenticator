@@ -1,8 +1,6 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../utils/customization/action_theme.dart';
 import '../../../utils/customization/extended_text_theme.dart';
@@ -10,11 +8,8 @@ import '../../../utils/customization/extended_text_theme.dart';
 class ThemeCustomization {
   static const ThemeCustomization defaultLightTheme = ThemeCustomization.defaultLightWith();
   static const ThemeCustomization defaultDarkTheme = ThemeCustomization.defaultDarkWith();
-  static const String _customFontFamilyName = 'customFontFamily';
 
   const ThemeCustomization({
-    this.customFontBytes,
-    this.customFontFamily = _customFontFamilyName,
     required this.brightness,
     required this.primaryColor,
     required this.onPrimary,
@@ -41,8 +36,6 @@ class ThemeCustomization {
         _qrButtonIconColor = qrButtonIconColor;
 
   const ThemeCustomization.defaultLightWith({
-    this.customFontBytes,
-    this.customFontFamily = _customFontFamilyName,
     Color? primaryColor,
     Color? onPrimary,
     Color? subtitleColor,
@@ -82,8 +75,6 @@ class ThemeCustomization {
         _qrButtonIconColor = qrButtonIconColor;
 
   const ThemeCustomization.defaultDarkWith({
-    this.customFontBytes,
-    this.customFontFamily = _customFontFamilyName,
     Color? primaryColor,
     Color? onPrimary,
     Color? subtitleColor,
@@ -123,9 +114,6 @@ class ThemeCustomization {
         _qrButtonIconColor = qrButtonIconColor;
 
   final Brightness brightness;
-
-  final Uint8List? customFontBytes;
-  final String customFontFamily;
 
   // Basic colors
   final Color primaryColor;
@@ -272,33 +260,25 @@ class ThemeCustomization {
         '_qrButtonIconColor': _qrButtonIconColor?.value,
       };
 
-  Future<void> loadCustomFonts() async {
-    if (customFontBytes == null) return;
-    var fontLoader = FontLoader(customFontFamily);
-    final byteData = ByteData.view(customFontBytes!.buffer);
-    fontLoader.addFont(Future.value(byteData));
-    await fontLoader.load();
-  }
-
-  ThemeData generateTheme() => ThemeData(
+  ThemeData generateTheme({String? fontFamily}) => ThemeData(
           useMaterial3: false,
           brightness: brightness,
           primaryColor: primaryColor,
           canvasColor: backgroundColor,
           textTheme: const TextTheme().copyWith(
-            bodyLarge: TextStyle(color: foregroundColor, fontFamily: customFontBytes != null ? customFontFamily : null),
-            bodyMedium: TextStyle(color: foregroundColor, fontFamily: customFontBytes != null ? customFontFamily : null),
-            titleMedium: TextStyle(color: foregroundColor, fontFamily: customFontBytes != null ? customFontFamily : null),
-            titleSmall: TextStyle(color: foregroundColor, fontFamily: customFontBytes != null ? customFontFamily : null),
-            displayLarge: TextStyle(color: foregroundColor, fontFamily: customFontBytes != null ? customFontFamily : null),
-            displayMedium: TextStyle(color: foregroundColor, fontFamily: customFontBytes != null ? customFontFamily : null),
-            displaySmall: TextStyle(color: foregroundColor, fontFamily: customFontBytes != null ? customFontFamily : null),
-            headlineMedium: TextStyle(color: foregroundColor, fontFamily: customFontBytes != null ? customFontFamily : null),
-            headlineSmall: TextStyle(color: foregroundColor, fontFamily: customFontBytes != null ? customFontFamily : null),
-            titleLarge: TextStyle(color: primaryColor, fontFamily: customFontBytes != null ? customFontFamily : null),
-            bodySmall: TextStyle(color: subtitleColor, fontFamily: customFontBytes != null ? customFontFamily : null),
-            labelLarge: TextStyle(color: foregroundColor, fontFamily: customFontBytes != null ? customFontFamily : null),
-            labelSmall: TextStyle(color: foregroundColor, fontFamily: customFontBytes != null ? customFontFamily : null),
+            bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            bodyMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            titleMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            displayLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            displayMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            displaySmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            headlineMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            headlineSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily),
+            bodySmall: TextStyle(color: subtitleColor, fontFamily: fontFamily),
+            labelLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            labelSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
           ),
           iconButtonTheme: IconButtonThemeData(
             style: ButtonStyle(

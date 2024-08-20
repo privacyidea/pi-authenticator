@@ -59,7 +59,6 @@ void main() async {
           Logger.error('Automatic data collection should not be enabled', name: 'main.dart#main');
         }
         final customization = ApplicationCustomization.defaultCustomization;
-        await customization.loadCustomFonts();
         runApp(AppWrapper(child: PrivacyIDEAAuthenticator(customization)));
       });
 }

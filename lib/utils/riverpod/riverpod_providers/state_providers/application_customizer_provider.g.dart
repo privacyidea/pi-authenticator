@@ -7,7 +7,7 @@ part of 'application_customizer_provider.dart';
 // **************************************************************************
 
 String _$applicationCustomizerHash() =>
-    r'1428314c2f7b9da2c867ec8fc8b82ae365caabca';
+    r'66edfd3f16d9bbd5eb802b9e87788297a475971c';
 
 /// Only used for the app customizer
 ///

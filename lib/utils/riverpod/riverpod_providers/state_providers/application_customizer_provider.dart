@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../model/enums/app_feature.dart';
@@ -33,5 +34,15 @@ class ApplicationCustomizer extends _$ApplicationCustomizer {
     return customization;
   }
 
-  void setState(ApplicationCustomization newState) => state = AsyncValue.data(newState);
+  Future<ApplicationCustomization> setState(ApplicationCustomization newState) async {
+    state = AsyncValue.data(newState);
+    return newState;
+  }
+
+  Future<ApplicationCustomization> updateState(FutureOr<ApplicationCustomization> Function(ApplicationCustomization) updater) async {
+    final oldState = await future;
+    final newState = await updater(oldState);
+    setState(newState);
+    return newState;
+  }
 }
